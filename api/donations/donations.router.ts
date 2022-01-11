@@ -11,7 +11,6 @@ donationsRouter.get('/', async (req: Request, res: Response) => {
 
   try {
     const donations = await pool.query(query);
-    console.log(donations);
     res.status(200).send(donations.rows);
   } catch (err) {
     res.status(500).send(err);
