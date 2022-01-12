@@ -1,0 +1,28 @@
+.contacts {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.contact-info {
+    background-color: white;
+    border-radius: 5px;
+    flex-grow: 1;
+    margin: 10px auto;
+    padding: 20px;
+    width: 50%;
+}
+
+.contact-field {
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.contact-field > * {
+    margin: 10px;
+}
+
+.contact-field > p {
+    font-weight: bold;
+}
