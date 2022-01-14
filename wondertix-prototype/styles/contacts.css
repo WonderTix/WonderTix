@@ -26,3 +26,12 @@
 .contact-field > p {
     font-weight: bold;
 }
+
+.vip {
+    background-color: purple;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    margin: 0;
+    padding: 1px 8px;
+}

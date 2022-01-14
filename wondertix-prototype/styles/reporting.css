@@ -91,11 +91,22 @@
     margin: 20px;
 }
 
+.reporting-table th {
+    background-color: #333;
+    color: white;
+}
+
 .reporting-table > table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
 }
 
-.reporting-table > th, td {
-    padding: 5px 10px;
+.reporting-table > tr, th, td {
+    padding: 5px 20px;
+    text-align: center;
+}
+
+.reporting-table-container > p {
+    font-weight: bold;
+    margin: 20px;
 }

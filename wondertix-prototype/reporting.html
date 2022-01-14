@@ -3,18 +3,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie-edge" />
-    <link rel='stylesheet' href='styles/styles.css'>
+    <link rel="stylesheet" href="styles/styles.css" />
     <link rel="stylesheet" href="styles/reporting.css" />
     <script src="scripts/reporting.js"></script>
   </head>
   <body class="reporting">
     <nav class="navbar">
-        <h3>WonderTix</h3>
-        <ul>
-            <li><a href="./index.html">Home</a></li>
-            <li><a href="./reporting.html">Reporting</a></li>
-            <li><a href="./tasks.html">Tasks</a></li>
-          </ul>
+      <h3>WonderTix</h3>
+      <ul>
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./reporting.html">Reporting</a></li>
+        <li><a href="./tasks.html">Tasks</a></li>
+      </ul>
     </nav>
     <div class="reporting-content">
       <div class="reporting-search">
@@ -26,10 +26,11 @@
         </fieldset>
         <fieldset id="search-queries">
           <legend>Search by</legend>
-          <select 
-          default="none"
-          class="reporting-select" 
-          onchange="if(this.selectedIndex) querySelection(this.value)">
+          <select
+            default="none"
+            class="reporting-select"
+            onchange="if(this.selectedIndex) querySelection(this.value)"
+          >
             <option disabled selected value>None selected</option>
             <option value="accounts">Accounts</option>
             <option value="contacts">Contacts</option>
@@ -41,10 +42,15 @@
         </fieldset>
         <fieldset id="sort-queries" hidden>
           <legend>Sort by</legend>
-          <select id="reporting-select" class="reporting-select"></select>
+          <select id="sort-select" class="reporting-select"></select>
         </fieldset>
         <div class="button-group">
-          <button class="reporting-button" onclick="runButton()">Run</button>
+          <button
+            class="reporting-button"
+            onclick="runButton()"
+          >
+            Run
+          </button>
           <button class="reporting-button">Save</button>
         </div>
       </div>
@@ -53,7 +59,10 @@
           <button class="reporting-button">Refresh</button>
           <button class="reporting-button">Export</button>
         </div>
-        <div id="reporting-table-container" class="reporting-table-container"></div>
+        <div
+          id="reporting-table-container"
+          class="reporting-table-container"
+        ></div>
       </div>
     </div>
   </body>
