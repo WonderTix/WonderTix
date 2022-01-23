@@ -1,20 +1,26 @@
 // api/donations/donations.router.ts
 
 import { Router, Request, Response } from 'express';
-import { pool } from '../db';
+import { find, findAll } from './donations.service';
 
 export const donationsRouter = Router();
 
-// GET donations
-donationsRouter.get('/', async (req: Request, res: Response) => {
-  const query = 'SELECT * FROM donations';
-
+// GET /api/donations
+donationsRouter.get('/', async (req, res) => {
   try {
-    const donations = await pool.query(query);
+    const donations = await findAll();
     res.status(200).send(donations.rows);
-  } catch (err) {
-    res.status(500).send(err);
+  } catch (err: any) {
+    res.status(500).send(err.message);
   }
 });
 
-// POST donations
+// GET /api/donations/:id
+donationsRouter.get('/:id', async (req, res) => {
+  try {
+    const donation = await find(req.params.id);
+    res.status(200).send(donation.rows);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
