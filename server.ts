@@ -30,7 +30,7 @@ app.use(cors(/* OPTIONS HERE */));
 /* Connect Routers */
 
 app.use('/api/donations', donationsRouter);
-app.use('/api/customers', contactsRouter);
+app.use('/api/contacts', contactsRouter);
 
 app.get('/', (req, res) => res.send('Hello World.'));
 
