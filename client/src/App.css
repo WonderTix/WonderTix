@@ -1,0 +1,18 @@
+html {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root, #root>div {
+  padding: 0px !important;
+  margin: 0px !important;
+  max-height: 100vh;
+  max-width: 100vw;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
