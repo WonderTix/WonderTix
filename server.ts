@@ -6,6 +6,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { donationsRouter } from './api/donations/donations.router';
+import { contactsRouter } from './api/contacts/contacts.router';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use(cors(/* OPTIONS HERE */));
 /* Connect Routers */
 
 app.use('/api/donations', donationsRouter);
+app.use('/api/contacts', contactsRouter);
 
 app.get('/', (req, res) => res.send('Hello World.'));
 
