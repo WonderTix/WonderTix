@@ -5,10 +5,11 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
 import { donationsRouter } from './api/donations/donations.router';
 import { contactsRouter } from './api/contacts/contacts.router';
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const port = parseInt(process.env.PORT || '8000');
