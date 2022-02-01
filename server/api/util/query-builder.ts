@@ -1,68 +1,86 @@
 // api/util/query-builder.ts
 
-import { QueryAttributes } from './query-attributes';
+export interface QueryAttr {
+  fields?: Array<string>;
+  filters?: Object;
+  sort?: Object;
+}
 
-const operators = {
-  $eq: '= ',
-  $contains: ''
+const operators: any = {
+  $eq: '='
+  // TODO -- $contains: ''
 };
 
-/* Remember to always add a space after each query item! */
+export function buildQuery(tableName: string, params: QueryAttr | undefined) {
+  let query = 'SELECT ';
 
-export class QueryBuilder {
-  table: string;
-  query: string;
-  attributes: QueryAttributes;
-
-  constructor(table: string, params: Object) {
-    this.table = table;
-    this.query = ``;
-    this.attributes = new QueryAttributes(params);
+  if (params === undefined) {
+    return `SELECT * FROM ${tableName}`;
   }
 
-  build() {
-    this.query += `SELECT `;
+  // Add fields
+  if (params.fields) {
+    query += parseFields(params.fields);
+  } else {
+    query += '* '; // unspecified fields queries all
+  }
 
-    // add fields to query
-    if (this.attributes['fields'] !== '') {
-      const entries = Object.entries(this.attributes['fields']);
-      for (const [i, value] of entries) {
-        this.query += `${value} `;
-        if (parseInt(i) !== entries.length - 1) {
-          this.query += `, `;
-        }
-      }
+  // Add table name
+  query += `FROM ${tableName} `;
+
+  // Add filters
+  if (params.filters) {
+    query += parseFilters(params.filters);
+  }
+
+  // Add sort
+  if (params.sort) {
+    query += parseSort(params.sort);
+  }
+
+  // console.log(query);
+  return query;
+}
+
+/* Helper Functions */
+
+function parseFields(fields: Array<string>) {
+  let res = '';
+  const len = fields.length;
+
+  for (let i = 0; i < len; i++) {
+    res += fields[i];
+
+    if (i !== len - 1) {
+      res += ', ';
     } else {
-      this.query += `* `;
+      res += ' ';
     }
-
-    this.query += `FROM ${this.table} `;
-
-    // add filters to query
-    if (this.attributes['filters'] !== '') {
-      const entries = Object.entries(this.attributes['filters']);
-      let i = 0;
-
-      this.query += `WHERE `;
-
-      for (const [key, value] of entries) {
-        this.query += `${key} = \'${value}\' `;
-
-        if (i !== entries.length - 1) {
-          this.query += `AND `;
-        }
-
-        i += 1;
-      }
-    }
-
-    // add sorting to query
-    if (this.attributes['sort'] !== '') {
-      const [[key, value]] = Object.entries(this.attributes['sort']);
-      this.query += `ORDER BY ${key} ${value} `;
-    }
-
-    console.log(this.query);
-    return this.query;
   }
+
+  return res;
+}
+
+function parseFilters(filters: Object) {
+  let res = '';
+  const entries = Object.entries(filters);
+  const len = entries.length;
+  res += 'WHERE ';
+
+  for (let i = 0; i < len; i++) {
+    const [key, obj] = entries[i];
+    const [[op, value]] = Object.entries(obj);
+    res += `${key} ${operators[op]} \'${value}\' `;
+
+    if (i !== len - 1) {
+      res += 'AND ';
+    }
+  }
+
+  return res;
+}
+
+function parseSort(sort: Object) {
+  const [[key, value]] = Object.entries(sort);
+  return `ORDER BY ${key} ${value} `;
 }
