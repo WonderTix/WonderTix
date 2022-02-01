@@ -8,7 +8,7 @@ export const contactsRouter = Router();
 // GET /api/contacts
 contactsRouter.get('/', async (req, res) => {
   try {
-    const contacts = await findAll();
+    const contacts = await findAll(req.query);
     res.status(200).send(contacts.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
