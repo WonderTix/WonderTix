@@ -1,18 +1,12 @@
 // api/contacts/contacts.service.ts
 
 import { pool } from '../db';
-import { QueryBuilder } from '../util/query-builder';
+import { buildQuery, QueryAttr } from '../util/query-builder';
 
-/* Currently uses old database, so contacts are customers */
+/* NOTE -- Currently uses old database, so contacts are customers */
 
-export const findAll = (params?: Object) => {
-  if (params === undefined) {
-    params = {};
-  }
-
-  console.log(params);
-
-  let myQuery = new QueryBuilder('customers', params).build();
+export const findAll = (params?: QueryAttr) => {
+  const myQuery = buildQuery('customers', params);
   return pool.query(myQuery);
 };
 
