@@ -8,7 +8,7 @@ export const donationsRouter = Router();
 // GET /api/donations
 donationsRouter.get('/', async (req, res) => {
   try {
-    const donations = await findAll();
+    const donations = await findAll(req.query);
     res.status(200).send(donations.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
