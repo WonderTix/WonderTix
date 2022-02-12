@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Accordion,
   AccordionDetails,
@@ -6,7 +7,6 @@ import {
   Box,
   ButtonGroup,
   Button,
-  FormControl,
   FormControlLabel,
   FormGroup,
   Radio,
@@ -18,28 +18,62 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { contactFilters, contactSorters } from "../../utils/arrays";
 
-export default function ContactsPanel({setResponse}) {
+export default function ContactsPanel({ setData }) {
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactAddress, setContactAddress] = useState("");
+  const [contactVip, setContactVip] = useState(false);
+  const [contactNewsletter, setContactNewsletter] = useState(false);
+  const [sortBy, setSortBy] = useState("");
 
   const handleChange = (e) => {
     e.preventDefault();
+    let value = e.target.id;
 
-    if (e.target.id === "contact-name") setContactName(e.target.value);
-    else if (e.target.id === "contact-email") setContactEmail(e.target.value);
-    else if (e.target.id === "contact-phone") setContactPhone(e.target.value);
-    else if (e.target.id === "contact-address") setContactAddress(e.target.value);
+    if (value === "contact-name") setContactName(e.target.value);
+    else if (value === "contact-email") setContactEmail(e.target.value);
+    else if (value === "contact-phone") setContactPhone(e.target.value);
+    else if (value === "contact-address") setContactAddress(e.target.value);
+    else if (value === "contact-vip") setContactVip(e.target.checked);
+    else if (value === "contact-newsletter")
+      setContactNewsletter(e.target.checked);
+    else if (value.includes("asc") || value.includes("desc"))
+      setSortBy(e.target.value);
   };
 
   const runQuery = async () => {
-    setResponse({ data: "test2" })
+    const filters = [];
+    if (contactName) filters.push(`filters[custname][$eq]=${contactName}`);
+    if (contactEmail) filters.push(`filters[email][$eq]=${contactEmail}`);
+    if (contactPhone) filters.push(`filters[phone][$eq]=${contactPhone}`);
+    if (contactAddress)
+      filters.push(`filters[custaddress][$eq]=${contactAddress}`);
+    if (contactVip) filters.push(`filters[vip][$eq]=true`);
+    if (contactNewsletter) filters.push(`filters[newsletter][$eq]=true`);
+    if (sortBy) {
+      let str = sortBy.split("-");
+      filters.push(`sort[${str[0]}]=${str[1]}`);
+    }
+    const params = filters.join("&");
+    let url = "http://localhost:8000/api/contacts";
+    if (params != "") url += `?${params}`;
+    console.log(url);
+
+    const data = await axios
+      .get(url)
+      .then((res) => {
+        setData(res.data);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   return (
     <Box>
-      <Accordion sx={{ maxWidth: "100%"}}>
+      <Accordion sx={{ maxWidth: "100%" }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>Filter By</Typography>
         </AccordionSummary>
@@ -75,9 +109,24 @@ export default function ContactsPanel({setResponse}) {
             }}
           >
             <FormGroup>
-              <FormControlLabel control={<Switch />} label="VIP" />
               <FormControlLabel
-                control={<Switch />}
+                control={
+                  <Switch
+                    checked={contactVip}
+                    id="contact-vip"
+                    onChange={handleChange}
+                  />
+                }
+                label="VIP"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={contactNewsletter}
+                    id="contact-newsletter"
+                    onChange={handleChange}
+                  />
+                }
                 label="Subscribed to newsletter"
               />
             </FormGroup>
@@ -94,15 +143,20 @@ export default function ContactsPanel({setResponse}) {
             borderColor: "divider",
           }}
         >
-          <RadioGroup defaultValue="name-ascending">
+          <RadioGroup>
             {contactSorters.map((i) => {
               return (
                 <FormControlLabel
-                  control={<Radio size="small" />}
-                  id={i.value}
+                  control={
+                    <Radio
+                      size="small"
+                      id={i.value}
+                      value={i.value}
+                      onChange={handleChange}
+                    />
+                  }
                   key={i.value}
                   label={i.label}
-                  value={i.value}
                 />
               );
             })}

@@ -10,7 +10,6 @@ import Auth from "../utils/Auth";
 
 export default function Home() {
   return (
-    <Box>
       <Routes>
         <Route path="/login" element={<Dashboard />} />
         <Route element={<Auth />}>
@@ -25,6 +24,5 @@ export default function Home() {
         </Route>
         <Route path="*" element={<Dashboard />} />
       </Routes>
-    </Box>
   );
 }

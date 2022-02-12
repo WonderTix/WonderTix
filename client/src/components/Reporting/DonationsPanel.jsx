@@ -22,13 +22,13 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { donationSorters } from "../../utils/arrays";
 
-export default function DonationsPanel({setResponse}) {
+export default function DonationsPanel({setData}) {
   const [value, setValue] = useState(0);
   const [beginDate, setBeginDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   const runQuery = () => {
-    setResponse({ data: "test3" });
+    setData("test3");
   }
 
   return (

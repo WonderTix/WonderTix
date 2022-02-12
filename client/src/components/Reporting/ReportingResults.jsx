@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Paper,
   Table,
   TableBody,
@@ -16,7 +15,7 @@ import {
   donationHeaders,
 } from "../../utils/arrays";
 
-export default function ReportingResults({ response, queryType }) {
+export default function ReportingResults({ data, queryType }) {
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
 
@@ -24,9 +23,11 @@ export default function ReportingResults({ response, queryType }) {
     if (queryType == 1) setColumns(accountHeaders);
     else if (queryType == 2) setColumns(contactHeaders);
     else if (queryType == 3) setColumns(donationHeaders);
-  }, [response]);
 
-  if (!response.data) return <Typography></Typography>;
+    if (data) setRows(data);
+  }, [data]);
+
+  if (!data) return <Typography></Typography>;
 
   return (
     <TableContainer
@@ -54,14 +55,30 @@ export default function ReportingResults({ response, queryType }) {
             })}
           </TableRow>
         </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell>
-              {rows.map((row) => {
-                return <TableCell align="center" sx={{ border: "1px solid #000" }}></TableCell>;
-              })}
-            </TableCell>
-          </TableRow>
+        <TableBody
+          sx={{
+            "& .MuiTableRow-root:nth-of-type(even)": {
+              backgroundColor: "#dfdfdf",
+            },
+          }}
+        >
+          {rows.map((row) => {
+            return (
+              <TableRow>
+                {Object.entries(row).map(([key, value], index) => {
+                  return (
+                    <TableCell
+                      align="center"
+                      key={`${index} ${value}`}
+                      sx={{ p: 1 }}
+                    >
+                      {value !== undefined && value !== null ? value.toString() : ""}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>

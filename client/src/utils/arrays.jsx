@@ -25,12 +25,12 @@ export const accountSorters = [
 ];
 
 export const contactSorters = [
-  { value: "name-ascending", label: "Name, Ascending" },
-  { value: "name-descending", label: "Name, Descending" },
-  { value: "email-ascending", label: "Email, Ascending" },
-  { value: "email-descending", label: "Email, Descending" },
-  { value: "address-ascending", label: "Address, Ascending" },
-  { value: "address-descending", label: "Address, Descending" },
+  { value: "custname-asc", label: "Name, Ascending" },
+  { value: "custname-desc", label: "Name, Descending" },
+  { value: "email-asc", label: "Email, Ascending" },
+  { value: "email-desc", label: "Email, Descending" },
+  { value: "custaddress-asc", label: "Address, Ascending" },
+  { value: "custaddress-desc", label: "Address, Descending" },
 ];
 
 export const donationSorters = [
@@ -50,6 +50,7 @@ export const accountHeaders = [
 export const contactHeaders = [
   { field: "id", headerName: "ID" },
   { field: "name", headerName: "Name" },
+  { field: "email", headerName: "Email" },
   { field: "phone", headerName: "Phone" },
   { field: "address", headerName: "Address" },
   { field: "newsletter", headerName: "Newsletter" },

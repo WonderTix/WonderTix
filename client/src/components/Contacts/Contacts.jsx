@@ -15,33 +15,27 @@ export default function Contacts() {
   const params = useParams();
   const navigate = useNavigate();
   const [contact, setContact] = useState("");
-  const [response, setResponse] = useState({
-    data: null,
-    isLoading: false,
-    error: null,
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState(null);
 
   useEffect(async () => {
     if (params.id) {
-      setResponse({ isLoading: true });
+      setIsLoading(true);
       setContact(params.id);
-      /*
       const data = await axios
-        .get(`api/customers?custname=${params.id}`)
+        .get(`http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}`)
         .then((res) => {
-          setResponse({
-            data: data,
-            isLoading: false,
-          });
+          setData(res.data[0]);
+          console.log(res);
         })
         .catch((err) => {
-          setResponse({ error: err.message });
-          console.log(err.message)
+          setError(err.message);
+          console.log(err.message);
         })
         .finally(() => {
-          setResponse({ isLoading: false });
+          setIsLoading(false);
         });
-        */
     }
   }, [params.id]);
 
@@ -56,7 +50,7 @@ export default function Contacts() {
     >
       <Paper
         component="form"
-        elevation={9}
+        elevation={3}
         sx={{
           m: 2,
           display: "flex",
@@ -88,10 +82,10 @@ export default function Contacts() {
         </IconButton>
       </Paper>
       <Box>
-        {response.isLoading ? (
+        {isLoading ? (
           <CircularProgress />
         ) : (
-          <ContactResults {...response} />
+          <ContactResults data={data} />
         )}
       </Box>
     </Box>

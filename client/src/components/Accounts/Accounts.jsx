@@ -60,7 +60,7 @@ export default function Accounts() {
     >
       <Paper
         component="form"
-        elevation={9}
+        elevation={3}
         sx={{
           display: "flex",
           m: 2,

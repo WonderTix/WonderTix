@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Box, CircularProgress, LinearProgress, Paper, Tab, Tabs } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Paper,
+  Tab,
+  Tabs,
+} from "@mui/material";
 import TabPanel from "../../utils/TabPanel";
 import AccountsPanel from "./AccountsPanel";
 import ContactsPanel from "./ContactsPanel";
@@ -8,11 +14,9 @@ import SavedPanel from "./SavedPanel";
 import ReportingResults from "./ReportingResults";
 
 export default function Reporting() {
-  const [response, setResponse] = useState({
-    data: null,
-    error: null,
-    isLoading: false,
-  });
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [value, setValue] = useState(0);
   const tabs = ["Saved", "Accounts", "Contacts", "Donations"];
 
@@ -33,10 +37,9 @@ export default function Reporting() {
         alignItems: "flex-start",
         display: "flex",
         flexDirection: "row",
-        p: 3,
       }}
     >
-      <Paper elevation={6} sx={{ maxWidth: "25%" }}>
+      <Paper elevation={6} sx={{ m: 3, maxWidth: "20rem" }}>
         <Tabs
           onChange={changeTab}
           sx={{
@@ -62,23 +65,32 @@ export default function Reporting() {
           })}
         </Tabs>
         <TabPanel value={value} index={0}>
-          <SavedPanel setResponse={setResponse} />
+          <SavedPanel />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <AccountsPanel setResponse={setResponse} />
+          <AccountsPanel setData={setData} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <ContactsPanel setResponse={setResponse} />
+          <ContactsPanel setData={setData} />
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <DonationsPanel setResponse={setResponse} />
+          <DonationsPanel setData={setData} />
         </TabPanel>
       </Paper>
-      <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", width: "100vw" }}>
-        {response.isLoading ? (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          mr: 3,
+          mt: 3,
+          width: "100vw",
+        }}
+      >
+        {isLoading ? (
           <CircularProgress sx={{ justifySelf: "center", ml: 3 }} />
         ) : (
-          <ReportingResults response={response} queryType={value} />
+          <ReportingResults data={data} queryType={value} />
         )}
       </Box>
     </Box>

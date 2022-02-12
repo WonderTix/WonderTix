@@ -19,7 +19,7 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { accountFilters, accountSorters } from "../../utils/arrays";
 
-export default function AccountsPanel({setResponse}) {
+export default function AccountsPanel({setData}) {
   const [accountName, setAccountName] = useState("");
   const [accountId, setAccountId] = useState("");
 
@@ -28,8 +28,8 @@ export default function AccountsPanel({setResponse}) {
     else if (e.target.id === "account-id") setAccountId(e.target.value);
   };
 
-  const runQuery = async () => {
-    setResponse({ data: "test" })
+  const runQuery = () => {
+    setData("test");
   };
 
   return (
