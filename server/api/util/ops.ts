@@ -32,6 +32,8 @@ export function useOp(op: string, a: string, b: any) {
       return `${a} LIKE \'${b}%\' `;
     case '$endsWith':
       return `${a} LIKE \'%${b}\' `;
+    case '$contains':
+      return `${a} LIKE \'%${b}%\' `;
   }
 
   throw 'Operator not found';
