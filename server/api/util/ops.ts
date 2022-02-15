@@ -24,7 +24,7 @@ const simple_ops: any = {
  */
 export function useOp(op: string, a: string, b: any) {
   if (simple_ops[op]) {
-    return `${a} ${simple_ops[op]} ${b} `;
+    return `${a} ${simple_ops[op]} \'${b}\' `;
   }
 
   switch (op) {
