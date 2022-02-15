@@ -1,15 +1,12 @@
 // api/util/query-builder.ts
 
+import { useOp } from './ops';
+
 export interface QueryAttr {
   fields?: Array<string>;
   filters?: Object;
   sort?: Object;
 }
-
-const operators: any = {
-  $eq: '='
-  // TODO -- $contains: ''
-};
 
 export function buildQuery(tableName: string, params: QueryAttr | undefined) {
   let query = 'SELECT ';
@@ -70,7 +67,7 @@ function parseFilters(filters: Object) {
   for (let i = 0; i < len; i++) {
     const [key, obj] = entries[i];
     const [[op, value]] = Object.entries(obj);
-    res += `${key} ${operators[op]} \'${value}\' `;
+    res += useOp(op, key, value);
 
     if (i !== len - 1) {
       res += 'AND ';
