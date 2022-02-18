@@ -15,33 +15,29 @@ export default function Accounts() {
   const params = useParams();
   const navigate = useNavigate();
   const [account, setAccount] = useState("");
-  const [response, setResponse] = useState({
-    data: null,
-    isLoading: false,
-    error: null,
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState(null);
 
   useEffect(async () => {
     if (params.id) {
-      setResponse({ isLoading: true });
+      setIsLoading(true);
       setAccount(params.id);
-      /*
       const data = await axios
-        .get(`api/users?username=${params.id}`)
-        .then((response) => {
-          setResponse({
-            data: response.data,
-            isLoading: false,
-          });
+        .get(
+          `http://localhost:8000/api/accounts?filters[username][$eq]=${params.id}`
+        )
+        .then((res) => {
+          setData(res.data[0]);
+          console.log(res);
         })
-        .catch((error) => {
-          setResponse({ error: error.message });
-          console.log(error.message);
+        .catch((err) => {
+          setError(err.message);
+          console.log(err.message);
         })
         .finally(() => {
-          setResponse({ isLoading: false });
+          setIsLoading(false);
         });
-    */
     }
   }, [params.id]);
 
@@ -52,25 +48,19 @@ export default function Accounts() {
 
   return (
     <Box
-      sx={{
-        alignItems: "center",
-        display: "flex",
-        flexDirection: "column",
-      }}
+      sx={{ alignItems: "center", display: "flex", flexDirection: "column" }}
     >
       <Paper
         component="form"
         elevation={3}
         sx={{
-          display: "flex",
           m: 2,
+          display: "flex",
           width: 400,
         }}
       >
         <InputBase
           sx={{
-            backgroundColor: "white",
-            borderRadius: "2px",
             ml: "5px",
             flex: 1,
             pl: 2,
@@ -94,7 +84,7 @@ export default function Accounts() {
         </IconButton>
       </Paper>
       <Box>
-        {response.isLoading ? <CircularProgress /> : <AccountResults {...response} />}
+        {isLoading ? <CircularProgress /> : <AccountResults data={data} />}
       </Box>
     </Box>
   );
