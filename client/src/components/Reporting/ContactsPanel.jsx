@@ -44,11 +44,11 @@ export default function ContactsPanel({ setData }) {
 
   const runQuery = async () => {
     const filters = [];
-    if (contactName) filters.push(`filters[custname][$eq]=${contactName}`);
-    if (contactEmail) filters.push(`filters[email][$eq]=${contactEmail}`);
-    if (contactPhone) filters.push(`filters[phone][$eq]=${contactPhone}`);
+    if (contactName) filters.push(`filters[custname][$contains]=${contactName}`);
+    if (contactEmail) filters.push(`filters[email][$contains]=${contactEmail}`);
+    if (contactPhone) filters.push(`filters[phone][$contains]=${contactPhone}`);
     if (contactAddress)
-      filters.push(`filters[custaddress][$eq]=${contactAddress}`);
+      filters.push(`filters[custaddress][$contains]=${contactAddress}`);
     if (contactVip) filters.push(`filters[vip][$eq]=true`);
     if (contactNewsletter) filters.push(`filters[newsletter][$eq]=true`);
     if (sortBy) {

@@ -31,9 +31,7 @@ export default function ReportingResults({ data, queryType }) {
 
   return (
     <TableContainer
-      elevation={6}
-      component={Paper}
-      sx={{ ml: 3, flexGrow: 1, p: 3 }}
+      sx={{ flexGrow: 1 }}
     >
       <Table>
         <TableHead>
