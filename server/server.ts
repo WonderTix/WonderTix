@@ -9,6 +9,7 @@ import path from 'path';
 import { donationsRouter } from './api/donations/donations.router';
 import { contactsRouter } from './api/contacts/contacts.router';
 import { accountsRouter } from './api/accounts/accounts.router';
+import { savedReportsRouter } from './api/saved_reports/saved_reports.router';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -34,6 +35,7 @@ app.use(cors(/* OPTIONS HERE */));
 app.use('/api/donations', donationsRouter);
 app.use('/api/contacts', contactsRouter);
 app.use('/api/accounts', accountsRouter);
+app.use('/api/saved_reports', savedReportsRouter);
 
 app.get('/', (req, res) => res.send('Hello World.'));
 
