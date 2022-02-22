@@ -20,3 +20,11 @@ export const create = (newReport: Report) => {
   `;
   return pool.query(myQuery);
 };
+
+export const remove = (id: string) => {
+  const myQuery = `
+    DELETE FROM saved_reports
+    WHERE id = ${id};
+  `;
+  return pool.query(myQuery);
+};
