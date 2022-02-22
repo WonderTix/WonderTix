@@ -36,3 +36,13 @@ savedReportsRouter.post('/', async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
+// DELETE /api/saved_reports/:id
+savedReportsRouter.delete('/:id', async (req, res) => {
+  try {
+    await ReportService.remove(req.params.id);
+    res.sendStatus(204);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
