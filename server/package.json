@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.ts",
-    "build": "tsc --project ./"
+    "dev": "nodemon server.ts"
   },
   "author": "",
   "license": "MIT",
