@@ -15,7 +15,7 @@ export const find = (id: string) => {
 export const create = (newReport: Report) => {
   const myQuery = `
     INSERT INTO saved_reports
-    VALUES (DEFAULT, \'${newReport.table_name}\', \'${newReport.query}\')
+    VALUES (DEFAULT, \'${newReport.table_name}\', \'${newReport.query_attr}\')
     RETURNING *;
   `;
   return pool.query(myQuery);
