@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.ts"
+    "dev": "nodemon --exec npx ts-node ./server.ts"
   },
   "author": "",
   "license": "MIT",
