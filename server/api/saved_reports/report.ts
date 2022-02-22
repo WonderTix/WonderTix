@@ -1,6 +1,4 @@
-import { QueryAttr } from '../util/query-builder';
-
 export interface Report {
   table_name: string;
-  query_attr: QueryAttr;
+  query_attr: string;
 }
