@@ -1,10 +1,19 @@
-# Sample starter for CRM backend CRUD operations.
+# CRM Backend
 
-## To setup project do the following:
+## Setup Instructions:
 
-- Setup database in the same way as wtix ticketing project (instructions provided by Jesse).
-- Run `npm install`.
-- Create a `.env` file at the root of your directory.
+- Make sure `wondertix.db` is setup and running in postgres, same as ticketing project.
+- Add saved_reports table to database.
+
+```
+CREATE TABLE IF NOT EXISTS saved_reports(
+    id serial PRIMARY KEY,
+    table_name text,
+    query_attr text
+);
+```
+
+- Create a `.env` file at the root CRM directory (outside of server folder).
 - Fill in missing variables in `.env`.
 
 ```
@@ -16,4 +25,14 @@ DB_PORT=5432
 DB_HOST=localhost
 ```
 
-- Run `npm run dev`.
+- Install the necessary dependencies
+
+```
+npm install
+```
+
+- Run the server development script
+
+```
+npm run dev
+```
