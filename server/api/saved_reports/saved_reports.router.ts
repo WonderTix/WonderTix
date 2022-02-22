@@ -30,7 +30,6 @@ savedReportsRouter.get('/:id', async (req, res) => {
 savedReportsRouter.post('/', async (req, res) => {
   try {
     const report: Report = req.body;
-    // console.log(report);
     const newReport = await ReportService.create(report);
     res.status(201).send(newReport.rows);
   } catch (err: any) {

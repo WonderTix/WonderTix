@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 dotenv.config({ path: path.join(__dirname, '../../.env') });
-console.log(path.join(__dirname, '../../.env'));
+// console.log(path.join(__dirname, '../../.env'));
 
 const config = {
   user: process.env.DB_USER,
@@ -18,7 +18,5 @@ const config = {
 export const pool = new Pool(config);
 
 pool.on('connect', () => {
-  console.log(
-    `[database]: Connected to ${config.database}/${config.user}@${config.host}`
-  );
+  console.log(`[database]: Connected to ${config.database}/${config.user}@${config.host}`);
 });
