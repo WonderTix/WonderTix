@@ -1,126 +1,83 @@
-import React, { useState } from "react";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  ButtonGroup,
-  Button,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  Radio,
-  RadioGroup,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
+import React from "react";
 import DatePicker from "@mui/lab/DatePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { donationSorters } from "../../utils/arrays";
+import { ButtonGroup, Button, Stack, TextField } from "@mui/material";
+import { donationFiltersTextField } from "../../utils/arrays.jsx";
 
-export default function DonationsPanel({setData}) {
-  const [value, setValue] = useState(0);
-  const [beginDate, setBeginDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+export default function DonationsPanel({ fetchData }) {
+  const [dononame, setDononame] = React.useState("");
+  const [amount, setAmount] = React.useState("");
+  const [beginValue, setBeginValue] = React.useState(null);
+  const [endValue, setEndValue] = React.useState(null);
 
-  const runQuery = () => {
-    setData("test3");
-  }
+  const handleClick = () => {
+    let filters = [];
+
+    if (dononame !== "") filters.push(`filters[dononame][$contains]=${dononame}`);
+    if (amount !== "") filters.push(`filters[amount][$gt]=${amount}`);
+    if (beginValue)
+      filters.push(`filters[donodate][$gt]=${beginValue.toLocaleString()}`);
+    if (endValue)
+      filters.push(`filters[donodate][$lt]=${endValue.toLocaleString()}`);
+
+    fetchData(filters.join("&"));
+  };
+
+  const handleChange = (e) => {
+    switch (e.target.id) {
+      case "dononame":
+        setDononame(e.target.value);
+        break;
+      case "amount":
+        setAmount(e.target.value);
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
-    <Box>
-      <Accordion sx={{ maxWidth: "100%"}}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>Filter By</Typography>
-        </AccordionSummary>
-        <AccordionDetails
-          sx={{
-            borderTop: 1,
-            borderColor: "divider",
-          }}
-        >
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Stack spacing={2} mt={1}>
-              <DatePicker
-                label="From Date"
-                value={beginDate}
-                onChange={(i) => {
-                  setBeginDate(i);
-                }}
-                renderInput={(params) => <TextField {...params} size="small" />}
-              />
-              <DatePicker
-                label="Until Date"
-                value={endDate}
-                onChange={(i) => {
-                  setEndDate(i);
-                }}
-                renderInput={(params) => <TextField {...params} size="small" />}
-              />
-              <TextField
-                label="Donation Amount"
-                fullWidth
-                size="small"
-                inputProps={{
-                  inputMode: "numeric",
-                  pattern: "[0-9]*",
-                }}
-              />
-              <TextField label="Donor Name" fullWidth size="small" />
-            </Stack>
-          </LocalizationProvider>
-        </AccordionDetails>
-        <Accordion sx={{ mx: 2, mb: 2 }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Advanced filters</Typography>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{
-              borderTop: 1,
-              borderColor: "divider",
+    <div sx={{ display: "flex", flexDirection: "column" }}>
+      {donationFiltersTextField.map((filter) => {
+        return (
+          <TextField
+            key={filter.id}
+            id={filter.id}
+            label={filter.label}
+            variant="outlined"
+            size="small"
+            sx={{ mb: 1 }}
+            onChange={handleChange}
+          />
+        );
+      })}
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Stack spacing={1}>
+          <DatePicker
+            label="From date"
+            id="from-date"
+            value={beginValue}
+            renderInput={(params) => <TextField {...params} size="small" />}
+            onChange={(newValue) => {
+              setBeginValue(newValue);
             }}
-          >
-            <FormGroup>
-              <FormControlLabel
-                control={<Switch />}
-                label="Exclude anonymous"
-              />
-            </FormGroup>
-          </AccordionDetails>
-        </Accordion>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>Sort By</Typography>
-        </AccordionSummary>
-        <AccordionDetails
-          sx={{
-            borderTop: 1,
-            borderColor: "divider",
-          }}
-        >
-          <RadioGroup defaultValue="name-ascending">
-            {donationSorters.map((i) => {
-              return (
-                <FormControlLabel
-                  key={i.value}
-                  value={i.value}
-                  label={i.label}
-                  control={<Radio size="small" />}
-                />
-              );
-            })}
-          </RadioGroup>
-        </AccordionDetails>
-      </Accordion>
-      <ButtonGroup fullWidth variant="contained" sx={{ mt: 3 }}>
-        <Button onClick={runQuery}>Run</Button>
+          />
+          <DatePicker
+            label="Until date"
+            id="until-date"
+            value={endValue}
+            renderInput={(params) => <TextField {...params} size="small" />}
+            onChange={(newValue) => {
+              setEndValue(newValue);
+            }}
+          />
+        </Stack>
+      </LocalizationProvider>
+      <ButtonGroup fullWidth variant="contained" sx={{ mt: 2 }}>
+        <Button onClick={handleClick}>Run</Button>
         <Button>Save</Button>
       </ButtonGroup>
-    </Box>
+    </div>
   );
 }

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  AppBar,
-  Box,
-  IconButton,
-  Link,
-  Toolbar
-} from "@mui/material";
+import { AppBar, Box, IconButton, Link, Toolbar } from "@mui/material";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { anchors } from "../utils/arrays";
 
@@ -37,7 +31,7 @@ export default function Navigation() {
             size="large"
             sx={{ ml: 4 }}
           >
-            <AccountCircleIcon sx={{ color: "#fff" }}/>
+            <AccountCircleIcon sx={{ color: "#fff" }} />
           </IconButton>
         </Box>
       </Toolbar>

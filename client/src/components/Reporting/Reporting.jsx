@@ -1,98 +1,167 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Box,
-  CircularProgress,
+  Button,
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
   Paper,
-  Tab,
-  Tabs,
+  Select,
 } from "@mui/material";
-import TabPanel from "../../utils/TabPanel";
-import AccountsPanel from "./AccountsPanel";
-import ContactsPanel from "./ContactsPanel";
-import DonationsPanel from "./DonationsPanel";
-import SavedPanel from "./SavedPanel";
-import ReportingResults from "./ReportingResults";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarDensitySelector,
+  useGridApiContext,
+} from "@mui/x-data-grid";
+import ImportExportIcon from "@mui/icons-material/ImportExport";
+import {
+  accountHeaders,
+  contactHeaders,
+  donationHeaders,
+} from "../../utils/arrays.jsx";
+import Panel from "../../utils/Panel.jsx";
+import AccountsPanel from "./AccountsPanel.jsx";
+import ContactsPanel from "./ContactsPanel.jsx";
+import DonationsPanel from "./DonationsPanel.jsx";
+import SavedPanel from "./SavedPanel.jsx";
 
-export default function Reporting() {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [value, setValue] = useState(0);
-  const tabs = ["Saved", "Accounts", "Contacts", "Donations"];
+export default function ReportingTest() {
+  const [rows, setRows] = React.useState([]);
+  const [columns, setColumns] = React.useState([]);
+  const [value, setValue] = React.useState("");
+  const [pageSize, setPageSize] = React.useState(25);
+  const navigate = useNavigate();
 
-  const a11yProps = (index) => {
-    return {
-      id: `tab-${index}`,
-      "aria-controls": `tabpanel-${index}`,
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  const fetchData = (query) => {
+    let headers;
+    let route;
+    switch (value) {
+      case 0:
+        route = "accounts";
+        headers = accountHeaders;
+        break;
+      case 1:
+        route = "contacts";
+        headers = contactHeaders;
+        break;
+      case 2:
+        route = "donations";
+        headers = donationHeaders;
+        break;
+      default:
+        return;
+    }
+
+    setColumns(headers);
+
+    let url = `http://localhost:8000/api/${route}`;
+
+    if (query !== "") url += `?${query}`;
+    console.log(url);
+
+    fetch(url)
+      .then((data) => data.json())
+      .then((data) => {
+        setRows(data);
+      });
+  };
+
+  function CustomToolbar() {
+    const apiRef = useGridApiContext();
+
+    const handleExport = (options) => {
+      apiRef.current.exportDataAsCsv(options);
     };
-  };
 
-  const changeTab = (event, index) => {
-    setValue(index);
-  };
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton />
+        <GridToolbarDensitySelector />
+        <Button
+          size="small"
+          startIcon={<ImportExportIcon />}
+          onClick={handleExport}
+        >
+          Export
+        </Button>
+      </GridToolbarContainer>
+    );
+  }
 
   return (
-    <Box
+    <Container
       sx={{
         alignItems: "flex-start",
         display: "flex",
         flexDirection: "row",
+        width: "100%",
       }}
     >
-      <Paper elevation={6} sx={{ m: 3, maxWidth: "20rem" }}>
-        <Tabs
-          onChange={changeTab}
-          sx={{
-            borderBottom: 1,
-            borderColor: "divider",
-          }}
-          value={value}
-          variant="scrollable"
-        >
-          {tabs.map((tab, index) => {
-            return (
-              <Tab
-                key={index}
-                label={tab}
-                style={{
-                  borderBottom: value === index ? "2px solid #3f50b5" : "none",
-                  color: value === index ? "#3f50b5" : "gray",
-                  fontWeight: value === index ? "bold" : "",
-                }}
-                {...a11yProps(index)}
-              />
-            );
-          })}
-        </Tabs>
-        <TabPanel value={value} index={0}>
-          <SavedPanel />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <AccountsPanel setData={setData} />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <ContactsPanel setData={setData} />
-        </TabPanel>
-        <TabPanel value={value} index={3}>
-          <DonationsPanel setData={setData} />
-        </TabPanel>
-      </Paper>
-      <Box
+      <Paper
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          mr: 3,
-          mt: 3,
-          width: "100vw",
+          ml: 2,
+          mt: 2,
+          p: 2,
+          width: 250,
         }}
       >
-        {isLoading ? (
-          <CircularProgress sx={{ justifySelf: "center", ml: 3 }} />
-        ) : (
-          <ReportingResults data={data} queryType={value} />
-        )}
-      </Box>
-    </Box>
+        <FormControl sx={{ width: "100%" }}>
+          <InputLabel id="search-label">Search by:</InputLabel>
+          <Select
+            fullWidth
+            id="search-select"
+            labelId="search-label"
+            value={value}
+            onChange={handleChange}
+          >
+            <MenuItem value={0}>Accounts</MenuItem>
+            <MenuItem value={1}>Contacts</MenuItem>
+            <MenuItem value={2}>Donations</MenuItem>
+            <MenuItem value={3}>
+              <strong>Saved</strong>
+            </MenuItem>
+          </Select>
+        </FormControl>
+        <Panel value={value} index={0}>
+          <AccountsPanel fetchData={fetchData} />
+        </Panel>
+        <Panel value={value} index={1}>
+          <ContactsPanel fetchData={fetchData} />
+        </Panel>
+        <Panel value={value} index={2}>
+          <DonationsPanel fetchData={fetchData} />
+        </Panel>
+        <Panel value={value} index={3}>
+          <SavedPanel fetchData={fetchData} />
+        </Panel>
+      </Paper>
+      <Paper elevation={0} sx={{ flexGrow: 1, height: 500, m: 2 }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          pagination
+          components={{
+            Toolbar: CustomToolbar,
+          }}
+          onCellClick={(params, event) => {
+            event.defaultMuiPrevented = true;
+            if (params.field === "username")
+              navigate(`/accounts/${params.formattedValue}`);
+            else if (params.field === "custname")
+              navigate(`/contacts/${params.formattedValue}`);
+          }}
+        />
+      </Paper>
+    </Container>
   );
 }

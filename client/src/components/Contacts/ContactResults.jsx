@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Typography } from "@mui/material";
+import { Button, Paper, Typography } from "@mui/material";
 
 export default function ContactResults({ data }) {
   if (!data) return <Typography></Typography>;
@@ -21,9 +21,11 @@ export default function ContactResults({ data }) {
     <Paper
       elevation={6}
       sx={{
+        display: "flex",
+        flexDirection: "column",
         mt: 2,
         p: 4,
-        width: 400,
+        width: 500,
       }}
     >
       <Typography variant="h4">{custname}</Typography>
@@ -36,6 +38,7 @@ export default function ContactResults({ data }) {
       <Typography>Seating Accomodation: {seatingaccom ? "Y" : "N"} </Typography>
       <Typography>VIP: {vip ? "Y" : "N"} </Typography>
       <Typography>Volunteer List: {volunteerlist ? "Y" : "N"}</Typography>
+      <Button disabled variant="contained" sx={{ alignSelf: "end" }}>Edit</Button>
     </Paper>
   );
 }

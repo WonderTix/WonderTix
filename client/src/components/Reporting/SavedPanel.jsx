@@ -1,49 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
-  Box,
-  Button,
   ButtonGroup,
-  FormControl,
+  Button,
   FormControlLabel,
   Radio,
   RadioGroup,
   Typography,
 } from "@mui/material";
 
-export default function SavedPanel() {
-  const [saved, setSaved] = useState(null);
+export default function SavedPanel({ fetchData }) {
+  const [saved, setSaved] = React.useState(null /*[{ value: "test", name: "test" }]*/);
+
+  if (!saved)
+    return (
+      <Typography sx={{ textAlign: "center" }}>
+        No saved queries found.
+      </Typography>
+    );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
-      {!saved ? (
-        <Typography sx={{ textAlign: "center" }}>
-          No saved queries found.
-        </Typography>
-      ) : (
-        <FormControl>
-          <RadioGroup>
-              {saved.map((i) => {
-                return (
-                  <FormControlLabel
-                    sx={{ mb: 1 }}
-                    control={<Radio />}
-                    name={i.name}
-                    label={i.name}
-                    value={i.name}
-                  />
-                );
-              })}
-          </RadioGroup>
-          <ButtonGroup fullWidth>
-            <Button type="submit" variant="contained">
-              Run
-            </Button>
-            <Button color="error">
-              Delete
-            </Button>
-          </ButtonGroup>
-        </FormControl>
-      )}
-    </Box>
+    <div>
+      <RadioGroup sx={{ mb: 1 }}>
+        {saved?.map((i) => {
+          return (
+            <FormControlLabel
+              value={i.value}
+              label={i.name}
+              control={<Radio size="small" sx={{ ml: 1 }}/>}
+              sx={{ mb: 1 }}
+            />
+          );
+        })}
+      </RadioGroup>
+      <ButtonGroup fullWidth>
+        <Button variant="contained">Run</Button>
+        <Button variant="contained" color="error">
+          Delete
+        </Button>
+      </ButtonGroup>
+    </div>
   );
 }

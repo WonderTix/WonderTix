@@ -1,109 +1,87 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
   ButtonGroup,
   Button,
-  FormControl,
   FormControlLabel,
   FormGroup,
-  Radio,
-  RadioGroup,
   Switch,
-  TextField,
-  Typography,
+  TextField
 } from "@mui/material";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { accountFilters, accountSorters } from "../../utils/arrays";
+import {
+  accountFiltersTextField,
+  accountFiltersSwitch,
+} from "../../utils/arrays.jsx";
 
-export default function AccountsPanel({setData}) {
-  const [accountName, setAccountName] = useState("");
-  const [accountId, setAccountId] = useState("");
+export default function AccountsPanel({ fetchData }) {
+  const [username, setUsername] = React.useState("");
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
+  const handleClick = () => {
+    let filters = [];
+    [
+      ["username", username],
+      ["is_superadmin", isAdmin],
+    ].forEach((filter) => {
+      if (filter[1] === "" || filter[1] === false) return;
+
+      filters.push(
+        `filters[${filter[0]}]${
+          typeof filter[1] === "string" ? "[$contains]" : "[$eq]"
+        }=${filter[1]}`
+      );
+    });
+
+    fetchData(filters.join("&"));
+  };
 
   const handleChange = (e) => {
-    if (e.target.id === "account-name") setAccountName(e.target.value);
-    else if (e.target.id === "account-id") setAccountId(e.target.value);
-  };
+    e.preventDefault();
 
-  const runQuery = () => {
-    setData("test");
+    switch (e.target.id) {
+      case "username":
+        setUsername(e.target.value);
+        break;
+      case "is_superadmin":
+        setIsAdmin(e.target.checked);
+        break;
+      default:
+        break;
+    }
   };
-
+  
   return (
-    <Box>
-      <Accordion sx={{ maxWidth: "100%"}}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>Filter By</Typography>
-        </AccordionSummary>
-        <AccordionDetails
-          sx={{
-            borderTop: 1,
-            borderColor: "divider",
-          }}
-        >
-          {accountFilters.map((i) => {
-            return (
-              <TextField
-                fullWidth
-                id={i.id}
-                key={i.id}
-                label={i.label}
-                margin="dense"
-                onChange={handleChange}
-                size="small"
-                type="text"
-              />
-            );
-          })}
-        </AccordionDetails>
-        <Accordion sx={{ mx: 2, mb: 2 }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Advanced filters</Typography>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{
-              borderTop: 1,
-              borderColor: "divider",
-            }}
-          >
-            <FormGroup>
-              <FormControlLabel control={<Switch />} label="Administrators" />
-            </FormGroup>
-          </AccordionDetails>
-        </Accordion>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>Sort By</Typography>
-        </AccordionSummary>
-        <AccordionDetails
-          sx={{
-            borderTop: 1,
-            borderColor: "divider",
-          }}
-        >
-          <RadioGroup defaultValue="name-ascending">
-            {accountSorters.map((i) => {
-              return (
-                <FormControlLabel
-                  control={<Radio size="small" />}
-                  id={i.value}
-                  key={i.value}
-                  label={i.label}
-                  value={i.value}
-                />
-              );
-            })}
-          </RadioGroup>
-        </AccordionDetails>
-      </Accordion>
-      <ButtonGroup fullWidth variant="contained" sx={{ mt: 3 }}>
-        <Button onClick={runQuery}>Run</Button>
+    <div sx={{ display: "flex", flexDirection: "column" }}>
+      {accountFiltersTextField.map((filter) => {
+        return (
+          <TextField
+            key={filter.id}
+            id={filter.id}
+            label={filter.label}
+            variant="outlined"
+            size="small"
+            sx={{ mb: 1 }}
+            type={filter.type}
+            onChange={handleChange}
+          />
+        );
+      })}
+      <FormGroup sx={{ ml: 1, mt: 1 }}>
+        {accountFiltersSwitch.map((filter) => {
+          return (
+            <FormControlLabel
+              key={filter.id}
+              control={<Switch size="small" id={filter.id} />}
+              label={filter.label}
+              sx={{ mb: 1 }}
+              onChange={handleChange}
+            />
+          );
+        })}
+      </FormGroup>
+      <ButtonGroup fullWidth variant="contained" sx={{ mt: 1 }}>
+        <Button onClick={handleClick}>Run</Button>
         <Button>Save</Button>
       </ButtonGroup>
-    </Box>
+    </div>
   );
 }

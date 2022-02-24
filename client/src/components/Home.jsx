@@ -1,12 +1,11 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Box from "@mui/material/Box";
-import Accounts from "./Accounts/Accounts";
-import Contacts from "./Contacts/Contacts";
-import Dashboard from "./Dashboard";
-import Reporting from "./Reporting/Reporting";
-import Tasks from "./Tasks/Tasks";
-import Auth from "../utils/Auth";
+import Accounts from "./Accounts/Accounts.jsx";
+import Contacts from "./Contacts/Contacts.jsx";
+import Dashboard from "./Dashboard.jsx";
+import Tasks from "./Tasks/Tasks.jsx";
+import Reporting from "./Reporting/Reporting.jsx";
+import Auth from "../utils/Auth.jsx";
 
 export default function Home() {
   return (
