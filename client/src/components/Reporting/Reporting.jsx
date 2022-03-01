@@ -27,12 +27,15 @@ import AccountsPanel from "./AccountsPanel.jsx";
 import ContactsPanel from "./ContactsPanel.jsx";
 import DonationsPanel from "./DonationsPanel.jsx";
 import SavedPanel from "./SavedPanel.jsx";
+import SavedDialog from "./SavedDialog.jsx";
 
 export default function ReportingTest() {
   const [rows, setRows] = React.useState([]);
   const [columns, setColumns] = React.useState([]);
   const [value, setValue] = React.useState("");
   const [pageSize, setPageSize] = React.useState(25);
+  const [open, setOpen] = React.useState(false);
+  const [savedName, setSavedName] = React.useState("");
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -64,7 +67,6 @@ export default function ReportingTest() {
     let url = `http://localhost:8000/api/${route}`;
 
     if (query !== "") url += `?${query}`;
-    console.log(url);
 
     fetch(url)
       .then((data) => data.json())
@@ -104,6 +106,7 @@ export default function ReportingTest() {
         width: "100%",
       }}
     >
+      <SavedDialog open={open} setOpen={setOpen} setSavedName={setSavedName} />
       <Paper
         sx={{
           ml: 2,
@@ -130,16 +133,31 @@ export default function ReportingTest() {
           </Select>
         </FormControl>
         <Panel value={value} index={0}>
-          <AccountsPanel fetchData={fetchData} />
+          <AccountsPanel
+            fetchData={fetchData}
+            setOpen={setOpen}
+            savedName={savedName}
+            setSavedName={setSavedName}
+          />
         </Panel>
         <Panel value={value} index={1}>
-          <ContactsPanel fetchData={fetchData} />
+          <ContactsPanel
+            fetchData={fetchData}
+            setOpen={setOpen}
+            savedName={savedName}
+            setSavedName={setSavedName}
+          />
         </Panel>
         <Panel value={value} index={2}>
-          <DonationsPanel fetchData={fetchData} />
+          <DonationsPanel
+            fetchData={fetchData}
+            setOpen={setOpen}
+            savedName={savedName}
+            setSavedName={setSavedName}
+          />
         </Panel>
         <Panel value={value} index={3}>
-          <SavedPanel fetchData={fetchData} />
+          <SavedPanel setColumns={setColumns} setRows={setRows} />
         </Panel>
       </Paper>
       <Paper elevation={0} sx={{ flexGrow: 1, height: 500, m: 2 }}>

@@ -5,23 +5,41 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { ButtonGroup, Button, Stack, TextField } from "@mui/material";
 import { donationFiltersTextField } from "../../utils/arrays.jsx";
 
-export default function DonationsPanel({ fetchData }) {
+export default function DonationsPanel({ fetchData, setOpen, savedName, setSavedName }) {
   const [dononame, setDononame] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [beginValue, setBeginValue] = React.useState(null);
   const [endValue, setEndValue] = React.useState(null);
 
-  const handleClick = () => {
+  React.useEffect(() => {
+    if (savedName === "") return;
+
+    let body = {
+      table_name: savedName,
+      query_attr: `donations/?${parseUrl()}`,
+    };
+
+    fetch(`http://localhost:8000/api/saved_reports`, {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then((res) => console.log(res));
+
+    setSavedName("");
+  });
+
+  const parseUrl = () => {
     let filters = [];
 
-    if (dononame !== "") filters.push(`filters[dononame][$contains]=${dononame}`);
+    if (dononame !== "")
+      filters.push(`filters[dononame][$contains]=${dononame}`);
     if (amount !== "") filters.push(`filters[amount][$gt]=${amount}`);
     if (beginValue)
       filters.push(`filters[donodate][$gt]=${beginValue.toLocaleString()}`);
     if (endValue)
       filters.push(`filters[donodate][$lt]=${endValue.toLocaleString()}`);
 
-    fetchData(filters.join("&"));
+    return filters.join("&");
   };
 
   const handleChange = (e) => {
@@ -75,8 +93,8 @@ export default function DonationsPanel({ fetchData }) {
         </Stack>
       </LocalizationProvider>
       <ButtonGroup fullWidth variant="contained" sx={{ mt: 2 }}>
-        <Button onClick={handleClick}>Run</Button>
-        <Button>Save</Button>
+        <Button onClick={() => fetchData(parseUrl())}>Run</Button>
+        <Button onClick={() => setOpen(true)}>Save</Button>
       </ButtonGroup>
     </div>
   );

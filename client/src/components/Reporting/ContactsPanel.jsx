@@ -13,7 +13,7 @@ import {
   contactFiltersSwitch,
 } from "../../utils/arrays.jsx";
 
-export default function ContactsPanel({ fetchData }) {
+export default function ContactsPanel({ fetchData, setOpen, savedName, setSavedName }) {
   const [custname, setCustname] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
@@ -21,7 +21,24 @@ export default function ContactsPanel({ fetchData }) {
   const [isVip, setIsVip] = React.useState(false);
   const [isVolunteerList, setIsVolunteerList] = React.useState(false);
 
-  const handleClick = () => {
+  React.useEffect(() => {
+    if (savedName === "") return;
+
+    let body = {
+      table_name: savedName,
+      query_attr: `contacts/?${parseUrl()}`,
+    };
+
+    fetch(`http://localhost:8000/api/saved_reports`, {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then((res) => console.log(res));
+
+    setSavedName("");
+  });
+
+  const parseUrl = () => {
     let filters = [];
     [
       ["custname", custname],
@@ -29,7 +46,7 @@ export default function ContactsPanel({ fetchData }) {
       ["phone", phone],
       ["address", address],
       ["vip", isVip],
-      ["\"volunteer list\"", isVolunteerList],
+      ['"volunteer list"', isVolunteerList],
     ].forEach((filter) => {
       if (filter[1] === "" || filter[1] === false) return;
 
@@ -40,7 +57,7 @@ export default function ContactsPanel({ fetchData }) {
       );
     });
 
-    fetchData(filters.join("&"));
+    return filters.join("&");
   };
 
   const handleChange = (e) => {
@@ -99,8 +116,8 @@ export default function ContactsPanel({ fetchData }) {
         })}
       </FormGroup>
       <ButtonGroup fullWidth variant="contained" sx={{ mt: 1 }}>
-        <Button onClick={handleClick}>Run</Button>
-        <Button>Save</Button>
+        <Button onClick={() => fetchData(parseUrl())}>Run</Button>
+        <Button onClick={() => setOpen(true)}>Save</Button>
       </ButtonGroup>
     </Box>
   );

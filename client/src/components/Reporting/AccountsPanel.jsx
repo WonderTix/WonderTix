@@ -5,18 +5,40 @@ import {
   FormControlLabel,
   FormGroup,
   Switch,
-  TextField
+  TextField,
 } from "@mui/material";
 import {
   accountFiltersTextField,
   accountFiltersSwitch,
 } from "../../utils/arrays.jsx";
 
-export default function AccountsPanel({ fetchData }) {
+export default function AccountsPanel({
+  fetchData,
+  setOpen,
+  savedName,
+  setSavedName,
+}) {
   const [username, setUsername] = React.useState("");
   const [isAdmin, setIsAdmin] = React.useState(false);
 
-  const handleClick = () => {
+  React.useEffect(() => {
+    if (savedName === "") return;
+
+    let body = {
+      table_name: savedName,
+      query_attr: `accounts/?${parseUrl()}`,
+    };
+
+    fetch(`http://localhost:8000/api/saved_reports`, {
+      method: "post",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(body),
+    }).then((res) => console.log(res));
+
+    setSavedName("");
+  });
+
+  const parseUrl = () => {
     let filters = [];
     [
       ["username", username],
@@ -31,7 +53,7 @@ export default function AccountsPanel({ fetchData }) {
       );
     });
 
-    fetchData(filters.join("&"));
+    return filters.join("&");
   };
 
   const handleChange = (e) => {
@@ -48,7 +70,7 @@ export default function AccountsPanel({ fetchData }) {
         break;
     }
   };
-  
+
   return (
     <div sx={{ display: "flex", flexDirection: "column" }}>
       {accountFiltersTextField.map((filter) => {
@@ -79,8 +101,8 @@ export default function AccountsPanel({ fetchData }) {
         })}
       </FormGroup>
       <ButtonGroup fullWidth variant="contained" sx={{ mt: 1 }}>
-        <Button onClick={handleClick}>Run</Button>
-        <Button>Save</Button>
+        <Button onClick={() => fetchData(parseUrl())}>Run</Button>
+        <Button onClick={() => setOpen(true)}>Save</Button>
       </ButtonGroup>
     </div>
   );

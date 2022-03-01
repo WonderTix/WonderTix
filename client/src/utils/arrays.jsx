@@ -24,11 +24,11 @@ export const contactHeaders = [
 ];
 export const donationHeaders = [
   { field: "id", headerName: "ID" },
-  { field: "donorid", headerName: "Donor ID", minWidth: 200 },
-  { field: "isanonymous", headerName: "Anonymous", minWidth: 200 },
-  { field: "amount", headerName: "Amount", minWidth: 200 },
-  { field: "dononame", headerName: "Name", minWidth: 200 },
-  { field: "frequency", headerName: "Frequency", minWidth: 200 },
+  { field: "donorid", headerName: "Donor ID", minWidth: 150 },
+  { field: "isanonymous", headerName: "Anonymous", minWidth: 150 },
+  { field: "amount", headerName: "Amount", minWidth: 150 },
+  { field: "dononame", headerName: "Name", minWidth: 150 },
+  { field: "frequency", headerName: "Frequency", minWidth: 150 },
   { field: "comments", headerName: "Comments", minWidth: 200 },
   { field: "donodate", headerName: "Date", minWidth: 200 },
 ];
