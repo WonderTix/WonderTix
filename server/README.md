@@ -42,10 +42,11 @@ Copy the database repo into a folder:
 
 https://github.com/WonderTix/Omicron-Theta
 
-Run the included sql scripts:
-> \i /PATH/TO/wtix_dump_030422.sql;
-> \i /PATH/TO/create_task_table.sql;
-Don't use "\" in your path name.
+Run the included sql scripts in the psql terminal under the wondertix database (\c your_wondertix_db):
+> \i '/PATH/TO/wtix_dump_030422.sql';
+> \i '/PATH/TO/create_task_table.sql';
+
+Don't use "\\" in your path name.
 
 Copy in the csv data:
 > \copy reservation FROM ‘/PATH/TO/reservation_data.csv’ DELIMITER ‘,’ CSV HEADER;
