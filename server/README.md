@@ -49,15 +49,13 @@ Don't use "\" in your path name.
 
 Copy in the csv data:
 > \copy reservation FROM ‘/PATH/TO/reservation_data.csv’ DELIMITER ‘,’ CSV HEADER;
+> 
 > \copy task FROM ‘/PATH/TO/task_data.csv’ DELIMITER ‘,’ CSV HEADER;
+> 
 > \copy task_notes FROM ‘/PATH/TO/task_notes_data.csv’ DELIMITER ‘,’ CSV HEADER;
 
 Create the saved reports table:
-> CREATE TABLE IF NOT EXISTS saved_reports(
->     id serial PRIMARY KEY,
->     table_name text,
->     query_attr text
-> );
+> CREATE TABLE IF NOT EXISTS saved_reports(id serial PRIMARY KEY, table_name text, query_attr text);
 
 **Getting the current code:**
 
@@ -82,15 +80,15 @@ https://nodejs.org/en/download/package-manager/
 Create a file named ‘.env’ in the base CRM folder and paste in the text below with \<text> replaced with your input:
 
 > PORT=8000
-    
+>
 > DB_USER=\<the username you made>
-    
+>   
 > DB_DATABASE=\<the wodertix db you made>
-    
+>    
 > DB_PASSWORD=\<the password you made>
-    
+>    
 > DB_PORT=5432
-    
+>    
 > DB_HOST=localhost
     
 
@@ -99,6 +97,7 @@ Go into the vscode terminal and go into the server folder:
 
 In under the server directory in the terminal run:
 > npm install
+> 
 > npm run dev
     
 Go to the website localhost:8000
