@@ -2,7 +2,7 @@
 
 ## Windows Quickstart:
 
-Getting the database setup:
+**Getting the database setup:**
 
 Install postgresql:
 
@@ -83,7 +83,7 @@ Create a file named ‘.env’ in the base CRM folder and paste in the text belo
 >
 > DB_USER=\<the username you made>
 >   
-> DB_DATABASE=\<the wodertix db you made>
+> DB_DATABASE=\<the wondertix db you made>
 >    
 > DB_PASSWORD=\<the password you made>
 >    
@@ -101,6 +101,7 @@ In under the server directory in the terminal run:
 > npm run dev
     
 Go to the website localhost:8000
+
 Try out localhost:8000/api/accounts
 
 If you see your database data, you did it!
