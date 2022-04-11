@@ -16,7 +16,10 @@
 
 3. Press enter for all the default hosts and ports and enter in your password.
 
-4. Follow the linux quickstart starting with “Copy the database repo into a folder”.
+4. Create a new database called wondertix:
+> CREATE DATABASE wondertix;
+
+5. Continue from the "**Initializaing the Database**" section.
 
 ## Linux Quickstart:
 
@@ -40,13 +43,16 @@
 6. Exit the psql shell with \q and login as the new user into the wondertix database:
 > psql -h localhost -d wondertix -U your_user -p 5432
 
-## Initializing the Database both Linux & Windows
+## Initializing the Database (both Linux & Windows)
 1. Copy the database repo into a folder:
 
 > https://github.com/WonderTix/Omicron-Theta
 
-2. Run the included sql scripts in the psql terminal under the wondertix database (\c your_wondertix_db):
+2. Run the included sql scripts in the psql terminal under the wondertix database:
+> \c wondertix;
+> 
 > \i '/PATH/TO/wtix_dump_030422.sql';
+> 
 > \i '/PATH/TO/create_task_table.sql';
 
 *Don't use "\\" in your path name.*
@@ -83,19 +89,18 @@ or
 
 2. Create a file named ‘.env’ in the base CRM folder and paste in the text below with \<text> replaced with your input:
 
-> PORT=8000
+>PORT=8000
 >
-> DB_USER=\<the username you made>
->   
-> DB_DATABASE=\<the wondertix db you made>
->    
-> DB_PASSWORD=\<the password you made>
->    
-> DB_PORT=5432
->    
-> DB_HOST=localhost
+>DB_USER=\<the username you made>
+>
+>DB_DATABASE=\<the wondertix db you made>
+>
+>DB_PASSWORD=\<the password you made>
+>
+>DB_PORT=5432
+>
+>DB_HOST=localhost
     
-
 3. Go into the vscode terminal and go into the server folder:
 > cd server
 
