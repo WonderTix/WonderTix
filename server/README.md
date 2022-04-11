@@ -1,84 +1,87 @@
-# CRM Backend
+# CRM Backend Setup Guide
 
 ## Windows Quickstart:
 
 **Getting the database setup:**
 
-Install postgresql:
+1. Install postgresql:
 
-https://www.postgresql.org/download/
+    https://www.postgresql.org/download/
+    
+    *Remember password you set up for later.*
 
-Remember password you set up for later.
+2. Find the SQL shell (psql) on your computer and run it:
+    
+    ![image](https://user-images.githubusercontent.com/18134813/162672641-aeccb831-d339-4509-9414-742427f4cdfc.png)
 
-Find the SQL shell (psql) on your computer and run it:
+3. Press enter for all the default hosts and ports and enter in your password.
 
-Press enter for all the default hosts and ports and enter in your password.
-
-Follow the linux quickstart starting with “Copy the database repo into a folder”.
+4. Follow the linux quickstart starting with “Copy the database repo into a folder”.
 
 ## Linux Quickstart:
 
 **Getting the database setup:**
 
-From the shell install postgresql:
+1. From the shell install postgresql:
 > sudo apt install postgresql postgresql-contrib
 
-Make sure it is running:
+2. Make sure it is running:
 > systemctl status postgresql.service
 
-Login as postgres admin:
+3. Login as postgres admin:
 > sudo -u postgres psql
 
-Create a new database called wondertix:
+4. Create a new database called wondertix:
 > CREATE DATABASE wondertix;
 
-Create a new account:
+5. Create a new account:
 > CREATE USER your_user WITH PASSWORD ‘mycoolpassword’;
 
-Exit the psql shell with \q and login as the new user into the wondertix database:
+6. Exit the psql shell with \q and login as the new user into the wondertix database:
 > psql -h localhost -d wondertix -U your_user -p 5432
 
-Copy the database repo into a folder:
+## Initializing the Database both Linux & Windows
+1. Copy the database repo into a folder:
 
-https://github.com/WonderTix/Omicron-Theta
+> https://github.com/WonderTix/Omicron-Theta
 
-Run the included sql scripts in the psql terminal under the wondertix database (\c your_wondertix_db):
+2. Run the included sql scripts in the psql terminal under the wondertix database (\c your_wondertix_db):
 > \i '/PATH/TO/wtix_dump_030422.sql';
 > \i '/PATH/TO/create_task_table.sql';
 
-Don't use "\\" in your path name.
+*Don't use "\\" in your path name.*
 
-Copy in the csv data:
+3. Copy in the csv data:
 > \copy reservation FROM ‘/PATH/TO/reservation_data.csv’ DELIMITER ‘,’ CSV HEADER;
 > 
 > \copy task FROM ‘/PATH/TO/task_data.csv’ DELIMITER ‘,’ CSV HEADER;
 > 
 > \copy task_notes FROM ‘/PATH/TO/task_notes_data.csv’ DELIMITER ‘,’ CSV HEADER;
 
-Create the saved reports table:
+4. Create the saved reports table:
 > CREATE TABLE IF NOT EXISTS saved_reports(id serial PRIMARY KEY, table_name text, query_attr text);
 
-**Getting the current code:**
+## Getting the current code 
 
-Install git: 
+1. Install git: 
 > sudo apt install git-all
 
 or
 
-https://git-scm.com/downloads
+> https://git-scm.com/downloads
 
-Create a folder and File>Open Folder in vscode.
+2. Create a folder and File>Open Folder in vscode.
 
-Clone the repo in that folder by running clone in the vscode terminal:
+3. Clone the repo in that folder by running clone in the vscode terminal:
 > git clone https://github.com/WonderTix/CRM
 
-**Getting the backend running:**
+## Getting the backend running 
 
-Install node:
+1. Install node:
 
-https://nodejs.org/en/download/package-manager/
+> https://nodejs.org/en/download/package-manager/
 
-Create a file named ‘.env’ in the base CRM folder and paste in the text below with \<text> replaced with your input:
+2. Create a file named ‘.env’ in the base CRM folder and paste in the text below with \<text> replaced with your input:
 
 > PORT=8000
 >
@@ -93,16 +96,16 @@ Create a file named ‘.env’ in the base CRM folder and paste in the text belo
 > DB_HOST=localhost
     
 
-Go into the vscode terminal and go into the server folder:
+3. Go into the vscode terminal and go into the server folder:
 > cd server
 
-In under the server directory in the terminal run:
+4. In under the server directory in the terminal run:
 > npm install
 > 
 > npm run dev
     
-Go to the website localhost:8000
+5. Go to the website localhost:8000
 
-Try out localhost:8000/api/accounts
+> Try out localhost:8000/api/accounts
 
-If you see your database data, you did it!
+### If you see your database data, you did it!
