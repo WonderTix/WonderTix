@@ -34,11 +34,11 @@
 3. Login as postgres admin:
 > sudo -u postgres psql
 
-4. Create a new database called wondertix:
+4. From within the psql shell, create a new database called wondertix:
 > CREATE DATABASE wondertix;
 
 5. Create a new account:
-> CREATE USER your_user WITH PASSWORD ‘mycoolpassword’;
+> CREATE USER your_user WITH PASSWORD 'mycoolpassword';
 
 6. Exit the psql shell with \q and login as the new user into the wondertix database:
 > psql -h localhost -d wondertix -U your_user -p 5432
@@ -48,7 +48,7 @@
 
 > https://github.com/WonderTix/Omicron-Theta
 
-2. Run the included sql scripts in the psql terminal under the wondertix database:
+2. Run the included sql scripts in the psql shell under the wondertix database:
 > \c wondertix;
 > 
 > \i '/PATH/TO/wtix_dump_030422.sql';
@@ -57,14 +57,18 @@
 
 *Don't use "\\" in your path name.*
 
-3. Copy in the csv data:
-> \copy reservation FROM ‘/PATH/TO/reservation_data.csv’ DELIMITER ‘,’ CSV HEADER;
-> 
-> \copy task FROM ‘/PATH/TO/task_data.csv’ DELIMITER ‘,’ CSV HEADER;
-> 
-> \copy task_notes FROM ‘/PATH/TO/task_notes_data.csv’ DELIMITER ‘,’ CSV HEADER;
+3. Exit the psql shell with \q and re-enter into the wondertix database.
 
-4. Create the saved reports table:
+4. Copy in the csv data:
+> \c wondertix;
+>
+> \copy reservation FROM '/PATH/TO/reservation_data.csv' DELIMITER ',' CSV HEADER;
+> 
+> \copy task FROM '/PATH/TO/task_data.csv' DELIMITER ',' CSV HEADER;
+> 
+> \copy task_notes FROM '/PATH/TO/task_notes_data.csv' DELIMITER ',' CSV HEADER;
+
+5. Create the saved reports table:
 > CREATE TABLE IF NOT EXISTS saved_reports(id serial PRIMARY KEY, table_name text, query_attr text);
 
 ## Getting the current code 
