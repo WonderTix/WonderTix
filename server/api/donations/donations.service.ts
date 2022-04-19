@@ -21,7 +21,7 @@ export const create = (r: any) => {
   const myQuery = {
     text: `
       INSERT INTO donations
-      VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7)
       RETURNING *
       `,
     values: [r.donorid, r.isanonymous, r.amount, r.dononame, 

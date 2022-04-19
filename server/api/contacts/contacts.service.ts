@@ -43,7 +43,7 @@ export const update = (r: any) => {
   const myQuery = {
     text: `
       UPDATE customers
-      SET (id, custname, email, phone, custaddress, newsletter, donorbadge,
+      SET (custname, email, phone, custaddress, newsletter, donorbadge,
            seatingaccom, vip, "volunteer list") = ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       WHERE id = $10
       RETURNING *
