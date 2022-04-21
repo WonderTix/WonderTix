@@ -1,3 +1,5 @@
+// Bug description: Unable to display column headers with full user information,
+// When moving the scroll bar to the right, everything goes back to normal.
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
