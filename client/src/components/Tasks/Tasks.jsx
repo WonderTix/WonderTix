@@ -1,5 +1,10 @@
-import React from 'react';
+import React from 'react'
+import TaskForm from "./TaskForm"
 
-export default function Tasks() {
-  return <div></div>;
+export default function Tasks(){
+    return(
+        <div>
+          <TaskForm />
+        </div>
+    )
 }

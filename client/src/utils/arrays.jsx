@@ -53,3 +53,14 @@ export const donationFiltersTextField = [
   { label: "Name", id: "dononame" },
   { label: "Amount", id: "amount" },
 ];
+
+export const createNewTaskTextFieldLabels = [
+  { label: "Task ID", id: "taskid"},
+  { label: "Parent ID", id: "parenttaskid"},
+  { label: "Subject", id: "tasksubject"},
+  { label: "Parent Subject", id: "parenttasksubject"},
+  { label: "Status", id: "status"},
+  { label: "Assign To", id: "assignto"},
+  { label: "Related Record", id: "relatedrecord"},
+  { label: "Description", id: "description"}
+]
