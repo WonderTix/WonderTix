@@ -2,6 +2,7 @@ import React from "react";
 import { AppBar, Box, IconButton, Link, Toolbar } from "@mui/material";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { anchors } from "../utils/arrays";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Navigation() {
   return (
