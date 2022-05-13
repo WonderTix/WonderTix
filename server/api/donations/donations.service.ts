@@ -11,7 +11,7 @@ export const findAll = (params?: QueryAttr) => {
 
 export const find = (id: string) => {
   const myQuery = { 
-    text: 'SELECT * FROM donations WHERE donationid = $1', 
+    text: 'SELECT * FROM donations WHERE id = $1', 
     values: [id] 
   }
   return pool.query(myQuery);
