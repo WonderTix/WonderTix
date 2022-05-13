@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { findAll, find } from './accounts.service';
+import { findAll, find, create, remove, update }  from './accounts.service';
 
 export const accountsRouter = Router();
 
@@ -18,6 +18,36 @@ accountsRouter.get('/:id', async (req, res) => {
   try {
     const account = await find(req.params.id);
     res.status(200).send(account.rows);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
+// POST /api/accounts
+accountsRouter.post('/', async (req, res) => {
+  try {
+    const newAccount = await create(req.body);
+    res.status(201).send(newAccount.rows);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
+// DELETE /api/accounts/:id
+accountsRouter.delete('/:id', async (req, res) => {
+  try {
+    await remove(req.params.id);
+    res.sendStatus(204);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
+// PUT /api/accounts/:id
+accountsRouter.put('/:id', async (req, res) => {
+  try {
+    const updatedAccount = await update(req);
+    res.sendStatus(204).send(updatedAccount.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
