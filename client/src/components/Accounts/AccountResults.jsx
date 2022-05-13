@@ -17,6 +17,7 @@ export default function AccountResults({ data }) {
         width: 500,
       }}
     >
+      
       <Typography variant="h4">{username} </Typography>
       <Typography>ID: {id}</Typography>
       <Typography>Admin: {is_superadmin ? "Y" : "N"}</Typography>
