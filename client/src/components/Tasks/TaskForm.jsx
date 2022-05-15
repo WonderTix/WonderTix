@@ -18,7 +18,6 @@ import DatePicker from "@mui/lab/DatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { makeStyles } from "@mui/styles";
-import SearchIcon from "@material-ui/icons/Search";
 import SearchBar from "./Search.jsx";
 
 const useStyles = makeStyles({
@@ -40,9 +39,33 @@ const useStyles = makeStyles({
 export default function TaskForm() {
   const [beginValue, setBeginValue] = React.useState(null);
   const [formValues, setFormValues] = React.useState();
+  const [taskId, setTaskId] = React.useState();
+  const [parentId, setParentId] = React.useState();
+  const [subject, setSubject] = React.useState();
+  const [parentSubject, setParentSubject] = React.useState();
+  const [status, setStatus] = React.useState();
+  const [dueDate, setDueDate] = React.useState(null);
+  const [assignTo, setAssignTo] = React.useState();
+  const [relatedRecords, setRelatedRecords] = React.useState();
+  const [description, setDescription] = React.useState();
+  
   const classes = useStyles();
 
   useEffect(() => {}, [beginValue]);
+
+  function handleClick(props){
+    console.log(taskId.target.value);
+    console.log(parentId.target.value);
+    console.log(subject.target.value);
+    console.log(parentSubject.target.value);
+    console.log(dueDate);
+    console.log(status.target.value);
+    console.log(assignTo.target.value);
+    console.log(relatedRecords);
+    console.log(description.target.value);
+    
+   console.log("alskdjflsdf");
+  }
 
   return (
     <form className={classes.root}>
@@ -63,7 +86,8 @@ export default function TaskForm() {
             size="small"
             sx={{ mb: 1 }}
             fullWidth={true}
-            disabled={true}
+            //disabled={true}
+            onChange={setTaskId}
           />
         </Grid>
         <Grid item xs={6}>
@@ -76,7 +100,8 @@ export default function TaskForm() {
             size="small"
             sx={{ mb: 1 }}
             fullWidth={true}
-            disabled={true}
+            //disabled={true}
+            onChange={setParentId}
           />
         </Grid>
         <Grid item xs={6}>
@@ -89,6 +114,7 @@ export default function TaskForm() {
             size="small"
             sx={{ mb: 1 }}
             fullWidth={true}
+            onChange={setSubject}
           />
         </Grid>
         <Grid item xs={6}>
@@ -101,7 +127,8 @@ export default function TaskForm() {
             size="small"
             sx={{ mb: 1 }}
             fullWidth={true}
-            disabled={true}
+            //disabled={true}
+            onChange={setParentSubject}
           />
         </Grid>
         <Grid item xs={6}>
@@ -112,7 +139,7 @@ export default function TaskForm() {
             >
               Status:
             </InputLabel>
-            <Select fullWidth id="search-select" labelId="search-label">
+            <Select fullWidth id="search-select" labelId="search-label" onChange={setStatus}>
               <MenuItem value={0}>Not Started</MenuItem>
               <MenuItem value={1}>In Progress</MenuItem>
               <MenuItem value={2}>Completed</MenuItem>
@@ -124,7 +151,7 @@ export default function TaskForm() {
             <DatePicker
               label="Due Date"
               id="due-date"
-              value={beginValue}
+              value={dueDate}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -135,17 +162,17 @@ export default function TaskForm() {
                 />
               )}
               onChange={(newValue) => {
-                setBeginValue(newValue);
+                setDueDate(newValue);
               }}
               fullWidth={true}
             />
           </LocalizationProvider>
         </Grid>
         <Grid item xs={6}>
-          <SearchBar data="Assign To"></SearchBar>
+          <SearchBar data="Assign To" onChange={setAssignTo}></SearchBar>
         </Grid>
         <Grid item xs={6}>
-          <SearchBar data="Related Record" />
+          <SearchBar data="Related Record" onChange={setRelatedRecords}/>
         </Grid>
 
         <Grid item xs={12}>
@@ -160,11 +187,12 @@ export default function TaskForm() {
             size="small"
             sx={{ mb: 1 }}
             fullWidth={true}
+            onChange={setDescription}
           />
         </Grid>
         <Grid item>
           <ButtonGroup fullWidth variant="contained" sx={{ mt: 1 }}>
-            <Button>Create</Button>
+            <Button onClick={(event)=>{handleClick(event)}}>Create</Button>
           </ButtonGroup>
         </Grid>
       </Grid>
