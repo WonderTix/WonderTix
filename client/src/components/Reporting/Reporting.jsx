@@ -188,6 +188,9 @@ export default function ReportingTest() {
   );
 }
 */
+
+
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -270,15 +273,7 @@ export default function ReportingTest() {
       });
   };
 
-  /*const processRowUpdate = React.useCallback(
-    async (newRow: GridRowModel) => {
-      // Make the HTTP request to save in the backend
-      const response = await mutateRow(newRow);
-      //setSnackbar({ children: 'User successfully saved', severity: 'success' });
-      return response;
-    },
-    [mutateRow],
-  );*/
+
 
   function CustomToolbar() {
     const apiRef = useGridApiContext();
@@ -369,7 +364,7 @@ export default function ReportingTest() {
         <DataGrid
           rows={rows}
           columns={columns}
-          experimentalFeatures={{ newEditingApi: true }}
+          //experimentalFeatures={{ newEditingApi: true }}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           //processRowUpdate={processRowUpdate}
@@ -378,7 +373,7 @@ export default function ReportingTest() {
           components={{
             Toolbar: CustomToolbar,
           }}
-          /*
+          
           onCellClick={(params, event) => {
             event.defaultMuiPrevented = true;
             if (params.field === "username")
@@ -386,7 +381,7 @@ export default function ReportingTest() {
             else if (params.field === "custname")
               navigate(`/contacts/${params.formattedValue}`);
           }}
-          */
+          
         />
 
 
