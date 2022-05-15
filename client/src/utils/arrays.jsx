@@ -70,14 +70,14 @@ export const accountHeaders = [
 export const contactHeaders = [
   { field: "id", headerName: "ID", minWidth: 50 },
   { field: "custname", headerName: "Name", minWidth: 200 },
-  { field: "email", headerName: "Email", minWidth: 250 , editable: true},
-  { field: "phone", headerName: "Phone", minWidth: 150 , editable: true},
-  { field: "custaddress", headerName: "Address", minWidth: 300, editable: true },
-  { field: "newsletter", headerName: "Newsletter", minWidth: 50, editable: true },
-  { field: "donor badge", headerName: "Donor", minWidth: 50, editable: true },
-  { field: "seatingaccom", headerName: "Seating Accomodation", minWidth: 200, editable: true },
-  { field: "vip", headerName: "VIP", minWidth: 50, editable: true },
-  { field: "volunteer list", headerName: "Volunteer List", minWidth: 150, editable: true },
+  { field: "email", headerName: "Email", minWidth: 250 },
+  { field: "phone", headerName: "Phone", minWidth: 150 },
+  { field: "custaddress", headerName: "Address", minWidth: 300 },
+  { field: "newsletter", headerName: "Newsletter", minWidth: 50 },
+  { field: "donor badge", headerName: "Donor", minWidth: 50 },
+  { field: "seatingaccom", headerName: "Seating Accomodation", minWidth: 200 },
+  { field: "vip", headerName: "VIP", minWidth: 50 },
+  { field: "volunteer list", headerName: "Volunteer List", minWidth: 150},
 ];
 export const donationHeaders = [
   { field: "id", headerName: "ID" },
