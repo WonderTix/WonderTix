@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Auth0Provider } from "@auth0/auth0-react";
 
 const Auth0ProviderWithHistory = ({ children }) => {
-  const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-  const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+  const domain = "dev-fhg-n56h.us.auth0.com";
+  const clientId = "misr9gFE1k3Y5gXh1JV7cgveWpLVNwQh";
 
   const history = useNavigate();
 
