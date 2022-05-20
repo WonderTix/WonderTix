@@ -25,36 +25,6 @@ export default function ContactResults({ data }) {
   }
 }
 
-/*
-  return (
-    <Paper
-      elevation={6}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        mt: 2,
-        p: 4,
-        width: 500,
-      }}
-    >
-      <Typography variant="h4">{custname}</Typography>
-      
-      <textarea name = "ID" value = "ID"/>
-      <input type="text" defaultValue="ID:{}"/>
-      <Typography>Test_Data {data.vip ? "Y":"N"}</Typography>
-      <Typography>ID: {id}</Typography>
-      <Typography>Email: {email}</Typography>
-      <Typography>Phone: {phone}</Typography>
-      <Typography>Address: {custaddress}</Typography>
-      <Typography>Newsletter: {newsletter ? "Y" : "N"} </Typography>
-      <Typography>Donor Badge: {donorbadge !== "false" ? donorbadge : "N/A"} </Typography>
-      <Typography>Seating Accomodation: {seatingaccom ? "Y" : "N"} </Typography>
-      <Typography>VIP: {vip ? "Y" : "N"} </Typography>
-      <Typography>Volunteer List: {volunteerlist ? "Y" : "N"}</Typography> 
-      <Button disabled variant="contained" sx={{ alignSelf: "end" }}>Edit</Button>
-    </Paper>
-  );  
-*/
 export function ContactForm(data){
 
 
@@ -73,13 +43,29 @@ export function ContactForm(data){
   //The changed data can be linked to the server (backend), but still cannot be updated
   const handleSubmit = (evt) => {
     evt.preventDefault();
-      let body = {
-        custname:{Custname}, email: {Email}, phone:{Phone}, custaddress:{Custaddress}, newsletter:{Newsletter}, 
-        donorbadge:{Donorbadge}, seatingaccom:{Seatingaccom}, vip:{VIP}, volunteer_list:{Volunteerlist},
-      };
-      const url=`http://localhost:8000/api/contacts`;
+      
+      //useState is an asynchronous operation, so it cannot be changed directly. 
+      //I tried to use useRef to change the value of volunteer, but it has no effect.
+      /*
+      if(Volunteerlist==undefined){
+        console.log("1111");
+        setVolunteerlist(false);
+      }
+      console.log("..................");
+      console.log(Volunteerlist);
+      */
 
-      fetch ( url, {
+      //If not work change Volunteerlist to false
+      let body = {
+        custname: Custname, email: Email, phone: Phone, custaddress:Custaddress, newsletter: Newsletter, 
+        donorbadge: Donorbadge, seatingaccom: Seatingaccom, vip: VIP, volunteer_list: false,  
+      };
+      
+       const url=`http://localhost:8000/api/contacts`;
+
+       console.log(body);
+
+       fetch ( url, {
         method: "post",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
