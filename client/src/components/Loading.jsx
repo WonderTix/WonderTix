@@ -5,7 +5,7 @@ export const Loading = () => {
 
   return (
     <div className="loader">
-      <img src={loadingImg} alt="Loading..." />
+      <img src={loadingImg} width="500" height="500" alt="Loading..." />
     </div>
   );
 };

@@ -35,13 +35,7 @@ export default function Navigation() {
             <img src={logo} className="logo_size"></img>
           </Link>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            textAlignVertical: "center",
-          }}
-        >
+        <Box>
           {anchors.map((anchor) => (
             <Link
               href={anchor.link}
@@ -52,15 +46,14 @@ export default function Navigation() {
               {anchor.title}
             </Link>
           ))}
-          <AuthNav />
-          {/* <IconButton
+          <IconButton
             aria-label="menu"
             edge="start"
             size="large"
             sx={{ ml: 4 }}
           >
             <AccountCircleIcon sx={{ color: "#fff" }} />
-          </IconButton> */}
+          </IconButton>
         </Box>
       </Toolbar>
     </AppBar>

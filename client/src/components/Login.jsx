@@ -6,5 +6,11 @@ import LoginButton from "./Authentication/login-button";
 import LogoutButton from "./Authentication/logout-button";
 
 export default function Login() {
-  return <LoginButton></LoginButton>;
+  return (
+    <>
+      <h1>Please Log In</h1>
+      <LoginButton></LoginButton>
+      <LogoutButton></LogoutButton>
+    </>
+  );
 }

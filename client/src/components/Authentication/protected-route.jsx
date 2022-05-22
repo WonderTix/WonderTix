@@ -3,9 +3,7 @@ import React from "react";
 import { Loading } from "../Loading";
 
 export default function ProtectedRoute({ component }) {
-  const Component = withAuthenticationRequired(component, {
-    onRedirecting: () => <Loading />,
-  });
+  const Component = withAuthenticationRequired(component);
 
   return <Component />;
 }
