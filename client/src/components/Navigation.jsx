@@ -46,6 +46,7 @@ export default function Navigation() {
               {anchor.title}
             </Link>
           ))}
+          <AuthNav />
           <IconButton
             aria-label="menu"
             edge="start"
