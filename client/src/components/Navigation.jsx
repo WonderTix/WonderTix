@@ -4,7 +4,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { anchors } from "../utils/arrays";
 import logo from "../Logo/2011_Logo_white.png";
 import "../Logo/logo.css";
-
+import AuthNav from "./Authentication/auth-nav";
 export default function Navigation() {
   return (
     <AppBar position="static" elevation={3}>
@@ -35,7 +35,13 @@ export default function Navigation() {
             <img src={logo} className="logo_size"></img>
           </Link>
         </Box>
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            textAlignVertical: "center",
+          }}
+        >
           {anchors.map((anchor) => (
             <Link
               href={anchor.link}
@@ -46,14 +52,15 @@ export default function Navigation() {
               {anchor.title}
             </Link>
           ))}
-          <IconButton
+          <AuthNav />
+          {/* <IconButton
             aria-label="menu"
             edge="start"
             size="large"
             sx={{ ml: 4 }}
           >
             <AccountCircleIcon sx={{ color: "#fff" }} />
-          </IconButton>
+          </IconButton> */}
         </Box>
       </Toolbar>
     </AppBar>
