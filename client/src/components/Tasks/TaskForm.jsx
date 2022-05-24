@@ -62,9 +62,8 @@ export default function TaskForm() {
     console.log(status.target.value);
     console.log(assignTo.target.value);
     console.log(relatedRecords);
-    console.log(description.target.value);
-    
-   console.log("alskdjflsdf");
+    console.log(description.target.value); 
+    console.log("alskdjflsdf");
   }
 
   return (

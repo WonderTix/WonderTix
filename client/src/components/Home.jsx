@@ -6,6 +6,8 @@ import Dashboard from "./Dashboard.jsx";
 import Tasks from "./Tasks/Tasks.jsx";
 import Reporting from "./Reporting/Reporting.jsx";
 import Auth from "../utils/Auth.jsx";
+import TaskForm from "./Tasks/TaskForm.jsx";
+import EditTask from "./Tasks/EditTask.jsx";
 
 export default function Home() {
   return (
@@ -20,6 +22,9 @@ export default function Home() {
           </Route>
           <Route path="/reporting" element={<Reporting />} />
           <Route path="/tasks" element={<Tasks />} />
+            <Route path="/tasks/create" element={<TaskForm />} />
+            <Route path="/tasks/edit" element={<EditTask />} />
+            <Route path="/tasks/accountInformation" element={<Tasks />} />
         </Route>
         <Route path="*" element={<Dashboard />} />
       </Routes>
