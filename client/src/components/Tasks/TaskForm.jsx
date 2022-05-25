@@ -36,7 +36,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function TaskForm() {
+export default function TaskForm(props) {
   const [beginValue, setBeginValue] = React.useState(null);
   const [formValues, setFormValues] = React.useState();
   const [taskId, setTaskId] = React.useState();
@@ -66,9 +66,10 @@ export default function TaskForm() {
     console.log("alskdjflsdf");
   }
 
+  
   return (
     <form className={classes.root}>
-      <h1>Create New Task</h1>
+      <h1>{props.title}</h1>
       <Grid
         container
         spacing={2}

@@ -42,7 +42,6 @@ export default function Navigation() {
         onClick={handleClick}
         sx = {{ color: "#fff", ml: 2}}
       >
-
         Task
       </Button>
       <Menu

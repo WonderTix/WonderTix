@@ -2,7 +2,6 @@ export const anchors = [
   { title: "Accounts", link: "/accounts" },
   { title: "Contacts", link: "/contacts" },
   { title: "Reporting", link: "/reporting" },
-  { title: "Tasks", link: "/tasks" },
 ];
 
 export const accountHeaders = [

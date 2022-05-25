@@ -7,13 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { TextField } from '@material-ui/core';
 
-/*const bull = (
-    <Box
-        component="span"
-        sx={{ border: 1, display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-    >
-    </Box>
-);*/
+
 function Item(props) {
     const { sx, ...other } = props;
     return (
