@@ -33,12 +33,12 @@ const card = (
     <React.Fragment>
         <CardContent>
         <Typography variant="h5" component="div">
-                Filter tasks by:
+                Filter tasks by: 
         </Typography>
         <div>
             <TextField
                 className="note-text"
-                label="Note"
+                label="Status and date will go here"
                 variant="outlined"
                 multiline={true}
                 rows={2}
