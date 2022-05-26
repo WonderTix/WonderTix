@@ -22,7 +22,7 @@ export default function Home() {
           </Route>
           <Route path="/reporting" element={<Reporting />} />
           <Route path="/tasks" element={<Tasks />} />
-            <Route path="/tasks/create" element={<TaskForm title = 'Create New Task'/>} />
+            <Route path="/tasks/create" element={<TaskForm title = 'Create New Task' name = 'Create'/>} />
             <Route path="/tasks/edit" element={<EditTask />} />
             <Route path="/tasks/accountInformation" element={<Tasks />} />
         </Route>

@@ -35,10 +35,13 @@ export default function EditTask() {
         justify="center"
     >
         <Grid item xs={5} >
-            <TaskForm title = 'View/Edit Task' fullWidth={true}/>
+            <TaskForm title='View/Edit Task' fullWidth={true} name='Create New Task'/>
         </Grid>
         <Grid item xs={3}>
             <Note />
+        </Grid>
+        <Grid item xs={3}>
+            <Filter />
         </Grid>
     </Grid>
     );

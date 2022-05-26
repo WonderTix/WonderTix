@@ -192,7 +192,7 @@ export default function TaskForm(props) {
         </Grid>
         <Grid item>
           <ButtonGroup fullWidth variant="contained" sx={{ mt: 1 }}>
-            <Button onClick={(event)=>{handleClick(event)}}>Create</Button>
+            <Button onClick={(event)=>{handleClick(event)}}>{props.name}</Button>
           </ButtonGroup>
         </Grid>
       </Grid>
