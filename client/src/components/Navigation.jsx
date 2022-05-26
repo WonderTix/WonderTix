@@ -4,8 +4,11 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { anchors } from "../utils/arrays";
 import logo from "../Logo/2011_Logo_white.png";
 import "../Logo/logo.css";
-import AuthNav from "./Authentication/auth-nav";
-export default function Navigation() {
+import { useAuth0 } from "@auth0/auth0-react";
+
+export default function Navigation({ icon }) {
+  const { user } = useAuth0();
+  const { name, picture, email } = user;
   return (
     <AppBar position="static" elevation={3}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -46,14 +49,14 @@ export default function Navigation() {
               {anchor.title}
             </Link>
           ))}
-          <AuthNav />
           <IconButton
             aria-label="menu"
             edge="start"
             size="large"
             sx={{ ml: 4 }}
           >
-            <AccountCircleIcon sx={{ color: "#fff" }} />
+            <img src={picture} width="30" height="30" />
+            {/* <AccountCircleIcon sx={{ color: "#fff" }} /> */}
           </IconButton>
         </Box>
       </Toolbar>
