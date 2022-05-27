@@ -3,7 +3,6 @@ export const anchors = [
   { title: "Accounts", link: "/accounts" },
   { title: "Contacts", link: "/contacts" },
   { title: "Reporting", link: "/reporting" },
-  { title: "Tasks", link: "/tasks" },
 ];
 
 export const accountHeaders = [
@@ -54,6 +53,17 @@ export const donationFiltersTextField = [
   { label: "Name", id: "dononame" },
   { label: "Amount", id: "amount" },
 ];
+
+export const createNewTaskTextFieldLabels = [
+  { label: "Task ID", id: "taskid"},
+  { label: "Parent ID", id: "parenttaskid"},
+  { label: "Subject", id: "tasksubject"},
+  { label: "Parent Subject", id: "parenttasksubject"},
+  { label: "Status", id: "status"},
+  { label: "Assign To", id: "assignto"},
+  { label: "Related Record", id: "relatedrecord"},
+  { label: "Description", id: "description"}
+]
 */
 export const anchors = [
   { title: "Accounts", link: "/accounts" },
@@ -109,4 +119,15 @@ export const contactFiltersSwitch = [
 export const donationFiltersTextField = [
   { label: "Name", id: "dononame" },
   { label: "Amount", id: "amount" },
+];
+
+export const createNewTaskTextFieldLabels = [
+  { label: "Task ID", id: "taskid"},
+  { label: "Parent ID", id: "parenttaskid"},
+  { label: "Subject", id: "tasksubject"},
+  { label: "Parent Subject", id: "parenttasksubject"},
+  { label: "Status", id: "status"},
+  { label: "Assign To", id: "assignto"},
+  { label: "Related Record", id: "relatedrecord"},
+  { label: "Description", id: "description"}
 ];
