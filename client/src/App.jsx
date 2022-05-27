@@ -12,6 +12,7 @@ import TaskForm from "./components/Tasks/TaskForm.jsx";
 import EditTask from "./components/Tasks/EditTask.jsx";
 
 export default function App() {
+  let bool = false;
   return (
     <>
       <ProtectedRoute component={Navigation} />
@@ -35,10 +36,18 @@ export default function App() {
           element={<ProtectedRoute component={Reporting} />}
         />
         <Route path="/tasks" element={<ProtectedRoute component={Tasks} />} />
-          <Route path="/tasks" element={<Tasks />} />
-            <Route path="/tasks/create" element={<TaskForm title = 'Create New Task' name = 'Create' threeButtonForm = {false}/>} />
-            <Route path="/tasks/edit" element={<EditTask />} />
-            <Route path="/tasks/accountInformation" element={<Tasks />} />
+        <Route
+          path="/tasks/create"
+          element={
+            <TaskForm
+              title="Create New Task"
+              name="Create"
+              threeButtonForm={false}
+            />
+          }
+        />
+        <Route path="/tasks/edit" element={<EditTask />} />
+        <Route path="/tasks/accountInformation" element={<Tasks />} />
       </Routes>
     </>
   );

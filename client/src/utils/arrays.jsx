@@ -69,7 +69,7 @@ export const anchors = [
   { title: "Accounts", link: "/accounts" },
   { title: "Contacts", link: "/contacts" },
   { title: "Reporting", link: "/reporting" },
-  { title: "Tasks", link: "/tasks" },
+  // { title: "Tasks", link: "/tasks" },
 ];
 
 export const accountHeaders = [
@@ -87,7 +87,7 @@ export const contactHeaders = [
   { field: "donor badge", headerName: "Donor", minWidth: 50 },
   { field: "seatingaccom", headerName: "Seating Accomodation", minWidth: 200 },
   { field: "vip", headerName: "VIP", minWidth: 50 },
-  { field: "volunteer list", headerName: "Volunteer List", minWidth: 150},
+  { field: "volunteer list", headerName: "Volunteer List", minWidth: 150 },
 ];
 export const donationHeaders = [
   { field: "id", headerName: "ID" },
@@ -122,12 +122,12 @@ export const donationFiltersTextField = [
 ];
 
 export const createNewTaskTextFieldLabels = [
-  { label: "Task ID", id: "taskid"},
-  { label: "Parent ID", id: "parenttaskid"},
-  { label: "Subject", id: "tasksubject"},
-  { label: "Parent Subject", id: "parenttasksubject"},
-  { label: "Status", id: "status"},
-  { label: "Assign To", id: "assignto"},
-  { label: "Related Record", id: "relatedrecord"},
-  { label: "Description", id: "description"}
+  { label: "Task ID", id: "taskid" },
+  { label: "Parent ID", id: "parenttaskid" },
+  { label: "Subject", id: "tasksubject" },
+  { label: "Parent Subject", id: "parenttasksubject" },
+  { label: "Status", id: "status" },
+  { label: "Assign To", id: "assignto" },
+  { label: "Related Record", id: "relatedrecord" },
+  { label: "Description", id: "description" },
 ];
