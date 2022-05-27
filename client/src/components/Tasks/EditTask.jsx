@@ -21,8 +21,8 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
     gridContainer: {
-        paddingLeft: "40px",
-        paddingRight: "40px"
+        paddingLeft: "10px",
+        paddingRight: "10px"
     }
 });
 export default function EditTask() {
@@ -30,17 +30,17 @@ export default function EditTask() {
     return (
         <Grid
         container
-        spacing={2}
+        spacing={1}
         className={classes.gridContainer}
         justify="center"
     >
-        <Grid item xs={5} >
-            <TaskForm title='View/Edit Task' fullWidth={true} name='Create New Task'/>
+        <Grid item xs={4} >
+            <TaskForm title ='View/Edit Task' fullWidth={true} threeButtonForm={true}/>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
             <Note />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
             <Filter />
         </Grid>
     </Grid>

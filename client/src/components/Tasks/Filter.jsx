@@ -6,6 +6,28 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { TextField } from '@material-ui/core';
+import DatePicker from "@mui/lab/DatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { MenuItem } from '@material-ui/core';
+import { FormControl } from '@material-ui/core';
+import { InputLabel } from '@material-ui/core';
+import { Select }from '@material-ui/core';
+
+
+export default function OutlinedCard() {
+    const [toDate, setToDate] = React.useState(null);
+    const [fromDate, setFromDate] = React.useState(null);
+    const [status, setStatus] = React.useState();
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+        <Box sx={{ display: 'grid', mt: 4, width: '100%', height: 450, maxWidth: 360, bgcolor: 'text.disabled', border: 1,   borderColor: 'text.primary'}}>
+            <Card variant="outlined">{card}  </Card>
+        </Box>
+        </div>   
+    );
+}
 
 function Item(props) {
     const { sx, ...other } = props;
@@ -24,7 +46,7 @@ function Item(props) {
             fontWeight: '700',
             ...sx,
         }}
-        {...other}
+        {...other} 
         />
     );
 }
@@ -35,19 +57,59 @@ const card = (
         <Typography variant="h5" component="div">
                 Filter tasks by: 
         </Typography>
-        <div>
-            <TextField
-                className="note-text"
-                label="Status and date will go here"
-                variant="outlined"
-                multiline={true}
-                rows={2}
-                maxRows={4}
-                size="small"
-                sx={{ my: 2 }}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <div style = {{display: 'flex', flexDirection: 'row'}}>
+            <DatePicker
+                label="From"
+                id="to-date"
+                renderInput={(params) => (
+                    <TextField
+                    {...params}
+                    size="small"
+                    sx={{
+                        backgroundColor: "white",
+                        my: 2
+                    }}
+                    />
+                )}
+                onChange={(newValue) => {
+                    setFromDate(newValue);
+                }}
                 fullWidth={true}
-            />
-        </div>
+                />
+                <DatePicker
+                label="To"
+                id="from-date"
+                renderInput={(params) => (
+                    <TextField
+                    {...params}
+                    size="small"
+                    sx={{
+                        backgroundColor: "white",
+                        my: 2
+                    }}
+                    />
+                )}
+                onChange={(newValue) => {
+                    setToDate(newValue);
+                }}
+                fullWidth={true}
+                />
+            </div>      
+            </LocalizationProvider>
+            <FormControl sx={{ width: "100%", my: 2}}>
+                <InputLabel
+                id='set-status'
+                label='Status'
+                >
+                Status:
+                </InputLabel>
+                <Select size="small" fullWidth id="set-status" labelId="Status" onChange={(newStatus => {setStatus(newStatus)})}>
+                <MenuItem value={0}>Not Started</MenuItem>
+                <MenuItem value={1}>In Progress</MenuItem>
+                <MenuItem value={2}>Completed</MenuItem>
+                </Select>
+            </FormControl>
         <CardActions>
         <Button onClick={() => setOpen(true)} variant="contained" size="small"> Confirm </Button>
         </CardActions>
@@ -96,16 +158,3 @@ const card = (
         </CardContent>
     </React.Fragment>
 );
-
-
-
-export default function OutlinedCard() {
-
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-        <Box sx={{ display: 'grid', mt: 4, width: '100%', height: 450, maxWidth: 360, bgcolor: 'text.disabled', border: 1,   borderColor: 'text.primary'}}>
-            <Card variant="outlined">{card}</Card>
-        </Box>
-        </div>   
-    );
-}

@@ -25,10 +25,10 @@ const useStyles = makeStyles({
     border: "1px solid black",
     padding: "30px",
     width: "50%",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: "5%",
-    marginBottom: "5%",
+    marginLeft: "2%",
+    marginRight: "2%",
+    marginTop: "2%",
+    marginBottom: "2%",
     backgroundColor: "#f8f9fa",
   },
   gridItem: {
@@ -191,9 +191,11 @@ export default function TaskForm(props) {
           />
         </Grid>
         <Grid item>
-          <ButtonGroup fullWidth variant="contained" sx={{ mt: 1 }}>
-            <Button onClick={(event)=>{handleClick(event)}}>{props.name}</Button>
-          </ButtonGroup>
+          {!props.threeButtonForm ? <Button variant='contained' onClick={(event)=>{handleClick(event)}}>{props.name}</Button> : <ButtonGroup variant="contained" sx={{ mt: 1 }}> 
+                  <Button> Button 1 </Button>
+                  <Button> Button 2 </Button>
+                  <Button> Button 3 </Button>
+              </ButtonGroup>}
         </Grid>
       </Grid>
     </form>
