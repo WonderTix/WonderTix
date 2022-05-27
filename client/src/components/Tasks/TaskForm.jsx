@@ -25,10 +25,10 @@ const useStyles = makeStyles({
     border: "1px solid black",
     padding: "30px",
     width: "50%",
-    marginLeft: "2%",
-    marginRight: "2%",
-    marginTop: "2%",
-    marginBottom: "2%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: "5%",
+    marginBottom: "5%",
     backgroundColor: "#f8f9fa",
   },
   gridItem: {
@@ -190,12 +190,12 @@ export default function TaskForm(props) {
             onChange={setDescription}
           />
         </Grid>
-        <Grid item>
-          {!props.threeButtonForm ? <Button variant='contained' onClick={(event)=>{handleClick(event)}}>{props.name}</Button> : <ButtonGroup variant="contained" sx={{ mt: 1 }}> 
-                  <Button> Button 1 </Button>
-                  <Button> Button 2 </Button>
-                  <Button> Button 3 </Button>
-              </ButtonGroup>}
+        <Grid item xs={12}>
+          {!props.threeButtonForm ? <Button variant='contained' onClick={(event)=>{handleClick(event)}}>{props.name}</Button> : <Box fullWidth sx={{display: 'flex', justifyContent: 'center'}}> 
+                  <Button variant = "contained" sx= {{mr: 1 }}> New Task </Button>
+                  <Button variant = "contained" sx= {{mr: 1 }}> Sub Task </Button>
+                  <Button variant = "contained"> Edit Task </Button>
+              </Box>}
         </Grid>
       </Grid>
     </form>

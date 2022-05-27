@@ -8,17 +8,6 @@ import Filter from "./Filter.jsx";
 import { makeStyles } from "@mui/styles";
 
 
-// export default function EditTask() {
-//     return(
-
-//         <div className="parent-component">
-//             <div className="create-component"><TaskForm title = 'View/Edit Task'/></div>
-//             <div className="Note-component"><Note/></div> 
-//             <div className="filter-component"><Filter/></div>
-//         </div>
-//     )
-// }
-
 const useStyles = makeStyles({
     gridContainer: {
         paddingLeft: "10px",
@@ -30,17 +19,17 @@ export default function EditTask() {
     return (
         <Grid
         container
-        spacing={1}
+        spacing={2}
         className={classes.gridContainer}
         justify="center"
     >
-        <Grid item xs={4} >
+        <Grid item xs={6} >
             <TaskForm title ='View/Edit Task' fullWidth={true} threeButtonForm={true}/>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
             <Note />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
             <Filter />
         </Grid>
     </Grid>
