@@ -8,6 +8,8 @@ import Contacts from "./components//Contacts/Contacts.jsx";
 import Tasks from "./components//Tasks/Tasks.jsx";
 import Reporting from "./components//Reporting/Reporting.jsx";
 import ProtectedRoute from "./components/Authentication/protected-route";
+import TaskForm from "./components/Tasks/TaskForm.jsx";
+import EditTask from "./components/Tasks/EditTask.jsx";
 
 export default function App() {
   return (
@@ -33,6 +35,10 @@ export default function App() {
           element={<ProtectedRoute component={Reporting} />}
         />
         <Route path="/tasks" element={<ProtectedRoute component={Tasks} />} />
+          <Route path="/tasks" element={<Tasks />} />
+            <Route path="/tasks/create" element={<TaskForm title = 'Create New Task' name = 'Create' threeButtonForm = {false}/>} />
+            <Route path="/tasks/edit" element={<EditTask />} />
+            <Route path="/tasks/accountInformation" element={<Tasks />} />
       </Routes>
     </>
   );
