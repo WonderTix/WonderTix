@@ -9,22 +9,29 @@ export const findAll = (params?: QueryAttr) => {
 };
 
 export const find = (id: string) => {
-  return pool.query(`SELECT * FROM saved_reports WHERE id = ${id}`);
+  const myQuery = { 
+    text: 'SELECT * FROM saved_reports WHERE $1', 
+    values: [id] 
+  }
+  return pool.query(myQuery);
 };
 
 export const create = (newReport: Report) => {
-  const myQuery = `
-    INSERT INTO saved_reports
-    VALUES (DEFAULT, \'${newReport.table_name}\', \'${newReport.query_attr}\')
-    RETURNING *;
-  `;
+  const myQuery = {
+    text: `
+      INSERT INTO saved_reports
+      VALUES (DEFAULT, $1, $2)
+      RETURNING *
+    `,
+    values:[newReport.table_name, newReport.query_attr]
+  }
   return pool.query(myQuery);
 };
 
 export const remove = (id: string) => {
-  const myQuery = `
-    DELETE FROM saved_reports
-    WHERE id = ${id};
-  `;
+  const myQuery = {
+    text: 'DELETE FROM saved_reports WHERE id = $1',
+    values: [id]
+  }
   return pool.query(myQuery);
 };

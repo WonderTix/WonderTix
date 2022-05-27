@@ -1,32 +1,14 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Accounts from "./Accounts/Accounts.jsx";
-import Contacts from "./Contacts/Contacts.jsx";
-import Dashboard from "./Dashboard.jsx";
-import Tasks from "./Tasks/Tasks.jsx";
-import Reporting from "./Reporting/Reporting.jsx";
-import Auth from "../utils/Auth.jsx";
-import TaskForm from "./Tasks/TaskForm.jsx";
-import EditTask from "./Tasks/EditTask.jsx";
+import { useAuth0 } from "@auth0/auth0-react";
+import AuthNav from "./Authentication/auth-nav";
 
 export default function Home() {
+  const { user } = useAuth0();
+  const { name, picture, email } = user;
   return (
-      <Routes>
-        <Route path="/login" element={<Dashboard />} />
-        <Route element={<Auth />}>
-          <Route path="/accounts" element={<Accounts />}>
-            <Route path=":id" element={<Accounts />} />
-          </Route>
-          <Route path="/contacts" element={<Contacts />}>
-            <Route path=":id" element={<Contacts />} />
-          </Route>
-          <Route path="/reporting" element={<Reporting />} />
-          <Route path="/tasks" element={<Tasks />} />
-            <Route path="/tasks/create" element={<TaskForm title = 'Create New Task' name = 'Create' threeButtonForm = {false}/>} />
-            <Route path="/tasks/edit" element={<EditTask />} />
-            <Route path="/tasks/accountInformation" element={<Tasks />} />
-        </Route>
-        <Route path="*" element={<Dashboard />} />
-      </Routes>
+    <>
+      <h3>Welcome {name}</h3>
+      <AuthNav />
+    </>
   );
 }
