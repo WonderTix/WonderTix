@@ -1,0 +1,12 @@
+export { AggregateTickettypeArgs } from "./AggregateTickettypeArgs";
+export { CreateManyTickettypeArgs } from "./CreateManyTickettypeArgs";
+export { CreateTickettypeArgs } from "./CreateTickettypeArgs";
+export { DeleteManyTickettypeArgs } from "./DeleteManyTickettypeArgs";
+export { DeleteTickettypeArgs } from "./DeleteTickettypeArgs";
+export { FindFirstTickettypeArgs } from "./FindFirstTickettypeArgs";
+export { FindManyTickettypeArgs } from "./FindManyTickettypeArgs";
+export { FindUniqueTickettypeArgs } from "./FindUniqueTickettypeArgs";
+export { GroupByTickettypeArgs } from "./GroupByTickettypeArgs";
+export { UpdateManyTickettypeArgs } from "./UpdateManyTickettypeArgs";
+export { UpdateTickettypeArgs } from "./UpdateTickettypeArgs";
+export { UpsertTickettypeArgs } from "./UpsertTickettypeArgs";

@@ -4,7 +4,7 @@ import 'reflect-metadata';
 import * as tq from 'type-graphql';
 import { ApolloServer } from 'apollo-server';
 import { context } from './context';
-import { resolvers } from "@generated/type-graphql"
+import { resolvers } from "./prisma/generated/type-graphql"
 
 import express from 'express';
 import helmet from 'helmet';

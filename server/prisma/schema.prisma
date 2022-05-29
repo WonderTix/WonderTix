@@ -1,14 +1,15 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
 generator typegraphql {
   provider = "typegraphql-prisma"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  output = "../prisma/generated/type-graphql"
 }
 
 model customers {
@@ -94,6 +95,7 @@ model linkedtickets {
   id                Int              @id @default(autoincrement())
   event_instance_id Int?
   ticket_type       Int?
+  dummy             String?
   event_instances   event_instances? @relation(fields: [event_instance_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "linkedtickets_showid_fkey")
   tickettype        tickettype?      @relation(fields: [ticket_type], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
