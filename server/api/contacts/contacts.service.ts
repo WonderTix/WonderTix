@@ -39,6 +39,7 @@ export const remove = (id: string) => {
   return pool.query(myQuery);
 };
 
+// This function takes the input provided by the user to update the Database
 export const update = (r: any) => {
   const myQuery = {
     text: `
