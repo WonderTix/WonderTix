@@ -125,6 +125,7 @@ DB_HOST=localhost
 
     `npx prisma generate`
     
+    (Might have to manually adjust schema for [certain errors](https://github.com/MichalLytek/typegraphql-prisma/issues/199))
 
 6. Under the server directory, in the terminal run:
     
