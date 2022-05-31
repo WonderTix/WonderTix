@@ -1,0 +1,12 @@
+export { AggregateDonationsArgs } from "./AggregateDonationsArgs";
+export { CreateDonationsArgs } from "./CreateDonationsArgs";
+export { CreateManyDonationsArgs } from "./CreateManyDonationsArgs";
+export { DeleteDonationsArgs } from "./DeleteDonationsArgs";
+export { DeleteManyDonationsArgs } from "./DeleteManyDonationsArgs";
+export { FindFirstDonationsArgs } from "./FindFirstDonationsArgs";
+export { FindManyDonationsArgs } from "./FindManyDonationsArgs";
+export { FindUniqueDonationsArgs } from "./FindUniqueDonationsArgs";
+export { GroupByDonationsArgs } from "./GroupByDonationsArgs";
+export { UpdateDonationsArgs } from "./UpdateDonationsArgs";
+export { UpdateManyDonationsArgs } from "./UpdateManyDonationsArgs";
+export { UpsertDonationsArgs } from "./UpsertDonationsArgs";

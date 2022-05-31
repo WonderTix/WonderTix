@@ -1,0 +1,12 @@
+export { AggregateLinkedticketsArgs } from "./AggregateLinkedticketsArgs";
+export { CreateLinkedticketsArgs } from "./CreateLinkedticketsArgs";
+export { CreateManyLinkedticketsArgs } from "./CreateManyLinkedticketsArgs";
+export { DeleteLinkedticketsArgs } from "./DeleteLinkedticketsArgs";
+export { DeleteManyLinkedticketsArgs } from "./DeleteManyLinkedticketsArgs";
+export { FindFirstLinkedticketsArgs } from "./FindFirstLinkedticketsArgs";
+export { FindManyLinkedticketsArgs } from "./FindManyLinkedticketsArgs";
+export { FindUniqueLinkedticketsArgs } from "./FindUniqueLinkedticketsArgs";
+export { GroupByLinkedticketsArgs } from "./GroupByLinkedticketsArgs";
+export { UpdateLinkedticketsArgs } from "./UpdateLinkedticketsArgs";
+export { UpdateManyLinkedticketsArgs } from "./UpdateManyLinkedticketsArgs";
+export { UpsertLinkedticketsArgs } from "./UpsertLinkedticketsArgs";
