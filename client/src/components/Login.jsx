@@ -1,4 +1,5 @@
 //The login page is not being used currently.
+//Someone can adapt this to a cstom login page with ath0
 
 import React, { useState } from "react";
 import LoginButton from "./Authentication/login-button";

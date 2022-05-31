@@ -1,3 +1,7 @@
+/*
+This component retrns a btton depending on if one is logged in or not. 
+
+*/
 import React from "react";
 import LoginButton from "./login-button";
 import LogoutButton from "./logout-button";
