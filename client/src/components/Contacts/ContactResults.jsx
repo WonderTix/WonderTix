@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Paper, Typography } from "@mui/material";
 
+import { useParams } from "react-router-dom";
 //import { useInput } from './hooks/input-hook';
 import { useState } from "react";
 
@@ -29,7 +30,7 @@ export function ContactForm(data){
 
 
   const [Custname, setName] = useState(data.custname);
-  const [Id, setID] = useState(data.id); 
+  const [id, setID] = useState(data.id); 
   const [Email, setEmail] = useState(data.email);
   const [Phone, setPhone] = useState(data.phone);
   const [Custaddress, setCustaddress] = useState(data.custaddress);
@@ -38,10 +39,11 @@ export function ContactForm(data){
   const [Seatingaccom, setSeatingaccom] = useState(data.seatingaccom);
   const [VIP, setVIP] = useState(data.vip);
   const [Volunteerlist, setVolunteerlist] = useState(data.volunteerlist);
+  const params = useParams();
 
 
-  //The changed data can be linked to the server (backend), but still cannot be updated
-  const handleSubmit = (evt) => {
+  //The changed data can be linked to the server (but it will creat a new row)
+  const HandleSubmit = (evt) => {
     evt.preventDefault();
       
       //useState is an asynchronous operation, so it cannot be changed directly. 
@@ -55,20 +57,29 @@ export function ContactForm(data){
       console.log(Volunteerlist);
       */
 
-      //If not work change Volunteerlist to false
+      //If not work change Volunteerlist to false      
       let body = {
         custname: Custname, email: Email, phone: Phone, custaddress:Custaddress, newsletter: Newsletter, 
         donorbadge: Donorbadge, seatingaccom: Seatingaccom, vip: VIP, volunteer_list: false,  
       };
-      
-       const url=`http://localhost:8000/api/contacts`;
 
+      console.log(params);
+      console.log(params.id);
+       // This is the statement to contact with the api, and establish a link with the background data from here
+       // However, in the actual url, param.id is not the id but the user's name, which causes the update to fail
+       const url=`http://localhost:8000/api/${params.id}`;
+       //const url='http://localhost:8000/api/contacts/'+params.id; 
+       //const url = 'http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}';
        console.log(body);
 
+       // This function contains the relevant methods of the operation
+       //"put" corresponds to the backend function "export const update = (r: any)
        fetch ( url, {
-        method: "post",
+        //method: "post",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
+        //params: JSON.stringify(params),
       }).then((res) => console.log(res));
   }
 
@@ -84,7 +95,7 @@ export function ContactForm(data){
       }}
     >
       
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={HandleSubmit}>
 
       <label>
         Custname: {Custname}
@@ -92,7 +103,7 @@ export function ContactForm(data){
       <br />
 
       <label>
-        ID: {Id}
+        ID: {id}
       </label>
       <br />
 
