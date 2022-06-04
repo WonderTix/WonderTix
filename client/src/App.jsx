@@ -36,7 +36,7 @@ export default function App() {
         />
         <Route path="/tasks" element={<ProtectedRoute component={Tasks} />} />
           <Route path="/tasks" element={<Tasks />} />
-            <Route path="/tasks/create" element={<TaskForm title = 'Create New Task' name = 'Create' threeButtonForm = {false}/>} />
+            <Route path="/tasks/create" element={<TaskForm title='Create New Task' name='Create' threeButtonForm = {false}/>} />
             <Route path="/tasks/edit" element={<EditTask />} />
             <Route path="/tasks/accountInformation" element={<Tasks />} />
       </Routes>
