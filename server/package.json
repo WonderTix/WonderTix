@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon --exec npx ts-node ./server.ts"
+    "dev": "nodemon --exec npx ts-node ./src/server.ts",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix"
   },
   "author": "",
   "license": "MIT",
@@ -34,6 +36,10 @@
     "@types/node": "^17.0.8",
     "@types/pg": "^8.6.3",
     "@types/ws": "^8.5.3",
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "eslint": "^8.17.0",
+    "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.15",
     "prisma": "~3.14.0",
     "ts-node": "^10.4.0",
