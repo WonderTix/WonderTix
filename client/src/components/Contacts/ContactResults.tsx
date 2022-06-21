@@ -111,7 +111,7 @@ export function ContactForm(data){
         Email: 
         <input
           name="Email"
-          type="text"                                                                                                                                                                                                                                                                                            m
+          type="text"
           value={Email}
           onChange={e => setEmail(e.target.value)} />
       </label>

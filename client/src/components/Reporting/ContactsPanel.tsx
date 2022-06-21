@@ -11,7 +11,7 @@ import {
 import {
   contactFiltersTextField,
   contactFiltersSwitch,
-} from "../../utils/arrays.jsx";
+} from "../../utils/arrays";
 
 export default function ContactsPanel({ fetchData, setOpen, savedName, setSavedName }) {
   const [custname, setCustname] = React.useState("");

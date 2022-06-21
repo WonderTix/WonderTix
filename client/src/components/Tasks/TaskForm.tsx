@@ -13,12 +13,13 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { createNewTaskTextFieldLabels } from "../../utils/arrays.jsx";
+import { createNewTaskTextFieldLabels } from "../../utils/arrays";
 import DatePicker from "@mui/lab/DatePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { makeStyles } from "@mui/styles";
-import SearchBar from "./Search.jsx";
+import SearchBar from "./Search";
+import {display} from "@mui/system";
 
 const useStyles = makeStyles({
   root: {
@@ -39,30 +40,30 @@ const useStyles = makeStyles({
 export default function TaskForm(props) {
   const [beginValue, setBeginValue] = React.useState(null);
   const [formValues, setFormValues] = React.useState();
-  const [taskId, setTaskId] = React.useState();
-  const [parentId, setParentId] = React.useState();
-  const [subject, setSubject] = React.useState();
-  const [parentSubject, setParentSubject] = React.useState();
-  const [status, setStatus] = React.useState();
+  const [taskId, setTaskId] = React.useState(0);
+  const [parentId, setParentId] = React.useState(0);
+  const [subject, setSubject] = React.useState("");
+  const [parentSubject, setParentSubject] = React.useState("");
+  const [status, setStatus] = React.useState(false);
   const [dueDate, setDueDate] = React.useState(null);
-  const [assignTo, setAssignTo] = React.useState();
+  const [assignTo, setAssignTo] = React.useState("");
   const [relatedRecords, setRelatedRecords] = React.useState();
-  const [description, setDescription] = React.useState();
+  const [description, setDescription] = React.useState("");
   
   const classes = useStyles();
 
   useEffect(() => {}, [beginValue]);
 
   function handleClick(props){
-    console.log(taskId.target.value);
-    console.log(parentId.target.value);
-    console.log(subject.target.value);
-    console.log(parentSubject.target.value);
+    console.log(taskId);
+    console.log(parentId);
+    console.log(subject);
+    console.log(parentSubject);
     console.log(dueDate);
-    console.log(status.target.value);
-    console.log(assignTo.target.value);
+    console.log(status);
+    console.log(assignTo);
     console.log(relatedRecords);
-    console.log(description.target.value); 
+    console.log(description); 
     console.log("alskdjflsdf");
   }
 
@@ -87,7 +88,7 @@ export default function TaskForm(props) {
             sx={{ mb: 1 }}
             fullWidth={true}
             //disabled={true}
-            onChange={setTaskId}
+            //onChange={() => {setTaskId(0)}}
           />
         </Grid>
         <Grid item xs={6}>
@@ -101,7 +102,7 @@ export default function TaskForm(props) {
             sx={{ mb: 1 }}
             fullWidth={true}
             //disabled={true}
-            onChange={setParentId}
+            //onChange={setParentId}
           />
         </Grid>
         <Grid item xs={6}>
@@ -114,7 +115,7 @@ export default function TaskForm(props) {
             size="small"
             sx={{ mb: 1 }}
             fullWidth={true}
-            onChange={setSubject}
+            //onChange={setSubject}
           />
         </Grid>
         <Grid item xs={6}>
@@ -128,18 +129,23 @@ export default function TaskForm(props) {
             sx={{ mb: 1 }}
             fullWidth={true}
             //disabled={true}
-            onChange={setParentSubject}
+            //onChange={setParentSubject}
           />
         </Grid>
         <Grid item xs={6}>
           <FormControl sx={{ width: "100%" }} className={classes.gridItem}>
             <InputLabel
               id={createNewTaskTextFieldLabels[4].id}
-              label={createNewTaskTextFieldLabels[4].label}
+              //label={createNewTaskTextFieldLabels[4].label}
             >
               Status:
             </InputLabel>
-            <Select fullWidth id="search-select" labelId="search-label" onChange={setStatus}>
+            <Select 
+              fullWidth 
+              id="search-select" 
+              labelId="search-label" 
+              //</FormControl>onChange={setStatus}
+              >
               <MenuItem value={0}>Not Started</MenuItem>
               <MenuItem value={1}>In Progress</MenuItem>
               <MenuItem value={2}>Completed</MenuItem>
@@ -150,7 +156,7 @@ export default function TaskForm(props) {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Due Date"
-              id="due-date"
+              //id="due-date"
               value={dueDate}
               renderInput={(params) => (
                 <TextField
@@ -164,7 +170,7 @@ export default function TaskForm(props) {
               onChange={(newValue) => {
                 setDueDate(newValue);
               }}
-              fullWidth={true}
+              //fullWidth={true}
             />
           </LocalizationProvider>
         </Grid>
@@ -187,15 +193,18 @@ export default function TaskForm(props) {
             size="small"
             sx={{ mb: 1 }}
             fullWidth={true}
-            onChange={setDescription}
+            //onChange={setDescription}
           />
         </Grid>
         <Grid item xs={12}>
-          {!props.threeButtonForm ? <Button variant='contained' onClick={(event)=>{handleClick(event)}}>{props.name}</Button> : <Box fullWidth sx={{display: 'flex', justifyContent: 'center'}}> 
-                  <Button variant = "contained" sx= {{mr: 1 }}> New Task </Button>
-                  <Button variant = "contained" sx= {{mr: 1 }}> Sub Task </Button>
+          {!props.threeButtonForm ? 
+            <Button variant='contained' onClick={(event)=>{handleClick(event)}}>{props.name}</Button> 
+            : <Box style={{display: 'flex', justifyContent: 'center'}}>
+                  <Button variant = "contained" style={{marginRight: "0.25rem" }}> New Task </Button>
+                  <Button variant = "contained" style={{marginRight: "0.25rem" }}> Sub Task </Button>
                   <Button variant = "contained"> Edit Task </Button>
-              </Box>}
+              </Box>
+              }
         </Grid>
       </Grid>
     </form>

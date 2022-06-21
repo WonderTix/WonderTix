@@ -3,7 +3,7 @@ import DatePicker from "@mui/lab/DatePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { ButtonGroup, Button, Stack, TextField } from "@mui/material";
-import { donationFiltersTextField } from "../../utils/arrays.jsx";
+import { donationFiltersTextField } from "../../utils/arrays";
 
 export default function DonationsPanel({ fetchData, setOpen, savedName, setSavedName }) {
   const [dononame, setDononame] = React.useState("");
@@ -56,7 +56,7 @@ export default function DonationsPanel({ fetchData, setOpen, savedName, setSaved
   };
 
   return (
-    <div sx={{ display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       {donationFiltersTextField.map((filter) => {
         return (
           <TextField
@@ -74,7 +74,6 @@ export default function DonationsPanel({ fetchData, setOpen, savedName, setSaved
         <Stack spacing={1}>
           <DatePicker
             label="From date"
-            id="from-date"
             value={beginValue}
             renderInput={(params) => <TextField {...params} size="small" />}
             onChange={(newValue) => {
@@ -83,7 +82,6 @@ export default function DonationsPanel({ fetchData, setOpen, savedName, setSaved
           />
           <DatePicker
             label="Until date"
-            id="until-date"
             value={endValue}
             renderInput={(params) => <TextField {...params} size="small" />}
             onChange={(newValue) => {

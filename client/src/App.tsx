@@ -3,15 +3,15 @@ import { Routes, Route } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import Navigation from "./components/Navigation";
 import Home from "./components/Home";
-import Accounts from "./components/Accounts/Accounts.jsx";
-import Contacts from "./components//Contacts/Contacts.jsx";
-import Tasks from "./components//Tasks/Tasks.jsx";
-import Reporting from "./components//Reporting/Reporting.jsx";
+import Accounts from "./components/Accounts/Accounts";
+import Contacts from "./components/Contacts/Contacts";
+import Tasks from "./components/Tasks/Tasks";
+import Reporting from "./components/Reporting/Reporting";
 import ProtectedRoute from "./components/Authentication/protected-route";
-import TaskForm from "./components/Tasks/TaskForm.jsx";
-import EditTask from "./components/Tasks/EditTask.jsx";
+import TaskForm from "./components/Tasks/TaskForm";
+import EditTask from "./components/Tasks/EditTask";
 
-export default function App() {
+function App() {
   let bool = false;
   return (
     <>
@@ -52,3 +52,5 @@ export default function App() {
     </>
   );
 }
+
+export default App;

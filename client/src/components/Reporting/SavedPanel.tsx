@@ -11,7 +11,7 @@ import {
   accountHeaders,
   contactHeaders,
   donationHeaders,
-} from "../../utils/arrays.jsx";
+} from "../../utils/arrays";
 
 export default function SavedPanel({ setColumns, setRows }) {
   const [refresher, setRefresher] = React.useState(0);

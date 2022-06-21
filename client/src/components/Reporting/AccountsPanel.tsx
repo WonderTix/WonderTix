@@ -10,7 +10,7 @@ import {
 import {
   accountFiltersTextField,
   accountFiltersSwitch,
-} from "../../utils/arrays.jsx";
+} from "../../utils/arrays";
 
 export default function AccountsPanel({
   fetchData,
@@ -72,7 +72,7 @@ export default function AccountsPanel({
   };
 
   return (
-    <div sx={{ display: "flex", flexDirection: "column" }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       {accountFiltersTextField.map((filter) => {
         return (
           <TextField
@@ -81,8 +81,7 @@ export default function AccountsPanel({
             label={filter.label}
             variant="outlined"
             size="small"
-            sx={{ mb: 1 }}
-            type={filter.type}
+            style={{ marginBottom: "0.25rem" }}
             onChange={handleChange}
           />
         );

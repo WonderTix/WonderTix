@@ -19,26 +19,29 @@ export default function SearchBar(props) {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
 
-  useEffect(async () => {
-    if (params.id) {
-      setIsLoading(true);
-      setContact(params.id);
-      const data = await axios
-        .get(
-          `http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}`
-        )
-        .then((res) => {
-          setData(res.data[0]);
-          console.log(res);
-        })
-        .catch((err) => {
-          setError(err.message);
-          console.log(err.message);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+  useEffect(() => {
+    const getData = async () => {
+      if (params.id) {
+        setIsLoading(true);
+        setContact(params.id);
+        await axios
+          .get(
+            `http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}`
+          )
+          .then((res) => {
+            setData(res.data[0]);
+            console.log(res);
+          })
+          .catch((err) => {
+            setError(err.message);
+            console.log(err.message);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      }
     }
+    getData();
   }, [params.id]);
 
   const handleClick = (e) => {

@@ -9,41 +9,42 @@ import {
   Paper,
 } from "@mui/material";
 import SearchIcon from "@material-ui/icons/Search";
-import AccountResults from "./AccountResults";
+import ContactResults from "./ContactResults";
 
-export default function Accounts() {
+export default function Contacts() {
   const params = useParams();
   const navigate = useNavigate();
-  const [account, setAccount] = useState("");
+  const [contact, setContact] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
 
-  useEffect(async () => {
-    if (params.id) {
-      setIsLoading(true);
-      setAccount(params.id);
-      const data = await axios
-        .get(
-          `http://localhost:8000/api/accounts?filters[username][$eq]=${params.id}`
-        )
-        .then((res) => {
-          setData(res.data[0]);
-          console.log(res);
-        })
-        .catch((err) => {
-          setError(err.message);
-          console.log(err.message);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+  useEffect(() => {
+    const getData = async () => {
+      if (params.id) {
+        setIsLoading(true);
+        setContact(params.id);
+        const data = await axios
+          .get(`http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}`)
+          .then((res) => {
+            setData(res.data[0]);
+            console.log(res);
+          })
+          .catch((err) => {
+            setError(err.message);
+            console.log(err.message);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      }
+      getData();
     }
   }, [params.id]);
 
   const handleClick = (e) => {
     e.preventDefault();
-    navigate(`${account}`);
+    navigate(`${contact}`);
   };
 
   return (
@@ -66,12 +67,12 @@ export default function Accounts() {
             pl: 2,
             py: 1,
           }}
-          placeholder="Search by account..."
-          inputProps={{ "aria-label": "search by account" }}
+          placeholder="Search by contact..."
+          inputProps={{ "aria-label": "search by contact" }}
           size="small"
-          value={account}
+          value={contact}
           onChange={(e) => {
-            setAccount(e.target.value);
+            setContact(e.target.value);
           }}
         />
         <IconButton
@@ -84,7 +85,11 @@ export default function Accounts() {
         </IconButton>
       </Paper>
       <Box>
-        {isLoading ? <CircularProgress /> : <AccountResults data={data} />}
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <ContactResults data={data} />
+        )}
       </Box>
     </Box>
   );

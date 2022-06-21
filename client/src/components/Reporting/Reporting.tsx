@@ -25,13 +25,13 @@ import {
   accountHeaders,
   contactHeaders,
   donationHeaders,
-} from "../../utils/arrays.jsx";
-import Panel from "../../utils/Panel.jsx";
-import AccountsPanel from "./AccountsPanel.jsx";
-import ContactsPanel from "./ContactsPanel.jsx";
-import DonationsPanel from "./DonationsPanel.jsx";
-import SavedPanel from "./SavedPanel.jsx";
-import SavedDialog from "./SavedDialog.jsx";
+} from "../../utils/arrays";
+import Panel from "../../utils/Panel";
+import AccountsPanel from "./AccountsPanel";
+import ContactsPanel from "./ContactsPanel";
+import DonationsPanel from "./DonationsPanel";
+import SavedPanel from "./SavedPanel";
+import SavedDialog from "./SavedDialog";
 
 
 import Snackbar from '@mui/material/Snackbar';
@@ -55,15 +55,15 @@ export default function ReportingTest() {
     let headers;
     let route;
     switch (value) {
-      case 0:
+      case "0":
         route = "accounts";
         headers = accountHeaders;
         break;
-      case 1:
+      case "1":
         route = "contacts";
         headers = contactHeaders;
         break;
-      case 2:
+      case "2":
         route = "donations";
         headers = donationHeaders;
         break;
