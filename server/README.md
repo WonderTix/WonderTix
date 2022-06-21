@@ -123,7 +123,7 @@ DB_HOST=localhost
     
     `npx prisma db pull`
 
-    `npx prisma generate`
+    `npx prisma generate --schema=./src/prisma/schema.prisma`
     
     (Might have to manually adjust schema for [certain errors](https://github.com/MichalLytek/typegraphql-prisma/issues/199))
 
