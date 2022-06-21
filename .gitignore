@@ -2,3 +2,5 @@
 .env
 
 */build
+
+server/src/prisma/generated
