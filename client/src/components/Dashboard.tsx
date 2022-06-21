@@ -1,4 +1,6 @@
-import React from "react";
-import Login from "./Login";
+// import React from 'react';
+// import Login from './Login';
 
-export default function Dashboard() {}
+const Dashboard = () => {};
+
+export default Dashboard;

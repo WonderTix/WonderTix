@@ -1,73 +1,75 @@
-import React, { useEffect, useState } from "react";
-import Grid from "@material-ui/core/Grid";
+import React from 'react';
+import Grid from '@material-ui/core/Grid';
 import {
   Box,
   Button,
-  ButtonGroup,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  FormGroup,
-  FormControlLabel,
-  Switch,
   TextField,
-} from "@mui/material";
-import { createNewTaskTextFieldLabels } from "../../utils/arrays";
-import DatePicker from "@mui/lab/DatePicker";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { makeStyles } from "@mui/styles";
-import SearchBar from "./Search";
-import {display} from "@mui/system";
+} from '@mui/material';
+import {createNewTaskTextFieldLabels} from '../../utils/arrays';
+import DatePicker from '@mui/lab/DatePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import {makeStyles} from '@mui/styles';
+import SearchBar from './Search';
 
 const useStyles = makeStyles({
   root: {
-    border: "1px solid black",
-    padding: "30px",
-    width: "50%",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginTop: "5%",
-    marginBottom: "5%",
-    backgroundColor: "#f8f9fa",
+    border: '1px solid black',
+    padding: '30px',
+    width: '50%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: '5%',
+    marginBottom: '5%',
+    backgroundColor: '#f8f9fa',
   },
   gridItem: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
 });
 
-export default function TaskForm(props) {
-  const [beginValue, setBeginValue] = React.useState(null);
-  const [formValues, setFormValues] = React.useState();
-  const [taskId, setTaskId] = React.useState(0);
-  const [parentId, setParentId] = React.useState(0);
-  const [subject, setSubject] = React.useState("");
-  const [parentSubject, setParentSubject] = React.useState("");
-  const [status, setStatus] = React.useState(false);
+/**
+ * @param {any} props Properties to be passed through to TaskForm
+ * @return {React.ReactElement} TaskForm HTML Element
+ */
+const TaskForm = (props: any): React.ReactElement => {
+  // const [beginValue, setBeginValue] = React.useState(null);
+  // const [formValues, setFormValues] = React.useState();
+  // const [taskId, setTaskId] = React.useState(0);
+  // const [parentId, setParentId] = React.useState(0);
+  // const [subject, setSubject] = React.useState('');
+  // const [parentSubject, setParentSubject] = React.useState('');
+  // const [status, setStatus] = React.useState(false);
   const [dueDate, setDueDate] = React.useState(null);
-  const [assignTo, setAssignTo] = React.useState("");
+  const [assignTo, setAssignTo] = React.useState('');
   const [relatedRecords, setRelatedRecords] = React.useState();
-  const [description, setDescription] = React.useState("");
-  
+  // const [description, setDescription] = React.useState('');
+
   const classes = useStyles();
 
-  useEffect(() => {}, [beginValue]);
+  // useEffect(() => {}, [beginValue]);
 
-  function handleClick(props){
-    console.log(taskId);
-    console.log(parentId);
-    console.log(subject);
-    console.log(parentSubject);
+  /**
+   * @return {void}
+   */
+  const handleClick = (): void => {
+    // console.log(taskId);
+    // console.log(parentId);
+    // console.log(subject);
+    // console.log(parentSubject);
     console.log(dueDate);
-    console.log(status);
+    // console.log(status);
     console.log(assignTo);
     console.log(relatedRecords);
-    console.log(description); 
-    console.log("alskdjflsdf");
-  }
+    // console.log(description);
+    console.log('alskdjflsdf');
+  };
 
-  
+
   return (
     <form className={classes.root}>
       <h1>{props.title}</h1>
@@ -85,10 +87,10 @@ export default function TaskForm(props) {
             label={createNewTaskTextFieldLabels[0].label}
             variant="outlined"
             size="small"
-            sx={{ mb: 1 }}
+            sx={{mb: 1}}
             fullWidth={true}
-            //disabled={true}
-            //onChange={() => {setTaskId(0)}}
+            // disabled={true}
+            // onChange={() => {setTaskId(0)}}
           />
         </Grid>
         <Grid item xs={6}>
@@ -99,10 +101,10 @@ export default function TaskForm(props) {
             label={createNewTaskTextFieldLabels[1].label}
             variant="outlined"
             size="small"
-            sx={{ mb: 1 }}
+            sx={{mb: 1}}
             fullWidth={true}
-            //disabled={true}
-            //onChange={setParentId}
+            // disabled={true}
+            // onChange={setParentId}
           />
         </Grid>
         <Grid item xs={6}>
@@ -113,9 +115,9 @@ export default function TaskForm(props) {
             label={createNewTaskTextFieldLabels[2].label}
             variant="outlined"
             size="small"
-            sx={{ mb: 1 }}
+            sx={{mb: 1}}
             fullWidth={true}
-            //onChange={setSubject}
+            // onChange={setSubject}
           />
         </Grid>
         <Grid item xs={6}>
@@ -126,26 +128,26 @@ export default function TaskForm(props) {
             label={createNewTaskTextFieldLabels[3].label}
             variant="outlined"
             size="small"
-            sx={{ mb: 1 }}
+            sx={{mb: 1}}
             fullWidth={true}
-            //disabled={true}
-            //onChange={setParentSubject}
+            // disabled={true}
+            // onChange={setParentSubject}
           />
         </Grid>
         <Grid item xs={6}>
-          <FormControl sx={{ width: "100%" }} className={classes.gridItem}>
+          <FormControl sx={{width: '100%'}} className={classes.gridItem}>
             <InputLabel
               id={createNewTaskTextFieldLabels[4].id}
-              //label={createNewTaskTextFieldLabels[4].label}
+              // label={createNewTaskTextFieldLabels[4].label}
             >
               Status:
             </InputLabel>
-            <Select 
-              fullWidth 
-              id="search-select" 
-              labelId="search-label" 
-              //</FormControl>onChange={setStatus}
-              >
+            <Select
+              fullWidth
+              id="search-select"
+              labelId="search-label"
+              // </FormControl>onChange={setStatus}
+            >
               <MenuItem value={0}>Not Started</MenuItem>
               <MenuItem value={1}>In Progress</MenuItem>
               <MenuItem value={2}>Completed</MenuItem>
@@ -156,21 +158,21 @@ export default function TaskForm(props) {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label="Due Date"
-              //id="due-date"
+              // id="due-date"
               value={dueDate}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   size="small"
                   sx={{
-                    backgroundColor: "white",
+                    backgroundColor: 'white',
                   }}
                 />
               )}
               onChange={(newValue) => {
                 setDueDate(newValue);
               }}
-              //fullWidth={true}
+              // fullWidth={true}
             />
           </LocalizationProvider>
         </Grid>
@@ -191,22 +193,40 @@ export default function TaskForm(props) {
             rows={5}
             maxRows={10}
             size="small"
-            sx={{ mb: 1 }}
+            sx={{mb: 1}}
             fullWidth={true}
-            //onChange={setDescription}
+            // onChange={setDescription}
           />
         </Grid>
         <Grid item xs={12}>
-          {!props.threeButtonForm ? 
-            <Button variant='contained' onClick={(event)=>{handleClick(event)}}>{props.name}</Button> 
-            : <Box style={{display: 'flex', justifyContent: 'center'}}>
-                  <Button variant = "contained" style={{marginRight: "0.25rem" }}> New Task </Button>
-                  <Button variant = "contained" style={{marginRight: "0.25rem" }}> Sub Task </Button>
-                  <Button variant = "contained"> Edit Task </Button>
-              </Box>
-              }
+          {!props.threeButtonForm ?
+            <Button variant='contained' onClick={()=>{
+              handleClick();
+            }}>{props.name}</Button> :
+            <Box style={{display: 'flex', justifyContent: 'center'}}>
+              <Button
+                variant="contained"
+                style={{marginRight: '0.25rem'}}
+              >
+                New Task
+              </Button>
+              <Button
+                variant="contained"
+                style={{marginRight: '0.25rem'}}
+              >
+                Sub Task
+              </Button>
+              <Button
+                variant="contained"
+              >
+                Edit Task
+              </Button>
+            </Box>
+          }
         </Grid>
       </Grid>
     </form>
   );
-}
+};
+
+export default TaskForm;

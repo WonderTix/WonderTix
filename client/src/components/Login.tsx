@@ -1,11 +1,11 @@
-//The login page is not being used currently.
-//Someone can adapt this to a cstom login page with ath0
+// The login page is not being used currently.
+// Someone can adapt this to a cstom login page with ath0
 
-import React, { useState } from "react";
-import LoginButton from "./Authentication/login-button";
-import LogoutButton from "./Authentication/logout-button";
+import React from 'react';
+import LoginButton from './Authentication/login-button';
+import LogoutButton from './Authentication/logout-button';
 
-export default function Login() {
+const Login = (): React.ReactElement => {
   return (
     <>
       <h1>Please Log In</h1>
@@ -13,4 +13,6 @@ export default function Login() {
       <LogoutButton></LogoutButton>
     </>
   );
-}
+};
+
+export default Login;

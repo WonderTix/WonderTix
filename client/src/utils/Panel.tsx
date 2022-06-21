@@ -1,9 +1,12 @@
-import React from "react";
-import { Box } from "@mui/material";
+import React from 'react';
+import {Box} from '@mui/material';
 
-export default function Panel(props) {
-  const { children, value, index, ...other } = props;
-
+/**
+ * @param {any} props
+ * @return {React.ReactElement} HTML Element for Panel
+ */
+const Panel = (props: any): React.ReactElement => {
+  const {children, value, index, ...other} = props;
   return (
     <div
       role="panel"
@@ -13,8 +16,15 @@ export default function Panel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ borderTop: "1px solid lightgray", mt:2, pt: 2 }}>{children}</Box>
+        <Box sx={
+          {borderTop: '1px solid lightgray',
+            mt: 2,
+            pt: 2,
+          }}
+        >{children}</Box>
       )}
     </div>
   );
-}
+};
+
+export default Panel;

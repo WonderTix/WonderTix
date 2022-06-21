@@ -1,10 +1,15 @@
-import React from 'react'
-import TaskForm from "./TaskForm"
+import React from 'react';
+import TaskForm from './TaskForm';
 
-export default function Tasks(){
-    return(
-        <div>
-          <TaskForm/>
-        </div>
-    )
-}
+/**
+ * @return {React.ReactElement} React element representing task form
+ */
+const Tasks = (): React.ReactElement => {
+  return (
+    <div>
+      <TaskForm/>
+    </div>
+  );
+};
+
+export default Tasks;

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Button,
   Dialog,
@@ -7,10 +7,22 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-} from "@mui/material";
+} from '@mui/material';
 
-export default function SavedDialog({ open, setOpen, setSavedName }) {
-  const [name, setName] = React.useState("");
+/**
+ * @param {any} props React props to be passed to SavedDialog
+ * @return {React.ReactElement}
+ */
+const SavedDialog = ({
+  open,
+  setOpen,
+  setSavedName,
+}: {
+  open:boolean,
+  setOpen: any,
+  setSavedName: any
+}): React.ReactElement => {
+  const [name, setName] = React.useState('');
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
@@ -44,4 +56,6 @@ export default function SavedDialog({ open, setOpen, setSavedName }) {
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default SavedDialog;

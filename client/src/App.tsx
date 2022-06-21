@@ -1,18 +1,17 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import CssBaseline from "@mui/material/CssBaseline";
-import Navigation from "./components/Navigation";
-import Home from "./components/Home";
-import Accounts from "./components/Accounts/Accounts";
-import Contacts from "./components/Contacts/Contacts";
-import Tasks from "./components/Tasks/Tasks";
-import Reporting from "./components/Reporting/Reporting";
-import ProtectedRoute from "./components/Authentication/protected-route";
-import TaskForm from "./components/Tasks/TaskForm";
-import EditTask from "./components/Tasks/EditTask";
+import React from 'react';
+import {Routes, Route} from 'react-router-dom';
+import CssBaseline from '@mui/material/CssBaseline';
+import Navigation from './components/Navigation';
+import Home from './components/Home';
+import Accounts from './components/Accounts/Accounts';
+import Contacts from './components/Contacts/Contacts';
+import Tasks from './components/Tasks/Tasks';
+import Reporting from './components/Reporting/Reporting';
+import ProtectedRoute from './components/Authentication/protected-route';
+import TaskForm from './components/Tasks/TaskForm';
+import EditTask from './components/Tasks/EditTask';
 
-function App() {
-  let bool = false;
+const App = () => {
   return (
     <>
       <ProtectedRoute component={Navigation} />
@@ -51,6 +50,6 @@ function App() {
       </Routes>
     </>
   );
-}
+};
 
 export default App;

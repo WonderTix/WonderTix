@@ -1,53 +1,66 @@
-import React from "react";
-import DatePicker from "@mui/lab/DatePicker";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { ButtonGroup, Button, Stack, TextField } from "@mui/material";
-import { donationFiltersTextField } from "../../utils/arrays";
+import React from 'react';
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import {ButtonGroup, Button, Stack, TextField} from '@mui/material';
+import {donationFiltersTextField} from '../../utils/arrays';
 
-export default function DonationsPanel({ fetchData, setOpen, savedName, setSavedName }) {
-  const [dononame, setDononame] = React.useState("");
-  const [amount, setAmount] = React.useState("");
+const DonationsPanel = ({
+  fetchData,
+  setOpen,
+  savedName,
+  setSavedName,
+}: {
+  fetchData: any,
+  setOpen: any,
+  savedName: any,
+  setSavedName: any,
+}) => {
+  const [dononame, setDononame] = React.useState('');
+  const [amount, setAmount] = React.useState('');
   const [beginValue, setBeginValue] = React.useState(null);
   const [endValue, setEndValue] = React.useState(null);
 
   React.useEffect(() => {
-    if (savedName === "") return;
+    if (savedName === '') return;
 
-    let body = {
+    const body = {
       table_name: savedName,
       query_attr: `donations/?${parseUrl()}`,
     };
 
     fetch(`http://localhost:8000/api/saved_reports`, {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(body),
     }).then((res) => console.log(res));
 
-    setSavedName("");
+    setSavedName('');
   });
 
   const parseUrl = () => {
-    let filters = [];
+    const filters = [];
 
-    if (dononame !== "")
+    if (dononame !== '') {
       filters.push(`filters[dononame][$contains]=${dononame}`);
-    if (amount !== "") filters.push(`filters[amount][$gt]=${amount}`);
-    if (beginValue)
+    }
+    if (amount !== '') filters.push(`filters[amount][$gt]=${amount}`);
+    if (beginValue) {
       filters.push(`filters[donodate][$gt]=${beginValue.toLocaleString()}`);
-    if (endValue)
+    }
+    if (endValue) {
       filters.push(`filters[donodate][$lt]=${endValue.toLocaleString()}`);
+    }
 
-    return filters.join("&");
+    return filters.join('&');
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     switch (e.target.id) {
-      case "dononame":
+      case 'dononame':
         setDononame(e.target.value);
         break;
-      case "amount":
+      case 'amount':
         setAmount(e.target.value);
         break;
       default:
@@ -56,7 +69,7 @@ export default function DonationsPanel({ fetchData, setOpen, savedName, setSaved
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div style={{display: 'flex', flexDirection: 'column'}}>
       {donationFiltersTextField.map((filter) => {
         return (
           <TextField
@@ -65,7 +78,7 @@ export default function DonationsPanel({ fetchData, setOpen, savedName, setSaved
             label={filter.label}
             variant="outlined"
             size="small"
-            sx={{ mb: 1 }}
+            sx={{mb: 1}}
             onChange={handleChange}
           />
         );
@@ -90,10 +103,12 @@ export default function DonationsPanel({ fetchData, setOpen, savedName, setSaved
           />
         </Stack>
       </LocalizationProvider>
-      <ButtonGroup fullWidth variant="contained" sx={{ mt: 2 }}>
+      <ButtonGroup fullWidth variant="contained" sx={{mt: 2}}>
         <Button onClick={() => fetchData(parseUrl())}>Run</Button>
         <Button onClick={() => setOpen(true)}>Save</Button>
       </ButtonGroup>
     </div>
   );
-}
+};
+
+export default DonationsPanel;

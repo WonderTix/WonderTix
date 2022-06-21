@@ -1,18 +1,22 @@
 /*
-This component is the main logic for the athentication to work. 
+This component is the main logic for the athentication to work.
 
 */
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Auth0Provider } from "@auth0/auth0-react";
+import React from 'react';
+import {useNavigate} from 'react-router-dom';
+import {Auth0Provider} from '@auth0/auth0-react';
 
-const Auth0ProviderWithHistory = ({ children }) => {
-  const domain = "dev-fhg-n56h.us.auth0.com";
-  const clientId = "misr9gFE1k3Y5gXh1JV7cgveWpLVNwQh";
+const Auth0ProviderWithHistory = ({
+  children,
+}: {
+  children: any,
+}): React.ReactElement => {
+  const domain = 'dev-fhg-n56h.us.auth0.com';
+  const clientId = 'misr9gFE1k3Y5gXh1JV7cgveWpLVNwQh';
 
   const history = useNavigate();
 
-  const onRedirectCallback = (appState) => {
+  const onRedirectCallback = (appState: any) => {
     history(appState?.returnTo || window.location.pathname);
   };
 
