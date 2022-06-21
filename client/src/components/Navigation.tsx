@@ -29,24 +29,16 @@ export default function Navigation({ icon }) {
             textAlignVertical: "center",
           }}
         >
-          <Link
-            href="/"
-            variant="h6"
-            sx={{
-              color: "#fff",
-              letterSpacing: "2px",
-              textDecoration: "none",
-              textAlignVertical: "center",
-              marginTop: "20px",
-            }}
-            className="T-style"
-          >
-            WonderTix CRM
-          </Link>
-
-          <Link href="https://portlandplayhouse.org/" sx={{ ml: 5 }}>
+          <Link href="https://portlandplayhouse.org/">
             <img src={logo} className="logo_size"></img>
           </Link>
+
+          <Link
+            href="/"
+          >
+            <p className="T-style">WonderTix CRM</p>
+          </Link>
+
         </Box>
         <Box>
           {anchors.map((anchor) => (
