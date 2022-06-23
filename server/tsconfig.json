@@ -99,3 +99,19 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   }
 }
+
+
+/*
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "noUnusedLocals": false,
+    "jsx": "react"
+  },
+  "include": ["routes/**/*", "server.ts"]
+,}
+
+*/
