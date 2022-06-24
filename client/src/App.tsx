@@ -1,15 +1,14 @@
-import React from 'react';
-import {Routes, Route} from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
-import Navigation from './components/Navigation';
-import Home from './components/Home';
+import { Route, Routes } from 'react-router-dom';
 import Accounts from './components/Accounts/Accounts';
-import Contacts from './components/Contacts/Contacts';
-import Tasks from './components/Tasks/Tasks';
-import Reporting from './components/Reporting/Reporting';
 import ProtectedRoute from './components/Authentication/protected-route';
-import TaskForm from './components/Tasks/TaskForm';
+import Contacts from './components/Contacts/Contacts';
+import Home from './components/Home';
+import Navigation from './components/Navigation';
+import Reporting from './components/Reporting/Reporting';
 import EditTask from './components/Tasks/EditTask';
+import TaskForm from './components/Tasks/TaskForm';
+import Tasks from './components/Tasks/Tasks';
 
 const App = () => {
   return (
@@ -50,7 +49,6 @@ const App = () => {
       </Routes>
     </>
   );
-<<<<<<< HEAD:client/src/App.jsx
 }
 
 //Ticketing
@@ -183,8 +181,6 @@ function App() {
 
 export default App;
   **/
-=======
 };
 
 export default App;
->>>>>>> development:client/src/App.tsx

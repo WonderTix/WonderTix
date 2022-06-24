@@ -1,10 +1,10 @@
 import Stripe from "stripe";
-import CartItem from "../../interfaces/CartItem";
-import Delta from "../../interfaces/Delta";
+import CartItem from "../../../../interfaces/CartItem";
+import Delta from "../../../../interfaces/Delta";
+import { pool } from "../../../db";
+import eventUtils from "../../../utilities/eventUtils";
+import { app } from "../../server";
 import { CheckoutFormInfo } from "../../src/components/CompleteOrderForm";
-import { pool } from "../db";
-import { app } from "../server";
-import eventUtils from "../utilities/eventUtils";
 
 let stripe = new Stripe(process.env.PRIVATE_STRIPE_KEY, {
   apiVersion: "2020-08-27",

@@ -1,6 +1,6 @@
-import { app } from "../server";
 import bcrypt from "bcryptjs";
-import { pool } from "../db";
+import { pool } from "../../../db";
+import { app } from "../../server";
 
 app.get("/api/user", (req, res) => {
   // going to need to use auth0 authentication middleware

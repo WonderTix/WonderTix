@@ -1,6 +1,6 @@
-import { app } from "../server";
-import { pool } from "../db";
-import { formatDoorlistResponse } from "../utilities/doorlistUtils";
+import { pool } from "../../../db";
+import { app } from "../../server";
+import { formatDoorlistResponse } from "./doorlist.service";
 
 //Door list route
 app.get("/api/doorlist", async (req, res) => {

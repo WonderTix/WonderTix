@@ -1,7 +1,7 @@
-import { app } from "../server";
-import { pool } from "../db";
-import * as ticketUtils from "../utilities/ticketUtils";
-import TicketsState from "../../interfaces/TicketsState";
+import TicketsState from "../../../../interfaces/TicketsState";
+import { pool } from "../../../db";
+import * as ticketUtils from "../../../utilities/ticketUtils";
+import { app } from "../../server";
 
 // Get all ticket types
 app.get("/api/tickets/type", async (req, res) => {

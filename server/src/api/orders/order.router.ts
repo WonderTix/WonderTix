@@ -1,5 +1,5 @@
-import { app } from "../server";
-import { fulfillOrder, refundOrder } from "../utilities/stripeUtils";
+import { fulfillOrder, refundOrder } from "../../../utilities/stripeUtils";
+import { app } from "../../server";
 
 app.post("/webhook", async (req, res) => {
   // TESTING WIHT SOME SIGNATURE VERIFICATION

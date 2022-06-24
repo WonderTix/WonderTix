@@ -1,5 +1,5 @@
-import { app } from "../server";
-import { pool } from "../db";
+import { pool } from "../../../db";
+import { app } from "../../server";
 
 // News Letter Route
 app.post("/api/newsletter/count", async (req, res) => {
