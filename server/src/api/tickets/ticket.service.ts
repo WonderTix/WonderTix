@@ -1,14 +1,14 @@
-import Ticket from "../../interfaces/Ticket";
+import Ticket from '../../../../interfaces/Ticket';
 
 // remove $ and parse to float
 // this should be done better
 // check if $ in string, or maybe consider other forms of currency?
-const parseMoneyString = (s: string) => Number.parseFloat(s.replace("$", ""));
+const parseMoneyString = (s: string) => Number.parseFloat(s.replace('$', ''));
 
-const toTicket = (row): Ticket => {
-  const { eventdate, starttime, ...rest } = row;
-  const [hour, min] = starttime.split(":");
-  let date = new Date(eventdate);
+const toTicket = (row:any): Ticket => {
+  const {eventdate, starttime, ...rest} = row;
+  const [hour, min] = starttime.split(':');
+  const date = new Date(eventdate);
   date.setHours(hour, min);
   return {
     ...rest,
@@ -19,12 +19,13 @@ const toTicket = (row): Ticket => {
   };
 };
 
-const reduceToTicketState = (res, t: Ticket) => {
+const reduceToTicketState = (res: any, t: Ticket) => {
   const id = t.event_instance_id;
-  const { byId, allIds } = res;
-  return allIds.includes(id)
-    ? res
-    : { byId: { ...byId, [id]: t }, allIds: [...allIds, id] };
+  const {byId, allIds} = res;
+  return allIds.includes(id) ?
+    res :
+    {byId: {...byId, [id]: t}, allIds: [...allIds, id]};
 };
 
-export { toTicket, reduceToTicketState };
+export {toTicket, reduceToTicketState};
+

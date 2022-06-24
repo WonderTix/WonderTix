@@ -1,8 +1,8 @@
-export const formatDoorlistResponse = (rowdata) => ({
+export const formatDoorlistResponse = (rowdata: any) => ({
   eventname: rowdata[0].eventname,
   eventdate: rowdata[0].eventdate,
   starttime: rowdata[0].starttime,
-  data: rowdata.map((datum) => {
+  data: rowdata.map((datum: any) => {
     const {
       custid,
       name,

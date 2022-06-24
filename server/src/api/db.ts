@@ -1,8 +1,8 @@
 // api/db.ts
 
-import {Pool} from 'pg';
 import dotenv from 'dotenv';
 import path from 'path';
+import {Pool} from 'pg';
 
 dotenv.config({path: path.join(__dirname, '../../.env')});
 // console.log(path.join(__dirname, '../../.env'));

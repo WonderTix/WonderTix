@@ -1,54 +1,66 @@
-import TicketsState from "../../../../interfaces/TicketsState";
-import { pool } from "../../../db";
-import * as ticketUtils from "../../../utilities/ticketUtils";
-import { app } from "../../server";
+import TicketsState from '../../../../interfaces/TicketsState';
+import {pool} from '../../../db';
+import {app} from '../../server';
+import * as ticketUtils from './ticket.service';
 
 // Get all ticket types
-app.get("/api/tickets/type", async (req, res) => {
+app.get('/api/tickets/type', async (req, res) => {
   try {
-    const query = "select * from tickettype";
-    const get_all_tickets = await pool.query(query);
-    res.json(get_all_tickets.rows);
+    const query = 'select * from tickettype';
+    const getAllTickets = await pool.query(query);
+    res.json(getAllTickets.rows);
   } catch (error) {
     console.error(error);
   }
 });
 
 // Set which tickets can be sold for an event
-app.post("/api/set-tickets", async (req, res) => {
+app.post('/api/set-tickets', async (req, res) => {
   try {
-    let body = req.body;
+    const body = req.body;
     const values = [body.event_instance_id, body.ticket_type];
     const query =
-      "insert into linkedtickets (event_instance_id, type) values ($1, $2)";
-    const set_tickets = await pool.query(query, values);
-    res.json(set_tickets);
+      'INSERT INTO linkedtickets (event_instance_id, type) VALUES ($1, $2)';
+    const setTickets = await pool.query(query, values);
+    res.json(setTickets);
   } catch (error) {
     console.error(error);
   }
 });
 
 // Get list of which tickets can be purchased for the show along with its prices
-app.get("/api/show-tickets", async (req, res) => {
+app.get('/api/show-tickets', async (req, res) => {
   try {
-    const query = `SELECT ev.id as event_id, ei.id as event_instance_id, eventname, eventdescription, eventdate, starttime, totalseats, availableseats, price, concessions
-              FROM events ev
-                  LEFT JOIN event_instances ei ON ev.id=ei.eventid
-                  JOIN linkedtickets lt ON lt.event_instance_id=ei.id
-                  JOIN tickettype tt ON lt.ticket_type=tt.id
-              WHERE ev.id=$1 AND isseason=false;`;
+    const query = `
+                    SELECT 
+                        ev.id as event_id,
+                        ei.id as event_instance_id,
+                        eventname,
+                        eventdescription,
+                        eventdate,
+                        starttime,
+                        totalseats, 
+                        availableseats,
+                        price,
+                        concessions
+                    FROM events ev
+                    LEFT JOIN event_instances ei ON ev.id=ei.eventid
+                    JOIN linkedtickets lt ON lt.event_instance_id=ei.id
+                    JOIN tickettype tt ON lt.ticket_type=tt.id
+                    WHERE ev.id=$1 AND isseason=false;
+                  `;
     const values = [req.query.event];
-    const available_tickets = await pool.query(query, values);
-    res.json(available_tickets);
-    console.log(available_tickets.rows);
-    return available_tickets.rows;
+    const availableTickets = await pool.query(query, values);
+    res.json(availableTickets);
+    console.log(availableTickets.rows);
+    return availableTickets.rows;
   } catch (error) {
     console.error(error);
   }
 });
 
 // Responds with tickets subset of Redux state
-app.get("/api/tickets", async (req, res) => {
+app.get('/api/tickets', async (req, res) => {
   try {
     const qs = `SELECT
                   ei.id AS event_instance_id,
@@ -65,17 +77,17 @@ app.get("/api/tickets", async (req, res) => {
                   JOIN tickettype tt ON lt.ticket_type=tt.id
               WHERE salestatus=true AND isseason=false AND availableseats > 0
               ORDER BY ei.id, event_instance_id;`;
-    const query_res = await pool.query(qs);
+    const queryRes = await pool.query(qs);
     res.json(
-      query_res.rows
-        .map(ticketUtils.toTicket)
-        .reduce(ticketUtils.reduceToTicketState, {
-          byId: {},
-          allIds: [],
-        } as TicketsState)
+        queryRes.rows
+            .map(ticketUtils.toTicket)
+            .reduce(ticketUtils.reduceToTicketState, {
+              byId: {},
+              allIds: [],
+            } as TicketsState),
     );
-    console.log("# tickets:", query_res.rowCount);
-  } catch (err) {
+    console.log('# tickets:', queryRes.rowCount);
+  } catch (err: any) {
     console.error(err.message);
   }
 });
