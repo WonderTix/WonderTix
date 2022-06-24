@@ -19,8 +19,8 @@ import { taskNotesRouter } from "./api/task_notes/task_notes.router";
 
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
-const app = express();
-const port = parseInt(process.env.PORT || "8000");
+export const app = express();
+const port = 8000;
 const hostname = process.env.HOSTNAME || "localhost";
 
 let stripe = new Stripe(process.env.PRIVATE_STRIPE_KEY, {
@@ -33,8 +33,14 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  session({
+    secret: "sessionsecret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 app.use(cookieParser("sessionsecret"));
 
 /* Middleware */
