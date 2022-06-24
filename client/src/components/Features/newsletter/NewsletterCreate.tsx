@@ -20,18 +20,27 @@ import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import {useState} from 'react';
 
+const NavBtnComponent = (props:any) => {
+  return(
+      <Grid item xs={3}><Button variant="contained" color="primary"
+                 style={{width: '100%', textTransform: 'uppercase'}}>
+        {props.name}
+      </Button>
+        </Grid>);
+};
+
 export default function NewsletterCreate() {
   return (
     <div style={{display: 'flex', height: '100vh', width: '100%'}}>
-      <Paper style={{flexGrow: 8, height: '100%', margin: '10px', paddingLeft: '5%', paddingTop: '50px', paddingRight: '10%'}} variant="outlined">
+      <Paper style={{flexGrow: 8, height: '100%', margin: '10px',
+        paddingLeft: '5%', paddingTop: '50px', paddingRight: '10%'}} variant="outlined">
         <Typography variant="h3">Newsletter Creation!</Typography>
         <hr/>
         <form>
           <Grid container spacing={1}>
-            <Grid item xs={3}><Button variant="contained" color="primary" style={{width: '100%'}}>ADD</Button> </Grid>
-            <Grid item xs={3}><Button variant="contained" color="primary" style={{width: '100%'}}>PREVIEW</Button> </Grid>
-            <Grid item xs={3}><Button variant="contained" color="primary" style={{width: '100%'}}>FINISH</Button> </Grid>
-            <Grid item xs={3}><Button variant="contained" color="secondary" style={{width: '100%'}}>DISCARD</Button> </Grid>
+           <NavBtnComponent name={"add"}/>
+            <NavBtnComponent name={"finish"}/>
+            <NavBtnComponent name={"discard"}/>
           </Grid>
         </form>
       </Paper>
