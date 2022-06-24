@@ -7,42 +7,42 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import { NavLink } from 'react-router-dom'
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
-import { makeStyles, Theme } from '@material-ui/core'
-import { selectNumInCart } from '../ticketingSlice'
-import { appSelector } from '../../../app/hooks'
+import {NavLink} from 'react-router-dom';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import {makeStyles, Theme} from '@material-ui/core';
+import {selectNumInCart} from '../ticketingSlice';
+import {appSelector} from '../../../app/hooks';
 
 const CartLink = () => {
-    const classes = useStyles()
-    const itemCount = appSelector(selectNumInCart)
-    return (
-        <NavLink to="/cart" className={classes.root}>
-            <ShoppingCartIcon />
+  const classes = useStyles();
+  const itemCount = appSelector(selectNumInCart);
+  return (
+    <NavLink to="/cart" className={classes.root}>
+      <ShoppingCartIcon />
             Cart
-            {(itemCount > 0) && <span className={classes.itemCount}>{itemCount}</span>}
-        </NavLink>
-    )
-}
+      {(itemCount > 0) && <span className={classes.itemCount}>{itemCount}</span>}
+    </NavLink>
+  );
+};
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        display: 'flex',
-        textDecoration: 'none',
-        alignItems: 'center',
-        color: theme.palette.text.primary,
-    },
-    itemCount: {
-        background: theme.palette.primary.main,
-        borderRadius: '8px',
-        width: '10px',
-        textAlign: 'center',
-        padding: '3px 5px',
-        margin: theme.spacing(0.5),
-        color: 'white',
-        fontWeight: 600
-    }
-}))
+  root: {
+    display: 'flex',
+    textDecoration: 'none',
+    alignItems: 'center',
+    color: theme.palette.text.primary,
+  },
+  itemCount: {
+    background: theme.palette.primary.main,
+    borderRadius: '8px',
+    width: '10px',
+    textAlign: 'center',
+    padding: '3px 5px',
+    margin: theme.spacing(0.5),
+    color: 'white',
+    fontWeight: 600,
+  },
+}));
 
-export default CartLink
+export default CartLink;
 

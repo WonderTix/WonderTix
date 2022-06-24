@@ -1,9 +1,7 @@
 // server.ts
-
-import cookieParser from "cookie-parser";
 import "reflect-metadata";
 import Stripe from "stripe";
-
+// @ts-ignore
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
@@ -16,14 +14,16 @@ import { donationsRouter } from "./api/donations/donations.router";
 import { savedReportsRouter } from "./api/saved_reports/saved_reports.router";
 import { tasksRouter } from "./api/tasks/tasks.router";
 import { taskNotesRouter } from "./api/task_notes/task_notes.router";
-
+// @ts-ignore
+import session from "express-session";
+import cookieParser from "cookie-parser";
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
 export const app = express();
 const port = 8000;
 const hostname = process.env.HOSTNAME || "localhost";
-
-let stripe = new Stripe(process.env.PRIVATE_STRIPE_KEY, {
+const stripeKey = process.env.PRIVATE_STRIPE_KEY ? process.env.PRIVATE_STRIPE_KEY : "";
+let stripe = new Stripe(stripeKey , {
   apiVersion: "2020-08-27",
 });
 
@@ -33,15 +33,6 @@ app.use(
     credentials: true,
   })
 );
-
-app.use(
-  session({
-    secret: "sessionsecret",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
-app.use(cookieParser("sessionsecret"));
 
 /* Middleware */
 app.use(express.json());

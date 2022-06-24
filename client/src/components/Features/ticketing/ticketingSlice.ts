@@ -12,15 +12,15 @@ import {
   createAsyncThunk,
   PayloadAction,
   CaseReducer,
-} from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
-import format from "date-fns/format";
-import { bound, titleCase } from "../../utils";
-import CartItem from "../../../interfaces/CartItem";
-import Ticket from "../../../interfaces/Ticket";
-import TicketsState from "../../../interfaces/TicketsState";
-import Event from "../../../interfaces/Event";
-import TicketingState from "../../../interfaces/TicketingState";
+} from '@reduxjs/toolkit';
+import {RootState} from '../../app/store';
+import format from 'date-fns/format';
+import {bound, titleCase} from '../../utils';
+import CartItem from '../../../interfaces/CartItem';
+import Ticket from '../../../interfaces/Ticket';
+import TicketsState from '../../../interfaces/TicketsState';
+import Event from '../../../interfaces/Event';
+import TicketingState from '../../../interfaces/TicketingState';
 
 const fetchData = async (url: string) => {
   try {
@@ -33,33 +33,33 @@ const fetchData = async (url: string) => {
 };
 
 export const fetchTicketingData = createAsyncThunk(
-  "ticketing/fetch",
-  async () => {
-    const events: Event[] = await fetchData("/api/events");
-    const ticketRes: TicketsState = await fetchData("/api/tickets");
-    const tickets = Object.entries(ticketRes.byId).reduce(
-      (res, [key, val]) => ({
-        ...res,
-        [key]: { ...val, date: new Date(val.date) },
-      }),
-      {}
-    );
-    return { events, tickets: { byId: tickets, allIds: ticketRes.allIds } };
-  }
+    'ticketing/fetch',
+    async () => {
+      const events: Event[] = await fetchData('/api/events');
+      const ticketRes: TicketsState = await fetchData('/api/tickets');
+      const tickets = Object.entries(ticketRes.byId).reduce(
+          (res, [key, val]) => ({
+            ...res,
+            [key]: {...val, date: new Date(val.date)},
+          }),
+          {},
+      );
+      return {events, tickets: {byId: tickets, allIds: ticketRes.allIds}};
+    },
 );
 
 export const toPartialCartItem = <T extends Ticket>(ticketLike: T) => ({
   product_id: ticketLike.event_instance_id,
   price: ticketLike.ticket_price,
   desc: `${ticketLike.admission_type} - ${format(
-    ticketLike.date,
-    "eee, MMM dd - h:mm a"
+      ticketLike.date,
+      'eee, MMM dd - h:mm a',
   )}`,
 });
 
 const appendCartField =
   <T extends CartItem>(key: keyof T, val: T[typeof key]) =>
-  (obj: any) => ({ ...obj, [key]: val });
+    (obj: any) => ({...obj, [key]: val});
 
 export const createCartItem = (data: {
   ticket: Ticket;
@@ -67,59 +67,59 @@ export const createCartItem = (data: {
   qty: number;
 }): CartItem =>
   [data.ticket]
-    .map(toPartialCartItem)
-    .map(
-      appendCartField(
-        "name",
-        `${titleCase(data.event.title)} Ticket${data.qty > 1 ? "s" : ""}`
+      .map(toPartialCartItem)
+      .map(
+          appendCartField(
+              'name',
+              `${titleCase(data.event.title)} Ticket${data.qty > 1 ? 's' : ''}`,
+          ),
       )
-    )
-    .map(appendCartField("qty", data.qty))
-    .map(appendCartField("product_img_url", data.event.image_url))[0];
+      .map(appendCartField('qty', data.qty))
+      .map(appendCartField('product_img_url', data.event.image_url))[0];
 
 // type EventId = string;
 const isTicket = (obj: any): obj is Ticket =>
-  Object.keys(obj).some((k) => k === "event_instance_id");
+  Object.keys(obj).some((k) => k === 'event_instance_id');
 const isCartItem = (obj: any): obj is CartItem =>
-  Object.keys(obj).some((k) => k === "product_id");
+  Object.keys(obj).some((k) => k === 'product_id');
 
 const byId = (id: number | string) => (obj: Ticket | Event | CartItem) =>
-  isTicket(obj)
-    ? obj.event_instance_id === id
-    : isCartItem(obj)
-    ? obj.product_id === id
-    : obj.id === id;
+  isTicket(obj) ?
+    obj.event_instance_id === id :
+    isCartItem(obj) ?
+    obj.product_id === id :
+    obj.id === id;
 
-const hasConcessions = (item: CartItem) => item.name.includes("Concessions");
+const hasConcessions = (item: CartItem) => item.name.includes('Concessions');
 const applyConcession = (c_price: number, item: CartItem) =>
-  hasConcessions(item)
-    ? item
-    : {
-        ...item,
-        name: item.name + " + Concessions",
-        price: c_price + item.price,
-        desc: `${item.desc} with concessions ticket`,
-      };
+  hasConcessions(item) ?
+    item :
+    {
+      ...item,
+      name: item.name + ' + Concessions',
+      price: c_price + item.price,
+      desc: `${item.desc} with concessions ticket`,
+    };
 
 interface ItemData {
   id: number;
   qty: number;
   concessions?: number;
 }
-const updateCartItem = (cart: CartItem[], { id, qty, concessions }: ItemData) =>
+const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
   cart.map((item) =>
-    item.product_id === id
-      ? concessions
-        ? applyConcession(concessions, { ...item, qty })
-        : { ...item, qty }
-      : item
+    item.product_id === id ?
+      concessions ?
+        applyConcession(concessions, {...item, qty}) :
+        {...item, qty} :
+      item,
   );
 
 const addTicketReducer: CaseReducer<
   TicketingState,
   PayloadAction<{ id: number; qty: number; concessions: boolean }>
 > = (state, action) => {
-  const { id, qty, concessions } = action.payload;
+  const {id, qty, concessions} = action.payload;
   const tickets = state.tickets;
 
   if (!tickets.allIds.includes(id)) return state;
@@ -139,18 +139,18 @@ const addTicketReducer: CaseReducer<
     };
   } else {
     const event = state.events.find(byId(ticket.eventid));
-    const newCartItem = event ? createCartItem({ ticket, event, qty }) : null;
-    return newCartItem
-      ? {
-          ...state,
-          cart: concessions
-            ? [
-                ...state.cart,
-                applyConcession(ticket.concession_price, newCartItem),
-              ]
-            : [...state.cart, newCartItem],
-        }
-      : state;
+    const newCartItem = event ? createCartItem({ticket, event, qty}) : null;
+    return newCartItem ?
+      {
+        ...state,
+        cart: concessions ?
+            [
+              ...state.cart,
+              applyConcession(ticket.concession_price, newCartItem),
+            ] :
+            [...state.cart, newCartItem],
+      } :
+      state;
   }
 };
 
@@ -159,28 +159,28 @@ const editQtyReducer: CaseReducer<
   TicketingState,
   PayloadAction<{ id: number; qty: number }>
 > = (state, action) => {
-  const { id, qty } = action.payload;
+  const {id, qty} = action.payload;
   if (!state.tickets.allIds.includes(id)) return state;
   const avail = state.tickets.byId[id].availableseats;
   const validRange = bound(0, state.tickets.byId[id].availableseats);
 
-  return qty <= avail
-    ? {
-        ...state,
-        cart: updateCartItem(state.cart, { id, qty: validRange(qty) }),
-      }
-    : state;
+  return qty <= avail ?
+    {
+      ...state,
+      cart: updateCartItem(state.cart, {id, qty: validRange(qty)}),
+    } :
+    state;
 };
 
 export const INITIAL_STATE: TicketingState = {
   cart: [],
-  tickets: { byId: {}, allIds: [] },
+  tickets: {byId: {}, allIds: []},
   events: [],
-  status: "idle",
+  status: 'idle',
 };
 
 const ticketingSlice = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState: INITIAL_STATE,
   reducers: {
     addTicketToCart: addTicketReducer,
@@ -196,19 +196,19 @@ const ticketingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTicketingData.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchTicketingData.fulfilled, (state, action) => {
-        state.status = "success";
-        state.tickets = action.payload.tickets
-          ? action.payload.tickets
-          : { byId: {}, allIds: [] };
-        state.events = action.payload.events ? action.payload.events : [];
-      })
-      .addCase(fetchTicketingData.rejected, (state) => {
-        state.status = "failed";
-      });
+        .addCase(fetchTicketingData.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(fetchTicketingData.fulfilled, (state, action) => {
+          state.status = 'success';
+          state.tickets = action.payload.tickets ?
+          action.payload.tickets :
+          {byId: {}, allIds: []};
+          state.events = action.payload.events ? action.payload.events : [];
+        })
+        .addCase(fetchTicketingData.rejected, (state) => {
+          state.status = 'failed';
+        });
   },
 });
 
@@ -217,19 +217,19 @@ export const selectCartSubtotal = (state: RootState): number =>
 export const selectCartIds = (state: RootState): number[] =>
   state.ticketing.cart.map((i) => i.product_id);
 export const selectCartItem = (
-  state: RootState,
-  id: number
+    state: RootState,
+    id: number,
 ): CartItem | undefined =>
   state.ticketing.cart.find((i) => i.product_id === id);
 export const selectCartTicketCount = (
-  state: RootState
+    state: RootState,
 ): { [key: number]: number } =>
   state.ticketing.cart.reduce((acc, item) => {
     const key = item.product_id;
     if (key in acc) {
       return acc;
     } else {
-      return { ...acc, [key]: item.qty };
+      return {...acc, [key]: item.qty};
     }
   }, {});
 export const selectNumInCart = (state: RootState) =>
@@ -239,11 +239,11 @@ export const selectCartContents = (state: RootState): CartItem[] =>
 
 const filterTicketsReducer =
   (ticketsById: { [key: number]: Ticket }, eventid: string) =>
-  (filtered: Ticket[], id: number) => {
-    return ticketsById[id].eventid === eventid
-      ? [...filtered, ticketsById[id]]
-      : filtered;
-  };
+    (filtered: Ticket[], id: number) => {
+      return ticketsById[id].eventid === eventid ?
+      [...filtered, ticketsById[id]] :
+      filtered;
+    };
 export interface EventPageData {
   title: string;
   description: string;
@@ -251,18 +251,18 @@ export interface EventPageData {
   tickets: Ticket[];
 }
 export const selectEventData = (
-  state: RootState,
-  eventid: string
+    state: RootState,
+    eventid: string,
 ): EventPageData | undefined => {
   const ticketData = state.ticketing.tickets;
   const event = state.ticketing.events.find(byId(eventid));
   if (event) {
-    const { id, ...playData } = event;
+    const {id, ...playData} = event;
     const tickets = ticketData.allIds.reduce(
-      filterTicketsReducer(ticketData.byId, eventid),
-      [] as Ticket[]
+        filterTicketsReducer(ticketData.byId, eventid),
+      [] as Ticket[],
     );
-    return { ...playData, tickets };
+    return {...playData, tickets};
   } else {
     return undefined;
   }
@@ -277,10 +277,10 @@ interface EventSummaryData {
 }
 export const selectPlaysData = (state: RootState) =>
   state.ticketing.events.reduce((res, event) => {
-    const { id, title, description } = event;
+    const {id, title, description} = event;
     const filteredTickets = state.ticketing.tickets.allIds.reduce(
-      filterTicketsReducer(state.ticketing.tickets.byId, id),
-      [] as Ticket[]
+        filterTicketsReducer(state.ticketing.tickets.byId, id),
+      [] as Ticket[],
     );
 
     return [

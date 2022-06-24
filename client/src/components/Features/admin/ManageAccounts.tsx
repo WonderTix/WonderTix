@@ -13,155 +13,156 @@ import {SyntheticEvent, useEffect, useState} from 'react';
 import {useAppDispatch} from '../../app/hooks';
 import {openSnackbar} from '../snackbarSlice';
 
-const useStyles = makeStyles(theme => ({
-    newuser: {
-        padding: "20px",
-        marginTop: "20px",
-        marginLeft: "20px",
-        width: "15em",
-        display: "flex",
-        flexDirection: "column"
+const useStyles = makeStyles((theme) => ({
+  newuser: {
+    padding: '20px',
+    marginTop: '20px',
+    marginLeft: '20px',
+    width: '15em',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  root: {
+    display: 'flex',
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
     },
-    root: {
-        display: "flex",
-        [theme.breakpoints.down('md')]: {
-            flexDirection: "column",
-        },
-        [theme.breakpoints.up('md')]: {
-            flexDirection: "row",
-        },
-        alignItems: "flex-end"
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
     },
-    item: {
-        marginBottom: "10px"
-    }, 
-    datagrid: {
-        height: "40em",
-        width: "100%"
-    }
-}))
+    alignItems: 'flex-end',
+  },
+  item: {
+    marginBottom: '10px',
+  },
+  datagrid: {
+    height: '40em',
+    width: '100%',
+  },
+}));
 
 export default function ManageAccounts() {
+  const [rows, setRows] = useState([]);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const classes = useStyles();
+  const dispatch = useAppDispatch();
 
-    const [rows, setRows] = useState([])
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const classes = useStyles()
-    const dispatch = useAppDispatch()
-
-    const getAccounts = async () => {
-        const r = await fetch('/api/users', {
-            credentials: 'include',
-            method: 'GET',
-        })
-        if (r.ok) {
-            const accounts = await r.json()
-            setRows(accounts)
-        } else {
-            setRows([])
-            dispatch(openSnackbar('Unauthorized'))
-        }
+  const getAccounts = async () => {
+    const r = await fetch('/api/users', {
+      credentials: 'include',
+      method: 'GET',
+    });
+    if (r.ok) {
+      const accounts = await r.json();
+      setRows(accounts);
+    } else {
+      setRows([]);
+      dispatch(openSnackbar('Unauthorized'));
     }
-    useEffect(() => {getAccounts()}, [])
+  };
+  useEffect(() => {
+    getAccounts();
+  }, []);
 
-    const deleteUser = (userid: number) => async () => {
-        const r = await fetch('/api/deleteUser', {
-            credentials: 'include',
-            method: 'post',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({id: userid})
-        })
-        if (r.ok) {
-            await getAccounts()
-            dispatch(openSnackbar('User deleted'))
-        }
+  const deleteUser = (userid: number) => async () => {
+    const r = await fetch('/api/deleteUser', {
+      credentials: 'include',
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id: userid}),
+    });
+    if (r.ok) {
+      await getAccounts();
+      dispatch(openSnackbar('User deleted'));
     }
+  };
 
-    const submitNewUser = async (e: any) => {
-        e.preventDefault()
-        const r = await fetch('/api/newUser', {
-            body: JSON.stringify({username, password}),
-            credentials: "include",
-            method: 'post',
-            headers: {'Content-type': 'application/json'}
-        })
-        if (r.ok) {
-            const j = await r.json()
-            if (j.error) {
-                console.log(j.error)
-                dispatch(openSnackbar('User already exists'))
-                return
-            }
-            await getAccounts()
-            dispatch(openSnackbar('User created'))
-            setUsername('')
-            setPassword('')
-        }
+  const submitNewUser = async (e: any) => {
+    e.preventDefault();
+    const r = await fetch('/api/newUser', {
+      body: JSON.stringify({username, password}),
+      credentials: 'include',
+      method: 'post',
+      headers: {'Content-type': 'application/json'},
+    });
+    if (r.ok) {
+      const j = await r.json();
+      if (j.error) {
+        console.log(j.error);
+        dispatch(openSnackbar('User already exists'));
+        return;
+      }
+      await getAccounts();
+      dispatch(openSnackbar('User created'));
+      setUsername('');
+      setPassword('');
     }
+  };
 
-    const editUser = async (userid: number, user: {}) => {
-        await fetch('/api/changeUser', {
-            body: JSON.stringify({id: userid, ...user}),
-            credentials: "include",
-            method: 'post',
-            headers: {'Content-type': 'application/json'}
-        })
-        dispatch(openSnackbar('User changed'))
-    }
+  const editUser = async (userid: number, user: {}) => {
+    await fetch('/api/changeUser', {
+      body: JSON.stringify({id: userid, ...user}),
+      credentials: 'include',
+      method: 'post',
+      headers: {'Content-type': 'application/json'},
+    });
+    dispatch(openSnackbar('User changed'));
+  };
 
-    const renderButton = (params: GridCellParams) => 
-        <Button 
-            disabled={params.row.is_superadmin} 
-            onClick={deleteUser(+params.id.toString())} 
-            variant="contained" 
-            color="secondary">
+  const renderButton = (params: GridCellParams) =>
+    <Button
+      disabled={params.row.is_superadmin}
+      onClick={deleteUser(+params.id.toString())}
+      variant="contained"
+      color="secondary">
                 Delete
-        </Button>
+    </Button>;
 
-    const columns: GridColumns = [{
-        field: 'id',
-        headerName: 'ID',
-        width: 100
-    }, {
-        field: 'username',
-        headerName: 'Username',
-        width: 150,
-        editable: true
-    }, {
-        field: 'password',
-        headerName: 'Password',
-        editable: true,
-        width: 200,
-        valueFormatter: params => params.value || "(Double-click to edit)"
+  const columns: GridColumns = [{
+    field: 'id',
+    headerName: 'ID',
+    width: 100,
+  }, {
+    field: 'username',
+    headerName: 'Username',
+    width: 150,
+    editable: true,
+  }, {
+    field: 'password',
+    headerName: 'Password',
+    editable: true,
+    width: 200,
+    valueFormatter: (params) => params.value || '(Double-click to edit)',
 
-    }, {
-        field: 'delete',
-        headerName: 'Delete',
-        renderCell: renderButton,
-        width: 130
-    }]
+  }, {
+    field: 'delete',
+    headerName: 'Delete',
+    renderCell: renderButton,
+    width: 130,
+  }];
 
-    const editCommit = (params: GridCellEditCommitParams, event: MuiEvent<SyntheticEvent<Element, Event>>) => 
-        editUser(+params.id.toString(), {[params.field]: params.value})
+  const editCommit = (params: GridCellEditCommitParams, event: MuiEvent<SyntheticEvent<Element, Event>>) =>
+    editUser(+params.id.toString(), {[params.field]: params.value});
 
-    return <>
-        <Typography variant="h3" gutterBottom>Manage Accounts</Typography>
-        <div className={classes.root}>
-                <DataGrid
-                    columns={columns}
-                    rows={rows}
-                    disableSelectionOnClick
-                    onCellEditCommit={editCommit}
-                    autoHeight
-                    style={{width: "100%"}}
-                    pageSize={10} />
-            <Paper variant="outlined" className={classes.newuser}>
-                <form>
-                    <TextField className={classes.item} fullWidth value={username} onChange={e => setUsername(e.target.value)} label="username" variant="outlined" />
-                    <TextField className={classes.item} fullWidth value={password} onChange={e => setPassword(e.target.value)} label="password" variant="outlined" />
-                    <Button type="submit" disabled={!username || !password} fullWidth onClick={submitNewUser} variant="contained" color="primary">create user</Button>
-                </form>
-            </Paper>
-        </div>
-    </>
+  return <>
+    <Typography variant="h3" gutterBottom>Manage Accounts</Typography>
+    <div className={classes.root}>
+      <DataGrid
+        columns={columns}
+        rows={rows}
+        disableSelectionOnClick
+        onCellEditCommit={editCommit}
+        autoHeight
+        style={{width: '100%'}}
+        pageSize={10} />
+      <Paper variant="outlined" className={classes.newuser}>
+        <form>
+          <TextField className={classes.item} fullWidth value={username} onChange={(e) => setUsername(e.target.value)} label="username" variant="outlined" />
+          <TextField className={classes.item} fullWidth value={password} onChange={(e) => setPassword(e.target.value)} label="password" variant="outlined" />
+          <Button type="submit" disabled={!username || !password} fullWidth onClick={submitNewUser} variant="contained" color="primary">create user</Button>
+        </form>
+      </Paper>
+    </div>
+  </>;
 }

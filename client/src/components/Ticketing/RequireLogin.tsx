@@ -7,10 +7,10 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import {ReactNode, useEffect, useState} from "react";
-import {Redirect} from "react-router";
-import {useAppDispatch} from "../app/hooks";
-import {setUser} from "../v1/admin/userSlice";
+import {ReactNode, useEffect, useState} from 'react';
+import {Redirect} from 'react-router';
+import {useAppDispatch} from '../app/hooks';
+import {setUser} from '../v1/admin/userSlice';
 
 type RequireLoginProps = {
     children: ReactNode
@@ -18,38 +18,38 @@ type RequireLoginProps = {
 }
 
 const RequireLogin = ({children, redirectTo}: RequireLoginProps) => {
-    const [queried, setQueried] = useState(false);
-    const [authenticated, setAuthenticated] = useState(false);
+  const [queried, setQueried] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
 
-    const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
-    const getUser = async () => {
-        if (queried) return;
-        const result = await fetch('/api/user', {
-            credentials: "include",
-            method: "GET"
-        })
-        if (result.ok) {
-            const user = await result.json()
-            dispatch(setUser(user))
-            console.log('getting user required')
-        }
-        setAuthenticated(result.status === 200);
-        setQueried(true)
-   }
+  const getUser = async () => {
+    if (queried) return;
+    const result = await fetch('/api/user', {
+      credentials: 'include',
+      method: 'GET',
+    });
+    if (result.ok) {
+      const user = await result.json();
+      dispatch(setUser(user));
+      console.log('getting user required');
+    }
+    setAuthenticated(result.status === 200);
+    setQueried(true);
+  };
 
-    useEffect(() => {
-        getUser()
-        return () => {
-            setQueried(false)
-            setAuthenticated(false)
-        }
-   }, [])
+  useEffect(() => {
+    getUser();
+    return () => {
+      setQueried(false);
+      setAuthenticated(false);
+    };
+  }, []);
 
-    return <>
-        {queried && authenticated && children}
-        {queried && !authenticated && <Redirect to={`/login${redirectTo ? redirectTo : ""}`}/>}
-    </>
-}
+  return <>
+    {queried && authenticated && children}
+    {queried && !authenticated && <Redirect to={`/login${redirectTo ? redirectTo : ''}`}/>}
+  </>;
+};
 
 export default RequireLogin;

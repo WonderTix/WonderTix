@@ -7,20 +7,20 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "../../app/store";
-import {User} from "../../../server/server";
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {RootState} from '../../app/store';
+import {User} from '../../../server/server';
 
 const userSlice = createSlice({
-    name: 'user',
-    initialState: null as (User | null),
-    reducers: {
-        setUser: (_, action: PayloadAction<User>) => action.payload,
-        clearUser: () => null
-    }
-})
+  name: 'user',
+  initialState: null as (User | null),
+  reducers: {
+    setUser: (_, action: PayloadAction<User>) => action.payload,
+    clearUser: () => null,
+  },
+});
 
-export const {setUser, clearUser} = userSlice.actions
-export const selectUser = (state: RootState) => state.user
+export const {setUser, clearUser} = userSlice.actions;
+export const selectUser = (state: RootState) => state.user;
 
-export default userSlice.reducer
+export default userSlice.reducer;

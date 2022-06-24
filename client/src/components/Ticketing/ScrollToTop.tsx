@@ -9,17 +9,17 @@
 **/
 // https://stackoverflow.com/questions/36904185/react-router-scroll-to-top-on-every-transition
 
-import { useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import {useEffect} from 'react';
+import {withRouter} from 'react-router-dom';
 
-function ScrollToTop({ history }: {history: any}) {
+function ScrollToTop({history}: {history: any}) {
   useEffect(() => {
     const unlisten = history.listen(() => {
       window.scrollTo(0, 0);
     });
     return () => {
       unlisten();
-    }
+    };
   }, []);
 
   return (null);

@@ -112,7 +112,7 @@
     "noUnusedLocals": false,
     "jsx": "react"
   },
-  "include": ["routes/**/*", "server.ts"]
+  "include": ["routes/** / *", "server.ts"]
 ,}
 
 */

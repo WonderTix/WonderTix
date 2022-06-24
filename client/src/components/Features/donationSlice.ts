@@ -7,20 +7,20 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from '../app/store'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {RootState} from '../app/store';
 
 export type DonationSlice = {amount: number}
 
 const donationSlice = createSlice({
-    name: 'donation',
-    initialState: {amount: 0},
-    reducers: {
-        setDonation: (_, action: PayloadAction<number>) => ({amount: action.payload})
-    }
-})
+  name: 'donation',
+  initialState: {amount: 0},
+  reducers: {
+    setDonation: (_, action: PayloadAction<number>) => ({amount: action.payload}),
+  },
+});
 
-export const {setDonation} = donationSlice.actions
-export const selectDonation = (state: RootState) => state.donation.amount
+export const {setDonation} = donationSlice.actions;
+export const selectDonation = (state: RootState) => state.donation.amount;
 
-export default donationSlice.reducer
+export default donationSlice.reducer;

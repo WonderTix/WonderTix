@@ -8,21 +8,21 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState } from '../app/store'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {RootState} from '../app/store';
 
 export type SnackbarState = {message: string, shown: boolean}
 
 const snackbarSlice = createSlice({
-    name: 'snackbar',
-    initialState: {message: "", shown: false},
-    reducers: {
-        openSnackbar: (_, action: PayloadAction<string>) => ({message: action.payload, shown: true}),
-        closeSnackbar: () => ({message: "", shown: false})
-    }
-})
+  name: 'snackbar',
+  initialState: {message: '', shown: false},
+  reducers: {
+    openSnackbar: (_, action: PayloadAction<string>) => ({message: action.payload, shown: true}),
+    closeSnackbar: () => ({message: '', shown: false}),
+  },
+});
 
-export const { openSnackbar, closeSnackbar } = snackbarSlice.actions
-export const selectSnackbar = (state: RootState) => state.snackbar
+export const {openSnackbar, closeSnackbar} = snackbarSlice.actions;
+export const selectSnackbar = (state: RootState) => state.snackbar;
 
-export default snackbarSlice.reducer
+export default snackbarSlice.reducer;

@@ -7,36 +7,36 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import EventCard from './EventCard'
-import { appSelector } from '../../app/hooks'
-import { CircularProgress } from '@material-ui/core'
-import { makeStyles } from '@material-ui/styles'
+import EventCard from './EventCard';
+import {appSelector} from '../../app/hooks';
+import {CircularProgress} from '@material-ui/core';
+import {makeStyles} from '@material-ui/styles';
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '1em',
-    },
-    loading: {
-        padding: '20px',
-        alignSelf: 'center',
-    }
-}))
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '1em',
+  },
+  loading: {
+    padding: '20px',
+    alignSelf: 'center',
+  },
+}));
 
 const EventsList = () => {
-    const allEvents = appSelector(state => state.ticketing.events)
-    const loadStatus = appSelector(state => state.ticketing.status)
+  const allEvents = appSelector((state) => state.ticketing.events);
+  const loadStatus = appSelector((state) => state.ticketing.status);
 
-    const classes = useStyles()    
+  const classes = useStyles();
 
-    return (
-        <section className={classes.root}>
-            {(loadStatus === 'loading') && <CircularProgress className={classes.loading}/>}
-            {(loadStatus === 'success') &&
-                allEvents.map(event => <EventCard key={event.id} {...event} />)
-            }
-        </section>
-    )
-}
-export default EventsList
+  return (
+    <section className={classes.root}>
+      {(loadStatus === 'loading') && <CircularProgress className={classes.loading}/>}
+      {(loadStatus === 'success') &&
+                allEvents.map((event) => <EventCard key={event.id} {...event} />)
+      }
+    </section>
+  );
+};
+export default EventsList;

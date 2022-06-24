@@ -7,31 +7,31 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import { appSelector } from '../app/hooks'
-import Typography from '@material-ui/core/Typography'
-import InstancesGroup from './InstancesGroup'
+import {appSelector} from '../app/hooks';
+import Typography from '@material-ui/core/Typography';
+import InstancesGroup from './InstancesGroup';
 
 export default function InstancesPage() {
-    const eventsLoadStatus = appSelector(state => state.events.status)
-    const instancesByEvent = appSelector(state => state.events.data)
-    const groupedInstances = Object.keys(instancesByEvent).map(key => {
-        const {eventname, eventdescription, ...data} = instancesByEvent[key]
-        return <InstancesGroup
-            key={key}
-            {...data}
-            eventTitle={eventname}
-            eventDesc={eventdescription}
-        />
-    })
+  const eventsLoadStatus = appSelector((state) => state.events.status);
+  const instancesByEvent = appSelector((state) => state.events.data);
+  const groupedInstances = Object.keys(instancesByEvent).map((key) => {
+    const {eventname, eventdescription, ...data} = instancesByEvent[key];
+    return <InstancesGroup
+      key={key}
+      {...data}
+      eventTitle={eventname}
+      eventDesc={eventdescription}
+    />;
+  });
 
-    return (
-        <div>
-            <Typography variant="h2">Select a Showing</Typography>
-            {(eventsLoadStatus === 'loading') && <p>Loading...</p>}
-            {(eventsLoadStatus === 'success') && groupedInstances}
-        </div>
-    )
+  return (
+    <div>
+      <Typography variant="h2">Select a Showing</Typography>
+      {(eventsLoadStatus === 'loading') && <p>Loading...</p>}
+      {(eventsLoadStatus === 'success') && groupedInstances}
+    </div>
+  );
 }
 
 // Want: Display showings by event
-// 
+//

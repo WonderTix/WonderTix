@@ -7,12 +7,12 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import { useState } from "react";
-import { Grid, Paper, Fab, TextField, makeStyles } from "@material-ui/core";
-import Chip from "@material-ui/core/Chip";
-import RemoveIcon from "@material-ui/icons/Remove";
-import EditRoundedIcon from "@material-ui/icons/EditRounded";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import {useState} from 'react';
+import {Grid, Paper, Fab, TextField, makeStyles} from '@material-ui/core';
+import Chip from '@material-ui/core/Chip';
+import RemoveIcon from '@material-ui/icons/Remove';
+import EditRoundedIcon from '@material-ui/icons/EditRounded';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 type CreatedEventInstanceProps = {
     id: number,
@@ -23,66 +23,66 @@ type CreatedEventInstanceProps = {
 };
 
 const useStyles = makeStyles({
-    root: {
-        marginTop: "20px",
-        height: "50px"
-    },
-    chip: {
-        marginTop: "5px",
-    }
-})
+  root: {
+    marginTop: '20px',
+    height: '50px',
+  },
+  chip: {
+    marginTop: '5px',
+  },
+});
 
 export default function EventInstanceListing({id, eventDate, startTime, totalSeats}: CreatedEventInstanceProps) {
-    const classes = useStyles();
-    const [isEditMode, setIsEditMode] = useState<boolean>(true);
+  const classes = useStyles();
+  const [isEditMode, setIsEditMode] = useState<boolean>(true);
 
-    const onEditTime = () => {
-        setIsEditMode(!isEditMode);
-    }
+  const onEditTime = () => {
+    setIsEditMode(!isEditMode);
+  };
 
-    const onRemoveTime = (id: number) => {
-        console.log("Removing id: " + id);
-    }
+  const onRemoveTime = (id: number) => {
+    console.log('Removing id: ' + id);
+  };
 
-    return(
-        <Grid container component={Paper} className={classes.root}>
-            <Grid item xs={1}>
-                <Chip label={ id } color={isEditMode ? "primary" : "secondary"} className={ classes.chip }/>
-            </Grid>
-            <Grid item xs={3}>
-                <TextField
-                    defaultValue={ eventDate.toISOString().slice(0, 10) }
-                    disabled={ isEditMode }
-                    type="date"
-                />
-            </Grid>
-            <Grid item xs={3}>
-                <TextField
-                    defaultValue={ startTime }
-                    disabled={ isEditMode }
-                    type="time"
-                />
-            </Grid>
-            <Grid item xs={1}>
-                <TextField
-                    defaultValue={ totalSeats } 
-                    disabled={ isEditMode }
-                    type="number"
-                />
-            </Grid>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={1}>
-                <Fab size="small" onClick={() => onEditTime()}>
-                    {
+  return (
+    <Grid container component={Paper} className={classes.root}>
+      <Grid item xs={1}>
+        <Chip label={ id } color={isEditMode ? 'primary' : 'secondary'} className={ classes.chip }/>
+      </Grid>
+      <Grid item xs={3}>
+        <TextField
+          defaultValue={ eventDate.toISOString().slice(0, 10) }
+          disabled={ isEditMode }
+          type="date"
+        />
+      </Grid>
+      <Grid item xs={3}>
+        <TextField
+          defaultValue={ startTime }
+          disabled={ isEditMode }
+          type="time"
+        />
+      </Grid>
+      <Grid item xs={1}>
+        <TextField
+          defaultValue={ totalSeats }
+          disabled={ isEditMode }
+          type="number"
+        />
+      </Grid>
+      <Grid item xs={2}></Grid>
+      <Grid item xs={1}>
+        <Fab size="small" onClick={() => onEditTime()}>
+          {
                         isEditMode ? <EditRoundedIcon /> : <CheckCircleIcon />
-                    }
-                </Fab>
-            </Grid>
-            <Grid item xs={1}>
-                <Fab size="small" onClick={() => onRemoveTime(id)}>
-                    <RemoveIcon />
-                </Fab>
-            </Grid>
-        </Grid>
-    )
+          }
+        </Fab>
+      </Grid>
+      <Grid item xs={1}>
+        <Fab size="small" onClick={() => onRemoveTime(id)}>
+          <RemoveIcon />
+        </Fab>
+      </Grid>
+    </Grid>
+  );
 }

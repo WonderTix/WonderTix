@@ -7,13 +7,13 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import { TextField, Button, Grid } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import {TextField, Button, Grid} from '@material-ui/core';
+import {Link} from 'react-router-dom';
+import React, {useState} from 'react';
 
 export default function CreateEvents(props: {}) {
-  const [eventName, setEventName] = useState("");
-  const [eventDesc, setEventDesc] = useState("");
+  const [eventName, setEventName] = useState('');
+  const [eventDesc, setEventDesc] = useState('');
   const [eventTickets, setEventTickets] = useState(0);
   const [eventDate, setEventDate] = useState(new Date()); // Use React datetime??
   const [eventTime, setEventTime] = useState(eventDate.getTime()); // Use React datetime??
@@ -27,11 +27,11 @@ export default function CreateEvents(props: {}) {
       eventTime: eventTime,
     };
 
-    const req = await fetch("/api/create-event", {
+    const req = await fetch('/api/create-event', {
       credentials: 'include',
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
@@ -62,7 +62,7 @@ export default function CreateEvents(props: {}) {
         fullWidth
       />
       <h3>Enter Image for Event</h3>
-      {/*taken from https://dev.to/asimdahall/client-side-image-upload-in-react-5ffc*/}
+      {/* taken from https://dev.to/asimdahall/client-side-image-upload-in-react-5ffc*/}
       <input type="file" accept="image/*" multiple={false} />
 
       <Grid container spacing={3}>
