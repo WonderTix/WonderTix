@@ -1,1 +1,1 @@
-export type LoadStatus = "idle" | "loading" | "success" | "failed";
+export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed';

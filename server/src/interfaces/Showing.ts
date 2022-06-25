@@ -1,4 +1,4 @@
- export default interface Showing {
+export default interface Showing {
     eventid: string;
     eventdate: string;
     starttime: string;

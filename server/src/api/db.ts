@@ -16,7 +16,7 @@ const config = {
   host: process.env.DB_HOST,
 };
 
-console.log("DB_HOST: " + process.env.DB_HOST)
+console.log('DB_HOST: ' + process.env.DB_HOST);
 
 export const pool = new Pool(config);
 

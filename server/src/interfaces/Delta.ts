@@ -5,7 +5,7 @@
  * A: Change occured within array
  */
 export default interface Delta {
-  kind: "N" | "E" | "D" | "A";
+  kind: 'N' | 'E' | 'D' | 'A';
   path: Array<string | number>;
   lhs?: any;
   rhs: any;
