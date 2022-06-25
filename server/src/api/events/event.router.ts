@@ -1,9 +1,11 @@
+import express from 'express';
 import Stripe from 'stripe';
-import CartItem from '../../../../interfaces/CartItem';
-import Delta from '../../../../interfaces/Delta';
 import {pool} from '../../../db';
-import {app} from '../../server';
+import CartItem from '../../interfaces/CartItem';
+import Delta from '../../interfaces/Delta';
 import eventUtils from './event.service';
+
+export const eventRouter = express.Router();
 
 const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
   process.env.PRIVATE_STRIPE_KEY : '';
@@ -14,7 +16,7 @@ const stripe = new Stripe(stripeKey, {
 
 // Endpont to get list of events
 // Event list route
-app.get('/api/event-list', async (req, res) => {
+eventRouter.get('/api/event-list', async (req, res) => {
   try {
     const events = await pool.query(
         'select id, eventname from events where active = true',
@@ -27,7 +29,7 @@ app.get('/api/event-list', async (req, res) => {
 
 // Endpoint to get event id
 // Event route
-app.get('/api/event-id', async (req, res) => {
+eventRouter.get('/api/event-id', async (req, res) => {
   try {
     const values = [req.body.eventname];
     // let values =['united']
@@ -44,7 +46,7 @@ app.get('/api/event-id', async (req, res) => {
 
 // Endpoint to get the list of all event instances that are currently active
 // Even route
-app.get('/api/active-event-instance-list', async (req, res) => {
+eventRouter.get('/api/active-event-instance-list', async (req, res) => {
   try {
     const query = `
                     SELECT 
@@ -71,7 +73,7 @@ app.get('/api/active-event-instance-list', async (req, res) => {
 // Stripe Utility folder endpoint refactor
 // TODO: when we add confirmation emails we can do it like this:
 // https://stripe.com/docs/payments/checkout/custom-success-page
-app.post('/api/checkout', async (req, res) => {
+eventRouter.post('/api/checkout', async (req, res) => {
   // TODO: NOT DO IT THIS WAY!!!
   // right now it gets the price info from the request made by the client.
   // THIS IS WRONG it needs to look up the price in the database given
@@ -221,7 +223,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // TODO: Check that provided ticket ID is valid
-app.put('/api/checkin', async (req, res) => {
+eventRouter.put('/api/checkin', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
@@ -236,7 +238,7 @@ app.put('/api/checkin', async (req, res) => {
 });
 
 // End point to create a new event
-app.post('/api/create-event', async (req, res) => {
+eventRouter.post('/api/create-event', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
@@ -259,7 +261,7 @@ app.post('/api/create-event', async (req, res) => {
 });
 
 // End point to create a new showing
-app.post('/api/create-event-instances', async (req, res) => {
+eventRouter.post('/api/create-event-instances', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   const {instances} = req.body;
@@ -286,7 +288,7 @@ app.post('/api/create-event-instances', async (req, res) => {
   }
 });
 
-app.put('/api/edit-event', async (req, res) => {
+eventRouter.put('/api/edit-event', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   const {eventid, deltas}: { eventid: string; deltas: Delta[] } = req.body;
@@ -317,7 +319,7 @@ app.put('/api/edit-event', async (req, res) => {
 
 // Updates salestatus in showtimes table
 // and active flag in plays table when given a play id
-app.post('/api/delete-event', async (req, res) => {
+eventRouter.post('/api/delete-event', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
@@ -340,7 +342,7 @@ app.post('/api/delete-event', async (req, res) => {
   }
 });
 
-app.get('/api/events', async (req, res) => {
+eventRouter.get('/api/events', async (req, res) => {
   try {
     const querystring = `
                           SELECT 

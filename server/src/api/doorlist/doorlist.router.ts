@@ -1,9 +1,11 @@
+import express from 'express';
 import {pool} from '../../../db';
-import {app} from '../../server';
 import {formatDoorlistResponse} from './doorlist.service';
 
+export const doorlistRouter = express.Router();
+
 // Door list route
-app.get('/api/doorlist', async (req, res) => {
+doorlistRouter.get('/api/doorlist', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {

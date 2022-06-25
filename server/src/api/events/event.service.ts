@@ -1,5 +1,5 @@
-import Delta from '../../../../interfaces/Delta';
-import Showing from '../../../../interfaces/Showing';
+import Delta from '../../interfaces/Delta';
+import Showing from '../../interfaces/Showing';
 import {pool} from '../db';
 
 const insertAllShowings = async (showings: Showing[]) => {

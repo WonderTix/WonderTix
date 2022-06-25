@@ -1,8 +1,10 @@
+import express from 'express';
 import {pool} from '../../../db';
-import {app} from '../../server';
+
+export const newsletterRouter = express.Router();
 
 // News Letter Route
-app.post('/api/newsletter/count', async (req, res) => {
+newsletterRouter.post('/api/newsletter/count', async (req, res) => {
   try {
     const emails = await pool.query(
         'SELECT COUNT(*) FROM customers WHERE email = $1',
@@ -15,7 +17,7 @@ app.post('/api/newsletter/count', async (req, res) => {
 });
 
 // Nesletter Route
-app.post('/api/newsletter/update', async (req, res) => {
+newsletterRouter.post('/api/newsletter/update', async (req, res) => {
   try {
     const body = req.body;
     const values = [body.news_opt, body.volunteer_opt, body.email];
@@ -26,12 +28,12 @@ app.post('/api/newsletter/update', async (req, res) => {
         values,
     );
     res.json(rows.rows);
-  } catch (err) {
+  } catch (err: any) {
     console.error(err.message);
   }
 });
 
-app.post('/api/newsletter/insert', async (req, res) => {
+newsletterRouter.post('/api/newsletter/insert', async (req, res) => {
   try {
     const body = req.body;
     const values = [

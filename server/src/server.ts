@@ -9,9 +9,15 @@ import 'reflect-metadata';
 import {accountsRouter} from './api/accounts/accounts.router';
 import {contactsRouter} from './api/contacts/contacts.router';
 import {donationsRouter} from './api/donations/donations.router';
+import {doorlistRouter} from './api/doorlist/doorlist.router';
+import {eventRouter} from './api/events/event.router';
+import {newsletterRouter} from './api/newsletter/newsletter.router';
+import {orderRouter} from './api/orders/order.router';
 import {savedReportsRouter} from './api/saved_reports/saved_reports.router';
+import {subRouter} from './api/subscriptions/subscription.router';
 import {tasksRouter} from './api/tasks/tasks.router';
 import {taskNotesRouter} from './api/task_notes/task_notes.router';
+import {ticketRouter} from './api/tickets/ticket.router';
 
 dotenv.config({path: path.join(__dirname, '../.env')});
 
@@ -53,6 +59,12 @@ app.use('/api/accounts', accountsRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/task_notes', taskNotesRouter);
 app.use('/api/saved_reports', savedReportsRouter);
+app.use(newsletterRouter);
+app.use(orderRouter);
+app.use(eventRouter);
+app.use(subRouter);
+app.use(ticketRouter);
+app.use(doorlistRouter);
 
 app.get('/', (_req, res) => res.send('Hello World.'));
 

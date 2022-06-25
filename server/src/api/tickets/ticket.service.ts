@@ -1,4 +1,4 @@
-import Ticket from '../../../../interfaces/Ticket';
+import Ticket from '../../interfaces/Ticket';
 
 // remove $ and parse to float
 // this should be done better

@@ -1,10 +1,12 @@
-import TicketsState from '../../../../interfaces/TicketsState';
+import express from 'express';
 import {pool} from '../../../db';
-import {app} from '../../server';
+import TicketsState from '../../interfaces/TicketsState';
 import * as ticketUtils from './ticket.service';
 
+export const ticketRouter = express.Router();
+
 // Get all ticket types
-app.get('/api/tickets/type', async (req, res) => {
+ticketRouter.get('/api/tickets/type', async (req, res) => {
   try {
     const query = 'select * from tickettype';
     const getAllTickets = await pool.query(query);
@@ -15,7 +17,7 @@ app.get('/api/tickets/type', async (req, res) => {
 });
 
 // Set which tickets can be sold for an event
-app.post('/api/set-tickets', async (req, res) => {
+ticketRouter.post('/api/set-tickets', async (req, res) => {
   try {
     const body = req.body;
     const values = [body.event_instance_id, body.ticket_type];
@@ -29,7 +31,7 @@ app.post('/api/set-tickets', async (req, res) => {
 });
 
 // Get list of which tickets can be purchased for the show along with its prices
-app.get('/api/show-tickets', async (req, res) => {
+ticketRouter.get('/api/show-tickets', async (req, res) => {
   try {
     const query = `
                     SELECT 
@@ -60,7 +62,7 @@ app.get('/api/show-tickets', async (req, res) => {
 });
 
 // Responds with tickets subset of Redux state
-app.get('/api/tickets', async (req, res) => {
+ticketRouter.get('/api/tickets', async (req, res) => {
   try {
     const qs = `SELECT
                   ei.id AS event_instance_id,

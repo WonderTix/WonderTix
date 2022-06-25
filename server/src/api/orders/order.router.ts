@@ -1,7 +1,9 @@
-import {app} from '../../server';
+import express from 'express';
 import {fulfillOrder, refundOrder} from './order.service';
 
-app.post('/webhook', async (req, res) => {
+export const orderRouter = express.Router();
+
+orderRouter.post('/webhook', async (req, res) => {
   // TESTING WIHT SOME SIGNATURE VERIFICATION
   // const payload = req.body;
   // console.log("PAYLOAD:   ");
