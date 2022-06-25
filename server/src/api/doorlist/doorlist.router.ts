@@ -1,5 +1,5 @@
 import express from 'express';
-import {pool} from '../../../db';
+import {pool} from '../db';
 import {formatDoorlistResponse} from './doorlist.service';
 
 export const doorlistRouter = express.Router();

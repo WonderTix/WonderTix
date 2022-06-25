@@ -19,7 +19,7 @@ import {tasksRouter} from './api/tasks/tasks.router';
 import {taskNotesRouter} from './api/task_notes/task_notes.router';
 import {ticketRouter} from './api/tickets/ticket.router';
 
-dotenv.config({path: path.join(__dirname, '../.env')});
+dotenv.config({path: path.join(__dirname, '../../.env')});
 
 export const app = express();
 const port = 8000;

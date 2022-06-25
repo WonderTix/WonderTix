@@ -1,6 +1,6 @@
 import express from 'express';
 import Stripe from 'stripe';
-import {pool} from '../../../db';
+import {pool} from '../db';
 import CartItem from '../../interfaces/CartItem';
 import Delta from '../../interfaces/Delta';
 import eventUtils from './event.service';
