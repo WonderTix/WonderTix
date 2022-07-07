@@ -1,18 +1,6 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import {TextField} from '@material-ui/core';
-import DatePicker from '@mui/lab/DatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import {MenuItem} from '@material-ui/core';
-import {FormControl} from '@material-ui/core';
-import {InputLabel} from '@material-ui/core';
-import {Select} from '@material-ui/core';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 /**
  * @return {React.ReactElement}
@@ -30,22 +18,11 @@ const OutlinedCard = (): React.ReactElement => {
   const Item = (props: any): React.ReactElement => {
     const {sx, ...other} = props;
     return (
-      <Box
+      <div
+        className='py-2 border border-zinc-200 rounded-lg
+         p-2 mt-2 text-zinc-600'
         sx={{
-          bgcolor: (theme) => {
-            (theme.palette.mode === 'dark' ? '#101010' : '#fff');
-          },
-          color: (theme) => {
-            (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800');
-          },
-          border: '1px solid',
-          borderColor: (theme) =>
-              theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-          p: 1,
-          m: 1,
-          borderRadius: 2,
-          fontSize: '0.875rem',
-          fontWeight: '700',
+
           ...sx,
         }}
         {...other}
@@ -55,157 +32,109 @@ const OutlinedCard = (): React.ReactElement => {
 
   const card = (
     <React.Fragment>
-      <CardContent>
-        <Typography variant="h5" component="div">
+      <div className='p-3'>
+        <div className='font-bold text-xl '>
                   Filter tasks by:
-        </Typography>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <div style = {{display: 'flex', flexDirection: 'row'}}>
-            <DatePicker
-              label="From"
-              value={fromDate}
-              onChange={(newValue) => {
-                setFromDate(newValue);
-              }}
-              renderInput={(params: any) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  style={{
-                    backgroundColor: 'white',
-                    marginTop: '0.5rem',
-                    marginBottom: '0.5rem',
-                  }}
-                />
-              )}
-            />
-            <DatePicker
-              label="To"
-              value={toDate}
-              onChange={(newValue) => {
-                setToDate(newValue);
-              }}
-              renderInput={(params:any) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  style={{
-                    backgroundColor: 'white',
-                    marginTop: '0.5rem',
-                    marginBottom: '0.5rem',
-                  }}
-                />
-              )}
-            />
+        </div>
+        <div>
+          <div className='flex flex-row'>
+            <div className='flex flex-col items-start mt-2 mr-4 '>
+              <DatePicker selected={fromDate}
+                onChange={(newValue) => {
+                  setFromDate(newValue);
+                }} value={fromDate}
+                className='border border-zinc-200 text-sm
+                px-2 py-2 rounded-lg bg-transparent
+                ' placeholderText="From" />
+            </div>
+            <div className='flex flex-col items-start mt-2'>
+              <DatePicker selected={toDate}
+                onChange={(newValue) => {
+                  setToDate(newValue);
+                }} value={toDate}
+                className='border border-zinc-200 text-sm
+                px-2 py-2 rounded-lg' placeholderText="To"/>
+            </div>
           </div>
-        </LocalizationProvider>
-        <FormControl sx={{width: '100%', my: 2}}>
-          <InputLabel
-            id='set-status'
-          >
-                  Status:
-          </InputLabel>
-          <Select
-            size="small"
-            fullWidth
-            id="set-status"
-            labelId="Status"
-            onChange={((newStatus: any) => {
-              setStatus(newStatus);
-              console.log(status);
-            })}
-          >
-            <MenuItem value={0}>Not Started</MenuItem>
-            <MenuItem value={1}>In Progress</MenuItem>
-            <MenuItem value={2}>Completed</MenuItem>
-          </Select>
-        </FormControl>
-        <CardActions>
-          <Button
-            onClick={() => {
-              setOpen(true);
-              console.log(isOpen);
-            }}
-            variant="contained"
-            size="small"
-          >
+        </div>
+        <div>
+          <select id="set-status" className="select w-full
+           max-w-xs bg-white border border-zinc-300
+           rounded-lg p-3 mt-4 text-zinc-600" onChange={((newStatus: any) => {
+            setStatus(newStatus);
+            console.log(status);
+          })}>
+            <option disabled selected>Status:</option>
+            <option value={0}>Not Started</option>
+            <option value={1}>In Progress</option>
+            <option value={2}>Completed</option>
+          </select>
+
+        </div>
+        <button
+          onClick={() => {
+            setOpen(true);
+            console.log(isOpen);
+          }}
+          className='bg-blue-600 mt-4 text-white px-5 py-2
+            rounded-xl shadow-xl hover:scale-105 duration-300
+             hover:bg-blue-800'
+        >
             Confirm
-          </Button>
-        </CardActions>
-        <div className = "note-card">
+        </button>
+        <div className = "">
           <Item>
-            <Typography variant="body2">
-                      Task 1
-            </Typography>
+            <div>
+              Task 1
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
-                      Task 2
-            </Typography>
+            <div>
+              Task 2
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
-                      Task 3
-            </Typography>
+            <div>
+              Task 3
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
-                      Task 4
-            </Typography>
+            <div>
+              Task 4
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
-                      Task 4
-            </Typography>
+            <div>
+              Task 5
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
-                      Task 4
-            </Typography>
+            <div>
+              Task 6
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
-                      Task 4
-            </Typography>
+            <div>
+              Task 7
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
-                      Task 4
-            </Typography>
+            <div>
+              Task 8
+            </div>
           </Item>
         </div>
-      </CardContent>
+      </div>
     </React.Fragment>
   );
 
   return (
-    <div
-      style={
-        {
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-        }
-      }
+    <div className='border border-zinc-200 rounded-lg p-4
+    shadow-lg overflow-auto'
     >
-      <Box
-        sx={
-          {
-            display: 'grid',
-            mt: 4,
-            width: '100%',
-            height: 450,
-            maxWidth: 360,
-            bgcolor: 'text.disabled',
-            border: 1,
-            borderColor: 'text.primary',
-          }
-        }
-      >
-        <Card variant="outlined">{card}  </Card>
-      </Box>
+
+      <div > {card}  </div>
+
     </div>
   );
 };

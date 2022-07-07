@@ -1,12 +1,4 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import {TextField} from '@material-ui/core';
-
 /**
  * @param {any} props Properties to be passed through to Item
  * @return {React.ReactElement} HTMLElement for Item
@@ -14,23 +6,11 @@ import {TextField} from '@material-ui/core';
 const Item = (props: any): React.ReactElement => {
   const {sx, ...other} = props;
   return (
-    <Box
+    <div
+      className='py-2 border border-zinc-200 rounded-lg
+         p-2 mt-2 text-zinc-600'
       sx={{
-        bgcolor: (theme) => {
-          (theme.palette.mode === 'dark' ? '#101010' : '#fff');
-        },
-        color: (theme) => {
-          (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800');
-        },
-        border: '1px solid',
-        borderColor: (theme) => {
-          (theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300');
-        },
-        p: 1,
-        m: 1,
-        borderRadius: 2,
-        fontSize: '0.875rem',
-        fontWeight: '700',
+
         ...sx,
       }}
       {...other}
@@ -45,108 +25,81 @@ const OutlinedCard = (): React.ReactElement => {
   const [isOpen, setOpen] = React.useState(false);
   const card = (
     <React.Fragment>
-      <CardContent>
-        <Typography variant="h5" component="div">
+      <div className='p-3'>
+        <div className='text-xl font-bold'>
                   Notes
-        </Typography>
+        </div>
         <div className = "note-card">
           <Item>
-            <Typography variant="body2">
+            <div >
                       Notes 1
-            </Typography>
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
+            <div >
                       Notes 2
-            </Typography>
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
+            <div >
                       Notes 3
-            </Typography>
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
+            <div >
                       Notes 4
-            </Typography>
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
+            <div >
                       Notes 4
-            </Typography>
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
+            <div >
                       Notes 4
-            </Typography>
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
+            <div >
                       Notes 4
-            </Typography>
+            </div>
           </Item>
           <Item>
-            <Typography variant="body2">
+            <div >
                       Notes 4
-            </Typography>
+            </div>
           </Item>
         </div>
         <div>
-          <TextField
-            className="note-text"
-            label="Note"
-            variant="outlined"
-            multiline={true}
-            rows={2}
-            maxRows={4}
-            size="small"
-            sx={{my: 2}}
-            fullWidth={true}
+          <input type="text" placeholder='Note'
+            className="input input-lg mt-4 w-full  border
+             border-zinc-300 p-3 mb-3 rounded-lg "
           />
         </div>
-      </CardContent>
-      <CardActions>
-        <Button
+      </div>
+      <div>
+        <button
           onClick={() => {
             setOpen(true);
             console.log(isOpen);
           }}
-          variant="contained"
-          size="small"
+          className='bg-blue-600 text-white px-5 py-2
+          rounded-xl shadow-xl hover:scale-105 duration-300
+           hover:bg-blue-800 ml-3'
         >
           Save
-        </Button>
-      </CardActions>
+        </button>
+      </div>
     </React.Fragment>
   );
   return (
-    <div
-      style={
-        {
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-        }
-      }
+    <div className='border border-zinc-200 rounded-lg p-4
+    shadow-lg overflow-auto mb-12'
     >
-      <Box
-        sx={
-          {
-            display: 'grid',
-            mt: 4,
-            width: '100%',
-            height: 450,
-            maxWidth: 360,
-            bgcolor: 'text.disabled',
-            border: 1,
-            borderColor: 'text.primary',
-          }
-        }
-      >
-        <Card variant="outlined">{card}</Card>
-      </Box>
+
+      <div > {card}  </div>
+
     </div>
   );
 };

@@ -1,12 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Box,
-  Paper,
-  InputBase,
-  IconButton,
-  CircularProgress,
-} from '@mui/material';
-import SearchIcon from '@material-ui/icons/Search';
 import {useNavigate, useParams} from 'react-router-dom';
 import ContactResults from '../Contacts/ContactResults';
 import axios from 'axios';
@@ -54,46 +46,39 @@ const SearchBar = (props: any): React.ReactElement => {
   };
 
   return (
-    <Box
-      sx={{alignItems: 'center', display: 'flex', flexDirection: 'column'}}
+    <div className='flex flex-col'
     >
-      <Paper
-        component="form"
-        elevation={3}
-        sx={{
-          m: 2,
-          display: 'flex',
-          width: '100%',
-        }}
+      <div
+        className='border border-zinc-300 flex flex-row p-2
+        rounded-lg shadow-md justify-between'
       >
-        <InputBase
-          sx={{
-            ml: '5px',
-            flex: 1,
-            pl: 2,
-            py: 1,
-          }}
+        <input
+          type="input "
+          className='w-full p-2 rounded-lg'
           placeholder={props.data}
-          inputProps={{'aria-label': 'search by contact'}}
-          size="small"
           value={contact}
           onChange={(e) => {
             setContact(e.target.value);
           }}
         />
-        <IconButton
+        <button
           type="submit"
-          sx={{p: 2}}
+          className='p-2 text-zinc-600 justify-end'
           aria-label="search"
           onClick={handleClick}
         >
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-      <Box>
-        {isLoading ? <CircularProgress /> : <ContactResults data={data} />}
-      </Box>
-    </Box>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd"
+              // eslint-disable-next-line max-len
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+      <div className='p-3 text-zinc-600'>
+        {isLoading ? <div className="radial-progress"/> :
+        <ContactResults data={data} />}
+      </div>
+    </div>
   );
 };
 

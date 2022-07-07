@@ -6,7 +6,7 @@ import TaskForm from './TaskForm';
  */
 const Tasks = (): React.ReactElement => {
   return (
-    <div>
+    <div className='p-8'>
       <TaskForm/>
     </div>
   );

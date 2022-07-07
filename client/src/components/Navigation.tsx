@@ -1,18 +1,14 @@
-import React from 'react';
+/* eslint-disable max-len */
+import React, {useState} from 'react';
 import {
-  AppBar,
-  Box,
-  IconButton,
-  Link,
-  Toolbar,
   Menu,
   MenuItem,
-  Button,
 } from '@mui/material';
 import {anchors} from '../utils/arrays';
 import logo from '../Logo/2011_Logo_white.png';
 import '../Logo/logo.css';
 import {useAuth0} from '@auth0/auth0-react';
+import {MenuIcon, XIcon} from '@heroicons/react/outline';
 
 const Navigation = ({
   icon,
@@ -25,6 +21,9 @@ const Navigation = ({
     setAnchorEl(event.currentTarget);
   };
 
+  const [nav, setNav] = useState(false);
+  const handleClick2 = () => setNav(!nav);
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -33,47 +32,37 @@ const Navigation = ({
   const {picture} = user;
 
   return (
-    <AppBar position="static" elevation={3}>
-      <Toolbar sx={{display: 'flex', justifyContent: 'space-between'}}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            textAlignVertical: 'center',
-          }}
-        >
-          <Link href="https://portlandplayhouse.org/">
+    <div className='w-screen h-[80px] z-10 bg-zinc-900 drop-shadow-lg'>
+      <div className='px-2 flex justify-between items-center w-full h-full '>
+        <div className='flex flex-row gap-4  items-center ml-4 '>
+          <a href="https://portlandplayhouse.org/">
             <img src={logo} className="logo_size"></img>
-          </Link>
+          </a>
 
-          <Link
-            href="/"
-          >
-            <p className="T-style">WonderTix CRM</p>
-          </Link>
+          <a href="/">
+            <p className="text-white text-xl font-bold md:flex hidden">WonderTix CRM</p>
+          </a>
 
-        </Box>
-        <Box>
+        </div>
+        <div className='md:flex flex-row items-center hidden '>
           {anchors.map((anchor) => (
-            <Link
+            <a
               href={anchor.link}
               key={anchor.title}
-              underline="none"
-              sx={{color: '#fff', ml: 2}}
+              className='text-white hover:scale-105 duration-300 ml-4 hover:bg-zinc-400 px-3 py-2 rounded-lg'
             >
               {anchor.title}
-            </Link>
+            </a>
           ))}
-          <Button
+          <button
             id="basic-button"
             aria-controls={open ? 'basic-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
             onClick={handleClick}
-            sx = {{color: '#fff', ml: 2}}
-          >
-        Task
-          </Button>
+            className='text-white ml-4  hover:scale-105 duration-300 hover:bg-zinc-400 px-3 py-2 rounded-lg '>
+            Task
+          </button>
           <Menu
             id="basic-menu"
             anchorEl={anchorEl}
@@ -86,61 +75,110 @@ const Navigation = ({
             <MenuItem
               onClick={handleClose}
             >
-              <Link
+              <a
                 href="/tasks/create"
-                sx={
-                  {
-                    color: 'black',
-                    letterSpacing: '2px',
-                  }
-                }
+                className='text-black'
               >
                 Create
-              </Link>
+              </a>
             </MenuItem>
             <MenuItem
               onClick={handleClose}
             >
-              <Link
+              <a
                 href="/tasks/edit"
-                sx={
-                  {
-                    color: 'black',
-                    letterSpacing: '2px',
-                  }
-                }
+                className='text-black'
               >
                 Edit
-              </Link>
+              </a>
             </MenuItem>
             <MenuItem
               onClick={handleClose}
             >
-              <Link
+              <a
                 href="/tasks/accountInformation"
-                sx={
-                  {
-                    color: 'black',
-                    letterSpacing: '2px',
-                  }
-                }
+                className='text-black'
               >
                 Account Information
-              </Link>
+              </a>
             </MenuItem>
           </Menu>
-          <IconButton
-            aria-label="menu"
-            edge="start"
-            size="large"
-            sx={{ml: 4}}
+
+          <div className='ml-6 mr-4 '>
+            <img src={picture} className='rounded-3xl w-12 h-12  ' />
+          </div>
+        </div>
+        <div className='md:hidden ' onClick={handleClick2}>
+          {!nav ? <MenuIcon className='w-5 mr-2 text-white'/> : <XIcon className = 'w-5 text-white mr-2' />}
+        </div>
+      </div>
+      <div className={!nav ? 'hidden' :'absolute bg-zinc-900 w-full flex flex-col items-center px-8 '}>
+        <a href="/">
+          <div className="text-white hover:scale-105 duration-300  border-b border-b-zinc-500 px-[30rem] p-9  ">Home</div>
+        </a>
+        {anchors.map((anchor) => (
+          <a
+            href={anchor.link}
+            key={anchor.title}
+            className='text-white hover:scale-105 duration-300  border-b border-b-zinc-500 px-[30rem] p-9'
           >
-            <img src={picture} width="30" height="30" />
-            {/* <AccountCircleIcon sx={{ color: "#fff" }} /> */}
-          </IconButton>
-        </Box>
-      </Toolbar>
-    </AppBar>
+            {anchor.title}
+          </a>
+        ))}
+        <button
+          id="basic-button"
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
+          className='text-white mt-8  hover:scale-105 duration-300 mb-8 border-b-white '>
+              Task
+        </button>
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+        >
+          <MenuItem
+            onClick={handleClose}
+          >
+            <a
+              href="/tasks/create"
+              className='text-black'
+            >
+                  Create
+            </a>
+          </MenuItem>
+          <MenuItem
+            onClick={handleClose}
+          >
+            <a
+              href="/tasks/edit"
+              className='text-black'
+            >
+                  Edit
+            </a>
+          </MenuItem>
+          <MenuItem
+            onClick={handleClose}
+          >
+            <a
+              href="/tasks/accountInformation"
+              className='text-black'
+            >
+                  Account Information
+            </a>
+          </MenuItem>
+        </Menu>
+
+
+      </div>
+
+    </div>
   );
 };
 

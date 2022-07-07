@@ -1,14 +1,5 @@
 import React from 'react';
 import {
-  Box,
-  Button,
-  ButtonGroup,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  TextField,
-} from '@mui/material';
-import {
   contactFiltersTextField,
   contactFiltersSwitch,
 } from '../../utils/arrays';
@@ -98,39 +89,43 @@ const ContactsPanel = ({
   };
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column'}}>
+    <div style={{display: 'flex', flexDirection: 'column'}}>
       {contactFiltersTextField.map((filter) => {
         return (
-          <TextField
+          <input type="text" placeholder={filter.label}
             key={filter.id}
             id={filter.id}
-            label={filter.label}
-            variant="outlined"
-            size="small"
-            sx={{mb: 1}}
-            onChange={handleChange}
-          />
+            className="input w-full max-w-xs border
+             border-zinc-300 p-3 mb-3 rounded-xl "
+            onChange={handleChange} />
         );
       })}
-      <FormGroup sx={{ml: 1, mt: 1}}>
+      <div className='mt-2 ml-2'>
         {contactFiltersSwitch.map((filter) => {
           return (
-            <FormControlLabel
-              key={filter.id}
-              control={<Switch size="small" id={filter.id} />}
-              label={filter.label}
-              sx={{mb: 1}}
-              onChange={handleChange}
-            />
+            // eslint-disable-next-line react/jsx-key
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <input key={filter.id} onChange={handleChange}
+                  type="checkbox" className="checkbox"/>
+                <span className="label-text ml-2">{filter.label}</span>
+              </label>
+            </div>
           );
         })}
-      </FormGroup>
-      <ButtonGroup fullWidth variant="contained" sx={{mt: 1}}>
-        <Button onClick={() => fetchData(parseUrl())}>Run</Button>
-        <Button onClick={() => setOpen(true)}>Save</Button>
-      </ButtonGroup>
-    </Box>
+      </div>
+      <div className='flex flex-col gap-2 mt-2'>
+        <button className='bg-blue-600 text-white px-6 py-2
+              rounded-xl shadow-xl hover:scale-105 duration-300
+               hover:bg-blue-800' onClick={() => fetchData(parseUrl())}>
+                 Run</button>
+        <button className='bg-blue-600 text-white px-6 py-2
+              rounded-xl shadow-xl hover:scale-105 duration-300
+               hover:bg-blue-800' onClick={() => setOpen(true)}>Save</button>
+      </div>
+    </div>
   );
 };
 
 export default ContactsPanel;
+

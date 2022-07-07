@@ -1,43 +1,34 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
 import TaskForm from './TaskForm';
 import Note from './Note';
 import Filter from './Filter';
-import {makeStyles} from '@mui/styles';
-
-
-const useStyles = makeStyles({
-  gridContainer: {
-    paddingLeft: '10px',
-    paddingRight: '10px',
-  },
-});
 
 /**
  * @return {React.ReactElement} HTMLElement for EditTask
  */
 const EditTask = (): React.ReactElement => {
-  const classes = useStyles();
   return (
-    <Grid
-      container
-      spacing={2}
-      className={classes.gridContainer}
-    >
-      <Grid item xs={6} >
+    <div
+      className='container grid gap-6 ml-12 mt-10 mr-12'>
+      <div className=' '>
+        <div className='text-3xl text-zinc-600 font-bold mb-3'>Tasks</div>
         <TaskForm
           title='View/Edit Task'
           fullWidth={true}
           threeButtonForm={true}
         />
-      </Grid>
-      <Grid item xs={3}>
-        <Note />
-      </Grid>
-      <Grid item xs={3}>
+      </div>
+      <div className=''>
+        <div className='text-3xl text-zinc-600 font-bold mb-3 '>
+          Filter</div>
         <Filter />
-      </Grid>
-    </Grid>
+      </div>
+      <div className=' '>
+        <div className='text-3xl text-zinc-600 font-bold mb-3 mt-10'>Notes</div>
+        <Note />
+      </div>
+
+    </div>
   );
 };
 
