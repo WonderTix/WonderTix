@@ -8,7 +8,6 @@ import theme from 'material-ui';
 import {Button, Snackbar} from '@material-ui/core';
 
 // CRM
-import Home from './components/Home';
 import Accounts from './components/Accounts/Accounts';
 import ProtectedRoute from './components/Authentication/protected-route';
 import Contacts from './components/Contacts/Contacts';
