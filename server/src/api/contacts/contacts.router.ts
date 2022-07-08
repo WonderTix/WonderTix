@@ -1,14 +1,25 @@
 // api/contacts/contacts.router.ts
 
 import {Router} from 'express';
-import {findAll, find, create, remove, update} from './contacts.service';
+import {create, find, findAll, findByName, remove, update}
+  from './contacts.service';
 
 export const contactsRouter = Router();
 
 // GET /api/contacts
 contactsRouter.get('/', async (req, res) => {
   try {
-    const contacts = await findAll(req.query);
+    const contacts = await findAll();
+    res.status(200).send(contacts.rows);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
+// GET /api/contacts/search?name={name}
+contactsRouter.get('/search', async (req, res) => {
+  try {
+    const contacts = await findByName(req.query.name as string);
     res.status(200).send(contacts.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -49,7 +60,7 @@ contactsRouter.delete('/:id', async (req, res) => {
 contactsRouter.put('/:id', async (req, res) => {
   try {
     const updatedContact = await update(req);
-    res.sendStatus(204).send(updatedContact.rows);
+    res.status(204).send(updatedContact.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

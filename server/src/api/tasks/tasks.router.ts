@@ -1,14 +1,14 @@
 // api/tasks/tasks.router.ts
 
 import {Router} from 'express';
-import {findAll, find, create, remove, update} from './tasks.service';
+import {create, find, findAll, remove, update} from './tasks.service';
 
 export const tasksRouter = Router();
 
 // GET /api/tasks
 tasksRouter.get('/', async (req, res) => {
   try {
-    const tasks = await findAll(req.query);
+    const tasks = await findAll();
     res.status(200).send(tasks.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -49,7 +49,7 @@ tasksRouter.delete('/:id', async (req, res) => {
 tasksRouter.put('/:id', async (req, res) => {
   try {
     const updatedTask = await update(req);
-    res.sendStatus(204).send(updatedTask.rows);
+    res.status(204).send(updatedTask.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

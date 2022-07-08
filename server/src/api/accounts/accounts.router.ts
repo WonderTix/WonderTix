@@ -1,12 +1,23 @@
 import {Router} from 'express';
-import {findAll, find, create, remove, update} from './accounts.service';
+import {create, find, findAll, findByUsername, remove, update}
+  from './accounts.service';
 
 export const accountsRouter = Router();
 
 // GET /api/accounts
 accountsRouter.get('/', async (req, res) => {
   try {
-    const accounts = await findAll(req.query);
+    const accounts = await findAll();
+    res.status(200).send(accounts.rows);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
+// GET /api/accounts/search?username={username}
+accountsRouter.get('/search', async (req, res) => {
+  try {
+    const accounts = await findByUsername(req.query.username as string);
     res.status(200).send(accounts.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -47,7 +58,7 @@ accountsRouter.delete('/:id', async (req, res) => {
 accountsRouter.put('/:id', async (req, res) => {
   try {
     const updatedAccount = await update(req);
-    res.sendStatus(204).send(updatedAccount.rows);
+    res.status(204).send(updatedAccount.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

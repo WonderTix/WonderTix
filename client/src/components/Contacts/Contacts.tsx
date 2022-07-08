@@ -25,7 +25,7 @@ const Contacts = (): React.ReactElement => {
         setIsLoading(true);
         setContact(params.id);
         await axios
-            .get(`http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}`)
+            .get(`http://localhost:8000/api/contacts/search?name=${params.id}`)
             .then((res) => {
               setData(res.data[0]);
               console.log(res);

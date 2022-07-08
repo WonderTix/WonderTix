@@ -1,11 +1,20 @@
 // api/donations/donations.service.ts
 
 import {pool} from '../db';
-import {buildQuery, QueryAttr} from '../util/query-builder';
 
-export const findAll = (params?: QueryAttr) => {
+export const findAll = () => {
   // const myQuery = 'SELECT * FROM donations';
-  const myQuery = buildQuery('donations', params);
+  const myQuery = {
+    text: `SELECT * FROM donations;`,
+  };
+  return pool.query(myQuery);
+};
+
+export const findByName = (name: string) => {
+  const myQuery = {
+    text: `SELECT * FROM donations WHERE dononame = $1`,
+    values: [name],
+  };
   return pool.query(myQuery);
 };
 

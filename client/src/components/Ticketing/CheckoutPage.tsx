@@ -48,7 +48,7 @@ export default function CheckoutPage() {
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch('/api/checkout', {
+    const response = await fetch('/api/events/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

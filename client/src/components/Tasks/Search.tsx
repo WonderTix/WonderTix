@@ -30,7 +30,7 @@ const SearchBar = (props: any): React.ReactElement => {
         setContact(params.id);
         await axios
             .get(
-                `http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}`,
+                `http://localhost:8000/api/contacts/search?name=${params.id}`,
             )
             .then((res) => {
               setData(res.data[0]);

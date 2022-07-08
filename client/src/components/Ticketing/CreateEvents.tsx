@@ -27,7 +27,7 @@ export default function CreateEvents(props: {}) {
       eventTime: eventTime,
     };
 
-    const req = await fetch('/api/create-event', {
+    const req = await fetch('/api/events', {
       credentials: 'include',
       method: 'POST',
       headers: {

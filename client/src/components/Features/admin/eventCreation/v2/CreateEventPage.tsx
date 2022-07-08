@@ -29,7 +29,7 @@ export default function CreateEventPage() {
   const [ticketTypes, setTicketTypes] = useState([]);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch('/api/tickets/type');
+    const res = await fetch('/api/tickets/types');
     setTicketTypes(await res.json());
   };
 
@@ -41,7 +41,7 @@ export default function CreateEventPage() {
   const onSubmit = async (formData: NewEventData) => {
     const {image_url, eventname, eventdescription, showings} = formData;
 
-    const createPlayRes = await fetch('/api/create-event', {
+    const createPlayRes = await fetch('/api/events', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
@@ -53,7 +53,7 @@ export default function CreateEventPage() {
       const {id} = eventData.rows[0];
       const showingdata = showings.map(formatShowingData(id));
 
-      const postShowings = await fetch('/api/create-event-instances', {
+      const postShowings = await fetch('/api/events/instances', {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',

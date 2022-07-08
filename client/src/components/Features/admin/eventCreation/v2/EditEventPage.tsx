@@ -41,7 +41,7 @@ export default function EditEventPage() {
   const initValues = playData ? formatToEventFormData(playData) : undefined;
 
   const fetchTicketTypes = async () => {
-    const res = await fetch('/api/tickets/type');
+    const res = await fetch('/api/tickets/types');
     setTicketTypes(await res.json());
   };
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function EditEventPage() {
   const onSubmit = async (updatedData: NewEventData) => {
     const deltas = diff(initValues, updatedData);
 
-    const res = await fetch('/api/edit-event', {
+    const res = await fetch('/api/events', {
       credentials: 'include',
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},

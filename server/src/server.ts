@@ -14,7 +14,7 @@ import {eventRouter} from './api/events/event.router';
 import {newsletterRouter} from './api/newsletter/newsletter.router';
 import {orderRouter} from './api/orders/order.router';
 import {savedReportsRouter} from './api/saved_reports/saved_reports.router';
-import {subRouter} from './api/subscriptions/subscription.router';
+import {subscriptionRouter} from './api/subscriptions/subscription.router';
 import {tasksRouter} from './api/tasks/tasks.router';
 import {taskNotesRouter} from './api/task_notes/task_notes.router';
 import {ticketRouter} from './api/tickets/ticket.router';
@@ -59,12 +59,12 @@ app.use('/api/accounts', accountsRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/task_notes', taskNotesRouter);
 app.use('/api/saved_reports', savedReportsRouter);
-app.use(newsletterRouter);
-app.use(orderRouter);
-app.use(eventRouter);
-app.use(subRouter);
-app.use(ticketRouter);
-app.use(doorlistRouter);
+app.use('/api/newsletter/', newsletterRouter);
+app.use('/api/events', eventRouter);
+app.use('/api/email_subscriptions', subscriptionRouter);
+app.use('/api/tickets', ticketRouter);
+app.use('/api/doorlist', doorlistRouter);
+app.use('/webhook', orderRouter);
 
 app.get('/', (_req, res) => res.send('Hello World.'));
 

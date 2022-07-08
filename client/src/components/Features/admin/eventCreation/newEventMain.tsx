@@ -55,7 +55,7 @@ export default function NewEventMain() {
   const [eventInstanceDetails, setEventInstanceDetails] = useState<EventInstanceDetails[]>([]);
 
   useEffect(() => {
-    fetch('/api/event-list')
+    fetch('/api/events/list')
         .then((response) => response.json())
         .then((data) => {
           const val: EventListings[] = [{name: 'New', id: 0}];
@@ -83,7 +83,7 @@ export default function NewEventMain() {
   const onInputChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setEventIndex(event.target.value as number);
     const rows: EventInstanceDetails[] = [];
-    fetch(`/api/show-tickets?event=${eventTitles[event.target.value as number].id}`)
+    fetch(`/api/tickets/list?event=${eventTitles[event.target.value as number].id}`)
         .then((request) => request.json())
         .then((data) => {
           console.log(data.rows);

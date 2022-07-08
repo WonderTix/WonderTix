@@ -1,8 +1,8 @@
 import express from 'express';
 import Stripe from 'stripe';
-import {pool} from '../db';
 import CartItem from '../../interfaces/CartItem';
 import Delta from '../../interfaces/Delta';
+import {pool} from '../db';
 import eventUtils from './event.service';
 
 export const eventRouter = express.Router();
@@ -14,9 +14,9 @@ const stripe = new Stripe(stripeKey, {
   apiVersion: '2020-08-27',
 });
 
-// Endpont to get list of events
+// Endpoint to get list of events
 // Event list route
-eventRouter.get('/api/event-list', async (req, res) => {
+eventRouter.get('/list', async (req, res) => {
   try {
     const events = await pool.query(
         'select id, eventname from events where active = true',
@@ -29,9 +29,10 @@ eventRouter.get('/api/event-list', async (req, res) => {
 
 // Endpoint to get event id
 // Event route
-eventRouter.get('/api/event-id', async (req, res) => {
+// GET /api/events/search?eventName={eventName}
+eventRouter.get('/search', async (req, res) => {
   try {
-    const values = [req.body.eventname];
+    const values = [req.query.eventName];
     // let values =['united']
     const ids = await pool.query(
         'select id, eventname from events where eventname = $1',
@@ -46,7 +47,7 @@ eventRouter.get('/api/event-id', async (req, res) => {
 
 // Endpoint to get the list of all event instances that are currently active
 // Even route
-eventRouter.get('/api/active-event-instance-list', async (req, res) => {
+eventRouter.get('/list/active', async (req, res) => {
   try {
     const query = `
                     SELECT 
@@ -73,7 +74,7 @@ eventRouter.get('/api/active-event-instance-list', async (req, res) => {
 // Stripe Utility folder endpoint refactor
 // TODO: when we add confirmation emails we can do it like this:
 // https://stripe.com/docs/payments/checkout/custom-success-page
-eventRouter.post('/api/checkout', async (req, res) => {
+eventRouter.post('/checkout', async (req, res) => {
   // TODO: NOT DO IT THIS WAY!!!
   // right now it gets the price info from the request made by the client.
   // THIS IS WRONG it needs to look up the price in the database given
@@ -223,7 +224,7 @@ eventRouter.post('/api/checkout', async (req, res) => {
 });
 
 // TODO: Check that provided ticket ID is valid
-eventRouter.put('/api/checkin', async (req, res) => {
+eventRouter.put('/checkin', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
@@ -238,7 +239,7 @@ eventRouter.put('/api/checkin', async (req, res) => {
 });
 
 // End point to create a new event
-eventRouter.post('/api/create-event', async (req, res) => {
+eventRouter.post('/', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
@@ -261,7 +262,8 @@ eventRouter.post('/api/create-event', async (req, res) => {
 });
 
 // End point to create a new showing
-eventRouter.post('/api/create-event-instances', async (req, res) => {
+// req body: array of {eventid, eventdate, starttime, totalseats, tickettype}
+eventRouter.post('/instances', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   const {instances} = req.body;
@@ -288,7 +290,7 @@ eventRouter.post('/api/create-event-instances', async (req, res) => {
   }
 });
 
-eventRouter.put('/api/edit-event', async (req, res) => {
+eventRouter.put('/', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   const {eventid, deltas}: { eventid: string; deltas: Delta[] } = req.body;
@@ -319,12 +321,12 @@ eventRouter.put('/api/edit-event', async (req, res) => {
 
 // Updates salestatus in showtimes table
 // and active flag in plays table when given a play id
-eventRouter.post('/api/delete-event', async (req, res) => {
+eventRouter.delete('/:id', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
     // playid
-    const {id} = req.body;
+    const id = req.params.id;
     if (id === undefined) {
       throw new Error('No event id provided');
     }
@@ -342,7 +344,7 @@ eventRouter.post('/api/delete-event', async (req, res) => {
   }
 });
 
-eventRouter.get('/api/events', async (req, res) => {
+eventRouter.get('/', async (req, res) => {
   try {
     const querystring = `
                           SELECT 

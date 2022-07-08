@@ -18,7 +18,7 @@ const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.va
 
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   try {
-    const res = await fetch(`/api/checkin`, {
+    const res = await fetch(`/api/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
