@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import React from 'react';
-import {Typography} from '@mui/material';
 
 import {useParams} from 'react-router-dom';
 // import { useInput } from './hooks/input-hook';
@@ -11,7 +10,7 @@ const ContactResults = ({
 }: {
   data: any,
 }): React.ReactElement => {
-  if (!data) return <Typography>Empty</Typography>;
+  if (!data) return <div>Empty</div>;
 
   // What is this?
   /* const {
