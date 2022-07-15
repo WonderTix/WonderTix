@@ -95,7 +95,7 @@ const OutlinedCard = (): React.ReactElement => {
   );
   return (
     <div className='border border-zinc-200 rounded-lg p-4
-    shadow-lg overflow-auto mb-12'
+    shadow-lg overflow-auto mb-12 bg-white'
     >
 
       <div > {card}  </div>

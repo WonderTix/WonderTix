@@ -104,83 +104,89 @@ const ReportingTest = (): React.ReactElement => {
   };
 
   return (
-    <div className='w-full flex flex-col items-center mt-12 '>
-      <div className='flex md:flex-row md:items-start sm:flex-col sm:items-center
-     container '>
-        <SavedDialog open={open} setOpen={setOpen} setSavedName={setSavedName} />
-
-        <div className="ml-4 mt-2 p-6 md:w-60 sm:w-80 border border-zinc-100 shadow-lg rounded-xl">
-          <div className='text-sm text-zinc-600'>Search by</div>
-          <select className="form-control relative w-full cursor-default rounded-lg bg-white py-4 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm  " onChange={(e)=>(handleshowhide(e))}>
-            <option value="" >select here</option>
-            <option value="1">Accounts</option>
-            <option value="2">Contacts</option>
-            <option value="3">Donations</option>
-            <option value="4">Saved</option>
-          </select>
-          { showhide === '1' && (
-            <div className='mt-4'>
-              <AccountsPanel
-                fetchData={fetchData}
-                setOpen={setOpen}
-                savedName={savedName}
-                setSavedName={setSavedName}
-              />
-            </div>
-          )
-          }
-          { showhide === '2' && (
-            <div className='mt-4'>
-              <ContactsPanel
-                fetchData={fetchData}
-                setOpen={setOpen}
-                savedName={savedName}
-                setSavedName={setSavedName}
-              />
-            </div>
-          )
-          }
-          { showhide === '3' && (
-            <div className='mt-4'>
-              <DonationsPanel
-                fetchData={fetchData}
-                setOpen={setOpen}
-                savedName={savedName}
-                setSavedName={setSavedName}
-              />
-            </div>
-          )
-          }
-          { showhide === '4' && (
-            <div className='mt-4'>
-              <SavedPanel setColumns={setColumns} setRows={setRows} />
-            </div>
-          )
-          }
-
+    <div className='w-full h-screen overflow-x-hidden absolute'>
+      <div className=' md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
+        <div className='flex flex-row'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 mb-14     ' >Reporting</h1>
         </div>
-        <div className='h-[50rem] w-[50rem] m-2 flex-grow-1 shadow-xl rounded-xl' >
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            // experimentalFeatures={{ newEditingApi: true }}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            // processRowUpdate={processRowUpdate}
-            rowsPerPageOptions={[10, 25, 50, 100]}
-            pagination
-            components={{
-              Toolbar: CustomToolbar,
-            }}
-            onCellClick={(params, event) => {
-              event.defaultMuiPrevented = true;
-              if (params.field === 'username') {
-                navigate(`/accounts/${params.formattedValue}`);
-              } else if (params.field === 'custname') {
-                navigate(`/contacts/${params.formattedValue}`);
-              }
-            }}
-          />
+        <div className='flex md:flex-row md:items-start sm:flex-col sm:items-center
+     container '>
+
+          <SavedDialog open={open} setOpen={setOpen} setSavedName={setSavedName} />
+
+          <div className=" mt-2 p-6 md:w-60 sm:w-80 border border-zinc-100 shadow-lg rounded-xl bg-white">
+            <div className='text-sm text-zinc-600'>Search by</div>
+            <select className="form-control relative w-full cursor-default rounded-lg bg-white py-4 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm  " onChange={(e)=>(handleshowhide(e))}>
+              <option value="" >select here</option>
+              <option value="1">Accounts</option>
+              <option value="2">Contacts</option>
+              <option value="3">Donations</option>
+              <option value="4">Saved</option>
+            </select>
+            { showhide === '1' && (
+              <div className='mt-4'>
+                <AccountsPanel
+                  fetchData={fetchData}
+                  setOpen={setOpen}
+                  savedName={savedName}
+                  setSavedName={setSavedName}
+                />
+              </div>
+            )
+            }
+            { showhide === '2' && (
+              <div className='mt-4'>
+                <ContactsPanel
+                  fetchData={fetchData}
+                  setOpen={setOpen}
+                  savedName={savedName}
+                  setSavedName={setSavedName}
+                />
+              </div>
+            )
+            }
+            { showhide === '3' && (
+              <div className='mt-4'>
+                <DonationsPanel
+                  fetchData={fetchData}
+                  setOpen={setOpen}
+                  savedName={savedName}
+                  setSavedName={setSavedName}
+                />
+              </div>
+            )
+            }
+            { showhide === '4' && (
+              <div className='mt-4'>
+                <SavedPanel setColumns={setColumns} setRows={setRows} />
+              </div>
+            )
+            }
+
+          </div>
+          <div className='h-[50rem] w-[50rem] m-2 flex-grow-1 shadow-xl rounded-xl bg-white' >
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              // experimentalFeatures={{ newEditingApi: true }}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              // processRowUpdate={processRowUpdate}
+              rowsPerPageOptions={[10, 25, 50, 100]}
+              pagination
+              components={{
+                Toolbar: CustomToolbar,
+              }}
+              onCellClick={(params, event) => {
+                event.defaultMuiPrevented = true;
+                if (params.field === 'username') {
+                  navigate(`/accounts/${params.formattedValue}`);
+                } else if (params.field === 'custname') {
+                  navigate(`/contacts/${params.formattedValue}`);
+                }
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

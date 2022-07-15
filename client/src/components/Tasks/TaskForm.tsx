@@ -42,7 +42,7 @@ const TaskForm = (props: any): React.ReactElement => {
 
 
   return (
-    <form className='border border-zinc-200 rounded-lg p-4 shadow-lg'>
+    <form className='border border-zinc-200 rounded-lg p-4 shadow-lg bg-white'>
       <h1>{props.title}</h1>
       <div className='container grid grid-cols-2 gap-2
       items-center justify-start rounded-xl'
