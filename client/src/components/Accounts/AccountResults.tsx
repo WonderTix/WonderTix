@@ -5,7 +5,7 @@ const AccountResults = ({
 }: {
   data: any,
 }): React.ReactElement => {
-  if (!data) return <div></div>;
+  if (!data) return <div>Empty</div>;
 
   const {username, id, is_superadmin: isSuperadmin} = data;
 

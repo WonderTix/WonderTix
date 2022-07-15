@@ -17,7 +17,8 @@ const Contacts = (): React.ReactElement => {
         setIsLoading(true);
         setContact(params.id);
         await axios
-            .get(`http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}`)
+            .get(`http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}`,
+            )
             .then((res) => {
               setData(res.data[0]);
               console.log(res);
@@ -66,12 +67,9 @@ const Contacts = (): React.ReactElement => {
           </svg>
         </button>
       </div>
-      <div className='p-3 text-zinc-600'>
-        {isLoading ? (
-          <div className="radial-progress"/>
-        ) : (
-          <ContactResults data={data} />
-        )}
+      <div className='mt-9 text-zinc-600 w-full '>
+        {isLoading ? <div className="radial-progress"/> :
+        <ContactResults data={data} />}
       </div>
     </div>
   );
