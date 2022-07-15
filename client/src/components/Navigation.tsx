@@ -22,12 +22,12 @@ const Navigation = ({
   const {name} = user;
 
   return (
-    <div className="w-full h-full bg-gray-200  ">
+    <div className="w-full h-full bg-gray-100  ">
       <div className="flex flex-no-wrap">
         <div className="absolute md:relative w-[14rem] h-screen  bg-zinc-900 hidden md:block z-10">
           <div className='h-12 w-full flex flex-col items-center'>
             <div className="h-12 w-full flex flex-col items-center " >
-              <a href="https://portlandplayhouse.org/" className=" bg-transparent border-transparent justify-center items-center">
+              <a href='https://portlandplayhouse.org/' className=" bg-transparent border-transparent justify-center items-center">
                 <img src={logo} className="mt-[5rem] w-[6rem]" alt="/"/>
               </a>
             </div>

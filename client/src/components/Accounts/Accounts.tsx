@@ -73,7 +73,7 @@ const Accounts = (): React.ReactElement => {
             </svg>
           </button>
         </div>
-        <div className='p-3 text-zinc-600'>
+        <div className='mt-9 text-zinc-600 w-full'>
           {isLoading ? <div className="radial-progress"/> :
          <AccountResults data={data} />}
         </div>
