@@ -4,3 +4,5 @@
 */build
 
 server/src/prisma/generated
+
+.idea
