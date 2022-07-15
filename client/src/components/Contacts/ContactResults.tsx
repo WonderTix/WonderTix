@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import React from 'react';
-
 import {useParams} from 'react-router-dom';
 // import { useInput } from './hooks/input-hook';
 import {useState} from 'react';
@@ -13,27 +12,121 @@ const ContactResults = ({
   if (!data) return <div>Empty</div>;
 
   // What is this?
-  /* const {
-   * custname,
-   * id,
-   * email,
-   * phone,
-   * custaddress,
-   * newsletter,
-   * donorbadge,
-   * seatingaccom,
-   * vip,
-   * volunteerlist,
-   * } = data;*/
+  const {
+    custname,
+    id,
+    email,
+    phone,
+    custaddress,
+    newsletter,
+    donorbadge,
+    seatingaccom,
+    vip,
+    volunteerlist,
+  } = data;
 
-  if (data) {
-    return contactForm(data);
-  }
+  return (
+    <div className='flec flex-row w-full bg-white
+     shadow-lg border border-zinc-300 rounded-lg'>
+      <div className='flex flex-col mt-2 p-5 '>
+        <div className='flex flex-row gap-3 text-3xl items-center border-b pb-5 font-bold text-zinc-700'>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+          </svg>
+          <div >Customer Information</div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-5 w-full'>
+          <div className='font-semibold'>
+          Customer name:
+          </div>
+          <div>
+            {custname}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            ID:
+          </div>
+          <div>
+            {id}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Email:
+          </div>
+          <div>
+            {email}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Phone:
+          </div>
+          <div>
+            {phone}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Customer Address:
+          </div>
+          <div>
+            {custaddress}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Newsletter:
+          </div>
+          <div>
+            {'' + newsletter}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Donorbadge:
+          </div>
+          <div>
+            {donorbadge}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Seating Accomdation:
+          </div>
+          <div>
+            { '' + seatingaccom }
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            VIP:
+          </div>
+          <div>
+            { '' + vip }
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Volunteer List:
+          </div>
+          <div>
+            {'' + volunteerlist}
+          </div>
+        </div>
+        <button disabled className='bg-zinc-300
+        mt-4 text-white px-5 py-2
+        rounded-xl justify-end
+          ' >Edit info</button>
+      </div>
+    </div>
+  );
 };
 
 
 export const contactForm = (data: any): React.ReactElement => {
-  const [Custname, setName] = useState('');
+  const [Custname, setName] = useState(data.custname);
   setName(data.custname);
   const [id, setID] = useState(0);
   setID(data.id);
@@ -84,14 +177,14 @@ export const contactForm = (data: any): React.ReactElement => {
     // and establish a link with the background data from here
     // However, in the actual url, param.id
     // is not the id but the user's name, which causes the update to fail
-    const url = `http://localhost:8000/api/${params.id}`;
+    const url=`http://localhost:8000/api/${params.id}`;
     // const url='http://localhost:8000/api/contacts/'+params.id;
     // const url = 'http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}';
     console.log(body);
 
     // This function contains the relevant methods of the operation
     // "put" corresponds to the backend function "export const update = (r: any)
-    fetch(url, {
+    fetch( url, {
       // method: "post",
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
@@ -101,110 +194,119 @@ export const contactForm = (data: any): React.ReactElement => {
   };
 
   return (
-    <div className="w-full max-w-s">
-      <form onSubmit={HandleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="custname">
-            Custname: {Custname}
-          </label>
+    <div className='flex flex-col mt-2 p-4 w-60 bg-black'>
+      <form >
+        <button onSubmit={HandleSubmit}></button>
+        <div>
+        Custname: {Custname}
         </div>
         <br />
 
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="id">
-            ID: {id}
-          </label>
+        <div>
+        ID: {id}
         </div>
         <br />
 
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Email:
-            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              name="Email"
-              type="text"
-              value={Email}
-              onChange={(e) => setEmail(e.target.value)} />
-          </label>
+        <div>
+        Email:
+          <input
+            name="Email"
+            type="text"
+            value={Email}
+            className="input w-full max-w-xs border
+            border-zinc-300 p-2 rounded-lg "
+            onChange={(e) => setEmail(e.target.value)} />
         </div>
-        <br />
+        <br/>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Phone:
-          <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+        <div>
+        Phone:
+          <input
             name="Phone"
             type="text"
             value={Phone}
+            className="input w-full max-w-xs border
+            border-zinc-300 p-2 rounded-lg "
             onChange={(e) => setPhone(e.target.value)} />
-        </label>
-        <br />
+        </div>
+        <br/>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Cust Address:
-          <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+        <div>
+        Cust Address:
+          <input
             name="Address"
             type="text"
             value={Custaddress}
+            className="input w-full max-w-xs border
+            border-zinc-300 p-2 rounded-lg "
             onChange={(e) => setCustaddress(e.target.value)} />
-        </label>
-        <br />
+        </div>
+        <br/>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Newsletter:
-          <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+        <div>
+        Newsletter:
+          <input
             name="Newsletter"
             type="text"
             value={Newsletter}
+            className="input w-full max-w-xs border
+            border-zinc-300 p-2 rounded-lg "
             onChange={(e) => setNewsletter(e.target.value)} />
-        </label>
-        <br />
+        </div>
+        <br/>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Donorbadge:
-          <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+        <div>
+        Donorbadge:
+          <input
             name="Donorbadge"
             type="text"
             value={Donorbadge}
+            className="input w-full max-w-xs border
+                      border-zinc-300 p-2 rounded-lg "
             onChange={(e) => setDonorbage(e.target.value)} />
-        </label>
-        <br />
+        </div>
+        <br/>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Seating Accomdation:
-          <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+        <div>
+        Seating Accomdation:
+          <input
             name="Seatingaccom"
             type="text"
             value={Seatingaccom}
+            className="input w-full max-w-xs border
+                      border-zinc-300 p-2 rounded-lg "
             onChange={(e) => setSeatingaccom(e.target.value)} />
-        </label>
-        <br />
+        </div>
+        <br/>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          VIP:
-          <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+        <div>
+        VIP:
+          <input
+            className="input w-full max-w-xs border
+                      border-zinc-300 p-2 rounded-lg "
             name="VIP"
             type="text"
             value={VIP}
             onChange={(e) => setVIP(e.target.value)} />
-        </label>
-        <br />
+        </div>
+        <br/>
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Volunteer List:
-          <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+        <div>
+        Volunteer List:
+          <input
             name="Volunteerlist"
             type="text"
             value={Volunteerlist}
+            className="input w-full max-w-xs border
+                      border-zinc-300 p-2 rounded-lg "
             onChange={(e) => setVolunteerlist(e.target.value)} />
-        </label>
-        <br />
-        <div className="flex items-center justify-between">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="SAVE" >
-            Submit
-          </button>
         </div>
+        <br/>
+
+        <button type="submit" value="SAVE" />
       </form>
     </div>
+
   );
 };
 
