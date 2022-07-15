@@ -294,6 +294,12 @@ CREATE SEQUENCE public.reservation_transno_seq
 ALTER SEQUENCE public.reservation_transno_seq OWNED BY public.reservation.transno;
 
 
+CREATE TABLE public.saved_reports (
+    id serial PRIMARY KEY,
+    table_name text,
+    query_attr text
+);
+
 --
 -- Name: seasons; Type: TABLE; Schema: public; Owner: -
 --
