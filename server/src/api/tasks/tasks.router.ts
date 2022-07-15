@@ -49,7 +49,7 @@ tasksRouter.delete('/:id', async (req, res) => {
 tasksRouter.put('/:id', async (req, res) => {
   try {
     const updatedTask = await update(req);
-    res.status(204).send(updatedTask.rows);
+    res.status(200).send(updatedTask.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

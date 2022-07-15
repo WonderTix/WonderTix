@@ -61,7 +61,7 @@ donationsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedDonation = await update(req);
     if (updatedDonation.rowCount > 0) {
-      res.status(204).send(updatedDonation.rows);
+      res.status(200).send(updatedDonation.rows);
     } else {
       res.sendStatus(404);
     }

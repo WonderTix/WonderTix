@@ -60,7 +60,7 @@ contactsRouter.delete('/:id', async (req, res) => {
 contactsRouter.put('/:id', async (req, res) => {
   try {
     const updatedContact = await update(req);
-    res.status(204).send(updatedContact.rows);
+    res.status(200).send(updatedContact.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

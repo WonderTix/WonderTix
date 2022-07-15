@@ -58,7 +58,7 @@ accountsRouter.delete('/:id', async (req, res) => {
 accountsRouter.put('/:id', async (req, res) => {
   try {
     const updatedAccount = await update(req);
-    res.status(204).send(updatedAccount.rows);
+    res.status(200).send(updatedAccount.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
