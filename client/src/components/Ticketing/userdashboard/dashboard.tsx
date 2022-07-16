@@ -1,9 +1,7 @@
 /* eslint-disable max-len */
 import React from 'react';
-import {useNavigate} from 'react-router-dom';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   return (
     <div className='w-full h-screen   overflow-x-hidden absolute    '>
       <div className='md:ml-[22rem] md:mt-40  sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]   '>
@@ -11,7 +9,7 @@ const Dashboard = () => {
         <h1 className='font-bold text-5xl mb-14   pb-8 w-[60rem] ' >Dashboard</h1>
 
         <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-5 '>
-          <button onClick={() => navigate('./doorlist')} className="hover:scale-105 md:h-80 md:w- transition duration-300 ease-in-out border-none  bg-gradient-to-r from-sky-500 to-indigo-500 rounded-3xl  shadow-xl  ">
+          <a href='\ticketing\doorlist' className="hover:scale-105 md:h-80 md:w- transition duration-300 ease-in-out border-none  bg-gradient-to-r from-sky-500 to-indigo-500 rounded-3xl  shadow-xl  ">
             <div className="m-8 flex flex-col items-start">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12  " viewBox="0 0 20 20" fill="white">
                 <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
@@ -21,7 +19,7 @@ const Dashboard = () => {
               <h5 className="mb-2 ml-2 text-2xl font-bold  text-white">Door List</h5>
 
             </div>
-          </button>
+          </a>
           <button className="border-none hover:border-none hover:scale-105  transition duration-300 ease-in-out bg-gradient-to-r from-cyan-500 to-blue-500  rounded-3xl    shadow-xl   ">
             <div className="m-8 flex flex-col items-start">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" viewBox="0 0 20 20" fill="white">
@@ -33,7 +31,7 @@ const Dashboard = () => {
 
             </div>
           </button>
-          <button onClick={() => navigate('./addevent')} className=" hover:scale-105 transition duration-300 ease-in-out   md:h-60 border-none hover:border-none bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-3xl   shadow-xl  ">
+          <a href='\ticketing\addevent' className=" hover:scale-105 transition duration-300 ease-in-out   md:h-60 border-none hover:border-none bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-3xl   shadow-xl  ">
             <div className="m-8 flex flex-col items-start">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -42,7 +40,7 @@ const Dashboard = () => {
               <h5 className="mb-2 ml-1 text-2xl font-bold tracking-tight  text-white">Add New Events</h5>
 
             </div>
-          </button>
+          </a>
           <button className="border-none hover:border-none hover:scale-105 transition duration-300 ease-in-out bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 rounded-3xl shadow-xl ">
             <div className="m-8  flex flex-col items-start">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2}>

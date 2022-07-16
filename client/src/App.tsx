@@ -53,6 +53,8 @@ const App = () => {
         <Route path="/admin/tasks/accountInformation" element={<ProtectedRoute component={TasksMain}/>} />
 
         <Route path="/ticketing" element={<ProtectedRoute component={Udashmain} />} />
+        <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
+        <Route path="/ticketing/addevent" element={<ProtectedRoute component={Addeventmain} />} />
 
       </Routes>
     </>
