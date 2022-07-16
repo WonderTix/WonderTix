@@ -2,7 +2,7 @@ import React from 'react';
 import {
   contactFiltersTextField,
   contactFiltersSwitch,
-} from '../../utils/arrays';
+} from '../../../utils/arrays';
 
 const ContactsPanel = ({
   fetchData,

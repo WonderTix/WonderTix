@@ -1,7 +1,7 @@
 import React from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import {donationFiltersTextField} from '../../utils/arrays';
+import {donationFiltersTextField} from '../../../utils/arrays';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 

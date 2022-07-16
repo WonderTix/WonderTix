@@ -12,8 +12,8 @@ import {
   accountHeaders,
   contactHeaders,
   donationHeaders,
-} from '../../utils/arrays';
-import Panel from '../../utils/Panel';
+} from '../../../utils/arrays';
+import Panel from '../../../utils/Panel';
 import AccountsPanel from './AccountsPanel';
 import ContactsPanel from './ContactsPanel';
 import DonationsPanel from './DonationsPanel';

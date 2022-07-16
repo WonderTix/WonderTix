@@ -11,7 +11,7 @@ import {
   accountHeaders,
   contactHeaders,
   donationHeaders,
-} from '../../utils/arrays';
+} from '../../../utils/arrays';
 
 const SavedPanel = ({
   setColumns,

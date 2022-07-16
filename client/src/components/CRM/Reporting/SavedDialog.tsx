@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../index.css';
+import '../../../index.css';
 /**
  * @param {any} props React props to be passed to SavedDialog
  * @return {React.ReactElement}

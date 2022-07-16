@@ -1,5 +1,5 @@
 import React from 'react';
-import {createNewTaskTextFieldLabels} from '../../utils/arrays';
+import {createNewTaskTextFieldLabels} from '../../../utils/arrays';
 import SearchBar from './Search';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';

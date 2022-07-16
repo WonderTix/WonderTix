@@ -3,7 +3,7 @@ import React from 'react';
 import {
   accountFiltersTextField,
   accountFiltersSwitch,
-} from '../../utils/arrays';
+} from '../../../utils/arrays';
 
 const AccountsPanel = ({
   fetchData,

@@ -5,9 +5,8 @@
 @import "tailwindcss/utilities";
 
 @layer base {
-    li {
-        @apply p-4
-    }
+
+
 
     .dialog-window{
         position: absolute;
