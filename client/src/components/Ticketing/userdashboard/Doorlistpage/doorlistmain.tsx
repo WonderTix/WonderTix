@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import Doorlist from './doorlist';
+import Doorlist from './doorlist2';
 
 const Doorlistmain = () => {
   return (
