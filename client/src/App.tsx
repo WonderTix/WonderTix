@@ -5,6 +5,7 @@
 import React from 'react';
 import {Routes, Route} from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
+import Accounts from './components/Accounts/Accounts';
 import ProtectedRoute from './components/Authentication/protected-route';
 import Dashmain from './components/CRM/Dashmain';
 import AccountsMain from './components/CRM/Accounts/AccountsMain';
