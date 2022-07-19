@@ -48,7 +48,7 @@ const Accounts = (): React.ReactElement => {
         <div className='flex flex-row'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14     ' >Accounts</h1>
         </div>
-        <div className='border bg-white border-zinc-300 w-full flex flex-row p-2
+        <form className='border bg-white border-zinc-300 w-full flex flex-row p-2
         rounded-lg shadow-md justify-between'
         >
           <input
@@ -72,7 +72,7 @@ const Accounts = (): React.ReactElement => {
                 d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
             </svg>
           </button>
-        </div>
+        </form>
         <div className='mt-9 text-zinc-600 w-full'>
           {isLoading ? <div className="radial-progress"/> :
          <AccountResults data={data} />}
