@@ -1,125 +1,66 @@
-// 3-d party imports
-import CssBaseline from '@mui/material/CssBaseline';
-import {Route, Routes} from 'react-router-dom';
-import {useEffect, useState} from 'react';
-import {ThemeProvider} from '@material-ui/core/styles';
-import {appSelector, useAppDispatch} from './components/app/hooks';
-import theme from 'material-ui';
-import {Button, Snackbar} from '@material-ui/core';
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 
-// CRM
-import Home from './components/Home';
+/* CRM */
+import React from 'react';
+import {Routes, Route} from 'react-router-dom';
+import CssBaseline from '@mui/material/CssBaseline';
 import Accounts from './components/Accounts/Accounts';
 import ProtectedRoute from './components/Authentication/protected-route';
-import Contacts from './components/Contacts/Contacts';
-import Navigation from './components/Navigation';
-import Reporting from './components/Reporting/Reporting';
-import EditTask from './components/Tasks/EditTask';
-import TaskForm from './components/Tasks/TaskForm';
-import Tasks from './components/Tasks/Tasks';
-// Ticketing
-import AllEventsPage from './components/Features/events/AllEventsPage';
-import EventPage from './components/Features/events/EventPage';
-import CheckoutSuccess from './components/Ticketing/CheckoutSuccess';
-import Cart from './components/Features/ticketing/cart/Cart';
-import CheckoutPage from './components/Ticketing/CheckoutPage';
-import NewsletterSignup from './components/Features/newsletter/NewsletterSignup';
-import LoginPage from './components/Ticketing/LoginPage';
-import RequireLogin from './components/Ticketing/RequireLogin';
-import AdminSwitch from './components/Features/admin/AdminSwitch';
-import OnlyDonationPage from './components/Ticketing/OnlyDonatePage';
+import Dashmain from './components/CRM/Dashmain';
+import AccountsMain from './components/CRM/Accounts/AccountsMain';
+import ContactMain from './components/CRM/Contacts/ContactMain';
+import ReportingMain from './components/CRM/Reporting/ReportingMain';
+import TasksEditMain from './components/CRM/Tasks/TasksEditMain';
+import TasksMain from './components/CRM/Tasks/TasksMain';
+import CreateTask from './components/CRM/Tasks/CreateTask';
 
+
+/* Ticketing */
+import Mainpage from './components/Ticketing/mainpage/Main';
+import Doorlistmain from './components/Ticketing/userdashboard/Doorlistpage/doorlistmain';
+import Addeventmain from './components/Ticketing/userdashboard/Add_event/addeventmain';
+import Udashmain from './components/Ticketing/userdashboard/Udashmain';
+import Deleteeventmain from './components/Ticketing/userdashboard/Delete_event/Deleteventmain';
 const App = () => {
-  const dispatch = useAppDispatch();
-  // const snackbarState = appSelector(selectSnackbar)
-  const eventsStatus = appSelector((state) => state.events.status);
-
-  useEffect(() => {
-    if (eventsStatus === 'idle') {
-      // dispatch(fetchEventInstanceData())
-      // dispatch(fetchTicketingData())
-    }
-  }, [dispatch]);
-
-  const onSnackbarClose = (_: React.SyntheticEvent | React.MouseEvent, reason?: string) => {
-    if (reason === 'clickaway') return;
-    // dispatch(closeSnackbar())
-  };
-
-  const [dates, setDates] = useState<Date[]>([new Date()]);
-
-
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <ProtectedRoute component={Navigation}/>
-        <ProtectedRoute component={CssBaseline}/>
-
-
-        <Routes>
-          {/* Ticketing routes*/}
-          <Route path="/" element={<ProtectedRoute component={AllEventsPage}/>}/>
-          <Route path="/testcalendar">
-            {/* <MultiSelectCalendar value={dates} onChange={setDates} onDateClicked={d => console.log(d)}/>*/}
-            <Button onClick={() => setDates([])}>Clear</Button>
-            {dates.map((d) => <p key={d.getTime()}>{d.toLocaleString()}</p>)}
-          </Route>
-          <Route path="/events/:eventid" element={<ProtectedRoute component={EventPage}/>}/>
-          <Route path="/events" element={<ProtectedRoute component={AllEventsPage}/>}/>
-          <Route path="cart/" element={<ProtectedRoute component={Cart}/>}/>
-          <Route path="/success" element={<ProtectedRoute component={CheckoutSuccess}/>}/>
-          <Route path="/donate" element={<ProtectedRoute component={OnlyDonationPage}/>}/>
-          <Route path="/completeorder" element={<ProtectedRoute component={CheckoutPage}/>}/>
-          <Route path="/newsletter_signup" element={<ProtectedRoute component={NewsletterSignup}/>}/>
-          <Route path="/login/:redirect?" element={<ProtectedRoute component={LoginPage}/>}/>
-
-          {/* Admin/CRM routes*/}
-          <Route path="/admin">
-            <RequireLogin redirectTo="/admin">
-              <AdminSwitch/>
-            </RequireLogin>
-          </Route>
-          <Route
-            path="/admin/accounts"
-            element={<ProtectedRoute component={Accounts}/>}
-          >
-            <Route path=":id" element={<ProtectedRoute component={Accounts}/>}/>
-          </Route>
-          <Route
-            path="/admin/contacts"
-            element={<ProtectedRoute component={Contacts}/>}
-          >
-            <Route path=":id" element={<ProtectedRoute component={Contacts}/>}/>
-          </Route>
-          <Route
-            path="/admin/reporting"
-            element={<ProtectedRoute component={Reporting}/>}
-          />
-          <Route path="/admin/tasks" element={<ProtectedRoute component={Tasks}/>}/>
-          <Route
-            path="/admin/tasks/create"
-            element={
-              <TaskForm
-                title="Create New Task"
-                name="Create"
-                threeButtonForm={false}
-              />
-            }
-          />
-          <Route path="/admin/tasks/edit" element={<EditTask/>}/>
-          <Route path="/admin/tasks/accountInformation" element={<Tasks/>}/>
-        </Routes>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          // open={snackbarState.shown}
-          autoHideDuration={6000}
-          onClose={onSnackbarClose}
-          // message={snackbarState.message}
+      <ProtectedRoute component={CssBaseline} />
+      <Routes>
+        <Route path="/" element={<ProtectedRoute component={Mainpage}/>} />
+        <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
+        <Route
+          path="/admin/accounts"
+          element={<ProtectedRoute component={AccountsMain} />}
+        >
+          <Route path=":id" element={<ProtectedRoute component={AccountsMain} />} />
+        </Route>
+        <Route
+          path="/admin/contacts"
+          element={<ProtectedRoute component={ContactMain} />}
+        >
+          <Route path=":id" element={<ProtectedRoute component={ContactMain} />} />
+        </Route>
+        <Route
+          path="/admin/reporting"
+          element={<ProtectedRoute component={ReportingMain} />}
         />
-      </ThemeProvider>
+        <Route path="/admin/tasks" element={<ProtectedRoute component={TasksMain} />} />
+        <Route
+          path="/admin/tasks/create"
+          element={
+            <ProtectedRoute component={CreateTask}/>}
+        />
+        <Route path="/admin/tasks/edit" element={<ProtectedRoute component={TasksEditMain}/>} />
+        <Route path="/admin/tasks/accountInformation" element={<ProtectedRoute component={TasksMain}/>} />
+
+        <Route path="/ticketing" element={<ProtectedRoute component={Udashmain} />} />
+        <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
+        <Route path="/ticketing/addevent" element={<ProtectedRoute component={Addeventmain} />} />
+        <Route path="/ticketing/deleteevent" element={<ProtectedRoute component={Deleteeventmain} />} />
+
+
+      </Routes>
     </>
   );
 };
