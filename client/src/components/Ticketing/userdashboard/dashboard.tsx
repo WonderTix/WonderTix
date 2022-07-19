@@ -41,7 +41,7 @@ const Dashboard = () => {
 
             </div>
           </a>
-          <button className="border-none hover:border-none hover:scale-105 transition duration-300 ease-in-out bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 rounded-3xl shadow-xl ">
+          <a href='/ticketing/deleteevent' className="border-none hover:border-none hover:scale-105 transition duration-300 ease-in-out bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 rounded-3xl shadow-xl ">
             <div className="m-8  flex flex-col items-start">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -50,7 +50,7 @@ const Dashboard = () => {
               <h5 className="mb-2 ml-1 text-2xl font-bold tracking-tight  text-white">Delete Event</h5>
 
             </div>
-          </button>
+          </a>
           <button className="border-none hover:border-none hover:scale-105  h-40  transition duration-300 ease-in-out  bg-gradient-to-r from-yellow-600 to-red-600 rounded-3xl  shadow-xl  ">
 
             <div className="m-8 flex flex-col items-start">

@@ -1,7 +1,86 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-unused-vars */
+/* eslint-disable require-jsdoc */
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
-import React from 'react';
+/**
+ * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+**/
+// import DataGrid from 'react-data-grid';
+import {DataGrid, GridCellParams} from '@mui/x-data-grid';
+import {Checkbox} from '@material-ui/core';
+import {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import axios from 'axios';
+// import RequireLogin from './RequireLogin';
+import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 
-const Doorlist = () => {
+const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.value as boolean} />);
+
+const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
+  try {
+    const res = await fetch(`/api/checkin`, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({isCheckedIn, ticketID}),
+    });
+    return res.json();
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+const renderCheckin = ((params: GridCellParams) =>
+  <Checkbox
+    color='primary'
+    defaultChecked={params.value as boolean}
+    onChange={(e) => checkInGuest(e.target.checked, params.getValue(params.id, 'ticketno') as string)}
+  />);
+
+const columns = [
+  {field: 'name'},
+  {field: 'vip', renderCell: renderCheckbox},
+  {field: 'donorbadge', renderCell: renderCheckbox},
+  {field: 'accomodations', renderCell: renderCheckbox},
+  {field: 'num_tickets'},
+  {field: 'arrived', renderCell: renderCheckin},
+];
+
+
+type DoorListProps = {eventinstanceid: string}
+export default function DoorList() {
+  const {eventinstanceid} = useParams<DoorListProps>();
+  const [doorList, setDoorList] = useState([]);
+  const [eventName, setEventName] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+
+  const getDoorList = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${eventinstanceid}`, {method: 'GET'});
+      const jsonData = await response.json();
+
+      // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }
+      setDoorList(jsonData.data);
+      setEventName(jsonData.eventname);
+      setDate(dayMonthDate(jsonData.eventdate));
+      setTime(militaryToCivilian(jsonData.starttime));
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getDoorList();
+  }, []);
+
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
@@ -9,80 +88,37 @@ const Doorlist = () => {
         <div className='flex flex-row'>
           <h1 className='font-bold text-5xl bg-clip-text
            text-transparent bg-gradient-to-r from-sky-500
-            to-indigo-500 mb-14     ' >Door List</h1>
+            to-indigo-500 mb-14' >Door List</h1>
         </div>
-        <div className="relative overflow-x-auto shadow-md
-         sm:rounded-xl mr-10 bg-gradient-to-r from-sky-500 to-indigo-500">
-          <div className="p-4">
-            <label htmlFor="table-search" className="sr-only">Search</label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 flex
-               items-center pl-3 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
-              </div>
-              <input type="text" id="table-search" className="bg-gray-50 border
-               border-gray-300 text-gray-900 text-sm rounded-lg
-                focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5
-                      dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search for names"/>
-            </div>
-          </div>
-          <table className="w-full text-sm text-left text-gray-500 ">
-            <thead className="text-xs text-gray-700 uppercase bg-zinc-300">
-              <tr>
-                <th scope="col" className="p-4">
-                  <div className="flex items-center">
-                    <input id="checkbox-all-search" type="checkbox" className="w-4 h-4
-                     text-blue-600 bg-gray-100 border-gray-300 rounded
-                      focus:ring-blue-500 dark:focus:ring-blue-600  focus:ring-2  "/>
-                    <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
-                  </div>
-                </th>
-                <th scope="col" className="px-6 py-3">
-                            Name
-                </th>
-
-                <th scope="col" className="px-6 py-3">
-                            Category
-                </th>
-                <th scope="col" className="px-6 py-3">
-                            # of Seats
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  <span className="sr-only">Edit</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="bg-zinc-100 border-b  hover:bg-gray-50 ">
-                <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                    <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
-                  </div>
-                </td>
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            Jack
-                </th>
-                <td className="px-6 py-4">
-                            VIB
-                </td>
-                <td className="px-6 py-4">
-                            2
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <a href="/" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                </td>
-              </tr>
-
-            </tbody>
-          </table>
-        </div>
-
+        <div className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</div>
+        <div className='text-2xl font-bold '>{`${date}, ${time}`}</div>
+        <table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
+          <thead className="text-xs text-zinc-100 uppercase rounded-t-lg bg-zinc-800">
+            <tr>
+              {columns.map((client) =>
+                (
+                  <>
+                    <th scope="col" className="px-6 py-3">
+                      {client.field}
+                    </th>
+                  </>
+                ),
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-zinc-100 border-b rounded-b-lg hover:bg-gray-50">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
     </div>
   );
-};
-
-export default Doorlist;
+}

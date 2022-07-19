@@ -20,6 +20,7 @@ import Mainpage from './components/Ticketing/mainpage/Main';
 import Doorlistmain from './components/Ticketing/userdashboard/Doorlistpage/doorlistmain';
 import Addeventmain from './components/Ticketing/userdashboard/Add_event/addeventmain';
 import Udashmain from './components/Ticketing/userdashboard/Udashmain';
+import Deleteeventmain from './components/Ticketing/userdashboard/Delete_event/Deleteventmain';
 const App = () => {
   return (
     <>
@@ -55,6 +56,8 @@ const App = () => {
         <Route path="/ticketing" element={<ProtectedRoute component={Udashmain} />} />
         <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
         <Route path="/ticketing/addevent" element={<ProtectedRoute component={Addeventmain} />} />
+        <Route path="/ticketing/deleteevent" element={<ProtectedRoute component={Deleteeventmain} />} />
+
 
       </Routes>
     </>
