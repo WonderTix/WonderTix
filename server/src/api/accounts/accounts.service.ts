@@ -1,12 +1,21 @@
 // api/accounts/accounts.service.ts
 
 import {pool} from '../db';
-import {buildQuery, QueryAttr} from '../util/query-builder';
 
 /* NOTE -- currently uses old database, so accounts are users */
 
-export const findAll = (params?: QueryAttr) => {
-  const myQuery = buildQuery('users', params);
+export const findAll = () => {
+  const myQuery = {
+    text: `SELECT * FROM users;`,
+  };
+  return pool.query(myQuery);
+};
+
+export const findByUsername = (username: string) => {
+  const myQuery = {
+    text: `SELECT * FROM users WHERE username = $1`,
+    values: [username],
+  };
   return pool.query(myQuery);
 };
 

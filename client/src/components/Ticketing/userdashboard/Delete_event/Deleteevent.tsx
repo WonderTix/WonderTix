@@ -16,19 +16,10 @@ import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 
 export default function DeleteEvents() {
   async function deleteEvent(showId: string) {
-    const data = {
-      id: showId,
-    };
-
-    const response = await fetch('/api/delete-event',
+    const response = await fetch(`/api/events/${showId}`,
         {
           credentials: 'include',
-          method: 'POST',
-          headers:
-           {
-             'Content-Type': 'application/json',
-           },
-          body: JSON.stringify(data),
+          method: 'DELETE',
         });
     getEvents();
     return response.json();
@@ -49,7 +40,7 @@ export default function DeleteEvents() {
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
     try {
-      const response = await fetch('/api/active-event-instance-list');
+      const response = await fetch('/api/events/list/active');
       const jsonData = await response.json();
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);

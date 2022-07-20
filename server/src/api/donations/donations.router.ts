@@ -1,14 +1,25 @@
 // api/donations/donations.router.ts
 
-import {Router, Request, Response} from 'express';
-import {findAll, find, create, remove, update} from './donations.service';
+import {Request, Response, Router} from 'express';
+import {create, find, findAll, findByName, remove, update}
+  from './donations.service';
 
 export const donationsRouter = Router();
 
 // GET /api/donations
 donationsRouter.get('/', async (req: Request, res: Response) => {
   try {
-    const donations = await findAll(req.query);
+    const donations = await findAll();
+    res.status(200).send(donations.rows);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
+// GET /api/donations/search?name={name}
+donationsRouter.get('/search', async (req: Request, res: Response) => {
+  try {
+    const donations = await findByName(req.query.name as string);
     res.status(200).send(donations.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -49,7 +60,11 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
 donationsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedDonation = await update(req);
-    res.sendStatus(204).send(updatedDonation.rows);
+    if (updatedDonation.rowCount > 0) {
+      res.status(200).send(updatedDonation.rows);
+    } else {
+      res.sendStatus(404);
+    }
   } catch (err: any) {
     res.status(500).send(err.message);
   }

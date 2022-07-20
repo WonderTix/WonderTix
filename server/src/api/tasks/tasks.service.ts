@@ -1,10 +1,11 @@
 // api/tasks/tasks.service.ts
 
 import {pool} from '../db';
-import {buildQuery, QueryAttr} from '../util/query-builder';
 
-export const findAll = (params?: QueryAttr) => {
-  const myQuery = buildQuery('task', params);
+export const findAll = () => {
+  const myQuery = {
+    text: `SELECT * FROM task;`,
+  };
   return pool.query(myQuery);
 };
 

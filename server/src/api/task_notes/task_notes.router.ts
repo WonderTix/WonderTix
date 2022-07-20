@@ -1,12 +1,12 @@
 import {Router} from 'express';
-import {findAll, find, create, remove, update} from './task_notes.service';
+import {create, find, findAll, remove, update} from './task_notes.service';
 
 export const taskNotesRouter = Router();
 
 // GET /api/task_notes
 taskNotesRouter.get('/', async (req, res) => {
   try {
-    const taskNotes = await findAll(req.query);
+    const taskNotes = await findAll();
     res.status(200).send(taskNotes.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -47,7 +47,7 @@ taskNotesRouter.delete('/:id', async (req, res) => {
 taskNotesRouter.put('/:id', async (req, res) => {
   try {
     const updatedTaskNotes = await update(req);
-    res.sendStatus(204).send(updatedTaskNotes.rows);
+    res.sendStatus(200).send(updatedTaskNotes.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

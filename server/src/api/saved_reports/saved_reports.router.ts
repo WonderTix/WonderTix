@@ -1,15 +1,15 @@
 // api/saved_reports/saved_reports.router.ts
 
 import {Router} from 'express';
-import * as ReportService from './saved_reports.service';
 import {Report} from './report';
+import * as ReportService from './saved_reports.service';
 
 export const savedReportsRouter = Router();
 
 // GET /api/saved_reports
 savedReportsRouter.get('/', async (req, res) => {
   try {
-    const reports = await ReportService.findAll(req.query);
+    const reports = await ReportService.findAll();
     res.status(200).send(reports.rows);
   } catch (err: any) {
     res.status(500).send(err.message);

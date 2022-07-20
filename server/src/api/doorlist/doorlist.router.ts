@@ -5,7 +5,7 @@ import {formatDoorlistResponse} from './doorlist.service';
 export const doorlistRouter = express.Router();
 
 // Door list route
-doorlistRouter.get('/api/doorlist', async (req, res) => {
+doorlistRouter.get('/', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {

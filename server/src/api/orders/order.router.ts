@@ -3,7 +3,7 @@ import {fulfillOrder, refundOrder} from './order.service';
 
 export const orderRouter = express.Router();
 
-orderRouter.post('/webhook', async (req, res) => {
+orderRouter.post('/', async (req, res) => {
   // TESTING WIHT SOME SIGNATURE VERIFICATION
   // const payload = req.body;
   // console.log("PAYLOAD:   ");
