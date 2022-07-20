@@ -177,7 +177,7 @@ export const contactForm = (data: any): React.ReactElement => {
     // and establish a link with the background data from here
     // However, in the actual url, param.id
     // is not the id but the user's name, which causes the update to fail
-    const url=`http://localhost:8000/api/${params.id}`;
+    const url=`http://localhost:8000/api/contacts/${data.id}`;
     // const url='http://localhost:8000/api/contacts/'+params.id;
     // const url = 'http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}';
     console.log(body);

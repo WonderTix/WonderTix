@@ -243,7 +243,7 @@ eventRouter.post('/', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
-    const {eventname, eventdescription, imageUrl} = req.body;
+    const {eventName, eventDesc, imageUrl} = req.body;
     const query = `
                     INSERT INTO events 
                       (seasonid, eventname, eventdescription, active, image_url)
@@ -251,8 +251,8 @@ eventRouter.post('/', async (req, res) => {
                     RETURNING *
                   `;
     const {rows} = await pool.query(query, [
-      eventname,
-      eventdescription,
+      eventName,
+      eventDesc,
       imageUrl,
     ]);
     res.json({rows});
