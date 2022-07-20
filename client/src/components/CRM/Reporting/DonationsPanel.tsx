@@ -24,6 +24,11 @@ const DonationsPanel = ({
   React.useEffect(() => {
     if (savedName === '') return;
 
+    /* TODO
+      Dynamic queries/Filter no longer being used by API.
+      Need to redesign these POST requests.
+    */
+
     const body = {
       table_name: savedName,
       query_attr: `donations/?${parseUrl()}`,

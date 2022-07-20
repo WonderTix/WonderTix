@@ -4,7 +4,7 @@ import {pool} from '../db';
 export const newsletterRouter = express.Router();
 
 // News Letter Route
-newsletterRouter.post('/api/newsletter/count', async (req, res) => {
+newsletterRouter.get('/count', async (req, res) => {
   try {
     const emails = await pool.query(
         'SELECT COUNT(*) FROM customers WHERE email = $1',
@@ -17,7 +17,7 @@ newsletterRouter.post('/api/newsletter/count', async (req, res) => {
 });
 
 // Nesletter Route
-newsletterRouter.post('/api/newsletter/update', async (req, res) => {
+newsletterRouter.put('/', async (req, res) => {
   try {
     const body = req.body;
     const values = [body.news_opt, body.volunteer_opt, body.email];
@@ -33,7 +33,7 @@ newsletterRouter.post('/api/newsletter/update', async (req, res) => {
   }
 });
 
-newsletterRouter.post('/api/newsletter/insert', async (req, res) => {
+newsletterRouter.post('/', async (req, res) => {
   try {
     const body = req.body;
     const values = [
@@ -66,5 +66,6 @@ newsletterRouter.post('/api/newsletter/insert', async (req, res) => {
     res.json(emails.rows);
   } catch (err: any) {
     console.error(err.message);
+    res.sendStatus(500);
   }
 });

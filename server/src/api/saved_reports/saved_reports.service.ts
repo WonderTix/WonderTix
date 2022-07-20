@@ -1,11 +1,13 @@
 // api/saved_reports/saved_reports.service.ts
 
 import {pool} from '../db';
-import {buildQuery, QueryAttr} from '../util/query-builder';
 import {Report} from './report';
 
-export const findAll = (params?: QueryAttr) => {
-  return pool.query(buildQuery('saved_reports', params));
+export const findAll = () => {
+  const myQuery = {
+    text: `SELECT * FROM saved_reports;`,
+  };
+  return pool.query(myQuery);
 };
 
 export const find = (id: string) => {

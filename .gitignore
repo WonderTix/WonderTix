@@ -6,3 +6,4 @@
 server/src/prisma/generated
 
 .idea
+.vscode

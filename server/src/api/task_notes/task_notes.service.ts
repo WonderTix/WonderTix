@@ -1,10 +1,11 @@
 // api/task_notes/task_notes.service.ts
 
 import {pool} from '../db';
-import {buildQuery, QueryAttr} from '../util/query-builder';
 
-export const findAll = (params?: QueryAttr) => {
-  const myQuery = buildQuery('task_notes', params);
+export const findAll = () => {
+  const myQuery = {
+    text: `SELECT * FROM task_notes;`,
+  };
   return pool.query(myQuery);
 };
 
