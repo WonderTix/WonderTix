@@ -61,8 +61,6 @@ const DoorList = () => {
   const [eventName, setEventName] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [id1, setId]=useState(Number);
-  const [id2, setId2]=useState(Number);
 
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
@@ -86,10 +84,7 @@ const DoorList = () => {
   const getDoorList = async (event) => {
     try {
       const getuser = event.target.value;
-
       const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${getuser}`, {method: 'GET'});
-
-      // const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${eventinstanceid}`, {method: 'GET'});
       const jsonData = await response.json();
 
       // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }
