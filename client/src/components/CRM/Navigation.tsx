@@ -121,7 +121,7 @@ const Navigation = ({
         </div>
         <div className={show2 ? 'w-full h-full absolute z-40  transform  translate-x-0 ' : '   w-full h-full absolute z-40  transform -translate-x-full'} id="mobile-nav">
           <div className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden" onClick={() => setShow2(!show2)} />
-          <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow pb-4 bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
+          <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
             <div className="flex flex-col justify-between h-full w-full">
               <div>
                 <div className="flex items-center justify-between px-6">
@@ -230,22 +230,41 @@ const Navigation = ({
               </div>
               <div className="w-full">
 
-                <div className="border-t border-gray-300">
-                  <div className="w-full flex flex-col items-start justify-between px-6 pt-1">
+                <div className="border-t bg-zinc-800/30 border-gray-500">
+                  <div className="w-full flex flex-row items-center justify-between  ">
 
-                    <div className="flex items-center mt-2">
-                      <img alt="profile-pic" src={picture} className="w-8 h-8 rounded-md" />
-                      <p className="text-sm text-zinc-200 leading-4 ml-2">{name}</p>
+                    <div className="flex flex-col items-center ml-3">
+                      <div className='flex flex-row mb-3 mt-2'>
+                        <img alt="profile-pic" src={picture} className="w-8 h-8 rounded-md" />
+                        <p className="text-sm text-zinc-200 leading-4 ml-2 font-semibold ">{name}</p>
+                      </div>
+                      <div className="flex w-full text-gray-200 mt-2 hover:text-indigo-700 cursor-pointer items-center">
+                        <div className="flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
+                          <a className="text-md font-semibold ml-2 "><AuthNav/></a>
+                        </div>
+                      </div>
+                    </div>
+                    <ul className="flex flex-col items-center gap-9 bg-zinc-800/50 px-6 py-6">
+                      <li className="flex flex-col w-full text-gray-200 hover:text-indigo-700 cursor-pointer items-center">
+                        <a onClick={() => navigate('/admin')} className="">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        </a>
+                      </li>
+                      <li className="flex flex-col items-center w-full text-gray-200 hover:text-indigo-700 cursor-pointer">
+                        <a onClick={() => navigate('/ticketing')} className="flex flex-col">
+                          <svg xmlns="http://www.w3.org/2000/svg" className=" h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                          </svg>
+                        </a>
+                      </li>
 
-                    </div>
-                    <div className="flex items-center text-white mt-5 hover:text-indigo-700 transition duration-300  ">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-logout" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                        <path d="M7 12h14l-3 -3m0 6l3 -3" />
-                      </svg>
-                      <button className="text-sm ml-2   "><AuthNav /></button>
-                    </div>
+                    </ul>
+
 
                   </div>
                 </div>
