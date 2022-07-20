@@ -110,6 +110,7 @@ const DoorList = () => {
         <select id="search-select" className="select w-full
            max-w-xs bg-white border border-zinc-300
            rounded-lg p-3 text-zinc-600 mb-7" onChange={(e) => (getDoorList(e))}>
+          <option className="px-6 py-3">select date</option>
           {eventList.map((eventss) => (
             <>
               <option value={eventss.id} className="px-6 py-3">
@@ -123,7 +124,7 @@ const DoorList = () => {
         <div className='text-2xl font-bold '>{`${date}, ${time}`}</div>
         <div>
           <DataGrid
-            className='bg-white rounded-lg text-xl '
+            className='bg-white'
             autoHeight
             disableSelectionOnClick
             rows={doorList}
