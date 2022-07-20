@@ -1,7 +1,7 @@
 import express from 'express';
 import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
-import Delta from '../../interfaces/Delta';
+import Showing from '../../interfaces/Showing';
 import {pool} from '../db';
 import eventUtils from './event.service';
 
@@ -14,18 +14,6 @@ const stripe = new Stripe(stripeKey, {
   apiVersion: '2020-08-27',
 });
 
-// Endpoint to get list of events
-// Event list route
-eventRouter.get('/list', async (req, res) => {
-  try {
-    const events = await pool.query(
-        'select id, eventname from events where active = true',
-    );
-    res.json(events.rows);
-  } catch (error: any) {
-    console.error(error.message);
-  }
-});
 
 // Endpoint to get event id
 // Event route
@@ -293,29 +281,109 @@ eventRouter.post('/instances', async (req, res) => {
 eventRouter.put('/', async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
-  const {eventid, deltas}: { eventid: string; deltas: Delta[] } = req.body;
-  if (eventid === undefined || deltas === undefined || deltas.length === 0) {
-    res.status(400);
-    res.send('No edits or event ID provided');
-  }
-  const eventChanges = deltas.filter(eventUtils.isEventChange);
-  const showingChanges = deltas.filter(eventUtils.isShowingChange);
+  const query = `UPDATE events
+                SET (seasonid, eventname, eventdescription, active, image_url)
+                = ($1, $2, $3, $4, $5)
+                WHERE id=$6
+                RETURNING *;`;
 
   try {
-    const results = [];
-    if (eventChanges.length > 0) {
-      const result = await eventUtils.updateEvent(eventid, eventChanges);
-      results.push(result);
-    }
-    if (showingChanges.length > 0) {
-      console.log('TODO: edit showings');
-    }
+    const queryResult = await pool.query(query, [
+      req.body.seasonid,
+      req.body.eventname,
+      req.body.eventdescription,
+      req.body.active,
+      req.body.image_url,
+      req.body.id]);
 
-    res.json({rows: results});
+    res.json(queryResult.rows);
   } catch (err: any) {
     console.error(err.message);
     res.status(500);
     res.send('Edit event failed: ' + err.message);
+  }
+});
+
+eventRouter.put('/instances/:id', async (req, res) => {
+  try {
+    // create temp table with same columns for updated instances
+    const createTempTable = `
+                              DROP TABLE IF EXISTS diff_table;
+
+                              SELECT *
+                              INTO TEMP TABLE diff_table
+                              FROM event_instances LIMIT 0;
+                            `;
+    await pool.query(createTempTable);
+
+    const instances: Showing[] = req.body;
+
+    // insert updated Showing[] to temp table for comparison
+    const insertToTemp =
+      `INSERT INTO diff_table VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`;
+
+    for (const instance of instances) {
+      await pool.query(insertToTemp, Object.values(instance));
+    }
+
+    // get the diff between temp table and eventinstances
+    const getDiffs = `select *,
+                        case
+                          when dt.id is null then 'Deleted'
+                          when ei.id is null then 'Added'
+                        else 'Updated'
+                          end as status
+                      from diff_table dt
+                        full outer join
+                          (SELECT * FROM event_instances WHERE eventid = $1)
+                            as ei
+                          using (id)
+                      where dt is distinct from ei;
+                      `;
+    const diffs = await pool.query(getDiffs, [req.params.id]);
+
+    // update rows
+    const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
+
+    const rowsUpdated = await eventUtils.updateShowings(rowsToUpdate);
+
+    // rows that need to be deleted
+    const toDelete = diffs.rows.filter((row) => row.status === 'Deleted')
+        .map((row) => row.id);
+
+    // delete rows
+    const rowsDeleted = await eventUtils.deleteShowings(toDelete);
+
+    // insert new rows
+    // showings with id = 0 have not yet been added to the table
+    const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
+    rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
+
+    const rowsInserted = (await eventUtils.insertAllShowings(rowsToInsert));
+
+    const responseData = {
+      data: {
+        numRowsUpdated: rowsUpdated,
+        numRowsDeleted: rowsDeleted,
+        numRowsInserted: rowsInserted.length,
+      },
+      status: {
+        success: true,
+        message: `${rowsUpdated} rows updated, `+
+          `${rowsDeleted} rows deleted, ${rowsInserted.length} rows inserted`,
+      },
+    };
+    res.status(200).send(responseData);
+  } catch (error: any) {
+    console.error(error);
+    const responseData = {
+      data: {},
+      status: {
+        success: false,
+        message: error.message,
+      },
+    };
+    res.status(500).send(responseData);
   }
 });
 
@@ -346,19 +414,19 @@ eventRouter.delete('/:id', async (req, res) => {
 
 eventRouter.get('/', async (req, res) => {
   try {
+    // query to retrieve all active events, and the number of showings for each
     const querystring = `
-                          SELECT 
-                            id, 
-                            eventname title, 
-                            eventdescription description, 
-                            image_url
-                          FROM events
-                          WHERE active=true;
+                          SELECT events.*, count(event_instances.id) as numShows
+                          FROM events 
+                          JOIN event_instances 
+                          ON events.id = event_instances.eventid 
+                          GROUP BY events.id
+                          HAVING active = true;
                         `;
     const data = await pool.query(querystring);
-    const events = data.rows.map(eventUtils.propToString('id'));
-    res.json(events);
+    res.json(data.rows);
   } catch (err: any) {
     console.error(err.message);
+    res.status(500).send(err.message);
   }
 });
