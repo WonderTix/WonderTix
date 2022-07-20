@@ -7,8 +7,6 @@ import bgImg from '../../../assets/pp_logo_black.png';
 import {Link} from 'react-scroll';
 import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../../Authentication/auth-nav';
-import LoginButton from '../../Authentication/login-button';
-import LogoutButton from '../../Authentication/logout-button';
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
@@ -29,10 +27,10 @@ const Navbar = () => {
     <div className='w-screen h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg'>
       <div className='px-2 flex justify-between items-center w-full h-full'>
         <div className='flex items-center'>
-          <div>
+          <a href='https://portlandplayhouse.org/'>
             <img className='w-12 h-full
              object-cover mx-4' src={bgImg} alt="/" />
-          </div>
+          </a>
 
           <ul className='hidden md:flex '>
             <li>
