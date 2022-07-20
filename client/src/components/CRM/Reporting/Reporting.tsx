@@ -69,6 +69,7 @@ const ReportingTest = (): React.ReactElement => {
 
     let url = `http://localhost:8000/api/${route}`;
 
+    // TODO need to remove this, query uses the weird filter syntax
     if (query !== '') url += `?${query}`;
 
     fetch(url)
