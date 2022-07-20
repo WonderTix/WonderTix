@@ -19,7 +19,7 @@ const Accounts = (): React.ReactElement => {
         setAccount(params.id);
         await axios
             .get(
-                `http://localhost:8000/api/accounts?filters[username][$eq]=${params.id}`,
+                `http://localhost:8000/api/accounts/search?username=${params.id}`,
             )
             .then((res) => {
               setData(res.data[0]);

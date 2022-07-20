@@ -29,7 +29,7 @@ export default function CreateEvents(props: {}) {
       eventTime: eventTime,
     };
 
-    const req = await fetch('/api/create-event', {
+    const req = await fetch('http://localhost:8000/api/events', {
       credentials: 'include',
       method: 'POST',
       headers: {
