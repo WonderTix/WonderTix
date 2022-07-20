@@ -65,7 +65,7 @@ const Navbar = () => {
         <div className='md:hidden ' onClick={handleClick}>
           {!nav ? <MenuIcon className='w-5'/> : <XIcon className = 'w-5' />}
         </div>
-        <div className="w-1/2 hidden md:flex">
+        <div className="w-1/2 hidden md:flex mr-4">
           <div className="w-full flex items-center pl-8 justify-end">
             <div className="flex items-center relative cursor-pointer" onClick={() => setProfile(!profile)}>
               <div className="rounded-full">
