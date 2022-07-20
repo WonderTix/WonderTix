@@ -34,7 +34,7 @@ const Navigation = ({
           </div>
           <ul className='space-y-7 mt-30 ml-[rem] flex flex-col items-center   '>
             <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <a href='\admin'className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+              <a onClick={() => navigate('/admin')}className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                 <div className="flex flex-col gap-2 items-center">
                   <div>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -49,7 +49,7 @@ const Navigation = ({
 
             </li>
             <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <a href='/admin/accounts' className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+              <a onClick={() => navigate('/admin/accounts')}className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                 <div className="flex flex-col gap-2 items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -62,7 +62,7 @@ const Navigation = ({
 
             </li>
             <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <a href='/admin/contacts' className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+              <a onClick={() => navigate('/admin/contacts')} className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                 <div className="flex flex-col gap-2 items-center">
                   <div>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -77,7 +77,7 @@ const Navigation = ({
 
             </li>
             <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <a href='/admin/reporting' className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+              <a onClick={() => navigate('/admin/reporting')} className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                 <div className="flex flex-col gap-2 items-center">
                   <div>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -109,9 +109,9 @@ const Navigation = ({
             <li className={!show ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
               <div className=" flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl" >
                 <div className="py-1 font-bold" >
-                  <a href="/admin/tasks/create" className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600" >Create</a>
-                  <a href="/admin/tasks/edit" className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent ">Edit</a>
-                  <a href="/admin/tasks/accountInformation" className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 " >Account Information</a>
+                  <a onClick={() => navigate('/admin/tasks/create')} className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600" >Create</a>
+                  <a onClick={() => navigate('/admin/tasks/edit')} className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent ">Edit</a>
+                  <a onClick={() => navigate('/admin/tasks/accountInformation')} className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 " >Account Information</a>
                 </div>
               </div>
             </li>
@@ -140,7 +140,7 @@ const Navigation = ({
                 </div>
                 <ul className=" space-y-7 mt-30  flex flex-col items-center  ">
                   <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                    <a href='/admin'className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+                    <a onClick={() => navigate('/admin')}className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                       <div className="flex flex-col gap-2 items-center">
                         <div>
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -155,7 +155,7 @@ const Navigation = ({
 
                   </li>
                   <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                    <a href='/admin/accounts' className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+                    <a onClick={() => navigate('/admin/accounts')} className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                       <div className="flex flex-col gap-2 items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -169,7 +169,7 @@ const Navigation = ({
                   </li>
 
                   <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                    <a href='/admin/contacts' className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+                    <a onClick={() => navigate('/admin/contacts')} className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                       <div className="flex flex-col gap-2 items-center">
                         <div>
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -186,7 +186,7 @@ const Navigation = ({
 
 
                   <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                    <a href='/admin/reporting' className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+                    <a onClick={() => navigate('/admin/reporting')} className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                       <div className="flex flex-col gap-2 items-center">
                         <div>
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -218,9 +218,9 @@ const Navigation = ({
                   <li className={!show ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
                     <div className=" flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl" >
                       <div className="py-1 font-bold" >
-                        <a href="/admin/tasks/create" className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600" >Create</a>
-                        <a href="/admin/tasks/edit" className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent ">Edit</a>
-                        <a href="/admin/tasks/accountInformation" className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 " >Account Information</a>
+                        <a onClick={() => navigate('/admin/tasks/create')} className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600" >Create</a>
+                        <a onClick={() => navigate('/admin/tasks/edit')} className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent ">Edit</a>
+                        <a onClick={() => navigate('/admin/tasks/accountInformation')} className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 " >Account Information</a>
                       </div>
                     </div>
                   </li>
@@ -273,7 +273,7 @@ const Navigation = ({
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                               </svg>
-                              <a href='\admin'className="text-sm ml-2">Admin</a>
+                              <a onClick={() => navigate('/admin')}className="text-sm ml-2">Admin</a>
                             </div>
                           </li>
                           <li className="flex p-4  w-full text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
@@ -281,7 +281,7 @@ const Navigation = ({
                               <svg xmlns="http://www.w3.org/2000/svg" className=" h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                               </svg>
-                              <a href='\ticketing'className="text-sm ml-2">Manage Ticketing</a>
+                              <a onClick={() => navigate('/ticketing')}className="text-sm ml-2">Manage Ticketing</a>
                             </div>
                           </li>
                           <li className="flex w-full p-4 justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
