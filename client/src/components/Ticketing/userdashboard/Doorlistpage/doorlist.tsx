@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 /* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 /* eslint-disable require-jsdoc */
@@ -17,7 +18,6 @@ import {DataGrid, GridCellParams} from '@mui/x-data-grid';
 import {Checkbox} from '@material-ui/core';
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
-import axios from 'axios';
 // import RequireLogin from './RequireLogin';
 import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 
@@ -25,7 +25,7 @@ const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.va
 
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   try {
-    const res = await fetch(`/api/events/checkin`, {
+    const res = await fetch(`http://localhost:8000/api/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
@@ -45,26 +45,49 @@ const renderCheckin = ((params: GridCellParams) =>
   />);
 
 const columns = [
-  {field: 'name'},
-  {field: 'vip', renderCell: renderCheckbox},
-  {field: 'donorbadge', renderCell: renderCheckbox},
-  {field: 'accomodations', renderCell: renderCheckbox},
-  {field: 'num_tickets'},
-  {field: 'arrived', renderCell: renderCheckin},
+  {field: 'name', headerName: 'Name', width: 200},
+  {field: 'vip', headerName: 'VIP', width: 100, renderCell: renderCheckbox},
+  {field: 'donorbadge', headerName: 'Donor', width: 125, renderCell: renderCheckbox},
+  {field: 'accomodations', headerName: 'Accomodations', width: 180, renderCell: renderCheckbox},
+  {field: 'num_tickets', headerName: 'Tickets', width: 130},
+  {field: 'arrived', headerName: 'Arrived', width: 130, renderCell: renderCheckin},
 ];
 
 
 type DoorListProps = {eventinstanceid: string}
-export default function DoorList() {
+const DoorList = () => {
   const {eventinstanceid} = useParams<DoorListProps>();
   const [doorList, setDoorList] = useState([]);
   const [eventName, setEventName] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [id, setId]=useState(Number);
+
+
+  const [eventList, setEventList] = useState([]);
+  const getEvents = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/events/list/active');
+      const jsonData = await response.json();
+      Object.keys(jsonData).forEach(function(key) {
+        jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
+        jsonData[key].starttime = militaryToCivilian(jsonData[key].starttime);
+      });
+      setEventList(jsonData);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getEvents();
+  }, []);
 
   const getDoorList = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${eventinstanceid}`, {method: 'GET'});
+      const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${id}`, {method: 'GET'});
+
+      // const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${eventinstanceid}`, {method: 'GET'});
       const jsonData = await response.json();
 
       // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }
@@ -76,7 +99,11 @@ export default function DoorList() {
       console.error(error.message);
     }
   };
-
+  const handleshowhide=(event)=>{
+    const getuser = event.target.value;
+    setId(getuser);
+    getDoorList();
+  };
   useEffect(() => {
     getDoorList();
   }, []);
@@ -90,9 +117,29 @@ export default function DoorList() {
            text-transparent bg-gradient-to-r from-sky-500
             to-indigo-500 mb-14' >Door List</h1>
         </div>
+        <div className='text-sm text-zinc-500 ml-1 mb-2'>Choose Event Date and time</div>
+        <select id="search-select" className="select w-full
+           max-w-xs bg-white border border-zinc-300
+           rounded-lg p-3 text-zinc-600 mb-7" onChange={(e) => (handleshowhide(e))}>
+          {eventList.map((eventss) => (
+            <>
+              <option key={eventss.id} value={eventss.id} className="px-6 py-3">
+                {eventss.eventdate} at {eventss.starttime}
+              </option>
+            </>
+          ),
+          )}
+        </select>
         <div className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</div>
         <div className='text-2xl font-bold '>{`${date}, ${time}`}</div>
-        <table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
+        <DataGrid
+          className='bg-white rounded-lg text-xl '
+          autoHeight
+          disableSelectionOnClick
+          rows={doorList}
+          columns={columns}
+          pageSize={10}/>
+        {/*<table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
           <thead className="text-xs text-zinc-100 uppercase rounded-t-lg bg-zinc-800">
             <tr>
               {columns.map((client) =>
@@ -108,17 +155,29 @@ export default function DoorList() {
           </thead>
           <tbody>
             <tr className="bg-zinc-100 border-b rounded-b-lg hover:bg-gray-50">
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>{doorList.map((eventss) => (
+                <>
+                  <option className="px-6 py-3">
+                    {eventss.name}
+                  </option>
+                </>
+              ),
+              )}</td>
+              <td>{doorList.map((eventss) => (
+                <>
+                  <option className="px-6 py-3">
+                    {eventss.vip}
+                  </option>
+                </>
+              ),
+              )}</td>
             </tr>
           </tbody>
-        </table>
+        </table>*/}
       </div>
 
     </div>
   );
-}
+};
+
+export default DoorList;

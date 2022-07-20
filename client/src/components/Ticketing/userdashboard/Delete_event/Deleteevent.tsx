@@ -9,7 +9,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-// import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid} from '@mui/x-data-grid';
 import Button from '@material-ui/core/Button';
 import React, {useState, useEffect} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
@@ -40,7 +40,7 @@ export default function DeleteEvents() {
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
     try {
-      const response = await fetch('/api/events/list/active');
+      const response = await fetch('http://localhost:8000/api/events/list/active');
       const jsonData = await response.json();
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
@@ -61,6 +61,7 @@ export default function DeleteEvents() {
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500' >Delete Event</h1>
+        <DataGrid autoHeight rows={eventList} columns={columns} pageSize={10} />
         <table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
           <thead className="text-xs text-zinc-100 rounded-t-lg bg-zinc-800">
             <tr>
@@ -77,7 +78,7 @@ export default function DeleteEvents() {
           </thead>
           <tbody>
             <tr className="bg-zinc-100 border-b rounded-b-lg hover:bg-gray-50">
-              <td>{eventList}</td>
+              <td></td>
               <td></td>
               <td></td>
               <td></td>

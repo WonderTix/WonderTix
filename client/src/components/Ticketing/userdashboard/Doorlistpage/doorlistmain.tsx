@@ -1,13 +1,13 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import Doorlist from './doorlist';
+import DoorList from './doorlist';
 
 const Doorlistmain = () => {
   return (
     <div className='flex flex-row'>
       <Udash_nav/>
-      <Doorlist/>
+      <DoorList/>
     </div>
   );
 };
