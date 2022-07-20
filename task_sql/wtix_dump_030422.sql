@@ -11585,7 +11585,7 @@ SELECT pg_catalog.setval('public.discounts_id_seq', 1, false);
 -- Name: donations_donationid_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.donations_donationid_seq', 1, false);
+SELECT pg_catalog.setval('public.donations_donationid_seq', 500, false);
 
 
 --
