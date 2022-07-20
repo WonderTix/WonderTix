@@ -61,8 +61,6 @@ const DoorList = () => {
   const [eventName, setEventName] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const [id, setId]=useState(Number);
-
 
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
@@ -83,11 +81,10 @@ const DoorList = () => {
     getEvents();
   }, []);
 
-  const getDoorList = async () => {
+  const getDoorList = async (event) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${id}`, {method: 'GET'});
-
-      // const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${eventinstanceid}`, {method: 'GET'});
+      const getuser = event.target.value;
+      const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${getuser}`, {method: 'GET'});
       const jsonData = await response.json();
 
       // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }
@@ -99,14 +96,6 @@ const DoorList = () => {
       console.error(error.message);
     }
   };
-  const handleshowhide=(event)=>{
-    const getuser = event.target.value;
-    setId(getuser);
-    getDoorList();
-  };
-  useEffect(() => {
-    getDoorList();
-  }, []);
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
@@ -120,10 +109,11 @@ const DoorList = () => {
         <div className='text-sm text-zinc-500 ml-1 mb-2'>Choose Event Date and time</div>
         <select id="search-select" className="select w-full
            max-w-xs bg-white border border-zinc-300
-           rounded-lg p-3 text-zinc-600 mb-7" onChange={(e) => (handleshowhide(e))}>
+           rounded-lg p-3 text-zinc-600 mb-7" onChange={(e) => (getDoorList(e))}>
+          <option className="px-6 py-3">select date</option>
           {eventList.map((eventss) => (
             <>
-              <option key={eventss.id} value={eventss.id} className="px-6 py-3">
+              <option value={eventss.id} className="px-6 py-3">
                 {eventss.eventdate} at {eventss.starttime}
               </option>
             </>
@@ -132,13 +122,15 @@ const DoorList = () => {
         </select>
         <div className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</div>
         <div className='text-2xl font-bold '>{`${date}, ${time}`}</div>
-        <DataGrid
-          className='bg-white rounded-lg text-xl '
-          autoHeight
-          disableSelectionOnClick
-          rows={doorList}
-          columns={columns}
-          pageSize={10}/>
+        <div>
+          <DataGrid
+            className='bg-white'
+            autoHeight
+            disableSelectionOnClick
+            rows={doorList}
+            columns={columns}
+            pageSize={10}/>
+        </div>
         {/*<table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
           <thead className="text-xs text-zinc-100 uppercase rounded-t-lg bg-zinc-800">
             <tr>

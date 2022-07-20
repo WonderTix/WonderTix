@@ -16,7 +16,7 @@ import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 
 export default function DeleteEvents() {
   async function deleteEvent(showId: string) {
-    const response = await fetch(`/api/events/${showId}`,
+    const response = await fetch(`http://localhost:8000/api/events/${showId}`,
         {
           credentials: 'include',
           method: 'DELETE',
@@ -61,8 +61,8 @@ export default function DeleteEvents() {
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500' >Delete Event</h1>
-        <DataGrid autoHeight rows={eventList} columns={columns} pageSize={10} />
-        <table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
+        <DataGrid className='bg-white' autoHeight rows={eventList} columns={columns} pageSize={10} />
+        {/* <table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
           <thead className="text-xs text-zinc-100 rounded-t-lg bg-zinc-800">
             <tr>
               {columns.map((client) =>
@@ -86,7 +86,7 @@ export default function DeleteEvents() {
               <td></td>
             </tr>
           </tbody>
-        </table>
+                </table>*/}
       </div>
     </div>
   );

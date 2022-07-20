@@ -32,24 +32,18 @@ const hostname = process.env.HOSTNAME || 'localhost';
 //   apiVersion: '2020-08-27',
 // });
 
-app.use(
-    cors({
-      origin: 'http://localhost:3000',
-      credentials: true,
-    }),
-);
 
 /* Middleware */
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(morgan('dev'));
 app.use(helmet());
-
-// this currently allows requests from any origin
-// which presents security vulenerabilities.
-// make sure to only allow whitelisted domains
-// when we figure out what those will be
-app.use(cors(/* OPTIONS HERE */));
+app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    }),
+);
 
 /* Connect Routers */
 
