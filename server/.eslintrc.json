@@ -1,29 +1,41 @@
 {
-    "ignorePatterns": ["src/prisma/**/*.ts"],
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "google"
+  "ignorePatterns": [
+    "src/prisma/**/*.ts"
+  ],
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "google"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "new-cap": [
+      "error",
+      {
+        "capIsNewExceptions": [
+          "Router"
+        ]
+      }
     ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint"
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
     ],
-    "rules": {
-      "new-cap": [
-        "error",
-        { "capIsNewExceptions": ["Router"] }
-      ],
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { "argsIgnorePattern": "^_" }
-      ]
-    }
+    "semi": "off",
+    "@typescript-eslint/semi": [
+      "error"
+    ]
+  }
 }

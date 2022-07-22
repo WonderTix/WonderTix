@@ -1,52 +1,64 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
+
+/* CRM */
 import React from 'react';
 import {Routes, Route} from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
-import Navigation from './components/Navigation';
-import Home from './components/Home';
-import Accounts from './components/Accounts/Accounts';
-import Contacts from './components/Contacts/Contacts';
-import Tasks from './components/Tasks/Tasks';
-import Reporting from './components/Reporting/Reporting';
 import ProtectedRoute from './components/Authentication/protected-route';
-import TaskForm from './components/Tasks/TaskForm';
-import EditTask from './components/Tasks/EditTask';
+import Dashmain from './components/CRM/Dashmain';
+import AccountsMain from './components/CRM/Accounts/AccountsMain';
+import ContactMain from './components/CRM/Contacts/ContactMain';
+import ReportingMain from './components/CRM/Reporting/ReportingMain';
+import TasksEditMain from './components/CRM/Tasks/TasksEditMain';
+import TasksMain from './components/CRM/Tasks/TasksMain';
+import CreateTask from './components/CRM/Tasks/CreateTask';
 
+
+/* Ticketing */
+import Mainpage from './components/Ticketing/mainpage/Main';
+import Doorlistmain from './components/Ticketing/userdashboard/Doorlistpage/doorlistmain';
+import Addeventmain from './components/Ticketing/userdashboard/Add_event/addeventmain';
+import Udashmain from './components/Ticketing/userdashboard/Udashmain';
+import Deleteeventmain from './components/Ticketing/userdashboard/Delete_event/Deleteventmain';
 const App = () => {
   return (
     <>
-      <ProtectedRoute component={Navigation} />
       <ProtectedRoute component={CssBaseline} />
       <Routes>
-        <Route path="/" element={<ProtectedRoute component={Home} />} />
+        <Route path="/" element={<ProtectedRoute component={Mainpage}/>} />
+        <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
         <Route
-          path="/accounts"
-          element={<ProtectedRoute component={Accounts} />}
+          path="/admin/accounts"
+          element={<ProtectedRoute component={AccountsMain} />}
         >
-          <Route path=":id" element={<ProtectedRoute component={Accounts} />} />
+          <Route path=":id" element={<ProtectedRoute component={AccountsMain} />} />
         </Route>
         <Route
-          path="/contacts"
-          element={<ProtectedRoute component={Contacts} />}
+          path="/admin/contacts"
+          element={<ProtectedRoute component={ContactMain} />}
         >
-          <Route path=":id" element={<ProtectedRoute component={Contacts} />} />
+          <Route path=":id" element={<ProtectedRoute component={ContactMain} />} />
         </Route>
         <Route
-          path="/reporting"
-          element={<ProtectedRoute component={Reporting} />}
+          path="/admin/reporting"
+          element={<ProtectedRoute component={ReportingMain} />}
         />
-        <Route path="/tasks" element={<ProtectedRoute component={Tasks} />} />
+        <Route path="/admin/tasks" element={<ProtectedRoute component={TasksMain} />} />
         <Route
-          path="/tasks/create"
+          path="/admin/tasks/create"
           element={
-            <TaskForm
-              title="Create New Task"
-              name="Create"
-              threeButtonForm={false}
-            />
-          }
+            <ProtectedRoute component={CreateTask}/>}
         />
-        <Route path="/tasks/edit" element={<EditTask />} />
-        <Route path="/tasks/accountInformation" element={<Tasks />} />
+        <Route path="/admin/tasks/edit" element={<ProtectedRoute component={TasksEditMain}/>} />
+        <Route path="/admin/tasks/accountInformation" element={<ProtectedRoute component={TasksMain}/>} />
+
+        <Route path="/ticketing" element={<ProtectedRoute component={Udashmain} />} />
+        <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
+        <Route path="/ticketing/addevent" element={<ProtectedRoute component={Addeventmain} />} />
+        <Route path="/ticketing/deleteevent" element={<ProtectedRoute component={Deleteeventmain} />} />
+
+
       </Routes>
     </>
   );

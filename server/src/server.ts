@@ -1,55 +1,49 @@
 // server.ts
-
-import 'reflect-metadata';
-import * as tq from 'type-graphql';
-import {ApolloServer} from 'apollo-server';
-import {context} from './context';
-import {resolvers} from './prisma/generated/type-graphql';
-
+import cors from 'cors';
+import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
-import cors from 'cors';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 import path from 'path';
-import {donationsRouter} from './api/donations/donations.router';
-import {contactsRouter} from './api/contacts/contacts.router';
+import 'reflect-metadata';
 import {accountsRouter} from './api/accounts/accounts.router';
-import {tasksRouter} from './api/tasks/tasks.router';
-import {
-  taskNotesRouter as taskNotesRouter,
-} from './api/task_notes/task_notes.router';
+import {contactsRouter} from './api/contacts/contacts.router';
+import {donationsRouter} from './api/donations/donations.router';
+import {doorlistRouter} from './api/doorlist/doorlist.router';
+import {eventRouter} from './api/events/event.router';
+import {newsletterRouter} from './api/newsletter/newsletter.router';
+import {orderRouter} from './api/orders/order.router';
 import {savedReportsRouter} from './api/saved_reports/saved_reports.router';
+import {subscriptionRouter} from './api/subscriptions/subscription.router';
+import {tasksRouter} from './api/tasks/tasks.router';
+import {taskNotesRouter} from './api/task_notes/task_notes.router';
+import {ticketRouter} from './api/tickets/ticket.router';
 
-dotenv.config({path: path.join(__dirname, '../.env')});
+dotenv.config({path: path.join(__dirname, '../../.env')});
 
-const gqlApp = async () => {
-  const schema = await tq.buildSchema({
-    resolvers,
-  });
-
-
-  new ApolloServer({schema, context: context}).listen({port: 4000}, () =>
-    console.log('graphql server ready at: http://localhost:4000'),
-  );
-};
-
-const app = express();
-const port = parseInt(process.env.PORT || '8000');
+export const app = express();
+const port = 8000;
 const hostname = process.env.HOSTNAME || 'localhost';
 
-/* Middleware */
+// const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
+//   process.env.PRIVATE_STRIPE_KEY : '';
 
+// const stripe = new Stripe(stripeKey, {
+//   apiVersion: '2020-08-27',
+// });
+
+
+/* Middleware */
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(morgan('dev'));
 app.use(helmet());
-
-// this currently allows requests from any origin
-// which presents security vulenerabilities.
-// make sure to only allow whitelisted domains
-// when we figure out what those will be
-app.use(cors(/* OPTIONS HERE */));
+app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    }),
+);
 
 /* Connect Routers */
 
@@ -59,11 +53,14 @@ app.use('/api/accounts', accountsRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/task_notes', taskNotesRouter);
 app.use('/api/saved_reports', savedReportsRouter);
+app.use('/api/newsletter/', newsletterRouter);
+app.use('/api/events', eventRouter);
+app.use('/api/email_subscriptions', subscriptionRouter);
+app.use('/api/tickets', ticketRouter);
+app.use('/api/doorlist', doorlistRouter);
+app.use('/webhook', orderRouter);
 
 app.get('/', (_req, res) => res.send('Hello World.'));
-
-/* Server Activation */
-gqlApp();
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://${hostname}:${port}`);

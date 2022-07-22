@@ -1,13 +1,68 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import "tailwindcss/base";
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
+
+@layer base {
+
+
+
+    .dialog-window{
+        position: absolute;
+        left: 40%;
+        top: 35%;
+        background-color: black;
+        z-index: 150;
+        width: 400px;
+    }
+    .dialog-wrapper{
+        z-index: 120;
+        left: 0;
+        top: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 90%;
+    }
+
+    .btn-container
+    {
+        width: 50%;
+        margin-left: 2.5%;
+        margin-right: 2.5%;
+        align-content: center;
+    }
+
+    .btn{
+        width: 100%;
+        text-align: center;
+        height: 40px;
+        border-radius: 10px;
+    }
+
+    .btn-primary{
+        color: white;
+        background-color: rgb(65, 151, 169);
+    }
+
+    .input-field
+    {
+        width: 100%;
+        border-bottom-width: 2px;
+        border-color: rgb(65, 151, 169);
+        color: black;
+        margin: 15px 0 15px 0;
+    }
+    .btn-secondary
+    {
+        color: black;
+        background-color: grey;
+    }
+    .btn-secondary:hover
+    {
+        color: white;
+        background-color: darkgray;
+    }
 }
