@@ -17,10 +17,12 @@ import CreateTask from './components/CRM/Tasks/CreateTask';
 
 /* Ticketing */
 import Mainpage from './components/Ticketing/mainpage/Main';
-import Doorlistmain from './components/Ticketing/userdashboard/Doorlistpage/doorlistmain';
-import Addeventmain from './components/Ticketing/userdashboard/Add_event/addeventmain';
-import Udashmain from './components/Ticketing/userdashboard/Udashmain';
-import Deleteeventmain from './components/Ticketing/userdashboard/Delete_event/Deleteventmain';
+import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
+import Addeventmain from './components/Ticketing/ticketingmanager/Events/Add_event/addeventmain';
+import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
+import Deleteeventmain from './components/Ticketing/ticketingmanager/Events/Delete_event/Deleteventmain';
+import Editeventmain from './components/Ticketing/ticketingmanager/Events/Edit_event/Editeventmain';
+import Manageventmain from './components/Ticketing/ticketingmanager/Events/Manageventsmain';
 const App = () => {
   return (
     <>
@@ -57,7 +59,8 @@ const App = () => {
         <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
         <Route path="/ticketing/addevent" element={<ProtectedRoute component={Addeventmain} />} />
         <Route path="/ticketing/deleteevent" element={<ProtectedRoute component={Deleteeventmain} />} />
-
+        <Route path="/ticketing/editevent" element={<ProtectedRoute component={Editeventmain} />} />
+        <Route path="/ticketing/manageevent" element={<ProtectedRoute component={Manageventmain} />} />
 
       </Routes>
     </>

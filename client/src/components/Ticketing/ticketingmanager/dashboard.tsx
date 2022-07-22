@@ -23,14 +23,14 @@ const Dashboard = () => {
 
             </div>
           </a>
-          <a className="border-none hover:border-none hover:scale-105  transition duration-300 ease-in-out bg-gradient-to-r from-cyan-500 to-blue-500  rounded-3xl    shadow-xl   ">
+          <a onClick={() => navigate('/ticketing/manageevent')} className="border-none hover:border-none hover:scale-105  transition duration-300 ease-in-out bg-gradient-to-r from-cyan-500 to-blue-500  rounded-3xl    shadow-xl   ">
             <div className="m-8 flex flex-col items-start">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" viewBox="0 0 20 20" fill="white">
                 <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
                 <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
               </svg>
 
-              <h5 className="mb-2 ml-1 text-2xl font-bold tracking-tight  text-white">Edit Event</h5>
+              <h5 className="mb-2 ml-1 text-2xl font-bold tracking-tight  text-white">Manage Events</h5>
 
             </div>
           </a>

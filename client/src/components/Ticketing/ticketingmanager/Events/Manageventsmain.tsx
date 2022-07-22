@@ -1,15 +1,15 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import CreateEvents from './addevent';
+import ManageEventsPage from './ManageEvents';
 
-const Addeventmain = () => {
+const Manageventmain = () => {
   return (
     <div className='flex flex-row '>
       <Udash_nav/>
-      <CreateEvents/>
+      <ManageEventsPage/>
     </div>
   );
 };
 
-export default Addeventmain;
+export default Manageventmain;

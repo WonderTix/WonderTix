@@ -10,9 +10,8 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
 import {DataGrid} from '@mui/x-data-grid';
-import Button from '@material-ui/core/Button';
 import React, {useState, useEffect} from 'react';
-import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
+import {dayMonthDate, militaryToCivilian} from '../../../../../utils/arrays';
 
 export default function DeleteEvents() {
   async function deleteEvent(showId: string) {
@@ -33,7 +32,7 @@ export default function DeleteEvents() {
     {field: 'eventdate', headerName: 'Date', width: 150},
     {field: 'starttime', headerName: 'Time', width: 100},
     {field: 'Delete', headerName: 'Delete', width: 150, renderCell: (params: any) => (
-      <Button variant="contained" color="secondary" onClick={() => deleteEvent(JSON.stringify(params.row.id))}>Delete</Button>
+      <button className='px-3 py-1 text-sm bg-red-600 text-white rounded-xl' onClick={() => deleteEvent(JSON.stringify(params.row.id))}>Delete</button>
     )},
   ];
 
