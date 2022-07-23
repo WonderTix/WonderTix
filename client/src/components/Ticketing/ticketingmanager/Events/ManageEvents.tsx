@@ -51,12 +51,7 @@ export default function ManageEventsPage() {
 
   const deleteEvent = async () => {
     setModalOpen(false);
-    const res = await fetch('http://localhost:8000/api/delete-event', {
-      credentials: 'include',
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({id: eventToDelete}),
-    });
+    const res = await fetch(`http://localhost:8000/api/events?id=${eventToDelete}`, {method: 'DELETE'});
     if (res.ok) {
       dispatch(openSnackbar('Deleted Event'));
       dispatch(fetchTicketingData());
