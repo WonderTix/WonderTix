@@ -43,7 +43,7 @@ const EditEventPage = () => {
   const initValues = playData ? formatToEventFormData(playData) : undefined;
 
   const fetchTicketTypes = async () => {
-    const res = await fetch('http://localhost:8000/api/tickets/type');
+    const res = await fetch('http://localhost:8000/api/tickets/types');
     setTicketTypes(await res.json());
   };
   useEffect(() => {
@@ -72,16 +72,20 @@ const EditEventPage = () => {
   };
 
   return (
-    <div>
-      <div>
-        Edit {playData?.title ?? 'Your Event'}
+    <div className='w-full h-screen overflow-x-hidden absolute'>
+      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
+     sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+        <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
+         bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 ' >
+          Edit {playData?.title ?? 'Your Event'}
+        </h1>
+        <EventForm
+          ticketTypes={ticketTypes}
+          onSubmit={onSubmit}
+          initialValues={initValues}
+          editMode
+        />
       </div>
-      <EventForm
-        ticketTypes={ticketTypes}
-        onSubmit={onSubmit}
-        initialValues={initValues}
-        editMode
-      />
     </div>
   );
 };
