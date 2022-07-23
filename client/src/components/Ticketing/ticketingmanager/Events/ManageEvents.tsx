@@ -51,7 +51,7 @@ export default function ManageEventsPage() {
 
   const deleteEvent = async () => {
     setModalOpen(false);
-    const res = await fetch(`http://localhost:8000/api/events?id=${eventToDelete}`, {method: 'DELETE'});
+    const res = await fetch(`http://localhost:8000/api/events/${eventToDelete}`, {method: 'DELETE'});
     if (res.ok) {
       dispatch(openSnackbar('Deleted Event'));
       dispatch(fetchTicketingData());
