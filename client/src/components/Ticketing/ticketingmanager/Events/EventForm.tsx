@@ -16,9 +16,7 @@ import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import {FieldArray} from 'react-final-form-arrays';
 // import DateFnsUtils from '@date-io/date-fns';
-import {Button} from '@material-ui/core';
 import {ValidationErrors} from 'final-form';
-import {useState} from 'react';
 // import {KeyboardDateTimePicker} from '@material-ui/pickers';
 // import DateFnsUtils from '@mui/lab/AdapterDateFns';
 
@@ -63,32 +61,6 @@ interface EventFormProps {
     editMode?: boolean
 }
 const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormProps) => {
-  const [eventName, setEventName] = useState('');
-  const [eventDesc, setEventDesc] = useState('');
-  const [eventTickets, setEventTickets] = useState(0);
-  const [eventDate, setEventDate] = useState(new Date()); // Use React datetime??
-  const [eventTime, setEventTime] = useState(eventDate.getTime()); // Use React datetime??
-
-  const eventCreate = async () => {
-    const data = {
-      eventName: eventName,
-      eventDesc: eventDesc,
-      eventTickets: eventTickets,
-      eventDate: eventDate,
-      eventTime: eventTime,
-    };
-
-    const req = await fetch('http://localhost:8000/api/events', {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    return req.json();
-  };
   return (
     <Form
       onSubmit={onSubmit}
@@ -102,7 +74,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
         submitting,
       }) => (
         <form onSubmit={handleSubmit}>
-          <div className='bg-white flex flex-col  p-6 rounded-xl '>
+          <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
             <div className='text-3xl font-semibold mb-5'>
                 Event Information
             </div>
@@ -114,9 +86,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                 name='eventname'
                 className='w-full p-2 rounded-lg border border-zinc-300 mb-3'
                 placeholder='Event Name'
-                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                  setEventName(ev.target.value)
-                }
               />
               <h3 className='text-sm text-zinc-600 mb-1'>Enter Short Event Description</h3>
               <input
@@ -125,9 +94,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                 id="EventDescription"
                 className='w-full p-2 rounded-lg border border-zinc-300 mb-3'
                 placeholder='Event Description'
-                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                  setEventDesc(ev.target.value)
-                }
               />
               <h3 className='text-sm text-zinc-600 mb-1'>Upload Image for Event</h3>
               <div className='mb-7'>
@@ -146,7 +112,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                     <div className="flex text-sm text-gray-600">
                       <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                         <span>Upload a file</span>
-                        <input id="file-upload" name="file-upload" type="file" accept="image/*" className="sr-only"/>
+                        <input id="file-upload" name="image_url" type="file" accept="image/*" className="sr-only"/>
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
@@ -167,10 +133,10 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                 {({fields}) =>
                   fields.map((name, i) => (
                     <div key={name} className='shadow-xl p-5 rounded-xl mb-4 bg-violet-700'>
-                      <label className='font-semibold text-white mb-3 mt-7  '>Show # {i + 1}</label>
-                      <div>
+                      <label className='font-semibold text-white mb-7 mt-7  '>Show # {i + 1}</label>
+                      <div className='flex flex-col gap-5 mt-5 pr-20'>
                         <input
-                          className='input rounded-lg p-2 mr-5 bg-violet-100'
+                          className='input rounded-lg p-2 bg-violet-100'
                           name={`${name}.totalseats`}
                           type='number'
                           required
@@ -181,13 +147,25 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                           className='p-2 rounded-lg bg-violet-100'
                           name={`${name}.ticketTypeId`}
                           required
+                          placeholder='Select Ticket Type'
                         >
+                          <option className='text-sm text-zinc-700 '>Select Ticket Type</option>
                           {ticketTypes.map((t) =>
                             <option key={t.id} value={t.id}>
                               {`${t.name}: ${t.price} (+ ${t.concessions} concessions)`}
                             </option >,
                           )}
                         </select>
+                        <div className="flex flex-row gap-10">
+                          <div>
+                            <h3 className='font-semibold text-white'>Enter Date</h3>
+                            <input type="date" name={`${name}.DateTime`} className='input w-full p-2 rounded-lg bg-violet-100 mb-7 '/>
+                          </div>
+                          <div >
+                            <h3 className='font-semibold text-white'>Enter time</h3>
+                            <input type="time" name="eventtime" className='w-full p-2 rounded-lg bg-violet-100  mb-7 '/>
+                          </div>
+                        </div>
                       </div>
                       <button
                         className='px-2 py-1 bg-red-500 mt-2 mb-4 text-white rounded-lg text-sm'
@@ -218,7 +196,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
             className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
             type='submit'
             disabled={!editMode && (submitting || pristine)}
-            onClick={eventCreate}
           >
             {editMode ? 'Save Changes' : 'Save New Event'}
           </button>
