@@ -42,7 +42,7 @@ export interface Event {
     image_url: string,
 }
 
-type TicketsState = {byId: {[key: number]: Ticket}, allIds: number[]}
+type TicketsState = {byId: {[key: string]: Ticket}, allIds: number[]}
 export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed'
 export interface ticketingState {
     cart: CartItem[],
@@ -66,8 +66,8 @@ export const fetchTicketingData = createAsyncThunk(
     async () => {
       const events: Event[] = await fetchData('http://localhost:8000/api/events');
       const ticketRes: TicketsState = await fetchData('http://localhost:8000/api/tickets');
-      const tickets = Object.entries(ticketRes.byId)
-          .reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date)}}), {});
+      const tickets = Object.entries(ticketRes.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date)}}), {});
+      console.log(tickets);
       return {events, tickets: {byId: tickets, allIds: ticketRes.allIds}};
     },
 );
@@ -279,4 +279,5 @@ export const selectNumAvailable = (state: RootState, ticketid: number) => {
 };
 
 export const {addTicketToCart, editItemQty, removeTicketFromCart, removeAllTicketsFromCart} = ticketingSlice.actions;
+// @ts-ignore
 export default ticketingSlice.reducer;
