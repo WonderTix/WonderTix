@@ -111,11 +111,11 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                 You can configure occurances of this event below. To add more, click the "Add Showing" button.
             </div>
 
-            <div className='bg-violet-200 rounded-xl p-5 shadow-md mb-4'>
+            <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4'>
               <FieldArray name='showings'>
                 {({fields}) =>
                   fields.map((name, i) => (
-                    <div key={name} className='shadow-xl p-5 rounded-xl mb-4 bg-violet-700'>
+                    <div key={name} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
                       <label className='font-semibold text-white mb-7 mt-7  '>Show # {i + 1}</label>
                       <div className='flex flex-col gap-5 mt-5 pr-20'>
                         <input
