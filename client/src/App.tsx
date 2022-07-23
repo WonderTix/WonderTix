@@ -59,7 +59,7 @@ const App = () => {
         <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
         <Route path="/ticketing/addevent" element={<ProtectedRoute component={Addeventmain} />} />
         <Route path="/ticketing/deleteevent" element={<ProtectedRoute component={Deleteeventmain} />} />
-        <Route path="/ticketing/editevent" element={<ProtectedRoute component={Editeventmain} />} />
+        <Route path="/ticketing/editevent/:eventid" element={<ProtectedRoute component={Editeventmain} />} />
         <Route path="/ticketing/manageevent" element={<ProtectedRoute component={Manageventmain} />} />
 
       </Routes>

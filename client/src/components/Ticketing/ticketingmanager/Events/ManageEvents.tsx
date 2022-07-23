@@ -29,7 +29,7 @@ export default function ManageEventsPage() {
   const [eventToDelete, setEventToDelete] = useState<string|null>();
 
   const onEditClick = (id: number|string) => {
-    history(`/admin/EditEvent/${id}`);
+    history(`/ticketing/editevent/${id}`);
   };
 
   const onDeleteClick = (id: string) => {

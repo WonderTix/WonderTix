@@ -18,7 +18,7 @@ import {fetchTicketingData} from '../../ticketing/ticketingSlice';
 import {fetchEventInstanceData} from '../events_pages/eventsSlice';
 import {openSnackbar} from '../../snackbarSlice';
 
-import EventForm, {NewEventData} from '../Event_elements/EventForm';
+import EventForm, {NewEventData} from '../EventForm';
 import {Typography} from '@material-ui/core';
 import {format} from 'date-fns';
 
@@ -34,7 +34,7 @@ const CreateEventPage = () => {
   const [ticketTypes, setTicketTypes] = useState([]);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch('http://localhost:8000/api/tickets/type');
+    const res = await fetch('http://localhost:8000/api/tickets/types');
     setTicketTypes(await res.json());
   };
 

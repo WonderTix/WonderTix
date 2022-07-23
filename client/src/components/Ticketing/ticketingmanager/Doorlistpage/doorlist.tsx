@@ -121,8 +121,8 @@ const DoorList = () => {
           )}
         </select>
         <div className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</div>
-        <div className='text-2xl font-bold '>{`${date}, ${time}`}</div>
-        <div>
+        <div className='text-2xl font-bold text-zinc-700'>{`${date}, ${time}`}</div>
+        <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
           <DataGrid
             className='bg-white'
             autoHeight
