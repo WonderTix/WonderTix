@@ -28,7 +28,8 @@ const formatToEventFormData = (data: EventPageData): Partial<NewEventData> => ({
   imageUrl: data.image_url,
   showings: data.tickets.map((t) => ({
     id: t.event_instance_id,
-    DateTime: t.date,
+    starttime: t.date,
+    eventdate: t.date,
     totalseats: t.totalseats ?? 0,
     ticketTypeId: '0',
   })),

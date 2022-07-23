@@ -21,9 +21,7 @@ import EventForm, {NewEventData} from '../EventForm';
 import {format} from 'date-fns';
 
 const formatShowingData = (eventid: number) => (data: any) => {
-  const {DateTime, totalseats, ticketTypeId} = data;
-  const eventdate = format(DateTime, 'yyyy-MM-dd');
-  const starttime = format(DateTime, 'HH:mm:00');
+  const {starttime, eventdate, totalseats, ticketTypeId} = data;
   return {eventid, eventdate, starttime, totalseats, tickettype: ticketTypeId};
 };
 
