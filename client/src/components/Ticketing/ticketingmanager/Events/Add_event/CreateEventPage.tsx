@@ -46,7 +46,7 @@ const CreateEventPage = () => {
   const onSubmit = async (formData: NewEventData) => {
     const {image_url, eventname, eventdescription, showings} = formData;
 
-    const createPlayRes = await fetch('http://localhost:8000/api/create-event', {
+    const createPlayRes = await fetch('http://localhost:8000/api/events', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
@@ -58,7 +58,7 @@ const CreateEventPage = () => {
       const {id} = eventData.rows[0];
       const showingdata = showings.map(formatShowingData(id));
 
-      const postShowings = await fetch('http://localhost:8000/api/create-event-instances', {
+      const postShowings = await fetch('http://localhost:8000/api/events/instances', {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',

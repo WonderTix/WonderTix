@@ -72,10 +72,10 @@ export default function ManageEventsPage() {
     {field: 'eventdescription', headerName: 'Description', width: 200},
     {field: 'numShows', headerName: 'No. Shows', width: 150},
     {field: 'Edit', headerName: 'Edit', width: 130, renderCell: (params: any) => (
-      <Button variant="contained" color="secondary" onClick={() => onEditClick(params.row.id)}>Edit</Button>
+      <button className='px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-800' onClick={() => onEditClick(params.row.id)}>Edit</button>
     )},
     {field: 'Delete', headerName: 'Delete', width: 150, renderCell: (params: any) => (
-      <Button variant="contained" color="secondary" onClick={() => onDeleteClick(params.row.id)}>Delete</Button>
+      <button className='px-5 py-2 bg-red-600 text-white rounded-xl hover:bg-red-800' onClick={() => onDeleteClick(params.row.id)}>Delete</button>
     )},
   ];
 

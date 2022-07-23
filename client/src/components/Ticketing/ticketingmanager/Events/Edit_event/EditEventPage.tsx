@@ -53,7 +53,7 @@ const EditEventPage = () => {
   const onSubmit = async (updatedData: NewEventData) => {
     const deltas = diff(initValues, updatedData);
 
-    const res = await fetch('http://localhost:8000/api/edit-event', {
+    const res = await fetch('http://localhost:8000/api/events', {
       credentials: 'include',
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
