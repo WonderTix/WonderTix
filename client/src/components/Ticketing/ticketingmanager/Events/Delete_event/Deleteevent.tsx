@@ -61,31 +61,6 @@ export default function DeleteEvents() {
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500' >Delete Event</h1>
         <DataGrid className='bg-white' autoHeight rows={eventList} columns={columns} pageSize={10} />
-        {/* <table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
-          <thead className="text-xs text-zinc-100 rounded-t-lg bg-zinc-800">
-            <tr>
-              {columns.map((client) =>
-                (
-                  <>
-                    <th scope="col" className="px-6 py-3">
-                      {client.headerName}
-                    </th>
-                  </>
-                ),
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-zinc-100 border-b rounded-b-lg hover:bg-gray-50">
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-                </table>*/}
       </div>
     </div>
   );

@@ -23,9 +23,9 @@ import {openSnackbar} from '../../snackbarSlice';
 
 
 const formatToEventFormData = (data: EventPageData): Partial<NewEventData> => ({
-  eventname: data.title,
-  eventdescription: data.description,
-  image_url: data.image_url,
+  eventName: data.title,
+  eventDesc: data.description,
+  imageUrl: data.image_url,
   showings: data.tickets.map((t) => ({
     id: t.event_instance_id,
     DateTime: t.date,

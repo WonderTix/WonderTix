@@ -17,9 +17,7 @@ import {useAppDispatch} from '../../../app/hooks';
 import {fetchTicketingData} from '../../ticketing/ticketingSlice';
 import {fetchEventInstanceData} from '../events_pages/eventsSlice';
 import {openSnackbar} from '../../snackbarSlice';
-
 import EventForm, {NewEventData} from '../EventForm';
-import {Typography} from '@material-ui/core';
 import {format} from 'date-fns';
 
 const formatShowingData = (eventid: number) => (data: any) => {
@@ -44,14 +42,15 @@ const CreateEventPage = () => {
 
   // TODO: create endpoint that combines /api/create-event & /api/create-showings
   const onSubmit = async (formData: NewEventData) => {
-    const {image_url, eventname, eventdescription, showings} = formData;
-
+    const {imageUrl, eventName, eventDesc, showings} = formData;
+    console.log(eventName);
     const createPlayRes = await fetch('http://localhost:8000/api/events', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
-      body: JSON.stringify({eventname, eventdescription, image_url}),
+      body: JSON.stringify({eventName, eventDesc, imageUrl}),
     });
+    console.log(createPlayRes);
 
     if (createPlayRes.ok) {
       const eventData = await createPlayRes.json();

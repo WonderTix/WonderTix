@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
@@ -17,6 +18,7 @@ import arrayMutators from 'final-form-arrays';
 import {FieldArray} from 'react-final-form-arrays';
 // import DateFnsUtils from '@date-io/date-fns';
 import {ValidationErrors} from 'final-form';
+import {useState} from 'react';
 // import {KeyboardDateTimePicker} from '@material-ui/pickers';
 // import DateFnsUtils from '@mui/lab/AdapterDateFns';
 
@@ -29,16 +31,18 @@ interface TicketType {
 }
 
 export interface NewEventData {
-    eventname: string,
-    eventdescription: string,
+    eventName: string,
+    eventDesc: string,
     isPublished: boolean,
-    image_url: string,
-    showings: {
-        id?: number,
-        DateTime: Date,
-        ticketTypeId: string,
-        totalseats: number
-    }[]
+    imageUrl: string,
+    showings: Showing []
+}
+
+export interface Showing {
+  id?: number,
+  DateTime: Date,
+  ticketTypeId: string,
+  totalseats: number
 }
 
 function validate(formData: any): ValidationErrors {
@@ -60,10 +64,26 @@ interface EventFormProps {
     initialValues?: Partial<NewEventData>,
     editMode?: boolean
 }
+
 const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormProps) => {
+  const [eventName, seteventName] = useState('');
+  const [eventDesc, setEventDesc] = useState('');
+  const [imageUrl, setImageURL] = useState('');
+  const [isPublished, setisPublished] = useState(false);
+  const [showings, setShowings] = useState([]);
+  const handleSubmit = () => {
+    const data: NewEventData = {
+      eventName,
+      eventDesc,
+      isPublished,
+      imageUrl,
+      showings,
+    };
+    onSubmit(data);
+  };
   return (
     <Form
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       initialValues={initialValues ?? initialState}
       mutators={{...arrayMutators}}
       validate={validate}
@@ -82,24 +102,33 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
               <h3 className='text-sm text-zinc-600 '>Enter Event Name</h3>
               <input
                 type="input"
-                id="Event"
-                name='eventname'
+                id="eventName"
+                name='eventName'
+                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                  seteventName(ev.target.value)
+                }
                 className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
                 placeholder='Event Name'
               />
               <h3 className='text-sm text-zinc-600 '>Enter Short Event Description</h3>
               <input
                 type="input"
-                name='eventdescription'
-                id="EventDescription"
+                name='eventDesc'
+                id="eventDesc"
+                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                  setEventDesc(ev.target.value)
+                }
                 className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
                 placeholder='Event Description'
               />
               <h3 className='text-sm text-zinc-600 '>Upload Image for Event</h3>
               <input
                 type="input"
-                name='image_url'
-                id="EventDescription"
+                name='imageUrl'
+                id="imageUrl"
+                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                  setImageURL(ev.target.value)
+                }
                 className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
                 placeholder='image URL'
               />
@@ -143,6 +172,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                           <div>
                             <h3 className='font-semibold text-white'>Enter Date</h3>
                             <input type="date" name={`${name}.DateTime`} className='input w-full p-2 rounded-lg bg-violet-100 mb-7 '/>
+
                           </div>
                           <div >
                             <h3 className='font-semibold text-white'>Enter time</h3>
