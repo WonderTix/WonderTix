@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FieldArray} from 'react-final-form-arrays';
 import {useState} from 'react';
 
+// import {useDisaptch} from 'react-redux';
 interface TicketType {
     id: number,
     name: string,
@@ -13,20 +14,49 @@ interface TicketType {
 
 interface Showing {
     id?: number,
-    starttime: Date,
-    eventdate: Date,
+    starttime: string,
+    eventdate: string,
     ticketTypeId: string,
     totalseats: number
 }
-const CreateShowing = (ticketTypes, initialValues, editMode) => {
-  const [starttime, setStarttime] = useState(Date);
-  const [eventdate, setEventdate] = useState(Date);
+// eslint-disable-next-line react/prop-types
+const CreateShowing = ( {key, addShow, showings}) => {
+  const [starttime, setStarttime] = useState('');
+  const [eventdate, setEventdate] = useState('');
   const [ticketTypeId, setTicketTypeId] = useState('');
   const [totalseats, setTotalseats] = useState(Number);
+  const [ticketTypes, setTicketTypes] = useState([]);
+  const fetchTicketTypes = async () => {
+    const res = await fetch('http://localhost:8000/api/tickets/types');
+    setTicketTypes(await res.json());
+  };
 
-  console.log(ticketTypes);
+  useEffect(() => {
+    fetchTicketTypes();
+  }, []);
+
+  // Generate the showing object to submit to parent component
+  const createShowObject = () => {
+    const showing: Showing = {id: Math.random()*10,
+      starttime: starttime,
+      eventdate: eventdate,
+      ticketTypeId: ticketTypeId,
+      totalseats: totalseats};
+    return showing;
+  };
+
+  // Send callback to parent
+  const handleClick = (event) => {
+    event.preventDefault();
+    //  use call back to get to parent state
+    addShow(createShowObject());
+  };
+
+
+  // @ts-ignore
+  // @ts-ignore
   return (
-    <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4'>
+    <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={key}>
       <FieldArray name='showings'>
         {({fields}) =>
           fields.map((name, i) => (
@@ -39,7 +69,7 @@ const CreateShowing = (ticketTypes, initialValues, editMode) => {
                   type='number'
                   required
                   placeholder='# of Seats'
-                  disabled={editMode}
+                  // disabled={editMode}
                   onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                     setTotalseats(parseInt(ev.target.value))
                   }
@@ -64,32 +94,44 @@ const CreateShowing = (ticketTypes, initialValues, editMode) => {
                   <div>
                     <h3 className='font-semibold text-white'>Enter Date</h3>
                     <input type="date" name={`${name}.DateTime`} className='input w-full p-2 rounded-lg bg-violet-100 mb-7 '
-                      onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                        setEventdate(ev.target.value)
-                      }/>
+                      onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+                        const date = new Date(ev.target.value);
+                        setEventdate(date.toString());
+                      } }/>
                   </div>
                   <div >
                     <h3 className='font-semibold text-white'>Enter time</h3>
                     <input type="time" name="eventtime" className='w-full p-2 rounded-lg bg-violet-100  mb-7 '
-                      onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                        setStarttime(ev.target.value)
+                      onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
+                        const time = new Date(ev.target.value);
+                        setStarttime(time.toString());
+                      }
                       }/>
                   </div>
                 </div>
               </div>
               <button
                 className='px-2 py-1 bg-red-500 mt-2 mb-4 text-white rounded-lg text-sm'
-                onClick={() => fields.remove(i)}
-                disabled={editMode}
+                onClick={() => {
+                  // call back to parent to remove myself (instance of current component)
+
+                }}
+                // disabled={editMode}
               >
                         Delete
+              </button>
+              <button
+                className='px-2 py-1 bg-red-500 mt-2 mb-4 text-white rounded-lg text-sm'
+                onClick={handleClick}
+                // disabled={editMode}
+              >
+                    Save
               </button>
             </div>
           ))
         }
       </FieldArray>
     </div>
-
   );
 };
 

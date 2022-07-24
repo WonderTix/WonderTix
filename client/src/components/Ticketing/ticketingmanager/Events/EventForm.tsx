@@ -17,8 +17,9 @@ import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import {FieldArray} from 'react-final-form-arrays';
 import {ValidationErrors} from 'final-form';
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import CreateShowing from './Add_event/createShowing';
+import {useSelector} from 'react-redux';
 
 
 interface TicketType {
@@ -65,15 +66,31 @@ interface EventFormProps {
 }
 
 const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormProps) => {
-  const [eventName, seteventName] = useState('');
+  const [eventName, setventName] = useState('');
   const [eventDesc, setEventDesc] = useState('');
   const [imageUrl, setImageURL] = useState('');
-  const [isPublished, setisPublished] = useState(false);
-  const [starttime, setStarttime] = useState(Date);
-  const [eventdate, setEventdate] = useState(Date);
-  const [ticketTypeId, setTicketTypeId] = useState('');
-  const [totalseats, setTotalseats] = useState(Number);
+  const [isPublished, setIsPublished] = useState(false);
   const [showings, setShowings] = useState([]);
+  const [showList, setShowList] = useState([]);
+  const [showBoxID, setShowBoxID] = useState(0);
+
+  console.log(showings);
+  // Callback to get new show from child component to the parent
+  const addShow = useCallback((show) =>{
+    setShowings([...showings, show]);
+  }, [showings]);
+
+  // Wrapper for callback to add new show to the list of showings
+  const addShowSection = (event) => {
+    // Update id for new Show box appended to the list
+    setShowBoxID(showBoxID +1);
+    // Insert new box to the Event form
+    setShowList(showList.concat(
+        <CreateShowing key={showBoxID} showings={showings}
+          addShow={addShow} />));
+  };
+
+  // Handle new play and the show options
   const handleSubmit = () => {
     const data: NewEventData = {
       eventName,
@@ -84,6 +101,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
     };
     onSubmit(data);
   };
+
   return (
     <Form
       onSubmit={handleSubmit}
@@ -96,78 +114,95 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
         pristine,
         submitting,
       }) => (
-        <form onSubmit={handleSubmit}>
-          <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
-            <div className='text-3xl font-semibold mb-5'>
-                Event Information
-            </div>
-            <div className='w-full flex flex-col '>
-              <h3 className='text-sm text-zinc-600 '>Enter Event Name</h3>
-              <input
-                type="input"
-                id="eventName"
-                name='eventName'
-                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                  seteventName(ev.target.value)
-                }
-                className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
-                placeholder='Event Name'
-              />
-              <h3 className='text-sm text-zinc-600 '>Enter Short Event Description</h3>
-              <input
-                type="input"
-                name='eventDesc'
-                id="eventDesc"
-                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                  setEventDesc(ev.target.value)
-                }
-                className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
-                placeholder='Event Description'
-              />
-              <h3 className='text-sm text-zinc-600 '>Upload Image for Event</h3>
-              <input
-                type="input"
-                name='imageUrl'
-                id="imageUrl"
-                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                  setImageURL(ev.target.value)
-                }
-                className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
-                placeholder='image URL'
-              />
-            </div>
-            <div className='text-3xl font-semibold mt-5'>
-                Showings
-            </div>
-            <div className='mb-3 text-sm text-zinc-600'>
-                You can configure occurances of this event below. To add more, click the "Add Showing" button.
-            </div>
-            <div>
-              <CreateShowing ticketTypes={ticketTypes}
-                initialValues={initialValues}
-                editMode={editMode}/>
-            </div>
-
-            <div>
-              <button
-                className='px-3 py-2 bg-green-500 text-white rounded-xl  '
-                type='button'
-                onClick={() => push('showings', undefined)}
-                disabled={editMode}
-              >
-                Add Showing
-              </button>
-            </div>
+        // <form onSubmit={handleSubmit}>
+        //   <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
+        //     <div className='text-3xl font-semibold mb-5'>
+        //         Event Information
+        //     </div>
+        //     <div className='w-full flex flex-col '>
+        //       <h3 className='text-sm text-zinc-600 '>Enter Event Name</h3>
+        //       <input
+        //         type="input"
+        //         id="eventName"
+        //         name='eventName'
+        //         onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+        //           seteventName(ev.target.value)
+        //         }
+        //         className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
+        //         placeholder='Event Name'
+        //       />
+        //       <h3 className='text-sm text-zinc-600 '>Enter Short Event Description</h3>
+        //       <input
+        //         type="input"
+        //         name='eventDesc'
+        //         id="eventDesc"
+        //         onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+        //           setEventDesc(ev.target.value)
+        //         }
+        //         className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
+        //         placeholder='Event Description'
+        //       />
+        //       <h3 className='text-sm text-zinc-600 '>Upload Image for Event</h3>
+        //       <input
+        //         type="input"
+        //         name='imageUrl'
+        //         id="imageUrl"
+        //         onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+        //           setImageURL(ev.target.value)
+        //         }
+        //         className='w-full p-2 rounded-lg border border-zinc-300 mb-4'
+        //         placeholder='image URL'
+        //       />
+        //     </div>
+        //     <div className='text-3xl font-semibold mt-5'>
+        //         Showings
+        //     </div>
+        //     <div className='mb-3 text-sm text-zinc-600'>
+        //         You can configure occurances of this event below. To add more, click the "Add Showing" button.
+        //     </div>
+        //     <div>
+        //       <CreateShowing
+        //     shows={showings} ticketTypes={ticketTypes}
+        //     initialValues={initialValues} addShow={addShow}
+        //       // during add you add new Create Showing
+        //       />
+        //     </div>
+        //
+        //     <div>
+        //       <button
+        //         className='px-3 py-2 bg-green-500 text-white rounded-xl  '
+        //         type='button'
+        //         onClick={() => push('showings', undefined)}
+        //         disabled={editMode}
+        //       >
+        //         Add Showing
+        //       </button>
+        //     </div>
+        //   </div>
+        //
+        //   <button
+        //     className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
+        //     type='submit'
+        //     disabled={!editMode && (submitting || pristine)}
+        //   >
+        //     {editMode ? 'Save Changes' : 'Save New Event'}
+        //   </button>
+        // </form>
+        <>
+          <div id="show-table">
+            {showList}
           </div>
-
-          <button
-            className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
-            type='submit'
-            disabled={!editMode && (submitting || pristine)}
-          >
-            {editMode ? 'Save Changes' : 'Save New Event'}
-          </button>
-        </form>
+          <div>
+            <button
+              className='px-3 py-2 bg-green-500 text-white rounded-xl'
+              type='button'
+              onClick={addShowSection}
+              disabled={editMode}
+            >
+          Add Showing
+            </button>
+          </div>
+        </>
       )}
     />
   );

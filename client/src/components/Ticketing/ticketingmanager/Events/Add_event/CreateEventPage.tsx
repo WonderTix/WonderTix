@@ -41,7 +41,7 @@ const CreateEventPage = () => {
   // TODO: create endpoint that combines /api/create-event & /api/create-showings
   const onSubmit = async (formData: NewEventData) => {
     const {imageUrl, eventName, eventDesc, showings} = formData;
-    console.log(eventName);
+
     const createPlayRes = await fetch('http://localhost:8000/api/events', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
