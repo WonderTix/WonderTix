@@ -20,6 +20,7 @@ import {ValidationErrors} from 'final-form';
 import {useCallback, useEffect, useState} from 'react';
 import ShowingInputContainer from './Add_event/showingInputContainer';
 import InputFieldForEvent from '../../../InputField';
+import React from 'react';
 
 interface TicketType {
     id: number,
@@ -93,22 +94,26 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   }, [showings]);
 
   // SHOWINGS ACTIONS:
-  const deleteShowing = useCallback(( id) => {
+  const deleteShowing = useCallback((id: number) => {
     console.log(id);
-    setShowBoxID(showBoxID - 1);
+    if (showBoxID >= 1) {
+      setShowBoxID(showBoxID - 1);
+    } else {
+      setShowBoxID(0);
+    }
     //  find show box that has to be removed
-    const oldList = [...showList];
-    const newList = oldList.filter((item) => item.props.id === id);
-    setShowList(newList);
-  }, [showList]);
+
+    // console.log(showList.filter((item: React.ReactElement) => item.props.id !== id));
+    setShowList((showList: any) => showList.filter((item: React.ReactElement) => item.props.id !== id));
+  }, [showList, showBoxID]);
 
   // Wrapper for callback to add new show to the list of showings
   const addShowSection = useCallback((event) => {
     // Update id for new Show box appended to the list
-    setShowBoxID(showBoxID +1);
     // Insert new box to the Event form
     const newShowBoxList = [...showList,
       <ShowingInputContainer key={showBoxID} id={showBoxID} showings={showings} deleteShow={deleteShowing} addShow={addShowData} />];
+    setShowBoxID(showBoxID + 1);
     setShowList(newShowBoxList);
     console.log(showList);
   }, [showList]);
