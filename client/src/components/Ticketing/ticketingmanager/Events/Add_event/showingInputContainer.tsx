@@ -20,7 +20,7 @@ interface Showing {
     totalseats: number
 }
 // eslint-disable-next-line react/prop-types
-const CreateShowing = ( {key, addShow, showings}) => {
+const ShowingInputContainer = ({id, addShow, showings, deleteShow}) => {
   const [starttime, setStarttime] = useState('');
   const [eventdate, setEventdate] = useState('');
   const [ticketTypeId, setTicketTypeId] = useState('');
@@ -36,8 +36,8 @@ const CreateShowing = ( {key, addShow, showings}) => {
   }, []);
 
   // Generate the showing object to submit to parent component
-  const createShowObject = () => {
-    const showing: Showing = {id: Math.random()*10,
+  const createShowObject = (id) => {
+    const showing: Showing = {id: id,
       starttime: starttime,
       eventdate: eventdate,
       ticketTypeId: ticketTypeId,
@@ -49,19 +49,21 @@ const CreateShowing = ( {key, addShow, showings}) => {
   const handleClick = (event) => {
     event.preventDefault();
     //  use call back to get to parent state
-    addShow(createShowObject());
+    addShow(createShowObject(id));
   };
 
+  const handleDelete = (event) => {
+    event.preventDefault();
+    deleteShow(id);
+  };
 
-  // @ts-ignore
-  // @ts-ignore
   return (
-    <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={key}>
+    <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={id}>
       <FieldArray name='showings'>
         {({fields}) =>
           fields.map((name, i) => (
             <div key={name} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
-              <label className='font-semibold text-white mb-7 mt-7  '>Show # {i + 1}</label>
+              <label className='font-semibold text-white mb-7 mt-7  '>Show # {id+ 1}</label>
               <div className='flex flex-col gap-5 mt-5 pr-20'>
                 <input
                   className='input rounded-lg p-2 bg-violet-100'
@@ -112,10 +114,7 @@ const CreateShowing = ( {key, addShow, showings}) => {
               </div>
               <button
                 className='px-2 py-1 bg-red-500 mt-2 mb-4 text-white rounded-lg text-sm'
-                onClick={() => {
-                  // call back to parent to remove myself (instance of current component)
-
-                }}
+                onClick={handleDelete}
                 // disabled={editMode}
               >
                         Delete
@@ -135,4 +134,4 @@ const CreateShowing = ( {key, addShow, showings}) => {
   );
 };
 
-export default CreateShowing;
+export default ShowingInputContainer;
