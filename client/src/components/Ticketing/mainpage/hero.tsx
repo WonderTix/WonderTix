@@ -1,17 +1,20 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import React from 'react';
-import {useState} from 'react';
+import React, {useEffect} from 'react';
 import {ListComponent} from './eventcard';
-
+import {useAppSelector, useAppDispatch} from '../app/hooks';
+import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 const Hero = () => {
-  const [components, setComponents] = useState(['sample']);
+  const allEvents = useAppSelector((state) => state.ticketing.events);
+  const dispatch = useAppDispatch();
 
-  // eslint-disable-next-line require-jsdoc
-  function addComponent() {
-    setComponents([...components, 'Sample']);
-  }
+  const getData = async () => {
+    return dispatch(fetchTicketingData());
+  };
 
+  useEffect(()=>{
+    getData();
+  }, []);
   return (
 
     <div className = 'home w-full h-screen ' >
@@ -34,11 +37,9 @@ const Hero = () => {
           </div>
           <div className=' m-auto  rounded-xl overflow-x-scroll  scroll-smooth   '>
             <div className='flex flex-row md:flex-row sm:flex-col '>
-              <div className='snap-start items-center m-auto  '>
-                <button className='py-4 px-8 sm:w-[50%] mx-4 text-center flex flex-col items-center bg-transparent text-gray-100 text-xl border-gray-100 hover:text-gray-300 hover:border-gray-300' onClick={addComponent}>+</button>
-              </div>
               <div className='flex flex-row md:flex-row sm:flex-col gap-7 py-6'>
-                {components.map((item, id) => ( <ListComponent text={item}/>))}
+                {allEvents.map((event) => <ListComponent key={event.id} {...event} />)
+                }
               </div>
             </div>
 
