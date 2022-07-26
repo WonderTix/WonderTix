@@ -48,7 +48,6 @@ const CreateEventPage = () => {
       method: 'POST',
       body: JSON.stringify({eventName, eventDesc, imageUrl}),
     });
-    console.log(showings);
 
     if (createPlayRes.ok) {
       const eventData = await createPlayRes.json();

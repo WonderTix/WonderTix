@@ -97,16 +97,15 @@ const ShowingInputContainer = ({id, addShow, showings, deleteShow}) => {
                     <h3 className='font-semibold text-white'>Enter Date</h3>
                     <input type="date" name={`${name}.DateTime`} className='input w-full p-2 rounded-lg bg-violet-100 mb-7 '
                       onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-                        const date = new Date(ev.target.value);
+                        const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
                         setEventdate(date.toString());
                       } }/>
                   </div>
                   <div >
                     <h3 className='font-semibold text-white'>Enter time</h3>
-                    <input type="time" name="eventtime" className='w-full p-2 rounded-lg bg-violet-100  mb-7 '
+                    <input type="time" name="eventtime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100  mb-7 '
                       onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
-                        const time = new Date(ev.target.value);
-                        setStarttime(time.toString());
+                        setStarttime(ev.target.value + ':00');
                       }
                       }/>
                   </div>
