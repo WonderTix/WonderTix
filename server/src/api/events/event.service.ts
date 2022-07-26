@@ -19,6 +19,7 @@ const insertAllShowings = async (showings: Showing[]) => {
   const res = [];
   for (const showing of showings) {
     const {eventid, eventdate, starttime, totalseats, tickettype} = showing;
+    console.log("Showing:", showing);
     if (tickettype === undefined) {
       throw new Error('No ticket type provided');
     }

@@ -90,7 +90,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
 
   // Callback to get new show from child component to the parent
   const addShowData = useCallback((show) =>{
-    setShowings([...showings, show]);
+    setShowings((showings: any) => [...showings, show]);
   }, [showings]);
 
   // SHOWINGS ACTIONS:

@@ -98,7 +98,8 @@ const ShowingInputContainer = ({id, addShow, showings, deleteShow}) => {
                     <input type="date" name={`${name}.DateTime`} className='input w-full p-2 rounded-lg bg-violet-100 mb-7 '
                       onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                         const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
-                        setEventdate(date.toString());
+
+                        setEventdate(date);
                       } }/>
                   </div>
                   <div >

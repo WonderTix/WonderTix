@@ -66,7 +66,8 @@ export const fetchTicketingData = createAsyncThunk(
     async () => {
       const events: Event[] = await fetchData('http://localhost:8000/api/events');
       const ticketRes: TicketsState = await fetchData('http://localhost:8000/api/tickets');
-      const tickets = Object.entries(ticketRes.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date)}}), {});
+      const tickets = Object.entries(ticketRes.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date).toString()}}), {});
+      console.log(tickets);
       return {events, tickets: {byId: tickets, allIds: ticketRes.allIds}};
     },
 );

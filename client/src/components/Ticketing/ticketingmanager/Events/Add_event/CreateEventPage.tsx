@@ -54,6 +54,7 @@ const CreateEventPage = () => {
       const {id} = eventData.rows[0];
       const showingdata = showings.map(formatShowingData(id));
 
+
       const postShowings = await fetch('http://localhost:8000/api/events/instances', {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
