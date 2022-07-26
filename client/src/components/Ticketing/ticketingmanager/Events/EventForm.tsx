@@ -15,7 +15,7 @@
 **/
 import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-import {FieldArray} from 'react-final-form-arrays';
+// import {FieldArray} from 'react-final-form-arrays';
 import {ValidationErrors} from 'final-form';
 import {useCallback, useEffect, useState} from 'react';
 import ShowingInputContainer from './Add_event/showingInputContainer';
@@ -196,7 +196,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
           <button
             className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
             type='submit'
-            disabled={!editMode && (submitting || pristine)}
+            disabled={!editMode && (submitting)}
           >
             {editMode ? 'Save Changes' : 'Save New Event'}
           </button>

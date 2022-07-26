@@ -113,18 +113,18 @@ const ShowingInputContainer = ({id, addShow, showings, deleteShow}) => {
                 </div>
               </div>
               <button
-                className='px-2 py-1 bg-red-500 mt-2 mb-4 text-white rounded-lg text-sm'
-                onClick={handleDelete}
-                // disabled={editMode}
-              >
-                        Delete
-              </button>
-              <button
-                className='px-2 py-1 bg-red-500 mt-2 mb-4 text-white rounded-lg text-sm'
+                className='px-2 py-1 bg-blue-500  mt-2 mb-4 text-white rounded-lg text-sm'
                 onClick={handleClick}
                 // disabled={editMode}
               >
                     Save
+              </button>
+              <button
+                className='px-2 py-1 bg-red-500 ml-9 mt-2 mb-4 text-white rounded-lg text-sm'
+                onClick={handleDelete}
+                // disabled={editMode}
+              >
+                        Delete
               </button>
             </div>
           ))
