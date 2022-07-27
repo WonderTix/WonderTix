@@ -38,7 +38,11 @@ const Eventshowings = () => {
         <div className='flex flex-col md:flex-col sm:flex-col
          sm:items-center w-full h-full bg-zinc-900/90 p-40 overflow-y-scroll'>
           <div className='w-full flex flex-row mb-5'>
-            <button onClick={() => navigate('/')} className='bg-blue-500 hover:bg-blue-600 px-3 py-1 text-white mb-3 rounded-xl'>back to Events</button>
+            <button onClick={() => navigate('/')} className='bg-blue-500 hover:bg-blue-600 px-3 py-2 mb-3 rounded-xl flex flex-row items-center text-zinc-100'>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+              back to Events</button>
           </div>
           <div>
             <div className='bg-zinc-700/30 p-9 flex flex-col items-center rounded-xl'>
