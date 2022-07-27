@@ -64,11 +64,25 @@ eventRouter.get('/list/active', async (req, res) => {
                     WHERE events.active = true AND ei.salestatus = true
                   `;
     const events = await pool.query(query);
-    const resp = events.rows.map((object: any) => object.eventdate = new Date(object.eventdate).toString());
     console.log(events.rows);
-    res.json(resp);
+    const responseData = {
+      data: events.rows,
+      status: {
+        success: true,
+        message: `${events.rowCount} rows retrieved`,
+      },
+    };
+    res.status(200).send(responseData);
   } catch (err: any) {
     console.error(err.message);
+    const responseData = {
+      data: {},
+      status: {
+        success: false,
+        message: `${err.message}`,
+      },
+    };
+    res.status(500).send(responseData);
   }
 });
 
