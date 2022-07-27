@@ -16,20 +16,26 @@ import format from 'date-fns/format';
 
 
 interface EventInstanceSelectProps {eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
-export default function EventInstanceSelect(props: EventInstanceSelectProps) {
+
+const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
   const [selectedId, setSelectedId] = useState(-1);
   const handleClick = (eventInstance: Ticket) => () => {
     setSelectedId(eventInstance.event_instance_id);
     if (props.eventInstanceSelected) props.eventInstanceSelected(eventInstance);
   };
+  console.log(props.eventInstances);
+
   return (
     <select className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
       {props.eventInstances.map((s) =>
         <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} onClick={handleClick(s)}>
-          {format(s.date, 'hh:mm a')}
+          {format(new Date(s.date), 'hh:mm a')}
+          {console.log(s.date)}
         </option>,
       )}
     </select>
   );
-}
+};
+
+export default EventInstanceSelect;
 

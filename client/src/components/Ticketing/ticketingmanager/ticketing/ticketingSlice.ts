@@ -76,7 +76,7 @@ export const fetchTicketingData = createAsyncThunk(
 export const toPartialCartItem = <T extends Ticket>(ticketLike: T) => ({
   product_id: ticketLike.event_instance_id,
   price: ticketLike.ticket_price,
-  desc: `${ticketLike.admission_type} - ${format(ticketLike.date, 'eee, MMM dd - h:mm a')}`,
+  desc: `${ticketLike.admission_type} - ${format(new Date(ticketLike.date), 'eee, MMM dd - h:mm a')}`,
 });
 
 const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) => (obj: any) => ({...obj, [key]: val});

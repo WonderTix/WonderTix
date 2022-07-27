@@ -56,7 +56,10 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
   switch (action.type) {
     case 'date_selected': {
       const {tickets, date} = action.payload;
-      const sameDayShows = tickets.filter((t: Ticket) => isSameDay(date, t.date));
+      const sameDayShows = tickets.filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)));
+      console.log(sameDayShows);
+      // (t: Ticket) => console.log(t.date);
+
       return {
         ...state,
         selectedDate: date,
@@ -129,7 +132,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       <b className='text-white'> - Choose time:</b>
     </div>,
     showSelection: <div>
-      {selectedTicket ? format(selectedTicket.date, 'eee, MMM dd - h:mm a') : ''}
+      {selectedTicket ? format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a') : ''}
     </div>,
   };
   console.log(qty);
@@ -166,7 +169,6 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
             (numAvail > 0) ? 'Quantity' : 'Can\'t add more to cart' :
             'Quantity (select ticket)'
           }
-          {console.log(selectedTicket)}
         </div>
         <select
           // labelId="qty-select-label"
@@ -193,7 +195,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
            bg-blue-500 text-white hover:bg-blue-600 rounded-xl '
           onClick={handleSubmit}
         >
-                    Get Tickets
+          Get Tickets
         </button>
       </div>
     </>
