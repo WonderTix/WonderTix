@@ -131,7 +131,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       {selectedDate ? format(selectedDate, 'eee, MMM dd') : ''}
       <b className='text-white'> - Choose time:</b>
     </div>,
-    showSelection: <div>
+    showSelection: <div className='text-white'>
       {selectedTicket ? format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a') : ''}
     </div>,
   };
