@@ -14,21 +14,27 @@ import TasksEditMain from './components/CRM/Tasks/TasksEditMain';
 import TasksMain from './components/CRM/Tasks/TasksMain';
 import CreateTask from './components/CRM/Tasks/CreateTask';
 
-
-/* Ticketing */
+/* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
+import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
+
+/* Ticketing Manager */
 import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
 import Addeventmain from './components/Ticketing/ticketingmanager/Events/Add_event/addeventmain';
 import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
 import Deleteeventmain from './components/Ticketing/ticketingmanager/Events/Delete_event/Deleteventmain';
 import Editeventmain from './components/Ticketing/ticketingmanager/Events/Edit_event/Editeventmain';
 import Manageventmain from './components/Ticketing/ticketingmanager/Events/Manageventsmain';
+
 const App = () => {
   return (
     <>
       <ProtectedRoute component={CssBaseline} />
       <Routes>
         <Route path="/" element={<ProtectedRoute component={Mainpage}/>} />
+        <Route path="/events/:eventid" element={<ProtectedRoute component={Eventshowingmain}/>} />
+
+
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
         <Route
           path="/admin/accounts"

@@ -10,7 +10,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import {List, ListItem, ListItemText} from '@material-ui/core';
 import {useState} from 'react';
 import {Ticket} from '../../ticketing/ticketingSlice';
 import format from 'date-fns/format';
@@ -24,13 +23,13 @@ export default function EventInstanceSelect(props: EventInstanceSelectProps) {
     if (props.eventInstanceSelected) props.eventInstanceSelected(eventInstance);
   };
   return (
-    <List component="nav">
+    <select className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
       {props.eventInstances.map((s) =>
-        <ListItem key={s.event_instance_id} button alignItems="flex-start" selected={s.event_instance_id===selectedId} onClick={handleClick(s)}>
-          <ListItemText primary={format(s.date, 'h:mm a')}/>
-        </ListItem>,
+        <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} onClick={handleClick(s)}>
+          {format(s.date, 'hh:mm a')}
+        </option>,
       )}
-    </List>
+    </select>
   );
 }
 
