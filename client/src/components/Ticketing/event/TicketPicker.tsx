@@ -148,8 +148,9 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       <Collapse in={showCalendar}>
         <div className='flex flex-col w-full'>
           <div className='flex flex-col text-white w-full px-20'>
-            <select className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
+            <select value={0}className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
               onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}>
+              <option>select date</option>
               {tickets.map((t) => <option value={(t.date).toString()}>
                 {format(new Date(t.date), 'eee, MMM dd yyyy')}
               </option>)}

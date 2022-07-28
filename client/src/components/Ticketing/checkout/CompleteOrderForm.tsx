@@ -179,7 +179,7 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
 
               <div className='w-full flex flex-row justify-between'>
                 <button className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600' onClick={onBack}>Back</button>
-                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-50' disabled={disabled || !valid} type="submit">Next</button>
+                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40' disabled={disabled || !valid} type="submit">Next</button>
               </div>
 
             </form>

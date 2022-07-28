@@ -12,6 +12,7 @@ services:
       DB_PASSWORD: ${PG_PASS}
       DB_USER: ${PG_USER}
       DB_PORT: 5432
+      PRIVATE_STRIPE_KEY: ${PRIVATE_STRIPE_KEY}
     volumes:
       - ./server:/wondertix
       - /wondertix/node_modules

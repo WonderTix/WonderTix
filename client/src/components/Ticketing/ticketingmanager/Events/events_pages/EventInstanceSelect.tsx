@@ -27,6 +27,8 @@ const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
 
   return (
     <select className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
+      <option>select time</option>
+
       {props.eventInstances.map((s) =>
         <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} onClick={handleClick(s)}>
           {format(new Date(s.date), 'hh:mm a')}

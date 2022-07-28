@@ -21,7 +21,8 @@ import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 
 // FYI this is ok to stay here; it's the public key so other people can't do anything with it anyway.
-const stripePromise = loadStripe('pk_test_51J5bpwGEweatMRnmGFUKgE6Q3wn7GmOJDAJ3Zag8DIhZjh324DdDUCFiEOLa0HQZFonkf2pc6lAOpPuheQs9N8AC00zNa4xALV');
+// Replace this with your stripe public key
+const stripePromise = loadStripe('pk_test_51L1ZrgCxejToBkkuM75NvF58FcE4o3vchpdMzCyvHsECKYCNNLuU3fwvoU2vr2OAhbrEKECrAjY3yI41cGfekAHV00BEo64vvF');
 
 
 export default function CheckoutPage() {
@@ -33,7 +34,8 @@ export default function CheckoutPage() {
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch('http://localhost:8000/api/checkout', {
+    const response = await fetch('http://localhost:8000/api/events/checkout', {
+      credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -20,7 +20,7 @@ import Mainpage from './components/Ticketing/mainpage/Main';
 import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
 import Cartmain from './components/Ticketing/cart/Cartmain';
 import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
-
+import CheckoutSuccess from './components/Ticketing/checkout/CheckoutSuccess';
 
 /* Ticketing Manager */
 import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
@@ -38,6 +38,7 @@ const App = () => {
         <Route path="/events/:eventid" element={<ProtectedRoute component={Eventshowingmain}/>} />
         <Route path="/cart" element={<ProtectedRoute component={Cartmain}/>} />
         <Route path="/completeorder" element={<ProtectedRoute component={Checkoutmain}/>} />
+        <Route path="/success" element={<ProtectedRoute component={CheckoutSuccess}/>} />
 
 
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
