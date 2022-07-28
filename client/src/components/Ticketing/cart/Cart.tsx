@@ -96,7 +96,7 @@ const Cart = () => {
             </div>
             <div className='flex flex-col md:flex-row sm:flex-col
          sm:items-center w-full h-full'>
-              <div className='w-full h-full md:mt-20 sm:mt-20 bg-zinc-300 p-9 flex flex-col items-start rounded-xl'>
+              <div className='w-full h-full md:mt-20 sm:mt-20 bg-zinc-300 p-9 flex flex-col gap-5 items-start rounded-xl'>
                 {(items.length > 0) ?
                     items.map((data) => <CartRow key={data.product_id} item={data} removeHandler={displayModal} />) :
                     <div className='text-zinc-400 '>There's nothing in your cart</div>
