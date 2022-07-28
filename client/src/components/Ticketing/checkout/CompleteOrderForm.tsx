@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
@@ -12,18 +13,19 @@
 **/
 // import {input type='text', Checkboxes} from 'mui-rff';
 import {Form} from 'react-final-form';
+import {useState} from 'react';
 
 export interface CheckoutFormInfo {
     'opt-in': boolean,
-    'first-name': string,
-    'last-name': string,
-    'street-address': string,
-    'postal-code': string,
+    firstName: string,
+    lastName: string,
+    streetAddress: string,
+    postalCode: string,
     country: string,
     phone?: string,
     email: string,
-    'visit-source'?: string,
-    'seating-accommodation': boolean,
+    visitSource?: string,
+    seatingAcc: string,
     comments?: string
 }
 
@@ -46,46 +48,127 @@ function validateEmail(email: string) {
 }
 */
 export default function CompleteOrderForm({onSubmit, onBack, disabled, donationForm}: CompleteOrderFormProps) {
+  const [firstName, setfirstName] = useState('');
+  const [lastName, setlastName] = useState('');
+  const [streetAddress, setstreetAddress] = useState('');
+  const [postalCode, setpostalCode] = useState('');
+  const [country, setCountry] = useState('');
+  const [phone, setphoneNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [visitSource, setvisitSource] = useState('');
+  const [seatingAcc, setseatingAcc] = useState('');
+  const [comments, setComments] = useState('');
+  const handleSubmit = () => {
+    const formData: CheckoutFormInfo = {
+      firstName,
+      lastName,
+      streetAddress,
+      postalCode,
+      country,
+      phone,
+      email,
+      visitSource,
+      seatingAcc,
+      comments,
+      'opt-in': false,
+    };
+    onSubmit(formData);
+  };
+
   return (<>
     <div className='w-full h-full flex flex-col items-center '>
       <div className='text-2xl font-bold mb-5'>Contact</div>
       <div className='w-full h-full'>
         <Form
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
           initialValues={{'opt-in': false, 'seating-accommodation': false}}
           render={({handleSubmit, values, valid}) => (
             <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-9 rounded-xl flex flex-col  justify-between'>
               <div className='flex flex-col w-full  '>
                 <div className='grid grid-cols-2 gap-5'>
-                  <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl " type='text' required name="first-name" placeholder="First Name"/>
-                  <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl " type='text' required name="last-name" placeholder="Last Name"/>
-                  <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl " type='text' required name="street-address" placeholder="Street Address"/>
-                  <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl " type='text' required name="postal-code" placeholder="Postal Code"/>
-                  <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl " type='text' required name="country" placeholder="Country"/>
-                  <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl " type='text' name="phone" placeholder="Phone"/>
-                  <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl " type='text' required name="email" placeholder="Email"/>
+                  <div>
+                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                     First Name
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 rounded-lg " type='text'
+                    required name="first-name" placeholder="First Name" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setfirstName(ev.target.value)
+                    }/>
+                  </div>
+                  <div>
+                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                     Last Name
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 rounded-lg " type='text' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setlastName(ev.target.value)}
+                    required name="last-name" placeholder="Last Name"/>
+                  </div>
+                  <div>
+                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                     Street Address
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 rounded-lg " type='text' required onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setstreetAddress(ev.target.value)} name="street-address" placeholder="Street Address"/>
+                  </div>
+                  <div>
+                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                     Postal Code
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 rounded-lg " type='text' required onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setpostalCode(ev.target.value)} name="postal-code" placeholder="Postal Code"/>
+                  </div>
+
+                  <div>
+                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                     Country
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 rounded-lg " type='text' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setCountry(ev.target.value)} required name="country" placeholder="Country"/>
+                  </div>
+                  <div>
+                    <span className="block text-sm font-medium text-slate-700 ml-1">
+                     Phone Number
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 " type='tel' name="phone" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setphoneNumber(ev.target.value)} placeholder="Phone"/>
+                  </div>
+                  <div>
+                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                     Email
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 " type="email" required onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setEmail(ev.target.value)} name="email" placeholder="Email"/>
+                  </div>
+                  <div>
+                    <span className=" block text-sm font-medium text-slate-700 ml-1">
+                     How did you hear about us?
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 rounded-lg " type='text' name="visit-source" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setvisitSource(ev.target.value)} placeholder="How did you hear about us?"/>
+                  </div>
+
 
                   <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl " type='text' name="visit-source" placeholder="How did you hear about us?"/>
-
-                  <input className="input w-full  border
-            border-zinc-300 p-4 rounded-xl col-span-2 " type='text' name="comments" placeholder="Comments"/>
+            border-zinc-300 p-4 rounded-lg col-span-2 " type='text' name="comments" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                    setComments(ev.target.value)} placeholder="Comments"/>
                 </div>
-                <div className='flex flex-col items-start gap-7 mt-10'>
+                <div className='flex flex-col items-start gap-3 mt-10'>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
-                    <input type='checkbox' name="opt-in"/>
+                    <input type='checkbox' name="opt-in" />
                     <div>I would like to recieve email info from portland playhouse</div>
                   </div>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     {!donationForm && <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
-                      <input type='checkbox' name="seating-accommodation"/>
+                      <input type='checkbox' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                        setseatingAcc(ev.target.value)} name="seating-accommodation"/>
                       <div>I need seating accommodations</div>
                     </div>
                     }
@@ -96,7 +179,7 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
 
               <div className='w-full flex flex-row justify-between'>
                 <button className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600' onClick={onBack}>Back</button>
-                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600' disabled={disabled || !valid} type="submit">Next</button>
+                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-50' disabled={disabled || !valid} type="submit">Next</button>
               </div>
 
             </form>
