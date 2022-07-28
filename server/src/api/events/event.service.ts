@@ -102,6 +102,12 @@ const updateEvent = async (id: string, changes: Delta[]) => {
   return queryResults;
 };
 
+const getShowingsById = async (id: string): Promise<Showing[]> => {
+  const query = `SELECT * FROM event_instances WHERE eventid = $1;`;
+  const queryResult = await pool.query(query, [id]);
+  return queryResult.rows;
+};
+
 export default {
   insertAllShowings,
   isShowingChange,
@@ -110,4 +116,5 @@ export default {
   updateEvent,
   updateShowings,
   deleteShowings,
+  getShowingsById,
 };

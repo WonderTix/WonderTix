@@ -306,55 +306,27 @@ eventRouter.put('/', async (req, res) => {
 
 eventRouter.put('/instances/:id', async (req, res) => {
   try {
-    // create temp table with same columns for updated instances
-    const createTempTable = `
-                              DROP TABLE IF EXISTS diff_table;
-
-                              SELECT *
-                              INTO TEMP TABLE diff_table
-                              FROM event_instances LIMIT 0;
-                            `;
-    await pool.query(createTempTable);
-
     const instances: Showing[] = req.body;
 
-    // insert updated Showing[] to temp table for comparison
-    const insertToTemp =
-      `INSERT INTO diff_table VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`;
+    // get existing showings for this event
+    const currentShowings = await eventUtils.getShowingsById(req.params.id);
 
-    for (const instance of instances) {
-      await pool.query(insertToTemp, Object.values(instance));
-    }
+    // see which showings are not present in the updated showings
+    const instancesSet = new Set(instances.map((show) => show.id));
 
-    // get the diff between temp table and eventinstances
-    const getDiffs = `select *,
-                        case
-                          when dt.id is null then 'Deleted'
-                          when ei.id is null then 'Added'
-                        else 'Updated'
-                          end as status
-                      from diff_table dt
-                        full outer join
-                          (SELECT * FROM event_instances WHERE eventid = $1)
-                            as ei
-                          using (id)
-                      where dt is distinct from ei;
-                      `;
-    const diffs = await pool.query(getDiffs, [req.params.id]);
+    const rowsToDelete = currentShowings.filter(
+        (show: Showing) => !instancesSet.has(show.id),
+    ).map((show) => show.id);
 
-    // update rows
+    // delete them
+    const rowsDeleted = await eventUtils.deleteShowings(rowsToDelete);
+
+    // update existing showings
     const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
 
     const rowsUpdated = await eventUtils.updateShowings(rowsToUpdate);
 
-    // rows that need to be deleted
-    const toDelete = diffs.rows.filter((row) => row.status === 'Deleted')
-        .map((row) => row.id);
-
-    // delete rows
-    const rowsDeleted = await eventUtils.deleteShowings(toDelete);
-
-    // insert new rows
+    // insert new showings
     // showings with id = 0 have not yet been added to the table
     const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
     rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
