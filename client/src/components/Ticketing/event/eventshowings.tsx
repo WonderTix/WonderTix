@@ -30,7 +30,7 @@ const Eventshowings = () => {
   if (eventData === undefined) return <p>Whoops! Event not found</p>;
   const {title, description, image_url, tickets} = eventData;
   return (
-    <div className = 'home w-full h-screen  ' >
+    <div className = ' w-full h-screen  ' >
       <div className=' w-full h-screen bg-zinc-100
       overflow-y-hidden overflow-x-hidden bg-scroll
         justify-between bg-cover bg-brightness-40'

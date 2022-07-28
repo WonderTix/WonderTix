@@ -17,6 +17,7 @@ import CreateTask from './components/CRM/Tasks/CreateTask';
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
 import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
+import Cartmain from './components/Ticketing/cart/Cartmain';
 
 /* Ticketing Manager */
 import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
@@ -33,6 +34,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<ProtectedRoute component={Mainpage}/>} />
         <Route path="/events/:eventid" element={<ProtectedRoute component={Eventshowingmain}/>} />
+        <Route path="/cart" element={<ProtectedRoute component={Cartmain}/>} />
 
 
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
