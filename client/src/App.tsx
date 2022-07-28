@@ -13,12 +13,15 @@ import ReportingMain from './components/CRM/Reporting/ReportingMain';
 import TasksEditMain from './components/CRM/Tasks/TasksEditMain';
 import TasksMain from './components/CRM/Tasks/TasksMain';
 import CreateTask from './components/CRM/Tasks/CreateTask';
-
+import ManageAccountsmain from './components/CRM/Accounts/ManageUsers/ManageAccountsmain';
+import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchmain';
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
 import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
 import Cartmain from './components/Ticketing/cart/Cartmain';
 import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
+
+
 /* Ticketing Manager */
 import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
 import Addeventmain from './components/Ticketing/ticketingmanager/Events/Add_event/addeventmain';
@@ -38,12 +41,16 @@ const App = () => {
 
 
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
+        <Route path="/admin/accounts" element={<ProtectedRoute component={AccountsMain} />} />
         <Route
-          path="/admin/accounts"
-          element={<ProtectedRoute component={AccountsMain} />}
+          path="/admin/accounts/search"
+          element={<ProtectedRoute component={userSearchmain} />}
         >
-          <Route path=":id" element={<ProtectedRoute component={AccountsMain} />} />
+
+          <Route path=":id" element={<ProtectedRoute component={userSearchmain} />} />
         </Route>
+        <Route path="/admin/accounts/manageaccount" element={<ProtectedRoute component={ManageAccountsmain} />} />
+
         <Route
           path="/admin/contacts"
           element={<ProtectedRoute component={ContactMain} />}
@@ -69,6 +76,7 @@ const App = () => {
         <Route path="/ticketing/deleteevent" element={<ProtectedRoute component={Deleteeventmain} />} />
         <Route path="/ticketing/editevent/:eventid" element={<ProtectedRoute component={Editeventmain} />} />
         <Route path="/ticketing/manageevent" element={<ProtectedRoute component={Manageventmain} />} />
+
 
       </Routes>
     </>
