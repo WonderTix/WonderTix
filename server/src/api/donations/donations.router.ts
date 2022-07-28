@@ -40,6 +40,10 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
 donationsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newDonation = await create(req.body);
+    // TODO wrap responses
+    // eslint-disable-next-line max-len
+    // const responseData = {data: newDonation.rows, status: {success: true/false, message: "OK"/ "x rows deleted"}};
+    // same for errors as well
     res.status(201).send(newDonation.rows);
   } catch (err: any) {
     res.status(500).send(err.message);

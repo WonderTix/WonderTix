@@ -2,7 +2,7 @@ import Delta from '../../interfaces/Delta';
 import Showing from '../../interfaces/Showing';
 import {pool} from '../db';
 
-const insertAllShowings = async (showings: Showing[]) => {
+const insertAllShowings = async (showings: Showing[]): Promise<Showing[]> => {
   const query = `
                   INSERT INTO event_instances 
                   (
@@ -13,24 +13,74 @@ const insertAllShowings = async (showings: Showing[]) => {
                     availableseats, 
                     salestatus
                   )
-                  VALUES ($1, $2, $3, $4, $4, true) RETURNING *;
+                  VALUES ($1, $2, $3, $4, $5, true) RETURNING *;
                 `;
 
   const res = [];
   for (const showing of showings) {
-    const {eventid, eventdate, starttime, totalseats, tickettype} = showing;
+    const tickettype = showing.tickettype;
     if (tickettype === undefined) {
       throw new Error('No ticket type provided');
     }
     const {rows} = await pool.query(query, [
-      eventid,
-      eventdate,
-      starttime,
-      totalseats,
+      showing.eventid,
+      showing.eventdate,
+      showing.starttime,
+      showing.totalseats,
+      showing.availableseats,
     ]);
     res.push({...rows[0], tickettype});
   }
   return res;
+};
+
+// takes in an array of Showings to be updated in DB
+const updateShowings = async (showings: Showing[]): Promise<number> => {
+  const updateQuery = `
+                        UPDATE event_instances
+                        SET
+                        eventdate = $2,
+                        starttime = $3,
+                        salestatus = $4,
+                        totalseats = $5,
+                        availableseats = $6,
+                        purchaseuri = $7
+                        WHERE id = $1
+                        `;
+  let rowsUpdated = 0;
+  for (const showing of showings) {
+    const queryResult = await pool.query(
+        updateQuery,
+        [
+          showing.id,
+          showing.eventdate,
+          showing.starttime,
+          showing.salestatus,
+          showing.totalseats,
+          showing.availableseats,
+          showing.purchaseuri,
+        ]);
+    rowsUpdated += queryResult.rowCount;
+  }
+  return rowsUpdated;
+};
+
+// takes in array of ids and deletes showings with those ids and linkedtickets
+const deleteShowings = async (ids: number[]): Promise<number> => {
+  const deleteQuery = `
+                        DELETE FROM event_instances
+                        WHERE id = $1;
+                        `;
+  let rowsDeleted = 0;
+  for (const id of ids) {
+    pool.query(
+        `DELETE FROM linkedtickets WHERE event_instance_id = $1;`,
+        [id],
+    );
+    const queryResult = await pool.query(deleteQuery, [id]);
+    rowsDeleted += queryResult.rowCount;
+  }
+  return rowsDeleted;
 };
 
 const isShowingChange = (d: Delta) => d.path.includes('showings');
@@ -52,10 +102,11 @@ const updateEvent = async (id: string, changes: Delta[]) => {
   return queryResults;
 };
 
-const propToString = (prop: any) => (obj: any) => ({
-  ...obj,
-  [prop]: obj[prop].toString(),
-});
+const getShowingsById = async (id: string): Promise<Showing[]> => {
+  const query = `SELECT * FROM event_instances WHERE eventid = $1;`;
+  const queryResult = await pool.query(query, [id]);
+  return queryResult.rows;
+};
 
 export default {
   insertAllShowings,
@@ -63,5 +114,7 @@ export default {
   isEventChange,
   eventFields,
   updateEvent,
-  propToString,
+  updateShowings,
+  deleteShowings,
+  getShowingsById,
 };
