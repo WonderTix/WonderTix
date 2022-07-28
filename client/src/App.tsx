@@ -18,7 +18,7 @@ import CreateTask from './components/CRM/Tasks/CreateTask';
 import Mainpage from './components/Ticketing/mainpage/Main';
 import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
 import Cartmain from './components/Ticketing/cart/Cartmain';
-
+import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
 /* Ticketing Manager */
 import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
 import Addeventmain from './components/Ticketing/ticketingmanager/Events/Add_event/addeventmain';
@@ -26,7 +26,6 @@ import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
 import Deleteeventmain from './components/Ticketing/ticketingmanager/Events/Delete_event/Deleteventmain';
 import Editeventmain from './components/Ticketing/ticketingmanager/Events/Edit_event/Editeventmain';
 import Manageventmain from './components/Ticketing/ticketingmanager/Events/Manageventsmain';
-
 const App = () => {
   return (
     <>
@@ -35,6 +34,7 @@ const App = () => {
         <Route path="/" element={<ProtectedRoute component={Mainpage}/>} />
         <Route path="/events/:eventid" element={<ProtectedRoute component={Eventshowingmain}/>} />
         <Route path="/cart" element={<ProtectedRoute component={Cartmain}/>} />
+        <Route path="/completeorder" element={<ProtectedRoute component={Checkoutmain}/>} />
 
 
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />

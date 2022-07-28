@@ -11,12 +11,6 @@
 **/
 import {useAppSelector} from '../app/hooks';
 import {
-  Button,
-  Divider,
-  Paper,
-  Typography,
-} from '@material-ui/core';
-import {
   selectCartItem,
   selectCartIds,
   selectCartSubtotal,
@@ -31,39 +25,39 @@ const YourOrder = () => {
   const cartIds = useAppSelector(selectCartIds);
   const donation = useAppSelector(selectDonation);
   const subtotal = useAppSelector(selectCartSubtotal);
-  const lineItems = cartIds.map((id) => <LineItem key={id} id={id} className={''}/>);
+  const lineItems = cartIds.map((id) => <LineItem key={id} id={id} className='bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'/>);
 
   return (
-    <Paper variant="outlined">
-      <Typography variant="h4">Your order</Typography>
-      <div>
-        {lineItems.length > 0 ? lineItems : <p>Your cart is empty</p>}
-      </div>
-
-      <Button onClick={() => history('/events')} color="primary" variant="contained" fullWidth>
+    <div className='flex flex-col justify-between h-full w-full'>
+      <div className='flex flex-col items-center w-full'>
+        <div className='text-zinc-100 text-2xl font-bold'>Your order</div>
+        <div className='text-zinc-100 mt-10 w-full'>
+          {lineItems.length > 0 ? lineItems : <p>Your cart is empty</p>}
+        </div>
+        <button onClick={() => history('/')} className='bg-green-600 px-3 py-1 text-sm
+         hover:bg-green-700 text-white rounded-xl mt-4 '>
         Add more items
-      </Button>
-
-      <Divider/>
-
-      <div>
-        <Typography variant="body1">Subtotal</Typography>
-        <Typography variant="body2" color="textSecondary">
-          {toDollar(subtotal)}
-        </Typography>
+        </button>
       </div>
-      <div>
-        <Typography variant="body2">Donation</Typography>
-        <Typography variant="body2" color="textSecondary">{toDollar(donation)}</Typography>
+      <div className='flex flex-col items-center gap-2 bg-zinc-800 rounded-xl px-5 py-3'>
+        <div className='flex flex-row items-center gap-2 justify-between w-full'>
+          <div className='text-zinc-100 text-sm '>Subtotal</div>
+          <div className='text-white text-lg font-bold'>
+            {toDollar(subtotal)}
+          </div>
+        </div>
+        <div className='flex flex-row items-center gap-2 justify-between w-full'>
+          <div className='text-zinc-100 text-sm '>Donation</div>
+          <div className='text-white text-lg font-bold'>{toDollar(donation)}</div>
+        </div>
+        <div className='flex flex-row items-center gap-2 justify-between w-full'>
+          <div className='text-zinc-100 text-sm '>Total</div>
+          <div className='text-white text-lg font-bold'>{toDollar(donation+subtotal)}</div>
+        </div>
       </div>
 
-      <Divider/>
 
-      <div>
-        <Typography variant="body1">Total</Typography>
-        <Typography variant="body1" color="textSecondary">{toDollar(donation+subtotal)}</Typography>
-      </div>
-    </Paper>
+    </div>
   );
 };
 
@@ -71,8 +65,8 @@ const LineItem = (props: {className: string, id: number}) => {
   const data = useAppSelector((state) => selectCartItem(state, props.id));
   return data ?
         <div className={props.className}>
-          <Typography>{data.qty} <b>x</b> {data.name}</Typography>
-          <Typography>{toDollar(data.qty * data.price)}</Typography>
+          <div>{data.qty} <b>x</b> {data.name}</div>
+          <div>{toDollar(data.qty * data.price)}</div>
         </div> :
         <div></div>;
 };
