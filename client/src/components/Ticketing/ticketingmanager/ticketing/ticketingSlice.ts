@@ -66,7 +66,8 @@ export const fetchTicketingData = createAsyncThunk(
     async () => {
       const events: Event[] = await fetchData('http://localhost:8000/api/events');
       const ticketRes: TicketsState = await fetchData('http://localhost:8000/api/tickets');
-      const tickets = Object.entries(ticketRes.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date)}}), {});
+      const tickets = Object.entries(ticketRes.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date).toString()}}), {});
+      console.log(tickets);
       return {events, tickets: {byId: tickets, allIds: ticketRes.allIds}};
     },
 );
@@ -75,7 +76,7 @@ export const fetchTicketingData = createAsyncThunk(
 export const toPartialCartItem = <T extends Ticket>(ticketLike: T) => ({
   product_id: ticketLike.event_instance_id,
   price: ticketLike.ticket_price,
-  desc: `${ticketLike.admission_type} - ${format(ticketLike.date, 'eee, MMM dd - h:mm a')}`,
+  desc: `${ticketLike.admission_type} - ${format(new Date(ticketLike.date), 'eee, MMM dd - h:mm a')}`,
 });
 
 const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) => (obj: any) => ({...obj, [key]: val});

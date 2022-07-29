@@ -1,4 +1,3 @@
-/* eslint-disable require-jsdoc */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
 /**
@@ -10,34 +9,21 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import {useState} from 'react';
-import {Ticket} from '../../ticketing/ticketingSlice';
-import format from 'date-fns/format';
+import {NavLink} from 'react-router-dom';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import {selectNumInCart} from '../ticketingmanager/ticketing/ticketingSlice';
+import {useAppSelector} from '../app/hooks';
 
-
-interface EventInstanceSelectProps {eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
-
-const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
-  const [selectedId, setSelectedId] = useState(-1);
-  const handleClick = (eventInstance: Ticket) => () => {
-    setSelectedId(eventInstance.event_instance_id);
-    if (props.eventInstanceSelected) props.eventInstanceSelected(eventInstance);
-  };
-  console.log(props.eventInstances);
-
+const CartLink = () => {
+  const itemCount = useAppSelector(selectNumInCart);
   return (
-    <select className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
-      <option>select time</option>
-
-      {props.eventInstances.map((s) =>
-        <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} onClick={handleClick(s)}>
-          {format(new Date(s.date), 'hh:mm a')}
-          {console.log(s.date)}
-        </option>,
-      )}
-    </select>
+    <NavLink to="/cart">
+      <ShoppingCartIcon />
+            Cart
+      {(itemCount > 0) && <span>{itemCount}</span>}
+    </NavLink>
   );
 };
 
-export default EventInstanceSelect;
+export default CartLink;
 

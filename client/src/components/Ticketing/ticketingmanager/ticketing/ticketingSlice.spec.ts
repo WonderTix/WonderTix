@@ -21,7 +21,7 @@ import ticketReducer, {
   selectCartItem,
   selectCartSubtotal,
 } from './ticketingSlice';
-// import {User} from '../../../../../../server/src/interfaces/User';
+// import User from '../../../../../../server/src/interfaces/User';
 
 const event: Event = {
   id: '1',

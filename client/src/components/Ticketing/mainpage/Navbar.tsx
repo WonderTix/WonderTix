@@ -54,7 +54,7 @@ const Navbar = () => {
             </li>
             <li className='px-4 py-2'>Donate</li>
             <li>
-              <button className='border-none bg-indigo-700
+              <button onClick={() => navigate('/cart')} className='border-none bg-indigo-700 ml-2
                hover:bg-zinc-500 px-4 py-2 hover:text-zinc-100 rounded-xl text-zinc-200 '>
                   Cart
               </button>

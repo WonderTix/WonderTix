@@ -64,9 +64,25 @@ eventRouter.get('/list/active', async (req, res) => {
                     WHERE events.active = true AND ei.salestatus = true
                   `;
     const events = await pool.query(query);
-    res.json(events.rows);
+    console.log(events.rows);
+    const responseData = {
+      data: events.rows,
+      status: {
+        success: true,
+        message: `${events.rowCount} rows retrieved`,
+      },
+    };
+    res.status(200).send(responseData);
   } catch (err: any) {
     console.error(err.message);
+    const responseData = {
+      data: {},
+      status: {
+        success: false,
+        message: `${err.message}`,
+      },
+    };
+    res.status(500).send(responseData);
   }
 });
 
@@ -268,6 +284,7 @@ eventRouter.post('/instances', async (req, res) => {
   // deleted isAuthenticated function
   const {instances} = req.body;
   let newInstances;
+  console.log(instances);
   try {
     newInstances = await eventUtils.insertAllShowings(instances);
     // Link showtime to ticket type

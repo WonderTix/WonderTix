@@ -40,7 +40,8 @@ export default function DeleteEvents() {
   const getEvents = async () => {
     try {
       const response = await fetch('http://localhost:8000/api/events/list/active');
-      const jsonData = await response.json();
+      const jsonRes = await response.json();
+      const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
         jsonData[key].starttime = militaryToCivilian(jsonData[key].starttime);

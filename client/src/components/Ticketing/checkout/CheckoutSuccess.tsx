@@ -10,34 +10,26 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import {useState} from 'react';
-import {Ticket} from '../../ticketing/ticketingSlice';
-import format from 'date-fns/format';
+import {useNavigate} from 'react-router-dom';
 
-
-interface EventInstanceSelectProps {eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
-
-const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
-  const [selectedId, setSelectedId] = useState(-1);
-  const handleClick = (eventInstance: Ticket) => () => {
-    setSelectedId(eventInstance.event_instance_id);
-    if (props.eventInstanceSelected) props.eventInstanceSelected(eventInstance);
-  };
-  console.log(props.eventInstances);
+export default function CheckoutSuccess() {
+  const navigate = useNavigate();
 
   return (
-    <select className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
-      <option>select time</option>
+    <div className='w-full h-screen items-center flex flex-row bg-zinc-100'>
+      <div className="w-full flex flex-col items-center text-2xl font-bold text-zinc-700 ">
+        <div className='flex flex-col items-center gap-5 bg-white p-7 rounded-xl shadow-xl'>
+          <div className="flex flex-row items-center ">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+            </svg>
+      Thank you for your purchase!
+          </div>
+          <button onClick={() => navigate('/')} className="bg-blue-500 px-5 py-3 text-white text-lg font-normal rounded-xl hover:bg-blue-600"> Back to Home</button>
+        </div>
 
-      {props.eventInstances.map((s) =>
-        <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} onClick={handleClick(s)}>
-          {format(new Date(s.date), 'hh:mm a')}
-          {console.log(s.date)}
-        </option>,
-      )}
-    </select>
+
+      </div>
+    </div>
   );
-};
-
-export default EventInstanceSelect;
-
+}

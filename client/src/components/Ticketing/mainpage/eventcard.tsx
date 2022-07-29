@@ -1,9 +1,11 @@
 import React from 'react';
-import bgImg2 from '../../../assets/My-project-24.png';
+// import bgImg2 from '../../../assets/My-project-24.png';
 
 import {useNavigate} from 'react-router-dom';
+import {titleCase} from '../../../utils/arrays';
+import {Event} from '../ticketingmanager/ticketing/ticketingSlice';
 
-const ListComponent = (props) => {
+const ListComponent = (props: Event) => {
   const navigate = useNavigate();
 
   return (
@@ -16,26 +18,23 @@ const ListComponent = (props) => {
         ease-in-out">
         <img className=" md:w-[14rem] h-96
          sm:h-40 md:h-auto object-cover rounded-t-lg
-           md:rounded-lg " src={bgImg2} alt="/" />
+           md:rounded-lg " src={props.image_url} alt="/" />
         <div className="p-6 flex flex-col justify-start text-center relative">
           <h5 className="text-gray-100 text-xl
-           font-medium mb-2">BELLA: AN AMERICAN TALL TALE</h5>
+           font-medium mb-2">{titleCase(props.title)}</h5>
           <p className="text-gray-200 text-base mb-4">
-              Hop on board for a Western musical adventure,
-               the likes of which you’ve never experienced.
+            {(props.description) ?
+                          props.description :
+                          'No description available.'
+            }
           </p>
-          <p className="text-gray-200
-           text-xs py-1">Friday, May 6th ( PREVIEW), 7.30pm </p>
-          <p className="text-gray-200
-           text-xs py-1">Saturday, May 14th, 7.30pm</p>
-          <p className="text-gray-200
-           text-xs py-1">Wednesday, May 25th, 7.30pm</p>
           <div className='flex flex-col items-center'>
-            <button onClick={() => navigate('./reserve')}className='py-2
+            <button onClick={() => navigate(`/events/${props.id}`)}
+              className='py-2
             text-white  border bg-indigo-600 border-indigo-600
-        hover:bg-transparent hover:text-indigo-600 rounded-full
-             px-4 sm:w-[60%] my-3 mx-16 hover:text-white
-              hover:border-white'>Reserve</button>
+             hover:bg-transparent hover:text-white rounded-2xl
+             px-4 sm:w-[60%] my-3 mx-1
+            hover:border-white'>See Showings</button>
           </div>
 
         </div>

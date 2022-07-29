@@ -97,34 +97,34 @@ const ShowingInputContainer = ({id, addShow, deleteShow}) => {
                     <h3 className='font-semibold text-white'>Enter Date</h3>
                     <input type="date" name={`${name}.DateTime`} className='input w-full p-2 rounded-lg bg-violet-100 mb-7 '
                       onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-                        const date = new Date(ev.target.value);
-                        setEventdate(date.toString());
+                        const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+                        setEventdate(date);
                       } }/>
                   </div>
                   <div >
                     <h3 className='font-semibold text-white'>Enter time</h3>
-                    <input type="time" name="eventtime" className='w-full p-2 rounded-lg bg-violet-100  mb-7 '
+                    <input type="time" name="eventtime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100  mb-7 '
                       onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
-                        const time = new Date(ev.target.value);
-                        setStarttime(time.toString());
+                        setStarttime(ev.target.value + ':00');
                       }
                       }/>
                   </div>
                 </div>
               </div>
               <button
-                className='px-2 py-1 bg-red-500 mt-2 mb-4 text-white rounded-lg text-sm'
-                onClick={handleDelete}
-                // disabled={editMode}
-              >
-                        Delete
-              </button>
-              <button
-                className='px-2 py-1 bg-red-500 mt-2 mb-4 text-white rounded-lg text-sm'
+                className='px-2 py-1 bg-blue-500  mt-2 mb-4 text-white rounded-lg text-sm'
                 onClick={handleClick}
                 // disabled={editMode}
               >
                     Save
+              </button>
+              <button
+                className='px-2 py-1 bg-red-500 ml-9 mt-2 mb-4 text-white rounded-lg text-sm'
+                onClick={handleDelete}
+                // disabled={editMode}
+              >
+                        Delete
               </button>
             </div>
           ))

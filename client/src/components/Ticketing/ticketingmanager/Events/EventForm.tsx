@@ -15,12 +15,17 @@
 **/
 import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-import {FieldArray} from 'react-final-form-arrays';
+// import {FieldArray} from 'react-final-form-arrays';
 import {ValidationErrors} from 'final-form';
 import React, {useCallback, useEffect, useState} from 'react';
 import ShowingInputContainer from './Add_event/showingInputContainer';
 import InputFieldForEvent from '../../../InputField';
+<<<<<<< HEAD
 import ShowListController from './Add_event/showListController';
+=======
+import React from 'react';
+
+>>>>>>> fd4586ba28e1a6300570dbd444886937f4a31817
 interface TicketType {
     id: number,
     name: string,
@@ -87,9 +92,42 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   }, [imageUrl]);
 
   // Callback to get new show from child component to the parent
+<<<<<<< HEAD
   const addShowData = useCallback((show) => {
     setShowings([...showings, show]);
   }, [showings]);
+=======
+  const addShowData = useCallback((show) =>{
+    setShowings((showings: any) => [...showings, show]);
+  }, [showings]);
+
+  // SHOWINGS ACTIONS:
+  const deleteShowing = useCallback((id: number) => {
+    console.log(id);
+    if (showBoxID >= 1) {
+      setShowBoxID(showBoxID - 1);
+    } else {
+      setShowBoxID(0);
+    }
+    //  find show box that has to be removed
+
+    // console.log(showList.filter((item: React.ReactElement) => item.props.id !== id));
+    setShowList((showList: any) => showList.filter((item: React.ReactElement) => item.props.id !== id));
+  }, [showList, showBoxID]);
+
+  // Wrapper for callback to add new show to the list of showings
+  const addShowSection = useCallback((event) => {
+    // Update id for new Show box appended to the list
+    // Insert new box to the Event form
+    const newShowBoxList = [...showList,
+      <ShowingInputContainer key={showBoxID} id={showBoxID} showings={showings} deleteShow={deleteShowing} addShow={addShowData} />];
+    setShowBoxID(showBoxID + 1);
+    setShowList(newShowBoxList);
+    console.log(showList);
+  }, [showList]);
+
+
+>>>>>>> fd4586ba28e1a6300570dbd444886937f4a31817
   // Handle new play and the show options
   const handleSubmit = () => {
     const data: NewEventData = {
@@ -159,7 +197,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
           <button
             className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
             type='submit'
-            disabled={!editMode && (submitting || pristine)}
+            disabled={!editMode && (submitting)}
           >
             {editMode ? 'Save Changes' : 'Save New Event'}
           </button>
