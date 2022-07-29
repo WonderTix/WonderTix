@@ -217,8 +217,8 @@ eventRouter.post('/checkout', async (req, res) => {
           }))
           .concat(donationItem),
       mode: 'payment',
-      success_url: 'http://localhost:3000/success',
-      cancel_url: 'http://localhost:3000',
+      success_url: `{process.env.FRONTEND_URL}/success`,
+      cancel_url: `process.env.FRONTEND_URL`,
       payment_intent_data: {
         metadata: {
           orders: JSON.stringify(orders),
