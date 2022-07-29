@@ -139,8 +139,8 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
   return (
     <>
       <Collapse in={showClearBtn}>
-        <button onClick={() => dispatch(resetWidget())} className='bg-red-600 px-3 py-1
-         rounded-xl text-white hover:bg-red-700 mb-3'>
+        <button onClick={() => dispatch(resetWidget())} className='bg-blue-600 px-3 py-1
+         rounded-xl text-white hover:bg-blue-700 mb-3'>
           Choose different date
         </button>
       </Collapse>

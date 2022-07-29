@@ -10,34 +10,30 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-/* Creator:  Jesse Coyle [jecoyle@pdx.edu]
- * Date:     7/5/2021
- * Revision: 7/15/2021
- */
 
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 // import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 // import Checkbox from '@material-ui/core/Checkbox';
 // import {useState} from 'react';
 
 export default function NewsletterCreate() {
   return (
-    <div style={{display: 'flex', height: '100vh', width: '100%'}}>
-      <Paper style={{flexGrow: 8, height: '100%', margin: '10px', paddingLeft: '5%', paddingTop: '50px', paddingRight: '10%'}} variant="outlined">
-        <Typography variant="h3">Newsletter Creation!</Typography>
-        <hr/>
-        <form>
-          <Grid container spacing={1}>
-            <Grid item xs={3}><Button variant="contained" color="primary" style={{width: '100%'}}>ADD</Button> </Grid>
-            <Grid item xs={3}><Button variant="contained" color="primary" style={{width: '100%'}}>PREVIEW</Button> </Grid>
-            <Grid item xs={3}><Button variant="contained" color="primary" style={{width: '100%'}}>FINISH</Button> </Grid>
-            <Grid item xs={3}><Button variant="contained" color="secondary" style={{width: '100%'}}>DISCARD</Button> </Grid>
-          </Grid>
-        </form>
-      </Paper>
+    <div className='w-full h-screen overflow-x-hidden absolute '>
+      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
+       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
+        <div className='w-full h-full'>
+          <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
+         bg-gradient-to-r from-yellow-600 to-red-600'>Newsletter Creation!</h1>
+          <hr/>
+          <div className='bg-white w-full h-full p-10 shadow-xl rounded-xl'>
+            <div className='grid grid-cols-4 gap-2'>
+              <div><button className="bg-green-500 text-white w-full py-2 rounded-xl hover:bg-green-600">Add</button> </div>
+              <div><button className="bg-yellow-500 text-white w-full py-2 rounded-xl hover:bg-yellow-600" >Preview</button> </div>
+              <div><button className="bg-blue-500 text-white w-full py-2 rounded-xl hover:bg-blue-600" >Finish</button> </div>
+              <div><button className="bg-red-500 text-white w-full py-2 rounded-xl hover:bg-red-600" >Discard</button> </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
