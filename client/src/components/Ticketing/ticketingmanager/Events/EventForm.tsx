@@ -17,11 +17,15 @@ import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 // import {FieldArray} from 'react-final-form-arrays';
 import {ValidationErrors} from 'final-form';
-import {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ShowingInputContainer from './Add_event/showingInputContainer';
 import InputFieldForEvent from '../../../InputField';
+<<<<<<< HEAD
+import ShowListController from './Add_event/showListController';
+=======
 import React from 'react';
 
+>>>>>>> fd4586ba28e1a6300570dbd444886937f4a31817
 interface TicketType {
     id: number,
     name: string,
@@ -71,9 +75,8 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   const [imageUrl, setImageURL] = useState('');
   const [isPublished, setIsPublished] = useState(false);
   const [showings, setShowings] = useState([]);
-  const [showList, setShowList] = useState([]);
-  const [showBoxID, setShowBoxID] = useState(0);
-  console.log(showList);
+
+
   // FIELDS CALLBACK
   // Set event name
   const addEventName = useCallback((eventName) => {
@@ -89,6 +92,11 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   }, [imageUrl]);
 
   // Callback to get new show from child component to the parent
+<<<<<<< HEAD
+  const addShowData = useCallback((show) => {
+    setShowings([...showings, show]);
+  }, [showings]);
+=======
   const addShowData = useCallback((show) =>{
     setShowings((showings: any) => [...showings, show]);
   }, [showings]);
@@ -119,6 +127,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   }, [showList]);
 
 
+>>>>>>> fd4586ba28e1a6300570dbd444886937f4a31817
   // Handle new play and the show options
   const handleSubmit = () => {
     const data: NewEventData = {
@@ -178,17 +187,9 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                 To add more, click the "Add Showing" button.
             </div>
             <div>
-              <div id="show-table">
-                {showList}
-              </div>
               {/*  Button to trigger add of new show*/}
-              <div>
-                <button
-                  className='px-3 py-2 bg-green-500 text-white rounded-xl'
-                  type='button' onClick={addShowSection}
-                  disabled={editMode}>
-                    Add Showing
-                </button>
+              <div id="show-table">
+                <ShowListController addShowData={addShowData} />
               </div>
             </div>
           </div>
