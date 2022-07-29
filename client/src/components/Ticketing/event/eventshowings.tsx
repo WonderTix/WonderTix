@@ -36,7 +36,7 @@ const Eventshowings = () => {
         justify-between bg-cover bg-brightness-40'
       style={{backgroundImage: `url(${image_url})`}} >
         <div className='flex flex-col md:flex-col sm:flex-col
-         sm:items-center w-full h-full bg-zinc-900/90 p-40 overflow-y-scroll'>
+         sm:items-center w-full h-full backdrop-blur-sm bg-zinc-900/80 p-40 overflow-y-scroll'>
           <div className='w-full flex flex-row mb-5'>
             <button onClick={() => navigate('/')} className='bg-blue-500 hover:bg-blue-600 px-3 py-2 mb-3 rounded-xl flex flex-row items-center text-zinc-100'>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
