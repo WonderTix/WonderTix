@@ -26,9 +26,9 @@ import Manageventmain from './components/Ticketing/ticketingmanager/Events/Manag
 const App = () => {
   return (
     <>
-      <ProtectedRoute component={CssBaseline} />
+      <CssBaseline />
       <Routes>
-        <Route path="/" element={<ProtectedRoute component={Mainpage}/>} />
+        <Route path="/" element={<Mainpage />} />
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
         <Route
           path="/admin/accounts"

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {MenuIcon, XIcon} from '@heroicons/react/outline';
 import {useNavigate} from 'react-router-dom';
 import bgImg from '../../../assets/pp_logo_black.png';
@@ -19,10 +19,18 @@ const Navbar = () => {
   const handleClick3 = () => setShow(!show);
 
   const [profile, setProfile] = useState(false);
-  const {user} = useAuth0();
-  const {picture} = user;
-  const {name} = user;
+
+  const {user, isAuthenticated} = useAuth0();
+
   const navigate = useNavigate();
+
+  let picture: any;
+  let name: any;
+
+  if (isAuthenticated) {
+    picture = user.picture;
+    name = user.name;
+  }
 
   return (
     <div className='w-screen h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg'>
