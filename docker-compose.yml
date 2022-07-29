@@ -22,6 +22,8 @@ services:
       context: ./client
     ports:
       - "3000:3000"
+    environment:
+      REACT_APP_ROOT_URL: ${ROOT_URL}
     volumes:
       - ./client:/wondertix
       - /wondertix/node_modules

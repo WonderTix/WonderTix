@@ -25,7 +25,7 @@ const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.va
 
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   try {
-    const res = await fetch(`http://localhost:8000/api/events/checkin`, {
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
@@ -65,7 +65,7 @@ const DoorList = () => {
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/events/list/active');
+      const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
       const jsonRes = await response.json();
       const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
@@ -85,7 +85,7 @@ const DoorList = () => {
   const getDoorList = async (event) => {
     try {
       const getuser = event.target.value;
-      const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${getuser}`, {method: 'GET'});
+      const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/doorlist?eventinstanceid=${getuser}`, {method: 'GET'});
       const jsonData = await response.json();
 
       // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }

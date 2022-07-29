@@ -11,8 +11,8 @@ const Auth0ProviderWithHistory = ({
 }: {
   children: any,
 }): React.ReactElement => {
-  const domain = 'dev-fhg-n56h.us.auth0.com';
-  const clientId = 'misr9gFE1k3Y5gXh1JV7cgveWpLVNwQh';
+  const domain = 'wtix-dev.us.auth0.com';
+  const clientId = 'riiCcrxD0o7N7oArqgWTTTniMmYM6WiL';
 
   const history = useNavigate();
 

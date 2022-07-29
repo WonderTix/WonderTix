@@ -30,7 +30,7 @@ const CreateEventPage = () => {
   const [ticketTypes, setTicketTypes] = useState([]);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch('http://localhost:8000/api/tickets/types');
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
     setTicketTypes(await res.json());
   };
 
@@ -42,7 +42,7 @@ const CreateEventPage = () => {
   const onSubmit = async (formData: NewEventData) => {
     const {imageUrl, eventName, eventDesc, showings} = formData;
 
-    const createPlayRes = await fetch('http://localhost:8000/api/events', {
+    const createPlayRes = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
@@ -55,7 +55,7 @@ const CreateEventPage = () => {
       const showingdata = showings.map(formatShowingData(id));
 
 
-      const postShowings = await fetch('http://localhost:8000/api/events/instances', {
+      const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',

@@ -18,7 +18,7 @@ const Contacts = (): React.ReactElement => {
         setIsLoading(true);
         setContact(params.id);
         await axios
-            .get(`http://localhost:8000/api/contacts/search?name=${params.id}`,
+            .get(process.env.REACT_APP_ROOT_URL + `/api/contacts/search?name=${params.id}`,
             )
             .then((res) => {
               setData(res.data[0]);

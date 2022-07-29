@@ -49,7 +49,7 @@ export default function ManageEventsPage() {
 
   const deleteEvent = async () => {
     handleClick2();
-    const res = await fetch(`http://localhost:8000/api/events/${eventToDelete}`, {method: 'DELETE'});
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${eventToDelete}`, {method: 'DELETE'});
     if (res.ok) {
       dispatch(openSnackbar('Deleted Event'));
       dispatch(fetchTicketingData());

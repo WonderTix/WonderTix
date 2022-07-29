@@ -23,7 +23,7 @@ export default function ManageAccounts() {
   const dispatch = useAppDispatch();
 
   const getAccounts = async () => {
-    const r = await fetch(`http://localhost:8000/api/accounts`, {
+    const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
       credentials: 'include',
       method: 'GET',
     });
@@ -40,7 +40,7 @@ export default function ManageAccounts() {
   }, []);
 
   const deleteUser = (userid: number) => async () => {
-    const r = await fetch(`http://localhost:8000/api/accounts/${userid}`, {
+    const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts/${userid}`, {
       credentials: 'include',
       method: 'DELETE',
     });
@@ -52,7 +52,7 @@ export default function ManageAccounts() {
 
   const submitNewUser = async (e: any) => {
     e.preventDefault();
-    const r = await fetch(`http://localhost:8000/api/accounts`, {
+    const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
       body: JSON.stringify({username, password}),
       credentials: 'include',
       method: 'POST',
@@ -73,7 +73,7 @@ export default function ManageAccounts() {
   };
 
   const editUser = async (userid: number, user: {}) => {
-    await fetch('http://localhost:8000/api/changeUser', {
+    await fetch(process.env.REACT_APP_ROOT_URL + '/api/changeUser', {
       body: JSON.stringify({id: userid, ...user}),
       credentials: 'include',
       method: 'post',

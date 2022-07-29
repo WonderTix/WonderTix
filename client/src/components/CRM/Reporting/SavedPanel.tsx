@@ -25,7 +25,7 @@ const SavedPanel = ({
   const [value, setValue] = React.useState(null);
 
   React.useEffect(() => {
-    fetch(`http://localhost:8000/api/saved_reports`)
+    fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`)
         .then((data) => data.json())
         .then((data) => {
           if (data.length > 0) setSaved(data);
@@ -43,7 +43,7 @@ const SavedPanel = ({
 
     setColumns(headers);
     // TODO need to rework all the api POST requests for reporting
-    fetch(`http://localhost:8000/api/${value}`)
+    fetch(process.env.REACT_APP_ROOT_URL + `/api/${value}`)
         .then((data) => data.json())
         .then((data) => setRows(data));
   };
@@ -57,7 +57,7 @@ const SavedPanel = ({
 
     if (id === -1) return;
 
-    fetch(`http://localhost:8000/api/saved_reports/${id}`, {
+    fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports/${id}`, {
       method: 'delete',
     });
 

@@ -27,7 +27,7 @@ const ShowingInputContainer = ({id, addShow, showings, deleteShow}) => {
   const [totalseats, setTotalseats] = useState(Number);
   const [ticketTypes, setTicketTypes] = useState([]);
   const fetchTicketTypes = async () => {
-    const res = await fetch('http://localhost:8000/api/tickets/types');
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
     setTicketTypes(await res.json());
   };
 

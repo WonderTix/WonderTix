@@ -19,7 +19,7 @@ const Accounts = (): React.ReactElement => {
         setAccount(params.id);
         await axios
             .get(
-                `http://localhost:8000/api/accounts/search?username=${params.id}`,
+                process.env.REACT_APP_ROOT_URL + `/api/accounts/search?username=${params.id}`,
             )
             .then((res) => {
               setData(res.data[0]);
