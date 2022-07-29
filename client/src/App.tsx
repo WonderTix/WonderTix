@@ -21,7 +21,7 @@ import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
 import Cartmain from './components/Ticketing/cart/Cartmain';
 import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
 import CheckoutSuccess from './components/Ticketing/checkout/CheckoutSuccess';
-
+import Donationmain from './components/Ticketing/donation/Donationmain';
 /* Ticketing Manager */
 import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
 import Addeventmain from './components/Ticketing/ticketingmanager/Events/Add_event/addeventmain';
@@ -42,6 +42,7 @@ const App = () => {
         <Route path="/cart" element={<ProtectedRoute component={Cartmain}/>} />
         <Route path="/completeorder" element={<ProtectedRoute component={Checkoutmain}/>} />
         <Route path="/success" element={<ProtectedRoute component={CheckoutSuccess}/>} />
+        <Route path="/donate" element={<ProtectedRoute component={Donationmain}/>} />
 
 
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />

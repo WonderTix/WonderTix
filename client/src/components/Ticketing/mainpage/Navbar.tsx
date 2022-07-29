@@ -52,7 +52,12 @@ const Navbar = () => {
                 </Link>
               </button>
             </li>
-            <li className='px-4 py-2'>Donate</li>
+            <li className=''>
+              <button onClick={() => navigate('/donate')} className='border-none bg-transparent
+               text-black px-4 py-2'>
+                Donate
+              </button>
+            </li>
             <li>
               <button onClick={() => navigate('/cart')} className='border-none bg-indigo-700 ml-2
                hover:bg-zinc-500 px-4 py-2 hover:text-zinc-100 rounded-xl text-zinc-200 '>
