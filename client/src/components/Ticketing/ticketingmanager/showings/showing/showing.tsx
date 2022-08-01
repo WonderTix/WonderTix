@@ -9,7 +9,6 @@ import {fetchTicketingData} from '../../../ticketingmanager/ticketing/ticketingS
 import {useNavigate} from 'react-router-dom';
 import {useAppSelector, useAppDispatch} from '../../../app/hooks';
 import format from 'date-fns/format';
-import ShowingInputContainer from '../../Events/Add_event/showingInputContainer';
 import {openSnackbar} from '../../snackbarSlice';
 import {fetchEventInstanceData} from '../../Events/events_pages/eventsSlice';
 
