@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express from 'express';
 import * as contactsService from './contacts.service';
-import { contactsRouter } from './contacts.router';
+import {contactsRouter} from './contacts.router';
 
 const app = express();
 app.use('/', contactsRouter);
@@ -12,12 +12,12 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('test contacts routes', function () {
+describe('test contacts routes', function() {
   describe('/', () => {
     it('/ get pass', async () => {
       // @ts-ignore
       contactsService.findAll.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).get('/').send();
       expect(res.statusCode).toBe(200);
@@ -38,7 +38,7 @@ describe('test contacts routes', function () {
     it('/search get pass', async () => {
       // @ts-ignore
       contactsService.findByName.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).get('/search').send();
       expect(res.statusCode).toBe(200);
@@ -59,7 +59,7 @@ describe('test contacts routes', function () {
     it('/:id get pass', async () => {
       // @ts-ignore
       contactsService.find.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).get('/:id').send();
       expect(res.statusCode).toBe(200);
@@ -80,7 +80,7 @@ describe('test contacts routes', function () {
     it('/ post pass', async () => {
       // @ts-ignore
       contactsService.create.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).post('/').send();
       expect(res.statusCode).toBe(201);
@@ -122,7 +122,7 @@ describe('test contacts routes', function () {
     it('/:id put pass', async () => {
       // @ts-ignore
       contactsService.update.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).put('/:id').send();
       expect(res.statusCode).toBe(200);

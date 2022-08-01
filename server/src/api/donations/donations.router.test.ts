@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express from 'express';
 import * as donationsService from './donations.service';
-import { donationsRouter } from './donations.router';
+import {donationsRouter} from './donations.router';
 
 const app = express();
 app.use('/', donationsRouter);
@@ -12,12 +12,12 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('test contacts routes', function () {
+describe('test contacts routes', function() {
   describe('/', () => {
     it('/ get pass', async () => {
       // @ts-ignore
       donationsService.findAll.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).get('/').send();
       expect(res.statusCode).toBe(200);
@@ -38,7 +38,7 @@ describe('test contacts routes', function () {
     it('/search get pass', async () => {
       // @ts-ignore
       donationsService.findByName.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).get('/search').send();
       expect(res.statusCode).toBe(200);
@@ -59,7 +59,7 @@ describe('test contacts routes', function () {
     it('/:id get pass', async () => {
       // @ts-ignore
       donationsService.find.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).get('/:id').send();
       expect(res.statusCode).toBe(200);
@@ -80,7 +80,7 @@ describe('test contacts routes', function () {
     it('/ post pass', async () => {
       // @ts-ignore
       donationsService.create.mockImplementationOnce(() => {
-        return { rows: [] };
+        return {rows: []};
       });
       const res = await request(app).post('/').send();
       expect(res.statusCode).toBe(201);
@@ -122,7 +122,7 @@ describe('test contacts routes', function () {
     it('/:id put pass', async () => {
       // @ts-ignore
       donationsService.update.mockImplementationOnce(() => {
-        return { rowCount: [1] };
+        return {rowCount: [1]};
       });
       const res = await request(app).put('/:id').send();
       expect(res.statusCode).toBe(200);
@@ -131,7 +131,7 @@ describe('test contacts routes', function () {
     it('/:id put error', async () => {
       // @ts-ignore
       donationsService.update.mockImplementationOnce(() => {
-        return { rowCount: [] };
+        return {rowCount: []};
       });
       const res = await request(app).put('/:id').send();
       expect(res.statusCode).toBe(404);

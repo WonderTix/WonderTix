@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express from 'express';
 import * as doorlistService from './doorlist.service';
-import { doorlistRouter } from './doorlist.router';
+import {doorlistRouter} from './doorlist.router';
 
 const app = express();
 app.use('/', doorlistRouter);
@@ -12,7 +12,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('test contacts routes', function () {
+describe('test contacts routes', function() {
   describe('/', () => {
     it('/ get pass', async () => {
       // // @ts-ignore
