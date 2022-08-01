@@ -92,7 +92,7 @@ describe('test contacts routes', function () {
         throw new Error();
       });
 
-      const res = await request(app).get('/').send();
+      const res = await request(app).post('/').send();
       expect(res.statusCode).toBe(500);
     });
   });
