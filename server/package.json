@@ -12,6 +12,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@types/supertest": "^2.0.12",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
