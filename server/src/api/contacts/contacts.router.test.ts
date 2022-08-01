@@ -1,6 +1,6 @@
 import request from 'supertest';
 import express from 'express';
-import * as accountsService from './contacts.service';
+import * as contactsService from './contacts.service';
 import { contactsRouter } from './contacts.router';
 
 const app = express();
@@ -16,7 +16,7 @@ describe('test contacts routes', function () {
   describe('/', () => {
     it('/ get pass', async () => {
       // @ts-ignore
-      accountsService.findAll.mockImplementationOnce(() => {
+      contactsService.findAll.mockImplementationOnce(() => {
         return { rows: [] };
       });
       const res = await request(app).get('/').send();
@@ -25,7 +25,7 @@ describe('test contacts routes', function () {
 
     it('/ get fail', async () => {
       // @ts-ignore
-      accountsService.findAll.mockImplementationOnce(() => {
+      contactsService.findAll.mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -37,7 +37,7 @@ describe('test contacts routes', function () {
   describe('/search', () => {
     it('/search get pass', async () => {
       // @ts-ignore
-      accountsService.findByName.mockImplementationOnce(() => {
+      contactsService.findByName.mockImplementationOnce(() => {
         return { rows: [] };
       });
       const res = await request(app).get('/search').send();
@@ -46,7 +46,7 @@ describe('test contacts routes', function () {
 
     it('/search get fail', async () => {
       // @ts-ignore
-      accountsService.findByName.mockImplementationOnce(() => {
+      contactsService.findByName.mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -58,7 +58,7 @@ describe('test contacts routes', function () {
   describe('/:id', () => {
     it('/:id get pass', async () => {
       // @ts-ignore
-      accountsService.find.mockImplementationOnce(() => {
+      contactsService.find.mockImplementationOnce(() => {
         return { rows: [] };
       });
       const res = await request(app).get('/:id').send();
@@ -67,7 +67,7 @@ describe('test contacts routes', function () {
 
     it('/:id get fail', async () => {
       // @ts-ignore
-      accountsService.find.mockImplementationOnce(() => {
+      contactsService.find.mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -79,7 +79,7 @@ describe('test contacts routes', function () {
   describe('/', () => {
     it('/ post pass', async () => {
       // @ts-ignore
-      accountsService.create.mockImplementationOnce(() => {
+      contactsService.create.mockImplementationOnce(() => {
         return { rows: [] };
       });
       const res = await request(app).post('/').send();
@@ -88,7 +88,7 @@ describe('test contacts routes', function () {
 
     it('/ post fail', async () => {
       // @ts-ignore
-      accountsService.create.mockImplementationOnce(() => {
+      contactsService.create.mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -100,7 +100,7 @@ describe('test contacts routes', function () {
   describe('/:id', () => {
     it('/:id delete pass', async () => {
       // @ts-ignore
-      accountsService.remove.mockImplementationOnce(() => {
+      contactsService.remove.mockImplementationOnce(() => {
         return null;
       });
       const res = await request(app).delete('/:id').send();
@@ -109,7 +109,7 @@ describe('test contacts routes', function () {
 
     it('/:id delete fail', async () => {
       // @ts-ignore
-      accountsService.remove.mockImplementationOnce(() => {
+      contactsService.remove.mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -121,7 +121,7 @@ describe('test contacts routes', function () {
   describe('/:id', () => {
     it('/:id put pass', async () => {
       // @ts-ignore
-      accountsService.update.mockImplementationOnce(() => {
+      contactsService.update.mockImplementationOnce(() => {
         return { rows: [] };
       });
       const res = await request(app).put('/:id').send();
@@ -130,7 +130,7 @@ describe('test contacts routes', function () {
 
     it('/:id put fail', async () => {
       // @ts-ignore
-      accountsService.update.mockImplementationOnce(() => {
+      contactsService.update.mockImplementationOnce(() => {
         throw new Error();
       });
       const res = await request(app).put('/:id').send();
