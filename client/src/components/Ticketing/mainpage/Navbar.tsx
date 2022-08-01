@@ -8,15 +8,12 @@ import {Link} from 'react-scroll';
 import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../../Authentication/auth-nav';
 
-const Navbar = () => {
+interface NavbarProps {
+  bMode?: boolean
+}
+const Navbar = ({bMode}: NavbarProps) => {
   const [nav, setNav] = useState(false);
   const handleClick = () => setNav(!nav);
-
-  const [na2, setNav2] = useState(false);
-  const handleClick2 = () => setNav2(!na2);
-
-  const [show, setShow] = useState(false);
-  const handleClick3 = () => setShow(!show);
 
   const [profile, setProfile] = useState(false);
   const {user} = useAuth0();
@@ -37,19 +34,24 @@ const Navbar = () => {
             <li>
               <button className='border-none bg-transparent
                text-black px-4 py-2'>
-                <Link to='home' smooth={true} duration={600}>
-                    Events
-                </Link>
+                {
+                   !bMode ? ( <Link to='home' smooth={true} duration={600}>
+                   Events
+                   </Link>):(<button onClick={() => navigate('/')}>Events</button>)
+                }
+
 
               </button>
 
             </li>
             <li>
-              <button className='border-none bg-transparent
-               text-black px-4 py-2'>
-                <Link to='seasontickets' smooth={true} duration={600}>
-                    Seasonal Tickets
-                </Link>
+              <button className={!bMode ? 'border-none bg-transparent text-black px-4 py-2':
+            ''}>
+                {
+                   !bMode ? ( <Link to='seasontickets' smooth={true} duration={600}>
+                   Seasonal Tickets
+                   </Link>):(<div></div>)
+                }
               </button>
             </li>
             <li className=''>

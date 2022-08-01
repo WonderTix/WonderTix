@@ -4,7 +4,7 @@ import Footer from '../mainpage/footer';
 import OnlyDonationPage from './OnlyDonatePage';
 const Donationmain = () => {
   return (
-    <><Navbar /><OnlyDonationPage /><Footer /></>
+    <><Navbar bMode/><OnlyDonationPage /><Footer /></>
   );
 };
 
