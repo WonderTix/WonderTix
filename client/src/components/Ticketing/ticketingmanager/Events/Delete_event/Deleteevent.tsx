@@ -61,7 +61,7 @@ export default function DeleteEvents() {
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-         bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500' >Delete Event</h1>
+         bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500' >Delete Event Showing</h1>
         <DataGrid className='bg-white' autoHeight rows={eventList} columns={columns} pageSize={10} />
       </div>
     </div>
