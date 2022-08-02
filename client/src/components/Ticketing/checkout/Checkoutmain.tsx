@@ -4,7 +4,7 @@ import Navbar from '../mainpage/Navbar';
 import Footer from '../mainpage/footer';
 const Checkoutmain = () => {
   return (
-    <><Navbar /><CheckoutPage /><Footer /></>
+    <><Navbar bMode /><CheckoutPage /><Footer /></>
   );
 };
 

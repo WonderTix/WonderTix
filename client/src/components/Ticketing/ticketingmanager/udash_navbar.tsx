@@ -11,7 +11,6 @@ const Udash_nav = () => {
   const [profile, setProfile] = useState(false);
 
   const {user} = useAuth0();
-  // const {name, picture, email} = user;
   const {picture} = user;
   const {name} = user;
   const navigate = useNavigate();
@@ -70,12 +69,12 @@ const Udash_nav = () => {
 
 
               <li className=" cursor-pointer text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                <a className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+                <a onClick={() => navigate('/ticketing/showings')} className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                   <div className="flex flex-col gap-2 items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293h3.172a1 1 0 00.707-.293l2.414-2.414a1 1 0 01.707-.293H20" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                     </svg>
-                    <span className="">Inbox</span>
+                    <span className="">Showings</span>
                   </div>
                 </a>
               </li>
@@ -145,14 +144,14 @@ const Udash_nav = () => {
 
 
                     <li className=" cursor-pointer text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                      <button className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out ">
+                      <a onClick={() => navigate('/ticketing/showings')} className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out ">
                         <div className="flex flex-col gap-2 items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293h3.172a1 1 0 00.707-.293l2.414-2.414a1 1 0 01.707-.293H20" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                           </svg>
-                          <span className="">Inbox</span>
+                          <span className="">Showings</span>
                         </div>
-                      </button>
+                      </a>
                     </li>
 
 

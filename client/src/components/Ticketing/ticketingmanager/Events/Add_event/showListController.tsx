@@ -1,4 +1,3 @@
-
 import React, {useState} from 'react';
 import ShowingInputContainer from './showingInputContainer';
 import {Showing} from '../EventForm';

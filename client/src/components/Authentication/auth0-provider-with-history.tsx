@@ -26,6 +26,8 @@ const Auth0ProviderWithHistory = ({
       clientId={clientId}
       redirectUri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
+      useRefreshTokens
+      cacheLocations="localstorage"
     >
       {children}
     </Auth0Provider>

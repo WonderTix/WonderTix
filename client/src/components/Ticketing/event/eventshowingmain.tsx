@@ -4,7 +4,7 @@ import Navbar from '../mainpage/Navbar';
 import Eventshowings from './eventshowings';
 const Eventshowingmain = () => {
   return (
-    <><Navbar /><Eventshowings /><Footer /></>
+    <><Navbar bMode /><Eventshowings /><Footer /></>
   );
 };
 

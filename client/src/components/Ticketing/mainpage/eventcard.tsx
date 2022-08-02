@@ -12,8 +12,8 @@ const ListComponent = (props: Event) => {
     <div className='flex justify-center '>
       <div className="flex flex-row overflow-auto md:flex-row
        sm:flex-col md:w-[35rem]
-      sm:w-[20rem] md:h-full rounded-lg
-       bg-zinc-700/80 shadow-lg mx-7 hover:scale-110
+      sm:w-[20rem] md:h-full rounded-2xl
+       bg-zinc-900/60 shadow-lg mx-7 hover:scale-110
        transition duration-300
         ease-in-out">
         <img className=" md:w-[14rem] h-96

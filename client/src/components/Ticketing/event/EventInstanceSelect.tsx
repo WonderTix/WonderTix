@@ -11,7 +11,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
 import {useState} from 'react';
-import {Ticket} from '../../ticketing/ticketingSlice';
+import {Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
 import format from 'date-fns/format';
 
 
@@ -19,18 +19,23 @@ interface EventInstanceSelectProps {eventInstances: Ticket[], eventInstanceSelec
 
 const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
   const [selectedId, setSelectedId] = useState(-1);
-  const handleClick = (eventInstance: Ticket) => () => {
-    setSelectedId(eventInstance.event_instance_id);
+
+  const handleClick = (id: number) => {
+    setSelectedId(id);
+    const eventInstance = props.eventInstances.find((obj) => {
+      return obj.event_instance_id === id;
+    });
+    console.log(eventInstance);
     if (props.eventInstanceSelected) props.eventInstanceSelected(eventInstance);
+    console.log(selectedId);
   };
   console.log(props.eventInstances);
 
   return (
-    <select className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
-      <option>select time</option>
-
+    <select defaultValue={0} onChange={((ev: React.ChangeEvent<HTMLSelectElement>): void => (handleClick(parseFloat(ev.target.value))))} className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
+      <option value={0} disabled >select time</option>
       {props.eventInstances.map((s) =>
-        <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} onClick={handleClick(s)}>
+        <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} value={s.event_instance_id} >
           {format(new Date(s.date), 'hh:mm a')}
           {console.log(s.date)}
         </option>,

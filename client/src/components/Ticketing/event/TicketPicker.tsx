@@ -18,7 +18,7 @@ import {
   Collapse,
 } from '@material-ui/core';
 // import MultiSelectCalendar from './MultiSelectCalendar';
-import EventInstanceSelect from '../ticketingmanager/Events/events_pages/EventInstanceSelect';
+import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
@@ -135,12 +135,13 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       {selectedTicket ? format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a') : ''}
     </div>,
   };
-  console.log(qty);
+  console.log(numAvail);
+  console.log(selectedTicket);
   return (
     <>
       <Collapse in={showClearBtn}>
-        <button onClick={() => dispatch(resetWidget())} className='bg-red-600 px-3 py-1
-         rounded-xl text-white hover:bg-red-700 mb-3'>
+        <button onClick={() => dispatch(resetWidget())} className='bg-blue-600 px-3 py-1
+         rounded-xl text-white hover:bg-blue-700 mb-3'>
           Choose different date
         </button>
       </Collapse>
@@ -148,12 +149,13 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       <Collapse in={showCalendar}>
         <div className='flex flex-col w-full'>
           <div className='flex flex-col text-white w-full px-20'>
-            <select value={0}className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
+            <select defaultValue={''} className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
               onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}>
-              <option>select date</option>
-              {tickets.map((t) => <option value={(t.date).toString()}>
-                {format(new Date(t.date), 'eee, MMM dd yyyy')}
-              </option>)}
+              <option value='' disabled>select date</option>
+              {tickets.map((t) =>
+                <option value={(t.date).toString()}>
+                  {format(new Date(t.date), 'eee, MMM dd yyyy')}
+                </option>)}
             </select>
           </div>
         </div>
@@ -174,10 +176,12 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
         <select
           // labelId="qty-select-label"
           value={qty}
+          defaultValue={0}
           disabled={selectedTicket===undefined || numAvail < 1}
           onChange={(e) => dispatch(changeQty(parseInt(e.target.value)))}
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
+          <option value={0} disabled>select qty</option>
           {range(numAvail, false).map((n) => <option className='text-white' key={n} value={n}>{n}</option>)}
         </select>
       </div>
