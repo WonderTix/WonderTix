@@ -81,9 +81,9 @@ const Navbar = ({bMode}: NavbarProps) => {
         <div className='md:hidden ' onClick={handleClick}>
           {!nav ? <MenuIcon className='w-5'/> : <XIcon className = 'w-5' />}
         </div>
-        <div className="w-1/2 hidden md:flex mr-4 gap-4">
+        <div className="w-1/2 hidden md:flex mr-4">
           <div className="w-full flex items-center pl-8 justify-end">
-            {login ? ( <div className="flex items-center relative cursor-pointer" onClick={() => setProfile(!profile)}>
+            {login ? ( <div className="flex items-center relative cursor-pointer px-4" onClick={() => setProfile(!profile)}>
               <div className="rounded-full">
                 {profile ? (
                         <ul className="p-2 w-full border-r bg-zinc-100 absolute rounded left-0 shadow mt-12 sm:mt-[4.3rem] ">
@@ -128,7 +128,7 @@ const Navbar = ({bMode}: NavbarProps) => {
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
               </div>
-            </div>) : ( <button className="flex flex-row gap-1 items-center bg-transparent text-zinc-500 rounded-xl ">
+            </div>) : ( <button className="flex px-5 flex-row gap-1  items-center text-zinc-500 rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out ">
               <button className="font-semibold"><AuthNav /></button>
             </button>)}
           </div>
