@@ -137,7 +137,7 @@ const Navbar = () => {
 
         <li className='border-b-2 p-3 border-zinc-300 w-full flex flex-col
          items-center hover:scale-105 duration-300'>
-          <button onClick={() => navigate('./')} className='border-none
+          <button onClick={() => navigate('/')} className='border-none
            bg-transparent text-black font-semibold  '>
                 Events
           </button>
