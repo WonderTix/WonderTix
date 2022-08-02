@@ -12,7 +12,7 @@ const LogoutButton = () => {
         })
       }
     >
-      Logout
+      Sign out
     </button>
   );
 };
