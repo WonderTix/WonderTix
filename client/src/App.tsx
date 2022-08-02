@@ -35,9 +35,9 @@ import showingmain from './components/Ticketing/ticketingmanager/showings/showin
 const App = () => {
   return (
     <>
-      <ProtectedRoute component={CssBaseline} />
+      <CssBaseline />
       <Routes>
-        <Route path="/" element={<ProtectedRoute component={Mainpage}/>} />
+        <Route path="/" element={<Mainpage />} />
         <Route path="/events/:eventid" element={<ProtectedRoute component={Eventshowingmain}/>} />
         <Route path="/cart" element={<ProtectedRoute component={Cartmain}/>} />
         <Route path="/completeorder" element={<ProtectedRoute component={Checkoutmain}/>} />
