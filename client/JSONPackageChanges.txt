@@ -1,0 +1,9 @@
+Changes:
+
+Removed "@date-io/date-fns": "^1.3.13",
+Removed "@headlessui/react": "^1.6.5",
+Removed "@material-ui/icons": "^5.0.0-beta.1",
+Removed "@mui/styles": "^5.7.0",
+Removed "@material-ui/lab": "^5.0.0-alpha.44",
+Removed "materialui-daterange-picker": "^1.1.92",
+Removed "@mui/icons-material": "^5.4.2",
