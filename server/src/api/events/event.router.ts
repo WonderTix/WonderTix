@@ -97,6 +97,15 @@ eventRouter.post('/checkout', async (req, res) => {
   // the id of the show/event/whatever. PRICES CANNOT COME FROM CLIENTS!!
   const data: CartItem[] = req.body.cartItems;
 
+  const {
+    firstName,
+    lastName,
+    streetAddress,
+    phone,
+    email,
+    seatingAcc,
+  } = req.body.formData;
+  const optIn = req.body.formData['opt-in'];
   let emailExists = false;
   try {
     const emails = await pool.query(
@@ -125,15 +134,15 @@ eventRouter.post('/checkout', async (req, res) => {
       await pool.query(
           query,
           [
-            req.body.formData['first-name'] +
+            firstName +
             ' ' +
-            req.body.formData['last-name'],
-            req.body.formData.email,
-            req.body.formData.phone,
-            req.body.formData['street-address'],
-            req.body.formData['opt-in'],
+            lastName,
+            email,
+            phone,
+            streetAddress,
+            optIn,
             false,
-            req.body.formData['seating-accommodation'],
+            seatingAcc,
           ],
       );
     } catch (error) {
@@ -141,14 +150,13 @@ eventRouter.post('/checkout', async (req, res) => {
     }
   } else {
     try {
-      const body = req.body;
       const values = [
-        body.formData.email,
-        body.formData['first-name'] + ' ' + body.formData['last-name'],
-        body.formData.phone,
-        body.formData['street-address'],
-        body.formData['opt-in'],
-        body.formData['seating-accommodation'],
+        email,
+        firstName + ' ' + lastName,
+        phone,
+        streetAddress,
+        optIn,
+        seatingAcc,
       ];
       const query = `
                       UPDATE public.customers
@@ -173,9 +181,7 @@ eventRouter.post('/checkout', async (req, res) => {
     const query = `SELECT id FROM customers WHERE custname = $1`;
     customerID = await pool.query(
         query,
-        [req.body.formData['first-name'] +
-        ' ' +
-        req.body.formData['last-name']],
+        [firstName + ' ' + lastName],
     );
     customerID = customerID.rows[0].id;
     // const formData: CheckoutFormInfo = req.body.formData;
@@ -217,8 +223,8 @@ eventRouter.post('/checkout', async (req, res) => {
           }))
           .concat(donationItem),
       mode: 'payment',
-      success_url: `{process.env.FRONTEND_URL}/success`,
-      cancel_url: `process.env.FRONTEND_URL`,
+      success_url: `${process.env.FRONTEND_URL}/success`,
+      cancel_url: `${process.env.FRONTEND_URL}`,
       payment_intent_data: {
         metadata: {
           orders: JSON.stringify(orders),
