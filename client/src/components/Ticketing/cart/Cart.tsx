@@ -14,7 +14,6 @@
 import {useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import CartRow from './CartItem';
-import {Backdrop, Button, Divider, Fade, Modal, Paper, Typography} from '@material-ui/core';
 import {toDollarAmount} from '../../../utils/arrays';
 import {removeTicketFromCart, removeAllTicketsFromCart, selectCartContents} from '../ticketingmanager/ticketing/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
