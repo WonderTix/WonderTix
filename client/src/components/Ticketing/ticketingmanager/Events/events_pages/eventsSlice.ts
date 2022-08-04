@@ -49,7 +49,7 @@ export const fetchEventInstanceData = createAsyncThunk(
     'events/fetchAll',
     async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/events/list/active');
+        const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
         const allEventInstances: EventInstance[] = await res.json();
         return aggregateInstances(allEventInstances);
       } catch (err) {

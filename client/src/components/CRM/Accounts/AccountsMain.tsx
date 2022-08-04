@@ -1,12 +1,12 @@
 /* eslint-disable react/react-in-jsx-scope */
 import Navigation from '../Navigation';
-import Accounts from './Accounts';
+import AccountsDash from './AccountsDash';
 
 const AccountsMain = () => {
   return (
     <div className='flex flex-row'>
       <Navigation icon={undefined}/>
-      <Accounts/>
+      <AccountsDash/>
     </div>
   );
 };

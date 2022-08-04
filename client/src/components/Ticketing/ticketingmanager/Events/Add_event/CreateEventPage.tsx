@@ -30,7 +30,7 @@ const CreateEventPage = () => {
   const [ticketTypes, setTicketTypes] = useState([]);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch('http://localhost:8000/api/tickets/types');
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
     setTicketTypes(await res.json());
   };
 
@@ -42,7 +42,7 @@ const CreateEventPage = () => {
   const onSubmit = async (formData: NewEventData) => {
     const {imageUrl, eventName, eventDesc, showings} = formData;
 
-    const createPlayRes = await fetch('http://localhost:8000/api/events', {
+    const createPlayRes = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
@@ -55,7 +55,7 @@ const CreateEventPage = () => {
       const showingdata = showings.map(formatShowingData(id));
 
 
-      const postShowings = await fetch('http://localhost:8000/api/events/instances', {
+      const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',
@@ -78,7 +78,7 @@ const CreateEventPage = () => {
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-         bg-gradient-to-r from-violet-500 to-fuchsia-500   ' >Add New Event</h1>
+         bg-gradient-to-r from-violet-500 to-fuchsia-500' >Add New Event</h1>
         <EventForm onSubmit={onSubmit} ticketTypes={ticketTypes}/>
       </div>
     </div>

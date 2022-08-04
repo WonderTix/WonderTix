@@ -15,7 +15,7 @@ import {dayMonthDate, militaryToCivilian} from '../../../../../utils/arrays';
 
 export default function DeleteEvents() {
   async function deleteEvent(showId: string) {
-    const response = await fetch(`http://localhost:8000/api/events/${showId}`,
+    const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${showId}`,
         {
           credentials: 'include',
           method: 'DELETE',
@@ -39,8 +39,10 @@ export default function DeleteEvents() {
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/events/list/active');
-      const jsonData = await response.json();
+      const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
+      console.log(process.env.REACT_APP_ROOT_URL);
+      const jsonRes = await response.json();
+      const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
         jsonData[key].starttime = militaryToCivilian(jsonData[key].starttime);
@@ -59,7 +61,7 @@ export default function DeleteEvents() {
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-         bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500' >Delete Event</h1>
+         bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500' >Delete Event Showing</h1>
         <DataGrid className='bg-white' autoHeight rows={eventList} columns={columns} pageSize={10} />
       </div>
     </div>

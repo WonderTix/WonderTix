@@ -12,8 +12,8 @@ const ListComponent = (props: Event) => {
     <div className='flex justify-center '>
       <div className="flex flex-row overflow-auto md:flex-row
        sm:flex-col md:w-[35rem]
-      sm:w-[20rem] md:h-full rounded-lg
-       bg-zinc-700/80 shadow-lg mx-7 hover:scale-110
+      sm:w-[20rem] md:h-full rounded-2xl
+       bg-zinc-900/60 shadow-lg mx-7 hover:scale-110
        transition duration-300
         ease-in-out">
         <img className=" md:w-[14rem] h-96
@@ -32,8 +32,8 @@ const ListComponent = (props: Event) => {
             <button onClick={() => navigate(`/events/${props.id}`)}
               className='py-2
             text-white  border bg-indigo-600 border-indigo-600
-             hover:bg-transparent hover:text-indigo-600 rounded-full
-             px-4 sm:w-[60%] my-3 mx-16 hover:text-white
+             hover:bg-transparent hover:text-white rounded-2xl
+             px-4 sm:w-[60%] my-3 mx-1
             hover:border-white'>See Showings</button>
           </div>
 

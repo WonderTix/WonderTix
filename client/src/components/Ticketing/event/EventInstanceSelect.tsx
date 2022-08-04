@@ -1,6 +1,6 @@
-/* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 /* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
@@ -11,49 +11,38 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
 import {useState} from 'react';
-import {Grid, Button} from '@material-ui/core';
-import BackupIcon from '@material-ui/icons/Backup';
+import {Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
+import format from 'date-fns/format';
 
-export default function ImageUploader({setImageObj} : {setImageObj: (f: File | undefined) => void}) {
-  const [fileObj, setFile] = useState<File>();
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.currentTarget.files === null) {
-      alert('File is not valid');
-    } else {
-      setFile(e.currentTarget.files[0]);
-    }
+interface EventInstanceSelectProps {eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
+
+const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
+  const [selectedId, setSelectedId] = useState(-1);
+
+  const handleClick = (id: number) => {
+    setSelectedId(id);
+    const eventInstance = props.eventInstances.find((obj) => {
+      return obj.event_instance_id === id;
+    });
+    console.log(eventInstance);
+    if (props.eventInstanceSelected) props.eventInstanceSelected(eventInstance);
+    console.log(selectedId);
   };
-
-  const fileUpload = () => {
-    if (fileObj !== null) {
-      setImageObj(fileObj);
-    }
-  };
+  console.log(props.eventInstances);
 
   return (
-    <Grid container>
-      <Grid item xs={6}>
-        <p>Upload an image</p>
-      </Grid>
-      <Grid item xs={12}>
-        <input
-          accept="image/*"
-          name="newImage"
-          id="file-input"
-          type="file"
-          onChange={onFileChange}
-        />
-        <label htmlFor="file-input">
-          <Button
-            color="primary"
-            endIcon={<BackupIcon />}
-            onClick={fileUpload}
-          >
-                        Upload
-          </Button>
-        </label>
-      </Grid>
-    </Grid>
+    <select defaultValue={0} onChange={((ev: React.ChangeEvent<HTMLSelectElement>): void => (handleClick(parseFloat(ev.target.value))))} className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
+      <option value={0} disabled >select time</option>
+      {props.eventInstances.map((s) =>
+        <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} value={s.event_instance_id} >
+          {format(new Date(s.date), 'hh:mm a')}
+          {console.log(s.date)}
+        </option>,
+      )}
+    </select>
   );
-}
+};
+
+export default EventInstanceSelect;
+

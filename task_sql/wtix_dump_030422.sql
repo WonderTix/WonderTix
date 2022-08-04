@@ -129,6 +129,7 @@ CREATE TABLE public.donations (
     dononame character varying(255),
     frequency public.freq,
     comments character varying(255),
+    payment_intent character varying,
     donodate date
 );
 

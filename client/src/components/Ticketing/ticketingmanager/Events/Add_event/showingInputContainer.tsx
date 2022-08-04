@@ -20,14 +20,14 @@ interface Showing {
     totalseats: number
 }
 // eslint-disable-next-line react/prop-types
-const ShowingInputContainer = ({id, addShow, showings, deleteShow}) => {
+const ShowingInputContainer = ({id, addShow, deleteShow}) => {
   const [starttime, setStarttime] = useState('');
   const [eventdate, setEventdate] = useState('');
   const [ticketTypeId, setTicketTypeId] = useState('');
   const [totalseats, setTotalseats] = useState(Number);
   const [ticketTypes, setTicketTypes] = useState([]);
   const fetchTicketTypes = async () => {
-    const res = await fetch('http://localhost:8000/api/tickets/types');
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
     setTicketTypes(await res.json());
   };
 
@@ -63,7 +63,7 @@ const ShowingInputContainer = ({id, addShow, showings, deleteShow}) => {
         {({fields}) =>
           fields.map((name, i) => (
             <div key={name} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
-              <label className='font-semibold text-white mb-7 mt-7  '>Show # {id+ 1}</label>
+              <label className='font-semibold text-white mb-7 mt-7  '>Show # {id + 1}</label>
               <div className='flex flex-col gap-5 mt-5 pr-20'>
                 <input
                   className='input rounded-lg p-2 bg-violet-100'

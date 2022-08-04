@@ -17,10 +17,10 @@ import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 // import {FieldArray} from 'react-final-form-arrays';
 import {ValidationErrors} from 'final-form';
-import {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ShowingInputContainer from './Add_event/showingInputContainer';
 import InputFieldForEvent from '../../../InputField';
-import React from 'react';
+import ShowListController from './Add_event/showListController';
 
 interface TicketType {
     id: number,
@@ -71,9 +71,8 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   const [imageUrl, setImageURL] = useState('');
   const [isPublished, setIsPublished] = useState(false);
   const [showings, setShowings] = useState([]);
-  const [showList, setShowList] = useState([]);
-  const [showBoxID, setShowBoxID] = useState(0);
-  console.log(showList);
+
+
   // FIELDS CALLBACK
   // Set event name
   const addEventName = useCallback((eventName) => {
@@ -89,36 +88,9 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   }, [imageUrl]);
 
   // Callback to get new show from child component to the parent
-  const addShowData = useCallback((show) =>{
-    setShowings((showings: any) => [...showings, show]);
+  const addShowData = useCallback((show) => {
+    setShowings([...showings, show]);
   }, [showings]);
-
-  // SHOWINGS ACTIONS:
-  const deleteShowing = useCallback((id: number) => {
-    console.log(id);
-    if (showBoxID >= 1) {
-      setShowBoxID(showBoxID - 1);
-    } else {
-      setShowBoxID(0);
-    }
-    //  find show box that has to be removed
-
-    // console.log(showList.filter((item: React.ReactElement) => item.props.id !== id));
-    setShowList((showList: any) => showList.filter((item: React.ReactElement) => item.props.id !== id));
-  }, [showList, showBoxID]);
-
-  // Wrapper for callback to add new show to the list of showings
-  const addShowSection = useCallback((event) => {
-    // Update id for new Show box appended to the list
-    // Insert new box to the Event form
-    const newShowBoxList = [...showList,
-      <ShowingInputContainer key={showBoxID} id={showBoxID} showings={showings} deleteShow={deleteShowing} addShow={addShowData} />];
-    setShowBoxID(showBoxID + 1);
-    setShowList(newShowBoxList);
-    console.log(showList);
-  }, [showList]);
-
-
   // Handle new play and the show options
   const handleSubmit = () => {
     const data: NewEventData = {
@@ -178,17 +150,9 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
                 To add more, click the "Add Showing" button.
             </div>
             <div>
-              <div id="show-table">
-                {showList}
-              </div>
               {/*  Button to trigger add of new show*/}
-              <div>
-                <button
-                  className='px-3 py-2 bg-green-500 text-white rounded-xl'
-                  type='button' onClick={addShowSection}
-                  disabled={editMode}>
-                    Add Showing
-                </button>
+              <div id="show-table">
+                <ShowListController addShowData={addShowData} />
               </div>
             </div>
           </div>
