@@ -132,41 +132,6 @@ const DoorList = () => {
             columns={columns}
             pageSize={10}/>
         </div>
-        {/*<table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
-          <thead className="text-xs text-zinc-100 uppercase rounded-t-lg bg-zinc-800">
-            <tr>
-              {columns.map((client) =>
-                (
-                  <>
-                    <th scope="col" className="px-6 py-3">
-                      {client.field}
-                    </th>
-                  </>
-                ),
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-zinc-100 border-b rounded-b-lg hover:bg-gray-50">
-              <td>{doorList.map((eventss) => (
-                <>
-                  <option className="px-6 py-3">
-                    {eventss.name}
-                  </option>
-                </>
-              ),
-              )}</td>
-              <td>{doorList.map((eventss) => (
-                <>
-                  <option className="px-6 py-3">
-                    {eventss.vip}
-                  </option>
-                </>
-              ),
-              )}</td>
-            </tr>
-          </tbody>
-        </table>*/}
       </div>
 
     </div>

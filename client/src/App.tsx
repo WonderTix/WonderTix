@@ -4,7 +4,6 @@
 /* CRM */
 import React from 'react';
 import {Routes, Route} from 'react-router-dom';
-import CssBaseline from '@mui/material/CssBaseline';
 import ProtectedRoute from './components/Authentication/protected-route';
 import Dashmain from './components/CRM/Dashmain';
 import AccountsMain from './components/CRM/Accounts/AccountsMain';
@@ -35,7 +34,6 @@ import showingmain from './components/Ticketing/ticketingmanager/showings/showin
 const App = () => {
   return (
     <>
-      <CssBaseline />
       <Routes>
         <Route path="/" element={<Mainpage />} />
         <Route path="/events/:eventid" element={<ProtectedRoute component={Eventshowingmain}/>} />

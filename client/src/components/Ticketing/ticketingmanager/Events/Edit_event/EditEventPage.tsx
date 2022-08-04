@@ -13,7 +13,6 @@
 **/
 import {useState, useEffect} from 'react';
 import EventForm, {NewEventData} from '../EventForm';
-import {Typography} from '@material-ui/core';
 import {useParams} from 'react-router-dom';
 import {selectEventData, EventPageData, fetchTicketingData} from '../../ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../../../app/hooks';
