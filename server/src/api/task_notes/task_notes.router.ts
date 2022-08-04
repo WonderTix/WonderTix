@@ -47,7 +47,7 @@ taskNotesRouter.delete('/:id', async (req, res) => {
 taskNotesRouter.put('/:id', async (req, res) => {
   try {
     const updatedTaskNotes = await update(req);
-    res.sendStatus(200).send(updatedTaskNotes.rows);
+    res.status(200).send(updatedTaskNotes.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
