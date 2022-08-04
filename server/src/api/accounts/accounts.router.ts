@@ -1,8 +1,12 @@
 import {Router} from 'express';
 import {create, find, findAll, findByUsername, remove, update}
   from './accounts.service';
+import {checkJwt, checkScopes} from '../../auth';
 
 export const accountsRouter = Router();
+
+accountsRouter.use(checkJwt);
+accountsRouter.use(checkScopes);
 
 // GET /api/accounts
 accountsRouter.get('/', async (req, res) => {

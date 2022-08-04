@@ -1,10 +1,29 @@
 // api/donations/donations.router.ts
 
 import {Request, Response, Router} from 'express';
+import {checkJwt, checkScopes} from '../../auth';
 import {create, find, findAll, findByName, remove, update}
   from './donations.service';
 
 export const donationsRouter = Router();
+
+// Public route
+// POST /api/donations
+donationsRouter.post('/', async (req: Request, res: Response) => {
+  try {
+    const newDonation = await create(req.body);
+    // TODO wrap responses
+    // eslint-disable-next-line max-len
+    // const responseData = {data: newDonation.rows, status: {success: true/false, message: "OK"/ "x rows deleted"}};
+    // same for errors as well
+    res.status(201).send(newDonation.rows);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
+donationsRouter.use(checkJwt);
+donationsRouter.use(checkScopes);
 
 // GET /api/donations
 donationsRouter.get('/', async (req: Request, res: Response) => {
@@ -31,20 +50,6 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const donation = await find(req.params.id);
     res.status(200).send(donation.rows);
-  } catch (err: any) {
-    res.status(500).send(err.message);
-  }
-});
-
-// POST /api/donations
-donationsRouter.post('/', async (req: Request, res: Response) => {
-  try {
-    const newDonation = await create(req.body);
-    // TODO wrap responses
-    // eslint-disable-next-line max-len
-    // const responseData = {data: newDonation.rows, status: {success: true/false, message: "OK"/ "x rows deleted"}};
-    // same for errors as well
-    res.status(201).send(newDonation.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

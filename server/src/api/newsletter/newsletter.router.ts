@@ -1,10 +1,11 @@
 import express from 'express';
+import {checkJwt, checkScopes} from '../../auth';
 import {pool} from '../db';
 
 export const newsletterRouter = express.Router();
 
 // News Letter Route
-newsletterRouter.get('/count', async (req, res) => {
+newsletterRouter.get('/count', checkJwt, checkScopes, async (req, res) => {
   try {
     const emails = await pool.query(
         'SELECT COUNT(*) FROM customers WHERE email = $1',

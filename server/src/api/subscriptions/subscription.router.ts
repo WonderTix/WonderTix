@@ -1,9 +1,10 @@
 import express from 'express';
+import {checkJwt, checkScopes} from '../../auth';
 import {pool} from '../db';
 
 export const subscriptionRouter = express.Router();
 
-subscriptionRouter.get('/newsletter',
+subscriptionRouter.get('/newsletter', checkJwt, checkScopes,
     async (req, res) => {
       // going to need to use auth0 authentication middleware
       // deleted isAuthenticated function
@@ -18,7 +19,7 @@ subscriptionRouter.get('/newsletter',
     },
 );
 
-subscriptionRouter.get('/volunteers',
+subscriptionRouter.get('/volunteers', checkJwt, checkScopes,
     async (req, res) => {
       try {
         const emails = await pool.query(
