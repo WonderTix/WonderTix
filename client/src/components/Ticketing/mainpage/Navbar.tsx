@@ -56,7 +56,6 @@ const Navbar = ({bMode}: NavbarProps) => {
                    </Link>):(<button onClick={() => navigate('/')}>Events</button>)
                 }
 
-
               </button>
 
             </li>
@@ -81,7 +80,7 @@ const Navbar = ({bMode}: NavbarProps) => {
         <div className='md:hidden ' onClick={handleClick}>
           {!nav ? <MenuIcon className='w-5'/> : <XIcon className = 'w-5' />}
         </div>
-        <div className="w-1/2 hidden md:flex mr-4">
+        <div className="w-1/2 hidden md:flex mr-4 gap-4">
           <div className="w-full flex items-center pl-8 justify-end">
             {login ? ( <div className="flex items-center relative cursor-pointer px-4" onClick={() => setProfile(!profile)}>
               <div className="rounded-full">
