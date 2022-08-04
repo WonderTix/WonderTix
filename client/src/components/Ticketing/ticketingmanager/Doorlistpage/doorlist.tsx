@@ -15,7 +15,7 @@
 **/
 // import DataGrid from 'react-data-grid';
 import {DataGrid, GridCellParams} from '@mui/x-data-grid';
-import {Checkbox} from '@material-ui/core';
+import {Checkbox} from '@mui/material';
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 // import RequireLogin from './RequireLogin';
@@ -25,7 +25,7 @@ const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.va
 
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   try {
-    const res = await fetch(`http://localhost:8000/api/events/checkin`, {
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
@@ -65,8 +65,9 @@ const DoorList = () => {
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/events/list/active');
-      const jsonData = await response.json();
+      const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
+      const jsonRes = await response.json();
+      const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
         jsonData[key].starttime = militaryToCivilian(jsonData[key].starttime);
@@ -84,7 +85,7 @@ const DoorList = () => {
   const getDoorList = async (event) => {
     try {
       const getuser = event.target.value;
-      const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${getuser}`, {method: 'GET'});
+      const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/doorlist?eventinstanceid=${getuser}`, {method: 'GET'});
       const jsonData = await response.json();
 
       // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }
@@ -131,41 +132,6 @@ const DoorList = () => {
             columns={columns}
             pageSize={10}/>
         </div>
-        {/*<table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
-          <thead className="text-xs text-zinc-100 uppercase rounded-t-lg bg-zinc-800">
-            <tr>
-              {columns.map((client) =>
-                (
-                  <>
-                    <th scope="col" className="px-6 py-3">
-                      {client.field}
-                    </th>
-                  </>
-                ),
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-zinc-100 border-b rounded-b-lg hover:bg-gray-50">
-              <td>{doorList.map((eventss) => (
-                <>
-                  <option className="px-6 py-3">
-                    {eventss.name}
-                  </option>
-                </>
-              ),
-              )}</td>
-              <td>{doorList.map((eventss) => (
-                <>
-                  <option className="px-6 py-3">
-                    {eventss.vip}
-                  </option>
-                </>
-              ),
-              )}</td>
-            </tr>
-          </tbody>
-        </table>*/}
       </div>
 
     </div>

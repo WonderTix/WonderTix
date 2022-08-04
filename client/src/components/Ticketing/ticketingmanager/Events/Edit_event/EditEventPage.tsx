@@ -13,7 +13,6 @@
 **/
 import {useState, useEffect} from 'react';
 import EventForm, {NewEventData} from '../EventForm';
-import {Typography} from '@material-ui/core';
 import {useParams} from 'react-router-dom';
 import {selectEventData, EventPageData, fetchTicketingData} from '../../ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../../../app/hooks';
@@ -23,12 +22,13 @@ import {openSnackbar} from '../../snackbarSlice';
 
 
 const formatToEventFormData = (data: EventPageData): Partial<NewEventData> => ({
-  eventname: data.title,
-  eventdescription: data.description,
-  image_url: data.image_url,
+  eventName: data.title,
+  eventDesc: data.description,
+  imageUrl: data.image_url,
   showings: data.tickets.map((t) => ({
     id: t.event_instance_id,
-    DateTime: t.date,
+    starttime: t.date,
+    eventdate: t.date,
     totalseats: t.totalseats ?? 0,
     ticketTypeId: '0',
   })),
@@ -43,7 +43,7 @@ const EditEventPage = () => {
   const initValues = playData ? formatToEventFormData(playData) : undefined;
 
   const fetchTicketTypes = async () => {
-    const res = await fetch('http://localhost:8000/api/tickets/types');
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
     setTicketTypes(await res.json());
   };
   useEffect(() => {
@@ -53,7 +53,7 @@ const EditEventPage = () => {
   const onSubmit = async (updatedData: NewEventData) => {
     const deltas = diff(initValues, updatedData);
 
-    const res = await fetch('http://localhost:8000/api/events', {
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
       credentials: 'include',
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},

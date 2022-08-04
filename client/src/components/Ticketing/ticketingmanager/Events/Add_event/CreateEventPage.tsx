@@ -17,15 +17,11 @@ import {useAppDispatch} from '../../../app/hooks';
 import {fetchTicketingData} from '../../ticketing/ticketingSlice';
 import {fetchEventInstanceData} from '../events_pages/eventsSlice';
 import {openSnackbar} from '../../snackbarSlice';
-
 import EventForm, {NewEventData} from '../EventForm';
-import {Typography} from '@material-ui/core';
 import {format} from 'date-fns';
 
 const formatShowingData = (eventid: number) => (data: any) => {
-  const {DateTime, totalseats, ticketTypeId} = data;
-  const eventdate = format(DateTime, 'yyyy-MM-dd');
-  const starttime = format(DateTime, 'HH:mm:00');
+  const {starttime, eventdate, totalseats, ticketTypeId} = data;
   return {eventid, eventdate, starttime, totalseats, tickettype: ticketTypeId};
 };
 
@@ -34,7 +30,7 @@ const CreateEventPage = () => {
   const [ticketTypes, setTicketTypes] = useState([]);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch('http://localhost:8000/api/tickets/types');
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
     setTicketTypes(await res.json());
   };
 
@@ -44,13 +40,13 @@ const CreateEventPage = () => {
 
   // TODO: create endpoint that combines /api/create-event & /api/create-showings
   const onSubmit = async (formData: NewEventData) => {
-    const {image_url, eventname, eventdescription, showings} = formData;
+    const {imageUrl, eventName, eventDesc, showings} = formData;
 
-    const createPlayRes = await fetch('http://localhost:8000/api/events', {
+    const createPlayRes = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
-      body: JSON.stringify({eventname, eventdescription, image_url}),
+      body: JSON.stringify({eventName, eventDesc, imageUrl}),
     });
 
     if (createPlayRes.ok) {
@@ -58,7 +54,8 @@ const CreateEventPage = () => {
       const {id} = eventData.rows[0];
       const showingdata = showings.map(formatShowingData(id));
 
-      const postShowings = await fetch('http://localhost:8000/api/events/instances', {
+
+      const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
         method: 'POST',
@@ -81,7 +78,7 @@ const CreateEventPage = () => {
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-         bg-gradient-to-r from-violet-500 to-fuchsia-500   ' >Add New Event</h1>
+         bg-gradient-to-r from-violet-500 to-fuchsia-500' >Add New Event</h1>
         <EventForm onSubmit={onSubmit} ticketTypes={ticketTypes}/>
       </div>
     </div>

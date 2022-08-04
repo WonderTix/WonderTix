@@ -35,7 +35,7 @@ const ContactsPanel = ({
       query_attr: `contacts/?${parseUrl()}`,
     };
 
-    fetch(`http://localhost:8000/api/saved_reports`, {
+    fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(body),

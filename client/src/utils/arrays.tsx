@@ -138,7 +138,7 @@ export const createNewTaskTextFieldLabels = [
 // Ticketing
 
 
-import {capitalize} from '@material-ui/core';
+import {capitalize} from '@mui/material';
 
 export const titleCase = (s: string) => s.split(' ').map((w) => capitalize(w)).join(' ');
 

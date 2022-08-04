@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
-/* eslint-disable max-len */
 /* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
@@ -10,24 +10,27 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import TableCell from '@material-ui/core/TableCell';
 
-type CalendarEntryProps = {
-    day: number,
-    calKey: number,
-    onCalendarClick: (key: number, fullDate: Date | null) => void,
-    fullDate: Date | null
-}
 
-export default function CalendarEntry({day, calKey, onCalendarClick, fullDate} : CalendarEntryProps) {
+export default function NewsletterCreate() {
   return (
-    <TableCell
-      align="center"
-      key={calKey}
-      onClick={() => onCalendarClick(calKey, fullDate)}
-      style={{cursor: 'pointer'}}
-    >
-      {day === 0 ? '' : day}
-    </TableCell>
+    <div className='w-full h-screen overflow-x-hidden absolute '>
+      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
+       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
+        <div className='w-full h-full'>
+          <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
+         bg-gradient-to-r from-yellow-600 to-red-600'>Newsletter Creation!</h1>
+          <hr/>
+          <div className='bg-white w-full h-full p-10 shadow-xl rounded-xl'>
+            <div className='grid grid-cols-4 gap-2'>
+              <div><button className="bg-green-500 text-white w-full py-2 rounded-xl hover:bg-green-600">Add</button> </div>
+              <div><button className="bg-yellow-500 text-white w-full py-2 rounded-xl hover:bg-yellow-600" >Preview</button> </div>
+              <div><button className="bg-blue-500 text-white w-full py-2 rounded-xl hover:bg-blue-600" >Finish</button> </div>
+              <div><button className="bg-red-500 text-white w-full py-2 rounded-xl hover:bg-red-600" >Discard</button> </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
