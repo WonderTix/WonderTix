@@ -15,7 +15,7 @@
 **/
 // import DataGrid from 'react-data-grid';
 import {DataGrid, GridCellParams} from '@mui/x-data-grid';
-import {Checkbox} from '@material-ui/core';
+import {Checkbox} from '@mui/material';
 import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 // import RequireLogin from './RequireLogin';

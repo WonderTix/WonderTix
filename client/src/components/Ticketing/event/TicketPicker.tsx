@@ -16,7 +16,7 @@ import {addTicketToCart, selectCartTicketCount, Ticket} from '../ticketingmanage
 import {openSnackbar} from '../ticketingmanager/snackbarSlice';
 import {
   Collapse,
-} from '@material-ui/core';
+} from '@mui/material';
 // import MultiSelectCalendar from './MultiSelectCalendar';
 import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
