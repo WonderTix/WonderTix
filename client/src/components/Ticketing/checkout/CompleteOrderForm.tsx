@@ -163,7 +163,7 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
                 <div className='flex flex-col items-start gap-3 mt-10'>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     <input type='checkbox' name="opt-in" />
-                    <div>I would like to recieve email info from portland playhouse</div>
+                    <div>I would like to receive email info from portland playhouse</div>
                   </div>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     {!donationForm && <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
