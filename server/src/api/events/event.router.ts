@@ -411,7 +411,13 @@ eventRouter.get('/', async (req, res) => {
   try {
     // query to retrieve all active events, and the number of showings for each
     const querystring = `
-                          SELECT events.*, count(event_instances.id) as numShows
+                          SELECT events.id,
+                          seasonid,
+                          eventname title,
+                          events.eventdescription description,
+                          events.active,
+                          events.image_url,
+                          count(event_instances.id) as numShows
                           FROM events 
                           JOIN event_instances 
                           ON events.id = event_instances.eventid 
@@ -419,6 +425,7 @@ eventRouter.get('/', async (req, res) => {
                           HAVING active = true;
                         `;
     const data = await pool.query(querystring);
+    data.rows.forEach((row) => row.id = row.id.toString());
     res.json(data.rows);
   } catch (err: any) {
     console.error(err.message);
