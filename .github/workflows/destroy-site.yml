@@ -1,0 +1,47 @@
+name: Destroy SnapSalary Page
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  destroy:
+    env: 
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+    permissions:
+      pull-requests: write
+      actions: read
+      checks: read
+      contents: read
+      deployments: read
+      issues: write
+    name: Destroy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Set Workspace
+        run: echo "TF_WORKSPACE=${{ github.event.pull_request.id }}" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@v3
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Destroy
+        id: destroy
+        run: terraform destroy -auto-approve -input=false
+        working-directory: ./terraform
+      
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Your test page has been destroyed.'
+            })
