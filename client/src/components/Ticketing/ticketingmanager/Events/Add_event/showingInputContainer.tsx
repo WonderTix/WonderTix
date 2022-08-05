@@ -17,10 +17,10 @@ interface Showing {
     starttime: string,
     eventdate: string,
     ticketTypeId: string,
-    totalseats: number
+    totalseats: number,
 }
 // eslint-disable-next-line react/prop-types
-const ShowingInputContainer = ({id, addShow, deleteShow}) => {
+const ShowingInputContainer = ({id, addShow, deleteShow, editMode}) => {
   const [starttime, setStarttime] = useState('');
   const [eventdate, setEventdate] = useState('');
   const [ticketTypeId, setTicketTypeId] = useState('');
@@ -71,7 +71,7 @@ const ShowingInputContainer = ({id, addShow, deleteShow}) => {
                   type='number'
                   required
                   placeholder='# of Seats'
-                  // disabled={editMode}
+                  disabled={editMode}
                   onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                     setTotalseats(parseInt(ev.target.value))
                   }
@@ -80,7 +80,7 @@ const ShowingInputContainer = ({id, addShow, deleteShow}) => {
                   className='p-2 rounded-lg bg-violet-100'
                   name={`${name}.ticketTypeId`}
                   required
-                  placeholder='Select Ticket Type'
+                  placeholder={'Select Ticket Type'}
                   onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
                     setTicketTypeId(ev.target.value)
                   }
@@ -113,16 +113,16 @@ const ShowingInputContainer = ({id, addShow, deleteShow}) => {
                 </div>
               </div>
               <button
-                className='px-2 py-1 bg-blue-500  mt-2 mb-4 text-white rounded-lg text-sm'
+                className='px-2 py-1 bg-blue-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm'
                 onClick={handleClick}
-                // disabled={editMode}
+                disabled={editMode}
               >
                     Save
               </button>
               <button
-                className='px-2 py-1 bg-red-500 ml-9 mt-2 mb-4 text-white rounded-lg text-sm'
+                className='px-2 py-1 bg-red-500 disabled:opacity-30 ml-9 mt-2 mb-4 text-white rounded-lg text-sm'
                 onClick={handleDelete}
-                // disabled={editMode}
+                disabled={editMode}
               >
                         Delete
               </button>

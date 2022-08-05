@@ -18,8 +18,7 @@ import arrayMutators from 'final-form-arrays';
 // import {FieldArray} from 'react-final-form-arrays';
 import {ValidationErrors} from 'final-form';
 import React, {useCallback, useEffect, useState} from 'react';
-import ShowingInputContainer from './Add_event/showingInputContainer';
-import InputFieldForEvent from '../../../InputField';
+import InputFieldForEvent from './InputField';
 import ShowListController from './Add_event/showListController';
 
 interface TicketType {
@@ -125,21 +124,21 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
               <InputFieldForEvent
                 name={'eventName'}
                 id={'eventName'} headerText={'Enter Event Name'}
-                action={addEventName} actionType={'onChange'}
-                placeholder={'Event Name'} />
+                action={addEventName} actionType={'onChange'} value={editMode ? initialValues.eventName : ''}
+                placeholder={editMode ? initialValues.eventName : 'Event Name'} />
 
               <InputFieldForEvent
                 name={'eventDesc'}
                 id={'eventDesc'} headerText={'Enter Short Event Description'}
                 actionType={'onChange'}
-                action={addEventDesc}
-                placeholder={'Event Description'} />
+                action={addEventDesc} value={editMode ? initialValues.eventDesc : ''}
+                placeholder={editMode ? initialValues.eventDesc : 'Event Description'} />
 
               <InputFieldForEvent
                 name={'imageUrl'}
                 id={'imageUrl'} headerText={'Upload Image for Event'}
-                action={addURL} actionType={'onChange'}
-                placeholder={'image URL'} />
+                action={addURL} actionType={'onChange'} value={editMode ? initialValues.imageUrl : ''}
+                placeholder={editMode ? initialValues.imageUrl : 'image URL'}/>
             </div>
             {/* Showings container*/}
             <div className='text-3xl font-semibold mt-5'>
@@ -152,7 +151,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController addShowData={addShowData} />
+                <ShowListController addShowData={addShowData} editMode={editMode} />
               </div>
             </div>
           </div>

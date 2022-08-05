@@ -1,13 +1,15 @@
+/* eslint-disable max-len */
 import React, {useState} from 'react';
 import ShowingInputContainer from './showingInputContainer';
 import {Showing} from '../EventForm';
 
 
 interface ShowListControllerProps{
-   addShowData: (show:Showing) => void;
+   addShowData: (show:Showing) => void,
+   editMode?: boolean
 }
 
-const ShowListController = ({addShowData}: ShowListControllerProps) => {
+const ShowListController = ({addShowData, editMode}: ShowListControllerProps) => {
   // const [showings, setShowings] = useState([]);
   const [shows, addShow] = useState([]);
   const [counter, updateCounter] = useState(0);
@@ -35,7 +37,7 @@ const ShowListController = ({addShowData}: ShowListControllerProps) => {
     // eslint-disable-next-line react/jsx-key
     return (<ShowingInputContainer
       id={element.id} key={element.id}
-      addShow={addShowData} deleteShow={deleteShowing} />);
+      addShow={addShowData} deleteShow={deleteShowing} editMode={editMode} />);
   });
 
   return (
@@ -43,8 +45,8 @@ const ShowListController = ({addShowData}: ShowListControllerProps) => {
       {renderedShow}
       <div>
         <button
-          className='px-3 py-2 bg-green-500 text-white rounded-xl'
-          type='button' onClick={addShowBox}>
+          className='px-3 py-2 bg-green-500 disabled:opacity-30 text-white rounded-xl'
+          type='button' onClick={addShowBox} disabled={editMode}>
                 Add Showing
         </button>
       </div>
