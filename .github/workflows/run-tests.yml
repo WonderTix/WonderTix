@@ -29,3 +29,4 @@ jobs:
 
       - name: Check Unit Tests
         run: npm test
+        working-directory: ./client
