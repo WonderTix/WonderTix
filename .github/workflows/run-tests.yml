@@ -1,4 +1,4 @@
-name: Build and Setup React Application in S3
+name: Run unit tests on client
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, edited, synchronize]
