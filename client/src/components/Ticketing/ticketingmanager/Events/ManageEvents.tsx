@@ -23,6 +23,7 @@ import {openSnackbar} from '../snackbarSlice';
 export default function ManageEventsPage() {
   const history = useNavigate();
   const dispatch = useAppDispatch();
+  // going to get event data directly from API instead
   const eventsData = useAppSelector(selectPlaysData);
   const [eventToDelete, setEventToDelete] = useState<string|null>();
   const [show, setShow] = useState(false);
