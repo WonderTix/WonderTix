@@ -25,6 +25,7 @@ services:
       - "3000:3000"
     environment:
       REACT_APP_ROOT_URL: ${ROOT_URL}
+      REACT_APP_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
     volumes:
       - ./client:/wondertix
       - /wondertix/node_modules
