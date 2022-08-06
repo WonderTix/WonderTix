@@ -1,11 +1,12 @@
 import express from 'express';
+import {checkJwt, checkScopes} from '../../auth';
 import {pool} from '../db';
 import {formatDoorlistResponse} from './doorlist.service';
 
 export const doorlistRouter = express.Router();
 
 // Door list route
-doorlistRouter.get('/', async (req, res) => {
+doorlistRouter.get('/', checkJwt, checkScopes, async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {

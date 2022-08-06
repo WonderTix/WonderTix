@@ -1,4 +1,5 @@
 import express from 'express';
+import {checkJwt, checkScopes} from '../../auth';
 import TicketsState from '../../interfaces/TicketsState';
 import {pool} from '../db';
 import * as ticketUtils from './ticket.service';
@@ -52,7 +53,7 @@ ticketRouter.get('/types', async (req, res) => {
 });
 
 // Set which tickets can be sold for an event
-ticketRouter.post('/types', async (req, res) => {
+ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
   try {
     const body = req.body;
     const values = [body.event_instance_id, body.ticket_type];

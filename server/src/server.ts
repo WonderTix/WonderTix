@@ -5,6 +5,9 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
+import https from 'https';
+import fs from 'fs';
+import {auth, requiredScopes} from 'express-oauth2-jwt-bearer';
 import 'reflect-metadata';
 import {accountsRouter} from './api/accounts/accounts.router';
 import {contactsRouter} from './api/contacts/contacts.router';
@@ -21,7 +24,7 @@ import {ticketRouter} from './api/tickets/ticket.router';
 
 dotenv.config({path: path.join(__dirname, '../../.env')});
 
-export const app = express();
+const app = express();
 const port = 8000;
 const hostname = process.env.HOSTNAME || 'localhost';
 
@@ -62,6 +65,15 @@ app.use('/webhook', orderRouter);
 
 app.get('/', (_req, res) => res.send('Hello World.'));
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://${hostname}:${port}`);
-});
+
+https
+    .createServer(
+        {
+          key: fs.readFileSync(
+              path.join(__dirname, '../localhost-key.pem'),
+          ),
+          cert: fs.readFileSync(path.join(__dirname, '../localhost.pem')),
+        }, app)
+    .listen(port, ()=>{
+      console.log(`[server]: Server is running at https://${hostname}:${port}`);
+    });

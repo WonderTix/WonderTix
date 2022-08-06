@@ -4,7 +4,7 @@ import CartItem from '../../interfaces/CartItem';
 import Showing from '../../interfaces/Showing';
 import {pool} from '../db';
 import eventUtils from './event.service';
-
+import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = express.Router();
 
 const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
@@ -233,8 +233,9 @@ eventRouter.post('/checkout', async (req, res) => {
   }
 });
 
+// PRIVATE ROUTE
 // TODO: Check that provided ticket ID is valid
-eventRouter.put('/checkin', async (req, res) => {
+eventRouter.put('/checkin', checkJwt, checkScopes, async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
@@ -249,7 +250,7 @@ eventRouter.put('/checkin', async (req, res) => {
 });
 
 // End point to create a new event
-eventRouter.post('/', async (req, res) => {
+eventRouter.post('/', checkJwt, checkScopes, async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
@@ -271,9 +272,10 @@ eventRouter.post('/', async (req, res) => {
   }
 });
 
+// PRIVATE
 // End point to create a new showing
 // req body: array of {eventid, eventdate, starttime, totalseats, tickettype}
-eventRouter.post('/instances', async (req, res) => {
+eventRouter.post('/instances', checkJwt, checkScopes, async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   const {instances} = req.body;
@@ -301,7 +303,8 @@ eventRouter.post('/instances', async (req, res) => {
   }
 });
 
-eventRouter.put('/', async (req, res) => {
+// PRIVATE ROUTE
+eventRouter.put('/', checkJwt, checkScopes, async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   const query = `UPDATE events
@@ -327,7 +330,8 @@ eventRouter.put('/', async (req, res) => {
   }
 });
 
-eventRouter.put('/instances/:id', async (req, res) => {
+// PRIVATE ROUTE
+eventRouter.put('/instances/:id', checkJwt, checkScopes, async (req, res) => {
   try {
     const instances: Showing[] = req.body;
 
@@ -382,9 +386,10 @@ eventRouter.put('/instances/:id', async (req, res) => {
   }
 });
 
+// PRIVATE ROUTE
 // Updates salestatus in showtimes table
 // and active flag in plays table when given a play id
-eventRouter.delete('/:id', async (req, res) => {
+eventRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {

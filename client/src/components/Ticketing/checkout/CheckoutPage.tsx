@@ -22,7 +22,7 @@ import {useNavigate} from 'react-router-dom';
 
 // FYI this is ok to stay here; it's the public key so other people can't do anything with it anyway.
 // Replace this with your stripe public key
-const stripePromise = loadStripe('pk_test_51L1ZrgCxejToBkkuM75NvF58FcE4o3vchpdMzCyvHsECKYCNNLuU3fwvoU2vr2OAhbrEKECrAjY3yI41cGfekAHV00BEo64vvF');
+const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
 
 
 export default function CheckoutPage() {

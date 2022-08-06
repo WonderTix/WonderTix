@@ -1,9 +1,15 @@
 // api/tasks/tasks.router.ts
 
 import {Router} from 'express';
+import {checkJwt, checkScopes} from '../../auth';
 import {create, find, findAll, remove, update} from './tasks.service';
 
 export const tasksRouter = Router();
+
+// ALL PRIVATE
+
+tasksRouter.use(checkJwt);
+tasksRouter.use(checkScopes);
 
 // GET /api/tasks
 tasksRouter.get('/', async (req, res) => {

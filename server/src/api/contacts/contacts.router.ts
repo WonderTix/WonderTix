@@ -1,10 +1,25 @@
 // api/contacts/contacts.router.ts
 
 import {Router} from 'express';
+import {checkJwt, checkScopes} from '../../auth';
 import {create, find, findAll, findByName, remove, update}
   from './contacts.service';
 
 export const contactsRouter = Router();
+
+// PUBLIC
+// POST /api/contacts
+contactsRouter.post('/', async (req, res) => {
+  try {
+    const newContact = await create(req.body);
+    res.status(201).send(newContact.rows);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
+contactsRouter.use(checkJwt);
+contactsRouter.use(checkScopes);
 
 // GET /api/contacts
 contactsRouter.get('/', async (req, res) => {
@@ -31,16 +46,6 @@ contactsRouter.get('/:id', async (req, res) => {
   try {
     const customer = await find(req.params.id);
     res.status(200).send(customer.rows);
-  } catch (err: any) {
-    res.status(500).send(err.message);
-  }
-});
-
-// POST /api/contacts
-contactsRouter.post('/', async (req, res) => {
-  try {
-    const newContact = await create(req.body);
-    res.status(201).send(newContact.rows);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

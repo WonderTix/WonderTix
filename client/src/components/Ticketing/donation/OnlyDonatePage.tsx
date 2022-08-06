@@ -24,12 +24,12 @@ export default function OnlyDonationPage() {
   const history = useNavigate();
 
   // Replace this with your stripe public key
-  const stripePromise = loadStripe('pk_test_51L1ZrgCxejToBkkuM75NvF58FcE4o3vchpdMzCyvHsECKYCNNLuU3fwvoU2vr2OAhbrEKECrAjY3yI41cGfekAHV00BEo64vvF');
+  const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
 
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch('/api/checkout', {
+    const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

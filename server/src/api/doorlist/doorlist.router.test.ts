@@ -2,6 +2,7 @@ import request from 'supertest';
 import express from 'express';
 import * as doorlistService from './doorlist.service';
 import {doorlistRouter} from './doorlist.router';
+import {getToken} from '../../testSetup';
 
 const app = express();
 app.use('/', doorlistRouter);
@@ -19,7 +20,8 @@ describe('test contacts routes', function() {
       // doorlistService.findAll.mockImplementationOnce(() => {
       //   return { rows: [] };
       // });
-      // const res = await request(app).get('/').send();
+      // const res = await request(app).get('/')
+      //     .set('Authorization', `Bearer ${getToken()}`)();
       // expect(res.statusCode).toBe(200);
     });
 
@@ -29,7 +31,8 @@ describe('test contacts routes', function() {
       //   throw new Error();
       // });
 
-      // const res = await request(app).get('/').send();
+      // const res = await request(app).get('/')
+      //     .set('Authorization', `Bearer ${getToken()}`)();
       // expect(res.statusCode).toBe(500);
     });
   });

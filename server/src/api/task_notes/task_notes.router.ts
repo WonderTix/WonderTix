@@ -1,7 +1,13 @@
 import {Router} from 'express';
+import {checkJwt, checkScopes} from '../../auth';
 import {create, find, findAll, remove, update} from './task_notes.service';
 
 export const taskNotesRouter = Router();
+
+// ALL PRIVATE
+
+taskNotesRouter.use(checkJwt);
+taskNotesRouter.use(checkScopes);
 
 // GET /api/task_notes
 taskNotesRouter.get('/', async (req, res) => {
