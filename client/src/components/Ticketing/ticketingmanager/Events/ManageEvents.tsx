@@ -24,6 +24,7 @@ import {useAuth0} from '@auth0/auth0-react';
 export default function ManageEventsPage() {
   const history = useNavigate();
   const dispatch = useAppDispatch();
+  // going to get event data directly from API instead
   const eventsData = useAppSelector(selectPlaysData);
   const [eventToDelete, setEventToDelete] = useState<string|null>();
   const [show, setShow] = useState(false);
