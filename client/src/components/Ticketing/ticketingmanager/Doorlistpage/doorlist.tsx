@@ -20,6 +20,7 @@ import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 // import RequireLogin from './RequireLogin';
 import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
+import {useAuth0} from '@auth0/auth0-react';
 
 const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.value as boolean} />);
 
@@ -56,6 +57,7 @@ const columns = [
 
 type DoorListProps = {eventinstanceid: string}
 const DoorList = () => {
+  const {getAccessTokenSilently} = useAuth0();
   const {eventinstanceid} = useParams<DoorListProps>();
   const [doorList, setDoorList] = useState([]);
   const [eventName, setEventName] = useState('');
@@ -63,6 +65,7 @@ const DoorList = () => {
   const [time, setTime] = useState('');
 
   const [eventList, setEventList] = useState([]);
+
   const getEvents = async () => {
     try {
       const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
@@ -82,10 +85,21 @@ const DoorList = () => {
     getEvents();
   }, []);
 
+
   const getDoorList = async (event) => {
     try {
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+
+      console.log('token', token);
       const getuser = event.target.value;
-      const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/doorlist?eventinstanceid=${getuser}`, {method: 'GET'});
+      const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/doorlist?eventinstanceid=${getuser}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const jsonData = await response.json();
 
       // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }

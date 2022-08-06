@@ -13,6 +13,8 @@ const Auth0ProviderWithHistory = ({
 }): React.ReactElement => {
   const domain = 'wtix-dev.us.auth0.com';
   const clientId = 'riiCcrxD0o7N7oArqgWTTTniMmYM6WiL';
+  const audience = 'https://localhost:8000';
+  const scope = 'admin';
 
   const history = useNavigate();
 
@@ -27,6 +29,8 @@ const Auth0ProviderWithHistory = ({
       redirectUri={window.location.origin}
       onRedirectCallback={onRedirectCallback}
       useRefreshTokens
+      audience={audience}
+      scope={scope}
       cacheLocations="localstorage"
     >
       {children}
