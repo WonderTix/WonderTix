@@ -4,6 +4,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {donationFiltersTextField} from '../../../utils/arrays';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import {useAuth0} from '@auth0/auth0-react';
 
 const DonationsPanel = ({
   fetchData,
@@ -20,27 +21,37 @@ const DonationsPanel = ({
   const [amount, setAmount] = React.useState('');
   const [beginValue, setBeginValue] = React.useState(new Date());
   const [endValue, setEndValue] = React.useState(new Date());
+  const {getAccessTokenSilently} = useAuth0();
 
   React.useEffect(() => {
-    if (savedName === '') return;
+    (async () => {
+      if (savedName === '') return;
 
-    /* TODO
-      Dynamic queries/Filter no longer being used by API.
-      Need to redesign these POST requests.
-    */
+      /* TODO
+        Dynamic queries/Filter no longer being used by API.
+        Need to redesign these POST requests.
+      */
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
 
-    const body = {
-      table_name: savedName,
-      query_attr: `donations/?${parseUrl()}`,
-    };
+      const body = {
+        table_name: savedName,
+        query_attr: `donations/?${parseUrl()}`,
+      };
 
-    fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body),
-    }).then((res) => console.log(res));
+      fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      }).then((res) => console.log(res));
 
-    setSavedName('');
+      setSavedName('');
+    });
   });
 
   const parseUrl = () => {

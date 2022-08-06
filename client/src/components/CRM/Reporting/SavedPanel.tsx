@@ -12,6 +12,7 @@ import {
   contactHeaders,
   donationHeaders,
 } from '../../../utils/arrays';
+import {useAuth0} from '@auth0/auth0-react';
 
 const SavedPanel = ({
   setColumns,
@@ -23,15 +24,27 @@ const SavedPanel = ({
   const [refresher, setRefresher] = React.useState(0);
   const [saved, setSaved] = React.useState(null);
   const [value, setValue] = React.useState(null);
+  const {getAccessTokenSilently} = useAuth0();
 
   React.useEffect(() => {
-    fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`)
-        .then((data) => data.json())
-        .then((data) => {
-          if (data.length > 0) setSaved(data);
-          else setSaved(null);
-        });
-  }, [refresher]);
+    (async () => {
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+      const response = await fetch(
+          process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+      if (response.json.length > 0) {
+        setSaved(response.json);
+      } else {
+        setSaved(null);
+      }
+    });
+  }, [refresher, getAccessTokenSilently]);
 
   const handleClickRun = () => {
     let headers = null;

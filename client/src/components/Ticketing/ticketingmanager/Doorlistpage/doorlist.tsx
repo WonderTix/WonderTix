@@ -25,11 +25,19 @@ import {useAuth0} from '@auth0/auth0-react';
 const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.value as boolean} />);
 
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
+  const {getAccessTokenSilently} = useAuth0();
   try {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
     const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       body: JSON.stringify({isCheckedIn, ticketID}),
     });
     return res.json();
@@ -93,7 +101,6 @@ const DoorList = () => {
         scope: 'admin',
       });
 
-      console.log('token', token);
       const getuser = event.target.value;
       const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/doorlist?eventinstanceid=${getuser}`, {
         headers: {

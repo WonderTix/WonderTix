@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import AccountResults from './AccountResults';
+import {useAuth0} from '@auth0/auth0-react';
 
 const Accounts = (): React.ReactElement => {
   const params = useParams();
@@ -11,15 +12,24 @@ const Accounts = (): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const {getAccessTokenSilently} = useAuth0();
 
   useEffect(() => {
     const getData = async () => {
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
       if (params.id) {
         setIsLoading(true);
         setAccount(params.id);
         await axios
             .get(
-                process.env.REACT_APP_ROOT_URL + `/api/accounts/search?username=${params.id}`,
+                process.env.REACT_APP_ROOT_URL + `/api/accounts/search?username=${params.id}`, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
             )
             .then((res) => {
               setData(res.data[0]);
@@ -35,7 +45,7 @@ const Accounts = (): React.ReactElement => {
       }
     };
     getData();
-  }, [params.id]);
+  }, [params.id, getAccessTokenSilently]);
 
   const handleClick = (e: any) => {
     e.preventDefault();

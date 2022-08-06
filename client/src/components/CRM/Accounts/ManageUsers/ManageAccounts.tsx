@@ -14,6 +14,7 @@ import {DataGrid, GridColumns, GridCellParams, GridCellEditCommitParams, MuiEven
 import {SyntheticEvent, useEffect, useState} from 'react';
 import {useAppDispatch} from '../../../Ticketing/app/hooks';
 import {openSnackbar} from '../../../Ticketing/ticketingmanager/snackbarSlice';
+import {useAuth0} from '@auth0/auth0-react';
 
 
 export default function ManageAccounts() {
@@ -21,32 +22,56 @@ export default function ManageAccounts() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useAppDispatch();
+  const {getAccessTokenSilently} = useAuth0();
 
   const getAccounts = async () => {
-    const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
-      credentials: 'include',
-      method: 'GET',
-    });
-    if (r.ok) {
-      const accounts = await r.json();
-      setRows(accounts);
-    } else {
-      setRows([]);
-      dispatch(openSnackbar('Unauthorized'));
+    try {
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+      const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+        method: 'GET',
+      });
+      if (r.ok) {
+        const accounts = await r.json();
+        setRows(accounts);
+      } else {
+        setRows([]);
+        dispatch(openSnackbar('Unauthorized'));
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
+
   useEffect(() => {
     getAccounts();
   }, []);
 
   const deleteUser = (userid: number) => async () => {
-    const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts/${userid}`, {
-      credentials: 'include',
-      method: 'DELETE',
-    });
-    if (r.ok) {
-      await getAccounts();
-      dispatch(openSnackbar('User deleted'));
+    try {
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+      const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts/${userid}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+        method: 'DELETE',
+      });
+      if (r.ok) {
+        await getAccounts();
+        dispatch(openSnackbar('User deleted'));
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -73,11 +98,18 @@ export default function ManageAccounts() {
   };
 
   const editUser = async (userid: number, user: {}) => {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
     await fetch(process.env.REACT_APP_ROOT_URL + '/api/changeUser', {
       body: JSON.stringify({id: userid, ...user}),
       credentials: 'include',
       method: 'post',
-      headers: {'Content-type': 'application/json'},
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
     });
     dispatch(openSnackbar('User changed'));
   };

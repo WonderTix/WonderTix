@@ -4,6 +4,7 @@ import {
   accountFiltersTextField,
   accountFiltersSwitch,
 } from '../../../utils/arrays';
+import {useAuth0} from '@auth0/auth0-react';
 
 const AccountsPanel = ({
   fetchData,
@@ -18,28 +19,41 @@ const AccountsPanel = ({
 }) => {
   const [username, setUsername] = React.useState('');
   const [isAdmin, setIsAdmin] = React.useState(false);
+  const {getAccessTokenSilently} = useAuth0();
 
   React.useEffect(() => {
-    if (savedName === '') return;
+    async () => {
+      if (savedName === '') return;
 
-    /* TODO
-      Dynamic queries/Filter no longer being used by API.
-      Need to redesign these POST requests.
-    */
+      /* TODO
+        Dynamic queries/Filter no longer being used by API.
+        Need to redesign these POST requests.
+      */
 
-    const body = {
-      table_name: savedName,
-      query_attr: `accounts/?${parseUrl()}`,
+      const body = {
+        table_name: savedName,
+        query_attr: `accounts/?${parseUrl()}`,
+      };
+
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+
+      const response = await fetch(
+          `${process.env.REACT_APP_ROOT_URL}/api/saved_reports`, {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(body),
+          });
+      console.log(response.text);
+
+      setSavedName('');
     };
-
-    fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body),
-    }).then((res) => console.log(res));
-
-    setSavedName('');
-  });
+  }, [getAccessTokenSilently]);
 
   const parseUrl = () => {
     const filters = [];

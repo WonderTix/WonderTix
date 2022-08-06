@@ -3,6 +3,7 @@ import {
   contactFiltersTextField,
   contactFiltersSwitch,
 } from '../../../utils/arrays';
+import {useAuth0} from '@auth0/auth0-react';
 
 const ContactsPanel = ({
   fetchData,
@@ -21,28 +22,39 @@ const ContactsPanel = ({
   const [address, setAddress] = React.useState('');
   const [isVip, setIsVip] = React.useState(false);
   const [isVolunteerList, setIsVolunteerList] = React.useState(false);
+  const {getAccessTokenSilently} = useAuth0();
 
   React.useEffect(() => {
-    if (savedName === '') return;
+    (async () => {
+      if (savedName === '') return;
 
-    /* TODO
-      Dynamic queries/Filter no longer being used by API.
-      Need to redesign these POST requests.
-    */
+      /* TODO
+        Dynamic queries/Filter no longer being used by API.
+        Need to redesign these POST requests.
+      */
 
-    const body = {
-      table_name: savedName,
-      query_attr: `contacts/?${parseUrl()}`,
-    };
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
 
-    fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body),
-    }).then((res) => console.log(res));
+      const body = {
+        table_name: savedName,
+        query_attr: `contacts/?${parseUrl()}`,
+      };
 
-    setSavedName('');
-  });
+      fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      }).then((res) => console.log(res));
+
+      setSavedName('');
+    });
+  }, [getAccessTokenSilently]);
 
   const parseUrl = () => {
     const filters = [];
