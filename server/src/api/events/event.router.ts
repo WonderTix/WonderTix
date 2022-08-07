@@ -135,7 +135,7 @@ eventRouter.post('/checkout', async (req, res) => {
     email,
     seatingAcc,
   } = req.body.formData;
-  const optIn = req.body.formData['opt-in'];
+  const optIn = req.body.formData['optIn'];
   let emailExists = false;
   try {
     const emails = await pool.query(
