@@ -14,7 +14,6 @@ import {createSlice, createAsyncThunk, PayloadAction, CaseReducer} from '@reduxj
 import {RootState} from '../../app/store';
 import format from 'date-fns/format';
 import {bound, titleCase} from '../../../../utils/arrays';
-import {useAuth0} from '@auth0/auth0-react';
 
 export interface CartItem {
     product_id: number, // references state.tickets.event_instance_id
@@ -54,17 +53,8 @@ export interface ticketingState {
 
 
 const fetchData = async (url: string) => {
-  const {getAccessTokenSilently} = useAuth0();
   try {
-    const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
-      scope: 'admin',
-    });
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(url);
     return await res.json();
   } catch (err) {
     console.error(err.message);
