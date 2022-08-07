@@ -9,3 +9,4 @@ server/src/prisma/generated
 .vscode
 
 *.pem
+/

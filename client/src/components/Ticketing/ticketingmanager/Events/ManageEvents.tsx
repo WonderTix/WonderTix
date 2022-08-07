@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable require-jsdoc */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
@@ -13,19 +12,18 @@
 **/
 
 import {useEffect, useState} from 'react';
-import {DataGrid} from '@mui/x-data-grid';
 import {useNavigate} from 'react-router';
-import {useAppSelector, useAppDispatch} from '../../app/hooks';
+import {useAppDispatch} from '../../app/hooks';
 import {fetchEventInstanceData} from './events_pages/eventsSlice';
-import {selectPlaysData, fetchTicketingData} from '../ticketing/ticketingSlice';
+import {fetchTicketingData} from '../ticketing/ticketingSlice';
+import {DataGrid} from '@mui/x-data-grid';
 import {openSnackbar} from '../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 
-export default function ManageEventsPage() {
+// eslint-disable-next-line react/prop-types
+export default function ManageEventsPage({data}) {
   const history = useNavigate();
   const dispatch = useAppDispatch();
-  // going to get event data directly from API instead
-  const eventsData = useAppSelector(selectPlaysData);
   const [eventToDelete, setEventToDelete] = useState<string|null>();
   const [show, setShow] = useState(false);
   const {getAccessTokenSilently} = useAuth0();
@@ -75,9 +73,9 @@ export default function ManageEventsPage() {
 
   const columns = [
     {field: 'id', headerName: 'ID', width: 100},
-    {field: 'eventname', headerName: 'Title', width: 200},
-    {field: 'eventdescription', headerName: 'Description', width: 200},
-    {field: 'numShows', headerName: 'No. Shows', width: 150},
+    {field: 'title', headerName: 'Title', width: 200},
+    {field: 'description', headerName: 'Description', width: 200},
+    {field: 'numshows', headerName: 'No. Shows', width: 150},
     {field: 'Edit', headerName: 'Edit', width: 130, renderCell: (params: any) => (
       <button className='px-5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-800' onClick={() => onEditClick(params.row.id)}>Edit</button>
     )},
@@ -85,21 +83,37 @@ export default function ManageEventsPage() {
       <button className='px-5 py-2 bg-red-600 text-white rounded-xl hover:bg-red-800' onClick={() => onDeleteClick(params.row.id)}>Delete</button>
     )},
   ];
+  // const header = (value)=> {
+  //   return <th>{value}</th>;
+  // };
+
+  // const row = (value) => {
+  //   return (
+  //     <tr>
+  //       <td>{value.id}</td>
+  //       <td>{value.title}</td>
+  //       <td>{value.numshows}</td>
+  //       <td><button>Edit</button></td>
+  //       <td><button>Delete</button></td>
+  //     </tr>
+  //   );
+  // };
+
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+     sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-         bg-gradient-to-r from-cyan-500 to-blue-500   '>Manage Events</h1>
+       bg-gradient-to-r from-cyan-500 to-blue-500   '>Manage Events</h1>
         <div className='bg-white p-3 rounded-xl mb-4 shadow-lg'>
-          <DataGrid className='bg-white' autoHeight columns={columns} rows={eventsData} pageSize={10} />
+          <DataGrid className='bg-white' autoHeight columns={columns} rows={data} pageSize={10} />
         </div>
         <button
           className='px-3 py-2 bg-green-500 text-white rounded-xl hover:bg-green-700'
           onClick={() => history('/ticketing/addevent')}
         >
-            Create New Event
+          Create New Event
         </button>
 
         <div className={!show ? 'hidden': 'relative z-10'} aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -124,13 +138,13 @@ export default function ManageEventsPage() {
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                   <button onClick={() => deleteEvent()} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent
-                   shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700
-                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
-                     sm:ml-3 sm:w-auto sm:text-sm">Yes</button>
+                 shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700
+                  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
+                   sm:ml-3 sm:w-auto sm:text-sm">Yes</button>
                   <button onClick={onCancelDelete} type="button" className="mt-3 w-full inline-flex
-                   justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
-                    font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
-                     focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
+                 justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
+                  font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
+                   focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancel</button>
                 </div>
               </div>
             </div>
@@ -138,6 +152,31 @@ export default function ManageEventsPage() {
         </div>
       </div>
     </div>
+
+  // <div style={{position: 'absolute', display: 'grid', width: '50%', height: '500px',
+  //   justifyContent: 'center',
+  //   backgroundColor: 'white',
+  //   marginTop: '20%',
+  //   marginLeft: '30%',
+  //   marginRight: '20%'}}>
+  //   <table className="table-auto" style={{width: '100%'}}>
+  //     <thead>
+  //       <tr>
+  //         {header('id')}
+  //         {header('Title')}
+  //         {header('Description')}
+  //         {header('No. Shows')}
+  //         {header('Edit')}
+  //         {header('Delete')}
+  //       </tr>
+  //     </thead>
+  //     <tbody>
+  //       {row({id: 10, title: 'hello', numshows: 10})}
+  //       {row({id: 10, title: 'hello', numshows: 10})}
+  //       {row({id: 10, title: 'hello', numshows: 10})}
+  //       {row({id: 10, title: 'hello', numshows: 10})}
+  //     </tbody>
+  //   </table>
+  // </div>
   );
 }
-
