@@ -12,13 +12,23 @@
 import {DataGrid} from '@mui/x-data-grid';
 import React, {useState, useEffect} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../../utils/arrays';
+import {useAuth0} from '@auth0/auth0-react';
 
 export default function DeleteEvents() {
+  const {getAccessTokenSilently} = useAuth0();
+
   async function deleteEvent(showId: string) {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
     const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${showId}`,
         {
           credentials: 'include',
           method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
     getEvents();
     return response.json();

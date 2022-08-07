@@ -19,6 +19,7 @@ import {useAppSelector, useAppDispatch} from '../../app/hooks';
 import {fetchEventInstanceData} from './events_pages/eventsSlice';
 import {selectPlaysData, fetchTicketingData} from '../ticketing/ticketingSlice';
 import {openSnackbar} from '../snackbarSlice';
+import {useAuth0} from '@auth0/auth0-react';
 
 export default function ManageEventsPage() {
   const history = useNavigate();
@@ -26,6 +27,7 @@ export default function ManageEventsPage() {
   const eventsData = useAppSelector(selectPlaysData);
   const [eventToDelete, setEventToDelete] = useState<string|null>();
   const [show, setShow] = useState(false);
+  const {getAccessTokenSilently} = useAuth0();
   const handleClick2 = () => setShow(!show);
   const onEditClick = (id: number|string) => {
     history(`/ticketing/editevent/${id}`);
@@ -49,7 +51,18 @@ export default function ManageEventsPage() {
 
   const deleteEvent = async () => {
     handleClick2();
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${eventToDelete}`, {method: 'DELETE'});
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${eventToDelete}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authentication: `Bearer ${token}`,
+          },
+        },
+    );
     if (res.ok) {
       dispatch(openSnackbar('Deleted Event'));
       dispatch(fetchTicketingData());
