@@ -59,10 +59,9 @@ const fulfillOrder = async (session: any) => {
       }
       try {
         await pool.query(
-           `UPDATE event_instances SET availableseats = availableseats - $1
-                 WHERE id = $2`,
+           `UPDATE event_instances SET availableseats = availableseats - 1
+                 WHERE id = $1`,
            [
-             temp[counter].quantity,
              temp[counter].id,
            ],
 	);
