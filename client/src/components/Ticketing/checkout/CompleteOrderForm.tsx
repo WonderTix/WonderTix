@@ -25,7 +25,7 @@ export interface CheckoutFormInfo {
     phone?: string,
     email: string,
     visitSource?: string,
-    seatingAcc: string,
+    seatingAcc: boolean,
     comments?: string
 }
 
@@ -56,7 +56,7 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
   const [phone, setphoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [visitSource, setvisitSource] = useState('');
-  const [seatingAcc, setseatingAcc] = useState('');
+  const [seatingAcc, setseatingAcc] = useState(false);
   const [comments, setComments] = useState('');
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
@@ -168,7 +168,7 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     {!donationForm && <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                       <input type='checkbox' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                        setseatingAcc(ev.target.value)} name="seating-accommodation"/>
+                        setseatingAcc(!seatingAcc)} name="seating-accommodation"/>
                       <div>I need seating accommodations</div>
                     </div>
                     }
