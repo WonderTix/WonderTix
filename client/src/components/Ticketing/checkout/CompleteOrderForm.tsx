@@ -16,7 +16,7 @@ import {Form} from 'react-final-form';
 import {useState} from 'react';
 
 export interface CheckoutFormInfo {
-    'opt-in': boolean,
+    optIn: boolean,
     firstName: string,
     lastName: string,
     streetAddress: string,
@@ -25,7 +25,7 @@ export interface CheckoutFormInfo {
     phone?: string,
     email: string,
     visitSource?: string,
-    seatingAcc: string,
+    seatingAcc: boolean,
     comments?: string
 }
 
@@ -56,8 +56,9 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
   const [phone, setphoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [visitSource, setvisitSource] = useState('');
-  const [seatingAcc, setseatingAcc] = useState('');
+  const [seatingAcc, setseatingAcc] = useState(false);
   const [comments, setComments] = useState('');
+  const [optIn, setOptIn] = useState(false);
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
       firstName,
@@ -70,7 +71,7 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
       visitSource,
       seatingAcc,
       comments,
-      'opt-in': false,
+      optIn,
     };
     onSubmit(formData);
   };
@@ -162,13 +163,14 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
                 </div>
                 <div className='flex flex-col items-start gap-3 mt-10'>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
-                    <input type='checkbox' name="opt-in" />
+                    <input type='checkbox' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setOptIn(!optIn)} name="opt-in" />
                     <div>I would like to receive email info from portland playhouse</div>
                   </div>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     {!donationForm && <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                       <input type='checkbox' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                        setseatingAcc(ev.target.value)} name="seating-accommodation"/>
+                        setseatingAcc(!seatingAcc)} name="seating-accommodation"/>
                       <div>I need seating accommodations</div>
                     </div>
                     }
