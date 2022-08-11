@@ -11559,13 +11559,13 @@ COPY public.tickettype (id, name, isseason, seasonid, price, concessions) FROM s
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.users (id, username, is_superadmin) FROM stdin;
-4	wtix	t
-0	brian   f
-1	hailey  f
-2	aiyana  f
-3	allen   f
-\.
+-- COPY public.users (id, username, is_superadmin) FROM stdin;
+-- 4	wtix	    t
+-- 0	brian       f
+-- 1	hailey      f
+-- 2	aiyana      f
+-- 3	allen       f
+-- \.
 
 
 --
