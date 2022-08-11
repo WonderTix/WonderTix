@@ -27,14 +27,14 @@ export const find = (id: string) => {
   return pool.query(myQuery);
 };
 
-export const create = (r: any) => {
+export const create = (r: {username: string, auth0_id: string}) => {
   const myQuery = {
     text: `
       INSERT INTO users
-      VALUES (DEFAULT, $1, $2, $3)
+      VALUES (DEFAULT, $1, DEFAULT, $2)
       RETURNING *
       `,
-    values: [r.username, r.pass_hash, r.is_superadmin],
+    values: [r.username, r.auth0_id],
   };
   return pool.query(myQuery);
 };
