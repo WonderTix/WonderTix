@@ -47,8 +47,8 @@ eventRouter.get('/:id', async (req, res) => {
                   FROM events
                   WHERE id = $1;
                   `;
-    const rows = await pool.query(query, [req.params.id]);
-    res.json(rows);
+    const data = await pool.query(query, [req.params.id]);
+    res.json(data.rows);
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
