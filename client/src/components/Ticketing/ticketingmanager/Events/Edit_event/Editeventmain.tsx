@@ -2,17 +2,19 @@
 import React, {useEffect, useState} from 'react';
 import Udash_nav from '../../udash_navbar';
 import EditEventPage from './EditEventPage';
-
+import {useParams} from 'react-router-dom';
 const Editeventmain = () => {
+  const params = useParams();
   const [loading, setLoading] = useState(true);
   const [event, setEvent] = useState();
   const [shows, setShows] = useState();
 
   const getEventToEdit = () => {
-    fetch(process.env.REACT_APP_ROOT_URL +'/api/events/')
+    fetch(process.env.REACT_APP_ROOT_URL +'/api/events/' + params.eventid)
         .then((response) => {
           return response.json();
         }).then((data)=>{
+          console.log(data);
           setEvent(data);
         });
   };
