@@ -31,6 +31,7 @@ const formatToEventFormData = (data: EventPageData): Partial<NewEventData> => ({
     id: t.event_instance_id,
     starttime: t.date,
     eventdate: t.date,
+    availableseats: t.availableseats ?? 0,
     totalseats: t.totalseats ?? 0,
     ticketTypeId: '0',
   })),

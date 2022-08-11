@@ -9,7 +9,7 @@ const Editeventmain = () => {
   const params = useParams();
   const [loading, setLoading] = useState(true);
   const [event, setEvent] = useState(undefined);
-  const [shows, setShows] = useState();
+  const [shows, setShows] = useState([]);
 
   const getEventToEdit = () => {
     fetch(process.env.REACT_APP_ROOT_URL +'/api/events/' + params.eventid)
@@ -18,17 +18,18 @@ const Editeventmain = () => {
         }).then((data)=>{
           console.log(data);
           const eventData: NewEventData = {
-            eventName: data[0].title,
-            eventDesc: data[0].description,
-            isPublished: data[0].active,
-            imageUrl: data[0].image_url,
+            eventName: data.title,
+            eventDesc: data.description,
+            isPublished: data.active,
+            imageUrl: data.image_url,
             showings: [],
           };
           setEvent(eventData);
         });
   };
   const getShowsToEdit = () => {
-    fetch(process.env.REACT_APP_ROOT_URL +'/api/events/')
+    fetch(process.env.REACT_APP_ROOT_URL +
+    `/api/events/instances/${params.eventid}`)
         .then((response) => {
           return response.json();
         }).then((data)=>{

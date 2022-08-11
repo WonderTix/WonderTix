@@ -41,6 +41,7 @@ export interface Showing {
   starttime: Date,
   eventdate: Date,
   ticketTypeId: string,
+  availableseats: number,
   totalseats: number
 }
 
