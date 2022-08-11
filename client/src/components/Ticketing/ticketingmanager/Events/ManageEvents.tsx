@@ -18,12 +18,14 @@ import {fetchEventInstanceData} from './events_pages/eventsSlice';
 import {fetchTicketingData} from '../ticketing/ticketingSlice';
 import {DataGrid} from '@mui/x-data-grid';
 import {openSnackbar} from '../snackbarSlice';
+import {useAuth0} from '@auth0/auth0-react';
 // eslint-disable-next-line react/prop-types
 export default function ManageEventsPage({data}) {
   const history = useNavigate();
   const dispatch = useAppDispatch();
   const [eventToDelete, setEventToDelete] = useState<string|null>();
   const [show, setShow] = useState(false);
+  const {getAccessTokenSilently} = useAuth0();
   const handleClick2 = () => setShow(!show);
   const onEditClick = (id: number|string) => {
     history(`/ticketing/editevent/${id}`);
@@ -47,7 +49,18 @@ export default function ManageEventsPage({data}) {
 
   const deleteEvent = async () => {
     handleClick2();
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${eventToDelete}`, {method: 'DELETE'});
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${eventToDelete}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authentication: `Bearer ${token}`,
+          },
+        },
+    );
     if (res.ok) {
       dispatch(openSnackbar('Deleted Event'));
       dispatch(fetchTicketingData());
@@ -69,6 +82,21 @@ export default function ManageEventsPage({data}) {
       <button className='px-5 py-2 bg-red-600 text-white rounded-xl hover:bg-red-800' onClick={() => onDeleteClick(params.row.id)}>Delete</button>
     )},
   ];
+  // const header = (value)=> {
+  //   return <th>{value}</th>;
+  // };
+
+  // const row = (value) => {
+  //   return (
+  //     <tr>
+  //       <td>{value.id}</td>
+  //       <td>{value.title}</td>
+  //       <td>{value.numshows}</td>
+  //       <td><button>Edit</button></td>
+  //       <td><button>Delete</button></td>
+  //     </tr>
+  //   );
+  // };
 
 
   return (

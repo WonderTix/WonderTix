@@ -19,6 +19,7 @@ import {fetchEventInstanceData} from '../events_pages/eventsSlice';
 import {openSnackbar} from '../../snackbarSlice';
 import EventForm, {NewEventData} from '../EventForm';
 import {format} from 'date-fns';
+import {useAuth0} from '@auth0/auth0-react';
 
 const formatShowingData = (eventid: number) => (data: any) => {
   const {starttime, eventdate, totalseats, ticketTypeId} = data;
@@ -28,6 +29,7 @@ const formatShowingData = (eventid: number) => (data: any) => {
 const CreateEventPage = () => {
   const dispatch = useAppDispatch();
   const [ticketTypes, setTicketTypes] = useState([]);
+  const {getAccessTokenSilently} = useAuth0();
 
   const fetchTicketTypes = async () => {
     const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
@@ -40,11 +42,18 @@ const CreateEventPage = () => {
 
   // TODO: create endpoint that combines /api/create-event & /api/create-showings
   const onSubmit = async (formData: NewEventData) => {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
     const {imageUrl, eventName, eventDesc, showings} = formData;
 
     const createPlayRes = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
       credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       method: 'POST',
       body: JSON.stringify({eventName, eventDesc, imageUrl}),
     });
@@ -57,7 +66,10 @@ const CreateEventPage = () => {
 
       const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         method: 'POST',
         body: JSON.stringify({instances: showingdata}),
       });

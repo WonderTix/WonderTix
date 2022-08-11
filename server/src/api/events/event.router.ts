@@ -33,6 +33,28 @@ eventRouter.get('/search', async (req, res) => {
   }
 });
 
+// Endpoint to get event by ID
+eventRouter.get('/:id', async (req, res) => {
+  try {
+    const query = `
+                  SELECT
+                    events.id,
+                    seasonid,
+                    eventname title,
+                    events.eventdescription description,
+                    events.active,
+                    events.image_url
+                  FROM events
+                  WHERE eventid = $1;
+                  `;
+    const rows = await pool.query(query, [req.params.id]);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
+
 // Endpoint to get the list of all event instances that are currently active
 // Even route
 eventRouter.get('/list/active', async (req, res) => {
@@ -416,18 +438,23 @@ eventRouter.get('/', async (req, res) => {
   try {
     // query to retrieve all active events, and the number of showings for each
     const querystring = `
-                          SELECT events.id,
-                          seasonid,
-                          eventname title,
-                          events.eventdescription description,
-                          events.active,
-                          events.image_url,
-                          count(event_instances.id) as numShows
-                          FROM events 
-                          JOIN event_instances 
-                          ON events.id = event_instances.eventid 
-                          GROUP BY events.id
-                          HAVING active = true;
+                        SELECT events.id,
+                        seasonid,
+                        eventname title,
+                        events.eventdescription description,
+                        events.active,
+                        events.image_url,
+                        count(event_instances.id) as numShows
+                        FROM events 
+                        JOIN event_instances 
+                        ON events.id = event_instances.eventid 
+                        GROUP BY events.id,
+                        events.seasonid,
+                        events.eventname,
+                        events.eventdescription,
+                        events.active,
+                        events.image_url
+                        HAVING active = true;
                         `;
     const data = await pool.query(querystring);
     data.rows.forEach((row) => row.id = row.id.toString());

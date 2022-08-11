@@ -38,7 +38,11 @@ const Hero = () => {
           <div className=' m-auto  rounded-xl overflow-x-scroll  scroll-smooth   '>
             <div className='flex flex-row md:flex-row sm:flex-col '>
               <div className='flex flex-row md:flex-row sm:flex-col gap-7 py-6'>
-                {allEvents.map((event) => <ListComponent key={event.id} {...event} />)
+                {
+                  console.log(allEvents)
+                }
+                {
+                  allEvents.map((event) => <ListComponent key={event.id} {...event} />)
                 }
               </div>
             </div>

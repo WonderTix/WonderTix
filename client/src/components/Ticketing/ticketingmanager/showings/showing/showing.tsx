@@ -11,6 +11,7 @@ import {useAppSelector, useAppDispatch} from '../../../app/hooks';
 import format from 'date-fns/format';
 import {openSnackbar} from '../../snackbarSlice';
 import {fetchEventInstanceData} from '../../Events/events_pages/eventsSlice';
+import {useAuth0} from '@auth0/auth0-react';
 
 type EventPageProps = {eventid: string}
 const Showing = () => {
@@ -18,6 +19,7 @@ const Showing = () => {
   const navigate = useNavigate();
   const [eventToDelete, setEventToDelete] = useState<string|null>();
   const [show, setShow] = useState(false);
+  const {getAccessTokenSilently} = useAuth0();
   const handleClick2 = () => setShow(!show);
   const onEditClick = (id: number|string) => {
     navigate(`/ticketing/editevent/${id}`);
@@ -37,7 +39,18 @@ const Showing = () => {
 
   const deleteEvent = async () => {
     handleClick2();
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${eventToDelete}`, {method: 'DELETE'});
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${eventToDelete}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+    );
     if (res.ok) {
       dispatch(openSnackbar('Deleted Event'));
       dispatch(fetchTicketingData());

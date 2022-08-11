@@ -36,11 +36,11 @@ const App = () => {
     <>
       <Routes>
         <Route path="/" element={<Mainpage />} />
-        <Route path="/events/:eventid" element={<ProtectedRoute component={Eventshowingmain}/>} />
-        <Route path="/cart" element={<ProtectedRoute component={Cartmain}/>} />
-        <Route path="/completeorder" element={<ProtectedRoute component={Checkoutmain}/>} />
-        <Route path="/success" element={<ProtectedRoute component={CheckoutSuccess}/>} />
-        <Route path="/donate" element={<ProtectedRoute component={Donationmain}/>} />
+        <Route path="/events/:eventid" element={<Eventshowingmain />} />
+        <Route path="/cart" element={<Cartmain />} />
+        <Route path="/completeorder" element={<Checkoutmain />} />
+        <Route path="/success" element={<CheckoutSuccess />} />
+        <Route path="/donate" element={<Donationmain />} />
 
 
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
