@@ -33,6 +33,28 @@ eventRouter.get('/search', async (req, res) => {
   }
 });
 
+// Endpoint to get event by ID
+eventRouter.get('/:id', async (req, res) => {
+  try {
+    const query = `
+                  SELECT
+                    events.id,
+                    seasonid,
+                    eventname title,
+                    events.eventdescription description,
+                    events.active,
+                    events.image_url
+                  FROM events
+                  WHERE eventid = $1;
+                  `;
+    const rows = await pool.query(query, [req.params.id]);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
+
 // Endpoint to get the list of all event instances that are currently active
 // Even route
 eventRouter.get('/list/active', async (req, res) => {
