@@ -12,7 +12,7 @@ interface TicketType {
     concessions: number,
 }
 
-interface Showing {
+export interface Showing {
     id?: number,
     starttime: string,
     eventdate: string,

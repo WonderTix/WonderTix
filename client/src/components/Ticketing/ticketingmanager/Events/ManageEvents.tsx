@@ -69,21 +69,6 @@ export default function ManageEventsPage({data}) {
       <button className='px-5 py-2 bg-red-600 text-white rounded-xl hover:bg-red-800' onClick={() => onDeleteClick(params.row.id)}>Delete</button>
     )},
   ];
-  // const header = (value)=> {
-  //   return <th>{value}</th>;
-  // };
-
-  // const row = (value) => {
-  //   return (
-  //     <tr>
-  //       <td>{value.id}</td>
-  //       <td>{value.title}</td>
-  //       <td>{value.numshows}</td>
-  //       <td><button>Edit</button></td>
-  //       <td><button>Delete</button></td>
-  //     </tr>
-  //   );
-  // };
 
 
   return (

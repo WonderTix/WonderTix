@@ -25,6 +25,7 @@ export interface EventInstance {
      availableseats: number,
 }
 
+
 export type Instance = Omit<EventInstance, 'eventid'|'eventname'|'eventdescription'|'image_url'>
 
 export interface Event {

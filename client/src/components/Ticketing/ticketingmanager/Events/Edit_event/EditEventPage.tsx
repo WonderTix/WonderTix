@@ -19,7 +19,7 @@ import {useAppSelector, useAppDispatch} from '../../../app/hooks';
 import {diff} from 'deep-diff';
 import {fetchEventInstanceData} from '../events_pages/eventsSlice';
 import {openSnackbar} from '../../snackbarSlice';
-
+import {Showing} from '../Add_event/showingInputContainer';
 
 const formatToEventFormData = (data: EventPageData): Partial<NewEventData> => ({
   eventName: data.title,
@@ -34,7 +34,14 @@ const formatToEventFormData = (data: EventPageData): Partial<NewEventData> => ({
   })),
 });
 type EditEventPageProps = {eventid: string}
-const EditEventPage = () => {
+
+interface mapDataToEditEventProps {
+  event: Event;
+  shows: Showing[];
+}
+
+
+const EditEventPage = ({event, shows}: mapDataToEditEventProps) => {
   const dispatch = useAppDispatch();
   const {eventid} = useParams<EditEventPageProps>();
   const [ticketTypes, setTicketTypes] = useState([]);
