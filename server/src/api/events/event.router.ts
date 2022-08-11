@@ -45,7 +45,7 @@ eventRouter.get('/:id', async (req, res) => {
                     events.active,
                     events.image_url
                   FROM events
-                  WHERE eventid = $1;
+                  WHERE id = $1;
                   `;
     const rows = await pool.query(query, [req.params.id]);
     res.json(rows);
