@@ -17,7 +17,7 @@ import {useParams} from 'react-router-dom';
 import {selectEventData, EventPageData, fetchTicketingData} from '../../ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../../../app/hooks';
 import {diff} from 'deep-diff';
-import {fetchEventInstanceData} from '../events_pages/eventsSlice';
+import {Event, fetchEventInstanceData} from '../events_pages/eventsSlice';
 import {openSnackbar} from '../../snackbarSlice';
 import {Showing} from '../Add_event/showingInputContainer';
 import {useAuth0} from '@auth0/auth0-react';
@@ -38,7 +38,7 @@ const formatToEventFormData = (data: EventPageData): Partial<NewEventData> => ({
 type EditEventPageProps = {eventid: string}
 
 interface mapDataToEditEventProps {
-  event: Event;
+  event: NewEventData;
   shows: Showing[];
 }
 
@@ -51,6 +51,7 @@ const EditEventPage = ({event, shows}: mapDataToEditEventProps) => {
   const playData = useAppSelector((state) => selectEventData(state, eventid));
   const initValues = playData ? formatToEventFormData(playData) : undefined;
   const {getAccessTokenSilently} = useAuth0();
+
 
   useEffect(() => {
     fetchTicketTypes();
@@ -100,7 +101,7 @@ const EditEventPage = ({event, shows}: mapDataToEditEventProps) => {
         <EventForm
           ticketTypes={ticketTypes}
           onSubmit={onSubmit}
-          initialValues={initValues}
+          initialValues={event}
           editMode
         />
       </div>

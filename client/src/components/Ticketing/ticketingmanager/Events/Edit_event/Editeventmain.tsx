@@ -3,10 +3,12 @@ import React, {useEffect, useState} from 'react';
 import Udash_nav from '../../udash_navbar';
 import EditEventPage from './EditEventPage';
 import {useParams} from 'react-router-dom';
+import {NewEventData} from '../EventForm';
+
 const Editeventmain = () => {
   const params = useParams();
   const [loading, setLoading] = useState(true);
-  const [event, setEvent] = useState();
+  const [event, setEvent] = useState(undefined);
   const [shows, setShows] = useState();
 
   const getEventToEdit = () => {
@@ -15,7 +17,14 @@ const Editeventmain = () => {
           return response.json();
         }).then((data)=>{
           console.log(data);
-          setEvent(data);
+          const eventData: NewEventData = {
+            eventName: data[0].title,
+            eventDesc: data[0].description,
+            isPublished: data[0].active,
+            imageUrl: data[0].image_url,
+            showings: [],
+          };
+          setEvent(eventData);
         });
   };
   const getShowsToEdit = () => {
@@ -23,7 +32,9 @@ const Editeventmain = () => {
         .then((response) => {
           return response.json();
         }).then((data)=>{
+          console.log(data);
           setShows(data);
+          setLoading(false);
         });
   };
 
