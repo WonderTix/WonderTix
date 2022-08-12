@@ -3,31 +3,59 @@
 import {pool} from '../db';
 
 /* NOTE -- currently uses old database, so accounts are users */
+type response = {
+  data: object,
+  status: {
+    success: boolean,
+    message: string,
+  }
+}
 
-export const findAll = () => {
-  const myQuery = {
-    text: `SELECT * FROM users;`,
+const buildResponse = async (query: any): Promise<response> => {
+  let resp: response = {
+    data: {},
+    status: {
+      success: false,
+      message: "",
+    }
   };
-  return pool.query(myQuery);
+  try {
+    const res = await pool.query(query)
+      resp = {
+        data: res.rows,
+        status: {
+          success: true,
+          message: "Ok",
+        }
+      }
+  } catch (error: any) {
+    resp.status.message = error.message;
+  }
+  return resp;
+}
+
+export const findAll = async (): Promise<response> => {
+  const myQuery = `SELECT * FROM users;`;
+  return await buildResponse(myQuery);
 };
 
-export const findByUsername = (username: string) => {
+export const findByUsername = async (username: string): Promise<response> => {
   const myQuery = {
     text: `SELECT * FROM users WHERE username = $1`,
     values: [username],
   };
-  return pool.query(myQuery);
+  return await buildResponse(myQuery);
 };
 
-export const find = (id: string) => {
+export const find = async (id: string): Promise<response> => {
   const myQuery = {
     text: 'SELECT * FROM users WHERE id = $1',
     values: [id],
   };
-  return pool.query(myQuery);
+  return await buildResponse(myQuery);
 };
 
-export const create = (r: {username: string, auth0_id: string}) => {
+export const create = async (r: {username: string, auth0_id: string}): Promise<response> => {
   const myQuery = {
     text: `
       INSERT INTO users
@@ -36,18 +64,18 @@ export const create = (r: {username: string, auth0_id: string}) => {
       `,
     values: [r.username, r.auth0_id],
   };
-  return pool.query(myQuery);
+  return await buildResponse(myQuery);
 };
 
-export const remove = (id: string) => {
+export const remove = async (id: string): Promise<response> => {
   const myQuery = {
     text: 'DELETE FROM users WHERE id = $1',
     values: [id],
   };
-  return pool.query(myQuery);
+  return buildResponse(myQuery);
 };
 
-export const update = (r: any) => {
+export const update = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
       UPDATE users
@@ -62,5 +90,5 @@ export const update = (r: any) => {
       r.params.id,
     ],
   };
-  return pool.query(myQuery);
+  return buildResponse(myQuery);
 };
