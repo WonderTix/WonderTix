@@ -1,41 +1,35 @@
 // api/accounts/accounts.service.ts
 
-import {pool} from '../db';
+import {response, buildResponse} from '../db';
 
 /* NOTE -- currently uses old database, so accounts are users */
-type response = {
-  data: object,
-  status: {
-    success: boolean,
-    message: string,
-  }
-}
 
-const buildResponse = async (query: any): Promise<response> => {
-  let resp: response = {
-    data: {},
-    status: {
-      success: false,
-      message: "",
-    }
-  };
-  try {
-    const res = await pool.query(query)
-      resp = {
-        data: res.rows,
-        status: {
-          success: true,
-          message: "Ok",
-        }
+export const findAll = async (params: any): Promise<response> => {
+
+  const myQuery = {
+    text: `SELECT * FROM users`,
+    values: Array<string>(),
+  }
+
+  if (Object.keys(params).length > 0) {
+    let count = 0;
+    myQuery.text += ' WHERE';
+    for (const val of Object.keys(params)) {
+      count += 1;
+      if (count > 1) {
+        myQuery.text += ' AND';
       }
-  } catch (error: any) {
-    resp.status.message = error.message;
+      if (val === 'username') {
+        myQuery.text += ` LOWER(username) LIKE $${count}`;
+        myQuery.values.push('%' + params[val].toLowerCase() + '%');
+      } else if (val === "is_superadmin") {
+        myQuery.text += ` is_superadmin = $${count}`;
+        myQuery.values.push(params[val]);
+      }
+    }
   }
-  return resp;
-}
+  console.log(myQuery);
 
-export const findAll = async (): Promise<response> => {
-  const myQuery = `SELECT * FROM users;`;
   return await buildResponse(myQuery);
 };
 

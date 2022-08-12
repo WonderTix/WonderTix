@@ -27,3 +27,34 @@ pool.on('connect', () => {
       `,
   );
 });
+
+export type response = {
+  data: object,
+  status: {
+    success: boolean,
+    message: string,
+  }
+}
+
+export const buildResponse = async (query: any): Promise<response> => {
+  let resp: response = {
+    data: {},
+    status: {
+      success: false,
+      message: "",
+    }
+  };
+  try {
+    const res = await pool.query(query)
+      resp = {
+        data: res.rows,
+        status: {
+          success: true,
+          message: "Ok",
+        }
+      }
+  } catch (error: any) {
+    resp.status.message = error.message;
+  }
+  return resp;
+}

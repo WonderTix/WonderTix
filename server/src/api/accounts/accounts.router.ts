@@ -5,21 +5,14 @@ import {checkJwt, checkScopes} from '../../auth';
 
 export const accountsRouter = Router();
 
-type response = {
-  data: object,
-  status: {
-    success: boolean,
-    message: string,
-  }
-}
-
 accountsRouter.use(checkJwt);
 accountsRouter.use(checkScopes);
 
 // GET /api/accounts
-accountsRouter.get('/', async (_req: Request, res: Response) => {
+accountsRouter.get('/', async (req: Request, res: Response) => {
   try {
-    const resp = await findAll();
+    console.log(req.query);
+    const resp = await findAll(req.query);
     let code = resp.status.success ? 200 : 404;
     res.status(code).send(resp)
   } catch (err: any) {
@@ -64,8 +57,8 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
 accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
-    let code = resp.status.success ? 200 : 404;
-    res.status(code).send(resp);;
+    let code = resp.status.success ? 204 : 404;
+    res.sendStatus(code);
   } catch (err: any) {
     res.status(500).send(err.message);
   }

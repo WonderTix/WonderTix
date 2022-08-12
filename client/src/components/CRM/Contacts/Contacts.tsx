@@ -21,7 +21,7 @@ const Contacts = (): React.ReactElement => {
             .get(process.env.REACT_APP_ROOT_URL + `/api/contacts/search?name=${params.id}`,
             )
             .then((res) => {
-              setData(res.data[0]);
+              setData(res.data.data[0]);
               console.log(res);
             })
             .catch((err) => {

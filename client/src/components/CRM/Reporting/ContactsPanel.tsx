@@ -69,9 +69,7 @@ const ContactsPanel = ({
       if (filter[1] === '' || filter[1] === false) return;
 
       filters.push(
-          `filters[${filter[0]}]${
-          typeof filter[1] === 'string' ? '[$contains]' : '[$eq]'
-          }=${filter[1]}`,
+          `${filter[0]}=${filter[1]}`,
       );
     });
 
