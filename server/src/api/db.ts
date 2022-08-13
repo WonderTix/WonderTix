@@ -29,7 +29,7 @@ pool.on('connect', () => {
 });
 
 export type response = {
-  data: object,
+  data: Array<any>,
   status: {
     success: boolean,
     message: string,
@@ -38,7 +38,7 @@ export type response = {
 
 export const buildResponse = async (query: any): Promise<response> => {
   let resp: response = {
-    data: {},
+    data: [],
     status: {
       success: false,
       message: "",
@@ -46,6 +46,7 @@ export const buildResponse = async (query: any): Promise<response> => {
   };
   try {
     const res = await pool.query(query)
+    console.log(res);
       resp = {
         data: res.rows,
         status: {

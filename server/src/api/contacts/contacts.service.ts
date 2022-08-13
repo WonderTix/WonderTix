@@ -24,7 +24,8 @@ export const findAll = async (params: any): Promise<response> => {
         myQuery.text += ` LOWER(${val}) LIKE $${count}`;
         myQuery.values.push('%' + params[val].toLowerCase() + '%');
       } else if (checkBoxes.includes(val)) {
-        myQuery.text += ` ${val} = $${count}`;
+        myQuery.text += ` $${count} = $${count+1}`;
+        myQuery.values.push(val);
         myQuery.values.push(params[val]);
       }
     }
