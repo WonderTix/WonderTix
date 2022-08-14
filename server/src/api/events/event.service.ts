@@ -68,15 +68,10 @@ const updateShowings = async (showings: Showing[]): Promise<number> => {
 // takes in array of ids and deletes showings with those ids and linkedtickets
 const deleteShowings = async (ids: number[]): Promise<number> => {
   const deleteQuery = `
-                        DELETE FROM event_instances
-                        WHERE id = $1;
+                        UPDATE event_instances SET salestatus=false WHERE id=$1;
                         `;
   let rowsDeleted = 0;
   for (const id of ids) {
-    pool.query(
-        `DELETE FROM linkedtickets WHERE event_instance_id = $1;`,
-        [id],
-    );
     const queryResult = await pool.query(deleteQuery, [id]);
     rowsDeleted += queryResult.rowCount;
   }
