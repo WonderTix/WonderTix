@@ -8,43 +8,43 @@ import {NewEventData} from '../EventForm';
 const Editeventmain = () => {
   const params = useParams();
   const [loading, setLoading] = useState(true);
-  const [event, setEvent] = useState(undefined);
-  const [shows, setShows] = useState([]);
+  const [eventData, setEventData] = useState(undefined);
 
-  const getEventToEdit = () => {
-    fetch(process.env.REACT_APP_ROOT_URL +'/api/events/' + params.eventid)
+  const getDataForEventAndShows = async () => {
+    const eventData: NewEventData = {
+      seasonID: undefined,
+      eventID: undefined,
+      eventName: '',
+      eventDesc: '',
+      isPublished: false,
+      imageUrl: '',
+      showings: [],
+    };
+    await fetch(process.env.REACT_APP_ROOT_URL +'/api/events/' + params.eventid)
         .then((response) => {
           return response.json();
         }).then((data)=>{
-          console.log(data);
-          const eventData: NewEventData = {
-            eventName: data.title,
-            eventDesc: data.description,
-            isPublished: data.active,
-            imageUrl: data.image_url,
-            showings: [],
-          };
-          setEvent(eventData);
+          eventData.eventName = data.title;
+          eventData.eventDesc = data.description;
+          eventData.isPublished = data.active;
+          eventData.imageUrl =data.image_url;
+          eventData.eventID = data.id;
+          eventData.seasonID= data.seasonid;
         });
-  };
-  const getShowsToEdit = () => {
-    fetch(process.env.REACT_APP_ROOT_URL +
-    `/api/events/instances/${params.eventid}`)
+    await fetch(process.env.REACT_APP_ROOT_URL +
+          `/api/events/instances/${params.eventid}`)
         .then((response) => {
           return response.json();
         }).then((data)=>{
-          console.log(data);
-          setShows(data);
-          setLoading(false);
+          eventData.showings = data;
         });
-  };
-
-  useEffect( () => {
-    getEventToEdit();
-    getShowsToEdit();
-    if (shows !== undefined && event !== undefined) {
+    setEventData(eventData);
+    if (eventData.showings !== undefined) {
       setLoading(false);
     }
+  };
+  useEffect( () => {
+    getDataForEventAndShows();
   }, []);
 
   if (loading == true) {
@@ -57,7 +57,7 @@ const Editeventmain = () => {
     return (
       <div className='flex flex-row '>
         <Udash_nav/>
-        <EditEventPage event={event} shows={shows}/>
+        <EditEventPage initValues={eventData}/>
       </div>
     );
   }

@@ -19,7 +19,8 @@ import arrayMutators from 'final-form-arrays';
 import {ValidationErrors} from 'final-form';
 import React, {useCallback, useEffect, useState} from 'react';
 import InputFieldForEvent from './InputField';
-import ShowListController from './Add_event/showListController';
+import ShowListController from '../Events/showListController';
+import {Showing} from '../../../../interfaces/showing.interface';
 
 interface TicketType {
     id: number,
@@ -29,6 +30,8 @@ interface TicketType {
 }
 
 export interface NewEventData {
+    seasonID?: number,
+    eventID?: number,
     eventName: string,
     eventDesc: string,
     isPublished: boolean,
@@ -36,14 +39,6 @@ export interface NewEventData {
     showings: Showing []
 }
 
-export interface Showing {
-  id?: number,
-  starttime: Date,
-  eventdate: Date,
-  ticketTypeId: string,
-  availableseats: number,
-  totalseats: number
-}
 
 function validate(formData: any): ValidationErrors {
   return (formData.showings?.length > 0) ? undefined : {error: 'Need one or more showings added'};
@@ -72,7 +67,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   const [isPublished, setIsPublished] = useState(false);
   const [showings, setShowings] = useState([]);
 
-
   // FIELDS CALLBACK
   // Set event name
   const addEventName = useCallback((eventName) => {
@@ -91,6 +85,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   const addShowData = useCallback((show) => {
     setShowings([...showings, show]);
   }, [showings]);
+
   // Handle new play and the show options
   const handleSubmit = () => {
     const data: NewEventData = {
@@ -152,7 +147,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController addShowData={addShowData} editMode={editMode} />
+                <ShowListController showsData={initialValues !== undefined? initialValues.showings: []} addShowData={addShowData}/>
               </div>
             </div>
           </div>

@@ -17,43 +17,20 @@ import {useParams} from 'react-router-dom';
 import {selectEventData, EventPageData, fetchTicketingData} from '../../ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../../../app/hooks';
 import {diff} from 'deep-diff';
-import {Event, fetchEventInstanceData} from '../events_pages/eventsSlice';
 import {openSnackbar} from '../../snackbarSlice';
-import {Showing} from '../Add_event/showingInputContainer';
 import {useAuth0} from '@auth0/auth0-react';
 
 
-const formatToEventFormData = (data: EventPageData): Partial<NewEventData> => ({
-  eventName: data.title,
-  eventDesc: data.description,
-  imageUrl: data.image_url,
-  showings: data.tickets.map((t) => ({
-    id: t.event_instance_id,
-    starttime: t.date,
-    eventdate: t.date,
-    availableseats: t.availableseats ?? 0,
-    totalseats: t.totalseats ?? 0,
-    ticketTypeId: '0',
-  })),
-});
-type EditEventPageProps = {eventid: string}
-
 interface mapDataToEditEventProps {
-  event: NewEventData;
-  shows: Showing[];
+  initValues: NewEventData;
 }
 
 
-const EditEventPage = ({event, shows}: mapDataToEditEventProps) => {
+const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
+  const params = useParams();
   const dispatch = useAppDispatch();
-  const {eventid} = useParams<EditEventPageProps>();
   const [ticketTypes, setTicketTypes] = useState([]);
-
-  const playData = useAppSelector((state) => selectEventData(state, eventid));
-  const initValues = playData ? formatToEventFormData(playData) : undefined;
   const {getAccessTokenSilently} = useAuth0();
-
-
   useEffect(() => {
     fetchTicketTypes();
   }, []);
@@ -64,12 +41,18 @@ const EditEventPage = ({event, shows}: mapDataToEditEventProps) => {
   };
 
   const onSubmit = async (updatedData: NewEventData) => {
-    const deltas = diff(initValues, updatedData);
+    const dataToSave = {
+      id: updatedData.eventID,
+      eventname: updatedData.eventName,
+      eventdescription: updatedData.eventDesc,
+      active: updatedData.isPublished,
+      image_url: updatedData.imageUrl,
+      seasonid: updatedData.seasonID,
+    };
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-
     const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/`, {
       credentials: 'include',
       method: 'PUT',
@@ -77,15 +60,24 @@ const EditEventPage = ({event, shows}: mapDataToEditEventProps) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({eventid, deltas}),
+      body: JSON.stringify({dataToSave}),
+    });
+
+    const res2 = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/instances/${params.eventid}`, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedData.showings),
     });
 
     if (res.ok) {
       const results = await res.json();
       console.log(results);
-      dispatch(fetchTicketingData());
-      dispatch(fetchEventInstanceData());
-      dispatch(openSnackbar(`Saved edit to ${playData?.title ?? 'event'}`));
+      // dispatch(fetchTicketingData());
+      dispatch(openSnackbar(`Saved edit to ${initValues.eventName ?? 'event'}`));
     } else {
       dispatch(openSnackbar('Save failed'));
     }
@@ -97,13 +89,13 @@ const EditEventPage = ({event, shows}: mapDataToEditEventProps) => {
      sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 ' >
-          Edit {playData?.title ?? 'Your Event'}
+          Edit {initValues.eventName ?? 'Your Event'}
         </h1>
         <EventForm
           ticketTypes={ticketTypes}
           onSubmit={onSubmit}
-          initialValues={event}
-          editMode
+          initialValues={initValues}
+          editMode={true}
         />
       </div>
     </div>
