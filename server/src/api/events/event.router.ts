@@ -464,19 +464,22 @@ eventRouter.get('/', async (req, res) => {
                         events.eventdescription description,
                         events.active,
                         events.image_url,
-                        count(event_instances.id) as numShows
+                        count(ei.id) as numShows
                         FROM events 
-                        JOIN event_instances 
-                        ON events.id = event_instances.eventid 
+                        LEFT OUTER JOIN 
+                          (SELECT 
+                            id,eventid
+                          FROM event_instances
+                          WHERE salestatus=true) 
+                        as ei
+                        ON events.id = ei.eventid
                         GROUP BY events.id,
                         events.seasonid,
                         events.eventname,
                         events.eventdescription,
                         events.active,
-                        events.image_url,
-                        event_instances.salestatus
+                        events.image_url
                         HAVING active = true
-                        AND event_instances.salestatus=true;
                         `;
     const data = await pool.query(querystring);
     data.rows.forEach((row) => row.id = row.id.toString());
