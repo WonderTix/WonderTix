@@ -63,7 +63,8 @@ eventRouter.get('/instances/:id', async (req, res) => {
                     *
                   FROM
                     event_instances
-                  WHERE eventid = $1;
+                  WHERE eventid = $1
+                  AND salestatus=true;
                   `;
     const data = await pool.query(query, [req.params.id]);
     console.log('Getting instance with id: ' + req.params.id);
@@ -472,8 +473,10 @@ eventRouter.get('/', async (req, res) => {
                         events.eventname,
                         events.eventdescription,
                         events.active,
-                        events.image_url
-                        HAVING active = true;
+                        events.image_url,
+                        event_instances.salestatus
+                        HAVING active = true
+                        AND event_instances.salestatus=true;
                         `;
     const data = await pool.query(querystring);
     data.rows.forEach((row) => row.id = row.id.toString());
