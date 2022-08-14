@@ -45,7 +45,7 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
       starttime: starttime,
       eventdate: eventdate,
       totalseats: totalseats,
-      availableseats: 0,
+      availableseats: totalseats,
       ticketTypeId: 0,
     };
     return showing;

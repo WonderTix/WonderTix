@@ -6,10 +6,11 @@ import ShowingInputContainer from './showingInputContainer';
 
 interface ShowListControllerProps{
    showsData?: Showing[];
-   addShowData: (show:Showing) => void,
+   addShowData: (show: Showing) => void,
+   updateShows: (shows:Showing[]) => void,
 }
 
-const ShowListController = ({showsData, addShowData}: ShowListControllerProps) => {
+const ShowListController = ({showsData, addShowData, updateShows}: ShowListControllerProps) => {
   console.log('Shows data');
   console.log(showsData);
   const [shows, addShow] = useState(showsData);
@@ -25,7 +26,9 @@ const ShowListController = ({showsData, addShowData}: ShowListControllerProps) =
       availableseats: 0,
       totalseats: 0,
     };
-    addShow([...shows, show]);
+    const newList = [...shows, show];
+    addShow(newList);
+    updateShows(newList);
     updateCounter(counter+1);
   };
 
@@ -35,6 +38,8 @@ const ShowListController = ({showsData, addShowData}: ShowListControllerProps) =
       return shows.id != id;
     });
     addShow(newList);
+    updateShows(newList);
+    updateCounter(counter-1);
     if (shows.length == 1) {
       updateCounter(0);
     }

@@ -57,15 +57,14 @@ interface EventFormProps {
     onSubmit: (formData: NewEventData) => void
     ticketTypes: TicketType[],
     initialValues?: Partial<NewEventData>,
-    editMode?: boolean
 }
 
-const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormProps) => {
-  const [eventName, setEventName] = useState('');
-  const [eventDesc, setEventDesc] = useState('');
-  const [imageUrl, setImageURL] = useState('');
-  const [isPublished, setIsPublished] = useState(false);
-  const [showings, setShowings] = useState([]);
+const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
+  const [eventName, setEventName] = useState(initialValues.eventName);
+  const [eventDesc, setEventDesc] = useState(initialValues.eventDesc);
+  const [imageUrl, setImageURL] = useState(initialValues.imageUrl);
+  const [isPublished, setIsPublished] = useState(initialValues.isPublished);
+  const [showings, setShowings] = useState(initialValues.showings);
 
   // FIELDS CALLBACK
   // Set event name
@@ -84,6 +83,10 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
   // Callback to get new show from child component to the parent
   const addShowData = useCallback((show) => {
     setShowings([...showings, show]);
+  }, [showings]);
+
+  const updateShows = useCallback((shows: Showing[]) => {
+    setShowings(shows);
   }, [showings]);
 
   // Handle new play and the show options
@@ -120,21 +123,21 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
               <InputFieldForEvent
                 name={'eventName'}
                 id={'eventName'} headerText={'Enter Event Name'}
-                action={addEventName} actionType={'onChange'} value={editMode ? initialValues.eventName : ''}
-                placeholder={editMode ? initialValues.eventName : 'Event Name'} />
+                action={addEventName} actionType={'onChange'} value={initialValues.eventName}
+                placeholder={initialValues.eventName ? initialValues.eventName: 'Event Name'} />
 
               <InputFieldForEvent
                 name={'eventDesc'}
                 id={'eventDesc'} headerText={'Enter Short Event Description'}
                 actionType={'onChange'}
-                action={addEventDesc} value={editMode ? initialValues.eventDesc : ''}
-                placeholder={editMode ? initialValues.eventDesc : 'Event Description'} />
+                action={addEventDesc} value={initialValues.eventDesc}
+                placeholder={initialValues.eventDesc ? initialValues.eventDesc : 'Event Description'} />
 
               <InputFieldForEvent
                 name={'imageUrl'}
                 id={'imageUrl'} headerText={'Upload Image for Event'}
-                action={addURL} actionType={'onChange'} value={editMode ? initialValues.imageUrl : ''}
-                placeholder={editMode ? initialValues.imageUrl : 'image URL'}/>
+                action={addURL} actionType={'onChange'} value={initialValues.imageUrl}
+                placeholder={initialValues.imageUrl ? initialValues.imageUrl : 'image URL'}/>
             </div>
             {/* Showings container*/}
             <div className='text-3xl font-semibold mt-5'>
@@ -147,7 +150,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={initialValues !== undefined? initialValues.showings: []} addShowData={addShowData}/>
+                <ShowListController showsData={initialValues !== undefined? initialValues.showings: []} addShowData = {addShowData} updateShows={updateShows}/>
               </div>
             </div>
           </div>
@@ -155,9 +158,8 @@ const EventForm = ({onSubmit, ticketTypes, initialValues, editMode}: EventFormPr
           <button
             className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
             type='submit'
-            disabled={!editMode && (submitting)}
           >
-            {editMode ? 'Save Changes' : 'Save New Event'}
+            Save
           </button>
         </form>
       )}

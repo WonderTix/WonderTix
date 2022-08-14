@@ -95,7 +95,6 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
           ticketTypes={ticketTypes}
           onSubmit={onSubmit}
           initialValues={initValues}
-          editMode={true}
         />
       </div>
     </div>
