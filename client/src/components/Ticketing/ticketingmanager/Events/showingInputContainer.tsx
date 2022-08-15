@@ -45,8 +45,9 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
       starttime: starttime,
       eventdate: eventdate,
       totalseats: totalseats,
-      availableseats: totalseats,
+      availableseats: availableseates? availableseates : totalseats,
       ticketTypeId: 0,
+      salesstatus: true,
     };
     return showing;
   };
@@ -55,7 +56,9 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
   const handleClick = (event) => {
     event.preventDefault();
     //  use call back to get to parent state
-    addShow(createShowObject(id));
+    if (id == 0) {
+      addShow(createShowObject(id));
+    }
   };
 
   const handleDelete = (event) => {
