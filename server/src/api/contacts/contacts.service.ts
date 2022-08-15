@@ -11,22 +11,24 @@ export const findAll = async (params: any): Promise<response> => {
   };
 
   if (Object.keys(params).length > 0) {
-    let count = 0;
+    let count = 1;
     myQuery.text += ' WHERE';
     const textFields = ['custname', 'email', 'phone', 'address'];
     const checkBoxes = ['vip', 'volunteer list'];
     for (const val of Object.keys(params)) {
-      count += 1;
       if (count > 1) {
         myQuery.text += ' AND';
       }
       if (textFields.includes(val)) {
-        myQuery.text += ` LOWER(${val}) LIKE $${count}`;
+        myQuery.text += ` LOWER(${count}) LIKE $${count+1}`;
+        myQuery.values.push(val);
         myQuery.values.push('%' + params[val].toLowerCase() + '%');
+        count += 2;
       } else if (checkBoxes.includes(val)) {
         myQuery.text += ` $${count} = $${count+1}`;
         myQuery.values.push(val);
         myQuery.values.push(params[val]);
+        count += 2;
       }
     }
   }
