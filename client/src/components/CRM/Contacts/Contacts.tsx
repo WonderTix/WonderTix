@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import ContactResults from './ContactResults';
+import {useAuth0} from '@auth0/auth0-react';
 
 const Contacts = (): React.ReactElement => {
   const params = useParams();
@@ -11,14 +12,25 @@ const Contacts = (): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const {getAccessTokenSilently} = useAuth0();
 
   useEffect(() => {
     const getData = async () => {
       if (params.id) {
         setIsLoading(true);
         setContact(params.id);
+        const token = await getAccessTokenSilently({
+          audience: 'https://localhost:8000',
+          scope: 'admin',
+        });
         await axios
-            .get(process.env.REACT_APP_ROOT_URL + `/api/contacts/search?name=${params.id}`,
+            .get(
+                process.env.REACT_APP_ROOT_URL + `/api/contacts/search?name=${params.id}`,
+                {
+                  headers: {
+                    'Authorization': `Bearer ${token}`,
+                  },
+                },
             )
             .then((res) => {
               setData(res.data[0]);
