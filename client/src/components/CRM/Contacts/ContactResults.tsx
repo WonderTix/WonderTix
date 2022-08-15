@@ -3,6 +3,7 @@ import React from 'react';
 import {useParams} from 'react-router-dom';
 // import { useInput } from './hooks/input-hook';
 import {useState} from 'react';
+import {useAuth0} from '@auth0/auth0-react';
 
 const ContactResults = ({
   data,
@@ -139,10 +140,11 @@ export const contactForm = (data: any): React.ReactElement => {
   const [VIP, setVIP] = useState(data.vip);
   const [Volunteerlist, setVolunteerlist] = useState(data.volunteerlist);
   const params = useParams();
+  const {getAccessTokenSilently} = useAuth0();
 
 
   // The changed data can be linked to the server (but it will creat a new row)
-  const HandleSubmit = (evt: any) => {
+  const HandleSubmit = async (evt: any) => {
     evt.preventDefault();
 
 
@@ -170,6 +172,10 @@ export const contactForm = (data: any): React.ReactElement => {
       vip: VIP,
       volunteer_list: false,
     };
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
 
     console.log(params);
     console.log(params.id);
@@ -187,7 +193,10 @@ export const contactForm = (data: any): React.ReactElement => {
     fetch( url, {
       // method: "post",
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       body: JSON.stringify(body),
       // params: JSON.stringify(params),
     }).then((res) => console.log(res));
