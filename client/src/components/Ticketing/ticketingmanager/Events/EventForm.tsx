@@ -82,7 +82,21 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
 
   // Callback to get new show from child component to the parent
   const addShowData = useCallback((show) => {
-    setShowings([...showings, show]);
+    const isInShowList = showings.some((element) => {
+      if ( element.id === show.id) {
+        return true;
+      }
+      return false;
+    });
+    if (isInShowList) {
+      const newShowList = showings.filter(((element) => {
+        return element.id !== show.id;
+      }));
+      newShowList.push(show);
+      setShowings(newShowList);
+    } else {
+      setShowings([...showings, show]);
+    }
   }, [showings]);
 
   const updateShows = useCallback((shows: Showing[]) => {

@@ -22,6 +22,7 @@ const ShowListController = ({showsData, addShowData, updateShows}: ShowListContr
       id: counter,
       starttime: undefined,
       eventdate: undefined,
+      salesstatus: true,
       ticketTypeId: 0,
       availableseats: 0,
       totalseats: 0,
@@ -45,13 +46,12 @@ const ShowListController = ({showsData, addShowData, updateShows}: ShowListContr
     }
   };
 
-  const renderedShow =shows.flatMap((element) => {
+  const renderedShow =shows.map((element) => {
     console.log(element);
-
     // eslint-disable-next-line react/jsx-key
     return (<ShowingInputContainer
       initialData={element}
-      id={element.id} key={element.id}
+      id={element.id} key={counter}
       addShow={addShowData} deleteShow={deleteShowing} />);
   });
   return (
