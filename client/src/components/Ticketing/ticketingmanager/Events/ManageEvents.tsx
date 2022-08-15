@@ -59,7 +59,7 @@ export default function ManageEventsPage() {
         {
           method: 'DELETE',
           headers: {
-            Authentication: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         },
     );
