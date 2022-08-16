@@ -53,7 +53,7 @@ const AccountsPanel = ({
 
       setSavedName('');
     };
-  }, [setSavedName, getAccessTokenSilently]);
+  }, [getAccessTokenSilently]);
 
   const parseUrl = () => {
     const filters = [];

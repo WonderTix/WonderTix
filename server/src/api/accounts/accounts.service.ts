@@ -30,7 +30,7 @@ export const findAll = async (params: any): Promise<response> => {
   }
   console.log(myQuery);
 
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'GET');
 };
 
 export const findByUsername = async (username: string): Promise<response> => {
@@ -38,7 +38,7 @@ export const findByUsername = async (username: string): Promise<response> => {
     text: `SELECT * FROM users WHERE username = $1`,
     values: [username],
   };
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'GET');
 };
 
 export const find = async (id: string): Promise<response> => {
@@ -46,7 +46,7 @@ export const find = async (id: string): Promise<response> => {
     text: 'SELECT * FROM users WHERE id = $1',
     values: [id],
   };
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'GET');
 };
 
 export const create = async (r: {username: string, auth0_id: string}): Promise<response> => {
@@ -58,7 +58,7 @@ export const create = async (r: {username: string, auth0_id: string}): Promise<r
       `,
     values: [r.username, r.auth0_id],
   };
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'POST');
 };
 
 export const remove = async (id: string): Promise<response> => {
@@ -66,7 +66,7 @@ export const remove = async (id: string): Promise<response> => {
     text: 'DELETE FROM users WHERE id = $1',
     values: [id],
   };
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'DELETE');
 };
 
 export const update = async (r: any): Promise<response> => {
@@ -84,5 +84,5 @@ export const update = async (r: any): Promise<response> => {
       r.params.id,
     ],
   };
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'UPDATE');
 };

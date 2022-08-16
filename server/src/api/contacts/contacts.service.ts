@@ -33,7 +33,7 @@ export const findAll = async (params: any): Promise<response> => {
     }
   }
   console.log(myQuery);
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'GET');
 };
 
 export const findByName = async (name: string): Promise<response> => {
@@ -41,7 +41,7 @@ export const findByName = async (name: string): Promise<response> => {
     text: `SELECT * FROM customers WHERE custname = $1`,
     values: [name],
   };
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'GET');
 };
 
 export const find = async (id: string): Promise<response> => {
@@ -49,7 +49,7 @@ export const find = async (id: string): Promise<response> => {
     text: 'SELECT * FROM customers WHERE id = $1',
     values: [id],
   };
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'GET');
 };
 
 export const create = async (r: any): Promise<response> => {
@@ -62,7 +62,7 @@ export const create = async (r: any): Promise<response> => {
     values: [r.custname, r.email, r.phone, r.custaddress, r.newsletter,
       r.donorbadge, r.seatingaccom, r.vip, r.volunteer_list],
   };
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'POST');
 };
 
 export const remove = async (id: string): Promise<response> => {
@@ -70,7 +70,7 @@ export const remove = async (id: string): Promise<response> => {
     text: 'DELETE FROM customers WHERE id = $1',
     values: [id],
   };
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'DELETE');
 };
 
 // This function takes the input provided by the user to update the Database
@@ -94,5 +94,5 @@ export const update = async (r: any): Promise<response> => {
       r.body.custaddress, r.body.newsletter, r.body.donorbadge,
       r.body.seatingaccom, r.body.vip, r.body.volunteer_list, r.params.id],
   };
-  return await buildResponse(myQuery);
+  return await buildResponse(myQuery, 'UPDATE');
 };

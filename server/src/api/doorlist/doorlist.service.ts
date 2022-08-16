@@ -35,5 +35,5 @@ export const getDoorlist = async (params: any): Promise<response> => {
     values: [params.eventinstanceid],
   }
 
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'GET');
 }

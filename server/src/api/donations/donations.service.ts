@@ -7,7 +7,7 @@ export const findAll = async (): Promise<response> => {
   const myQuery = {
     text: `SELECT * FROM donations;`,
   };
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'GET');
 };
 
 export const findByName = async (name: string): Promise<response> => {
@@ -15,7 +15,7 @@ export const findByName = async (name: string): Promise<response> => {
     text: `SELECT * FROM donations WHERE dononame = $1`,
     values: [name],
   };
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'GET');
 };
 
 export const find = async (id: string): Promise<response> => {
@@ -23,7 +23,7 @@ export const find = async (id: string): Promise<response> => {
     text: 'SELECT * FROM donations WHERE id = $1',
     values: [id],
   };
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'GET');
 };
 
 export const create = async (r: any): Promise<response> => {
@@ -36,7 +36,7 @@ export const create = async (r: any): Promise<response> => {
     values: [r.donorid, r.isanonymous, r.amount, r.dononame,
       r.frequency, r.comments, r.donodate],
   };
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'POST');
 };
 
 export const remove = async (id: string): Promise<response> => {
@@ -44,7 +44,7 @@ export const remove = async (id: string): Promise<response> => {
     text: 'DELETE FROM donations WHERE id = $1',
     values: [id],
   };
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'DELETE');
 };
 
 export const update = async (r: any): Promise<response> => {
@@ -66,5 +66,5 @@ export const update = async (r: any): Promise<response> => {
     values: [r.body.donorid, r.body.isanonymous, r.body.amount, r.body.dononame,
       r.body.frequency, r.body.comments, r.body.donodate, r.params.id],
   };
-  return buildResponse(myQuery);
+  return buildResponse(myQuery, 'UPDATE');
 };
