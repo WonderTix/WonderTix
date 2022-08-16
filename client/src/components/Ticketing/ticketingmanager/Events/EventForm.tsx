@@ -60,11 +60,25 @@ interface EventFormProps {
 }
 
 const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
-  const [eventName, setEventName] = useState(initialValues.eventName);
-  const [eventDesc, setEventDesc] = useState(initialValues.eventDesc);
-  const [imageUrl, setImageURL] = useState(initialValues.imageUrl);
-  const [isPublished, setIsPublished] = useState(initialValues.isPublished);
-  const [showings, setShowings] = useState(initialValues.showings);
+  const def = (initialValues !== undefined) ? {
+    eventName: initialValues.eventName,
+    eventDesc: initialValues.eventDesc,
+    imageUrl: initialValues.imageUrl,
+    isPublished: initialValues.isPublished,
+    showings: initialValues.showings,
+  }:
+  {
+    eventName: '',
+    eventDesc: '',
+    imageUrl: '',
+    isPublished: false,
+    showings: [],
+  };
+  const [eventName, setEventName] = useState(def.eventName);
+  const [eventDesc, setEventDesc] = useState(def.eventDesc);
+  const [imageUrl, setImageURL] = useState(def.imageUrl);
+  const [isPublished, setIsPublished] = useState(def.isPublished);
+  const [showings, setShowings] = useState(def.showings);
 
   // FIELDS CALLBACK
   // Set event name
@@ -130,21 +144,21 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
               <InputFieldForEvent
                 name={'eventName'}
                 id={'eventName'} headerText={'Enter Event Name'}
-                action={addEventName} actionType={'onChange'} value={initialValues.eventName}
-                placeholder={initialValues.eventName ? initialValues.eventName: 'Event Name'} />
+                action={addEventName} actionType={'onChange'} value={def.eventName}
+                placeholder={def.eventName ? def.eventName: 'Event Name'} />
 
               <InputFieldForEvent
                 name={'eventDesc'}
                 id={'eventDesc'} headerText={'Enter Short Event Description'}
                 actionType={'onChange'}
-                action={addEventDesc} value={initialValues.eventDesc}
-                placeholder={initialValues.eventDesc ? initialValues.eventDesc : 'Event Description'} />
+                action={addEventDesc} value={def.eventDesc}
+                placeholder={def.eventDesc ? def.eventDesc : 'Event Description'} />
 
               <InputFieldForEvent
                 name={'imageUrl'}
                 id={'imageUrl'} headerText={'Upload Image for Event'}
-                action={addURL} actionType={'onChange'} value={initialValues.imageUrl}
-                placeholder={initialValues.imageUrl ? initialValues.imageUrl : 'image URL'}/>
+                action={addURL} actionType={'onChange'} value={def.imageUrl}
+                placeholder={def.imageUrl ? def.imageUrl : 'image URL'}/>
             </div>
             {/* Showings container*/}
             <div className='text-3xl font-semibold mt-5'>
@@ -157,7 +171,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={initialValues !== undefined? initialValues.showings: []} addShowData = {addShowData} updateShows={updateShows}/>
+                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} updateShows={updateShows}/>
               </div>
             </div>
           </div>

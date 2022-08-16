@@ -19,7 +19,7 @@ import {useAppSelector, useAppDispatch} from '../../../app/hooks';
 import {diff} from 'deep-diff';
 import {openSnackbar} from '../../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
-
+import {useNavigate} from 'react-router-dom';
 
 interface mapDataToEditEventProps {
   initValues: NewEventData;
@@ -28,6 +28,7 @@ interface mapDataToEditEventProps {
 
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   const params = useParams();
+  const nav = useNavigate();
   const dispatch = useAppDispatch();
   const [ticketTypes, setTicketTypes] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
@@ -81,6 +82,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     } else {
       dispatch(openSnackbar('Save failed'));
     }
+    nav('/ticketing/manageevent');
   };
 
   return (
