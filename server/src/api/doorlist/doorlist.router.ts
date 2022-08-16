@@ -31,7 +31,9 @@ doorlistRouter.get('/', checkJwt, checkScopes, async (req, res) => {
                         JOIN customers as cust ON tix.custid = cust.id
                         WHERE event_instance.id = $1
                         GROUP BY 
-                          cust.id, 
+                          cust.id, cust.vip,
+                          cust.donorbadge, 
+                          cust.seatingaccom,
                           name, events.id, 
                           events.eventname, 
                           event_instance.id, 
