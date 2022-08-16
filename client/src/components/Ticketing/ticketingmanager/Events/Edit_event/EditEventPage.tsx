@@ -43,7 +43,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
 
   const onSubmit = async (updatedData: NewEventData) => {
     const dataToSave = {
-      id: updatedData.eventID,
+      id: params.eventid,
       eventname: updatedData.eventName,
       eventdescription: updatedData.eventDesc,
       active: updatedData.isPublished,
@@ -61,7 +61,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({dataToSave}),
+      body: JSON.stringify(dataToSave),
     });
 
     const res2 = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/instances/${params.eventid}`, {
