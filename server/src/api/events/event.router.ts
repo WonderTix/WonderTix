@@ -376,7 +376,6 @@ eventRouter.put('/', checkJwt, checkScopes, async (req, res) => {
 eventRouter.put('/instances/:id', checkJwt, checkScopes, async (req, res) => {
   try {
     const instances: Showing[] = req.body;
-
     // get existing showings for this event
     const currentShowings = await eventUtils.getShowingsById(req.params.id);
 
@@ -386,20 +385,20 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (req, res) => {
     const rowsToDelete = currentShowings.filter(
         (show: Showing) => !instancesSet.has(show.id),
     ).map((show) => show.id);
-
     // delete them
     const rowsDeleted = await eventUtils.deleteShowings(rowsToDelete);
 
     // update existing showings
     const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
-
     const rowsUpdated = await eventUtils.updateShowings(rowsToUpdate);
 
     // insert new showings
     // showings with id = 0 have not yet been added to the table
     const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
-    rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
-
+    rowsToInsert.forEach((show: Showing) => {
+      show.tickettype = 0;
+      show.eventid = req.params.id;
+    });
     const rowsInserted = (await eventUtils.insertAllShowings(rowsToInsert));
 
     const responseData = {

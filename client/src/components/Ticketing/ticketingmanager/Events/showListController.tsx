@@ -22,14 +22,14 @@ const ShowListController = ({showsData, addShowData, updateShows}: ShowListContr
       id: counter,
       starttime: undefined,
       eventdate: undefined,
-      salesstatus: true,
+      salestatus: true,
       ticketTypeId: 0,
       availableseats: 0,
       totalseats: 0,
     };
     const newList = [...shows, show];
     addShow(newList);
-    updateShows(newList);
+    // updateShows(newList);
     updateCounter(counter+1);
   };
 

@@ -17,6 +17,7 @@ const insertAllShowings = async (showings: Showing[]): Promise<Showing[]> => {
                 `;
 
   const res = [];
+  console.log('inserting showigns');
   for (const showing of showings) {
     const tickettype = showing.tickettype;
     if (tickettype === undefined) {
@@ -98,7 +99,8 @@ const updateEvent = async (id: string, changes: Delta[]) => {
 };
 
 const getShowingsById = async (id: string): Promise<Showing[]> => {
-  const query = `SELECT * FROM event_instances WHERE eventid = $1;`;
+  const query = `SELECT * FROM event_instances WHERE eventid = $1
+    AND salestatus=true;`;
   const queryResult = await pool.query(query, [id]);
   return queryResult.rows;
 };
