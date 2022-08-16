@@ -96,5 +96,5 @@ $$;
 -- Before you can import the data, you need to make sure to have users with ids 0-3 in the DB, or the import will fail due to the foreign key constraint on the task.rel_contact.
 
 INSERT INTO public.users
-    VALUES (0,'brian','',false), (1,'hailey','',false), (2,'aiyana','',false), (3,'allen','',false)
+    VALUES (0,'brian',DEFAULT,''), (1,'hailey',DEFAULT,''), (2,'aiyana',DEFAULT,''), (3,'allen',DEFAULT,'')
     ON CONFLICT (id) DO NOTHING; 
