@@ -12,8 +12,6 @@ interface ShowListControllerProps{
 }
 
 const ShowListController = ({showsData, addShowData, updateShows}: ShowListControllerProps) => {
-  console.log('Shows data');
-  console.log(showsData);
   const [shows, addShow] = useState(showsData ? showsData: []);
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
