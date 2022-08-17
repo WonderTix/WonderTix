@@ -14,9 +14,7 @@
 import {useState, useEffect} from 'react';
 import EventForm, {NewEventData} from '../EventForm';
 import {useParams} from 'react-router-dom';
-import {selectEventData, EventPageData, fetchTicketingData} from '../../ticketing/ticketingSlice';
-import {useAppSelector, useAppDispatch} from '../../../app/hooks';
-import {diff} from 'deep-diff';
+import {useAppDispatch} from '../../../app/hooks';
 import {openSnackbar} from '../../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
