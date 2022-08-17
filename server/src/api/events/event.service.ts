@@ -17,7 +17,6 @@ const insertAllShowings = async (showings: Showing[]): Promise<Showing[]> => {
                 `;
 
   const res = [];
-  console.log('inserting showigns');
   for (const showing of showings) {
     const tickettype = showing.tickettype;
     if (tickettype === undefined) {
