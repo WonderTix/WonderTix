@@ -20,7 +20,8 @@ import {openSnackbar} from '../../snackbarSlice';
 import EventForm, {NewEventData} from '../EventForm';
 import {format} from 'date-fns';
 import {useAuth0} from '@auth0/auth0-react';
-
+import {useNavigate} from 'react-router-dom';
+import PopUp from '../../../Pop-up';
 const formatShowingData = (eventid: number) => (data: any) => {
   const {starttime, eventdate, totalseats, ticketTypeId} = data;
   return {eventid, eventdate, starttime, totalseats, tickettype: ticketTypeId};
@@ -29,8 +30,9 @@ const formatShowingData = (eventid: number) => (data: any) => {
 const CreateEventPage = () => {
   const dispatch = useAppDispatch();
   const [ticketTypes, setTicketTypes] = useState([]);
+  const [visible, setVisible] = useState(true);
   const {getAccessTokenSilently} = useAuth0();
-
+  const nav = useNavigate();
   const fetchTicketTypes = async () => {
     const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
     setTicketTypes(await res.json());
@@ -78,17 +80,24 @@ const CreateEventPage = () => {
         // console.log('dispatch');
         // dispatch(fetchEventInstanceData());
         // dispatch(fetchTicketingData());
-        dispatch(openSnackbar('New Event Created'));
+        nav('/ticketing/manageevent');
       }
     } else {
       console.error('New event creation failed', createPlayRes.statusText);
     }
   };
 
+  const handleClose = () => {
+    setVisible(false);
+  };
+
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+        {visible == true ?
+        <PopUp message='Added Event' title="Sucess" handleClose={handleClose} /> :
+         <></> }
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-violet-500 to-fuchsia-500' >Add New Event</h1>
         <EventForm onSubmit={onSubmit} ticketTypes={ticketTypes}/>
