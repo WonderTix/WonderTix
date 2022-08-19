@@ -12,7 +12,7 @@ const Manageventmain = () => {
         .then((response) => {
           return response.json();
         }).then((data)=>{
-          setEventData(data);
+          setEventData(data.data);
           setLoading(false);
         });
   };
