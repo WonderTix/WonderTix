@@ -14,10 +14,9 @@
 import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router';
 import {useAppDispatch} from '../../app/hooks';
-import {fetchEventInstanceData} from './events_pages/eventsSlice';
+
 import {fetchTicketingData} from '../ticketing/ticketingSlice';
 import {DataGrid} from '@mui/x-data-grid';
-import {openSnackbar} from '../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 // eslint-disable-next-line react/prop-types
 export default function ManageEventsPage({data}) {
@@ -62,9 +61,7 @@ export default function ManageEventsPage({data}) {
         },
     );
     if (res.ok) {
-      dispatch(openSnackbar('Deleted Event'));
-      dispatch(fetchTicketingData());
-      dispatch(fetchEventInstanceData());
+      console.log('Deleted event');
     } else {
       console.error(res.status, res.statusText);
     }

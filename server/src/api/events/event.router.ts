@@ -2,7 +2,19 @@ import {Router, Response, Request} from 'express';
 import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
 import {pool} from '../db';
-import eventUtils, {checkIn, getEventById, getActiveEventsAndInstances, createEvent, createShowing, updateEvent, archivePlays, getActiveEvents, updateInstances} from './event.service';
+import eventUtils, {
+  checkIn,
+  getEventById, 
+  getEventByName,
+  getActiveEventsAndInstances,
+  createEvent,
+  createShowing,
+  updateEvent,
+  archivePlays,
+  getActiveEvents,
+  updateInstances,
+  getInstanceById
+} from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
 
@@ -19,7 +31,7 @@ const stripe = new Stripe(stripeKey, {
 // GET /api/events/search?eventName={eventName}
 eventRouter.get('/search', async (req: Request, res: Response) => {
   try {
-    const ids = await getEventById(req.query);
+    const ids = await getEventByName(req.query);
     let code = ids.status.success ? 200 : 404;
     res.status(code).send(ids);
   } catch (error: any) {
@@ -28,42 +40,22 @@ eventRouter.get('/search', async (req: Request, res: Response) => {
 });
 
 // Endpoint to get event by ID
-eventRouter.get('/:id', async (req, res) => {
+eventRouter.get('/:id', async (req: Request, res: Response) => {
   try {
-    const query = `
-                  SELECT
-                    events.id,
-                    seasonid,
-                    eventname title,
-                    events.eventdescription description,
-                    events.active,
-                    events.image_url
-                  FROM events
-                  WHERE id = $1;
-                  `;
-    const data = await pool.query(query, [req.params.id]);
-    res.json(data.rows[0]);
+    const data = await getEventById(req.params)
+    const code = data.status.success ? 200 : 404;
+    res.status(code).send(data);
   } catch (error) {
-    console.error(error);
     res.sendStatus(500);
   }
 });
 
 // Endpoint to get event instance by ID
-eventRouter.get('/instances/:id', async (req, res) => {
+eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
   try {
-    const query = `
-                  SELECT
-                    *
-                  FROM
-                    event_instances
-                  WHERE eventid = $1
-                  AND salestatus=true;
-                  `;
-    const data = await pool.query(query, [req.params.id]);
-    console.log('Getting instance with id: ' + req.params.id);
-    console.log(data.rows);
-    res.json(data.rows);
+    const data = await getInstanceById(req.params);
+    const code = data.status.success ? 200 : 404;
+    res.status(code).send(data);
   } catch (error) {
     console.error(error);
     res.sendStatus(500);

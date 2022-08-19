@@ -28,6 +28,38 @@ export const getActiveEvents = async (): Promise<response> => {
   return buildResponse(myQuery, 'GET');
 }
 
+export const getInstanceById = async (params: any): Promise<response => {
+    const query = {
+      text: `SELECT
+                    *
+                  FROM
+                    event_instances
+                  WHERE eventid = $1
+                  AND salestatus=true;
+                  `,
+      values: [params.id],
+    }
+    return await buildResponse(query, 'GET');
+}
+
+export const getEventById = async (params: any): Promise<response> => {
+    const query = {
+
+      text: `SELECT
+                    events.id,
+                    seasonid,
+                    eventname title,
+                    events.eventdescription description,
+                    events.active,
+                    events.image_url
+                  FROM events
+                  WHERE id = $1;
+                  `,
+      values: [params.id]
+    }
+    return await buildResponse(query, 'GET');
+}
+
 export const updateInstances = async (body: any, params: any): Promise<response> => {
   const instances: Showing[] = body;
 
@@ -72,7 +104,7 @@ export const updateInstances = async (body: any, params: any): Promise<response>
   };
 }
 
-export const getEventById = async (params: any): Promise<response> => {
+export const getEventByName = async (params: any): Promise<response> => {
   const myQuery = {
     text: 'select id, eventname from events where eventname = $1',
     values: [params.eventName],
