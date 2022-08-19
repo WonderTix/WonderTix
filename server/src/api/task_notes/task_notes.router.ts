@@ -46,7 +46,7 @@ taskNotesRouter.post('/', async (req: Request, res: Response) => {
 taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const delResponse = await remove(req.params.id);
-    const code = delResponse.status.success ? 200 : 404;
+    const code = delResponse.status.success ? 204 : 404;
     res.status(code).send(delResponse);
   } catch (err: any) {
     res.status(500).send(err.message);
