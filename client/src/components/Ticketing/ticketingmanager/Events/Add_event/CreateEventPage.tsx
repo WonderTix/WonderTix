@@ -30,7 +30,7 @@ const formatShowingData = (eventid: number) => (data: any) => {
 const CreateEventPage = () => {
   const dispatch = useAppDispatch();
   const [ticketTypes, setTicketTypes] = useState([]);
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const {getAccessTokenSilently} = useAuth0();
   const nav = useNavigate();
   const fetchTicketTypes = async () => {
@@ -77,10 +77,8 @@ const CreateEventPage = () => {
       });
       // update Redux state with new event & available tickets
       if (postShowings.ok) {
-        // console.log('dispatch');
-        // dispatch(fetchEventInstanceData());
-        // dispatch(fetchTicketingData());
-        nav('/ticketing/manageevent');
+        setVisible(true);
+        // nav('/ticketing/manageevent');
       }
     } else {
       console.error('New event creation failed', createPlayRes.statusText);
@@ -89,6 +87,7 @@ const CreateEventPage = () => {
 
   const handleClose = () => {
     setVisible(false);
+    nav('/ticketing/manageevent');
   };
 
   return (
@@ -96,7 +95,7 @@ const CreateEventPage = () => {
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         {visible == true ?
-        <PopUp message='Added Event' title="Sucess" handleClose={handleClose} /> :
+        <PopUp message='New event has been successfully added.' title="Success" handleClose={handleClose} /> :
          <></> }
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-violet-500 to-fuchsia-500' >Add New Event</h1>
