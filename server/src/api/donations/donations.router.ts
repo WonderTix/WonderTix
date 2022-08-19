@@ -60,7 +60,7 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removed_donations = await remove(req.params.id);
     let code = removed_donations.status.success ? 204 : 404;
-    res.sendStatus(code);
+    res.status(code).send(removed_donations);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -71,11 +71,7 @@ donationsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedDonation = await update(req);
     let code = updatedDonation.status.success ? 200 : 404;
-    if (updatedDonation.data.length > 0) {
-      res.status(code).send(updatedDonation);
-    } else {
-      res.sendStatus(404);
-    }
+    res.status(code).send(updatedDonation);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
