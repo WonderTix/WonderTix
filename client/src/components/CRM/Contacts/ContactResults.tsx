@@ -1,4 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
+/* eslint-disable require-jsdoc */
+
 import React from 'react';
 import {useParams} from 'react-router-dom';
 // import { useInput } from './hooks/input-hook';
@@ -11,7 +14,23 @@ const ContactResults = ({
   data: any,
 }): React.ReactElement => {
   if (!data) return <div>Empty</div>;
+  const {getAccessTokenSilently} = useAuth0();
 
+  async function deleteEvent(showId: Number) {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+    const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/contacts/${showId}`,
+        {
+          credentials: 'include',
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+    return response.json();
+  }
   // What is this?
   const {
     custname,
@@ -116,10 +135,14 @@ const ContactResults = ({
             {'' + volunteerlist}
           </div>
         </div>
-        <button disabled className='bg-zinc-300
+        <button disabled className='bg-blue-600 disabled:opacity-40
         mt-4 text-white px-5 py-2
         rounded-xl justify-end
           ' >Edit info</button>
+        <button className='bg-red-600 hover:bg-red-700
+        mt-4 text-white px-5 py-2
+        rounded-xl justify-end
+          ' onClick={() => deleteEvent(id)} >Remove Customer</button>
       </div>
     </div>
   );

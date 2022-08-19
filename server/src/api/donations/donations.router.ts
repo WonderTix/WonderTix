@@ -12,11 +12,8 @@ export const donationsRouter = Router();
 donationsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newDonation = await create(req.body);
-    // TODO wrap responses
-    // eslint-disable-next-line max-len
-    // const responseData = {data: newDonation.rows, status: {success: true/false, message: "OK"/ "x rows deleted"}};
-    // same for errors as well
-    res.status(201).send(newDonation.rows);
+    let code = newDonation.status.success ? 200 : 404;
+    res.status(code).send(newDonation);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -29,7 +26,8 @@ donationsRouter.use(checkScopes);
 donationsRouter.get('/', async (req: Request, res: Response) => {
   try {
     const donations = await findAll();
-    res.status(200).send(donations.rows);
+    let code = donations.status.success ? 200 : 404;
+    res.status(code).send(donations);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -39,7 +37,8 @@ donationsRouter.get('/', async (req: Request, res: Response) => {
 donationsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const donations = await findByName(req.query.name as string);
-    res.status(200).send(donations.rows);
+    let code = donations.status.success ? 200 : 404;
+    res.status(code).send(donations);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -49,7 +48,8 @@ donationsRouter.get('/search', async (req: Request, res: Response) => {
 donationsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const donation = await find(req.params.id);
-    res.status(200).send(donation.rows);
+    let code = donation.status.success ? 200 : 404;
+    res.status(code).send(donation);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -58,8 +58,9 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
 // DELETE /api/donations/:id
 donationsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
-    await remove(req.params.id);
-    res.sendStatus(204);
+    const removed_donations = await remove(req.params.id);
+    let code = removed_donations.status.success ? 204 : 404;
+    res.sendStatus(code);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -69,8 +70,9 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
 donationsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedDonation = await update(req);
-    if (updatedDonation.rowCount > 0) {
-      res.status(200).send(updatedDonation.rows);
+    let code = updatedDonation.status.success ? 200 : 404;
+    if (updatedDonation.data.length > 0) {
+      res.status(code).send(updatedDonation);
     } else {
       res.sendStatus(404);
     }

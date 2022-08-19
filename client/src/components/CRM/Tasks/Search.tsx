@@ -35,7 +35,7 @@ const SearchBar = (props: any): React.ReactElement => {
                   },
                 })
             .then((res) => {
-              setData(res.data[0]);
+              setData(res.data.data[0]);
               console.log(res);
             })
             .catch((err) => {

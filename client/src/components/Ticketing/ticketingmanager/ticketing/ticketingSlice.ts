@@ -64,7 +64,8 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
     'ticketing/fetch',
     async () => {
-      const events: Event[] = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/events');
+      const eventData = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/events');
+      const events: Event[] = eventData.data;
       const ticketRes: TicketsState = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/tickets');
       const tickets = Object.entries(ticketRes.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date).toString()}}), {});
       console.log(tickets);

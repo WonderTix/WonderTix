@@ -58,7 +58,7 @@ const SavedPanel = ({
     // TODO need to rework all the api POST requests for reporting
     fetch(process.env.REACT_APP_ROOT_URL + `/api/${value}`)
         .then((data) => data.json())
-        .then((data) => setRows(data));
+        .then((data) => setRows(data.data));
   };
 
   const handleClickDelete = () => {

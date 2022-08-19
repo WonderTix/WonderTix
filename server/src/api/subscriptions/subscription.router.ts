@@ -2,6 +2,12 @@ import express from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {pool} from '../db';
 
+/*
+*
+* This whole file can probably be deleted and merged into customers
+*
+*/
+
 export const subscriptionRouter = express.Router();
 
 subscriptionRouter.get('/newsletter', checkJwt, checkScopes,

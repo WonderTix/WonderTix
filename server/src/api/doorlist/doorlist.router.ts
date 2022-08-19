@@ -1,51 +1,16 @@
-import express from 'express';
+import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {pool} from '../db';
-import {formatDoorlistResponse} from './doorlist.service';
+import {getDoorlist} from './doorlist.service';
 
-export const doorlistRouter = express.Router();
+export const doorlistRouter = Router();
 
 // Door list route
-doorlistRouter.get('/', checkJwt, checkScopes, async (req, res) => {
-  // going to need to use auth0 authentication middleware
-  // deleted isAuthenticated function
+doorlistRouter.get('/', checkJwt, checkScopes, async (req: Request, res: Response) => {
   try {
-    const querystring = `
-                        SELECT 
-                          cust.id as "custid", 
-                          cust.custname as "name", 
-                          cust.vip, 
-                          cust.donorbadge, 
-                          cust.seatingaccom,
-                          events.id as "eventid", 
-                          events.eventname, 
-                          event_instance.id as "event_instance_id", 
-                          event_instance.eventdate, 
-                          event_instance.starttime, 
-                          tix.checkedin as "arrived", 
-                          count(cust.id) as "num_tickets"
-                        FROM event_instances as event_instance 
-                        LEFT JOIN events ON event_instance.eventid = events.id 
-                        LEFT JOIN tickets as tix 
-                        ON event_instance.id = tix.eventinstanceid
-                        JOIN customers as cust ON tix.custid = cust.id
-                        WHERE event_instance.id = $1
-                        GROUP BY 
-                          cust.id, cust.vip,
-                          cust.donorbadge, 
-                          cust.seatingaccom,
-                          name, events.id, 
-                          events.eventname, 
-                          event_instance.id, 
-                          event_instance.eventdate, 
-                          event_instance.starttime, 
-                          tix.checkedin
-                        ORDER BY name
-                        `;
-    const values = [req.query.eventinstanceid];
-    const doorlist = await pool.query(querystring, values);
-    res.json(formatDoorlistResponse(doorlist.rows));
+    const doorlist = await getDoorlist(req.query);
+    let code = doorlist.status.success ? 200 : 404;
+    res.status(code).send(doorlist)
   } catch (err: any) {
-    console.error(err.message);
+    res.status(500).send(err.message);
   }
 });

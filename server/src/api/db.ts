@@ -27,3 +27,50 @@ pool.on('connect', () => {
       `,
   );
 });
+
+export type response = {
+  data: Array<any>,
+  status: {
+    success: boolean,
+    message: string,
+  }
+}
+
+export const buildResponse = async (query: any, type: string): Promise<response> => {
+  let resp: response = {
+    data: Array<any>(),
+    status: {
+      success: false,
+      message: "",
+    }
+  };
+  try {
+    const res = await pool.query(query)
+    console.log(res);
+    let verification_string;
+    switch(type) {
+      case 'UPDATE':
+        verification_string = 'updated';
+        break;
+      case 'GET':
+        verification_string = 'returned';
+        break;
+      case 'DELETE':
+        verification_string = 'deleted';
+        break;
+      case 'POST':
+        verification_string = 'inserted';
+        break;
+    }
+    resp = {
+      data: res.rows,
+      status: {
+        success: true,
+        message: `${res.rowCount} ${res.rowCount === 1 ? 'row' : 'rows'} ${verification_string}.`,
+      }
+    }
+  } catch (error: any) {
+    resp.status.message = error.message;
+  }
+  return resp;
+}

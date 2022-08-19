@@ -39,7 +39,7 @@ export default function ManageAccounts() {
       });
       if (r.ok) {
         const accounts = await r.json();
-        setRows(accounts);
+        setRows(accounts.data);
       } else {
         setRows([]);
         dispatch(openSnackbar('Unauthorized'));
