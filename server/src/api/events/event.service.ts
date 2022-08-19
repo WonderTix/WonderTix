@@ -3,29 +3,73 @@ import Showing from '../../interfaces/Showing';
 import {pool, response, buildResponse} from '../db';
 
 export const getActiveEvents = async (): Promise<response> => {
-    const myQuery = {
-    text: `
-                        SELECT events.id,
-                        seasonid,
-                        eventname title,
-                        events.eventdescription description,
-                        events.active,
-                        events.image_url,
-                        count(event_instances.id) as numShows
-                        FROM events 
-                        JOIN event_instances 
-                        ON events.id = event_instances.eventid 
-                        GROUP BY events.id,
-                        events.seasonid,
-                        events.eventname,
-                        events.eventdescription,
-                        events.active,
-                        events.image_url
-                        HAVING active = true;
-                        `,
-    };
+  const myQuery = {
+  text: `
+                      SELECT events.id,
+                      seasonid,
+                      eventname title,
+                      events.eventdescription description,
+                      events.active,
+                      events.image_url,
+                      count(event_instances.id) as numShows
+                      FROM events 
+                      JOIN event_instances 
+                      ON events.id = event_instances.eventid 
+                      GROUP BY events.id,
+                      events.seasonid,
+                      events.eventname,
+                      events.eventdescription,
+                      events.active,
+                      events.image_url
+                      HAVING active = true;
+                      `,
+  };
 
-    return buildResponse(myQuery, 'GET');
+  return buildResponse(myQuery, 'GET');
+}
+
+export const updateInstances = async (body: any, params: any): Promise<response> => {
+  const instances: Showing[] = body;
+
+  // get existing showings for this event
+  const currentShowings = await getShowingsById(params.id);
+
+  // see which showings are not present in the updated showings
+  const instancesSet = new Set(instances.map((show) => show.id));
+
+  const rowsToDelete = currentShowings.filter(
+      (show: Showing) => !instancesSet.has(show.id),
+  ).map((show) => show.id);
+
+  // delete them
+  const rowsDeleted = await deleteShowings(rowsToDelete);
+
+  // update existing showings
+  const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
+
+  const rowsUpdated = await updateShowings(rowsToUpdate);
+
+  // insert new showings
+  // showings with id = 0 have not yet been added to the table
+  const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
+  rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
+
+  const rowsInserted = (await insertAllShowings(rowsToInsert));
+
+  return {
+    data: [
+      {
+        numRowsUpdated: rowsUpdated,
+        numRowsDeleted: rowsDeleted,
+        numRowsInserted: rowsInserted.length,
+      }
+    ],
+    status: {
+      success: true,
+      message: `${rowsUpdated} rows updated, `+
+        `${rowsDeleted} rows deleted, ${rowsInserted.length} rows inserted`,
+    },
+  };
 }
 
 export const getEventById = async (params: any): Promise<response> => {

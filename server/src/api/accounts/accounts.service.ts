@@ -7,8 +7,13 @@ import {response, buildResponse} from '../db';
 export const findAll = async (params: any): Promise<response> => {
 
   const myQuery = {
-    text: `SELECT * FROM users`,
-    values: Array<string>(),
+    text: `SELECT * FROM users
+            WHERE ($1::text IS NULL OR LOWER(username) LIKE $1)
+            AND ($2::boolean IS NULL OR is_superadmin = $2)`,
+    values: [
+      params.username !== undefined ? '%' + params.username + '%': params.username,
+      params.is_superadmin,
+    ],
   }
 
   if (Object.keys(params).length > 0) {
@@ -28,7 +33,6 @@ export const findAll = async (params: any): Promise<response> => {
       }
     }
   }
-  console.log(myQuery);
 
   return await buildResponse(myQuery, 'GET');
 };

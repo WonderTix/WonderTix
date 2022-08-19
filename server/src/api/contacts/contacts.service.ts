@@ -6,32 +6,24 @@ import {response, buildResponse} from '../db';
 
 export const findAll = async (params: any): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM customers`,
-    values: Array<string>(),
+    text: `SELECT * 
+            FROM customers 
+            WHERE ($1::text IS NULL OR LOWER(custname) LIKE $1)
+            AND ($2::text IS NULL OR LOWER(email) LIKE $2)
+            AND ($3::text IS NULL OR LOWER(phone) LIKE $3)
+            AND ($4::text IS NULL OR LOWER(custaddress) LIKE $4)
+            AND ($5::boolean IS NULL OR vip = $5)
+            AND ($6::boolean IS NULL OR "volunteer list" = $6)`,
+    values: [
+      params.custname !== undefined ? '%' + params.custname + '%' : params.custname,
+      params.email !== undefined ? '%' + params.email + '%' : params.email,
+      params.phone !== undefined ? '%' + params.phone + '%' : params.phone,
+      params.address !== undefined ? '%' + params.address + '%' : params.address,
+      params.vip,
+      params.volunteer_list,
+    ],
   };
 
-  if (Object.keys(params).length > 0) {
-    let count = 1;
-    myQuery.text += ' WHERE';
-    const textFields = ['custname', 'email', 'phone', 'address'];
-    const checkBoxes = ['vip', 'volunteer list'];
-    for (const val of Object.keys(params)) {
-      if (count > 1) {
-        myQuery.text += ' AND';
-      }
-      if (textFields.includes(val)) {
-        myQuery.text += ` LOWER(${count}) LIKE $${count+1}`;
-        myQuery.values.push(val);
-        myQuery.values.push('%' + params[val].toLowerCase() + '%');
-        count += 2;
-      } else if (checkBoxes.includes(val)) {
-        myQuery.text += ` $${count} = $${count+1}`;
-        myQuery.values.push(val);
-        myQuery.values.push(params[val]);
-        count += 2;
-      }
-    }
-  }
   console.log(myQuery);
   return await buildResponse(myQuery, 'GET');
 };

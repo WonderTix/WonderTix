@@ -39,7 +39,7 @@ const Hero = () => {
             <div className='flex flex-row md:flex-row sm:flex-col '>
               <div className='flex flex-row md:flex-row sm:flex-col gap-7 py-6'>
                 {
-                  console.log(allEvents)
+                  console.log('All Events:', allEvents)
                 }
                 {
                   allEvents.map((event) => <ListComponent key={event.id} {...event} />)

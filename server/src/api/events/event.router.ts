@@ -1,9 +1,8 @@
 import {Router, Response, Request} from 'express';
 import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
-import Showing from '../../interfaces/Showing';
 import {pool} from '../db';
-import eventUtils, {checkIn, getEventById, getActiveEventsAndInstances, createEvent, createShowing, updateEvent, archivePlays, getActiveEvents} from './event.service';
+import eventUtils, {checkIn, getEventById, getActiveEventsAndInstances, createEvent, createShowing, updateEvent, archivePlays, getActiveEvents, updateInstances} from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
 
@@ -259,56 +258,13 @@ eventRouter.put('/', checkJwt, checkScopes, async (req: Request, res: Response) 
 // PRIVATE ROUTE
 eventRouter.put('/instances/:id', checkJwt, checkScopes, async (req: Request, res: Response) => {
   try {
-    const instances: Showing[] = req.body;
-
-    // get existing showings for this event
-    const currentShowings = await eventUtils.getShowingsById(req.params.id);
-
-    // see which showings are not present in the updated showings
-    const instancesSet = new Set(instances.map((show) => show.id));
-
-    const rowsToDelete = currentShowings.filter(
-        (show: Showing) => !instancesSet.has(show.id),
-    ).map((show) => show.id);
-
-    // delete them
-    const rowsDeleted = await eventUtils.deleteShowings(rowsToDelete);
-
-    // update existing showings
-    const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
-
-    const rowsUpdated = await eventUtils.updateShowings(rowsToUpdate);
-
-    // insert new showings
-    // showings with id = 0 have not yet been added to the table
-    const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
-    rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
-
-    const rowsInserted = (await eventUtils.insertAllShowings(rowsToInsert));
-
-    const responseData = {
-      data: {
-        numRowsUpdated: rowsUpdated,
-        numRowsDeleted: rowsDeleted,
-        numRowsInserted: rowsInserted.length,
-      },
-      status: {
-        success: true,
-        message: `${rowsUpdated} rows updated, `+
-          `${rowsDeleted} rows deleted, ${rowsInserted.length} rows inserted`,
-      },
-    };
-    res.status(200).send(responseData);
+    req.body
+    req.params
+    const resp = await updateInstances(req.body, req.params);
+    const code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
   } catch (error: any) {
-    console.error(error);
-    const responseData = {
-      data: {},
-      status: {
-        success: false,
-        message: error.message,
-      },
-    };
-    res.status(500).send(responseData);
+    res.status(500).send(error.message);
   }
 });
 

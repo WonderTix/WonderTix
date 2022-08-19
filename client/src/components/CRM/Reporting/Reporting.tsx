@@ -81,6 +81,8 @@ const ReportingTest = (): React.ReactElement => {
     // TODO need to remove this, query uses the weird filter syntax
     if (query !== '') url += `?${query}`;
 
+    console.log(url);
+
     await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
