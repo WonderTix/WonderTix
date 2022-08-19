@@ -108,12 +108,13 @@ const DoorList = () => {
         },
       });
       const jsonData = await response.json();
+      console.log(jsonData.data);
 
       // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }
       setDoorList(jsonData.data);
-      setEventName(jsonData.eventname);
-      setDate(dayMonthDate(jsonData.eventdate));
-      setTime(militaryToCivilian(jsonData.starttime));
+      setEventName(jsonData.data[0].eventname);
+      setDate(dayMonthDate(jsonData.data[0].eventdate));
+      setTime(militaryToCivilian(jsonData.data[0].starttime));
     } catch (error) {
       console.error(error.message);
     }

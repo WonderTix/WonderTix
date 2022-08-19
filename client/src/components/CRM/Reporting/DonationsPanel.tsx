@@ -52,7 +52,7 @@ const DonationsPanel = ({
 
       setSavedName('');
     });
-  });
+  }, [savedName]);
 
   const parseUrl = () => {
     const filters = [];

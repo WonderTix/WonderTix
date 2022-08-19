@@ -1,72 +1,37 @@
-import express from 'express';
+import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {pool} from '../db';
+import {updateNewsletter, getNewsletterCount, insertNewsletter} from './newletter.service';
 
-export const newsletterRouter = express.Router();
+export const newsletterRouter = Router();
 
 // News Letter Route
-newsletterRouter.get('/count', checkJwt, checkScopes, async (req, res) => {
+newsletterRouter.get('/count', checkJwt, checkScopes, async (req: Request, res: Response) => {
   try {
-    const emails = await pool.query(
-        'SELECT COUNT(*) FROM customers WHERE email = $1',
-        [req.body.email],
-    );
-    res.json(emails.rows);
-  } catch (err: any) {
-    console.error(err.message);
+    const emails = await getNewsletterCount(req.query);
+    let code = emails.status.success ? 200 : 404;
+    res.status(code).send(emails);
+  } catch (error: any) {
+    res.status(500).send(error.message)
   }
 });
 
 // Nesletter Route
-newsletterRouter.put('/', async (req, res) => {
+newsletterRouter.put('/', async (req: Request, res: Response) => {
   try {
-    const body = req.body;
-    const values = [body.news_opt, body.volunteer_opt, body.email];
-    const rows = await pool.query(
-        `UPDATE public.customers
-              SET newsletter=$1, "volunteer list"=$2
-              WHERE email = $3;`,
-        values,
-    );
-    res.json(rows.rows);
-  } catch (err: any) {
-    console.error(err.message);
+    const newsLetterResp = await updateNewsletter(req.body);
+    const code = newsLetterResp.status.success ? 200 : 404;
+    res.status(code).send(newsLetterResp);
+  } catch (error: any) {
+    res.status(500).send(error.message)
   }
 });
 
-newsletterRouter.post('/', async (req, res) => {
+newsletterRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const body = req.body;
-    const values = [
-      body.custname,
-      body.email,
-      body.phone,
-      body.custaddress,
-      body.news_opt,
-      false,
-      false,
-      false,
-      body.volunteer_opt,
-    ];
-    const query = `
-                  INSERT INTO public.customers (
-                    custname, 
-                    email, 
-                    phone, 
-                    custaddress, 
-                    newsletter, 
-                    donorbadge, 
-                    seatingaccom, 
-                    vip, 
-                    "volunteer list")
-                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`;
-    const emails = await pool.query(
-        query,
-        values,
-    );
-    res.json(emails.rows);
+    const insert = await insertNewsletter(req.body)
+    const code = insert.status.success ? 200 : 404;
+    res.status(code).send(insert);
   } catch (err: any) {
-    console.error(err.message);
-    res.sendStatus(500);
+    res.status(500).send(err.message);
   }
 });
