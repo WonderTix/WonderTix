@@ -58,8 +58,9 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
 // DELETE /api/contacts/:id
 contactsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
-    await remove(req.params.id);
-    res.sendStatus(204);
+    const resp = await remove(req.params.id);
+    let code = resp.status.success ? 204 : 404;
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
