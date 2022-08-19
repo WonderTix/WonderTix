@@ -1,6 +1,6 @@
 // api/contacts/contacts.router.ts
 
-import {Router} from 'express';
+import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {create, find, findAll, findByName, remove, update}
   from './contacts.service';
@@ -9,10 +9,11 @@ export const contactsRouter = Router();
 
 // PUBLIC
 // POST /api/contacts
-contactsRouter.post('/', async (req, res) => {
+contactsRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const newContact = await create(req.body);
-    res.status(201).send(newContact.rows);
+    const resp = await create(req.body);
+    let code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -22,37 +23,40 @@ contactsRouter.use(checkJwt);
 contactsRouter.use(checkScopes);
 
 // GET /api/contacts
-contactsRouter.get('/', async (req, res) => {
+contactsRouter.get('/', async (req: Request, res: Response) => {
   try {
-    const contacts = await findAll();
-    res.status(200).send(contacts.rows);
+    const resp = await findAll(req.query);
+    let code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
 });
 
 // GET /api/contacts/search?name={name}
-contactsRouter.get('/search', async (req, res) => {
+contactsRouter.get('/search', async (req: Request, res: Response) => {
   try {
-    const contacts = await findByName(req.query.name as string);
-    res.status(200).send(contacts.rows);
+    const resp = await findByName(req.query.name as string);
+    let code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
 });
 
 // GET /api/contacts/:id
-contactsRouter.get('/:id', async (req, res) => {
+contactsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
-    const customer = await find(req.params.id);
-    res.status(200).send(customer.rows);
+    const resp = await find(req.params.id);
+    let code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
 });
 
 // DELETE /api/contacts/:id
-contactsRouter.delete('/:id', async (req, res) => {
+contactsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     await remove(req.params.id);
     res.sendStatus(204);
@@ -62,10 +66,11 @@ contactsRouter.delete('/:id', async (req, res) => {
 });
 
 // PUT /api/contacts/:id
-contactsRouter.put('/:id', async (req, res) => {
+contactsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
-    const updatedContact = await update(req);
-    res.status(200).send(updatedContact.rows);
+    const resp = await update(req);
+    let code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
