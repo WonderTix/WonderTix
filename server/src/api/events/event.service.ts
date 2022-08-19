@@ -250,15 +250,10 @@ const updateShowings = async (showings: Showing[]): Promise<number> => {
 // takes in array of ids and deletes showings with those ids and linkedtickets
 const deleteShowings = async (ids: number[]): Promise<number> => {
   const deleteQuery = `
-                        DELETE FROM event_instances
-                        WHERE id = $1;
+                        UPDATE event_instances SET salestatus=false WHERE id=$1;
                         `;
   let rowsDeleted = 0;
   for (const id of ids) {
-    pool.query(
-        `DELETE FROM linkedtickets WHERE event_instance_id = $1;`,
-        [id],
-    );
     const queryResult = await pool.query(deleteQuery, [id]);
     rowsDeleted += queryResult.rowCount;
   }
@@ -270,7 +265,8 @@ const isEventChange = (d: Delta) => !isShowingChange(d) && d.kind === 'E';
 const eventFields = ['eventname', 'eventdescription', 'image_url'];
 
 const getShowingsById = async (id: string): Promise<Showing[]> => {
-  const query = `SELECT * FROM event_instances WHERE eventid = $1;`;
+  const query = `SELECT * FROM event_instances WHERE eventid = $1
+    AND salestatus=true;`;
   const queryResult = await pool.query(query, [id]);
   return queryResult.rows;
 };

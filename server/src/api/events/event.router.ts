@@ -27,6 +27,48 @@ eventRouter.get('/search', async (req: Request, res: Response) => {
   }
 });
 
+// Endpoint to get event by ID
+eventRouter.get('/:id', async (req, res) => {
+  try {
+    const query = `
+                  SELECT
+                    events.id,
+                    seasonid,
+                    eventname title,
+                    events.eventdescription description,
+                    events.active,
+                    events.image_url
+                  FROM events
+                  WHERE id = $1;
+                  `;
+    const data = await pool.query(query, [req.params.id]);
+    res.json(data.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
+
+// Endpoint to get event instance by ID
+eventRouter.get('/instances/:id', async (req, res) => {
+  try {
+    const query = `
+                  SELECT
+                    *
+                  FROM
+                    event_instances
+                  WHERE eventid = $1
+                  AND salestatus=true;
+                  `;
+    const data = await pool.query(query, [req.params.id]);
+    console.log('Getting instance with id: ' + req.params.id);
+    console.log(data.rows);
+    res.json(data.rows);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
 // Endpoint to get the list of all event instances that are currently active
 // Even route
 eventRouter.get('/list/active', async (_req: Request, res: Response) => {
@@ -258,8 +300,6 @@ eventRouter.put('/', checkJwt, checkScopes, async (req: Request, res: Response) 
 // PRIVATE ROUTE
 eventRouter.put('/instances/:id', checkJwt, checkScopes, async (req: Request, res: Response) => {
   try {
-    req.body
-    req.params
     const resp = await updateInstances(req.body, req.params);
     const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);

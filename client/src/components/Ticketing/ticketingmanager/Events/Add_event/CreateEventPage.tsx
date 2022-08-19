@@ -75,9 +75,9 @@ const CreateEventPage = () => {
       });
       // update Redux state with new event & available tickets
       if (postShowings.ok) {
-        console.log('dispatch');
-        dispatch(fetchEventInstanceData());
-        dispatch(fetchTicketingData());
+        // console.log('dispatch');
+        // dispatch(fetchEventInstanceData());
+        // dispatch(fetchTicketingData());
         dispatch(openSnackbar('New Event Created'));
       }
     } else {
