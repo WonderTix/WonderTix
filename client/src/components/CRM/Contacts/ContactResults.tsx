@@ -1,8 +1,12 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
+/* eslint-disable require-jsdoc */
+
 import React from 'react';
 import {useParams} from 'react-router-dom';
 // import { useInput } from './hooks/input-hook';
 import {useState} from 'react';
+import {useAuth0} from '@auth0/auth0-react';
 
 const ContactResults = ({
   data,
@@ -10,7 +14,23 @@ const ContactResults = ({
   data: any,
 }): React.ReactElement => {
   if (!data) return <div>Empty</div>;
+  const {getAccessTokenSilently} = useAuth0();
 
+  async function deleteEvent(showId: Number) {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+    const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/contacts/${showId}`,
+        {
+          credentials: 'include',
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+    return response.json();
+  }
   // What is this?
   const {
     custname,
@@ -115,10 +135,14 @@ const ContactResults = ({
             {'' + volunteerlist}
           </div>
         </div>
-        <button disabled className='bg-zinc-300
+        <button disabled className='bg-blue-600 disabled:opacity-40
         mt-4 text-white px-5 py-2
         rounded-xl justify-end
           ' >Edit info</button>
+        <button className='bg-red-600 hover:bg-red-700
+        mt-4 text-white px-5 py-2
+        rounded-xl justify-end
+          ' onClick={() => deleteEvent(id)} >Remove Customer</button>
       </div>
     </div>
   );
@@ -139,10 +163,11 @@ export const contactForm = (data: any): React.ReactElement => {
   const [VIP, setVIP] = useState(data.vip);
   const [Volunteerlist, setVolunteerlist] = useState(data.volunteerlist);
   const params = useParams();
+  const {getAccessTokenSilently} = useAuth0();
 
 
   // The changed data can be linked to the server (but it will creat a new row)
-  const HandleSubmit = (evt: any) => {
+  const HandleSubmit = async (evt: any) => {
     evt.preventDefault();
 
 
@@ -170,6 +195,10 @@ export const contactForm = (data: any): React.ReactElement => {
       vip: VIP,
       volunteer_list: false,
     };
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
 
     console.log(params);
     console.log(params.id);
@@ -177,9 +206,9 @@ export const contactForm = (data: any): React.ReactElement => {
     // and establish a link with the background data from here
     // However, in the actual url, param.id
     // is not the id but the user's name, which causes the update to fail
-    const url=`http://localhost:8000/api/contacts/${data.id}`;
-    // const url='http://localhost:8000/api/contacts/'+params.id;
-    // const url = 'http://localhost:8000/api/contacts?filters[custname][$eq]=${params.id}';
+    const url=process.env.REACT_APP_ROOT_URL + `/api/contacts/${data.id}`;
+    // const url=process.env.REACT_APP_ROOT_URL + '/api/contacts/'+params.id;
+    // const url = process.env.REACT_APP_ROOT_URL + '/api/contacts?filters[custname][$eq]=${params.id}';
     console.log(body);
 
     // This function contains the relevant methods of the operation
@@ -187,7 +216,10 @@ export const contactForm = (data: any): React.ReactElement => {
     fetch( url, {
       // method: "post",
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       body: JSON.stringify(body),
       // params: JSON.stringify(params),
     }).then((res) => console.log(res));

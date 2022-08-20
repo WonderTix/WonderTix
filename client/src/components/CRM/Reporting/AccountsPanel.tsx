@@ -4,6 +4,7 @@ import {
   accountFiltersTextField,
   accountFiltersSwitch,
 } from '../../../utils/arrays';
+import {useAuth0} from '@auth0/auth0-react';
 
 const AccountsPanel = ({
   fetchData,
@@ -18,28 +19,41 @@ const AccountsPanel = ({
 }) => {
   const [username, setUsername] = React.useState('');
   const [isAdmin, setIsAdmin] = React.useState(false);
+  const {getAccessTokenSilently} = useAuth0();
 
   React.useEffect(() => {
-    if (savedName === '') return;
+    async () => {
+      if (savedName === '') return;
 
-    /* TODO
-      Dynamic queries/Filter no longer being used by API.
-      Need to redesign these POST requests.
-    */
+      /* TODO
+        Dynamic queries/Filter no longer being used by API.
+        Need to redesign these POST requests.
+      */
 
-    const body = {
-      table_name: savedName,
-      query_attr: `accounts/?${parseUrl()}`,
+      const body = {
+        table_name: savedName,
+        query_attr: `accounts/?${parseUrl()}`,
+      };
+
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+
+      const response = await fetch(
+          `${process.env.REACT_APP_ROOT_URL}/api/saved_reports`, {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(body),
+          });
+      console.log(response.text);
+
+      setSavedName('');
     };
-
-    fetch(`http://localhost:8000/api/saved_reports`, {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body),
-    }).then((res) => console.log(res));
-
-    setSavedName('');
-  });
+  }, [getAccessTokenSilently]);
 
   const parseUrl = () => {
     const filters = [];
@@ -50,9 +64,7 @@ const AccountsPanel = ({
       if (filter[1] === '' || filter[1] === false) return;
 
       filters.push(
-          `filters[${filter[0]}]${
-          typeof filter[1] === 'string' ? '[$contains]' : '[$eq]'
-          }=${filter[1]}`,
+          `${filter[0]}=${filter[1]}`,
       );
     });
 
@@ -60,7 +72,8 @@ const AccountsPanel = ({
   };
 
   const handleChange = (e) => {
-    e.preventDefault();
+    console.log(e);
+    console.log(e.target.id);
 
     switch (e.target.id) {
       case 'username':
@@ -89,13 +102,21 @@ const AccountsPanel = ({
       })}
       <div className='mt-2'>
         {accountFiltersSwitch.map((filter) => {
+          console.log(filter);
           return (
-
-            <div className="form-control">
-              <label className="label cursor-pointer">
-                <input key={filter.id} onChange={handleChange}
-                  type="checkbox" className="checkbox"/>
-                <span className="label-text ml-2">{filter.label}</span>
+            <div className="form-check">
+              <input key={filter.id} id={filter.id} onChange={handleChange}
+                type="checkbox" className="
+                  form-check-input appearance-non h-4 w-4 border
+                  border-gray-300 rounded-sm bg-white
+                  checked:bg-blue-600 checked:border-blue-600
+                  focus:outline-none transition duration-200
+                  mt-1 align-top bg-no-repeat bg-center bg-contain
+                  float-left mr-2 cursor-pointer" value="" />
+              <label
+                className="form-check-label inline-block label-text ml-2"
+                htmlFor={filter.id}>
+                {filter.label}
               </label>
             </div>
           );

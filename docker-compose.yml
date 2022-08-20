@@ -12,6 +12,8 @@ services:
       DB_PASSWORD: ${PG_PASS}
       DB_USER: ${PG_USER}
       DB_PORT: 5432
+      PRIVATE_STRIPE_KEY: ${PRIVATE_STRIPE_KEY}
+      FRONTEND_URL: ${FRONTEND_URL}
     volumes:
       - ./server:/wondertix
       - /wondertix/node_modules
@@ -21,6 +23,9 @@ services:
       context: ./client
     ports:
       - "3000:3000"
+    environment:
+      REACT_APP_ROOT_URL: ${ROOT_URL}
+      REACT_APP_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
     volumes:
       - ./client:/wondertix
       - /wondertix/node_modules

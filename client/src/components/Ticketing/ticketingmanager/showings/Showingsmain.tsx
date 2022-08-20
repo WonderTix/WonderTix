@@ -1,15 +1,14 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import DeleteEvents from './Deleteevent';
-
-const Deleteeventmain = () => {
+import InstancesPage from './InstancesPage';
+const Showingsmain = () => {
   return (
     <div className='flex flex-row'>
       <Udash_nav/>
-      <DeleteEvents/>
+      <InstancesPage/>
     </div>
   );
 };
 
-export default Deleteeventmain;
+export default Showingsmain;

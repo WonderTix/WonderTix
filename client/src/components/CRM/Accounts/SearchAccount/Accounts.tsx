@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import AccountResults from './AccountResults';
+import {useAuth0} from '@auth0/auth0-react';
 
 const Accounts = (): React.ReactElement => {
   const params = useParams();
@@ -11,18 +12,27 @@ const Accounts = (): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const {getAccessTokenSilently} = useAuth0();
 
   useEffect(() => {
     const getData = async () => {
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
       if (params.id) {
         setIsLoading(true);
         setAccount(params.id);
         await axios
             .get(
-                `http://localhost:8000/api/accounts/search?username=${params.id}`,
+                process.env.REACT_APP_ROOT_URL + `/api/accounts/search?username=${params.id}`, {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
             )
             .then((res) => {
-              setData(res.data[0]);
+              setData(res.data.data[0]);
               console.log(res);
             })
             .catch((err) => {
@@ -35,7 +45,7 @@ const Accounts = (): React.ReactElement => {
       }
     };
     getData();
-  }, [params.id]);
+  }, [params.id, getAccessTokenSilently]);
 
   const handleClick = (e: any) => {
     e.preventDefault();
@@ -46,7 +56,7 @@ const Accounts = (): React.ReactElement => {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
         <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14     ' >Accounts</h1>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-rose-400 to-orange-300 mb-14     ' >Search Account</h1>
         </div>
         <form className='border bg-white border-zinc-300 w-full flex flex-row p-2
         rounded-lg shadow-md justify-between'

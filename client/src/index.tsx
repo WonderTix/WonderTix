@@ -6,13 +6,16 @@ import Auth0ProviderWithHistory
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import {Provider} from 'react-redux';
+import store from './components/Ticketing/app/store';
 ReactDOM.render(
-    <Router>
-      <Auth0ProviderWithHistory>
-        <App />
-      </Auth0ProviderWithHistory>
-    </Router>,
+    <Provider store={store}>
+      <Router>
+        <Auth0ProviderWithHistory>
+          <App />
+        </Auth0ProviderWithHistory>
+      </Router>
+    </Provider>,
     document.getElementById('root'),
 );
 

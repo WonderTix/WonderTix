@@ -12,13 +12,15 @@
 **/
 
 import React, {useState} from 'react';
+import {useAuth0} from '@auth0/auth0-react';
 
-export default function CreateEvents(props: {}) {
+export default function CreateEvents() {
   const [eventName, setEventName] = useState('');
   const [eventDesc, setEventDesc] = useState('');
   const [eventTickets, setEventTickets] = useState(0);
-  const [eventDate, setEventDate] = useState(new Date()); // Use React datetime??
-  const [eventTime, setEventTime] = useState(eventDate.getTime()); // Use React datetime??
+  const eventDate = new Date(); // Use React datetime??
+  const eventTime = useState(eventDate.getTime()); // Use React datetime??
+  const {getAccessTokenSilently} = useAuth0();
 
   const eventCreate = async () => {
     const data = {
@@ -29,11 +31,17 @@ export default function CreateEvents(props: {}) {
       eventTime: eventTime,
     };
 
-    const req = await fetch('http://localhost:8000/api/events', {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+
+    const req = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
       credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });

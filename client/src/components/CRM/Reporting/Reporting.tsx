@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 // Bug description: Unable to display column headers with full user information,
 // When moving the scroll bar to the right, everything goes back to normal.
@@ -13,13 +12,13 @@ import {
   contactHeaders,
   donationHeaders,
 } from '../../../utils/arrays';
-import Panel from '../../../utils/Panel';
 import AccountsPanel from './AccountsPanel';
 import ContactsPanel from './ContactsPanel';
 import DonationsPanel from './DonationsPanel';
 import SavedPanel from './SavedPanel';
 import SavedDialog from './SavedDialog';
-import {Fragment, useState} from 'react';
+import {useState} from 'react';
+import {useAuth0} from '@auth0/auth0-react';
 
 
 /**
@@ -33,6 +32,7 @@ const ReportingTest = (): React.ReactElement => {
   const [open, setOpen] = React.useState(false);
   const [savedName, setSavedName] = React.useState('');
   const navigate = useNavigate();
+  const {getAccessTokenSilently} = useAuth0();
 
 
   const [showhide, setShowhide]=useState('');
@@ -40,14 +40,17 @@ const ReportingTest = (): React.ReactElement => {
   const handleshowhide=(event)=>{
     const getuser = event.target.value;
     setShowhide(getuser);
-  };
-  const handleChange = (event: any) => {
-    setValue(event.target.value);
+    setValue((parseInt(getuser)-1).toString());
+    console.log(value);
   };
 
-  const fetchData = (query: any) => {
+  const fetchData = async (query: any) => {
     let headers: any;
     let route: any;
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
     switch (value) {
       case '0':
         route = 'accounts';
@@ -62,20 +65,27 @@ const ReportingTest = (): React.ReactElement => {
         headers = donationHeaders;
         break;
       default:
-        return;
+        break;
     }
+    console.log(route);
 
     setColumns(headers);
 
-    let url = `http://localhost:8000/api/${route}`;
+    let url = process.env.REACT_APP_ROOT_URL + `/api/${route}`;
 
     // TODO need to remove this, query uses the weird filter syntax
     if (query !== '') url += `?${query}`;
 
-    fetch(url)
+    console.log(url);
+
+    await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
         .then((data) => data.json())
         .then((data) => {
-          setRows(data);
+          setRows(data.data);
         });
   };
 

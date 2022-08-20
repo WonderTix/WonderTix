@@ -2,6 +2,7 @@ import request from 'supertest';
 import express from 'express';
 import * as contactsService from './contacts.service';
 import {contactsRouter} from './contacts.router';
+import {getToken} from '../../testSetup';
 
 const app = express();
 app.use('/', contactsRouter);
@@ -17,9 +18,10 @@ describe('test contacts routes', function() {
     it('/ get pass', async () => {
       // @ts-ignore
       contactsService.findAll.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).get('/').send();
+      const res = await request(app).get('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(200);
     });
 
@@ -28,9 +30,9 @@ describe('test contacts routes', function() {
       contactsService.findAll.mockImplementationOnce(() => {
         throw new Error();
       });
-
-      const res = await request(app).get('/').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).get('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -38,9 +40,10 @@ describe('test contacts routes', function() {
     it('/search get pass', async () => {
       // @ts-ignore
       contactsService.findByName.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).get('/search').send();
+      const res = await request(app).get('/search')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(200);
     });
 
@@ -50,8 +53,9 @@ describe('test contacts routes', function() {
         throw new Error();
       });
 
-      const res = await request(app).get('/search').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).get('/search')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -59,9 +63,10 @@ describe('test contacts routes', function() {
     it('/:id get pass', async () => {
       // @ts-ignore
       contactsService.find.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).get('/:id').send();
+      const res = await request(app).get('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(200);
     });
 
@@ -71,8 +76,9 @@ describe('test contacts routes', function() {
         throw new Error();
       });
 
-      const res = await request(app).get('/:id').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).get('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -80,10 +86,11 @@ describe('test contacts routes', function() {
     it('/ post pass', async () => {
       // @ts-ignore
       contactsService.create.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).post('/').send();
-      expect(res.statusCode).toBe(201);
+      const res = await request(app).post('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect(res.statusCode).toBe(200);
     });
 
     it('/ post fail', async () => {
@@ -92,8 +99,9 @@ describe('test contacts routes', function() {
         throw new Error();
       });
 
-      const res = await request(app).post('/').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).post('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -101,9 +109,10 @@ describe('test contacts routes', function() {
     it('/:id delete pass', async () => {
       // @ts-ignore
       contactsService.remove.mockImplementationOnce(() => {
-        return null;
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).delete('/:id').send();
+      const res = await request(app).delete('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(204);
     });
 
@@ -113,8 +122,9 @@ describe('test contacts routes', function() {
         throw new Error();
       });
 
-      const res = await request(app).delete('/:id').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).delete('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -122,9 +132,10 @@ describe('test contacts routes', function() {
     it('/:id put pass', async () => {
       // @ts-ignore
       contactsService.update.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).put('/:id').send();
+      const res = await request(app).put('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(200);
     });
 
@@ -133,8 +144,9 @@ describe('test contacts routes', function() {
       contactsService.update.mockImplementationOnce(() => {
         throw new Error();
       });
-      const res = await request(app).put('/:id').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).put('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 });

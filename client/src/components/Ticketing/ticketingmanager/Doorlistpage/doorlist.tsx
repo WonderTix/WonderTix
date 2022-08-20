@@ -1,8 +1,3 @@
-/* eslint-disable spaced-comment */
-/* eslint-disable camelcase */
-/* eslint-disable no-unused-vars */
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -15,20 +10,28 @@
 **/
 // import DataGrid from 'react-data-grid';
 import {DataGrid, GridCellParams} from '@mui/x-data-grid';
-import {Checkbox} from '@material-ui/core';
-import {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {Checkbox} from '@mui/material';
+import React, {useEffect, useState} from 'react';
 // import RequireLogin from './RequireLogin';
 import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
+import {useAuth0} from '@auth0/auth0-react';
 
 const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.value as boolean} />);
 
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
+  const {getAccessTokenSilently} = useAuth0();
   try {
-    const res = await fetch(`http://localhost:8000/api/events/checkin`, {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       body: JSON.stringify({isCheckedIn, ticketID}),
     });
     return res.json();
@@ -54,19 +57,20 @@ const columns = [
 ];
 
 
-type DoorListProps = {eventinstanceid: string}
 const DoorList = () => {
-  const {eventinstanceid} = useParams<DoorListProps>();
+  const {getAccessTokenSilently} = useAuth0();
   const [doorList, setDoorList] = useState([]);
   const [eventName, setEventName] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
 
   const [eventList, setEventList] = useState([]);
+
   const getEvents = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/events/list/active');
-      const jsonData = await response.json();
+      const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
+      const jsonRes = await response.json();
+      const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
         jsonData[key].starttime = militaryToCivilian(jsonData[key].starttime);
@@ -81,17 +85,28 @@ const DoorList = () => {
     getEvents();
   }, []);
 
+
   const getDoorList = async (event) => {
     try {
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+
       const getuser = event.target.value;
-      const response = await fetch(`http://localhost:8000/api/doorlist?eventinstanceid=${getuser}`, {method: 'GET'});
+      const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/doorlist?eventinstanceid=${getuser}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const jsonData = await response.json();
+      console.log(jsonData.data);
 
       // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }
       setDoorList(jsonData.data);
-      setEventName(jsonData.eventname);
-      setDate(dayMonthDate(jsonData.eventdate));
-      setTime(militaryToCivilian(jsonData.starttime));
+      setEventName(jsonData.data[0].eventname);
+      setDate(dayMonthDate(jsonData.data[0].eventdate));
+      setTime(militaryToCivilian(jsonData.data[0].starttime));
     } catch (error) {
       console.error(error.message);
     }
@@ -121,8 +136,8 @@ const DoorList = () => {
           )}
         </select>
         <div className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</div>
-        <div className='text-2xl font-bold '>{`${date}, ${time}`}</div>
-        <div>
+        <div className='text-2xl font-bold text-zinc-700'>{`${date}, ${time}`}</div>
+        <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
           <DataGrid
             className='bg-white'
             autoHeight
@@ -131,41 +146,6 @@ const DoorList = () => {
             columns={columns}
             pageSize={10}/>
         </div>
-        {/*<table className="table-fixed w-full text-sm text-left rounded-lg text-gray-500 ">
-          <thead className="text-xs text-zinc-100 uppercase rounded-t-lg bg-zinc-800">
-            <tr>
-              {columns.map((client) =>
-                (
-                  <>
-                    <th scope="col" className="px-6 py-3">
-                      {client.field}
-                    </th>
-                  </>
-                ),
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-zinc-100 border-b rounded-b-lg hover:bg-gray-50">
-              <td>{doorList.map((eventss) => (
-                <>
-                  <option className="px-6 py-3">
-                    {eventss.name}
-                  </option>
-                </>
-              ),
-              )}</td>
-              <td>{doorList.map((eventss) => (
-                <>
-                  <option className="px-6 py-3">
-                    {eventss.vip}
-                  </option>
-                </>
-              ),
-              )}</td>
-            </tr>
-          </tbody>
-        </table>*/}
       </div>
 
     </div>

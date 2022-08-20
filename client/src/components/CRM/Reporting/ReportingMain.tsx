@@ -7,7 +7,7 @@ const ReportingMain=() =>{
   return (
     <div className='flex flex-row  '>
       <Reporting/>
-      <Navigation icon={undefined}/>
+      <Navigation/>
     </div>
   );
 };

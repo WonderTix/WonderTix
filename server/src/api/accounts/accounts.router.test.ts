@@ -2,6 +2,7 @@ import request from 'supertest';
 import express from 'express';
 import * as accountsService from './accounts.service';
 import {accountsRouter} from './accounts.router';
+import {getToken} from '../../testSetup';
 
 const app = express();
 app.use('/', accountsRouter);
@@ -17,9 +18,10 @@ describe('test accounts routes', function() {
     it('/ get pass', async () => {
       // @ts-ignore
       accountsService.findAll.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).get('/').send();
+      const res = await request(app).get('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(200);
     });
 
@@ -28,9 +30,9 @@ describe('test accounts routes', function() {
       accountsService.findAll.mockImplementationOnce(() => {
         throw new Error();
       });
-
-      const res = await request(app).get('/').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).get('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -38,9 +40,10 @@ describe('test accounts routes', function() {
     it('/search get pass', async () => {
       // @ts-ignore
       accountsService.findByUsername.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).get('/search').send();
+      const res = await request(app).get('/search')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(200);
     });
 
@@ -50,8 +53,9 @@ describe('test accounts routes', function() {
         throw new Error();
       });
 
-      const res = await request(app).get('/search').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).get('/search')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -59,9 +63,10 @@ describe('test accounts routes', function() {
     it('/:id get pass', async () => {
       // @ts-ignore
       accountsService.find.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).get('/:id').send();
+      const res = await request(app).get('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(200);
     });
 
@@ -70,9 +75,9 @@ describe('test accounts routes', function() {
       accountsService.find.mockImplementationOnce(() => {
         throw new Error();
       });
-
-      const res = await request(app).get('/:id').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).get('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -80,10 +85,11 @@ describe('test accounts routes', function() {
     it('/ post pass', async () => {
       // @ts-ignore
       accountsService.create.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).post('/').send();
-      expect(res.statusCode).toBe(201);
+      const res = await request(app).post('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect(res.statusCode).toBe(200);
     });
 
     it('/ post fail', async () => {
@@ -91,9 +97,9 @@ describe('test accounts routes', function() {
       accountsService.create.mockImplementationOnce(() => {
         throw new Error();
       });
-
-      const res = await request(app).post('/').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).post('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -101,9 +107,10 @@ describe('test accounts routes', function() {
     it('/:id delete pass', async () => {
       // @ts-ignore
       accountsService.remove.mockImplementationOnce(() => {
-        return null;
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).delete('/:id').send();
+      const res = await request(app).delete('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(204);
     });
 
@@ -113,8 +120,9 @@ describe('test accounts routes', function() {
         throw new Error();
       });
 
-      const res = await request(app).delete('/:id').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).delete('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 
@@ -122,9 +130,10 @@ describe('test accounts routes', function() {
     it('/:id put pass', async () => {
       // @ts-ignore
       accountsService.update.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
-      const res = await request(app).put('/:id').send();
+      const res = await request(app).put('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
       expect(res.statusCode).toBe(200);
     });
 
@@ -133,8 +142,9 @@ describe('test accounts routes', function() {
       accountsService.update.mockImplementationOnce(() => {
         throw new Error();
       });
-      const res = await request(app).put('/:id').send();
-      expect(res.statusCode).toBe(500);
+      const res = await request(app).put('/:id')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect([500, 404]).toContain(res.statusCode);
     });
   });
 });

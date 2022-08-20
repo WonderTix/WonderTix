@@ -1,11 +1,22 @@
-import express from 'express';
+import {Router, Response, Request} from 'express';
 import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
-import Delta from '../../interfaces/Delta';
 import {pool} from '../db';
-import eventUtils from './event.service';
-
-export const eventRouter = express.Router();
+import {
+  checkIn,
+  getEventById,
+  getEventByName,
+  getActiveEventsAndInstances,
+  createEvent,
+  createShowing,
+  updateEvent,
+  archivePlays,
+  getActiveEvents,
+  updateInstances,
+  getInstanceById,
+} from './event.service';
+import {checkJwt, checkScopes} from '../../auth';
+export const eventRouter = Router();
 
 const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
   process.env.PRIVATE_STRIPE_KEY : '';
@@ -14,59 +25,51 @@ const stripe = new Stripe(stripeKey, {
   apiVersion: '2020-08-27',
 });
 
-// Endpoint to get list of events
-// Event list route
-eventRouter.get('/list', async (req, res) => {
-  try {
-    const events = await pool.query(
-        'select id, eventname from events where active = true',
-    );
-    res.json(events.rows);
-  } catch (error: any) {
-    console.error(error.message);
-  }
-});
 
 // Endpoint to get event id
 // Event route
 // GET /api/events/search?eventName={eventName}
-eventRouter.get('/search', async (req, res) => {
+eventRouter.get('/search', async (req: Request, res: Response) => {
   try {
-    const values = [req.query.eventName];
-    // let values =['united']
-    const ids = await pool.query(
-        'select id, eventname from events where eventname = $1',
-        values,
-    );
-    if (ids.rowCount === 0) res.status(404).json('No event was found.');
-    else res.json(ids.rows);
-  } catch (error) {
-    console.error(error);
+    const ids = await getEventByName(req.query);
+    const code = ids.status.success ? 200 : 404;
+    res.status(code).send(ids);
+  } catch (error: any) {
+    res.status(500).send(error.message);
   }
 });
 
+// Endpoint to get event by ID
+eventRouter.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const data = await getEventById(req.params);
+    const code = data.status.success ? 200 : 404;
+    res.status(code).send(data);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
+
+// Endpoint to get event instance by ID
+eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
+  try {
+    const data = await getInstanceById(req.params);
+    const code = data.status.success ? 200 : 404;
+    res.status(code).send(data);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
 // Endpoint to get the list of all event instances that are currently active
 // Even route
-eventRouter.get('/list/active', async (req, res) => {
+eventRouter.get('/list/active', async (_req: Request, res: Response) => {
   try {
-    const query = `
-                    SELECT 
-                      ei.id,
-                      ei.eventid,
-                      events.eventname,
-                      events.eventdescription,
-                      events.image_url,
-                      ei.eventdate, ei.starttime,
-                      ei.totalseats,
-                      ei.availableseats
-                    FROM event_instances as ei 
-                    JOIN events on ei.eventid = events.id 
-                    WHERE events.active = true AND ei.salestatus = true
-                  `;
-    const events = await pool.query(query);
-    res.json(events.rows);
-  } catch (err: any) {
-    console.error(err.message);
+    const events = await getActiveEventsAndInstances();
+    const code = events.status.success ? 200 : 404;
+    res.status(code).send(events);
+  } catch (error: any) {
+    res.status(500).send(error.message);
   }
 });
 
@@ -74,13 +77,23 @@ eventRouter.get('/list/active', async (req, res) => {
 // Stripe Utility folder endpoint refactor
 // TODO: when we add confirmation emails we can do it like this:
 // https://stripe.com/docs/payments/checkout/custom-success-page
-eventRouter.post('/checkout', async (req, res) => {
+eventRouter.post('/checkout', async (req: Request, res: Response) => {
   // TODO: NOT DO IT THIS WAY!!!
   // right now it gets the price info from the request made by the client.
   // THIS IS WRONG it needs to look up the price in the database given
   // the id of the show/event/whatever. PRICES CANNOT COME FROM CLIENTS!!
   const data: CartItem[] = req.body.cartItems;
 
+  const {
+    firstName,
+    lastName,
+    streetAddress,
+    phone,
+    email,
+    seatingAcc,
+  } = req.body.formData;
+
+  const optIn = req.body.formData['optIn'];
   let emailExists = false;
   try {
     const emails = await pool.query(
@@ -109,15 +122,15 @@ eventRouter.post('/checkout', async (req, res) => {
       await pool.query(
           query,
           [
-            req.body.formData['first-name'] +
+            firstName +
             ' ' +
-            req.body.formData['last-name'],
-            req.body.formData.email,
-            req.body.formData.phone,
-            req.body.formData['street-address'],
-            req.body.formData['opt-in'],
+            lastName,
+            email,
+            phone,
+            streetAddress,
+            optIn,
             false,
-            req.body.formData['seating-accommodation'],
+            seatingAcc,
           ],
       );
     } catch (error) {
@@ -125,14 +138,13 @@ eventRouter.post('/checkout', async (req, res) => {
     }
   } else {
     try {
-      const body = req.body;
       const values = [
-        body.formData.email,
-        body.formData['first-name'] + ' ' + body.formData['last-name'],
-        body.formData.phone,
-        body.formData['street-address'],
-        body.formData['opt-in'],
-        body.formData['seating-accommodation'],
+        email,
+        firstName + ' ' + lastName,
+        phone,
+        streetAddress,
+        optIn,
+        seatingAcc,
       ];
       const query = `
                       UPDATE public.customers
@@ -157,9 +169,7 @@ eventRouter.post('/checkout', async (req, res) => {
     const query = `SELECT id FROM customers WHERE custname = $1`;
     customerID = await pool.query(
         query,
-        [req.body.formData['first-name'] +
-        ' ' +
-        req.body.formData['last-name']],
+        [firstName + ' ' + lastName],
     );
     customerID = customerID.rows[0].id;
     // const formData: CheckoutFormInfo = req.body.formData;
@@ -201,8 +211,8 @@ eventRouter.post('/checkout', async (req, res) => {
           }))
           .concat(donationItem),
       mode: 'payment',
-      success_url: 'http://localhost:3000/success',
-      cancel_url: 'http://localhost:3000',
+      success_url: `${process.env.FRONTEND_URL}/success`,
+      cancel_url: `${process.env.FRONTEND_URL}`,
       payment_intent_data: {
         metadata: {
           orders: JSON.stringify(orders),
@@ -223,142 +233,115 @@ eventRouter.post('/checkout', async (req, res) => {
   }
 });
 
+// PRIVATE ROUTE
 // TODO: Check that provided ticket ID is valid
-eventRouter.put('/checkin', async (req, res) => {
+eventRouter.put('/checkin', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
-    const querystring = `UPDATE tickets SET checkedin=$1 WHERE ticketno=$2`;
-    const values = [req.body.isCheckedIn, req.body.ticketID];
-    const queryRes = await pool.query(querystring, values);
-    res.json(queryRes.rows);
-  } catch (err: any) {
-    console.error(err.message);
-    throw new Error('check in failed');
+    const queryRes = await checkIn(req.body);
+    const code = queryRes.status.success ? 200 : 404;
+    res.status(code).send(queryRes);
+  } catch (error: any) {
+    res.status(500).send(error.message);
   }
 });
 
 // End point to create a new event
-eventRouter.post('/', async (req, res) => {
+eventRouter.post('/', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
-    const {eventName, eventDesc, imageUrl} = req.body;
-    const query = `
-                    INSERT INTO events 
-                      (seasonid, eventname, eventdescription, active, image_url)
-                    VALUES (0, $1, $2, true, $3)
-                    RETURNING *
-                  `;
-    const {rows} = await pool.query(query, [
-      eventName,
-      eventDesc,
-      imageUrl,
-    ]);
-    res.json({rows});
+    const newEvent = await createEvent(req.body);
+    const code = newEvent.status.success ? 200 : 404;
+    res.status(code).send(newEvent);
   } catch (error: any) {
-    console.error(error);
+    res.status(500).send(error.message);
   }
 });
 
+// PRIVATE
 // End point to create a new showing
 // req body: array of {eventid, eventdate, starttime, totalseats, tickettype}
-eventRouter.post('/instances', async (req, res) => {
+eventRouter.post('/instances', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
-  const {instances} = req.body;
-  let newInstances;
   try {
-    newInstances = await eventUtils.insertAllShowings(instances);
-    // Link showtime to ticket type
-    const linkingdata = newInstances.map((s) => ({
-      id: s.id,
-      tickettype: s.tickettype,
-    }));
-    const query2 =
-      `INSERT INTO linkedtickets (event_instance_id, ticket_type) 
-        VALUES ($1, $2)`;
-    for (const sh of linkingdata) {
-      const {id, tickettype} = sh;
-      await pool.query(query2, [id, tickettype]);
-    }
-    res.json({newInstances});
-  } catch (err) {
-    console.error(err);
-    res.status(400);
-    res.send(err);
+    const showings = await createShowing(req.body);
+    const code = showings.status.success ? 200 : 404;
+    res.status(code).send(showings);
+  } catch (error: any) {
+    res.status(500).send(error.message);
   }
 });
 
-eventRouter.put('/', async (req, res) => {
+// PRIVATE ROUTE
+eventRouter.put('/', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
-  const {eventid, deltas}: { eventid: string; deltas: Delta[] } = req.body;
-  if (eventid === undefined || deltas === undefined || deltas.length === 0) {
-    res.status(400);
-    res.send('No edits or event ID provided');
-  }
-  const eventChanges = deltas.filter(eventUtils.isEventChange);
-  const showingChanges = deltas.filter(eventUtils.isShowingChange);
 
   try {
-    const results = [];
-    if (eventChanges.length > 0) {
-      const result = await eventUtils.updateEvent(eventid, eventChanges);
-      results.push(result);
-    }
-    if (showingChanges.length > 0) {
-      console.log('TODO: edit showings');
-    }
-
-    res.json({rows: results});
-  } catch (err: any) {
-    console.error(err.message);
-    res.status(500);
-    res.send('Edit event failed: ' + err.message);
+    const queryResult = await updateEvent(req.body);
+    const code = queryResult.status.success ? 200 : 404;
+    res.status(code).send(queryResult);
+  } catch (error: any) {
+    res.status(500).send(error.message);
   }
 });
 
+// PRIVATE ROUTE
+eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
+  try {
+    const resp = await updateInstances(req.body, req.params);
+    const code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
+// PRIVATE ROUTE
 // Updates salestatus in showtimes table
 // and active flag in plays table when given a play id
-eventRouter.delete('/:id', async (req, res) => {
+eventRouter.delete('/:id', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
     // playid
-    const id = req.params.id;
-    if (id === undefined) {
-      throw new Error('No event id provided');
-    }
-    const archivePlay = 'UPDATE events SET active=false WHERE id=$1;';
-    const archiveShowtimes =
-      'UPDATE event_instances SET salestatus=false WHERE eventid=$1;';
-
-    const archivedPlay = await pool.query(archivePlay, [id]);
-    const archivedShowtimes = await pool.query(archiveShowtimes, [id]);
-    res.json({rows: [...archivedPlay.rows, ...archivedShowtimes.rows]});
-  } catch (error) {
-    console.error(error);
-    res.status(400);
-    res.send(error);
+    const plays = await archivePlays(req.params);
+    const code = plays.status.success ? 200 : 404;
+    res.status(code).send(plays);
+  } catch (error: any) {
+    res.status(500).send(error.message);
   }
 });
 
-eventRouter.get('/', async (req, res) => {
+eventRouter.get('/', async (_req: Request, res: Response) => {
   try {
-    const querystring = `
-                          SELECT 
-                            id, 
-                            eventname title, 
-                            eventdescription description, 
-                            image_url
-                          FROM events
-                          WHERE active=true;
-                        `;
-    const data = await pool.query(querystring);
-    const events = data.rows.map(eventUtils.propToString('id'));
-    res.json(events);
+    // query to retrieve all active events, and the number of showings for each
+    const data = await getActiveEvents();
+    data.data.forEach((row) => row.id = row.id.toString());
+    const code = data.status.success ? 200 : 404;
+    res.status(code).send(data);
   } catch (err: any) {
-    console.error(err.message);
+    res.status(500).send(err.message);
   }
 });

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import ContactResults from '../Contacts/ContactResults';
 import axios from 'axios';
+import {useAuth0} from '@auth0/auth0-react';
 
 /**
  * @param {any} props Props to be passed to SearchBar
@@ -14,18 +15,27 @@ const SearchBar = (props: any): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const {getAccessTokenSilently} = useAuth0();
 
   useEffect(() => {
     const getData = async () => {
       if (params.id) {
         setIsLoading(true);
         setContact(params.id);
+        const token = await getAccessTokenSilently({
+          audience: 'https://localhost:8000',
+          scope: 'admin',
+        });
         await axios
             .get(
-                `http://localhost:8000/api/contacts/search?name=${params.id}`,
-            )
+                process.env.REACT_APP_ROOT_URL +
+                `/api/contacts/search?name=${params.id}`, {
+                  headers: {
+                    'Authorization': `Bearer ${token}`,
+                  },
+                })
             .then((res) => {
-              setData(res.data[0]);
+              setData(res.data.data[0]);
               console.log(res);
             })
             .catch((err) => {

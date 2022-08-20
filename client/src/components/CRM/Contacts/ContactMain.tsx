@@ -5,7 +5,7 @@ import Contacts from './Contacts';
 const ContactMain = () => {
   return (
     <div className='flex flex-row'>
-      <Navigation icon={undefined}/>
+      <Navigation/>
       <Contacts/>
     </div>
   );

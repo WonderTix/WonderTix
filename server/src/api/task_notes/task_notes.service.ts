@@ -1,23 +1,23 @@
 // api/task_notes/task_notes.service.ts
 
-import {pool} from '../db';
+import {buildResponse, response} from '../db';
 
-export const findAll = () => {
+export const findAll = async (): Promise<response> => {
   const myQuery = {
     text: `SELECT * FROM task_notes;`,
   };
-  return pool.query(myQuery);
+  return await buildResponse(myQuery, 'GET');
 };
 
-export const find = (id: string) => {
+export const find = async (id: string): Promise<response> => {
   const myQuery = {
     text: 'SELECT * FROM task_notes WHERE id = $1',
     values: [id],
   };
-  return pool.query(myQuery);
+  return await buildResponse(myQuery, 'GET');
 };
 
-export const create = (r: any) => {
+export const create = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
       INSERT INTO task_notes
@@ -26,18 +26,18 @@ export const create = (r: any) => {
       `,
     values: [r.task_id, r.notes, r.date_created],
   };
-  return pool.query(myQuery);
+  return await buildResponse(myQuery, 'POST');
 };
 
-export const remove = (id: string) => {
+export const remove = async (id: string): Promise<response> => {
   const myQuery = {
     text: 'DELETE FROM task_notes WHERE id = $1',
     values: [id],
   };
-  return pool.query(myQuery);
+  return await buildResponse(myQuery, 'DELETE');
 };
 
-export const update = (r: any) => {
+export const update = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
       UPDATE task_notes
@@ -47,5 +47,5 @@ export const update = (r: any) => {
       `,
     values: [r.body.task_id, r.body.notes, r.body.date_created, r.params.id],
   };
-  return pool.query(myQuery);
+  return await buildResponse(myQuery, 'UPDATE');
 };

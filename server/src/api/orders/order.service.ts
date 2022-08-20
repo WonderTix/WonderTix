@@ -57,6 +57,17 @@ const fulfillOrder = async (session: any) => {
         console.log(error);
         otherCounter = otherCounter - 1;
       }
+      try {
+        await pool.query(
+            `UPDATE event_instances SET availableseats = availableseats - 1
+                 WHERE id = $1`,
+            [
+              temp[counter].id,
+            ],
+        );
+      } catch (error) {
+        console.log(error);
+      }
       otherCounter = otherCounter + 1;
     }
     counter = counter + 1;
