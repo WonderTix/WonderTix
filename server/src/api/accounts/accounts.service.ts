@@ -5,16 +5,17 @@ import {response, buildResponse} from '../db';
 /* NOTE -- currently uses old database, so accounts are users */
 
 export const findAll = async (params: any): Promise<response> => {
-
   const myQuery = {
     text: `SELECT * FROM users
             WHERE ($1::text IS NULL OR LOWER(username) LIKE $1)
             AND ($2::boolean IS NULL OR is_superadmin = $2)`,
     values: [
-      params.username !== undefined ? '%' + params.username + '%': params.username,
+      params.username !== undefined ?
+        '%' + params.username + '%':
+        params.username,
       params.is_superadmin,
     ],
-  }
+  };
 
   if (Object.keys(params).length > 0) {
     let count = 0;
@@ -27,7 +28,7 @@ export const findAll = async (params: any): Promise<response> => {
       if (val === 'username') {
         myQuery.text += ` LOWER(username) LIKE $${count}`;
         myQuery.values.push('%' + params[val].toLowerCase() + '%');
-      } else if (val === "is_superadmin") {
+      } else if (val === 'is_superadmin') {
         myQuery.text += ` is_superadmin = $${count}`;
         myQuery.values.push(params[val]);
       }
@@ -53,7 +54,9 @@ export const find = async (id: string): Promise<response> => {
   return await buildResponse(myQuery, 'GET');
 };
 
-export const create = async (r: {username: string, auth0_id: string}): Promise<response> => {
+export const create = async (
+    r: {username: string, auth0_id: string},
+): Promise<response> => {
   const myQuery = {
     text: `
       INSERT INTO users

@@ -13,8 +13,8 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
   try {
     console.log(req.query);
     const resp = await findAll(req.query);
-    let code = resp.status.success ? 200 : 404;
-    res.status(code).send(resp)
+    const code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -24,7 +24,7 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
 accountsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const resp = await findByUsername(req.query.username as string);
-    let code = resp.status.success ? 200 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -35,7 +35,7 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
 accountsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
-    let code = resp.status.success ? 200 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -46,7 +46,7 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
 accountsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const resp = await create(req.body);
-    let code = resp.status.success ? 200 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -57,7 +57,7 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
 accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
-    let code = resp.status.success ? 204 : 404;
+    const code = resp.status.success ? 204 : 404;
     res.sendStatus(code);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -68,7 +68,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
 accountsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req);
-    let code = resp.status.success ? 200 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);

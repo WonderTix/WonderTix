@@ -12,7 +12,7 @@ export const donationsRouter = Router();
 donationsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newDonation = await create(req.body);
-    let code = newDonation.status.success ? 200 : 404;
+    const code = newDonation.status.success ? 200 : 404;
     res.status(code).send(newDonation);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -26,7 +26,7 @@ donationsRouter.use(checkScopes);
 donationsRouter.get('/', async (req: Request, res: Response) => {
   try {
     const donations = await findAll();
-    let code = donations.status.success ? 200 : 404;
+    const code = donations.status.success ? 200 : 404;
     res.status(code).send(donations);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -37,7 +37,7 @@ donationsRouter.get('/', async (req: Request, res: Response) => {
 donationsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const donations = await findByName(req.query.name as string);
-    let code = donations.status.success ? 200 : 404;
+    const code = donations.status.success ? 200 : 404;
     res.status(code).send(donations);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -48,7 +48,7 @@ donationsRouter.get('/search', async (req: Request, res: Response) => {
 donationsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const donation = await find(req.params.id);
-    let code = donation.status.success ? 200 : 404;
+    const code = donation.status.success ? 200 : 404;
     res.status(code).send(donation);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -58,9 +58,9 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
 // DELETE /api/donations/:id
 donationsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const removed_donations = await remove(req.params.id);
-    let code = removed_donations.status.success ? 204 : 404;
-    res.status(code).send(removed_donations);
+    const removedDonations = await remove(req.params.id);
+    const code = removedDonations.status.success ? 204 : 404;
+    res.status(code).send(removedDonations);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -70,7 +70,7 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
 donationsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedDonation = await update(req);
-    let code = updatedDonation.status.success ? 200 : 404;
+    const code = updatedDonation.status.success ? 200 : 404;
     res.status(code).send(updatedDonation);
   } catch (err: any) {
     res.status(500).send(err.message);

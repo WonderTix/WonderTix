@@ -4,7 +4,7 @@ import {pool, response, buildResponse} from '../db';
 
 export const getActiveEvents = async (): Promise<response> => {
   const myQuery = {
-  text: `
+    text: `
                       SELECT events.id,
                       seasonid,
                       eventname title,
@@ -26,26 +26,26 @@ export const getActiveEvents = async (): Promise<response> => {
   };
 
   return buildResponse(myQuery, 'GET');
-}
+};
 
 export const getInstanceById = async (params: any): Promise<response> => {
-    const query = {
-      text: `SELECT
+  const query = {
+    text: `SELECT
                     *
                   FROM
                     event_instances
                   WHERE eventid = $1
                   AND salestatus=true;
                   `,
-      values: [params.id],
-    }
-    return await buildResponse(query, 'GET');
-}
+    values: [params.id],
+  };
+  return await buildResponse(query, 'GET');
+};
 
 export const getEventById = async (params: any): Promise<response> => {
-    const query = {
+  const query = {
 
-      text: `SELECT
+    text: `SELECT
                     events.id,
                     seasonid,
                     eventname title,
@@ -55,12 +55,15 @@ export const getEventById = async (params: any): Promise<response> => {
                   FROM events
                   WHERE id = $1;
                   `,
-      values: [params.id]
-    }
-    return await buildResponse(query, 'GET');
-}
+    values: [params.id],
+  };
+  return await buildResponse(query, 'GET');
+};
 
-export const updateInstances = async (body: any, params: any): Promise<response> => {
+export const updateInstances = async (
+    body: any,
+    params: any,
+): Promise<response> => {
   const instances: Showing[] = body;
 
   // get existing showings for this event
@@ -94,7 +97,7 @@ export const updateInstances = async (body: any, params: any): Promise<response>
         numRowsUpdated: rowsUpdated,
         numRowsDeleted: rowsDeleted,
         numRowsInserted: rowsInserted.length,
-      }
+      },
     ],
     status: {
       success: true,
@@ -102,7 +105,7 @@ export const updateInstances = async (body: any, params: any): Promise<response>
         `${rowsDeleted} rows deleted, ${rowsInserted.length} rows inserted`,
     },
   };
-}
+};
 
 export const getEventByName = async (params: any): Promise<response> => {
   const myQuery = {
@@ -110,69 +113,68 @@ export const getEventByName = async (params: any): Promise<response> => {
     values: [params.eventName],
   };
   return buildResponse(myQuery, 'GET');
-}
+};
 
 export const updateEvent = async (params: any): Promise<response> => {
-
   const myQuery = {
-      text: `UPDATE events
+    text: `UPDATE events
                   SET (seasonid, eventname, eventdescription, active, image_url)
                   = ($1, $2, $3, $4, $5)
                   WHERE id=$6
                   RETURNING *;`,
-      values: [
-        params.seasonid,
-        params.eventname,
-        params.eventdescription,
-        params.active,
-        params.image_url,
-        params.id
-      ]
-    }
-    return buildResponse(myQuery, 'UPDATE');
-}
+    values: [
+      params.seasonid,
+      params.eventname,
+      params.eventdescription,
+      params.active,
+      params.image_url,
+      params.id,
+    ],
+  };
+  return buildResponse(myQuery, 'UPDATE');
+};
 
 export const createShowing = async (params: any): Promise<response> => {
-    const newInstances = await insertAllShowings(params.instances);
-    // Link showtime to ticket type
-    const linkingdata = newInstances.map((s) => ({
-      id: s.id,
-      tickettype: s.tickettype,
-    }));
-    let count = 1;
-    const myQuery = {
-      text: `INSERT INTO linkedtickets (event_instance_id, ticket_type) VALUES `,
-      values: Array<any>(),
+  const newInstances = await insertAllShowings(params.instances);
+  // Link showtime to ticket type
+  const linkingdata = newInstances.map((s) => ({
+    id: s.id,
+    tickettype: s.tickettype,
+  }));
+  let count = 1;
+  const myQuery = {
+    text: `INSERT INTO linkedtickets (event_instance_id, ticket_type) VALUES `,
+    values: <number[]>([]),
+  };
+  for (const sh of linkingdata) {
+    if (myQuery.values.length !== 0) {
+      myQuery.text += ', ';
     }
-    for (const sh of linkingdata) {
-      if (myQuery.values.length !== 0) {
-        myQuery.text += ', '
-      }
-      myQuery.text += `($${count}, $${count+1})`;
-      count += 2;
-      const {id, tickettype} = sh;
-      myQuery.values = [...myQuery.values, id, tickettype];
-      console.log(myQuery.text);
-    }
-    return buildResponse(myQuery, 'POST');
-}
+    myQuery.text += `($${count}, $${count+1})`;
+    count += 2;
+    const {id, tickettype} = sh;
+    myQuery.values = [...myQuery.values, id, tickettype];
+    console.log(myQuery.text);
+  }
+  return buildResponse(myQuery, 'POST');
+};
 
 export const archivePlays = async (params: any): Promise<response> => {
-    const id = params.id;
-    const myQuery = {
-      text: 'UPDATE events SET active=false WHERE id=$1;',
-      values: [id],
-    }
-    const intermediate_response = await buildResponse(myQuery, 'UPDATE');
+  const id = params.id;
+  const myQuery = {
+    text: 'UPDATE events SET active=false WHERE id=$1;',
+    values: [id],
+  };
+  const intermediateResponse = await buildResponse(myQuery, 'UPDATE');
 
-    myQuery.text =
+  myQuery.text =
       'UPDATE event_instances SET salestatus=false WHERE eventid=$1;';
-    
-    const second_response = await buildResponse(myQuery, 'UPDATE');
-    second_response.data.concat(intermediate_response.data);
 
-    return second_response;
-}
+  const secondResponse = await buildResponse(myQuery, 'UPDATE');
+  secondResponse.data.concat(intermediateResponse.data);
+
+  return secondResponse;
+};
 
 export const createEvent = async (params: any): Promise<response> => {
   const myQuery = {
@@ -183,18 +185,18 @@ export const createEvent = async (params: any): Promise<response> => {
                   RETURNING *
                 `,
     values: [params.eventname, params.eventdescription, params.imageUrl],
-  }
+  };
   console.log(params);
   return buildResponse(myQuery, 'POST');
-}
+};
 
 export const checkIn = async (params: any): Promise<response> => {
-    const myQuery = {
-      text: `UPDATE tickets SET checkedin=$1 WHERE ticketno=$2`,
-      values: [params.isCheckedIn, params.ticketID],
-    }
-    return buildResponse(myQuery, 'UPDATE');
-}
+  const myQuery = {
+    text: `UPDATE tickets SET checkedin=$1 WHERE ticketno=$2`,
+    values: [params.isCheckedIn, params.ticketID],
+  };
+  return buildResponse(myQuery, 'UPDATE');
+};
 
 export const getActiveEventsAndInstances = async (): Promise<response> => {
   const myQuery = {
@@ -212,9 +214,9 @@ export const getActiveEventsAndInstances = async (): Promise<response> => {
                   JOIN events on ei.eventid = events.id 
                   WHERE events.active = true AND ei.salestatus = true
                 `,
-  }
+  };
   return buildResponse(myQuery, 'GET');
-}
+};
 
 const insertAllShowings = async (showings: Showing[]): Promise<Showing[]> => {
   const query = `

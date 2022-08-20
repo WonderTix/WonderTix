@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 import {Pool} from 'pg';
 
-dotenv.config({path: path.join(__dirname, '../../.env')});
-console.log(path.join(__dirname, '../../.env'));
+dotenv.config({path: path.join(__dirname, '../../../.env')});
+// console.log(path.join(__dirname, '../../.env'));
 
 const config = {
   user: process.env.DB_USER,
@@ -38,9 +38,10 @@ export type response = {
 
 export const buildResponse = async (
     query: any,
-    type: string): Promise<response> => {
+    type: string,
+): Promise<response> => {
   let resp: response = {
-    data: Array<any>(),
+    data: <any[]>([]),
     status: {
       success: false,
       message: '',
@@ -68,11 +69,10 @@ export const buildResponse = async (
       data: res.rows,
       status: {
         success: true,
-        message:
-            `${res.rowCount} ${res.rowCount === 1 ?
-              'row' :
-              'rows'
-            } ${verificationString}.`,
+        message: `${res.rowCount} ${res.rowCount === 1 ?
+          'row' :
+          'rows'
+        } ${verificationString}.`,
       },
     };
   } catch (error: any) {

@@ -1,17 +1,24 @@
 import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {updateNewsletter, getNewsletterCount, insertNewsletter} from './newletter.service';
+import {
+  updateNewsletter,
+  getNewsletterCount,
+  insertNewsletter,
+} from './newletter.service';
 
 export const newsletterRouter = Router();
 
 // News Letter Route
-newsletterRouter.get('/count', checkJwt, checkScopes, async (req: Request, res: Response) => {
+newsletterRouter.get('/count', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   try {
     const emails = await getNewsletterCount(req.query);
-    let code = emails.status.success ? 200 : 404;
+    const code = emails.status.success ? 200 : 404;
     res.status(code).send(emails);
   } catch (error: any) {
-    res.status(500).send(error.message)
+    res.status(500).send(error.message);
   }
 });
 
@@ -22,13 +29,13 @@ newsletterRouter.put('/', async (req: Request, res: Response) => {
     const code = newsLetterResp.status.success ? 200 : 404;
     res.status(code).send(newsLetterResp);
   } catch (error: any) {
-    res.status(500).send(error.message)
+    res.status(500).send(error.message);
   }
 });
 
 newsletterRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const insert = await insertNewsletter(req.body)
+    const insert = await insertNewsletter(req.body);
     const code = insert.status.success ? 200 : 404;
     res.status(code).send(insert);
   } catch (err: any) {

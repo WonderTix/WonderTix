@@ -2,9 +2,9 @@ import {Router, Response, Request} from 'express';
 import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
 import {pool} from '../db';
-import eventUtils, {
+import {
   checkIn,
-  getEventById, 
+  getEventById,
   getEventByName,
   getActiveEventsAndInstances,
   createEvent,
@@ -13,7 +13,7 @@ import eventUtils, {
   archivePlays,
   getActiveEvents,
   updateInstances,
-  getInstanceById
+  getInstanceById,
 } from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
@@ -32,17 +32,17 @@ const stripe = new Stripe(stripeKey, {
 eventRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const ids = await getEventByName(req.query);
-    let code = ids.status.success ? 200 : 404;
+    const code = ids.status.success ? 200 : 404;
     res.status(code).send(ids);
   } catch (error: any) {
-    res.status(500).send(error.message)
+    res.status(500).send(error.message);
   }
 });
 
 // Endpoint to get event by ID
 eventRouter.get('/:id', async (req: Request, res: Response) => {
   try {
-    const data = await getEventById(req.params)
+    const data = await getEventById(req.params);
     const code = data.status.success ? 200 : 404;
     res.status(code).send(data);
   } catch (error) {
@@ -66,7 +66,7 @@ eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
 eventRouter.get('/list/active', async (_req: Request, res: Response) => {
   try {
     const events = await getActiveEventsAndInstances();
-    let code = events.status.success ? 200 : 404;
+    const code = events.status.success ? 200 : 404;
     res.status(code).send(events);
   } catch (error: any) {
     res.status(500).send(error.message);
@@ -235,40 +235,49 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
 
 // PRIVATE ROUTE
 // TODO: Check that provided ticket ID is valid
-eventRouter.put('/checkin', checkJwt, checkScopes, async (req: Request, res: Response) => {
+eventRouter.put('/checkin', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
     const queryRes = await checkIn(req.body);
-    let code = queryRes.status.success ? 200 : 404;
+    const code = queryRes.status.success ? 200 : 404;
     res.status(code).send(queryRes);
   } catch (error: any) {
-    res.status(500).send(error.message)
+    res.status(500).send(error.message);
   }
 });
 
 // End point to create a new event
-eventRouter.post('/', checkJwt, checkScopes, async (req: Request, res: Response) => {
+eventRouter.post('/', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
     const newEvent = await createEvent(req.body);
-    let code = newEvent.status.success ? 200 : 404;
+    const code = newEvent.status.success ? 200 : 404;
     res.status(code).send(newEvent);
   } catch (error: any) {
-    res.status(500).send(error.message)
+    res.status(500).send(error.message);
   }
 });
 
 // PRIVATE
 // End point to create a new showing
 // req body: array of {eventid, eventdate, starttime, totalseats, tickettype}
-eventRouter.post('/instances', checkJwt, checkScopes, async (req: Request, res: Response) => {
+eventRouter.post('/instances', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
     const showings = await createShowing(req.body);
-    let code = showings.status.success ? 200 : 404;
+    const code = showings.status.success ? 200 : 404;
     res.status(code).send(showings);
   } catch (error: any) {
     res.status(500).send(error.message);
@@ -276,13 +285,16 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (req: Request, res: 
 });
 
 // PRIVATE ROUTE
-eventRouter.put('/', checkJwt, checkScopes, async (req: Request, res: Response) => {
+eventRouter.put('/', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
 
   try {
     const queryResult = await updateEvent(req.body);
-    let code = queryResult.status.success ? 200 : 404;
+    const code = queryResult.status.success ? 200 : 404;
     res.status(code).send(queryResult);
   } catch (error: any) {
     res.status(500).send(error.message);
@@ -290,7 +302,10 @@ eventRouter.put('/', checkJwt, checkScopes, async (req: Request, res: Response) 
 });
 
 // PRIVATE ROUTE
-eventRouter.put('/instances/:id', checkJwt, checkScopes, async (req: Request, res: Response) => {
+eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   try {
     const resp = await updateInstances(req.body, req.params);
     const code = resp.status.success ? 200 : 404;
@@ -303,13 +318,16 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (req: Request, re
 // PRIVATE ROUTE
 // Updates salestatus in showtimes table
 // and active flag in plays table when given a play id
-eventRouter.delete('/:id', checkJwt, checkScopes, async (req: Request, res: Response) => {
+eventRouter.delete('/:id', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
     // playid
     const plays = await archivePlays(req.params);
-    let code = plays.status.success ? 200 : 404;
+    const code = plays.status.success ? 200 : 404;
     res.status(code).send(plays);
   } catch (error: any) {
     res.status(500).send(error.message);
@@ -321,7 +339,7 @@ eventRouter.get('/', async (_req: Request, res: Response) => {
     // query to retrieve all active events, and the number of showings for each
     const data = await getActiveEvents();
     data.data.forEach((row) => row.id = row.id.toString());
-    let code = data.status.success ? 200 : 404;
+    const code = data.status.success ? 200 : 404;
     res.status(code).send(data);
   } catch (err: any) {
     res.status(500).send(err.message);

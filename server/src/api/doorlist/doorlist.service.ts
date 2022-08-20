@@ -33,7 +33,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
                       ORDER BY name
                       `,
     values: [params.eventinstanceid],
-  }
+  };
 
   return buildResponse(myQuery, 'GET');
-}
+};

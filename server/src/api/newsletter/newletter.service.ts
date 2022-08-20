@@ -4,9 +4,9 @@ export const getNewsletterCount = async (params: any): Promise<response> => {
   const myQuery = {
     text: 'SELECT COUNT(*) FROM customers WHERE email = $1',
     values: [params.email],
-  }
+  };
   return buildResponse(myQuery, 'GET');
-}
+};
 
 export const updateNewsletter = async (params: any): Promise<response> => {
   const myQuery = {
@@ -14,9 +14,9 @@ export const updateNewsletter = async (params: any): Promise<response> => {
                   SET newsletter=$1, "volunteer list"=$2
                   WHERE email = $3;`,
     values: [params.news_opt, params.volunteer_opt, params.email],
-  }
+  };
   return buildResponse(myQuery, 'UPDATE');
-}
+};
 
 export const insertNewsletter = async (params: any): Promise<response> => {
   const myQuery = {
@@ -44,4 +44,4 @@ export const insertNewsletter = async (params: any): Promise<response> => {
     ],
   };
   return buildResponse(myQuery, 'POST');
-}
+};

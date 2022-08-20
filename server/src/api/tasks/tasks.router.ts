@@ -15,7 +15,7 @@ tasksRouter.use(checkScopes);
 tasksRouter.get('/', async (_req: Request, res: Response) => {
   try {
     const tasks = await findAll();
-    let code = tasks.status.success ? 200 : 404;
+    const code = tasks.status.success ? 200 : 404;
     res.status(code).send(tasks);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -26,7 +26,7 @@ tasksRouter.get('/', async (_req: Request, res: Response) => {
 tasksRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const task = await find(req.params.id);
-    let code = task.status.success ? 200 : 404;
+    const code = task.status.success ? 200 : 404;
     res.status(code).send(task);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -37,7 +37,7 @@ tasksRouter.get('/:id', async (req: Request, res: Response) => {
 tasksRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newTask = await create(req.body);
-    let code = newTask.status.success ? 200 : 404;
+    const code = newTask.status.success ? 200 : 404;
     res.status(code).send(newTask);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -48,7 +48,7 @@ tasksRouter.post('/', async (req: Request, res: Response) => {
 tasksRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removeStatus = await remove(req.params.id);
-    let code = removeStatus.status.success ? 204 : 404;
+    const code = removeStatus.status.success ? 204 : 404;
     res.sendStatus(code);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -59,7 +59,7 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
 tasksRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedTask = await update(req);
-    let code = updatedTask.status.success ? 200 : 404;
+    const code = updatedTask.status.success ? 200 : 404;
     res.status(code).send(updatedTask);
   } catch (err: any) {
     res.status(500).send(err.message);
