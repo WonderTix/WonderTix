@@ -20,7 +20,8 @@ const event = {
   title: 'test',
   description: 'test',
   imageUrl: 'https://test.com/image.jpg',
-  id: 0,
+  image_url: 'https://test.com/image.jpg',
+  id: '0',
   instances: [],
 };
 
@@ -50,7 +51,7 @@ beforeEach(() => {
   ReactDOM.render(
       <BrowserRouter>
         <Routes>
-          <Route path="*" element= {<ListComponent {...event}/>}/>
+          <Route path="*" element= {<ListComponent key={0} {...event}/>}/>
         </Routes>
       </BrowserRouter>, list);
 });
