@@ -132,6 +132,7 @@ describe('ticketing slice', () => {
       const eventid = '1';
       expect(selectEventData(ROOT_INIT_STATE, eventid))
           .toEqual({
+            id: '1',
             title: 'Event 1',
             description: 'lorem ipsum donor',
             image_url: 'https://image',
