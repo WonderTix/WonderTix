@@ -46,10 +46,10 @@ const ShowListController = ({showsData, addShowData, updateShows}: ShowListContr
     updateShows(newList);
   };
 
+
   return (
     <>
       {shows.map((element, index) => {
-      // eslint-disable-next-line react/jsx-key
         return (<ShowingInputContainer
           initialData={element}
           id={element.id} key={index}

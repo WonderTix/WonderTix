@@ -20,8 +20,10 @@ export const getActiveEvents = async (): Promise<response> => {
                       events.eventname,
                       events.eventdescription,
                       events.active,
-                      events.image_url
-                      HAVING active = true;
+                      events.image_url,
+                      event_instances.salestatus
+                      HAVING active = true AND event_instances.salestatus = true
+                      ORDER BY id;
                       `,
   };
 
@@ -35,7 +37,8 @@ export const getInstanceById = async (params: any): Promise<response> => {
                   FROM
                     event_instances
                   WHERE eventid = $1
-                  AND salestatus=true;
+                  AND salestatus=true
+                  ORDER BY id;
                   `,
     values: [params.id],
   };
@@ -184,7 +187,7 @@ export const createEvent = async (params: any): Promise<response> => {
                   VALUES (0, $1, $2, true, $3)
                   RETURNING *
                 `,
-    values: [params.eventname, params.eventdescription, params.imageUrl],
+    values: [params.eventName, params.eventDesc, params.imageUrl],
   };
   console.log(params);
   return buildResponse(myQuery, 'POST');
@@ -213,6 +216,7 @@ export const getActiveEventsAndInstances = async (): Promise<response> => {
                   FROM event_instances as ei 
                   JOIN events on ei.eventid = events.id 
                   WHERE events.active = true AND ei.salestatus = true
+                  ORDER BY ei.id
                 `,
   };
   return buildResponse(myQuery, 'GET');
@@ -300,7 +304,7 @@ const eventFields = ['eventname', 'eventdescription', 'image_url'];
 
 const getShowingsById = async (id: string): Promise<Showing[]> => {
   const query = `SELECT * FROM event_instances WHERE eventid = $1
-    AND salestatus=true;`;
+    AND salestatus=true ORDER BY event_instances.id;`;
   const queryResult = await pool.query(query, [id]);
   return queryResult.rows;
 };

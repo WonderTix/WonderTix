@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 /* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {titleCase} from '../../../../../utils/arrays';

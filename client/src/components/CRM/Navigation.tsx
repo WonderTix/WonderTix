@@ -7,11 +7,7 @@ import AuthNav from '../Authentication/auth-nav';
 
 import {useNavigate} from 'react-router-dom';
 
-const Navigation = ({
-  icon,
-}: {
-  icon: any,
-}) => {
+const Navigation = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const [profile, setProfile] = useState(false);

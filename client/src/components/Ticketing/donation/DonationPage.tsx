@@ -1,5 +1,3 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -12,9 +10,14 @@
 **/
 import {selectDonation, setDonation} from '../ticketingmanager/donationSlice';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect, ReactElement} from 'react';
 
-export default function DonationPage({onNext}: {onNext: () => any}) {
+/**
+ * Renders the donation page
+ * @param {function} onNext onNext callback function
+ * @return {ReactElement}
+ */
+export default function DonationPage({onNext}: {onNext: () => any}): ReactElement {
   const dispatch = useAppDispatch();
   const donation = useAppSelector(selectDonation);
   const [amount, setAmount] = useState(0);

@@ -1,8 +1,3 @@
-/* eslint-disable spaced-comment */
-/* eslint-disable camelcase */
-/* eslint-disable no-unused-vars */
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -16,8 +11,7 @@
 // import DataGrid from 'react-data-grid';
 import {DataGrid, GridCellParams} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
-import {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
 // import RequireLogin from './RequireLogin';
 import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
@@ -63,10 +57,8 @@ const columns = [
 ];
 
 
-type DoorListProps = {eventinstanceid: string}
 const DoorList = () => {
   const {getAccessTokenSilently} = useAuth0();
-  const {eventinstanceid} = useParams<DoorListProps>();
   const [doorList, setDoorList] = useState([]);
   const [eventName, setEventName] = useState('');
   const [date, setDate] = useState('');

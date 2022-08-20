@@ -1,5 +1,4 @@
 /* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -14,7 +13,7 @@ import YourOrder from '../cart/YourOrder';
 import {selectCartContents} from '../ticketingmanager/ticketing/ticketingSlice';
 import {useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
-import {useState} from 'react';
+import {ReactElement, useState} from 'react';
 import DonationPage from '../donation/DonationPage';
 import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
@@ -24,8 +23,11 @@ import {useNavigate} from 'react-router-dom';
 // Replace this with your stripe public key
 const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
 
-
-export default function CheckoutPage() {
+/**
+ * Displays Checkout Page
+ * @return {ReactElement}
+ */
+export default function CheckoutPage(): ReactElement {
   const navigate = useNavigate();
 
   const cartItems = useAppSelector(selectCartContents);

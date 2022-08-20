@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 import React, {useEffect} from 'react';
 import {ListComponent} from './eventcard';

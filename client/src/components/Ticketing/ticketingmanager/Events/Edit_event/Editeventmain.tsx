@@ -24,19 +24,19 @@ const Editeventmain = () => {
         .then((response) => {
           return response.json();
         }).then((data)=>{
-          eventData.eventName = data.title;
-          eventData.eventDesc = data.description;
-          eventData.isPublished = data.active;
-          eventData.imageUrl =data.image_url;
-          eventData.eventID = data.id;
-          eventData.seasonID= data.seasonid;
+          eventData.eventName = data.data[0].title;
+          eventData.eventDesc = data.data[0].description;
+          eventData.isPublished = data.data[0].active;
+          eventData.imageUrl =data.data[0].image_url;
+          eventData.eventID = data.data[0].id;
+          eventData.seasonID= data.data[0].seasonid;
         });
     await fetch(process.env.REACT_APP_ROOT_URL +
           `/api/events/instances/${params.eventid}`)
         .then((response) => {
           return response.json();
         }).then((data)=>{
-          eventData.showings = data;
+          eventData.showings = data.data;
         });
     setEventData(eventData);
     if (eventData.showings !== undefined) {

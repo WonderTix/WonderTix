@@ -5,7 +5,7 @@ import Navigation from '../../Navigation';
 const ManageAccountsmain = () => {
   return (
     <div className='flex flex-row'>
-      <Navigation icon={undefined}/>
+      <Navigation/>
       <ManageAccounts/>
     </div>
   );

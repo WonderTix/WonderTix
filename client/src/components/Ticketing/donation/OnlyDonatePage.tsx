@@ -1,5 +1,3 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -12,13 +10,16 @@
 **/
 import {useAppSelector} from '../app/hooks';
 import {selectDonation} from '../ticketingmanager/donationSlice';
-import {useState} from 'react';
+import React, {ReactElement, useState} from 'react';
 import CompleteOrderForm, {CheckoutFormInfo} from '../checkout/CompleteOrderForm';
 import {useNavigate} from 'react-router';
 import {loadStripe} from '@stripe/stripe-js';
 
-
-export default function OnlyDonationPage() {
+/**
+ * Renders the Donations page without checkout
+ * @return {ReactElement}
+ */
+export default function OnlyDonationPage(): ReactElement {
   const donation = useAppSelector(selectDonation);
   const [amount, setAmount] = useState(donation);
   const history = useNavigate();

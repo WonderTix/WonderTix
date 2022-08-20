@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -11,7 +8,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import EventForm, {NewEventData} from '../EventForm';
 import {useParams} from 'react-router-dom';
 import {useAppDispatch} from '../../../app/hooks';
@@ -22,7 +19,6 @@ import {useNavigate} from 'react-router-dom';
 interface mapDataToEditEventProps {
   initValues: NewEventData;
 }
-
 
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   const params = useParams();
@@ -62,7 +58,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       body: JSON.stringify(dataToSave),
     });
 
-    const res2 = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/instances/${params.eventid}`, {
+    await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/instances/${params.eventid}`, {
       credentials: 'include',
       method: 'PUT',
       headers: {

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 // Bug description: Unable to display column headers with full user information,
 // When moving the scroll bar to the right, everything goes back to normal.
@@ -13,13 +12,12 @@ import {
   contactHeaders,
   donationHeaders,
 } from '../../../utils/arrays';
-import Panel from '../../../utils/Panel';
 import AccountsPanel from './AccountsPanel';
 import ContactsPanel from './ContactsPanel';
 import DonationsPanel from './DonationsPanel';
 import SavedPanel from './SavedPanel';
 import SavedDialog from './SavedDialog';
-import {Fragment, useState} from 'react';
+import {useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 
 
@@ -44,9 +42,6 @@ const ReportingTest = (): React.ReactElement => {
     setShowhide(getuser);
     setValue((parseInt(getuser)-1).toString());
     console.log(value);
-  };
-  const handleChange = (event: any) => {
-    setValue(event.target.value);
   };
 
   const fetchData = async (query: any) => {

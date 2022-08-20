@@ -10,8 +10,8 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-import {DataGrid, GridColumns, GridCellParams, GridCellEditCommitParams, MuiEvent} from '@mui/x-data-grid';
-import {SyntheticEvent, useEffect, useState} from 'react';
+import {DataGrid, GridColumns, GridCellParams, GridCellEditCommitParams} from '@mui/x-data-grid';
+import {useEffect, useState} from 'react';
 import {useAppDispatch} from '../../../Ticketing/app/hooks';
 import {openSnackbar} from '../../../Ticketing/ticketingmanager/snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
@@ -145,7 +145,7 @@ export default function ManageAccounts() {
     width: 130,
   }];
 
-  const editCommit = (params: GridCellEditCommitParams, event: MuiEvent<SyntheticEvent<Element, Event>>) =>
+  const editCommit = (params: GridCellEditCommitParams) =>
     editUser(+params.id.toString(), {[params.field]: params.value});
 
   return (

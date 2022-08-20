@@ -1,18 +1,7 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import React, {useEffect} from 'react';
-import {FieldArray} from 'react-final-form-arrays';
 import {useState} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
-
-// import {useDisaptch} from 'react-redux';
-interface TicketType {
-    id: number,
-    name: string,
-    price: number,
-    concessions: number,
-}
-
 
 export interface MapPropsToShowingInputContainer {
   initialData?: Showing;
@@ -26,7 +15,7 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
   const [eventdate, setEventdate] = useState(initialData.eventdate !== undefined? initialData.eventdate: '');
   const [ticketTypeId, setTicketTypeId] = useState('');
   const [totalseats, setTotalseats] = useState(initialData.totalseats !== undefined? initialData.totalseats: 0);
-  const [availableseates, setAvailableSeates] = useState(initialData.availableseats !== undefined? initialData.availableseats: 0);
+  const availableseates = initialData.availableseats !== undefined? initialData.availableseats: 0;
   const [ticketTypes, setTicketTypes] = useState([]);
   const dateFieldValue = eventdate.split('T');
   const fetchTicketTypes = async () => {

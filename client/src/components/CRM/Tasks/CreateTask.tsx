@@ -6,7 +6,7 @@ import TaskForm from './TaskForm';
 const CreateTask=() =>{
   return (
     <div className='flex flex-row  '>
-      <Navigation icon={undefined}/>
+      <Navigation/>
       <div className='w-full h-screen overflow-x-hidden absolute'>
         <div className=' md:ml-[18rem] md:mt-40 md:mr-40
             sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>

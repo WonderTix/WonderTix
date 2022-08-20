@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-key */
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -22,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import {useReducer} from 'react';
+import React, {useReducer} from 'react';
 
 interface TicketPickerState {
     selectedDate?: Date,
@@ -153,7 +150,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
               onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}>
               <option value='' disabled>select date</option>
               {tickets.map((t) =>
-                <option value={(t.date).toString()}>
+                <option key={t.eventid} value={(t.date).toString()}>
                   {format(new Date(t.date), 'eee, MMM dd yyyy')}
                 </option>)}
             </select>
@@ -190,7 +187,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
           disabled={!selectedTicket}
           checked={concessions}
           className='bg-zinc-700/50 disabled:opacity-30 disabled:cursor-not-allowed '
-          onChange={(e) => dispatch({type: 'toggle_concession'})} name='concessions' />
+          onChange={() => dispatch({type: 'toggle_concession'})} name='concessions' />
         <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
       </div>
       <div>

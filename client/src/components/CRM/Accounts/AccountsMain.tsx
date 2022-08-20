@@ -5,7 +5,7 @@ import AccountsDash from './AccountsDash';
 const AccountsMain = () => {
   return (
     <div className='flex flex-row'>
-      <Navigation icon={undefined}/>
+      <Navigation/>
       <AccountsDash/>
     </div>
   );

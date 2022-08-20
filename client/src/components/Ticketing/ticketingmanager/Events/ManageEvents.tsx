@@ -1,5 +1,3 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -11,15 +9,19 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
 
-import {useEffect, useState} from 'react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import {useNavigate} from 'react-router';
 import {useAppDispatch} from '../../app/hooks';
 
 import {fetchTicketingData} from '../ticketing/ticketingSlice';
 import {DataGrid} from '@mui/x-data-grid';
 import {useAuth0} from '@auth0/auth0-react';
-// eslint-disable-next-line react/prop-types
-export default function ManageEventsPage({data}) {
+/**
+ * Renders the ManageEvents page
+ * @param {any} data
+ * @return {ReactElement}
+ */
+export default function ManageEventsPage({data}: any): ReactElement {
   const history = useNavigate();
   const dispatch = useAppDispatch();
   const [eventToDelete, setEventToDelete] = useState<string|null>();

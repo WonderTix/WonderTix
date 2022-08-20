@@ -1,6 +1,4 @@
-/* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-/* eslint-disable camelcase */
 /*
 export const anchors = [
   { title: "Accounts", link: "/accounts" },
@@ -144,7 +142,13 @@ export const titleCase = (s: string) => s.split(' ').map((w) => capitalize(w)).j
 
 type time = {hours: number, minutes: number, ampm?: 'AM'|'PM'}
 
-export function isSameDay(a: Date, b: Date) {
+/**
+ * Checks if days are equal
+ * @param {Date} a date1 to compare
+ * @param {Date} b date2 to compare
+ * @return {boolean}
+ */
+export function isSameDay(a: Date, b: Date): Boolean {
   const sameDay = a.getDate() == b.getDate();
   const sameMonth = a.getMonth() == b.getMonth();
   const sameYear = a.getFullYear() == b.getFullYear();
@@ -152,10 +156,10 @@ export function isSameDay(a: Date, b: Date) {
 }
 
 const serializeTime = (datestr: string): time => {
-  const hours_minutes = datestr.split(':');
+  const hoursMinutes = datestr.split(':');
   return {
-    hours: parseInt(hours_minutes[0]),
-    minutes: parseInt(hours_minutes[1]),
+    hours: parseInt(hoursMinutes[0]),
+    minutes: parseInt(hoursMinutes[1]),
   };
 };
 
@@ -179,8 +183,8 @@ const formatTime = (time: time, template='hh:mm tt') =>
       .replace('tt', time.ampm!);
 
 // Input=19:00:00 => Output=7:00 PM
-export const militaryToCivilian = (mil_t: string) =>
-  formatTime(toCivilianHours(appendAMPM(serializeTime(mil_t))));
+export const militaryToCivilian = (milT: string) =>
+  formatTime(toCivilianHours(appendAMPM(serializeTime(milT))));
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

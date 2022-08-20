@@ -17,7 +17,7 @@ export const findAll = async (params: any): Promise<response> => {
     ],
   };
 
-  if (Object.keys(params).length > 0) {
+  /*if (Object.keys(params).length > 0) {
     let count = 0;
     myQuery.text += ' WHERE';
     for (const val of Object.keys(params)) {
@@ -33,7 +33,7 @@ export const findAll = async (params: any): Promise<response> => {
         myQuery.values.push(params[val]);
       }
     }
-  }
+  }*/
 
   return await buildResponse(myQuery, 'GET');
 };

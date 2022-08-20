@@ -7,7 +7,7 @@ const Dashmain=() =>{
   return (
     <div className='flex flex-row  '>
       <Dashboard/>
-      <Navigation icon={undefined}/>
+      <Navigation/>
     </div>
   );
 };

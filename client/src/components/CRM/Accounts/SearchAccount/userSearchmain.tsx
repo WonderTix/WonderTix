@@ -5,7 +5,7 @@ const userSearchmain = () => {
   return (
     <div className='flex flex-row  '>
       <Accounts/>
-      <Navigation icon={undefined}/>
+      <Navigation/>
     </div>
   );
 };

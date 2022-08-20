@@ -7,7 +7,7 @@ const TasksMain=() =>{
   return (
     <div className='flex flex-row  '>
       <Tasks/>
-      <Navigation icon={undefined}/>
+      <Navigation/>
     </div>
   );
 };

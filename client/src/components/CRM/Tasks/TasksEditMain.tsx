@@ -7,7 +7,7 @@ import EditTask from './EditTask';
 const TasksEditMain=() =>{
   return (
     <div className='flex flex-row  '>
-      <Navigation icon={undefined}/>
+      <Navigation/>
       <EditTask/>
     </div>
   );

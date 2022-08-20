@@ -1,9 +1,4 @@
-/* eslint-disable camelcase */
-/* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-/* eslint-disable require-jsdoc */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable react/no-unescaped-entities */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
@@ -17,7 +12,7 @@ import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 // import {FieldArray} from 'react-final-form-arrays';
 import {ValidationErrors} from 'final-form';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
 import {Showing} from '../../../../interfaces/showing.interface';
@@ -39,7 +34,11 @@ export interface NewEventData {
     showings: Showing []
 }
 
-
+/**
+ * Validates form data
+ * @param {any} formData Data retrieved from form
+ * @return {ValidationErrors}
+ */
 function validate(formData: any): ValidationErrors {
   return (formData.showings?.length > 0) ? undefined : {error: 'Need one or more showings added'};
 }
@@ -59,6 +58,7 @@ interface EventFormProps {
     initialValues?: Partial<NewEventData>,
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const def = (initialValues !== undefined) ? {
     eventName: initialValues.eventName,
@@ -77,7 +77,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const [eventName, setEventName] = useState(def.eventName);
   const [eventDesc, setEventDesc] = useState(def.eventDesc);
   const [imageUrl, setImageURL] = useState(def.imageUrl);
-  const [isPublished, setIsPublished] = useState(def.isPublished);
+  const isPublished = def.isPublished;
   const [showings, setShowings] = useState(def.showings);
 
   // FIELDS CALLBACK
@@ -122,6 +122,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
     onSubmit(data);
   };
 
+  console.log(def);
 
   return (
     <Form
@@ -131,9 +132,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       validate={validate}
       render={({
         handleSubmit,
-        form: {mutators: {push, pop}},
-        pristine,
-        submitting,
       }) => (
         <form onSubmit={handleSubmit}>
           <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
@@ -166,7 +164,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             </div>
             <div className='mb-3 text-sm text-zinc-600'>
                 You can configure occurances of this event below.
-                To add more, click the "Add Showing" button.
+                To add more, click the &quot;Add Showing&quot; button.
             </div>
             <div>
               {/*  Button to trigger add of new show*/}

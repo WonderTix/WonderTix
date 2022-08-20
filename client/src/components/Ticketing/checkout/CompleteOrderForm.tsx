@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
@@ -13,7 +10,7 @@
 **/
 // import {input type='text', Checkboxes} from 'mui-rff';
 import {Form} from 'react-final-form';
-import {useState} from 'react';
+import React, {ReactElement, useState} from 'react';
 
 export interface CheckoutFormInfo {
     optIn: boolean,
@@ -47,7 +44,16 @@ function validateEmail(email: string) {
   return valid ? undefined : 'Invalid e-mail';
 }
 */
-export default function CompleteOrderForm({onSubmit, onBack, disabled, donationForm}: CompleteOrderFormProps) {
+/**
+ * Displays the complete order form
+ * @param {function} onSubmit onSubmit callback function
+ * @param {function} onBack onBack callback function
+ * @return {ReactElement}
+ */
+export default function CompleteOrderForm(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    {onSubmit, onBack, disabled, donationForm}: CompleteOrderFormProps,
+): ReactElement {
   const [firstName, setfirstName] = useState('');
   const [lastName, setlastName] = useState('');
   const [streetAddress, setstreetAddress] = useState('');
@@ -83,6 +89,7 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
         <Form
           onSubmit={handleSubmit}
           initialValues={{'opt-in': false, 'seating-accommodation': false}}
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           render={({handleSubmit, values, valid}) => (
             <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-9 rounded-xl flex flex-col  justify-between'>
               <div className='flex flex-col w-full  '>
@@ -163,13 +170,13 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
                 </div>
                 <div className='flex flex-col items-start gap-3 mt-10'>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
-                    <input type='checkbox' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                    <input type='checkbox' onChange={(): void =>
                       setOptIn(!optIn)} name="opt-in" />
                     <div>I would like to receive email info from portland playhouse</div>
                   </div>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     {!donationForm && <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
-                      <input type='checkbox' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      <input type='checkbox' onChange={(): void =>
                         setseatingAcc(!seatingAcc)} name="seating-accommodation"/>
                       <div>I need seating accommodations</div>
                     </div>
@@ -190,7 +197,5 @@ export default function CompleteOrderForm({onSubmit, onBack, disabled, donationF
         />
       </div>
     </div>
-
-
   </>);
 }
