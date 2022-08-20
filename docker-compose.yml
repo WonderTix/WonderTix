@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: ./server
+    ports:
+      - "8000:8000"
+    environment:
+      DB_DATABASE: ${PG_DB}
+      DB_HOST: '172.17.0.1'
+      DB_PASSWORD: ${PG_PASS}
+      DB_USER: ${PG_USER}
+      DB_PORT: 5432
+      PRIVATE_STRIPE_KEY: ${PRIVATE_STRIPE_KEY}
+      FRONTEND_URL: ${FRONTEND_URL}
+    volumes:
+      - ./server:/wondertix
+      - /wondertix/node_modules
+    command: npm run dev
+  client:
+    build:
+      context: ./client
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_ROOT_URL: ${ROOT_URL}
+      REACT_APP_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
+    volumes:
+      - ./client:/wondertix
+      - /wondertix/node_modules
+    command: npm run start
+  database:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+    volumes:
+      - ./task_sql/create_task_table.sql:/docker-entrypoint-initdb.d/02-create_task_table.sql
+      - ./task_sql/wtix_dump_030422.sql:/docker-entrypoint-initdb.d/01-wtix_dump.sql
