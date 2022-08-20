@@ -14,11 +14,7 @@
 **/
 import {useEffect, useState} from 'react';
 import {useAppDispatch} from '../../../app/hooks';
-import {fetchTicketingData} from '../../ticketing/ticketingSlice';
-import {fetchEventInstanceData} from '../events_pages/eventsSlice';
-import {openSnackbar} from '../../snackbarSlice';
 import EventForm, {NewEventData} from '../EventForm';
-import {format} from 'date-fns';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../../Pop-up';
