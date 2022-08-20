@@ -7,6 +7,7 @@ import {Event} from '../ticketingmanager/ticketing/ticketingSlice';
 
 const ListComponent = (props: Event) => {
   const navigate = useNavigate();
+  console.log('Props:', props);
 
   return (
     <div className='flex justify-center '>

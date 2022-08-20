@@ -26,6 +26,7 @@ const store = configureStore(
         // user: userSlice,
         donation: donationSlice,
       },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
     },
 );
 // Infer the `RootState` and `AppDispatch` types from the store itself

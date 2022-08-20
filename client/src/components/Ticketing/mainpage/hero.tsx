@@ -8,17 +8,16 @@ import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 
 
 const Hero = () => {
-  const allEvents = useAppSelector((state) => state.ticketing.events);
+  const allEvents = useAppSelector((state) => {
+    console.log('State:', state.ticketing);
+    return state.ticketing.events;
+  });
   const dispatch = useAppDispatch();
 
-  const getData = async () => {
-    return dispatch(fetchTicketingData());
-  };
-
-
   useEffect(()=>{
-    getData();
+    dispatch(fetchTicketingData());
   }, []);
+
   return (
     <div className = 'home w-full h-screen ' >
       <div className=' w-full h-screen bg-zinc-100
