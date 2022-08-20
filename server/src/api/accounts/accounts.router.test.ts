@@ -18,7 +18,7 @@ describe('test accounts routes', function() {
     it('/ get pass', async () => {
       // @ts-ignore
       accountsService.findAll.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -40,7 +40,7 @@ describe('test accounts routes', function() {
     it('/search get pass', async () => {
       // @ts-ignore
       accountsService.findByUsername.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/search')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -63,7 +63,7 @@ describe('test accounts routes', function() {
     it('/:id get pass', async () => {
       // @ts-ignore
       accountsService.find.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -85,7 +85,7 @@ describe('test accounts routes', function() {
     it('/ post pass', async () => {
       // @ts-ignore
       accountsService.create.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).post('/')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -107,7 +107,7 @@ describe('test accounts routes', function() {
     it('/:id delete pass', async () => {
       // @ts-ignore
       accountsService.remove.mockImplementationOnce(() => {
-        return null;
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).delete('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -130,7 +130,7 @@ describe('test accounts routes', function() {
     it('/:id put pass', async () => {
       // @ts-ignore
       accountsService.update.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).put('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();

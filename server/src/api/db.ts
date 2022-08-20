@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 import {Pool} from 'pg';
 
-dotenv.config({path: path.join(__dirname, '../../../.env')});
-// console.log(path.join(__dirname, '../../.env'));
+dotenv.config({path: path.join(__dirname, '../../.env')});
+console.log(path.join(__dirname, '../../.env'));
 
 const config = {
   user: process.env.DB_USER,
@@ -34,43 +34,49 @@ export type response = {
     success: boolean,
     message: string,
   }
-}
+};
 
-export const buildResponse = async (query: any, type: string): Promise<response> => {
+export const buildResponse = async (
+    query: any,
+    type: string): Promise<response> => {
   let resp: response = {
     data: Array<any>(),
     status: {
       success: false,
-      message: "",
-    }
+      message: '',
+    },
   };
   try {
-    const res = await pool.query(query)
+    const res = await pool.query(query);
     console.log(res);
-    let verification_string;
-    switch(type) {
+    let verificationString;
+    switch (type) {
       case 'UPDATE':
-        verification_string = 'updated';
+        verificationString = 'updated';
         break;
       case 'GET':
-        verification_string = 'returned';
+        verificationString = 'returned';
         break;
       case 'DELETE':
-        verification_string = 'deleted';
+        verificationString = 'deleted';
         break;
       case 'POST':
-        verification_string = 'inserted';
+        verificationString = 'inserted';
         break;
     }
     resp = {
       data: res.rows,
       status: {
         success: true,
-        message: `${res.rowCount} ${res.rowCount === 1 ? 'row' : 'rows'} ${verification_string}.`,
-      }
-    }
+        message:
+            `${res.rowCount} ${res.rowCount === 1 ?
+              'row' :
+              'rows'
+            } ${verificationString}.`,
+      },
+    };
   } catch (error: any) {
     resp.status.message = error.message;
   }
   return resp;
-}
+};

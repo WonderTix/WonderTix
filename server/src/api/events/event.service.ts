@@ -28,7 +28,7 @@ export const getActiveEvents = async (): Promise<response> => {
   return buildResponse(myQuery, 'GET');
 }
 
-export const getInstanceById = async (params: any): Promise<response => {
+export const getInstanceById = async (params: any): Promise<response> => {
     const query = {
       text: `SELECT
                     *

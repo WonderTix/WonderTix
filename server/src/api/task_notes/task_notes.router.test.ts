@@ -18,7 +18,7 @@ describe('test task_notes routes', function() {
     it('/ get pass', async () => {
       // @ts-ignore
       taskNotesService.findAll.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -41,7 +41,7 @@ describe('test task_notes routes', function() {
     it('/:id get pass', async () => {
       // @ts-ignore
       taskNotesService.find.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -64,7 +64,7 @@ describe('test task_notes routes', function() {
     it('/ post pass', async () => {
       // @ts-ignore
       taskNotesService.create.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).post('/')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -87,7 +87,7 @@ describe('test task_notes routes', function() {
     it('/:id delete pass', async () => {
       // @ts-ignore
       taskNotesService.remove.mockImplementationOnce(() => {
-        return null;
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).delete('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -110,7 +110,7 @@ describe('test task_notes routes', function() {
     it('/:id put pass', async () => {
       // @ts-ignore
       taskNotesService.update.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).put('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();

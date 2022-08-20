@@ -13,12 +13,12 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('test contacts routes', function() {
+describe('test donations routes', function() {
   describe('/', () => {
     it('/ get pass', async () => {
       // @ts-ignore
       donationsService.findAll.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -41,7 +41,7 @@ describe('test contacts routes', function() {
     it('/search get pass', async () => {
       // @ts-ignore
       donationsService.findByName.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/search')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -64,7 +64,7 @@ describe('test contacts routes', function() {
     it('/:id get pass', async () => {
       // @ts-ignore
       donationsService.find.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -87,7 +87,7 @@ describe('test contacts routes', function() {
     it('/ post pass', async () => {
       // @ts-ignore
       donationsService.create.mockImplementationOnce(() => {
-        return {rows: []};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).post('/')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -110,7 +110,7 @@ describe('test contacts routes', function() {
     it('/:id delete pass', async () => {
       // @ts-ignore
       donationsService.remove.mockImplementationOnce(() => {
-        return null;
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).delete('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -133,7 +133,7 @@ describe('test contacts routes', function() {
     it('/:id put pass', async () => {
       // @ts-ignore
       donationsService.update.mockImplementationOnce(() => {
-        return {rowCount: [1]};
+        return {data: [], status: {success: true, message: ''}};
       });
       const res = await request(app).put('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();

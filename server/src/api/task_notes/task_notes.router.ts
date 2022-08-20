@@ -13,6 +13,7 @@ taskNotesRouter.use(checkScopes);
 taskNotesRouter.get('/', async (_req: Request, res: Response) => {
   try {
     const taskNotes = await findAll();
+    console.log(taskNotes);
     const code = taskNotes.status.success ? 200 : 404;
     res.status(code).send(taskNotes);
   } catch (err: any) {

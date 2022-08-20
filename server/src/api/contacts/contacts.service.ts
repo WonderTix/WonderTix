@@ -15,10 +15,13 @@ export const findAll = async (params: any): Promise<response> => {
             AND ($5::boolean IS NULL OR vip = $5)
             AND ($6::boolean IS NULL OR "volunteer list" = $6)`,
     values: [
-      params.custname !== undefined ? '%' + params.custname + '%' : params.custname,
-      params.email !== undefined ? '%' + params.email + '%' : params.email,
+      params.custname !== undefined ?
+        '%' + params.custname + '%' : params.custname,
+      params.email !== undefined ?
+        '%' + params.email + '%' : params.email,
       params.phone !== undefined ? '%' + params.phone + '%' : params.phone,
-      params.address !== undefined ? '%' + params.address + '%' : params.address,
+      params.address !== undefined ?
+        '%' + params.address + '%' : params.address,
       params.vip,
       params.volunteer_list,
     ],

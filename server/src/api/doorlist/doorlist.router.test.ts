@@ -13,27 +13,27 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('test contacts routes', function() {
+describe('test doorlist routes', function() {
   describe('/', () => {
     it('/ get pass', async () => {
-      // // @ts-ignore
-      // doorlistService.findAll.mockImplementationOnce(() => {
-      //   return { rows: [] };
-      // });
-      // const res = await request(app).get('/')
-      //     .set('Authorization', `Bearer ${getToken()}`)();
-      // expect(res.statusCode).toBe(200);
+      // @ts-ignore
+      doorlistService.getDoorlist.mockImplementationOnce(() => {
+        return {data: [], status: {success: true, message: ''}};
+      });
+      const res = await request(app).get('/')
+          .set('Authorization', `Bearer ${getToken()}`);
+      expect(res.statusCode).toBe(200);
     });
 
     it('/ get fail', async () => {
-      // // @ts-ignore
-      // doorlistService.findAll.mockImplementationOnce(() => {
-      //   throw new Error();
-      // });
+      // @ts-ignore
+      doorlistService.getDoorlist.mockImplementationOnce(() => {
+        throw new Error();
+      });
 
-      // const res = await request(app).get('/')
-      //     .set('Authorization', `Bearer ${getToken()}`)();
-      // expect(res.statusCode).toBe(500);
+      const res = await request(app).get('/')
+          .set('Authorization', `Bearer ${getToken()}`).send();
+      expect(res.statusCode).toBe(500);
     });
   });
 });

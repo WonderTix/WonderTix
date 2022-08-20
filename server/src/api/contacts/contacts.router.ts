@@ -12,7 +12,7 @@ export const contactsRouter = Router();
 contactsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const resp = await create(req.body);
-    let code = resp.status.success ? 200 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -26,7 +26,7 @@ contactsRouter.use(checkScopes);
 contactsRouter.get('/', async (req: Request, res: Response) => {
   try {
     const resp = await findAll(req.query);
-    let code = resp.status.success ? 200 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -37,7 +37,7 @@ contactsRouter.get('/', async (req: Request, res: Response) => {
 contactsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const resp = await findByName(req.query.name as string);
-    let code = resp.status.success ? 200 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -48,7 +48,7 @@ contactsRouter.get('/search', async (req: Request, res: Response) => {
 contactsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
-    let code = resp.status.success ? 200 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -59,7 +59,7 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
 contactsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
-    let code = resp.status.success ? 204 : 404;
+    const code = resp.status.success ? 204 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -70,7 +70,8 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
 contactsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req);
-    let code = resp.status.success ? 200 : 404;
+    console.log(resp);
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
