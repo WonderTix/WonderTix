@@ -8,10 +8,6 @@ import configureStore from 'redux-mock-store';
 
 import Hero from './hero';
 import {ListComponent} from './eventcard';
-import donationSlice from '../ticketingmanager/donationSlice';
-import eventsReducer from '../ticketingmanager/Events/events_pages/eventsSlice';
-import snackbarReducer from '../ticketingmanager/snackbarSlice';
-import ticketingReducer from '../ticketingmanager/ticketing/ticketingSlice';
 import thunk from 'redux-thunk';
 
 let container : HTMLDivElement;
