@@ -31,6 +31,7 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
   const createShowObject = (id) => {
     const showing: Showing = {
       id: id,
+      eventid: initialData.eventid,
       starttime: starttime,
       eventdate: eventdate,
       totalseats: totalseats,

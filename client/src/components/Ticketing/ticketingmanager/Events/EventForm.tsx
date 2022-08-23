@@ -62,6 +62,7 @@ interface EventFormProps {
 const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const def = (initialValues !== undefined) ? {
     eventName: initialValues.eventName,
+    eventID: initialValues.eventID,
     eventDesc: initialValues.eventDesc,
     imageUrl: initialValues.imageUrl,
     isPublished: initialValues.isPublished,
@@ -69,12 +70,14 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   }:
   {
     eventName: '',
+    eventID: -1,
     eventDesc: '',
     imageUrl: '',
     isPublished: false,
     showings: [],
   };
   const [eventName, setEventName] = useState(def.eventName);
+  const eventID = def.eventID;
   const [eventDesc, setEventDesc] = useState(def.eventDesc);
   const [imageUrl, setImageURL] = useState(def.imageUrl);
   const isPublished = def.isPublished;
@@ -102,7 +105,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       newShowList.push(show);
       setShowings(newShowList);
     } else {
-      setShowings([...showings, show]);
+      setShowings((showings) => [...showings, show]);
     }
   }, [showings]);
 
@@ -114,6 +117,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const handleSubmit = () => {
     const data: NewEventData = {
       eventName,
+      eventID,
       eventDesc,
       isPublished,
       imageUrl,
@@ -169,7 +173,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} updateShows={updateShows}/>
+                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} updateShows={updateShows} eventid={def.eventID}/>
               </div>
             </div>
           </div>

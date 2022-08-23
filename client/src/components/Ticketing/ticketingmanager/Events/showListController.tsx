@@ -2,28 +2,31 @@
 /* eslint-disable max-len */
 import React, {useState} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
+// import EventForm from './EventForm';
 import ShowingInputContainer from './showingInputContainer';
 
 
 interface ShowListControllerProps{
-   showsData?: Showing[];
+   showsData?: Showing[],
    addShowData: (show: Showing) => void,
    updateShows: (shows:Showing[]) => void,
-}
+   eventid: number,
+};
 
-const ShowListController = ({showsData, addShowData, updateShows}: ShowListControllerProps) => {
+const ShowListController = ({showsData, addShowData, updateShows, eventid}: ShowListControllerProps) => {
   const [shows, addShow] = useState(showsData ? showsData: []);
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
-    let id;
+    /* let id;
     if (shows.length > 0) {
       id = shows[shows.length - 1].id + 1;
     } else {
       id = 0;
-    }
+    } */
     const show: Showing = {
-      id: parseInt(id),
+      id: 0,
+      eventid: eventid,
       starttime: undefined,
       eventdate: undefined,
       salestatus: true,
@@ -31,8 +34,8 @@ const ShowListController = ({showsData, addShowData, updateShows}: ShowListContr
       availableseats: 0,
       totalseats: 0,
     };
-    addShow([...shows, show]);
-
+    addShow((shows) => [...shows, show]);
+    console.log(shows);
     // updateShows(newList);
   };
 
