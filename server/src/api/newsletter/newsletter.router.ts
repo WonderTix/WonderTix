@@ -6,7 +6,19 @@ import {
   insertNewsletter,
 } from './newletter.service';
 
+/**
+ * create Router object
+ *
+ * @type {?}
+ */
+
 export const newsletterRouter = Router();
+
+/**
+ * route: GET /count
+ *
+ * @type {?}
+ */
 
 // News Letter Route
 newsletterRouter.get('/count', checkJwt, checkScopes, async (
@@ -22,6 +34,12 @@ newsletterRouter.get('/count', checkJwt, checkScopes, async (
   }
 });
 
+/**
+ * route: PUT /
+ *
+ * @type {?}
+ */
+
 // Nesletter Route
 newsletterRouter.put('/', async (req: Request, res: Response) => {
   try {
@@ -32,6 +50,12 @@ newsletterRouter.put('/', async (req: Request, res: Response) => {
     res.status(500).send(error.message);
   }
 });
+
+/**
+ * route: POST /
+ *
+ * @type {?}
+ */
 
 newsletterRouter.post('/', async (req: Request, res: Response) => {
   try {
