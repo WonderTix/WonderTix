@@ -1,3 +1,10 @@
+/**
+ * Auth
+ * Authentification for user longin
+ * Wired with Auth Express Library
+ * Performs scoping of users and route availabe for them
+ */
+
 import {auth, requiredScopes} from 'express-oauth2-jwt-bearer';
 
 export const checkJwt = auth({
