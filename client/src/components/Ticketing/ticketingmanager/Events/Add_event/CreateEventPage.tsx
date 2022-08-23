@@ -52,7 +52,8 @@ const CreateEventPage = () => {
 
     if (createPlayRes.ok) {
       const eventData = await createPlayRes.json();
-      const {id} = eventData.rows[0];
+      console.log(eventData);
+      const {id} = eventData.data[0];
       const showingdata = showings.map(formatShowingData(id));
 
 
