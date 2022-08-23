@@ -39,7 +39,7 @@ with open(".env", "w") as f:
     f.write("PG_PASS=" + PG_PASS + "\n")
     f.write("PG_DB=" + PG_DB + "\n")
     f.write("PRIVATE_STRIPE_KEY=" + stripe_api + "\n")
-    f.write("ROOT_URL=http://localhost:8000\n")
+    f.write("ROOT_URL=https://localhost:8000\n")
     f.write("FRONTEND_URL=https://localhost:3000\n")
     f.write("AUTH0_URL=" + AUTH0_URL + "\n")
     f.write("AUTH0_CLIENT_ID=" + AUTH0_CLIENT_ID + "\n")
