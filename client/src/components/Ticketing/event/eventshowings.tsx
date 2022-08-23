@@ -8,8 +8,15 @@ import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 import TicketPicker from './TicketPicker';
 import {useNavigate} from 'react-router-dom';
 
-
+/**
+ * EventPageProps - Used to hold data
+ */
 type EventPageProps = {eventid: string}
+
+/**
+ * Data Handler
+ * @returns HTMLElements
+ */
 const Eventshowings = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

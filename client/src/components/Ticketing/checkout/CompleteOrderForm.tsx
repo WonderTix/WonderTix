@@ -12,6 +12,21 @@
 import {Form} from 'react-final-form';
 import React, {ReactElement, useState} from 'react';
 
+/**
+ * Info for checkout form
+ * @module
+ * @param {boolean} optIn 
+ * @param {string} firstName
+ * @param {string} lastName
+ * @param {string} streetAddress
+ * @param {string} postalCode
+ * @param {stirng} country
+ * @param {string} phone 
+ * @param {string} email
+ * @param {string} visitSource
+ * @param {boolean} seatingAcc
+ * @param {string} comments
+ */
 export interface CheckoutFormInfo {
     optIn: boolean,
     firstName: string,
@@ -26,6 +41,13 @@ export interface CheckoutFormInfo {
     comments?: string
 }
 
+/**
+ * Used to complete order
+ * @param {function} onSubmit 
+ * @param {function} onBack
+ * @param {boolean} disabled
+ * @param {boolean} donationForm
+ */
 type CompleteOrderFormProps = {
     onSubmit: (formData: CheckoutFormInfo) => any,
     onBack: () => any,

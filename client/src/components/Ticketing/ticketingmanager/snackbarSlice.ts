@@ -14,6 +14,14 @@ import {RootState} from '../app/store';
 
 export type SnackbarState = {message: string, shown: boolean}
 
+/**
+ * Gets exported and used by other events
+ * @module
+ * @param {string} name - called 'snackbar'
+ * @param {string} message - empty string at beginning
+ * @param {boolean} shown - default false
+ * @param {Object} reducers - Either snackbar is opened or closed
+ */
 const snackbarSlice = createSlice({
   name: 'snackbar',
   initialState: {message: '', shown: false},

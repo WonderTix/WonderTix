@@ -14,6 +14,12 @@ import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {toDollarAmount} from '../../../utils/arrays';
 
 interface CartRowProps {item: CartItem, removeHandler: (id: number) => void}
+
+/**
+ * Entire thing is meant to handle increments and decrements in prices and item qty
+ * @param {CartRowProps} item - remove handler
+ * @returns {ReactElement}
+ */
 const CartRow = ({item, removeHandler}: CartRowProps) => {
   const dispatch = useAppDispatch();
   const [cost, setCost] = useState(item.price * item.qty);

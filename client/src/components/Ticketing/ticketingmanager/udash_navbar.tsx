@@ -6,6 +6,17 @@ import {useNavigate} from 'react-router-dom';
 import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../../Authentication/auth-nav';
 
+/**
+ * Has Dashboard, Door List, Manage Events, and Showings to navigate to
+ * @module
+ * @param {boolean} show - We use states true or false, default is false
+ * @param {boolean} profile - True or false, default is false
+ * @param {auth0} user - managed by auth0
+ * @param {auth0} picture - managed by auth0
+ * @param {auth0} name - managed by auth0
+ * @param {Object} navigate - makes use of the navigate function 
+ * @returns {Object} Udash_nav
+ */
 const Udash_nav = () => {
   const [show, setShow] = useState(false);
   const [profile, setProfile] = useState(false);

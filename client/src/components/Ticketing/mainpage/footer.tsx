@@ -1,5 +1,9 @@
 import React from 'react';
 
+/**
+ * Footer for the newsletter stuff
+ * @returns {Footer}
+ */
 const Footer = () => {
   return (
     <footer className="bg-zinc-300 text-center drop-shadow-lg ">

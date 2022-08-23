@@ -1,7 +1,9 @@
 import React, {CSSProperties} from 'react';
 import popupProps from '../../interfaces/popup.interface';
 
-
+/**
+ * @property {Object} popUpContainer - A property container for pop up
+ */
 const popUpContainer: CSSProperties = {
   'position': 'fixed',
   'background': '#00000050',
@@ -11,6 +13,9 @@ const popUpContainer: CSSProperties = {
   'left': '0',
 };
 
+/**
+ * @property {Object} box - A property container for the box used for pop up
+ */
 const box: CSSProperties ={
   'position': 'relative',
   'width': '50%',
@@ -23,6 +28,13 @@ const box: CSSProperties ={
   'marginLeft': '30%',
 };
 
+/**
+ * Popup makes use of both popUpContainer and box for styles
+ * @module
+ * @param {string} title - Title of popup
+ * @param {string} message - Message of popup
+ * @returns {popupProps} PopUp - Object named PopUp that can be interacted with
+ */
 const PopUp = ({title, message, handleClose}: popupProps) => {
   return (
     <div style={popUpContainer}>

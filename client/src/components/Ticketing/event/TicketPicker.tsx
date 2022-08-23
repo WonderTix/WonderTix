@@ -21,6 +21,18 @@ import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
 import React, {useReducer} from 'react';
 
+/**
+ * @module
+ * @param {Date} selectedDate
+ * @param {Ticket[]} displayedShowings
+ * @param {Ticket} selectedTicket
+ * @param {number} qty
+ * @param {boolean} concessions
+ * @param {boolean} showCalendar
+ * @param {boolean} showTimes
+ * @param {boolean} showClearBtn
+ * @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
+ */
 interface TicketPickerState {
     selectedDate?: Date,
     displayedShowings: Ticket[],
@@ -33,6 +45,16 @@ interface TicketPickerState {
     prompt: 'selectDate' | 'selectTime' | 'showSelection',
 }
 
+/**
+ * Initial state
+ * displayedShowings: [],
+ * qty: 0,
+ * concessions: false,
+ * showCalendar: true,
+ * showTimes: false,
+ * showClearBtn: false,
+ * prompt: 'selectDate',
+ */
 const initialState: TicketPickerState = {
   displayedShowings: [],
   qty: 0,
@@ -49,6 +71,10 @@ const timeSelected = (t: Ticket) => ({type: 'time_selected', payload: t});
 const resetWidget = () => ({type: 'reset'});
 const changeQty = (n: number) => ({type: 'change_qty', payload: n});
 
+/**
+ * TicketPickerReducer is meant to be used to lower ticket numbers
+ * @returns a certain default state if failed
+ */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
   switch (action.type) {
     case 'date_selected': {
@@ -88,6 +114,12 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
 interface TicketPickerProps {
     tickets: Ticket[]
 }
+
+/**
+ * Used to choose the tickets
+ * @param {TicketPickerProps} tickets
+ * @returns HTMLElements and the correct ticket when picking
+ */
 const TicketPicker = ({tickets}: TicketPickerProps) => {
   const [{
     qty,

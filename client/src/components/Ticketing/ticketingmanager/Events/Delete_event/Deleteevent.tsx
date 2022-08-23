@@ -14,6 +14,11 @@ import React, {useState, useEffect} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
 
+/**
+ * Deletes Events
+ * @module
+ * @returns reponse.json()
+ */
 export default function DeleteEvents() {
   const {getAccessTokenSilently} = useAuth0();
 
@@ -34,7 +39,9 @@ export default function DeleteEvents() {
     return response.json();
   }
 
-  // Create columns that appears in data
+  /**
+   * const columns - Used to create columns that appear in the data
+   */
   const columns = [
     {field: 'id', headerName: 'Event Instance ID', width: 100},
     {field: 'eventname', headerName: 'Event', width: 150},
@@ -46,6 +53,9 @@ export default function DeleteEvents() {
     )},
   ];
 
+  /**
+   * getEvents - used to get events using the api routes
+   */
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
     try {
@@ -63,6 +73,10 @@ export default function DeleteEvents() {
     }
   };
 
+  /**
+   * useEffect calls getEvents
+   * @returns {DataGrid}
+   */
   useEffect(() => {
     getEvents();
   }, []);

@@ -11,6 +11,11 @@ interface NavbarProps {
   bMode?: boolean
 }
 
+/**
+ * Used to set up the navbar from auth0
+ * @param {NavbarProps} bMode
+ * @returns HTMLElements like the image and username
+ */
 const Navbar = ({bMode}: NavbarProps) => {
   const [nav, setNav] = useState(false);
   const handleClick = () => setNav(!nav);

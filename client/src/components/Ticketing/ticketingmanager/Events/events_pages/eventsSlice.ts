@@ -13,6 +13,19 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../../../app/store';
 import {Dictionary} from '../../../../../utils/arrays';
 
+/**
+ * Used to create event instances
+ * @module
+ * @param {number} id
+ * @param {number} eventid
+ * @param {string} eventname
+ * @param {string} eventdescription
+ * @param {string} image_url
+ * @param {string} eventdate
+ * @param {string} starttime
+ * @param {number} totalseats
+ * @param {number} availableseats
+ */
 export interface EventInstance {
      id: number,
      eventid: number,
@@ -25,9 +38,20 @@ export interface EventInstance {
      availableseats: number,
 }
 
-
+/**
+ * Omits 'eventid','eventname','eventdescription','image_url'
+ * @module
+ */
 export type Instance = Omit<EventInstance, 'eventid'|'eventname'|'eventdescription'|'image_url'>
 
+/**
+ * @module
+ * @param {string} eventname
+ * @param {string} eventdescription
+ * @param {string} image_url
+ * @param {number} eventid
+ * @param {Instance[]} instances
+ */
 export interface Event {
     eventname: string,
     eventdescription?: string,
@@ -36,7 +60,11 @@ export interface Event {
     instances: Instance[],
 }
 
-
+/**
+ * @module
+ * @param {EventInstance[]} events 
+ * @returns events[eventid]
+ */
 export const aggregateInstances = (events: EventInstance[]) =>
   events.reduce<Dictionary<Event>>((events, event) => {
     const {eventname, eventdescription, image_url, eventid, ...instance} = event;
@@ -46,6 +74,11 @@ export const aggregateInstances = (events: EventInstance[]) =>
             {...events, [eventid]: {eventid, eventname, eventdescription, image_url, instances: [instance]}};
   }, {});
 
+/**
+ * Fetches the data
+ * @module
+ * @returns aggregateInstances(allEventInstances) or console prints error
+ */
 export const fetchEventInstanceData = createAsyncThunk(
     'events/fetchAll',
     async () => {
@@ -59,16 +92,29 @@ export const fetchEventInstanceData = createAsyncThunk(
     },
 );
 
+/**
+ * @module
+ * @param {Dictionary<Event>} data
+ * @param {Array} status - 'idle' | 'loading' | 'success' | 'failed'
+ */
 export interface EventInstancesState {
     data: Dictionary<Event>,
     status: 'idle' | 'loading' | 'success' | 'failed'
 }
 
+/**
+ * @module
+ * @param data - {}
+ * @param status - 'idle
+ */
 export const INITIAL_STATE: EventInstancesState = {
   data: {},
   status: 'idle',
 };
 
+/**
+ * eventsSlice = createSlice creates an event
+ */
 const eventsSlice = createSlice({
   name: 'events',
   initialState: INITIAL_STATE,
@@ -88,6 +134,12 @@ const eventsSlice = createSlice({
   },
 });
 
+/**
+ * Used to select all the event instances and then return them
+ * @module
+ * @param {RootState} state 
+ * @returns {eventname, eventdescription, image_url}[]
+ */
 // Returns {eventname, eventdescription, image_url}[]
 export const selectAllEventInstances = (state: RootState) =>
   Object.keys(state.events.data).map((key) => {
@@ -101,6 +153,13 @@ export const selectAllEventInstances = (state: RootState) =>
     };
   });
 
+/**
+ * Used to return list of instances for a given event, otherwise undefined if the play doesn't exist
+ * @module
+ * @param {RootState} state 
+ * @param {number} id - Event
+ * @returns state.events.data[key] or undefined
+ */
 // Returns list of instances for given event, or undefined if play doesn't exist
 export const selectEventInstanceData =
     (state: RootState, id: number): Event | undefined => {

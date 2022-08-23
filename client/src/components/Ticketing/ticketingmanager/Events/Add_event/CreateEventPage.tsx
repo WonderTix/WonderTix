@@ -18,6 +18,10 @@ const formatShowingData = (eventid: number) => (data: any) => {
   return {eventid, eventdate, starttime, totalseats, tickettype: ticketTypeId};
 };
 
+/**
+ * Creates event page
+ * @returns all data, or console error, EventForm and PopUp
+ */
 const CreateEventPage = () => {
   const [ticketTypes, setTicketTypes] = useState([]);
   const [visible, setVisible] = useState(false);

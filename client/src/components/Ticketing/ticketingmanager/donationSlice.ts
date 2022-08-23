@@ -13,6 +13,13 @@ import {RootState} from '../app/store';
 
 export type DonationSlice = {amount: number}
 
+/**
+ * Gets exported and used by other components
+ * @module
+ * @param {string} name - named 'donation'
+ * @param {number} InitialState - amount: 0
+ * @param {Object} reducers - sets donation to whatever amount
+ */
 const donationSlice = createSlice({
   name: 'donation',
   initialState: {amount: 0},

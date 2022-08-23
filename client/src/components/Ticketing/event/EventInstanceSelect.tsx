@@ -12,8 +12,16 @@ import React, {useState} from 'react';
 import {Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
 import format from 'date-fns/format';
 
+/**
+ * EventInstanceSelectProps holds tickets, showings and such
+ */
 interface EventInstanceSelectProps {eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
 
+/**
+ * This is the handler
+ * @param {EventInstanceSelectProps} props 
+ * @returns the selection of date and others once clicked
+ */
 const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
   const [selectedId, setSelectedId] = useState(-1);
 

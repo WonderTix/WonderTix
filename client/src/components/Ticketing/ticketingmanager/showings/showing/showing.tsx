@@ -12,7 +12,17 @@ import {openSnackbar} from '../../snackbarSlice';
 import {fetchEventInstanceData} from '../../Events/events_pages/eventsSlice';
 import {useAuth0} from '@auth0/auth0-react';
 
+/**
+ * @param {string} eventid - EventPageProps uses this
+ */
 type EventPageProps = {eventid: string}
+
+/**
+ * Displays the data of the showing, uses dispatch, navigate, eventToDelete, setEventToDelete, show, setShow, getAccessTokenSilently, 
+ * handleClick2, onEditClick, onDeleteClick, onCancelDelete, getData, deleteEvent
+ * @module
+ * @returns HTMLElements
+ */
 const Showing = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
