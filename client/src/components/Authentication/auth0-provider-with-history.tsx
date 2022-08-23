@@ -5,7 +5,10 @@ This component is the main logic for the athentication to work.
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Auth0Provider} from '@auth0/auth0-react';
-
+/**
+ * the main logic for the athentication to work
+ * @return {React.ReactElement}
+ */
 const Auth0ProviderWithHistory = ({
   children,
 }: {

@@ -5,7 +5,10 @@ import {donationFiltersTextField} from '../../../utils/arrays';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * Donation panal in reporting
+ * @return {ReactElement}
+ */
 const DonationsPanel = ({
   fetchData,
   setOpen,

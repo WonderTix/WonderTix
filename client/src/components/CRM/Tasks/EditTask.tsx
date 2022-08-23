@@ -4,6 +4,7 @@ import Note from './Note';
 import Filter from './Filter';
 
 /**
+ * Handle editing tasks
  * @return {React.ReactElement} HTMLElement for EditTask
  */
 const EditTask = (): React.ReactElement => {

@@ -19,6 +19,7 @@ const Item = (props: any): React.ReactElement => {
 };
 
 /**
+ * Handles notes
  * @return {React.ReactElement} HTMLElement for Item
  */
 const OutlinedCard = (): React.ReactElement => {

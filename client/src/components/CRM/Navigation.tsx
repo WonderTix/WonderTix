@@ -6,7 +6,10 @@ import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../Authentication/auth-nav';
 
 import {useNavigate} from 'react-router-dom';
-
+/**
+ * CRM Navigation bar
+ * @return {React.ReactElement}
+ */
 const Navigation = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);

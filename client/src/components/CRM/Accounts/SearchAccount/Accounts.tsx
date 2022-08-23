@@ -4,7 +4,10 @@ import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import AccountResults from './AccountResults';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * handle searching for user`s account
+ * @return {ReactElement}
+ */
 const Accounts = (): React.ReactElement => {
   const params = useParams();
   const navigate = useNavigate();

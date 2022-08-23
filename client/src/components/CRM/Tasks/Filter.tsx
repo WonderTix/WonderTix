@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 /**
+ * filter tasks componenet
  * @return {React.ReactElement}
  */
 const OutlinedCard = (): React.ReactElement => {

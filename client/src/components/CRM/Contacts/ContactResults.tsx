@@ -7,7 +7,10 @@ import {useParams} from 'react-router-dom';
 // import { useInput } from './hooks/input-hook';
 import {useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * Display the results of contacts search
+ * @return {ReactElement}
+ */
 const ContactResults = ({
   data,
 }: {

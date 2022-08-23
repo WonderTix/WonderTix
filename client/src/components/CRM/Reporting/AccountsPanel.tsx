@@ -5,7 +5,10 @@ import {
   accountFiltersSwitch,
 } from '../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * Account panal in reporting
+ * @return {ReactElement}
+ */
 const AccountsPanel = ({
   fetchData,
   setOpen,

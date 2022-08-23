@@ -4,7 +4,10 @@ import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import ContactResults from './ContactResults';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * handle searching for contact information
+ * @return {ReactElement}
+ */
 const Contacts = (): React.ReactElement => {
   const params = useParams();
   const navigate = useNavigate();
