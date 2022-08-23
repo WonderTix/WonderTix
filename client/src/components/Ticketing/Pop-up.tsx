@@ -33,7 +33,7 @@ const box: CSSProperties ={
  * @module
  * @param {string} title - Title of popup
  * @param {string} message - Message of popup
- * @returns {popupProps} PopUp - Object named PopUp that can be interacted with
+ * @returns {ReactElement} PopUp - Function named PopUp that can be interacted with
  */
 const PopUp = ({title, message, handleClose}: popupProps) => {
   return (

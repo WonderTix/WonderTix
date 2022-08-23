@@ -2,7 +2,7 @@ import React from 'react';
 
 /**
  * Footer for the newsletter stuff
- * @returns {Footer}
+ * @returns {ReactElement}
  */
 const Footer = () => {
   return (

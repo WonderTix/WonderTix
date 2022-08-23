@@ -5,7 +5,15 @@ import {Showing} from '../../../../interfaces/showing.interface';
 // import EventForm from './EventForm';
 import ShowingInputContainer from './showingInputContainer';
 
-
+/**
+ * Used to help process shows correctly
+ * @param {Showing[]} showsData
+ * @param {Showing} show
+ * @param {function} addShowData
+ * @param {Showing[]} shows 
+ * @param {function} updateShows
+ * @param {number} eventid
+ */
 interface ShowListControllerProps{
    showsData?: Showing[],
    addShowData: (show: Showing) => void,
@@ -13,6 +21,11 @@ interface ShowListControllerProps{
    eventid: number,
 };
 
+/**
+ * The shows handler
+ * @param {ShowListControllerProps} showsData, addShowData, updateShows, eventid
+ * @returns {ReactElement} and {ShowingInputContainer}
+ */
 const ShowListController = ({showsData, addShowData, updateShows, eventid}: ShowListControllerProps) => {
   const [shows, addShow] = useState(showsData ? showsData: []);
   // SHOWINGS ACTIONS:

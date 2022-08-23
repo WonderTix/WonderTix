@@ -73,6 +73,15 @@ const changeQty = (n: number) => ({type: 'change_qty', payload: n});
 
 /**
  * TicketPickerReducer is meant to be used to lower ticket numbers
+ * Default:
+ *      ...state,
+ *      selectedDate: date,
+ *      selectedTicket: undefined,
+ *      displayedShowings: sameDayShows,
+ *      showCalendar: false,
+ *      showTimes: true,
+ *      showClearBtn: true,
+ *      prompt: 'selectTime',
  * @returns a certain default state if failed
  */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
@@ -118,7 +127,7 @@ interface TicketPickerProps {
 /**
  * Used to choose the tickets
  * @param {TicketPickerProps} tickets
- * @returns HTMLElements and the correct ticket when picking
+ * @returns {ReactElement} and the correct ticket when picking
  */
 const TicketPicker = ({tickets}: TicketPickerProps) => {
   const [{

@@ -75,7 +75,7 @@ export default function DeleteEvents() {
 
   /**
    * useEffect calls getEvents
-   * @returns {DataGrid}
+   * @returns {ReactElement}
    */
   useEffect(() => {
     getEvents();

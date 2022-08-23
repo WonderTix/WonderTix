@@ -15,7 +15,7 @@ import AuthNav from '../../Authentication/auth-nav';
  * @param {auth0} picture - managed by auth0
  * @param {auth0} name - managed by auth0
  * @param {Object} navigate - makes use of the navigate function 
- * @returns {Object} Udash_nav
+ * @returns {ReactElement} Udash_nav
  */
 const Udash_nav = () => {
   const [show, setShow] = useState(false);

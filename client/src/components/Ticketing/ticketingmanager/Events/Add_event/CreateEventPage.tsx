@@ -20,7 +20,7 @@ const formatShowingData = (eventid: number) => (data: any) => {
 
 /**
  * Creates event page
- * @returns all data, or console error, EventForm and PopUp
+ * @returns {ReactElement} and all data, or console error, EventForm and PopUp
  */
 const CreateEventPage = () => {
   const [ticketTypes, setTicketTypes] = useState([]);

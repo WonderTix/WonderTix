@@ -7,7 +7,8 @@ import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../../Authentication/auth-nav';
 
 /**
- * @returns {Object} Udash_nav
+ * The base navbar
+ * @returns {ReactElement} Udash_nav
  */
 const Udash_nav = () => {
   const [show, setShow] = useState(false);

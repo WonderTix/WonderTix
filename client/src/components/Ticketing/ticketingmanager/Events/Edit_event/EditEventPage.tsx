@@ -33,7 +33,7 @@ interface mapDataToEditEventProps {
  * @param dispatch - useAppDispatch()
  * @param ticketTypes, setTicketTypes - useState([])
  * @param getAccessTokenSilently - useAuth0()
- * @returns {EventForm}
+ * @returns {ReactElement}
  */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   const params = useParams();

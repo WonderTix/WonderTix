@@ -4,7 +4,7 @@ import Udash_nav from '../udash_navbar';
 import InstancesPage from './InstancesPage';
 
 /**
- * @returns {Object} Showingsmain - has Udash_nav and InstancesPage to reroute to other components
+ * @returns {Udash_nav, InstancesPage} Showingsmain - has Udash_nav and InstancesPage to reroute to other components
  */
 const Showingsmain = () => {
   return (

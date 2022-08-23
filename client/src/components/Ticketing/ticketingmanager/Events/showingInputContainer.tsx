@@ -3,12 +3,26 @@ import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
 
+/**
+ * Used to map props to input container correctly
+ * @module
+ * @param {initialData} Showing
+ * @param {number} id
+ * @param {function} addShow
+ * @param {function} deleteShow
+ */
 export interface MapPropsToShowingInputContainer {
   initialData?: Showing;
   id: number;
   addShow: (show:Showing) => void;
   deleteShow: (id:number) => void;
 }
+
+/**
+ * 
+ * @param {MapPropsToShowingInputContainer} {initialData, id, addShow, deleteShow}
+ * @returns {ReactElement}
+ */
 // eslint-disable-next-line react/prop-types
 const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsToShowingInputContainer) => {
   const [starttime, setStarttime] = useState(initialData.starttime !== undefined? initialData.starttime: '');

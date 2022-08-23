@@ -3,6 +3,10 @@ import React, {useState, useEffect} from 'react';
 import Udash_nav from '../udash_navbar';
 import ManageEventsPage from './ManageEvents';
 
+/**
+ * Handler that uses getDataFromServer
+ * @returns {Udash_nav, Loading} or {Udash_nav, ManageEventsPage}
+ */
 const Manageventmain = () => {
   const [eventData, setEventData] = useState();
   const [loading, setLoading] = useState(true);

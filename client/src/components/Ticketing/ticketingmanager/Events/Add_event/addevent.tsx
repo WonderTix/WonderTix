@@ -17,7 +17,7 @@ import {useAuth0} from '@auth0/auth0-react';
 /**
  * Used to help create events
  * @module
- * @returns HTMLElements and other event changes
+ * @returns {ReactElement} and other event changes
  */
 export default function CreateEvents() {
   const [eventName, setEventName] = useState('');

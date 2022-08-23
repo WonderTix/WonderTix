@@ -20,7 +20,7 @@ import {useNavigate} from 'react-router-dom';
 /**
  * Uses dispatch, navigate, allEvents, and getData
  * @module
- * @returns dispatch(fetchTicketingData()) and HTMLElements
+ * @returns {ReactElements} and dispatch(fetchTicketingData()) 
  */
 const InstancesPage = () => {
   const dispatch = useAppDispatch();

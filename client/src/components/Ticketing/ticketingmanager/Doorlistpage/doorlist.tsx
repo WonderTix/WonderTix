@@ -72,7 +72,7 @@ const columns = [
 
 /**
  * Doorlist gets data about the event, time of the event 
- * @returns HTMLElements and a datagrid that can be edited
+ * @returns {ReactElement} DoorList also has a datagrid
  */
 const DoorList = () => {
   const {getAccessTokenSilently} = useAuth0();

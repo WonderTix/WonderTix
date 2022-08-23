@@ -8,7 +8,7 @@ import {Event} from '../ticketingmanager/ticketing/ticketingSlice';
 /**
  * Lists out all the event cards
  * @param {Event} props 
- * @returns {ListComponent} and HTMLElements
+ * @returns {ReactElement}
  */
 const ListComponent = (props: Event) => {
   const navigate = useNavigate();

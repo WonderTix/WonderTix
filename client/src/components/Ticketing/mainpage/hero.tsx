@@ -6,7 +6,7 @@ import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 
 /**
  * Events page
- * @returns {Hero} displays the events
+ * @returns {ReactElement} state.event.ticketing also returned
  */
 const Hero = () => {
   const allEvents = useAppSelector((state) => {

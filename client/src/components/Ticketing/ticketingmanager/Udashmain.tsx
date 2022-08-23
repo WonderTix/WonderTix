@@ -7,7 +7,7 @@ import Udash_nav from './udash_navbar';
 /**
  * Udashmain uses both Udash_nav and Dashboard to make the main dashboard
  * @module
- * @returns {Object} Udashmain
+ * @returns {ReactElement} Udashmain
  */
 const Udashmain=() => {
   return (
