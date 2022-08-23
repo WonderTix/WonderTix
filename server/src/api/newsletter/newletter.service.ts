@@ -1,5 +1,11 @@
 import {response, buildResponse} from '../db';
 
+/**
+ * query: get count of customer rows with email matching params.email
+ *
+ * @type {Promise<response>}
+ */
+
 export const getNewsletterCount = async (params: any): Promise<response> => {
   const myQuery = {
     text: 'SELECT COUNT(*) FROM customers WHERE email = $1',
@@ -7,6 +13,12 @@ export const getNewsletterCount = async (params: any): Promise<response> => {
   };
   return buildResponse(myQuery, 'GET');
 };
+
+/**
+ * query: update newsletter and volunteer list values where email matching params.email
+ *
+ * @type {Promise<response>}
+ */
 
 export const updateNewsletter = async (params: any): Promise<response> => {
   const myQuery = {
@@ -17,6 +29,12 @@ export const updateNewsletter = async (params: any): Promise<response> => {
   };
   return buildResponse(myQuery, 'UPDATE');
 };
+
+/**
+ * query: insert new customer
+ *
+ * @type Promise<response>
+ */
 
 export const insertNewsletter = async (params: any): Promise<response> => {
   const myQuery = {
