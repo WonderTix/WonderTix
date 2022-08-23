@@ -1,5 +1,11 @@
 import {response, buildResponse} from '../db';
 
+/**
+ * query: get doorlist by params.eventinstanceid
+ *
+ * @type {Promise<response>}
+ */
+
 export const getDoorlist = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
