@@ -68,6 +68,7 @@ export const updateInstances = async (
     params: any,
 ): Promise<response> => {
   const instances: Showing[] = body;
+  console.log("Instances", instances);
 
   // get existing showings for this event
   const currentShowings = await getShowingsById(params.id);
@@ -92,6 +93,7 @@ export const updateInstances = async (
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
   rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
 
+  console.log("Rows to insert", rowsToInsert);
   const rowsInserted = (await insertAllShowings(rowsToInsert));
 
   return {
