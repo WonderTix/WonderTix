@@ -35,6 +35,9 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
     }
   };
 
+  console.log(item.payWhatCan);
+  console.log(item.payWhatPrice);
+
   return (
     <div className='bg-zinc-200 w-full flex flex-row
      h-40 gap-5 rounded-xl bg-cover' style={{backgroundImage: `url(${item.product_img_url})`}} >
@@ -60,8 +63,12 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
               </svg>
             </button>
           </div>
-
-          <div className='text-white font-semibold'>{toDollarAmount(cost)}</div>
+          <div className='text-white font-semibold'>
+            {item.payWhatCan ?
+              toDollarAmount(item.payWhatPrice) :
+              toDollarAmount(cost)
+            }
+          </div>
           <button className='text-white'
             aria-label={`Remove ${item.name} from cart`}
             onClick={() => removeHandler(item.product_id)}
@@ -71,7 +78,6 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
             </svg>
           </button>
         </div>
-
       </div>
     </div>
   );
