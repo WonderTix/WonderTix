@@ -26,7 +26,7 @@ interface TicketPickerState {
     displayedShowings: Ticket[],
     selectedTicket?: Ticket,
     qty: number,
-    payWhatPrice?: number,
+    payWhatPrice?: number, // New var to represent Pay What Can Amount
     concessions: boolean,
     showCalendar: boolean,
     showTimes: boolean,
@@ -84,7 +84,7 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
     case 'toggle_concession': {
       return {...state, concessions: !state.concessions};
     }
-    case 'change_pay_what': {
+    case 'change_pay_what': { // New state for when changePayWhat is called to set payWhatPrice
       return {...state, payWhatPrice: action.payload};
     }
     default:
@@ -100,7 +100,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
     qty,
     concessions,
     prompt,
-    payWhatPrice,
+    payWhatPrice, // Pay What Price
     selectedDate,
     displayedShowings,
     selectedTicket,
@@ -111,7 +111,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
 
   const appDispatch = useAppDispatch();
   const cartTicketCount = useAppSelector(selectCartTicketCount);
-  const [tempPay, setTempPay] = useState(0);
+  const [tempPay, setTempPay] = useState(0); // Temp Variable to represent payWhatPrice input by user
 
   const handleClick = (d: Date, t: Ticket[]) => {
     dispatch(dateSelected(d, t));
@@ -119,7 +119,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedTicket && qty) {
-      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, qty, concessions, payWhatPrice}));
+      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, qty, concessions, payWhatPrice})); // Changed to accept pay what price
       appDispatch(openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`));
       dispatch(resetWidget());
     }
@@ -206,18 +206,18 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
           onChange={() => dispatch({type: 'toggle_concession'})} name='concessions' />
         <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
       </div>
-      <div className={tickets[0].admission_type == 'General Admission' ? 'show': 'hidden'}>
+      <div className={tickets[0].admission_type == 'General Admission' ? 'show': 'hidden'}> {/* When a ticket is a Pay what can ticket this section will be visible */}
         <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
           <div className='justify-center items-center text-white rounded-xl'>
-            <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What amount: {payWhatPrice}</h1>
+            <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What amount: {payWhatPrice}</h1> {/* Shows price input by user to user */}
           </div>
           <input
             disabled={!selectedTicket}
-            onChange={(e) => payWhatFunc(e)}
-            type="text"
+            onChange={(e) => payWhatFunc(e)} // On change temp pay is set
+            type="money"
             placeholder="Enter Amount"
             className="disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
-          />
+          /> {/* input box for setting pay what price*/}
         </div>
       </div>
       <button
@@ -225,7 +225,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
         type="button"
         className="disabled:opacity-30 disabled:cursor-not-allowed bg-blue-600 px-3 py-1 rounded-xl text-white hover:bg-blue-700 mb-5"
         onClick={()=> dispatch(changePayWhat(tempPay))}
-      >
+      > {/* When button is clicked payWhatPrice is set*/}
           Set Pay What</button>
       <div>
         <button

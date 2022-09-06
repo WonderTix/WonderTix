@@ -66,7 +66,7 @@ const LineItem = (props: {className: string, id: number}) => {
   return data ?
         <div className={props.className}>
           <div>{data.qty} <b>x</b> {data.name}</div>
-          <div>{
+          <div>{ // If Cart item is payWhat can show pay what can price else show calculated price
             data.payWhatCan ?
               toDollar(data.payWhatPrice) :
               toDollar(data.qty * data.price)

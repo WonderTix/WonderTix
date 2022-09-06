@@ -63,7 +63,7 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
               </svg>
             </button>
           </div>
-          <div className='text-white font-semibold'>
+          <div className='text-white font-semibold'> {/* If A ticket is a payWhatCan then show payWhatPrice else show calculated price */}
             {item.payWhatCan ?
               toDollarAmount(item.payWhatPrice) :
               toDollarAmount(cost)

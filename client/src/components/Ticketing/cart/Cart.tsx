@@ -13,7 +13,7 @@ import {useNavigate} from 'react-router-dom';
 
 type Item = {price: number, qty: number, payWhatCan: boolean, payWhatPrice?: number}
 const itemCost = (item: Item) => item.price * item.qty;
-const subtotalReducer = (acc: number, item: Item) => {
+const subtotalReducer = (acc: number, item: Item) => { // Updated subTotal reducer to take in account for payWhatCan Price
   if (!item.payWhatCan) {
     return acc + itemCost(item);
   } else {
