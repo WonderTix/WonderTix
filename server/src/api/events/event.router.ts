@@ -285,6 +285,43 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
 });
 
 // PRIVATE ROUTE
+/**
+ * @swagger
+ *  /events/
+ *    put:
+ *      summary: Update the details for an event
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                id: integer
+ *                seasonid: integer
+ *                eventname: string
+ *                eventdescription: string
+ *                active: boolean
+ *                image_url: string
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    id: integer
+ *                    seasonid: integer
+ *                    eventname: string
+ *                    eventdescription: string
+ *                    active: boolean
+ *                    image_url: string
+ *        404:
+ *          description: An error occured querying the database
+ */
 eventRouter.put('/', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
@@ -302,6 +339,47 @@ eventRouter.put('/', checkJwt, checkScopes, async (
 });
 
 // PRIVATE ROUTE
+/**
+ * @swagger
+ *  /events/instances/:id
+ *    put:
+ *      summary: Updates the list of showings for a given event
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          schema:
+ *            type: integer
+ *          description: The ID of the event
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id: integer
+ *                  eventdate: string
+ *                  starttime: string
+ *                  salestatus: boolean
+ *                  totalseats: integer
+ *                  availableseats: integer
+ *                  purchaseuri: string
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  numRowsUpdated: integer
+ *                  numRowsDeleted: integer
+ *                  numRowsInserted: integer
+ *          404:
+ *            description: An error occured querying the database
+ */
 eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,

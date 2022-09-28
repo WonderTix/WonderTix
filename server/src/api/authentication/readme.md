@@ -1,3 +1,8 @@
+# UPDATE Spring/Summer 2022
+
+We implemented Auth0 authentication on the backend. The package `express-oauth2-jwt-bearer` is being used to authenticate the auth token, and to check scopes. When user creates an account in the client, by default it does not have admin scope. Currently, the only way to create an account with admin scope is via the Auth0 dashboard. Ideally, there will be a way for an existing admin account to update an existing account with admin scope. This would be done in the client, hitting the Auth0 management API to update the account's scope. Currently, when user creates an account via the Auth0 login page, an Auth0 action flow executes that posts the username and auth0_id to the Users table in the database. Certain protected routes that require admin scope utilize the `checkJWT` and `checkScopes` middleware functions, defined in `server/src/auth.ts`. The remaining contents of this readme were present when we joined this project, and I'm leaving here for archival purposes.
+
+# Previous contents of this file
 For the CRM:
 	Authentication is not ready yet, there are a few things still left to be implemented before we can test it.
 We are using passportJS authentication middleware with a passport-local authentication strategy to mirror the ticketing authentication.
