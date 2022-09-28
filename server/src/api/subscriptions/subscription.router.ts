@@ -8,7 +8,19 @@ import {pool} from '../db';
 *
 */
 
+/**
+ * create Router
+ *
+ * @type {?}
+ */
+
 export const subscriptionRouter = express.Router();
+
+/**
+ * route: GET /newsletter
+ *
+ * @type {?}
+ */
 
 subscriptionRouter.get('/newsletter', checkJwt, checkScopes,
     async (req, res) => {
@@ -24,6 +36,11 @@ subscriptionRouter.get('/newsletter', checkJwt, checkScopes,
       }
     },
 );
+
+/** route: GET /volunteers
+ *
+ * @type {?}
+ */
 
 subscriptionRouter.get('/volunteers', checkJwt, checkScopes,
     async (req, res) => {

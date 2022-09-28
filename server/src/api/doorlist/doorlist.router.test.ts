@@ -4,14 +4,30 @@ import * as doorlistService from './doorlist.service';
 import {doorlistRouter} from './doorlist.router';
 import {getToken} from '../../testSetup';
 
+/**
+ * create and use express object
+ *
+ * @type {?}
+ */
+
 const app = express();
 app.use('/', doorlistRouter);
+
+/**
+ * jest mock set up transactions
+ */
 
 jest.mock('./doorlist.service');
 
 afterEach(() => {
   jest.clearAllMocks();
 });
+
+/**
+ * unit test: GET /
+ *
+ * @type {?}
+ */
 
 describe('test doorlist routes', function() {
   describe('/', () => {

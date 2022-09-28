@@ -7,6 +7,17 @@ import {Pool} from 'pg';
 dotenv.config({path: path.join(__dirname, '../../../.env')});
 // console.log(path.join(__dirname, '../../.env'));
 
+/**
+ * define database configuration from .env environment file
+ *
+ * @typedef {Object} Config
+ * @property {string} user - db username
+ * @property {string} database - db name
+ * @property {string} password - db password
+ * @property {number} port - server tcp port
+ * @property {string} host - server fqdn or ip address
+ */
+
 const config = {
   user: process.env.DB_USER,
   database: process.env.DB_DATABASE,
@@ -18,7 +29,17 @@ const config = {
 
 console.log('DB_HOST: ' + process.env.DB_HOST);
 
+/**
+ * create pool object from configuration
+ *
+ * @type {?}
+ */
+
 export const pool = new Pool(config);
+
+/**
+ * connect pool to database host
+ */
 
 pool.on('connect', () => {
   console.log(
@@ -28,6 +49,14 @@ pool.on('connect', () => {
   );
 });
 
+/**
+ * define response for pool queries
+ *
+ * @typedef {Object} Response
+ * @property {Array<any>} data - array of rows in query response
+ * @property {{success: boolean, message: string}} status - success indicator and result message(s)
+ */
+
 export type response = {
   data: Array<any>,
   status: {
@@ -35,6 +64,12 @@ export type response = {
     message: string,
   }
 };
+
+/**
+ * builds a response message for a query result
+ *
+ * @type {Promise<response>}
+ */
 
 export const buildResponse = async (
     query: any,
