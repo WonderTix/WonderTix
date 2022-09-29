@@ -3,6 +3,7 @@ import {checkJwt, checkScopes} from '../../auth';
 import TicketsState from '../../interfaces/TicketsState';
 import {pool} from '../db';
 import * as ticketUtils from './ticket.service';
+import Ticket from '../../interfaces/Ticket';
 
 export const ticketRouter = express.Router();
 
@@ -67,6 +68,28 @@ ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
+  }
+});
+
+// POST /api/tickets/newType
+ticketRouter.post('/newType', checkJwt, checkScopes, async (req, res) => {
+  try {
+    const newTicket = await ticketUtils.createTicketType(req.body);
+    const code = newTicket.status.success ? 200 : 404;
+    res.status(code).send(newTicket);
+  } catch (error: any) {
+    res.sendStatus(500).send(error.message);
+  }
+});
+
+// DELETE /api/tickets/:id
+ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
+  try {
+    const resp = await ticketUtils.removeTicketType(req.params.id);
+    const code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
+  } catch (error: any) {
+    res.sendStatus(500).send(error.message);
   }
 });
 
