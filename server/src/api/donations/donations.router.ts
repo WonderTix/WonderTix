@@ -7,6 +7,8 @@ import {create, find, findAll, findByName, remove, update}
 
 export const donationsRouter = Router();
 
+// Public route
+// POST /api/donations
 donationsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newDonation = await create(req.body);
@@ -17,10 +19,10 @@ donationsRouter.post('/', async (req: Request, res: Response) => {
   }
 });
 
-// remaining routes are all private and require user to have admin scope
 donationsRouter.use(checkJwt);
 donationsRouter.use(checkScopes);
 
+// GET /api/donations
 donationsRouter.get('/', async (req: Request, res: Response) => {
   try {
     const donations = await findAll();
@@ -31,6 +33,7 @@ donationsRouter.get('/', async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/donations/search?name={name}
 donationsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const donations = await findByName(req.query.name as string);
@@ -41,6 +44,7 @@ donationsRouter.get('/search', async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/donations/:id
 donationsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const donation = await find(req.params.id);
@@ -51,6 +55,7 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// DELETE /api/donations/:id
 donationsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removedDonations = await remove(req.params.id);
@@ -61,6 +66,7 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// PUT /api/donations/:id
 donationsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedDonation = await update(req);
