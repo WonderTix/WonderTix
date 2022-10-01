@@ -8,6 +8,7 @@ export const accountsRouter = Router();
 accountsRouter.use(checkJwt);
 accountsRouter.use(checkScopes);
 
+// GET /api/accounts
 accountsRouter.get('/', async (req: Request, res: Response) => {
   try {
     console.log(req.query);
@@ -19,6 +20,7 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/accounts/search?username={username}
 accountsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const resp = await findByUsername(req.query.username as string);
@@ -29,6 +31,7 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/accounts/:id
 accountsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
@@ -39,6 +42,7 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// POST /api/accounts
 accountsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const resp = await create(req.body);
@@ -49,6 +53,7 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
   }
 });
 
+// DELETE /api/accounts/:id
 accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
@@ -59,6 +64,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// PUT /api/accounts/:id
 accountsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req);
