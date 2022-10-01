@@ -22,15 +22,12 @@ export interface CartItem {
     desc: string,
     product_img_url: string,
     price: number,
-    payWhatCan: boolean, // Bool to represent if a ticket is a payWhatCan
-    payWhatPrice?: number, // Optional var to represent payWhatPrice for cart item
 }
 
 export interface Ticket {
     event_instance_id: number,
     eventid: string,
-    admission_type: 'General Admission' | 'Pay What You Can', // Added new admission type for pay what can ticket
-    payWhatYouCan?: number, // Optional var to represent pay what can price
+    admission_type: 'General Admission',
     date: Date,
     ticket_price: number,
     concession_price: number,
@@ -122,14 +119,9 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
         item,
   );
 
-const payWhatFunc = (cart: CartItem, num: number) => { // Sets payWhatCan to true and sets payWhatPrice
-  cart.payWhatCan = true;
-  cart.payWhatPrice = num;
-  console.log(cart.payWhatCan);
-};
 
-const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean, payWhatPrice?: number}>> = (state, action) => {
-  const {id, qty, concessions, payWhatPrice} = action.payload; // Updated local vars to extract payWhatPrice
+const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean}>> = (state, action) => {
+  const {id, qty, concessions} = action.payload;
   const tickets = state.tickets;
 
   if (!tickets.allIds.includes(id)) return state;
@@ -138,12 +130,8 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   const inCart = state.cart.find(byId(id));
   const validRange = bound(0, ticket.availableseats);
 
-  console.log(payWhatPrice);
 
   if (inCart) {
-    {/* if (payWhatPrice > 0) {
-      payWhatFunc(state.cart, payWhatPrice);
-    }*/}
     return {
       ...state,
       cart: updateCartItem(state.cart, {
@@ -155,9 +143,6 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   } else {
     const event = state.events.find(byId(ticket.eventid));
     const newCartItem = event ? createCartItem({ticket, event, qty}) : null;
-    if (event && payWhatPrice > 0) { // If a ticet had a payWhatPrice payWhatFunc is called
-      payWhatFunc(newCartItem, payWhatPrice);
-    }
     return newCartItem ?
             {
               ...state,
@@ -223,14 +208,7 @@ const ticketingSlice = createSlice({
   },
 });
 
-export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => { // Updated to account for payWhatCan Price
-  if (!item.payWhatCan) { // If not payWhatCan calculate subtotal and add to tot
-    return tot + (item.price * item.qty);
-  } else { // If payWhatCan use payWhatPrice to add to tot
-    return tot + item.payWhatPrice;
-  }
-  console.log(tot);
-}, 0);
+export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => tot + (item.price * item.qty), 0);
 export const selectCartIds = (state: RootState): number[] => state.ticketing.cart.map((i) => i.product_id);
 export const selectCartItem = (state: RootState, id: number): CartItem|undefined => state.ticketing.cart.find((i) => i.product_id===id);
 export const selectCartTicketCount = (state: RootState): {[key: number]: number} =>
