@@ -11803,7 +11803,7 @@ ALTER TABLE ONLY public.linkedtickets
 --
 
 ALTER TABLE ONLY public.linkedtickets
-    ADD CONSTRAINT linkedtickets_ticket_type_fkey FOREIGN KEY (ticket_type) REFERENCES public.tickettype(id);
+    ADD CONSTRAINT linkedtickets_ticket_type_fkey FOREIGN KEY (ticket_type) REFERENCES public.tickettype(id) ON DELETE CASCADE;
 
 
 --
