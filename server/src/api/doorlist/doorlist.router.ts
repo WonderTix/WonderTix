@@ -2,7 +2,19 @@ import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {getDoorlist} from './doorlist.service';
 
+/**
+ * create router object
+ *
+ * @type {?}
+ */
+
 export const doorlistRouter = Router();
+
+/**
+ * route: GET /
+ *
+ * @type {?}
+ */
 
 // Door list route
 doorlistRouter.get('/', checkJwt, checkScopes, async (
