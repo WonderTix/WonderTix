@@ -87,7 +87,7 @@ CREATE TABLE public.seasons
 -- Create TicketType
 CREATE TABLE public.tickettype
 (
-    id integer NOT NULL,
+    id integer NOT NULL DEFAULT nextval('tickettype_id_seq'::regclass),
     name character varying(100) COLLATE pg_catalog."default",
     isseason boolean,
     seasonid integer,
