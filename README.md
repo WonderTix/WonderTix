@@ -26,7 +26,7 @@ mkcert -install
 cd <path/to/WonderTix/client>
 mkcert localhost
 ```
-This will install the CA for the mkcert certificate and create a certificate for localhost. The application is set to use the `localhost.pem` file for SSL. Copy `localhost.pem` to your `server` directory as well for future changes to SSL on the backend.  
+This will install the CA for the mkcert certificate and create a certificate for localhost. The application is set to use the `localhost.pem` file for SSL. Copy `localhost.pem` and `localhost-key.pem` to your `server` directory as well for future changes to SSL on the backend.  
 
 ### Docker Setup
 1. Install [Docker](https://docs.docker.com/engine/install/ubuntu/)
