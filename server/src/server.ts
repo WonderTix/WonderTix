@@ -1,4 +1,15 @@
-// server.ts
+/**
+ * Server
+ * Responsable for routing correct server
+ * execution on changes of url on front end
+ *
+ * @param app - instanciates express instnace
+ * that is performs URI responce to client requests
+ *
+ *
+ *
+ */
+
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
