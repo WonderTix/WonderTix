@@ -1,6 +1,6 @@
 /**
  * Tickets State
- * @param {[key: number]: Ticket} byId - dicertorty of tickets by id
+ * @param {[key: number]: Ticket} byId - directory of tickets by id
  *
  * @param {number[]} allIds - list of all ids of shows
  */

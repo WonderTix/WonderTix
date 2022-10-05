@@ -1,9 +1,9 @@
 /**
- * Ticket inteface desvibes the values required for the ticket to exist
- * @param {number} event_instance_id - referance to the show id
+ * Ticket interface describes the values required for the ticket to exist
+ * @param {number} event_instance_id - reference to the show id
  * (specific show) that ticket is purchased for
  *
- * @param {string} eventid - referance to the Event object
+ * @param {string} eventid - reference to the Event object
  *
  * @param {string} admission_type - type of the admission
  * in future can include subscription for events
