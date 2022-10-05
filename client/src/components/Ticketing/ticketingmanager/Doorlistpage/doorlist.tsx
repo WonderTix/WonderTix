@@ -18,6 +18,12 @@ import {useAuth0} from '@auth0/auth0-react';
 
 const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.value as boolean} />);
 
+/**
+ * Used to check the guests in
+ * @param {boolean} isCheckedIn 
+ * @param {string} ticketID 
+ * @returns 
+ */
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   const {getAccessTokenSilently} = useAuth0();
   try {
@@ -40,6 +46,11 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   }
 };
 
+/**
+ * renders in the check in for guests
+ * @param {GridCellParams} params 
+ * @returns edits the checkInGuest value
+ */
 const renderCheckin = ((params: GridCellParams) =>
   <Checkbox
     color='primary'
@@ -47,6 +58,9 @@ const renderCheckin = ((params: GridCellParams) =>
     onChange={(e) => checkInGuest(e.target.checked, params.getValue(params.id, 'ticketno') as string)}
   />);
 
+/**
+ * columns uses name, vip, donorbadge, accomodations, num_tickets, arrived and renders
+ */
 const columns = [
   {field: 'name', headerName: 'Name', width: 200},
   {field: 'vip', headerName: 'VIP', width: 100, renderCell: renderCheckbox},
@@ -56,7 +70,10 @@ const columns = [
   {field: 'arrived', headerName: 'Arrived', width: 130, renderCell: renderCheckin},
 ];
 
-
+/**
+ * Doorlist gets data about the event, time of the event 
+ * @returns {ReactElement} DoorList also has a datagrid
+ */
 const DoorList = () => {
   const {getAccessTokenSilently} = useAuth0();
   const [doorList, setDoorList] = useState([]);

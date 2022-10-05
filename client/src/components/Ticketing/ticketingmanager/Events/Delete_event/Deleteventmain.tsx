@@ -3,6 +3,10 @@ import React from 'react';
 import Udash_nav from '../../udash_navbar';
 import DeleteEvents from './Deleteevent';
 
+/**
+ * Deletes the event from main
+ * @returns {Udash_nav, DeleteEvents} DeleteeventMain
+ */
 const Deleteeventmain = () => {
   return (
     <div className='flex flex-row'>

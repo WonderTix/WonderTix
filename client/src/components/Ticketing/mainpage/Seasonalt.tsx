@@ -1,7 +1,10 @@
 /* eslint-disable max-len */
 import React from 'react';
 
-
+/**
+ * Text about seasonal tickets
+ * @returns {ReactElement}
+ */
 const Seasonaltickets = () => {
   return (
     <div className='seasontickets w-full py-[10rem] px-4 bg-zinc-200'>

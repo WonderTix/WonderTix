@@ -16,10 +16,25 @@ import {openSnackbar} from '../../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 
+/**
+ * Maps edit data to the event props
+ * @param {NewEventData} initValues
+ */
 interface mapDataToEditEventProps {
   initValues: NewEventData;
 }
 
+/**
+ * Self explanatory
+ * @module
+ * @param {mapDataToEditEventProps} initValues
+ * @param params - useParams()
+ * @param nav - useNavigate()
+ * @param dispatch - useAppDispatch()
+ * @param ticketTypes, setTicketTypes - useState([])
+ * @param getAccessTokenSilently - useAuth0()
+ * @returns {ReactElement}
+ */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   const params = useParams();
   const nav = useNavigate();

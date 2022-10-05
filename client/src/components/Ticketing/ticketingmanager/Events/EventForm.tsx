@@ -17,6 +17,14 @@ import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
 import {Showing} from '../../../../interfaces/showing.interface';
 
+/**
+ * Type of ticket
+ * @module
+ * @param {number} id
+ * @param {string} name
+ * @param {number} price
+ * @param {number} concessions
+ */
 interface TicketType {
     id: number,
     name: string,
@@ -24,6 +32,17 @@ interface TicketType {
     concessions: number,
 }
 
+/**
+ * Used to create new event data
+ * @module
+ * @param {number} seasonID?
+ * @param {number} eventID?
+ * @param {string} eventName
+ * @param {string} eventDesc
+ * @param {boolean} isPublished
+ * @param {string} imageUrl - why is this name scheme different
+ * @param {Showing} showings 
+ */
 export interface NewEventData {
     seasonID?: number,
     eventID?: number,
@@ -43,6 +62,10 @@ function validate(formData: any): ValidationErrors {
   return (formData.showings?.length > 0) ? undefined : {error: 'Need one or more showings added'};
 }
 
+/**
+ * Sets initial state
+ * @param {Array} showings: DateTime: undefined, ticketType: undefined, ticketTypeId: undefined
+ */
 const initialState = {
   showings: [{
     DateTime: undefined,
@@ -51,13 +74,28 @@ const initialState = {
   }],
 };
 
-
+/**
+ * Used for submission
+ * @param {NewEventData} formData - starts void
+ * @param {TicketType} tickeTypes - starts empty
+ * @param {Partial<NewEventData>} InitialValues?
+ */
 interface EventFormProps {
     onSubmit: (formData: NewEventData) => void
     ticketTypes: TicketType[],
     initialValues?: Partial<NewEventData>,
 }
 
+/**
+ * Event Form values, set all of them
+ * @param eventName - initialValues.eventName || ''
+ * @param eventID - initialValues.eventID || -1
+ * @param eventDesc - initialValues.eventDesc || ''
+ * @param imageUrl - initialValues.imageUrl || ''
+ * @param isPublished - initialValues.isPublished || false
+ * @param showings - initialValues.showings || []
+ * @returns {Form} EventForm 
+ */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const def = (initialValues !== undefined) ? {

@@ -5,6 +5,10 @@ import EditEventPage from './EditEventPage';
 import {useParams} from 'react-router-dom';
 import {NewEventData} from '../EventForm';
 
+/**
+ * As the name says
+ * @returns {Udash_nav, EditsEventPage} or only Udash_nav if loading. and response.json() 
+ */
 const Editeventmain = () => {
   const params = useParams();
   const [loading, setLoading] = useState(true);

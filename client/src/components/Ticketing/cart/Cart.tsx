@@ -11,10 +11,19 @@ import {
 import {useNavigate} from 'react-router-dom';
 
 
+/**
+ * @param {Item} price: number, qty: number
+ * @param {function} itemCost - item: Item, item.price * item.qty
+ * @param {function} subtotalReducer - acc: number, item: Item, acc + itemCost(item)
+ */
 type Item = {price: number, qty: number}
 const itemCost = (item: Item) => item.price * item.qty;
 const subtotalReducer = (acc: number, item: Item) => acc + itemCost(item);
 
+/**
+ * Cart handler on clicks, resets and complete orders
+ * @returns {ReactElement}
+ */
 const Cart = () => {
   const history = useNavigate();
   const navigate = useNavigate();

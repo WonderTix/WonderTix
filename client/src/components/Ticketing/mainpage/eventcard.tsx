@@ -5,6 +5,11 @@ import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
 import {Event} from '../ticketingmanager/ticketing/ticketingSlice';
 
+/**
+ * Lists out all the event cards
+ * @param {Event} props 
+ * @returns {ReactElement}
+ */
 const ListComponent = (props: Event) => {
   const navigate = useNavigate();
   console.log('Props:', props);

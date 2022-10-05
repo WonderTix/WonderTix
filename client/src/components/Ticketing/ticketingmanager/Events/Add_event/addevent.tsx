@@ -14,6 +14,11 @@
 import React, {useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 
+/**
+ * Used to help create events
+ * @module
+ * @returns {ReactElement} and other event changes
+ */
 export default function CreateEvents() {
   const [eventName, setEventName] = useState('');
   const [eventDesc, setEventDesc] = useState('');

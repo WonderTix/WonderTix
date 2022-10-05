@@ -17,6 +17,11 @@ import {fetchTicketingData} from '../ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../../app/hooks';
 import {useNavigate} from 'react-router-dom';
 
+/**
+ * Uses dispatch, navigate, allEvents, and getData
+ * @module
+ * @returns {ReactElements} and dispatch(fetchTicketingData()) 
+ */
 const InstancesPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

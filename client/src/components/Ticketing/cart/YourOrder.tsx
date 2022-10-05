@@ -18,8 +18,13 @@ import {
 import {useNavigate} from 'react-router';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 
+/**Math to dollar - `$${(Math.round(x * 100) / 100).toFixed(2)}` */
 const toDollar = (x: number) => `$${(Math.round(x * 100) / 100).toFixed(2)}`;
 
+/**
+ * Used to handle your order by using the app selector
+ * @returns {ReactElement}
+ */
 const YourOrder = () => {
   const history = useNavigate();
   const cartIds = useAppSelector(selectCartIds);
