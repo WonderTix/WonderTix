@@ -16,20 +16,28 @@ import {useAppDispatch} from '../../../Ticketing/app/hooks';
 import {openSnackbar} from '../../../Ticketing/ticketingmanager/snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 
-
+/**
+ * Manage Users accounts, reset password, delete account and add new account
+ * @return {ReactElement}
+ */
 export default function ManageAccounts() {
+/** @param {any} rows - Accounts table rows */
   const [rows, setRows] = useState([]);
+  /** @param {string} username - Username */
   const [username, setUsername] = useState('');
+  /** @param {string} password - password */
   const [password, setPassword] = useState('');
   const dispatch = useAppDispatch();
   const {getAccessTokenSilently} = useAuth0();
 
   const getAccounts = async () => {
     try {
+      /** @param {string} token - AccessToken */
       const token = await getAccessTokenSilently({
         audience: 'https://localhost:8000',
         scope: 'admin',
       });
+      /** @param {Response} r - Get data from Accounts Table */
       const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -38,6 +46,7 @@ export default function ManageAccounts() {
         method: 'GET',
       });
       if (r.ok) {
+        /** @param {any} accounts - Accounts data */
         const accounts = await r.json();
         setRows(accounts.data);
       } else {
@@ -55,10 +64,12 @@ export default function ManageAccounts() {
 
   const deleteUser = (userid: number) => async () => {
     try {
+      /** @param {string} token - AccessToken */
       const token = await getAccessTokenSilently({
         audience: 'https://localhost:8000',
         scope: 'admin',
       });
+      /** @param {Response} r - Delete data from Accounts Table */
       const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts/${userid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -74,9 +85,9 @@ export default function ManageAccounts() {
       console.log(error.message);
     }
   };
-
   const submitNewUser = async (e: any) => {
     e.preventDefault();
+    /** @param {Response} r - Post data to Accounts Table */
     const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
       body: JSON.stringify({username, password}),
       credentials: 'include',
@@ -98,6 +109,7 @@ export default function ManageAccounts() {
   };
 
   const editUser = async (userid: number, user: {}) => {
+    /** @param {string} token - AccessToken */
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',

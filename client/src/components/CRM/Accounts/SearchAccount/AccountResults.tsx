@@ -1,5 +1,8 @@
 import React from 'react';
-
+/**
+ * Return account results after performing account search
+ * @return {ReactElement}
+ */
 const AccountResults = ({
   data,
 }: {

@@ -4,7 +4,10 @@ import {
   contactFiltersSwitch,
 } from '../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * Contact panal in reporting
+ * @return {ReactElement}
+ */
 const ContactsPanel = ({
   fetchData,
   setOpen,

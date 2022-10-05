@@ -13,7 +13,10 @@ import {
   donationHeaders,
 } from '../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * Saved panal in reporting
+ * @return {ReactElement}
+ */
 const SavedPanel = ({
   setColumns,
   setRows,

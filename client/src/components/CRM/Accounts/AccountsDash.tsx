@@ -3,7 +3,10 @@
 // import React from 'react';
 // import Login from './Login';
 import {useNavigate} from 'react-router-dom';
-
+/**
+ * Account dashboard
+ * @return {ReactElement}
+ */
 const AccountsDash = () => {
   const navigate = useNavigate();
   return (
