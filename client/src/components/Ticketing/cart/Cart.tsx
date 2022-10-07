@@ -116,8 +116,8 @@ const Cart = () => {
               <div className='flex flex-col items-center gap-3 '>
 
                 <div className='flex flex-col items-center form-control disabled:opacity-50 '>
-                  <div className='input-group flex flex-row items-center w-full px-3 py-3 text-black rounded-xl bg-sky-500'>
-                    <input type="text" placeholder="Discount code..." className='input input-bordered' />
+                  <div className='input-group flex flex-row items-center w-full px-3 py-1 text-black rounded-xl bg-sky-500'>
+                    <input type="text" placeholder="Discount code..." className='input input-bordered rounded-md pl-2' />
                     <button className='btn btn-square bg-sky-500 ml-1'>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                         stroke="white"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
