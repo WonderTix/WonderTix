@@ -120,7 +120,7 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
   );
 
 /**addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer*/
-const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean}>> = (state, action) => {
+const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean }>> = (state, action) => {
   const {id, qty, concessions} = action.payload;
   const tickets = state.tickets;
 
