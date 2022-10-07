@@ -66,7 +66,6 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
               </svg>
             </button>
           </div>
-
           <div className='text-white font-semibold'>{toDollarAmount(cost)}</div>
           <button className='text-white'
             aria-label={`Remove ${item.name} from cart`}
@@ -77,7 +76,6 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
             </svg>
           </button>
         </div>
-
       </div>
     </div>
   );

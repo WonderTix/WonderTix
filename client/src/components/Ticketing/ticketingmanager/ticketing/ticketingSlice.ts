@@ -199,6 +199,7 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   const inCart = state.cart.find(byId(id));
   const validRange = bound(0, ticket.availableseats);
 
+
   if (inCart) {
     return {
       ...state,
