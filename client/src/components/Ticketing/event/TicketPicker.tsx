@@ -19,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {useReducer} from 'react';
+import React, {useEffect, useReducer} from 'react';
 
 /**
  * @module
@@ -173,8 +173,10 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       {selectedTicket ? format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a') : ''}
     </div>,
   };
+
   console.log(numAvail);
   console.log(selectedTicket);
+  useEffect(()=> console.log('Selected Ticket', {selectedTicket}), [selectedTicket]);
   return (
     <>
       <Collapse in={showClearBtn}>

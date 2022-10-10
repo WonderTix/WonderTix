@@ -1,4 +1,5 @@
 import Ticket from '../../interfaces/Ticket';
+import {buildResponse, response} from '../db';
 
 // remove $ and parse to float
 // this should be done better
@@ -27,5 +28,31 @@ const reduceToTicketState = (res: any, t: Ticket) => {
     {byId: {...byId, [id]: t}, allIds: [...allIds, id]};
 };
 
-export {toTicket, reduceToTicketState};
+// Function to create a new ticket type used by
+const createTicketType = async (params: any): Promise<response> => {
+  const myQuery = {
+    text:
+    `
+      INSERT INTO tickettype
+        VALUES (DEFAULT, $1, $2, $3, $4, $5)
+        RETURNING *
+    `,
+    values: [params.name, params.isseason, params.seasonid,
+      params.price, params.concessions],
+  };
+  console.log(params);
+  return buildResponse(myQuery, 'POST');
+};
+
+// Function for removing a ticket type
+const removeTicketType = async (id: string): Promise<response> => {
+  const myQuery = {
+    text: 'DELETE From tickettype WHERE id = $1',
+    values: [id],
+  };
+  return await buildResponse(myQuery, 'DELETE');
+};
+
+
+export {toTicket, reduceToTicketState, createTicketType, removeTicketType};
 

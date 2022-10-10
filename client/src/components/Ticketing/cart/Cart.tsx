@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import CartRow from './CartItem';
 import {toDollarAmount} from '../../../utils/arrays';
@@ -43,6 +43,8 @@ const Cart = () => {
   const [targetItem, setTargetItem] = useState<number|null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
   const [removeContextMessage, setRemoveContextMessage] = useState('');
+
+  useEffect(() => console.log(subtotal), [subtotal]);
 
   const resetModal = () => {
     setTargetItem(null);
@@ -120,7 +122,6 @@ const Cart = () => {
                     </svg>
                     Empty Cart
                   </div>
-
                 </button>
                 <button className='bg-yellow-600 px-3 py-2 flex flex-col items-center w-full text-white rounded-xl disabled:opacity-50 ' disabled={items.length === 0} onClick={navigateToCompleteOrder}>
                   <div className='flex flex-row items-center gap-1'>

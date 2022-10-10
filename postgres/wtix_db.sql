@@ -352,6 +352,20 @@ CREATE TABLE public.tickettype (
 );
 
 --
+-- Name: tickettype_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+CREATE SEQUENCE public.tickettype_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE public.tickettype_id_seq
+    OWNED BY public.tickettype.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 CREATE TABLE public.users (
@@ -586,7 +600,7 @@ ALTER TABLE ONLY public.linkedtickets
 --
 
  ALTER TABLE ONLY public.linkedtickets
-     ADD CONSTRAINT linkedtickets_ticket_type_fkey FOREIGN KEY (ticket_type) REFERENCES public.tickettype(id);
+     ADD CONSTRAINT linkedtickets_ticket_type_fkey FOREIGN KEY (ticket_type) REFERENCES public.tickettype(id) ON DELETE CASCADE;
 
 
 --
