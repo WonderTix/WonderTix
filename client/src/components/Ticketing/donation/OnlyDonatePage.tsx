@@ -60,7 +60,7 @@ export default function OnlyDonationPage(): ReactElement {
       <div className='flex flex-col w-full items-start'>
         <div className='text-sm text-zinc-600 ml-2'>Donation Amount $</div>
         <input
-          placeholder="donation amount"
+          placeholder="Donation Amount"
           onChange={(e) => setAmount(+e.target.value)}
           type="number"
           className='w-full mb-7 bg-zinc-200 text-black p-5 rounded-xl'
