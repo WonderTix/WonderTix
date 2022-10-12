@@ -40,5 +40,4 @@ services:
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASS}
     volumes:
-      - ./task_sql/create_task_table.sql:/docker-entrypoint-initdb.d/02-create_task_table.sql
-      - ./task_sql/wtix_dump_030422.sql:/docker-entrypoint-initdb.d/01-wtix_dump.sql
+      - ./task_sql/mywtix_dump.sql:/docker-entrypoint-initdb.d/wtix.sql
