@@ -32,6 +32,7 @@ import {subscriptionRouter} from './api/subscriptions/subscription.router';
 import {tasksRouter} from './api/tasks/tasks.router';
 import {taskNotesRouter} from './api/task_notes/task_notes.router';
 import {ticketRouter} from './api/tickets/ticket.router';
+import {discountsRouter} from './api/discounts/discounts.router';
 
 dotenv.config({path: path.join(__dirname, '../../.env')});
 
@@ -73,6 +74,7 @@ app.use('/api/email_subscriptions', subscriptionRouter);
 app.use('/api/tickets', ticketRouter);
 app.use('/api/doorlist', doorlistRouter);
 app.use('/webhook', orderRouter);
+app.use('/api/discounts', discountsRouter);
 
 app.get('/', (_req, res) => res.send('Hello World.'));
 
