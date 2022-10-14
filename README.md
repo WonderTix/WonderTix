@@ -1,4 +1,7 @@
 # WonderTix
+
+For the most current stable version see the 'main' branch.
+
 ## Overview
 Wondertix is a full-featured ticket sales plaform and CRM built for Portland Playhouse. It consists of a ticketing frontend, and ticketing and CRM administrative panels and will serve a variety of purposes, from managing email campaigns, to managing ticket sales.
 
