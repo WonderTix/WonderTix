@@ -13,6 +13,7 @@ const parseDate = (d : number) => {
   d -= year *10000;
   const month = d / 100 | 0;
   const day = d - month*100;
+  // month-1 because the month field is 0-indexed in JS
   return new Date(year, month-1, day);
 };
 
