@@ -5,26 +5,23 @@ import {pool, response, buildResponse} from '../db';
 export const getActiveEvents = async (): Promise<response> => {
   const myQuery = {
     text: `
-                      SELECT events.id,
-                      seasonid,
-                      eventname title,
-                      events.eventdescription description,
-                      events.active,
-                      events.image_url,
-                      count(event_instances.id) as numShows
-                      FROM events 
-                      JOIN event_instances 
-                      ON events.id = event_instances.eventid 
-                      GROUP BY events.id,
-                      events.seasonid,
-                      events.eventname,
-                      events.eventdescription,
-                      events.active,
-                      events.image_url,
-                      event_instances.salestatus
-                      HAVING active = true AND event_instances.salestatus = true
-                      ORDER BY id;
-                      `,
+          SELECT eventid id, 
+          seasonid, 
+          eventname title, 
+          eventdescription description, 
+          active, 
+          imageurl image_url, 
+          count(eventinstances.eventinstanceid) as numShows
+          FROM events natural join eventinstances
+          GROUP BY events.eventid,
+          events.seasonid,
+          events.eventname,
+          events.eventdescription,
+          events.active,
+          events.imageurl
+          HAVING active = true 
+          ORDER BY eventid;
+          `,
   };
 
   return buildResponse(myQuery, 'GET');

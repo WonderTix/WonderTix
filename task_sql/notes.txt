@@ -1,0 +1,3 @@
+From docker command line:
+  run 'psql -U postgres' to connect to the postgres server running in docker
+  run '\c wondertix' to connect to the database
