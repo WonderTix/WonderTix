@@ -6,6 +6,8 @@ import {buildResponse, response} from '../db';
 // check if $ in string, or maybe consider other forms of currency?
 const parseMoneyString = (s: string) => Number.parseFloat(s.replace('$', ''));
 
+// converts an integer representation of a date to a JS date object
+// 20220512 -> 2022-05-12 == May 12 2022
 const parseDate = (d : number) => {
   const year = d / 10000 | 0;
   d -= year *10000;
