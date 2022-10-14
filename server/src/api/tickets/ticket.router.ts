@@ -22,7 +22,8 @@ ticketRouter.get('/', async (req, res) => {
               price AS ticket_price,
               concessions AS concession_price
               FROM eventinstances NATURAL JOIN eventtickets NATURAL JOIN tickettype
-              WHERE availableseats > 0`;
+              WHERE availableseats > 0
+              AND salestatus = true`;
     const queryRes = await pool.query(qs);
     res.json(
         queryRes.rows

@@ -6,10 +6,20 @@ import {buildResponse, response} from '../db';
 // check if $ in string, or maybe consider other forms of currency?
 const parseMoneyString = (s: string) => Number.parseFloat(s.replace('$', ''));
 
+const parseDate = (d : number) => {
+  const year = d / 10000 | 0;
+  d -= year *10000;
+  const month = d / 100 | 0;
+  const day = d - month*100;
+  return new Date(year, month-1, day);
+};
+
+ 
+
 const toTicket = (row:any): Ticket => {
   const {eventdate, starttime, ...rest} = row;
   const [hour, min] = starttime.split(':');
-  const date = new Date(eventdate);
+  const date = parseDate(eventdate);
   date.setHours(hour, min);
   return {
     ...rest,
