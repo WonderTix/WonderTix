@@ -6,9 +6,9 @@ stripe_api = input("Please enter your Stripe Secret Key: ")
 while stripe_api == "":
     stripe_api = input("Key cannot be empty. Please enter your Stripe Secret Key: ")
 
-PG_DB = input("Please enter the desired postgres database name: ")
-while PG_DB == "":
-    PG_DB = input("Postgres database cannot be blank. Please enter the desired postgres database name: ")
+PG_DB = input("Please enter the desired postgres database name [wondertix]: ")
+if PG_DB == "":
+    PG_DB = input("wondertix")
 
 PG_USER = input("Please enter desired postgres username [postgres]: ")
 if PG_USER == "":
