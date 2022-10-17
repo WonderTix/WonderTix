@@ -3,6 +3,9 @@ import {fulfillOrder, refundOrder} from './order.service';
 
 export const orderRouter = express.Router();
 
+/* This route serves as a webhook to fulfill orders successfully processed by
+*  Stripe. See https://stripe.com/docs/api/events/retrieve for details on the request body
+*/
 orderRouter.post('/', async (req, res) => {
   // TESTING WIHT SOME SIGNATURE VERIFICATION
   // const payload = req.body;
