@@ -10,7 +10,7 @@ import ShowingInputContainer from './showingInputContainer';
  * @param {Showing[]} showsData
  * @param {Showing} show
  * @param {function} addShowData
- * @param {Showing[]} shows 
+ * @param {Showing[]} shows
  * @param {function} updateShows
  * @param {number} eventid
  */
@@ -24,7 +24,7 @@ interface ShowListControllerProps{
 /**
  * The shows handler
  * @param {ShowListControllerProps} showsData, addShowData, updateShows, eventid
- * @returns {ReactElement} and {ShowingInputContainer}
+ * @return {ReactElement} and {ShowingInputContainer}
  */
 const ShowListController = ({showsData, addShowData, updateShows, eventid}: ShowListControllerProps) => {
   const [shows, addShow] = useState(showsData ? showsData: []);
@@ -43,7 +43,8 @@ const ShowListController = ({showsData, addShowData, updateShows, eventid}: Show
       starttime: undefined,
       eventdate: undefined,
       salestatus: true,
-      ticketTypeId: 0,
+      ticketTypeId: [],
+      seatsForType: [],
       availableseats: 0,
       totalseats: 0,
     };
@@ -69,7 +70,7 @@ const ShowListController = ({showsData, addShowData, updateShows, eventid}: Show
         return (<ShowingInputContainer
           initialData={element}
           id={element.id} key={index}
-          addShow={addShowData} deleteShow={deleteShowing} />);
+          addShow={addShowData} deleteShow={deleteShowing}/>);
       })}
       <div>
         <button

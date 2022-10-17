@@ -31,6 +31,10 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
   const [totalseats, setTotalseats] = useState(initialData.totalseats !== undefined? initialData.totalseats: 0);
   const availableseates = initialData.availableseats !== undefined? initialData.availableseats: 0;
   const [ticketTypes, setTicketTypes] = useState([]);
+
+  let seatsForType = [];
+  let typesForShow = [];
+
   const dateFieldValue = eventdate.split('T');
   const fetchTicketTypes = async () => {
     const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
@@ -41,8 +45,22 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
     fetchTicketTypes();
   }, [initialData]);
 
+  const addToArray = () => {
+    seatsForType = [];
+    typesForShow = [];
+    const inputs = document.getElementsByName('numInput');
+    const selects = document.getElementsByName('typeSelect');
+    inputs.forEach((e: HTMLInputElement) => {
+      seatsForType.push(parseInt(e.value));
+    });
+    selects.forEach((e: HTMLSelectElement) => {
+      typesForShow.push(parseInt(e.value));
+    });
+  };
+
   // Generate the showing object to submit to parent component
   const createShowObject = (id) => {
+    addToArray();
     const showing: Showing = {
       id: id,
       eventid: initialData.eventid,
@@ -50,9 +68,11 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
       eventdate: eventdate,
       totalseats: totalseats,
       availableseats: availableseates? availableseates : totalseats,
-      ticketTypeId: 0,
+      ticketTypeId: typesForShow,
+      seatsForType: seatsForType,
       salestatus: true,
     };
+    console.log(showing);
     return showing;
   };
 
@@ -68,13 +88,61 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
     deleteShow(id);
   };
 
+  const createTicketOptions = (select: HTMLSelectElement) :HTMLSelectElement=> {
+    ticketTypes.map((t) => {
+      const newOp = document.createElement('option');
+      if (t.id == ticketTypeId) {
+        newOp.setAttribute('key', t.id);
+        newOp.setAttribute('value', t.id);
+        newOp.text = `${t.name}: ${t.price} (+ ${t.concessions} concessions)`;
+      } else {
+        newOp.setAttribute('key', t.id);
+        newOp.setAttribute('value', t.id);
+        newOp.text = `${t.name}: ${t.price} (+ ${t.concessions} concessions)`;
+      }
+      select.appendChild(newOp);
+    });
+    return select;
+  };
+
+  const addElement = (e) => {
+    const div = e.target.parentElement.firstChild;
+    const newDiv = document.createElement('div');
+    const input = document.createElement('input');
+    input.setAttribute('class', 'input rounded-lg p-2 bg-violet-100 w-full flex flex-col');
+    input.setAttribute('name', 'numInput');
+    input.setAttribute('type', 'number');
+    input.setAttribute('placeholder', '# of Seats');
+    let select = document.createElement('select');
+    select.setAttribute('class', 'p-2 rounded-lg bg-violet-100');
+    select.setAttribute('name', 'typeSelect');
+    const options = document.createElement('option');
+    options.setAttribute('class', 'text-sm text-zinc-700');
+    options.text = 'Select Ticket Type';
+
+    select.appendChild(options);
+    select = createTicketOptions(select);
+
+    newDiv.appendChild(input);
+    newDiv.appendChild(select);
+    newDiv.setAttribute('class', 'flex flex-col gap-5 mt-5 md:pr-20');
+
+    div.appendChild(newDiv);
+  };
+
+  const removeElement = (e) => {
+    const div = e.target.parentElement.firstChild;
+    div.removeChild(div.lastChild);
+  };
+
   return (
     <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={id}>
       <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
         <label className='font-semibold text-white mb-7 mt-7  '>Show # {id}</label>
-        <div className='flex flex-col gap-5 mt-5 pr-20'>
+        <div className='flex flex-col gap-5 mt-5 md:pr-20'>
+          <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
           <input
-            className='input rounded-lg p-2 bg-violet-100'
+            className='input rounded-lg p-2 bg-violet-100 w-full'
             value={totalseats}
             name={`${initialData.eventdate}`}
             type='number'
@@ -84,29 +152,19 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
               setTotalseats(parseInt(ev.target.value))
             }
           />
-          <select
-            className='p-2 rounded-lg bg-violet-100'
-            required
-            placeholder={'Select Ticket Type'}
-            onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
-              setTicketTypeId(ev.target.value)
-            }
-          >
-            <option className='text-sm text-zinc-700 '>Select Ticket Type</option>
-            {ticketTypes.map((t) =>
-                      t.id == ticketTypeId?
-                      <option key={t.id} value={t.id} selected>
-                        {`${t.name}: ${t.price} (+ ${t.concessions} concessions)`}
-                      </option > :
-                    <option key={t.id} value={t.id}>
-                      {`${t.name}: ${t.price} (+ ${t.concessions} concessions)`}
-                    </option >,
-            )}
-          </select>
-          <div className="flex flex-row gap-10">
+          <div className='w-full'>
+            <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
+            <button className='block px-2 py-1 bg-blue-500 disabled:opacity-30
+              mt-4 mb-2 text-white rounded-lg text-sm'
+            onClick={addElement}>Add Ticket Option</button>
+            <button className='block px-2 py-1 bg-red-500 disabled:opacity-30
+              mt-2 mb-4 text-white rounded-lg text-sm'
+            onClick={removeElement}>Remove Ticket Option</button>
+          </div>
+          <div className="flex md:flex-row gap-10 flex-col">
             <div>
               <h3 className='font-semibold text-white'>Enter Date</h3>
-              <input type="date" className='input w-full p-2 rounded-lg bg-violet-100 mb-7 '
+              <input type="date" className='input w-full p-2 rounded-lg bg-violet-100 mb-7'
                 value={dateFieldValue[0]}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setEventdate(ev.target.value);
