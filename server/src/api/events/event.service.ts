@@ -173,15 +173,15 @@ export const archivePlays = async (params: any): Promise<response> => {
     text: `
         UPDATE events 
         SET active = false 
-        WHERE id = $1;`,
+        WHERE eventid = $1;`,
     values: [id],
   };
   const intermediateResponse = await buildResponse(myQuery, 'UPDATE');
 
   myQuery.text = `
-      UPDATE event_instances 
-      SET salestatus=false 
-      WHERE eventid=$1;`;
+      UPDATE eventinstances 
+      SET salestatus = false 
+      WHERE eventinstanceid = $1;`;
 
   const secondResponse = await buildResponse(myQuery, 'UPDATE');
   secondResponse.data.concat(intermediateResponse.data);
@@ -193,7 +193,7 @@ export const createEvent = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
         INSERT INTO events 
-          (seasonid, eventname, eventdescription, active, image_url)
+          (seasonid, eventname, eventdescription, active, imageurl)
         VALUES (0, $1, $2, true, $3)
         RETURNING *;`,
     values: [params.eventName, params.eventDesc, params.imageUrl],
