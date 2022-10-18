@@ -1,0 +1,112 @@
+get:
+  type: object
+  properties:
+    data:
+      type: array
+      description: Returns all of the donations in the donation table. Requires Auth0 authentication with admin scope.
+      items:
+        $ref: '#/components/schemas/donations'
+    status:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Returns true on successful request
+          example: true
+        message:
+          type: string
+          description: Returns a brief description of the request status
+          example: Successfully retrieved 1 row.
+
+put:
+  type: object
+  properties:
+    data:
+      type: array
+      description: Updates data on the database and returns the created object.
+      items:
+        $ref: '#/components/schemas/donations'
+    status:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Returns true on successful request
+          example: true
+        message:
+          type: string
+          description: Returns a brief description of the request status
+          example: Successfully updated 1 row.
+
+post:
+  type: object
+  properties:
+    data:
+      type: array
+      description: Inserts data into the database and returns the created object.
+      items:
+        $ref: '#/components/schemas/donations'
+    status:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Returns true on successful request
+          example: true
+        message:
+          type: string
+          description: Returns a brief description of the request status
+          example: Successfully inserted 1 row.
+      
+
+reqbody:
+  $ref: '#/components/schemas/donations-body'
+
+      
+      
+components:
+  schemas:
+    donations-body:
+      type: object
+      properties:
+        donorid:
+          type: number
+          description: ID of the donor, tied to contact DB
+          example: 2
+        isanonymous:
+          type: boolean
+          description: Flag to determine if the user should be hidden on donor lists
+          example: false
+        amount:
+          type: cash
+          description: Amount of donation in dollars
+          example: $5
+        dononame:
+          type: string
+          description: Name of the donator
+          example: Lula Margarida
+        frequency:
+          type: string
+          description: Frequency of the donation
+          example: one-time
+        comments:
+          type: string -> Optional
+          description: User comment related to the donation
+          example: You guys are doing a great job and I wanted to support you further.
+        donodate:
+          type: string
+          description: Date the donation was processed
+          example: 2022-07-13
+    donations:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: number
+              description: ID of donation in the table
+              example: 0
+            payment_intent:
+              type: string
+              description: Payment intent to be used with Stripe
+              example: null
+        - $ref: '#/components/schemas/donations-body'

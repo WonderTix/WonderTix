@@ -9,4 +9,4 @@ RUN chown -R 1000:1000 /wondertix
 
 USER 1000:1000
 
-RUN npm install
+RUN npm install --force
