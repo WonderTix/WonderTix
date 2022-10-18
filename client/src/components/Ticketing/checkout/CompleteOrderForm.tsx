@@ -15,13 +15,13 @@ import React, {ReactElement, useState} from 'react';
 /**
  * Info for checkout form
  * @module
- * @param {boolean} optIn 
+ * @param {boolean} optIn
  * @param {string} firstName
  * @param {string} lastName
  * @param {string} streetAddress
  * @param {string} postalCode
  * @param {stirng} country
- * @param {string} phone 
+ * @param {string} phone
  * @param {string} email
  * @param {string} visitSource
  * @param {boolean} seatingAcc
@@ -43,7 +43,7 @@ export interface CheckoutFormInfo {
 
 /**
  * Used to complete order
- * @param {function} onSubmit 
+ * @param {function} onSubmit
  * @param {function} onBack
  * @param {boolean} disabled
  * @param {boolean} donationForm
@@ -194,7 +194,7 @@ export default function CompleteOrderForm(
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     <input type='checkbox' onChange={(): void =>
                       setOptIn(!optIn)} name="opt-in" />
-                    <div>I would like to receive email info from portland playhouse</div>
+                    <div>I would like to receive email info from Portland Playhouse</div>
                   </div>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     {!donationForm && <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
@@ -209,9 +209,8 @@ export default function CompleteOrderForm(
               </div>
 
               <div className='w-full flex flex-row justify-between'>
-                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40' type="submit">Next</button>
                 <button className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600' onClick={onBack}>Back</button>
-
+                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40' type="submit">Next</button>
               </div>
 
             </form>
