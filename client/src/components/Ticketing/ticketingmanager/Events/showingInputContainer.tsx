@@ -19,7 +19,7 @@ export interface MapPropsToShowingInputContainer {
 }
 
 /**
- * 
+ *
  * @param {MapPropsToShowingInputContainer} {initialData, id, addShow, deleteShow}
  * @returns {ReactElement}
  */
@@ -45,14 +45,16 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
     fetchTicketTypes();
   }, [initialData]);
 
-  const addToArray = () => {
+  const addToArray = (e) => {
     seatsForType = [];
     typesForShow = [];
-    const inputs = document.getElementsByName('numInput');
-    const selects = document.getElementsByName('typeSelect');
-    inputs.forEach((e: HTMLInputElement) => {
-      seatsForType.push(parseInt(e.value));
-    });
+    const div = e.target.parentElement;
+    const inputs = div.querySelectorAll('input');
+    const selects = div.querySelectorAll('select');
+    const len = inputs.length - 2;
+    for (let i = 1; i < len; i++) {
+      seatsForType.push(parseInt(inputs[i].value));
+    }
     selects.forEach((e: HTMLSelectElement) => {
       typesForShow.push(parseInt(e.value));
     });
@@ -60,7 +62,6 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
 
   // Generate the showing object to submit to parent component
   const createShowObject = (id) => {
-    addToArray();
     const showing: Showing = {
       id: id,
       eventid: initialData.eventid,
@@ -80,6 +81,7 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
   const handleClick = (event) => {
     event.preventDefault();
     //  use call back to get to parent state
+    addToArray(event);
     addShow(createShowObject(id));
   };
 
@@ -92,13 +94,13 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
     ticketTypes.map((t) => {
       const newOp = document.createElement('option');
       if (t.id == ticketTypeId) {
-        newOp.setAttribute('key', t.id);
-        newOp.setAttribute('value', t.id);
-        newOp.text = `${t.name}: ${t.price} (+ ${t.concessions} concessions)`;
+        newOp.setAttribute('key', t.tickettypeid);
+        newOp.setAttribute('value', t.tickettypeid);
+        newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
       } else {
-        newOp.setAttribute('key', t.id);
-        newOp.setAttribute('value', t.id);
-        newOp.text = `${t.name}: ${t.price} (+ ${t.concessions} concessions)`;
+        newOp.setAttribute('key', t.tickettypeid);
+        newOp.setAttribute('value', t.tickettypeid);
+        newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
       }
       select.appendChild(newOp);
     });
