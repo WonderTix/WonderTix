@@ -13,8 +13,6 @@ import {
  */
 
 export const discountsRouter = Router();
-//discountsRouter.use(checkJwt);
-//discountsRouter.use(checkScopes);
 
 /**
  * route: GET /count
@@ -22,11 +20,7 @@ export const discountsRouter = Router();
  * @type {?}
  */
 
-<<<<<<< Updated upstream
-discountsRouter.get('/', async(
-=======
 discountsRouter.get('/', checkJwt, checkScopes, async(
->>>>>>> Stashed changes
     req: Request,
     res: Response,
 ) => {
@@ -46,7 +40,7 @@ discountsRouter.get('/', checkJwt, checkScopes, async(
  * @type {?}
  */
 
-discountsRouter.post('/', async(
+discountsRouter.post('/', checkJwt, checkScopes, async(
     req: Request,
     res: Response,
 ) => {
@@ -65,7 +59,7 @@ discountsRouter.post('/', async(
  * @type {?}
  */
 
-discountsRouter.delete('/:id', async(
+discountsRouter.delete('/:id', checkJwt, checkScopes, async(
     req: Request,
     res: Response,
 ) => {
