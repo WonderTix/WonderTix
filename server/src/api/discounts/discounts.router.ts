@@ -22,7 +22,11 @@ export const discountsRouter = Router();
  * @type {?}
  */
 
+<<<<<<< Updated upstream
 discountsRouter.get('/', async(
+=======
+discountsRouter.get('/', checkJwt, checkScopes, async(
+>>>>>>> Stashed changes
     req: Request,
     res: Response,
 ) => {
