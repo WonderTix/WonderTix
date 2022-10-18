@@ -1,0 +1,73 @@
+get:
+  type: object
+  properties:
+    data:
+      type: array
+      description: Returns all of the customers for a specific doorlist. Requires Auth0 authentication with admin scope.
+      items:
+        $ref: '#/components/schemas/doorlist'
+    status:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Returns true on successful request
+          example: true
+        message:
+          type: string
+          description: Returns a brief description of the request status
+          example: Successfully retrieved 1 row.
+
+components:
+  schemas:
+    doorlist:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the customer
+          example: 1979
+        name:
+          type: string
+          description: Name of the customer
+          example: Adriena Annabel
+        val:
+          type: boolean
+          description: VIP status of customer
+          example: false
+        donorbadge:
+          type: string
+          description: Customer donor badge
+          example: false
+        accomodations:
+          type: boolean
+          description: Flag to determine if user needs accomodations
+          example: false
+        eventid:
+          type: integer
+          description: ID of the event that the customer is attending
+          example: 1
+        eventname:
+          type: string
+          description: Name of the event the customer is attending
+          example: The last cafe
+        event_instance_id:
+          type: integer
+          description: ID of the event instance
+          example: 22
+        eventdate:
+          type: data
+          description: Date of the event
+          example: 2021-01-28T00:00:00.000Z
+        starttime:
+          type: time
+          description: Start time of the event
+          example: 19:00:00
+        checkedin:
+          type: boolean
+          description: Flag to determine if user is checked in
+          example: false
+        num_tickets:
+          type: integer
+          description: Number of tickets purchased by the customer
+          example: 1
