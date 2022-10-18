@@ -59,7 +59,7 @@ discountsRouter.post('/', checkJwt, checkScopes, async(
  * @type {?}
  */
 
-discountsRouter.delete('/:id', checkJwt, checkScopes, async(
+discountsRouter.put('/:id', checkJwt, checkScopes, async(
     req: Request,
     res: Response,
 ) => {

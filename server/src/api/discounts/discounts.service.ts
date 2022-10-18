@@ -55,5 +55,5 @@ export const deleteDiscountCode = async (id: any): Promise<response> => {
     text: `UPDATE discounts SET usagelimit=0 WHERE discountid=$1;`,
     values: [id],
   };
-  return buildResponse(query, 'DELETE')
+  return buildResponse(query, 'PUT')
 };
