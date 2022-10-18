@@ -20,7 +20,7 @@ export const discountsRouter = Router();
  * @type {?}
  */
 
-discountsRouter.get('/', checkJwt, checkScopes async(
+discountsRouter.get('/', checkJwt, checkScopes, async(
     req: Request,
     res: Response,
 ) => {
