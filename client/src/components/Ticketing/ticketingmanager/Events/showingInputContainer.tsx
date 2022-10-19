@@ -158,9 +158,11 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
             <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
             <button className='block px-2 py-1 bg-blue-500 disabled:opacity-30
               mt-4 mb-2 text-white rounded-lg text-sm'
+            type='button'
             onClick={addElement}>Add Ticket Option</button>
             <button className='block px-2 py-1 bg-red-500 disabled:opacity-30
               mt-2 mb-4 text-white rounded-lg text-sm'
+            type='button'
             onClick={removeElement}>Remove Ticket Option</button>
           </div>
           <div className="flex md:flex-row gap-10 flex-col">
