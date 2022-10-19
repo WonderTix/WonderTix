@@ -6,23 +6,26 @@ export const getActiveEvents = async (): Promise<response> => {
   const myQuery = {
     text: `
         SELECT 
-          eventid id, 
-          seasonid, 
-          eventname title, 
-          eventdescription description, 
-          active, 
-          imageurl image_url, 
-          count(eventinstances.eventinstanceid) as numShows
-        FROM events natural join eventinstances
+          e.eventid id, 
+          e.seasonid_fk seasonid, 
+          e.eventname title, 
+          e.eventdescription description, 
+          e.active, 
+          e.imageurl image_url, 
+          count(ei.eventinstanceid) as numShows
+        FROM 
+          events e JOIN eventinstances ei ON e.eventid = ei.eventid_fk
         GROUP BY 
-          events.eventid,
-          events.seasonid,
-          events.eventname,
-          events.eventdescription,
-          events.active,
-          events.imageurl
-        HAVING active = true 
-        ORDER BY eventid;`,
+          e.eventid,
+          e.seasonid_fk,
+          e.eventname,
+          e.eventdescription,
+          e.active,
+          e.imageurl
+        HAVING 
+          e.active = true 
+        ORDER BY 
+          e.eventid;`,
   };
 
   return buildResponse(myQuery, 'GET');
