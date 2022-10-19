@@ -12,18 +12,23 @@ ticketRouter.get('/', async (req, res) => {
   try {
     const qs = `
               SELECT
-              eventinstanceid event_instance_id,
-              eventid,
-              eventdate,
-              eventtime starttime,
-              totalseats,
-              availableseats,
-              description AS admission_type,
-              price AS ticket_price,
-              concessions AS concession_price
-              FROM eventinstances NATURAL JOIN eventtickets NATURAL JOIN tickettype
-              WHERE availableseats > 0
-              AND salestatus = true`;
+                ei.eventinstanceid event_instance_id,
+                ei.eventid_fk eventid,
+                ei.eventdate,
+                ei.eventtime starttime,
+                ei.totalseats,
+                ei.availableseats,
+                tt.description AS admission_type,
+                tt.price AS ticket_price,
+                tt.concessions AS concession_price
+              FROM
+                eventtickets et
+                JOIN eventinstances ei ON et.eventinstanceid_fk = ei.eventinstanceid
+                JOIN tickettype tt on et.tickettypeid_fk = tt.tickettypeid
+              WHERE 
+                ei.availableseats > 0
+              AND 
+                ei.salestatus = true`;
     const queryRes = await pool.query(qs);
     res.json(
         queryRes.rows
