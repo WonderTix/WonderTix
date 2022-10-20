@@ -50,10 +50,25 @@ export const addDiscountCode = async (params: any): Promise<response> => {
  * @type {Promise<response>}
  */
 
-export const deleteDiscountCode = async (id: any): Promise<response> => {
+export const alterDiscountCode = async (id: any): Promise<response> => {
   const query = {
     text: `UPDATE discounts SET usagelimit=0 WHERE discountid=$1;`,
     values: [id],
   };
   return buildResponse(query, 'PUT')
+};
+
+
+/**
+ * query: Delete entry from db
+ *
+ * @type {Promise<response>}
+ */
+
+export const deleteDiscountCode = async (id: any): Promise<response> => {
+  const query = {
+    text: `DELETE FROM discounts WHERE discountid=$1;`,
+    values: [id],
+  };
+  return buildResponse(query, 'DELETE')
 };
