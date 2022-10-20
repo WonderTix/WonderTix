@@ -59,7 +59,7 @@ export const create = async (
 ): Promise<response> => {
   const myQuery = {
     text: `
-      INSERT INTO users
+      INSERT INTO users (username, auth0_id)
       VALUES ($1, $2)
       RETURNING *;`,
     values: [r.username, r.auth0_id],
@@ -67,28 +67,27 @@ export const create = async (
   return await buildResponse(myQuery, 'POST');
 };
 
-export const remove = async (id: any): Promise<response> => {
+export const remove = async (username: string): Promise<response> => {
   const myQuery = {
-    text: 'DELETE FROM users WHERE userid = $1;',
-    values: [id],
+    text: 'DELETE FROM users WHERE lower(username) = lower($1);',
+    values: [username]
   };
   return buildResponse(myQuery, 'DELETE');
 };
 
-export const update = async (b: {username: string, auth0_id: string, is_superadmin: boolean},
-    userid: any): Promise<response> => {
+export const update = async (b: any, userid: any): Promise<response> => {
   const myQuery = {
     text: `
       UPDATE users
-      SET (username, auth0_id, is_superadmin) = ($1::text, $2::text, $3::boolean)
+      SET (username, auth0_id, is_superadmin) = ($1, $2, $3)
       WHERE userid = $4
       RETURNING *;`,
     values: [
-      b.username,
-      b.auth0_id,
+      b.username === undefined ? '%' + b.username + '%' : b.username,
+      b.auth0_id === undefined ? '%' + b.auth0_id + '%' : b.auth0_id,
       b.is_superadmin,
       userid,
     ],
   };
-  return buildResponse(myQuery, 'UPDATE');
+  return buildResponse(myQuery, 'PUT');
 };
