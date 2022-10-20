@@ -8,7 +8,7 @@ import {response, buildResponse} from '../db';
 
 export const getNewsletterCount = async (params: any): Promise<response> => {
   const myQuery = {
-    text: 'SELECT COUNT(*) FROM customers WHERE email = $1',
+    text: 'SELECT COUNT(*) FROM customers WHERE email = $1;',
     values: [params.email],
   };
   return buildResponse(myQuery, 'GET');
@@ -22,9 +22,14 @@ export const getNewsletterCount = async (params: any): Promise<response> => {
 
 export const updateNewsletter = async (params: any): Promise<response> => {
   const myQuery = {
-    text: `UPDATE public.customers
-                  SET newsletter=$1, "volunteer list"=$2
-                  WHERE email = $3;`,
+    text: `
+          UPDATE 
+            customers
+          SET 
+            newsletter = $1,
+            volunteerlist = $2
+          WHERE 
+            email = $3;`,
     values: [params.news_opt, params.volunteer_opt, params.email],
   };
   return buildResponse(myQuery, 'UPDATE');
@@ -38,19 +43,25 @@ export const updateNewsletter = async (params: any): Promise<response> => {
 
 export const insertNewsletter = async (params: any): Promise<response> => {
   const myQuery = {
-    text: `INSERT INTO public.customers (
-                  custname, 
-                  email, 
-                  phone, 
-                  custaddress, 
-                  newsletter, 
-                  donorbadge, 
-                  seatingaccom, 
-                  vip, 
-                  "volunteer list")
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
+    // Possible breaking change custname -> firstname, lastname
+    text: `
+          INSERT INTO 
+            customers(
+                firstname,
+                lastname, 
+                email, 
+                phone, 
+                custaddress, 
+                newsletter, 
+                donorbadge, 
+                seatingaccom, 
+                vip, 
+                volunteerlist)
+          VALUES 
+            ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
     values: [
-      params.custname,
+      params.firstname,
+      params.lastname,
       params.email,
       params.phone,
       params.custaddress,
