@@ -2,19 +2,17 @@ import {Router, Response, Request} from 'express';
 import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
 import {pool} from '../db';
-import {
-  checkIn,
-  getEventById,
-  getEventByName,
-  getActiveEventsAndInstances,
-  createEvent,
-  createShowing,
-  updateEvent,
-  archivePlays,
-  getActiveEvents,
-  updateInstances,
-  getInstanceById,
-} from './event.service';
+import {checkIn,
+        getEventById,
+        getEventByName,
+        getActiveEventsAndInstances,
+        createEvent,
+        createShowing,
+        updateEvent,
+        archivePlays,
+        getActiveEvents,
+        updateInstances,
+        getInstanceById} from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
 
@@ -97,7 +95,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
   let emailExists = false;
   try {
     const emails = await pool.query(
-        'SELECT COUNT(*) FROM customers WHERE email = $1',
+        'SELECT COUNT(*) FROM customers WHERE email = $1;',
         [req.body.formData.email],
     );
     emailExists = +emails.rows[0].count > 0;
@@ -107,23 +105,24 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
   }
   if (emailExists === false) {
     try {
+      // Possible breaking change custname -> firstname, lastname
       const query = `
-                      INSERT INTO customers (
-                          custname, 
+                    INSERT INTO 
+                      customers (
+                          firstname,
+                          lastname, 
                           email, 
                           phone, 
                           custaddress, 
                           newsletter, 
                           donorbadge, 
-                          seatingaccom
-                      )
-                      VALUES ($1, $2, $3, $4, $5, $6, $7)
-                    `;
+                          seatingaccom)
+                    VALUES 
+                      ($1, $2, $3, $4, $5, $6, $7, $8);`;
       await pool.query(
           query,
           [
-            firstName +
-            ' ' +
+            firstName,
             lastName,
             email,
             phone,
@@ -140,22 +139,26 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     try {
       const values = [
         email,
-        firstName + ' ' + lastName,
+        firstName,
+        lastName,
         phone,
         streetAddress,
         optIn,
         seatingAcc,
       ];
+      // Possible breaking change custname -> firstname, lastname
       const query = `
-                      UPDATE public.customers
-                      SET 
-                        custname=$2,
-                        phone=$3, 
-                        custaddress=$4,
-                        newsletter=$5,
-                        seatingaccom=$6
-                      WHERE email=$1;
-                    `;
+                    UPDATE 
+                      customers
+                    SET 
+                      firstname = $2,
+                      lastname = $3,
+                      phone = $4, 
+                      custaddress = $5,
+                      newsletter = $6,
+                      seatingaccom = $7
+                    WHERE 
+                      email=$1;`;
       await pool.query(query, values);
     } catch (error: any) {
       console.log(error);
@@ -166,10 +169,17 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
   let customerID = null;
 
   try {
-    const query = `SELECT id FROM customers WHERE custname = $1`;
+    // Possible breaking change custname -> firstname, lastname
+    const query = `
+                  SELECT 
+                    customerid 
+                  FROM 
+                    customers 
+                  WHERE 
+                    firstname = $1 AND lastname = $2;`;
     customerID = await pool.query(
         query,
-        [firstName + ' ' + lastName],
+        [firstName, lastName],
     );
     customerID = customerID.rows[0].id;
     // const formData: CheckoutFormInfo = req.body.formData;
