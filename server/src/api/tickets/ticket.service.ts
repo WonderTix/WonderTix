@@ -19,7 +19,7 @@ const parseIntToDate = (d : number) => {
 
  
 
-const toTicket = (row:any): Ticket => {
+export const toTicket = (row:any): Ticket => {
   const {eventdate, starttime, ...rest} = row;
   const [hour, min] = starttime.split(':');
   const date = parseIntToDate(eventdate);
@@ -33,7 +33,7 @@ const toTicket = (row:any): Ticket => {
   };
 };
 
-const reduceToTicketState = (res: any, t: Ticket) => {
+export const reduceToTicketState = (res: any, t: Ticket) => {
   const id = t.event_instance_id;
   const {byId, allIds} = res;
   return allIds.includes(id) ?
@@ -42,30 +42,38 @@ const reduceToTicketState = (res: any, t: Ticket) => {
 };
 
 // Function to create a new ticket type used by
-const createTicketType = async (params: any): Promise<response> => {
+export const createTicketType = async (params: any): Promise<response> => {
   const myQuery = {
+    // Breaking change, fewer values required
     text:`
-      INSERT INTO 
-        tickettype
-      VALUES 
-        (DEFAULT, $1, $2, $3, $4, $5)
-      RETURNING *;`,
-    values: [params.name, params.isseason, params.seasonid,
-      params.price, params.concessions],
+          INSERT INTO 
+            tickettype (
+                description,
+                price,
+                concessions)
+          VALUES 
+            ($1, $2, $3)
+          RETURNING *;`,
+    values: [
+      params.name,
+      params.price, 
+      params.concessions],
   };
   console.log(params);
   return buildResponse(myQuery, 'POST');
 };
 
 // Function for removing a ticket type
-const removeTicketType = async (id: string): Promise<response> => {
+export const removeTicketType = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'DELETE FROM tickettype WHERE id = $1',
+    text: `
+          UPDATE 
+            tickettype 
+          SET
+            depracated = true
+          WHERE 
+            tickettypeid = $1;`,
     values: [id],
   };
   return await buildResponse(myQuery, 'DELETE');
 };
-
-
-export {toTicket, reduceToTicketState, createTicketType, removeTicketType};
-
