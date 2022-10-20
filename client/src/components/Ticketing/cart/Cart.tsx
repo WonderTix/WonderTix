@@ -22,7 +22,7 @@ const subtotalReducer = (acc: number, item: Item) => acc + itemCost(item);
 
 /**
  * Cart handler on clicks, resets and complete orders
- * @returns {ReactElement}
+ * @return {ReactElement}
  */
 const Cart = () => {
   const history = useNavigate();
@@ -114,7 +114,20 @@ const Cart = () => {
                 <div className='text-white'>{toDollarAmount(subtotal)}</div>
               </div>
 
-              <div className='flex flex-col items-center gap-3'>
+
+              <div className='flex flex-col items-center gap-3 '>
+
+                <div className='flex flex-col items-center form-control disabled:opacity-50 '>
+                  <div className='input-group flex flex-row items-center w-full px-3 py-1 text-black rounded-xl bg-sky-500'>
+                    <input type="text" placeholder="Discount code..." className='input input-bordered rounded-md pl-2' />
+                    <button className='btn btn-square bg-sky-500 ml-1'>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="white"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </button>
+                  </div>
+                </div>
+
                 <button className='bg-red-600 flex flex-col items-center w-full px-3 py-3 text-white rounded-xl disabled:opacity-50 'disabled={items.length === 0} onClick={removeAllCartItems}>
                   <div className='flex flex-row items-center gap-1'>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

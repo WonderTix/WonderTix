@@ -6,23 +6,26 @@ export const getActiveEvents = async (): Promise<response> => {
   const myQuery = {
     text: `
         SELECT 
-          eventid id, 
-          seasonid, 
-          eventname title, 
-          eventdescription description, 
-          active, 
-          imageurl image_url, 
-          count(eventinstances.eventinstanceid) as numShows
-        FROM events natural join eventinstances
+          e.eventid id, 
+          e.seasonid_fk seasonid, 
+          e.eventname title, 
+          e.eventdescription description, 
+          e.active, 
+          e.imageurl image_url, 
+          count(ei.eventinstanceid) as numShows
+        FROM 
+          events e JOIN eventinstances ei ON e.eventid = ei.eventid_fk
         GROUP BY 
-          events.eventid,
-          events.seasonid,
-          events.eventname,
-          events.eventdescription,
-          events.active,
-          events.imageurl
-        HAVING active = true 
-        ORDER BY eventid;`,
+          e.eventid,
+          e.seasonid_fk,
+          e.eventname,
+          e.eventdescription,
+          e.active,
+          e.imageurl
+        HAVING 
+          e.active = true 
+        ORDER BY 
+          e.eventid;`,
   };
 
   return buildResponse(myQuery, 'GET');
@@ -64,6 +67,7 @@ export const updateInstances = async (
     params: any,
 ): Promise<response> => {
   const instances: Showing[] = body;
+  console.log("Instances", instances);
 
   // get existing showings for this event
   const currentShowings = await getShowingsById(params.id);
@@ -88,6 +92,7 @@ export const updateInstances = async (
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
   rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
 
+  console.log("Rows to insert", rowsToInsert);
   const rowsInserted = (await insertAllShowings(rowsToInsert));
 
   return {
@@ -173,15 +178,15 @@ export const archivePlays = async (params: any): Promise<response> => {
     text: `
         UPDATE events 
         SET active = false 
-        WHERE id = $1;`,
+        WHERE eventid = $1;`,
     values: [id],
   };
   const intermediateResponse = await buildResponse(myQuery, 'UPDATE');
 
   myQuery.text = `
-      UPDATE event_instances 
-      SET salestatus=false 
-      WHERE eventid=$1;`;
+      UPDATE eventinstances 
+      SET salestatus = false 
+      WHERE eventinstanceid = $1;`;
 
   const secondResponse = await buildResponse(myQuery, 'UPDATE');
   secondResponse.data.concat(intermediateResponse.data);
@@ -193,7 +198,7 @@ export const createEvent = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
         INSERT INTO events 
-          (seasonid, eventname, eventdescription, active, image_url)
+          (seasonid, eventname, eventdescription, active, imageurl)
         VALUES (0, $1, $2, true, $3)
         RETURNING *;`,
     values: [params.eventName, params.eventDesc, params.imageUrl],
