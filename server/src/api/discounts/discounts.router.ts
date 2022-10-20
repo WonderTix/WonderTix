@@ -100,7 +100,7 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async (
 
 
 /**
- * route: DELETE /
+ * route: PUT /
  *
  * @type {?}
  */
