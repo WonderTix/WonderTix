@@ -1,0 +1,22 @@
+When creating your .env file (python script):
+  Leave the username and password as the defaults: 'postgres'
+  Set the database name as: 'wondertix'
+
+
+Connecting PGAdmin to the DB in docker:
+  Download PGAdmin: https://www.pgadmin.org/download/
+  Start the docker project
+  Open PGAdmin and select 'Add New Server'
+    Under the 'General' tab, give the server a name
+    Under the 'Connection' tab:
+      Set hostname/address to 'localhost'
+      Verify Port is set to 5432
+      Set username/password to the same values in your .env file (postgres default for both)
+  Click save and you will be connected
+
+
+Access the docker command line from Docker Desktop, by selecting the running
+postgres container and clicking the 'CLI' button
+To connect to the DB from docker command line:
+  run 'psql -U postgres' to connect to the postgres server running in docker
+  run '\c wondertix' to connect to the database

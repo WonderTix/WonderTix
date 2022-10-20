@@ -10,21 +10,25 @@ export const ticketRouter = express.Router();
 // Responds with tickets subset of Redux state
 ticketRouter.get('/', async (req, res) => {
   try {
-    const qs = `SELECT
-                  ei.id AS event_instance_id,
-                  eventid,
-                  eventdate,
-                  starttime,
-                  totalseats,
-                  availableseats,
-                  tt.name AS admission_type,
-                  price AS ticket_price,
-                  concessions AS concession_price
-              FROM event_instances ei
-                  JOIN linkedtickets lt ON ei.id=lt.event_instance_id
-                  JOIN tickettype tt ON lt.ticket_type=tt.id
-              WHERE salestatus=true AND isseason=false AND availableseats > 0
-              ORDER BY ei.id, event_instance_id;`;
+    const qs = `
+              SELECT
+                ei.eventinstanceid event_instance_id,
+                ei.eventid_fk eventid,
+                ei.eventdate,
+                ei.eventtime starttime,
+                ei.totalseats,
+                ei.availableseats,
+                tt.description AS admission_type,
+                tt.price AS ticket_price,
+                tt.concessions AS concession_price
+              FROM
+                eventtickets et
+                JOIN eventinstances ei ON et.eventinstanceid_fk = ei.eventinstanceid
+                JOIN tickettype tt on et.tickettypeid_fk = tt.tickettypeid
+              WHERE 
+                ei.availableseats > 0
+              AND 
+                ei.salestatus = true`;
     const queryRes = await pool.query(qs);
     res.json(
         queryRes.rows

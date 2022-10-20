@@ -1,6 +1,9 @@
 # WonderTix
+
+For the most current stable version see the 'main' branch.
+
 ## Overview
-Wondertix is a full-featured ticket sales plaform and CRM built for Portland Playhouse. It consists of a ticketing frontend, and ticketing and CRM administrative panels and will serve a variety of purposes, from managing email campaigns, to managing ticket sales.
+Wondertix is a full-featured ticket sales platform and CRM built for Portland Playhouse. It consists of a user ticketing system as well as both ticketing and CRM administrative panels. This project serves a variety of purposes including managing task assignments, financial reporting, and handling ticket sales. Future features include managing/creating email campaigns and ticket exchanges. 
 
 ## Setup
 There are two says to set this project up. Either directly by installing postgres and using npm, or by using docker. Docker is by far the easier method of installation.
