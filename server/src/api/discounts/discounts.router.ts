@@ -4,6 +4,7 @@ import {
   getDiscountCodes,
   addDiscountCode,
   deleteDiscountCode,
+  alterDiscountCode,
 } from './discounts.service';
 
 /**
@@ -54,12 +55,32 @@ discountsRouter.post('/', checkJwt, checkScopes, async(
 });
 
 /**
- * route: DELETE /
+ * route: PUT /
  *
  * @type {?}
  */
 
 discountsRouter.put('/:id', checkJwt, checkScopes, async(
+    req: Request,
+    res: Response,
+) => {
+    try {
+      const oldCode = await alterDiscountCode(req.params.id);
+      const code = oldCode.status.success ? 200 : 404;
+      res.status(code).send(oldCode);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
+});
+
+
+/**
+ * route: DELETE /
+ *
+ * @type {?}
+ */
+
+discountsRouter.delete('/:id', checkJwt, checkScopes, async(
     req: Request,
     res: Response,
 ) => {
