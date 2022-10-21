@@ -50,7 +50,7 @@ export const createTask = async (r: any): Promise<response> => {
       r.due_date, 
       r.rel_contact,
       r.rel_donation, 
-      r.rel_ticket_order, 
+      r.rel_order, 
       r.rel_account],
   };
   return await buildResponse(myQuery, 'POST');
@@ -81,7 +81,7 @@ export const updateTask = async (r: any): Promise<response> => {
             datedue,
             rel_contact,
             rel_donation,
-            rel_ticket_order,
+            rel_order,
             rel_account) = 
             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           WHERE 
