@@ -14,8 +14,8 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../../Pop-up';
 const formatShowingData = (eventid: number) => (data: any) => {
-  const {starttime, eventdate, totalseats, ticketTypeId} = data;
-  return {eventid, eventdate, starttime, totalseats, tickettype: ticketTypeId};
+  const {starttime, eventdate, totalseats, ticketTypeIds} = data;
+  return {eventid, eventdate, starttime, totalseats, tickettypes: ticketTypeIds};
 };
 
 /**
@@ -60,7 +60,6 @@ const CreateEventPage = () => {
       const {id} = eventData.data[0];
       const showingdata = showings.map(formatShowingData(id));
 
-
       const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
         headers: {
@@ -87,8 +86,8 @@ const CreateEventPage = () => {
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+      <div className='md:ml-[18rem] md:mr-[5rem] sm:mt-40 sm:mt-[11rem]
+       sm:mr-[2rem] sm:ml-[2rem] sm:mb-[11rem]'>
         {visible == true ?
         <PopUp message='New event has been successfully added.' title="Success" handleClose={handleClose} /> :
          <></> }
