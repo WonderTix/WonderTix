@@ -3,7 +3,7 @@ get:
   properties:
     data:
       type: array
-      description: Returns all of the customers for a specific doorlist. Requires Auth0 authentication with admin scope.
+      description: Returns all of the contacts for a specific doorlist. Requires Auth0 authentication with admin scope.
       items:
         $ref: '#/components/schemas/doorlist'
     status:

@@ -95,7 +95,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
   let emailExists = false;
   try {
     const emails = await pool.query(
-        'SELECT COUNT(*) FROM customers WHERE email = $1;',
+        'SELECT COUNT(*) FROM contacts WHERE email = $1;',
         [req.body.formData.email],
     );
     emailExists = +emails.rows[0].count > 0;
@@ -108,7 +108,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       // Possible breaking change custname -> firstname, lastname
       const query = `
                     INSERT INTO 
-                      customers (
+                      contacts (
                           firstname,
                           lastname, 
                           email, 
@@ -149,7 +149,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       // Possible breaking change custname -> firstname, lastname
       const query = `
                     UPDATE 
-                      customers
+                      contacts
                     SET 
                       firstname = $2,
                       lastname = $3,
@@ -174,7 +174,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                   SELECT 
                     customerid 
                   FROM 
-                    customers 
+                    contacts 
                   WHERE 
                     firstname = $1 AND lastname = $2;`;
     customerID = await pool.query(

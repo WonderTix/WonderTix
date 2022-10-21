@@ -8,7 +8,7 @@ import {response, buildResponse} from '../db';
 
 export const getNewsletterCount = async (params: any): Promise<response> => {
   const myQuery = {
-    text: 'SELECT COUNT(*) FROM customers WHERE email = $1;',
+    text: 'SELECT COUNT(*) FROM contacts WHERE email = $1;',
     values: [params.email],
   };
   return buildResponse(myQuery, 'GET');
@@ -24,7 +24,7 @@ export const updateNewsletter = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
           UPDATE 
-            customers
+            contacts
           SET 
             newsletter = $1,
             volunteerlist = $2
@@ -46,7 +46,7 @@ export const insertNewsletter = async (params: any): Promise<response> => {
     // Possible breaking change custname -> firstname, lastname
     text: `
           INSERT INTO 
-            customers(
+            contacts (
                 firstname,
                 lastname, 
                 email, 
