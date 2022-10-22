@@ -1,14 +1,16 @@
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {DataGrid} from '@mui/x-data-grid';
 import Chip from '@mui/material/Chip';
 import {useAuth0} from '@auth0/auth0-react';
 
+// Web page that manages ticket types
 const TicketTypes = () => {
-  const [ticketTypes, setTicketTypes] = useState([]);
+  // const [ticketTypes, setTicketTypes] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
 
 
+  // Defines the columns of the grid
   const columns = [
     {field: 'type', headerName: 'Ticket Type', width: 300},
     {field: 'price', headerName: 'Price', width: 150},
@@ -17,7 +19,7 @@ const TicketTypes = () => {
       headerName: 'Edit',
       sortable: false,
       width: 100,
-      renderCell: (params) => {
+      renderCell: () => {
         return (
           <Chip
             label="Edit"
@@ -31,7 +33,7 @@ const TicketTypes = () => {
       headerName: 'Delete',
       sortable: false,
       width: 100,
-      renderCell: (params) => {
+      renderCell: () => {
         return (
           <Chip
             label="Delete"
@@ -39,19 +41,22 @@ const TicketTypes = () => {
             onClick={handleDeleteClick}
           />
         );
-      }
+      },
     },
   ];
 
+  // handles the click event of the edit button
   const handleEditClick = () => {
     console.log('Edit Clicked');
   };
 
+  // handles the click event of the delete button
   const handleDeleteClick = () => {
     console.log('Delete Clicked');
   };
 
 
+  // Fetches all the ticket types from the API in the backend
   const getTicketTypes = async () => {
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
@@ -67,7 +72,9 @@ const TicketTypes = () => {
       const jsonRes = await response.json();
       const jsonData = jsonRes.data;
 
-      setTicketTypes(jsonData);
+      console.log(jsonData);
+
+      // setTicketTypes(jsonData);
     } catch (error) {
       console.error(error.message);
     }
@@ -76,7 +83,7 @@ const TicketTypes = () => {
     getTicketTypes();
   }, []);
 
-  // General Admission, Arts for All, Access, Previews tickets
+  // Defines the rows of the grid with dummy data of ticket types
   const data = [
     {id: 1, type: 'General Admission - Adult', price: '$39.50', edit: 'Edit',
       delete: 'Delete'},
