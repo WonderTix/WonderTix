@@ -15,7 +15,8 @@ export interface Showing {
     starttime: string,
     eventdate: string,
     salestatus: boolean,
-    ticketTypeId: number,
+    ticketTypeId: number[],
+    seatsForType: number[],
     totalseats: number,
     availableseats: number
   }
