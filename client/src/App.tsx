@@ -31,6 +31,8 @@ import Manageventmain from './components/Ticketing/ticketingmanager/Events/Manag
 import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsletter/NewsletterCreatemain';
 import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showingsmain';
 import showingmain from './components/Ticketing/ticketingmanager/showings/showing/showingmain';
+import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
+
 const App = () => {
   return (
     <>
@@ -82,7 +84,7 @@ const App = () => {
         <Route path="/ticketing/addnewsletter" element={<ProtectedRoute component={NewsletterCreatemain} />} />
         <Route path="/ticketing/showings" element={<ProtectedRoute component={Showingsmain} />} />
         <Route path="/ticketing/showings/:eventid" element={<ProtectedRoute component={showingmain} />} />
-
+        <Route path="/ticketing/tickettypes" element={<ProtectedRoute component={Tickettypesmain} />} />
       </Routes>
     </>
   );
