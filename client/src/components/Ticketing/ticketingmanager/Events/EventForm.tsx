@@ -41,7 +41,7 @@ interface TicketType {
  * @param {string} eventDesc
  * @param {boolean} isPublished
  * @param {string} imageUrl - why is this name scheme different
- * @param {Showing} showings 
+ * @param {Showing} showings
  */
 export interface NewEventData {
     seasonID?: number,
@@ -94,7 +94,7 @@ interface EventFormProps {
  * @param imageUrl - initialValues.imageUrl || ''
  * @param isPublished - initialValues.isPublished || false
  * @param showings - initialValues.showings || []
- * @returns {Form} EventForm 
+ * @returns {Form} EventForm
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
@@ -140,11 +140,21 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
     const isInShowList = showings.some((element) => element.id === show.id);
     if (isInShowList) {
       const newShowList = showings.filter(((element) => element.id !== show.id));
-      newShowList.push(show);
-      setShowings(newShowList);
+      const index = showings.findIndex((i) => {
+        return i.eventdate === show.eventdate && i.starttime === show.starttime;
+      });
+      if (index > -1) {
+        showings[index] = show;
+      } else {
+        newShowList.push(show);
+        // setShowings(newShowList);
+        setShowings((showings) => [...showings, ...newShowList]);
+      }
     } else {
-      setShowings((showings) => [...showings, show]);
+      // setShowings((showings) => [...showings, show]);
+      showings.push(show);
     }
+    console.log(showings);
   }, [showings]);
 
   const updateShows = useCallback((shows: Showing[]) => {

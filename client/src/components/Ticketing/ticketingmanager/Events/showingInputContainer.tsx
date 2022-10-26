@@ -190,7 +190,7 @@ const ShowingInputContainer = ({initialData, id, whenCreate, addShow, deleteShow
             </div>
             <div >
               <h3 className='font-semibold text-white'>Enter time</h3>
-              <input type="time" name="starttime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100  mb-7 '
+              <input type="time" name="starttime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
                 value={starttime}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
                   setStarttime(ev.target.value + ':00');
