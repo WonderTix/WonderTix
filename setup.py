@@ -8,7 +8,7 @@ while stripe_api == "":
 
 PG_DB = input("Please enter the desired postgres database name [wondertix]: ")
 if PG_DB == "":
-    PG_DB = input("wondertix")
+    PG_DB = "wondertix"
 
 PG_USER = input("Please enter desired postgres username [postgres]: ")
 if PG_USER == "":

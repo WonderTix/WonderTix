@@ -26,7 +26,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
                       LEFT JOIN events ON event_instance.eventid = events.id 
                       LEFT JOIN tickets as tix 
                       ON event_instance.id = tix.eventinstanceid
-                      JOIN customers as cust ON tix.custid = cust.id
+                      JOIN contacts as cust ON tix.custid = cust.id
                       WHERE event_instance.id = $1
                       GROUP BY 
                         cust.id, 
