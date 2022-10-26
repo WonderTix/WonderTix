@@ -2,12 +2,12 @@
 
 import {response, buildResponse} from '../db';
 
-/* NOTE -- Currently uses old database, so contacts are customers */
+/* NOTE -- Currently uses old database, so contacts are contacts */
 
 export const findAll = async (params: any): Promise<response> => {
   const myQuery = {
     text: `SELECT * 
-            FROM customers 
+            FROM contacts 
             WHERE ($1::text IS NULL OR LOWER(custname) LIKE $1)
             AND ($2::text IS NULL OR LOWER(email) LIKE $2)
             AND ($3::text IS NULL OR LOWER(phone) LIKE $3)
@@ -33,7 +33,7 @@ export const findAll = async (params: any): Promise<response> => {
 
 export const findByName = async (name: string): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM customers WHERE custname = $1`,
+    text: `SELECT * FROM contacts WHERE custname = $1`,
     values: [name],
   };
   return await buildResponse(myQuery, 'GET');
@@ -41,7 +41,7 @@ export const findByName = async (name: string): Promise<response> => {
 
 export const find = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'SELECT * FROM customers WHERE id = $1',
+    text: 'SELECT * FROM contacts WHERE id = $1',
     values: [id],
   };
   return await buildResponse(myQuery, 'GET');
@@ -50,7 +50,7 @@ export const find = async (id: string): Promise<response> => {
 export const create = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
-      INSERT INTO customers
+      INSERT INTO contacts
       VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
       `,
@@ -62,7 +62,7 @@ export const create = async (r: any): Promise<response> => {
 
 export const remove = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'DELETE FROM customers WHERE id = $1',
+    text: 'DELETE FROM contacts WHERE id = $1',
     values: [id],
   };
   return await buildResponse(myQuery, 'DELETE');
@@ -72,7 +72,7 @@ export const remove = async (id: string): Promise<response> => {
 export const update = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
-      UPDATE customers
+      UPDATE contacts
       SET (custname,
            email,
            phone,
