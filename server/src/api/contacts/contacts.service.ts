@@ -7,7 +7,7 @@ import {response, buildResponse} from '../db';
 export const findAll = async (params: any): Promise<response> => {
   const myQuery = {
     text: `SELECT *
-            FROM contacts
+            FROM customers
             WHERE ($1::text IS NULL OR LOWER(firstname) LIKE $1)
             AND ($2::text IS NULL OR LOWER(lastname) LIKE $2)
             AND ($3::text IS NULL OR LOWER(email) LIKE $3)
@@ -43,7 +43,7 @@ export const findAll = async (params: any): Promise<response> => {
 
 export const findByName = async (firstname: string, lastname: string): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM contacts WHERE lower(firstname) = lower($1) OR lower(lastname) = lower($2);`,
+    text: `SELECT * FROM customers WHERE lower(firstname) = lower($1) OR lower(lastname) = lower($2);`,
     values: [firstname, lastname],
   };
   return await buildResponse(myQuery, 'GET');
@@ -106,7 +106,7 @@ export const remove = async (id: string): Promise<response> => {
 export const update = async (r:any): Promise<response> => {
   const myQuery = {
     text: `
-      UPDATE contacts
+      UPDATE customers
       SET (firstname,
            lastname,
            email,
