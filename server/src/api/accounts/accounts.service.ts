@@ -75,8 +75,12 @@ export const remove = async (id: any): Promise<response> => {
   return buildResponse(myQuery, 'DELETE');
 };
 
+<<<<<<< HEAD
 export const update = async (b: {username: string, auth0_id: string, is_superadmin: boolean},
     userid: any): Promise<response> => {
+=======
+export const update = async (b: {username: string, auth0_id: string, is_superadmin: boolean}, userid: any): Promise<response> => {
+>>>>>>> fedc0eef (Queries refactored)
   const myQuery = {
     text: `
       UPDATE users
