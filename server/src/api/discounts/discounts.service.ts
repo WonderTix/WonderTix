@@ -38,7 +38,6 @@ export const addDiscountCode = async (params: any): Promise<response> => {
     values: [params.code, params.amount, params.percent, params.startdate, params.enddate,
       params.tickettypeid, params.createdby, params.usagelimit, params.min_tickets, params.min_events],
   };
-  console.log(query);
   return buildResponse(query, 'POST');
 };
 
