@@ -14,6 +14,7 @@ import {Showing} from '../../../../interfaces/showing.interface';
 export interface MapPropsToShowingInputContainer {
   initialData?: Showing;
   id: number;
+  whenCreate: number;
   addShow: (show:Showing) => void;
   deleteShow: (id:number) => void;
 }
@@ -24,7 +25,7 @@ export interface MapPropsToShowingInputContainer {
  * @returns {ReactElement}
  */
 // eslint-disable-next-line react/prop-types
-const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsToShowingInputContainer) => {
+const ShowingInputContainer = ({initialData, id, whenCreate, addShow, deleteShow}:MapPropsToShowingInputContainer) => {
   const [starttime, setStarttime] = useState(initialData.starttime !== undefined? initialData.starttime: '');
   const [eventdate, setEventdate] = useState(initialData.eventdate !== undefined? initialData.eventdate: '');
   const [ticketTypeId, setTicketTypeId] = useState('');
@@ -35,7 +36,7 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
   let seatsForType = [];
   let typesForShow = [];
 
-  const dateFieldValue = eventdate.split('T');
+  const dateFieldValue = typeof eventdate === 'string' ? eventdate.split('T') : '';
   const fetchTicketTypes = async () => {
     const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
     setTicketTypes(await res.json());
@@ -121,18 +122,28 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
     const options = document.createElement('option');
     options.setAttribute('class', 'text-sm text-zinc-700');
     options.text = 'Select Ticket Type';
-
+    const removeBut = document.createElement('button');
+    removeBut.textContent = 'Remove';
+    removeBut.setAttribute('class', 'w-min block px-2 py-1 bg-red-500 disabled:opacity-30 mb-4 text-white rounded-lg text-sm');
+    removeBut.setAttribute('type', 'button');
+    removeBut.addEventListener('click', removeElement);
     select.appendChild(options);
     select = createTicketOptions(select);
 
     newDiv.appendChild(input);
     newDiv.appendChild(select);
-    newDiv.setAttribute('class', 'flex flex-col gap-5 mt-5 md:pr-20');
+    newDiv.appendChild(removeBut);
+    newDiv.setAttribute('class', 'flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5');
 
     div.appendChild(newDiv);
   };
 
   const removeElement = (e) => {
+    const curDiv = e.target.parentElement;
+    curDiv.remove();
+  };
+
+  const removeLastElement = (e) => {
     const div = e.target.parentElement.firstChild;
     div.removeChild(div.lastChild);
   };
@@ -140,11 +151,11 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
   return (
     <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={id}>
       <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
-        <label className='font-semibold text-white mb-7 mt-7  '>Show # {id}</label>
+        <label className='font-semibold text-white mb-7 mt-7  '>Show # {id ? id : whenCreate}</label>
         <div className='flex flex-col gap-5 mt-5 md:pr-20'>
           <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
           <input
-            className='input rounded-lg p-2 bg-violet-100 w-full'
+            className='input rounded-lg p-2 bg-violet-100 w-full md:w-7/8'
             value={totalseats}
             name={`${initialData.eventdate}`}
             type='number'
@@ -156,14 +167,16 @@ const ShowingInputContainer = ({initialData, id, addShow, deleteShow}:MapPropsTo
           />
           <div className='w-full'>
             <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
+            {/*
+            <button className='block px-2 py-1 bg-red-500 disabled:opacity-30
+              mt-2 mb-4 text-white rounded-lg text-sm'
+            type='button'
+            onClick={removeLastElement}>Remove Ticket Option</button>
+          */}
             <button className='block px-2 py-1 bg-blue-500 disabled:opacity-30
               mt-4 mb-2 text-white rounded-lg text-sm'
             type='button'
             onClick={addElement}>Add Ticket Option</button>
-            <button className='block px-2 py-1 bg-red-500 disabled:opacity-30
-              mt-2 mb-4 text-white rounded-lg text-sm'
-            type='button'
-            onClick={removeElement}>Remove Ticket Option</button>
           </div>
           <div className="flex md:flex-row gap-10 flex-col">
             <div>

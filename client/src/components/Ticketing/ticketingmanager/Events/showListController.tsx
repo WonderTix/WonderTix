@@ -28,6 +28,7 @@ interface ShowListControllerProps{
  */
 const ShowListController = ({showsData, addShowData, updateShows, eventid}: ShowListControllerProps) => {
   const [shows, addShow] = useState(showsData ? showsData: []);
+  let whenCreate = 0;
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
@@ -63,13 +64,12 @@ const ShowListController = ({showsData, addShowData, updateShows, eventid}: Show
     updateShows(newList);
   };
 
-
   return (
     <>
       {shows.map((element, index) => {
         return (<ShowingInputContainer
           initialData={element}
-          id={element.id} key={index}
+          id={element.id} whenCreate={whenCreate += 1} key={index}
           addShow={addShowData} deleteShow={deleteShowing}/>);
       })}
       <div>
