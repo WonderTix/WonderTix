@@ -60,7 +60,7 @@ export const getEventById = async (params: any): Promise<response> => {
     text: `
           SELECT
             eventid,
-            seasonid,
+            seasonid_fk,
             eventname title,
             eventdescription description,
             active,
@@ -161,6 +161,7 @@ export const updateEvent = async (params: any): Promise<response> => {
       params.eventname,
       params.eventdescription,
       params.active,
+      params.seasonticketeligible,
       params.image_url,
       params.id,
     ],
@@ -241,7 +242,12 @@ export const createEvent = async (params: any): Promise<response> => {
           VALUES 
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
-    values: [params.eventName, params.eventDesc, params.imageUrl],
+    values: [
+      params.seasonid_fk, 
+      params.eventName, 
+      params.eventDesc, 
+      params.seasonticketeligible, 
+      params.imageUrl],
   };
   console.log(params);
   return buildResponse(myQuery, 'POST');

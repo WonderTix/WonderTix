@@ -4,7 +4,10 @@ import {response, buildResponse} from '../db';
 
 export const getAllTasks = async (): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM task;`,
+    text: `
+          SELECT * 
+          FROM task
+          ORDER BY taskid;`,
   };
   return await buildResponse(myQuery, 'GET');
 };
@@ -39,15 +42,15 @@ export const createTask = async (r: any): Promise<response> => {
             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           RETURNING *;`,
     values: [
-      r.parent_id, 
+      r.parentid, 
       r.subject, 
       r.description, 
       r.status,
-      r.assign_to, 
-      r.report_to, 
-      r.date_created,
-      r.date_assigned, 
-      r.due_date, 
+      r.assignto, 
+      r.reportto, 
+      r.datecreated,
+      r.dateassigned, 
+      r.duedate, 
       r.rel_contact,
       r.rel_donation, 
       r.rel_order, 
@@ -88,15 +91,15 @@ export const updateTask = async (r: any): Promise<response> => {
             taskid = $14
           RETURNING *;`,
     values: [
-      r.body.parent_id, 
+      r.body.parentid, 
       r.body.subject, 
       r.body.description,
       r.body.status, 
-      r.body.assign_to, 
-      r.body.report_to,
-      r.body.date_created, 
-      r.body.date_assigned, 
-      r.body.due_date,
+      r.body.assignto, 
+      r.body.reportto,
+      r.body.datecreated, 
+      r.body.dateassigned, 
+      r.body.duedate,
       r.body.rel_contact, 
       r.body.rel_donation, 
       r.body.rel_ticket_order,
