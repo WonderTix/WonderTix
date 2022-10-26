@@ -90,5 +90,5 @@ export const update = async (b: {username: string, auth0_id: string, is_superadm
       userid,
     ],
   };
-  return buildResponse(myQuery, 'PUT');
+  return buildResponse(myQuery, 'UPDATE');
 };
