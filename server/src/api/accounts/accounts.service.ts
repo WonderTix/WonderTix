@@ -75,19 +75,19 @@ export const remove = async (username: string): Promise<response> => {
   return buildResponse(myQuery, 'DELETE');
 };
 
-export const update = async (b: any, userid: any): Promise<response> => {
+export const update = async (b: {username: string, auth0_id: string, is_superadmin: boolean}, userid: any): Promise<response> => {
   const myQuery = {
     text: `
       UPDATE users
-      SET (username, auth0_id, is_superadmin) = ($1, $2, $3)
+      SET (username, auth0_id, is_superadmin) = ($1::text, $2::text, $3::boolean)
       WHERE userid = $4
       RETURNING *;`,
     values: [
-      b.username === undefined ? '%' + b.username + '%' : b.username,
-      b.auth0_id === undefined ? '%' + b.auth0_id + '%' : b.auth0_id,
+      b.username,
+      b.auth0_id,
       b.is_superadmin,
       userid,
     ],
   };
-  return buildResponse(myQuery, 'PUT');
+  return buildResponse(myQuery, 'UPDATE');
 };
