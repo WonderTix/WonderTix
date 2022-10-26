@@ -46,7 +46,7 @@ subscriptionRouter.get('/volunteers', checkJwt, checkScopes,
     async (req, res) => {
       try {
         const emails = await pool.query(
-            'Select email from contacts where "volunteer list" = True',
+            'Select email from customers where volunteerlist = True',
         );
         res.json(emails.rows);
       } catch (err: any) {
