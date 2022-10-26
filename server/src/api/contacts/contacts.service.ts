@@ -7,7 +7,7 @@ import {response, buildResponse} from '../db';
 export const findAll = async (params: any): Promise<response> => {
   const myQuery = {
     text: `SELECT *
-            FROM customers
+            FROM contacts
             WHERE ($1::text IS NULL OR LOWER(firstname) LIKE $1)
             AND ($2::text IS NULL OR LOWER(lastname) LIKE $2)
             AND ($3::text IS NULL OR LOWER(email) LIKE $3)
@@ -43,7 +43,7 @@ export const findAll = async (params: any): Promise<response> => {
 
 export const findByName = async (firstname: string, lastname: string): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM customers WHERE lower(firstname) = lower($1) OR lower(lastname) = lower($2);`,
+    text: `SELECT * FROM contacts WHERE lower(firstname) = lower($1) OR lower(lastname) = lower($2);`,
     values: [firstname, lastname],
   };
   return await buildResponse(myQuery, 'GET');
@@ -51,7 +51,7 @@ export const findByName = async (firstname: string, lastname: string): Promise<r
 
 export const find = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'SELECT * FROM contacts WHERE contactid = $1;',
+    text: 'SELECT * FROM contacts WHERE customerid = $1',
     values: [id],
   };
   return await buildResponse(myQuery, 'GET');
@@ -60,43 +60,27 @@ export const find = async (id: string): Promise<response> => {
 export const create = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
-      INSERT INTO 
-        contacts (firstname, lastname, email, address, phone, donorbadge, seatingaccom, newsletter, vip, volunteerlist)
-      VALUES 
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING *;`,
-    values: [
-      r.firstname, 
-      r.lastname, 
-      r.email, 
-      r.address, 
-      r.phone, 
-      r.donorbadge, 
-      r.seatingaccom, 
-      r.newsletter, 
-      r.vip, 
-      r.volunteerlist],
+      INSERT INTO contacts
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *
+      `,
+    values: [r.firstname,
+      r.lastname,
+      r.email,
+      r.custaddress,
+      r.phone,
+      r.donorbadge,
+      r.seatingaccom,
+      r.newsletter,
+      r.vip,
+      r.volunteer_list],
   };
   return await buildResponse(myQuery, 'POST');
 };
 
 export const remove = async (id: string): Promise<response> => {
   const myQuery = {
-    text: `
-          UPDATE contacts 
-          SET 
-            firstname = null,
-            lastname = null,
-            email = null,
-            address = null,
-            phone = null,
-            donorbadge = null,
-            seatingaccom = null,
-            vip = null,
-            volunteerlist = null,
-            newsletter = null
-          WHERE 
-            contactid = $1;`,
+    text: 'DELETE FROM contacts WHERE customerid = $1;',
     values: [id],
   };
   return await buildResponse(myQuery, 'DELETE');
@@ -106,7 +90,7 @@ export const remove = async (id: string): Promise<response> => {
 export const update = async (r:any): Promise<response> => {
   const myQuery = {
     text: `
-      UPDATE customers
+      UPDATE contacts
       SET (firstname,
            lastname,
            email,
@@ -120,18 +104,9 @@ export const update = async (r:any): Promise<response> => {
       WHERE contactid = $11
       RETURNING *;
       `,
-    values: [
-      r.body.firstname, 
-      r.body.lastname, 
-      r.body.email,
-      r.body.address, 
-      r.body.phone,  
-      r.body.donorbadge, 
-      r.body.seatingaccom,
-      r.body.vip, 
-      r.body.volunteerlist, 
-      r.body.newsletter, 
-      r.params.id],
+    values: [r.body.firstname, r.body.lastname, r.body.email,
+      r.body.custaddress, r.body.phone, r.body.donorbadge, r.body.seatingaccom,
+      r.body.vip, r.body.volunteerlist, r.body.newsletter, r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');
 };
