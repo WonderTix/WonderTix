@@ -59,18 +59,18 @@ export const create = async (
 ): Promise<response> => {
   const myQuery = {
     text: `
-      INSERT INTO users (username, auth0_id)
-      VALUES ($1, $2)
+      INSERT INTO users
+      VALUES (DEFAULT, $1, DEFAULT, $2)
       RETURNING *;`,
     values: [r.username, r.auth0_id],
   };
   return await buildResponse(myQuery, 'POST');
 };
 
-export const remove = async (username: string): Promise<response> => {
+export const remove = async (id: any): Promise<response> => {
   const myQuery = {
-    text: 'DELETE FROM users WHERE lower(username) = lower($1);',
-    values: [username]
+    text: 'DELETE FROM users WHERE userid = $1;',
+    values: [id]
   };
   return buildResponse(myQuery, 'DELETE');
 };
