@@ -64,17 +64,8 @@ ticketRouter.get('/', async (req: Request, res: Response) => {
 //   }
 // });
 
+
 // Get all ticket types
-// ticketRouter.get('/types', async (req, res) => {
-//   try {
-//     const query = 'SELECT * FROM tickettype;';
-//     const getAllTickets = await pool.query(query);
-//     res.json(getAllTickets.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.sendStatus(500);
-//   }
-// });
 ticketRouter.get('/types', async (req: Request, res: Response) => {
   try {
     const ticketTypes = await ticketUtils.getTicketTypes();
@@ -85,11 +76,31 @@ ticketRouter.get('/types', async (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 });
+// ticketRouter.get('/types', async (req, res) => {
+//   try {
+//     const query = 'SELECT * FROM tickettype;';
+//     const getAllTickets = await pool.query(query);
+//     res.json(getAllTickets.rows);
+//   } catch (error) {
+//     console.error(error);
+//     res.sendStatus(500);
+//   }
+// });
+
 
 //
 // **BROKEN** linkedtickets is depracated, will require refactor
 //
 // Set which tickets can be sold for an event
+ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
+  try {
+    const data = await ticketUtils.setDefaultTicketForEvent(req.params);
+    const code = data.status.success ? 200 : 404;
+    res.status(code).send(data);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
 // ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
 //   try {
 //     const body = req.body;
@@ -108,15 +119,7 @@ ticketRouter.get('/types', async (req: Request, res: Response) => {
 //     res.sendStatus(500);
 //   }
 // });
-ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
-  try {
-    const data = await ticketUtils.setDefaultTicketForEvent(req.params);
-    const code = data.status.success ? 200 : 404;
-    res.status(code).send(data);
-  } catch (error) {
-    res.sendStatus(500);
-  }
-});
+
 
 // POST /api/tickets/newType
 ticketRouter.post('/newType', checkJwt, checkScopes, async (req, res) => {
@@ -140,41 +143,48 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
   }
 });
 
-//
-// **BROKEN** Will require refactor and DB update for
-//  eventinstance: defaulttickettype
-//
+
 // Get list of which tickets can be purchased for the show along with its prices
 ticketRouter.get('/list', async (req, res) => {
   try {
-    const query = `
-                  SELECT 
-                    ev.id as event_id,
-                    ei.id as event_instance_id,
-                    eventname,
-                    eventdescription,
-                    eventdate,
-                    starttime,
-                    totalseats, 
-                    availableseats,
-                    price,
-                    concessions
-                  FROM events ev
-                  LEFT JOIN event_instances ei 
-                    ON ev.id=ei.eventid
-                  JOIN linkedtickets lt 
-                    ON lt.event_instance_id=ei.id
-                  JOIN tickettype tt 
-                    ON lt.ticket_type=tt.id
-                  WHERE 
-                    ev.id=$1 AND isseason=false;`;
-    const values = [req.query.event];
-    const availableTickets = await pool.query(query, values);
-    res.json(availableTickets.rows);
-    console.log(availableTickets.rows);
-    return availableTickets.rows;
+    const tickets = await ticketUtils.getTickets();
+    const code = tickets.status.success ? 200 : 404;
+    res.status(code).send(tickets);
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
   }
 });
+// ticketRouter.get('/list', async (req, res) => {
+//   try {
+//     const query = `
+//                   SELECT 
+//                     ev.id as event_id,
+//                     ei.id as event_instance_id,
+//                     eventname,
+//                     eventdescription,
+//                     eventdate,
+//                     starttime,
+//                     totalseats, 
+//                     availableseats,
+//                     price,
+//                     concessions
+//                   FROM events ev
+//                   LEFT JOIN event_instances ei 
+//                     ON ev.id=ei.eventid
+//                   JOIN linkedtickets lt 
+//                     ON lt.event_instance_id=ei.id
+//                   JOIN tickettype tt 
+//                     ON lt.ticket_type=tt.id
+//                   WHERE 
+//                     ev.id=$1 AND isseason=false;`;
+//     const values = [req.query.event];
+//     const availableTickets = await pool.query(query, values);
+//     res.json(availableTickets.rows);
+//     console.log(availableTickets.rows);
+//     return availableTickets.rows;
+//   } catch (error) {
+//     console.error(error);
+//     res.sendStatus(500);
+//   }
+// });

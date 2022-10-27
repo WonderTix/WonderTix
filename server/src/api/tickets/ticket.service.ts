@@ -80,8 +80,6 @@ export const setDefaultTicketForEvent = async (params: any): Promise<response> =
  
 
 
-
-
 export const toTicket = (row:any): Ticket => {
   const {eventdate, starttime, ...rest} = row;
   const [hour, min] = starttime.split(':');
@@ -139,4 +137,36 @@ export const removeTicketType = async (id: string): Promise<response> => {
     values: [id],
   };
   return await buildResponse(myQuery, 'DELETE');
+};
+
+
+//
+// **BROKEN** Will require refactor and DB update for
+//  eventinstance: defaulttickettype
+//
+export const getTickets = async (): Promise<response> => {
+  const myQuery = {
+    text: `
+          SELECT 
+            ev.id as event_id,
+            ei.id as event_instance_id,
+            eventname,
+            eventdescription,
+            eventdate,
+            starttime,
+            totalseats, 
+            availableseats,
+            price,
+            concessions
+          FROM events ev
+          LEFT JOIN event_instances ei 
+            ON ev.id=ei.eventid
+          JOIN linkedtickets lt 
+            ON lt.event_instance_id=ei.id
+          JOIN tickettype tt 
+            ON lt.ticket_type=tt.id
+          WHERE 
+            ev.id=$1 AND isseason=false;`,
+  };
+  return await buildResponse(myQuery, 'GET');
 };
