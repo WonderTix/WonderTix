@@ -1,27 +1,11 @@
 import Ticket from '../../interfaces/Ticket';
-import {buildResponse, response} from '../db';
+import {buildResponse, response, parseIntToDate} from '../db';
 
 // remove $ and parse to float
 // this should be done better
 // check if $ in string, or maybe consider other forms of currency?
 const parseMoneyString = (s: string) => Number.parseFloat(s.replace('$', ''));
 
-// converts an integer representation of a date to a JS date object
-// 20220512 -> 2022-05-12 == May 12 2022
-const parseIntToDate = (d : number) => {
-  const year = d / 10000 | 0;
-  d -= year *10000;
-  const month = d / 100 | 0;
-  const day = d - month*100;
-  // month-1 because the month field is 0-indexed in JS
-  return new Date(year, month-1, day);
-};
-
-// converts a JS date object to an integer representation of the date
-// May 12 2022 -> 20220512
-const parseDateToInt = (d : Date) => {
-  return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
-};
 
 //
 export const getAvailableTickets = async (): Promise<response> => {
