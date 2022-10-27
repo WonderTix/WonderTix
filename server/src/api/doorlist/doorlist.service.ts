@@ -10,7 +10,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
                       SELECT(
-                        cust.customerid,
+                        cust.contactid,
                         cust.firstname,
                         cust.lastname,
                         cust.vip,
@@ -22,15 +22,15 @@ export const getDoorlist = async (params: any): Promise<response> => {
                         eventinstance.eventdate,
                         eventinstance.eventtime,
                         tix.redeemed,
-                          count(cust.customerid))
+                          count(cust.contactid))
                       FROM eventinstances as eventinstance
                       LEFT JOIN events ON eventinstance.eventinstanceid = events.eventid
                       LEFT JOIN eventtickets as tix
                       ON eventinstance.eventinstanceid = tix.eventinstanceid_fk
-                      JOIN customers as cust ON tix.eventinstanceid_fk = cust.customerid
+                      JOIN contacts as cust ON tix.eventinstanceid_fk = cust.contactid
                       WHERE eventinstance.eventinstanceid = $1
                       GROUP BY
-                        cust.customerid,
+                        cust.contactid,
                         cust.firstname, cust.lastname, events.eventid,
                         events.eventname,
                         eventinstance.eventinstanceid,

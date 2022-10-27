@@ -33,7 +33,7 @@ export const create = async (r: any): Promise<response> => {
       VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
       `,
-    values: [r.customerid, r.isanonymous, r.amount, r.donorname,
+    values: [r.contactid_fk, r.isanonymous, r.amount, r.donorname,
       r.frequency, r.comments, r.payment_intent, r.donationdate],
   };
   return buildResponse(myQuery, 'POST');
