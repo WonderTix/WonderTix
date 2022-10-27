@@ -90,21 +90,30 @@ ticketRouter.get('/types', async (req: Request, res: Response) => {
 // **BROKEN** linkedtickets is depracated, will require refactor
 //
 // Set which tickets can be sold for an event
+// ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
+//   try {
+//     const body = req.body;
+//     const values = [body.event_instance_id, body.ticket_type];
+//     const query = `
+//                   INSERT INTO 
+//                     linkedtickets (
+//                         event_instance_id, 
+//                         ticket_type)
+//                   VALUES 
+//                     ($1, $2);`;
+//     const setTickets = await pool.query(query, values);
+//     res.json(setTickets.rows);
+//   } catch (error) {
+//     console.error(error);
+//     res.sendStatus(500);
+//   }
+// });
 ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
   try {
-    const body = req.body;
-    const values = [body.event_instance_id, body.ticket_type];
-    const query = `
-                  INSERT INTO 
-                    linkedtickets (
-                        event_instance_id, 
-                        ticket_type)
-                  VALUES 
-                    ($1, $2);`;
-    const setTickets = await pool.query(query, values);
-    res.json(setTickets.rows);
+    const data = await ticketUtils.setDefaultTicketForEvent(req.params);
+    const code = data.status.success ? 200 : 404;
+    res.status(code).send(data);
   } catch (error) {
-    console.error(error);
     res.sendStatus(500);
   }
 });

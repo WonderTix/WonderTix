@@ -23,7 +23,7 @@ const parseDateToInt = (d : Date) => {
   return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
 };
 
-
+//
 export const getAvailableTickets = async (): Promise<response> => {
   const myQuery = {
     text: `
@@ -51,14 +51,36 @@ export const getAvailableTickets = async (): Promise<response> => {
   return await buildResponse(myQuery, 'GET');
 };
 
-
+//
 export const getTicketTypes = async (): Promise<response> => {
   const myQuery = {
     text: `SELECT * FROM tickettype;`,
   };
   return await buildResponse(myQuery, 'GET');
 };
+
+
+//
+export const setDefaultTicketForEvent = async (params: any): Promise<response> => {
+  const myQuery = {
+    text: `
+          UPDATE  
+            eventinstances
+          SET 
+            defaulttickettype = $1
+          WHERE
+            eventinstanceid = $2;`,
+    values: [
+      params.eventinstanceid,
+      params.tickettypeid
+    ],
+  };
+  return buildResponse(myQuery, 'POST')
+};
  
+
+
+
 
 export const toTicket = (row:any): Ticket => {
   const {eventdate, starttime, ...rest} = row;
