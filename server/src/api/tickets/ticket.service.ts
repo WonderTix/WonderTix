@@ -17,6 +17,47 @@ const parseIntToDate = (d : number) => {
   return new Date(year, month-1, day);
 };
 
+// converts a JS date object to an integer representation of the date
+// May 12 2022 -> 20220512
+const parseDateToInt = (d : Date) => {
+  return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+};
+
+
+export const getAvailableTickets = async (): Promise<response> => {
+  const myQuery = {
+    text: `
+    SELECT
+      ei.eventinstanceid event_instance_id,
+      ei.eventid_fk eventid,
+      ei.eventdate,
+      ei.eventtime starttime,
+      ei.totalseats,
+      ei.availableseats,
+      tt.description AS admission_type,
+      tt.price AS ticket_price,
+      tt.concessions AS concession_price
+    FROM
+      eventinstances ei 
+      JOIN tickettype tt 
+        ON ei.defaulttickettype = tt.tickettypeid
+    WHERE 
+      ei.availableseats > 0
+    AND 
+      ei.salestatus = true
+    ORDER BY
+      ei.eventinstanceid;`,
+  };
+  return await buildResponse(myQuery, 'GET');
+};
+
+
+export const getTicketTypes = async (): Promise<response> => {
+  const myQuery = {
+    text: `SELECT * FROM tickettype;`,
+  };
+  return await buildResponse(myQuery, 'GET');
+};
  
 
 export const toTicket = (row:any): Ticket => {
