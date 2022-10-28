@@ -55,13 +55,19 @@ const ShowListController = ({showsData, addShowData, updateShows, eventid}: Show
   };
 
 
-  const deleteShowing = (id) => {
+  const deleteShowing = (whenCreate) => {
+    const index = whenCreate - 1;
     const oldList = [...shows];
+    const newList = oldList.splice(index, 1);
+    /*
     const newList = oldList.filter((shows) => {
       return shows.id != id;
     });
-    addShow(newList);
-    updateShows(newList);
+    */
+    console.log(oldList);
+    addShow([]);
+    addShow(oldList);
+    updateShows(oldList);
   };
 
   return (

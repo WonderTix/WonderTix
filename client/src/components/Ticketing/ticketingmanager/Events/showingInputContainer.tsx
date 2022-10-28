@@ -88,7 +88,7 @@ const ShowingInputContainer = ({initialData, id, whenCreate, addShow, deleteShow
 
   const handleDelete = (event) => {
     event.preventDefault();
-    deleteShow(id);
+    deleteShow(whenCreate);
   };
 
   const createTicketOptions = (select: HTMLSelectElement) :HTMLSelectElement=> {
