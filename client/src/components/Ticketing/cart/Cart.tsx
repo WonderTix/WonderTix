@@ -43,6 +43,7 @@ const Cart = () => {
   const [targetItem, setTargetItem] = useState<number|null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
   const [removeContextMessage, setRemoveContextMessage] = useState('');
+  const [discountText, setDiscount] = useState('');
 
   useEffect(() => console.log(subtotal), [subtotal]);
 
@@ -67,6 +68,10 @@ const Cart = () => {
     setRemoveContext(RemoveContext.all);
     setRemoveContextMessage('all items');
     handleClick2();
+  };
+
+  const applyDiscount = () => {
+    console.log('Discount button clicked! Value: ' + discountText);
   };
 
   const displayModal = (id: number) => {
@@ -119,8 +124,8 @@ const Cart = () => {
 
                 <div className='flex flex-col items-center form-control disabled:opacity-50 '>
                   <div className='input-group flex flex-row items-center w-full px-3 py-1 text-black rounded-xl bg-sky-500'>
-                    <input type="text" placeholder="Discount code..." className='input input-bordered rounded-md pl-2' />
-                    <button className='btn btn-square bg-sky-500 ml-1'>
+                    <input type="text" placeholder="Discount code..." value={discountText} onChange={(e) => {setDiscount(e.target.value)}} className='input input-bordered rounded-md pl-2' />
+                    <button className='btn btn-square bg-sky-500 ml-1' onClick={applyDiscount}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                         stroke="white"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
