@@ -10,7 +10,7 @@ const fulfillOrder = async (session: any) => {
   try {
     custName = await pool.query(
         `SELECT custname
-              FROM customers
+              FROM contacts
               WHERE id = $1`,
         [session.data.object.metadata.custid],
     );
