@@ -14,7 +14,7 @@ import {Showing} from '../../../../interfaces/showing.interface';
 export interface MapPropsToShowingInputContainer {
   initialData?: Showing;
   id: number;
-  whenCreate: number;
+  showingNum: number;
   addShow: (show:Showing) => void;
   deleteShow: (id:number) => void;
 }
@@ -25,7 +25,7 @@ export interface MapPropsToShowingInputContainer {
  * @returns {ReactElement}
  */
 // eslint-disable-next-line react/prop-types
-const ShowingInputContainer = ({initialData, id, whenCreate, addShow, deleteShow}:MapPropsToShowingInputContainer) => {
+const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow}:MapPropsToShowingInputContainer) => {
   const [starttime, setStarttime] = useState(initialData.starttime !== undefined? initialData.starttime: '');
   const [eventdate, setEventdate] = useState(initialData.eventdate !== undefined? initialData.eventdate: '');
   const [ticketTypeId, setTicketTypeId] = useState('');
@@ -143,15 +143,10 @@ const ShowingInputContainer = ({initialData, id, whenCreate, addShow, deleteShow
     curDiv.remove();
   };
 
-  const removeLastElement = (e) => {
-    const div = e.target.parentElement.firstChild;
-    div.removeChild(div.lastChild);
-  };
-
   return (
     <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={id}>
       <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
-        <label className='font-semibold text-white mb-7 mt-7  '>Show # {id ? id : whenCreate}</label>
+        <label className='font-semibold text-white mb-7 mt-7  '>Show # {id ? id : showingNum}</label>
         <div className='flex flex-col gap-5 mt-5 md:pr-20'>
           <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
           <input
@@ -167,12 +162,6 @@ const ShowingInputContainer = ({initialData, id, whenCreate, addShow, deleteShow
           />
           <div className='w-full'>
             <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
-            {/*
-            <button className='block px-2 py-1 bg-red-500 disabled:opacity-30
-              mt-2 mb-4 text-white rounded-lg text-sm'
-            type='button'
-            onClick={removeLastElement}>Remove Ticket Option</button>
-          */}
             <button className='block px-2 py-1 bg-blue-500 disabled:opacity-30
               mt-4 mb-2 text-white rounded-lg text-sm'
             type='button'
@@ -186,7 +175,6 @@ const ShowingInputContainer = ({initialData, id, whenCreate, addShow, deleteShow
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setEventdate(ev.target.value);
                 } }/>
-
             </div>
             <div >
               <h3 className='font-semibold text-white'>Enter time</h3>
