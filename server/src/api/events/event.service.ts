@@ -226,7 +226,7 @@ export const createShowing = async (params: any): Promise<response> => {
       } inserted.`,
     },
   };
-  console.log('Unspoken rizz?', res);
+  console.log(res);
   return res;
 };
 
