@@ -1,10 +1,8 @@
 import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {
-  updateNewsletter,
-  getNewsletterCount,
-  insertNewsletter,
-} from './newletter.service';
+import {updateNewsletter,
+        getNewsletterCount,
+        insertNewsletter} from './newsletter.service';
 
 /**
  * create Router object

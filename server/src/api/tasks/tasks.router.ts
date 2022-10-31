@@ -2,7 +2,11 @@
 
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {create, find, findAll, remove, update} from './tasks.service';
+import {createTask, 
+        findTask, 
+        getAllTasks, 
+        removeTask, 
+        updateTask} from './tasks.service';
 
 export const tasksRouter = Router();
 
@@ -14,7 +18,7 @@ tasksRouter.use(checkScopes);
 // GET /api/tasks
 tasksRouter.get('/', async (_req: Request, res: Response) => {
   try {
-    const tasks = await findAll();
+    const tasks = await getAllTasks();
     const code = tasks.status.success ? 200 : 404;
     res.status(code).send(tasks);
   } catch (err: any) {
@@ -25,7 +29,7 @@ tasksRouter.get('/', async (_req: Request, res: Response) => {
 // GET /api/tasks/:id
 tasksRouter.get('/:id', async (req: Request, res: Response) => {
   try {
-    const task = await find(req.params.id);
+    const task = await findTask(req.params.id);
     const code = task.status.success ? 200 : 404;
     res.status(code).send(task);
   } catch (err: any) {
@@ -36,7 +40,7 @@ tasksRouter.get('/:id', async (req: Request, res: Response) => {
 // POST /api/tasks
 tasksRouter.post('/', async (req: Request, res: Response) => {
   try {
-    const newTask = await create(req.body);
+    const newTask = await createTask(req.body);
     const code = newTask.status.success ? 200 : 404;
     res.status(code).send(newTask);
   } catch (err: any) {
@@ -47,7 +51,7 @@ tasksRouter.post('/', async (req: Request, res: Response) => {
 // DELETE /api/tasks/:id
 tasksRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const removeStatus = await remove(req.params.id);
+    const removeStatus = await removeTask(req.params.id);
     const code = removeStatus.status.success ? 204 : 404;
     res.sendStatus(code);
   } catch (err: any) {
@@ -58,7 +62,7 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
 // PUT /api/tasks/:id
 tasksRouter.put('/:id', async (req: Request, res: Response) => {
   try {
-    const updatedTask = await update(req);
+    const updatedTask = await updateTask(req);
     const code = updatedTask.status.success ? 200 : 404;
     res.status(code).send(updatedTask);
   } catch (err: any) {

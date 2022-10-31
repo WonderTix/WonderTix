@@ -4,7 +4,7 @@ import {pool} from '../db';
 
 /*
 *
-* This whole file can probably be deleted and merged into customers
+* This whole file can probably be deleted and merged into contacts
 *
 */
 
@@ -28,7 +28,7 @@ subscriptionRouter.get('/newsletter', checkJwt, checkScopes,
       // deleted isAuthenticated function
       try {
         const emails = await pool.query(
-            'Select email from customers where newsletter = True',
+            'Select email from contacts where newsletter = True',
         );
         res.json(emails.rows);
       } catch (err: any) {
@@ -46,7 +46,7 @@ subscriptionRouter.get('/volunteers', checkJwt, checkScopes,
     async (req, res) => {
       try {
         const emails = await pool.query(
-            'Select email from customers where "volunteer list" = True',
+            'Select email from contacts where "volunteer list" = True',
         );
         res.json(emails.rows);
       } catch (err: any) {

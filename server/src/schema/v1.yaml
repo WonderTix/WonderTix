@@ -416,12 +416,12 @@ paths:
 
   /api/doorlist:
     get:
-      summary: Get a list of all customers in a doorlist.
+      summary: Get a list of all contacts in a doorlist.
       tags:
         - Doorlist
       responses:
         200:
-          description: Returns all of the customers for a specific event in the database. Requires Auth0 authentication with admin scope.
+          description: Returns all of the contacts for a specific event in the database. Requires Auth0 authentication with admin scope.
           content:
             application/json:
               schema:

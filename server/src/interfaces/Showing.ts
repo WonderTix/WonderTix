@@ -30,4 +30,5 @@ export default interface Showing {
     availableseats: number;
     tickettype: number; // ticket type ID
     purchaseuri: string;
+    ispreview: boolean;
 }
