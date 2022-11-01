@@ -182,8 +182,8 @@ export const createShowing = async (params: any): Promise<response> => {
   // Link showtime to ticket type
   const linkingdata = newInstances.map((s) => ({
     id: <number>Object.values(s)[0],
-    tickettypes: <number[]>Object.values(s)[10],
-    seatsfortype: <number[]>Object.values(s)[11],
+    tickettypes: <number[]>Object.values(s)[9],
+    seatsfortype: <number[]>Object.values(s)[10],
   }));
   const myQuery = {
     text: `INSERT INTO ticketrestrictions (eventinstanceid_fk, tickettypeid_fk,

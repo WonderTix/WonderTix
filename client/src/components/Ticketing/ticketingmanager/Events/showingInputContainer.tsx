@@ -88,7 +88,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
 
   const handleDelete = (event) => {
     event.preventDefault();
-    deleteShow(whenCreate);
+    deleteShow(showingNum);
   };
 
   const createTicketOptions = (select: HTMLSelectElement) :HTMLSelectElement=> {
@@ -181,7 +181,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
               <input type="time" name="starttime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
                 value={starttime}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
-                  setStarttime(ev.target.value + ':00');
+                  setStarttime(ev.target.value);
                 }
                 }/>
             </div>

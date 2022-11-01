@@ -54,9 +54,9 @@ const ShowListController = ({showsData, addShowData, updateShows, eventid}: Show
     // updateShows(newList);
   };
 
-
-  const deleteShowing = (whenCreate) => {
-    const index = whenCreate - 1;
+  // Kinda works
+  const deleteShowing = (showingNum) => {
+    const index = showingNum - 1;
     const oldList = [...shows];
     const newList = oldList.splice(index, 1);
     /*
