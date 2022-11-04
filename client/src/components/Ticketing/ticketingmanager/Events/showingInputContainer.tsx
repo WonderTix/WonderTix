@@ -33,8 +33,9 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
   const availableseates = initialData.availableseats !== undefined? initialData.availableseats: 0;
   const [ticketTypes, setTicketTypes] = useState([]);
 
-  let seatsForType = [];
-  let typesForShow = [];
+  // Index of seatsForType match typesForShow so seatsForType[0] is for typesForShow[0]
+  let seatsForType = []; // Number of seats for certian type of ticket
+  let typesForShow = []; // Ticket types for all showings
 
   const dateFieldValue = typeof eventdate === 'string' ? eventdate.split('T') : '';
   const fetchTicketTypes = async () => {
@@ -46,6 +47,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
     fetchTicketTypes();
   }, [initialData]);
 
+  // Gets ticket types and seats for types before sending to parent component
   const addToArray = (e) => {
     seatsForType = [];
     typesForShow = [];
@@ -91,6 +93,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
     deleteShow(event);
   };
 
+  // Uses ticketTypes array to map out option (used by addElement)
   const createTicketOptions = (select: HTMLSelectElement) :HTMLSelectElement=> {
     ticketTypes.map((t) => {
       const newOp = document.createElement('option');
@@ -108,6 +111,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
     return select;
   };
 
+  // Adds a ticket type input container to element
   const addElement = (e) => {
     const div = e.target.parentElement.firstChild;
     const newDiv = document.createElement('div');
@@ -138,6 +142,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
     div.appendChild(newDiv);
   };
 
+  // Removes a specified ticket type input container
   const removeElement = (e) => {
     const curDiv = e.target.parentElement;
     curDiv.remove();
