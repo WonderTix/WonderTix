@@ -16,6 +16,21 @@ export const getDiscountCodes = async (): Promise<response> => {
 };
 
 /**
+ * query: checks specific id discount code
+ *
+ * @type {Promise<response>}
+ */
+
+export const checkDiscountCode = async(code: any): Promise<response> => {
+  const query = {
+    text: `SELECT * FROM discounts WHERE lower(code)=lower($1);`,
+    values: [code]
+  };
+  return buildResponse(query, 'GET');
+};
+
+
+/**
  * query: adds supplied discount code to db
  *
  * @type {Promise<response>}
