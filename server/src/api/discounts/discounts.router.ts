@@ -56,6 +56,25 @@ discountsRouter.get('/search', async (
 
 
 /**
+ * route: GET /id
+ *
+ * @type {?}
+ */
+discountsRouter.get('/:code', async(
+    req: Request,
+    res: Response,
+) => {
+    try{
+      const codes = await checkDiscountCode(req.params.code);
+      const code = codes.status.success ? 200 : 404;
+      res.status(code).send(codes);
+    } catch(error:any) {
+      res.status(500).send(error.message);
+    }
+});
+
+
+/**
  * route: POST /
  *
  * @type {?}
