@@ -60,7 +60,7 @@ export const create = async (
   const myQuery = {
     text: `
       INSERT INTO users
-      VALUES (DEFAULT, $1, DEFAULT, $2)
+      VALUES ($1, $2)
       RETURNING *;`,
     values: [r.username, r.auth0_id],
   };
