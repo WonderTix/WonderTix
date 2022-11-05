@@ -1,4 +1,5 @@
 import {pool} from '../db';
+export {refundOrder, fulfillOrder};
 
 const fulfillOrder = async (session: any) => {
   // TODO: fill me in
@@ -94,6 +95,3 @@ const refundOrder = async (session: any) => {
     console.log(error);
   }
 };
-
-export {refundOrder, fulfillOrder};
-
