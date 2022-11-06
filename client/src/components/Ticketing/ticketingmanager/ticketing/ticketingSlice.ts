@@ -95,8 +95,8 @@ export interface ticketingState {
 }
 
 /**
- * 
- * @param {string} url - gets data 
+ *
+ * @param {string} url - gets data
  * @returns Error message on fail, otherwise gets message
  */
 const fetchData = async (url: string) => {
@@ -125,6 +125,42 @@ export const fetchTicketingData = createAsyncThunk(
     },
 );
 
+
+// WORKING HERE
+/**
+ * Discount code
+ * @module
+ * @param {number} discountid
+ * @param {string} code - the discount code itself
+ * @param {number} amount - A set number of dollars off
+ * @param {number} percent - A percentage to be taken off
+ * @param {Date} startDate - date format
+ * @param {Date} endDate - date format
+ */
+ export interface Discount {
+  discountid: number,
+  code: string,
+  amount: number,
+  percent: number,
+  startDate: Date,
+  endDate: Date,
+}
+
+/**
+ * Fetches all the data, and gets all the api routes then prints to console
+ * @module
+ * @returns {Array} events, tickets, byID, allIds
+ */
+ export const fetchDiscountData = createAsyncThunk(
+  'ticketing/fetch',
+  async () => {
+    const discountData = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/discounts');
+    const discount: Discount[] = discountData.data;
+    console.log('Discounts', discount);
+    return {discount};
+  },
+);
+
 /**
  * Shows some information on cartitem
  * @param {T} ticketLike - based on ticket object?
@@ -139,7 +175,7 @@ const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) =
 /**
  * Uses appendCartField to append to the cartfield
  * @module
- * @param {Array} data - ticket, event, qty, CartItem 
+ * @param {Array} data - ticket, event, qty, CartItem
  * @returns appended statements to the cartfield, appends: name, qty, product_img_url
  */
 export const createCartItem = (data: {ticket: Ticket, event: Event, qty: number}): CartItem =>
@@ -332,8 +368,8 @@ export interface EventPageData {
 /**
  * Name says it all
  * @module
- * @param {RootState} state - different types of state of selectEventData 
- * @param {EventId} eventid 
+ * @param {RootState} state - different types of state of selectEventData
+ * @param {EventId} eventid
  * @param ticketData - uses state.ticketing.tickets
  * @param event - uses state.ticketing.events.find(byId(eventid))
  * @returns playData, Tickets | undefined
@@ -370,7 +406,7 @@ interface EventSummaryData {
 /**
  * Gets the data from the play when selected
  * @module
- * @param {RootState} state 
+ * @param {RootState} state
  * @returns {Array} id: event.id, eventname: title, eventdescription: description, numShows: filteredTickets.length
  */
 export const selectPlaysData = (state: RootState) =>
@@ -392,8 +428,8 @@ export const selectPlaysData = (state: RootState) =>
 /**
  * Gets num of tickets available
  * @module
- * @param {RootState} state 
- * @param {number} ticketid 
+ * @param {RootState} state
+ * @param {number} ticketid
  * @returns ticket.avilableseats
  */
 export const selectNumAvailable = (state: RootState, ticketid: number) => {

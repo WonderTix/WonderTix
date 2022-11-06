@@ -7,6 +7,7 @@ import {
   removeTicketFromCart,
   removeAllTicketsFromCart,
   selectCartContents,
+  fetchDiscountData,
 } from '../ticketingmanager/ticketing/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
 
@@ -71,7 +72,8 @@ const Cart = () => {
   };
 
   const applyDiscount = () => {
-    console.log('Discount button clicked! Value: ' + discountText);
+    console.log('Discount button clicked! Value: ' + discountText.toUpperCase());
+    return dispatch(fetchDiscountData());
   };
 
   const displayModal = (id: number) => {
