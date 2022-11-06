@@ -34,7 +34,7 @@ contactsRouter.get('/', async (req: Request, res: Response) => {
 contactsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const resp = await findByName(req.query.firstname as string, req.query.lastname as string);
-    const code = resp.status.success ? 204 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
