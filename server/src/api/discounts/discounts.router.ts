@@ -71,7 +71,7 @@ discountsRouter.post('/', checkJwt, checkScopes, async(
 ) => {
     try {
       const newCode = await addDiscountCode(req.body);
-      const code = newCode.status.success ? 200 : 404;
+      const code = newCode.status.success ? 204 : 404;
       res.status(code).send(newCode);
     } catch (error: any) {
       res.status(500).send(error.message);
