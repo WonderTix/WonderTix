@@ -10,7 +10,6 @@ accountsRouter.use(checkScopes);
 
 accountsRouter.get('/', async (req: Request, res: Response) => {
   try {
-    console.log(req.query);
     const resp = await findAll(req.query);
     const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
@@ -53,7 +52,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
     const code = resp.status.success ? 204 : 404;
-    res.sendStatus(code);
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -61,7 +60,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
 
 accountsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
-    const resp = await update(req);
+    const resp = await update(req.body, req.params.id);
     const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {

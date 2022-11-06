@@ -16,6 +16,21 @@ export const getDiscountCodes = async (): Promise<response> => {
 };
 
 /**
+ * query: checks specific id discount code
+ *
+ * @type {Promise<response>}
+ */
+
+export const checkDiscountCode = async(code: any): Promise<response> => {
+  const query = {
+    text: `SELECT * FROM discounts WHERE lower(code)=lower($1);`,
+    values: [code]
+  };
+  return buildResponse(query, 'GET');
+};
+
+
+/**
  * query: adds supplied discount code to db
  *
  * @type {Promise<response>}
@@ -29,16 +44,15 @@ export const addDiscountCode = async (params: any): Promise<response> => {
       percent,
       startdate,
       enddate,
-      tickettypeid,
-      createdby,
+      tickettypeid_fk,
+      createdby_fk,
       usagelimit,
       min_tickets,
       min_events)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
     values: [params.code, params.amount, params.percent, params.startdate, params.enddate,
-      params.tickettypeid, params.createdby, params.usagelimit, params.min_tickets, params.min_events],
+      params.tickettypeid_fk, params.createdby_fk, params.usagelimit, params.min_tickets, params.min_events],
   };
-  console.log(query);
   return buildResponse(query, 'POST');
 };
 
@@ -50,10 +64,25 @@ export const addDiscountCode = async (params: any): Promise<response> => {
  * @type {Promise<response>}
  */
 
-export const deleteDiscountCode = async (id: any): Promise<response> => {
+export const alterDiscountCode = async (id: any): Promise<response> => {
   const query = {
     text: `UPDATE discounts SET usagelimit=0 WHERE discountid=$1;`,
     values: [id],
   };
-  return buildResponse(query, 'PUT')
+  return buildResponse(query, 'PUT');
+};
+
+
+/**
+ * query: Delete entry from db
+ *
+ * @type {Promise<response>}
+ */
+
+export const deleteDiscountCode = async (id: any): Promise<response> => {
+  const query = {
+    text: `DELETE FROM discounts WHERE discountid=$1;`,
+    values: [id],
+  };
+  return buildResponse(query, 'DELETE');
 };
