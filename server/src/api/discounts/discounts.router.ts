@@ -47,11 +47,7 @@ discountsRouter.get('/codeCheck', async(
 ) => {
     try{
       const codes = await checkDiscountCode(req.query.code);
-      let c1 = codes.status.success ? 200 : 404;
-      if(codes.status.success === true && codes.data.length === 0){
-        c1 = 404;
-      }
-      const code = c1;
+      const code = codes.status.success ? 204 : 404;
       res.status(code).send(codes);
     } catch(error:any) {
       res.status(500).send(error.message);
