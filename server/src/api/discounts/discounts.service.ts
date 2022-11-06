@@ -69,7 +69,7 @@ export const alterDiscountCode = async (id: any): Promise<response> => {
     text: `UPDATE discounts SET usagelimit=0 WHERE discountid=$1;`,
     values: [id],
   };
-  return buildResponse(query, 'PUT')
+  return buildResponse(query, 'PUT');
 };
 
 
@@ -84,5 +84,5 @@ export const deleteDiscountCode = async (id: any): Promise<response> => {
     text: `DELETE FROM discounts WHERE discountid=$1;`,
     values: [id],
   };
-  return buildResponse(query, 'DELETE')
+  return buildResponse(query, 'DELETE');
 };
