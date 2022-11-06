@@ -19,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {useEffect, useReducer} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 
 /**
  * @module
@@ -38,6 +38,7 @@ interface TicketPickerState {
     displayedShowings: Ticket[],
     selectedTicket?: Ticket,
     qty: number,
+    payWhatPrice?: number,
     concessions: boolean,
     showCalendar: boolean,
     showTimes: boolean,
@@ -62,6 +63,7 @@ const initialState: TicketPickerState = {
   showCalendar: true,
   showTimes: false,
   showClearBtn: false,
+  payWhatPrice: 0,
   prompt: 'selectDate',
 };
 
@@ -70,6 +72,8 @@ const dateSelected = (d: Date, t: Ticket[]) => ({type: 'date_selected', payload:
 const timeSelected = (t: Ticket) => ({type: 'time_selected', payload: t});
 const resetWidget = () => ({type: 'reset'});
 const changeQty = (n: number) => ({type: 'change_qty', payload: n});
+// const changePayWhat = (event: React.ChangeEvent<HTMLInputElement>) => ({type: 'change_pay_what', payload: event.currentTarget.value});
+const changePayWhat = (n:number) => ({type: 'change_pay_what', payload: n});
 
 /**
  * TicketPickerReducer is meant to be used to lower ticket numbers
@@ -115,6 +119,9 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
     case 'toggle_concession': {
       return {...state, concessions: !state.concessions};
     }
+    case 'change_pay_what': {
+      return {...state, payWhatPrice: action.payload};
+    }
     default:
       throw new Error('Received undefined action type');
   }
@@ -134,6 +141,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
     qty,
     concessions,
     prompt,
+    payWhatPrice,
     selectedDate,
     displayedShowings,
     selectedTicket,
@@ -144,6 +152,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
 
   const appDispatch = useAppDispatch();
   const cartTicketCount = useAppSelector(selectCartTicketCount);
+  const [tempPay, setTempPay] = useState(0);
 
   const handleClick = (d: Date, t: Ticket[]) => {
     dispatch(dateSelected(d, t));
@@ -151,7 +160,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedTicket && qty) {
-      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, qty, concessions}));
+      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, qty, concessions, payWhatPrice}));
       appDispatch(openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`));
       dispatch(resetWidget());
     }
@@ -174,9 +183,13 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
     </div>,
   };
 
+  const payWhatFunc = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    setTempPay(parseInt(event.currentTarget.value));
+  };
+
   console.log(numAvail);
   console.log(selectedTicket);
-  useEffect(()=> console.log('Selected Ticket', {selectedTicket}), [selectedTicket]);
   return (
     <>
       <Collapse in={showClearBtn}>
@@ -233,6 +246,27 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
           onChange={() => dispatch({type: 'toggle_concession'})} name='concessions' />
         <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
       </div>
+      <div className={tickets[0].admission_type == 'General Admission' ? 'show': 'hidden'}>
+        <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
+          <div className='justify-center items-center text-white rounded-xl'>
+            <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What amount: {payWhatPrice}</h1>
+          </div>
+          <input
+            disabled={!selectedTicket}
+            onChange={(e) => payWhatFunc(e)}
+            type="text"
+            placeholder="Enter Amount"
+            className="disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+      </div>
+      <button
+        disabled={!selectedTicket}
+        type="button"
+        className="disabled:opacity-30 disabled:cursor-not-allowed bg-blue-600 px-3 py-1 rounded-xl text-white hover:bg-blue-700 mb-5"
+        onClick={()=> dispatch(changePayWhat(tempPay))}
+      >
+          Set Pay What</button>
       <div>
         <button
           disabled={!qty || !selectedTicket || qty > selectedTicket.availableseats}
