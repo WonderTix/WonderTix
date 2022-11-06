@@ -41,7 +41,7 @@ discountsRouter.get('/', checkJwt, checkScopes, async(
  *
  * @type {?}
  */
-discountsRouter.get('/codeCheck', async(
+discountsRouter.get('/search', async(
     req: Request,
     res: Response,
 ) => {
