@@ -60,13 +60,17 @@ discountsRouter.get('/search', async (
  *
  * @type {?}
  */
-discountsRouter.get('/:code', async(
+discountsRouter.get('/codeCheck', async(
     req: Request,
     res: Response,
 ) => {
     try{
-      const codes = await checkDiscountCode(req.params.code);
-      const code = codes.status.success ? 200 : 404;
+      const codes = await checkDiscountCode(req.query.code);
+      let c1 = codes.status.success ? 200 : 404;
+      if(codes.status.success === true && codes.data.length === 0){
+        c1 = 404;
+      }
+      const code = c1;
       res.status(code).send(codes);
     } catch(error:any) {
       res.status(500).send(error.message);
@@ -99,13 +103,41 @@ discountsRouter.post('/', checkJwt, checkScopes, async (
  * @type {?}
  */
 
-discountsRouter.delete('/:id', checkJwt, checkScopes, async (
+discountsRouter.put('/:id', checkJwt, checkScopes, async(
+    req: Request,
+    res: Response,
+) => {
+    try {
+      const oldCode = await alterDiscountCode(req.params.id);
+      let c1 = oldCode.status.success ? 200 : 404;
+      if(oldCode.status.success === true && oldCode.data.length === 0){
+        c1 = 404;
+      }
+      const code = c1;
+      res.status(code).send(oldCode);
+    } catch (error: any) {
+      res.status(500).send(error.message);
+    }
+});
+
+
+/**
+ * route: DELETE /
+ *
+ * @type {?}
+ */
+
+discountsRouter.delete('/:id', checkJwt, checkScopes, async(
     req: Request,
     res: Response,
 ) => {
     try {
       const oldCode = await deleteDiscountCode(req.params.id);
-      const code = oldCode.status.success ? 200 : 404;
+      let c1 = oldCode.status.success ? 200 : 404;
+      if(oldCode.status.success === true && oldCode.data.length === 0){
+        c1 = 404;
+      }
+      const code = c1;
       res.status(code).send(oldCode);
     } catch (error: any) {
       res.status(500).send(error.message);
