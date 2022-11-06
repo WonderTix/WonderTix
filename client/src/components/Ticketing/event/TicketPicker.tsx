@@ -19,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {useEffect, useReducer} from 'react';
+import React, {ChangeEvent, useEffect, useReducer} from 'react';
 
 /**
  * @module
@@ -83,10 +83,7 @@ const changeQty = (n: number) => ({type: 'change_qty', payload: n});
  *      showTimes: true,
  *      showClearBtn: true,
  *      prompt: 'selectTime',
- *
- * @param state
- * @param action
- * @returns a certain default state if failed
+ * @return a certain default state if failed
  */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
   switch (action.type) {
