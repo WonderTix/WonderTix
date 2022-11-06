@@ -157,6 +157,21 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
     console.log(showings);
   }, [showings]);
 
+  const deleteShowing = useCallback((event) => {
+    const div = event.target.parentElement;
+    const inputs = div.querySelectorAll('input');
+    const length = inputs.length;
+    const date = inputs[length - 2].value;
+    const time = inputs[length - 1].value;
+    const index = showings.findIndex((el) => {
+      return el.eventdate === date && el.starttime === time;
+    });
+    if (index > 0) {
+      showings.splice(index, 1);
+      console.log(showings);
+    }
+  }, [showings]);
+
   const updateShows = useCallback((shows: Showing[]) => {
     setShowings(shows);
   }, [showings]);
@@ -171,6 +186,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       imageUrl,
       showings,
     };
+    console.log(data);
     onSubmit(data);
   };
 
@@ -221,7 +237,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} updateShows={updateShows} eventid={def.eventID}/>
+                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} updateShows={updateShows} deleteShowing={deleteShowing} eventid={def.eventID}/>
               </div>
             </div>
           </div>

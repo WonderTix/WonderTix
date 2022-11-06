@@ -16,7 +16,7 @@ export interface MapPropsToShowingInputContainer {
   id: number;
   showingNum: number;
   addShow: (show:Showing) => void;
-  deleteShow: (id:number) => void;
+  deleteShow: (event: Event) => void;
 }
 
 /**
@@ -88,7 +88,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
 
   const handleDelete = (event) => {
     event.preventDefault();
-    deleteShow(showingNum);
+    deleteShow(event);
   };
 
   const createTicketOptions = (select: HTMLSelectElement) :HTMLSelectElement=> {
@@ -170,7 +170,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
           <div className="flex md:flex-row gap-10 flex-col">
             <div>
               <h3 className='font-semibold text-white'>Enter Date</h3>
-              <input type="date" className='input w-full p-2 rounded-lg bg-violet-100 mb-7'
+              <input type="date" id="date" className='input w-full p-2 rounded-lg bg-violet-100 mb-7'
                 value={dateFieldValue[0]}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setEventdate(ev.target.value);
@@ -178,7 +178,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
             </div>
             <div >
               <h3 className='font-semibold text-white'>Enter time</h3>
-              <input type="time" name="starttime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
+              <input type="time" id="time" name="starttime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
                 value={starttime}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
                   setStarttime(ev.target.value);
