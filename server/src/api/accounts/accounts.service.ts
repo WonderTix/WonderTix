@@ -46,10 +46,10 @@ export const findByUsername = async (username: string): Promise<response> => {
   return await buildResponse(myQuery, 'GET');
 };
 
-export const find = async (id: string): Promise<response> => {
+export const find = async (userid: string): Promise<response> => {
   const myQuery = {
-    text: 'SELECT * FROM users WHERE id = $1',
-    values: [id],
+    text: `SELECT * FROM users WHERE userid = $1`,
+    values: [userid],
   };
   return await buildResponse(myQuery, 'GET');
 };
@@ -60,35 +60,33 @@ export const create = async (
   const myQuery = {
     text: `
       INSERT INTO users
-      VALUES (DEFAULT, $1, DEFAULT, $2)
-      RETURNING *
-      `,
+      VALUES ($1, $2)
+      RETURNING *;`,
     values: [r.username, r.auth0_id],
   };
   return await buildResponse(myQuery, 'POST');
 };
 
-export const remove = async (id: string): Promise<response> => {
+export const remove = async (id: any): Promise<response> => {
   const myQuery = {
-    text: 'DELETE FROM users WHERE id = $1',
-    values: [id],
+    text: 'DELETE FROM users WHERE userid = $1;',
+    values: [id]
   };
   return buildResponse(myQuery, 'DELETE');
 };
 
-export const update = async (r: any): Promise<response> => {
+export const update = async (b: {username: string, auth0_id: string, is_superadmin: boolean}, userid: any): Promise<response> => {
   const myQuery = {
     text: `
       UPDATE users
-      SET (username, pass_hash, is_superadmin) = ($1, $2, $3)
-      WHERE id = $4
-      RETURNING *
-      `,
+      SET (username, auth0_id, is_superadmin) = ($1::text, $2::text, $3::boolean)
+      WHERE userid = $4
+      RETURNING *;`,
     values: [
-      r.body.username,
-      r.body.pass_hash,
-      r.body.is_superadmin,
-      r.params.id,
+      b.username,
+      b.auth0_id,
+      b.is_superadmin,
+      userid,
     ],
   };
   return buildResponse(myQuery, 'UPDATE');
