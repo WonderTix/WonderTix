@@ -85,18 +85,3 @@ export const deleteDiscountCode = async (id: any): Promise<response> => {
   };
   return buildResponse(query, 'DELETE');
 };
-
-
-/**
- * query: Delete entry from db
- *
- * @type {Promise<response>}
- */
-
-export const deleteDiscountCode = async (id: any): Promise<response> => {
-  const query = {
-    text: `DELETE FROM discounts WHERE discountid=$1;`,
-    values: [id],
-  };
-  return buildResponse(query, 'DELETE')
-};
