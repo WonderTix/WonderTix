@@ -140,8 +140,8 @@ ticketRouter.get('/list', async (req, res) => {
                     ON lt.event_instance_id=ei.id
                   JOIN tickettype tt
                     ON lt.ticket_type=tt.id
-                  WHERE
-                    ev.id=$1 AND isseason=false;`;
+                  WHERE 
+                    ev.id=$1;`;
     const values = [req.query.event];
     const availableTickets = await pool.query(query, values);
     res.json(availableTickets.rows);
