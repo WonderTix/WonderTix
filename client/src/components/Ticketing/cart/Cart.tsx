@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import CartRow from './CartItem';
 import {toDollarAmount} from '../../../utils/arrays';
@@ -16,7 +16,7 @@ import {useNavigate} from 'react-router-dom';
  * @param {function} itemCost - item: Item, item.price * item.qty
  * @param {function} subtotalReducer - acc: number, item: Item, acc + itemCost(item)
  */
-type Item = {price: number, qty: number}
+type Item = {price: number, qty: number, payWhatCan: boolean, payWhatPrice?: number}
 const itemCost = (item: Item) => item.price * item.qty;
 const subtotalReducer = (acc: number, item: Item) => {
   if (!item.payWhatCan) {

@@ -33,7 +33,7 @@ const event: Event = {
 const ticket: Ticket = {
   event_instance_id: 1,
   eventid: '1',
-  admission_type: 'General Admission',
+  admission_type: 'General Admission - Adult',
   date: new Date('2021-07-31T19:00:00'),
   ticket_price: 15.99,
   concession_price: 4.99,
@@ -42,7 +42,7 @@ const ticket: Ticket = {
 const ticket2: Ticket = {
   event_instance_id: 2,
   eventid: '1',
-  admission_type: 'General Admission',
+  admission_type: 'General Admission - Adult',
   date: new Date('2021-08-07T16:00:00'),
   ticket_price: 19.99,
   concession_price: 9.99,
