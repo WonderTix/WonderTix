@@ -166,7 +166,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
     const index = showings.findIndex((el) => {
       return el.eventdate === date && el.starttime === time;
     });
-    if (index > 0) {
+    if (index > -1) {
       showings.splice(index, 1);
       console.log(showings);
     }
