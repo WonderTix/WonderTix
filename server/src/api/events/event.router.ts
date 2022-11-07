@@ -113,7 +113,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                           lastname, 
                           email, 
                           phone, 
-                          custaddress, 
+                          address, 
                           newsletter, 
                           donorbadge, 
                           seatingaccom)
@@ -154,7 +154,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                       firstname = $2,
                       lastname = $3,
                       phone = $4, 
-                      custaddress = $5,
+                      address = $5,
                       newsletter = $6,
                       seatingaccom = $7
                     WHERE 
@@ -164,24 +164,24 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       console.log(error);
     }
   }
-  // storing the customer id for later processing on succesful payments.
+  // storing the contact id for later processing on succesful payments.
   // if we cant find the custid something went wrong
-  let customerID = null;
+  let contactID = null;
 
   try {
     // Possible breaking change custname -> firstname, lastname
     const query = `
                   SELECT 
-                    customerid 
+                    contactid 
                   FROM 
                     contacts 
                   WHERE 
                     firstname = $1 AND lastname = $2;`;
-    customerID = await pool.query(
+    contactID = await pool.query(
         query,
         [firstName, lastName],
     );
-    customerID = customerID.rows[0].id;
+    contactID = contactID.rows[0].id;
     // const formData: CheckoutFormInfo = req.body.formData;
     const donation: number = req.body.donation;
     const donationItem = {
@@ -226,13 +226,13 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       payment_intent_data: {
         metadata: {
           orders: JSON.stringify(orders),
-          custid: customerID,
+          custid: contactID,
           donation: donation,
         },
       },
       metadata: {
         orders: JSON.stringify(orders),
-        custid: customerID,
+        custid: contactID,
       },
     });
     console.log(session);

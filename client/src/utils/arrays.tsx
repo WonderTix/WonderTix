@@ -16,7 +16,7 @@ export const contactHeaders = [
   { field: "custname", headerName: "Name", minWidth: 200 },
   { field: "email", headerName: "Email", minWidth: 250 },
   { field: "phone", headerName: "Phone", minWidth: 150 },
-  { field: "custaddress", headerName: "Address", minWidth: 300 },
+  { field: "address", headerName: "Address", minWidth: 300 },
   { field: "newsletter", headerName: "Newsletter", minWidth: 50 },
   { field: "donor badge", headerName: "Donor", minWidth: 50 },
   { field: "seatingaccom", headerName: "Seating Accomodation", minWidth: 200 },
@@ -42,7 +42,7 @@ export const contactFiltersTextField = [
   { label: "Name", id: "custname" },
   { label: "Email", id: "email" },
   { label: "Phone", id: "phone" },
-  { label: "Address", id: "custaddress" },
+  { label: "Address", id: "address" },
 ];
 
 export const contactFiltersSwitch = [
@@ -83,7 +83,7 @@ export const contactHeaders = [
   {field: 'custname', headerName: 'Name', minWidth: 200},
   {field: 'email', headerName: 'Email', minWidth: 250},
   {field: 'phone', headerName: 'Phone', minWidth: 150},
-  {field: 'custaddress', headerName: 'Address', minWidth: 300},
+  {field: 'address', headerName: 'Address', minWidth: 300},
   {field: 'newsletter', headerName: 'Newsletter', minWidth: 50},
   {field: 'donor badge', headerName: 'Donor', minWidth: 50},
   {field: 'seatingaccom', headerName: 'Seating Accomodation', minWidth: 200},
@@ -109,7 +109,7 @@ export const contactFiltersTextField = [
   {label: 'Name', id: 'custname'},
   {label: 'Email', id: 'email'},
   {label: 'Phone', id: 'phone'},
-  {label: 'Address', id: 'custaddress'},
+  {label: 'Address', id: 'address'},
 ];
 
 export const contactFiltersSwitch = [

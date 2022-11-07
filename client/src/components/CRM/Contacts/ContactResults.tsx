@@ -40,7 +40,7 @@ const ContactResults = ({
     id,
     email,
     phone,
-    custaddress,
+    address,
     newsletter,
     donorbadge,
     seatingaccom,
@@ -95,7 +95,7 @@ const ContactResults = ({
             Customer Address:
           </div>
           <div>
-            {custaddress}
+            {address}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -159,7 +159,7 @@ export const contactForm = (data: any): React.ReactElement => {
   setID(data.id);
   const [Email, setEmail] = useState(data.email);
   const [Phone, setPhone] = useState(data.phone);
-  const [Custaddress, setCustaddress] = useState(data.custaddress);
+  const [Address, setaddress] = useState(data.address);
   const [Newsletter, setNewsletter] = useState(data.newsletter);
   const [Donorbadge, setDonorbage] = useState(data.donorbage);
   const [Seatingaccom, setSeatingaccom] = useState(data.seatingaccom);
@@ -191,7 +191,7 @@ export const contactForm = (data: any): React.ReactElement => {
       custname: Custname,
       email: Email,
       phone: Phone,
-      custaddress: Custaddress,
+      address: Address,
       newsletter: Newsletter,
       donorbadge: Donorbadge,
       seatingaccom: Seatingaccom,
@@ -271,10 +271,10 @@ export const contactForm = (data: any): React.ReactElement => {
           <input
             name="Address"
             type="text"
-            value={Custaddress}
+            value={Address}
             className="input w-full max-w-xs border
             border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setCustaddress(e.target.value)} />
+            onChange={(e) => setaddress(e.target.value)} />
         </div>
         <br/>
 
