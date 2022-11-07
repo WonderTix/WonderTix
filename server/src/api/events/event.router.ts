@@ -3,16 +3,16 @@ import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
 import {pool} from '../db';
 import {checkIn,
-        getEventById,
-        getEventByName,
-        getActiveEventsAndInstances,
-        createEvent,
-        createShowing,
-        updateEvent,
-        archivePlays,
-        getActiveEvents,
-        updateInstances,
-        getInstanceById} from './event.service';
+  getEventById,
+  getEventByName,
+  getActiveEventsAndInstances,
+  createEvent,
+  createShowing,
+  updateEvent,
+  archivePlays,
+  getActiveEvents,
+  updateInstances,
+  getInstanceById} from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
 

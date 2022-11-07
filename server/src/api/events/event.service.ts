@@ -182,8 +182,8 @@ export const createShowing = async (params: any): Promise<response> => {
   // Link showtime to ticket type
   const linkingdata = newInstances.map((s) => ({
     id: <number>Object.values(s)[0],
-    tickettypes: <number[]>Object.values(s)[10],
-    seatsfortype: <number[]>Object.values(s)[11],
+    tickettypes: <number[]>Object.values(s)[10], // Keeps changing?
+    seatsfortype: <number[]>Object.values(s)[11], // Keeps changing?
   }));
   const myQuery = {
     text: `INSERT INTO ticketrestrictions (eventinstanceid_fk, tickettypeid_fk,
@@ -226,7 +226,59 @@ export const createShowing = async (params: any): Promise<response> => {
       } inserted.`,
     },
   };
-  console.log(res);
+  await createTickets(linkingdata);
+  return res;
+};
+
+export const createTickets = async (params: any): Promise<response> => {
+  const data = params;
+  const numberOfShowings = data.length;
+  const myQuery = {
+    text: `INSERT INTO 
+            eventtickets
+            (eventinstanceid_fk, tickettypeid_fk) 
+          VALUES ($1, $2) 
+          RETURNING *;`,
+    values: <number[]>([]),
+  };
+  let res: response = {
+    data: <any[]>([]),
+    status: {
+      success: false,
+      message: '',
+    },
+  };
+  const toReturn = [];
+  let rowCount = 0;
+  for (let k = 0; k < numberOfShowings; k += 1) {
+    const numOfTypes = data[k].tickettypes.length;
+    for (let i = 0; i < numOfTypes; i += 1) {
+      const numOfSeats = data[k].seatsfortype[i];
+      for (let j = 0; j < numOfSeats; j += 1) {
+        let queryResults;
+        try {
+          queryResults = await pool.query(myQuery, [
+            data[k].id,
+            data[k].tickettypes[i],
+          ]);
+          toReturn.push(queryResults);
+          rowCount += queryResults.rowCount;
+        } catch (error: any) {
+          res.status.message = error.message;
+        }
+      }
+    }
+  }
+  res = {
+    data: toReturn,
+    status: {
+      success: true,
+      message: `${rowCount} ${rowCount === 1 ?
+        'row' :
+        'rows'
+      } inserted.`,
+    },
+  };
   return res;
 };
 
