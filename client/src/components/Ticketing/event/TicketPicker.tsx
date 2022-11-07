@@ -86,7 +86,7 @@ const changePayWhat = (n:number) => ({type: 'change_pay_what', payload: n});
  *      showTimes: true,
  *      showClearBtn: true,
  *      prompt: 'selectTime',
- * @returns a certain default state if failed
+ * @return a certain default state if failed
  */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
   switch (action.type) {
@@ -134,7 +134,7 @@ interface TicketPickerProps {
 /**
  * Used to choose the tickets
  * @param {TicketPickerProps} tickets
- * @returns {ReactElement} and the correct ticket when picking
+ * @return {ReactElement} and the correct ticket when picking
  */
 const TicketPicker = ({tickets}: TicketPickerProps) => {
   const [{
@@ -259,14 +259,15 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
             className="disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
+        <button
+          disabled={!selectedTicket}
+          type="button"
+          className="disabled:opacity-30 disabled:cursor-not-allowed bg-blue-600 px-3 py-1 rounded-xl text-white hover:bg-blue-700 mb-5"
+          onClick={()=> dispatch(changePayWhat(tempPay))}
+        >
+          Set Pay What
+        </button>
       </div>
-      <button
-        disabled={!selectedTicket}
-        type="button"
-        className="disabled:opacity-30 disabled:cursor-not-allowed bg-blue-600 px-3 py-1 rounded-xl text-white hover:bg-blue-700 mb-5"
-        onClick={()=> dispatch(changePayWhat(tempPay))}
-      >
-          Set Pay What</button>
       <div>
         <button
           disabled={!qty || !selectedTicket || qty > selectedTicket.availableseats}
