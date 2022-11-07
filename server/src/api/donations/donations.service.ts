@@ -12,7 +12,7 @@ export const findAll = async (): Promise<response> => {
 
 export const findByName = async (name: string): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM donations WHERE dononame = $1`,
+    text: `SELECT * FROM donations WHERE lower(donorname) = lower($1)`,
     values: [name],
   };
   return buildResponse(myQuery, 'GET');
@@ -20,7 +20,7 @@ export const findByName = async (name: string): Promise<response> => {
 
 export const find = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'SELECT * FROM donations WHERE id = $1',
+    text: 'SELECT * FROM donations WHERE donationid = $1',
     values: [id],
   };
   return buildResponse(myQuery, 'GET');
@@ -30,18 +30,18 @@ export const create = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
       INSERT INTO donations
-      VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7)
+      VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
       `,
-    values: [r.donorid, r.isanonymous, r.amount, r.dononame,
-      r.frequency, r.comments, r.donodate],
+    values: [r.contactid_fk, r.isanonymous, r.amount, r.donorname,
+      r.frequency, r.comments, r.payment_intent, r.donationdate],
   };
   return buildResponse(myQuery, 'POST');
 };
 
 export const remove = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'DELETE FROM donations WHERE id = $1',
+    text: 'DELETE FROM donations WHERE donationid = $1',
     values: [id],
   };
   return buildResponse(myQuery, 'DELETE');
@@ -52,19 +52,20 @@ export const update = async (r: any): Promise<response> => {
     text: `
       UPDATE donations
       SET (
-        donorid,
+        contactid_fk,
         isanonymous,
         amount,
-        dononame,
+        donorname,
         frequency,
         comments,
-        donodate) = 
-          ($1, $2, $3, $4, $5, $6, $7)
-      WHERE id = $8
+        payment_intent,
+        donationdate) =
+          ($1, $2, $3, $4, $5, $6, $7, $8)
+      WHERE donationid = $9
       RETURNING *
       `,
-    values: [r.body.donorid, r.body.isanonymous, r.body.amount, r.body.dononame,
-      r.body.frequency, r.body.comments, r.body.donodate, r.params.id],
+    values: [r.body.contactid_fk, r.body.isanonymous, r.body.amount, r.body.donorname,
+      r.body.frequency, r.body.comments, r.body.payment_intent, r.body.donationdate, r.params.id],
   };
   return buildResponse(myQuery, 'UPDATE');
 };
