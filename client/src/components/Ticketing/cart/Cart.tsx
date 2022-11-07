@@ -73,7 +73,7 @@ const Cart = () => {
 
   const applyDiscount = () => {
     console.log('Discount button clicked! Value: ' + discountText.toUpperCase());
-    return dispatch(fetchDiscountData());
+    return dispatch(fetchDiscountData(discountText));
   };
 
   const displayModal = (id: number) => {

@@ -153,8 +153,12 @@ export const fetchTicketingData = createAsyncThunk(
  */
  export const fetchDiscountData = createAsyncThunk(
   'ticketing/fetch',
-  async () => {
-    const discountData = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/discounts');
+  async (code: number) => {
+    let url = process.env.REACT_APP_ROOT_URL + '/api/discounts/search?code=' + code;
+    // const params = { code: 'FIVEOFF' };
+    // url.search = new URLSearchParams(params);
+
+    const discountData = await fetchData(url);
     const discount: Discount[] = discountData.data;
     console.log('Discounts', discount);
     return {discount};
