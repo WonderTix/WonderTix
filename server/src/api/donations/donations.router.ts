@@ -54,7 +54,7 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
 donationsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removedDonations = await remove(req.params.id);
-    const code = removedDonations.status.success ? 204 : 404;
+    const code = removedDonations.status.success ? 200 : 404;
     res.status(code).send(removedDonations);
   } catch (err: any) {
     res.status(500).send(err.message);
