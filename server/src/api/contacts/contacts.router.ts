@@ -54,7 +54,7 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
 contactsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
-    const code = resp.status.success ? 204 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.sendStatus(code);
   } catch (err: any) {
     res.status(500).send(err.message);
