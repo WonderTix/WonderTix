@@ -113,7 +113,7 @@ describe('test contacts routes', function() {
       });
       const res = await request(app).delete('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
-      expect(res.statusCode).toBe(204);
+      expect(res.statusCode).toBe(200);
     });
 
     it('/:id delete fail', async () => {
