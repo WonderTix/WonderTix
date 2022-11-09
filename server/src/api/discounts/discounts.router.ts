@@ -86,7 +86,11 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async(
 ) => {
     try {
       const oldCode = await alterDiscountCode(req.params.id);
-      const code = oldCode.status.success ? 200 : 404;
+      let tempc = oldCode.status.success ? 200 : 404;
+      if(tempc === 200 && oldCode.data.length === 0){
+        tempc = 404;
+      }
+      const code = tempc;
     } catch (error: any) {
       res.status(500).send(error.message);
     }
@@ -105,7 +109,11 @@ discountsRouter.delete('/:id', checkJwt, checkScopes, async(
 ) => {
     try {
       const oldCode = await deleteDiscountCode(req.params.id);
-      const code = oldCode.status.success ? 200 : 404;
+      let tempc = oldCode.status.success ? 200 : 404;
+      if(tempc === 200 && oldCode.data.length === 0){
+        tempc = 404;
+      }
+      const code = tempc;
       res.status(code).send(oldCode);
     } catch (error: any) {
       res.status(500).send(error.message);

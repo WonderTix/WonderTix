@@ -18,7 +18,7 @@ describe('test contacts routes', function() {
     it('/ get pass', async () => {
       // @ts-ignore
       contactsService.findAll.mockImplementationOnce(() => {
-        return {data: [], status: {success: true, message: ''}};
+        return {data: [0], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -40,7 +40,7 @@ describe('test contacts routes', function() {
     it('/search get pass', async () => {
       // @ts-ignore
       contactsService.findByName.mockImplementationOnce(() => {
-        return {data: [], status: {success: true, message: ''}};
+        return {data: [0], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/search')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -63,7 +63,7 @@ describe('test contacts routes', function() {
     it('/:id get pass', async () => {
       // @ts-ignore
       contactsService.find.mockImplementationOnce(() => {
-        return {data: [], status: {success: true, message: ''}};
+        return {data: [0], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -109,7 +109,7 @@ describe('test contacts routes', function() {
     it('/:id delete pass', async () => {
       // @ts-ignore
       contactsService.remove.mockImplementationOnce(() => {
-        return {data: [], status: {success: true, message: ''}};
+        return {data: [0], status: {success: true, message: ''}};
       });
       const res = await request(app).delete('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
@@ -132,7 +132,7 @@ describe('test contacts routes', function() {
     it('/:id put pass', async () => {
       // @ts-ignore
       contactsService.update.mockImplementationOnce(() => {
-        return {data: [], status: {success: true, message: ''}};
+        return {data: [0], status: {success: true, message: ''}};
       });
       const res = await request(app).put('/:id')
           .set('Authorization', `Bearer ${getToken()}`).send();
