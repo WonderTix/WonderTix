@@ -2,10 +2,10 @@
 
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {createTask, 
-        findTask, 
-        getAllTasks, 
-        removeTask, 
+import {createTask,
+        findTask,
+        getAllTasks,
+        removeTask,
         updateTask} from './tasks.service';
 
 export const tasksRouter = Router();
@@ -30,7 +30,11 @@ tasksRouter.get('/', async (_req: Request, res: Response) => {
 tasksRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const task = await findTask(req.params.id);
-    const code = task.status.success ? 200 : 404;
+    let tempc = task.status.success ? 200 : 404;
+    if(tempc === 200 && task.data.length === 0){
+      tempc = 404;
+    }
+    const code = tempc;
     res.status(code).send(task);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -52,7 +56,11 @@ tasksRouter.post('/', async (req: Request, res: Response) => {
 tasksRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removeStatus = await removeTask(req.params.id);
-    const code = removeStatus.status.success ? 204 : 404;
+    let tempc = removeStatus.status.success ? 200 : 404;
+    if(tempc === 200 && removeStatus.data.length === 0){
+      tempc = 404;
+    }
+    const code = tempc;
     res.sendStatus(code);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -63,7 +71,11 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
 tasksRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedTask = await updateTask(req);
-    const code = updatedTask.status.success ? 200 : 404;
+    let tempc = updatedTask.status.success ? 200 : 404;
+    if(tempc === 200 && updatedTask.data.length === 0){
+      tempc = 404;
+    }
+    const code = tempc;
     res.status(code).send(updatedTask);
   } catch (err: any) {
     res.status(500).send(err.message);

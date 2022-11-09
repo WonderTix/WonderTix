@@ -25,8 +25,8 @@ taskNotesRouter.get('/', async (_req: Request, res: Response) => {
 taskNotesRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const taskNotes = await find(req.params.id);
-    let tempc = codes.status.success ? 200 : 404;
-    if(tempc === 200 && donation.data.length === 0){
+    let tempc = taskNotes.status.success ? 200 : 404;
+    if(tempc === 200 && taskNotes.data.length === 0){
       tempc = 404;
     }
     const code = tempc;
