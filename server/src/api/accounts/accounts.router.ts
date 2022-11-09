@@ -21,7 +21,11 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
 accountsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const resp = await findByUsername(req.query.username as string);
-    const code = resp.status.success ? 200 : 404;
+    let c1 = resp.status.success ? 200 : 404;
+    if(resp.status.success === true && resp.data.length === 0){
+      c1 = 404;
+    }
+    const code = c1;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
