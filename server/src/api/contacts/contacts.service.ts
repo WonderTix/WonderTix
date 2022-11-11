@@ -27,7 +27,7 @@ export const findAll = async (params: any): Promise<response> => {
         '%' + params.email + '%' : params.email,
       params.address !== undefined ?
         '%' + params.address + '%' : params.address,
-      params.phone !== undefined ? 
+      params.phone !== undefined ?
         '%' + params.phone + '%' : params.phone,
       params.donorbadge,
       params.seatingaccom,
