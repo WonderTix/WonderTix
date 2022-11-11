@@ -9,7 +9,8 @@ import AuthenticationButton from './authentication-button';
  * a wrapper for the
 Authentication button. It is kind of repetitive.
 but can be placed anywhere to create a dynamic login/logot btton
- * @return {React.ReactElement}
+ *
+ * @returns {React.ReactElement}
  */
 const AuthNav = (): React.ReactElement => <AuthenticationButton />;
 

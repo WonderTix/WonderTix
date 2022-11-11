@@ -1,7 +1,10 @@
 import React from 'react';
 /**
  * Return account results after performing account search
- * @return {ReactElement}
+ *
+ * @param root0
+ * @param root0.data
+ * @returns {ReactElement}
  */
 const AccountResults = ({
   data,

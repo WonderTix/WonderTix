@@ -4,9 +4,10 @@ import {useNavigate} from 'react-router-dom';
 
 /**
  * Has Dashboard, Door List, Manage Events, Add New Events, Delete Event Showings, Create Newsletter, Manage Seasonal Tickets to click on
- * @module 
- * @param {Object} navigate - Used to go to different components
- * @returns {ReactElement} Dashboard 
+ *
+ * @module
+ * @param {object} navigate - Used to go to different components
+ * @returns {ReactElement} Dashboard
  */
 const Dashboard = () => {
   const navigate = useNavigate();

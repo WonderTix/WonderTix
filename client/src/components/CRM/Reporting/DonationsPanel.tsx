@@ -7,7 +7,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import {useAuth0} from '@auth0/auth0-react';
 /**
  * Donation panal in reporting
- * @return {ReactElement}
+ *
+ * @param root0
+ * @param root0.fetchData
+ * @param root0.setOpen
+ * @param root0.savedName
+ * @param root0.setSavedName
+ * @returns {ReactElement}
  */
 const DonationsPanel = ({
   fetchData,
@@ -99,7 +105,9 @@ const DonationsPanel = ({
             onChange={handleChange} />
         );
       })}
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
+      {/* Dropping this calender view for Donations
+       reporting because of unresolved error */}
+      {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
         <div className='flex flex-col  gap-2'>
           <div className='text-sm text-zinc-500'>Start from</div>
           <DatePicker selected={beginValue}
@@ -111,7 +119,7 @@ const DonationsPanel = ({
             className='border border-zinc-200 text-sm
             px-2 py-3 rounded-xl mb-2' />
         </div>
-      </LocalizationProvider>
+      </LocalizationProvider> */}
       <div className='flex flex-col gap-2 mt-2'>
         <button className='bg-blue-600 text-white px-6 py-2
               rounded-xl shadow-xl hover:scale-105 duration-300
