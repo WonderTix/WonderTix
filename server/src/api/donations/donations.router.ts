@@ -47,6 +47,7 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
     let tempc = donation.status.success ? 200 : 404;
     if(tempc === 200 && donation.data.length === 0){
       tempc = 404;
+      donation.status.success = false;
     }
     const code = tempc;
     res.status(code).send(donation);
@@ -61,6 +62,7 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
     let tempc = removedDonations.status.success ? 200 : 404;
     if(tempc === 200 && removedDonations.data.length === 0){
       tempc = 404;
+      removedDonations.status.success = false;
     }
     const code = tempc;
     res.status(code).send(removedDonations);
@@ -75,6 +77,7 @@ donationsRouter.put('/:id', async (req: Request, res: Response) => {
     let tempc = updatedDonation.status.success ? 200 : 404;
     if(tempc === 200 && updatedDonation.data.length === 0){
       tempc = 404;
+      updatedDonation.status.success = false;
     }
     const code = tempc;
     res.status(code).send(updatedDonation);

@@ -28,6 +28,7 @@ taskNotesRouter.get('/:id', async (req: Request, res: Response) => {
     let tempc = taskNotes.status.success ? 200 : 404;
     if(tempc === 200 && taskNotes.data.length === 0){
       tempc = 404;
+      taskNotes.status.success = false;
     }
     const code = tempc;
     res.status(code).send(taskNotes);
@@ -54,6 +55,7 @@ taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
     let tempc = delResponse.status.success ? 200 : 404;
     if(tempc === 200 && delResponse.data.length === 0){
       tempc = 404;
+      delResponse.status.success = false;
     }
     const code = tempc;
     res.status(code).send(delResponse);
@@ -69,6 +71,7 @@ taskNotesRouter.put('/:id', async (req: Request, res: Response) => {
     let tempc = updatedTaskNotes.status.success ? 200 : 404;
     if(tempc === 200 && updatedTaskNotes.data.length === 0){
       tempc = 404;
+      updatedTaskNotes.status.success = false;
     }
     const code = tempc;
     res.status(code).send(updatedTaskNotes);

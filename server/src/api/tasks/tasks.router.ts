@@ -33,6 +33,7 @@ tasksRouter.get('/:id', async (req: Request, res: Response) => {
     let tempc = task.status.success ? 200 : 404;
     if(tempc === 200 && task.data.length === 0){
       tempc = 404;
+      task.status.success = false;
     }
     const code = tempc;
     res.status(code).send(task);
@@ -59,6 +60,7 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
     let tempc = removeStatus.status.success ? 200 : 404;
     if(tempc === 200 && removeStatus.data.length === 0){
       tempc = 404;
+      removeStatus.status.success = false;
     }
     const code = tempc;
     res.sendStatus(code);
@@ -74,6 +76,7 @@ tasksRouter.put('/:id', async (req: Request, res: Response) => {
     let tempc = updatedTask.status.success ? 200 : 404;
     if(tempc === 200 && updatedTask.data.length === 0){
       tempc = 404;
+      updatedTask.status.success = false;
     }
     const code = tempc;
     res.status(code).send(updatedTask);

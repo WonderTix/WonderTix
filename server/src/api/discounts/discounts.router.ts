@@ -89,6 +89,7 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async(
       let tempc = resp.status.success ? 200 : 404;
       if(tempc === 200 && resp.data.length === 0){
         tempc = 404;
+        resp.status.success = false;
       }
       const code = tempc;
       res.status(code).send(resp);
@@ -113,6 +114,7 @@ discountsRouter.delete('/:id', checkJwt, checkScopes, async(
       let tempc = resp.status.success ? 200 : 404;
       if(tempc === 200 && resp.data.length === 0){
         tempc = 404;
+        resp.status.success = false;
       }
       const code = tempc;
       res.status(code).send(resp);
