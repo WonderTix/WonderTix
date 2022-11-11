@@ -27,7 +27,7 @@ export const findAll = async (params: any): Promise<response> => {
         '%' + params.email + '%' : params.email,
       params.address !== undefined ?
         '%' + params.address + '%' : params.address,
-      params.phone !== undefined ? 
+      params.phone !== undefined ?
         '%' + params.phone + '%' : params.phone,
       params.donorbadge !== undefined ?
         '%' + params.donorbadge + '%' : params.donorbadge,
@@ -63,17 +63,17 @@ export const create = async (r: any): Promise<response> => {
     text: `
       INSERT INTO contacts
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING *
-      `,
-    values: [r.firstname,
-      r.lastname,
-      r.email,
-      r.custaddress,
-      r.phone,
-      r.donorbadge,
-      r.seatingaccom,
-      r.newsletter,
-      r.vip,
+      RETURNING *;`,
+    values: [
+      r.firstname, 
+      r.lastname, 
+      r.email, 
+      r.address, 
+      r.phone, 
+      r.donorbadge, 
+      r.seatingaccom, 
+      r.newsletter, 
+      r.vip, 
       r.volunteer_list],
   };
   return await buildResponse(myQuery, 'POST');
@@ -119,9 +119,18 @@ export const update = async (r:any): Promise<response> => {
       WHERE contactid = $11
       RETURNING *;
       `,
-    values: [r.body.firstname, r.body.lastname, r.body.email,
-      r.body.address, r.body.phone,  r.body.donorbadge, r.body.seatingaccom,
-      r.body.vip, r.body.volunteerlist, r.body.newsletter, r.params.id],
+    values: [
+      r.body.firstname, 
+      r.body.lastname, 
+      r.body.email,
+      r.body.address, 
+      r.body.phone,  
+      r.body.donorbadge, 
+      r.body.seatingaccom,
+      r.body.vip, 
+      r.body.volunteerlist, 
+      r.body.newsletter, 
+      r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');
 };
