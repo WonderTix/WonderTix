@@ -80,7 +80,7 @@ export const updateInstances = async (
     params: any,
 ): Promise<response> => {
   const instances: Showing[] = body;
-  console.log("Instances", instances);
+  console.log('Instances', instances);
 
   // get existing showings for this event
   const currentShowings = await getShowingsById(params.id);
@@ -105,7 +105,7 @@ export const updateInstances = async (
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
   rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
 
-  console.log("Rows to insert", rowsToInsert);
+  console.log('Rows to insert', rowsToInsert);
   const rowsInserted = (await insertAllShowings(rowsToInsert));
 
   return {
@@ -243,10 +243,10 @@ export const createEvent = async (params: any): Promise<response> => {
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
     values: [
-      params.seasonid_fk, 
-      params.eventName, 
-      params.eventDesc, 
-      params.seasonticketeligible, 
+      params.seasonid_fk,
+      params.eventName,
+      params.eventDesc,
+      params.seasonticketeligible,
       params.imageUrl],
   };
   console.log(params);
@@ -322,7 +322,7 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       showing.starttime,
       showing.totalseats,
       showing.availableseats,
-      showing.ispreview
+      showing.ispreview,
     ]);
     res.push({...rows[0], tickettype});
   }
@@ -357,7 +357,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
           showing.totalseats,
           showing.availableseats,
           showing.purchaseuri,
-          showing.ispreview
+          showing.ispreview,
         ]);
     rowsUpdated += queryResult.rowCount;
   }

@@ -17,7 +17,6 @@ const parseIntToDate = (d : number) => {
   return new Date(year, month-1, day);
 };
 
- 
 
 export const toTicket = (row:any): Ticket => {
   const {eventdate, starttime, ...rest} = row;
@@ -45,7 +44,7 @@ export const reduceToTicketState = (res: any, t: Ticket) => {
 export const createTicketType = async (params: any): Promise<response> => {
   const myQuery = {
     // Breaking change, fewer values required
-    text:`
+    text: `
           INSERT INTO 
             tickettype (
                 description,
@@ -56,7 +55,7 @@ export const createTicketType = async (params: any): Promise<response> => {
           RETURNING *;`,
     values: [
       params.name,
-      params.price, 
+      params.price,
       params.concessions],
   };
   console.log(params);

@@ -22,7 +22,7 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const resp = await findByUsername(req.query.username as string);
     let c1 = resp.status.success ? 200 : 404;
-    if(resp.status.success === true && resp.data.length === 0){
+    if (resp.status.success === true && resp.data.length === 0) {
       c1 = 404;
     }
     const code = c1;
@@ -36,7 +36,7 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
     let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
+    if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
@@ -60,7 +60,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
     let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
+    if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
@@ -74,7 +74,7 @@ accountsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req.body, req.params.id);
     let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
+    if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;

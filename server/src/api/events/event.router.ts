@@ -3,16 +3,16 @@ import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
 import {pool} from '../db';
 import {checkIn,
-        getEventById,
-        getEventByName,
-        getActiveEventsAndInstances,
-        createEvent,
-        createShowing,
-        updateEvent,
-        archivePlays,
-        getActiveEvents,
-        updateInstances,
-        getInstanceById} from './event.service';
+  getEventById,
+  getEventByName,
+  getActiveEventsAndInstances,
+  createEvent,
+  createShowing,
+  updateEvent,
+  archivePlays,
+  getActiveEvents,
+  updateInstances,
+  getInstanceById} from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
 
@@ -42,7 +42,7 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const data = await getEventById(req.params);
     let tempc = data.status.success ? 200 : 404;
-    if(tempc === 200 && data.data.length === 0){
+    if (tempc === 200 && data.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
@@ -401,7 +401,7 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
   try {
     const resp = await updateInstances(req.body, req.params);
     let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
+    if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
@@ -424,7 +424,7 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
     // playid
     const plays = await archivePlays(req.params);
     let tempc = plays.status.success ? 200 : 404;
-    if(tempc === 200 && plays.data.length === 0){
+    if (tempc === 200 && plays.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;

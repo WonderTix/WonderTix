@@ -45,7 +45,7 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
     let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
+    if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
@@ -59,7 +59,7 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
     let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
+    if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
@@ -74,7 +74,7 @@ contactsRouter.put('/:id', async (req: Request, res: Response) => {
     const resp = await update(req);
     console.log(resp);
     let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
+    if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
