@@ -49,11 +49,11 @@ export const createTask = async (r: any): Promise<response> => {
       r.assignto,
       r.reportto,
       r.datecreated,
-      r.dateassigned, 
-      r.duedate, 
+      r.dateassigned,
+      r.duedate,
       r.ref_contact,
-      r.ref_donation, 
-      r.ref_order, 
+      r.ref_donation,
+      r.ref_order,
       r.ref_account],
   };
   return await buildResponse(myQuery, 'POST');
@@ -100,10 +100,10 @@ export const updateTask = async (r: any): Promise<response> => {
       r.body.datecreated,
       r.body.dateassigned,
       r.body.duedate,
-      r.body.ref_contact, 
-      r.body.ref_donation, 
+      r.body.ref_contact,
+      r.body.ref_donation,
       r.body.ref_ticket_order,
-      r.body.ref_account, 
+      r.body.ref_account,
       r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');

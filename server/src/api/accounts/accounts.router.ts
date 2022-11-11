@@ -22,7 +22,7 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const resp = await findByUsername(req.query.username as string);
     let c1 = resp.status.success ? 200 : 404;
-    if(resp.status.success === true && resp.data.length === 0){
+    if (resp.status.success === true && resp.data.length === 0) {
       c1 = 404;
     }
     const code = c1;

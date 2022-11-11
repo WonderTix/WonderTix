@@ -104,7 +104,7 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
   try {
     const resp = await ticketUtils.removeTicketType(req.params.id);
     let code = resp.status.success ? 200 : 404;
-    if(code === 200 && resp.data.length === 0){
+    if (code === 200 && resp.data.length === 0) {
       code = 404;
       resp.status.success = false;
     }
