@@ -62,7 +62,16 @@ export const create = async (r: any): Promise<response> => {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
       `,
-    values: [r.firstname, r.lastname, r.email, r.custaddress, r.phone, r.donorbadge, r.seatingaccom, r.newsletter, r.vip, r.volunteer_list],
+    values: [r.firstname,
+      r.lastname,
+      r.email,
+      r.custaddress,
+      r.phone,
+      r.donorbadge,
+      r.seatingaccom,
+      r.newsletter,
+      r.vip,
+      r.volunteer_list],
   };
   return await buildResponse(myQuery, 'POST');
 };
@@ -94,7 +103,7 @@ export const update = async (r:any): Promise<response> => {
       RETURNING *;
       `,
     values: [r.body.firstname, r.body.lastname, r.body.email,
-      r.body.custaddress, r.body.phone,  r.body.donorbadge, r.body.seatingaccom,
+      r.body.custaddress, r.body.phone, r.body.donorbadge, r.body.seatingaccom,
       r.body.vip, r.body.volunteerlist, r.body.newsletter, r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');

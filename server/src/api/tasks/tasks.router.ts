@@ -3,10 +3,10 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {createTask,
-        findTask,
-        getAllTasks,
-        removeTask,
-        updateTask} from './tasks.service';
+  findTask,
+  getAllTasks,
+  removeTask,
+  updateTask} from './tasks.service';
 
 export const tasksRouter = Router();
 
@@ -31,7 +31,7 @@ tasksRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const task = await findTask(req.params.id);
     let tempc = task.status.success ? 200 : 404;
-    if(tempc === 200 && task.data.length === 0){
+    if (tempc === 200 && task.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
@@ -57,7 +57,7 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removeStatus = await removeTask(req.params.id);
     let tempc = removeStatus.status.success ? 200 : 404;
-    if(tempc === 200 && removeStatus.data.length === 0){
+    if (tempc === 200 && removeStatus.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;
@@ -72,7 +72,7 @@ tasksRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedTask = await updateTask(req);
     let tempc = updatedTask.status.success ? 200 : 404;
-    if(tempc === 200 && updatedTask.data.length === 0){
+    if (tempc === 200 && updatedTask.data.length === 0) {
       tempc = 404;
     }
     const code = tempc;

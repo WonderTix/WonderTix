@@ -326,7 +326,7 @@ export const createEvent = async (params: any): Promise<response> => {
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
     values: [
-      params.seasonId,
+      params.seasonid_fk,
       params.eventName,
       params.eventDesc,
       params.seasonticketeligible,
