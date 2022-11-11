@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid, GridRowsProp, GridColumns} from '@mui/x-data-grid';
 import Chip from '@mui/material/Chip';
 import {useAuth0} from '@auth0/auth0-react';
 
@@ -9,18 +9,30 @@ const TicketTypes = () => {
   const {getAccessTokenSilently} = useAuth0();
 
   // Defines the columns of the grid
-  const columns = [
-    {field: 'type', headerName: 'Ticket Type', width: 300},
-    {field: 'price', headerName: 'Price', width: 150},
+  const columns: GridColumns = [
+    {
+      field: 'description',
+      headerName: 'Ticket Type',
+      width: 400,
+      editable: true,
+    },
+    {
+      field: 'price',
+      headerName: 'Price',
+      width: 150,
+      editable: true,
+    },
+    /*
     {
       field: 'edit',
       headerName: 'Edit',
       sortable: false,
       width: 100,
-      renderCell: () => {
-        return <Chip label="Edit" onClick={handleEditClick} />;
+      renderCell: (id) => {
+        return <Chip label='Edit' onClick={handleEditClick(id)} />;
       },
     },
+    */
     {
       field: 'delete',
       headerName: 'Delete',
@@ -28,20 +40,25 @@ const TicketTypes = () => {
       width: 100,
       renderCell: () => {
         return (
-          <Chip label="Delete" color="error" onClick={handleDeleteClick} />
+          <Chip label='Delete' color='error' onClick={handleDeleteClick} />
         );
       },
     },
   ];
 
+  /*
   // handles the click event of the edit button
-  const handleEditClick = () => {
+  const handleEditClick = (id: string) => {
     console.log('Edit Clicked');
   };
+  */
 
   // handles the click event of the delete button
   const handleDeleteClick = () => {
     console.log('Delete Clicked');
+  };
+
+  const handleAddTicket = () => {
   };
 
   // Fetches all the ticket types from the API in the backend
@@ -53,21 +70,26 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
-        /*
-      const response = await fetch(
           process.env.REACT_APP_ROOT_URL + '/api/tickets/types',
-          {headers: {Authorization: `Bearer ${token}`}},
+          {
+            credentials: 'omit',
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          },
       );
-      */
 
       console.log('Access token --> ' + process.env.REACT_APP_ROOT_URL);
       const jsonRes = await response.json();
-      const jsonData = jsonRes.data;
 
-      console.log('json data -> ' + jsonData);
-
-      setTicketTypes(jsonData);
+      setTicketTypes(() => {
+        for (let i = 0; i < jsonRes.length; ++i) {
+          jsonRes[i].id = i;
+        }
+        return jsonRes;
+      });
     } catch (error) {
       console.error(error.message);
     }
@@ -76,62 +98,31 @@ const TicketTypes = () => {
     getTicketTypes();
   }, []);
 
-  // Defines the rows of the grid with dummy data of ticket types
-  const data = [
-    {
-      id: 1,
-      type: 'General Admission - Adult',
-      price: '$39.50',
-      edit: 'Edit',
-      delete: 'Delete',
-    },
-    {
-      id: 2,
-      type: 'General Admission - Under 25',
-      price: '$34.59',
-      edit: 'Edit',
-      delete: 'Delete',
-    },
-    {
-      id: 3,
-      type: 'Arts for All',
-      price: '$5.00',
-      edit: 'Edit',
-      delete: 'Delete',
-    },
-    {id: 4, type: 'Access', price: '$25.00', edit: 'Edit', delete: 'Delete'},
-    {
-      id: 5,
-      type: 'Previews',
-      price: '$25.00',
-      edit: 'Edit',
-      delete: 'Delete',
-    },
-  ];
-
   return (
-    <div className="w-full h-screen overflow-x-hidden absolute ">
+    <div className='w-full h-screen overflow-x-hidden absolute '>
       <div
-        className="md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-         sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]"
+        className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
+         sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'
       >
         <h1
-          className="font-bold text-5xl mb-14 bg-clip-text text-transparent
-           bg-gradient-to-r from-green-400 to-teal-700"
+          className='font-bold text-5xl mb-14 bg-clip-text text-transparent
+           bg-gradient-to-r from-green-400 to-teal-700'
         >
           Manage Ticket Types
         </h1>
         <button
           // className='px-3 py-2 bg-blue-600 text-white rounded-xl float-right'
-          className="px-3 py-2 bg-blue-600 text-white rounded-xl mr-0 mb-2"
-          type="submit"
+          className='px-3 py-2 bg-blue-600 text-white rounded-xl mr-0 mb-2'
+          type='submit'
+          onClick={handleAddTicket}
         >
           Add New Ticket Type
         </button>
         <DataGrid
-          className="bg-white"
+          className='bg-white'
+          editMode='row'
           autoHeight
-          rows={data}
+          rows={ticketTypes}
           columns={columns}
           pageSize={10}
         />
