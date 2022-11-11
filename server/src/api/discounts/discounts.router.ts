@@ -91,6 +91,7 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async(
         tempc = 404;
       }
       const code = tempc;
+      res.status(code).send(resp);
     } catch (error: any) {
       res.status(500).send(error.message);
     }
