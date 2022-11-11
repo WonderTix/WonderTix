@@ -5,7 +5,8 @@
 import {useNavigate} from 'react-router-dom';
 /**
  * CRM Dashboard
- * @return {React.ReactElement}
+ *
+ * @returns {React.ReactElement}
  */
 const Dashboard = () => {
   const navigate = useNavigate();

@@ -7,7 +7,9 @@ import {NewEventData} from '../EventForm';
 
 /**
  * As the name says
- * @returns {Udash_nav, EditsEventPage} or only Udash_nav if loading. and response.json() 
+ *
+ * @returns {Udash_nav, EditsEventPage} or only Udash_nav if loading.
+ * Also response.json()
  */
 const Editeventmain = () => {
   const params = useParams();

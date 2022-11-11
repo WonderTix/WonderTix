@@ -7,7 +7,13 @@ import {
 import {useAuth0} from '@auth0/auth0-react';
 /**
  * Account panal in reporting
- * @return {ReactElement}
+ *
+ * @param root0
+ * @param root0.fetchData
+ * @param root0.setOpen
+ * @param root0.savedName
+ * @param root0.setSavedName
+ * @returns {ReactElement}
  */
 const AccountsPanel = ({
   fetchData,

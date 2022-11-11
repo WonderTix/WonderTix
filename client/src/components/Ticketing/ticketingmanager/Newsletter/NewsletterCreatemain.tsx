@@ -5,6 +5,7 @@ import NewsletterCreate from './NewsletterCreate';
 
 /**
  * Main page for news letters
+ *
  * @returns {Udash_nav, NewsletterCreate}
  */
 const NewsletterCreatemain = () => {
