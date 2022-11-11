@@ -143,7 +143,7 @@ export const getTickets = async (): Promise<response> => {
             price,
             concessions
           FROM events ev
-          LEFT JOIN event_instances ei 
+          LEFT JOIN eventinstances ei 
             ON ev.id=ei.eventid
           JOIN linkedtickets lt 
             ON lt.event_instance_id=ei.id
