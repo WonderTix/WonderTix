@@ -12,11 +12,12 @@ export const findAll = async (params: any): Promise<response> => {
             AND ($2::text IS NULL OR LOWER(lastname) LIKE $2)
             AND ($3::text IS NULL OR LOWER(email) LIKE $3)
             AND ($4::text IS NULL OR LOWER(address) LIKE $4)
-            AND ($5::text IS NULL OR LOWER(donorbadge) LIKE $5)
-            AND ($6::boolean IS NULL OR seatingaccom = $6)
-            AND ($7::boolean IS NULL OR vip = $7)
-            AND ($8::boolean IS NULL OR volunteerlist = $8)
-            AND ($9::boolean IS NULL OR newsletter = $9)`,
+            AND ($4::text IS NULL OR LOWER(phone) LIKE $5)
+            AND ($5::text IS NULL OR LOWER(donorbadge) LIKE $6)
+            AND ($6::boolean IS NULL OR seatingaccom = $7)
+            AND ($7::boolean IS NULL OR vip = $8)
+            AND ($8::boolean IS NULL OR volunteerlist = $9)
+            AND ($9::boolean IS NULL OR newsletter = $10)`,
     values: [
       params.firstname !== undefined ?
         '%' + params.firstname + '%' : params.firstname,
@@ -26,9 +27,11 @@ export const findAll = async (params: any): Promise<response> => {
         '%' + params.email + '%' : params.email,
       params.address !== undefined ?
         '%' + params.address + '%' : params.address,
-      params.phone !== undefined ? '%' + params.phone + '%' : params.phone,
+      params.phone !== undefined ? 
+        '%' + params.phone + '%' : params.phone,
       params.donorbadge !== undefined ?
         '%' + params.donorbadge + '%' : params.donorbadge,
+      params.seatingaccom,
       params.vip,
       params.volunteerlist,
       params.newsletter,
@@ -49,7 +52,7 @@ export const findByName = async (firstname: string, lastname: string): Promise<r
 
 export const find = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'SELECT * FROM contacts WHERE contactid = $1',
+    text: 'SELECT * FROM contacts WHERE contactid = $1;',
     values: [id],
   };
   return await buildResponse(myQuery, 'GET');
@@ -69,7 +72,21 @@ export const create = async (r: any): Promise<response> => {
 
 export const remove = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'DELETE FROM contacts WHERE contactid = $1;',
+    text: `
+          UPDATE contacts 
+          SET 
+            firstname = null,
+            lastname = null,
+            email = null,
+            address = null,
+            phone = null,
+            donorbadge = null,
+            seatingaccom = null,
+            vip = null,
+            volunteerlist = null,
+            newsletter = null
+          WHERE 
+            contactid = $1;`,
     values: [id],
   };
   return await buildResponse(myQuery, 'DELETE');
