@@ -38,6 +38,7 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
     let tempc = resp.status.success ? 200 : 404;
     if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
+      resp.status.success = false;
     }
     const code = tempc;
     res.status(code).send(resp);
@@ -62,6 +63,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
     let tempc = resp.status.success ? 200 : 404;
     if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
+      resp.status.success = false;
     }
     const code = tempc;
     res.status(code).send(resp);
@@ -76,6 +78,7 @@ accountsRouter.put('/:id', async (req: Request, res: Response) => {
     let tempc = resp.status.success ? 200 : 404;
     if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
+      resp.status.success = false;
     }
     const code = tempc;
     res.status(code).send(resp);

@@ -44,6 +44,7 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
     let tempc = data.status.success ? 200 : 404;
     if (tempc === 200 && data.data.length === 0) {
       tempc = 404;
+      data.status.success = false;
     }
     const code = tempc;
     res.status(code).send(data);
@@ -427,6 +428,7 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
     let tempc = plays.status.success ? 200 : 404;
     if (tempc === 200 && plays.data.length === 0) {
       tempc = 404;
+      plays.status.success = false;
     }
     const code = tempc;
     res.status(code).send(plays);
