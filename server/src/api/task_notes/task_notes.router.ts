@@ -25,12 +25,11 @@ taskNotesRouter.get('/', async (_req: Request, res: Response) => {
 taskNotesRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const taskNotes = await find(req.params.id);
-    let tempc = taskNotes.status.success ? 200 : 404;
-    if (tempc === 200 && taskNotes.data.length === 0) {
-      tempc = 404;
+    let code = taskNotes.status.success ? 200 : 404;
+    if(code === 200 && taskNotes.data.length === 0){
+      code = 404;
       taskNotes.status.success = false;
     }
-    const code = tempc;
     res.status(code).send(taskNotes);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -52,12 +51,11 @@ taskNotesRouter.post('/', async (req: Request, res: Response) => {
 taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const delResponse = await remove(req.params.id);
-    let tempc = delResponse.status.success ? 200 : 404;
-    if (tempc === 200 && delResponse.data.length === 0) {
-      tempc = 404;
+    let code = delResponse.status.success ? 200 : 404;
+    if(code === 200 && delResponse.data.length === 0){
+      code = 404;
       delResponse.status.success = false;
     }
-    const code = tempc;
     res.status(code).send(delResponse);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -68,12 +66,11 @@ taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
 taskNotesRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedTaskNotes = await update(req);
-    let tempc = updatedTaskNotes.status.success ? 200 : 404;
-    if (tempc === 200 && updatedTaskNotes.data.length === 0) {
-      tempc = 404;
+    let code = updatedTaskNotes.status.success ? 200 : 404;
+    if(code === 200 && updatedTaskNotes.data.length === 0){
+      code = 404;
       updatedTaskNotes.status.success = false;
     }
-    const code = tempc;
     res.status(code).send(updatedTaskNotes);
   } catch (err: any) {
     res.status(500).send(err.message);

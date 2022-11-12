@@ -103,11 +103,11 @@ ticketRouter.post('/newType', checkJwt, checkScopes, async (req, res) => {
 ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
   try {
     const resp = await ticketUtils.removeTicketType(req.params.id);
-    let tempc = resp.status.success ? 200 : 404;
-    if (tempc === 200 && resp.data.length === 0) {
-      tempc = 404;
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+      resp.status.success = false;
     }
-    const code = tempc;
     res.status(code).send(resp);
   } catch (error: any) {
     res.sendStatus(500).send(error.message);
