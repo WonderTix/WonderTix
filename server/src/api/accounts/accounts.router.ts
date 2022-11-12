@@ -31,11 +31,11 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
 accountsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
-    let c1 = resp.status.success ? 200 : 404;
-    if (resp.status.success === true && resp.data.length === 0) {
-      c1 = 404;
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+      resp.status.success = false;
     }
-    const code = c1;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -45,7 +45,7 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
 accountsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const resp = await create(req.body);
-    const code = resp.status.success ? 204 : 404;
+    const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
