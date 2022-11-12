@@ -12,12 +12,12 @@ export const findAll = async (params: any): Promise<response> => {
             AND ($2::text IS NULL OR LOWER(lastname) LIKE $2)
             AND ($3::text IS NULL OR LOWER(email) LIKE $3)
             AND ($4::text IS NULL OR LOWER(address) LIKE $4)
-            AND ($4::text IS NULL OR LOWER(phone) LIKE $5)
-            AND ($5::text IS NULL OR LOWER(donorbadge) LIKE $6)
-            AND ($6::boolean IS NULL OR seatingaccom = $7)
-            AND ($7::boolean IS NULL OR vip = $8)
-            AND ($8::boolean IS NULL OR volunteerlist = $9)
-            AND ($9::boolean IS NULL OR newsletter = $10)`,
+            AND ($5::text IS NULL OR LOWER(phone) LIKE $5)
+            AND ($6::text IS NULL OR LOWER(donorbadge) LIKE $6)
+            AND ($7::boolean IS NULL OR seatingaccom = $7)
+            AND ($8::boolean IS NULL OR vip = $8)
+            AND ($9::boolean IS NULL OR volunteerlist = $9)
+            AND ($10::boolean IS NULL OR newsletter = $10)`,
     values: [
       params.firstname !== undefined ?
         '%' + params.firstname + '%' : params.firstname,
