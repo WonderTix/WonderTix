@@ -28,7 +28,6 @@ export interface MapPropsToShowingInputContainer {
 const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow}:MapPropsToShowingInputContainer) => {
   const [starttime, setStarttime] = useState(initialData.starttime !== undefined? initialData.starttime: '');
   const [eventdate, setEventdate] = useState(initialData.eventdate !== undefined? initialData.eventdate: '');
-  const [ticketTypeId, setTicketTypeId] = useState('');
   const [totalseats, setTotalseats] = useState(initialData.totalseats !== undefined? initialData.totalseats: 0);
   const availableseates = initialData.availableseats !== undefined? initialData.availableseats: 0;
   const [ticketTypes, setTicketTypes] = useState([]);
@@ -97,15 +96,9 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
   const createTicketOptions = (select: HTMLSelectElement) :HTMLSelectElement=> {
     ticketTypes.map((t) => {
       const newOp = document.createElement('option');
-      if (t.id == ticketTypeId) {
-        newOp.setAttribute('key', t.tickettypeid);
-        newOp.setAttribute('value', t.tickettypeid);
-        newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
-      } else {
-        newOp.setAttribute('key', t.tickettypeid);
-        newOp.setAttribute('value', t.tickettypeid);
-        newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
-      }
+      newOp.setAttribute('key', t.tickettypeid);
+      newOp.setAttribute('value', t.tickettypeid);
+      newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
       select.appendChild(newOp);
     });
     return select;

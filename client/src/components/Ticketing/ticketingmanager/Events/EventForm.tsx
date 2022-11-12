@@ -172,10 +172,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
     }
   }, [showings]);
 
-  const updateShows = useCallback((shows: Showing[]) => {
-    setShowings(shows);
-  }, [showings]);
-
   // Handle new play and the show options
   const handleSubmit = () => {
     const data: NewEventData = {
@@ -237,7 +233,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} updateShows={updateShows} deleteShowing={deleteShowing} eventid={def.eventID}/>
+                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} deleteShowing={deleteShowing} eventid={def.eventID}/>
               </div>
             </div>
           </div>
