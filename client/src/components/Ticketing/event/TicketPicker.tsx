@@ -19,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {ChangeEvent, useEffect, useReducer} from 'react';
+import React, {useEffect, useReducer} from 'react';
 
 /**
  * @module

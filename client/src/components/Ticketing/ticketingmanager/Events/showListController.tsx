@@ -12,7 +12,6 @@ import ShowingInputContainer from './showingInputContainer';
  * @param {Showing} show
  * @param {Function} addShowData
  * @param {Showing[]} shows
- * @param {Function} updateShows
  * @param {number} eventid
  */
 interface ShowListControllerProps{
