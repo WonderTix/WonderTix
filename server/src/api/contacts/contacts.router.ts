@@ -44,12 +44,11 @@ contactsRouter.get('/search', async (req: Request, res: Response) => {
 contactsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
-    let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
-      tempc = 404;
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
       resp.status.success = false;
     }
-    const code = tempc;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -74,13 +73,11 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
 contactsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req);
-    console.log(resp);
-    let tempc = resp.status.success ? 200 : 404;
-    if(tempc === 200 && resp.data.length === 0){
-      tempc = 404;
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
       resp.status.success = false;
     }
-    const code = tempc;
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
