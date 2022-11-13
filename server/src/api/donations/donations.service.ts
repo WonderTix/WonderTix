@@ -33,7 +33,7 @@ export const create = async (r: any): Promise<response> => {
       VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
       `,
-    values: [r.customerid, r.isanonymous, r.amount, r.donorname,
+    values: [r.contactid_fk, r.isanonymous, r.amount, r.donorname,
       r.frequency, r.comments, r.payment_intent, r.donationdate],
   };
   return buildResponse(myQuery, 'POST');
@@ -52,7 +52,7 @@ export const update = async (r: any): Promise<response> => {
     text: `
       UPDATE donations
       SET (
-        donationid,
+        contactid_fk,
         isanonymous,
         amount,
         donorname,
@@ -64,7 +64,7 @@ export const update = async (r: any): Promise<response> => {
       WHERE donationid = $9
       RETURNING *
       `,
-    values: [r.body.customerid, r.body.isanonymous, r.body.amount, r.body.donorname,
+    values: [r.body.contactid_fk, r.body.isanonymous, r.body.amount, r.body.donorname,
       r.body.frequency, r.body.comments, r.body.payment_intent, r.body.donationdate, r.params.id],
   };
   return buildResponse(myQuery, 'UPDATE');
