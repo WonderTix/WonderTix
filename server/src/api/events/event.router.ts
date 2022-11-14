@@ -41,11 +41,17 @@ eventRouter.get('/search', async (req: Request, res: Response) => {
 eventRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const data = await getEventById(req.params);
+<<<<<<< HEAD
     let tempc = data.status.success ? 200 : 404;
     if (tempc === 200 && data.data.length === 0) {
       tempc = 404;
+=======
+    let code = data.status.success ? 200 : 404;
+    if(code === 200 && data.data.length === 0){
+      code = 404;
+      data.status.success = false;
+>>>>>>> development
     }
-    const code = tempc;
     res.status(code).send(data);
   } catch (error) {
     res.sendStatus(500);
@@ -400,11 +406,16 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
 ) => {
   try {
     const resp = await updateInstances(req.body, req.params);
+<<<<<<< HEAD
     let tempc = resp.status.success ? 200 : 404;
     if (tempc === 200 && resp.data.length === 0) {
       tempc = 404;
+=======
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+>>>>>>> development
     }
-    const code = tempc;
     res.status(code).send(resp);
   } catch (error: any) {
     res.status(500).send(error.message);
@@ -423,11 +434,17 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
   try {
     // playid
     const plays = await archivePlays(req.params);
+<<<<<<< HEAD
     let tempc = plays.status.success ? 200 : 404;
     if (tempc === 200 && plays.data.length === 0) {
       tempc = 404;
+=======
+    let code = plays.status.success ? 200 : 404;
+    if(code === 200 && plays.data.length === 0){
+      code = 404;
+      plays.status.success = false;
+>>>>>>> development
     }
-    const code = tempc;
     res.status(code).send(plays);
   } catch (error: any) {
     res.status(500).send(error.message);
