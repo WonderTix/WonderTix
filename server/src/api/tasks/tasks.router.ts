@@ -30,16 +30,10 @@ tasksRouter.get('/', async (_req: Request, res: Response) => {
 tasksRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const task = await findTask(req.params.id);
-<<<<<<< HEAD
-    let tempc = task.status.success ? 200 : 404;
-    if (tempc === 200 && task.data.length === 0) {
-      tempc = 404;
-=======
     let code = task.status.success ? 200 : 404;
     if(code === 200 && task.data.length === 0){
       code = 404;
       task.status.success = false;
->>>>>>> development
     }
     res.status(code).send(task);
   } catch (err: any) {
@@ -62,16 +56,10 @@ tasksRouter.post('/', async (req: Request, res: Response) => {
 tasksRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removeStatus = await removeTask(req.params.id);
-<<<<<<< HEAD
-    let tempc = removeStatus.status.success ? 200 : 404;
-    if (tempc === 200 && removeStatus.data.length === 0) {
-      tempc = 404;
-=======
     let code = removeStatus.status.success ? 200 : 404;
     if(code === 200 && removeStatus.data.length === 0){
       code = 404;
       removeStatus.status.success = false;
->>>>>>> development
     }
     res.sendStatus(code);
   } catch (err: any) {
@@ -83,16 +71,10 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
 tasksRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedTask = await updateTask(req);
-<<<<<<< HEAD
-    let tempc = updatedTask.status.success ? 200 : 404;
-    if (tempc === 200 && updatedTask.data.length === 0) {
-      tempc = 404;
-=======
     let code = updatedTask.status.success ? 200 : 404;
     if(code === 200 && updatedTask.data.length === 0){
       code = 404;
       updatedTask.status.success = false;
->>>>>>> development
     }
     res.status(code).send(updatedTask);
   } catch (err: any) {

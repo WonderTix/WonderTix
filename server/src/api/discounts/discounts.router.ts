@@ -84,13 +84,6 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {
-<<<<<<< HEAD
-  try {
-    const resp = await alterDiscountCode(req.params.id);
-    let tempc = resp.status.success ? 200 : 404;
-    if (tempc === 200 && resp.data.length === 0) {
-      tempc = 404;
-=======
     try {
       const resp = await alterDiscountCode(req.params.id);
       let code = resp.status.success ? 200 : 404;
@@ -101,13 +94,9 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async (
       res.status(code).send(resp);
     } catch (error: any) {
       res.status(500).send(error.message);
->>>>>>> development
     }
-    const code = tempc;
-  } catch (error: any) {
-    res.status(500).send(error.message);
   }
-});
+);
 
 
 /**
@@ -120,13 +109,6 @@ discountsRouter.delete('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {
-<<<<<<< HEAD
-  try {
-    const resp = await deleteDiscountCode(req.params.id);
-    let tempc = resp.status.success ? 200 : 404;
-    if (tempc === 200 && resp.data.length === 0) {
-      tempc = 404;
-=======
     try {
       const resp = await deleteDiscountCode(req.params.id);
       let code = resp.status.success ? 200 : 404;
@@ -137,11 +119,5 @@ discountsRouter.delete('/:id', checkJwt, checkScopes, async (
       res.status(code).send(resp);
     } catch (error: any) {
       res.status(500).send(error.message);
->>>>>>> development
     }
-    const code = tempc;
-    res.status(code).send(resp);
-  } catch (error: any) {
-    res.status(500).send(error.message);
-  }
 });

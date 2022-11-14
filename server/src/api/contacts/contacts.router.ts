@@ -44,16 +44,10 @@ contactsRouter.get('/search', async (req: Request, res: Response) => {
 contactsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
-<<<<<<< HEAD
-    let tempc = resp.status.success ? 200 : 404;
-    if (tempc === 200 && resp.data.length === 0) {
-      tempc = 404;
-=======
     let code = resp.status.success ? 200 : 404;
     if(code === 200 && resp.data.length === 0){
       code = 404;
       resp.status.success = false;
->>>>>>> development
     }
     res.status(code).send(resp);
   } catch (err: any) {
@@ -64,16 +58,10 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
 contactsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
-<<<<<<< HEAD
-    let tempc = resp.status.success ? 200 : 404;
-    if (tempc === 200 && resp.data.length === 0) {
-      tempc = 404;
-=======
     let code = resp.status.success ? 200 : 404;
     if(code === 200 && resp.data.length === 0){
       code = 404;
       resp.status.success = false;
->>>>>>> development
     }
     res.sendStatus(code);
   } catch (err: any) {
@@ -84,17 +72,10 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
 contactsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req);
-<<<<<<< HEAD
-    console.log(resp);
-    let tempc = resp.status.success ? 200 : 404;
-    if (tempc === 200 && resp.data.length === 0) {
-      tempc = 404;
-=======
     let code = resp.status.success ? 200 : 404;
     if(code === 200 && resp.data.length === 0){
       code = 404;
       resp.status.success = false;
->>>>>>> development
     }
     res.status(code).send(resp);
   } catch (err: any) {
