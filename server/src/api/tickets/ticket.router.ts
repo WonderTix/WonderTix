@@ -66,7 +66,7 @@ ticketRouter.get('/types', async (req, res) => {
 
 
 //
-// **BROKEN** linkedtickets is depracated, will require refactor
+// **BROKEN** linkedtickets is deprecated, will require refactor
 //
 // Set which tickets can be sold for an event
 ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {

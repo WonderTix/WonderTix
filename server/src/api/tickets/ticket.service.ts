@@ -69,7 +69,7 @@ export const removeTicketType = async (id: string): Promise<response> => {
           UPDATE 
             tickettype 
           SET
-            depracated = true
+            deprecated = true
           WHERE 
             tickettypeid = $1;`,
     values: [id],
