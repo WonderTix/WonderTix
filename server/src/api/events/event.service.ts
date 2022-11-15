@@ -422,7 +422,6 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
     res.push({...rows[0], ticketTypeId: showing.ticketTypeId,
       seatsForType: showing.seatsForType});
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   results = {
     data: toReturn,
     status: {
@@ -433,6 +432,7 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       } inserted.`,
     },
   };
+  console.log(results);
   return res;
 };
 
