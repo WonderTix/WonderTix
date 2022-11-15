@@ -3,10 +3,10 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {createTask,
-        findTask,
-        getAllTasks,
-        removeTask,
-        updateTask} from './tasks.service';
+  findTask,
+  getAllTasks,
+  removeTask,
+  updateTask} from './tasks.service';
 
 export const tasksRouter = Router();
 

@@ -5,6 +5,7 @@ import OnlyDonationPage from './OnlyDonatePage';
 
 /**
  * Main page for donations
+ *
  * @returns {Navbar, OnlyDonationPage, Footer}
  */
 const Donationmain = () => {

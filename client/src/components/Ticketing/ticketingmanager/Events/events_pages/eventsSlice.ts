@@ -8,13 +8,14 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../../../app/store';
 import {Dictionary} from '../../../../../utils/arrays';
 
 /**
  * Used to create event instances
+ *
  * @module
  * @param {number} id
  * @param {number} eventid
@@ -40,6 +41,7 @@ export interface EventInstance {
 
 /**
  * Omits 'eventid','eventname','eventdescription','image_url'
+ *
  * @module
  */
 export type Instance = Omit<EventInstance, 'eventid'|'eventname'|'eventdescription'|'image_url'>
@@ -62,7 +64,7 @@ export interface Event {
 
 /**
  * @module
- * @param {EventInstance[]} events 
+ * @param {EventInstance[]} events
  * @returns events[eventid]
  */
 export const aggregateInstances = (events: EventInstance[]) =>
@@ -76,6 +78,7 @@ export const aggregateInstances = (events: EventInstance[]) =>
 
 /**
  * Fetches the data
+ *
  * @module
  * @returns aggregateInstances(allEventInstances) or console prints error
  */
@@ -136,8 +139,9 @@ const eventsSlice = createSlice({
 
 /**
  * Used to select all the event instances and then return them
+ *
  * @module
- * @param {RootState} state 
+ * @param {RootState} state
  * @returns {eventname, eventdescription, image_url}[]
  */
 // Returns {eventname, eventdescription, image_url}[]
@@ -155,8 +159,9 @@ export const selectAllEventInstances = (state: RootState) =>
 
 /**
  * Used to return list of instances for a given event, otherwise undefined if the play doesn't exist
+ *
  * @module
- * @param {RootState} state 
+ * @param {RootState} state
  * @param {number} id - Event
  * @returns state.events.data[key] or undefined
  */

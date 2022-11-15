@@ -22,17 +22,17 @@ export const discountsRouter = Router();
  * @type {?}
  */
 
-discountsRouter.get('/', checkJwt, checkScopes, async(
+discountsRouter.get('/', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {
-    try {
-      const codes = await getDiscountCodes();
-      const code = codes.status.success ? 200 : 404;
-      res.status(code).send(codes);
-    } catch (error: any) {
-      res.status(500).send(error.message);
-    }
+  try {
+    const codes = await getDiscountCodes();
+    const code = codes.status.success ? 200 : 404;
+    res.status(code).send(codes);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
 });
 
 
@@ -41,17 +41,17 @@ discountsRouter.get('/', checkJwt, checkScopes, async(
  *
  * @type {?}
  */
-discountsRouter.get('/search', async(
+discountsRouter.get('/search', async (
     req: Request,
     res: Response,
 ) => {
-    try{
-      const codes = await checkDiscountCode(req.query.code);
-      const code = codes.status.success ? 200 : 404;
-      res.status(code).send(codes);
-    } catch(error:any) {
-      res.status(500).send(error.message);
-    }
+  try {
+    const codes = await checkDiscountCode(req.query.code);
+    const code = codes.status.success ? 200 : 404;
+    res.status(code).send(codes);
+  } catch (error:any) {
+    res.status(500).send(error.message);
+  }
 });
 
 
@@ -61,17 +61,17 @@ discountsRouter.get('/search', async(
  * @type {?}
  */
 
-discountsRouter.post('/', checkJwt, checkScopes, async(
+discountsRouter.post('/', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {
-    try {
-      const newCode = await addDiscountCode(req.body);
-      const code = newCode.status.success ? 200 : 404;
-      res.status(code).send(newCode);
-    } catch (error: any) {
-      res.status(500).send(error.message);
-    }
+  try {
+    const newCode = await addDiscountCode(req.body);
+    const code = newCode.status.success ? 200 : 404;
+    res.status(code).send(newCode);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
 });
 
 /**
@@ -80,7 +80,7 @@ discountsRouter.post('/', checkJwt, checkScopes, async(
  * @type {?}
  */
 
-discountsRouter.put('/:id', checkJwt, checkScopes, async(
+discountsRouter.put('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {
@@ -95,7 +95,8 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async(
     } catch (error: any) {
       res.status(500).send(error.message);
     }
-});
+  }
+);
 
 
 /**
@@ -104,7 +105,7 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async(
  * @type {?}
  */
 
-discountsRouter.delete('/:id', checkJwt, checkScopes, async(
+discountsRouter.delete('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {

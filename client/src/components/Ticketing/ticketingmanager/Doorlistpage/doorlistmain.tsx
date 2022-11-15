@@ -5,6 +5,7 @@ import DoorList from './doorlist';
 
 /**
  * Main page to host door list
+ *
  * @module
  * @returns {Udash_nav, DoorList}
  */
