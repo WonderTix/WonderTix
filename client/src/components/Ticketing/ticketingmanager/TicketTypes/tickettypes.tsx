@@ -38,9 +38,9 @@ const TicketTypes = () => {
       headerName: 'Delete',
       sortable: false,
       width: 100,
-      renderCell: () => {
+      renderCell: (cell) => {
         return (
-          <Chip label='Delete' color='error' onClick={handleDeleteClick} />
+          <Chip label='Delete' color='error' onClick={() => handleDeleteClick(cell)} />
         );
       },
     },
@@ -54,8 +54,34 @@ const TicketTypes = () => {
   */
 
   // handles the click event of the delete button
-  const handleDeleteClick = () => {
+  const handleDeleteClick = async (cell) => {
     console.log('Delete Clicked');
+    // console.log(`ID: ${cell.row.id}`);
+    // console.log(event?.currentTarget.id)
+    const ticketId = Number(cell.row.id) + 1;
+    ticketId.toString();
+    console.log('New id: ' + ticketId);
+
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+
+    try {
+      const response = await fetch(
+          process.env.REACT_APP_ROOT_URL + '/api/tickets/' + ticketId, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+
+      const responseData = await response.json();
+      console.log(responseData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleAddTicket = () => {
