@@ -409,7 +409,6 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
     }
     const date = showing.eventdate.split('-');
     const dateAct = date.join('');
-    console.log(dateAct);
     const {rows} = await pool.query(query, [
       showing.eventid,
       dateAct,
@@ -418,12 +417,12 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       showing.availableseats,
       showing.ispreview,
     ]);
-    console.log(rows);
     toReturn.push(showing);
     rowCount += 1;
     res.push({...rows[0], ticketTypeId: showing.ticketTypeId,
       seatsForType: showing.seatsForType});
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   results = {
     data: toReturn,
     status: {
@@ -434,7 +433,6 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       } inserted.`,
     },
   };
-  console.log(results);
   return res;
 };
 
