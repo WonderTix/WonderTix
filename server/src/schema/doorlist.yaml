@@ -36,7 +36,7 @@ components:
           description: VIP status of customer
           example: false
         donorbadge:
-          type: string
+          type: boolean
           description: Customer donor badge
           example: false
         accomodations:
