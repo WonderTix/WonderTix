@@ -175,7 +175,7 @@ paths:
             example:
               custname: test person
               newsletter: false
-              donorbadge: 'false'
+              donorbadge: false
               seatingaccom: false
               vip: false
               volunteer_list: false
@@ -265,7 +265,7 @@ paths:
             example:
               custname: updated person
               newsletter: false
-              donorbadge: 'false'
+              donorbadge: false
               seatingaccom: false
               vip: false
               volunteer_list: false
@@ -1206,7 +1206,7 @@ components:
         newsletter:
           type: boolean
         donorbadge:
-          type: string
+          type: boolean
         seatingaccom:
           type: boolean
         vip:
@@ -1216,7 +1216,7 @@ components:
       example:
         custname: test person
         newsletter: false
-        donorbadge: 'false'
+        donorbadge: false
         seatingaccom: false
         vip: false
         volunteer_list: false
@@ -1236,7 +1236,7 @@ components:
         newsletter:
           type: boolean
         donorbadge:
-          type: string
+          type: boolean
         seatingaccom:
           type: boolean
         vip:
@@ -1246,7 +1246,7 @@ components:
       example:
         custname: updated person
         newsletter: false
-        donorbadge: 'false'
+        donorbadge: false
         seatingaccom: false
         vip: false
         volunteer_list: false

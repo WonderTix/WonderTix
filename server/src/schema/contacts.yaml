@@ -87,7 +87,7 @@ components:
           description: Flag to determine if user signed up for newsletter
           example: true
         donorbadge:
-          type: string
+          type: boolean
           description: Badge to show for the donor
           example: false
         seatingaccom:
