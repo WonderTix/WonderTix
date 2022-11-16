@@ -100,17 +100,10 @@ export const updateTask = async (r: any): Promise<response> => {
       r.body.datecreated,
       r.body.dateassigned,
       r.body.duedate,
-<<<<<<< HEAD
       r.body.ref_contact, 
       r.body.ref_donation, 
       r.body.ref_ticket_order,
       r.body.ref_account, 
-=======
-      r.body.rel_contact,
-      r.body.rel_donation,
-      r.body.rel_ticket_order,
-      r.body.rel_account,
->>>>>>> 741cff548e3eb296cb675cd8f2b683342af7fcf7
       r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');
