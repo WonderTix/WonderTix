@@ -7,7 +7,12 @@ import {
   removeTicketFromCart,
   removeAllTicketsFromCart,
   selectCartContents,
-  fetchDiscountData,
+  selectDiscount,
+  addDiscountToCart,
+  removeDiscountFromCart,
+  // Discount,
+  // fetchDiscountData, // take this out
+  // DiscountItem,
 } from '../ticketingmanager/ticketing/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
 
@@ -44,9 +49,14 @@ const Cart = () => {
   const [targetItem, setTargetItem] = useState<number|null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
   const [removeContextMessage, setRemoveContextMessage] = useState('');
-  const [discountText, setDiscount] = useState('');
+  const [discountText, setDiscountText] = useState<string|null>(null);
+  const [validDiscount, setValidDiscount] = useState(false);
+  const discount = useAppSelector(selectDiscount);
 
-  useEffect(() => console.log(subtotal), [subtotal]);
+  useEffect(() => {
+    console.log(subtotal), [subtotal];
+    console.log('Current discount:', discount);
+  });
 
   const resetModal = () => {
     setTargetItem(null);
@@ -71,9 +81,22 @@ const Cart = () => {
     handleClick2();
   };
 
-  const applyDiscount = () => {
+  const applyDiscount = (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidDiscount(true);
     console.log('Discount button clicked! Value: ' + discountText.toUpperCase());
-    return dispatch(fetchDiscountData(discountText));
+
+    // dispatch(fetchDiscountData(discountText));
+    dispatch(addDiscountToCart({code: discountText}));
+
+    return;
+  };
+
+  const removeDiscount = () => {
+    console.log('Remove discount button clicked');
+    setValidDiscount(false);
+    setDiscountText('');
+    dispatch(removeDiscountFromCart());
   };
 
   const displayModal = (id: number) => {
@@ -126,12 +149,26 @@ const Cart = () => {
 
                 <div className='flex flex-col items-center form-control disabled:opacity-50 '>
                   <div className='input-group flex flex-row items-center w-full px-3 py-1 text-black rounded-xl bg-sky-500'>
-                    <input type="text" placeholder="Discount code..." value={discountText} onChange={(e) => {setDiscount(e.target.value)}} className='input input-bordered rounded-md pl-2' />
-                    <button className='btn btn-square bg-sky-500 ml-1' onClick={applyDiscount}>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="white"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                    </button>
+                    <input type="text" placeholder="Discount code..." className='input input-bordered rounded-md pl-2'
+                      value={discountText}
+                      onChange={(e) => {
+                        setDiscountText(e.target.value.toUpperCase());
+                      }}
+                      disabled={discount.code !== 'init'}
+                    />
+                    {!validDiscount ? (
+                      <button className='btn btn-square bg-sky-500 ml-1' onClick={applyDiscount}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                          stroke="white"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                      </button>
+                    ) : (
+                      <button className='btn btn-square bg-sky-500 ml-1' onClick={removeDiscount}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                          stroke="white"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                            d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                    )}
                   </div>
                 </div>
 

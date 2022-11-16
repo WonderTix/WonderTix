@@ -78,6 +78,7 @@ type TicketsState = {byId: {[key: string]: Ticket}, allIds: number[]}
  * @module
  */
 export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed'
+export type DiscountItem = {code: string, amount: number, percent: number}
 
 /**
  * Used to manage the ticketing states
@@ -86,12 +87,14 @@ export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed'
  * @param {Array} tickets - TicketsState has a key(string), byId(ticket), allIds is a number array
  * @param {Array} events - Event Array
  * @param {Array} status - Array of different loading states
+ * @param {Array} discount - Discount has a code(string), amount(number), percent(number)
  */
 export interface ticketingState {
     cart: CartItem[],
     tickets: TicketsState,
     events: Event[],
     status: LoadStatus,
+    discount: DiscountItem,
 }
 
 /**
@@ -137,7 +140,7 @@ export const fetchTicketingData = createAsyncThunk(
  * @param {Date} startDate - date format
  * @param {Date} endDate - date format
  */
- export interface Discount {
+export interface Discount {
   discountid: number,
   code: string,
   amount: number,
@@ -149,21 +152,59 @@ export const fetchTicketingData = createAsyncThunk(
 /**
  * Fetches all the data, and gets all the api routes then prints to console
  * @module
- * @returns {Array} events, tickets, byID, allIds
+ * @returns {DiscountItem} code, amount, percent
  */
- export const fetchDiscountData = createAsyncThunk(
-  'ticketing/fetch',
-  async (code: number) => {
-    let url = process.env.REACT_APP_ROOT_URL + '/api/discounts/search?code=' + code;
-    // const params = { code: 'FIVEOFF' };
-    // url.search = new URLSearchParams(params);
+export const fetchDiscountData = createAsyncThunk(
+    'ticketing/fetchDiscount',
+    async (code: string) => {
+      const url = process.env.REACT_APP_ROOT_URL + '/api/discounts/search?code=' + code;
+      const discountData = await fetchData(url);
+      const discountArray: Discount[] = discountData.data;
+      const discount: DiscountItem = {
+        code: discountArray[0].code,
+        amount: discountArray[0].amount,
+        percent: discountArray[0].percent,
+      };
 
-    const discountData = await fetchData(url);
-    const discount: Discount[] = discountData.data;
-    console.log('Discounts', discount);
-    return {discount};
-  },
+      console.log('Discount returned:', discount);
+
+      const retDisc: DiscountItem = {
+        code: 'test',
+        amount: 11,
+        percent: 0,
+      };
+
+      // Check date (after startDate and before EndDate)
+      // Check number of uses limit
+      // Check min tickets
+      // Check min events
+
+      // console.log(addDiscountToCart(discount[0]));
+      // console.log(addDiscountToCart(retDisc));
+
+      // return {retDisc};
+      return {discount};
+    },
 );
+async function fetchDiscountData2(code: string) {
+  const url = process.env.REACT_APP_ROOT_URL + '/api/discounts/search?code=' + code;
+  const discountData = await fetchData(url);
+  const discountArray: Discount[] = discountData.data;
+  const discount: DiscountItem = {
+    code: discountArray[0].code,
+    amount: discountArray[0].amount,
+    percent: discountArray[0].percent,
+  };
+  console.log('Discount returned:', discount);
+
+  const retDisc: DiscountItem = {
+    code: discount[0].code,
+    amount: discount[0].amount,
+    percent: discount[0].percent,
+  };
+
+  return {discount};
+};
 
 /**
  * Shows some information on cartitem
@@ -187,16 +228,17 @@ export const createCartItem = (data: {ticket: Ticket, event: Event, qty: number}
       .map(appendCartField('name', `${titleCase(data.event.title)} Ticket${(data.qty>1) ? 's' : ''}`))
       .map(appendCartField('qty', data.qty))
       .map(appendCartField('product_img_url', data.event.image_url))[0];
-/**@param {string} EventId */
+
+/** @param {string} EventId */
 type EventId = string
 
-/**@param {boolean} isTicket - checks if ticket object matches event_instance_id */
+/** @param {boolean} isTicket - checks if ticket object matches event_instance_id */
 const isTicket = (obj: any): obj is Ticket => Object.keys(obj).some((k) => k==='event_instance_id');
 
-/**@param {boolean} isCartItem - checks if cart object matches product_id */
+/** @param {boolean} isCartItem - checks if cart object matches product_id */
 const isCartItem = (obj: any): obj is CartItem => Object.keys(obj).some((k) => k==='product_id');
 
-/**byId does checks by ID */
+/** byId does checks by ID */
 const byId = (id: number|EventId) => (obj: Ticket|Event|CartItem) =>
     (isTicket(obj)) ?
         obj.event_instance_id===id :
@@ -204,10 +246,10 @@ const byId = (id: number|EventId) => (obj: Ticket|Event|CartItem) =>
             obj.product_id===id :
             obj.id===id;
 
-/**hasConcessions checks if CartItem includes Concessions */
+/** hasConcessions checks if CartItem includes Concessions */
 const hasConcessions = (item: CartItem) => item.name.includes('Concessions');
 
-/**applyConcession appends and adds that it's a ticket with concessions */
+/** applyConcession appends and adds that it's a ticket with concessions */
 const applyConcession = (c_price: number, item: CartItem) => (hasConcessions(item)) ? item :
     {
       ...item,
@@ -216,10 +258,10 @@ const applyConcession = (c_price: number, item: CartItem) => (hasConcessions(ite
       desc: `${item.desc} with concessions ticket`,
     };
 
-/**ItemData array is id, qty, concessions(bool) */
+/** ItemData array is id, qty, concessions(bool) */
 interface ItemData {id: number, qty: number, concessions?: number}
 
-/**updateCartItem edits the cart items like qty, id, and concessions */
+/** updateCartItem edits the cart items like qty, id, and concessions */
 const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
   cart.map((item) => (item.product_id===id) ?
         (concessions) ?
@@ -228,7 +270,43 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
         item,
   );
 
-/**addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer*/
+
+// const addDiscountReducer: CaseReducer<ticketingState, PayloadAction<{ code: string, amount: number, percent: number }>> = (state, action) => {
+const addDiscountReducer: CaseReducer<ticketingState, PayloadAction<{ code: string }>> = (state, action) => {
+  // const {code, amount, percent} = action.payload;
+  const {code} = action.payload;
+
+  /*
+  fetchDiscountData2(code).then( (response) => {
+    console.log('fetch2 response:', response.retDisc);
+  });
+  */
+
+  const retDisc: DiscountItem = {code: 'testingreducer', amount: 5, percent: 11};
+
+  return {
+    ...state,
+    discount: retDisc,
+  };
+
+  /*
+  return {
+    ...state,
+    discount: fetchDiscountData2(code).then( (result) => {return result.discount;}),
+  };
+  */
+
+  /*
+  return {
+    ...state,
+    discount: fetchDiscountData2(code),
+  };
+  */
+
+};
+
+
+/** addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer*/
 const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean }>> = (state, action) => {
   const {id, qty, concessions} = action.payload;
   const tickets = state.tickets;
@@ -263,7 +341,7 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   }
 };
 
-/**editQtyReducer changes the qty, don't update if ticket doesn't exist, and don't try to set more if available */
+/** editQtyReducer changes the qty, don't update if ticket doesn't exist, and don't try to set more if available */
 // Do not update state if 1) ticket doesn't exist, 2) try to set more than available
 const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty: number}>> = (state, action) => {
   const {id, qty} = action.payload;
@@ -283,21 +361,28 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
  * @param {Array} tickets - byId: {}, allIds: []
  * @param {Array} events - []
  * @param {string} status - 'idle'
+ * @param {DiscountItem} discount - {'', 0, 0}
  */
 export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {byId: {}, allIds: []},
   events: [],
   status: 'idle',
+  discount: {code: 'init', amount: 0, percent: 0},
 };
 
-/**ticketSlice = createSlice, creates the ticketing slice */
+/** ticketSlice = createSlice, creates the ticketing slice */
 const ticketingSlice = createSlice({
   name: 'cart',
   initialState: INITIAL_STATE,
   reducers: {
     addTicketToCart: addTicketReducer,
     editItemQty: editQtyReducer,
+    addDiscountToCart: addDiscountReducer,
+    removeDiscountFromCart: (state) => ({
+      ...state,
+      discount: INITIAL_STATE.discount,
+    }),
     removeTicketFromCart: (state, action: PayloadAction<number>) => ({
       ...state,
       cart: state.cart.filter((item) => item.product_id!==action.payload),
@@ -309,6 +394,18 @@ const ticketingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+        .addCase(fetchDiscountData.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(fetchDiscountData.fulfilled, (state, action) => {
+          state.status = 'success';
+          state.discount = (action.payload.discount) ?
+                    {code: 'addcasefulfilled', amount: 1, percent: 2} :
+                    {code: '', amount: 0, percent: 0};
+        })
+        .addCase(fetchDiscountData.rejected, (state) => {
+          state.status = 'failed';
+        })
         .addCase(fetchTicketingData.pending, (state) => {
           state.status = 'loading';
         })
@@ -327,7 +424,7 @@ const ticketingSlice = createSlice({
   },
 });
 
-/**export selectCartSubtotal, selectCartIds, selectCartItem, selectCartTicketCount, selectNumInCart, selectCartContents - self explanatory */
+/** export selectCartSubtotal, selectCartIds, selectCartItem, selectCartTicketCount, selectNumInCart, selectCartContents - self explanatory */
 export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => tot + (item.price * item.qty), 0);
 export const selectCartIds = (state: RootState): number[] => state.ticketing.cart.map((i) => i.product_id);
 export const selectCartItem = (state: RootState, id: number): CartItem|undefined => state.ticketing.cart.find((i) => i.product_id===id);
@@ -346,7 +443,9 @@ export const selectCartTicketCount = (state: RootState): {[key: number]: number}
 export const selectNumInCart = (state: RootState) => state.ticketing.cart.length;
 export const selectCartContents = (state: RootState): CartItem[] => state.ticketing.cart;
 
-/**filterTicketsReducer - self explanatory */
+export const selectDiscount = (state: RootState): DiscountItem => state.ticketing.discount;
+
+/** filterTicketsReducer - self explanatory */
 const filterTicketsReducer = (ticketsById: {[key: number]: Ticket}, eventid: EventId) =>
   (filtered: Ticket[], id: number) => {
     return (ticketsById[id].eventid===eventid) ?
@@ -443,6 +542,6 @@ export const selectNumAvailable = (state: RootState, ticketid: number) => {
         ticket;
 };
 
-export const {addTicketToCart, editItemQty, removeTicketFromCart, removeAllTicketsFromCart} = ticketingSlice.actions;
+export const {addTicketToCart, editItemQty, addDiscountToCart, removeDiscountFromCart, removeTicketFromCart, removeAllTicketsFromCart} = ticketingSlice.actions;
 // @ts-ignore
 export default ticketingSlice.reducer;
