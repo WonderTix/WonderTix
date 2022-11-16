@@ -8,11 +8,9 @@ import {
   removeAllTicketsFromCart,
   selectCartContents,
   selectDiscount,
-  addDiscountToCart,
+  fetchDiscountData,
   removeDiscountFromCart,
-  // Discount,
-  // fetchDiscountData, // take this out
-  // DiscountItem,
+  DiscountItem,
 } from '../ticketingmanager/ticketing/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
 
@@ -25,6 +23,10 @@ import {useNavigate} from 'react-router-dom';
 type Item = {price: number, qty: number}
 const itemCost = (item: Item) => item.price * item.qty;
 const subtotalReducer = (acc: number, item: Item) => acc + itemCost(item);
+const totalReducer = (subtotal: number, discount: DiscountItem) => {
+  const total = subtotal * (1-(discount.percent/100)) - discount.amount;
+  return (total > 0) ? total : subtotal;
+};
 
 /**
  * Cart handler on clicks, resets and complete orders
@@ -52,9 +54,11 @@ const Cart = () => {
   const [discountText, setDiscountText] = useState<string|null>(null);
   const [validDiscount, setValidDiscount] = useState(false);
   const discount = useAppSelector(selectDiscount);
+  const total = totalReducer(subtotal, discount);
 
   useEffect(() => {
-    console.log(subtotal), [subtotal];
+    console.log('Subtotal:', subtotal), [subtotal];
+    console.log('Total:', total), [total];
     console.log('Current discount:', discount);
   });
 
@@ -84,11 +88,9 @@ const Cart = () => {
   const applyDiscount = (e: React.FormEvent) => {
     e.preventDefault();
     setValidDiscount(true);
-    console.log('Discount button clicked! Value: ' + discountText.toUpperCase());
+    console.log('Discount button clicked! Value: ' + discountText);
 
-    // dispatch(fetchDiscountData(discountText));
-    dispatch(addDiscountToCart({code: discountText}));
-
+    dispatch(fetchDiscountData(discountText));
     return;
   };
 
@@ -149,12 +151,13 @@ const Cart = () => {
 
                 <div className='flex flex-col items-center form-control disabled:opacity-50 '>
                   <div className='input-group flex flex-row items-center w-full px-3 py-1 text-black rounded-xl bg-sky-500'>
-                    <input type="text" placeholder="Discount code..." className='input input-bordered rounded-md pl-2'
-                      value={discountText}
+                    <input type="text" placeholder="Discount code..."
+                      className='input input-bordered rounded-md pl-2'
+                      value={(discountText) ? discountText : discount.code}
                       onChange={(e) => {
                         setDiscountText(e.target.value.toUpperCase());
                       }}
-                      disabled={discount.code !== 'init'}
+                      disabled={discount.code !== ''}
                     />
                     {!validDiscount ? (
                       <button className='btn btn-square bg-sky-500 ml-1' onClick={applyDiscount}>

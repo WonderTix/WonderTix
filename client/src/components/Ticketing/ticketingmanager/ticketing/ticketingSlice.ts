@@ -355,7 +355,7 @@ export const INITIAL_STATE: ticketingState = {
   tickets: {byId: {}, allIds: []},
   events: [],
   status: 'idle',
-  discount: {code: 'init', amount: 0, percent: 0},
+  discount: {code: '', amount: 0, percent: 0},
 };
 
 /** ticketSlice = createSlice, creates the ticketing slice */
@@ -386,8 +386,8 @@ const ticketingSlice = createSlice({
         })
         .addCase(fetchDiscountData.fulfilled, (state, action) => {
           state.status = 'success';
-          state.discount = (action.payload.discount) ?
-                    {code: 'addcasefulfilled', amount: 1, percent: 2} :
+          state.discount = (action.payload) ?
+                    action.payload.discount :
                     {code: '', amount: 0, percent: 0};
         })
         .addCase(fetchDiscountData.rejected, (state) => {
