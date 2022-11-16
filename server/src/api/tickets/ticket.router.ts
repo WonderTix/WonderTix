@@ -55,7 +55,7 @@ ticketRouter.get('/', async (req, res) => {
 // Get all ticket types
 ticketRouter.get('/types', async (req, res) => {
   try {
-    const query = 'SELECT * FROM tickettype;';
+    const query = `SELECT * FROM tickettype WHERE deprecated = false;`;
     const getAllTickets = await pool.query(query);
     res.json(getAllTickets.rows);
   } catch (error) {
