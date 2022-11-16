@@ -55,7 +55,7 @@ ticketRouter.get('/', async (req, res) => {
 // Get all ticket types
 ticketRouter.get('/types', async (req, res) => {
   try {
-    const query = 'SELECT * FROM tickettype;';
+    const query = `SELECT * FROM tickettype WHERE deprecated = false;`;
     const getAllTickets = await pool.query(query);
     res.json(getAllTickets.rows);
   } catch (error) {
@@ -66,7 +66,7 @@ ticketRouter.get('/types', async (req, res) => {
 
 
 //
-// **BROKEN** linkedtickets is depracated, will require refactor
+// **BROKEN** linkedtickets is deprecated, will require refactor
 //
 // Set which tickets can be sold for an event
 ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
@@ -140,8 +140,8 @@ ticketRouter.get('/list', async (req, res) => {
                     ON lt.event_instance_id=ei.id
                   JOIN tickettype tt
                     ON lt.ticket_type=tt.id
-                  WHERE
-                    ev.id=$1 AND isseason=false;`;
+                  WHERE 
+                    ev.id=$1;`;
     const values = [req.query.event];
     const availableTickets = await pool.query(query, values);
     res.json(availableTickets.rows);
