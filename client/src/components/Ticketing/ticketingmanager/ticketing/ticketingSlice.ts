@@ -197,12 +197,6 @@ async function fetchDiscountData2(code: string) {
   };
   console.log('Discount returned:', discount);
 
-  const retDisc: DiscountItem = {
-    code: discount[0].code,
-    amount: discount[0].amount,
-    percent: discount[0].percent,
-  };
-
   return {discount};
 };
 
@@ -276,12 +270,13 @@ const addDiscountReducer: CaseReducer<ticketingState, PayloadAction<{ code: stri
   // const {code, amount, percent} = action.payload;
   const {code} = action.payload;
 
-  /*
-  fetchDiscountData2(code).then( (response) => {
-    console.log('fetch2 response:', response.retDisc);
-  });
-  */
 
+  fetchDiscountData2(code).then( (response) => {
+    console.log('fetch2 response:', response.discount);
+  });
+
+
+  // Used to return SOMETHING while I get the fetch stuff worked out
   const retDisc: DiscountItem = {code: 'testingreducer', amount: 5, percent: 11};
 
   return {
@@ -289,20 +284,12 @@ const addDiscountReducer: CaseReducer<ticketingState, PayloadAction<{ code: stri
     discount: retDisc,
   };
 
-  /*
+  /* In theory this should work?
   return {
     ...state,
     discount: fetchDiscountData2(code).then( (result) => {return result.discount;}),
   };
   */
-
-  /*
-  return {
-    ...state,
-    discount: fetchDiscountData2(code),
-  };
-  */
-
 };
 
 
