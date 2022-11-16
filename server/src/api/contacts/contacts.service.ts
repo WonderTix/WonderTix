@@ -60,8 +60,10 @@ export const find = async (id: string): Promise<response> => {
 export const create = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
-      INSERT INTO contacts
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      INSERT INTO 
+        contacts (firstname, lastname, email, address, phone, donorbadge, seatingaccom, newsletter, vip, volunteerlist)
+      VALUES 
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *;`,
     values: [
       r.firstname, 
