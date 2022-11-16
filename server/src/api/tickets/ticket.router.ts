@@ -65,10 +65,10 @@ ticketRouter.get('/', async (req: Request, res: Response) => {
 // });
 
 
-// Get all ticket types
+// Get valid ticket types
 ticketRouter.get('/types', async (req: Request, res: Response) => {
   try {
-    const ticketTypes = await ticketUtils.getTicketTypes();
+    const ticketTypes = await ticketUtils.getValidTicketTypes();
     const code = ticketTypes.status.success ? 200 : 404;
     res.status(code).send(ticketTypes);
   } catch (error) {

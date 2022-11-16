@@ -36,13 +36,20 @@ export const getAvailableTickets = async (): Promise<response> => {
 };
 
 //
-export const getTicketTypes = async (): Promise<response> => {
+export const getValidTicketTypes = async (): Promise<response> => {
+  const myQuery = {
+    text: `SELECT * FROM tickettype WHERE deprecated = false;`,
+  };
+  return await buildResponse(myQuery, 'GET');
+};
+
+//
+export const getAllTicketTypes = async (): Promise<response> => {
   const myQuery = {
     text: `SELECT * FROM tickettype;`,
   };
   return await buildResponse(myQuery, 'GET');
 };
-
 
 //
 export const setDefaultTicketForEvent = async (params: any): Promise<response> => {
