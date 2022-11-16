@@ -83,7 +83,10 @@ const changeQty = (n: number) => ({type: 'change_qty', payload: n});
  *      showTimes: true,
  *      showClearBtn: true,
  *      prompt: 'selectTime',
- * @return a certain default state if failed
+ *
+ * @param state
+ * @param action
+ * @returns a certain default state if failed
  */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
   switch (action.type) {

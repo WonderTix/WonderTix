@@ -99,6 +99,9 @@ interface EventFormProps {
  * @param imageUrl - initialValues.imageUrl || ''
  * @param isPublished - initialValues.isPublished || false
  * @param showings - initialValues.showings || []
+ * @param eventName.onSubmit
+ * @param eventName.ticketTypes
+ * @param eventName.initialValues
  * @returns {Form} EventForm
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

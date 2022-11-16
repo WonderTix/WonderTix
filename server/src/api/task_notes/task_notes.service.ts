@@ -45,6 +45,6 @@ export const update = async (r: any): Promise<response> => {
       WHERE id = $5
       RETURNING *;
       `,
-    values: [r.body.tasknoteid, r.body.taskid_fk, r.body.date_created, r.body.notes, r.params.id], };
+    values: [r.body.tasknoteid, r.body.taskid_fk, r.body.date_created, r.body.notes, r.params.id]};
   return await buildResponse(myQuery, 'UPDATE');
 };
