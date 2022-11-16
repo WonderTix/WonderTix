@@ -178,7 +178,7 @@ paths:
               donorbadge: false
               seatingaccom: false
               vip: false
-              volunteer_list: false
+              volunteerlist: false
         required: true
       responses:
         '200':
@@ -268,7 +268,7 @@ paths:
               donorbadge: false
               seatingaccom: false
               vip: false
-              volunteer_list: false
+              volunteerlist: false
         required: true
       responses:
         '200':
@@ -1198,7 +1198,7 @@ components:
       - donorbadge
       - seatingaccom
       - vip
-      - volunteer_list
+      - volunteerlist
       type: object
       properties:
         custname:
@@ -1211,7 +1211,7 @@ components:
           type: boolean
         vip:
           type: boolean
-        volunteer_list:
+        volunteerlist:
           type: boolean
       example:
         custname: test person
@@ -1219,7 +1219,7 @@ components:
         donorbadge: false
         seatingaccom: false
         vip: false
-        volunteer_list: false
+        volunteerlist: false
     PUTapicontactsidRequest:
       title: PUTapicontactsidRequest
       required:
@@ -1228,7 +1228,7 @@ components:
       - donorbadge
       - seatingaccom
       - vip
-      - volunteer_list
+      - volunteerlist
       type: object
       properties:
         custname:
@@ -1241,7 +1241,7 @@ components:
           type: boolean
         vip:
           type: boolean
-        volunteer_list:
+        volunteerlist:
           type: boolean
       example:
         custname: updated person
@@ -1249,7 +1249,7 @@ components:
         donorbadge: false
         seatingaccom: false
         vip: false
-        volunteer_list: false
+        volunteerlist: false
     POSTapidonationsRequest:
       title: POSTapidonationsRequest
       required:
