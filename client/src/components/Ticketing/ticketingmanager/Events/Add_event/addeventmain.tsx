@@ -6,6 +6,7 @@ import CreateEventPage from './CreateEventPage';
 
 /**
  * Used to add events
+ *
  * @returns {Udash_nav, CreateEventPage} Addeventmain
  */
 const Addeventmain = () => {

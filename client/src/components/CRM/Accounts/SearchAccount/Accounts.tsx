@@ -6,7 +6,8 @@ import AccountResults from './AccountResults';
 import {useAuth0} from '@auth0/auth0-react';
 /**
  * handle searching for user`s account
- * @return {ReactElement}
+ *
+ * @returns {ReactElement}
  */
 const Accounts = (): React.ReactElement => {
   const params = useParams();

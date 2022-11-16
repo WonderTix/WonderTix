@@ -5,6 +5,7 @@ import Eventshowings from './eventshowings';
 
 /**
  * Main host for eventShowings
+ *
  * @returns {Navbar, Eventshowings, Footer}
  */
 const Eventshowingmain = () => {

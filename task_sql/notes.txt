@@ -1,8 +1,3 @@
-When creating your .env file (python script):
-  Leave the username and password as the defaults: 'postgres'
-  Set the database name as: 'wondertix'
-
-
 Connecting PGAdmin to the DB in docker:
   Download PGAdmin: https://www.pgadmin.org/download/
   Start the docker project

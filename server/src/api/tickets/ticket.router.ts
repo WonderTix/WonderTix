@@ -89,7 +89,7 @@ ticketRouter.get('/types', async (req: Request, res: Response) => {
 
 
 //
-// **BROKEN** linkedtickets is depracated, will require refactor
+// **BROKEN** linkedtickets is deprecated, will require refactor
 //
 // Set which tickets can be sold for an event
 ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
@@ -136,7 +136,11 @@ ticketRouter.post('/newType', checkJwt, checkScopes, async (req, res) => {
 ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
   try {
     const resp = await ticketUtils.removeTicketType(req.params.id);
-    const code = resp.status.success ? 200 : 404;
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+      resp.status.success = false;
+    }
     res.status(code).send(resp);
   } catch (error: any) {
     res.sendStatus(500).send(error.message);

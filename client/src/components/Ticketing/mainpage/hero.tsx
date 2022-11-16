@@ -6,6 +6,7 @@ import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 
 /**
  * Events page
+ *
  * @returns {ReactElement} state.event.ticketing also returned
  */
 const Hero = () => {

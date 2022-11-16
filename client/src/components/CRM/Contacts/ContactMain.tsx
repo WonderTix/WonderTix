@@ -2,7 +2,7 @@
 import Navigation from '../Navigation';
 import Contacts from './Contacts';
 /**
- * @return {object} ContactMain - has Navigation
+ * @returns {object} ContactMain - has Navigation
  *  and Contacts to reroute to other components
  */
 const ContactMain = () => {

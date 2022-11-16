@@ -34,7 +34,7 @@ describe('test doorlist routes', function() {
     it('/ get pass', async () => {
       // @ts-ignore
       doorlistService.getDoorlist.mockImplementationOnce(() => {
-        return {data: [], status: {success: true, message: ''}};
+        return {data: [0], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/')
           .set('Authorization', `Bearer ${getToken()}`);

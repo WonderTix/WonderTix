@@ -7,7 +7,7 @@
  *  sales status -- available or published
  * totalseats is the total amount of available seats for the event
  * during initial add totall seats equal to available seats
- **/
+ */
 
 export interface Showing {
     id?: number,

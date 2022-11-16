@@ -90,7 +90,7 @@ export const reduceToTicketState = (res: any, t: Ticket) => {
 export const createTicketType = async (params: any): Promise<response> => {
   const myQuery = {
     // Breaking change, fewer values required
-    text:`
+    text: `
           INSERT INTO 
             tickettype (
                 description,
@@ -101,7 +101,7 @@ export const createTicketType = async (params: any): Promise<response> => {
           RETURNING *;`,
     values: [
       params.name,
-      params.price, 
+      params.price,
       params.concessions],
   };
   console.log(params);
@@ -115,7 +115,7 @@ export const removeTicketType = async (id: string): Promise<response> => {
           UPDATE 
             tickettype 
           SET
-            depracated = true
+            deprecated = true
           WHERE 
             tickettypeid = $1;`,
     values: [id],

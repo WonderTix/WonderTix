@@ -15,7 +15,11 @@ import {
 import {useAuth0} from '@auth0/auth0-react';
 /**
  * Saved panal in reporting
- * @return {ReactElement}
+ *
+ * @param root0
+ * @param root0.setColumns
+ * @param root0.setRows
+ * @returns {ReactElement}
  */
 const SavedPanel = ({
   setColumns,
