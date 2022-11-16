@@ -9,7 +9,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {createSlice, createAsyncThunk, PayloadAction, CaseReducer} from '@reduxjs/toolkit';
 import {RootState} from '../../app/store';
 import format from 'date-fns/format';
@@ -17,6 +17,7 @@ import {bound, titleCase} from '../../../../utils/arrays';
 
 /**
  * Amount of tickets in the cart
+ *
  * @module
  * @param {number} product_id - references state.tickets.event_instance_id
  * @param {number} qty - amount of that product (tickets)
@@ -36,6 +37,7 @@ export interface CartItem {
 
 /**
  * Ticket item itself
+ *
  * @module
  * @param {number} event_instance_id
  * @param {string} eventid
@@ -59,6 +61,7 @@ export interface Ticket {
 
 /**
  * The interface for event
+ *
  * @module
  * @param {string} id - Event id
  * @param {string} title - title of event showing
@@ -75,12 +78,14 @@ export interface Event {
 type TicketsState = {byId: {[key: string]: Ticket}, allIds: number[]}
 /**
  * Four states - 'idle', 'loading', 'success', 'failed'
+ *
  * @module
  */
 export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed'
 
 /**
  * Used to manage the ticketing states
+ *
  * @module
  * @param {Array} cart - Array called CartItem
  * @param {Array} tickets - TicketsState has a key(string), byId(ticket), allIds is a number array
@@ -95,8 +100,8 @@ export interface ticketingState {
 }
 
 /**
- * 
- * @param {string} url - gets data 
+ *
+ * @param {string} url - gets data
  * @returns Error message on fail, otherwise gets message
  */
 const fetchData = async (url: string) => {
@@ -110,6 +115,7 @@ const fetchData = async (url: string) => {
 
 /**
  * Fetches all the data, and gets all the api routes then prints to console
+ *
  * @module
  * @returns {Array} events, tickets, byID, allIds
  */
@@ -127,6 +133,7 @@ export const fetchTicketingData = createAsyncThunk(
 
 /**
  * Shows some information on cartitem
+ *
  * @param {T} ticketLike - based on ticket object?
  */
 export const toPartialCartItem = <T extends Ticket>(ticketLike: T) => ({
@@ -138,8 +145,12 @@ export const toPartialCartItem = <T extends Ticket>(ticketLike: T) => ({
 const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) => (obj: any) => ({...obj, [key]: val});
 /**
  * Uses appendCartField to append to the cartfield
+ *
  * @module
- * @param {Array} data - ticket, event, qty, CartItem 
+ * @param data.ticket
+ * @param data.event
+ * @param data.qty
+ * @param {Array} data - ticket, event, qty, CartItem
  * @returns appended statements to the cartfield, appends: name, qty, product_img_url
  */
 export const createCartItem = (data: {ticket: Ticket, event: Event, qty: number}): CartItem =>
@@ -147,16 +158,26 @@ export const createCartItem = (data: {ticket: Ticket, event: Event, qty: number}
       .map(appendCartField('name', `${titleCase(data.event.title)} Ticket${(data.qty>1) ? 's' : ''}`))
       .map(appendCartField('qty', data.qty))
       .map(appendCartField('product_img_url', data.event.image_url))[0];
-/**@param {string} EventId */
+/** @param {string} EventId */
 type EventId = string
 
-/**@param {boolean} isTicket - checks if ticket object matches event_instance_id */
+/**
+ * @param {boolean} isTicket - checks if ticket object matches event_instance_id
+ * @param obj
+ */
 const isTicket = (obj: any): obj is Ticket => Object.keys(obj).some((k) => k==='event_instance_id');
 
-/**@param {boolean} isCartItem - checks if cart object matches product_id */
+/**
+ * @param {boolean} isCartItem - checks if cart object matches product_id
+ * @param obj
+ */
 const isCartItem = (obj: any): obj is CartItem => Object.keys(obj).some((k) => k==='product_id');
 
-/**byId does checks by ID */
+/**
+ * byId does checks by ID
+ *
+ * @param id
+ */
 const byId = (id: number|EventId) => (obj: Ticket|Event|CartItem) =>
     (isTicket(obj)) ?
         obj.event_instance_id===id :
@@ -164,10 +185,19 @@ const byId = (id: number|EventId) => (obj: Ticket|Event|CartItem) =>
             obj.product_id===id :
             obj.id===id;
 
-/**hasConcessions checks if CartItem includes Concessions */
+/**
+ * hasConcessions checks if CartItem includes Concessions
+ *
+ * @param item
+ */
 const hasConcessions = (item: CartItem) => item.name.includes('Concessions');
 
-/**applyConcession appends and adds that it's a ticket with concessions */
+/**
+ * applyConcession appends and adds that it's a ticket with concessions
+ *
+ * @param c_price
+ * @param item
+ */
 const applyConcession = (c_price: number, item: CartItem) => (hasConcessions(item)) ? item :
     {
       ...item,
@@ -176,10 +206,18 @@ const applyConcession = (c_price: number, item: CartItem) => (hasConcessions(ite
       desc: `${item.desc} with concessions ticket`,
     };
 
-/**ItemData array is id, qty, concessions(bool) */
+/** ItemData array is id, qty, concessions(bool) */
 interface ItemData {id: number, qty: number, concessions?: number}
 
-/**updateCartItem edits the cart items like qty, id, and concessions */
+/**
+ * updateCartItem edits the cart items like qty, id, and concessions
+ *
+ * @param cart
+ * @param root0
+ * @param root0.id
+ * @param root0.qty
+ * @param root0.concessions
+ */
 const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
   cart.map((item) => (item.product_id===id) ?
         (concessions) ?
@@ -188,7 +226,12 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
         item,
   );
 
-/**addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer*/
+/**
+ * addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer
+ *
+ * @param state
+ * @param action
+ */
 const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean }>> = (state, action) => {
   const {id, qty, concessions} = action.payload;
   const tickets = state.tickets;
@@ -223,7 +266,12 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   }
 };
 
-/**editQtyReducer changes the qty, don't update if ticket doesn't exist, and don't try to set more if available */
+/**
+ * editQtyReducer changes the qty, don't update if ticket doesn't exist, and don't try to set more if available
+ *
+ * @param state
+ * @param action
+ */
 // Do not update state if 1) ticket doesn't exist, 2) try to set more than available
 const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty: number}>> = (state, action) => {
   const {id, qty} = action.payload;
@@ -238,6 +286,7 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
 
 /**
  * Makes an inital state for ticketing
+ *
  * @module
  * @param {Array} cart - []
  * @param {Array} tickets - byId: {}, allIds: []
@@ -251,7 +300,7 @@ export const INITIAL_STATE: ticketingState = {
   status: 'idle',
 };
 
-/**ticketSlice = createSlice, creates the ticketing slice */
+/** ticketSlice = createSlice, creates the ticketing slice */
 const ticketingSlice = createSlice({
   name: 'cart',
   initialState: INITIAL_STATE,
@@ -287,7 +336,11 @@ const ticketingSlice = createSlice({
   },
 });
 
-/**export selectCartSubtotal, selectCartIds, selectCartItem, selectCartTicketCount, selectNumInCart, selectCartContents - self explanatory */
+/**
+ * export selectCartSubtotal, selectCartIds, selectCartItem, selectCartTicketCount, selectNumInCart, selectCartContents - self explanatory
+ *
+ * @param state
+ */
 export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => tot + (item.price * item.qty), 0);
 export const selectCartIds = (state: RootState): number[] => state.ticketing.cart.map((i) => i.product_id);
 export const selectCartItem = (state: RootState, id: number): CartItem|undefined => state.ticketing.cart.find((i) => i.product_id===id);
@@ -306,7 +359,11 @@ export const selectCartTicketCount = (state: RootState): {[key: number]: number}
 export const selectNumInCart = (state: RootState) => state.ticketing.cart.length;
 export const selectCartContents = (state: RootState): CartItem[] => state.ticketing.cart;
 
-/**filterTicketsReducer - self explanatory */
+/**
+ * filterTicketsReducer - self explanatory
+ *
+ * @param eventid
+ */
 const filterTicketsReducer = (ticketsById: {[key: number]: Ticket}, eventid: EventId) =>
   (filtered: Ticket[], id: number) => {
     return (ticketsById[id].eventid===eventid) ?
@@ -316,6 +373,7 @@ const filterTicketsReducer = (ticketsById: {[key: number]: Ticket}, eventid: Eve
 
 /**
  * Interface for EventPageData
+ *
  * @module
  * @param {string} title
  * @param {string} description
@@ -331,9 +389,10 @@ export interface EventPageData {
 
 /**
  * Name says it all
+ *
  * @module
- * @param {RootState} state - different types of state of selectEventData 
- * @param {EventId} eventid 
+ * @param {RootState} state - different types of state of selectEventData
+ * @param {EventId} eventid
  * @param ticketData - uses state.ticketing.tickets
  * @param event - uses state.ticketing.events.find(byId(eventid))
  * @returns playData, Tickets | undefined
@@ -353,6 +412,7 @@ export const selectEventData = (state: RootState, eventid: EventId): EventPageDa
 
 /**
  * Manages events page
+ *
  * @module
  * @param {EventId} id
  * @param {string} eventname
@@ -369,8 +429,9 @@ interface EventSummaryData {
 
 /**
  * Gets the data from the play when selected
+ *
  * @module
- * @param {RootState} state 
+ * @param {RootState} state
  * @returns {Array} id: event.id, eventname: title, eventdescription: description, numShows: filteredTickets.length
  */
 export const selectPlaysData = (state: RootState) =>
@@ -391,9 +452,10 @@ export const selectPlaysData = (state: RootState) =>
 
 /**
  * Gets num of tickets available
+ *
  * @module
- * @param {RootState} state 
- * @param {number} ticketid 
+ * @param {RootState} state
+ * @param {number} ticketid
  * @returns ticket.avilableseats
  */
 export const selectNumAvailable = (state: RootState, ticketid: number) => {

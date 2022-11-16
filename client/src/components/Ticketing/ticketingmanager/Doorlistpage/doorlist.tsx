@@ -7,7 +7,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 // import DataGrid from 'react-data-grid';
 import {DataGrid, GridCellParams} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
@@ -20,9 +20,10 @@ const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.va
 
 /**
  * Used to check the guests in
- * @param {boolean} isCheckedIn 
- * @param {string} ticketID 
- * @returns 
+ *
+ * @param {boolean} isCheckedIn
+ * @param {string} ticketID
+ * @returns
  */
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   const {getAccessTokenSilently} = useAuth0();
@@ -48,7 +49,8 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
 
 /**
  * renders in the check in for guests
- * @param {GridCellParams} params 
+ *
+ * @param {GridCellParams} params
  * @returns edits the checkInGuest value
  */
 const renderCheckin = ((params: GridCellParams) =>
@@ -71,7 +73,8 @@ const columns = [
 ];
 
 /**
- * Doorlist gets data about the event, time of the event 
+ * Doorlist gets data about the event, time of the event
+ *
  * @returns {ReactElement} DoorList also has a datagrid
  */
 const DoorList = () => {

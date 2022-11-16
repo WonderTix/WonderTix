@@ -13,8 +13,8 @@ import {useNavigate} from 'react-router-dom';
 
 /**
  * @param {Item} price: number, qty: number
- * @param {function} itemCost - item: Item, item.price * item.qty
- * @param {function} subtotalReducer - acc: number, item: Item, acc + itemCost(item)
+ * @param {Function} itemCost - item: Item, item.price * item.qty
+ * @param {Function} subtotalReducer - acc: number, item: Item, acc + itemCost(item)
  */
 type Item = {price: number, qty: number}
 const itemCost = (item: Item) => item.price * item.qty;
@@ -22,7 +22,8 @@ const subtotalReducer = (acc: number, item: Item) => acc + itemCost(item);
 
 /**
  * Cart handler on clicks, resets and complete orders
- * @return {ReactElement}
+ *
+ * @returns {ReactElement}
  */
 const Cart = () => {
   const history = useNavigate();
@@ -32,7 +33,7 @@ const Cart = () => {
   {
       single,
       all,
-  };
+  }
 
   const [show, setShow] = useState(false);
   const handleClick2 = () => setShow(!show);

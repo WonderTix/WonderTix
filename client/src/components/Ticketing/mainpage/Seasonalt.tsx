@@ -3,6 +3,7 @@ import React from 'react';
 
 /**
  * Text about seasonal tickets
+ *
  * @returns {ReactElement}
  */
 const Seasonaltickets = () => {

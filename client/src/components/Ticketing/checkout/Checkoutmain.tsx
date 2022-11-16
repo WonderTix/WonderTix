@@ -5,6 +5,7 @@ import Footer from '../mainpage/footer';
 
 /**
  * Hosts checkout page
+ *
  * @returns {Navbar, CheckoutPage, Footer}
  */
 const Checkoutmain = () => {

@@ -2,7 +2,7 @@ import React from 'react';
 import Accounts from './Accounts';
 import Navigation from '../../Navigation';
 /**
- * @return {object} userSearchmain - has Navigation
+ * @returns {object} userSearchmain - has Navigation
  *  and Accounts to reroute to other components
  */
 const userSearchmain = () => {

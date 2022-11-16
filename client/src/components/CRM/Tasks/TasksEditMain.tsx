@@ -4,7 +4,7 @@ import Navigation from '../Navigation';
 import EditTask from './EditTask';
 
 /**
- * @return {object} TasksEditMain - has Navigation
+ * @returns {object} TasksEditMain - has Navigation
  *  and EditTask to reroute to other components
  */
 const TasksEditMain=() =>{

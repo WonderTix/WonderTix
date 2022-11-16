@@ -175,10 +175,10 @@ paths:
             example:
               custname: test person
               newsletter: false
-              donorbadge: 'false'
+              donorbadge: false
               seatingaccom: false
               vip: false
-              volunteer_list: false
+              volunteerlist: false
         required: true
       responses:
         '200':
@@ -265,10 +265,10 @@ paths:
             example:
               custname: updated person
               newsletter: false
-              donorbadge: 'false'
+              donorbadge: false
               seatingaccom: false
               vip: false
-              volunteer_list: false
+              volunteerlist: false
         required: true
       responses:
         '200':
@@ -738,7 +738,7 @@ paths:
               custname: John Doe
               email: abc@xyz.com
               phone: 555-555-5555
-              custaddress: 123 Main St
+              address: 123 Main St
               news_opt: 'true'
               volunteer_opt: 'true'
         required: true
@@ -766,7 +766,7 @@ paths:
               custname: John Doe
               email: abc@xyz.com
               phone: 555-555-5555
-              custaddress: 123 Main St
+              address: 123 Main St
               news_opt: 'true'
               volunteer_opt: 'false'
         required: true
@@ -1198,7 +1198,7 @@ components:
       - donorbadge
       - seatingaccom
       - vip
-      - volunteer_list
+      - volunteerlist
       type: object
       properties:
         custname:
@@ -1206,20 +1206,20 @@ components:
         newsletter:
           type: boolean
         donorbadge:
-          type: string
+          type: boolean
         seatingaccom:
           type: boolean
         vip:
           type: boolean
-        volunteer_list:
+        volunteerlist:
           type: boolean
       example:
         custname: test person
         newsletter: false
-        donorbadge: 'false'
+        donorbadge: false
         seatingaccom: false
         vip: false
-        volunteer_list: false
+        volunteerlist: false
     PUTapicontactsidRequest:
       title: PUTapicontactsidRequest
       required:
@@ -1228,7 +1228,7 @@ components:
       - donorbadge
       - seatingaccom
       - vip
-      - volunteer_list
+      - volunteerlist
       type: object
       properties:
         custname:
@@ -1236,20 +1236,20 @@ components:
         newsletter:
           type: boolean
         donorbadge:
-          type: string
+          type: boolean
         seatingaccom:
           type: boolean
         vip:
           type: boolean
-        volunteer_list:
+        volunteerlist:
           type: boolean
       example:
         custname: updated person
         newsletter: false
-        donorbadge: 'false'
+        donorbadge: false
         seatingaccom: false
         vip: false
-        volunteer_list: false
+        volunteerlist: false
     POSTapidonationsRequest:
       title: POSTapidonationsRequest
       required:
@@ -1469,7 +1469,7 @@ components:
       - custname
       - email
       - phone
-      - custaddress
+      - address
       - news_opt
       - volunteer_opt
       type: object
@@ -1480,7 +1480,7 @@ components:
           type: string
         phone:
           type: string
-        custaddress:
+        address:
           type: string
         news_opt:
           type: string
@@ -1490,7 +1490,7 @@ components:
         custname: John Doe
         email: abc@xyz.com
         phone: 555-555-5555
-        custaddress: 123 Main St
+        address: 123 Main St
         news_opt: 'true'
         volunteer_opt: 'true'
     PUTapinewsletterRequest:
@@ -1499,7 +1499,7 @@ components:
       - custname
       - email
       - phone
-      - custaddress
+      - address
       - news_opt
       - volunteer_opt
       type: object
@@ -1510,7 +1510,7 @@ components:
           type: string
         phone:
           type: string
-        custaddress:
+        address:
           type: string
         news_opt:
           type: string
@@ -1520,7 +1520,7 @@ components:
         custname: John Doe
         email: abc@xyz.com
         phone: 555-555-5555
-        custaddress: 123 Main St
+        address: 123 Main St
         news_opt: 'true'
         volunteer_opt: 'false'
     POSTapitask_notesRequest:

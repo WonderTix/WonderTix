@@ -5,7 +5,8 @@
 import {useNavigate} from 'react-router-dom';
 /**
  * Account dashboard
- * @return {ReactElement}
+ *
+ * @returns {ReactElement}
  */
 const AccountsDash = () => {
   const navigate = useNavigate();

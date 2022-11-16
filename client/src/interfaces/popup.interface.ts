@@ -2,7 +2,8 @@
  * Inteface for Pop up Component
  * Describes the title and the message that is send to the component
  * Contains call back to parent component to close the Pop Up windows
- * **/
+ *
+ */
  interface popupProps
 {
     title: string;
