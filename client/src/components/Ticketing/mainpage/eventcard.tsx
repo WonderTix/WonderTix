@@ -7,7 +7,8 @@ import {Event} from '../ticketingmanager/ticketing/ticketingSlice';
 
 /**
  * Lists out all the event cards
- * @param {Event} props 
+ *
+ * @param {Event} props
  * @returns {ReactElement}
  */
 const ListComponent = (props: Event) => {

@@ -42,12 +42,12 @@ export const createTask = async (r: any): Promise<response> => {
             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           RETURNING *;`,
     values: [
-      r.parentid, 
-      r.subject, 
-      r.description, 
+      r.parentid,
+      r.subject,
+      r.description,
       r.status,
-      r.assignto, 
-      r.reportto, 
+      r.assignto,
+      r.reportto,
       r.datecreated,
       r.dateassigned, 
       r.duedate, 
@@ -91,19 +91,26 @@ export const updateTask = async (r: any): Promise<response> => {
             taskid = $14
           RETURNING *;`,
     values: [
-      r.body.parentid, 
-      r.body.subject, 
+      r.body.parentid,
+      r.body.subject,
       r.body.description,
-      r.body.status, 
-      r.body.assignto, 
+      r.body.status,
+      r.body.assignto,
       r.body.reportto,
-      r.body.datecreated, 
-      r.body.dateassigned, 
+      r.body.datecreated,
+      r.body.dateassigned,
       r.body.duedate,
+<<<<<<< HEAD
       r.body.ref_contact, 
       r.body.ref_donation, 
       r.body.ref_ticket_order,
       r.body.ref_account, 
+=======
+      r.body.rel_contact,
+      r.body.rel_donation,
+      r.body.rel_ticket_order,
+      r.body.rel_account,
+>>>>>>> 741cff548e3eb296cb675cd8f2b683342af7fcf7
       r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');

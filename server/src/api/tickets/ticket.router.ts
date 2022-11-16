@@ -28,13 +28,13 @@ ticketRouter.get('/', async (req, res) => {
                   tt.concessions AS concession_price
                 FROM
                   eventtickets et
-                  JOIN eventinstances ei 
+                  JOIN eventinstances ei
                     ON et.eventinstanceid_fk = ei.eventinstanceid
-                  JOIN tickettype tt 
+                  JOIN tickettype tt
                     ON et.tickettypeid_fk = tt.tickettypeid
-                WHERE 
+                WHERE
                   ei.availableseats > 0
-                AND 
+                AND
                   ei.salestatus = true;`;
     const queryRes = await pool.query(qs);
     res.json(
@@ -74,11 +74,11 @@ ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
     const body = req.body;
     const values = [body.event_instance_id, body.ticket_type];
     const query = `
-                  INSERT INTO 
+                  INSERT INTO
                     linkedtickets (
-                        event_instance_id, 
+                        event_instance_id,
                         ticket_type)
-                  VALUES 
+                  VALUES
                     ($1, $2);`;
     const setTickets = await pool.query(query, values);
     res.json(setTickets.rows);
@@ -103,7 +103,11 @@ ticketRouter.post('/newType', checkJwt, checkScopes, async (req, res) => {
 ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
   try {
     const resp = await ticketUtils.removeTicketType(req.params.id);
-    const code = resp.status.success ? 200 : 404;
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+      resp.status.success = false;
+    }
     res.status(code).send(resp);
   } catch (error: any) {
     res.sendStatus(500).send(error.message);
@@ -118,23 +122,23 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
 ticketRouter.get('/list', async (req, res) => {
   try {
     const query = `
-                  SELECT 
+                  SELECT
                     ev.id as event_id,
                     ei.id as event_instance_id,
                     eventname,
                     eventdescription,
                     eventdate,
                     starttime,
-                    totalseats, 
+                    totalseats,
                     availableseats,
                     price,
                     concessions
                   FROM events ev
-                  LEFT JOIN event_instances ei 
+                  LEFT JOIN event_instances ei
                     ON ev.id=ei.eventid
-                  JOIN linkedtickets lt 
+                  JOIN linkedtickets lt
                     ON lt.event_instance_id=ei.id
-                  JOIN tickettype tt 
+                  JOIN tickettype tt
                     ON lt.ticket_type=tt.id
                   WHERE 
                     ev.id=$1;`;

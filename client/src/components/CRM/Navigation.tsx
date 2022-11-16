@@ -8,7 +8,8 @@ import AuthNav from '../Authentication/auth-nav';
 import {useNavigate} from 'react-router-dom';
 /**
  * CRM Navigation bar
- * @return {React.ReactElement}
+ *
+ * @returns {React.ReactElement}
  */
 const Navigation = () => {
   const [show, setShow] = useState(false);

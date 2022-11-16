@@ -10,7 +10,7 @@ import {response, buildResponse} from '../db';
 
 export const getDiscountCodes = async (): Promise<response> => {
   const query = {
-  text: `SELECT * FROM discounts;`,
+    text: `SELECT * FROM discounts;`,
   };
   return buildResponse(query, 'GET');
 };
@@ -21,10 +21,10 @@ export const getDiscountCodes = async (): Promise<response> => {
  * @type {Promise<response>}
  */
 
-export const checkDiscountCode = async(code: any): Promise<response> => {
+export const checkDiscountCode = async (code: any): Promise<response> => {
   const query = {
     text: `SELECT * FROM discounts WHERE lower(code)=lower($1);`,
-    values: [code]
+    values: [code],
   };
   return buildResponse(query, 'GET');
 };
@@ -55,7 +55,6 @@ export const addDiscountCode = async (params: any): Promise<response> => {
   };
   return buildResponse(query, 'POST');
 };
-
 
 
 /**

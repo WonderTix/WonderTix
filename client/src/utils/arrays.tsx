@@ -144,11 +144,12 @@ type time = {hours: number, minutes: number, ampm?: 'AM'|'PM'}
 
 /**
  * Checks if days are equal
+ *
  * @param {Date} a date1 to compare
  * @param {Date} b date2 to compare
- * @return {boolean}
+ * @returns {boolean}
  */
-export function isSameDay(a: Date, b: Date): Boolean {
+export function isSameDay(a: Date, b: Date): boolean {
   const sameDay = a.getDate() == b.getDate();
   const sameMonth = a.getMonth() == b.getMonth();
   const sameYear = a.getFullYear() == b.getFullYear();

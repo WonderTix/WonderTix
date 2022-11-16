@@ -1,7 +1,7 @@
 import * as React from 'react';
 /**
  * @param {any} props Properties to be passed through to Item
- * @return {React.ReactElement} HTMLElement for Item
+ * @returns {React.ReactElement} HTMLElement for Item
  */
 const Item = (props: any): React.ReactElement => {
   const {sx, ...other} = props;
@@ -20,7 +20,8 @@ const Item = (props: any): React.ReactElement => {
 
 /**
  * Handles notes
- * @return {React.ReactElement} HTMLElement for Item
+ *
+ * @returns {React.ReactElement} HTMLElement for Item
  */
 const OutlinedCard = (): React.ReactElement => {
   const [isOpen, setOpen] = React.useState(false);

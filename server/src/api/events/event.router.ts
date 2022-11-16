@@ -3,16 +3,16 @@ import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
 import {pool} from '../db';
 import {checkIn,
-        getEventById,
-        getEventByName,
-        getActiveEventsAndInstances,
-        createEvent,
-        createShowing,
-        updateEvent,
-        archivePlays,
-        getActiveEvents,
-        updateInstances,
-        getInstanceById} from './event.service';
+  getEventById,
+  getEventByName,
+  getActiveEventsAndInstances,
+  createEvent,
+  createShowing,
+  updateEvent,
+  archivePlays,
+  getActiveEvents,
+  updateInstances,
+  getInstanceById} from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
 
@@ -41,7 +41,11 @@ eventRouter.get('/search', async (req: Request, res: Response) => {
 eventRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const data = await getEventById(req.params);
-    const code = data.status.success ? 200 : 404;
+    let code = data.status.success ? 200 : 404;
+    if(code === 200 && data.data.length === 0){
+      code = 404;
+      data.status.success = false;
+    }
     res.status(code).send(data);
   } catch (error) {
     res.sendStatus(500);
@@ -107,7 +111,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     try {
       // Possible breaking change custname -> firstname, lastname
       const query = `
-                    INSERT INTO 
+                    INSERT INTO
                       contacts (
                           firstname,
                           lastname, 
@@ -117,7 +121,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                           newsletter, 
                           donorbadge, 
                           seatingaccom)
-                    VALUES 
+                    VALUES
                       ($1, $2, $3, $4, $5, $6, $7, $8);`;
       await pool.query(
           query,
@@ -148,16 +152,16 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       ];
       // Possible breaking change custname -> firstname, lastname
       const query = `
-                    UPDATE 
+                    UPDATE
                       contacts
-                    SET 
+                    SET
                       firstname = $2,
                       lastname = $3,
                       phone = $4, 
                       address = $5,
                       newsletter = $6,
                       seatingaccom = $7
-                    WHERE 
+                    WHERE
                       email=$1;`;
       await pool.query(query, values);
     } catch (error: any) {
@@ -396,7 +400,10 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
 ) => {
   try {
     const resp = await updateInstances(req.body, req.params);
-    const code = resp.status.success ? 200 : 404;
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+    }
     res.status(code).send(resp);
   } catch (error: any) {
     res.status(500).send(error.message);
@@ -415,7 +422,11 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
   try {
     // playid
     const plays = await archivePlays(req.params);
-    const code = plays.status.success ? 200 : 404;
+    let code = plays.status.success ? 200 : 404;
+    if(code === 200 && plays.data.length === 0){
+      code = 404;
+      plays.status.success = false;
+    }
     res.status(code).send(plays);
   } catch (error: any) {
     res.status(500).send(error.message);

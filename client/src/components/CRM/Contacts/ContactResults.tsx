@@ -9,7 +9,10 @@ import {useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 /**
  * Display the results of contacts search
- * @return {ReactElement}
+ *
+ * @param root0
+ * @param root0.data
+ * @returns {ReactElement}
  */
 const ContactResults = ({
   data,
@@ -19,7 +22,11 @@ const ContactResults = ({
   if (!data) return <div>Empty</div>;
   const {getAccessTokenSilently} = useAuth0();
 
-  async function deleteEvent(showId: Number) {
+  /**
+   *
+   * @param showId
+   */
+  async function deleteEvent(showId: number) {
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',

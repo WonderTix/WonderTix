@@ -7,11 +7,12 @@ import ShowingInputContainer from './showingInputContainer';
 
 /**
  * Used to help process shows correctly
+ *
  * @param {Showing[]} showsData
  * @param {Showing} show
- * @param {function} addShowData
+ * @param {Function} addShowData
  * @param {Showing[]} shows
- * @param {function} updateShows
+ * @param {Function} updateShows
  * @param {number} eventid
  */
 interface ShowListControllerProps{
@@ -19,12 +20,13 @@ interface ShowListControllerProps{
    addShowData: (show: Showing) => void,
    updateShows: (shows:Showing[]) => void,
    eventid: number,
-};
+}
 
 /**
  * The shows handler
+ *
  * @param {ShowListControllerProps} showsData, addShowData, updateShows, eventid
- * @return {ReactElement} and {ShowingInputContainer}
+ * @returns {ReactElement} and {ShowingInputContainer}
  */
 const ShowListController = ({showsData, addShowData, updateShows, eventid}: ShowListControllerProps) => {
   const [shows, addShow] = useState(showsData ? showsData: []);
