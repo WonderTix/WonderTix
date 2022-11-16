@@ -75,7 +75,7 @@ export const create = async (r: any): Promise<response> => {
       r.seatingaccom, 
       r.newsletter, 
       r.vip, 
-      r.volunteer_list],
+      r.volunteerlist],
   };
   return await buildResponse(myQuery, 'POST');
 };

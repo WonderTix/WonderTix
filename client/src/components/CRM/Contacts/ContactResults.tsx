@@ -203,7 +203,7 @@ export const contactForm = (data: any): React.ReactElement => {
       donorbadge: Donorbadge,
       seatingaccom: Seatingaccom,
       vip: VIP,
-      volunteer_list: false,
+      volunteerlist: false,
     };
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
