@@ -136,17 +136,25 @@ export const fetchTicketingData = createAsyncThunk(
  * @param {string} code - the discount code itself
  * @param {number} amount - A set number of dollars off
  * @param {number} percent - A percentage to be taken off
- * @param {Date} startDate - date format
- * @param {Date} endDate - date format
+ * @param {number} startdate - date format
+ * @param {number} enddate - date format
  */
 export interface Discount {
   discountid: number,
   code: string,
   amount: number,
   percent: number,
-  startDate: Date,
-  endDate: Date,
+  startdate: number,
+  enddate: number,
 }
+
+const convertedDate = (dateString: number) => {
+  const year = dateString.toString().substring(0, 4);
+  const month = dateString.toString().substring(4, 6);
+  const day = dateString.toString().substring(6);
+  const newDate = new Date(year + '-' + month + '-' + day);
+  return (newDate);
+};
 
 /**
  * Fetches all the data, and gets all the api routes then prints to console
@@ -168,7 +176,12 @@ export const fetchDiscountData = createAsyncThunk(
       console.log('Discount returned:', discountArray[0]);
 
       // Check date (after startDate and before EndDate)
-      // Check number of uses limit
+      const now = new Date(Date.now());
+      const end = convertedDate(discountArray[0].enddate);
+      if (end < now) console.log('EndDate is before now!');
+      const start = convertedDate(discountArray[0].enddate);
+      if (start > now) console.log('StartDate is after now!');
+      // Check number of uses limit (???)
       // Check min tickets
       // Check min events
 
