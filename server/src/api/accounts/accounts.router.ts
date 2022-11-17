@@ -10,7 +10,6 @@ accountsRouter.use(checkScopes);
 
 accountsRouter.get('/', async (req: Request, res: Response) => {
   try {
-    console.log(req.query);
     const resp = await findAll(req.query);
     const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
@@ -32,7 +31,11 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
 accountsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
-    const code = resp.status.success ? 200 : 404;
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+      resp.status.success = false;
+    }
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -52,8 +55,12 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
 accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
-    const code = resp.status.success ? 204 : 404;
-    res.sendStatus(code);
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+      resp.status.success = false;
+    }
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -61,8 +68,12 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
 
 accountsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
-    const resp = await update(req);
-    const code = resp.status.success ? 200 : 404;
+    const resp = await update(req.body, req.params.id);
+    let code = resp.status.success ? 200 : 404;
+    if(code === 200 && resp.data.length === 0){
+      code = 404;
+      resp.status.success = false;
+    }
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);

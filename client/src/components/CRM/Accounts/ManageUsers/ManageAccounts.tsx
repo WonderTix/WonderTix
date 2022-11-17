@@ -9,7 +9,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {DataGrid, GridColumns, GridCellParams, GridCellEditCommitParams} from '@mui/x-data-grid';
 import {useEffect, useState} from 'react';
 import {useAppDispatch} from '../../../Ticketing/app/hooks';
@@ -18,7 +18,8 @@ import {useAuth0} from '@auth0/auth0-react';
 
 /**
  * Manage Users accounts, reset password, delete account and add new account
- * @return {ReactElement}
+ *
+ * @returns {ReactElement}
  */
 export default function ManageAccounts() {
 /** @param {any} rows - Accounts table rows */
@@ -108,7 +109,7 @@ export default function ManageAccounts() {
     }
   };
 
-  const editUser = async (userid: number, user: {}) => {
+  const editUser = async (userid: number, user: Record<string, unknown>) => {
     /** @param {string} token - AccessToken */
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
@@ -199,5 +200,5 @@ export default function ManageAccounts() {
 
     </div>
   );
-};
+}
 

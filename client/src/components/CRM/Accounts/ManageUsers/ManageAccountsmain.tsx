@@ -4,7 +4,7 @@ import ManageAccounts from './ManageAccounts';
 import Navigation from '../../Navigation';
 
 /**
- * @return {object} ManageAccountsmain - has Navigation
+ * @returns {object} ManageAccountsmain - has Navigation
  *  and ManageAccounts to reroute to other components
  */
 const ManageAccountsmain = () => {

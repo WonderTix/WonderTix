@@ -3,7 +3,7 @@ import {Box} from '@mui/material';
 
 /**
  * @param {any} props
- * @return {React.ReactElement} HTML Element for Panel
+ * @returns {React.ReactElement} HTML Element for Panel
  */
 const Panel = (props: any): React.ReactElement => {
   const {children, value, index, ...other} = props;

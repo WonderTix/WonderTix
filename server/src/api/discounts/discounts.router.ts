@@ -2,8 +2,10 @@ import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {
   getDiscountCodes,
+  checkDiscountCode,
   addDiscountCode,
   deleteDiscountCode,
+  alterDiscountCode,
 } from './discounts.service';
 
 /**
@@ -15,22 +17,41 @@ import {
 export const discountsRouter = Router();
 
 /**
- * route: GET /count
+ * route: GET
  *
  * @type {?}
  */
 
-discountsRouter.get('/', checkJwt, checkScopes, async(
+discountsRouter.get('/', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {
-    try {
-      const codes = await getDiscountCodes();
-      const code = codes.status.success ? 200 : 404;
-      res.status(code).send(codes);
-    } catch (error: any) {
-      res.status(500).send(error.message);
-    }
+  try {
+    const codes = await getDiscountCodes();
+    const code = codes.status.success ? 200 : 404;
+    res.status(code).send(codes);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
+
+/**
+ * route: GET /id
+ *
+ * @type {?}
+ */
+discountsRouter.get('/search', async (
+    req: Request,
+    res: Response,
+) => {
+  try {
+    const codes = await checkDiscountCode(req.query.code);
+    const code = codes.status.success ? 200 : 404;
+    res.status(code).send(codes);
+  } catch (error:any) {
+    res.status(500).send(error.message);
+  }
 });
 
 
@@ -40,18 +61,43 @@ discountsRouter.get('/', checkJwt, checkScopes, async(
  * @type {?}
  */
 
-discountsRouter.post('/', checkJwt, checkScopes, async(
+discountsRouter.post('/', checkJwt, checkScopes, async (
+    req: Request,
+    res: Response,
+) => {
+  try {
+    const newCode = await addDiscountCode(req.body);
+    const code = newCode.status.success ? 200 : 404;
+    res.status(code).send(newCode);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
+/**
+ * route: PUT /
+ *
+ * @type {?}
+ */
+
+discountsRouter.put('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {
     try {
-      const newCode = await addDiscountCode(req.body);
-      const code = newCode.status.success ? 200 : 404;
-      res.status(code).send(newCode);
+      const resp = await alterDiscountCode(req.params.id);
+      let code = resp.status.success ? 200 : 404;
+      if(code === 200 && resp.data.length === 0){
+        code = 404;
+        resp.status.success = false;
+      }
+      res.status(code).send(resp);
     } catch (error: any) {
       res.status(500).send(error.message);
     }
-});
+  }
+);
+
 
 /**
  * route: DELETE /
@@ -59,14 +105,18 @@ discountsRouter.post('/', checkJwt, checkScopes, async(
  * @type {?}
  */
 
-discountsRouter.put('/:id', checkJwt, checkScopes, async(
+discountsRouter.delete('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
 ) => {
     try {
-      const oldCode = await deleteDiscountCode(req.params.id);
-      const code = oldCode.status.success ? 200 : 404;
-      res.status(code).send(oldCode);
+      const resp = await deleteDiscountCode(req.params.id);
+      let code = resp.status.success ? 200 : 404;
+      if(code === 200 && resp.data.length === 0){
+        code = 404;
+        resp.status.success = false;
+      }
+      res.status(code).send(resp);
     } catch (error: any) {
       res.status(500).send(error.message);
     }

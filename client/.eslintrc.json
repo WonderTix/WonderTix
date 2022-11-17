@@ -4,8 +4,11 @@
         "es2021": true
     },
     "extends": [
+        "eslint:recommended",
+        "google",
         "plugin:react/recommended",
-        "google"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:jsdoc/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -17,10 +20,31 @@
     },
     "plugins": [
         "react",
+        "jsdoc",
         "@typescript-eslint"
     ],
     "rules": {
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": "error"
+        "@typescript-eslint/no-unused-vars": "off",
+        "linebreak-style": 0,
+        "valid-jsdoc": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "react/no-unknown-property": "off",
+
+        // These jsdoc rules are not applicable for documenting the react code
+        "jsdoc/check-param-names": 0,
+        "jsdoc/require-param-description": 0,
+        "jsdoc/require-param-name": 0,
+        "jsdoc/require-returns": 0,
+        "jsdoc/require-returns-type": 0,
+        "jsdoc/require-returns-check": 0,
+        "jsdoc/require-returns-description": 0,
+        "jsdoc/valid-types": 0,
+        "jsdoc/no-undefined-types": 0
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
     }
 }

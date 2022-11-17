@@ -32,6 +32,7 @@ import {tasksRouter} from './api/tasks/tasks.router';
 import {taskNotesRouter} from './api/task_notes/task_notes.router';
 import {ticketRouter} from './api/tickets/ticket.router';
 import {discountsRouter} from './api/discounts/discounts.router';
+import {reportingRouter} from './api/reporting/reporting.router';
 import swaggerUi from 'swagger-ui-express';
 import yamljs from 'yamljs';
 import {resolveRefs} from 'json-refs';
@@ -40,26 +41,26 @@ import {resolveRefs} from 'json-refs';
 /**
  * Return JSON object. Source: https://github.com/chuve/swagger-multi-file-spec
  * @param {array | object} root
- * @returns {Promise.<JSON>}
+ * @return {Promise.<JSON>}
  */
 const multiFileSwagger = (root: any) => {
   const options = {
-    filter: ["relative", "remote"],
+    filter: ['relative', 'remote'],
     loaderOptions: {
-      processContent: function (res: any, callback: any) {
+      processContent: function(res: any, callback: any) {
         callback(null, yamljs.parse(res.text));
       },
     },
   };
 
   return resolveRefs(root, options).then(
-    function (results: any) {
-      console.log(results);
-      return results.resolved;
-    },
-    function (err: any) {
-      console.log(err.stack);
-    }
+      function(results: any) {
+        console.log(results);
+        return results.resolved;
+      },
+      function(err: any) {
+        console.log(err.stack);
+      },
   );
 };
 
@@ -105,12 +106,13 @@ const createServer = async () => {
   app.use('/api/tickets', ticketRouter);
   app.use('/api/doorlist', doorlistRouter);
   app.use('/api/discounts', discountsRouter);
+  app.use('/api/reporting', reportingRouter);
   app.use('/webhook', orderRouter);
 
   app.get('/', (_req, res) => res.send('Hello World.'));
 
   const swaggerDocument = await multiFileSwagger(
-    yamljs.load(path.resolve(__dirname, "./schema/test.yaml"))
+      yamljs.load(path.resolve(__dirname, './schema/test.yaml')),
   );
 
   console.log(swaggerDocument);
@@ -125,14 +127,13 @@ const createServer = async () => {
             ),
             cert: fs.readFileSync(path.join(__dirname, '../localhost.pem')),
           }, app);
-
-}
+};
 
 createServer().then((server) => {
   const port = 8000;
   server.listen(port);
   console.log(`Listening on port ${port}`);
 })
-.catch((err) => {
-  console.log(err.stack);
-});
+    .catch((err) => {
+      console.log(err.stack);
+    });

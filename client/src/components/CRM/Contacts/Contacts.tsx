@@ -6,7 +6,8 @@ import ContactResults from './ContactResults';
 import {useAuth0} from '@auth0/auth0-react';
 /**
  * handle searching for contact information
- * @return {ReactElement}
+ *
+ * @returns {ReactElement}
  */
 const Contacts = (): React.ReactElement => {
   const params = useParams();

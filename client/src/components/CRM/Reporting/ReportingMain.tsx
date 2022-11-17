@@ -3,7 +3,7 @@ import Reporting from './Reporting';
 import Navigation from '../Navigation';
 
 /**
- * @return {object} ReportingMain - has Navigation
+ * @returns {object} ReportingMain - has Navigation
  *  and Reporting to reroute to other components
  */
 const ReportingMain=() =>{

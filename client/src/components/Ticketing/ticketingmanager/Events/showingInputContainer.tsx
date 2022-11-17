@@ -5,11 +5,12 @@ import {Showing} from '../../../../interfaces/showing.interface';
 
 /**
  * Used to map props to input container correctly
+ *
  * @module
  * @param {initialData} Showing
  * @param {number} id
- * @param {function} addShow
- * @param {function} deleteShow
+ * @param {Function} addShow
+ * @param {Function} deleteShow
  */
 export interface MapPropsToShowingInputContainer {
   initialData?: Showing;

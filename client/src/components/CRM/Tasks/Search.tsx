@@ -6,7 +6,7 @@ import {useAuth0} from '@auth0/auth0-react';
 
 /**
  * @param {any} props Props to be passed to SearchBar
- * @return {React.ReactElement} HTMLElement for Searchbar
+ * @returns {React.ReactElement} HTMLElement for Searchbar
  */
 const SearchBar = (props: any): React.ReactElement => {
   const params = useParams();
