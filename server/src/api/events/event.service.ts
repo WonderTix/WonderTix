@@ -326,7 +326,7 @@ export const createEvent = async (params: any): Promise<response> => {
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
     values: [
-      params.seasonid_fk,
+      params.seasonIdFk,
       params.eventName,
       params.eventDesc,
       params.seasonticketeligible,
@@ -409,7 +409,6 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
     }
     const date = showing.eventdate.split('-');
     const dateAct = date.join('');
-    console.log(dateAct);
     const {rows} = await pool.query(query, [
       showing.eventid,
       dateAct,
@@ -418,7 +417,6 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       showing.availableseats,
       showing.ispreview,
     ]);
-    console.log(rows);
     toReturn.push(showing);
     rowCount += 1;
     res.push({...rows[0], ticketTypeId: showing.ticketTypeId,

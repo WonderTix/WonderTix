@@ -44,7 +44,7 @@ const CreateEventPage = () => {
       scope: 'admin',
     });
     const {imageUrl, eventName, eventDesc, showings} = formData;
-    const seasonId = 7;
+    const seasonIdFk = 7;
 
     const createPlayRes = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
       credentials: 'include',
@@ -53,15 +53,13 @@ const CreateEventPage = () => {
         'Authorization': `Bearer ${token}`,
       },
       method: 'POST',
-      body: JSON.stringify({seasonId, eventName, eventDesc, imageUrl}),
+      body: JSON.stringify({seasonIdFk, eventName, eventDesc, imageUrl}),
     });
 
     if (createPlayRes.ok) {
       const eventData = await createPlayRes.json();
       const id = eventData.data[0].eventid;
-      console.log(id);
       const showingdata = showings.map(formatShowingData(id));
-      console.log(showingdata);
       const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
         headers: {

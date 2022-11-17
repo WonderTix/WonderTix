@@ -155,11 +155,9 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
         showings[index] = show;
       } else {
         newShowList.push(show);
-        // setShowings(newShowList);
         setShowings((showings) => [...showings, ...newShowList]);
       }
     } else {
-      // setShowings((showings) => [...showings, show]);
       showings.push(show);
     }
     console.log(showings);
@@ -245,7 +243,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} updateShows={updateShows} deleteShowing={deleteShowing} eventid={def.eventID}/>
+                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} deleteShowing={deleteShowing} eventid={def.eventID}/>
               </div>
             </div>
           </div>

@@ -18,7 +18,6 @@ import ShowingInputContainer from './showingInputContainer';
 interface ShowListControllerProps{
    showsData?: Showing[],
    addShowData: (show: Showing) => void,
-   updateShows: (shows:Showing[]) => void,
    deleteShowing: (event: Event) => void,
    eventid: number,
 }
@@ -29,7 +28,7 @@ interface ShowListControllerProps{
  * @param {ShowListControllerProps} showsData, addShowData, updateShows, eventid
  * @returns {ReactElement} and {ShowingInputContainer}
  */
-const ShowListController = ({showsData, addShowData, updateShows, deleteShowing, eventid}: ShowListControllerProps) => {
+const ShowListController = ({showsData, addShowData, deleteShowing, eventid}: ShowListControllerProps) => {
   const [shows, addShow] = useState(showsData ? showsData: []);
   let showingNum = 0;
   // SHOWINGS ACTIONS:
@@ -54,25 +53,12 @@ const ShowListController = ({showsData, addShowData, updateShows, deleteShowing,
     };
     addShow((shows) => [...shows, show]);
     console.log(shows);
-    // updateShows(newList);
   };
 
-  // Kinda works
   const deleteShowingBox = (event) => {
     const toRemove = event.target.parentElement.parentElement;
     console.log(toRemove);
     toRemove.remove();
-    // const newList = shows.filter((o, i) => index !== i);
-    // addShow(newList);
-    /*
-    const oldList = [...shows];
-    const newList = oldList.splice(index, 1);
-    const why = shows.splice(index, 1);
-    const newList = oldList.filter((shows) => {
-      return shows.id != id;
-    });
-    console.log(oldList);
-    */
     console.log(shows);
     deleteShowing(event);
   };
