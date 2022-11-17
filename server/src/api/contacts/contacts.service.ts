@@ -27,7 +27,7 @@ export const findAll = async (params: any): Promise<response> => {
         '%' + params.email + '%' : params.email,
       params.address !== undefined ?
         '%' + params.address + '%' : params.address,
-      params.phone !== undefined ?
+      params.phone !== undefined ? 
         '%' + params.phone + '%' : params.phone,
       params.donorbadge,
       params.seatingaccom,
@@ -51,7 +51,7 @@ export const findByName = async (firstname: string, lastname: string): Promise<r
 
 export const find = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'SELECT * FROM contacts WHERE customerid = $1',
+    text: 'SELECT * FROM contacts WHERE contactid = $1;',
     values: [id],
   };
   return await buildResponse(myQuery, 'GET');
@@ -60,27 +60,43 @@ export const find = async (id: string): Promise<response> => {
 export const create = async (r: any): Promise<response> => {
   const myQuery = {
     text: `
-      INSERT INTO contacts
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING *
-      `,
-    values: [r.firstname,
-      r.lastname,
-      r.email,
-      r.custaddress,
-      r.phone,
-      r.donorbadge,
-      r.seatingaccom,
-      r.newsletter,
-      r.vip,
-      r.volunteer_list],
+      INSERT INTO 
+        contacts (firstname, lastname, email, address, phone, donorbadge, seatingaccom, newsletter, vip, volunteerlist)
+      VALUES 
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING *;`,
+    values: [
+      r.firstname, 
+      r.lastname, 
+      r.email, 
+      r.address, 
+      r.phone, 
+      r.donorbadge, 
+      r.seatingaccom, 
+      r.newsletter, 
+      r.vip, 
+      r.volunteerlist],
   };
   return await buildResponse(myQuery, 'POST');
 };
 
 export const remove = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'DELETE FROM contacts WHERE customerid = $1;',
+    text: `
+          UPDATE contacts 
+          SET 
+            firstname = null,
+            lastname = null,
+            email = null,
+            address = null,
+            phone = null,
+            donorbadge = null,
+            seatingaccom = null,
+            vip = null,
+            volunteerlist = null,
+            newsletter = null
+          WHERE 
+            contactid = $1;`,
     values: [id],
   };
   return await buildResponse(myQuery, 'DELETE');
@@ -104,9 +120,18 @@ export const update = async (r:any): Promise<response> => {
       WHERE contactid = $11
       RETURNING *;
       `,
-    values: [r.body.firstname, r.body.lastname, r.body.email,
-      r.body.custaddress, r.body.phone, r.body.donorbadge, r.body.seatingaccom,
-      r.body.vip, r.body.volunteerlist, r.body.newsletter, r.params.id],
+    values: [
+      r.body.firstname, 
+      r.body.lastname, 
+      r.body.email,
+      r.body.address, 
+      r.body.phone,  
+      r.body.donorbadge, 
+      r.body.seatingaccom,
+      r.body.vip, 
+      r.body.volunteerlist, 
+      r.body.newsletter, 
+      r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');
 };
