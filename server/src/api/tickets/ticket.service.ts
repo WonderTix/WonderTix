@@ -35,6 +35,28 @@ export const getAvailableTickets = async (): Promise<response> => {
   return await buildResponse(myQuery, 'GET');
 };
 
+export const toTicket = (row:any): Ticket => {
+  const {eventdate, starttime, ...rest} = row;
+  const [hour, min] = starttime.split(':');
+  const date = parseIntToDate(eventdate);
+  date.setHours(hour, min);
+  return {
+    ...rest,
+    date: date.toJSON(),
+    eventid: row.eventid.toString(),
+    ticket_price: parseMoneyString(row.ticket_price),
+    concession_price: parseMoneyString(row.concession_price),
+  };
+};
+
+export const reduceToTicketState = (res: any, t: Ticket) => {
+  const id = t.event_instance_id;
+  const {byId, allIds} = res;
+  return allIds.includes(id) ?
+    res :
+    {byId: {...byId, [id]: t}, allIds: [...allIds, id]};
+};
+
 
 //
 export const getValidTicketTypes = async (): Promise<response> => {
@@ -59,7 +81,12 @@ export const getValidTicketTypes = async (): Promise<response> => {
 //
 export const getAllTicketTypes = async (): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM tickettype;`,
+    text: `
+          SELECT * 
+          FROM 
+            tickettype
+          ORDER BY
+            tickettypeid ASC;`,
   };
   return await buildResponse(myQuery, 'GET');
 };
@@ -82,30 +109,7 @@ export const setDefaultTicketForEvent = async (params: any): Promise<response> =
   };
   return buildResponse(myQuery, 'POST')
 };
- 
 
-
-export const toTicket = (row:any): Ticket => {
-  const {eventdate, starttime, ...rest} = row;
-  const [hour, min] = starttime.split(':');
-  const date = parseIntToDate(eventdate);
-  date.setHours(hour, min);
-  return {
-    ...rest,
-    date: date.toJSON(),
-    eventid: row.eventid.toString(),
-    ticket_price: parseMoneyString(row.ticket_price),
-    concession_price: parseMoneyString(row.concession_price),
-  };
-};
-
-export const reduceToTicketState = (res: any, t: Ticket) => {
-  const id = t.event_instance_id;
-  const {byId, allIds} = res;
-  return allIds.includes(id) ?
-    res :
-    {byId: {...byId, [id]: t}, allIds: [...allIds, id]};
-};
 
 // Function to create a new ticket type used by
 export const createTicketType = async (params: any): Promise<response> => {
@@ -130,7 +134,7 @@ export const createTicketType = async (params: any): Promise<response> => {
 };
 
 
-// Function for removing a ticket type
+// Function for updating a ticket type
 export const updateTicketType = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
@@ -168,34 +172,3 @@ export const removeTicketType = async (id: string): Promise<response> => {
   return await buildResponse(myQuery, 'DELETE');
 };
 
-
-//
-// **BROKEN** Will require refactor and DB update for
-//  eventinstance: defaulttickettype
-//
-export const getTickets = async (): Promise<response> => {
-  const myQuery = {
-    text: `
-          SELECT 
-            ev.id as event_id,
-            ei.id as event_instance_id,
-            eventname,
-            eventdescription,
-            eventdate,
-            starttime,
-            totalseats, 
-            availableseats,
-            price,
-            concessions
-          FROM events ev
-          LEFT JOIN eventinstances ei 
-            ON ev.id=ei.eventid
-          JOIN linkedtickets lt 
-            ON lt.event_instance_id=ei.id
-          JOIN tickettype tt 
-            ON lt.ticket_type=tt.id
-          WHERE 
-            ev.id=$1 AND isseason=false;`,
-  };
-  return await buildResponse(myQuery, 'GET');
-};
