@@ -35,13 +35,26 @@ export const getAvailableTickets = async (): Promise<response> => {
   return await buildResponse(myQuery, 'GET');
 };
 
+
 //
 export const getValidTicketTypes = async (): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM tickettype WHERE deprecated = false;`,
+    text: `
+      SELECT 
+        tickettypeid id,
+        description,
+        price,
+        concessions
+      FROM 
+        tickettype 
+      WHERE 
+        deprecated = false
+      ORDER BY
+        tickettypeid ASC;`,
   };
   return await buildResponse(myQuery, 'GET');
 };
+
 
 //
 export const getAllTicketTypes = async (): Promise<response> => {
@@ -50,6 +63,7 @@ export const getAllTicketTypes = async (): Promise<response> => {
   };
   return await buildResponse(myQuery, 'GET');
 };
+
 
 //
 export const setDefaultTicketForEvent = async (params: any): Promise<response> => {
@@ -114,6 +128,30 @@ export const createTicketType = async (params: any): Promise<response> => {
   console.log(params);
   return buildResponse(myQuery, 'POST');
 };
+
+
+// Function for removing a ticket type
+export const updateTicketType = async (params: any): Promise<response> => {
+  const myQuery = {
+    text: `
+          UPDATE 
+            tickettype 
+          SET
+            description = $2,
+            price = $3,
+            concessions = $4
+          WHERE 
+            tickettypeid = $1;`,
+    values: [
+      params.id,
+      params.description,
+      params.price,
+      params.concessions],
+  };
+  return await buildResponse(myQuery, 'UPDATE');
+};
+
+
 
 // Function for removing a ticket type
 export const removeTicketType = async (id: string): Promise<response> => {

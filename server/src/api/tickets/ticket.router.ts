@@ -14,55 +14,55 @@ export const ticketRouter = Router();
 //
 // Responds with tickets subset of Redux state
 
-ticketRouter.get('/', async (req: Request, res: Response) => {
-  try {
-    const tickets = await ticketUtils.getAvailableTickets();
-    const code = tickets.status.success ? 200 : 404;
-    res.status(code).send(tickets);
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
-  }
-});
-
-// ticketRouter.get('/', async (req, res) => {
+// ticketRouter.get('/', async (req: Request, res: Response) => {
 //   try {
-//     const qs = `
-//                 SELECT
-//                   ei.eventinstanceid event_instance_id,
-//                   ei.eventid_fk eventid,
-//                   ei.eventdate,
-//                   ei.eventtime starttime,
-//                   ei.totalseats,
-//                   ei.availableseats,
-//                   tt.description AS admission_type,
-//                   tt.price AS ticket_price,
-//                   tt.concessions AS concession_price
-//                 FROM
-//                   eventtickets et
-//                   JOIN eventinstances ei 
-//                     ON et.eventinstanceid_fk = ei.eventinstanceid
-//                   JOIN tickettype tt 
-//                     ON et.tickettypeid_fk = tt.tickettypeid
-//                 WHERE 
-//                   ei.availableseats > 0
-//                 AND 
-//                   ei.salestatus = true;`;
-//     const queryRes = await pool.query(qs);
-//     res.json(
-//         queryRes.rows
-//             .map(ticketUtils.toTicket)
-//             .reduce(ticketUtils.reduceToTicketState, {
-//               byId: {},
-//               allIds: [],
-//             } as TicketsState),
-//     );
-//     console.log('# tickets:', queryRes.rowCount);
-//   } catch (err: any) {
-//     console.error(err.message);
+//     const tickets = await ticketUtils.getAvailableTickets();
+//     const code = tickets.status.success ? 200 : 404;
+//     res.status(code).send(tickets);
+//   } catch (error) {
+//     console.error(error);
 //     res.sendStatus(500);
 //   }
 // });
+
+ticketRouter.get('/', async (req, res) => {
+  try {
+    const qs = `
+                SELECT
+                  ei.eventinstanceid event_instance_id,
+                  ei.eventid_fk eventid,
+                  ei.eventdate,
+                  ei.eventtime starttime,
+                  ei.totalseats,
+                  ei.availableseats,
+                  tt.description AS admission_type,
+                  tt.price AS ticket_price,
+                  tt.concessions AS concession_price
+                FROM
+                  eventtickets et
+                  JOIN eventinstances ei 
+                    ON et.eventinstanceid_fk = ei.eventinstanceid
+                  JOIN tickettype tt 
+                    ON et.tickettypeid_fk = tt.tickettypeid
+                WHERE 
+                  ei.availableseats > 0
+                AND 
+                  ei.salestatus = true;`;
+    const queryRes = await pool.query(qs);
+    res.json(
+        queryRes.rows
+            .map(ticketUtils.toTicket)
+            .reduce(ticketUtils.reduceToTicketState, {
+              byId: {},
+              allIds: [],
+            } as TicketsState),
+    );
+    console.log('# tickets:', queryRes.rowCount);
+  } catch (err: any) {
+    console.error(err.message);
+    res.sendStatus(500);
+  }
+});
 
 
 // Get valid ticket types
@@ -76,16 +76,6 @@ ticketRouter.get('/types', async (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 });
-// ticketRouter.get('/types', async (req, res) => {
-//   try {
-//     const query = 'SELECT * FROM tickettype;';
-//     const getAllTickets = await pool.query(query);
-//     res.json(getAllTickets.rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.sendStatus(500);
-//   }
-// });
 
 
 //
@@ -127,6 +117,17 @@ ticketRouter.post('/newType', checkJwt, checkScopes, async (req, res) => {
     const newTicket = await ticketUtils.createTicketType(req.body);
     const code = newTicket.status.success ? 200 : 404;
     res.status(code).send(newTicket);
+  } catch (error: any) {
+    res.sendStatus(500).send(error.message);
+  }
+});
+
+// POST /api/tickets/updateType
+ticketRouter.post('/updateType', checkJwt, checkScopes, async (req, res) => {
+  try {
+    const updatedTicket = await ticketUtils.updateTicketType(req.body);
+    const code = updatedTicket.status.success ? 200 : 404;
+    res.status(code).send(updatedTicket);
   } catch (error: any) {
     res.sendStatus(500).send(error.message);
   }
