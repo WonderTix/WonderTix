@@ -136,8 +136,11 @@ export const fetchTicketingData = createAsyncThunk(
  * @param {string} code - the discount code itself
  * @param {number} amount - A set number of dollars off
  * @param {number} percent - A percentage to be taken off
- * @param {number} startdate - date format
- * @param {number} enddate - date format
+ * @param {number} startdate - yyyymmdd format
+ * @param {number} enddate - yyyymmdd format
+ * @param {number} min_tickets - The minimum number of tickets for this discount to apply
+ * @param {number} min_events - The minimum number of events for this discount to apply
+ * @param {number} usagelimit - The maximum number of times this discount can be used
  */
 export interface Discount {
   discountid: number,
@@ -146,6 +149,9 @@ export interface Discount {
   percent: number,
   startdate: number,
   enddate: number,
+  min_tickets: number,
+  min_events: number,
+  usagelimit: number,
 }
 
 /**
@@ -168,9 +174,6 @@ export const fetchDiscountData = createAsyncThunk(
       console.log('Discount returned:', discountArray[0]);
 
       // Check date (after startDate and before EndDate)
-      // Check min tickets
-      // Check min events
-
       const nowDate = new Date(Date.now());
       const now = Number(nowDate.getFullYear().toString() + (nowDate.getMonth()+1).toString() + nowDate.getDate().toString());
       console.log('Current date in db format:', now);
@@ -180,14 +183,21 @@ export const fetchDiscountData = createAsyncThunk(
       console.log('Start:', start);
       console.log('End:', end);
 
-      if (end < now) {
+      if (end && (end < now)) {
         console.log('EndDate is before now!');
       }
-      if (start > now) {
+      if (start && (start > now)) {
         console.log('StartDate is after now!');
       }
 
+      // Check min tickets
+      console.log('Min tickets:', discountArray[0].min_tickets);
+
+      // Check min events
+      console.log('Min events:', discountArray[0].min_events);
+
       // Check number of uses limit (???)
+      console.log('Usage limit:', discountArray[0].usagelimit);
 
       return {discount};
     },
