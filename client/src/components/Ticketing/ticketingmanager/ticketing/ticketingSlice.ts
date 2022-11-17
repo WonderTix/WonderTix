@@ -148,14 +148,6 @@ export interface Discount {
   enddate: number,
 }
 
-const convertedDate = (dateString: number) => {
-  const year = dateString.toString().substring(0, 4);
-  const month = dateString.toString().substring(4, 6);
-  const day = dateString.toString().substring(6);
-  const newDate = new Date(year + '-' + month + '-' + day);
-  return (newDate);
-};
-
 /**
  * Fetches all the data, and gets all the api routes then prints to console
  * @module
@@ -176,14 +168,26 @@ export const fetchDiscountData = createAsyncThunk(
       console.log('Discount returned:', discountArray[0]);
 
       // Check date (after startDate and before EndDate)
-      const now = new Date(Date.now());
-      const end = convertedDate(discountArray[0].enddate);
-      if (end < now) console.log('EndDate is before now!');
-      const start = convertedDate(discountArray[0].enddate);
-      if (start > now) console.log('StartDate is after now!');
-      // Check number of uses limit (???)
       // Check min tickets
       // Check min events
+
+      const nowDate = new Date(Date.now());
+      const now = Number(nowDate.getFullYear().toString() + (nowDate.getMonth()+1).toString() + nowDate.getDate().toString());
+      console.log('Current date in db format:', now);
+
+      const start = discountArray[0].startdate;
+      const end = discountArray[0].enddate;
+      console.log('Start:', start);
+      console.log('End:', end);
+
+      if (end < now) {
+        console.log('EndDate is before now!');
+      }
+      if (start > now) {
+        console.log('StartDate is after now!');
+      }
+
+      // Check number of uses limit (???)
 
       return {discount};
     },
