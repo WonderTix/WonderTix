@@ -129,7 +129,6 @@ export const fetchTicketingData = createAsyncThunk(
 );
 
 
-// WORKING HERE
 /**
  * Discount code
  * @module
@@ -166,39 +165,16 @@ export const fetchDiscountData = createAsyncThunk(
         percent: discountArray[0].percent,
       };
 
-      console.log('Discount returned:', discount);
-
-      const retDisc: DiscountItem = {
-        code: 'test',
-        amount: 11,
-        percent: 0,
-      };
+      console.log('Discount returned:', discountArray[0]);
 
       // Check date (after startDate and before EndDate)
       // Check number of uses limit
       // Check min tickets
       // Check min events
 
-      // console.log(addDiscountToCart(discount[0]));
-      // console.log(addDiscountToCart(retDisc));
-
-      // return {retDisc};
       return {discount};
     },
 );
-async function fetchDiscountData2(code: string) {
-  const url = process.env.REACT_APP_ROOT_URL + '/api/discounts/search?code=' + code;
-  const discountData = await fetchData(url);
-  const discountArray: Discount[] = discountData.data;
-  const discount: DiscountItem = {
-    code: discountArray[0].code,
-    amount: discountArray[0].amount,
-    percent: discountArray[0].percent,
-  };
-  console.log('Discount returned:', discount);
-
-  return {discount};
-};
 
 /**
  * Shows some information on cartitem
@@ -263,34 +239,6 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
             {...item, qty} :
         item,
   );
-
-
-// const addDiscountReducer: CaseReducer<ticketingState, PayloadAction<{ code: string, amount: number, percent: number }>> = (state, action) => {
-const addDiscountReducer: CaseReducer<ticketingState, PayloadAction<{ code: string }>> = (state, action) => {
-  // const {code, amount, percent} = action.payload;
-  const {code} = action.payload;
-
-
-  fetchDiscountData2(code).then( (response) => {
-    console.log('fetch2 response:', response.discount);
-  });
-
-
-  // Used to return SOMETHING while I get the fetch stuff worked out
-  const retDisc: DiscountItem = {code: 'testingreducer', amount: 5, percent: 11};
-
-  return {
-    ...state,
-    discount: retDisc,
-  };
-
-  /* In theory this should work?
-  return {
-    ...state,
-    discount: fetchDiscountData2(code).then( (result) => {return result.discount;}),
-  };
-  */
-};
 
 
 /** addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer*/
@@ -365,7 +313,6 @@ const ticketingSlice = createSlice({
   reducers: {
     addTicketToCart: addTicketReducer,
     editItemQty: editQtyReducer,
-    addDiscountToCart: addDiscountReducer,
     removeDiscountFromCart: (state) => ({
       ...state,
       discount: INITIAL_STATE.discount,
@@ -429,7 +376,6 @@ export const selectCartTicketCount = (state: RootState): {[key: number]: number}
   );
 export const selectNumInCart = (state: RootState) => state.ticketing.cart.length;
 export const selectCartContents = (state: RootState): CartItem[] => state.ticketing.cart;
-
 export const selectDiscount = (state: RootState): DiscountItem => state.ticketing.discount;
 
 /** filterTicketsReducer - self explanatory */
@@ -529,6 +475,6 @@ export const selectNumAvailable = (state: RootState, ticketid: number) => {
         ticket;
 };
 
-export const {addTicketToCart, editItemQty, addDiscountToCart, removeDiscountFromCart, removeTicketFromCart, removeAllTicketsFromCart} = ticketingSlice.actions;
+export const {addTicketToCart, editItemQty, removeDiscountFromCart, removeTicketFromCart, removeAllTicketsFromCart} = ticketingSlice.actions;
 // @ts-ignore
 export default ticketingSlice.reducer;
