@@ -1,5 +1,7 @@
 import Ticket from '../../interfaces/Ticket';
 import {buildResponse, response, parseIntToDate} from '../db';
+import TicketsState from '../../interfaces/TicketsState';
+import {pool} from '../db';
 
 // remove $ and parse to float
 // this should be done better
@@ -9,33 +11,59 @@ const parseMoneyString = (s: string) => Number.parseFloat(s.replace('$', ''));
 
 //
 export const getAvailableTickets = async (): Promise<response> => {
-  const myQuery = {
-    text: `
-    SELECT
-      ei.eventinstanceid event_instance_id,
-      ei.eventid_fk eventid,
-      ei.eventdate,
-      ei.eventtime starttime,
-      ei.totalseats,
-      ei.availableseats,
-      tt.description AS admission_type,
-      tt.price AS ticket_price,
-      tt.concessions AS concession_price
-    FROM
-      eventinstances ei 
-      JOIN tickettype tt 
-        ON ei.defaulttickettype = tt.tickettypeid
-    WHERE 
-      ei.availableseats > 0
-    AND 
-      ei.salestatus = true
-    ORDER BY
-      ei.eventinstanceid;`,
+
+  let resp: response = {
+    data: <any[]>([]),
+    status: {
+      success: false,
+      message: '',
+    },
   };
-  return await buildResponse(myQuery, 'GET');
+
+  const myQuery = `
+      SELECT
+        ei.eventinstanceid event_instance_id,
+        ei.eventid_fk eventid,
+        ei.eventdate,
+        ei.eventtime starttime,
+        ei.totalseats,
+        ei.availableseats,
+        tt.description AS admission_type,
+        tt.price AS ticket_price,
+        tt.concessions AS concession_price
+      FROM
+        eventtickets et
+        JOIN eventinstances ei 
+          ON et.eventinstanceid_fk = ei.eventinstanceid
+        JOIN tickettype tt 
+          ON et.tickettypeid_fk = tt.tickettypeid
+      WHERE 
+        ei.availableseats > 0
+      AND 
+        ei.salestatus = true;`;
+  const queryRes = await pool.query(myQuery);
+
+  resp = {
+    data: queryRes.rows
+          .map(toTicket)
+          .reduce(reduceToTicketState, {
+            byId: {},
+            allIds: [],
+          } as TicketsState),
+    status: {
+      success: true,
+      message: `${queryRes.rowCount} ${queryRes.rowCount === 1 ?
+        'row' :
+        'rows'
+      } ${'returned'}.`,
+      },
+    };
+
+  return await resp;
 };
 
-export const toTicket = (row:any): Ticket => {
+
+const toTicket = (row:any): Ticket => {
   const {eventdate, starttime, ...rest} = row;
   const [hour, min] = starttime.split(':');
   const date = parseIntToDate(eventdate);
@@ -49,7 +77,7 @@ export const toTicket = (row:any): Ticket => {
   };
 };
 
-export const reduceToTicketState = (res: any, t: Ticket) => {
+const reduceToTicketState = (res: any, t: Ticket) => {
   const id = t.event_instance_id;
   const {byId, allIds} = res;
   return allIds.includes(id) ?
