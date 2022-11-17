@@ -102,8 +102,8 @@ ticketRouter.post('/newType', checkJwt, checkScopes, async (req, res) => {
 });
 
 
-// POST /api/tickets/updateType
-ticketRouter.post('/updateType', checkJwt, checkScopes, async (req, res) => {
+// PUT /api/tickets/updateType
+ticketRouter.put('/updateType', checkJwt, checkScopes, async (req, res) => {
   try {
     const updatedTicket = await ticketUtils.updateTicketType(req.body);
     const code = updatedTicket.status.success ? 200 : 404;
