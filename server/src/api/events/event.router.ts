@@ -290,7 +290,6 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
-    console.log(req.body);
     const showings = await createShowing(req.body);
     const code = showings.status.success ? 200 : 404;
     res.status(code).send(showings);
