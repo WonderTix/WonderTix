@@ -3,6 +3,7 @@ import {
   DataGrid,
   GridColumns,
   GridRenderCellParams,
+  GridRowModel,
   GridRowParams,
 } from '@mui/x-data-grid';
 import Chip from '@mui/material/Chip';
@@ -57,25 +58,22 @@ const TicketTypes = () => {
     },
   ];
 
-  // handles the click event of the edit button
-  const handleEditClick = async (data: GridRowParams) => {
-    console.log('Edit Clicked');
-    console.log('Data: ' + data);
-
-    // Warning: Will need to chnage getValue() to params.row on next MUI release
-    const newName = data.getValue(data.id, 'description');
-    console.log(newName);
-    const newPrice = data.getValue(data.id, 'price');
-    console.log(newPrice);
-
-    // wont work right now:
-    const previousName = ticketTypes[data.id].description;
-    const previousPrice = ticketTypes[data.id].price;
-    if (newName !== previousName || newPrice !== previousPrice) {
-      console.log('Name or Price has changed');
-      // NEXT: make POST request to update the ticket type
-    }
-  };
+  // handles editing a ticket type
+  const handleEditTicket = React.useCallback(
+      async (newRow: GridRowModel, prevRow: GridRowModel) => {
+        console.log('New row: ' + newRow.id + ' ' + newRow.description +
+          ' ' + newRow.price);
+        console.log('Prev row: ' + prevRow.id + ' ' + prevRow.description +
+          ' ' + prevRow.price);
+        if (newRow.description !== prevRow.description ||
+          newRow.price !== prevRow.price) {
+          // NEXT: Also check that ticket name is not empty & price is number
+          console.log('Ticket type has changed');
+          // NEXT: Make PUT request to update ticket type
+        }
+        return newRow;
+      }, [ticketTypes],
+  );
 
   // handles the click event of the delete button
   const handleDeleteClick = async (cell: GridRenderCellParams) => {
@@ -109,6 +107,7 @@ const TicketTypes = () => {
   };
 
   const handleAddTicket = async () => {
+    return;
   };
 
   // Fetches all the ticket types from the API in the backend
@@ -134,13 +133,7 @@ const TicketTypes = () => {
       console.log('Access token --> ' + process.env.REACT_APP_ROOT_URL);
       const jsonRes = await response.json();
 
-      setTicketTypes(() => {
-        for (let i = 0; i < jsonRes.length; ++i) {
-          jsonRes[i].id = i;
-        }
-        console.log(jsonRes);
-        return jsonRes;
-      });
+      setTicketTypes(jsonRes.data);
     } catch (error) {
       console.error(error.message);
     }
@@ -177,8 +170,8 @@ const TicketTypes = () => {
           columns={columns}
           pageSize={10}
           experimentalFeatures={{newEditingApi: true}}
-          onRowEditStop={(data) => handleEditClick(data)}
-          // onCellEditStop={(params: GridCellEditStopParams, event: MuiEvent) => {
+          processRowUpdate={handleEditTicket}
+          onProcessRowUpdateError={(err) => console.log(err)}
           // }}
         />
       </div>
