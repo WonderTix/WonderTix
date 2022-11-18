@@ -18,7 +18,7 @@ import ShowingInputContainer from './showingInputContainer';
 interface ShowListControllerProps{
    showsData?: Showing[],
    addShowData: (show: Showing) => void,
-   deleteShowing: (event: Event) => void,
+   updateShows: (shows:Showing[]) => void,
    eventid: number,
 }
 
@@ -28,9 +28,8 @@ interface ShowListControllerProps{
  * @param {ShowListControllerProps} showsData, addShowData, updateShows, eventid
  * @returns {ReactElement} and {ShowingInputContainer}
  */
-const ShowListController = ({showsData, addShowData, deleteShowing, eventid}: ShowListControllerProps) => {
+const ShowListController = ({showsData, addShowData, updateShows, eventid}: ShowListControllerProps) => {
   const [shows, addShow] = useState(showsData ? showsData: []);
-  let showingNum = 0;
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
@@ -53,23 +52,27 @@ const ShowListController = ({showsData, addShowData, deleteShowing, eventid}: Sh
     };
     addShow((shows) => [...shows, show]);
     console.log(shows);
+    // updateShows(newList);
   };
 
-  const deleteShowingBox = (event) => {
-    const toRemove = event.target.parentElement.parentElement;
-    console.log(toRemove);
-    toRemove.remove();
-    console.log(shows);
-    deleteShowing(event);
+
+  const deleteShowing = (id) => {
+    const oldList = [...shows];
+    const newList = oldList.filter((shows) => {
+      return shows.id != id;
+    });
+    addShow(newList);
+    updateShows(newList);
   };
+
 
   return (
     <>
       {shows.map((element, index) => {
         return (<ShowingInputContainer
           initialData={element}
-          id={element.id} showingNum={showingNum += 1} key={index}
-          addShow={addShowData} deleteShow={deleteShowingBox}/>);
+          id={element.id} key={index}
+          addShow={addShowData} deleteShow={deleteShowing}/>);
       })}
       <div>
         <button

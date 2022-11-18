@@ -19,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {ChangeEvent, useEffect, useReducer} from 'react';
+import React, {useEffect, useReducer} from 'react';
 
 /**
  * @module
@@ -70,7 +70,6 @@ const dateSelected = (d: Date, t: Ticket[]) => ({type: 'date_selected', payload:
 const timeSelected = (t: Ticket) => ({type: 'time_selected', payload: t});
 const resetWidget = () => ({type: 'reset'});
 const changeQty = (n: number) => ({type: 'change_qty', payload: n});
-
 
 /**
  * TicketPickerReducer is meant to be used to lower ticket numbers
@@ -196,7 +195,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
           <div className='flex flex-col text-white w-full px-20'>
             <select defaultValue={''} className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
               onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}>
-              <option value='' disabled selected={prompt === 'selectDate'}>select date</option>
+              <option value='' disabled>select date</option>
               {tickets.map((t) =>
                 <option key={t.eventid} value={(t.date).toString()}>
                   {format(new Date(t.date), 'eee, MMM dd yyyy')}
@@ -207,7 +206,6 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       </Collapse>
       <Collapse in={showTimes}>
         <EventInstanceSelect
-          check={prompt}
           eventInstances={displayedShowings}
           eventInstanceSelected={(t) => dispatch(timeSelected(t))}
         />
