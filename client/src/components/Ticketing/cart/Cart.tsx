@@ -85,6 +85,16 @@ const Cart = () => {
     handleClick2();
   };
 
+  const printDiscountText = (disc: DiscountItem) => {
+    if (disc.code === '' ) return;
+
+    if (disc.amount === 0) {
+      return (disc.percent + '% discount');
+    } else {
+      return ('$' + disc.amount + ' discount');
+    }
+  };
+
   const applyDiscount = (e: React.FormEvent) => {
     e.preventDefault();
     setValidDiscount(true);
@@ -143,7 +153,8 @@ const Cart = () => {
               flex-col items-center rounded-xl justify-between'>
               <div className='flex flex-col items-center'>
                 <div className='text-zinc-100 text-xl font-semibold'>Subtotal</div>
-                <div className='text-white'>{toDollarAmount(subtotal)}</div>
+                <div className='text-amber-300 italic'>{printDiscountText(discount)}</div>
+                <div className='text-white'>{toDollarAmount(total)}</div>
               </div>
 
 
