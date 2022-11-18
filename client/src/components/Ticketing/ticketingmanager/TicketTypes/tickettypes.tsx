@@ -1,15 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {DataGrid, GridRowsProp, GridColumns} from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColumns,
+  GridRenderCellParams,
+  GridRowParams,
+} from '@mui/x-data-grid';
 import Chip from '@mui/material/Chip';
 import {useAuth0} from '@auth0/auth0-react';
 
 // Web page that manages ticket types
 const TicketTypes = () => {
+  // id = 0, tickettypeid = 1, etc...
   const [ticketTypes, setTicketTypes] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
 
   // Defines the columns of the grid
   const columns: GridColumns = [
+  // const columns: GridColDef[] = [
     {
       field: 'description',
       headerName: 'Ticket Type',
@@ -21,6 +28,9 @@ const TicketTypes = () => {
       headerName: 'Price',
       width: 150,
       editable: true,
+      // valueParser: (value: GridCellValue, params: GridCellParams) => {
+      // parseFloat(params.value);
+      // },
     },
     /*
     {
@@ -40,21 +50,35 @@ const TicketTypes = () => {
       width: 100,
       renderCell: (cell) => {
         return (
-          <Chip label='Delete' color='error' onClick={() => handleDeleteClick(cell)} />
+          <Chip label='Delete' color='error' onClick={
+            () => handleDeleteClick(cell)} />
         );
       },
     },
   ];
 
-  /*
   // handles the click event of the edit button
-  const handleEditClick = (id: string) => {
+  const handleEditClick = async (data: GridRowParams) => {
     console.log('Edit Clicked');
+    console.log('Data: ' + data);
+
+    // Warning: Will need to chnage getValue() to params.row on next MUI release
+    const newName = data.getValue(data.id, 'description');
+    console.log(newName);
+    const newPrice = data.getValue(data.id, 'price');
+    console.log(newPrice);
+
+    // wont work right now:
+    const previousName = ticketTypes[data.id].description;
+    const previousPrice = ticketTypes[data.id].price;
+    if (newName !== previousName || newPrice !== previousPrice) {
+      console.log('Name or Price has changed');
+      // NEXT: make POST request to update the ticket type
+    }
   };
-  */
 
   // handles the click event of the delete button
-  const handleDeleteClick = async (cell) => {
+  const handleDeleteClick = async (cell: GridRenderCellParams) => {
     console.log('Delete Clicked');
     // console.log(`ID: ${cell.row.id}`);
     // console.log(event?.currentTarget.id)
@@ -84,7 +108,7 @@ const TicketTypes = () => {
     }
   };
 
-  const handleAddTicket = () => {
+  const handleAddTicket = async () => {
   };
 
   // Fetches all the ticket types from the API in the backend
@@ -114,6 +138,7 @@ const TicketTypes = () => {
         for (let i = 0; i < jsonRes.length; ++i) {
           jsonRes[i].id = i;
         }
+        console.log(jsonRes);
         return jsonRes;
       });
     } catch (error) {
@@ -151,6 +176,10 @@ const TicketTypes = () => {
           rows={ticketTypes}
           columns={columns}
           pageSize={10}
+          experimentalFeatures={{newEditingApi: true}}
+          onRowEditStop={(data) => handleEditClick(data)}
+          // onCellEditStop={(params: GridCellEditStopParams, event: MuiEvent) => {
+          // }}
         />
       </div>
     </div>
