@@ -36,8 +36,9 @@ const ContactResults = ({
   }
   // What is this?
   const {
-    custname,
-    id,
+    firstname,
+    lastname,
+    contactid,
     email,
     phone,
     custaddress,
@@ -47,7 +48,6 @@ const ContactResults = ({
     vip,
     volunteerlist,
   } = data;
-
   return (
     <div className='flec flex-row w-full bg-white
      shadow-lg border border-zinc-300 rounded-lg'>
@@ -63,7 +63,7 @@ const ContactResults = ({
           Customer name:
           </div>
           <div>
-            {custname}
+            {firstname +' '+lastname}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -71,7 +71,7 @@ const ContactResults = ({
             ID:
           </div>
           <div>
-            {id}
+            {contactid}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -145,7 +145,7 @@ const ContactResults = ({
         <button className='bg-red-600 hover:bg-red-700
         mt-4 text-white px-5 py-2
         rounded-xl justify-end
-          ' onClick={() => deleteEvent(id)} >Remove Customer</button>
+          ' onClick={() => deleteEvent(contactid)} >Remove Customer</button>
       </div>
     </div>
   );
@@ -153,8 +153,9 @@ const ContactResults = ({
 
 
 export const contactForm = (data: any): React.ReactElement => {
-  const [Custname, setName] = useState(data.custname);
-  setName(data.custname);
+  const [Custname, setName] = useState(data.name);
+
+  setName(data.name);
   const [id, setID] = useState(0);
   setID(data.id);
   const [Email, setEmail] = useState(data.email);

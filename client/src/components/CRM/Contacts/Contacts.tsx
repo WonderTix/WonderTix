@@ -16,7 +16,39 @@ const Contacts = (): React.ReactElement => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const {getAccessTokenSilently} = useAuth0();
-
+  
+  const getData = async () => {
+    if (params.id) {
+      setIsLoading(true);
+      setContact(params.id);
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+      await axios
+          .get(
+              process.env.REACT_APP_ROOT_URL + `/api/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
+              {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+              },
+          )
+          .then((res) => {
+            setData(res.data.data[0]);
+            console.log(res);
+          })
+          .catch((err) => {
+            setError(err.message);
+            console.log(error);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+    }
+  };
+  useEffect(() => {getData()}, [params.id]);
+  /*
   useEffect(() => {
     const getData = async () => {
       if (params.id) {
@@ -28,7 +60,7 @@ const Contacts = (): React.ReactElement => {
         });
         await axios
             .get(
-                process.env.REACT_APP_ROOT_URL + `/api/contacts/search?name=${params.id}`,
+                process.env.REACT_APP_ROOT_URL + `/api/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
                 {
                   headers: {
                     'Authorization': `Bearer ${token}`,
@@ -36,7 +68,7 @@ const Contacts = (): React.ReactElement => {
                 },
             )
             .then((res) => {
-              setData(res.data.data[0]);
+              setData(res.data.data);
               console.log(res);
             })
             .catch((err) => {
@@ -50,12 +82,11 @@ const Contacts = (): React.ReactElement => {
     };
     getData();
   }, [params.id]);
-
+  */
   const handleClick = (e: any) => {
     e.preventDefault();
     navigate(`${contact}`);
   };
-
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='flex flex-col  md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
