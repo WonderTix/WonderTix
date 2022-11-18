@@ -14,8 +14,8 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../../Pop-up';
 const formatShowingData = (eventid: number) => (data: any) => {
-  const {starttime, eventdate, totalseats, ticketTypeIds} = data;
-  return {eventid, eventdate, starttime, totalseats, tickettypes: ticketTypeIds};
+  const {starttime, eventdate, totalseats, ticketTypeId, seatsForType} = data;
+  return {eventid, eventdate, starttime, totalseats, ticketTypeId: ticketTypeId, seatsForType};
 };
 
 /**
@@ -44,6 +44,7 @@ const CreateEventPage = () => {
       scope: 'admin',
     });
     const {imageUrl, eventName, eventDesc, showings} = formData;
+    const seasonid_fk = 7;
 
     const createPlayRes = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
       credentials: 'include',
@@ -52,15 +53,13 @@ const CreateEventPage = () => {
         'Authorization': `Bearer ${token}`,
       },
       method: 'POST',
-      body: JSON.stringify({eventName, eventDesc, imageUrl}),
+      body: JSON.stringify({seasonid_fk, eventName, eventDesc, imageUrl}),
     });
 
     if (createPlayRes.ok) {
       const eventData = await createPlayRes.json();
-      console.log(eventData);
-      const {id} = eventData.data[0];
+      const id = eventData.data[0].eventid;
       const showingdata = showings.map(formatShowingData(id));
-
       const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
         headers: {
