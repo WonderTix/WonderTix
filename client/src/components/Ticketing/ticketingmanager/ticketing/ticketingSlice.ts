@@ -75,7 +75,7 @@ export interface Event {
     image_url: string,
 }
 
-type TicketsState = {byId: {[key: string]: Ticket}, allIds: number[]}
+type TicketsState = {data: {byId: {[key: string]: Ticket}, allIds: number[]}}
 /**
  * Four states - 'idle', 'loading', 'success', 'failed'
  *
@@ -125,9 +125,9 @@ export const fetchTicketingData = createAsyncThunk(
       const eventData = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/events');
       const events: Event[] = eventData.data;
       const ticketRes: TicketsState = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/tickets');
-      const tickets = Object.entries(ticketRes.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date).toString()}}), {});
+      const tickets = Object.entries(ticketRes.data.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date).toString()}}), {});
       console.log('Tickets', tickets);
-      return {events, tickets: {byId: tickets, allIds: ticketRes.allIds}};
+      return {events, tickets: {data: {byId: tickets, allIds: ticketRes.data.allIds}}};
     },
 );
 
@@ -236,9 +236,9 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   const {id, qty, concessions} = action.payload;
   const tickets = state.tickets;
 
-  if (!tickets.allIds.includes(id)) return state;
+  if (!tickets.data.allIds.includes(id)) return state;
 
-  const ticket = tickets.byId[id];
+  const ticket = tickets.data.byId[id];
   const inCart = state.cart.find(byId(id));
   const validRange = bound(0, ticket.availableseats);
 
@@ -275,9 +275,9 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
 // Do not update state if 1) ticket doesn't exist, 2) try to set more than available
 const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty: number}>> = (state, action) => {
   const {id, qty} = action.payload;
-  if (!state.tickets.allIds.includes(id)) return state;
-  const avail = state.tickets.byId[id].availableseats;
-  const validRange = bound(0, state.tickets.byId[id].availableseats);
+  if (!state.tickets.data.allIds.includes(id)) return state;
+  const avail = state.tickets.data.byId[id].availableseats;
+  const validRange = bound(0, state.tickets.data.byId[id].availableseats);
 
   return (qty <= avail) ?
         {...state, cart: updateCartItem(state.cart, {id, qty: validRange(qty)})} :
@@ -295,7 +295,7 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
  */
 export const INITIAL_STATE: ticketingState = {
   cart: [],
-  tickets: {byId: {}, allIds: []},
+  tickets: {data: {byId: {}, allIds: []}},
   events: [],
   status: 'idle',
 };
@@ -325,7 +325,7 @@ const ticketingSlice = createSlice({
           state.status = 'success';
           state.tickets = (action.payload.tickets) ?
                     action.payload.tickets :
-                    {byId: {}, allIds: []};
+                    {data: {byId: {}, allIds: []}};
           state.events = (action.payload.events) ?
                     action.payload.events :
                     [];
@@ -402,8 +402,8 @@ export const selectEventData = (state: RootState, eventid: EventId): EventPageDa
   const event = state.ticketing.events.find(byId(eventid));
   if (event) {
     const {...playData} = event;
-    const tickets = ticketData.allIds
-        .reduce(filterTicketsReducer(ticketData.byId, eventid), [] as Ticket[]);
+    const tickets = ticketData.data.allIds
+        .reduce(filterTicketsReducer(ticketData.data.byId, eventid), [] as Ticket[]);
     return {...playData, tickets};
   } else {
     return undefined;
@@ -437,8 +437,8 @@ interface EventSummaryData {
 export const selectPlaysData = (state: RootState) =>
   state.ticketing.events.reduce((res, event) => {
     const {id, title, description} = event;
-    const filteredTickets = state.ticketing.tickets.allIds.reduce(
-        filterTicketsReducer(state.ticketing.tickets.byId, id),
+    const filteredTickets = state.ticketing.tickets.data.allIds.reduce(
+        filterTicketsReducer(state.ticketing.tickets.data.byId, id),
                 [] as Ticket[],
     );
 
@@ -459,7 +459,7 @@ export const selectPlaysData = (state: RootState) =>
  * @returns ticket.avilableseats
  */
 export const selectNumAvailable = (state: RootState, ticketid: number) => {
-  const ticket = state.ticketing.tickets.byId[ticketid];
+  const ticket = state.ticketing.tickets.data.byId[ticketid];
   return (ticket) ?
         ticket.availableseats :
         ticket;
