@@ -60,6 +60,7 @@ const Cart = () => {
     console.log('Subtotal:', subtotal), [subtotal];
     console.log('Total:', total), [total];
     console.log('Current discount:', discount);
+    if (discount.code) setValidDiscount(true);
   });
 
   const resetModal = () => {
