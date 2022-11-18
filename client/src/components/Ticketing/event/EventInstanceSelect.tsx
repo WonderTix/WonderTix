@@ -15,7 +15,7 @@ import format from 'date-fns/format';
 /**
  * EventInstanceSelectProps holds tickets, showings and such
  */
-interface EventInstanceSelectProps {eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
+interface EventInstanceSelectProps {check: string, eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
 
 /**
  * This is the handler
@@ -39,9 +39,9 @@ const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
 
   return (
     <select defaultValue={0} onChange={((ev: React.ChangeEvent<HTMLSelectElement>): void => (handleClick(parseFloat(ev.target.value))))} className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
-      <option value={0} disabled >select time</option>
+      <option disabled selected={props.check === 'selectTime'}>select time</option>
       {props.eventInstances.map((s) =>
-        <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} value={s.event_instance_id} >
+        <option key={s.event_instance_id} value={s.event_instance_id} >
           {format(new Date(s.date), 'hh:mm a')}
           {console.log(s.date)}
         </option>,
