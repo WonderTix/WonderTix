@@ -70,9 +70,9 @@ export const getOrdersByContact = async (params: any): Promise<response> => {
           SELECT * 
           FROM orders
           WHERE orders.contactid_fk = $1;`,
-          values: [
-            params.contactid
-          ],
+    values: [
+      params.contactid,
+    ],
   };
   return await buildResponse(myQuery, 'GET');
 };

@@ -11,7 +11,6 @@ const parseMoneyString = (s: string) => Number.parseFloat(s.replace('$', ''));
 
 //
 export const getAvailableTickets = async (): Promise<response> => {
-
   let resp: response = {
     data: <any[]>([]),
     status: {
@@ -21,7 +20,7 @@ export const getAvailableTickets = async (): Promise<response> => {
   };
 
   try {
-      const myQuery = `
+    const myQuery = `
         SELECT
           ei.eventinstanceid event_instance_id,
           ei.eventid_fk eventid,
@@ -46,19 +45,19 @@ export const getAvailableTickets = async (): Promise<response> => {
 
     resp = {
       data: queryRes.rows
-            .map(toTicket)
-            .reduce(reduceToTicketState, {
-              byId: {},
-              allIds: [],
-            } as TicketsState),
+          .map(toTicket)
+          .reduce(reduceToTicketState, {
+            byId: {},
+            allIds: [],
+          } as TicketsState),
       status: {
         success: true,
         message: `${queryRes.rowCount} ${queryRes.rowCount === 1 ?
           'row' :
           'rows'
         } ${'returned'}.`,
-        },
-      };
+      },
+    };
   } catch (error: any) {
     resp.status.message = error.message;
   }
@@ -135,10 +134,10 @@ export const setDefaultTicketForEvent = async (params: any): Promise<response> =
             eventinstanceid = $2;`,
     values: [
       params.eventinstanceid,
-      params.tickettypeid
+      params.tickettypeid,
     ],
   };
-  return buildResponse(myQuery, 'POST')
+  return buildResponse(myQuery, 'POST');
 };
 
 
@@ -185,7 +184,6 @@ export const updateTicketType = async (params: any): Promise<response> => {
   };
   return await buildResponse(myQuery, 'UPDATE');
 };
-
 
 
 // Function for removing a ticket type

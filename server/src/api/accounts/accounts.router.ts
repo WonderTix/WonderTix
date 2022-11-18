@@ -32,7 +32,7 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
     let code = resp.status.success ? 200 : 404;
-    if(code === 200 && resp.data.length === 0){
+    if (code === 200 && resp.data.length === 0) {
       code = 404;
       resp.status.success = false;
     }
@@ -56,7 +56,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
     let code = resp.status.success ? 200 : 404;
-    if(code === 200 && resp.data.length === 0){
+    if (code === 200 && resp.data.length === 0) {
       code = 404;
       resp.status.success = false;
     }
@@ -70,7 +70,7 @@ accountsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req.body, req.params.id);
     let code = resp.status.success ? 200 : 404;
-    if(code === 200 && resp.data.length === 0){
+    if (code === 200 && resp.data.length === 0) {
       code = 404;
       resp.status.success = false;
     }
