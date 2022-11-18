@@ -2,7 +2,7 @@
 import Navigation from '../Navigation';
 import AccountsDash from './AccountsDash';
 /**
- * @return {object} AccountsMain - has Navigation
+ * @returns {object} AccountsMain - has Navigation
  *  and AccountsDash to reroute to other components
  */
 const AccountsMain = () => {

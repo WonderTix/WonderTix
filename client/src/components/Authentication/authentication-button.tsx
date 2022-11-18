@@ -8,7 +8,8 @@ import LogoutButton from './logout-button';
 import {useAuth0} from '@auth0/auth0-react';
 /**
  * returns a button depending on if one is logged in or not.
- * @return {React.ReactElement}
+ *
+ * @returns {React.ReactElement}
  */
 const AuthenticationButton = () => {
   const {isAuthenticated} = useAuth0();

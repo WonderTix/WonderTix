@@ -78,7 +78,7 @@ components:
           type: phone
           description: Phone number of the customer
           example: 697-197-4373
-        custaddress:
+        address:
           type: string
           description: Address of the customer
           example: 1156 296th Ave
@@ -87,7 +87,7 @@ components:
           description: Flag to determine if user signed up for newsletter
           example: true
         donorbadge:
-          type: string
+          type: boolean
           description: Badge to show for the donor
           example: false
         seatingaccom:

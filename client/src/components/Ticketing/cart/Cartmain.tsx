@@ -4,7 +4,7 @@ import Navbar from '../mainpage/Navbar';
 import Footer from '../mainpage/footer';
 
 /**
- * @param {function} Cartmain
+ * @param {Function} Cartmain
  * @returns {Navbar, Cart, Footer}
  */
 const Cartmain = () => {

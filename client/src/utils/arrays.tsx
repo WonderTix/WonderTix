@@ -16,7 +16,7 @@ export const contactHeaders = [
   { field: "custname", headerName: "Name", minWidth: 200 },
   { field: "email", headerName: "Email", minWidth: 250 },
   { field: "phone", headerName: "Phone", minWidth: 150 },
-  { field: "custaddress", headerName: "Address", minWidth: 300 },
+  { field: "address", headerName: "Address", minWidth: 300 },
   { field: "newsletter", headerName: "Newsletter", minWidth: 50 },
   { field: "donor badge", headerName: "Donor", minWidth: 50 },
   { field: "seatingaccom", headerName: "Seating Accomodation", minWidth: 200 },
@@ -42,7 +42,7 @@ export const contactFiltersTextField = [
   { label: "Name", id: "custname" },
   { label: "Email", id: "email" },
   { label: "Phone", id: "phone" },
-  { label: "Address", id: "custaddress" },
+  { label: "Address", id: "address" },
 ];
 
 export const contactFiltersSwitch = [
@@ -83,7 +83,7 @@ export const contactHeaders = [
   {field: 'custname', headerName: 'Name', minWidth: 200},
   {field: 'email', headerName: 'Email', minWidth: 250},
   {field: 'phone', headerName: 'Phone', minWidth: 150},
-  {field: 'custaddress', headerName: 'Address', minWidth: 300},
+  {field: 'address', headerName: 'Address', minWidth: 300},
   {field: 'newsletter', headerName: 'Newsletter', minWidth: 50},
   {field: 'donor badge', headerName: 'Donor', minWidth: 50},
   {field: 'seatingaccom', headerName: 'Seating Accomodation', minWidth: 200},
@@ -109,7 +109,7 @@ export const contactFiltersTextField = [
   {label: 'Name', id: 'custname'},
   {label: 'Email', id: 'email'},
   {label: 'Phone', id: 'phone'},
-  {label: 'Address', id: 'custaddress'},
+  {label: 'Address', id: 'address'},
 ];
 
 export const contactFiltersSwitch = [
@@ -144,11 +144,12 @@ type time = {hours: number, minutes: number, ampm?: 'AM'|'PM'}
 
 /**
  * Checks if days are equal
+ *
  * @param {Date} a date1 to compare
  * @param {Date} b date2 to compare
- * @return {boolean}
+ * @returns {boolean}
  */
-export function isSameDay(a: Date, b: Date): Boolean {
+export function isSameDay(a: Date, b: Date): boolean {
   const sameDay = a.getDate() == b.getDate();
   const sameMonth = a.getMonth() == b.getMonth();
   const sameYear = a.getFullYear() == b.getFullYear();

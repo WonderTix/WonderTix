@@ -7,11 +7,10 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 // import {FieldArray} from 'react-final-form-arrays';
-import {ValidationErrors} from 'final-form';
 import React, {useCallback, useState} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
@@ -19,6 +18,7 @@ import {Showing} from '../../../../interfaces/showing.interface';
 
 /**
  * Type of ticket
+ *
  * @module
  * @param {number} id
  * @param {string} name
@@ -34,6 +34,7 @@ interface TicketType {
 
 /**
  * Used to create new event data
+ *
  * @module
  * @param {number} seasonID?
  * @param {number} eventID?
@@ -41,7 +42,7 @@ interface TicketType {
  * @param {string} eventDesc
  * @param {boolean} isPublished
  * @param {string} imageUrl - why is this name scheme different
- * @param {Showing} showings 
+ * @param {Showing} showings
  */
 export interface NewEventData {
     seasonID?: number,
@@ -55,15 +56,17 @@ export interface NewEventData {
 
 /**
  * Validates form data
+ *
  * @param {any} formData Data retrieved from form
- * @return {ValidationErrors}
+ * @returns {ValidationErrors}
  */
-function validate(formData: any): ValidationErrors {
+function validate(formData: any) {
   return (formData.showings?.length > 0) ? undefined : {error: 'Need one or more showings added'};
 }
 
 /**
  * Sets initial state
+ *
  * @param {Array} showings: DateTime: undefined, ticketType: undefined, ticketTypeId: undefined
  */
 const initialState = {
@@ -76,6 +79,7 @@ const initialState = {
 
 /**
  * Used for submission
+ *
  * @param {NewEventData} formData - starts void
  * @param {TicketType} tickeTypes - starts empty
  * @param {Partial<NewEventData>} InitialValues?
@@ -88,13 +92,17 @@ interface EventFormProps {
 
 /**
  * Event Form values, set all of them
+ *
  * @param eventName - initialValues.eventName || ''
  * @param eventID - initialValues.eventID || -1
  * @param eventDesc - initialValues.eventDesc || ''
  * @param imageUrl - initialValues.imageUrl || ''
  * @param isPublished - initialValues.isPublished || false
  * @param showings - initialValues.showings || []
- * @returns {Form} EventForm 
+ * @param eventName.onSubmit
+ * @param eventName.ticketTypes
+ * @param eventName.initialValues
+ * @returns {Form} EventForm
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {

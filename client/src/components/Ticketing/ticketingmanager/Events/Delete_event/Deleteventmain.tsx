@@ -5,6 +5,7 @@ import DeleteEvents from './Deleteevent';
 
 /**
  * Deletes the event from main
+ *
  * @returns {Udash_nav, DeleteEvents} DeleteeventMain
  */
 const Deleteeventmain = () => {

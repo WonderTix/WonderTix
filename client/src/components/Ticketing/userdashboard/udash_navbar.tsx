@@ -8,6 +8,7 @@ import AuthNav from '../../Authentication/auth-nav';
 
 /**
  * The base navbar
+ *
  * @returns {ReactElement} Udash_nav
  */
 const Udash_nav = () => {
