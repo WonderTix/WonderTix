@@ -141,8 +141,7 @@ const Cart = () => {
             </svg>
             <div className='text-3xl font-bold ml-2 mt-2'>My Cart</div>
           </div>
-          <div className='flex flex-col md:flex-row sm:flex-col
-        sm:items-center w-full h-full'>
+          <div className='flex flex-col md:flex-row sm:flex-col sm:items-center w-full h-full'>
             <div className='w-full h-full md:mt-20 sm:mt-20 bg-zinc-300 p-9 flex flex-col gap-5 items-start rounded-xl'>
               {(items.length > 0) ?
                   items.map((data) => <CartRow key={data.product_id} item={data} removeHandler={displayModal} />) :

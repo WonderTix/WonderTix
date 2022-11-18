@@ -78,7 +78,7 @@ type TicketsState = {byId: {[key: string]: Ticket}, allIds: number[]}
  * @module
  */
 export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed'
-export type DiscountItem = {code: string, amount: number, percent: number}
+export type DiscountItem = {code: string, amount: number, percent: number, minTickets: number, minEvents: number}
 
 /**
  * Used to manage the ticketing states
@@ -169,6 +169,8 @@ export const fetchDiscountData = createAsyncThunk(
         code: discountArray[0].code,
         amount: discountArray[0].amount,
         percent: discountArray[0].percent,
+        minTickets: discountArray[0].min_tickets,
+        minEvents: discountArray[0].min_events,
       };
 
       console.log('Discount returned:', discountArray[0]);
@@ -191,10 +193,10 @@ export const fetchDiscountData = createAsyncThunk(
       }
 
       // Check min tickets
-      console.log('Min tickets:', discountArray[0].min_tickets);
+      console.log('Min tickets:', discount.minTickets);
 
       // Check min events
-      console.log('Min events:', discountArray[0].min_events);
+      console.log('Min events:', discount.minEvents);
 
       // Check number of uses limit (???)
       console.log('Usage limit:', discountArray[0].usagelimit);
@@ -323,14 +325,14 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
  * @param {Array} tickets - byId: {}, allIds: []
  * @param {Array} events - []
  * @param {string} status - 'idle'
- * @param {DiscountItem} discount - {'', 0, 0}
+ * @param {DiscountItem} discount - {'', 0, 0, 0, 0}
  */
 export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {byId: {}, allIds: []},
   events: [],
   status: 'idle',
-  discount: {code: '', amount: 0, percent: 0},
+  discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},
 };
 
 /** ticketSlice = createSlice, creates the ticketing slice */
@@ -360,9 +362,12 @@ const ticketingSlice = createSlice({
         })
         .addCase(fetchDiscountData.fulfilled, (state, action) => {
           state.status = 'success';
+          console.log('num events:', state.cart.length);
+          console.log('num tickets:', getNumTickets(state));
+          // console.log('cart:', state.cart.values());
           state.discount = (action.payload) ?
                     action.payload.discount :
-                    {code: '', amount: 0, percent: 0};
+                    {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0};
         })
         .addCase(fetchDiscountData.rejected, (state) => {
           state.status = 'failed';
@@ -391,6 +396,23 @@ export const selectCartIds = (state: RootState): number[] => state.ticketing.car
 export const selectCartItem = (state: RootState, id: number): CartItem|undefined => state.ticketing.cart.find((i) => i.product_id===id);
 export const selectCartTicketCount = (state: RootState): {[key: number]: number} =>
   state.ticketing.cart.reduce(
+      (acc, item) => {
+        const key = item.product_id;
+        if (key in acc) {
+          return acc;
+        } else {
+          return {...acc, [key]: item.qty};
+        }
+      }
+      , {},
+  );
+export const getNumTickets = (state: RootState): {[key: number]: number} =>
+  state.cart.reduce(
+    /*
+      (acc, item) => {
+        acc + item.qty;
+      }, {},
+    */
       (acc, item) => {
         const key = item.product_id;
         if (key in acc) {

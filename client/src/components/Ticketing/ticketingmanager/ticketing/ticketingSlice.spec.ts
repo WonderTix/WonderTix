@@ -53,6 +53,8 @@ const discount1: DiscountItem = {
   code: '',
   amount: 0,
   percent: 0,
+  minTickets: 0,
+  minEvents: 0,
 };
 
 const ticketingInitState: ticketingState = {
