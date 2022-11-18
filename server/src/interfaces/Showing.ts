@@ -28,8 +28,7 @@ export default interface Showing {
     salestatus: boolean;
     totalseats: number;
     availableseats: number;
-    ticketTypeId: number[],
-    seatsForType: number[],
+    tickettype: number; // ticket type ID
     purchaseuri: string;
     ispreview: boolean;
 }

@@ -148,33 +148,10 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
     const isInShowList = showings.some((element) => element.id === show.id);
     if (isInShowList) {
       const newShowList = showings.filter(((element) => element.id !== show.id));
-      const index = showings.findIndex((i) => {
-        return i.eventdate === show.eventdate && i.starttime === show.starttime;
-      });
-      if (index > -1) {
-        showings[index] = show;
-      } else {
-        newShowList.push(show);
-        setShowings((showings) => [...showings, ...newShowList]);
-      }
+      newShowList.push(show);
+      setShowings(newShowList);
     } else {
-      showings.push(show);
-    }
-    console.log(showings);
-  }, [showings]);
-
-  const deleteShowing = useCallback((event) => {
-    const div = event.target.parentElement;
-    const inputs = div.querySelectorAll('input');
-    const length = inputs.length;
-    const date = inputs[length - 2].value;
-    const time = inputs[length - 1].value;
-    const index = showings.findIndex((el) => {
-      return el.eventdate === date && el.starttime === time;
-    });
-    if (index > -1) {
-      showings.splice(index, 1);
-      console.log(showings);
+      setShowings((showings) => [...showings, show]);
     }
   }, [showings]);
 
@@ -192,7 +169,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       imageUrl,
       showings,
     };
-    console.log(data);
     onSubmit(data);
   };
 
@@ -243,7 +219,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} deleteShowing={deleteShowing} eventid={def.eventID}/>
+                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} updateShows={updateShows} eventid={def.eventID}/>
               </div>
             </div>
           </div>

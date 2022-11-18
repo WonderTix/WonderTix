@@ -1,5 +1,3 @@
-import {query} from 'express';
-import {link} from 'fs';
 import Delta from '../../interfaces/Delta';
 import Showing from '../../interfaces/Showing';
 import {pool, response, buildResponse} from '../db';
@@ -105,8 +103,7 @@ export const updateInstances = async (
   // insert new showings
   // showings with id = 0 have not yet been added to the table
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
-  // rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
-  rowsToInsert.forEach((show: Showing) => show.ticketTypeId[0] = 0);
+  rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
 
   console.log('Rows to insert', rowsToInsert);
   const rowsInserted = (await insertAllShowings(rowsToInsert));
@@ -181,105 +178,25 @@ export const createShowing = async (params: any): Promise<response> => {
   const newInstances = await insertAllShowings(params.instances);
   // Link showtime to ticket type
   const linkingdata = newInstances.map((s) => ({
-    id: <number>Object.values(s)[0],
-    tickettypes: <number[]>Object.values(s)[10], // Keeps changing?
-    seatsfortype: <number[]>Object.values(s)[11], // Keeps changing?
+    id: s.id,
+    tickettype: s.tickettype,
   }));
+  let count = 1;
   const myQuery = {
-    text: `INSERT INTO ticketrestrictions (eventinstanceid_fk, tickettypeid_fk,
-      ticketlimit) VALUES ($1, $2, $3) `,
+    text: `INSERT INTO linkedtickets (event_instance_id, ticket_type) VALUES `,
     values: <number[]>([]),
   };
-  let res: response = {
-    data: <any[]>([]),
-    status: {
-      success: false,
-      message: '',
-    },
-  };
-  const toReturn = [];
-  let rowCount = 0;
-  for (const show of linkingdata) {
-    const len = show.tickettypes.length;
-    for (let i = 0; i < len; i += 1) {
-      let queryResults;
-      try {
-        queryResults = await pool.query(myQuery, [
-          show.id,
-          show.tickettypes[i],
-          show.seatsfortype[i],
-        ]);
-        toReturn.push(queryResults);
-        rowCount += queryResults.rowCount;
-      } catch (error: any) {
-        res.status.message = error.message;
-      }
+  for (const sh of linkingdata) {
+    if (myQuery.values.length !== 0) {
+      myQuery.text += ', ';
     }
+    myQuery.text += `($${count}, $${count+1})`;
+    count += 2;
+    const {id, tickettype} = sh;
+    myQuery.values = [...myQuery.values, id, tickettype];
+    console.log(myQuery.text);
   }
-  res = {
-    data: toReturn,
-    status: {
-      success: true,
-      message: `${rowCount} ${rowCount === 1 ?
-        'row' :
-        'rows'
-      } inserted.`,
-    },
-  };
-  await createTickets(linkingdata);
-  return res;
-};
-
-export const createTickets = async (params: any): Promise<response> => {
-  const data = params;
-  const numberOfShowings = data.length;
-  const myQuery = {
-    text: `INSERT INTO 
-            eventtickets
-            (eventinstanceid_fk, tickettypeid_fk) 
-          VALUES ($1, $2) 
-          RETURNING *;`,
-    values: <number[]>([]),
-  };
-  let res: response = {
-    data: <any[]>([]),
-    status: {
-      success: false,
-      message: '',
-    },
-  };
-  const toReturn = [];
-  let rowCount = 0;
-  for (let k = 0; k < numberOfShowings; k += 1) {
-    const numOfTypes = data[k].tickettypes.length;
-    for (let i = 0; i < numOfTypes; i += 1) {
-      const numOfSeats = data[k].seatsfortype[i];
-      for (let j = 0; j < numOfSeats; j += 1) {
-        let queryResults;
-        try {
-          queryResults = await pool.query(myQuery, [
-            data[k].id,
-            data[k].tickettypes[i],
-          ]);
-          toReturn.push(queryResults);
-          rowCount += queryResults.rowCount;
-        } catch (error: any) {
-          res.status.message = error.message;
-        }
-      }
-    }
-  }
-  res = {
-    data: toReturn,
-    status: {
-      success: true,
-      message: `${rowCount} ${rowCount === 1 ?
-        'row' :
-        'rows'
-      } inserted.`,
-    },
-  };
-  return res;
+  return buildResponse(myQuery, 'POST');
 };
 
 export const archivePlays = async (params: any): Promise<response> => {
@@ -332,9 +249,9 @@ export const createEvent = async (params: any): Promise<response> => {
       params.seasonticketeligible,
       params.imageUrl],
   };
+  console.log(params);
   return buildResponse(myQuery, 'POST');
 };
-
 
 export const checkIn = async (params: any): Promise<response> => {
   const myQuery = {
@@ -394,45 +311,21 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
                   ($1, $2, $3, $4, $5, true, $6) 
                 RETURNING *;`;
   const res = [];
-  let results: response = {
-    data: <any[]>([]),
-    status: {
-      success: false,
-      message: '',
-    },
-  };
-  const toReturn = [];
-  let rowCount = 0;
   for (const showing of showings) {
-    if (showing.ticketTypeId.length === 0) {
+    const tickettype = showing.tickettype;
+    if (tickettype === undefined) {
       throw new Error('No ticket type provided');
     }
-    const date = showing.eventdate.split('-');
-    const dateAct = date.join('');
     const {rows} = await pool.query(query, [
       showing.eventid,
-      dateAct,
+      showing.eventdate,
       showing.starttime,
       showing.totalseats,
       showing.availableseats,
       showing.ispreview,
     ]);
-    toReturn.push(showing);
-    rowCount += 1;
-    res.push({...rows[0], ticketTypeId: showing.ticketTypeId,
-      seatsForType: showing.seatsForType});
+    res.push({...rows[0], tickettype});
   }
-  results = {
-    data: toReturn,
-    status: {
-      success: true,
-      message: `${rowCount} ${rowCount === 1 ?
-        'row' :
-        'rows'
-      } inserted.`,
-    },
-  };
-  console.log(results);
   return res;
 };
 
