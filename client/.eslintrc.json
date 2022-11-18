@@ -25,13 +25,17 @@
     ],
     "rules": {
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": "off",
         "linebreak-style": 0,
         "valid-jsdoc": "off",
+
+        "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+
         "react/no-unknown-property": "off",
 
         // These jsdoc rules are not applicable for documenting the react code
+        "jsdoc/require-param-type": 0,
         "jsdoc/check-param-names": 0,
         "jsdoc/require-param-description": 0,
         "jsdoc/require-param-name": 0,
@@ -41,6 +45,7 @@
         "jsdoc/require-returns-description": 0,
         "jsdoc/valid-types": 0,
         "jsdoc/no-undefined-types": 0
+        
     },
     "settings": {
         "react": {
