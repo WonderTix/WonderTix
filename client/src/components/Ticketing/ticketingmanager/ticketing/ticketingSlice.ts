@@ -195,9 +195,11 @@ export const fetchDiscountData = createAsyncThunk(
 
       if (end && (end < now)) {
         console.log('EndDate is before now!');
+        return;
       }
       if (start && (start > now)) {
         console.log('StartDate is after now!');
+        return;
       }
 
       // Check min tickets
@@ -238,57 +240,6 @@ export interface Discount {
   min_events: number,
   usagelimit: number,
 }
-
-/**
- * Fetches all the data, and gets all the api routes then prints to console
- * @module
- * @returns {DiscountItem} code, amount, percent
- */
-export const fetchDiscountData = createAsyncThunk(
-    'ticketing/fetchDiscount',
-    async (code: string) => {
-      const url = process.env.REACT_APP_ROOT_URL + '/api/discounts/search?code=' + code;
-      const discountData = await fetchData(url);
-      const discountArray: Discount[] = discountData.data;
-      const discount: DiscountItem = {
-        code: discountArray[0].code,
-        amount: discountArray[0].amount,
-        percent: discountArray[0].percent,
-        minTickets: discountArray[0].min_tickets,
-        minEvents: discountArray[0].min_events,
-      };
-
-      console.log('Discount returned:', discountArray[0]);
-
-      // Check date (after startDate and before EndDate)
-      const nowDate = new Date(Date.now());
-      const now = Number(nowDate.getFullYear().toString() + (nowDate.getMonth()+1).toString() + nowDate.getDate().toString());
-      console.log('Current date in db format:', now);
-
-      const start = discountArray[0].startdate;
-      const end = discountArray[0].enddate;
-      console.log('Start:', start);
-      console.log('End:', end);
-
-      if (end && (end < now)) {
-        console.log('EndDate is before now!');
-      }
-      if (start && (start > now)) {
-        console.log('StartDate is after now!');
-      }
-
-      // Check min tickets
-      console.log('Min tickets:', discount.minTickets);
-
-      // Check min events
-      console.log('Min events:', discount.minEvents);
-
-      // Check number of uses limit (???)
-      console.log('Usage limit:', discountArray[0].usagelimit);
-
-      return {discount};
-    },
-);
 
 /**
  * Shows some information on cartitem
@@ -490,8 +441,9 @@ const ticketingSlice = createSlice({
         .addCase(fetchDiscountData.fulfilled, (state, action) => {
           state.status = 'success';
           console.log('num events:', state.cart.length);
-          console.log('num tickets:', getNumTickets(state));
+          // console.log('num tickets:', getNumTickets(state));
           // console.log('cart:', state.cart.values());
+          console.log('payload:', action.payload);
           state.discount = (action.payload) ?
                     action.payload.discount :
                     {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0};
@@ -538,12 +490,12 @@ export const selectCartTicketCount = (state: RootState): {[key: number]: number}
       , {},
   );
 export const getNumTickets = (state: RootState): {[key: number]: number} =>
-  state.cart.reduce(
-    /*
-      (acc, item) => {
-        acc + item.qty;
-      }, {},
-    */
+  state.ticketing.cart.reduce(
+      /*
+        (acc, item) => {
+          acc + item.qty;
+        }, {},
+      */
       (acc, item) => {
         const key = item.product_id;
         if (key in acc) {

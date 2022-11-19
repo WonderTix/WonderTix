@@ -54,6 +54,7 @@ const Cart = () => {
   const [removeContextMessage, setRemoveContextMessage] = useState('');
   const [discountText, setDiscountText] = useState<string|null>(null);
   const [validDiscount, setValidDiscount] = useState(false);
+  const [discountClicked, setDiscountClicked] = useState(false);
   const discount = useAppSelector(selectDiscount);
   const total = totalReducer(subtotal, discount);
 
@@ -61,7 +62,10 @@ const Cart = () => {
     console.log('Subtotal:', subtotal), [subtotal];
     console.log('Total:', total), [total];
     console.log('Current discount:', discount);
-    if (discount.code) setValidDiscount(true);
+    if (discount.code !== '') {
+      setValidDiscount(true);
+      setDiscountClicked(false);
+    } else setValidDiscount(false);
   });
 
   const resetModal = () => {
@@ -98,17 +102,14 @@ const Cart = () => {
   };
 
   const applyDiscount = (e: React.FormEvent) => {
-    e.preventDefault();
-    setValidDiscount(true);
-    console.log('Discount button clicked! Value: ' + discountText);
-
     dispatch(fetchDiscountData(discountText));
+    setDiscountClicked(true);
     return;
   };
 
   const removeDiscount = () => {
-    console.log('Remove discount button clicked');
     setValidDiscount(false);
+    setDiscountClicked(false);
     setDiscountText('');
     dispatch(removeDiscountFromCart());
   };
@@ -168,6 +169,7 @@ const Cart = () => {
                       value={(discountText) ? discountText : discount.code}
                       onChange={(e) => {
                         setDiscountText(e.target.value.toUpperCase());
+                        setDiscountClicked(false);
                       }}
                       disabled={discount.code !== ''}
                     />
@@ -185,6 +187,9 @@ const Cart = () => {
                       </button>
                     )}
                   </div>
+                  {!validDiscount && discountClicked ? (
+                    <div className='text-white italic'>Invalid discount code</div>
+                  ) : ('')}
                 </div>
 
                 <button className='bg-red-600 flex flex-col items-center w-full px-3 py-3 text-white rounded-xl disabled:opacity-50 'disabled={items.length === 0} onClick={removeAllCartItems}>
