@@ -161,7 +161,7 @@ describe('ticketing slice', () => {
     it('Date data is deserialized', () => {
       const eventid = '1';
       const eventData = selectEventData(ROOT_INIT_STATE, eventid);
-      expect(eventData?.tickets[0].date instanceof Date).toEqual(true);
+      expect(eventData!.tickets[0].date instanceof Date).toEqual(true);
     });
   });
 
