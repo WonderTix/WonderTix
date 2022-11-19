@@ -2,7 +2,7 @@ import React from 'react';
 import '../../../index.css';
 /**
  * @param {any} props React props to be passed to SavedDialog
- * @return {React.ReactElement}
+ * @returns {React.ReactElement}
  */
 const SavedDialog = ({
   open,

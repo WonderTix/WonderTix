@@ -15,7 +15,8 @@ type EventPageProps = {eventid: string}
 
 /**
  * Data Handler
- * @returns {ReactElement} and returns dispatch(fetchTicketingData()) 
+ *
+ * @returns {ReactElement} and returns dispatch(fetchTicketingData())
  */
 const Eventshowings = () => {
   const dispatch = useAppDispatch();

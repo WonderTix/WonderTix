@@ -184,7 +184,7 @@ paths:
             type: boolean
           description: vip status of the contact to filter by
         - in: query
-          name: volunteer_list
+          name: volunteerlist
           schema:
             type: string
           description: volunteer status of the contact to filter by

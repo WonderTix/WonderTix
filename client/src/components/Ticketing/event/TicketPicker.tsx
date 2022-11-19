@@ -7,7 +7,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {addTicketToCart, selectCartTicketCount, Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
 import {openSnackbar} from '../ticketingmanager/snackbarSlice';
@@ -19,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {useEffect, useReducer} from 'react';
+import React, {ChangeEvent, useEffect, useReducer} from 'react';
 
 /**
  * @module
@@ -71,6 +71,7 @@ const timeSelected = (t: Ticket) => ({type: 'time_selected', payload: t});
 const resetWidget = () => ({type: 'reset'});
 const changeQty = (n: number) => ({type: 'change_qty', payload: n});
 
+
 /**
  * TicketPickerReducer is meant to be used to lower ticket numbers
  * Default:
@@ -82,6 +83,9 @@ const changeQty = (n: number) => ({type: 'change_qty', payload: n});
  *      showTimes: true,
  *      showClearBtn: true,
  *      prompt: 'selectTime',
+ *
+ * @param state
+ * @param action
  * @returns a certain default state if failed
  */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
@@ -126,6 +130,7 @@ interface TicketPickerProps {
 
 /**
  * Used to choose the tickets
+ *
  * @param {TicketPickerProps} tickets
  * @returns {ReactElement} and the correct ticket when picking
  */
@@ -191,7 +196,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
           <div className='flex flex-col text-white w-full px-20'>
             <select defaultValue={''} className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
               onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}>
-              <option value='' disabled>select date</option>
+              <option value='' disabled selected={prompt === 'selectDate'}>select date</option>
               {tickets.map((t) =>
                 <option key={t.eventid} value={(t.date).toString()}>
                   {format(new Date(t.date), 'eee, MMM dd yyyy')}
@@ -202,6 +207,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       </Collapse>
       <Collapse in={showTimes}>
         <EventInstanceSelect
+          check={prompt}
           eventInstances={displayedShowings}
           eventInstanceSelected={(t) => dispatch(timeSelected(t))}
         />

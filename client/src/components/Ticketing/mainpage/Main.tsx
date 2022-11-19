@@ -8,6 +8,7 @@ import React from 'react';
 
 /**
  * Page that loads everything after getting through auth0
+ *
  * @returns {Navbar, Hero, Seasonaltickets, Footer, ReactElement}
  */
 const Mainpage = () => {
@@ -42,7 +43,7 @@ const Mainpage = () => {
         </div>;
       </>
     );
-  };
+  }
 
   return (
     <div>

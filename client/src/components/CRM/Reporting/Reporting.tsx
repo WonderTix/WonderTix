@@ -22,7 +22,7 @@ import {useAuth0} from '@auth0/auth0-react';
 
 
 /**
- * @return {React.ReactElement} ReportingTest HTMLElement
+ * @returns {React.ReactElement} ReportingTest HTMLElement
  */
 const ReportingTest = (): React.ReactElement => {
   const [rows, setRows] = React.useState([]);
