@@ -27,12 +27,9 @@
         "no-unused-vars": "off",
         "linebreak-style": 0,
         "valid-jsdoc": "off",
-<<<<<<< HEAD
 
         "@typescript-eslint/no-unused-vars": "off",
-=======
         "camelcase": "off",
->>>>>>> development
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/no-explicit-any": "off",
 
