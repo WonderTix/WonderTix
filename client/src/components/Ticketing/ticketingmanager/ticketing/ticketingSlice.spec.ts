@@ -52,11 +52,13 @@ const ticket2: Ticket = {
 const ticketingInitState: ticketingState = {
   cart: [],
   tickets: {
-    byId: {
-      1: ticket,
-      2: ticket2,
-    },
-    allIds: [1, 2],
+    data: {
+      byId: {
+        1: ticket,
+        2: ticket2,
+      },
+      allIds: [1, 2],
+    }
   },
   events: [event],
   status: 'idle',
