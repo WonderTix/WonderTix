@@ -62,14 +62,29 @@ const TicketTypes = () => {
   const handleEditTicket = React.useCallback(
       async (newRow: GridRowModel, prevRow: GridRowModel) => {
         console.log('New row: ' + newRow.id + ' ' + newRow.description +
-          ' ' + newRow.price);
-        console.log('Prev row: ' + prevRow.id + ' ' + prevRow.description +
-          ' ' + prevRow.price);
+          ' ' + newRow.price + ' ' + newRow.concessions);
+
+        const token = await getAccessTokenSilently({
+          audience: 'https://localhost:8000',
+          scope: 'admin',
+        });
+
         if (newRow.description !== prevRow.description ||
           newRow.price !== prevRow.price) {
           // NEXT: Also check that ticket name is not empty & price is number
           console.log('Ticket type has changed');
-          // NEXT: Make PUT request to update ticket type
+
+          const response = await fetch(
+            process.env.REACT_APP_ROOT_URL+'/api/tickets/updateType', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify(newRow),
+            }
+          );
+          console.log(response);
         }
         return newRow;
       }, [ticketTypes],
