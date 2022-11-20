@@ -11,9 +11,9 @@ import {useAuth0} from '@auth0/auth0-react';
 
 // Web page that manages ticket types
 const TicketTypes = () => {
-  // id = 0, tickettypeid = 1, etc...
   const [ticketTypes, setTicketTypes] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
+  const [addTicketClicked, setAddTicketClicked] = useState(false);
 
   // Defines the columns of the grid
   const columns: GridColumns = [
@@ -121,8 +121,60 @@ const TicketTypes = () => {
     }
   };
 
-  const handleAddTicket = async () => {
-    return;
+  const showAddTicketView = () => {
+    // how to generate a new ticket type id
+    const newTicketId = ticketTypes.length + 1;
+
+    return (
+      <div className='bg-blue-200 rounded-xl p-10 shadow-md mb-4'>
+        <div className='shadow-xl p-5 rounded-xl mb-9 bg-blue-700'>
+          {/* <label className='font-semibold text-white mb-7 mt-7  '>Name</label> */}
+          <div className='flex flex-col gap-5 mt-5 md:pr-20'>
+            <label className="text-white" htmlFor="name">Name</label>
+            <input 
+              className='input rounded-lg p-2 bg-blue-100 w-full'
+              placeholder="Enter name of new ticket type"
+              type="text"
+              id="name"
+              name="name"
+              required
+            />
+            <label className='text-white' htmlFor="price">Price</label>
+            <input 
+              className='input rounded-lg p-2 bg-blue-100 w-full'
+              placeholder="Price of ticket type"
+              type="number"
+              min="0"
+              id="price"
+              name="price"
+              required
+            />
+            <label className='text-white' htmlFor="concessions">Concessions</label>
+            <input 
+              className='input rounded-lg p-2 bg-blue-100 w-full'
+              placeholder="Price of concessions"
+              type="number"
+              min="0"
+              id="concessions"
+              name="concessions"
+              required
+            />
+          </div>
+          <button
+            className='px-2 py-1 bg-blue-500 disabled:opacity-30  mt-6 mb-4 text-white rounded-lg text-sm'
+            //onClick={}
+          >
+            Submit
+          </button>
+          <button
+            className='px-2 py-1 bg-red-500 disabled:opacity-30 ml-9 mt-6 mb-4 text-white rounded-lg text-sm'
+            onClick={() => setAddTicketClicked(!addTicketClicked)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    )
   };
 
   // Fetches all the ticket types from the API in the backend
@@ -173,10 +225,11 @@ const TicketTypes = () => {
           // className='px-3 py-2 bg-blue-600 text-white rounded-xl float-right'
           className='px-3 py-2 bg-blue-600 text-white rounded-xl mr-0 mb-2'
           type='submit'
-          onClick={handleAddTicket}
+          onClick={() => setAddTicketClicked(!addTicketClicked)}
         >
           Add New Ticket Type
         </button>
+        {addTicketClicked && showAddTicketView()}
         <DataGrid
           className='bg-white'
           editMode='row'
