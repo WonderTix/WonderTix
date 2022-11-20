@@ -95,7 +95,7 @@ const TicketTypes = () => {
     console.log('Delete Clicked');
     // console.log(`ID: ${cell.row.id}`);
     // console.log(event?.currentTarget.id)
-    const ticketId = Number(cell.row.id) + 1;
+    const ticketId = Number(cell.row.id);
     ticketId.toString();
     console.log('New id: ' + ticketId);
 
