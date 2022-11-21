@@ -4,7 +4,8 @@ import TaskForm from './TaskForm';
 
 /**
  * Create new Task
- * @return {ReactElement}
+ *
+ * @returns {ReactElement}
  */
 const CreateTask=() =>{
   return (

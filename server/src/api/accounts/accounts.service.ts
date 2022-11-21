@@ -17,7 +17,7 @@ export const findAll = async (params: any): Promise<response> => {
     ],
   };
 
-  /*if (Object.keys(params).length > 0) {
+  /* if (Object.keys(params).length > 0) {
     let count = 0;
     myQuery.text += ' WHERE';
     for (const val of Object.keys(params)) {
@@ -70,12 +70,13 @@ export const create = async (
 export const remove = async (id: any): Promise<response> => {
   const myQuery = {
     text: 'DELETE FROM users WHERE userid = $1;',
-    values: [id]
+    values: [id],
   };
   return buildResponse(myQuery, 'DELETE');
 };
 
-export const update = async (b: {username: string, auth0_id: string, is_superadmin: boolean}, userid: any): Promise<response> => {
+export const update = async (b: {username: string, auth0_id: string, is_superadmin: boolean},
+    userid: any): Promise<response> => {
   const myQuery = {
     text: `
       UPDATE users

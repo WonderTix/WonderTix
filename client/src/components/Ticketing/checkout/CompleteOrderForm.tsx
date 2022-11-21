@@ -7,13 +7,14 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 // import {input type='text', Checkboxes} from 'mui-rff';
 import {Form} from 'react-final-form';
 import React, {ReactElement, useState} from 'react';
 
 /**
  * Info for checkout form
+ *
  * @module
  * @param {boolean} optIn
  * @param {string} firstName
@@ -43,8 +44,9 @@ export interface CheckoutFormInfo {
 
 /**
  * Used to complete order
- * @param {function} onSubmit
- * @param {function} onBack
+ *
+ * @param {Function} onSubmit
+ * @param {Function} onBack
  * @param {boolean} disabled
  * @param {boolean} donationForm
  */
@@ -68,9 +70,10 @@ function validateEmail(email: string) {
 */
 /**
  * Displays the complete order form
- * @param {function} onSubmit onSubmit callback function
- * @param {function} onBack onBack callback function
- * @return {ReactElement}
+ *
+ * @param {Function} onSubmit onSubmit callback function
+ * @param {Function} onBack onBack callback function
+ * @returns {ReactElement}
  */
 export default function CompleteOrderForm(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -112,7 +115,7 @@ export default function CompleteOrderForm(
           onSubmit={handleSubmit}
           initialValues={{'opt-in': false, 'seating-accommodation': false}}
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          render={({handleSubmit, values, valid}) => (
+          render={({handleSubmit}) => (
             <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-9 rounded-xl flex flex-col  justify-between'>
               <div className='flex flex-col w-full  '>
                 <div className='grid grid-cols-2 gap-5'>

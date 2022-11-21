@@ -8,13 +8,14 @@ import AuthNav from '../../Authentication/auth-nav';
 
 /**
  * Has Dashboard, Door List, Manage Events, and Showings to navigate to
+ *
  * @module
  * @param {boolean} show - We use states true or false, default is false
  * @param {boolean} profile - True or false, default is false
  * @param {auth0} user - managed by auth0
  * @param {auth0} picture - managed by auth0
  * @param {auth0} name - managed by auth0
- * @param {Object} navigate - makes use of the navigate function 
+ * @param {object} navigate - makes use of the navigate function
  * @returns {ReactElement} Udash_nav
  */
 const Udash_nav = () => {

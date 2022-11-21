@@ -2,7 +2,7 @@ import React, {CSSProperties} from 'react';
 import popupProps from '../../interfaces/popup.interface';
 
 /**
- * @property {Object} popUpContainer - A property container for pop up
+ * @property {object} popUpContainer - A property container for pop up
  */
 const popUpContainer: CSSProperties = {
   'position': 'fixed',
@@ -14,7 +14,7 @@ const popUpContainer: CSSProperties = {
 };
 
 /**
- * @property {Object} box - A property container for the box used for pop up
+ * @property {object} box - A property container for the box used for pop up
  */
 const box: CSSProperties ={
   'position': 'relative',
@@ -30,10 +30,12 @@ const box: CSSProperties ={
 
 /**
  * Popup makes use of both popUpContainer and box for styles
+ *
  * @module
  * @param {string} title - Title of popup
  * @param {string} message - Message of popup
- * @returns {ReactElement} PopUp - Function named PopUp that can be interacted with
+ * @returns {ReactElement} PopUp - Function named PopUp that can be interacted
+ * with
  */
 const PopUp = ({title, message, handleClose}: popupProps) => {
   return (

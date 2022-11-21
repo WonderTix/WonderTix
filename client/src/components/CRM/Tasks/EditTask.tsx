@@ -5,7 +5,8 @@ import Filter from './Filter';
 
 /**
  * Handle editing tasks
- * @return {React.ReactElement} HTMLElement for EditTask
+ *
+ * @returns {React.ReactElement} HTMLElement for EditTask
  */
 const EditTask = (): React.ReactElement => {
   return (

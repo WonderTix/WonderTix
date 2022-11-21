@@ -7,7 +7,10 @@ import {useNavigate} from 'react-router-dom';
 import {Auth0Provider} from '@auth0/auth0-react';
 /**
  * the main logic for the athentication to work
- * @return {React.ReactElement}
+ *
+ * @param root0
+ * @param root0.children
+ * @returns {React.ReactElement}
  */
 const Auth0ProviderWithHistory = ({
   children,
