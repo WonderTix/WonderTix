@@ -15,6 +15,10 @@ const TicketTypes = () => {
   const {getAccessTokenSilently} = useAuth0();
   const [addTicketClicked, setAddTicketClicked] = useState(false);
 
+  const [newTicketType, setTicketType] = useState('');
+  const [newTicketPrice, setTicketPrice] = useState(0);
+  const [newConcessionsPrice, setConcessionsPrice] = useState(0);
+
   // Defines the columns of the grid
   const columns: GridColumns = [
   // const columns: GridColDef[] = [
@@ -121,9 +125,50 @@ const TicketTypes = () => {
     }
   };
 
-  const showAddTicketView = () => {
-    // how to generate a new ticket type id
+  const handleNameChange = (event) => {
+    setTicketType(event.target.value);
+    // console.log(newTicketType);
+  }
+  const handlePriceChange = (event) => {
+    setTicketPrice(event.target.value);
+    // console.log(newTicketPrice)
+  }
+  const handleConcessionsChange = (event) => {
+    setConcessionsPrice(event.target.value);
+    // console.log(newConcessionsPrice)
+  }
+  const handleSubmit = async () => {
+    console.log('Submit clicked');
+    console.log(newTicketType);
     const newTicketId = ticketTypes.length + 1;
+
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+
+    try {
+      const response = await fetch(
+          process.env.REACT_APP_ROOT_URL + '/api/tickets/newType', 
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({name: newTicketType, price: newTicketPrice, concessions: newConcessionsPrice}),
+          }
+      )
+      if (response.ok) {
+        console.log('Ticket type added successfully');
+        setAddTicketClicked(!addTicketClicked); // closes the form
+      }
+    } catch (error) {
+      console.log(error);
+    }
+}
+
+  const showAddTicketView = () => {
 
     return (
       <div className='bg-blue-200 rounded-xl p-10 shadow-md mb-4'>
@@ -137,6 +182,7 @@ const TicketTypes = () => {
               type="text"
               id="name"
               name="name"
+              onChange={handleNameChange}
               required
             />
             <label className='text-white' htmlFor="price">Price</label>
@@ -147,6 +193,7 @@ const TicketTypes = () => {
               min="0"
               id="price"
               name="price"
+              onChange={handlePriceChange}
               required
             />
             <label className='text-white' htmlFor="concessions">Concessions</label>
@@ -157,12 +204,13 @@ const TicketTypes = () => {
               min="0"
               id="concessions"
               name="concessions"
+              onChange={handleConcessionsChange}
               required
             />
           </div>
           <button
             className='px-2 py-1 bg-blue-500 disabled:opacity-30  mt-6 mb-4 text-white rounded-lg text-sm'
-            //onClick={}
+            onClick={handleSubmit}
           >
             Submit
           </button>
