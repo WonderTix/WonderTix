@@ -241,7 +241,7 @@ const payWhatFunc = (cart: CartItem, num: number) => {
  * @param state
  * @param action
  */
- const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean, payWhatPrice?: number }>> = (state, action) => {
+const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean, payWhatPrice?: number }>> = (state, action) => {
   const {id, qty, concessions, payWhatPrice} = action.payload;
   const tickets = state.tickets;
 
