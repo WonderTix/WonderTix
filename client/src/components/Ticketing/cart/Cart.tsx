@@ -59,9 +59,6 @@ const Cart = () => {
   const total = totalReducer(subtotal, discount);
 
   useEffect(() => {
-    console.log('Subtotal:', subtotal), [subtotal];
-    console.log('Total:', total), [total];
-    console.log('Current discount:', discount);
     if (discount.code !== '') {
       setValidDiscount(true);
       setDiscountClicked(false);
