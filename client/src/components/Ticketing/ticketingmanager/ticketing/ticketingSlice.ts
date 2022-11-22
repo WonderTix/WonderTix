@@ -440,10 +440,6 @@ const ticketingSlice = createSlice({
         })
         .addCase(fetchDiscountData.fulfilled, (state, action) => {
           state.status = 'success';
-          console.log('num events:', state.cart.length);
-          // console.log('num tickets:', getNumTickets(state));
-          // console.log('cart:', state.cart.values());
-          console.log('payload:', action.payload);
           state.discount = (action.payload) ?
                     action.payload.discount :
                     {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0};
@@ -492,11 +488,6 @@ export const selectCartTicketCount = (state: RootState): {[key: number]: number}
   );
 export const getNumTickets = (state: RootState): {[key: number]: number} =>
   state.ticketing.cart.reduce(
-      /*
-        (acc, item) => {
-          acc + item.qty;
-        }, {},
-      */
       (acc, item) => {
         const key = item.product_id;
         if (key in acc) {
