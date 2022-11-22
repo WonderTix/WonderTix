@@ -471,7 +471,7 @@ const ticketingSlice = createSlice({
  * @param state
  */
 export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => tot + (item.price * item.qty), 0);
-export const selectCartTotal = (state: RootState): number => selectCartSubtotal(state) * (1-(state.ticketing.discount.percent/100)) - state.ticketing.discount.amount;
+export const selectCartTotal = (state: RootState): number => Math.max(selectCartSubtotal(state) * (1-(state.ticketing.discount.percent/100)) - state.ticketing.discount.amount, 0);
 export const selectCartIds = (state: RootState): number[] => state.ticketing.cart.map((i) => i.product_id);
 export const selectCartItem = (state: RootState, id: number): CartItem|undefined => state.ticketing.cart.find((i) => i.product_id===id);
 export const selectCartTicketCount = (state: RootState): {[key: number]: number} =>
