@@ -25,7 +25,7 @@ const itemCost = (item: Item) => item.price * item.qty;
 const subtotalReducer = (acc: number, item: Item) => acc + itemCost(item);
 const totalReducer = (subtotal: number, discount: DiscountItem) => {
   const total = subtotal * (1-(discount.percent/100)) - discount.amount;
-  return (total > 0) ? total : subtotal;
+  return (total < 0) ? 0 : total;
 };
 
 /**
