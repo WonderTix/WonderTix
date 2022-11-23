@@ -16,7 +16,8 @@ const Contacts = (): React.ReactElement => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
   const {getAccessTokenSilently} = useAuth0();
-  
+  const [datalist, setDataList] = useState([]);
+
   const getData = async () => {
     if (params.id) {
       setIsLoading(true);
@@ -35,7 +36,8 @@ const Contacts = (): React.ReactElement => {
               },
           )
           .then((res) => {
-            setData(res.data.data[0]);
+            // setData(res.data);
+            setDataList(res.data);
             console.log(res);
           })
           .catch((err) => {
@@ -87,6 +89,11 @@ const Contacts = (): React.ReactElement => {
     e.preventDefault();
     navigate(`${contact}`);
   };
+  console.log("----------------------");
+  console.log("Find D?",datalist)
+  const printall = datalist.map((d:any)=>{
+    console.log(d);
+  })
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='flex flex-col  md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
@@ -121,7 +128,7 @@ const Contacts = (): React.ReactElement => {
         <div className='mt-9 text-zinc-600 w-full '>
           {isLoading ? <div className="radial-progress"/> :
         <ContactResults data={data} />}
-        </div>
+        </div>        
       </div>
     </div>
   );
