@@ -58,7 +58,7 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
         </span>
         <div className='flex flex-row items-center gap-7 mr-5'>
           <div className='flex flex-row items-center gap-2'>
-            <button className='text-white items-center' aira-label={`remove one ${item.name} to cart`} onClick={decrement}>
+            <button className='text-white items-center' aria-label={`remove one ${item.name} to cart`} onClick={decrement}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" />
               </svg>
