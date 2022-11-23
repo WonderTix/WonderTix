@@ -251,7 +251,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
           onChange={() => dispatch({type: 'toggle_concession'})} name='concessions' />
         <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
       </div>
-      <div className={tickets[0].admission_type == 'General Admission - Adult' ? 'show': 'hidden'}>
+      <div className={tickets[0].admission_type == 'Pay What You Can' ? 'show': 'hidden'}>
         <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
           <div className='justify-center items-center text-white rounded-xl'>
             <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What amount: {payWhatPrice}</h1>
