@@ -98,7 +98,7 @@ const Cart = () => {
     }
   };
 
-  const applyDiscount = (e: React.FormEvent) => {
+  const applyDiscount = () => {
     dispatch(fetchDiscountData(discountText));
     setDiscountClicked(true);
     return;
