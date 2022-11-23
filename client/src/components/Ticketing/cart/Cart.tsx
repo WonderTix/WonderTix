@@ -19,6 +19,7 @@ import {useNavigate} from 'react-router-dom';
  * @param {Item} price: number, qty: number
  * @param {Function} itemCost - item: Item, item.price * item.qty
  * @param {Function} subtotalReducer - acc: number, item: Item, acc + itemCost(item)
+ * @param {Function} totalReducer - subtotal: number, discount: DiscountItem
  */
 type Item = {price: number, qty: number}
 const itemCost = (item: Item) => item.price * item.qty;
@@ -98,11 +99,13 @@ const Cart = () => {
     }
   };
 
-  const applyDiscount = () => {
-    dispatch(fetchDiscountData(discountText));
+  /**
+   * Searches for (and applies if found) discount code based on user input
+   */
+  async function applyDiscount() {
+    await dispatch(fetchDiscountData(discountText));
     setDiscountClicked(true);
-    return;
-  };
+  }
 
   const removeDiscount = () => {
     setValidDiscount(false);
@@ -160,6 +163,9 @@ const Cart = () => {
               <div className='flex flex-col items-center gap-3 '>
 
                 <div className='flex flex-col items-center form-control disabled:opacity-50 '>
+                  {!validDiscount && discountClicked ? (
+                    <div className='text-amber-300 italic'>Invalid discount code</div>
+                  ) : ('')}
                   <div className='input-group flex flex-row items-center w-full px-3 py-1 text-black rounded-xl bg-sky-500'>
                     <input type="text" placeholder="Discount code..."
                       className='input input-bordered rounded-md pl-2'
@@ -184,9 +190,6 @@ const Cart = () => {
                       </button>
                     )}
                   </div>
-                  {!validDiscount && discountClicked ? (
-                    <div className='text-white italic'>Invalid discount code</div>
-                  ) : ('')}
                 </div>
 
                 <button className='bg-red-600 flex flex-col items-center w-full px-3 py-3 text-white rounded-xl disabled:opacity-50 'disabled={items.length === 0} onClick={removeAllCartItems}>
