@@ -120,6 +120,7 @@ const TicketTypes = () => {
 
       const responseData = await response.json();
       console.log(responseData);
+      getTicketTypes(); // refreshes the page ie re-renders the component (the grid)
     } catch (error) {
       console.log(error);
     }
