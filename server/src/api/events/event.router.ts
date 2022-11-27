@@ -84,6 +84,10 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
   // right now it gets the price info from the request made by the client.
   // THIS IS WRONG it needs to look up the price in the database given
   // the id of the show/event/whatever. PRICES CANNOT COME FROM CLIENTS!!
+  // FIXED: prices are fetched from db so customers cannot change the price they
+  // submit their order. Some data such as itemname and description can be.
+  // Should not be an issue becuase this is only stored in stripe, and not used
+  // by us
   const data: CartItem[] = req.body.cartItems;
 
   const {
@@ -114,12 +118,12 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                     INSERT INTO
                       contacts (
                           firstname,
-                          lastname, 
-                          email, 
-                          phone, 
-                          address, 
-                          newsletter, 
-                          donorbadge, 
+                          lastname,
+                          email,
+                          phone,
+                          address,
+                          newsletter,
+                          donorbadge,
                           seatingaccom)
                     VALUES
                       ($1, $2, $3, $4, $5, $6, $7, $8);`;
@@ -157,7 +161,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                     SET
                       firstname = $2,
                       lastname = $3,
-                      phone = $4, 
+                      phone = $4,
                       address = $5,
                       newsletter = $6,
                       seatingaccom = $7
@@ -175,11 +179,11 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
   try {
     // Possible breaking change custname -> firstname, lastname
     const query = `
-                  SELECT 
-                    contactid 
-                  FROM 
-                    contacts 
-                  WHERE 
+                  SELECT
+                    contactid
+                  FROM
+                    contacts
+                  WHERE
                     firstname = $1 AND lastname = $2;`;
     contactID = await pool.query(
         query,
@@ -205,6 +209,24 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       id: item.product_id,
       quantity: item.qty,
     }));
+
+
+//Queries the database to get item prices
+    let costVect = [];
+    for(let i = 0; i < data.length; i++){
+      try{
+        let priceQueryi = await pool.query(
+            'SELECT price FROM orderitems WHERE orderitemid = $1;',
+            [data[i].product_id],
+        );
+        if(priceQueryi.rows[0]){
+          data[i].price = priceQueryi.rows[0]; //Replaces price in data with DB price
+        }
+      } catch (err: any) {
+        console.error(err.message);
+        throw new Error('Cost Calculation Error');
+      };
+    };
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
