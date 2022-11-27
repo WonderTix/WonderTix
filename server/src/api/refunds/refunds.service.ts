@@ -1,6 +1,5 @@
 
-import {response, buildResponse} from '../db';
-import Stripe from 'stripe';
+import {response, buildResponse, pool} from '../db';
 const Stripe = require('stripe');
 const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
   process.env.PRIVATE_STRIPE_KEY : '';
@@ -11,22 +10,22 @@ const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
  */
 const stripe = Stripe(stripeKey);
 
-export const initRefund = async initRefund(mode, id, amount): Promise<response> => {
+export const initRefund = async(mode:number = 0, id:string = ``, amount:number = 0.0): Promise<response> => {
       //Pass donation/order, donationid/orderid, amount/ordertotal (default 0.0 -> full refund)
   let query = {
     text: ``,
-    values: [],
+    values: [id],
   };
   //Retrieve payment intent from respective table
   let dbTable;
-  if(mode === 0){//Mode 0 -> donation refund
+  //Mode 0 -> donation refund
+  if(mode === 0){
     query.text = `SELECT payment_intent FROM donatons WHERE donationid = $1`;
-    query.values = [id];
-    dbTable = orders;
-  } else if(mode === 1){//Mode 1 -> order refund
+    dbTable = `orders`;
+  //Mode 1 -> order refund
+  } else if(mode === 1){
     query.text = `SELECT payment_intent FROM payment WHERE oderid = $1`;
-    query.values = [id];
-    dbTable = donations;
+    dbTable =  `donations`;
   } else { //fails
     throw new Error('Invalid refund mode');
   }
@@ -47,7 +46,7 @@ export const initRefund = async initRefund(mode, id, amount): Promise<response> 
     text: `UPDATE $1
             SET refund_id = $2
             WHERE payment_intent = $3`,
-    values: [dbtable, refund.id, paymentIntent],
+    values: [dbTable, refund.id, paymentIntent],
   };
   return buildResponse(refQuery, 'PUT');
 };

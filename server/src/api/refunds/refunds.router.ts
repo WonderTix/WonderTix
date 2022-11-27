@@ -1,6 +1,6 @@
 import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {pool} from '../db';
+import {initRefund} from './refunds.service';
 
 /**
  * create Router object
@@ -21,7 +21,7 @@ refundRouter.put('/', checkJwt, checkScopes, async(
 ) => {
     try{
       //Pass donation/order, donationid/orderid, amount/ordertotal (default 0.0 -> full refund)
-      const codes = await initRefund(req.params.mode, req.params.id, req.params.amount);
+      const codes = await initRefund(req.body.refMode, req.body.id, req.body.amount);
       const code = codes.status.success ? 200 : 404;
       res.status(code).send(codes);
     }catch(error: any){
