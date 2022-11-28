@@ -4,7 +4,6 @@ import {
   GridColumns,
   GridRenderCellParams,
   GridRowModel,
-  GridRowParams,
 } from '@mui/x-data-grid';
 import Chip from '@mui/material/Chip';
 import {useAuth0} from '@auth0/auth0-react';
@@ -14,14 +13,12 @@ const TicketTypes = () => {
   const [ticketTypes, setTicketTypes] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
   const [addTicketClicked, setAddTicketClicked] = useState(false);
-
   const [newTicketType, setTicketType] = useState('');
   const [newTicketPrice, setTicketPrice] = useState(0);
   const [newConcessionsPrice, setConcessionsPrice] = useState(0);
 
   // Defines the columns of the grid
   const columns: GridColumns = [
-  // const columns: GridColDef[] = [
     {
       field: 'description',
       headerName: 'Ticket Type',
@@ -33,21 +30,7 @@ const TicketTypes = () => {
       headerName: 'Price',
       width: 150,
       editable: true,
-      // valueParser: (value: GridCellValue, params: GridCellParams) => {
-      // parseFloat(params.value);
-      // },
     },
-    /*
-    {
-      field: 'edit',
-      headerName: 'Edit',
-      sortable: false,
-      width: 100,
-      renderCell: (id) => {
-        return <Chip label='Edit' onClick={handleEditClick(id)} />;
-      },
-    },
-    */
     {
       field: 'delete',
       headerName: 'Delete',
@@ -75,18 +58,17 @@ const TicketTypes = () => {
 
         if (newRow.description !== prevRow.description ||
           newRow.price !== prevRow.price) {
-          // NEXT: Also check that ticket name is not empty & price is number
           console.log('Ticket type has changed');
 
           const response = await fetch(
-            process.env.REACT_APP_ROOT_URL+'/api/tickets/updateType', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
+              process.env.REACT_APP_ROOT_URL+'/api/tickets/updateType', {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(newRow),
               },
-              body: JSON.stringify(newRow),
-            }
           );
           console.log(response);
         }
@@ -97,11 +79,8 @@ const TicketTypes = () => {
   // handles the click event of the delete button
   const handleDeleteClick = async (cell: GridRenderCellParams) => {
     console.log('Delete Clicked');
-    // console.log(`ID: ${cell.row.id}`);
-    // console.log(event?.currentTarget.id)
     const ticketId = Number(cell.row.id);
     ticketId.toString();
-    console.log('New id: ' + ticketId);
 
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
@@ -120,7 +99,7 @@ const TicketTypes = () => {
 
       const responseData = await response.json();
       console.log(responseData);
-      getTicketTypes(); // refreshes the page ie re-renders the component (the grid)
+      getTicketTypes(); // refreshes the page ie re-renders the table
     } catch (error) {
       console.log(error);
     }
@@ -128,20 +107,18 @@ const TicketTypes = () => {
 
   const handleNameChange = (event) => {
     setTicketType(event.target.value);
-    // console.log(newTicketType);
-  }
+  };
+
   const handlePriceChange = (event) => {
     setTicketPrice(event.target.value);
-    // console.log(newTicketPrice)
-  }
+  };
+
   const handleConcessionsChange = (event) => {
     setConcessionsPrice(event.target.value);
-    // console.log(newConcessionsPrice)
-  }
+  };
+
   const handleSubmit = async () => {
     console.log('Submit clicked');
-    console.log(newTicketType);
-    const newTicketId = ticketTypes.length + 1;
 
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
@@ -150,16 +127,22 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_ROOT_URL + '/api/tickets/newType', 
+          process.env.REACT_APP_ROOT_URL + '/api/tickets/newType',
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({name: newTicketType, price: newTicketPrice, concessions: newConcessionsPrice}),
-          }
-      )
+            body: JSON.stringify(
+                {
+                  name: newTicketType,
+                  price: newTicketPrice,
+                  concessions: newConcessionsPrice,
+                },
+            ),
+          },
+      );
       if (response.ok) {
         console.log('Ticket type added successfully');
         setAddTicketClicked(!addTicketClicked); // closes the form
@@ -167,17 +150,16 @@ const TicketTypes = () => {
     } catch (error) {
       console.log(error);
     }
-}
+  };
 
+  // Shows the form to add a new ticket type
   const showAddTicketView = () => {
-
     return (
       <div className='bg-blue-200 rounded-xl p-10 shadow-md mb-4'>
         <div className='shadow-xl p-5 rounded-xl mb-9 bg-blue-700'>
-          {/* <label className='font-semibold text-white mb-7 mt-7  '>Name</label> */}
           <div className='flex flex-col gap-5 mt-5 md:pr-20'>
             <label className="text-white" htmlFor="name">Name</label>
-            <input 
+            <input
               className='input rounded-lg p-2 bg-blue-100 w-full'
               placeholder="Enter name of new ticket type"
               type="text"
@@ -187,7 +169,7 @@ const TicketTypes = () => {
               required
             />
             <label className='text-white' htmlFor="price">Price</label>
-            <input 
+            <input
               className='input rounded-lg p-2 bg-blue-100 w-full'
               placeholder="Price of ticket type"
               type="number"
@@ -197,8 +179,10 @@ const TicketTypes = () => {
               onChange={handlePriceChange}
               required
             />
-            <label className='text-white' htmlFor="concessions">Concessions</label>
-            <input 
+            <label className='text-white' htmlFor="concessions">
+              Concessions
+            </label>
+            <input
               className='input rounded-lg p-2 bg-blue-100 w-full'
               placeholder="Price of concessions"
               type="number"
@@ -210,20 +194,22 @@ const TicketTypes = () => {
             />
           </div>
           <button
-            className='px-2 py-1 bg-blue-500 disabled:opacity-30  mt-6 mb-4 text-white rounded-lg text-sm'
+            className='px-2 py-1 bg-blue-500 disabled:opacity-30
+              mt-6 mb-4 text-white rounded-lg text-sm'
             onClick={handleSubmit}
           >
             Submit
           </button>
           <button
-            className='px-2 py-1 bg-red-500 disabled:opacity-30 ml-9 mt-6 mb-4 text-white rounded-lg text-sm'
+            className='px-2 py-1 bg-red-500 disabled:opacity-30
+              ml-9 mt-6 mb-4 text-white rounded-lg text-sm'
             onClick={() => setAddTicketClicked(!addTicketClicked)}
           >
             Cancel
           </button>
         </div>
       </div>
-    )
+    );
   };
 
   // Fetches all the ticket types from the API in the backend
@@ -271,7 +257,6 @@ const TicketTypes = () => {
           Manage Ticket Types
         </h1>
         <button
-          // className='px-3 py-2 bg-blue-600 text-white rounded-xl float-right'
           className='px-3 py-2 bg-blue-600 text-white rounded-xl mr-0 mb-2'
           type='submit'
           onClick={() => setAddTicketClicked(!addTicketClicked)}
