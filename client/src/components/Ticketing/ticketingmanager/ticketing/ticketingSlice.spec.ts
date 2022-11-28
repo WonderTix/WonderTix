@@ -20,6 +20,7 @@ import ticketReducer, {
   selectCartTicketCount,
   selectCartItem,
   selectCartSubtotal,
+  DiscountItem,
 } from './ticketingSlice';
 // import User from '../../../../../../server/src/interfaces/User';
 
@@ -48,18 +49,28 @@ const ticket2: Ticket = {
   concession_price: 9.99,
   availableseats: 20,
 };
+const discount1: DiscountItem = {
+  code: '',
+  amount: 0,
+  percent: 0,
+  minTickets: 0,
+  minEvents: 0,
+};
 
 const ticketingInitState: ticketingState = {
   cart: [],
   tickets: {
-    byId: {
-      1: ticket,
-      2: ticket2,
-    },
-    allIds: [1, 2],
+    data: {
+      byId: {
+        1: ticket,
+        2: ticket2,
+      },
+      allIds: [1, 2],
+    }
   },
   events: [event],
   status: 'idle',
+  discount: discount1,
 };
 
 const ROOT_INIT_STATE: RootState = {
