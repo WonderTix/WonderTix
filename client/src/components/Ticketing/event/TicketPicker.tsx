@@ -73,6 +73,7 @@ const timeSelected = (t: Ticket) => ({type: 'time_selected', payload: t});
 const resetWidget = () => ({type: 'reset'});
 const changeQty = (n: number) => ({type: 'change_qty', payload: n});
 const changePayWhat = (n:number) => ({type: 'change_pay_what', payload: n});
+let tempPay = 0;
 
 /**
  * TicketPickerReducer is meant to be used to lower ticket numbers
@@ -155,7 +156,6 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
 
   const appDispatch = useAppDispatch();
   const cartTicketCount = useAppSelector(selectCartTicketCount);
-  const [tempPay, setTempPay] = useState(0);
 
   const handleClick = (d: Date, t: Ticket[]) => {
     dispatch(dateSelected(d, t));
@@ -188,7 +188,8 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
 
   const payWhatFunc = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    setTempPay(parseInt(event.currentTarget.value));
+    tempPay = parseInt(event.currentTarget.value);
+    dispatch(changePayWhat(tempPay));
   };
 
   console.log(numAvail);
@@ -253,16 +254,17 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       <div className={tickets[0].admission_type == 'Pay What You Can' ? 'show flex-col': 'hidden'}>
         <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
           <div className='justify-center items-center text-white rounded-xl'>
-            <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What amount: {payWhatPrice}</h1>
+            <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What You Can</h1>
           </div>
           <input
             disabled={!selectedTicket}
             onChange={(e) => payWhatFunc(e)}
             type="text"
             placeholder="Enter Amount"
-            className="disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 mb-2 disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
+        {/*
         <button
           disabled={!selectedTicket}
           type="button"
@@ -271,6 +273,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
         >
           Set Pay What
         </button>
+        */}
       </div>
       <div>
         <button
