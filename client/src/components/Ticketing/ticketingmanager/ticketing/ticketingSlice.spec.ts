@@ -87,7 +87,7 @@ describe('ticketing slice', () => {
     product_id: ticket.event_instance_id,
     qty: 1,
     name: 'Event 1 Ticket',
-    desc: 'General Admission - Sat, Jul 31 - 7:00 PM',
+    desc: 'General Admission - Adult - Sat, Jul 31 - 7:00 PM',
     product_img_url: 'https://image',
     price: 15.99,
   };
@@ -150,7 +150,7 @@ describe('ticketing slice', () => {
             tickets: [{
               event_instance_id: 1,
               eventid: '1',
-              admission_type: 'General Admission',
+              admission_type: 'General Admission - Adult',
               ticket_price: 15.99,
               concession_price: 4.99,
               availableseats: 34,
@@ -158,7 +158,7 @@ describe('ticketing slice', () => {
             }, {
               event_instance_id: 2,
               eventid: '1',
-              admission_type: 'General Admission',
+              admission_type: 'General Admission - Adult',
               ticket_price: 19.99,
               concession_price: 9.99,
               availableseats: 20,
