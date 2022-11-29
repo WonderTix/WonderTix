@@ -42,9 +42,6 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
     }
   };
 
-  console.log(item.payWhatCan);
-  console.log(item.payWhatPrice);
-
   return (
     <div className='bg-zinc-200 w-full flex flex-row
      h-40 gap-5 rounded-xl bg-cover' style={{backgroundImage: `url(${item.product_img_url})`}} >

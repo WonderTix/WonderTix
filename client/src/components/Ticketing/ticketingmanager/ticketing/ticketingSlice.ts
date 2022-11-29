@@ -365,9 +365,6 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   console.log(payWhatPrice);
 
   if (inCart) {
-    {/* if (payWhatPrice > 0) {
-      payWhatFunc(state.cart, payWhatPrice);
-    }*/}
     return {
       ...state,
       cart: updateCartItem(state.cart, {
