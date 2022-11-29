@@ -49,7 +49,18 @@ export const findByName = async (firstname: string, lastname: string): Promise<r
 
 export const find = async (id: string): Promise<response> => {
   const myQuery = {
-    text: 'SELECT * FROM contacts WHERE customerid = $1',
+    text: 'SELECT * FROM contacts WHERE contactid = $1',
+    values: [id],
+  };
+  return await buildResponse(myQuery, 'GET');
+};
+
+export const findContactTicket = async (id: string): Promise<response> => {
+  const myQuery = {
+    text: `SELECT * FROM contacts 
+           LEFT JOIN orders ON
+           orders.contactid_fk = contacts.contactid
+           WHERE contacts.contactid = $1`,
     values: [id],
   };
   return await buildResponse(myQuery, 'GET');

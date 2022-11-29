@@ -7,6 +7,8 @@ import {useParams} from 'react-router-dom';
 // import { useInput } from './hooks/input-hook';
 import {useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
+import {useNavigate} from 'react-router-dom';
+
 /**
  * Display the results of contacts search
  * @return {ReactElement}
@@ -18,6 +20,7 @@ const ContactResults = ({
 }): React.ReactElement => {
   if (!data) return <div>Empty</div>;
   const {getAccessTokenSilently} = useAuth0();
+  const navigate = useNavigate();
 
   async function deleteEvent(showId: Number) {
     const token = await getAccessTokenSilently({
@@ -41,12 +44,6 @@ const ContactResults = ({
     contactid,
     email,
     phone,
-    custaddress,
-    newsletter,
-    donorbadge,
-    seatingaccom,
-    vip,
-    volunteerlist,
   } = data;
   return (
     <div className='flec flex-row w-full bg-white
@@ -90,58 +87,10 @@ const ContactResults = ({
             {phone}
           </div>
         </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Customer Address:
-          </div>
-          <div>
-            {custaddress}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Newsletter:
-          </div>
-          <div>
-            {'' + newsletter}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Donorbadge:
-          </div>
-          <div>
-            {donorbadge}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Seating Accomdation:
-          </div>
-          <div>
-            { '' + seatingaccom }
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            VIP:
-          </div>
-          <div>
-            { '' + vip }
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Volunteer List:
-          </div>
-          <div>
-            {'' + volunteerlist}
-          </div>
-        </div>
-        <button disabled className='bg-blue-600 disabled:opacity-40
+        <button className='bg-blue-600 disabled:opacity-40
         mt-4 text-white px-5 py-2
         rounded-xl justify-end
-          ' >Edit info</button>
+          ' onClick={() => navigate(`/admin/contacts/show/${contactid}`)}>Show All Information</button>
         <button className='bg-red-600 hover:bg-red-700
         mt-4 text-white px-5 py-2
         rounded-xl justify-end
@@ -150,7 +99,6 @@ const ContactResults = ({
     </div>
   );
 };
-
 
 export const contactForm = (data: any): React.ReactElement => {
   const [Custname, setName] = useState(data.name);
