@@ -29,7 +29,7 @@ export const ContactOneResult = () => {
       });
       await axios
           .get(
-              process.env.REACT_APP_ROOT_URL + `/api/contacts/${params.contactid}`,
+              process.env.REACT_APP_ROOT_URL + `/api/contacts/show/${params.contactid}`,
               {
                 headers: {
                   'Authorization': `Bearer ${token}`,
