@@ -44,6 +44,12 @@ const ContactResults = ({
     contactid,
     email,
     phone,
+    address,
+    newsletter,
+    donorbadge,
+    seatingaccom,
+    vip,
+    volunteerlist,
   } = data;
   return (
     <div className='flec flex-row w-full bg-white
@@ -85,6 +91,54 @@ const ContactResults = ({
           </div>
           <div>
             {phone}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Customer Address:
+          </div>
+          <div>
+            {address}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Newsletter:
+          </div>
+          <div>
+            {'' + newsletter}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Donorbadge:
+          </div>
+          <div>
+            {donorbadge}
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Seating Accomdation:
+          </div>
+          <div>
+            { '' + seatingaccom }
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            VIP:
+          </div>
+          <div>
+            { '' + vip }
+          </div>
+        </div>
+        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <div className='font-semibold'>
+            Volunteer List:
+          </div>
+          <div>
+            {'' + volunteerlist}
           </div>
         </div>
         <button className='bg-blue-600 disabled:opacity-40
