@@ -45,7 +45,7 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const donation = await find(req.params.id);
     let code = donation.status.success ? 200 : 404;
-    if(code === 200 && donation.data.length === 0){
+    if (code === 200 && donation.data.length === 0) {
       code = 404;
       donation.status.success = false;
     }
@@ -59,7 +59,7 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removedDonations = await remove(req.params.id);
     let code = removedDonations.status.success ? 200 : 404;
-    if(code === 200 && removedDonations.data.length === 0){
+    if (code === 200 && removedDonations.data.length === 0) {
       code = 404;
       removedDonations.status.success = false;
     }
@@ -73,7 +73,7 @@ donationsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedDonation = await update(req);
     let code = updatedDonation.status.success ? 200 : 404;
-    if(code === 200 && updatedDonation.data.length === 0){
+    if (code === 200 && updatedDonation.data.length === 0) {
       code = 404;
       updatedDonation.status.success = false;
     }

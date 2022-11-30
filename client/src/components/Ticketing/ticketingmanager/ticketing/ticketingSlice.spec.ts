@@ -66,7 +66,7 @@ const ticketingInitState: ticketingState = {
         2: ticket2,
       },
       allIds: [1, 2],
-    }
+    },
   },
   events: [event],
   status: 'idle',

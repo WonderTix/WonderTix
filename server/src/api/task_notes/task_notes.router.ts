@@ -26,7 +26,7 @@ taskNotesRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const taskNotes = await find(req.params.id);
     let code = taskNotes.status.success ? 200 : 404;
-    if(code === 200 && taskNotes.data.length === 0){
+    if (code === 200 && taskNotes.data.length === 0) {
       code = 404;
       taskNotes.status.success = false;
     }
@@ -52,7 +52,7 @@ taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const delResponse = await remove(req.params.id);
     let code = delResponse.status.success ? 200 : 404;
-    if(code === 200 && delResponse.data.length === 0){
+    if (code === 200 && delResponse.data.length === 0) {
       code = 404;
       delResponse.status.success = false;
     }
@@ -67,7 +67,7 @@ taskNotesRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedTaskNotes = await update(req);
     let code = updatedTaskNotes.status.success ? 200 : 404;
-    if(code === 200 && updatedTaskNotes.data.length === 0){
+    if (code === 200 && updatedTaskNotes.data.length === 0) {
       code = 404;
       updatedTaskNotes.status.success = false;
     }

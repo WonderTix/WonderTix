@@ -31,7 +31,7 @@ tasksRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const task = await findTask(req.params.id);
     let code = task.status.success ? 200 : 404;
-    if(code === 200 && task.data.length === 0){
+    if (code === 200 && task.data.length === 0) {
       code = 404;
       task.status.success = false;
     }
@@ -57,7 +57,7 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removeStatus = await removeTask(req.params.id);
     let code = removeStatus.status.success ? 200 : 404;
-    if(code === 200 && removeStatus.data.length === 0){
+    if (code === 200 && removeStatus.data.length === 0) {
       code = 404;
       removeStatus.status.success = false;
     }
@@ -72,7 +72,7 @@ tasksRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedTask = await updateTask(req);
     let code = updatedTask.status.success ? 200 : 404;
-    if(code === 200 && updatedTask.data.length === 0){
+    if (code === 200 && updatedTask.data.length === 0) {
       code = 404;
       updatedTask.status.success = false;
     }

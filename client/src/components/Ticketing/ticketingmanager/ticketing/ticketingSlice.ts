@@ -108,7 +108,6 @@ export interface ticketingState {
 /**
  *
  * @param {string} url - gets data
- *
  * @param {string} url - gets data
  * @returns Error message on fail, otherwise gets message
  */
@@ -142,6 +141,7 @@ export const fetchTicketingData = createAsyncThunk(
 
 /**
  * Discount code
+ *
  * @module
  * @param {number} discountid
  * @param {string} code - the discount code itself
@@ -167,6 +167,7 @@ export interface Discount {
 
 /**
  * Fetches all the data, and gets all the api routes then prints to console
+ *
  * @module
  * @returns {DiscountItem} code, amount, percent
  */
@@ -221,6 +222,7 @@ export const fetchDiscountData = createAsyncThunk(
 
 /**
  * Discount code
+ *
  * @module
  * @param {number} discountid
  * @param {string} code - the discount code itself
