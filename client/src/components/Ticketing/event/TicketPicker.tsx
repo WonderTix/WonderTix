@@ -264,16 +264,6 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
             className="mt-1 mb-2 disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-        {/*
-        <button
-          disabled={!selectedTicket}
-          type="button"
-          className="justify-content: center mt-2 mx-auto disabled:opacity-30 disabled:cursor-not-allowed bg-blue-600 px-3 py-1 rounded-xl text-white hover:bg-blue-700 mb-5"
-          onClick={()=> dispatch(changePayWhat(tempPay))}
-        >
-          Set Pay What
-        </button>
-        */}
       </div>
       <div>
         <button
