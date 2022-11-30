@@ -87,7 +87,6 @@ const TicketTypes = () => {
 
   // handles the click event of the delete button
   const handleDeleteClick = async (cell: GridRenderCellParams) => {
-    console.log('Delete Clicked');
     const ticketId = Number(cell.row.id);
     ticketId.toString();
 
@@ -117,9 +116,8 @@ const TicketTypes = () => {
   };
 
 
+  // asks the user to confirm the deletion of a ticket type
   const showConfirmDeletePrompt = (cell: GridRenderCellParams) => {
-    console.log('confirm dialog');
-
     return (
       <div className='relative w-full h-screen overflow-x-hidden z-10'
         aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -178,18 +176,22 @@ const TicketTypes = () => {
     );
   };
 
+  // stores the name of the ticket type
   const handleNameChange = (event) => {
     setTicketType(event.target.value);
   };
 
+  // stores the price of the ticket type
   const handlePriceChange = (event) => {
     setTicketPrice(event.target.value);
   };
 
+  // stores the concession price of the ticket type
   const handleConcessionsChange = (event) => {
     setConcessionsPrice(event.target.value);
   };
 
+  // handles the submit click when adding new ticket type
   const handleSubmit = async () => {
     console.log('Submit clicked');
 
@@ -231,8 +233,8 @@ const TicketTypes = () => {
   // Shows the form to add a new ticket type
   const showAddTicketView = () => {
     return (
-      <div className='bg-blue-200 rounded-xl p-10 shadow-md mb-4'>
-        <div className='shadow-xl p-5 rounded-xl mb-9 bg-blue-700'>
+      <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4'>
+        <div className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
           <div className='flex flex-col gap-5 mt-5 md:pr-20'>
             <label className="text-white" htmlFor="name">Name</label>
             <input
