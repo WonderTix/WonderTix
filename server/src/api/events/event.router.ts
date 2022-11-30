@@ -1,5 +1,4 @@
 import {Router, Response, Request} from 'express';
-import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
 import {pool} from '../db';
 import {checkIn,
@@ -16,12 +15,9 @@ import {checkIn,
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
 
-const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
-  process.env.PRIVATE_STRIPE_KEY : '';
+const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 
-const stripe = new Stripe(stripeKey, {
-  apiVersion: '2020-08-27',
-});
+const stripe = require('stripe')(stripeKey);
 
 
 // Endpoint to get event id
@@ -88,8 +84,8 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
   // submit their order. Some data such as itemname and description can be.
   // Should not be an issue becuase this is only stored in stripe, and not used
   // by us
-  const data: CartItem[] = req.body.cartItems;
-
+  let data: CartItem[] = req.body.cartItems;
+  console.log(data);
   const {
     firstName,
     lastName,
@@ -109,11 +105,10 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     emailExists = +emails.rows[0].count > 0;
   } catch (error: any) {
     console.error(error.message);
-    // Todo(jesse): Handle error cases
+    throw new Error('optin w/ email failure');
   }
   if (emailExists === false) {
     try {
-      // Possible breaking change custname -> firstname, lastname
       const query = `
                     INSERT INTO
                       contacts (
@@ -121,7 +116,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                           lastname,
                           email,
                           phone,
-                          address,
+                          custaddress,
                           newsletter,
                           donorbadge,
                           seatingaccom)
@@ -154,7 +149,6 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
         optIn,
         seatingAcc,
       ];
-      // Possible breaking change custname -> firstname, lastname
       const query = `
                     UPDATE
                       contacts
@@ -162,7 +156,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                       firstname = $2,
                       lastname = $3,
                       phone = $4,
-                      address = $5,
+                      custaddress = $5,
                       newsletter = $6,
                       seatingaccom = $7
                     WHERE
@@ -170,26 +164,27 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       await pool.query(query, values);
     } catch (error: any) {
       console.log(error);
+      throw new Error('contact update failure');
     }
   }
   // storing the contact id for later processing on succesful payments.
   // if we cant find the custid something went wrong
-  let contactID = null;
+  let contactID;
 
   try {
     // Possible breaking change custname -> firstname, lastname
-    const query = `
+    const query = {text: `
                   SELECT
                     contactid
                   FROM
-                    contacts
+                    public.contacts
                   WHERE
-                    firstname = $1 AND lastname = $2;`;
-    contactID = await pool.query(
-        query,
-        [firstName, lastName],
-    );
-    contactID = contactID.rows[0].id;
+                    firstname = $1 AND lastname = $2;`,
+                    values: [firstName, lastName],
+                  }
+    contactID = await pool.query(query);
+    contactID = contactID.rows[0].contactid;
+    console.log(contactID);
     // const formData: CheckoutFormInfo = req.body.formData;
     const donation: number = req.body.donation;
     const donationItem = {
@@ -219,15 +214,19 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
             'SELECT price FROM orderitems WHERE orderitemid = $1;',
             [data[i].product_id],
         );
-        if(priceQueryi.rows[0]){
-          data[i].price = priceQueryi.rows[0]; //Replaces price in data with DB price
+        if(priceQueryi.rows[0].price){
+          console.log(priceQueryi);
+          console.log(priceQueryi.rows[0].price);
+          data[i].price = (Number((priceQueryi.rows[0].price).replace(/[^0-9\.-]+/g,"")));
+        } else {
+          throw new Error('No price in database')
         }
       } catch (err: any) {
         console.error(err.message);
         throw new Error('Cost Calculation Error');
       };
     };
-
+    console.log(data);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       // this is the offending area
@@ -261,11 +260,11 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
         custid: contactID,
       },
     });
-    console.log(session);
-    res.json({id: session.id});
+    console.log(session.id);
+    res.json({id: session.id, paymentIntent: session.payment_intent});
   } catch (err: any) {
     console.error(err.message);
-    throw new Error('Customer not found');
+    throw new Error('session creation failure');
   }
 });
 

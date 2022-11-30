@@ -19,9 +19,10 @@ import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 
-// FYI this is ok to stay here; it's the public key so other people can't do anything with it anyway.
-// Replace this with your stripe public key
-const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
+//const pk = `${process.env.PUBLIC_STRIPE_KEY}`;
+//const pk = `pk_test_51LarKnLnmVGBW71PEQcPH5MivNcFakrZR5hg3jRtSPIp58ziwNHjFfOVktgxWdMD8OHdteqMWiYh1MWCTOY5QcLH00BS27YNOM`;
+const pk = `pk_live_51LarKnLnmVGBW71PE5iZvRz1YyozIa1DggXkHwUB6xoVwaEhohEZKsestQwUtx0jAl98f3As5T7wIJ7MGDsvHPik000tLSC9xC`;
+const stripePromise = loadStripe(pk);
 
 /**
  * Displays Checkout Page
@@ -30,14 +31,13 @@ const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
  */
 export default function CheckoutPage(): ReactElement {
   const navigate = useNavigate();
-
   const cartItems = useAppSelector(selectCartContents);
   const donation = useAppSelector(selectDonation);
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>('donation');
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/checkout', {
+    const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/checkout`, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -46,9 +46,10 @@ export default function CheckoutPage(): ReactElement {
       body: JSON.stringify({cartItems, formData, donation}),
     });
     const session = await response.json();
-    const result = await stripe.redirectToCheckout({
-      sessionId: session.id,
-    });
+    console.log(session.id);
+    console.log(pk);
+    const paymentIntent = session.payment_intent;
+    const result = await(stripe.redirectToCheckout({sessionId: session.id}));
     if (result.error) {
       console.log(result.error.message);
     }
