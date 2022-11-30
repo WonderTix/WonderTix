@@ -41,7 +41,8 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
   const dateFieldValue = typeof eventdate === 'string' ? eventdate.split('T') : '';
   const fetchTicketTypes = async () => {
     const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
-    setTicketTypes(await res.json());
+    const data = await res.json();
+    setTicketTypes(data.data);
   };
 
   useEffect(() => {
@@ -99,12 +100,12 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
     ticketTypes.map((t) => {
       const newOp = document.createElement('option');
       if (t.id == ticketTypeId) {
-        newOp.setAttribute('key', t.tickettypeid);
-        newOp.setAttribute('value', t.tickettypeid);
+        newOp.setAttribute('key', t.id);
+        newOp.setAttribute('value', t.id);
         newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
       } else {
-        newOp.setAttribute('key', t.tickettypeid);
-        newOp.setAttribute('value', t.tickettypeid);
+        newOp.setAttribute('key', t.id);
+        newOp.setAttribute('value', t.id);
         newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
       }
       select.appendChild(newOp);

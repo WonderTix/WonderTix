@@ -33,6 +33,8 @@ export interface CartItem {
     desc: string,
     product_img_url: string,
     price: number,
+    payWhatCan: boolean,
+    payWhatPrice?: number,
 }
 
 /**
@@ -51,7 +53,8 @@ export interface CartItem {
 export interface Ticket {
     event_instance_id: number,
     eventid: string,
-    admission_type: 'General Admission',
+    admission_type: 'General Admission - Adult' | 'Pay What You Can',
+    payWhatYouCan?: number,
     date: Date,
     ticket_price: number,
     concession_price: number,
@@ -82,6 +85,7 @@ type TicketsState = {data: {byId: {[key: string]: Ticket}, allIds: number[]}}
  * @module
  */
 export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed'
+export type DiscountItem = {code: string, amount: number, percent: number, minTickets: number, minEvents: number}
 
 /**
  * Used to manage the ticketing states
@@ -91,15 +95,19 @@ export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed'
  * @param {Array} tickets - TicketsState has a key(string), byId(ticket), allIds is a number array
  * @param {Array} events - Event Array
  * @param {Array} status - Array of different loading states
+ * @param {Array} discount - Discount has a code(string), amount(number), percent(number)
  */
 export interface ticketingState {
     cart: CartItem[],
     tickets: TicketsState,
     events: Event[],
     status: LoadStatus,
+    discount: DiscountItem,
 }
 
 /**
+ *
+ * @param {string} url - gets data
  *
  * @param {string} url - gets data
  * @returns Error message on fail, otherwise gets message
@@ -131,6 +139,111 @@ export const fetchTicketingData = createAsyncThunk(
     },
 );
 
+
+/**
+ * Discount code
+ * @module
+ * @param {number} discountid
+ * @param {string} code - the discount code itself
+ * @param {number} amount - A set number of dollars off
+ * @param {number} percent - A percentage to be taken off
+ * @param {number} startdate - yyyymmdd format
+ * @param {number} enddate - yyyymmdd format
+ * @param {number} min_tickets - The minimum number of tickets for this discount to apply
+ * @param {number} min_events - The minimum number of events for this discount to apply
+ * @param {number} usagelimit - The maximum number of times this discount can be used
+ */
+export interface Discount {
+  discountid: number,
+  code: string,
+  amount: number,
+  percent: number,
+  startdate: number,
+  enddate: number,
+  min_tickets: number,
+  min_events: number,
+  usagelimit: number,
+}
+
+/**
+ * Fetches all the data, and gets all the api routes then prints to console
+ * @module
+ * @returns {DiscountItem} code, amount, percent
+ */
+export const fetchDiscountData = createAsyncThunk(
+    'ticketing/fetchDiscount',
+    async (code: string) => {
+      const url = process.env.REACT_APP_ROOT_URL + '/api/discounts/search?code=' + code;
+      const discountData = await fetchData(url);
+      const discountArray: Discount[] = discountData.data;
+      const discount: DiscountItem = {
+        code: discountArray[0].code,
+        amount: discountArray[0].amount,
+        percent: discountArray[0].percent,
+        minTickets: discountArray[0].min_tickets,
+        minEvents: discountArray[0].min_events,
+      };
+
+      console.log('Discount returned:', discountArray[0]);
+
+      // Check date (after startDate and before EndDate)
+      const nowDate = new Date(Date.now());
+      const now = Number(nowDate.getFullYear().toString() + (nowDate.getMonth()+1).toString() + nowDate.getDate().toString());
+      console.log('Current date in db format:', now);
+
+      const start = discountArray[0].startdate;
+      const end = discountArray[0].enddate;
+      console.log('Start:', start);
+      console.log('End:', end);
+
+      if (end && (end < now)) {
+        console.log('EndDate is before now!');
+        return;
+      }
+      if (start && (start > now)) {
+        console.log('StartDate is after now!');
+        return;
+      }
+
+      // Check min tickets
+      console.log('Min tickets:', discount.minTickets);
+
+      // Check min events
+      console.log('Min events:', discount.minEvents);
+
+      // Check number of uses limit (???)
+      console.log('Usage limit:', discountArray[0].usagelimit);
+
+      return {discount};
+    },
+);
+
+
+/**
+ * Discount code
+ * @module
+ * @param {number} discountid
+ * @param {string} code - the discount code itself
+ * @param {number} amount - A set number of dollars off
+ * @param {number} percent - A percentage to be taken off
+ * @param {number} startdate - yyyymmdd format
+ * @param {number} enddate - yyyymmdd format
+ * @param {number} min_tickets - The minimum number of tickets for this discount to apply
+ * @param {number} min_events - The minimum number of events for this discount to apply
+ * @param {number} usagelimit - The maximum number of times this discount can be used
+ */
+export interface Discount {
+  discountid: number,
+  code: string,
+  amount: number,
+  percent: number,
+  startdate: number,
+  enddate: number,
+  min_tickets: number,
+  min_events: number,
+  usagelimit: number,
+}
+
 /**
  * Shows some information on cartitem
  *
@@ -158,7 +271,8 @@ export const createCartItem = (data: {ticket: Ticket, event: Event, qty: number}
       .map(appendCartField('name', `${titleCase(data.event.title)} Ticket${(data.qty>1) ? 's' : ''}`))
       .map(appendCartField('qty', data.qty))
       .map(appendCartField('product_img_url', data.event.image_url))[0];
-/** @param {string} EventId */
+
+/**  @param {string} EventId */
 type EventId = string
 
 /**
@@ -206,7 +320,7 @@ const applyConcession = (c_price: number, item: CartItem) => (hasConcessions(ite
       desc: `${item.desc} with concessions ticket`,
     };
 
-/** ItemData array is id, qty, concessions(bool) */
+/**  ItemData array is id, qty, concessions(bool) */
 interface ItemData {id: number, qty: number, concessions?: number}
 
 /**
@@ -226,14 +340,20 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
         item,
   );
 
+const payWhatFunc = (cart: CartItem, num: number) => {
+  cart.payWhatCan = true;
+  cart.payWhatPrice = num;
+  console.log(cart.payWhatCan);
+};
+
 /**
  * addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer
  *
  * @param state
  * @param action
  */
-const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean }>> = (state, action) => {
-  const {id, qty, concessions} = action.payload;
+const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean, payWhatPrice?: number }>> = (state, action) => {
+  const {id, qty, concessions, payWhatPrice} = action.payload;
   const tickets = state.tickets;
 
   if (!tickets.data.allIds.includes(id)) return state;
@@ -242,6 +362,7 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   const inCart = state.cart.find(byId(id));
   const validRange = bound(0, ticket.availableseats);
 
+  console.log(payWhatPrice);
 
   if (inCart) {
     return {
@@ -255,6 +376,10 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   } else {
     const event = state.events.find(byId(ticket.eventid));
     const newCartItem = event ? createCartItem({ticket, event, qty}) : null;
+    if (event && payWhatPrice > 0) {
+      payWhatFunc(newCartItem, payWhatPrice);
+    }
+    console.log(newCartItem);
     return newCartItem ?
             {
               ...state,
@@ -292,12 +417,14 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
  * @param {Array} tickets - byId: {}, allIds: []
  * @param {Array} events - []
  * @param {string} status - 'idle'
+ * @param {DiscountItem} discount - {'', 0, 0, 0, 0}
  */
 export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {data: {byId: {}, allIds: []}},
   events: [],
   status: 'idle',
+  discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},
 };
 
 /** ticketSlice = createSlice, creates the ticketing slice */
@@ -307,6 +434,10 @@ const ticketingSlice = createSlice({
   reducers: {
     addTicketToCart: addTicketReducer,
     editItemQty: editQtyReducer,
+    removeDiscountFromCart: (state) => ({
+      ...state,
+      discount: INITIAL_STATE.discount,
+    }),
     removeTicketFromCart: (state, action: PayloadAction<number>) => ({
       ...state,
       cart: state.cart.filter((item) => item.product_id!==action.payload),
@@ -318,6 +449,18 @@ const ticketingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+        .addCase(fetchDiscountData.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(fetchDiscountData.fulfilled, (state, action) => {
+          state.status = 'success';
+          state.discount = (action.payload) ?
+                    action.payload.discount :
+                    {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0};
+        })
+        .addCase(fetchDiscountData.rejected, (state) => {
+          state.status = 'failed';
+        })
         .addCase(fetchTicketingData.pending, (state) => {
           state.status = 'loading';
         })
@@ -336,12 +479,21 @@ const ticketingSlice = createSlice({
   },
 });
 
+
 /**
  * export selectCartSubtotal, selectCartIds, selectCartItem, selectCartTicketCount, selectNumInCart, selectCartContents - self explanatory
  *
  * @param state
  */
-export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => tot + (item.price * item.qty), 0);
+export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => {
+  if (!item.payWhatCan) {
+    return tot + (item.price * item.qty);
+  } else {
+    return tot + item.payWhatPrice;
+  }
+  console.log(tot);
+}, 0);
+export const selectCartTotal = (state: RootState): number => Math.max(selectCartSubtotal(state) * (1-(state.ticketing.discount.percent/100)) - state.ticketing.discount.amount, 0);
 export const selectCartIds = (state: RootState): number[] => state.ticketing.cart.map((i) => i.product_id);
 export const selectCartItem = (state: RootState, id: number): CartItem|undefined => state.ticketing.cart.find((i) => i.product_id===id);
 export const selectCartTicketCount = (state: RootState): {[key: number]: number} =>
@@ -356,8 +508,21 @@ export const selectCartTicketCount = (state: RootState): {[key: number]: number}
       }
       , {},
   );
+export const getNumTickets = (state: RootState): {[key: number]: number} =>
+  state.ticketing.cart.reduce(
+      (acc, item) => {
+        const key = item.product_id;
+        if (key in acc) {
+          return acc;
+        } else {
+          return {...acc, [key]: item.qty};
+        }
+      }
+      , {},
+  );
 export const selectNumInCart = (state: RootState) => state.ticketing.cart.length;
 export const selectCartContents = (state: RootState): CartItem[] => state.ticketing.cart;
+export const selectDiscount = (state: RootState): DiscountItem => state.ticketing.discount;
 
 /**
  * filterTicketsReducer - self explanatory
@@ -465,6 +630,6 @@ export const selectNumAvailable = (state: RootState, ticketid: number) => {
         ticket;
 };
 
-export const {addTicketToCart, editItemQty, removeTicketFromCart, removeAllTicketsFromCart} = ticketingSlice.actions;
+export const {addTicketToCart, editItemQty, removeDiscountFromCart, removeTicketFromCart, removeAllTicketsFromCart} = ticketingSlice.actions;
 // @ts-ignore
 export default ticketingSlice.reducer;

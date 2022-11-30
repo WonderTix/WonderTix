@@ -20,6 +20,7 @@ import ticketReducer, {
   selectCartTicketCount,
   selectCartItem,
   selectCartSubtotal,
+  DiscountItem,
 } from './ticketingSlice';
 // import User from '../../../../../../server/src/interfaces/User';
 
@@ -33,7 +34,7 @@ const event: Event = {
 const ticket: Ticket = {
   event_instance_id: 1,
   eventid: '1',
-  admission_type: 'General Admission',
+  admission_type: 'General Admission - Adult',
   date: new Date('2021-07-31T19:00:00'),
   ticket_price: 15.99,
   concession_price: 4.99,
@@ -42,11 +43,18 @@ const ticket: Ticket = {
 const ticket2: Ticket = {
   event_instance_id: 2,
   eventid: '1',
-  admission_type: 'General Admission',
+  admission_type: 'General Admission - Adult',
   date: new Date('2021-08-07T16:00:00'),
   ticket_price: 19.99,
   concession_price: 9.99,
   availableseats: 20,
+};
+const discount1: DiscountItem = {
+  code: '',
+  amount: 0,
+  percent: 0,
+  minTickets: 0,
+  minEvents: 0,
 };
 
 const ticketingInitState: ticketingState = {
@@ -62,6 +70,7 @@ const ticketingInitState: ticketingState = {
   },
   events: [event],
   status: 'idle',
+  discount: discount1,
 };
 
 const ROOT_INIT_STATE: RootState = {
@@ -78,7 +87,7 @@ describe('ticketing slice', () => {
     product_id: ticket.event_instance_id,
     qty: 1,
     name: 'Event 1 Ticket',
-    desc: 'General Admission - Sat, Jul 31 - 7:00 PM',
+    desc: 'General Admission - Adult - Sat, Jul 31 - 7:00 PM',
     product_img_url: 'https://image',
     price: 15.99,
   };
@@ -141,7 +150,7 @@ describe('ticketing slice', () => {
             tickets: [{
               event_instance_id: 1,
               eventid: '1',
-              admission_type: 'General Admission',
+              admission_type: 'General Admission - Adult',
               ticket_price: 15.99,
               concession_price: 4.99,
               availableseats: 34,
@@ -149,7 +158,7 @@ describe('ticketing slice', () => {
             }, {
               event_instance_id: 2,
               eventid: '1',
-              admission_type: 'General Admission',
+              admission_type: 'General Admission - Adult',
               ticket_price: 19.99,
               concession_price: 9.99,
               availableseats: 20,

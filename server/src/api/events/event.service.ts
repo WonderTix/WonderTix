@@ -414,7 +414,7 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       dateAct,
       showing.starttime,
       showing.totalseats,
-      showing.availableseats,
+      showing.totalseats,
       showing.ispreview,
     ]);
     toReturn.push(showing);

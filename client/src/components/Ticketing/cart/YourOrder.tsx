@@ -14,6 +14,8 @@ import {
   selectCartItem,
   selectCartIds,
   selectCartSubtotal,
+  selectCartTotal,
+  selectDiscount,
 } from '../ticketingmanager/ticketing/ticketingSlice';
 import {useNavigate} from 'react-router';
 import {selectDonation} from '../ticketingmanager/donationSlice';
@@ -35,6 +37,8 @@ const YourOrder = () => {
   const cartIds = useAppSelector(selectCartIds);
   const donation = useAppSelector(selectDonation);
   const subtotal = useAppSelector(selectCartSubtotal);
+  const total = useAppSelector(selectCartTotal);
+  const discount = useAppSelector(selectDiscount);
   const lineItems = cartIds.map((id) => <LineItem key={id} id={id} className='bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'/>);
 
   return (
@@ -56,13 +60,19 @@ const YourOrder = () => {
             {toDollar(subtotal)}
           </div>
         </div>
+        {discount.code !== '' ? (
+        <div className='flex flex-row items-center gap-2 justify-between w-full'>
+          <div className='text-zinc-100 text-sm '>Discount</div>
+          <div className='text-amber-300 text-lg font-bold'>{toDollar(subtotal-total)}</div>
+        </div>
+        ) : ('')}
         <div className='flex flex-row items-center gap-2 justify-between w-full'>
           <div className='text-zinc-100 text-sm '>Donation</div>
           <div className='text-white text-lg font-bold'>{toDollar(donation)}</div>
         </div>
         <div className='flex flex-row items-center gap-2 justify-between w-full'>
           <div className='text-zinc-100 text-sm '>Total</div>
-          <div className='text-white text-lg font-bold'>{toDollar(donation+subtotal)}</div>
+          <div className='text-white text-lg font-bold'>{toDollar(donation+total)}</div>
         </div>
       </div>
 
@@ -76,7 +86,11 @@ const LineItem = (props: {className: string, id: number}) => {
   return data ?
         <div className={props.className}>
           <div>{data.qty} <b>x</b> {data.name}</div>
-          <div>{toDollar(data.qty * data.price)}</div>
+          <div>{
+            data.payWhatCan ?
+              toDollar(data.payWhatPrice) :
+              toDollar(data.qty * data.price)
+          }</div>
         </div> :
         <div></div>;
 };
