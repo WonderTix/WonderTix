@@ -138,7 +138,7 @@ interface TicketPickerProps {
  * Used to choose the tickets
  *
  * @param {TicketPickerProps} tickets
- * @return {ReactElement} and the correct ticket when picking
+ * @returns {ReactElement} and the correct ticket when picking
  */
 const TicketPicker = ({tickets}: TicketPickerProps) => {
   const [{
