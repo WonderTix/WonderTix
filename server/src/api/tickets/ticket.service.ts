@@ -90,6 +90,8 @@ const reduceToTicketState = (res: any, t: Ticket) => {
 
 //
 export const getValidTicketTypes = async (): Promise<response> => {
+  // The tickettype indexed by a tickettypeid value of 0 is reserved for 
+  // the Pay What You Can tickettype and should not be modified
   const myQuery = {
     text: `
       SELECT 
@@ -100,7 +102,7 @@ export const getValidTicketTypes = async (): Promise<response> => {
       FROM 
         tickettype 
       WHERE 
-        deprecated = false
+        deprecated = false AND tickettypeid != 0
       ORDER BY
         tickettypeid ASC;`,
   };
