@@ -2,7 +2,7 @@
 
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {create, find, findAll, findByName, remove, update}
+import {create, find, findAll, findByName, remove, update,findContactTicket}
   from './contacts.service';
 
 export const contactsRouter = Router();
@@ -41,6 +41,16 @@ contactsRouter.get('/search', async (req: Request, res: Response) => {
   }
 });
 
+contactsRouter.get('/show/:id', async (req: Request, res: Response) => {
+  try {
+    const resp = await findContactTicket(req.params.id);
+    const code = resp.status.success ? 200 : 404;
+    res.status(code).send(resp);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
 contactsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
@@ -54,6 +64,7 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
     res.status(500).send(err.message);
   }
 });
+
 
 contactsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
