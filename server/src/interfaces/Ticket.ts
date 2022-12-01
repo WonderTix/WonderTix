@@ -22,7 +22,7 @@
 export default interface Ticket {
   event_instance_id: number;
   eventid: string;
-  admission_type: 'General Admission' | 'Pay What You Can';
+  admission_type: 'General Admission - Adult' | 'Pay What You Can';
   payWhatYouCan?: number;
   date: Date;
   ticket_price: number;

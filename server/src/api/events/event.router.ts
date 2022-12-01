@@ -43,7 +43,7 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const data = await getEventById(req.params);
     let code = data.status.success ? 200 : 404;
-    if(code === 200 && data.data.length === 0){
+    if (code === 200 && data.data.length === 0) {
       code = 404;
       data.status.success = false;
     }
@@ -469,7 +469,7 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
   try {
     const resp = await updateInstances(req.body, req.params);
     let code = resp.status.success ? 200 : 404;
-    if(code === 200 && resp.data.length === 0){
+    if (code === 200 && resp.data.length === 0) {
       code = 404;
     }
     res.status(code).send(resp);
@@ -491,7 +491,7 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
     // playid
     const plays = await archivePlays(req.params);
     let code = plays.status.success ? 200 : 404;
-    if(code === 200 && plays.data.length === 0){
+    if (code === 200 && plays.data.length === 0) {
       code = 404;
       plays.status.success = false;
     }

@@ -33,6 +33,8 @@ export interface CartItem {
     desc: string,
     product_img_url: string,
     price: number,
+    payWhatCan: boolean,
+    payWhatPrice?: number,
 }
 
 /**
@@ -51,7 +53,8 @@ export interface CartItem {
 export interface Ticket {
     event_instance_id: number,
     eventid: string,
-    admission_type: 'General Admission',
+    admission_type: 'General Admission - Adult' | 'Pay What You Can',
+    payWhatYouCan?: number,
     date: Date,
     ticket_price: number,
     concession_price: number,
@@ -105,7 +108,6 @@ export interface ticketingState {
 /**
  *
  * @param {string} url - gets data
- *
  * @param {string} url - gets data
  * @returns Error message on fail, otherwise gets message
  */
@@ -139,6 +141,7 @@ export const fetchTicketingData = createAsyncThunk(
 
 /**
  * Discount code
+ *
  * @module
  * @param {number} discountid
  * @param {string} code - the discount code itself
@@ -164,6 +167,7 @@ export interface Discount {
 
 /**
  * Fetches all the data, and gets all the api routes then prints to console
+ *
  * @module
  * @returns {DiscountItem} code, amount, percent
  */
@@ -218,6 +222,7 @@ export const fetchDiscountData = createAsyncThunk(
 
 /**
  * Discount code
+ *
  * @module
  * @param {number} discountid
  * @param {string} code - the discount code itself
@@ -337,14 +342,20 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
         item,
   );
 
+const payWhatFunc = (cart: CartItem, num: number) => {
+  cart.payWhatCan = true;
+  cart.payWhatPrice = num;
+  console.log(cart.payWhatCan);
+};
+
 /**
  * addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer
  *
  * @param state
  * @param action
  */
-const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean }>> = (state, action) => {
-  const {id, qty, concessions} = action.payload;
+const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean, payWhatPrice?: number }>> = (state, action) => {
+  const {id, qty, concessions, payWhatPrice} = action.payload;
   const tickets = state.tickets;
 
   if (!tickets.data.allIds.includes(id)) return state;
@@ -353,6 +364,7 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   const inCart = state.cart.find(byId(id));
   const validRange = bound(0, ticket.availableseats);
 
+  console.log(payWhatPrice);
 
   if (inCart) {
     return {
@@ -366,6 +378,10 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   } else {
     const event = state.events.find(byId(ticket.eventid));
     const newCartItem = event ? createCartItem({ticket, event, qty}) : null;
+    if (event && payWhatPrice > 0) {
+      payWhatFunc(newCartItem, payWhatPrice);
+    }
+    console.log(newCartItem);
     return newCartItem ?
             {
               ...state,
@@ -465,12 +481,20 @@ const ticketingSlice = createSlice({
   },
 });
 
+
 /**
  * export selectCartSubtotal, selectCartIds, selectCartItem, selectCartTicketCount, selectNumInCart, selectCartContents - self explanatory
  *
  * @param state
  */
-export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => tot + (item.price * item.qty), 0);
+export const selectCartSubtotal = (state: RootState): number => state.ticketing.cart.reduce((tot, item) => {
+  if (!item.payWhatCan) {
+    return tot + (item.price * item.qty);
+  } else {
+    return tot + item.payWhatPrice;
+  }
+  console.log(tot);
+}, 0);
 export const selectCartTotal = (state: RootState): number => Math.max(selectCartSubtotal(state) * (1-(state.ticketing.discount.percent/100)) - state.ticketing.discount.amount, 0);
 export const selectCartIds = (state: RootState): number[] => state.ticketing.cart.map((i) => i.product_id);
 export const selectCartItem = (state: RootState, id: number): CartItem|undefined => state.ticketing.cart.find((i) => i.product_id===id);
