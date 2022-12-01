@@ -18,8 +18,9 @@ import {useAuth0} from '@auth0/auth0-react';
 type EventPageProps = {eventid: string}
 
 /**
- * Displays the data of the showing, uses dispatch, navigate, eventToDelete, setEventToDelete, show, setShow, getAccessTokenSilently, 
+ * Displays the data of the showing, uses dispatch, navigate, eventToDelete, setEventToDelete, show, setShow, getAccessTokenSilently,
  * handleClick2, onEditClick, onDeleteClick, onCancelDelete, getData, deleteEvent
+ *
  * @module
  * @returns HTMLElements
  */

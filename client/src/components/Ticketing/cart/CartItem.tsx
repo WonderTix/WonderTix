@@ -7,7 +7,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import React, {useState, useEffect} from 'react';
 import {editItemQty, selectNumAvailable, CartItem} from '../ticketingmanager/ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
@@ -17,6 +17,7 @@ interface CartRowProps {item: CartItem, removeHandler: (id: number) => void}
 
 /**
  * Entire thing is meant to handle increments and decrements in prices and item qty
+ *
  * @param {CartRowProps} item - remove handler
  * @returns {ReactElement}
  */
@@ -54,7 +55,7 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
         </span>
         <div className='flex flex-row items-center gap-7 mr-5'>
           <div className='flex flex-row items-center gap-2'>
-            <button className='text-white items-center' aira-label={`remove one ${item.name} to cart`} onClick={decrement}>
+            <button className='text-white items-center' aria-label={`remove one ${item.name} to cart`} onClick={decrement}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" />
               </svg>
@@ -66,7 +67,12 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
               </svg>
             </button>
           </div>
-          <div className='text-white font-semibold'>{toDollarAmount(cost)}</div>
+          <div className='text-white font-semibold'>
+            {item.payWhatCan ?
+              toDollarAmount(item.payWhatPrice) :
+              toDollarAmount(cost)
+            }
+          </div>
           <button className='text-white'
             aria-label={`Remove ${item.name} from cart`}
             onClick={() => removeHandler(item.product_id)}
@@ -76,6 +82,7 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
             </svg>
           </button>
         </div>
+
       </div>
     </div>
   );

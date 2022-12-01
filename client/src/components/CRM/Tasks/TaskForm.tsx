@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 /**
  * @param {any} props Properties to be passed through to TaskForm
- * @return {React.ReactElement} TaskForm HTML Element
+ * @returns {React.ReactElement} TaskForm HTML Element
  */
 const TaskForm = (props: any): React.ReactElement => {
   // const [beginValue, setBeginValue] = React.useState(null);
@@ -25,7 +25,7 @@ const TaskForm = (props: any): React.ReactElement => {
   // useEffect(() => {}, [beginValue]);
 
   /**
-   * @return {void}
+   * @returns {void}
    */
   const handleClick = (): void => {
     // console.log(taskId);

@@ -7,7 +7,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {addTicketToCart, selectCartTicketCount, Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
 import {openSnackbar} from '../ticketingmanager/snackbarSlice';
@@ -19,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {useEffect, useReducer} from 'react';
+import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 
 /**
  * @module
@@ -38,6 +38,7 @@ interface TicketPickerState {
     displayedShowings: Ticket[],
     selectedTicket?: Ticket,
     qty: number,
+    payWhatPrice?: number,
     concessions: boolean,
     showCalendar: boolean,
     showTimes: boolean,
@@ -62,6 +63,7 @@ const initialState: TicketPickerState = {
   showCalendar: true,
   showTimes: false,
   showClearBtn: false,
+  payWhatPrice: 0,
   prompt: 'selectDate',
 };
 
@@ -70,6 +72,8 @@ const dateSelected = (d: Date, t: Ticket[]) => ({type: 'date_selected', payload:
 const timeSelected = (t: Ticket) => ({type: 'time_selected', payload: t});
 const resetWidget = () => ({type: 'reset'});
 const changeQty = (n: number) => ({type: 'change_qty', payload: n});
+const changePayWhat = (n:number) => ({type: 'change_pay_what', payload: n});
+let tempPay = 0;
 
 /**
  * TicketPickerReducer is meant to be used to lower ticket numbers
@@ -82,6 +86,9 @@ const changeQty = (n: number) => ({type: 'change_qty', payload: n});
  *      showTimes: true,
  *      showClearBtn: true,
  *      prompt: 'selectTime',
+ *
+ * @param state
+ * @param action
  * @returns a certain default state if failed
  */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
@@ -115,6 +122,9 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
     case 'toggle_concession': {
       return {...state, concessions: !state.concessions};
     }
+    case 'change_pay_what': {
+      return {...state, payWhatPrice: action.payload};
+    }
     default:
       throw new Error('Received undefined action type');
   }
@@ -126,6 +136,7 @@ interface TicketPickerProps {
 
 /**
  * Used to choose the tickets
+ *
  * @param {TicketPickerProps} tickets
  * @returns {ReactElement} and the correct ticket when picking
  */
@@ -134,6 +145,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
     qty,
     concessions,
     prompt,
+    payWhatPrice,
     selectedDate,
     displayedShowings,
     selectedTicket,
@@ -151,7 +163,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedTicket && qty) {
-      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, qty, concessions}));
+      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, qty, concessions, payWhatPrice}));
       appDispatch(openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`));
       dispatch(resetWidget());
     }
@@ -174,9 +186,14 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
     </div>,
   };
 
+  const payWhatFunc = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    tempPay = parseInt(event.currentTarget.value);
+    dispatch(changePayWhat(tempPay));
+  };
+
   console.log(numAvail);
   console.log(selectedTicket);
-  useEffect(()=> console.log('Selected Ticket', {selectedTicket}), [selectedTicket]);
   return (
     <>
       <Collapse in={showClearBtn}>
@@ -191,7 +208,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
           <div className='flex flex-col text-white w-full px-20'>
             <select defaultValue={''} className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
               onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}>
-              <option value='' disabled>select date</option>
+              <option value='' disabled selected={prompt === 'selectDate'}>select date</option>
               {tickets.map((t) =>
                 <option key={t.eventid} value={(t.date).toString()}>
                   {format(new Date(t.date), 'eee, MMM dd yyyy')}
@@ -202,6 +219,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
       </Collapse>
       <Collapse in={showTimes}>
         <EventInstanceSelect
+          check={prompt}
           eventInstances={displayedShowings}
           eventInstanceSelected={(t) => dispatch(timeSelected(t))}
         />
@@ -232,6 +250,20 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
           className='bg-zinc-700/50 disabled:opacity-30 disabled:cursor-not-allowed '
           onChange={() => dispatch({type: 'toggle_concession'})} name='concessions' />
         <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
+      </div>
+      <div className={tickets[0].admission_type == 'Pay What You Can' ? 'show flex-col': 'hidden'}>
+        <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
+          <div className='justify-center items-center text-white rounded-xl'>
+            <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What You Can</h1>
+          </div>
+          <input
+            disabled={!selectedTicket}
+            onChange={(e) => payWhatFunc(e)}
+            type="text"
+            placeholder="Enter Amount"
+            className="mt-1 mb-2 disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
       </div>
       <div>
         <button

@@ -115,3 +115,21 @@ export const buildResponse = async (
   }
   return resp;
 };
+
+
+// converts the databases integer representation of a date into a JS date object
+// 20220512 -> 2022-05-12 == May 12 2022
+export const parseIntToDate = (d : number) => {
+  const year = d / 10000 | 0;
+  d -= year *10000;
+  const month = d / 100 | 0;
+  const day = d - month*100;
+  // month-1 because the month field is 0-indexed in JS
+  return new Date(year, month-1, day);
+};
+
+// converts a JS date object to the databases integer representation of the date
+// May 12 2022 -> 20220512
+export const parseDateToInt = (d : Date) => {
+  return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+};

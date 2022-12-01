@@ -5,6 +5,7 @@ import ManageEventsPage from './ManageEvents';
 
 /**
  * Handler that uses getDataFromServer
+ *
  * @returns {Udash_nav, Loading} or {Udash_nav, ManageEventsPage}
  */
 const Manageventmain = () => {

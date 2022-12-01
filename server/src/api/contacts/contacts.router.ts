@@ -54,7 +54,11 @@ contactsRouter.get('/show/:id', async (req: Request, res: Response) => {
 contactsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
-    const code = resp.status.success ? 200 : 404;
+    let code = resp.status.success ? 200 : 404;
+    if (code === 200 && resp.data.length === 0) {
+      code = 404;
+      resp.status.success = false;
+    }
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -65,7 +69,11 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
 contactsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
-    const code = resp.status.success ? 204 : 404;
+    let code = resp.status.success ? 200 : 404;
+    if (code === 200 && resp.data.length === 0) {
+      code = 404;
+      resp.status.success = false;
+    }
     res.sendStatus(code);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -75,8 +83,11 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
 contactsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req);
-    console.log(resp);
-    const code = resp.status.success ? 200 : 404;
+    let code = resp.status.success ? 200 : 404;
+    if (code === 200 && resp.data.length === 0) {
+      code = 404;
+      resp.status.success = false;
+    }
     res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);

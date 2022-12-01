@@ -34,27 +34,27 @@ export const createTask = async (r: any): Promise<response> => {
                 datecreated,
                 dateassigned,
                 datedue,
-                rel_contact,
-                rel_donation,
-                rel_order,
-                rel_account)
+                ref_contact,
+                ref_donation,
+                ref_order,
+                ref_account)
           VALUES 
             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           RETURNING *;`,
     values: [
-      r.parentid, 
-      r.subject, 
-      r.description, 
+      r.parentid,
+      r.subject,
+      r.description,
       r.status,
-      r.assignto, 
-      r.reportto, 
+      r.assignto,
+      r.reportto,
       r.datecreated,
-      r.dateassigned, 
-      r.duedate, 
-      r.rel_contact,
-      r.rel_donation, 
-      r.rel_order, 
-      r.rel_account],
+      r.dateassigned,
+      r.duedate,
+      r.ref_contact,
+      r.ref_donation,
+      r.ref_order,
+      r.ref_account],
   };
   return await buildResponse(myQuery, 'POST');
 };
@@ -82,28 +82,28 @@ export const updateTask = async (r: any): Promise<response> => {
             datecreated,
             dateassigned,
             datedue,
-            rel_contact,
-            rel_donation,
-            rel_order,
-            rel_account) = 
+            ref_contact,
+            ref_donation,
+            ref_order,
+            ref_account) = 
             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           WHERE 
             taskid = $14
           RETURNING *;`,
     values: [
-      r.body.parentid, 
-      r.body.subject, 
+      r.body.parentid,
+      r.body.subject,
       r.body.description,
-      r.body.status, 
-      r.body.assignto, 
+      r.body.status,
+      r.body.assignto,
       r.body.reportto,
-      r.body.datecreated, 
-      r.body.dateassigned, 
+      r.body.datecreated,
+      r.body.dateassigned,
       r.body.duedate,
-      r.body.rel_contact, 
-      r.body.rel_donation, 
-      r.body.rel_ticket_order,
-      r.body.rel_account, 
+      r.body.ref_contact,
+      r.body.ref_donation,
+      r.body.ref_ticket_order,
+      r.body.ref_account,
       r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');

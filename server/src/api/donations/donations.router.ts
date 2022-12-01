@@ -44,7 +44,11 @@ donationsRouter.get('/search', async (req: Request, res: Response) => {
 donationsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const donation = await find(req.params.id);
-    const code = donation.status.success ? 200 : 404;
+    let code = donation.status.success ? 200 : 404;
+    if (code === 200 && donation.data.length === 0) {
+      code = 404;
+      donation.status.success = false;
+    }
     res.status(code).send(donation);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -54,7 +58,11 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
 donationsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const removedDonations = await remove(req.params.id);
-    const code = removedDonations.status.success ? 204 : 404;
+    let code = removedDonations.status.success ? 200 : 404;
+    if (code === 200 && removedDonations.data.length === 0) {
+      code = 404;
+      removedDonations.status.success = false;
+    }
     res.status(code).send(removedDonations);
   } catch (err: any) {
     res.status(500).send(err.message);
@@ -64,7 +72,11 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
 donationsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedDonation = await update(req);
-    const code = updatedDonation.status.success ? 200 : 404;
+    let code = updatedDonation.status.success ? 200 : 404;
+    if (code === 200 && updatedDonation.data.length === 0) {
+      code = 404;
+      updatedDonation.status.success = false;
+    }
     res.status(code).send(updatedDonation);
   } catch (err: any) {
     res.status(500).send(err.message);

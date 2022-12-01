@@ -3,7 +3,7 @@ import Dashboard from './Dashboard';
 import Navigation from './Navigation';
 
 /**
- * @return {object} Dashmain - has Navigation
+ * @returns {object} Dashmain - has Navigation
  *  and Dashboard to reroute to other components
  */
 const Dashmain=() =>{
