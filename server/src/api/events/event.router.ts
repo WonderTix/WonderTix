@@ -121,7 +121,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                           lastname,
                           email,
                           phone,
-                          custaddress,
+                          address,
                           newsletter,
                           donorbadge,
                           seatingaccom)
@@ -161,7 +161,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                       firstname = $2,
                       lastname = $3,
                       phone = $4,
-                      custaddress = $5,
+                      address = $5,
                       newsletter = $6,
                       seatingaccom = $7
                     WHERE
@@ -255,14 +255,14 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
           orders: JSON.stringify(orders),
           custid: contactID,
           donation: donation,
-          discountCode: ''
+          discountCode: null
         },
       },
       metadata: {
         orders: JSON.stringify(orders),
         custid: contactID,
         donation: donation,
-        discountCode: ''
+        discountCode: null
       },
     });
     const pi =
@@ -299,13 +299,13 @@ eventRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (reques
     console.log('starting fulfillment');
     const session = event.data.object;
     console.log('session = ' + session);
-    const amount = session.amount;
+    const amount = session.amount/100];
     console.log('session data = ' + session.metadata);
     const inp = orderFulfillment({
       id: session.metadata.custid,
       discountid_fk: session.metadata.discountCode,
       ordertotal: amount,
-      payment_intent: session.payment_intent
+      payment_intent: session.payment_intent,
     });
     console.log('fulfilled');
   } catch(err:any){

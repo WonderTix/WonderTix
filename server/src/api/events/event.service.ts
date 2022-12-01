@@ -58,19 +58,32 @@ export const getInstanceById = async (params: any): Promise<response> => {
 
 export const orderFulfillment = async (params:any): Promise<response> =>  {
   const odate = new Date();
-  const orderdate = odate.toISOString();
+  let st =  '' + odate.getFullYear();
+  if(odate.getMonth() < 10){
+    st = st + '0' + odate.getMonth();
+  } else {
+    st = st + '' + odate.getMonth();
+  }
+  if(odate.getDay() < 10){
+    st = st + '0' + odate.getDay();
+  } else {
+    st = st + '' + odate.getDay();
+  }
+  const orderdate = Number(st);
+  console.log("order date = " + orderdate);
+  const ordertime = odate.getHours() +':'+ odate.getMinutes() +':'+ odate.getSeconds() +'-'+ odate.getTimezoneOffset();
+  //Needs discount codes added
   const query = {
     text:`INSERT INTO orders
     (
       contactid_fk,
       orderdate,
       ordertime,
-      discountid_fk,
       ordertotal,
       payment_intent
     )
-    VALUES($1, $2, $3, $4, $5, $6, $7);`,
-    values: [params.id, orderdate, orderdate, params.discountid_fk, params.ordertotal, params.payment_intent],
+    VALUES($1, $2, $3, $4, $5);`,
+    values: [params.id, orderdate, ordertime, params.ordertotal, params.payment_intent],
   };
   return await buildResponse(query, 'POST');
 };
