@@ -11,13 +11,18 @@ import {checkIn,
   archivePlays,
   getActiveEvents,
   updateInstances,
-  getInstanceById} from './event.service';
+  getInstanceById,
+  orderFulfillment,
+} from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 export const eventRouter = Router();
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
-
 const stripe = require('stripe')(stripeKey);
+//const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
+const webhookKey = `whsec_f9a21f44f3657e3f840903f4260adbd74f74ea9940e405ac19466e58ecb60b82`;
+
+const bodyParser = require('body-parser');
 
 
 // Endpoint to get event id
@@ -184,7 +189,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                   }
     contactID = await pool.query(query);
     contactID = contactID.rows[0].contactid;
-    console.log(contactID);
+    console.log('contact ID: ' + contactID);
     // const formData: CheckoutFormInfo = req.body.formData;
     const donation: number = req.body.donation;
     const donationItem = {
@@ -194,7 +199,6 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
           name: 'Donation',
           description: 'A generous donation',
         },
-        // the price here needs to be fetched from the DB instead
         unit_amount: donation * 100,
       },
       quantity: 1,
@@ -229,7 +233,6 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     console.log(data);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      // this is the offending area
       // all this stuff needs to be replaced by info from DB based on event ID
       line_items: data
           .map((item) => ({
@@ -239,7 +242,6 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                 name: item.name,
                 description: item.desc,
               },
-              // the price here needs to be fetched from the DB instead
               unit_amount: item.price * 100,
             },
             quantity: item.qty,
@@ -253,19 +255,64 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
           orders: JSON.stringify(orders),
           custid: contactID,
           donation: donation,
+          discountCode: ''
         },
       },
       metadata: {
         orders: JSON.stringify(orders),
         custid: contactID,
+        donation: donation,
+        discountCode: ''
       },
     });
+    const pi =
     console.log(session.id);
-    res.json({id: session.id, paymentIntent: session.payment_intent});
+    res.json({id: session.id, paymentIntent: pi});
   } catch (err: any) {
     console.error(err.message);
     throw new Error('session creation failure');
   }
+});
+
+
+eventRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (request, response) => {
+  const pl = request.body;
+  const sig = request.headers['stripe-signature'];
+  console.log("pl = " + JSON.stringify(pl));
+  console.log(webhookKey);
+  console.log(sig);
+  let event;
+
+  try{
+//    event = stripe.webhooks.constructEvent(pl,sig,webhookKey);
+    event = pl;
+  } catch (err:any){
+    console.log('webhook failed');
+    response.status(400).send(`Webhook error` + `${err.message}`);
+    return;
+  }
+
+  console.log('webhook passed');
+  console.log(event);
+
+  try{
+    console.log('starting fulfillment');
+    const session = event.data.object;
+    console.log('session = ' + session);
+    const amount = session.amount;
+    console.log('session data = ' + session.metadata);
+    const inp = orderFulfillment({
+      id: session.metadata.custid,
+      discountid_fk: session.metadata.discountCode,
+      ordertotal: amount,
+      payment_intent: session.payment_intent
+    });
+    console.log('fulfilled');
+  } catch(err:any){
+    throw new Error('fulfillment error')
+  }
+  console.log('returning');
+  response.status(200).send('returned; no data added');
 });
 
 // PRIVATE ROUTE

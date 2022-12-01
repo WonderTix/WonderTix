@@ -1,8 +1,7 @@
 
 import {response, buildResponse, pool} from '../db';
 const Stripe = require('stripe');
-const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
-  process.env.PRIVATE_STRIPE_KEY : '';
+const stripeKey = process.env.PRIVATE_STRIPE_KEY;
 /**
  * query: Initiate refund
  *
@@ -20,7 +19,7 @@ export const initRefund = async(mode:number = 0, id:string = ``, amount:number =
   let dbTable;
   //Mode 0 -> donation refund
   if(mode === 0){
-    query.text = `SELECT payment_intent FROM donatons WHERE donationid = $1`;
+    query.text = `SELECT payment_intent FROM donations WHERE donationid = $1`;
     dbTable = `orders`;
   //Mode 1 -> order refund
   } else if(mode === 1){
@@ -48,5 +47,5 @@ export const initRefund = async(mode:number = 0, id:string = ``, amount:number =
             WHERE payment_intent = $3`,
     values: [dbTable, refund.id, paymentIntent],
   };
-  return buildResponse(refQuery, 'PUT');
+  return buildResponse(refQuery, 'POST');
 };

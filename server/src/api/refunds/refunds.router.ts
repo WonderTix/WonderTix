@@ -7,7 +7,7 @@ import {initRefund} from './refunds.service';
  *
  * @type {?}
  */
-export const refundRouter = Router();
+export const refundsRouter = Router();
 
 
 /**
@@ -15,7 +15,7 @@ export const refundRouter = Router();
  *
  * @type {?}
  */
-refundRouter.put('/', checkJwt, checkScopes, async(
+refundsRouter.post('/', checkJwt, checkScopes, async(
   req:Request,
   res:Response,
 ) => {

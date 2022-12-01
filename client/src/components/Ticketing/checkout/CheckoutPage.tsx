@@ -20,8 +20,8 @@ import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 
 //const pk = `${process.env.PUBLIC_STRIPE_KEY}`;
-//const pk = `pk_test_51LarKnLnmVGBW71PEQcPH5MivNcFakrZR5hg3jRtSPIp58ziwNHjFfOVktgxWdMD8OHdteqMWiYh1MWCTOY5QcLH00BS27YNOM`;
-const pk = `pk_live_51LarKnLnmVGBW71PE5iZvRz1YyozIa1DggXkHwUB6xoVwaEhohEZKsestQwUtx0jAl98f3As5T7wIJ7MGDsvHPik000tLSC9xC`;
+const pk = `pk_test_51LarKnLnmVGBW71PEQcPH5MivNcFakrZR5hg3jRtSPIp58ziwNHjFfOVktgxWdMD8OHdteqMWiYh1MWCTOY5QcLH00BS27YNOM`;
+//const pk = `pk_live_51LarKnLnmVGBW71PE5iZvRz1YyozIa1DggXkHwUB6xoVwaEhohEZKsestQwUtx0jAl98f3As5T7wIJ7MGDsvHPik000tLSC9xC`;
 const stripePromise = loadStripe(pk);
 
 /**
