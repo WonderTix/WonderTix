@@ -8,8 +8,9 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import Navigation from '../Navigation';
+import {getDataGridUtilityClass} from '@mui/x-data-grid';
 /**
- * @return {object} ContactOneResult - has Navigation
+ * @returns {object} ContactOneResult - has Navigation
  *  and Contacts to reroute to other components
  */
 
@@ -70,11 +71,11 @@ export const ContactOneResult = () => {
             <div>
               <br/>
               {data.map(
-                  Cust =>
+                  (Cust) =>
                     <ContactDisplayTicket
                       data={Cust}
                       key={Cust.orderid}
-                      {...Cust}/>
+                      {...Cust}/>,
               )},
             </div>
             }
@@ -104,7 +105,7 @@ export const ContactDisplayForm = ({
     seatingaccom,
     vip,
     volunteerlist,
-    }=data;
+  }=data;
   return (
     <div>
       <button className='bg-blue-600 disabled:opacity-40
@@ -222,6 +223,9 @@ export const ContactDisplayTicket = ({
     } catch (error) {
       console.log(error);
     }
+
+    // Used here for demonstration purposes only
+    window.location.reload();
   };
 
   if (!data) return <div>Nothing in contactForm</div>;
@@ -230,6 +234,7 @@ export const ContactDisplayTicket = ({
     orderid,
     ordertime,
     ordertotal,
+    refunded,
   } = data;
   if (orderid != null) {
     return (
@@ -251,6 +256,10 @@ export const ContactDisplayTicket = ({
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>Order Total:</div>
             <div>{ordertotal}</div>
+          </div>
+          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+            <div className='font-semibold'>Refunded:</div>
+            <div>{refunded}</div>
           </div>
           <button
             className='px-2 py-1 bg-blue-500 disabled:opacity-30
