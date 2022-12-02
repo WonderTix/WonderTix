@@ -9,7 +9,7 @@ const stripeKey = process.env.PRIVATE_STRIPE_KEY;
  */
 const stripe = Stripe(stripeKey);
 
-export const initRefund = async(mode:number = 0, id:string = ``, amount:number = 0.0): Promise<response> => {
+export const initRefund = async(mode:number, id:string, amount:number): Promise<response> => {
       //Pass donation/order, donationid/orderid, amount/ordertotal (default 0.0 -> full refund)
   let query = {
     text: ``,
@@ -20,23 +20,24 @@ export const initRefund = async(mode:number = 0, id:string = ``, amount:number =
   //Mode 0 -> donation refund
   if(mode === 0){
     query.text = `SELECT payment_intent FROM donations WHERE donationid = $1`;
-    dbTable = `orders`;
+    dbTable = `donations`;
   //Mode 1 -> order refund
   } else if(mode === 1){
-    query.text = `SELECT payment_intent FROM payment WHERE oderid = $1`;
-    dbTable =  `donations`;
+    query.text = `SELECT payment_intent FROM orders WHERE orderid = $1`;
+    dbTable =  `orders`;
   } else { //fails
     throw new Error('Invalid refund mode');
   }
 
   let paymentIntent = await pool.query(query.text,query.values);
   let refund;
-  paymentIntent = paymentIntent.rows[0]; //may need 2 layers of array peeling; Only using one
+  paymentIntent = paymentIntent.rows[0].payment_intent; //may need 2 layers of array peeling; Only using one
+  console.log('payment Intent ' + paymentIntent);
   try{
     if(amount === 0.0){ //Full refund
-      refund = await stripe.refunds.create({payment_inetent: paymentIntent});
+      refund = await stripe.refunds.create({payment_intent: paymentIntent});
     } else { //Partial refund
-      refund = await stripe.refunds.create({payment_inetent: paymentIntent, amount: amount * 100}); //assumes amount is in dollars
+      refund = await stripe.refunds.create({payment_intent: paymentIntent, amount: amount * 100}); //assumes amount is in dollars
     }
   }catch(err: any){
     throw new Error('Refund construction error');
