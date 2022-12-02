@@ -15,12 +15,12 @@ import {checkIn,
   orderFulfillment,
 } from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
+import { JsonObject } from 'swagger-ui-express';
 export const eventRouter = Router();
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
-//const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
-const webhookKey = `whsec_f9a21f44f3657e3f840903f4260adbd74f74ea9940e405ac19466e58ecb60b82`;
+const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 
 const bodyParser = require('body-parser');
 
@@ -231,7 +231,9 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       };
     };
     console.log(data);
-    const session = await stripe.checkout.sessions.create({
+
+
+    let stripeCheckoutData: JsonObject = {
       payment_method_types: ['card'],
       // all this stuff needs to be replaced by info from DB based on event ID
       line_items: data
@@ -264,7 +266,22 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
         donation: donation,
         discountCode: null
       },
-    });
+    };
+
+    const discount = req.body.discount;
+    let stripeCoupon;
+    if (discount.code !== '') {
+      if (discount.amount > 0) {
+        stripeCoupon = await stripe.coupons.create({amount_off: discount.amount * 100, duration: 'once', name: discount.code, currency: 'usd'});
+      } else {
+        stripeCoupon = await stripe.coupons.create({percent_off: discount.percent, duration: 'once', name: discount.code});
+      }
+      stripeCheckoutData.discounts = [{coupon: stripeCoupon.id,}];
+    }
+    
+    console.log(stripeCheckoutData);
+
+    const session = await stripe.checkout.sessions.create(stripeCheckoutData);
     const pi =
     console.log(session.id);
     res.json({id: session.id, paymentIntent: pi});
@@ -301,12 +318,15 @@ eventRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (reques
     console.log('session = ' + session);
     const amount = session.amount/100;
     console.log('session data = ' + session.metadata);
-    const inp = orderFulfillment({
-      id: session.metadata.custid,
-      discountid_fk: session.metadata.discountCode,
-      ordertotal: amount,
-      payment_intent: session.payment_intent,
-    });
+    console.log('event type = ' + event.type)
+    if (event.type === 'charge.succeeded') {
+      const inp = orderFulfillment({
+        id: session.metadata.custid,
+        discountid_fk: session.metadata.discountCode,
+        ordertotal: amount,
+        payment_intent: session.payment_intent,
+      });
+    }
     console.log('fulfilled');
   } catch(err:any){
     throw new Error('fulfillment error')

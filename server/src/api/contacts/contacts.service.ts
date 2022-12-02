@@ -65,7 +65,17 @@ export const findContactTicket = async (id: string): Promise<response> => {
            WHERE contacts.contactid = $1;`,
     values: [id],
   };
-  return await buildResponse(myQuery, 'GET');
+  const resp = await buildResponse(myQuery, 'GET');
+
+  for (let i=0; i<resp.data.length; i++) {
+    if (resp.data[i].refund_intent) {
+      resp.data[i].refunded = "true";
+    } else {
+      resp.data[i].refunded = "false";
+    }
+  }
+
+   return resp;
 };
  
 
