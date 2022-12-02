@@ -15,48 +15,47 @@ const Contacts = (): React.ReactElement => {
   const [contact, setContact] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
   const {getAccessTokenSilently} = useAuth0();
+  const [datalist, setDataList] = useState([]);
 
-  useEffect(() => {
-    const getData = async () => {
-      if (params.id) {
-        setIsLoading(true);
-        setContact(params.id);
-        const token = await getAccessTokenSilently({
-          audience: 'https://localhost:8000',
-          scope: 'admin',
-        });
-        await axios
-            .get(
-                process.env.REACT_APP_ROOT_URL + `/api/contacts/search?name=${params.id}`,
-                {
-                  headers: {
-                    'Authorization': `Bearer ${token}`,
-                  },
+  const getData = async () => {
+    if (params.id) {
+      setIsLoading(true);
+      setContact(params.id);
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
+      await axios
+          .get(
+              process.env.REACT_APP_ROOT_URL + `/api/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
+              {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
                 },
-            )
-            .then((res) => {
-              setData(res.data.data[0]);
-              console.log(res);
-            })
-            .catch((err) => {
-              setError(err.message);
-              console.log(error);
-            })
-            .finally(() => {
-              setIsLoading(false);
-            });
-      }
-    };
+              },
+          )
+          .then((res) => {
+            // setData(res.data);
+            setDataList(res.data.data);
+            console.log(res);
+          })
+          .catch((err) => {
+            setError(err.message);
+            console.log(error);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+    }
+  };
+  useEffect(() => {
     getData();
   }, [params.id]);
-
   const handleClick = (e: any) => {
     e.preventDefault();
     navigate(`${contact}`);
   };
-
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='flex flex-col  md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
@@ -88,13 +87,18 @@ const Contacts = (): React.ReactElement => {
             </svg>
           </button>
         </form>
-        <div className='mt-9 text-zinc-600 w-full '>
-          {isLoading ? <div className="radial-progress"/> :
-        <ContactResults data={data} />}
+        <div>
+          <br/>
+          {datalist.map(
+              Cust =>
+                <ContactResults
+                  data={Cust}
+                  key={Cust.contactid}
+                  {...Cust}/>
+          )},
         </div>
       </div>
     </div>
   );
 };
-
 export default Contacts;

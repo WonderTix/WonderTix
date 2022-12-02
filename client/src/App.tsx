@@ -8,6 +8,7 @@ import ProtectedRoute from './components/Authentication/protected-route';
 import Dashmain from './components/CRM/Dashmain';
 import AccountsMain from './components/CRM/Accounts/AccountsMain';
 import ContactMain from './components/CRM/Contacts/ContactMain';
+import {ContactOneResult} from './components/CRM/Contacts/ContactOneResult';
 import ReportingMain from './components/CRM/Reporting/ReportingMain';
 import TasksEditMain from './components/CRM/Tasks/TasksEditMain';
 import TasksMain from './components/CRM/Tasks/TasksMain';
@@ -60,8 +61,9 @@ const App = () => {
           path="/admin/contacts"
           element={<ProtectedRoute component={ContactMain} />}
         >
-          <Route path=":id" element={<ProtectedRoute component={ContactMain} />} />
+          <Route path=":id" element={<ProtectedRoute component={ContactOneResult} />} />
         </Route>
+        <Route path="/admin/contacts/show/:contactid" element={<ProtectedRoute component={ContactOneResult} />} />
         <Route
           path="/admin/reporting"
           element={<ProtectedRoute component={ReportingMain} />}
