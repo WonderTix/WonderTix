@@ -299,7 +299,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_ROOT_URL + '/api/tickets/types',
+          process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes',
           {
             credentials: 'omit',
             method: 'GET',

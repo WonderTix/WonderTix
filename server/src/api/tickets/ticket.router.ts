@@ -18,8 +18,8 @@ ticketRouter.get('/', async (req: Request, res: Response) => {
 });
 
 
-// GET /api/tickets/types
-ticketRouter.get('/types', async (req: Request, res: Response) => {
+// GET /api/tickets/validTypes
+ticketRouter.get('/validTypes', async (req, res) => {
   try {
     const ticketTypes = await ticketUtils.getValidTicketTypes();
     const code = ticketTypes.status.success ? 200 : 404;
@@ -30,6 +30,17 @@ ticketRouter.get('/types', async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/tickets/allTypes
+ticketRouter.get('/allTypes', async (req, res) => {
+  try {
+    const ticketTypes = await ticketUtils.getAllTicketTypes();
+    const code = ticketTypes.status.success ? 200 : 404;
+    res.status(code).send(ticketTypes);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
 
 // POST /api/tickets/types
 ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {

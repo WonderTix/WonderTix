@@ -48,7 +48,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   }, []);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes');
     setTicketTypes(await res.json());
   };
 
