@@ -10,7 +10,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import YourOrder from '../cart/YourOrder';
-import {selectCartContents} from '../ticketingmanager/ticketing/ticketingSlice';
+import {selectCartContents, selectDiscount} from '../ticketingmanager/ticketing/ticketingSlice';
 import {useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
@@ -19,7 +19,7 @@ import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 
-// const pk = `${process.env.PUBLIC_STRIPE_KEY}`;
+// const pk = process.env.PUBLIC_STRIPE_KEY;
 const pk = `pk_test_51LYvt2L95zqXUSVMjbBbBmIeGvvFTrq6p1zwj3RmMGQ0zgKOGcqeUCNFsgLAt7bcn01fnzz3rnwehrLBSfSFQUb300J5jCAfOE`;
 // const pk = `pk_live_51LarKnLnmVGBW71PE5iZvRz1YyozIa1DggXkHwUB6xoVwaEhohEZKsestQwUtx0jAl98f3As5T7wIJ7MGDsvHPik000tLSC9xC`;
 const stripePromise = loadStripe(pk);
@@ -32,6 +32,7 @@ const stripePromise = loadStripe(pk);
 export default function CheckoutPage(): ReactElement {
   const navigate = useNavigate();
   const cartItems = useAppSelector(selectCartContents);
+  const discount = useAppSelector(selectDiscount);
   const donation = useAppSelector(selectDonation);
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>('donation');
   const doCheckout = async (formData: CheckoutFormInfo) => {
@@ -43,7 +44,7 @@ export default function CheckoutPage(): ReactElement {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({cartItems, formData, donation}),
+      body: JSON.stringify({cartItems, formData, donation, discount}),
     });
     const session = await response.json();
     console.log(session.id);
