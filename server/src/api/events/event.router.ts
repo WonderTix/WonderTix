@@ -299,7 +299,7 @@ eventRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (reques
     console.log('starting fulfillment');
     const session = event.data.object;
     console.log('session = ' + session);
-    const amount = session.amount/100];
+    const amount = session.amount/100;
     console.log('session data = ' + session.metadata);
     const inp = orderFulfillment({
       id: session.metadata.custid,
