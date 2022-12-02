@@ -184,8 +184,8 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                   FROM
                     public.contacts
                   WHERE
-                    firstname = $1 AND lastname = $2;`,
-                    values: [firstName, lastName],
+                    email = $1;`,
+                    values: [email],
                   }
     contactID = await pool.query(query);
     contactID = contactID.rows[0].contactid;
