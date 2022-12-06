@@ -15,7 +15,7 @@ import {checkIn,
   orderFulfillment,
 } from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
-import { JsonObject } from 'swagger-ui-express';
+import {JsonObject} from 'swagger-ui-express';
 export const eventRouter = Router();
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
@@ -89,7 +89,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
   // submit their order. Some data such as itemname and description can be.
   // Should not be an issue becuase this is only stored in stripe, and not used
   // by us
-  let data: CartItem[] = req.body.cartItems;
+  const data: CartItem[] = req.body.cartItems;
   console.log(data);
   const {
     firstName,
@@ -185,8 +185,8 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                     public.contacts
                   WHERE
                     email = $1;`,
-                    values: [email],
-                  }
+    values: [email],
+    };
     contactID = await pool.query(query);
     contactID = contactID.rows[0].contactid;
     console.log('contact ID: ' + contactID);
@@ -210,20 +210,20 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     }));
 
 
-//Queries the database to get item prices
-    let costVect = [];
-    for(let i = 0; i < data.length; i++){
-      try{
-        let priceQueryi = await pool.query(
+    // Queries the database to get item prices
+    const costVect = [];
+    for (let i = 0; i < data.length; i++) {
+      try {
+        const priceQueryi = await pool.query(
             'SELECT price FROM orderitems WHERE orderitemid = $1;',
             [data[i].product_id],
         );
-        if(priceQueryi.rows[0].price){
+        if (priceQueryi.rows[0].price) {
           console.log(priceQueryi);
           console.log(priceQueryi.rows[0].price);
-          data[i].price = (Number((priceQueryi.rows[0].price).replace(/[^0-9\.-]+/g,"")));
+          data[i].price = (Number((priceQueryi.rows[0].price).replace(/[^0-9\.-]+/g, '')));
         } else {
-          throw new Error('No price in database')
+          throw new Error('No price in database');
         }
       } catch (err: any) {
         console.error(err.message);
@@ -233,7 +233,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     console.log(data);
 
 
-    let stripeCheckoutData: JsonObject = {
+    const stripeCheckoutData: JsonObject = {
       payment_method_types: ['card'],
       // all this stuff needs to be replaced by info from DB based on event ID
       line_items: data
@@ -257,14 +257,14 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
           orders: JSON.stringify(orders),
           custid: contactID,
           donation: donation,
-          discountCode: null
+          discountCode: null,
         },
       },
       metadata: {
         orders: JSON.stringify(orders),
         custid: contactID,
         donation: donation,
-        discountCode: null
+        discountCode: null,
       },
     };
 
@@ -272,13 +272,20 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     let stripeCoupon;
     if (discount.code !== '') {
       if (discount.amount > 0) {
-        stripeCoupon = await stripe.coupons.create({amount_off: discount.amount * 100, duration: 'once', name: discount.code, currency: 'usd'});
+        stripeCoupon = await stripe.coupons.create({
+          amount_off: discount.amount * 100,
+          duration: 'once',
+          name: discount.code,
+          currency: 'usd'});
       } else {
-        stripeCoupon = await stripe.coupons.create({percent_off: discount.percent, duration: 'once', name: discount.code});
+        stripeCoupon = await stripe.coupons.create({
+          percent_off: discount.percent,
+          duration: 'once',
+          name: discount.code});
       }
-      stripeCheckoutData.discounts = [{coupon: stripeCoupon.id,}];
+      stripeCheckoutData.discounts = [{coupon: stripeCoupon.id}];
     }
-    
+
     console.log(stripeCheckoutData);
 
     const session = await stripe.checkout.sessions.create(stripeCheckoutData);
@@ -295,15 +302,15 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
 eventRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (request, response) => {
   const pl = request.body;
   const sig = request.headers['stripe-signature'];
-  console.log("pl = " + JSON.stringify(pl));
+  console.log('pl = ' + JSON.stringify(pl));
   console.log(webhookKey);
   console.log(sig);
   let event;
 
-  try{
-//    event = stripe.webhooks.constructEvent(pl,sig,webhookKey);
+  try {
+    //    event = stripe.webhooks.constructEvent(pl,sig,webhookKey);
     event = pl;
-  } catch (err:any){
+  } catch (err:any) {
     console.log('webhook failed');
     response.status(400).send(`Webhook error` + `${err.message}`);
     return;
@@ -312,13 +319,13 @@ eventRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (reques
   console.log('webhook passed');
   console.log(event);
 
-  try{
+  try {
     console.log('starting fulfillment');
     const session = event.data.object;
     console.log('session = ' + session);
     const amount = session.amount/100;
     console.log('session data = ' + session.metadata);
-    console.log('event type = ' + event.type)
+    console.log('event type = ' + event.type);
     if (event.type === 'charge.succeeded') {
       const inp = orderFulfillment({
         id: session.metadata.custid,
@@ -328,8 +335,8 @@ eventRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (reques
       });
     }
     console.log('fulfilled');
-  } catch(err:any){
-    throw new Error('fulfillment error')
+  } catch (err:any) {
+    throw new Error('fulfillment error');
   }
   console.log('returning');
   response.status(200).send('returned; no data added');

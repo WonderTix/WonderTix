@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {query} from 'express';
 import {link} from 'fs';
 import Delta from '../../interfaces/Delta';
@@ -56,25 +57,25 @@ export const getInstanceById = async (params: any): Promise<response> => {
   return await buildResponse(query, 'GET');
 };
 
-export const orderFulfillment = async (params:any): Promise<response> =>  {
+export const orderFulfillment = async (params:any): Promise<response> => {
   const odate = new Date();
-  let st =  '' + odate.getFullYear();
-  if(odate.getMonth() < 10){
+  let st = '' + odate.getFullYear();
+  if (odate.getMonth() < 10) {
     st = st + '0' + odate.getMonth();
   } else {
     st = st + '' + odate.getMonth();
   }
-  if(odate.getDay() < 10){
+  if (odate.getDay() < 10) {
     st = st + '0' + odate.getDay();
   } else {
     st = st + '' + odate.getDay();
   }
   const orderdate = Number(st);
-  console.log("order date = " + orderdate);
+  console.log('order date = ' + orderdate);
   const ordertime = odate.getHours() +':'+ odate.getMinutes() +':'+ odate.getSeconds() +'-'+ odate.getTimezoneOffset();
-  //Needs discount codes added
+  // Needs discount codes added
   const query = {
-    text:`INSERT INTO orders
+    text: `INSERT INTO orders
     (
       contactid_fk,
       orderdate,

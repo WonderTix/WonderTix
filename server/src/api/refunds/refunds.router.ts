@@ -15,17 +15,17 @@ export const refundsRouter = Router();
  *
  * @type {?}
  */
-refundsRouter.post('/', checkJwt, checkScopes, async(
-  req:Request,
-  res:Response,
+refundsRouter.post('/', checkJwt, checkScopes, async (
+    req:Request,
+    res:Response,
 ) => {
-    try{
-      //Pass donation/order, donationid/orderid, amount/ordertotal (default 0.0 -> full refund)
-      const codes = await initRefund(req.body.refMode, req.body.id, req.body.amount);
-      const code = codes.status.success ? 200 : 404;
-      res.status(code).send(codes);
-    }catch(error: any){
-      res.status(500).send(error.message);
-    }
+  try {
+    // Pass donation/order, donationid/orderid, amount/ordertotal (default 0.0 -> full refund)
+    const codes = await initRefund(req.body.refMode, req.body.id, req.body.amount);
+    const code = codes.status.success ? 200 : 404;
+    res.status(code).send(codes);
+  } catch (error: any) {
+    res.status(500).send(error.message);
   }
+},
 );

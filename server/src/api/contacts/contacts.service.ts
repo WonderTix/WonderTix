@@ -43,7 +43,11 @@ export const findAll = async (params: any): Promise<response> => {
 
 export const findByName = async (firstname: string, lastname: string): Promise<response> => {
   const myQuery = {
-    text: `SELECT * FROM contacts WHERE lower(firstname) = lower($1) OR lower(lastname) = lower($2) OR lower(lastname) = lower($1);`,
+    text: `SELECT * 
+          FROM contacts 
+          WHERE lower(firstname) = lower($1) 
+            OR lower(lastname) = lower($2) 
+            OR lower(lastname) = lower($1);`,
     values: [firstname, lastname],
   };
   return await buildResponse(myQuery, 'GET');
@@ -56,7 +60,7 @@ export const find = async (id: string): Promise<response> => {
   };
   return await buildResponse(myQuery, 'GET');
 };
-    
+
 export const findContactTicket = async (id: string): Promise<response> => {
   const myQuery = {
     text: `SELECT * FROM contacts 
@@ -69,15 +73,15 @@ export const findContactTicket = async (id: string): Promise<response> => {
 
   for (let i=0; i<resp.data.length; i++) {
     if (resp.data[i].refund_intent) {
-      resp.data[i].refunded = "true";
+      resp.data[i].refunded = 'true';
     } else {
-      resp.data[i].refunded = "false";
+      resp.data[i].refunded = 'false';
     }
   }
 
-   return resp;
+  return resp;
 };
- 
+
 
 export const create = async (r: any): Promise<response> => {
   const myQuery = {

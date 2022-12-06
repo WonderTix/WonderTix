@@ -90,7 +90,7 @@ const reduceToTicketState = (res: any, t: Ticket) => {
 
 //
 export const getValidTicketTypes = async (): Promise<response> => {
-  // The tickettype indexed by a tickettypeid value of 0 is reserved for 
+  // The tickettype indexed by a tickettypeid value of 0 is reserved for
   // the Pay What You Can tickettype and should not be modified
   const myQuery = {
     text: `
