@@ -223,9 +223,6 @@ export const ContactDisplayTicket = ({
     } catch (error) {
       console.log(error);
     }
-
-    // Used here for demonstration purposes only
-    window.location.reload();
   };
 
   if (!data) return <div>Nothing in contactForm</div>;

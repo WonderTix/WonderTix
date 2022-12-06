@@ -19,9 +19,9 @@ import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 
-// const pk = process.env.PUBLIC_STRIPE_KEY;
+// Your Stripe public key should be retrieved from an 
+// enviroment variable in .env, but this is still low risk
 const pk = `pk_test_51LYvt2L95zqXUSVMjbBbBmIeGvvFTrq6p1zwj3RmMGQ0zgKOGcqeUCNFsgLAt7bcn01fnzz3rnwehrLBSfSFQUb300J5jCAfOE`;
-// const pk = `pk_live_51LarKnLnmVGBW71PE5iZvRz1YyozIa1DggXkHwUB6xoVwaEhohEZKsestQwUtx0jAl98f3As5T7wIJ7MGDsvHPik000tLSC9xC`;
 const stripePromise = loadStripe(pk);
 
 /**

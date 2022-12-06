@@ -114,13 +114,17 @@ export const getValidTicketTypes = async (): Promise<response> => {
 export const getAllTicketTypes = async (): Promise<response> => {
   const myQuery = {
     text: `
-          SELECT * 
-          FROM 
-            tickettype
-          WHERE 
-            deprecated = false
-          ORDER BY
-            tickettypeid ASC;`,
+    SELECT 
+      tickettypeid id,
+      description,
+      price,
+      concessions
+    FROM 
+      tickettype 
+    WHERE 
+      deprecated = false
+    ORDER BY
+      tickettypeid ASC;`,
   };
   return await buildResponse(myQuery, 'GET');
 };
