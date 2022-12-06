@@ -81,11 +81,8 @@ eventRouter.get('/list/active', async (_req: Request, res: Response) => {
 // TODO: when we add confirmation emails we can do it like this:
 // https://stripe.com/docs/payments/checkout/custom-success-page
 eventRouter.post('/checkout', async (req: Request, res: Response) => {
-  // TODO: NOT DO IT THIS WAY!!!
-  // right now it gets the price info from the request made by the client.
-  // THIS IS WRONG it needs to look up the price in the database given
-  // the id of the show/event/whatever. PRICES CANNOT COME FROM CLIENTS!!
-  // FIXED: prices are fetched from db so customers cannot change the price they
+  
+  // Prices are fetched from db so customers cannot change the price they
   // submit their order. Some data such as itemname and description can be.
   // Should not be an issue becuase this is only stored in stripe, and not used
   // by us
