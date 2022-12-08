@@ -48,7 +48,7 @@ export const initRefund = async (mode:number, id:string, amount:number): Promise
   }
 
   const refQuery = {
-    text: `UPDATE ` + dbTable + ` 
+    text: `UPDATE ` + dbTable + `
             SET refund_intent = $1
             WHERE payment_intent = $2;`,
     values: [refund.id, paymentIntent],

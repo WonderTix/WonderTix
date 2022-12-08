@@ -12,7 +12,6 @@ import {checkIn,
   getActiveEvents,
   updateInstances,
   getInstanceById,
-  orderFulfillment,
 } from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
 import {JsonObject} from 'swagger-ui-express';
@@ -20,7 +19,6 @@ export const eventRouter = Router();
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
-const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 
 const bodyParser = require('body-parser');
 
@@ -81,7 +79,7 @@ eventRouter.get('/list/active', async (_req: Request, res: Response) => {
 // TODO: when we add confirmation emails we can do it like this:
 // https://stripe.com/docs/payments/checkout/custom-success-page
 eventRouter.post('/checkout', async (req: Request, res: Response) => {
-  
+
   // Prices are fetched from db so customers cannot change the price they
   // submit their order. Some data such as itemname and description can be.
   // Should not be an issue becuase this is only stored in stripe, and not used
@@ -293,50 +291,6 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     console.error(err.message);
     throw new Error('session creation failure');
   }
-});
-
-
-eventRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (request, response) => {
-  const pl = request.body;
-  const sig = request.headers['stripe-signature'];
-  console.log('pl = ' + JSON.stringify(pl));
-  console.log(webhookKey);
-  console.log(sig);
-  let event;
-
-  try {
-    //    event = stripe.webhooks.constructEvent(pl,sig,webhookKey);
-    event = pl;
-  } catch (err:any) {
-    console.log('webhook failed');
-    response.status(400).send(`Webhook error` + `${err.message}`);
-    return;
-  }
-
-  console.log('webhook passed');
-  console.log(event);
-
-  try {
-    console.log('starting fulfillment');
-    const session = event.data.object;
-    console.log('session = ' + session);
-    const amount = session.amount/100;
-    console.log('session data = ' + session.metadata);
-    console.log('event type = ' + event.type);
-    if (event.type === 'charge.succeeded') {
-      const inp = orderFulfillment({
-        id: session.metadata.custid,
-        discountid_fk: session.metadata.discountCode,
-        ordertotal: amount,
-        payment_intent: session.payment_intent,
-      });
-    }
-    console.log('fulfilled');
-  } catch (err:any) {
-    throw new Error('fulfillment error');
-  }
-  console.log('returning');
-  response.status(200).send('returned; no data added');
 });
 
 // PRIVATE ROUTE

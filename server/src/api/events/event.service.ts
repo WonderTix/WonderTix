@@ -5,6 +5,7 @@ import Delta from '../../interfaces/Delta';
 import Showing from '../../interfaces/Showing';
 import {pool, response, buildResponse} from '../db';
 
+
 export const getActiveEvents = async (): Promise<response> => {
   const myQuery = {
     // Breaking change: added seasonticketeligible field
@@ -55,38 +56,6 @@ export const getInstanceById = async (params: any): Promise<response> => {
     values: [params.id],
   };
   return await buildResponse(query, 'GET');
-};
-
-export const orderFulfillment = async (params:any): Promise<response> => {
-  const odate = new Date();
-  let st = '' + odate.getFullYear();
-  if (odate.getMonth() < 10) {
-    st = st + '0' + odate.getMonth();
-  } else {
-    st = st + '' + odate.getMonth();
-  }
-  if (odate.getDay() < 10) {
-    st = st + '0' + odate.getDay();
-  } else {
-    st = st + '' + odate.getDay();
-  }
-  const orderdate = Number(st);
-  console.log('order date = ' + orderdate);
-  const ordertime = odate.getHours() +':'+ odate.getMinutes() +':'+ odate.getSeconds() +'-'+ odate.getTimezoneOffset();
-  // Needs discount codes added
-  const query = {
-    text: `INSERT INTO orders
-    (
-      contactid_fk,
-      orderdate,
-      ordertime,
-      ordertotal,
-      payment_intent
-    )
-    VALUES($1, $2, $3, $4, $5);`,
-    values: [params.id, orderdate, ordertime, params.ordertotal, params.payment_intent],
-  };
-  return await buildResponse(query, 'POST');
 };
 
 
