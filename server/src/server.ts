@@ -109,7 +109,7 @@ const createServer = async () => {
   app.use('/api/discounts', discountsRouter);
   app.use('/api/refunds', refundsRouter);
   app.use('/api/reporting', reportingRouter);
-  app.use('/webhook', orderRouter);
+  app.use('/api/order', orderRouter);
 
   app.get('/', (_req, res) => res.send('Hello World.'));
 
