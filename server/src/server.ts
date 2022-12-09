@@ -33,6 +33,7 @@ import {taskNotesRouter} from './api/task_notes/task_notes.router';
 import {ticketRouter} from './api/tickets/ticket.router';
 import {discountsRouter} from './api/discounts/discounts.router';
 import {reportingRouter} from './api/reporting/reporting.router';
+import {refundsRouter} from './api/refunds/refunds.router';
 import swaggerUi from 'swagger-ui-express';
 import yamljs from 'yamljs';
 import {resolveRefs} from 'json-refs';
@@ -106,8 +107,9 @@ const createServer = async () => {
   app.use('/api/tickets', ticketRouter);
   app.use('/api/doorlist', doorlistRouter);
   app.use('/api/discounts', discountsRouter);
+  app.use('/api/refunds', refundsRouter);
   app.use('/api/reporting', reportingRouter);
-  app.use('/webhook', orderRouter);
+  app.use('/api/order', orderRouter);
 
   app.get('/', (_req, res) => res.send('Hello World.'));
 

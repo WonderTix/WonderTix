@@ -90,7 +90,7 @@ const reduceToTicketState = (res: any, t: Ticket) => {
 
 //
 export const getValidTicketTypes = async (): Promise<response> => {
-  // The tickettype indexed by a tickettypeid value of 0 is reserved for 
+  // The tickettype indexed by a tickettypeid value of 0 is reserved for
   // the Pay What You Can tickettype and should not be modified
   const myQuery = {
     text: `
@@ -114,6 +114,25 @@ export const getValidTicketTypes = async (): Promise<response> => {
 export const getAllTicketTypes = async (): Promise<response> => {
   const myQuery = {
     text: `
+    SELECT 
+      tickettypeid id,
+      description,
+      price,
+      concessions
+    FROM 
+      tickettype 
+    WHERE 
+      deprecated = false
+    ORDER BY
+      tickettypeid ASC;`,
+  };
+  return await buildResponse(myQuery, 'GET');
+};
+
+//
+export const getDepracatedTicketTypes = async (): Promise<response> => {
+  const myQuery = {
+    text: `
           SELECT * 
           FROM 
             tickettype
@@ -122,7 +141,6 @@ export const getAllTicketTypes = async (): Promise<response> => {
   };
   return await buildResponse(myQuery, 'GET');
 };
-
 
 //
 export const setDefaultTicketForEvent = async (params: any): Promise<response> => {

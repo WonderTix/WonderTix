@@ -2,7 +2,7 @@
 
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {create, find, findAll, findByName, remove, update,findContactTicket}
+import {create, find, findAll, findByName, remove, update, findContactTicket}
   from './contacts.service';
 
 export const contactsRouter = Router();

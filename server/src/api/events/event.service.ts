@@ -1,27 +1,29 @@
+/* eslint-disable max-len */
 import {query} from 'express';
 import {link} from 'fs';
 import Delta from '../../interfaces/Delta';
 import Showing from '../../interfaces/Showing';
 import {pool, response, buildResponse} from '../db';
 
+
 export const getActiveEvents = async (): Promise<response> => {
   const myQuery = {
     // Breaking change: added seasonticketeligible field
     text: `
-          SELECT 
-            e.eventid id, 
-            e.seasonid_fk seasonid, 
-            e.eventname title, 
-            e.eventdescription description, 
-            e.active, 
+          SELECT
+            e.eventid id,
+            e.seasonid_fk seasonid,
+            e.eventname title,
+            e.eventdescription description,
+            e.active,
             e.seasonticketeligible,
-            e.imageurl image_url, 
+            e.imageurl image_url,
             count(ei.eventinstanceid) as numShows
-          FROM 
-            events e 
-            JOIN eventinstances ei 
+          FROM
+            events e
+            JOIN eventinstances ei
               ON e.eventid = ei.eventid_fk
-          GROUP BY 
+          GROUP BY
             e.eventid,
             e.seasonid_fk,
             e.eventname,
@@ -29,9 +31,9 @@ export const getActiveEvents = async (): Promise<response> => {
             e.active,
             e.seasonticketeligible,
             e.imageurl
-          HAVING 
-            e.active = true 
-          ORDER BY 
+          HAVING
+            e.active = true
+          ORDER BY
             e.eventid;`,
   };
 
@@ -43,18 +45,19 @@ export const getInstanceById = async (params: any): Promise<response> => {
     // Query will break frontend when defaultickttype is added to event instance
     text: `
           SELECT *
-          FROM 
+          FROM
             eventinstances
-          WHERE 
-            eventid_fk = $1 
-          AND 
+          WHERE
+            eventid_fk = $1
+          AND
             salestatus = true
-          ORDER BY 
+          ORDER BY
             eventinstanceid;`,
     values: [params.id],
   };
   return await buildResponse(query, 'GET');
 };
+
 
 export const getEventById = async (params: any): Promise<response> => {
   const query = {
@@ -68,9 +71,9 @@ export const getEventById = async (params: any): Promise<response> => {
             active,
             seasonticketeligible,
             imageurl
-          FROM 
+          FROM
             events
-          WHERE 
+          WHERE
             eventid = $1;`,
     values: [params.id],
   };
@@ -130,12 +133,12 @@ export const updateInstances = async (
 export const getEventByName = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
-          SELECT 
-            eventid, 
-            eventname 
-          FROM 
-            events 
-          WHERE 
+          SELECT
+            eventid,
+            eventname
+          FROM
+            events
+          WHERE
             eventname = $1;`,
     values: [params.eventName],
   };
@@ -146,17 +149,17 @@ export const updateEvent = async (params: any): Promise<response> => {
   const myQuery = {
     // Breaking change: added seasonticketeligible field
     text: `
-          UPDATE 
+          UPDATE
             events
           SET (
-            seasonid_fk, 
-            eventname, 
-            eventdescription, 
-            active, 
-            seasonticketeligible, 
+            seasonid_fk,
+            eventname,
+            eventdescription,
+            active,
+            seasonticketeligible,
             imageurl)
             = ($1, $2, $3, $4, $5, $6)
-          WHERE 
+          WHERE
             eventid = $7
           RETURNING *;`,
     values: [
@@ -234,10 +237,10 @@ export const createTickets = async (params: any): Promise<response> => {
   const data = params;
   const numberOfShowings = data.length;
   const myQuery = {
-    text: `INSERT INTO 
+    text: `INSERT INTO
             eventtickets
-            (eventinstanceid_fk, tickettypeid_fk) 
-          VALUES ($1, $2) 
+            (eventinstanceid_fk, tickettypeid_fk)
+          VALUES ($1, $2)
           RETURNING *;`,
     values: <number[]>([]),
   };
@@ -286,22 +289,22 @@ export const archivePlays = async (params: any): Promise<response> => {
   const id = params.id;
   const myQuery = {
     text: `
-          UPDATE 
-            events 
-          SET 
-            active = false 
-          WHERE 
+          UPDATE
+            events
+          SET
+            active = false
+          WHERE
             eventid = $1;`,
     values: [id],
   };
   const intermediateResponse = await buildResponse(myQuery, 'UPDATE');
 
   myQuery.text = `
-                  UPDATE 
-                    eventinstances 
-                  SET 
-                    salestatus = false 
-                  WHERE 
+                  UPDATE
+                    eventinstances
+                  SET
+                    salestatus = false
+                  WHERE
                     eventinstanceid = $1;`;
 
   const secondResponse = await buildResponse(myQuery, 'UPDATE');
@@ -314,15 +317,15 @@ export const createEvent = async (params: any): Promise<response> => {
   const myQuery = {
     // Breaking change: added seasonticketeligible field
     text: `
-          INSERT INTO 
+          INSERT INTO
             events (
-                seasonid_fk,  
-                eventname, 
-                eventdescription, 
+                seasonid_fk,
+                eventname,
+                eventdescription,
                 active,
-                seasonticketeligible, 
+                seasonticketeligible,
                 imageurl)
-          VALUES 
+          VALUES
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
     values: [
@@ -339,11 +342,11 @@ export const createEvent = async (params: any): Promise<response> => {
 export const checkIn = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
-          UPDATE 
-            eventtickets 
-          SET 
-            redeemed = $1 
-          WHERE 
+          UPDATE
+            eventtickets
+          SET
+            redeemed = $1
+          WHERE
             eventticketid = $2;`,
     values: [params.isCheckedIn, params.ticketID],
   };
@@ -353,25 +356,25 @@ export const checkIn = async (params: any): Promise<response> => {
 export const getActiveEventsAndInstances = async (): Promise<response> => {
   const myQuery = {
     text: `
-          SELECT 
+          SELECT
             ei.eventinstanceid,
             e.eventid,
             e.eventname,
             e.eventdescription,
             e.imageurl,
-            ei.eventdate, 
+            ei.eventdate,
             ei.eventtime,
             ei.totalseats,
             ei.availableseats
-          FROM 
-            eventinstances ei 
-            JOIN events e 
+          FROM
+            eventinstances ei
+            JOIN events e
               ON e.eventid = ei.eventid_fk
-          WHERE 
-            e.active = true 
-          AND 
+          WHERE
+            e.active = true
+          AND
             ei.salestatus = true
-          ORDER BY 
+          ORDER BY
             ei.eventinstanceid;`,
   };
   return buildResponse(myQuery, 'GET');
@@ -381,17 +384,17 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
   // Breaking change: added ispreview
   // Will need to add defaulttickettype for event instances when field add/db updated
   const query = `
-                INSERT INTO 
+                INSERT INTO
                   eventinstances (
-                      eventid_fk, 
-                      eventdate, 
-                      eventtime, 
-                      totalseats, 
-                      availableseats, 
+                      eventid_fk,
+                      eventdate,
+                      eventtime,
+                      totalseats,
+                      availableseats,
                       salestatus,
                       ispreview)
-                VALUES 
-                  ($1, $2, $3, $4, $5, true, $6) 
+                VALUES
+                  ($1, $2, $3, $4, $5, true, $6)
                 RETURNING *;`;
   const res = [];
   let results: response = {
@@ -440,7 +443,7 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
 export const updateShowings = async (showings: Showing[]): Promise<number> => {
   // Will break: need to add defaulttickettype for event instances when field add/db updated
   const updateQuery = `
-                      UPDATE 
+                      UPDATE
                         eventinstances
                       SET
                         eventdate = $2,
@@ -450,7 +453,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         availableseats = $6,
                         purchaseuri = $7
                         ispreview = $8
-                      WHERE 
+                      WHERE
                         eventinstanceid = $1;`;
   let rowsUpdated = 0;
   for (const showing of showings) {
@@ -474,11 +477,11 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
 // takes in array of ids and deletes showings with those ids and linkedtickets
 export const deleteShowings = async (ids: number[]): Promise<number> => {
   const deleteQuery = `
-                      UPDATE 
-                        eventinstances 
-                      SET 
-                        salestatus = false 
-                      WHERE 
+                      UPDATE
+                        eventinstances
+                      SET
+                        salestatus = false
+                      WHERE
                         eventinstanceid = $1;`;
   let rowsDeleted = 0;
   for (const id of ids) {
@@ -495,12 +498,12 @@ const eventFields = ['eventname', 'eventdescription', 'imageurl'];
 export const getShowingsById = async (id: string): Promise<Showing[]> => {
   // Breaking change: ispreview is new field, defaulttickettype will be added soon
   const query = `
-                SELECT * 
-                FROM 
-                  eventinstances 
-                WHERE 
-                  eventid_fk = $1 AND salestatus = true 
-                ORDER BY 
+                SELECT *
+                FROM
+                  eventinstances
+                WHERE
+                  eventid_fk = $1 AND salestatus = true
+                ORDER BY
                   eventinstanceid;`;
   const queryResult = await pool.query(query, [id]);
   return queryResult.rows;

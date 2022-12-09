@@ -1,5 +1,4 @@
 import {Router, Response, Request} from 'express';
-import Stripe from 'stripe';
 import CartItem from '../../interfaces/CartItem';
 import {pool} from '../db';
 import {checkIn,
@@ -12,16 +11,16 @@ import {checkIn,
   archivePlays,
   getActiveEvents,
   updateInstances,
-  getInstanceById} from './event.service';
+  getInstanceById,
+} from './event.service';
 import {checkJwt, checkScopes} from '../../auth';
+import {JsonObject} from 'swagger-ui-express';
 export const eventRouter = Router();
 
-const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
-  process.env.PRIVATE_STRIPE_KEY : '';
+const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
+const stripe = require('stripe')(stripeKey);
 
-const stripe = new Stripe(stripeKey, {
-  apiVersion: '2020-08-27',
-});
+const bodyParser = require('body-parser');
 
 
 // Endpoint to get event id
@@ -80,12 +79,13 @@ eventRouter.get('/list/active', async (_req: Request, res: Response) => {
 // TODO: when we add confirmation emails we can do it like this:
 // https://stripe.com/docs/payments/checkout/custom-success-page
 eventRouter.post('/checkout', async (req: Request, res: Response) => {
-  // TODO: NOT DO IT THIS WAY!!!
-  // right now it gets the price info from the request made by the client.
-  // THIS IS WRONG it needs to look up the price in the database given
-  // the id of the show/event/whatever. PRICES CANNOT COME FROM CLIENTS!!
-  const data: CartItem[] = req.body.cartItems;
 
+  // Prices are fetched from db so customers cannot change the price they
+  // submit their order. Some data such as itemname and description can be.
+  // Should not be an issue becuase this is only stored in stripe, and not used
+  // by us
+  const data: CartItem[] = req.body.cartItems;
+  console.log(data);
   const {
     firstName,
     lastName,
@@ -105,21 +105,20 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
     emailExists = +emails.rows[0].count > 0;
   } catch (error: any) {
     console.error(error.message);
-    // Todo(jesse): Handle error cases
+    throw new Error('optin w/ email failure');
   }
   if (emailExists === false) {
     try {
-      // Possible breaking change custname -> firstname, lastname
       const query = `
                     INSERT INTO
                       contacts (
                           firstname,
-                          lastname, 
-                          email, 
-                          phone, 
-                          address, 
-                          newsletter, 
-                          donorbadge, 
+                          lastname,
+                          email,
+                          phone,
+                          address,
+                          newsletter,
+                          donorbadge,
                           seatingaccom)
                     VALUES
                       ($1, $2, $3, $4, $5, $6, $7, $8);`;
@@ -150,14 +149,13 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
         optIn,
         seatingAcc,
       ];
-      // Possible breaking change custname -> firstname, lastname
       const query = `
                     UPDATE
                       contacts
                     SET
                       firstname = $2,
                       lastname = $3,
-                      phone = $4, 
+                      phone = $4,
                       address = $5,
                       newsletter = $6,
                       seatingaccom = $7
@@ -166,26 +164,27 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       await pool.query(query, values);
     } catch (error: any) {
       console.log(error);
+      throw new Error('contact update failure');
     }
   }
   // storing the contact id for later processing on succesful payments.
   // if we cant find the custid something went wrong
-  let contactID = null;
+  let contactID;
 
   try {
     // Possible breaking change custname -> firstname, lastname
-    const query = `
-                  SELECT 
-                    contactid 
-                  FROM 
-                    contacts 
-                  WHERE 
-                    firstname = $1 AND lastname = $2;`;
-    contactID = await pool.query(
-        query,
-        [firstName, lastName],
-    );
-    contactID = contactID.rows[0].id;
+    const query = {text: `
+                  SELECT
+                    contactid
+                  FROM
+                    public.contacts
+                  WHERE
+                    email = $1;`,
+    values: [email],
+    };
+    contactID = await pool.query(query);
+    contactID = contactID.rows[0].contactid;
+    console.log('contact ID: ' + contactID);
     // const formData: CheckoutFormInfo = req.body.formData;
     const donation: number = req.body.donation;
     const donationItem = {
@@ -195,7 +194,6 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
           name: 'Donation',
           description: 'A generous donation',
         },
-        // the price here needs to be fetched from the DB instead
         unit_amount: donation * 100,
       },
       quantity: 1,
@@ -206,9 +204,32 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
       quantity: item.qty,
     }));
 
-    const session = await stripe.checkout.sessions.create({
+
+    // Queries the database to get item prices
+    const costVect = [];
+    for (let i = 0; i < data.length; i++) {
+      try {
+        const priceQueryi = await pool.query(
+            'SELECT price FROM orderitems WHERE orderitemid = $1;',
+            [data[i].product_id],
+        );
+        if (priceQueryi.rows[0].price) {
+          console.log(priceQueryi);
+          console.log(priceQueryi.rows[0].price);
+          data[i].price = (Number((priceQueryi.rows[0].price).replace(/[^0-9\.-]+/g, '')));
+        } else {
+          throw new Error('No price in database');
+        }
+      } catch (err: any) {
+        console.error(err.message);
+        throw new Error('Cost Calculation Error');
+      };
+    };
+    console.log(data);
+
+
+    const stripeCheckoutData: JsonObject = {
       payment_method_types: ['card'],
-      // this is the offending area
       // all this stuff needs to be replaced by info from DB based on event ID
       line_items: data
           .map((item) => ({
@@ -218,7 +239,6 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
                 name: item.name,
                 description: item.desc,
               },
-              // the price here needs to be fetched from the DB instead
               unit_amount: item.price * 100,
             },
             quantity: item.qty,
@@ -232,18 +252,44 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
           orders: JSON.stringify(orders),
           custid: contactID,
           donation: donation,
+          discountCode: null,
         },
       },
       metadata: {
         orders: JSON.stringify(orders),
         custid: contactID,
+        donation: donation,
+        discountCode: null,
       },
-    });
-    console.log(session);
-    res.json({id: session.id});
+    };
+
+    const discount = req.body.discount;
+    let stripeCoupon;
+    if (discount.code !== '') {
+      if (discount.amount > 0) {
+        stripeCoupon = await stripe.coupons.create({
+          amount_off: discount.amount * 100,
+          duration: 'once',
+          name: discount.code,
+          currency: 'usd'});
+      } else {
+        stripeCoupon = await stripe.coupons.create({
+          percent_off: discount.percent,
+          duration: 'once',
+          name: discount.code});
+      }
+      stripeCheckoutData.discounts = [{coupon: stripeCoupon.id}];
+    }
+
+    console.log(stripeCheckoutData);
+
+    const session = await stripe.checkout.sessions.create(stripeCheckoutData);
+    const pi =
+    console.log(session.id);
+    res.json({id: session.id, paymentIntent: pi});
   } catch (err: any) {
     console.error(err.message);
-    throw new Error('Customer not found');
+    throw new Error('session creation failure');
   }
 });
 

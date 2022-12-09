@@ -8,8 +8,9 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import Navigation from '../Navigation';
+import {getDataGridUtilityClass} from '@mui/x-data-grid';
 /**
- * @return {object} ContactOneResult - has Navigation
+ * @returns {object} ContactOneResult - has Navigation
  *  and Contacts to reroute to other components
  */
 
@@ -70,11 +71,11 @@ export const ContactOneResult = () => {
             <div>
               <br/>
               {data.map(
-                  Cust =>
+                  (Cust) =>
                     <ContactDisplayTicket
                       data={Cust}
                       key={Cust.orderid}
-                      {...Cust}/>
+                      {...Cust}/>,
               )},
             </div>
             }
@@ -104,7 +105,7 @@ export const ContactDisplayForm = ({
     seatingaccom,
     vip,
     volunteerlist,
-    }=data;
+  }=data;
   return (
     <div>
       <button className='bg-blue-600 disabled:opacity-40
@@ -193,14 +194,46 @@ export const ContactDisplayTicket = ({
 }:{
     data:any
   }):ReactElement =>{
+  const {getAccessTokenSilently} = useAuth0();
+
+  const handleRefund = async (orderid, amount) => {
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
+
+    try {
+      const id = orderid;
+      // refund order
+      amount = 0.0;
+      const refMode = 1;
+
+      const response = await fetch(
+          process.env.REACT_APP_ROOT_URL + '/api/refunds', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({refMode, id, amount}),
+          });
+
+      const responseData = await response.json();
+      console.log(responseData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (!data) return <div>Nothing in contactForm</div>;
   const {
     orderdate,
     orderid,
     ordertime,
     ordertotal,
+    refunded,
   } = data;
-  if (orderid != null){
+  if (orderid != null) {
     return (
       <div className='flec flex-row w-full bg-white
             shadow-lg border border-zinc-300 rounded-lg'>
@@ -221,8 +254,21 @@ export const ContactDisplayTicket = ({
             <div className='font-semibold'>Order Total:</div>
             <div>{ordertotal}</div>
           </div>
+          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+            <div className='font-semibold'>Refunded:</div>
+            <div>{refunded}</div>
+          </div>
+          <button
+            className='px-2 py-1 bg-blue-500 disabled:opacity-30
+              mt-6 mb-4 text-white rounded-lg text-sm'
+            onClick={() => handleRefund(orderid, ordertotal)}
+          >
+            Refund
+          </button>
         </div>
       </div>
     );
+  } else {
+    return <div>Nothing in contactForm</div>;
   }
 };

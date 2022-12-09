@@ -90,11 +90,11 @@ const Contacts = (): React.ReactElement => {
         <div>
           <br/>
           {datalist.map(
-              Cust =>
+              (Cust) =>
                 <ContactResults
                   data={Cust}
                   key={Cust.contactid}
-                  {...Cust}/>
+                  {...Cust}/>,
           )},
         </div>
       </div>

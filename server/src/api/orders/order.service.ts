@@ -1,6 +1,13 @@
-import {pool} from '../db';
-export {refundOrder, fulfillOrder};
+import {pool, response, buildResponse} from '../db';
+export {refundOrder, fulfillOrder, orderFulfillment};
 
+const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
+const stripe = require('stripe')(stripeKey);
+const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
+const bodyParser = require('body-parser');
+
+// orderFullfillment is now used instead. Leaving it here for reference but
+// could be removed
 const fulfillOrder = async (session: any) => {
   // TODO: fill me in
   // TODO: fill me in
@@ -75,6 +82,7 @@ const fulfillOrder = async (session: any) => {
   }
 };
 
+// Not used
 const refundOrder = async (session: any) => {
   try {
     await pool.query(
@@ -94,4 +102,36 @@ const refundOrder = async (session: any) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+const orderFulfillment = async (params:any): Promise<response> => {
+  const odate = new Date();
+  let st = '' + odate.getFullYear();
+  if (odate.getMonth() < 10) {
+    st = st + '0' + odate.getMonth();
+  } else {
+    st = st + '' + odate.getMonth();
+  }
+  if (odate.getDay() < 10) {
+    st = st + '0' + odate.getDay();
+  } else {
+    st = st + '' + odate.getDay();
+  }
+  const orderdate = Number(st);
+  console.log('order date = ' + orderdate);
+  const ordertime = odate.getHours() +':'+ odate.getMinutes() +':'+ odate.getSeconds() +'-'+ odate.getTimezoneOffset();
+  // Needs discount codes added
+  const query = {
+    text: `INSERT INTO orders
+    (
+      contactid_fk,
+      orderdate,
+      ordertime,
+      ordertotal,
+      payment_intent
+    )
+    VALUES($1, $2, $3, $4, $5);`,
+    values: [params.id, orderdate, ordertime, params.ordertotal, params.payment_intent],
+  };
+  return await buildResponse(query, 'POST');
 };
