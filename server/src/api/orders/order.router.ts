@@ -1,5 +1,5 @@
 import express from 'express';
-import {fulfillOrder, refundOrder, orderFulfillment} from './order.service';
+import {orderFulfillment} from './order.service';
 
 export const orderRouter = express.Router();
 
@@ -7,44 +7,12 @@ const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const bodyParser = require('body-parser');
-/* This route serves as a webhook to fulfill orders successfully processed by
-*  Stripe. See https://stripe.com/docs/api/events/retrieve for details on the request body
-*/
-orderRouter.post('/', async (req, res) => {
-  // TESTING WIHT SOME SIGNATURE VERIFICATION
-  // const payload = req.body;
-  // console.log("PAYLOAD:   ");
-  // console.log(payload);
-  // const signature = req.headers['stripe-signature'];
-  // console.log("SIGNATURE:   ");
-  // console.log(signature);
-  // let event;
-  // try {
-  // event = stripe.webhooks.constructEvent(payload, signature, endpointSecret);
-  // } catch (error) {
-  //     console.log(error);
-  //     return;
-  // }
-  const event = req.body;
 
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      // const paymentIntent = event.data.object;
-      console.log('PaymentIntent was successful');
-
-      fulfillOrder(event);
-      break;
-    case 'charge.refunded':
-      refundOrder(event);
-      console.log('refund created');
-      break;
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  // Return a 200 response to acknowledge receipt of the event
-  res.json({received: true});
-});
+// To use the webhook locally the Stripe CLI will need to be setup see 
+// https://stripe.com/docs/stripe-cli. The command to start having Stripe
+// make test requests to the webhook is 
+// `./stripe listen --forward-to https://localhost:8000/api/order/webhook`
+// See https://stripe.com/docs/webhooks/test
 
 orderRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (request, response) => {
   const pl = request.body;

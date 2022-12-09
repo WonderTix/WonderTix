@@ -6,6 +6,8 @@ const stripe = require('stripe')(stripeKey);
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const bodyParser = require('body-parser');
 
+// orderFullfillment is now used instead. Leaving it here for reference but
+// could be removed
 const fulfillOrder = async (session: any) => {
   // TODO: fill me in
   // TODO: fill me in
@@ -80,6 +82,7 @@ const fulfillOrder = async (session: any) => {
   }
 };
 
+// Not used
 const refundOrder = async (session: any) => {
   try {
     await pool.query(
