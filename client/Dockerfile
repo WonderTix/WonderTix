@@ -1,7 +1,7 @@
 FROM node:18-alpine
 
 WORKDIR /wondertix
-COPY ./package.json .
+COPY ./package*.json .
 
 RUN chown -R 1000:1000 /wondertix
 
