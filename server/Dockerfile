@@ -1,6 +1,4 @@
-FROM node:19
-
-RUN apt-get update
+FROM node:18-alpine
 
 WORKDIR /wondertix
 COPY ./package.json .
