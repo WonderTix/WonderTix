@@ -102,9 +102,9 @@ const createServer = async () => {
       .createServer(
           {
             key: fs.readFileSync(
-                path.join(__dirname, '../localhost-key.pem'),
+                path.join(__dirname, '../key.pem'),
             ),
-            cert: fs.readFileSync(path.join(__dirname, '../localhost.pem')),
+            cert: fs.readFileSync(path.join(__dirname, '../cert.pem')),
           }, app);
 };
 
