@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import {query} from 'express';
-import {link} from 'fs';
+import { query } from 'express';
+import { link } from 'fs';
 import Delta from '../../interfaces/Delta';
 import Showing from '../../interfaces/Showing';
-import {pool, response, buildResponse} from '../db';
+import { pool, response, buildResponse } from '../db';
 
 
 export const getActiveEvents = async (): Promise<response> => {
@@ -81,8 +81,8 @@ export const getEventById = async (params: any): Promise<response> => {
 };
 
 export const updateInstances = async (
-    body: any,
-    params: any,
+  body: any,
+  params: any,
 ): Promise<response> => {
   const instances: Showing[] = body;
   console.log('Instances', instances);
@@ -94,7 +94,7 @@ export const updateInstances = async (
   const instancesSet = new Set(instances.map((show) => show.id));
 
   const rowsToDelete = currentShowings.filter(
-      (show: Showing) => !instancesSet.has(show.id),
+    (show: Showing) => !instancesSet.has(show.id),
   ).map((show) => show.id);
 
   // delete them
@@ -124,7 +124,7 @@ export const updateInstances = async (
     ],
     status: {
       success: true,
-      message: `${rowsUpdated} rows updated, `+
+      message: `${rowsUpdated} rows updated, ` +
         `${rowsDeleted} rows deleted, ${rowsInserted.length} rows inserted`,
     },
   };
@@ -181,13 +181,17 @@ export const updateEvent = async (params: any): Promise<response> => {
 // linkedtickets is depracated, will require refactor
 //
 export const createShowing = async (params: any): Promise<response> => {
-  const newInstances = await insertAllShowings(params.instances);
+  console.log("test");
+  const newInstances = await insertAllShowings(params.instances); //Catch error with .catch, do something with error and don't instert into tickettype
   // Link showtime to ticket type
+  console.log("192");
+
   const linkingdata = newInstances.map((s) => ({
     id: <number>Object.values(s)[0],
     tickettypes: <number[]>Object.values(s)[10], // Keeps changing?
     seatsfortype: <number[]>Object.values(s)[11], // Keeps changing?
   }));
+
   const myQuery = {
     text: `INSERT INTO ticketrestrictions (eventinstanceid_fk, tickettypeid_fk,
       ticketlimit) VALUES ($1, $2, $3) `,
@@ -207,6 +211,7 @@ export const createShowing = async (params: any): Promise<response> => {
     for (let i = 0; i < len; i += 1) {
       let queryResults;
       try {
+        console.log("211");
         queryResults = await pool.query(myQuery, [
           show.id,
           show.tickettypes[i],
@@ -215,6 +220,8 @@ export const createShowing = async (params: any): Promise<response> => {
         toReturn.push(queryResults);
         rowCount += queryResults.rowCount;
       } catch (error: any) {
+        console.log("ERROR?");
+        console.log(error.message);
         res.status.message = error.message;
       }
     }
@@ -226,7 +233,7 @@ export const createShowing = async (params: any): Promise<response> => {
       message: `${rowCount} ${rowCount === 1 ?
         'row' :
         'rows'
-      } inserted.`,
+        } inserted.`,
     },
   };
   await createTickets(linkingdata);
@@ -279,7 +286,7 @@ export const createTickets = async (params: any): Promise<response> => {
       message: `${rowCount} ${rowCount === 1 ?
         'row' :
         'rows'
-      } inserted.`,
+        } inserted.`,
     },
   };
   return res;
@@ -407,12 +414,13 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
   const toReturn = [];
   let rowCount = 0;
   for (const showing of showings) {
-    if (showing.ticketTypeId.length === 0) {
-      throw new Error('No ticket type provided');
-    }
+    // if (showing.ticketTypeId.length === 0) {
+    //   console.log("No ticket type provided");
+    //   throw new Error('No ticket type provided'); //No error catching for this???
+    // }
     const date = showing.eventdate.split('-');
     const dateAct = date.join('');
-    const {rows} = await pool.query(query, [
+    const { rows } = await pool.query(query, [
       showing.eventid,
       dateAct,
       showing.starttime,
@@ -422,8 +430,10 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
     ]);
     toReturn.push(showing);
     rowCount += 1;
-    res.push({...rows[0], ticketTypeId: showing.ticketTypeId,
-      seatsForType: showing.seatsForType});
+    res.push({
+      ...rows[0], ticketTypeId: showing.ticketTypeId,
+      seatsForType: showing.seatsForType
+    });
   }
   results = {
     data: toReturn,
@@ -432,7 +442,7 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       message: `${rowCount} ${rowCount === 1 ?
         'row' :
         'rows'
-      } inserted.`,
+        } inserted.`,
     },
   };
   console.log(results);
@@ -458,17 +468,17 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
   let rowsUpdated = 0;
   for (const showing of showings) {
     const queryResult = await pool.query(
-        updateQuery,
-        [
-          showing.id,
-          showing.eventdate,
-          showing.starttime,
-          showing.salestatus,
-          showing.totalseats,
-          showing.availableseats,
-          showing.purchaseuri,
-          showing.ispreview,
-        ]);
+      updateQuery,
+      [
+        showing.id,
+        showing.eventdate,
+        showing.starttime,
+        showing.salestatus,
+        showing.totalseats,
+        showing.availableseats,
+        showing.purchaseuri,
+        showing.ispreview,
+      ]);
     rowsUpdated += queryResult.rowCount;
   }
   return rowsUpdated;

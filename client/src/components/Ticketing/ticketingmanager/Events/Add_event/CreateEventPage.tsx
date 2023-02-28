@@ -43,6 +43,7 @@ const CreateEventPage = () => {
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
+    console.log(token);
     const {imageUrl, eventName, eventDesc, showings} = formData;
     const seasonid_fk = 7;
 
@@ -71,6 +72,7 @@ const CreateEventPage = () => {
       });
       // update Redux state with new event & available tickets
       if (postShowings.ok) {
+        console.log('hi');
         setVisible(true);
         // nav('/ticketing/manageevent');
       }
