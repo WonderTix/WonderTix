@@ -106,7 +106,7 @@ export default function ManageEventsPage({data}: any): ReactElement {
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
        bg-gradient-to-r from-cyan-500 to-blue-500   '>Manage Events</h1>
         <div className='bg-white p-3 rounded-xl mb-4 shadow-lg'>
-          <DataGrid className='bg-white' autoHeight columns={columns} rows={data} pageSize={10} />
+          <DataGrid className='bg-white' autoHeight columns={columns} rows={data} pageSize={10} rowsPerPageOptions={[10]} />
         </div>
         <button
           className='px-3 py-2 bg-green-500 text-white rounded-xl hover:bg-green-700'
