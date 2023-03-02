@@ -20,6 +20,7 @@ interface ShowListControllerProps{
    addShowData: (show: Showing) => void,
    deleteShowing: (event: Event) => void,
    eventid: number,
+   setShowingsHandler: (show) => void,
 }
 
 /**
@@ -28,31 +29,42 @@ interface ShowListControllerProps{
  * @param {ShowListControllerProps} showsData, addShowData, updateShows, eventid
  * @returns {ReactElement} and {ShowingInputContainer}
  */
-const ShowListController = ({showsData, addShowData, deleteShowing, eventid}: ShowListControllerProps) => {
-  const [shows, addShow] = useState(showsData ? showsData: []);
+const ShowListController = ({showsData, addShowData, deleteShowing, eventid, setShowingsHandler}: ShowListControllerProps) => {
+  const [shows, setShow] = useState(showsData ? showsData: []);
   let showingNum = 0;
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
-    /* let id;
+    let id = 0;
     if (shows.length > 0) {
       id = shows[shows.length - 1].id + 1;
     } else {
       id = 0;
-    } */
+    }
     const show: Showing = {
-      id: 0,
+      id: id,
       eventid: eventid,
-      starttime: undefined,
-      eventdate: undefined,
-      salestatus: true,
+      starttime: '',
+      eventdate: '',
       ticketTypeId: [],
       seatsForType: [],
       availableseats: 0,
       totalseats: 0,
+      salestatus: true,
     };
-    addShow((shows) => [...shows, show]);
+    setShow((shows) => [...shows, show]);
     console.log(shows);
+  };
+
+  const handleSetShow = (show) => {
+    const showItems = [...shows];
+    let showToModify = showItems[show.id];
+    if (JSON.stringify(showToModify) !== JSON.stringify(show)) {
+      showToModify = show;
+      showItems[show.id] = show;
+      setShow(showItems);
+      setShowingsHandler(showItems);
+    }
   };
 
   const deleteShowingBox = (event) => {
@@ -66,10 +78,16 @@ const ShowListController = ({showsData, addShowData, deleteShowing, eventid}: Sh
   return (
     <>
       {shows.map((element, index) => {
-        return (<ShowingInputContainer
-          initialData={element}
-          id={element.id} showingNum={showingNum += 1} key={index}
-          addShow={addShowData} deleteShow={deleteShowingBox}/>);
+        return (
+          <ShowingInputContainer
+            initialData={element}
+            id={element.id}
+            showingNum={showingNum += 1}
+            key={index}
+            addShowData={addShowData}
+            deleteShow={deleteShowingBox}
+            handleSetShow={handleSetShow}
+          />);
       })}
       <div>
         <button

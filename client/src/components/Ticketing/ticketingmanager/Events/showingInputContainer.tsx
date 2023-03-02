@@ -16,8 +16,9 @@ export interface MapPropsToShowingInputContainer {
   initialData?: Showing;
   id: number;
   showingNum: number;
-  addShow: (show:Showing) => void;
+  addShowData: (show: Showing) => void;
   deleteShow: (event: Event) => void;
+  handleSetShow: (show: Showing) => void;
 }
 
 /**
@@ -26,17 +27,20 @@ export interface MapPropsToShowingInputContainer {
  * @returns {ReactElement}
  */
 // eslint-disable-next-line react/prop-types
-const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow}:MapPropsToShowingInputContainer) => {
+const ShowingInputContainer = ({initialData, id, showingNum, addShowData, deleteShow, handleSetShow}:MapPropsToShowingInputContainer) => {
   const [starttime, setStarttime] = useState(initialData.starttime !== undefined? initialData.starttime: '');
   const [eventdate, setEventdate] = useState(initialData.eventdate !== undefined? initialData.eventdate: '');
   const [ticketTypeId, setTicketTypeId] = useState('');
   const [totalseats, setTotalseats] = useState(initialData.totalseats !== undefined? initialData.totalseats: 0);
-  const availableseates = initialData.availableseats !== undefined? initialData.availableseats: 0;
+  const [availableSeats, setAvailableSeats] = useState(initialData.availableseats !== undefined? initialData.availableseats: 0);
   const [ticketTypes, setTicketTypes] = useState([]);
+  const [seatsForType, setSeatsForType] = useState([]);
+  const [typesForShow, setTypesForShow] = useState([]);
+
 
   // Index of seatsForType match typesForShow so seatsForType[0] is for typesForShow[0]
-  let seatsForType = []; // Number of seats for certian type of ticket
-  let typesForShow = []; // Ticket types for all showings
+  // let seatsForType = []; // Number of seats for certian type of ticket
+  // let typesForShow = []; // Ticket types for all showings
 
   const dateFieldValue = typeof eventdate === 'string' ? eventdate.split('T') : '';
   const fetchTicketTypes = async () => {
@@ -49,45 +53,68 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
     fetchTicketTypes();
   }, [initialData]);
 
-  // Gets ticket types and seats for types before sending to parent component
-  const addToArray = (e) => {
-    seatsForType = [];
-    typesForShow = [];
-    const div = e.target.parentElement;
-    const inputs = div.querySelectorAll('input');
-    const selects = div.querySelectorAll('select');
-    const len = inputs.length - 2;
-    for (let i = 1; i < len; i++) {
-      seatsForType.push(parseInt(inputs[i].value));
-    }
-    selects.forEach((e: HTMLSelectElement) => {
-      typesForShow.push(parseInt(e.value));
-    });
-  };
-
-  // Generate the showing object to submit to parent component
-  const createShowObject = (id) => {
+  useEffect(() => {
+    setStarttime(starttime);
+    setEventdate(eventdate);
+    setTicketTypeId(ticketTypeId);
+    setTotalseats(totalseats);
+    setAvailableSeats(availableSeats);
+    setTicketTypes(ticketTypes);
+    setSeatsForType(seatsForType);
+    setTypesForShow(typesForShow);
     const showing: Showing = {
       id: id,
       eventid: initialData.eventid,
       starttime: starttime,
       eventdate: eventdate,
-      totalseats: totalseats,
-      availableseats: availableseates? availableseates : totalseats,
       ticketTypeId: typesForShow,
       seatsForType: seatsForType,
+      availableseats: availableSeats ? availableSeats : totalseats,
+      totalseats: totalseats,
       salestatus: true,
     };
-    console.log(showing);
-    return showing;
-  };
+    handleSetShow(showing);
+  }, [starttime, eventdate, ticketTypeId, totalseats, availableSeats, ticketTypes, seatsForType, typesForShow]);
+
+  // Gets ticket types and seats for types before sending to parent component
+  // const addToArray = (e) => {
+  //   const div = e.target.parentElement;
+  //   const inputs = div.querySelectorAll('input');
+  //   const selects = div.querySelectorAll('select');
+  //   const len = inputs.length - 2;
+  //   for (let i = 1; i < len; i++) {
+  //     setSeatsForType((data) => [...data, parseInt(inputs[i].value)]);
+  //     // seatsForType.push(parseInt(inputs[i].value));
+  //   }
+  //   selects.forEach((e: HTMLSelectElement) => {
+  //     setTypesForShow((data) => [...data, parseInt(e.value)]);
+  //     // typesForShow.push(parseInt(e.value));
+  //   });
+  // };
+
+  // // Generate the showing object to submit to parent component
+  // const createShowObject = (id) => {
+  //   const showing: Showing = {
+  //     id: id,
+  //     eventid: initialData.eventid,
+  //     starttime: starttime,
+  //     eventdate: eventdate,
+  //     totalseats: totalseats,
+  //     availableseats: availableSeats ? availableSeats : totalseats,
+  //     ticketTypeId: typesForShow,
+  //     seatsForType: seatsForType,
+  //     salestatus: true,
+  //   };
+  //   console.log(showing);
+  //   return showing;
+  // };
 
   // Send callback to parent
   const handleClick = (event) => {
     event.preventDefault();
     //  use call back to get to parent state
-    addToArray(event);
-    addShow(createShowObject(id));
+    // addToArray(event);
+    // addShowData(createShowObject(id));
   };
 
   const handleDelete = (event) => {

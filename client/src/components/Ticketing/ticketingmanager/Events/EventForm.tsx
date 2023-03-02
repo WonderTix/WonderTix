@@ -143,24 +143,30 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
     setImageURL(url.target.value);
   }, [imageUrl]);
 
+  const setShowingsHandler = (shows) => {
+    setShowings(shows);
+    console.log(showings);
+  };
+
   // Callback to get new show from child component to the parent
   const addShowData = useCallback((show) => {
-    const isInShowList = showings.some((element) => element.id === show.id);
-    if (isInShowList) {
-      const newShowList = showings.filter(((element) => element.id !== show.id));
-      const index = showings.findIndex((i) => {
-        return i.eventdate === show.eventdate && i.starttime === show.starttime;
-      });
-      if (index > -1) {
-        showings[index] = show;
-      } else {
-        newShowList.push(show);
-        setShowings((showings) => [...showings, ...newShowList]);
-      }
-    } else {
-      showings.push(show);
-    }
-    console.log(showings);
+    console.log('nothing');
+  //   const isInShowList = showings.some((element) => element.id === show.id);
+  //   if (isInShowList) {
+  //     const newShowList = showings.filter(((element) => element.id !== show.id));
+  //     const index = showings.findIndex((i) => {
+  //       return i.eventdate === show.eventdate && i.starttime === show.starttime;
+  //     });
+  //     if (index > -1) {
+  //       showings[index] = show;
+  //     } else {
+  //       newShowList.push(show);
+  //       setShowings((showings) => [...showings, ...newShowList]);
+  //     }
+  //   } else {
+  //     showings.push(show);
+  //   }
+  //   console.log(showings);
   }, [showings]);
 
   const deleteShowing = useCallback((event) => {
@@ -194,13 +200,11 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       eventDesc,
       isPublished,
       imageUrl,
-      showings,
+      showings: showings,
     };
     console.log(data);
     onSubmit(data);
   };
-
-  console.log(def);
 
   return (
     <Form
@@ -247,7 +251,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} deleteShowing={deleteShowing} eventid={def.eventID}/>
+                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} addShowData = {addShowData} deleteShowing={deleteShowing} eventid={def.eventID} setShowingsHandler={setShowingsHandler}/>
               </div>
             </div>
           </div>
