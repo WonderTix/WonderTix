@@ -451,7 +451,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         salestatus = $4,
                         totalseats = $5,
                         availableseats = $6,
-                        purchaseuri = $7
+                        purchaseuri = $7,
                         ispreview = $8
                       WHERE
                         eventinstanceid = $1;`;
