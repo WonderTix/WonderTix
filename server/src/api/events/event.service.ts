@@ -108,8 +108,7 @@ export const updateInstances = async (
   // insert new showings
   // showings with id = 0 have not yet been added to the table
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
-  // rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
-  rowsToInsert.forEach((show: Showing) => show.ticketTypeId[0] = 0);
+  // @TODO set default ticket type
 
   console.log('Rows to insert', rowsToInsert);
   const rowsInserted = (await insertAllShowings(rowsToInsert));
