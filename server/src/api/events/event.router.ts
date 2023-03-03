@@ -452,7 +452,7 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     }
     res.status(code).send(resp);
   } catch (error: any) {
-    res.status(500).send(error.message);
+    res.status(500).send(error);
   }
 });
 
