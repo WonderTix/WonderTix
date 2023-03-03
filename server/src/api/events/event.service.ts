@@ -407,9 +407,6 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
   const toReturn = [];
   let rowCount = 0;
   for (const showing of showings) {
-    if (showing.ticketTypeId.length === 0) {
-      throw new Error('No ticket type provided');
-    }
     const date = showing.eventdate.split('-');
     const dateAct = date.join('');
     const {rows} = await pool.query(query, [
