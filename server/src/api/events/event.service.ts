@@ -498,7 +498,16 @@ const eventFields = ['eventname', 'eventdescription', 'imageurl'];
 export const getShowingsById = async (id: string): Promise<Showing[]> => {
   // Breaking change: ispreview is new field, defaulttickettype will be added soon
   const query = `
-                SELECT *
+                SELECT eventinstanceid AS id,
+                    eventid_fk AS eventid,
+                    eventdate,
+                    eventtime AS starttime,
+                    salestatus,
+                    totalseats,
+                    availableseats,
+                    defaulttickettype AS ticketTypeId,
+                    purchaseuri,
+                    ispreview
                 FROM
                   eventinstances
                 WHERE
