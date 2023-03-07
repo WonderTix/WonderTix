@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
 // import EventForm from './EventForm';
 import ShowingInputContainer from './showingInputContainer';
@@ -10,66 +10,69 @@ import ShowingInputContainer from './showingInputContainer';
  *
  * @param {Showing[]} showsData
  * @param {Showing} show
- * @param {Function} addShowData
  * @param {Showing[]} shows
  * @param {Function} updateShows
  * @param {number} eventid
+ * @param {Function} setShowingsHandler
  */
 interface ShowListControllerProps{
    showsData?: Showing[],
-   addShowData: (show: Showing) => void,
-   deleteShowing: (event: Event) => void,
    eventid: number,
+   setShowingsHandler: (show) => void,
 }
 
 /**
  * The shows handler
  *
- * @param {ShowListControllerProps} showsData, addShowData, updateShows, eventid
+ * @param {ShowListControllerProps} showsData, updateShows, eventid, setShowingsHandler
  * @returns {ReactElement} and {ShowingInputContainer}
  */
-const ShowListController = ({showsData, addShowData, deleteShowing, eventid}: ShowListControllerProps) => {
-  const [shows, addShow] = useState(showsData ? showsData: []);
+const ShowListController = ({showsData, eventid, setShowingsHandler}: ShowListControllerProps) => {
+  const [shows, setShow] = useState(showsData ? showsData: []);
   let showingNum = 0;
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
-    /* let id;
+    let id = 0;
     if (shows.length > 0) {
       id = shows[shows.length - 1].id + 1;
     } else {
       id = 0;
-    } */
+    }
     const show: Showing = {
-      id: 0,
+      id: id,
       eventid: eventid,
-      starttime: undefined,
-      eventdate: undefined,
-      salestatus: true,
+      starttime: '',
+      eventdate: '',
       ticketTypeId: [],
       seatsForType: [],
       availableseats: 0,
       totalseats: 0,
+      salestatus: true,
     };
-    addShow((shows) => [...shows, show]);
-    console.log(shows);
+    setShow((shows) => [...shows, show]);
   };
 
-  const deleteShowingBox = (event) => {
-    const toRemove = event.target.parentElement.parentElement;
-    console.log(toRemove);
-    toRemove.remove();
-    console.log(shows);
-    deleteShowing(event);
-  };
+  const handleSetShow = useCallback((show) => {
+    const showItems = [...shows];
+    let showToModify = showItems[show.id];
+    showToModify = show;
+    showItems[show.id] = show;
+    setShow(showItems);
+    setShowingsHandler(showItems);
+  }, [shows]);
 
   return (
     <>
       {shows.map((element, index) => {
-        return (<ShowingInputContainer
-          initialData={element}
-          id={element.id} showingNum={showingNum += 1} key={index}
-          addShow={addShowData} deleteShow={deleteShowingBox}/>);
+        return (
+          <ShowingInputContainer
+            initialData={element}
+            id={element.id}
+            showingNum={showingNum += 1}
+            key={index}
+            handleSetShow={handleSetShow}
+          />);
       })}
       <div>
         <button
