@@ -28,19 +28,15 @@ export interface MapPropsToShowingInputContainer {
  */
 // eslint-disable-next-line react/prop-types
 const ShowingInputContainer = ({initialData, id, showingNum, addShowData, deleteShow, handleSetShow}:MapPropsToShowingInputContainer) => {
-  const [starttime, setStarttime] = useState(initialData.starttime !== undefined? initialData.starttime: '');
-  const [eventdate, setEventdate] = useState(initialData.eventdate !== undefined? initialData.eventdate: '');
-  const [ticketTypeId, setTicketTypeId] = useState('');
-  const [totalseats, setTotalseats] = useState(initialData.totalseats !== undefined? initialData.totalseats: 0);
-  const [availableSeats, setAvailableSeats] = useState(initialData.availableseats !== undefined? initialData.availableseats: 0);
-  const [ticketTypes, setTicketTypes] = useState([]);
+  const [starttime, setStartTime] = useState(initialData.starttime !== undefined? initialData.starttime: '');
+  const [eventdate, setEventDate] = useState(initialData.eventdate !== undefined? initialData.eventdate: '');
+  const [ticketTypeId, setTicketTypeId] = useState([]);
   const [seatsForType, setSeatsForType] = useState([]);
-  const [typesForShow, setTypesForShow] = useState([]);
+  const [availableSeats, setAvailableSeats] = useState(initialData.availableseats !== undefined? initialData.availableseats: 0);
+  const [totalSeats, setTotalSeats] = useState(initialData.totalseats !== undefined? initialData.totalseats: 0);
 
+  const [ticketTypes, setTicketTypes] = useState([]);
 
-  // Index of seatsForType match typesForShow so seatsForType[0] is for typesForShow[0]
-  // let seatsForType = []; // Number of seats for certian type of ticket
-  // let typesForShow = []; // Ticket types for all showings
 
   const dateFieldValue = typeof eventdate === 'string' ? eventdate.split('T') : '';
   const fetchTicketTypes = async () => {
@@ -54,127 +50,43 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShowData, delete
   }, [initialData]);
 
   useEffect(() => {
-    setStarttime(starttime);
-    setEventdate(eventdate);
-    setTicketTypeId(ticketTypeId);
-    setTotalseats(totalseats);
-    setAvailableSeats(availableSeats);
-    setTicketTypes(ticketTypes);
-    setSeatsForType(seatsForType);
-    setTypesForShow(typesForShow);
     const showing: Showing = {
       id: id,
       eventid: initialData.eventid,
       starttime: starttime,
       eventdate: eventdate,
-      ticketTypeId: typesForShow,
+      ticketTypeId: ticketTypeId,
       seatsForType: seatsForType,
-      availableseats: availableSeats ? availableSeats : totalseats,
-      totalseats: totalseats,
+      availableseats: availableSeats ? availableSeats : totalSeats,
+      totalseats: totalSeats,
       salestatus: true,
     };
     handleSetShow(showing);
-  }, [starttime, eventdate, ticketTypeId, totalseats, availableSeats, ticketTypes, seatsForType, typesForShow]);
+  }, [starttime, eventdate, ticketTypeId, totalSeats, availableSeats, seatsForType]);
 
-  // Gets ticket types and seats for types before sending to parent component
-  // const addToArray = (e) => {
-  //   const div = e.target.parentElement;
-  //   const inputs = div.querySelectorAll('input');
-  //   const selects = div.querySelectorAll('select');
-  //   const len = inputs.length - 2;
-  //   for (let i = 1; i < len; i++) {
-  //     setSeatsForType((data) => [...data, parseInt(inputs[i].value)]);
-  //     // seatsForType.push(parseInt(inputs[i].value));
-  //   }
-  //   selects.forEach((e: HTMLSelectElement) => {
-  //     setTypesForShow((data) => [...data, parseInt(e.value)]);
-  //     // typesForShow.push(parseInt(e.value));
-  //   });
-  // };
 
-  // // Generate the showing object to submit to parent component
-  // const createShowObject = (id) => {
-  //   const showing: Showing = {
-  //     id: id,
-  //     eventid: initialData.eventid,
-  //     starttime: starttime,
-  //     eventdate: eventdate,
-  //     totalseats: totalseats,
-  //     availableseats: availableSeats ? availableSeats : totalseats,
-  //     ticketTypeId: typesForShow,
-  //     seatsForType: seatsForType,
-  //     salestatus: true,
-  //   };
-  //   console.log(showing);
-  //   return showing;
-  // };
-
-  // Send callback to parent
-  const handleClick = (event) => {
-    event.preventDefault();
-    //  use call back to get to parent state
-    // addToArray(event);
-    // addShowData(createShowObject(id));
+  const handleAddTicketOption = (e) => {
+    setSeatsForType((data) => [...data, 0]);
+    setTicketTypeId((data) => [...data, 0]);
   };
 
-  const handleDelete = (event) => {
-    event.preventDefault();
-    deleteShow(event);
+  const handleSeatChange = (e) => {
+    const newSeats = [...seatsForType];
+    newSeats[parseInt(e.target.id)] = parseInt(e.target.value);
+    setSeatsForType(newSeats);
   };
 
-  // Uses ticketTypes array to map out option (used by addElement)
-  const createTicketOptions = (select: HTMLSelectElement) :HTMLSelectElement=> {
-    ticketTypes.map((t) => {
-      const newOp = document.createElement('option');
-      if (t.id == ticketTypeId) {
-        newOp.setAttribute('key', t.id);
-        newOp.setAttribute('value', t.id);
-        newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
-      } else {
-        newOp.setAttribute('key', t.id);
-        newOp.setAttribute('value', t.id);
-        newOp.text = `${t.description}: ${t.price} (+ ${t.concessions} concessions)`;
-      }
-      select.appendChild(newOp);
-    });
-    return select;
+  const handleRemove = (e) => {
+    const newSeats = seatsForType.filter((seat, i) => i !== parseInt(e.target.value));
+    const newTypes = ticketTypeId.filter((ticketType, i) => i !== parseInt(e.target.value));
+    setSeatsForType(newSeats);
+    setTicketTypeId(newTypes);
   };
 
-  // Adds a ticket type input container to element
-  const addElement = (e) => {
-    const div = e.target.parentElement.firstChild;
-    const newDiv = document.createElement('div');
-    const input = document.createElement('input');
-    input.setAttribute('class', 'input rounded-lg p-2 bg-violet-100 w-full flex flex-col');
-    input.setAttribute('name', 'numInput');
-    input.setAttribute('type', 'number');
-    input.setAttribute('placeholder', '# of Seats');
-    let select = document.createElement('select');
-    select.setAttribute('class', 'p-2 rounded-lg bg-violet-100');
-    select.setAttribute('name', 'typeSelect');
-    const options = document.createElement('option');
-    options.setAttribute('class', 'text-sm text-zinc-700');
-    options.text = 'Select Ticket Type';
-    const removeBut = document.createElement('button');
-    removeBut.textContent = 'Remove';
-    removeBut.setAttribute('class', 'w-min block px-2 py-1 bg-red-500 disabled:opacity-30 mb-4 text-white rounded-lg text-sm');
-    removeBut.setAttribute('type', 'button');
-    removeBut.addEventListener('click', removeElement);
-    select.appendChild(options);
-    select = createTicketOptions(select);
-
-    newDiv.appendChild(input);
-    newDiv.appendChild(select);
-    newDiv.appendChild(removeBut);
-    newDiv.setAttribute('class', 'flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5');
-
-    div.appendChild(newDiv);
-  };
-
-  // Removes a specified ticket type input container
-  const removeElement = (e) => {
-    const curDiv = e.target.parentElement;
-    curDiv.remove();
+  const handleOptionChange = (e) => {
+    const newList = [...ticketTypeId];
+    newList[e.target.id] = parseInt(e.target.value);
+    setTicketTypeId(newList);
   };
 
   return (
@@ -185,21 +97,51 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShowData, delete
           <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
           <input
             className='input rounded-lg p-2 bg-violet-100 w-full md:w-7/8'
-            value={totalseats}
+            value={totalSeats}
             name={`${initialData.eventdate}`}
             type='number'
             required
             placeholder='# of Seats'
-            onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-              setTotalseats(parseInt(ev.target.value))
+            onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+              if (isNaN(parseInt(ev.target.value))) setTotalSeats(0);
+              if (parseInt(ev.target.value) >= 0) setTotalSeats(parseInt(ev.target.value));
+            }
             }
           />
           <div className='w-full'>
             <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
+            {seatsForType.length > 0 ?
+                seatsForType.map((seats, i) => (
+                  <div key={i} className='flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5'>
+                    <input
+                      id={String(i)}
+                      className='input rounded-lg p-2 bg-violet-100 w-full flex flex-col'
+                      name='numInput'
+                      type='number'
+                      placeholder='# of Seats'
+                      onChange={handleSeatChange}
+                      value={seatsForType[i]}
+                    >
+                    </input>
+                    <select className='p-2 rounded-lg bg-violet-100' name='typeSelect' onChange={handleOptionChange} id={String(i)}>
+                      <option className='text-sm text-zinc-700'>
+                        Select Ticket Type
+                      </option>
+                      {ticketTypes.map((ticketType, j) => <option key={j} className='text-sm text-zinc-700' value={ticketType.id}>
+                        {ticketType.description}: {ticketType.price} (+{ticketType.concessions} concessions)
+                      </option>)}
+                    </select>
+                    <button className='w-min block px-2 py-1 bg-red-500 disabled:opacity-30 mb-4 text-white rounded-lg text-sm'
+                      type='button' onClick={handleRemove} value={i}>
+                      Remove
+                    </button>
+                  </div>)):
+              null
+            }
             <button className='block px-2 py-1 bg-blue-500 disabled:opacity-30
               mt-4 mb-2 text-white rounded-lg text-sm'
             type='button'
-            onClick={addElement}>Add Ticket Option</button>
+            onClick={handleAddTicketOption}>Add Ticket Option</button>
           </div>
           <div className="flex md:flex-row gap-10 flex-col">
             <div>
@@ -207,7 +149,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShowData, delete
               <input type="date" id="date" className='input w-full p-2 rounded-lg bg-violet-100 mb-7'
                 value={dateFieldValue[0]}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-                  setEventdate(ev.target.value);
+                  setEventDate(ev.target.value);
                 } }/>
             </div>
             <div >
@@ -215,24 +157,12 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShowData, delete
               <input type="time" id="time" name="starttime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
                 value={starttime}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
-                  setStarttime(ev.target.value);
+                  setStartTime(ev.target.value);
                 }
                 }/>
             </div>
           </div>
         </div>
-        <button
-          className='px-2 py-1 bg-blue-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm'
-          onClick={handleClick}
-        >
-                    Save
-        </button>
-        <button
-          className='px-2 py-1 bg-red-500 disabled:opacity-30 ml-9 mt-2 mb-4 text-white rounded-lg text-sm'
-          onClick={handleDelete}
-        >
-                        Delete
-        </button>
       </div>
     </div>
   );

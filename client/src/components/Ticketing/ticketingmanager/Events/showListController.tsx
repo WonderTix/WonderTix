@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
 // import EventForm from './EventForm';
 import ShowingInputContainer from './showingInputContainer';
@@ -53,19 +53,20 @@ const ShowListController = ({showsData, addShowData, deleteShowing, eventid, set
       salestatus: true,
     };
     setShow((shows) => [...shows, show]);
-    console.log(shows);
   };
 
-  const handleSetShow = (show) => {
+  useEffect(() => {
+    console.log(shows);
+  }, [shows]);
+
+  const handleSetShow = useCallback((show) => {
     const showItems = [...shows];
     let showToModify = showItems[show.id];
-    if (JSON.stringify(showToModify) !== JSON.stringify(show)) {
-      showToModify = show;
-      showItems[show.id] = show;
-      setShow(showItems);
-      setShowingsHandler(showItems);
-    }
-  };
+    showToModify = show;
+    showItems[show.id] = show;
+    setShow(showItems);
+    setShowingsHandler(showItems);
+  }, [shows]);
 
   const deleteShowingBox = (event) => {
     const toRemove = event.target.parentElement.parentElement;
