@@ -7,16 +7,30 @@ import {Showing} from '../../../../interfaces/showing.interface';
  * Used to map props to input container correctly
  *
  * @module
- * @param {initialData} Showing
+ * @param {initialData} object
  * @param {number} id
  * @param {Function} handleSetShow
  */
+interface InitialData {
+  availableseats?: number,
+  defaulttickettype?: number,
+  eventdate?: number | string,
+  eventid_fk?: number,
+  eventinstanceid?: number,
+  eventtime?: string,
+  ispreview?: boolean,
+  purchaseuri?: string,
+  salestatus?: boolean,
+  totalseats?: number
+}
+
 export interface MapPropsToShowingInputContainer {
-  initialData?: Showing;
+  initialData: InitialData;
   id: number;
   showingNum: number;
   handleSetShow: (show: Showing) => void;
 }
+
 
 /**
  *
@@ -24,11 +38,17 @@ export interface MapPropsToShowingInputContainer {
  * @returns {ReactElement}
  */
 // eslint-disable-next-line react/prop-types
+
+const toDateStringFormat = (date) => {
+  const dateString = String(date);
+  return `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}-${dateString.slice(6, 8)}`;
+};
+
 const ShowingInputContainer = ({initialData, id, showingNum, handleSetShow}:MapPropsToShowingInputContainer) => {
-  const [starttime, setStartTime] = useState(initialData.starttime !== undefined? initialData.starttime: '');
-  const [eventdate, setEventDate] = useState(initialData.eventdate !== undefined? initialData.eventdate: '');
-  const [ticketTypeId, setTicketTypeId] = useState([]);
-  const [seatsForType, setSeatsForType] = useState([]);
+  const [starttime, setStartTime] = useState(initialData.eventtime !== undefined? initialData.eventtime.slice(0, 8): '');
+  const [eventdate, setEventDate] = useState(initialData.eventdate !== undefined? toDateStringFormat(initialData.eventdate) : '');
+  const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
+  const [seatsForType, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
   const [availableSeats, setAvailableSeats] = useState(initialData.availableseats !== undefined? initialData.availableseats: 0);
   const [totalSeats, setTotalSeats] = useState(initialData.totalseats !== undefined? initialData.totalseats: 0);
 
@@ -49,7 +69,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, handleSetShow}:MapP
   useEffect(() => {
     const showing: Showing = {
       id: id,
-      eventid: initialData.eventid,
+      eventid: initialData.eventid_fk,
       starttime: starttime,
       eventdate: eventdate,
       ticketTypeId: ticketTypeId,

@@ -55,8 +55,6 @@ const ShowListController = ({showsData, eventid, setShowingsHandler}: ShowListCo
 
   const handleSetShow = useCallback((show) => {
     const showItems = [...shows];
-    let showToModify = showItems[show.id];
-    showToModify = show;
     showItems[show.id] = show;
     setShow(showItems);
     setShowingsHandler(showItems);
