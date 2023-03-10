@@ -53,14 +53,6 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   };
 
   const onSubmit = async (updatedData: NewEventData) => {
-    const dataToSave = {
-      id: params.eventid,
-      eventname: updatedData.eventName,
-      eventdescription: updatedData.eventDesc,
-      active: updatedData.isPublished,
-      image_url: updatedData.imageUrl,
-      seasonid: updatedData.seasonID,
-    };
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',
@@ -72,7 +64,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(dataToSave),
+      body: JSON.stringify(updatedData),
     });
 
     await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/instances/${params.eventid}`, {

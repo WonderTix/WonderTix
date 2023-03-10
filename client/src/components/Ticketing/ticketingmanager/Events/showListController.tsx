@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable max-len */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
 // import EventForm from './EventForm';
 import ShowingInputContainer from './showingInputContainer';
@@ -28,19 +28,15 @@ interface ShowListControllerProps{
  * @returns {ReactElement} and {ShowingInputContainer}
  */
 const ShowListController = ({showsData, eventid, setShowingsHandler}: ShowListControllerProps) => {
-  const [shows, setShow] = useState(showsData ? showsData: []);
-  let showingNum = 0;
+  const [shows, setShow] = useState(showsData ? showsData : []);
+  const [numOfShowings, setNumoOfShowings] = useState(showsData ? showsData.length : 0);
+
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
-    let id = 0;
-    if (shows.length > 0) {
-      id = shows[shows.length - 1].id + 1;
-    } else {
-      id = 0;
-    }
+    setNumoOfShowings(numOfShowings + 1);
     const show: Showing = {
-      id: id,
+      id: numOfShowings,
       eventid: eventid,
       starttime: '',
       eventdate: '',
@@ -57,19 +53,34 @@ const ShowListController = ({showsData, eventid, setShowingsHandler}: ShowListCo
     const showItems = [...shows];
     showItems[show.id] = show;
     setShow(showItems);
-    setShowingsHandler(showItems);
   }, [shows]);
+
+  const handleDeleteShow = useCallback((e) => {
+    const newShowItems = shows.filter((_, i) => i !== parseInt(e.target.id));
+    newShowItems.forEach((e, i) => {
+      e.id = i;
+    });
+    console.log(newShowItems);
+    setNumoOfShowings(numOfShowings - 1);
+    setShow(newShowItems);
+  }, [shows]);
+
+
+  useEffect(() => {
+    console.log(shows);
+    setShowingsHandler(shows);
+  }, [handleSetShow, handleDeleteShow]);
 
   return (
     <>
       {shows.map((element, index) => {
         return (
           <ShowingInputContainer
-            initialData={element}
-            id={element.id}
-            showingNum={showingNum += 1}
-            key={index}
+            showingData={element}
+            id={element.id ? element.id : index}
+            key={element.id ? element.id : index}
             handleSetShow={handleSetShow}
+            handleDeleteShow={handleDeleteShow}
           />);
       })}
       <div>

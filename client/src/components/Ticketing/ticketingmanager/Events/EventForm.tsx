@@ -149,10 +149,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
 
   // Handle new play and the show options
   const handleSubmit = () => {
-    // if (showings === undefined || showings.length == 0) {
-    //   console.log('ERROR: NO SHOWINGS!');
-    //   return;
-    // }
     const data: NewEventData = {
       eventName,
       eventID,
