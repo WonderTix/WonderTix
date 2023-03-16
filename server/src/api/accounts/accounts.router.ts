@@ -61,6 +61,46 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /search:
+ *   get:
+ *     summary: Search for an account by username.
+ *     description: Retrieve an account by username.
+ *     parameters:
+ *       - name: username
+ *         in: query
+ *         description: Username of the account to filter by.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: A successful response with an account object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                       description: Indicates if the operation was successful.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                       description: The identification number for the account.
+ *                     name:
+ *                       type: string
+ *                       description: The name of the account.
+ *       '404':
+ *         description: Account not found.
+ *     tags:
+ *       - Accounts
+ */
 accountsRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const resp = await findByUsername(req.query.username as string);
