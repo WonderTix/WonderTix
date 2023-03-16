@@ -13,6 +13,9 @@ import EventForm, {NewEventData} from '../EventForm';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../../Pop-up';
+
+let id = 0;
+
 const formatShowingData = (eventid: number) => (data: any) => {
   const {starttime, eventdate, totalseats, ticketTypeId, seatsForType} = data;
   return {eventid, eventdate, starttime, totalseats, ticketTypeId: ticketTypeId, seatsForType};
@@ -58,7 +61,7 @@ const CreateEventPage = () => {
 
     if (createPlayRes.ok) {
       const eventData = await createPlayRes.json();
-      const id = eventData.data[0].eventid;
+      id = eventData.data[0].eventid;
       const showingdata = showings.map(formatShowingData(id));
       const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
@@ -81,6 +84,7 @@ const CreateEventPage = () => {
 
   const handleClose = () => {
     setVisible(false);
+    nav(`/ticketing/editevent/${id}`);
   };
 
   const handleProceed = () => {
