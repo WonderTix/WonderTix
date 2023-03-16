@@ -234,6 +234,54 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /accounts/:id:
+ *   delete:
+ *     summary: Delete an account by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: number
+ *         description: id of the account to delete
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                       description: Indicates if the delete was successful
+ *                 data:
+ *                   type: object
+ *                   description: Empty object
+ *                   example: {}
+ *       404:
+ *         description: Account not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                       description: Indicates if the delete was successful
+ *                 message:
+ *                   type: string
+ *                   description: Error message
+ *     tags:
+ *       - Accounts
+ */ 
 accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
