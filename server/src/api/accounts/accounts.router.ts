@@ -8,6 +8,49 @@ export const accountsRouter = Router();
 accountsRouter.use(checkJwt);
 accountsRouter.use(checkScopes);
 
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Retrieve all accounts.
+ *     description: Retrieve a list of all accounts, with the option to filter by username and superadmin status.
+ *     parameters:
+ *       - name: username
+ *         in: query
+ *         description: Filter the results by username (case-insensitive).
+ *         schema:
+ *           type: string
+ *       - name: is_superadmin
+ *         in: query
+ *         description: Filter the results by superadmin status.
+ *         schema:
+ *           type: boolean
+ *     responses:
+ *       '200':
+ *         description: A successful response with an array of account objects.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: number
+ *                     description: The identification number for the account.
+ *                   username:
+ *                     type: string
+ *                     description: The username for the account.
+ *                   is_superadmin:
+ *                     type: boolean
+ *                     description: Indicates if the account has superadmin status.
+ *       '404':
+ *         description: No accounts found.
+ *     tags:
+ *       - Accounts
+ */
+
+
 accountsRouter.get('/', async (req: Request, res: Response) => {
   try {
     const resp = await findAll(req.query);
