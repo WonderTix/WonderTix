@@ -165,6 +165,65 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /:
+ *   post:
+ *     summary: Create a new account.
+ *     description: Create a new account with the provided information.
+ *     requestBody:
+ *       description: The account to be created.
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the new account.
+ *               username:
+ *                 type: string
+ *                 description: The username for the new account.
+ *               password:
+ *                 type: string
+ *                 description: The password for the new account.
+ *               email:
+ *                 type: string
+ *                 description: The email for the new account.
+ *     responses:
+ *       '200':
+ *         description: A successful response with the newly created account object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                       description: Indicates if the operation was successful.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                       description: The identification number for the new account.
+ *                     name:
+ *                       type: string
+ *                       description: The name of the new account.
+ *                     username:
+ *                       type: string
+ *                       description: The username for the new account.
+ *                     email:
+ *                       type: string
+ *                       description: The email for the new account.
+ *       '404':
+ *         description: Account not created.
+ *     tags:
+ *       - Accounts
+ */
 accountsRouter.post('/', async (req: Request, res: Response) => {
   try {
     const resp = await create(req.body);
