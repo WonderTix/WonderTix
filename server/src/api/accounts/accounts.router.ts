@@ -296,6 +296,45 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// TODO: add $ref to proper directory 
+/**
+ * @swagger
+ * /accounts/:id:
+ *   put:
+ *     summary: Update an account.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: number
+ *         description: The ID of the account to update.
+ *       - in: body
+ *         name: account
+ *         description: The account object to update.
+ *         schema:
+ *           type: object
+ *           properties:
+ *             username:
+ *               type: string
+ *             auth0_id:
+ *               type: string
+ *             is_superadmin:
+ *               type: boolean
+ *     responses:
+ *       '200':
+ *         description: Successfully updated the account.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               
+ *       '404':
+ *         description: The specified account was not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *     tags:
+ *       - Accounts               
+ */
 accountsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req.body, req.params.id);
