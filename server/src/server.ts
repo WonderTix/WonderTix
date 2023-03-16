@@ -44,6 +44,18 @@ const openapiSpecification = swaggerJsdoc({
       title: 'Wondertix API',
       version: '1.0.0',
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{
+      bearerAuth: ['admin'],
+    }],
   },
   apis: ['./src/api/**/*.ts'],
 });
