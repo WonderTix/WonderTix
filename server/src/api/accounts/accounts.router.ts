@@ -111,6 +111,46 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /:id:
+ *   get:
+ *     summary: Get an account by id.
+ *     description: Retrieve an account by its id.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: The identification number for the account.
+ *         schema:
+ *           type: number
+ *     responses:
+ *       '200':
+ *         description: A successful response with an account object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                       description: Indicates if the operation was successful.
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: number
+ *                       description: The identification number for the account.
+ *                     name:
+ *                       type: string
+ *                       description: The name of the account.
+ *       '404':
+ *         description: Account not found.
+ *     tags:
+ *       - Accounts
+ */
 accountsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await find(req.params.id);
