@@ -75,7 +75,6 @@ const CreateEventPage = () => {
       // update Redux state with new event & available tickets
       if (postShowings.ok) {
         setVisible(true);
-        // nav('/ticketing/manageevent');
       }
     } else {
       console.error('New event creation failed', createPlayRes.statusText);
