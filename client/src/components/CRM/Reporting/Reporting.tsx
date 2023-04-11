@@ -177,6 +177,7 @@ const ReportingTest = (): React.ReactElement => {
           </div>
           <div className='h-[50rem] w-[50rem] m-2 flex-grow-1 shadow-xl rounded-xl bg-white' >
             <DataGrid
+              getRowId={(data) => data.userid}
               rows={rows}
               columns={columns}
               // experimentalFeatures={{ newEditingApi: true }}
