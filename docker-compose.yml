@@ -15,8 +15,8 @@ services:
       PRIVATE_STRIPE_KEY: ${PRIVATE_STRIPE_KEY}
       FRONTEND_URL: ${FRONTEND_URL}
     volumes:
-      - ./server:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./server:/usr/app
+      - /usr/app/node_modules
     command: npm run dev
   client:
     build:
@@ -27,8 +27,8 @@ services:
       REACT_APP_ROOT_URL: ${ROOT_URL}
       REACT_APP_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
     volumes:
-      - ./client:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./client:/usr/app
+      - /usr/app/node_modules
     command: npm run start
   database:
     image: postgres
