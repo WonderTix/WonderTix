@@ -12,10 +12,10 @@ import {useNavigate} from 'react-router-dom';
  * @returns {React.ReactElement}
  */
 const Navigation = () => {
-  const [show, setShow] = useState(false);
-  const handleClick = () => setShow(!show);
+  const [showTaskMenu, setShowTaskMenu] = useState(false);
+  const handleClick = () => setShowTaskMenu(!showTaskMenu);
   const [profile, setProfile] = useState(false);
-  const [show2, setShow2] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const {user} = useAuth0();
   // const {name, picture, email} = user;
@@ -106,7 +106,7 @@ const Navigation = () => {
               </button>
 
             </li>
-            <li className={!show ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
+            <li className={!showTaskMenu ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
               <div className=" flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl" >
                 <div className="py-1 font-bold" >
                   <a onClick={() => navigate('/admin/tasks/create')} className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600" >Create</a>
@@ -119,8 +119,8 @@ const Navigation = () => {
           </ul>
 
         </div>
-        <div className={show2 ? 'w-full h-full absolute z-40  transform  translate-x-0 ' : '   w-full h-full absolute z-40  transform -translate-x-full'} id="mobile-nav">
-          <div className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden" onClick={() => setShow2(!show2)} />
+        <div className={showMobileMenu ? 'w-full h-full absolute z-40  transform  translate-x-0 ' : '   w-full h-full absolute z-40  transform -translate-x-full'} id="mobile-nav">
+          <div className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden" onClick={() => setShowMobileMenu(!showMobileMenu)} />
           <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
             <div className="flex flex-col justify-between h-full w-full">
               <div>
@@ -130,7 +130,7 @@ const Navigation = () => {
                       <img src={logo} className="mt-[5rem] w-[6rem] " alt="/"/>
                     </button>
                   </div>
-                  <div id="closeSideBar" className="flex items-center justify-center h-10 w-10" onClick={() => setShow2(!show2)}>
+                  <div id="closeSideBar" className="flex items-center justify-center h-10 w-10" onClick={() => setShowMobileMenu(!showMobileMenu)}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-x" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" fill="none" strokeLinecap="round" strokeLinejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" />
                       <line x1={18} y1={6} x2={6} y2={18} />
@@ -215,7 +215,7 @@ const Navigation = () => {
                     </button>
 
                   </li>
-                  <li className={!show ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
+                  <li className={!showTaskMenu ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
                     <div className=" flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl" >
                       <div className="py-1 font-bold" >
                         <a onClick={() => navigate('/admin/tasks/create')} className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600" >Create</a>
@@ -332,8 +332,8 @@ const Navigation = () => {
                 </div>
               </div>
             </div>
-            <div className="text-gray-600 mr-8 visible md:hidden relative" onClick={() => setShow2(!show2)}>
-              {show ? (
+            <div className="text-gray-600 mr-8 visible md:hidden relative" onClick={() => setShowMobileMenu(!showMobileMenu)}>
+              {showMobileMenu ? (
                   ' '
               ) : (
                   <svg aria-label="Main Menu" aria-haspopup="true" xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu cursor-pointer" width={30} height={30} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
