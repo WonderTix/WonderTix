@@ -17,8 +17,8 @@ services:
       AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
       AUTH0_URL: ${AUTH0_URL}
     volumes:
-      - ./server:/wondertix
-      - /wondertix/node_modules
+      - ./server:/usr/app
+      - /usr/app/node_modules
     command: npm run dev
   client:
     build:
@@ -32,8 +32,8 @@ services:
       REACT_APP_AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID}
       REACT_APP_AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
     volumes:
-      - ./client:/wondertix
-      - /wondertix/node_modules
+      - ./client:/usr/app
+      - /usr/app/node_modules
     command: npm run start
   database:
     image: postgres
