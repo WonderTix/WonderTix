@@ -1,12 +1,15 @@
-FROM --platform=linux/amd64 node:latest
+FROM node:18-alpine
 
-RUN apt-get update
+RUN apk upgrade --update-cache --available && \
+    apk add openssl && \
+    rm -rf /var/cache/apk/*
 
-WORKDIR /wondertix
-COPY ./package.json .
+WORKDIR /usr
 
-RUN chown -R 1000:1000 /wondertix
+RUN openssl req -newkey rsa:2048 -new -nodes -x509 -days 365 -keyout key.pem -out cert.pem -subj "/C=US/ST=OR/L=Portland/O=WonderTix/CN=Wondertix Localhost"
 
-USER 1000:1000
+WORKDIR /usr/app
+
+COPY ./package*.json .
 
 RUN npm install

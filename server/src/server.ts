@@ -44,6 +44,18 @@ const openapiSpecification = swaggerJsdoc({
       title: 'Wondertix API',
       version: '1.0.0',
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{
+      bearerAuth: ['admin'],
+    }],
   },
   apis: ['./src/api/**/*.ts'],
 });
@@ -101,10 +113,8 @@ const createServer = async () => {
   return https
       .createServer(
           {
-            key: fs.readFileSync(
-                path.join(__dirname, '../localhost-key.pem'),
-            ),
-            cert: fs.readFileSync(path.join(__dirname, '../localhost.pem')),
+            key: fs.readFileSync('/usr/key.pem'),
+            cert: fs.readFileSync('/usr/cert.pem'),
           }, app);
 };
 
