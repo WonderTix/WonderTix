@@ -275,8 +275,6 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *   put:
  *     summary: Update a contact by ID
  *     description: Update a contact by providing its unique ID.
- *     tags:
- *       - Contacts
  *     parameters:
  *       - in: path
  *         name: id
@@ -350,7 +348,9 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *                   description: Empty object, contact was not found.
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
- */
+ *     tags:
+ *       - Contacts 
+*/
 
 contactsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
