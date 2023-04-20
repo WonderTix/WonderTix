@@ -46,6 +46,8 @@ accountsRouter.use(checkScopes);
  *                     description: Indicates if the account has superadmin status.
  *       '404':
  *         description: No accounts found.
+ *       '500':
+ *         description: Internal server error
  *     tags:
  *       - Accounts
  */
@@ -98,6 +100,8 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
  *                       description: The name of the account.
  *       '404':
  *         description: Account not found.
+ *       '500':
+ *         description: Internal server error
  *     tags:
  *       - Accounts
  */
@@ -148,6 +152,8 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
  *                       description: The name of the account.
  *       '404':
  *         description: Account not found.
+ *       '500':
+ *         description: Internal server error
  *     tags:
  *       - Accounts
  */
@@ -221,6 +227,8 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
  *                       description: The email for the new account.
  *       '404':
  *         description: Account not created.
+ *       '500':
+ *         description: Internal server error
  *     tags:
  *       - Accounts
  */
@@ -279,6 +287,8 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
  *                 message:
  *                   type: string
  *                   description: Error message
+ *       500:
+ *         description: Internal server error
  *     tags:
  *       - Accounts
  */ 
@@ -332,6 +342,8 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
+ *       '500':
+ *         description: Internal server error
  *     tags:
  *       - Accounts               
  */
