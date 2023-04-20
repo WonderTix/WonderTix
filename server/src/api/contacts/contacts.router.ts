@@ -58,6 +58,8 @@ contactsRouter.use(checkScopes);
  *         schema:
  *           type: string
  *         description: volunteer status of the contact to filter by
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Returns all of the contacts in the database. Requires Auth0 authentication with admin scope.
@@ -95,6 +97,8 @@ contactsRouter.get('/', async (req: Request, res: Response) => {
  *         description: Full name of the contact to search for
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: A list of contacts matching the first and last name
@@ -131,6 +135,8 @@ contactsRouter.get('/search', async (req: Request, res: Response) => {
  *         description: ID of the contact to retrieve
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: The details of the contact with the specified ID
@@ -184,6 +190,8 @@ contactsRouter.get('/show/:id', async (req: Request, res: Response) => {
  *         description: ID of the contact to retrieve.
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: Contact found.
@@ -245,6 +253,8 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
  *         description: ID of the contact to remove
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Contact was removed successfully
@@ -300,6 +310,8 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *                 type: boolean
  *               volunteerlist:
  *                 type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Contact updated successfully.
