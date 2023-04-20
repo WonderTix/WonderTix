@@ -25,6 +25,8 @@ accountsRouter.use(checkScopes);
  *         description: Filter the results by superadmin status.
  *         schema:
  *           type: boolean
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: A successful response with an array of account objects.
@@ -73,6 +75,8 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
  *         description: Username of the account to filter by.
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: A successful response with an account object.
@@ -125,6 +129,8 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
  *         description: The identification number for the account.
  *         schema:
  *           type: number
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: A successful response with an account object.
@@ -194,6 +200,8 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
  *               email:
  *                 type: string
  *                 description: The email for the new account.
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: A successful response with the newly created account object.
@@ -251,6 +259,8 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
  *         schema:
  *           type: number
  *         description: id of the account to delete
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Account deleted successfully
@@ -328,6 +338,8 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
  *               type: string
  *             is_superadmin:
  *               type: boolean
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: Successfully updated the account.
