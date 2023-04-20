@@ -6,7 +6,31 @@ import * as ReportService from './saved_reports.service';
 
 export const savedReportsRouter = Router();
 
-// GET /api/saved_reports
+/**
+ * @swagger
+ *   /api/saved_reports:
+ *     get:
+ *       summary: Get all saved reports
+ *       security:
+ *         - bearerAuth: []
+ *       responses:
+ *         200:
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     savedreportid: {type: integer}
+ *                     tablename: {type: string}
+ *                     queryattr: {type: string}
+ *         401:
+ *           description: Unauthorized
+ *         404:
+ *          description: Not Found
+ */
 savedReportsRouter.get('/', async (req, res) => {
   try {
     const reports = await ReportService.findAll();
@@ -16,7 +40,34 @@ savedReportsRouter.get('/', async (req, res) => {
   }
 });
 
-// GET /api/saved_reports/:id
+/**
+ * @swagger
+ *   /api/saved_reports/{id}:
+ *     get:
+ *       summary: Get a saved report by id
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *       responses:
+ *         200:
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     savedreportid: {type: integer}
+ *                     tablename: {type: string}
+ *                     queryattr: {type: string}
+ *         401:
+ *           description: Unauthorized
+ *         404:
+ *           description: Not Found
+ */
 savedReportsRouter.get('/:id', async (req, res) => {
   try {
     const report = await ReportService.find(req.params.id);
@@ -26,7 +77,39 @@ savedReportsRouter.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/saved_reports
+/**
+ * @swagger
+ *   /api/saved_reports/:
+ *     post:
+ *       summary: Create a new saved report
+ *       security:
+ *         - bearerAuth: []
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 tablename: {type: string}
+ *                 query_attr: {type: string}
+ *       responses:
+ *         200:
+ *           description: OK
+ *           apllication/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   savedreportid: {type: integer}
+ *                   tablename: {type: string}
+ *                   queryattr: {type: string}
+ *         401:
+ *           description: Unauthorized
+ *         404:
+ *          description: Not Found
+ */
 savedReportsRouter.post('/', async (req, res) => {
   try {
     const report: Report = req.body;
@@ -37,7 +120,24 @@ savedReportsRouter.post('/', async (req, res) => {
   }
 });
 
-// DELETE /api/saved_reports/:id
+/**
+ * @swagger
+ *   /api/saved_reports/{id}:
+ *     post:
+ *       summary: Delete a saved report by id
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *       responses:
+ *         200:
+ *           description: OK
+ *         401:
+ *           description: Unauthorized
+ *         404:
+ *           description: Not Found
+ */
 savedReportsRouter.delete('/:id', async (req, res) => {
   try {
     await ReportService.remove(req.params.id);

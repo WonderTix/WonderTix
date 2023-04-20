@@ -20,12 +20,31 @@ export const eventRouter = Router();
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
 
-const bodyParser = require('body-parser');
 
-
-// Endpoint to get event id
-// Event route
-// GET /api/events/search?eventName={eventName}
+/**
+ * @swagger
+ *   /api/events/search:
+ *   get:
+ *     summary: Get event ids by name
+ *     security:
+ *      - bearerAuth: []
+ *     parameters:
+ *     - in: query
+ *       name: eventName
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                type: integer
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *        description: Not Found
+ */
 eventRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const ids = await getEventByName(req.query);
@@ -36,7 +55,37 @@ eventRouter.get('/search', async (req: Request, res: Response) => {
   }
 });
 
-// Endpoint to get event by ID
+/**
+ * @swagger
+ *  /api/events/{id}:
+ *    get:
+ *      summary: Get event by id
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *      - in: path
+ *        name: id
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  eventid: {type: integer}
+ *                  seasonid_fk: {type: integer}
+ *                  eventname: {type: string}
+ *                  eventdescription: {type: string}
+ *                  active: {type: boolean}
+ *                  availableseats: {type: integer}
+ *                  seasonticketeligible: {type: boolean}
+ *                  imageurl: {type: string}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
 eventRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const data = await getEventById(req.params);
@@ -51,7 +100,39 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// Endpoint to get event instance by ID
+/**
+ * @swagger
+ *  /api/events/instances/{id}:
+ *    get:
+ *      summary: Get event  instance by id
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *      - in: path
+ *        name: id
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  eventid: {type: integer}
+ *                  eventdate: {type: string}
+ *                  starttime: {type: string}
+ *                  salestatus: {type: boolean}
+ *                  totalseats: {type: integer}
+ *                  availableseats: {type: integer}
+ *                  ticketTypeId: {type: array, items: {type: integer}}
+ *                  seatsForType: {type: array, items: {type: integer}}
+ *                  purchaseuri: {type: string}
+ *                  ispreview: {type: boolean}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
 eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
   try {
     const data = await getInstanceById(req.params);
@@ -62,8 +143,38 @@ eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 });
-// Endpoint to get the list of all event instances that are currently active
-// Even route
+
+/**
+ * @swagger
+ *  /api/events/list/active:
+ *    get:
+ *      summary: Get all active events
+ *      security:
+ *        - bearerAuth: []
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    eventinstanceid: {type: integer}
+ *                    event: {type: integer}
+ *                    eventname: {type: string}
+ *                    eventdescription: {type: string}
+ *                    imageurl: {type: string}
+ *                    eventdate: {type: string}
+ *                    starttime: {type: string}
+ *                    totalseats: {type: integer}
+ *                    availableseats: {type: integer}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
 eventRouter.get('/list/active', async (_req: Request, res: Response) => {
   try {
     const events = await getActiveEventsAndInstances();
@@ -78,6 +189,12 @@ eventRouter.get('/list/active', async (_req: Request, res: Response) => {
 // Stripe Utility folder endpoint refactor
 // TODO: when we add confirmation emails we can do it like this:
 // https://stripe.com/docs/payments/checkout/custom-success-page
+/**
+ * @swagger
+ * /api/events/checkout:
+ *   post:
+ *     summary: Checkout endpoint for stripe
+ */
 eventRouter.post('/checkout', async (req: Request, res: Response) => {
 
   // Prices are fetched from db so customers cannot change the price they
@@ -310,7 +427,35 @@ eventRouter.put('/checkin', checkJwt, checkScopes, async (
   }
 });
 
-// End point to create a new event
+/**
+ * @swagger
+ *  /api/events:
+ *  post:
+ *    summary: Create a new event
+ *    security:
+ *      - bearerAuth: []
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              seasonid: {type: integer}
+ *              eventname: {type: string}
+ *              eventdescription: {type: string}
+ *              active: {type: boolean}
+ *              seasonticketeligible: {type: boolean}
+ *              image_url: {type: string}
+ *          example:
+ *            seasonid: 1
+ *            eventname: "The Nutcracker"
+ *            eventdescription: "A classic holiday ballet"
+ *            active: true
+ *            seasonticketeligible: true
+ *            image_url: "https://www.example.com/image.jpg"
+ *
+ */
 eventRouter.post('/', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
@@ -326,9 +471,56 @@ eventRouter.post('/', checkJwt, checkScopes, async (
   }
 });
 
-// PRIVATE
-// End point to create a new showing
-// req body: array of {eventid, eventdate, starttime, totalseats, tickettype}
+
+/**
+ * @swagger
+ *  /api/events/instances:
+ *    post:
+ *      summary: Create a new event instance
+ *      security:
+ *        - bearerAuth: []
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                instances:
+ *                  type: array
+ *                  items:
+ *                    type: object
+ *                    properties:
+ *                      eventid: {type: integer}
+ *                      eventdate: {type: string}
+ *                      starttime: {type: string}
+ *                      salestatus: {type: boolean}
+ *                      totalseats: {type: integer}
+ *                      availableseats: {type: integer}
+ *                      ticketTypeId: {type: array, items: {type: integer}}
+ *                      seatsForType: {type: array, items: {type: integer}}
+ *                      purchaseuri: {type: string}
+ *                      ispreview: {type: boolean}
+ *              example:
+ *                instances:
+ *                  - eventid: 1
+ *                    eventdate: 2021-05-01
+ *                    starttime: 20:00:00.000000 -08:00
+ *                    salestatus: false
+ *                    totalseats: 100
+ *                    availableseats: 28
+ *                    ticketTypeId: [1]
+ *                    seatsForType: [28]
+ *                    purchaseuri: https://www.eventbrite.com/e/123456789
+ *                    ispreview: true
+ *      responses:
+ *        200:
+ *          description: OK
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
 eventRouter.post('/instances', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
@@ -344,12 +536,13 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
   }
 });
 
-// PRIVATE ROUTE
 /**
  * @swagger
- *  /events:
+ *  /api/events:
  *    put:
  *      summary: Update the details for an event
+ *      security:
+ *        - bearerAuth: []
  *      requestBody:
  *        required: true
  *        content:
@@ -357,28 +550,26 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
  *            schema:
  *              type: object
  *              properties:
- *                id: integer
- *                seasonid: integer
- *                eventname: string
- *                eventdescription: string
- *                active: boolean
- *                image_url: string
+ *                id: {type: integer}
+ *                seasonid: {type: integer}
+ *                eventname: {type: string}
+ *                eventdescription: {type: string}
+ *                active: {type: boolean}
+ *                seasonticketeligible: {type: boolean}
+ *                image_url: {type: string}
+ *            example:
+ *              id: 1
+ *              seasonid: 1
+ *              eventname: "The Nutcracker"
+ *              eventdescription: "A classic holiday ballet"
+ *              active: true
+ *              seasonticketeligible: true
+ *              image_url: "https://www.example.com/image.jpg"
  *      responses:
  *        200:
  *          description: OK
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                  type: object
- *                  properties:
- *                    id: integer
- *                    seasonid: integer
- *                    eventname: string
- *                    eventdescription: string
- *                    active: boolean
- *                    image_url: string
+ *        401:
+ *          description: Unauthorized
  *        404:
  *          description: An error occured querying the database
  */
@@ -398,18 +589,16 @@ eventRouter.put('/', checkJwt, checkScopes, async (
   }
 });
 
-// PRIVATE ROUTE
 /**
  * @swagger
- *  /events/instances/:id:
- *    put:
- *      summary: Updates the list of showings for a given event
+ *  /api/events/instances/{id}:
+ *    PUT:
+ *      summary: Update the details for an event instance
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
- *        - in: path
- *          name: id
- *          schema:
- *            type: integer
- *          description: The ID of the event
+ *      - in: path
+ *        name: id
  *      requestBody:
  *        required: true
  *        content:
@@ -419,27 +608,34 @@ eventRouter.put('/', checkJwt, checkScopes, async (
  *              items:
  *                type: object
  *                properties:
- *                  id: integer
- *                  eventdate: string
- *                  starttime: string
- *                  salestatus: boolean
- *                  totalseats: integer
- *                  availableseats: integer
- *                  purchaseuri: string
- *                  ispreview: boolean
+ *                  eventid: {type: integer}
+ *                  eventdate: {type: string}
+ *                  starttime: {type: string}
+ *                  salestatus: {type: boolean}
+ *                  totalseats: {type: integer}
+ *                  availableseats: {type: integer}
+ *                  ticketTypeId: {type: array, items: {type: integer}}
+ *                  seatsForType: {type: array, items: {type: integer}}
+ *                  purchaseuri: {type: string}
+ *                  ispreview: {type: boolean}
+ *              example:
+ *                - eventid: 1
+ *                  eventdate: 2021-05-01
+ *                  starttime: 20:00:00.000000 -08:00
+ *                  salestatus: false
+ *                  totalseats: 100
+ *                  availableseats: 28
+ *                  ticketTypeId: [1]
+ *                  seatsForType: [28]
+ *                  purchaseuri: https://www.eventbrite.com/e/123456789
+ *                  ispreview: true
  *      responses:
  *        200:
  *          description: OK
- *          content:
- *            application/json:
- *              schema:
- *                type: object
- *                properties:
- *                  numRowsUpdated: integer
- *                  numRowsDeleted: integer
- *                  numRowsInserted: integer
- *          404:
- *            description: An error occurred querying the database
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
  */
 eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     req: Request,
@@ -457,9 +653,24 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
   }
 });
 
-// PRIVATE ROUTE
-// Updates salestatus in showtimes table
-// and active flag in plays table when given a play id
+/**
+ * @swagger
+ *  /api/events/{id}:
+ *    delete:
+ *      summary: soft deletes an event by setting active to false and eventinstances salestatus to false
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *      responses:
+ *        200:
+ *          description: OK
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
 eventRouter.delete('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
@@ -480,6 +691,36 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
   }
 });
 
+/**
+ * @swagger
+ *  /api/events:
+ *    get:
+ *      summary: get a list of events
+ *      security:
+ *        - bearerAuth: []
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    id: {type: integer}
+ *                    seasonid: {type: integer}
+ *                    title: {type: string}
+ *                    description: {type: string}
+ *                    active: {type: boolean}
+ *                    seasonticketeligible: {type: boolean}
+ *                    image_url: {type: string}
+ *                    num_shows: {type: integer}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
 eventRouter.get('/', async (_req: Request, res: Response) => {
   try {
     // query to retrieve all active events, and the number of showings for each
