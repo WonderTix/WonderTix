@@ -84,8 +84,6 @@ discountsRouter.get('/', checkJwt, checkScopes, async (
  *   get:
  *     summary: Search for a discount code
  *     description: Search information given the discount code. 
- *     tags:
- *       - Discounts
  *     parameters:
  *       - in: query
  *         name: code
@@ -121,6 +119,8 @@ discountsRouter.get('/', checkJwt, checkScopes, async (
  *                   example: "Discount code not found"
  *       '500':
  *         description: Internal server error
+ *     tags:
+ *       - Discounts
  */
 
 discountsRouter.get('/search', async (
