@@ -10,7 +10,7 @@ accountsRouter.use(checkScopes);
 
 /**
  * @swagger
- * /:
+ * /accounts:
  *   get:
  *     summary: Retrieve all accounts.
  *     description: Retrieve a list of all accounts, with the option to filter by username and superadmin status.
@@ -49,8 +49,6 @@ accountsRouter.use(checkScopes);
  *     tags:
  *       - Accounts
  */
-
-
 accountsRouter.get('/', async (req: Request, res: Response) => {
   try {
     const resp = await findAll(req.query);
@@ -63,7 +61,7 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /search:
+ * /accounts/search:
  *   get:
  *     summary: Search for an account by username.
  *     description: Retrieve an account by username.
@@ -113,7 +111,7 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /:id:
+ * /accounts/{id}:
  *   get:
  *     summary: Get an account by id.
  *     description: Retrieve an account by its id.
@@ -167,7 +165,7 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /:
+ * /accounts:
  *   post:
  *     summary: Create a new account.
  *     description: Create a new account with the provided information.
@@ -236,7 +234,7 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /accounts/:id:
+ * /accounts/{id}:
  *   delete:
  *     summary: Delete an account by id
  *     parameters:
@@ -299,7 +297,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
 // TODO: add $ref to proper directory 
 /**
  * @swagger
- * /accounts/:id:
+ * /accounts/{id}:
  *   put:
  *     summary: Update an account.
  *     parameters:
