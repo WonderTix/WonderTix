@@ -163,13 +163,13 @@ export const updateEvent = async (params: any): Promise<response> => {
             eventid = $7
           RETURNING *;`,
     values: [
-      params.seasonid,
-      params.eventname,
-      params.eventdescription,
-      params.active,
+      7,
+      params.eventName,
+      params.eventDesc,
+      params.isPublished,
       params.seasonticketeligible,
       params.image_url,
-      params.id,
+      params.eventID,
     ],
   };
   return buildResponse(myQuery, 'UPDATE');
@@ -451,7 +451,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         salestatus = $4,
                         totalseats = $5,
                         availableseats = $6,
-                        purchaseuri = $7
+                        purchaseuri = $7,
                         ispreview = $8
                       WHERE
                         eventinstanceid = $1;`;

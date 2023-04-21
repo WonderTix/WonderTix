@@ -34,7 +34,7 @@ const Editeventmain = () => {
           eventData.eventDesc = data.data[0].description;
           eventData.isPublished = data.data[0].active;
           eventData.imageUrl =data.data[0].image_url;
-          eventData.eventID = data.data[0].id;
+          eventData.eventID = data.data[0].eventid;
           eventData.seasonID= data.data[0].seasonid;
         });
     await fetch(process.env.REACT_APP_ROOT_URL +

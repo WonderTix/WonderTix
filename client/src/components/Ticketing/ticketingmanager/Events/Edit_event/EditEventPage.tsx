@@ -38,6 +38,14 @@ interface mapDataToEditEventProps {
  * @returns {ReactElement}
  */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
+  
+  if (initValues.eventID == null) {
+    console.log("initValues: " + JSON.stringify(initValues));
+    throw new TypeError("eventID must be set");
+  }else {
+    console.log("event id: " + initValues.eventID);
+  }
+  
   const params = useParams();
   const nav = useNavigate();
   const dispatch = useAppDispatch();
