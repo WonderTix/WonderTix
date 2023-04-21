@@ -186,44 +186,37 @@ const Navbar = ({bMode}: NavbarProps) => {
           {login ? ( <div className="flex  items-center relative cursor-pointer px-4" onClick={() => setProfile(!profile)}>
             <div className="rounded-full">
               {profile ? (
-                  <div>
+                  <div className="w-40">
                     {admin ? (
-                    <ul className="p-2 w-max border-r bg-zinc-100 absolute rounded left-0 shadow mt-12 sm:mt-[4.3rem] ">
-                      <li className="text-gray-600 hover:text-indigo-700 cursor-pointer">
-                        <button onClick={() => navigate('/admin')} className="flex p-4 w-full justify-start items-center gap-x-2 text-sm">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                            Admin
-                        </button>
-                      </li>
-                      <li className="text-gray-600 hover:text-indigo-700 cursor-pointer">
-                        <button onClick={() => navigate('/ticketing')} className="flex p-4 w-full justify-start items-center gap-x-2 text-sm">
-                          <svg xmlns="http://www.w3.org/2000/svg" className=" h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                          </svg>
-                            Manage Ticketing
-                        </button>
-                      </li>
-                      {/* <li className="flex p-4 w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
-                        <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className=" h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                          </svg>
-                          <button onClick={() => navigate('/ticketing')} className="text-sm ml-2">Manage Ticketing</button>
-                        </div>
-                      </li> */}
-                      <li className="flex w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
-                        {/* <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg> */}
-                        {/* <a className="border-none bg-transparent text-sm ml-2"> */}
-                        <AuthNav />
-                        {/* </a> */}
-                        {/* </div> */}
-                      </li>
-                    </ul>
+                      <Admin_nav_dropdown/>
+                    // <ul className="p-2 w-full border-r bg-zinc-100 absolute rounded left-0 shadow mt-12 sm:mt-[4.3rem] ">
+                    //   <li className="text-gray-600 hover:text-indigo-700 cursor-pointer">
+                    //     <button onClick={() => navigate('/admin')} className="flex p-4 w-full justify-start items-center gap-x-2 text-sm">
+                    //       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    //         <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    //       </svg>
+                    //         Admin
+                    //     </button>
+                    //   </li>
+                    //   <li className="text-gray-600 hover:text-indigo-700 cursor-pointer">
+                    //     <button onClick={() => navigate('/ticketing')} className="flex p-4 w-full justify-start items-center gap-x-2 text-sm">
+                    //       <svg xmlns="http://www.w3.org/2000/svg" className=" h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    //         <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                    //       </svg>
+                    //         Manage Ticketing
+                    //     </button>
+                    //   </li>
+                      // <li className="flex w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
+                      //   {/* <div className="flex items-center">
+                      //     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      //       <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      //     </svg> */}
+                      //   {/* <a className="border-none bg-transparent text-sm ml-2"> */}
+                      //   <AuthNav />
+                      //   {/* </a> */}
+                      //   {/* </div> */}
+                      // </li>
+                    // </ul>
                     ): (
                     <ul className="p-2 w-max border-r bg-zinc-100 absolute rounded left-0 shadow mt-12 sm:mt-[4.3rem] ">
                       <li className="flex w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
