@@ -9,7 +9,7 @@ const LogoutButton = () => {
   const {logout} = useAuth0();
   return (
     <button
-      className="flex w-full justify-start items-center gap-x-2 p-4"
+      className="flex w-full justify-start items-center gap-x-2 p-4 text-sm"
       onClick={() =>
         logout({
           returnTo: window.location.origin,
