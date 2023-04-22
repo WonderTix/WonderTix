@@ -404,6 +404,8 @@ export const insertAllShowings = async (
     if (showing.ticketTypeId.length === 0) {
       throw new Error("No ticket type provided");
     }
+    const date = showing.eventdate; //.split('-');
+    //const dateAct = date.join('');
     const { rows } = await pool.query(query, [
       showing.eventid,
       showing.eventdate,
@@ -444,7 +446,8 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         totalseats = $5,
                         availableseats = $6,
                         purchaseuri = $7,
-                        ispreview = $8
+                        ispreview = $8,
+                        eventid_fk = $9
                       WHERE
                         eventinstanceid = $1;`;
   let rowsUpdated = 0;
