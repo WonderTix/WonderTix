@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import React, {useEffect} from 'react';
-import {useState} from 'react';
-import {Showing} from '../../../../interfaces/showing.interface';
+import React, { useEffect } from "react";
+import { useState } from "react";
+import { Showing } from "../../../../interfaces/showing.interface";
 
 /**
  * Used to map props to input container correctly
@@ -12,17 +12,17 @@ import {Showing} from '../../../../interfaces/showing.interface';
  * @param {Function} handleSetShow
  */
 interface InitialData {
-  availableseats?: number,
-  defaulttickettype?: number,
-  eventdate?: number | string,
-  eventid_fk?: number,
-  eventinstanceid?: number,
-  eventtime?: string,
-  ispreview?: boolean,
-  purchaseuri?: string,
-  salestatus?: boolean,
-  totalseats?: number,
-  starttime?: number | string,
+  availableseats?: number;
+  defaulttickettype?: number;
+  eventdate?: string;
+  eventid_fk?: number;
+  eventinstanceid?: number;
+  eventtime?: string;
+  ispreview?: boolean;
+  purchaseuri?: string;
+  salestatus?: boolean;
+  totalseats?: number;
+  starttime?: number | string;
 }
 
 export interface MapPropsToShowingInputContainer {
@@ -32,7 +32,6 @@ export interface MapPropsToShowingInputContainer {
   handleDeleteShow: (e: any) => void;
 }
 
-
 /**
  *
  * @param {MapPropsToShowingInputContainer} {initialData, id, handleSetShow}
@@ -40,34 +39,53 @@ export interface MapPropsToShowingInputContainer {
  */
 // eslint-disable-next-line react/prop-types
 
-
 const toDateStringFormat = (date) => {
-  if (date === undefined || date === '') return '';
+  console.log(date);
+  if (date === undefined || date === "") return null;
   const dateString = String(date);
-  if (dateString.split('-').length === 3) return dateString;
-  return `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}-${dateString.slice(6, 8)}`;
+  if (dateString.split("-").length === 3) {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  }
+  return null;
 };
 
 const toTimeStringFormat = (time) => {
-  if (time === undefined || time === '') return '';
+  if (time === undefined || time === "") return "";
   const timeString = String(time);
   if (timeString.split(/[+-]/).length === 1) return timeString;
   return timeString.split(/[+-]/)[0];
 };
 
-const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow}:MapPropsToShowingInputContainer) => {
-  const [starttime, setStartTime] = useState(showingData.eventtime !== undefined ? showingData.eventtime.slice(0, 8): '');
-  const [eventdate, setEventDate] = useState(showingData.eventdate !== undefined ? toDateStringFormat(showingData.eventdate) : '');
+const ShowingInputContainer = ({
+  showingData,
+  id,
+  handleSetShow,
+  handleDeleteShow,
+}: MapPropsToShowingInputContainer) => {
+  const [starttime, setStartTime] = useState(
+    showingData.eventtime !== undefined ? showingData.eventtime.slice(0, 8) : ""
+  );
+  const [eventdate, setEventDate] = useState(
+    showingData.eventdate !== undefined
+      ? toDateStringFormat(showingData.eventdate)
+      : ""
+  );
   const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
   const [seatsForType, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
-  const [availableSeats, setAvailableSeats] = useState(showingData.availableseats !== undefined ? showingData.availableseats : 0);
-  const [totalSeats, setTotalSeats] = useState(showingData.totalseats !== undefined ? showingData.totalseats : 0);
+  const [availableSeats, setAvailableSeats] = useState(
+    showingData.availableseats !== undefined ? showingData.availableseats : 0
+  );
+  const [totalSeats, setTotalSeats] = useState(
+    showingData.totalseats !== undefined ? showingData.totalseats : 0
+  );
 
   const [ticketTypes, setTicketTypes] = useState([]);
 
-
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/allTypes');
+    const res = await fetch(
+      process.env.REACT_APP_ROOT_URL + "/api/tickets/allTypes"
+    );
     const data = await res.json();
     setTicketTypes(data.data);
   };
@@ -89,7 +107,14 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
       salestatus: true,
     };
     handleSetShow(showing);
-  }, [starttime, eventdate, ticketTypeId, totalSeats, availableSeats, seatsForType]);
+  }, [
+    starttime,
+    eventdate,
+    ticketTypeId,
+    totalSeats,
+    availableSeats,
+    seatsForType,
+  ]);
 
   const handleAddTicketOption = (e) => {
     setSeatsForType((data) => [...data, 0]);
@@ -103,8 +128,12 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
   };
 
   const handleRemoveOption = (e) => {
-    const newSeats = seatsForType.filter((_, i) => i !== parseInt(e.target.value));
-    const newTypes = ticketTypeId.filter((_, i) => i !== parseInt(e.target.value));
+    const newSeats = seatsForType.filter(
+      (_, i) => i !== parseInt(e.target.value)
+    );
+    const newTypes = ticketTypeId.filter(
+      (_, i) => i !== parseInt(e.target.value)
+    );
     setSeatsForType(newSeats);
     setTicketTypeId(newTypes);
   };
@@ -116,78 +145,126 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
   };
 
   return (
-    <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={id}>
-      <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
-        <label className='font-semibold text-white mb-7 mt-7  '>Show # {id + 1}</label>
-        <div className='flex flex-col gap-5 mt-5 md:pr-20'>
-          <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
+    <div className="bg-violet-200 rounded-xl p-10 shadow-md mb-4" key={id}>
+      <div key={id} className="shadow-xl p-5 rounded-xl mb-9 bg-violet-700">
+        <label className="font-semibold text-white mb-7 mt-7  ">
+          Show # {id + 1}
+        </label>
+        <div className="flex flex-col gap-5 mt-5 md:pr-20">
+          <h3 className="font-semibold text-white">
+            Total Tickets For Showing
+          </h3>
           <input
-            className='input rounded-lg p-2 bg-violet-100 w-full md:w-7/8'
+            className="input rounded-lg p-2 bg-violet-100 w-full md:w-7/8"
             value={showingData.totalseats}
-            type='number'
+            type="number"
             required
             key={id}
             onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
               if (isNaN(parseInt(ev.target.value))) setTotalSeats(0);
-              if (parseInt(ev.target.value) >= 0) setTotalSeats(parseInt(ev.target.value));
-            }
-            }
+              if (parseInt(ev.target.value) >= 0)
+                setTotalSeats(parseInt(ev.target.value));
+            }}
           />
-          <div className='w-full'>
-            <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
-            {
-              seatsForType.map((seats, i) => (
-                <div key={i} className='flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5'>
-                  <input
-                    id={String(i)}
-                    className='input rounded-lg p-2 bg-violet-100 w-full flex flex-col'
-                    name='numInput'
-                    type='number'
-                    placeholder='# of Seats'
-                    onChange={handleSeatChange}
-                    value={seatsForType[i]}
-                  >
-                  </input>
-                  <select className='p-2 rounded-lg bg-violet-100' name='typeSelect' onChange={handleChangeOption} id={String(i)} value={ticketTypeId[i]}>
-                    <option className='text-sm text-zinc-700'>
-                      Select Ticket Type
+          <div className="w-full">
+            <div
+              className="toAdd flex flex-col gap-5 md:pr-20 w-full"
+              id="toAdd"
+            ></div>
+            {seatsForType.map((seats, i) => (
+              <div
+                key={i}
+                className="flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5"
+              >
+                <input
+                  id={String(i)}
+                  className="input rounded-lg p-2 bg-violet-100 w-full flex flex-col"
+                  name="numInput"
+                  type="number"
+                  placeholder="# of Seats"
+                  onChange={handleSeatChange}
+                  value={seatsForType[i]}
+                ></input>
+                <select
+                  className="p-2 rounded-lg bg-violet-100"
+                  name="typeSelect"
+                  onChange={handleChangeOption}
+                  id={String(i)}
+                  value={ticketTypeId[i]}
+                >
+                  <option className="text-sm text-zinc-700">
+                    Select Ticket Type
+                  </option>
+                  {ticketTypes.map((ticketType, j) => (
+                    <option
+                      key={j}
+                      className="text-sm text-zinc-700"
+                      value={ticketType.id}
+                    >
+                      {ticketType.description}: {ticketType.price} (+
+                      {ticketType.concessions} concessions)
                     </option>
-                    {ticketTypes.map((ticketType, j) => <option key={j} className='text-sm text-zinc-700' value={ticketType.id}>
-                      {ticketType.description}: {ticketType.price} (+{ticketType.concessions} concessions)
-                    </option>)}
-                  </select>
-                  <button className='w-min block px-2 py-1 bg-red-500 disabled:opacity-30 mb-4 text-white rounded-lg text-sm'
-                    type='button' onClick={handleRemoveOption} value={i}>
-                    Remove
-                  </button>
-                </div>))
-            }
-            <button className='block px-2 py-1 bg-blue-500 disabled:opacity-30
-              mt-4 mb-2 text-white rounded-lg text-sm'
-            type='button'
-            onClick={handleAddTicketOption}>Add Ticket Option</button>
+                  ))}
+                </select>
+                <button
+                  className="w-min block px-2 py-1 bg-red-500 disabled:opacity-30 mb-4 text-white rounded-lg text-sm"
+                  type="button"
+                  onClick={handleRemoveOption}
+                  value={i}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              className="block px-2 py-1 bg-blue-500 disabled:opacity-30
+              mt-4 mb-2 text-white rounded-lg text-sm"
+              type="button"
+              onClick={handleAddTicketOption}
+            >
+              Add Ticket Option
+            </button>
           </div>
           <div className="flex md:flex-row gap-10 flex-col">
             <div>
-              <h3 className='font-semibold text-white'>Enter Date</h3>
-              <input type="date" id="date" className='input w-full p-2 rounded-lg bg-violet-100 mb-7'
+              <h3 className="font-semibold text-white">Enter Date</h3>
+              <input
+                type="date"
+                id="date"
+                className="input w-full p-2 rounded-lg bg-violet-100 mb-7"
                 value={toDateStringFormat(showingData.eventdate)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+                  console.log(ev.target.value);
                   setEventDate(ev.target.value);
-                } }/>
+                }}
+              />
             </div>
-            <div >
-              <h3 className='font-semibold text-white'>Enter time</h3>
-              <input type="time" id="time" name="starttime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
-                value={toTimeStringFormat(showingData.eventtime ? showingData.eventtime : showingData.starttime)}
-                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
+            <div>
+              <h3 className="font-semibold text-white">Enter time</h3>
+              <input
+                type="time"
+                id="time"
+                name="starttime"
+                placeholder="00:00:00"
+                className="w-full p-2 rounded-lg bg-violet-100 mb-7 "
+                value={toTimeStringFormat(
+                  showingData.eventtime
+                    ? showingData.eventtime
+                    : showingData.starttime
+                )}
+                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setStartTime(ev.target.value);
-                }
-                }/>
+                }}
+              />
             </div>
           </div>
         </div>
-        <button className='px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm' type='button' onClick={handleDeleteShow} id={String(id)}>
+        <button
+          className="px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm"
+          type="button"
+          onClick={handleDeleteShow}
+          id={String(id)}
+        >
           Delete
         </button>
       </div>
