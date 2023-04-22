@@ -15,6 +15,7 @@ import {useAppDispatch} from '../../../app/hooks';
 import {openSnackbar} from '../../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
+import {Showing} from '../../../../../interfaces/showing.interface';
 
 /**
  * Maps edit data to the event props
@@ -61,6 +62,13 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   };
 
   const onSubmit = async (updatedData: NewEventData) => {
+    console.log("onSubmit called for edit event");
+    let showings = updatedData.showings.map((show: Showing) => {
+      show.eventid = initValues.eventID;
+      return show;
+    });
+    updatedData.showings = showings;
+    console.log("sending data: " + updatedData);
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',

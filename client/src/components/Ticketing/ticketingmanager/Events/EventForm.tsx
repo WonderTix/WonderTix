@@ -157,7 +157,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       imageUrl,
       showings: showings,
     };
-    console.log(data);
+    console.log("handle submit called");
     onSubmit(data);
   };
 
@@ -166,7 +166,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       onSubmit={handleSubmit}
       initialValues={initialValues ?? initialState}
       mutators={{...arrayMutators}}
-      validate={validate}
+      
       render={({
         handleSubmit,
       }) => (

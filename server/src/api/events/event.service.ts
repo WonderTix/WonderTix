@@ -3,6 +3,7 @@ import {query} from 'express';
 import {link} from 'fs';
 import Delta from '../../interfaces/Delta';
 import Showing from '../../interfaces/Showing';
+//import Showing from 'wtix-core';
 import {pool, response, buildResponse} from '../db';
 
 
@@ -410,11 +411,11 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
     if (showing.ticketTypeId.length === 0) {
       throw new Error('No ticket type provided');
     }
-    const date = showing.eventdate.split('-');
-    const dateAct = date.join('');
+    const date = showing.eventdate;//.split('-');
+    //const dateAct = date.join('');
     const {rows} = await pool.query(query, [
       showing.eventid,
-      dateAct,
+      showing.eventdate,
       showing.starttime,
       showing.totalseats,
       showing.totalseats,
@@ -452,7 +453,8 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         totalseats = $5,
                         availableseats = $6,
                         purchaseuri = $7,
-                        ispreview = $8
+                        ispreview = $8,
+                        eventid_fk = $9
                       WHERE
                         eventinstanceid = $1;`;
   let rowsUpdated = 0;
@@ -468,6 +470,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
           showing.availableseats,
           showing.purchaseuri,
           showing.ispreview,
+          showing.eventid
         ]);
     rowsUpdated += queryResult.rowCount;
   }

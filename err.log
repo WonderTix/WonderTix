@@ -1,0 +1,92 @@
+The PUBLIC_STRIPE_KEY variable is not set. Defaulting to a blank string.
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 704, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 399, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.10/http/client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1037, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.10/http/client.py", line 975, in send
+    self.connect()
+  File "/usr/lib/python3/dist-packages/docker/transport/unixconn.py", line 30, in connect
+    sock.connect(self.unix_socket)
+PermissionError: [Errno 13] Permission denied
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 440, in send
+    resp = conn.urlopen(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 786, in urlopen
+    retries = retries.increment(
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 550, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/usr/lib/python3/dist-packages/six.py", line 718, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 704, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 399, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.10/http/client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.10/http/client.py", line 1037, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.10/http/client.py", line 975, in send
+    self.connect()
+  File "/usr/lib/python3/dist-packages/docker/transport/unixconn.py", line 30, in connect
+    sock.connect(self.unix_socket)
+urllib3.exceptions.ProtocolError: ('Connection aborted.', PermissionError(13, 'Permission denied'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/docker/api/client.py", line 214, in _retrieve_server_version
+    return self.version(api_version=False)["ApiVersion"]
+  File "/usr/lib/python3/dist-packages/docker/api/daemon.py", line 181, in version
+    return self._result(self._get(url), json=True)
+  File "/usr/lib/python3/dist-packages/docker/utils/decorators.py", line 46, in inner
+    return f(self, *args, **kwargs)
+  File "/usr/lib/python3/dist-packages/docker/api/client.py", line 237, in _get
+    return self.get(url, **self._set_request_timeout(kwargs))
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 542, in get
+    return self.request('GET', url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 529, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 645, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 501, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', PermissionError(13, 'Permission denied'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/bin/docker-compose", line 33, in <module>
+    sys.exit(load_entry_point('docker-compose==1.29.2', 'console_scripts', 'docker-compose')())
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 81, in main
+    command_func()
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 200, in perform_command
+    project = project_from_options('.', options)
+  File "/usr/lib/python3/dist-packages/compose/cli/command.py", line 60, in project_from_options
+    return get_project(
+  File "/usr/lib/python3/dist-packages/compose/cli/command.py", line 152, in get_project
+    client = get_client(
+  File "/usr/lib/python3/dist-packages/compose/cli/docker_client.py", line 41, in get_client
+    client = docker_client(
+  File "/usr/lib/python3/dist-packages/compose/cli/docker_client.py", line 170, in docker_client
+    client = APIClient(use_ssh_client=not use_paramiko_ssh, **kwargs)
+  File "/usr/lib/python3/dist-packages/docker/api/client.py", line 197, in __init__
+    self._version = self._retrieve_server_version()
+  File "/usr/lib/python3/dist-packages/docker/api/client.py", line 221, in _retrieve_server_version
+    raise DockerException(
+docker.errors.DockerException: Error while fetching server API version: ('Connection aborted.', PermissionError(13, 'Permission denied'))
