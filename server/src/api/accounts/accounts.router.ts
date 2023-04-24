@@ -343,15 +343,8 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
  *     responses:
  *       '200':
  *         description: Successfully updated the account.
- *         content:
- *           application/json:
- *             schema:
- *               
  *       '404':
  *         description: The specified account was not found.
- *         content:
- *           application/json:
- *             schema:
  *       '500':
  *         description: Internal server error
  *     tags:
