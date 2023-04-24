@@ -8,12 +8,6 @@ import {
   alterDiscountCode,
 } from './discounts.service';
 
-/**
- * create Router object
- *
- * @type {?}
- */
-
 export const discountsRouter = Router();
 
 /**
