@@ -5,7 +5,7 @@ import logoi from '../../../assets/pp_logo_white.png';
 import {useNavigate} from 'react-router-dom';
 import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../../Authentication/auth-nav';
-import Admin_nav_dropdown from './Admin_nav_dropdown';
+import AdminNavDropdown from './AdminNavDropdown';
 
 /**
  * Has Dashboard, Door List, Manage Events, and Showings to navigate to
@@ -181,13 +181,7 @@ const Udash_nav = () => {
                           <p className="text-sm text-zinc-200 leading-4 ml-2 font-semibold ">{name}</p>
                         </div>
                         <div className="flex w-full text-gray-200 mt-2 hover:text-indigo-700 cursor-pointer items-center">
-                          {/* <div className="flex items-center"> */}
-                          {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg> */}
-                          {/* <a className="text-md font-semibold ml-2 "><AuthNav/></a> */}
                           <AuthNav/>
-                          {/* </div> */}
                         </div>
                       </div>
                       <ul className="flex flex-col items-center gap-9 bg-zinc-800/50 px-6 py-6">
@@ -230,7 +224,7 @@ const Udash_nav = () => {
                   <div className="w-full flex items-center pl-8 justify-end">
                     <div className="flex items-center relative cursor-pointer" onClick={() => setProfile(!profile)}>
                       <div className="rounded-full">
-                        {profile ? (<Admin_nav_dropdown/>) : ('')}
+                        {profile ? (<AdminNavDropdown/>) : ('')}
                         <div className="relative">
                           <div className=''>
                             <img src={picture} className='rounded-3xl w-12 h-12  ' />
