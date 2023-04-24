@@ -2,21 +2,48 @@ import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {getDoorlist} from './doorlist.service';
 
-/**
- * create router object
- *
- * @type {?}
- */
-
 export const doorlistRouter = Router();
 
 /**
- * route: GET /
- *
- * @type {?}
+ * @swagger
+ *   /api/doorlist:
+ *   get:
+ *     summary: Get doorlist
+ *     security:
+ *      - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success: {type: boolean}
+ *                     message: {type: string}
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       contactid: {type: integer}
+ *                       firstname: {type: string}
+ *                       lastname: {type: string}
+ *                       vip: {type: boolean}
+ *                       doorbadge: {type: string}
+ *                       seatingaccom: {type: string}
+ *                       eventid: {type: integer}
+ *                       eventname: {type: string}
+ *                       eventinstanceid: {type: integer}
+ *                       eventdate: {type: string}
+ *                       eventtime: {type: string}
+ *                       redeemed: {type: integer}
+ *       401:
+ *         description: Unauthorized
  */
-
-// Door list route
 doorlistRouter.get('/', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
