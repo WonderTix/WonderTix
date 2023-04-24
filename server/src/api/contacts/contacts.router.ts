@@ -63,12 +63,10 @@ contactsRouter.use(checkScopes);
  *     responses:
  *       200:
  *         description: Returns all of the contacts in the database. Requires Auth0 authentication with admin scope.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/contacts-get"
  *       404:
- *         $ref: "#/components/responses/NotFound"
+ *         description: No contacts are available to be retrieved. 
+ *       '500':
+ *         description: An error occurred while processing the request
  *     tags:
  *      - Contacts
  */
@@ -101,11 +99,7 @@ contactsRouter.get('/', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       '200':
- *         description: A list of contacts matching the first and last name
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Contacts'
+ *         description: A list of contacts matching the first and last name.
  *       '404':
  *         description: No contacts were found with the first and last name.
  *       '500':
