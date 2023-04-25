@@ -44,6 +44,7 @@ export const initRefund = async (mode:number, id:string, amount:number): Promise
         amount: amount * 100}); // assumes amount is in dollars
     }
   } catch (err: any) {
+    console.error(err);
     throw new Error('Refund construction error');
   }
 
