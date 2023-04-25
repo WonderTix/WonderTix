@@ -2,18 +2,47 @@ import {Router, Response, Request} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {initRefund} from './refunds.service';
 
-/**
- * create Router object
- *
- * @type {?}
- */
 export const refundsRouter = Router();
 
-
 /**
- * route: PUT /
- *
- * @type {?}
+ * @swagger
+ *  /api/refunds:
+ *    post:
+ *      summary: Create refund
+ *      security:
+ *        - bearerAuth: []
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                refMode: {type: integer}
+ *                id: {type: integer}
+ *                amount: {type: number}
+ *            example:
+ *              refMode: 1
+ *              id: 1
+ *              amount: 0.0
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data: {type: object}
+ *                  status:
+ *                    type: object
+ *                    properties:
+ *                      success: {type: boolean}
+ *                      message: {type: string}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
  */
 refundsRouter.post('/', checkJwt, checkScopes, async (
     req:Request,
