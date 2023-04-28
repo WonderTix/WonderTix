@@ -2,26 +2,31 @@ import express from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {pool} from '../db';
 
-/*
-*
-* This whole file can probably be deleted and merged into contacts
-*
-*/
-
-/**
- * create Router
- *
- * @type {?}
- */
-
 export const subscriptionRouter = express.Router();
 
 /**
- * route: GET /newsletter
- *
- * @type {?}
+ * @swagger
+ *   /api/email_subscriptions/newsletter:
+ *   get:
+ *     summary: Get emails of people who have subscribed to the newsletter
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   email: {type: string}
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *        description: Not Found
  */
-
 subscriptionRouter.get('/newsletter', checkJwt, checkScopes,
     async (req, res) => {
       // going to need to use auth0 authentication middleware
@@ -37,11 +42,29 @@ subscriptionRouter.get('/newsletter', checkJwt, checkScopes,
     },
 );
 
-/** route: GET /volunteers
- *
- * @type {?}
+/**
+ * @swagger
+ *   /api/email_subscriptions/volunteers:
+ *   get:
+ *     summary: Get emails of volunteers
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   email: {type: string}
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *        description: Not Found
  */
-
 subscriptionRouter.get('/volunteers', checkJwt, checkScopes,
     async (req, res) => {
       try {
