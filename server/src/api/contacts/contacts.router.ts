@@ -1,5 +1,3 @@
-// api/contacts/contacts.router.ts
-
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {create, find, findAll, findByName, remove, update, findContactTicket}
@@ -62,17 +60,15 @@ contactsRouter.use(checkScopes);
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Returns all of the contacts in the database. Requires Auth0 authentication with admin scope.
+ *         description: >
+ *           Returns all the contacts in the database. Requires Auth0 authentication with admin scope.
  *       404:
- *         description: No contacts are available to be retrieved. 
+ *         description: No contacts are available to be retrieved.
  *       '500':
  *         description: An error occurred while processing the request
  *     tags:
  *      - Contacts
  */
-
-
-
 contactsRouter.get('/', async (req: Request, res: Response) => {
   try {
     const resp = await findAll(req.query);
@@ -165,7 +161,7 @@ contactsRouter.get('/show/:id', async (req: Request, res: Response) => {
   try {
     const resp = await findContactTicket(req.params.id);
     const code = resp.status.success ? 200 : 404;
-    res.status(code).send(resp); 
+    res.status(code).send(resp);
   } catch (err: any) {
     res.status(500).send(err.message);
   }
@@ -300,7 +296,7 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *                 type: string
  *               address:
  *                 type: string
- *               vip: 
+ *               vip:
  *                 type: boolean
  *               volunteerlist:
  *                 type: string
@@ -316,7 +312,7 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *               properties:
  *                 status:
  *                   type: boolean
- *                   description: Status of the request 
+ *                   description: Status of the request
  *                 message:
  *                   type: string
  *                   description: Additional message from the server.
@@ -332,7 +328,7 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *                       type: string
  *                     address:
  *                       type: string
- *                     vip: 
+ *                     vip:
  *                       type: boolean
  *                     volunteerlist:
  *                       type: string
@@ -345,7 +341,7 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *               properties:
  *                 status:
  *                   type: boolean
- *                   description: Status of the request. 
+ *                   description: Status of the request.
  *                 message:
  *                   type: string
  *                   description: Error message from the server.
@@ -355,7 +351,7 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  *     tags:
- *       - Contacts 
+ *       - Contacts
 */
 
 contactsRouter.put('/:id', async (req: Request, res: Response) => {
