@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {useParams} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
@@ -29,6 +29,33 @@ const Eventshowings = () => {
   useEffect(()=>{
     getData();
   }, []);
+
+  const [show, setShow] = useState(false);
+
+  const handleSubmit = (ticketInfo: any) => {
+    const date = ticketInfo.selectedDate;
+    const dateString = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+    });
+    const timeString = date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+    const p = document.getElementById('cart-success-text');
+    p.textContent = `${ticketInfo.qty} ticket${ticketInfo.qty === 1 ? '' : 's'} to ${title} on ${dateString} at ${timeString} ha${ticketInfo.qty === 1 ? 's' : 've'} been added to the cart`;
+    setShow(!show);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+  };
+
+  const navigateToCart = () => {
+    navigate('/cart');
+  };
 
   const {eventid} = useParams<EventPageProps>();
   const eventData = useAppSelector((state) => selectEventData(state, eventid));
@@ -65,10 +92,42 @@ const Eventshowings = () => {
               </div>
             </div>
             <div className='bg-zinc-700/30 p-9 flex flex-col items-center rounded-xl mt-9 w-full'>
-              <TicketPicker tickets={tickets} />
+              <TicketPicker onSubmit={handleSubmit} tickets={tickets} />
             </div>
           </div>
+        </div>
+      </div>
 
+      <div className={!show ? 'hidden': 'fixed w-full h-screen overflow-x-hidden z-10'} aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div className="fixed z-10 inset-0 overflow-y-auto bg-gray-500 bg-opacity-75 transition-opacity">
+          <div className="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+            <div className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <button type="button" onClick={handleClose} className="absolute top-3
+                    right-2.5 text-gray-400 bg-transparent hover:bg-gray-200
+                    hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto
+                    inline-flex items-center dark:hover:bg-gray-800
+                    dark:hover:text-white" data-modal-toggle="popup-modal">
+                    <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                    <span className="sr-only">Close modal</span>
+                  </button>
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">Success!</h3>
+                    <div className="mt-2">
+                      <p id="cart-success-text" className="text-sm text-gray-500">Tickets added successly!</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button onClick={navigateToCart} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent
+                shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
+                  sm:ml-3 sm:w-auto sm:text-sm">Take me there!</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
