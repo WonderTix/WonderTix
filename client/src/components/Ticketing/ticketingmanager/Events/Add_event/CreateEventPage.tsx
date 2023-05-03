@@ -88,7 +88,7 @@ const CreateEventPage = () => {
 
   const handleProceed = () => {
     setVisible(false);
-    nav('/ticketing/manageevent');
+    nav('/ticketing/showings');
   };
 
   return (
