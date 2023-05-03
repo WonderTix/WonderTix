@@ -40,6 +40,9 @@ import swaggerUi from 'swagger-ui-express';
 const openapiSpecification = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
+    servers: [{
+      url: 'https://localhost:8000/api',
+    }],
     info: {
       title: 'Wondertix API',
       version: '1.0.0',

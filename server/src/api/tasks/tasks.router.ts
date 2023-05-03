@@ -13,7 +13,7 @@ tasksRouter.use(checkScopes);
 
 /**
  * @swagger
- *   /api/tasks:
+ *   /tasks:
  *   get:
  *     summary: Get all tasks
  *     security:
@@ -69,7 +69,7 @@ tasksRouter.get('/', async (_req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /api/tasks/{id}:
+ *   /tasks/{id}:
  *   get:
  *     summary: Get all tasks
  *     security:
@@ -130,7 +130,7 @@ tasksRouter.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /api/tasks:
+ *   /tasks:
  *   post:
  *     summary: Get all tasks
  *     security:
@@ -177,7 +177,7 @@ tasksRouter.post('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /api/tasks/{id}:
+ *   /tasks/{id}:
  *   delete:
  *     summary: Delete a task
  *     security:
@@ -204,7 +204,7 @@ tasksRouter.delete('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /api/tasks/{id}:
+ *   /tasks/{id}:
  *   put:
  *     summary: Update a task
  *     security:

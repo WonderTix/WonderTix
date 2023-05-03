@@ -8,7 +8,7 @@ export const newsletterRouter = Router();
 
 /**
  * @swagger
- *   /api/newsletter/count:
+ *   /newsletter/count:
  *     get:
  *       summary: get newsletter count by email
  *       security:
@@ -55,7 +55,7 @@ newsletterRouter.get('/count', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- *   /api/newsletter/:
+ *   /newsletter/:
  *     put:
  *       summary: update newsletter by email
  *       security:
@@ -102,7 +102,7 @@ newsletterRouter.put('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /api/newsletter/:
+ *   /newsletter/:
  *     post:
  *       summary: Create newsletter
  *       security:

@@ -6,7 +6,7 @@ export const refundsRouter = Router();
 
 /**
  * @swagger
- *  /api/refunds:
+ *  /refunds:
  *    post:
  *      summary: Create refund
  *      security:
