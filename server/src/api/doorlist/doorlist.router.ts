@@ -6,9 +6,11 @@ export const doorlistRouter = Router();
 
 /**
  * @swagger
- *   /doorlist:
+ * /doorlist:
  *   get:
  *     summary: Get doorlist
+ *     tags:
+ *       - Doorlist
  *     security:
  *      - bearerAuth: []
  *     responses:

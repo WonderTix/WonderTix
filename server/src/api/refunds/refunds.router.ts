@@ -9,6 +9,8 @@ export const refundsRouter = Router();
  *  /refunds:
  *    post:
  *      summary: Create refund
+ *      tags:
+ *        - Refunds
  *      security:
  *        - bearerAuth: []
  *      requestBody:

@@ -8,6 +8,8 @@ export const reportingRouter = Router();
  *   /reporting:
  *   get:
  *     summary: Get all active event sales
+ *     tags:
+ *       - Reporting
  *     security:
  *      - bearerAuth: []
  *     responses:

@@ -17,6 +17,8 @@ const bodyParser = require('body-parser');
  *        and https://stripe.com/docs/webhooks/test for more info.
  *        run `./stripe listen --forward-to https://localhost:8000/api/order/webhook`
  *        to listen for Stripe test events.
+ *      tags:
+ *        - Order
  */
 orderRouter.post('/webhook', bodyParser.raw({type: `application/json`}), (request, response) => {
   const pl = request.body;
