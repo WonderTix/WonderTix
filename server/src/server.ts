@@ -34,36 +34,34 @@ import {ticketRouter} from './api/tickets/ticket.router';
 import {discountsRouter} from './api/discounts/discounts.router';
 import {reportingRouter} from './api/reporting/reporting.router';
 import {refundsRouter} from './api/refunds/refunds.router';
+import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import yamljs from 'yamljs';
-import {resolveRefs} from 'json-refs';
 
-
-/**
- * Return JSON object. Source: https://github.com/chuve/swagger-multi-file-spec
- * @param {array | object} root
- * @return {Promise.<JSON>}
- */
-const multiFileSwagger = (root: any) => {
-  const options = {
-    filter: ['relative', 'remote'],
-    loaderOptions: {
-      processContent: function(res: any, callback: any) {
-        callback(null, yamljs.parse(res.text));
+const openapiSpecification = swaggerJsdoc({
+  definition: {
+    openapi: '3.0.0',
+    servers: [{
+      url: 'https://localhost:8000/api',
+    }],
+    info: {
+      title: 'Wondertix API',
+      version: '1.0.0',
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
       },
     },
-  };
-
-  return resolveRefs(root, options).then(
-      function(results: any) {
-        console.log(results);
-        return results.resolved;
-      },
-      function(err: any) {
-        console.log(err.stack);
-      },
-  );
-};
+    security: [{
+      bearerAuth: ['admin'],
+    }],
+  },
+  apis: ['./src/api/**/*.ts'],
+});
 
 const createServer = async () => {
   dotenv.config({path: path.join(__dirname, '../../.env')});
@@ -113,21 +111,13 @@ const createServer = async () => {
 
   app.get('/', (_req, res) => res.send('Hello World.'));
 
-  const swaggerDocument = await multiFileSwagger(
-      yamljs.load(path.resolve(__dirname, './schema/test.yaml')),
-  );
-
-  console.log(swaggerDocument);
-
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
   return https
       .createServer(
           {
-            key: fs.readFileSync(
-                path.join(__dirname, '../localhost-key.pem'),
-            ),
-            cert: fs.readFileSync(path.join(__dirname, '../localhost.pem')),
+            key: fs.readFileSync('/usr/app/localhost-key.pem'),
+            cert: fs.readFileSync('/usr/app/localhost.pem'),
           }, app);
 };
 

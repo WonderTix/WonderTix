@@ -17,9 +17,9 @@ const Auth0ProviderWithHistory = ({
 }: {
   children: any,
 }): React.ReactElement => {
-  const domain = 'wtix-dev.us.auth0.com';
-  const clientId = 'riiCcrxD0o7N7oArqgWTTTniMmYM6WiL';
-  const audience = 'https://localhost:8000';
+  const domain = process.env.REACT_APP_AUTH0_URL;
+  const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+  const audience = process.env.REACT_APP_AUTH0_AUDIENCE;
   const scope = 'admin';
 
   const history = useNavigate();
