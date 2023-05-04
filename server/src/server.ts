@@ -40,10 +40,25 @@ import swaggerUi from 'swagger-ui-express';
 const openapiSpecification = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
+    servers: [{
+      url: 'https://localhost:8000/api',
+    }],
     info: {
       title: 'Wondertix API',
       version: '1.0.0',
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{
+      bearerAuth: ['admin'],
+    }],
   },
   apis: ['./src/api/**/*.ts'],
 });
@@ -101,10 +116,8 @@ const createServer = async () => {
   return https
       .createServer(
           {
-            key: fs.readFileSync(
-                path.join(__dirname, '../localhost-key.pem'),
-            ),
-            cert: fs.readFileSync(path.join(__dirname, '../localhost.pem')),
+            key: fs.readFileSync('/usr/app/localhost-key.pem'),
+            cert: fs.readFileSync('/usr/app/localhost.pem'),
           }, app);
 };
 
