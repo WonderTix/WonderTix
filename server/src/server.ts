@@ -116,8 +116,8 @@ const createServer = async () => {
   return https
       .createServer(
           {
-            key: fs.readFileSync('/usr/key.pem'),
-            cert: fs.readFileSync('/usr/cert.pem'),
+            key: fs.readFileSync('/usr/app/localhost-key.pem'),
+            cert: fs.readFileSync('/usr/app/localhost.pem'),
           }, app);
 };
 
