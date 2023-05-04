@@ -174,6 +174,8 @@ export default function ManageAccounts() {
           </div>
           <div className=' bg-white shadow-xl p-4 rounded-xl'>
             <DataGrid
+              getRowId={(data) => data.userid}
+              rowsPerPageOptions={[10]}
               columns={columns}
               rows={rows}
               disableSelectionOnClick
