@@ -5,9 +5,11 @@ export const reportingRouter = Router();
 
 /**
  * @swagger
- *   /api/reporting:
+ *   /reporting:
  *   get:
  *     summary: Get all active event sales
+ *     tags:
+ *       - Reporting
  *     security:
  *      - bearerAuth: []
  *     responses:

@@ -1,5 +1,3 @@
-// api/donations/donations.router.ts
-
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import {create, find, findAll, findByName, remove, update}
@@ -30,7 +28,7 @@ donationsRouter.use(checkScopes);
  *       - bearerAuth: []
  *     responses:
  *       '200':
- *         description: A list of all donations. 
+ *         description: A list of all donations.
  *         content:
  *           application/json:
  *             schema:
@@ -254,7 +252,7 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
  *       '200':
  *         description: The donation with the ID was deleted.
  *       '404':
- *         description: No donation found with the ID given. 
+ *         description: No donation found with the ID given.
  *       '500':
  *         description: Internal server error.
  *     tags:
@@ -283,7 +281,7 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
  *     parameters:
  *       - in: path
  *         name: id
- *         description: The donationid. 
+ *         description: The donationid.
  *         schema:
  *           type: integer
  *       - in: body
@@ -312,7 +310,7 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Updated donation 
+ *         description: Updated donation
  *         schema:
  *           type: object
  *           properties:

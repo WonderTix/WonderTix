@@ -8,9 +8,11 @@ export const newsletterRouter = Router();
 
 /**
  * @swagger
- *   /api/newsletter/count:
+ *   /newsletter/count:
  *     get:
  *       summary: get newsletter count by email
+ *       tags:
+ *         - Newsletter
  *       security:
  *         - bearerAuth: []
  *       parameters:
@@ -55,9 +57,11 @@ newsletterRouter.get('/count', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- *   /api/newsletter/:
+ *   /newsletter/:
  *     put:
  *       summary: update newsletter by email
+ *       tags:
+ *         - Newsletter
  *       security:
  *         - bearerAuth: []
  *       requestBody:
@@ -102,9 +106,11 @@ newsletterRouter.put('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /api/newsletter/:
+ *   /newsletter/:
  *     post:
  *       summary: Create newsletter
+ *       tags:
+ *         - Newsletter
  *       security:
  *         - bearerAuth: []
  *       requestBody:

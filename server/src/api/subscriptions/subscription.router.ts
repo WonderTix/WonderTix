@@ -6,9 +6,11 @@ export const subscriptionRouter = express.Router();
 
 /**
  * @swagger
- *   /api/email_subscriptions/newsletter:
+ *   /email_subscriptions/newsletter:
  *   get:
  *     summary: Get emails of people who have subscribed to the newsletter
+ *     tags:
+ *       - Email Subscriptions
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -44,9 +46,11 @@ subscriptionRouter.get('/newsletter', checkJwt, checkScopes,
 
 /**
  * @swagger
- *   /api/email_subscriptions/volunteers:
+ *   /email_subscriptions/volunteers:
  *   get:
  *     summary: Get emails of volunteers
+ *     tags:
+ *       - Email Subscriptions
  *     security:
  *       - bearerAuth: []
  *     responses:

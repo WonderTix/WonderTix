@@ -15,7 +15,7 @@ export const discountsRouter = Router();
  * /discounts:
  *   get:
  *     summary: Retrieve all discount codes
- *     description: Retrieve all discounts codes available. 
+ *     description: Retrieve all discounts codes available.
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -77,7 +77,7 @@ discountsRouter.get('/', checkJwt, checkScopes, async (
  * /discounts/search:
  *   get:
  *     summary: Search for a discount code
- *     description: Search information given the discount code. 
+ *     description: Search information given the discount code.
  *     parameters:
  *       - in: query
  *         name: code
@@ -137,7 +137,7 @@ discountsRouter.get('/search', async (
  * /discounts:
  *   post:
  *     summary: Create a new discount code
- *     description: Creates a new discount code. 
+ *     description: Creates a new discount code.
  *     security:
  *       - bearerAuth: []
  *     requestBody:

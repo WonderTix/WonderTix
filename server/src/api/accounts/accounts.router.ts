@@ -13,7 +13,8 @@ accountsRouter.use(checkScopes);
  * /accounts:
  *   get:
  *     summary: Retrieve all accounts.
- *     description: Retrieve a list of all accounts, with the option to filter by username and superadmin status.
+ *     description: >
+ *         Retrieve a list of all accounts, with the option to filter by username and superadmin status.
  *     parameters:
  *       - name: username
  *         in: query
@@ -299,7 +300,7 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
  *         description: Internal server error
  *     tags:
  *       - Accounts
- */ 
+ */
 accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await remove(req.params.id);
@@ -314,7 +315,6 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// TODO: add $ref to proper directory 
 /**
  * @swagger
  * /accounts/{id}:
@@ -348,8 +348,9 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
  *       '500':
  *         description: Internal server error
  *     tags:
- *       - Accounts               
+ *       - Accounts
  */
+// TODO: add $ref to proper directory
 accountsRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const resp = await update(req.body, req.params.id);
