@@ -13,6 +13,9 @@ import EventForm, {NewEventData} from '../EventForm';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../../Pop-up';
+
+let id = 0;
+
 const formatShowingData = (eventid: number) => (data: any) => {
   const {starttime, eventdate, totalseats, ticketTypeId, seatsForType} = data;
   return {eventid, eventdate, starttime, totalseats, ticketTypeId: ticketTypeId, seatsForType};
@@ -58,7 +61,7 @@ const CreateEventPage = () => {
 
     if (createPlayRes.ok) {
       const eventData = await createPlayRes.json();
-      const id = eventData.data[0].eventid;
+      id = eventData.data[0].eventid;
       const showingdata = showings.map(formatShowingData(id));
       const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
         credentials: 'include',
@@ -72,7 +75,6 @@ const CreateEventPage = () => {
       // update Redux state with new event & available tickets
       if (postShowings.ok) {
         setVisible(true);
-        // nav('/ticketing/manageevent');
       }
     } else {
       console.error('New event creation failed', createPlayRes.statusText);
@@ -81,7 +83,12 @@ const CreateEventPage = () => {
 
   const handleClose = () => {
     setVisible(false);
-    nav('/ticketing/manageevent');
+    nav(`/ticketing/editevent/${id}`);
+  };
+
+  const handleProceed = () => {
+    setVisible(false);
+    nav('/ticketing/showings');
   };
 
   return (
@@ -89,7 +96,7 @@ const CreateEventPage = () => {
       <div className='md:ml-[18rem] md:mr-[5rem] sm:mt-40 sm:mt-[11rem]
        sm:mr-[2rem] sm:ml-[2rem] sm:mb-[11rem]'>
         {visible == true ?
-        <PopUp message='New event has been successfully added.' title="Success" handleClose={handleClose} /> :
+        <PopUp title="Success" message='New event has been successfully added.' handleClose={handleClose} handleProceed={handleProceed} /> :
          <></> }
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-violet-500 to-fuchsia-500' >Add New Event</h1>

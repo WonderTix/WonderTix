@@ -1,12 +1,7 @@
-FROM --platform=linux/amd64 node:latest
+FROM node:18-alpine
 
-RUN apt-get update
+WORKDIR /usr/app
 
-WORKDIR /wondertix
-COPY ./package.json .
-
-RUN chown -R 1000:1000 /wondertix
-
-USER 1000:1000
+COPY ./package*.json .
 
 RUN npm install --force
