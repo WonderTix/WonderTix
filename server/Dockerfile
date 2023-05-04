@@ -1,12 +1,11 @@
-FROM --platform=linux/amd64 node:latest
+FROM node:18-alpine
 
-RUN apt-get update
+RUN apk upgrade --update-cache --available && \
+    apk add openssl && \
+    rm -rf /var/cache/apk/*
 
-WORKDIR /wondertix
-COPY ./package.json .
+WORKDIR /usr/app
 
-RUN chown -R 1000:1000 /wondertix
-
-USER 1000:1000
+COPY ./package*.json .
 
 RUN npm install

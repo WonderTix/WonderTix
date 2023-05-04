@@ -24,7 +24,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ./client/package-lock.json
       - name: npm install
-        run: npm install
+        run: npm install --force
         working-directory: ./client
 
       - name: Check Unit Tests
