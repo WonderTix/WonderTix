@@ -44,8 +44,8 @@ const Eventshowings = () => {
       hour12: true,
     });
 
-    const p = document.getElementById('cart-success-text');
-    p.textContent = `${ticketInfo.qty} ticket${ticketInfo.qty === 1 ? '' : 's'} to ${title} on ${dateString} at ${timeString} ha${ticketInfo.qty === 1 ? 's' : 've'} been added to the cart`;
+    const cartSuccessText = document.getElementById('cart-success-text');
+    cartSuccessText.textContent = `${ticketInfo.qty} ticket${ticketInfo.qty === 1 ? '' : 's'} to ${title} on ${dateString} at ${timeString} ha${ticketInfo.qty === 1 ? 's' : 've'} been added to the cart`;
     setShow(!show);
     document.body.style.overflow = 'hidden';
   };
