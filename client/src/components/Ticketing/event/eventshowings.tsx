@@ -47,14 +47,17 @@ const Eventshowings = () => {
     const p = document.getElementById('cart-success-text');
     p.textContent = `${ticketInfo.qty} ticket${ticketInfo.qty === 1 ? '' : 's'} to ${title} on ${dateString} at ${timeString} ha${ticketInfo.qty === 1 ? 's' : 've'} been added to the cart`;
     setShow(!show);
+    document.body.style.overflow = 'hidden';
   };
 
   const handleClose = () => {
     setShow(false);
+    document.body.style.overflow = '';
   };
 
   const navigateToCart = () => {
     navigate('/cart');
+    document.body.style.overflow = '';
   };
 
   const {eventid} = useParams<EventPageProps>();
