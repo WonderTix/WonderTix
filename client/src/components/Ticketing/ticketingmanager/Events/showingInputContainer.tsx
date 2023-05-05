@@ -45,7 +45,8 @@ const toDateStringFormat = (date) => {
   const dateString = String(date);
   if (dateString.split("-").length === 3) {
     const [year, month, day] = dateString.split("-").map(Number);
-    return new Date(year, month - 1, day);
+    const Dateobject = new Date(year, month - 1, day);
+    return Dateobject.getTime();
   }
   return null;
 };
@@ -97,14 +98,14 @@ const ShowingInputContainer = ({
   useEffect(() => {
     const showing: Showing = {
       id: id,
-      eventid: showingData.eventid_fk,
-      starttime: starttime,
       eventdate: eventdate,
+      starttime: starttime,
+      salestatus: true,
+      totalseats: totalSeats,
       ticketTypeId: ticketTypeId,
       seatsForType: seatsForType,
       availableseats: availableSeats ? availableSeats : totalSeats,
-      totalseats: totalSeats,
-      salestatus: true,
+      eventid: showingData.eventid_fk,
     };
     handleSetShow(showing);
   }, [

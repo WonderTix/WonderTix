@@ -461,6 +461,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
       showing.availableseats,
       showing.purchaseuri,
       showing.ispreview,
+      showing.eventid,
     ]);
     rowsUpdated += queryResult.rowCount;
   }
