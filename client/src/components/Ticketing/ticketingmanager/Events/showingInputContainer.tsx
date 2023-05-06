@@ -14,7 +14,7 @@ import { Showing } from "../../../../interfaces/showing.interface";
 interface InitialData {
   availableseats?: number;
   defaulttickettype?: number;
-  eventdate?: string;
+  eventdate: string;
   eventid_fk?: number;
   eventinstanceid?: number;
   eventtime?: string;
@@ -48,7 +48,7 @@ const toDateStringFormat = (date) => {
     const Dateobject = new Date(year, month - 1, day);
     return Dateobject.getTime();
   }
-  return null;
+  return date;
 };
 
 const toTimeStringFormat = (time) => {
@@ -68,9 +68,7 @@ const ShowingInputContainer = ({
     showingData.eventtime !== undefined ? showingData.eventtime.slice(0, 8) : ""
   );
   const [eventdate, setEventDate] = useState(
-    showingData.eventdate !== undefined
-      ? toDateStringFormat(showingData.eventdate)
-      : ""
+    showingData.eventdate
   );
   const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
   const [seatsForType, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
@@ -233,7 +231,7 @@ const ShowingInputContainer = ({
                 type="date"
                 id="date"
                 className="input w-full p-2 rounded-lg bg-violet-100 mb-7"
-                value={toDateStringFormat(showingData.eventdate)}
+                value={showingData.eventdate}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   console.log(ev.target.value);
                   setEventDate(ev.target.value);
