@@ -98,8 +98,14 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
 
   const handleSeatChange = (e) => {
     const newSeats = [...seatsForType];
-    newSeats[parseInt(e.target.id)] = parseInt(e.target.value);
-    setSeatsForType(newSeats);
+    if (parseInt(e.target.value) >= 0) {
+      newSeats[parseInt(e.target.id)] = parseInt(e.target.value);
+      setSeatsForType(newSeats);
+    }
+    else {
+      newSeats[parseInt(e.target.id)] = 0;
+      setSeatsForType(newSeats);
+    }
   };
 
   const handleRemoveOption = (e) => {
