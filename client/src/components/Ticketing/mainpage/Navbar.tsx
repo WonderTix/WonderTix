@@ -135,7 +135,7 @@ const Navbar = ({bMode}: NavbarProps) => {
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
               </div>
-            </div>) : ( <button className="flex px-5 flex-row gap-1  items-center text-zinc-500 rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out ">
+            </div>) : ( <button className="flex px-5 flex-row gap-1 items-center text-zinc-500 rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out ">
               <button className="font-semibold"><AuthNav /></button>
             </button>)}
           </div>
