@@ -157,8 +157,8 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       imageUrl,
       showings: showings,
     };
-    console.log(data);
-    onSubmit(data);
+    if (eventName === '' || eventDesc === '') alert("You must enter an event name and an even description");
+    else onSubmit(data);
   };
 
   return (
