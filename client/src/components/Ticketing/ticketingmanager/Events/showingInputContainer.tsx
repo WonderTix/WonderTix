@@ -101,8 +101,7 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
     if (parseInt(e.target.value) >= 0) {
       newSeats[parseInt(e.target.id)] = parseInt(e.target.value);
       setSeatsForType(newSeats);
-    }
-    else {
+    } else {
       newSeats[parseInt(e.target.id)] = 0;
       setSeatsForType(newSeats);
     }
