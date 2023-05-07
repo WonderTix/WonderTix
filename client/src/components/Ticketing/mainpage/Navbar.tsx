@@ -135,9 +135,9 @@ const Navbar = ({bMode}: NavbarProps) => {
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
               </div>
-            </div>) : ( <button className="flex px-5 flex-row gap-1 items-center text-zinc-500 rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out ">
-              <button className="font-semibold"><AuthNav /></button>
-            </button>)}
+            </div>) : ( <div className="flex px-5 flex-row gap-1 items-center text-zinc-500 font-semibold rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out ">
+              <AuthNav />
+            </div>)}
           </div>
           <button onClick={() => navigate('/cart')} className=' flex flex-row gap-1 items-center bg-indigo-600
                hover:bg-transparent border border-indigo-600  font-semibold px-3 py-2 transition duration-300 ease-in-out  hover:text-indigo-600 rounded-xl text-zinc-200 '>
@@ -157,25 +157,25 @@ const Navbar = ({bMode}: NavbarProps) => {
                     {admin ? (
                       <AdminNavDropdown/>
                     ): (
-                    <ul className="p-2 w-max border-r bg-zinc-100 absolute rounded left-0 shadow mt-12 sm:mt-[4.3rem] ">
-                      <li className="flex w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
-                        <AuthNav />
-                      </li>
-                    </ul>
+                      <ul className="p-2 w-max border-r bg-zinc-100 absolute rounded left-0 shadow mt-12 sm:mt-[4.3rem] ">
+                        <li className="flex w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
+                          <AuthNav />
+                        </li>
+                      </ul>
                     )}
                   </div>
-                    ) : (
-                        ''
-                    )}
+              ) : (
+                  ''
+              )}
               <div className="relative">
                 <div className=''>
                   <img src={picture} className=' rounded-3xl w-10 h-10  ' />
                 </div>
               </div>
             </div>
-          </div>) : ( <button className="flex px-5 flex-row gap-1  items-center text-zinc-500 rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out ">
-            <button className="font-semibold"><AuthNav /></button>
-          </button>)}
+          </div>) : ( <div className="flex px-5 flex-row gap-1  items-center text-zinc-500 font-semibold rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out ">
+            <AuthNav />
+          </div>)}
         </div>
       </div>
 
