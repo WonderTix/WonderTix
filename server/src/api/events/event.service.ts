@@ -323,8 +323,8 @@ export const createEvent = async (params: any): Promise<response> => {
                 eventname,
                 eventdescription,
                 active,
-                seasonticketeligible,
-                imageurl)
+                imageurl
+                )
           VALUES
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
@@ -333,7 +333,8 @@ export const createEvent = async (params: any): Promise<response> => {
       params.eventName,
       params.eventDesc,
       params.seasonticketeligible,
-      params.imageUrl],
+      params.imageUrl
+    ],
   };
   return buildResponse(myQuery, 'POST');
 };
@@ -406,16 +407,27 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
   };
   const toReturn = [];
   let rowCount = 0;
+  // Using 2020-01-01 as a default value or it will not save
+  let dateAct = '20200101'
+  let startTime = '00:00'
   for (const showing of showings) {
-    if (showing.ticketTypeId.length === 0) {
-      throw new Error('No ticket type provided');
+    if (showing.eventdate !== '') {
+      const date = showing.eventdate.split('-');
+      dateAct = date.join('');
     }
-    const date = showing.eventdate.split('-');
-    const dateAct = date.join('');
+    else {
+      dateAct = '20200101'
+    }
+    if (showing.starttime !== '') {
+      startTime = showing.starttime
+    }
+    else {
+      startTime = '00:00'
+    }
     const {rows} = await pool.query(query, [
       showing.eventid,
       dateAct,
-      showing.starttime,
+      startTime,
       showing.totalseats,
       showing.totalseats,
       showing.ispreview,
@@ -435,7 +447,6 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       } inserted.`,
     },
   };
-  console.log(results);
   return res;
 };
 
