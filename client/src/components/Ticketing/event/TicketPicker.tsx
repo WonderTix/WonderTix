@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
+ * Copyright Â© 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
@@ -8,6 +8,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {addTicketToCart, selectCartTicketCount, Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
 import {openSnackbar} from '../ticketingmanager/snackbarSlice';
@@ -22,17 +23,17 @@ import isSameDay from 'date-fns/isSameDay';
 import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 
 /**
- * @module
- * @param {Date} selectedDate
- * @param {Ticket[]} displayedShowings
- * @param {Ticket} selectedTicket
- * @param {number} qty
- * @param {boolean} concessions
- * @param {boolean} showCalendar
- * @param {boolean} showTimes
- * @param {boolean} showClearBtn
- * @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
- */
+* @module
+* @param {Date} selectedDate
+* @param {Ticket[]} displayedShowings
+* @param {Ticket} selectedTicket
+* @param {number} qty
+* @param {boolean} concessions
+* @param {boolean} showCalendar
+* @param {boolean} showTimes
+* @param {boolean} showClearBtn
+* @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
+*/
 interface TicketPickerState {
     selectedDate?: Date,
     displayedShowings: Ticket[],
@@ -47,15 +48,15 @@ interface TicketPickerState {
 }
 
 /**
- * Initial state
- * displayedShowings: [],
- * qty: 0,
- * concessions: false,
- * showCalendar: true,
- * showTimes: false,
- * showClearBtn: false,
- * prompt: 'selectDate',
- */
+* Initial state
+* displayedShowings: [],
+* qty: 0,
+* concessions: false,
+* showCalendar: true,
+* showTimes: false,
+* showClearBtn: false,
+* prompt: 'selectDate',
+*/
 const initialState: TicketPickerState = {
   displayedShowings: [],
   qty: 0,
@@ -76,21 +77,21 @@ const changePayWhat = (n:number) => ({type: 'change_pay_what', payload: n});
 let tempPay = 0;
 
 /**
- * TicketPickerReducer is meant to be used to lower ticket numbers
- * Default:
- *      ...state,
- *      selectedDate: date,
- *      selectedTicket: undefined,
- *      displayedShowings: sameDayShows,
- *      showCalendar: false,
- *      showTimes: true,
- *      showClearBtn: true,
- *      prompt: 'selectTime',
- *
- * @param state
- * @param action
- * @returns a certain default state if failed
- */
+* TicketPickerReducer is meant to be used to lower ticket numbers
+* Default:
+*      ...state,
+*      selectedDate: date,
+*      selectedTicket: undefined,
+*      displayedShowings: sameDayShows,
+*      showCalendar: false,
+*      showTimes: true,
+*      showClearBtn: true,
+*      prompt: 'selectTime',
+*
+* @param state
+* @param action
+* @returns a certain default state if failed
+*/
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
   switch (action.type) {
     case 'date_selected': {
@@ -131,16 +132,17 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
 };
 
 interface TicketPickerProps {
+    onSubmit: (ticketInfo: any) => void,
     tickets: Ticket[]
 }
 
 /**
- * Used to choose the tickets
- *
- * @param {TicketPickerProps} tickets
- * @returns {ReactElement} and the correct ticket when picking
- */
-const TicketPicker = ({tickets}: TicketPickerProps) => {
+* Used to choose the tickets
+*
+* @param {TicketPickerProps} props
+* @returns {ReactElement} and the correct ticket when picking
+*/
+const TicketPicker = (props: TicketPickerProps) => {
   const [{
     qty,
     concessions,
@@ -156,12 +158,23 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
 
   const appDispatch = useAppDispatch();
   const cartTicketCount = useAppSelector(selectCartTicketCount);
+  const tickets = props.tickets;
 
   const handleClick = (d: Date, t: Ticket[]) => {
     dispatch(dateSelected(d, t));
   };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const ticketInfo = {
+      qty: qty,
+      selectedDate: selectedDate,
+    };
+
+    // send ticket info to parent to display
+    props.onSubmit(ticketInfo);
+
     if (selectedTicket && qty) {
       appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, qty, concessions, payWhatPrice}));
       appDispatch(openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`));
@@ -198,7 +211,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
     <>
       <Collapse in={showClearBtn}>
         <button onClick={() => dispatch(resetWidget())} className='bg-blue-600 px-3 py-1
-         rounded-xl text-white hover:bg-blue-700 mb-3'>
+        rounded-xl text-white hover:bg-blue-700 mb-3'>
           Choose different date
         </button>
       </Collapse>
@@ -269,7 +282,7 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
         <button
           disabled={!qty || !selectedTicket || qty > selectedTicket.availableseats}
           className='< disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3
-           bg-blue-500 text-white hover:bg-blue-600 rounded-xl '
+          bg-blue-500 text-white hover:bg-blue-600 rounded-xl '
           onClick={handleSubmit}
         >
           Get Tickets
@@ -280,4 +293,3 @@ const TicketPicker = ({tickets}: TicketPickerProps) => {
 };
 
 export default TicketPicker;
-

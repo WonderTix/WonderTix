@@ -81,6 +81,7 @@ const ContactsPanel = ({
           `${filter[0]}=${filter[1]}`,
       );
     });
+    console.log(filters.join('&'))
 
     return filters.join('&');
   };
@@ -128,7 +129,7 @@ const ContactsPanel = ({
         {contactFiltersSwitch.map((filter) => {
           return (
             // eslint-disable-next-line react/jsx-key
-            <div className="form-control">
+            <div className="form-control" key={filter.id}>
               <label className="label cursor-pointer">
                 <input key={filter.id} onChange={handleChange}
                   type="checkbox" className="checkbox"/>
