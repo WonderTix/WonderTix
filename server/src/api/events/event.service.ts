@@ -323,6 +323,7 @@ export const createEvent = async (params: any): Promise<response> => {
                 eventname,
                 eventdescription,
                 active,
+                seasonticketeligible,
                 imageurl
                 )
           VALUES
