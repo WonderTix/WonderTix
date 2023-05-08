@@ -83,7 +83,7 @@ const Udash_nav = () => {
             </ul>
           </div>
           {/* Mobile responsive sidebar*/}
-          <div className={showMobileMenu ? 'w-full h-full absolute z-40  transform  translate-x-0 ' : '   w-full h-full absolute z-40  transform -translate-x-full'} id="mobile-nav">
+          <div className={showMobileMenu ? 'w-full h-full absolute z-40  transform  translate-x-0 ' : 'w-full h-full absolute z-40 transform -translate-x-full'} id="mobile-nav">
             <div className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden" onClick={() => setShowMobileMenu(!showMobileMenu)} />
             <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow  bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
               <div className="flex flex-col justify-between h-full w-full">
@@ -158,7 +158,6 @@ const Udash_nav = () => {
                   </ul>
                 </div>
                 <div className="w-full">
-
                   <div className="border-t bg-zinc-800/30 border-gray-500">
                     <div className="w-full flex flex-row items-center justify-between  ">
 
@@ -189,17 +188,16 @@ const Udash_nav = () => {
 
                       </ul>
 
-
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          {/* Mobile responsive sidebar*/}
-          {/* Sidebar ends */}
+          {/* Mobile responsive sidebar ends*/}
+
+          {/* Desktop top navigation starts */}
           <div className="w-full">
-            {/* Navigation starts */}
             <nav className="h-16 flex items-center md:items-stretch justify-end md:justify-between bg-white shadow relative z-10">
               <div className="hidden md:flex w-full pr-6">
                 <div className="w-1/2 h-full hidden md:flex items-center pr-24">
@@ -233,16 +231,15 @@ const Udash_nav = () => {
               <div className="text-gray-600 mr-8 visible md:hidden relative" onClick={() => setShowMobileMenu(!showMobileMenu)}>
                 {showMobileMenu ? (
                   ' '
-              ) : (
+                ) : (
                   <svg aria-label="Main Menu" aria-haspopup="true" xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu cursor-pointer" width={30} height={30} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" />
                     <line x1={4} y1={8} x2={20} y2={8} />
                     <line x1={4} y1={16} x2={20} y2={16} />
                   </svg>
-              )}
+                )}
               </div>
             </nav>
-
 
           </div>
         </div>

@@ -228,6 +228,7 @@ const Navigation = () => {
 
                 </ul>
               </div>
+
               {/* Bottom corner nav elements */}
               <div className="w-full">
 
@@ -268,6 +269,7 @@ const Navigation = () => {
             </div>
           </div>
         </div>
+
         {/* Navigation starts */}
         <div className="w-full">
           <nav className="h-16 flex items-center md:items-stretch justify-end md:justify-between bg-white shadow relative z-10">
@@ -305,13 +307,13 @@ const Navigation = () => {
             </div>
             <div className="text-gray-600 mr-8 visible md:hidden relative" onClick={() => setShowMobileMenu(!showMobileMenu)}>
               {showMobileMenu ? (
-                  ' '
+                ' '
               ) : (
-                  <svg aria-label="Main Menu" aria-haspopup="true" xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu cursor-pointer" width={30} height={30} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" />
-                    <line x1={4} y1={8} x2={20} y2={8} />
-                    <line x1={4} y1={16} x2={20} y2={16} />
-                  </svg>
+                <svg aria-label="Main Menu" aria-haspopup="true" xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu cursor-pointer" width={30} height={30} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <line x1={4} y1={8} x2={20} y2={8} />
+                  <line x1={4} y1={16} x2={20} y2={16} />
+                </svg>
               )}
             </div>
           </nav>
