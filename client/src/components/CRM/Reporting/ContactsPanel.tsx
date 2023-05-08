@@ -81,7 +81,7 @@ const ContactsPanel = ({
           `${filter[0]}=${filter[1]}`,
       );
     });
-    console.log(filters.join('&'))
+    console.log(filters.join('&'));
 
     return filters.join('&');
   };
