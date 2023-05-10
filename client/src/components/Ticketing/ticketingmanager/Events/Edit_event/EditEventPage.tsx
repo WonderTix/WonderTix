@@ -68,7 +68,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       return show;
     });
     updatedData.showings = showings;
-    console.log("sending data: " + updatedData);
+    console.log("sending data: ", updatedData.showings);
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',

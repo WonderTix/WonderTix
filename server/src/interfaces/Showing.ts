@@ -32,4 +32,7 @@ export default interface Showing {
     seatsForType: number[],
     purchaseuri: string;
     ispreview: boolean;
+    eventinstanceid: number;
+    
+    
 }

@@ -83,21 +83,23 @@ export const updateInstances = async (
   params: any
 ): Promise<response> => {
   const instances: Showing[] = body;
-  console.log("Instances", instances);
+  console.log("Instances", body);
 
   // get existing showings for this event
   const currentShowings = await getShowingsById(params.id);
 
+  
+
   // see which showings are not present in the updated showings
-  const instancesSet = new Set(instances.map((show) => show.id));
-
+  const instancesSet = new Set(instances.map((show) => show.eventinstanceid));
   const rowsToDelete = currentShowings
-    .filter((show: Showing) => !instancesSet.has(show.id))
-    .map((show) => show.id);
-
+    .filter((show: Showing) => !instancesSet.has(show.eventinstanceid))
+    .map((show) => show.eventinstanceid);
+    console.log("currentShowings", currentShowings);
+    console.log("Rows to Delete", rowsToDelete);
   // delete them
   const rowsDeleted = await deleteShowings(rowsToDelete);
-
+  console.log("Instances", instances);
   // update existing showings
   const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
 
@@ -452,6 +454,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         eventinstanceid = $1;`;
   let rowsUpdated = 0;
   for (const showing of showings) {
+    console.log("Update Current: ", showings);
     const queryResult = await pool.query(updateQuery, [
       showing.id,
       showing.eventdate,
@@ -479,7 +482,8 @@ export const deleteShowings = async (ids: number[]): Promise<number> => {
                         eventinstanceid = $1;`;
   let rowsDeleted = 0;
   for (const id of ids) {
-    const queryResult = await pool.query(deleteQuery, [id]);
+    const queryResult = await pool.query(deleteQuery, [id,]);
+    console.log("Deleted");
     rowsDeleted += queryResult.rowCount;
   }
   return rowsDeleted;

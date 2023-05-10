@@ -70,7 +70,7 @@ const ShowListController = ({
       newShowItems.forEach((e, i) => {
         e.id = i;
       });
-      console.log(newShowItems);
+      console.log("Begin HandleDelete", newShowItems);
       setNumoOfShowings(numOfShowings - 1);
       setShow(newShowItems);
     },
@@ -78,7 +78,6 @@ const ShowListController = ({
   );
 
   useEffect(() => {
-    console.log(shows);
     setShowingsHandler(shows);
   }, [handleSetShow, handleDeleteShow]);
 
