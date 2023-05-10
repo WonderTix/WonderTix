@@ -21,7 +21,7 @@ export const getActiveEvents = async (): Promise<response> => {
           FROM
             events e
             JOIN eventinstances ei
-              ON e.eventid = ei.eventid_fk
+              ON e.eventid = ei.eventid_fk WHERE ei.salestatus = true
           GROUP BY
             e.eventid,
             e.seasonid_fk,
