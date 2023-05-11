@@ -42,8 +42,8 @@ const ShowListController = ({
     event.preventDefault();
     setNumoOfShowings(numOfShowings + 1);
     const show: Showing = {
-      id: numOfShowings,
-      eventid: eventid,
+      eventinstanceid: numOfShowings,
+      eventid_fk: eventid,
       starttime: "",
       eventdate: "",
       ticketTypeId: [],
@@ -68,7 +68,7 @@ const ShowListController = ({
     (e) => {
       const newShowItems = shows.filter((_, i) => i !== parseInt(e.target.id));
       newShowItems.forEach((e, i) => {
-        e.id = i;
+        e.eventinstanceid = i;
       });
       console.log("Begin HandleDelete", newShowItems);
       setNumoOfShowings(numOfShowings - 1);
@@ -87,8 +87,8 @@ const ShowListController = ({
         return (
           <ShowingInputContainer
             showingData={element}
-            id={element.id ? element.id : index}
-            key={element.id ? element.id : index}
+            id={element.eventinstanceid ? element.eventinstanceid : index}
+            key={element.eventinstanceid ? element.eventinstanceid : index}
             handleSetShow={handleSetShow}
             handleDeleteShow={handleDeleteShow}
           />

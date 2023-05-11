@@ -46,6 +46,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   }else {
     console.log("event id: " + initValues.eventID);
   }
+  console.log("fetched: " + JSON.stringify(initValues));
   
   const params = useParams();
   const nav = useNavigate();
@@ -65,6 +66,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     console.log("onSubmit called for edit event");
     let showings = updatedData.showings.map((show: Showing) => {
       show.eventid = initValues.eventID;
+      show.eventid_fk = initValues.eventID;
       return show;
     });
     updatedData.showings = showings;

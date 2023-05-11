@@ -31,7 +31,7 @@ export const getActiveEvents = async (): Promise<response> => {
             e.seasonticketeligible,
             e.imageurl
           HAVING
-            e.active = true
+            e.active = true 
           ORDER BY
             e.eventid;`,
   };
@@ -91,7 +91,9 @@ export const updateInstances = async (
   
 
   // see which showings are not present in the updated showings
-  const instancesSet = new Set(instances.map((show) => show.eventinstanceid));
+  const instancesSet = new Set(instances.map((show) =>
+    show.eventinstanceid
+  ));
   const rowsToDelete = currentShowings
     .filter((show: Showing) => !instancesSet.has(show.eventinstanceid))
     .map((show) => show.eventinstanceid);

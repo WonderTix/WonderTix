@@ -127,7 +127,9 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const [eventDesc, setEventDesc] = useState(def.eventDesc);
   const [imageUrl, setImageURL] = useState(def.imageUrl);
   const isPublished = def.isPublished;
+  console.log("showings before useState: " + JSON.stringify(def.showings));
   const [showings, setShowings] = useState(def.showings);
+  console.log("showings after useState: " + JSON.stringify(def.showings));
 
   // FIELDS CALLBACK
   // Set event name
@@ -157,7 +159,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       imageUrl,
       showings: showings,
     };
-    console.log("handle submit called");
+    console.log("handle submit called with showings: " + JSON.stringify(showings));
     onSubmit(data);
   };
 

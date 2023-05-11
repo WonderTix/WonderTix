@@ -10,8 +10,9 @@
  */
 
 export interface Showing {
-    id?: number,
+    eventinstanceid: number,
     eventid?: number,
+    eventid_fk: number,
     starttime: string,
     eventdate: string,
     salestatus: boolean,
