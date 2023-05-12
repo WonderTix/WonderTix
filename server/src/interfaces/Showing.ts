@@ -35,4 +35,5 @@ export default interface Showing {
     eventinstanceid: number;
     
     
+    
 }

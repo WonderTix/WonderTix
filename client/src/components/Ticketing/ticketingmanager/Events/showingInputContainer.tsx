@@ -15,7 +15,7 @@ interface InitialData {
   availableseats?: number;
   defaulttickettype?: number;
   eventdate: string;
-  eventid_fk: number;
+  eventid_fk?: number;
   eventinstanceid?: number;
   eventtime?: string;
   ispreview?: boolean;
@@ -95,7 +95,7 @@ const ShowingInputContainer = ({
 
   useEffect(() => {
     const showing: Showing = {
-      eventinstanceid: id,
+      id: id,
       eventdate: eventdate,
       starttime: starttime,
       salestatus: true,
@@ -103,9 +103,10 @@ const ShowingInputContainer = ({
       ticketTypeId: ticketTypeId,
       seatsForType: seatsForType,
       availableseats: availableSeats ? availableSeats : totalSeats,
-      eventid: showingData.eventid_fk,
-      eventid_fk: showingData.eventid_fk
+      eventid_fk: showingData.eventid_fk,
+      
     };
+    console.log("const showing: Showing");
     handleSetShow(showing);
   }, [
     starttime,

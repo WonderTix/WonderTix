@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Showing } from "../../../../interfaces/showing.interface";
 // import EventForm from './EventForm';
 import ShowingInputContainer from "./showingInputContainer";
+import { fetchEventInstanceData } from "./events_pages/eventsSlice";
 
 /**
  * Used to help process shows correctly
@@ -42,7 +43,7 @@ const ShowListController = ({
     event.preventDefault();
     setNumoOfShowings(numOfShowings + 1);
     const show: Showing = {
-      eventinstanceid: numOfShowings,
+      id: numOfShowings,
       eventid_fk: eventid,
       starttime: "",
       eventdate: "",
@@ -59,6 +60,7 @@ const ShowListController = ({
     (show) => {
       const showItems = [...shows];
       showItems[show.id] = show;
+      console.log("HandleSetShow", JSON.stringify(showItems));
       setShow(showItems);
     },
     [shows]
@@ -88,7 +90,6 @@ const ShowListController = ({
           <ShowingInputContainer
             showingData={element}
             id={element.eventinstanceid ? element.eventinstanceid : index}
-            key={element.eventinstanceid ? element.eventinstanceid : index}
             handleSetShow={handleSetShow}
             handleDeleteShow={handleDeleteShow}
           />
