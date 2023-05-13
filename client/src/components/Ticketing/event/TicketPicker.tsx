@@ -20,6 +20,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
+import {TicketType} from '../ticketingmanager/Events/EventForm';
 import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 
 /**
@@ -32,6 +33,7 @@ import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 * @param {boolean} showCalendar
 * @param {boolean} showTimes
 * @param {boolean} showClearBtn
+* @param {TicketType} ticketType
 * @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
 */
 interface TicketPickerState {
@@ -41,6 +43,7 @@ interface TicketPickerState {
     qty: number,
     payWhatPrice?: number,
     concessions: boolean,
+    ticketType: TicketType,
     showCalendar: boolean,
     showTimes: boolean,
     showClearBtn: boolean,
@@ -52,6 +55,7 @@ interface TicketPickerState {
 * displayedShowings: [],
 * qty: 0,
 * concessions: false,
+* ticketType: null,
 * showCalendar: true,
 * showTimes: false,
 * showClearBtn: false,
@@ -61,6 +65,7 @@ const initialState: TicketPickerState = {
   displayedShowings: [],
   qty: 0,
   concessions: false,
+  ticketType: null,
   showCalendar: true,
   showTimes: false,
   showClearBtn: false,
@@ -143,6 +148,28 @@ interface TicketPickerProps {
 * @returns {ReactElement} and the correct ticket when picking
 */
 const TicketPicker = (props: TicketPickerProps) => {
+  let ticketTypes: TicketType[];
+
+  useEffect(() => {
+    const fetchTicketTypes = async () => {
+      const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes')
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error('Failed to retrieve ticket types');
+            }
+            console.log('Response containing ticket types received successfully');
+            return res.json();
+          })
+          .then((resData) => {
+            ticketTypes = Array.from(resData.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    };
+    fetchTicketTypes();
+  }, []);
+
   const [{
     qty,
     concessions,
@@ -151,6 +178,7 @@ const TicketPicker = (props: TicketPickerProps) => {
     selectedDate,
     displayedShowings,
     selectedTicket,
+    ticketType,
     showCalendar,
     showTimes,
     showClearBtn,
