@@ -52,6 +52,7 @@ const ShowListController = ({
       availableseats: 0,
       totalseats: 0,
       salestatus: true,
+      eventinstanceid: numOfShowings,
     };
     setShow((shows) => [...shows, show]);
   };
@@ -89,14 +90,14 @@ const ShowListController = ({
         return (
           <ShowingInputContainer
             showingData={element}
-            id={element.eventinstanceid ? element.eventinstanceid : index}
+            id={element.id ? element.id : index}
             handleSetShow={handleSetShow}
             handleDeleteShow={handleDeleteShow}
           />
         );
       })}
       <div>
-        <button
+         <button
           className="px-3 py-2 bg-green-500 disabled:opacity-30 text-white rounded-xl"
           type="button"
           onClick={addShowBox}

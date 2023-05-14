@@ -95,7 +95,7 @@ const ShowingInputContainer = ({
 
   useEffect(() => {
     const showing: Showing = {
-      id: id,
+      eventinstanceid: showingData.eventinstanceid,
       eventdate: eventdate,
       starttime: starttime,
       salestatus: true,
@@ -104,9 +104,8 @@ const ShowingInputContainer = ({
       seatsForType: seatsForType,
       availableseats: availableSeats ? availableSeats : totalSeats,
       eventid_fk: showingData.eventid_fk,
-      
+      id:id,
     };
-    console.log("const showing: Showing");
     handleSetShow(showing);
   }, [
     starttime,
