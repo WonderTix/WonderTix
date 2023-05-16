@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Showing } from "../../../../interfaces/showing.interface";
 // import EventForm from './EventForm';
 import ShowingInputContainer from "./showingInputContainer";
+import { fetchEventInstanceData } from "./events_pages/eventsSlice";
 
 /**
  * Used to help process shows correctly
@@ -42,7 +43,7 @@ const ShowListController = ({
     event.preventDefault();
     setNumoOfShowings(numOfShowings + 1);
     const show: Showing = {
-      eventinstanceid: numOfShowings,
+      id: numOfShowings,
       eventid_fk: eventid,
       starttime: "",
       eventdate: "",
@@ -51,6 +52,7 @@ const ShowListController = ({
       availableseats: 0,
       totalseats: 0,
       salestatus: true,
+      eventinstanceid: numOfShowings,
     };
     setShow((shows) => [...shows, show]);
   };
@@ -59,7 +61,11 @@ const ShowListController = ({
     (show) => {
       const showItems = [...shows];
       console.log("handle set show called with eventinstanceid " + show.eventinstanceid);
+      console.log("id: " + show.id);
       showItems[show.eventinstanceid] = show;
+
+      showItems[show.id] = show;
+      
       setShow(showItems);
     },
     [shows]
@@ -100,15 +106,14 @@ const ShowListController = ({
         return (
           <ShowingInputContainer
             showingData={element}
-            id={element.eventinstanceid}
-            key={element.eventinstanceid}
+            id={element.id ? element.id : index}
             handleSetShow={handleSetShow}
             handleDeleteShow={handleDeleteShow}
           />
         );
       })}
       <div>
-        <button
+         <button
           className="px-3 py-2 bg-green-500 disabled:opacity-30 text-white rounded-xl"
           type="button"
           onClick={addShowBox}

@@ -10,8 +10,12 @@
  */
 
 export interface Showing {
+<<<<<<< HEAD
     id?: number,
     eventinstanceid: number,
+=======
+    id: number,
+>>>>>>> origin/julian
     eventid?: number,
     eventid_fk?: number,
     starttime: string,
@@ -20,5 +24,6 @@ export interface Showing {
     ticketTypeId: number[],
     seatsForType: number[],
     totalseats: number,
-    availableseats: number
+    availableseats: number,
+    eventinstanceid?: number,
   }

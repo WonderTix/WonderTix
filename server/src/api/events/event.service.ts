@@ -103,10 +103,10 @@ export const updateInstances = async (
   const rowsDeleted = await deleteShowings(rowsToDelete);
   console.log("Instances", instances);
   // update existing showings
-  const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
-
+  const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0 && show.eventinstanceid === show.id);
+  console.log("rowsToUpdate", rowsToUpdate);
   const rowsUpdated = await updateShowings(rowsToUpdate);
-
+  console.log("Instances", rowsUpdated);
   // insert new showings
   // showings with id = 0 have not yet been added to the table
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
