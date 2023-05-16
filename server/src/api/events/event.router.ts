@@ -347,7 +347,7 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
 // PRIVATE ROUTE
 /**
  * @swagger
- *  /events/
+ *  /events:
  *    put:
  *      summary: Update the details for an event
  *      requestBody:
@@ -401,7 +401,7 @@ eventRouter.put('/', checkJwt, checkScopes, async (
 // PRIVATE ROUTE
 /**
  * @swagger
- *  /events/instances/:id
+ *  /events/instances/:id:
  *    put:
  *      summary: Updates the list of showings for a given event
  *      parameters:
@@ -426,6 +426,7 @@ eventRouter.put('/', checkJwt, checkScopes, async (
  *                  totalseats: integer
  *                  availableseats: integer
  *                  purchaseuri: string
+ *                  ispreview: boolean
  *      responses:
  *        200:
  *          description: OK
@@ -438,7 +439,7 @@ eventRouter.put('/', checkJwt, checkScopes, async (
  *                  numRowsDeleted: integer
  *                  numRowsInserted: integer
  *          404:
- *            description: An error occured querying the database
+ *            description: An error occurred querying the database
  */
 eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     req: Request,
@@ -452,7 +453,7 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     }
     res.status(code).send(resp);
   } catch (error: any) {
-    res.status(500).send(error.message);
+    res.status(500).send(error);
   }
 });
 

@@ -113,6 +113,7 @@ export const updateInstances = async (
       show.ticketTypeId[0] = 0;
     }
   });
+  // @TODO set default ticket type
 
   console.log("Rows to insert", rowsToInsert);
   const rowsInserted = await insertAllShowings(rowsToInsert);
@@ -406,12 +407,18 @@ export const insertAllShowings = async (
   const toReturn = [];
   let rowCount = 0;
   for (const showing of showings) {
+<<<<<<< HEAD
     if (showing.ticketTypeId.length === 0) {
       throw new Error("No ticket type provided");
     }
     const date = showing.eventdate; //.split('-');
     //const dateAct = date.join('');
     const { rows } = await pool.query(query, [
+=======
+    const date = showing.eventdate.split('-');
+    const dateAct = date.join('');
+    const {rows} = await pool.query(query, [
+>>>>>>> development
       showing.eventid,
       showing.eventdate,
       showing.starttime,
@@ -451,8 +458,12 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         totalseats = $5,
                         availableseats = $6,
                         purchaseuri = $7,
+<<<<<<< HEAD
                         ispreview = $8,
                         eventid_fk = $9
+=======
+                        ispreview = $8
+>>>>>>> development
                       WHERE
                         eventinstanceid = $1;`;
   let rowsUpdated = 0;
@@ -499,7 +510,16 @@ const eventFields = ["eventname", "eventdescription", "imageurl"];
 export const getShowingsById = async (id: string): Promise<Showing[]> => {
   // Breaking change: ispreview is new field, defaulttickettype will be added soon
   const query = `
-                SELECT *
+                SELECT eventinstanceid AS id,
+                    eventid_fk AS eventid,
+                    eventdate,
+                    eventtime AS starttime,
+                    salestatus,
+                    totalseats,
+                    availableseats,
+                    defaulttickettype AS ticketTypeId,
+                    purchaseuri,
+                    ispreview
                 FROM
                   eventinstances
                 WHERE
