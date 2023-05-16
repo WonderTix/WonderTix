@@ -25,7 +25,7 @@ const bodyParser = require('body-parser');
 
 /**
  * @swagger
- * /event/search:
+ * /events/search:
  *   get:
  *     summary: Search events by name
  *     description: Returns a list of event IDs and event names matching the provided event name
@@ -58,7 +58,7 @@ eventRouter.get('/search', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /event/{id}:
+ * /events/{id}:
  *   get:
  *     summary: Get event by ID
  *     description: Returns an event with the provided ID
@@ -96,7 +96,7 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /event/instances/{id}:
+ * /events/instances/{id}:
  *   get:
  *     summary: Get instance by ID
  *     description: Returns an instance with the provided ID
@@ -131,7 +131,7 @@ eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /event/list/active:
+ * /events/list/active:
  *   get:
  *     summary: Get a list of active events and their instances
  *     description: Returns a list of active events and their instances
@@ -381,21 +381,21 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
 // PRIVATE ROUTE
 /**
  * @swagger
- * /event/checkin:
- *   put:
- *     summary: Check-in to an event
- *     description: Allows authenticated users to check-in to an event
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       '200':
- *         description: Successfully checked in to the event
- *       '404':
- *         description: The specified event or event instance was not found
- *       '500':
- *         description: An error occurred while processing the request
- *     tags:
- *       - Event
+ *  /events/checkin:
+ *    put:
+ *      summary: Check-in to an event
+ *      description: Allows authenticated users to check-in to an event
+ *      security:
+ *        - bearerAuth: []
+ *      responses:
+ *        '200':
+ *          description: Successfully checked in to the event
+ *        '404':
+ *          description: The specified event or event instance was not found
+ *        '500':
+ *          description: An error occurred while processing the request
+ *      tags:
+ *        - Event
  */
 // TODO: Check that provided ticket ID is valid
 eventRouter.put('/checkin', checkJwt, checkScopes, async (
@@ -415,7 +415,7 @@ eventRouter.put('/checkin', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- * /event:
+ * /events:
  *   post:
  *     summary: Create a new event
  *     description: Allows authenticated users to create a new event
@@ -474,7 +474,7 @@ eventRouter.post('/', checkJwt, checkScopes, async (
 // End point to create a new showing
 /**
  * @swagger
- * /event/instances:
+ * /events/instances:
  *   post:
  *     summary: Create new showings for an event
  *     description: Allows authenticated users to create new showings for an event
@@ -502,7 +502,7 @@ eventRouter.post('/', checkJwt, checkScopes, async (
  *                   description: The total number of seats available for the showing
  *                 tickettype:
  *                   type: string
- *                   description: The type of ticket for the showing 
+ *                   description: The type of ticket for the showing
  *     responses:
  *       '200':
  *         description: Successfully created new showings
@@ -569,8 +569,8 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
  *          description: The event details were updated successfully
  *        '404':
  *          description: An error occurred while updating the event details
- *     tags:
- *       - Event
+ *      tags:
+ *        - Event
  */
 eventRouter.put('/', checkJwt, checkScopes, async (
     req: Request,
@@ -591,51 +591,51 @@ eventRouter.put('/', checkJwt, checkScopes, async (
 // PRIVATE ROUTE
 /**
  * @swagger
- * /instances/{id}:
- *   put:
- *     summary: Update the details for an event instance
- *     description: Allows authenticated users to update the details for an event instance
- *     parameters:
- *       - in: path
- *         name: id
- *         description: The ID of the event instance to update
- *         schema:
- *           type: integer
- *     requestBody:
- *       description: Request body containing updated details for the event instance
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               eventid:
- *                 type: integer
- *                 description: The ID of the event associated with this instance
- *               eventdate:
- *                 type: string
- *                 format: date-time
- *                 description: The date and time of the event instance
- *               starttime:
- *                 type: string
- *                 format: time
- *                 description: The start time of the event instance in HH:MM format
- *               totalseats:
- *                 type: integer
- *                 description: The total number of seats available for this instance
- *               tickettype:
- *                 type: string
- *                 description: The type of ticket available for this instance
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       '200':
- *         description: Successfully updated the event instance
- *       '404':
- *         description: The event instance was not found or could not be updated
- *       '500':
- *         description: An error occurred while processing the request
- *     tags:
- *       - Event
+ *  /events/instances/{id}:
+ *    put:
+ *      summary: Update the details for an event instance
+ *      description: Allows authenticated users to update the details for an event instance
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          description: The ID of the event instance to update
+ *          schema:
+ *            type: integer
+ *      requestBody:
+ *        description: Request body containing updated details for the event instance
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                eventid:
+ *                  type: integer
+ *                  description: The ID of the event associated with this instance
+ *                eventdate:
+ *                  type: string
+ *                  format: date-time
+ *                  description: The date and time of the event instance
+ *                starttime:
+ *                  type: string
+ *                  format: time
+ *                  description: The start time of the event instance in HH:MM format
+ *                totalseats:
+ *                  type: integer
+ *                  description: The total number of seats available for this instance
+ *                tickettype:
+ *                  type: string
+ *                  description: The type of ticket available for this instance
+ *      security:
+ *        - bearerAuth: []
+ *      responses:
+ *        '200':
+ *          description: Successfully updated the event instance
+ *        '404':
+ *          description: The event instance was not found or could not be updated
+ *        '500':
+ *          description: An error occurred while processing the request
+ *      tags:
+ *        - Event
  */
 eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     req: Request,
@@ -678,8 +678,8 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
  *       '500':
  *         description: An error occurred while processing the request
  *     tags:
- *       - Event 
- */                
+ *       - Event
+ */
 eventRouter.delete('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
