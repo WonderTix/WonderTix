@@ -18,7 +18,8 @@ Future features include managing/creating email campaigns and ticket exchanges.
     chmod +x mkcert-v*-linux-amd64
     sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
     ```
-- [Stripe CLI](ttps://stripe.com/docs/stripe-cli)
+- [Stripe CLI](https://stripe.com/docs/stripe-cli)
+   - Follow step 1 to install the CLI. 
 
 ## Setup
 1. Clone the repository.
