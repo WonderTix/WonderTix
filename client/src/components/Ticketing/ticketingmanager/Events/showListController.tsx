@@ -71,7 +71,7 @@ const ShowListController = ({
     (e) => {
       const newShowItems = shows.filter((_, i) => i !== parseInt(e.target.id));
       newShowItems.forEach((e, i) => {
-        e.eventinstanceid = i;
+        e.id = i;
       });
       console.log("Begin HandleDelete", newShowItems);
       setNumoOfShowings(numOfShowings - 1);

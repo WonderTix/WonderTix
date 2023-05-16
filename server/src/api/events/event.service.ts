@@ -103,7 +103,7 @@ export const updateInstances = async (
   const rowsDeleted = await deleteShowings(rowsToDelete);
   console.log("Instances", instances);
   // update existing showings
-  const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0 && show.eventinstanceid === show.id);
+  const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
   console.log("rowsToUpdate", rowsToUpdate);
   const rowsUpdated = await updateShowings(rowsToUpdate);
   console.log("Instances", rowsUpdated);
@@ -111,7 +111,11 @@ export const updateInstances = async (
   // showings with id = 0 have not yet been added to the table
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
   // rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
-  rowsToInsert.forEach((show: Showing) => (show.ticketTypeId[0] = 0));
+  rowsToInsert.forEach((show: Showing) => {
+    if (typeof show.ticketTypeId[0] !== "undefined") {
+      show.ticketTypeId[0] = 0;
+    }
+  });
 
   console.log("Rows to insert", rowsToInsert);
   const rowsInserted = await insertAllShowings(rowsToInsert);
@@ -458,7 +462,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
   for (const showing of showings) {
     console.log("Update Current: ", showings);
     const queryResult = await pool.query(updateQuery, [
-      showing.id,
+      showing.eventinstanceid,
       showing.eventdate,
       showing.starttime,
       showing.salestatus,

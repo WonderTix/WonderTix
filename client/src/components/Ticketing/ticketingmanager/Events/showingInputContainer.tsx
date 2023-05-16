@@ -97,7 +97,7 @@ const ShowingInputContainer = ({
     const showing: Showing = {
       eventinstanceid: showingData.eventinstanceid,
       eventdate: eventdate,
-      starttime: starttime,
+      eventtime: starttime,
       salestatus: true,
       totalseats: totalSeats,
       ticketTypeId: ticketTypeId,

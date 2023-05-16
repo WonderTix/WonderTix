@@ -13,7 +13,7 @@ export interface Showing {
     id: number,
     eventid?: number,
     eventid_fk?: number,
-    starttime: string,
+    eventtime: string,
     eventdate: string,
     salestatus: boolean,
     ticketTypeId: number[],
