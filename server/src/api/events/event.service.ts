@@ -88,25 +88,22 @@ export const updateInstances = async (
   // get existing showings for this event
   const currentShowings = await getShowingsById(params.id);
 
-  
-
   // see which showings are not present in the updated showings
-  const instancesSet = new Set(instances.map((show) =>
-    show.eventinstanceid
-  ));
+  const instancesSet = new Set(instances.map((show) => show.eventinstanceid));
   const rowsToDelete = currentShowings
     .filter((show: Showing) => !instancesSet.has(show.eventinstanceid))
     .map((show) => show.eventinstanceid);
-    console.log("currentShowings", currentShowings);
-    console.log("Rows to Delete", rowsToDelete);
+  console.log("currentShowings", currentShowings);
+  console.log("Rows to Delete", rowsToDelete);
   // delete them
   const rowsDeleted = await deleteShowings(rowsToDelete);
   console.log("Instances", instances);
   // update existing showings
-  const rowsToUpdate = instances.filter((show: Showing) => show.id !== 0);
+  const rowsToUpdate = instances.filter(
+    (show: Showing) => show.id && show.id !== 0
+  );
   console.log("rowsToUpdate", rowsToUpdate);
   const rowsUpdated = await updateShowings(rowsToUpdate);
-  console.log("Instances", rowsUpdated);
   // insert new showings
   // showings with id = 0 have not yet been added to the table
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
@@ -488,7 +485,7 @@ export const deleteShowings = async (ids: number[]): Promise<number> => {
                         eventinstanceid = $1;`;
   let rowsDeleted = 0;
   for (const id of ids) {
-    const queryResult = await pool.query(deleteQuery, [id,]);
+    const queryResult = await pool.query(deleteQuery, [id]);
     console.log("Deleted");
     rowsDeleted += queryResult.rowCount;
   }

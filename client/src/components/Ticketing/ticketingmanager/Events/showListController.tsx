@@ -60,12 +60,14 @@ const ShowListController = ({
   const handleSetShow = useCallback(
     (show) => {
       const showItems = [...shows];
-      console.log("handle set show called with eventinstanceid " + show.eventinstanceid);
+      console.log(
+        "handle set show called with eventinstanceid " + show.eventinstanceid
+      );
       console.log("id: " + show.id);
       showItems[show.id] = show;
 
       showItems[show.id] = show;
-      
+
       setShow(showItems);
     },
     [shows]
@@ -87,16 +89,16 @@ const ShowListController = ({
   useEffect(() => {
     setShowingsHandler(shows);
   }, [handleSetShow, handleDeleteShow]);
-  
+
   let newShows: Showing[] = [];
   let uniqueKeys: Set<number> = new Set();
   shows.forEach((show) => {
-    if(show !== undefined) {
-    if(!uniqueKeys.has(show.eventinstanceid)) {
-      uniqueKeys.add(show.eventinstanceid);
-      //show.id = show.eventinstanceid;
-      newShows.push(show);
-    }
+    if (show !== undefined) {
+      if (!uniqueKeys.has(show.eventinstanceid)) {
+        uniqueKeys.add(show.eventinstanceid);
+        //show.id = show.eventinstanceid;
+        newShows.push(show);
+      }
     }
   });
 
@@ -114,7 +116,7 @@ const ShowListController = ({
         );
       })}
       <div>
-         <button
+        <button
           className="px-3 py-2 bg-green-500 disabled:opacity-30 text-white rounded-xl"
           type="button"
           onClick={addShowBox}

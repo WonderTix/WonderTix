@@ -10,16 +10,15 @@
  */
 
 export interface Showing {
-    id?: number,
-
-    eventid?: number,
-    eventid_fk?: number,
-    eventtime: string,
-    eventdate: string,
-    salestatus: boolean,
-    ticketTypeId: number[],
-    seatsForType: number[],
-    totalseats: number,
-    availableseats: number,
-    eventinstanceid?: number,
-  }
+  id: number;
+  eventid?: number;
+  eventid_fk?: number;
+  starttime: string;
+  eventdate: string;
+  salestatus: boolean;
+  ticketTypeId: number[];
+  seatsForType: number[];
+  totalseats: number;
+  availableseats: number;
+  eventinstanceid?: number;
+}
