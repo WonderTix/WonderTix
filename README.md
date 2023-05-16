@@ -32,7 +32,6 @@ Future features include managing/creating email campaigns and ticket exchanges.
 5. To test the checkout process with Stripe, make sure the Stripe CLI is installed. 
    1. Run `stripe login` and press enter to accept access. This only needs to be done once.
    2. Run `stripe listen --forward-to https://localhost:8000/api/order/webhook` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
-
 6. The client will be available at https://localhost:3000 
    1. You will need to accept the self-signed certificate. In chrome click anywhere on the page and type `thisisunsafe`. This will allow you to continue to the site.
 7. The server will be available at https://localhost:8000
