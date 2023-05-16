@@ -60,8 +60,12 @@ const ShowListController = ({
   const handleSetShow = useCallback(
     (show) => {
       const showItems = [...shows];
+      console.log("handle set show called with eventinstanceid " + show.eventinstanceid);
+      console.log("id: " + show.id);
       showItems[show.id] = show;
-      console.log("HandleSetShow", JSON.stringify(showItems));
+
+      showItems[show.id] = show;
+      
       setShow(showItems);
     },
     [shows]
@@ -83,10 +87,23 @@ const ShowListController = ({
   useEffect(() => {
     setShowingsHandler(shows);
   }, [handleSetShow, handleDeleteShow]);
+  
+  let newShows: Showing[] = [];
+  let uniqueKeys: Set<number> = new Set();
+  shows.forEach((show) => {
+    if(show !== undefined) {
+    if(!uniqueKeys.has(show.eventinstanceid)) {
+      uniqueKeys.add(show.eventinstanceid);
+      //show.id = show.eventinstanceid;
+      newShows.push(show);
+    }
+    }
+  });
 
   return (
     <>
-      {shows.map((element, index) => {
+      {newShows.map((element: Showing, index) => {
+        //console.log("id: " + element.eventinstanceid);
         return (
           <ShowingInputContainer
             showingData={element}

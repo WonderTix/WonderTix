@@ -10,7 +10,8 @@
  */
 
 export interface Showing {
-    id: number,
+    id?: number,
+
     eventid?: number,
     eventid_fk?: number,
     eventtime: string,
