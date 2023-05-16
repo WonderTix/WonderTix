@@ -10,12 +10,8 @@
  */
 
 export interface Showing {
-<<<<<<< HEAD
     id?: number,
-    eventinstanceid: number,
-=======
-    id: number,
->>>>>>> origin/julian
+
     eventid?: number,
     eventid_fk?: number,
     starttime: string,

@@ -62,7 +62,7 @@ const ShowListController = ({
       const showItems = [...shows];
       console.log("handle set show called with eventinstanceid " + show.eventinstanceid);
       console.log("id: " + show.id);
-      showItems[show.eventinstanceid] = show;
+      showItems[show.id] = show;
 
       showItems[show.id] = show;
       
@@ -94,6 +94,7 @@ const ShowListController = ({
     if(show !== undefined) {
     if(!uniqueKeys.has(show.eventinstanceid)) {
       uniqueKeys.add(show.eventinstanceid);
+      //show.id = show.eventinstanceid;
       newShows.push(show);
     }
     }
@@ -102,7 +103,7 @@ const ShowListController = ({
   return (
     <>
       {newShows.map((element: Showing, index) => {
-        console.log("id: " + element.eventinstanceid);
+        //console.log("id: " + element.eventinstanceid);
         return (
           <ShowingInputContainer
             showingData={element}
