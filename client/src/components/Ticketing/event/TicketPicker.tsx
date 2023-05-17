@@ -296,7 +296,7 @@ const TicketPicker = (props: TicketPickerProps) => {
         />
       </Collapse>
 
-      <div className='flex flex-col gap-2 mt-3'>
+      <div className='flex flex-col gap-2 mt-7'>
         {ticketTypes.map((t) => (
           <p key={t.id}>
             hello {t.name}
@@ -334,7 +334,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           {range(numAvail, false).map((n) => <option className='text-white' key={n} value={n}>{n}</option>)}
         </select>
       </div>
-      <div className='flex flex-row gap-2 mt-3 mb-3'>
+      <div className='flex flex-row gap-2 mt-3 mb-7'>
         <input type='checkbox'
           disabled={!selectedTicket}
           checked={concessions}
