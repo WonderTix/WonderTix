@@ -172,6 +172,7 @@ const TicketPicker = (props: TicketPickerProps) => {
     selectedDate,
     displayedShowings,
     selectedTicket,
+    selectedTicketType,
     ticketTypes,
     showCalendar,
     showTimes,
@@ -305,9 +306,10 @@ const TicketPicker = (props: TicketPickerProps) => {
         <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
         <select
           // labelId="ticket-type-select-label"
+          value={selectedTicketType.name}
           defaultValue={''}
           disabled={selectedTicket===undefined || numAvail < 1}
-          onChange={(e) => dispatch(changeTicketType(ticketTypes.find((t) => t.name === e.target.value)))}
+          onChange={(e) => dispatch(changeTicketType(state.ticketTypes.find((t) => t.name === e.target.value)))}
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
           <option value={''} disabled>select ticket type</option>
