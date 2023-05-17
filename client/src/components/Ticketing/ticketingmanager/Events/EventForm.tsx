@@ -158,7 +158,17 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       showings: showings,
     };
     if (eventName === '' || eventDesc === '' || showings.length === 0) alert('You must enter an event name, an event description, and insert at least one showing');
-    else onSubmit(data);
+    else {
+      for (let i = 0; i < data.showings.length; i++) {
+        for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
+          if (data.showings[i].ticketTypeId[j] === 'NaN') {
+            data.showings[i].seatsForType.splice(j, 1);
+            data.showings[i].ticketTypeId.splice(j, 1);
+          }
+        }
+      }
+      onSubmit(data);
+    }
   };
 
   return (
