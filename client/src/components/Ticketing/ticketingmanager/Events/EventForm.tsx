@@ -15,6 +15,7 @@ import React, {useCallback, useState} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
 import {Showing} from '../../../../interfaces/showing.interface';
+import PopUp from '../../Pop-up';
 
 /**
  * Type of ticket
@@ -128,6 +129,8 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const [imageUrl, setImageURL] = useState(def.imageUrl);
   const isPublished = def.isPublished;
   const [showings, setShowings] = useState(def.showings);
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [err, setErr] = useState('');
 
   // FIELDS CALLBACK
   // Set event name
@@ -157,8 +160,33 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       imageUrl,
       showings: showings,
     };
-    if (eventName === '' || eventDesc === '' || showings.length === 0) alert('You must enter an event name, an event description, and insert at least one showing');
-    else {
+    if (eventName === '' || eventDesc === '' || showings.length === 0) {
+      const conditions = [];
+      if (eventName === '') {
+        conditions.push('Event name');
+      }
+      if (eventDesc === '') {
+        conditions.push('Event description');
+      }
+      if (showings.length === 0) {
+        conditions.push('Showings');
+      }
+      let message = '';
+      if (conditions.length > 0) {
+        message += conditions.slice(0, -1).join(', ');
+        if (conditions.length > 1) {
+          message += ' and ';
+        }
+        message += conditions[conditions.length - 1];
+      }
+      if (conditions.length === 1) {
+        message += ' field is missing.';
+      } else {
+        message += ' fields are missing.';
+      }
+      setErr(message);
+      setShowPopUp(true);
+    } else {
       for (let i = 0; i < data.showings.length; i++) {
         for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
           if (data.showings[i].ticketTypeId[j] === 'NaN') {
@@ -172,64 +200,67 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   };
 
   return (
-    <Form
-      onSubmit={handleSubmit}
-      initialValues={initialValues ?? initialState}
-      mutators={{...arrayMutators}}
-      validate={validate}
-      render={({
-        handleSubmit,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
-            <div className='text-3xl font-semibold mb-5'>
-                Event Information
-            </div>
-            <div className='w-full flex flex-col '>
-              <InputFieldForEvent
-                name={'eventName'}
-                id={'eventName'} headerText={'Enter Event Name'}
-                action={addEventName} actionType={'onChange'} value={def.eventName}
-                placeholder={def.eventName ? def.eventName: 'Event Name'} />
+    <div>
+      {showPopUp ? <PopUp message={err} title='Failed to save' handleClose={() => setShowPopUp(false)}/> : null}
+      <Form
+        onSubmit={handleSubmit}
+        initialValues={initialValues ?? initialState}
+        mutators={{...arrayMutators}}
+        validate={validate}
+        render={({
+          handleSubmit,
+        }) => (
+          <form onSubmit={handleSubmit}>
+            <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
+              <div className='text-3xl font-semibold mb-5'>
+                  Event Information
+              </div>
+              <div className='w-full flex flex-col '>
+                <InputFieldForEvent
+                  name={'eventName'}
+                  id={'eventName'} headerText={'Enter Event Name'}
+                  action={addEventName} actionType={'onChange'} value={def.eventName}
+                  placeholder={def.eventName ? def.eventName: 'Event Name'} />
 
-              <InputFieldForEvent
-                name={'eventDesc'}
-                id={'eventDesc'} headerText={'Enter Short Event Description'}
-                actionType={'onChange'}
-                action={addEventDesc} value={def.eventDesc}
-                placeholder={def.eventDesc ? def.eventDesc : 'Event Description'} />
+                <InputFieldForEvent
+                  name={'eventDesc'}
+                  id={'eventDesc'} headerText={'Enter Short Event Description'}
+                  actionType={'onChange'}
+                  action={addEventDesc} value={def.eventDesc}
+                  placeholder={def.eventDesc ? def.eventDesc : 'Event Description'} />
 
-              <InputFieldForEvent
-                name={'imageUrl'}
-                id={'imageUrl'} headerText={'Upload Image for Event'}
-                action={addURL} actionType={'onChange'} value={def.imageUrl}
-                placeholder={def.imageUrl ? def.imageUrl : 'image URL'}/>
-            </div>
-            {/* Showings container*/}
-            <div className='text-3xl font-semibold mt-5'>
-                Showings
-            </div>
-            <div className='mb-3 text-sm text-zinc-600'>
-                You can configure occurances of this event below.
-                To add more, click the &quot;Add Showing&quot; button.
-            </div>
-            <div>
-              {/*  Button to trigger add of new show*/}
-              <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventID} setShowingsHandler={setShowingsHandler}/>
+                <InputFieldForEvent
+                  name={'imageUrl'}
+                  id={'imageUrl'} headerText={'Upload Image for Event'}
+                  action={addURL} actionType={'onChange'} value={def.imageUrl}
+                  placeholder={def.imageUrl ? def.imageUrl : 'image URL'}/>
+              </div>
+              {/* Showings container*/}
+              <div className='text-3xl font-semibold mt-5'>
+                  Showings
+              </div>
+              <div className='mb-3 text-sm text-zinc-600'>
+                  You can configure occurances of this event below.
+                  To add more, click the &quot;Add Showing&quot; button.
+              </div>
+              <div>
+                {/*  Button to trigger add of new show*/}
+                <div id="show-table">
+                  <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventID} setShowingsHandler={setShowingsHandler}/>
+                </div>
               </div>
             </div>
-          </div>
 
-          <button
-            className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
-            type='submit'
-          >
-            Save
-          </button>
-        </form>
-      )}
-    />
+            <button
+              className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
+              type='submit'
+            >
+              Save
+            </button>
+          </form>
+        )}
+      />
+    </div>
   );
 };
 
