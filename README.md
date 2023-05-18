@@ -18,18 +18,23 @@ Future features include managing/creating email campaigns and ticket exchanges.
     chmod +x mkcert-v*-linux-amd64
     sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
     ```
+- [Stripe CLI](https://stripe.com/docs/stripe-cli)
 
 ## Setup
 1. Clone the repository.
 2. Copy `.env.dist` to `.env`
    1. Set the values for `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. *you can get these values from the team lead*
-   2. set the value for `PRIVATE_STRIPE_KEY` *you can get this value from the team lead*
+   2. Set the value for `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. *you can get this value from the team lead*
+   3. Set the value for `PRIVATE_STRIPE_WEBHOOK`. *explained in step 5*
 3. In `<path/to/WonderTix/server>` Run `mkcert -install` to install the local certificate authority
 4. Run `docker-compose up -d`
-5. The client will be available at https://localhost:3000 
+5. To test the checkout process with Stripe, make sure the Stripe CLI is installed. 
+   1. Run `stripe login` and press enter to accept access. This only needs to be done once.
+   2. Run `stripe listen --forward-to https://localhost:8000/api/order/webhook` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
+6. The client will be available at https://localhost:3000 
    1. You will need to accept the self-signed certificate. In chrome click anywhere on the page and type `thisisunsafe`. This will allow you to continue to the site.
-6. The server will be available at https://localhost:8000
-7. The swagger docs will be available at https://localhost:8000/api/docs
+7. The server will be available at https://localhost:8000
+8. The swagger docs will be available at https://localhost:8000/api/docs
    1. To log in to swagger, login to the client and copy the value of the `access_token` from the request to `<AUTH0_URL>/oath/token`. Paste this value into the `Authorize` dialog in swagger.
 
 ## Troubleshooting
