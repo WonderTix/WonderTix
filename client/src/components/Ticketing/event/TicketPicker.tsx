@@ -162,7 +162,7 @@ interface TicketPickerProps {
 * @returns {ReactElement} and the correct ticket when picking
 */
 const TicketPicker = (props: TicketPickerProps) => {
-  const [state, setState] = useState<TicketPickerState>(initialState);
+  const [ticketTypesState, setTicketTypesState] = useState<TicketPickerState>(initialState);
 
   const [{
     qty,
@@ -196,7 +196,7 @@ const TicketPicker = (props: TicketPickerProps) => {
             concessions: t.concessions,
           }));
 
-          setState((prevState) => ({
+          setTicketTypesState((prevState) => ({
             ...prevState,
             ticketTypes: data,
           }));
@@ -211,9 +211,8 @@ const TicketPicker = (props: TicketPickerProps) => {
   }, []);
 
   useEffect(() => {
-    console.log(state.ticketTypes);
-    console.log(typeof state.ticketTypes[0]);
-  }, [state.ticketTypes]);
+    console.log(ticketTypesState.ticketTypes);
+  }, [ticketTypesState.ticketTypes]);
 
   const appDispatch = useAppDispatch();
   const cartTicketCount = useAppSelector(selectCartTicketCount);
@@ -309,11 +308,11 @@ const TicketPicker = (props: TicketPickerProps) => {
           value={selectedTicketType.name}
           defaultValue={''}
           disabled={selectedTicket===undefined || numAvail < 1}
-          onChange={(e) => dispatch(changeTicketType(state.ticketTypes.find((t) => t.name === e.target.value)))}
+          onChange={(e) => dispatch(changeTicketType(ticketTypesState.ticketTypes.find((t) => t.name === e.target.value)))}
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
           <option value={''} disabled>select ticket type</option>
-          {state.ticketTypes.map((t) => <option className='text-white' key={t.id} value={t.name}>{t.name}: {t.price}</option>)}
+          {ticketTypesState.ticketTypes.map((t) => <option className='text-white' key={t.id} value={t.name}>{t.name}: {t.price}</option>)}
         </select>
       </div>
 
