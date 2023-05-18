@@ -38,14 +38,9 @@ const Eventshowings = () => {
       month: 'short',
       day: '2-digit',
     });
-    const timeString = date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
 
     const cartSuccessText = document.getElementById('cart-success-text');
-    cartSuccessText.textContent = `${ticketInfo.qty} ticket${ticketInfo.qty === 1 ? '' : 's'} to ${title} on ${dateString} at ${timeString} ha${ticketInfo.qty === 1 ? 's' : 've'} been added to the cart`;
+    cartSuccessText.textContent = `You added ${ticketInfo.qty} ticket${ticketInfo.qty === 1 ? '' : 's'} to ${title} on ${dateString} to the cart.`;
     setShow(!show);
     document.body.style.overflow = 'hidden';
   };
@@ -118,7 +113,7 @@ const Eventshowings = () => {
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">Success!</h3>
                     <div className="mt-2">
-                      <p id="cart-success-text" className="text-sm text-gray-500">Tickets added successly!</p>
+                      <p id="cart-success-text" className="text-sm text-gray-500">Tickets added successfully!</p>
                     </div>
                   </div>
                 </div>

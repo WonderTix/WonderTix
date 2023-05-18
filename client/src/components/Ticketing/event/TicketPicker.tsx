@@ -20,6 +20,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
+import {TicketType} from '../ticketingmanager/Events/EventForm';
 import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 
 /**
@@ -29,9 +30,12 @@ import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 * @param {Ticket} selectedTicket
 * @param {number} qty
 * @param {boolean} concessions
+* @param {TicketType[]} ticketTypes
+* @param {TicketType} selectedTicketType
 * @param {boolean} showCalendar
 * @param {boolean} showTimes
 * @param {boolean} showClearBtn
+* @param {TicketType} ticketType
 * @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
 */
 interface TicketPickerState {
@@ -41,6 +45,8 @@ interface TicketPickerState {
     qty: number,
     payWhatPrice?: number,
     concessions: boolean,
+    ticketTypes: TicketType[],
+    selectedTicketType?: TicketType,
     showCalendar: boolean,
     showTimes: boolean,
     showClearBtn: boolean,
@@ -52,6 +58,8 @@ interface TicketPickerState {
 * displayedShowings: [],
 * qty: 0,
 * concessions: false,
+* ticketTypes: [],
+* selectedTicketType: null,
 * showCalendar: true,
 * showTimes: false,
 * showClearBtn: false,
@@ -61,6 +69,13 @@ const initialState: TicketPickerState = {
   displayedShowings: [],
   qty: 0,
   concessions: false,
+  ticketTypes: [],
+  selectedTicketType: {
+    id: 0,
+    name: '',
+    price: 0,
+    concessions: 0,
+  },
   showCalendar: true,
   showTimes: false,
   showClearBtn: false,
@@ -74,6 +89,7 @@ const timeSelected = (t: Ticket) => ({type: 'time_selected', payload: t});
 const resetWidget = () => ({type: 'reset'});
 const changeQty = (n: number) => ({type: 'change_qty', payload: n});
 const changePayWhat = (n:number) => ({type: 'change_pay_what', payload: n});
+const changeTicketType = (t: TicketType) => ({type: 'change_ticket_type', payload: {selectedTicketType: t}});
 let tempPay = 0;
 
 /**
@@ -126,6 +142,9 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
     case 'change_pay_what': {
       return {...state, payWhatPrice: action.payload};
     }
+    case 'change_ticket_type': {
+      return {...state, selectedTicketType: action.payload};
+    }
     default:
       throw new Error('Received undefined action type');
   }
@@ -143,6 +162,8 @@ interface TicketPickerProps {
 * @returns {ReactElement} and the correct ticket when picking
 */
 const TicketPicker = (props: TicketPickerProps) => {
+  const [ticketTypesState, setTicketTypesState] = useState<TicketPickerState>(initialState);
+
   const [{
     qty,
     concessions,
@@ -151,10 +172,47 @@ const TicketPicker = (props: TicketPickerProps) => {
     selectedDate,
     displayedShowings,
     selectedTicket,
+    selectedTicketType,
+    ticketTypes,
     showCalendar,
     showTimes,
     showClearBtn,
   }, dispatch] = useReducer(TicketPickerReducer, initialState);
+
+  const fetchTicketTypes = async () => {
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes')
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error('Failed to retrieve ticket types');
+          }
+          console.log('Response containing ticket types received successfully');
+          return res.json();
+        })
+        .then((resData) => {
+          const data: TicketType[] = resData.data.map((t) => ({
+            id: t.id,
+            name: t.description,
+            price: t.price,
+            concessions: t.concessions,
+          }));
+
+          setTicketTypesState((prevState) => ({
+            ...prevState,
+            ticketTypes: data,
+          }));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+  };
+
+  useEffect(() => {
+    fetchTicketTypes();
+  }, []);
+
+  useEffect(() => {
+    console.log(ticketTypesState.ticketTypes);
+  }, [ticketTypesState.ticketTypes]);
 
   const appDispatch = useAppDispatch();
   const cartTicketCount = useAppSelector(selectCartTicketCount);
@@ -237,8 +295,29 @@ const TicketPicker = (props: TicketPickerProps) => {
           eventInstanceSelected={(t) => dispatch(timeSelected(t))}
         />
       </Collapse>
+
+      <div className='flex flex-col gap-2 mt-7'>
+        {ticketTypes.map((t) => (
+          <p key={t.id}>
+            hello {t.name}
+          </p>
+        ))}
+        <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
+        <select
+          // labelId="ticket-type-select-label"
+          value={selectedTicketType.name}
+          defaultValue={''}
+          disabled={selectedTicket===undefined || numAvail < 1}
+          onChange={(e) => dispatch(changeTicketType(ticketTypesState.ticketTypes.find((t) => t.name === e.target.value)))}
+          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
+        >
+          <option value={''} disabled>select ticket type</option>
+          {ticketTypesState.ticketTypes.map((t) => <option className='text-white' key={t.id} value={t.name}>{t.name}: {t.price}</option>)}
+        </select>
+      </div>
+
       <div className='flex flex-col gap-2 mt-3'>
-        <div className='text-zinc-300' id="qty-select-label">
+        <div className='text-center text-zinc-300' id="qty-select-label">
           {selectedTicket ?
             (numAvail > 0) ? 'Quantity' : 'Can\'t add more to cart' :
             'Quantity (select ticket)'
@@ -256,7 +335,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           {range(numAvail, false).map((n) => <option className='text-white' key={n} value={n}>{n}</option>)}
         </select>
       </div>
-      <div className='flex flex-row gap-2 mt-3 mb-3'>
+      <div className='flex flex-row gap-2 mt-3 mb-7'>
         <input type='checkbox'
           disabled={!selectedTicket}
           checked={concessions}
