@@ -160,6 +160,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       imageUrl,
       showings: showings,
     };
+    console.log(data);
     if (eventName === '' || eventDesc === '' || showings.length === 0) {
       const conditions = [];
       if (eventName === '') {
@@ -186,17 +187,24 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       }
       setErr(message);
       setShowPopUp(true);
-    } else {
-      for (let i = 0; i < data.showings.length; i++) {
-        for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
-          if (data.showings[i].ticketTypeId[j] === 'NaN') {
-            data.showings[i].seatsForType.splice(j, 1);
-            data.showings[i].ticketTypeId.splice(j, 1);
-          }
+      return;
+    }
+    for (let i = 0; i < data.showings.length; i++) {
+      if (data.showings[i].eventdate === '' || data.showings[i].starttime === '') {
+        setErr('Each showing must have an event date and an event time.');
+        setShowPopUp(true);
+        return;
+      }
+    }
+    for (let i = 0; i < data.showings.length; i++) {
+      for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
+        if (data.showings[i].ticketTypeId[j] === 'NaN') {
+          data.showings[i].seatsForType.splice(j, 1);
+          data.showings[i].ticketTypeId.splice(j, 1);
         }
       }
-      onSubmit(data);
     }
+    onSubmit(data);
   };
 
   return (
