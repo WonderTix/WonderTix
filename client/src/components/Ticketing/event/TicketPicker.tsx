@@ -264,10 +264,10 @@ const TicketPicker = (props: TicketPickerProps) => {
     dispatch(changePayWhat(tempPay));
   };
 
-  
   const filteredTicketTypes = ticketTypesState.ticketTypes.filter((t) => {
-    if(!selectedTicket)
+    if (!selectedTicket) {
       return;
+    }
     return t.name === selectedTicket.admission_type && selectedTicket.availableseats > 0;
   });
 
@@ -321,9 +321,9 @@ const TicketPicker = (props: TicketPickerProps) => {
         >
           <option value={''} disabled>select ticket type</option>
           {filteredTicketTypes.map((t) => (
-          <option className="text-white" key={t.id} value={t.name}>
-            {t.name}: {t.price}
-          </option>))}
+            <option className="text-white" key={t.id} value={t.name}>
+              {t.name}: {t.price}
+            </option>))}
         </select>
       </div>
 
