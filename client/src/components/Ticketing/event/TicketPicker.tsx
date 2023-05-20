@@ -180,7 +180,7 @@ const TicketPicker = (props: TicketPickerProps) => {
   }, dispatch] = useReducer(TicketPickerReducer, initialState);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes')
+    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/allTypes')
         .then((res) => {
           if (!res.ok) {
             throw new Error('Failed to retrieve ticket types');
@@ -228,6 +228,7 @@ const TicketPicker = (props: TicketPickerProps) => {
     const ticketInfo = {
       qty: qty,
       selectedDate: selectedDate,
+      ticketType: selectedTicketType,
     };
 
     // send ticket info to parent to display
@@ -262,6 +263,13 @@ const TicketPicker = (props: TicketPickerProps) => {
     tempPay = parseInt(event.currentTarget.value);
     dispatch(changePayWhat(tempPay));
   };
+
+  
+  const filteredTicketTypes = ticketTypesState.ticketTypes.filter((t) => {
+    if(!selectedTicket)
+      return;
+    return t.name === selectedTicket.admission_type && selectedTicket.availableseats > 0;
+  });
 
   console.log(numAvail);
   console.log(selectedTicket);
@@ -312,7 +320,10 @@ const TicketPicker = (props: TicketPickerProps) => {
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
           <option value={''} disabled>select ticket type</option>
-          {ticketTypesState.ticketTypes.map((t) => <option className='text-white' key={t.id} value={t.name}>{t.name}: {t.price}</option>)}
+          {filteredTicketTypes.map((t) => (
+          <option className="text-white" key={t.id} value={t.name}>
+            {t.name}: {t.price}
+          </option>))}
         </select>
       </div>
 

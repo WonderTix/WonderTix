@@ -53,7 +53,7 @@ export interface CartItem {
 export interface Ticket {
     event_instance_id: number,
     eventid: string,
-    admission_type: 'General Admission - Adult' | 'Pay What You Can',
+    admission_type: string,
     payWhatYouCan?: number,
     date: Date,
     ticket_price: number,
