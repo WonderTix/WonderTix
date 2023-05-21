@@ -9,6 +9,12 @@ export const doorlistRouter = Router();
  * /doorlist:
  *   get:
  *     summary: Get doorlist
+ *     parameters:
+ *       - name: eventinstanceid
+ *         in: query
+ *         description: used to identify different occurences of events
+ *         schema:
+ *           type: integer
  *     tags:
  *       - Doorlist
  *     security:
