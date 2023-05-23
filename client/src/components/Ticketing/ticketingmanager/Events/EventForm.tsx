@@ -41,7 +41,7 @@ export interface TicketType {
  * @param {string} eventname
  * @param {string} eventdescription
  * @param {boolean} active
- * @param {string} imageurl - why is this name scheme different
+ * @param {string} image_url - why is this name scheme different
  * @param {Showing} showings
  */
 /*export interface WtixEvent {
@@ -50,7 +50,7 @@ export interface TicketType {
     eventname: string,
     eventdescription: string,
     active: boolean,
-    imageurl: string,
+    image_url: string,
     showings: Showing []
 }*/
 
@@ -96,7 +96,7 @@ interface EventFormProps {
  * @param eventname - initialValues.eventname || ''
  * @param eventid - initialValues.eventid || -1
  * @param eventdescription - initialValues.eventdescription || ''
- * @param imageurl - initialValues.imageurl || ''
+ * @param image_url - initialValues.image_url || ''
  * @param active - initialValues.active || false
  * @param showings - initialValues.showings || []
  * @param eventname.onSubmit
@@ -108,24 +108,24 @@ interface EventFormProps {
 const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const def: WtixEvent = (initialValues !== undefined) ? {
     eventname: initialValues.eventname,
-    id: initialValues.id,
+    eventid: initialValues.eventid,
     eventdescription: initialValues.eventdescription,
-    imageurl: initialValues.imageurl,
+    image_url: initialValues.image_url,
     active: initialValues.active,
     showings: initialValues.showings,
   }:
   {
     eventname: '',
-    id: -1,
+    eventid: -1,
     eventdescription: '',
-    imageurl: '',
+    image_url: '',
     active: false,
     showings: [],
   };
   const [eventname, seteventname] = useState(def.eventname);
-  const eventid = def.id;
+  const eventid = def.eventid;
   const [eventdescription, setEventDesc] = useState(def.eventdescription);
-  const [imageurl, setImageURL] = useState(def.imageurl);
+  const [image_url, setImageURL] = useState(def.image_url);
   const active = def.active;
   //console.log("showings before useState: " + JSON.stringify(def.showings));
   const [showings, setShowings] = useState(def.showings);
@@ -143,7 +143,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   // Set url
   const addURL = useCallback((url) => {
     setImageURL(url.target.value);
-  }, [imageurl]);
+  }, [image_url]);
 
   const setShowingsHandler = (shows) => {
     setShowings(shows);
@@ -153,10 +153,10 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const handleSubmit = () => {
     const data: WtixEvent = {
       eventname,
-      id: eventid,
+      eventid: eventid,
       eventdescription,
       active,
-      imageurl,
+      image_url,
       showings: showings,
     };
     //console.log("handle submit called with showings: " + JSON.stringify(showings));
@@ -192,10 +192,10 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
                 placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
 
               <InputFieldForEvent
-                name={'imageurl'}
-                id={'imageurl'} headerText={'Upload Image for Event'}
-                action={addURL} actionType={'onChange'} value={def.imageurl}
-                placeholder={def.imageurl ? def.imageurl : 'image URL'}/>
+                name={'image_url'}
+                id={'image_url'} headerText={'Upload Image for Event'}
+                action={addURL} actionType={'onChange'} value={def.image_url}
+                placeholder={def.image_url ? def.image_url : 'image URL'}/>
             </div>
             {/* Showings container*/}
             <div className='text-3xl font-semibold mt-5'>
@@ -208,7 +208,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             <div>
               {/*  Button to trigger add of new show*/}
               <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.id} setShowingsHandler={setShowingsHandler}/>
+                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
               </div>
             </div>
           </div>

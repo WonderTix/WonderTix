@@ -23,9 +23,9 @@ export const getAvailableTickets = async (): Promise<response> => {
     const myQuery = `
         SELECT
           ei.id event_instance_id,
-          ei.eventid_fk eventid,
+          ei.eventid,
           ei.eventdate,
-          ei.eventtime starttime,
+          ei.starttime,
           ei.totalseats,
           ei.availableseats,
           tt.description AS admission_type,

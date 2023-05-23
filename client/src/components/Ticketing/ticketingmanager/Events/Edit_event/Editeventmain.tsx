@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import Udash_nav from '../../udash_navbar';
 import EditEventPage from './EditEventPage';
 import {useParams} from 'react-router-dom';
-import {NewEventData} from '../EventForm';
+import { WtixEvent } from '../../../../../interfaces/showing.interface';
 
 /**
  * As the name says
@@ -17,25 +17,25 @@ const Editeventmain = () => {
   const [eventData, setEventData] = useState(undefined);
 
   const getDataForEventAndShows = async () => {
-    const eventData: NewEventData = {
-      seasonID: undefined,
-      eventID: undefined,
-      eventName: '',
-      eventDesc: '',
-      isPublished: false,
-      imageUrl: '',
+    const eventData: WtixEvent = {
+      seasonid: undefined,
+      eventid: undefined,
+      eventname: '',
+      eventdescription: '',
+      active: false,
+      image_url: '',
       showings: [],
     };
     await fetch(process.env.REACT_APP_ROOT_URL +'/api/events/' + params.eventid)
         .then((response) => {
           return response.json();
         }).then((data)=>{
-          eventData.eventName = data.data[0].title;
-          eventData.eventDesc = data.data[0].description;
-          eventData.isPublished = data.data[0].active;
-          eventData.imageUrl =data.data[0].image_url;
-          eventData.eventID = data.data[0].eventid;
-          eventData.seasonID= data.data[0].seasonid;
+          eventData.eventname = data.data[0].title;
+          eventData.eventdescription = data.data[0].description;
+          eventData.active = data.data[0].active;
+          eventData.image_url =data.data[0].image_url;
+          eventData.eventid = data.data[0].eventid;
+          eventData.seasonid = data.data[0].seasonid;
         });
     await fetch(process.env.REACT_APP_ROOT_URL +
           `/api/events/instances/${params.eventid}`)

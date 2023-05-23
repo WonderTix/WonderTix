@@ -11,21 +11,23 @@ import { Showing } from "../../../../interfaces/showing.interface";
  * @param {number} id
  * @param {Function} handleSetShow
  */
-interface InitialData {
+/*interface InitialData {
   availableseats?: number;
   defaulttickettype?: number;
   eventdate: string;
   eventid: number;
+  index: number;
   ispreview?: boolean;
   purchaseuri?: string;
   salestatus?: boolean;
   totalseats?: number;
   starttime: string;
-}
+}*/
 
 export interface MapPropsToShowingInputContainer {
-  showingData: InitialData;
+  showingData: Showing;
   id: number;
+  index: number,
   handleSetShow: (show: Showing) => void;
   handleDeleteShow: (e: any) => void;
 }
@@ -59,6 +61,7 @@ const toTimeStringFormat = (time) => {
 const ShowingInputContainer = ({
   showingData,
   id,
+  index,
   handleSetShow,
   handleDeleteShow,
 }: MapPropsToShowingInputContainer) => {
@@ -100,6 +103,7 @@ const ShowingInputContainer = ({
       availableseats: availableSeats ? availableSeats : totalSeats,
       eventid: showingData.eventid,
       id: id,
+      index: index,
     };
     handleSetShow(showing);
   }, [

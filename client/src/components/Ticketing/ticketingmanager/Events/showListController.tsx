@@ -34,16 +34,18 @@ const ShowListController = ({
   setShowingsHandler,
 }: ShowListControllerProps) => {
   const [shows, setShow] = useState(showsData ? showsData : []);
-  const [numOfShowings, setNumoOfShowings] = useState(
+  const [numOfShowings, setNumOfShowings] = useState(
     showsData ? showsData.length : 0
   );
 
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
-    setNumoOfShowings(numOfShowings + 1);
+    setNumOfShowings(numOfShowings + 1);
+    
     const show: Showing = {
-      id: numOfShowings,
+      id: 0,
+      index: numOfShowings,
       eventid: eventid,
       starttime: "",
       eventdate: "",
@@ -53,7 +55,9 @@ const ShowListController = ({
       totalseats: 0,
       salestatus: true,
     };
+    console.log("created new show with id: " + show.id);
     setShow((shows) => [...shows, show]);
+    
   };
 
   const handleSetShow = useCallback(
@@ -63,9 +67,7 @@ const ShowListController = ({
         "handle set show called with event instance id " + show.id
       );
       console.log("id: " + show.id);
-      showItems[show.id] = show;
-
-      showItems[show.id] = show;
+      showItems[show.index] = show;
 
       setShow(showItems);
     },
@@ -75,11 +77,11 @@ const ShowListController = ({
   const handleDeleteShow = useCallback(
     (e) => {
       const newShowItems = shows.filter((_, i) => i !== parseInt(e.target.id));
-      newShowItems.forEach((e, i) => {
+      /*newShowItems.forEach((e, i) => {
         e.id = i;
-      });
+      });*/
       console.log("Begin HandleDelete", newShowItems);
-      setNumoOfShowings(numOfShowings - 1);
+      setNumOfShowings(numOfShowings - 1);
       setShow(newShowItems);
     },
     [shows]
@@ -89,9 +91,9 @@ const ShowListController = ({
     setShowingsHandler(shows);
   }, [handleSetShow, handleDeleteShow]);
 
-  let newShows: Showing[] = [];
+  /*let newShows: Showing[] = [];
   let uniqueKeys: Set<number> = new Set();
-  shows.forEach((show) => {
+  shows.forEach((show: Showing) => {
     if (show !== undefined) {
       if (!uniqueKeys.has(show.id)) {
         uniqueKeys.add(show.id);
@@ -99,16 +101,18 @@ const ShowListController = ({
         newShows.push(show);
       }
     }
-  });
+  });*/
 
   return (
     <>
-      {newShows.map((element: Showing, index) => {
+      {shows.map((element: Showing, index) => {
+        element.index = index;
         //console.log("id: " + element.id);
         return (
           <ShowingInputContainer
             showingData={element}
-            id={element.id ? element.id : index}
+            id={element.id}
+            index={index}
             handleSetShow={handleSetShow}
             handleDeleteShow={handleDeleteShow}
           />

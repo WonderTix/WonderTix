@@ -40,11 +40,11 @@ interface mapDataToEditEventProps {
  */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   
-  if (initValues.id == null) {
+  if (initValues.eventid == null) {
     console.log("initValues: " + JSON.stringify(initValues));
     throw new TypeError("eventid must be set");
   }else {
-    console.log("event id: " + initValues.id);
+    console.log("event id: " + initValues.eventid);
   }
   console.log("fetched: " + JSON.stringify(initValues));
   
@@ -65,7 +65,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   const onSubmit = async (updatedData: WtixEvent) => {
     console.log("onSubmit called for edit event");
     let showings = updatedData.showings.map((show: Showing) => {
-      show.eventid = initValues.id;
+      show.eventid = initValues.eventid;
       return show;
     });
     updatedData.showings = showings;

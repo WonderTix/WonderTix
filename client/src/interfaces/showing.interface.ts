@@ -10,18 +10,19 @@
  */
 
 export interface WtixEvent {
-  id: number;
+  eventid: number;
   seasonid?: number;
   eventname: string;
   eventdescription: string;
   active: boolean;
   seasonticketeligible?: boolean;
-  imageurl: string;
+  image_url: string;
   showings: Showing[];
 }
 
 export interface Showing {
   id: number;
+  index: number;
   eventid: number;
   starttime: string;
   eventdate: string;
