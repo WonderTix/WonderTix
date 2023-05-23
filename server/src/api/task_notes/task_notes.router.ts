@@ -210,7 +210,7 @@ taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /api/task_notes/{id}:
+ *   /task_notes/{id}:
  *     put:
  *       summary: Update a task note
  *       tags:
