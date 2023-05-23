@@ -36,6 +36,7 @@ import {reportingRouter} from './api/reporting/reporting.router';
 import {refundsRouter} from './api/refunds/refunds.router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import {ticketTypesRouter} from "./api/ticket_types/ticket_types.router";
 
 const openapiSpecification = swaggerJsdoc({
   definition: {
@@ -103,6 +104,7 @@ const createServer = async () => {
   app.use('/api/events', eventRouter);
   app.use('/api/email_subscriptions', subscriptionRouter);
   app.use('/api/tickets', ticketRouter);
+  app.use('/api/ticket-types', ticketTypesRouter);
   app.use('/api/doorlist', doorlistRouter);
   app.use('/api/discounts', discountsRouter);
   app.use('/api/refunds', refundsRouter);

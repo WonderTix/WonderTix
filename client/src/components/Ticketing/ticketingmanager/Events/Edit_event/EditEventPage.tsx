@@ -93,7 +93,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     } else {
       dispatch(openSnackbar('Save failed'));
     }
-    nav('/ticketing/manageevent');
+    nav('/ticketing/showings');
   };
 
   return (
