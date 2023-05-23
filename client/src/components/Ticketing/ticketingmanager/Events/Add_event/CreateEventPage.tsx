@@ -9,10 +9,11 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import React, {useEffect, useState} from 'react';
-import EventForm, {NewEventData} from '../EventForm';
+import EventForm from '../EventForm';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../../Pop-up';
+import {WtixEvent} from '../../../../../interfaces/showing.interface';
 
 let id = 0;
 
@@ -41,12 +42,12 @@ const CreateEventPage = () => {
   }, []);
 
   // TODO: create endpoint that combines /api/create-event & /api/create-showings
-  const onSubmit = async (formData: NewEventData) => {
+  const onSubmit = async (formData: WtixEvent) => {
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const {imageUrl, eventName, eventDesc, showings} = formData;
+    const {imageurl, eventname, eventdescription, showings} = formData;
     const seasonid_fk = 7;
 
     const createPlayRes = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
@@ -56,7 +57,7 @@ const CreateEventPage = () => {
         'Authorization': `Bearer ${token}`,
       },
       method: 'POST',
-      body: JSON.stringify({seasonid_fk, eventName, eventDesc, imageUrl}),
+      body: JSON.stringify({seasonid_fk, eventname, eventdescription, imageurl}),
     });
 
     if (createPlayRes.ok) {

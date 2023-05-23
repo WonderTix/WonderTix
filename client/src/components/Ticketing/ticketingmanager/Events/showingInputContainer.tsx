@@ -15,14 +15,12 @@ interface InitialData {
   availableseats?: number;
   defaulttickettype?: number;
   eventdate: string;
-  eventid_fk?: number;
-  eventinstanceid?: number;
-  eventtime?: string;
+  eventid: number;
   ispreview?: boolean;
   purchaseuri?: string;
   salestatus?: boolean;
   totalseats?: number;
-  starttime?: number | string;
+  starttime: string;
 }
 
 export interface MapPropsToShowingInputContainer {
@@ -65,7 +63,7 @@ const ShowingInputContainer = ({
   handleDeleteShow,
 }: MapPropsToShowingInputContainer) => {
   const [starttime, setStartTime] = useState(
-    showingData.eventtime !== undefined ? showingData.eventtime.slice(0, 8) : ""
+    showingData.starttime !== undefined ? showingData.starttime.slice(0, 8) : ""
   );
   const [eventdate, setEventDate] = useState(showingData.eventdate);
   const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
@@ -93,15 +91,14 @@ const ShowingInputContainer = ({
 
   useEffect(() => {
     const showing: Showing = {
-      eventinstanceid: showingData.eventinstanceid,
       eventdate: eventdate,
       starttime: starttime,
       salestatus: true,
       totalseats: totalSeats,
-      ticketTypeId: ticketTypeId,
+      tickettypeids: ticketTypeId,
       seatsForType: seatsForType,
       availableseats: availableSeats ? availableSeats : totalSeats,
-      eventid_fk: showingData.eventid_fk,
+      eventid: showingData.eventid,
       id: id,
     };
     handleSetShow(showing);
@@ -246,8 +243,8 @@ const ShowingInputContainer = ({
                 placeholder="00:00:00"
                 className="w-full p-2 rounded-lg bg-violet-100 mb-7 "
                 value={toTimeStringFormat(
-                  showingData.eventtime
-                    ? showingData.eventtime
+                  showingData.starttime
+                    ? showingData.starttime
                     : showingData.starttime
                 )}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {

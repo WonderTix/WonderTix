@@ -22,7 +22,7 @@ export const getAvailableTickets = async (): Promise<response> => {
   try {
     const myQuery = `
         SELECT
-          ei.eventinstanceid event_instance_id,
+          ei.id event_instance_id,
           ei.eventid_fk eventid,
           ei.eventdate,
           ei.eventtime starttime,
@@ -34,7 +34,7 @@ export const getAvailableTickets = async (): Promise<response> => {
         FROM
           eventtickets et
           JOIN eventinstances ei 
-            ON et.eventinstanceid_fk = ei.eventinstanceid
+            ON et.eventinstanceid_fk = ei.id
           JOIN tickettype tt 
             ON et.tickettypeid_fk = tt.tickettypeid
         WHERE 
@@ -151,9 +151,9 @@ export const setDefaultTicketForEvent = async (params: any): Promise<response> =
           SET 
             defaulttickettype = $1
           WHERE
-            eventinstanceid = $2;`,
+            id = $2;`,
     values: [
-      params.eventinstanceid,
+      params.id,
       params.tickettypeid,
     ],
   };

@@ -9,21 +9,21 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import React, {useState, useEffect} from 'react';
-import EventForm, {NewEventData} from '../EventForm';
+import EventForm from '../EventForm';
 import {useParams} from 'react-router-dom';
 import {useAppDispatch} from '../../../app/hooks';
 import {openSnackbar} from '../../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
-import {Showing} from '../../../../../interfaces/showing.interface';
+import {Showing, WtixEvent} from '../../../../../interfaces/showing.interface';
 
 /**
  * Maps edit data to the event props
  *
- * @param {NewEventData} initValues
+ * @param {WtixEvent} initValues
  */
 interface mapDataToEditEventProps {
-  initValues: NewEventData;
+  initValues: WtixEvent;
 }
 
 /**
@@ -40,11 +40,11 @@ interface mapDataToEditEventProps {
  */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   
-  if (initValues.eventID == null) {
+  if (initValues.id == null) {
     console.log("initValues: " + JSON.stringify(initValues));
-    throw new TypeError("eventID must be set");
+    throw new TypeError("eventid must be set");
   }else {
-    console.log("event id: " + initValues.eventID);
+    console.log("event id: " + initValues.id);
   }
   console.log("fetched: " + JSON.stringify(initValues));
   
@@ -62,11 +62,10 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     setTicketTypes(await res.json());
   };
 
-  const onSubmit = async (updatedData: NewEventData) => {
+  const onSubmit = async (updatedData: WtixEvent) => {
     console.log("onSubmit called for edit event");
     let showings = updatedData.showings.map((show: Showing) => {
-      show.eventid = initValues.eventID;
-      show.eventid_fk = initValues.eventID;
+      show.eventid = initValues.id;
       return show;
     });
     updatedData.showings = showings;
@@ -99,7 +98,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       const results = await res.json();
       console.log(results);
       // dispatch(fetchTicketingData());
-      dispatch(openSnackbar(`Saved edit to ${initValues.eventName ?? 'event'}`));
+      dispatch(openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`));
     } else {
       dispatch(openSnackbar('Save failed'));
     }
@@ -112,7 +111,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
      sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 ' >
-          Edit {initValues.eventName ?? 'Your Event'}
+          Edit {initValues.eventname ?? 'Your Event'}
         </h1>
         <EventForm
           ticketTypes={ticketTypes}

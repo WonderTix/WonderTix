@@ -17,11 +17,11 @@ export const getActiveEvents = async (): Promise<response> => {
             e.active,
             e.seasonticketeligible,
             e.imageurl image_url,
-            count(ei.eventinstanceid) as numShows
+            count(ei.id) as numShows
           FROM
             events e
             JOIN eventinstances ei
-              ON e.eventid = ei.eventid_fk WHERE ei.salestatus = true
+              ON e.eventid = ei.eventid WHERE ei.salestatus = true
           GROUP BY
             e.eventid,
             e.seasonid_fk,
@@ -47,11 +47,11 @@ export const getInstanceById = async (params: any): Promise<response> => {
           FROM
             eventinstances
           WHERE
-            eventid_fk = $1
+            eventid = $1
           AND
             salestatus = true
           ORDER BY
-            eventinstanceid;`,
+            id;`,
     values: [params.id],
   };
   return await buildResponse(query, "GET");
@@ -89,10 +89,10 @@ export const updateInstances = async (
   const currentShowings = await getShowingsById(params.id);
 
   // see which showings are not present in the updated showings
-  const instancesSet = new Set(instances.map((show) => show.eventinstanceid));
+  const instancesSet = new Set(instances.map((show) => show.id));
   const rowsToDelete = currentShowings
-    .filter((show: Showing) => !instancesSet.has(show.eventinstanceid))
-    .map((show) => show.eventinstanceid);
+    .filter((show: Showing) => !instancesSet.has(show.id))
+    .map((show) => show.id);
   console.log("currentShowings", currentShowings);
   console.log("Rows to Delete", rowsToDelete);
   // delete them
@@ -100,7 +100,7 @@ export const updateInstances = async (
   console.log("Instances", instances);
   // update existing showings
   const rowsToUpdate = instances.filter(
-    (show: Showing) => show.eventinstanceid && show.eventinstanceid !== 0
+    (show: Showing) => show.id && show.id !== 0
   );
   console.log("rowsToUpdate", rowsToUpdate);
   const rowsUpdated = await updateShowings(rowsToUpdate);
@@ -193,7 +193,7 @@ export const createShowing = async (params: any): Promise<response> => {
     seatsfortype: <number[]>Object.values(s)[11], // Keeps changing?
   }));
   const myQuery = {
-    text: `INSERT INTO ticketrestrictions (eventinstanceid_fk, tickettypeid_fk,
+    text: `INSERT INTO ticketrestrictions (id_fk, tickettypeid_fk,
       ticketlimit) VALUES ($1, $2, $3) `,
     values: <number[]>[],
   };
@@ -240,7 +240,7 @@ export const createTickets = async (params: any): Promise<response> => {
   const myQuery = {
     text: `INSERT INTO
             eventtickets
-            (eventinstanceid_fk, tickettypeid_fk)
+            (id_fk, tickettypeid_fk)
           VALUES ($1, $2)
           RETURNING *;`,
     values: <number[]>[],
@@ -303,7 +303,7 @@ export const archivePlays = async (params: any): Promise<response> => {
                   SET
                     salestatus = false
                   WHERE
-                    eventinstanceid = $1;`;
+                    id = $1;`;
 
   const secondResponse = await buildResponse(myQuery, "UPDATE");
   secondResponse.data.concat(intermediateResponse.data);
@@ -355,25 +355,25 @@ export const getActiveEventsAndInstances = async (): Promise<response> => {
   const myQuery = {
     text: `
           SELECT
-            ei.eventinstanceid,
+            ei.id,
             e.eventid,
             e.eventname,
             e.eventdescription,
             e.imageurl,
             ei.eventdate,
-            ei.eventtime,
+            ei.starttime,
             ei.totalseats,
             ei.availableseats
           FROM
             eventinstances ei
             JOIN events e
-              ON e.eventid = ei.eventid_fk
+              ON e.eventid = ei.eventid
           WHERE
             e.active = true
           AND
             ei.salestatus = true
           ORDER BY
-            ei.eventinstanceid;`,
+            ei.id;`,
   };
   return buildResponse(myQuery, "GET");
 };
@@ -386,9 +386,9 @@ export const insertAllShowings = async (
   const query = `
                 INSERT INTO
                   eventinstances (
-                      eventid_fk,
+                      eventid,
                       eventdate,
-                      eventtime,
+                      starttime,
                       totalseats,
                       availableseats,
                       salestatus,
@@ -447,21 +447,21 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         eventinstances
                       SET
                         eventdate = $2,
-                        eventtime = $3,
+                        starttime = $3,
                         salestatus = $4,
                         totalseats = $5,
                         availableseats = $6,
                         purchaseuri = $7,
                         ispreview = $8,
-                        eventid_fk = $9
+                        eventid = $9
 
                       WHERE
-                        eventinstanceid = $1;`;
+                        id = $1;`;
   let rowsUpdated = 0;
   for (const showing of showings) {
     console.log("Update Current: ", showings);
     const queryResult = await pool.query(updateQuery, [
-      showing.eventinstanceid,
+      showing.id,
       showing.eventdate,
       showing.starttime,
       showing.salestatus,
@@ -484,7 +484,7 @@ export const deleteShowings = async (ids: number[]): Promise<number> => {
                       SET
                         salestatus = false
                       WHERE
-                        eventinstanceid = $1;`;
+                        id = $1;`;
   let rowsDeleted = 0;
   for (const id of ids) {
     const queryResult = await pool.query(deleteQuery, [id]);
@@ -501,10 +501,10 @@ const eventFields = ["eventname", "eventdescription", "imageurl"];
 export const getShowingsById = async (id: string): Promise<Showing[]> => {
   // Breaking change: ispreview is new field, defaulttickettype will be added soon
   const query = `
-                SELECT eventinstanceid AS id,
-                    eventid_fk AS eventid,
+                SELECT id AS id,
+                    eventid,
                     eventdate,
-                    eventtime AS starttime,
+                    starttime,
                     salestatus,
                     totalseats,
                     availableseats,
@@ -514,9 +514,9 @@ export const getShowingsById = async (id: string): Promise<Showing[]> => {
                 FROM
                   eventinstances
                 WHERE
-                  eventid_fk = $1 AND salestatus = true
+                  eventid = $1 AND salestatus = true
                 ORDER BY
-                  eventinstanceid;`;
+                  id;`;
   const queryResult = await pool.query(query, [id]);
   return queryResult.rows;
 };
