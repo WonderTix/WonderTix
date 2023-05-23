@@ -407,18 +407,12 @@ export const insertAllShowings = async (
   const toReturn = [];
   let rowCount = 0;
   for (const showing of showings) {
-<<<<<<< HEAD
     if (showing.ticketTypeId.length === 0) {
       throw new Error("No ticket type provided");
     }
     const date = showing.eventdate; //.split('-');
     //const dateAct = date.join('');
     const { rows } = await pool.query(query, [
-=======
-    const date = showing.eventdate.split('-');
-    const dateAct = date.join('');
-    const {rows} = await pool.query(query, [
->>>>>>> development
       showing.eventid,
       showing.eventdate,
       showing.starttime,
