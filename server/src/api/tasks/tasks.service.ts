@@ -37,7 +37,7 @@ export const createTask = async (r: any): Promise<response> => {
                 ref_contact,
                 ref_donation,
                 ref_order,
-                ref_account)
+                ref_user)
           VALUES 
             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           RETURNING *;`,
@@ -54,7 +54,7 @@ export const createTask = async (r: any): Promise<response> => {
       r.ref_contact,
       r.ref_donation,
       r.ref_order,
-      r.ref_account],
+      r.ref_user],
   };
   return await buildResponse(myQuery, 'POST');
 };
@@ -85,7 +85,7 @@ export const updateTask = async (r: any): Promise<response> => {
             ref_contact,
             ref_donation,
             ref_order,
-            ref_account) = 
+            ref_user) = 
             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
           WHERE 
             taskid = $14
@@ -103,7 +103,7 @@ export const updateTask = async (r: any): Promise<response> => {
       r.body.ref_contact,
       r.body.ref_donation,
       r.body.ref_ticket_order,
-      r.body.ref_account,
+      r.body.ref_user,
       r.params.id],
   };
   return await buildResponse(myQuery, 'UPDATE');
