@@ -4,12 +4,45 @@ import {create, find, findAll, remove, update} from './task_notes.service';
 
 export const taskNotesRouter = Router();
 
-// ALL PRIVATE
-
 taskNotesRouter.use(checkJwt);
 taskNotesRouter.use(checkScopes);
 
-// GET /api/task_notes
+/**
+ * @swagger
+ *   /task_notes:
+ *     get:
+ *       summary: Get all task notes
+ *       tags:
+ *         - Task Notes
+ *       security:
+ *         - bearerAuth: []
+ *       responses:
+ *         200:
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         taskknoteid: {type: integer}
+ *                         taskid_fk: {type: integer}
+ *                         date: {type: string}
+ *                         notes: {type: string}
+ *                   status:
+ *                     type: object
+ *                     properties:
+ *                       success: {type: boolean}
+ *                       message: {type: string}
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *        description: Not Found
+ */
 taskNotesRouter.get('/', async (_req: Request, res: Response) => {
   try {
     const taskNotes = await findAll();
@@ -21,7 +54,45 @@ taskNotesRouter.get('/', async (_req: Request, res: Response) => {
   }
 });
 
-// GET /api/task_notes/:id
+/**
+ * @swagger
+ *   /task_notes/{id}:
+ *     get:
+ *       summary: Get a task note
+ *       tags:
+ *         - Task Notes
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *       responses:
+ *         200:
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         taskknoteid: {type: integer}
+ *                         taskid_fk: {type: integer}
+ *                         date: {type: string}
+ *                         notes: {type: string}
+ *                   status:
+ *                     type: object
+ *                     properties:
+ *                       success: {type: boolean}
+ *                       message: {type: string}
+ *         401:
+ *           description: Unauthorized
+ *         404:
+ *           description: Not Found
+ */
 taskNotesRouter.get('/:id', async (req: Request, res: Response) => {
   try {
     const taskNotes = await find(req.params.id);
@@ -36,7 +107,50 @@ taskNotesRouter.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/task_notes
+/**
+ * @swagger
+ *   /task_notes:
+ *     post:
+ *       summary: Create a task note
+ *       tags:
+ *         - Task Notes
+ *       security:
+ *         - bearerAuth: []
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 taskid: {type: integer}
+ *                 date_created: {type: string}
+ *                 notes: {type: string}
+ *       responses:
+ *         200:
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   data:
+ *                     type: object
+ *                     properties:
+ *                       taskknoteid: {type: integer}
+ *                       taskid_fk: {type: integer}
+ *                       date: {type: string}
+ *                       notes: {type: string}
+ *                   status:
+ *                     type: object
+ *                     properties:
+ *                       success: {type: boolean}
+ *                       message: {type: string}
+ *         401:
+ *           description: Unauthorized
+ *         404:
+ *           description: Not Found
+ */
 taskNotesRouter.post('/', async (req: Request, res: Response) => {
   try {
     const newTaskNotes = await create(req.body);
@@ -47,7 +161,39 @@ taskNotesRouter.post('/', async (req: Request, res: Response) => {
   }
 });
 
-// DELETE /api/task_notes/:id
+/**
+ * @swagger
+ *   /task_notes/{id}:
+ *     delete:
+ *       summary: Delete a task note
+ *       tags:
+ *         - Task Notes
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *       responses:
+ *         200:
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   data:
+ *                     type: array
+ *                     items: {type: object}
+ *                   status:
+ *                     type: object
+ *                     properties:
+ *                       success: {type: boolean}
+ *                       message: {type: string}
+ *         401:
+ *           description: Unauthorized
+ *         404:
+ *           description: Not Found
+ */
 taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
   try {
     const delResponse = await remove(req.params.id);
@@ -62,7 +208,56 @@ taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// PUT /api/task_notes/:id
+/**
+ * @swagger
+ *   /api/task_notes/{id}:
+ *     put:
+ *       summary: Update a task note
+ *       tags:
+ *         - Task Notes
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - in: path
+ *           name: id
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 tasknoteid: {type: integer}
+ *                 taskid_fk: {type: integer}
+ *                 date_created: {type: string}
+ *                 notes: {type: string}
+ *       responses:
+ *         200:
+ *           description: OK
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   data:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         taskknoteid: {type: integer}
+ *                         taskid_fk: {type: integer}
+ *                         date: {type: string}
+ *                         notes: {type: string}
+ *                   status:
+ *                     type: object
+ *                     properties:
+ *                       success: {type: boolean}
+ *                       message: {type: string}
+ *         401:
+ *           description: Unauthorized
+ *         404:
+ *           description: Not Found
+ */
 taskNotesRouter.put('/:id', async (req: Request, res: Response) => {
   try {
     const updatedTaskNotes = await update(req);

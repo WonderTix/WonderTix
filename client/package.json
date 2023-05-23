@@ -37,7 +37,7 @@
     "react-redux": "^8.0.2",
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.0",
+    "react-scripts": "^5.0.1",
     "react-scroll": "^1.8.7",
     "react-tailwind-table": "^1.1.1",
     "redux-mock-store": "^1.5.4",
@@ -47,7 +47,7 @@
    
   },
   "scripts": {
-    "start": "cross-env HTTPS=true cross-env SSL_CRT_FILE=localhost.pem react-scripts start",
+    "start": "cross-env HTTPS=true cross-env SSL_CRT_FILE=cert.pem react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

@@ -100,7 +100,7 @@ export const updateInstances = async (
   console.log("Instances", instances);
   // update existing showings
   const rowsToUpdate = instances.filter(
-    (show: Showing) => show.id && show.id !== 0
+    (show: Showing) => show.eventinstanceid && show.eventinstanceid !== 0
   );
   console.log("rowsToUpdate", rowsToUpdate);
   const rowsUpdated = await updateShowings(rowsToUpdate);
@@ -452,12 +452,9 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         totalseats = $5,
                         availableseats = $6,
                         purchaseuri = $7,
-<<<<<<< HEAD
                         ispreview = $8,
                         eventid_fk = $9
-=======
-                        ispreview = $8
->>>>>>> development
+
                       WHERE
                         eventinstanceid = $1;`;
   let rowsUpdated = 0;

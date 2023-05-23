@@ -36,14 +36,30 @@ import {reportingRouter} from './api/reporting/reporting.router';
 import {refundsRouter} from './api/refunds/refunds.router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import {ticketTypesRouter} from "./api/ticket_types/ticket_types.router";
 
 const openapiSpecification = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
+    servers: [{
+      url: 'https://localhost:8000/api',
+    }],
     info: {
       title: 'Wondertix API',
       version: '1.0.0',
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{
+      bearerAuth: ['admin'],
+    }],
   },
   apis: ['./src/api/**/*.ts'],
 });
@@ -88,6 +104,7 @@ const createServer = async () => {
   app.use('/api/events', eventRouter);
   app.use('/api/email_subscriptions', subscriptionRouter);
   app.use('/api/tickets', ticketRouter);
+  app.use('/api/ticket-types', ticketTypesRouter);
   app.use('/api/doorlist', doorlistRouter);
   app.use('/api/discounts', discountsRouter);
   app.use('/api/refunds', refundsRouter);
@@ -101,10 +118,8 @@ const createServer = async () => {
   return https
       .createServer(
           {
-            key: fs.readFileSync(
-                path.join(__dirname, '../localhost-key.pem'),
-            ),
-            cert: fs.readFileSync(path.join(__dirname, '../localhost.pem')),
+            key: fs.readFileSync('/usr/app/localhost-key.pem'),
+            cert: fs.readFileSync('/usr/app/localhost.pem'),
           }, app);
 };
 

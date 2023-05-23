@@ -6,19 +6,19 @@ import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../Authentication/auth-nav';
 
 import {useNavigate} from 'react-router-dom';
+import AdminNavDropdown from '../Ticketing/ticketingmanager/AdminNavDropdown';
 /**
  * CRM Navigation bar
  *
  * @returns {React.ReactElement}
  */
 const Navigation = () => {
-  const [show, setShow] = useState(false);
-  const handleClick = () => setShow(!show);
+  const [showTaskMenu, setShowTaskMenu] = useState(false);
+  const handleClick = () => setShowTaskMenu(!showTaskMenu);
   const [profile, setProfile] = useState(false);
-  const [show2, setShow2] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const {user} = useAuth0();
-  // const {name, picture, email} = user;
   const {picture} = user;
   const {name} = user;
   const navigate = useNavigate();
@@ -106,7 +106,7 @@ const Navigation = () => {
               </button>
 
             </li>
-            <li className={!show ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
+            <li className={!showTaskMenu ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
               <div className=" flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl" >
                 <div className="py-1 font-bold" >
                   <a onClick={() => navigate('/admin/tasks/create')} className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600" >Create</a>
@@ -119,8 +119,8 @@ const Navigation = () => {
           </ul>
 
         </div>
-        <div className={show2 ? 'w-full h-full absolute z-40  transform  translate-x-0 ' : '   w-full h-full absolute z-40  transform -translate-x-full'} id="mobile-nav">
-          <div className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden" onClick={() => setShow2(!show2)} />
+        <div className={showMobileMenu ? 'w-full h-full absolute z-40  transform  translate-x-0 ' : '   w-full h-full absolute z-40  transform -translate-x-full'} id="mobile-nav">
+          <div className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden" onClick={() => setShowMobileMenu(!showMobileMenu)} />
           <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
             <div className="flex flex-col justify-between h-full w-full">
               <div>
@@ -130,7 +130,7 @@ const Navigation = () => {
                       <img src={logo} className="mt-[5rem] w-[6rem] " alt="/"/>
                     </button>
                   </div>
-                  <div id="closeSideBar" className="flex items-center justify-center h-10 w-10" onClick={() => setShow2(!show2)}>
+                  <div id="closeSideBar" className="flex items-center justify-center h-10 w-10" onClick={() => setShowMobileMenu(!showMobileMenu)}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-x" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" fill="none" strokeLinecap="round" strokeLinejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" />
                       <line x1={18} y1={6} x2={6} y2={18} />
@@ -215,7 +215,7 @@ const Navigation = () => {
                     </button>
 
                   </li>
-                  <li className={!show ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
+                  <li className={!showTaskMenu ? 'hidden':' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'}>
                     <div className=" flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl" >
                       <div className="py-1 font-bold" >
                         <a onClick={() => navigate('/admin/tasks/create')} className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600" >Create</a>
@@ -228,6 +228,8 @@ const Navigation = () => {
 
                 </ul>
               </div>
+
+              {/* Bottom corner nav elements */}
               <div className="w-full">
 
                 <div className="border-t bg-zinc-800/30 border-gray-500">
@@ -239,12 +241,7 @@ const Navigation = () => {
                         <p className="text-sm text-zinc-200 leading-4 ml-2 font-semibold ">{name}</p>
                       </div>
                       <div className="flex w-full text-gray-200 mt-2 hover:text-indigo-700 cursor-pointer items-center">
-                        <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg>
-                          <a className="text-md font-semibold ml-2 "><AuthNav/></a>
-                        </div>
+                        <AuthNav/>
                       </div>
                     </div>
                     <ul className="flex flex-col items-center gap-9 bg-zinc-800/50 px-6 py-6">
@@ -272,8 +269,9 @@ const Navigation = () => {
             </div>
           </div>
         </div>
+
+        {/* Navigation starts */}
         <div className="w-full">
-          {/* Navigation starts */}
           <nav className="h-16 flex items-center md:items-stretch justify-end md:justify-between bg-white shadow relative z-10">
             <div className="hidden md:flex w-full pr-6">
               <div className="w-1/2 h-full hidden md:flex items-center pr-24">
@@ -286,35 +284,10 @@ const Navigation = () => {
                   <div className="flex items-center relative cursor-pointer" onClick={() => setProfile(!profile)}>
                     <div className="rounded-full">
                       {profile ? (
-                        <ul className="p-2 w-full border-r bg-white absolute rounded left-0 shadow mt-12 sm:mt-16 ">
-                          <li className="flex w-full p-4 justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
-                            <div className="flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                              </svg>
-                              <a onClick={() => navigate('/admin')}className="text-sm ml-2">Admin</a>
-                            </div>
-                          </li>
-                          <li className="flex p-4  w-full text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
-                            <div className="flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className=" h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                              </svg>
-                              <a onClick={() => navigate('/ticketing')}className="text-sm ml-2">Manage Ticketing</a>
-                            </div>
-                          </li>
-                          <li className="flex w-full p-4 justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center">
-                            <div className="flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                              </svg>
-                              <a className="border-none bg-transparent text-sm ml-2"><AuthNav /></a>
-                            </div>
-                          </li>
-                        </ul>
-                    ) : (
+                        <AdminNavDropdown/>
+                      ) : (
                         ''
-                    )}
+                      )}
                       <div className="relative">
                         <div className=''>
                           <img src={picture} className='rounded-3xl w-12 h-12  ' />
@@ -332,15 +305,15 @@ const Navigation = () => {
                 </div>
               </div>
             </div>
-            <div className="text-gray-600 mr-8 visible md:hidden relative" onClick={() => setShow2(!show2)}>
-              {show ? (
-                  ' '
+            <div className="text-gray-600 mr-8 visible md:hidden relative" onClick={() => setShowMobileMenu(!showMobileMenu)}>
+              {showMobileMenu ? (
+                ' '
               ) : (
-                  <svg aria-label="Main Menu" aria-haspopup="true" xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu cursor-pointer" width={30} height={30} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" />
-                    <line x1={4} y1={8} x2={20} y2={8} />
-                    <line x1={4} y1={16} x2={20} y2={16} />
-                  </svg>
+                <svg aria-label="Main Menu" aria-haspopup="true" xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-menu cursor-pointer" width={30} height={30} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <line x1={4} y1={8} x2={20} y2={8} />
+                  <line x1={4} y1={16} x2={20} y2={16} />
+                </svg>
               )}
             </div>
           </nav>
