@@ -54,6 +54,7 @@ const ShowListController = ({
       availableseats: 0,
       totalseats: 0,
       salestatus: true,
+      ispreview: false,
     };
     console.log("created new show with id: " + show.id);
     setShow((shows) => [...shows, show]);
@@ -77,9 +78,9 @@ const ShowListController = ({
   const handleDeleteShow = useCallback(
     (e) => {
       const newShowItems = shows.filter((_, i) => i !== parseInt(e.target.id));
-      /*newShowItems.forEach((e, i) => {
-        e.id = i;
-      });*/
+      newShowItems.forEach((e, i) => {
+        e.index = i;
+      });
       console.log("Begin HandleDelete", newShowItems);
       setNumOfShowings(numOfShowings - 1);
       setShow(newShowItems);

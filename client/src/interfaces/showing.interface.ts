@@ -31,4 +31,5 @@ export interface Showing {
   seatsForType: number[];
   totalseats: number;
   availableseats: number;
+  ispreview: boolean;
 }

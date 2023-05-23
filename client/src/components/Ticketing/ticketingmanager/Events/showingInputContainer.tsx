@@ -104,6 +104,7 @@ const ShowingInputContainer = ({
       eventid: showingData.eventid,
       id: id,
       index: index,
+      ispreview: false,
     };
     handleSetShow(showing);
   }, [
@@ -262,7 +263,7 @@ const ShowingInputContainer = ({
           className="px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm"
           type="button"
           onClick={handleDeleteShow}
-          id={String(id)}
+          id={String(index)}
         >
           Delete
         </button>
