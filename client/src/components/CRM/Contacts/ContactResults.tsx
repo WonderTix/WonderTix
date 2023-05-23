@@ -34,7 +34,7 @@ const ContactResults = ({
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/contacts/${showId}`,
+    const response = await fetch(process.env.REACT_APP_API_1_URL + `/contacts/${showId}`,
         {
           credentials: 'include',
           method: 'DELETE',
@@ -219,9 +219,9 @@ export const contactForm = (data: any): React.ReactElement => {
     // and establish a link with the background data from here
     // However, in the actual url, param.id
     // is not the id but the user's name, which causes the update to fail
-    const url=process.env.REACT_APP_ROOT_URL + `/api/contacts/${data.id}`;
-    // const url=process.env.REACT_APP_ROOT_URL + '/api/contacts/'+params.id;
-    // const url = process.env.REACT_APP_ROOT_URL + '/api/contacts?filters[custname][$eq]=${params.id}';
+    const url=process.env.REACT_APP_API_1_URL + `/contacts/${data.id}`;
+    // const url=process.env.REACT_APP_API_1_URL + '/contacts/'+params.id;
+    // const url = process.env.REACT_APP_API_1_URL + '/contacts?filters[custname][$eq]=${params.id}';
     console.log(body);
 
     // This function contains the relevant methods of the operation

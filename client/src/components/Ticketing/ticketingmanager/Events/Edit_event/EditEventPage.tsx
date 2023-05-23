@@ -48,7 +48,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   }, []);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes');
+    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes');
     setTicketTypes(await res.json());
   };
 
@@ -65,7 +65,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/`, {
+    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -75,7 +75,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       body: JSON.stringify(dataToSave),
     });
 
-    await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/instances/${params.eventid}`, {
+    await fetch(process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`, {
       credentials: 'include',
       method: 'PUT',
       headers: {

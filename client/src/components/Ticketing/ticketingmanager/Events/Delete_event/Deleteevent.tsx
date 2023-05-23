@@ -32,7 +32,7 @@ export default function DeleteEvents() {
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${showId}`,
+    const response = await fetch(process.env.REACT_APP_API_1_URL + `/events/${showId}`,
         {
           credentials: 'include',
           method: 'DELETE',
@@ -64,8 +64,8 @@ export default function DeleteEvents() {
   const [eventList, setEventList] = useState([]);
   const getEvents = async () => {
     try {
-      const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
-      console.log(process.env.REACT_APP_ROOT_URL);
+      const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/active');
+      console.log(process.env.REACT_APP_API_1_URL);
       const jsonRes = await response.json();
       const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
