@@ -2,7 +2,6 @@
 import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
-import PopUp from '../../Pop-up';
 import DeleteConfirm from './deleteConfirm';
 
 /**

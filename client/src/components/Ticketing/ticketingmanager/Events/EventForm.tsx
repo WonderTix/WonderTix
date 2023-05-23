@@ -161,6 +161,11 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       showings: showings,
     };
     console.log(data);
+    if (showings.length === 0) {
+      setErr('Please enter at least one showing.');
+      setShowPopUp(true);
+      return;
+    }
     if (eventName === '' || eventDesc === '' || showings.length === 0) {
       const conditions = [];
       if (eventName === '') {
@@ -168,9 +173,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       }
       if (eventDesc === '') {
         conditions.push('Event description');
-      }
-      if (showings.length === 0) {
-        conditions.push('Showings');
       }
       let message = '';
       if (conditions.length > 0) {
