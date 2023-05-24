@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,281 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model contacts {
+  contactid     Int         @id @default(autoincrement())
+  firstname     String?     @db.VarChar(255)
+  lastname      String?     @db.VarChar(255)
+  email         String?     @db.VarChar(100)
+  address       String?     @db.VarChar(255)
+  phone         String?     @db.VarChar(15)
+  donorbadge    Boolean?    @default(false)
+  seatingaccom  Boolean?    @default(false)
+  vip           Boolean?    @default(false)
+  volunteerlist Boolean?    @default(false)
+  newsletter    Boolean?    @default(false)
+  donations     donations[]
+  orders        orders[]
+}
+
+model date {
+  dateid                              Int              @id
+  date_actual                         DateTime         @db.Date
+  day_name                            String           @db.VarChar(9)
+  day_of_week                         Int
+  day_of_month                        Int
+  day_of_quarter                      Int
+  day_of_year                         Int
+  week_of_month                       Int
+  week_of_year                        Int
+  month_actual                        Int
+  month_name                          String           @db.VarChar(9)
+  quarter                             Int
+  year_actual                         Int
+  first_day_of_week                   DateTime         @db.Date
+  last_day_of_week                    DateTime         @db.Date
+  first_day_of_month                  DateTime         @db.Date
+  last_day_of_month                   DateTime         @db.Date
+  first_day_of_quarter                DateTime         @db.Date
+  last_day_of_quarter                 DateTime         @db.Date
+  first_day_of_year                   DateTime         @db.Date
+  last_day_of_year                    DateTime         @db.Date
+  weekend                             Boolean
+  discounts_discounts_enddateTodate   discounts[]      @relation("discounts_enddateTodate")
+  discounts_discounts_startdateTodate discounts[]      @relation("discounts_startdateTodate")
+  donations                           donations[]
+  eventinstances                      eventinstances[]
+  orders                              orders[]
+  seasons_seasons_enddateTodate       seasons[]        @relation("seasons_enddateTodate")
+  seasons_seasons_startdateTodate     seasons[]        @relation("seasons_startdateTodate")
+  task_task_dateassignedTodate        task[]           @relation("task_dateassignedTodate")
+  task_task_datecreatedTodate         task[]           @relation("task_datecreatedTodate")
+  task_task_datedueTodate             task[]           @relation("task_datedueTodate")
+}
+
+model discounts {
+  discountid                     Int         @id @default(autoincrement())
+  code                           String?     @db.VarChar(32)
+  amount                         Int?
+  percent                        Int?
+  startdate                      Int?
+  enddate                        Int?
+  tickettypeid_fk                Int?
+  createdby_fk                   Int?
+  usagelimit                     Int?
+  min_tickets                    Int?
+  min_events                     Int?
+  users                          users?      @relation(fields: [createdby_fk], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+  date_discounts_enddateTodate   date?       @relation("discounts_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  date_discounts_startdateTodate date?       @relation("discounts_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  tickettype                     tickettype? @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  orders                         orders[]
+}
+
+model donations {
+  donationid     Int       @id @default(autoincrement())
+  contactid_fk   Int?
+  isanonymous    Boolean?  @default(false)
+  amount         Decimal?  @db.Money
+  donorname      String?   @db.VarChar(255)
+  frequency      freq?
+  comments       String?   @db.VarChar(255)
+  payment_intent String?   @db.VarChar(255)
+  refund_intent  String?   @db.VarChar(255)
+  donationdate   Int?
+  date           date?     @relation(fields: [donationdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  contacts       contacts? @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "donations_donoid_fkey")
+}
+
+model eventinstances {
+  eventinstanceid    Int                  @id @default(autoincrement())
+  eventid_fk         Int
+  eventdate          Int
+  eventtime          DateTime             @db.Timetz(6)
+  salestatus         Boolean?
+  totalseats         Int?
+  availableseats     Int?
+  purchaseuri        String?              @db.VarChar(255)
+  ispreview          Boolean?             @default(false)
+  defaulttickettype  Int?
+  tickettype         tickettype?          @relation(fields: [defaulttickettype], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  date               date                 @relation(fields: [eventdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  events             events               @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction, map: "eventinstances_eventid_fkey")
+  eventtickets       eventtickets[]
+  ticketrestrictions ticketrestrictions[]
+}
+
+model events {
+  eventid              Int              @id @default(autoincrement())
+  seasonid_fk          Int
+  eventname            String           @db.VarChar(255)
+  eventdescription     String?          @db.VarChar(255)
+  active               Boolean?
+  seasonticketeligible Boolean?
+  imageurl             String?          @db.VarChar(255)
+  eventinstances       eventinstances[]
+  seasons              seasons          @relation(fields: [seasonid_fk], references: [seasonid], onDelete: NoAction, onUpdate: NoAction, map: "events_seasonid_fkey")
+  seasontickets        seasontickets[]
+}
+
+model eventtickets {
+  eventticketid      Int             @id(map: "tickets_pkey") @default(autoincrement())
+  eventinstanceid_fk Int
+  tickettypeid_fk    Int?
+  purchased          Boolean?        @default(false)
+  redeemed           Boolean?        @default(false)
+  redeemed_ts        DateTime?       @db.Timetz(6)
+  donated            Boolean?        @default(false)
+  tickettype         tickettype?     @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  eventinstances     eventinstances  @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction, map: "tickets_eventinstanceid_fkey")
+  seasontickets      seasontickets[]
+  singletickets      singletickets[]
+}
+
+model orderitems {
+  orderitemid   Int             @id @default(autoincrement())
+  orderid_fk    Int
+  price         Decimal?        @db.Money
+  orders        orders          @relation(fields: [orderid_fk], references: [orderid], onDelete: NoAction, onUpdate: NoAction, map: "orderitems_orderid_fkey")
+  seasontickets seasontickets[]
+  singletickets singletickets[]
+}
+
+model orders {
+  orderid        Int          @id @default(autoincrement())
+  contactid_fk   Int
+  orderdate      Int
+  ordertime      DateTime?    @db.Timetz(6)
+  discountid_fk  Int?
+  payment_intent String?      @db.VarChar(255)
+  refund_intent  String?      @db.VarChar(255)
+  ordertotal     Decimal?     @db.Money
+  orderitems     orderitems[]
+  contacts       contacts     @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "orders_contactid_fkey")
+  discounts      discounts?   @relation(fields: [discountid_fk], references: [discountid], onDelete: NoAction, onUpdate: NoAction, map: "orders_discountid_fkey")
+  date           date         @relation(fields: [orderdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model savedreports {
+  savedreportid Int     @id @default(autoincrement())
+  tablename     String? @db.VarChar(255)
+  queryattr     String?
+}
+
+model seasons {
+  seasonid                     Int      @id @default(autoincrement())
+  name                         String   @db.VarChar(100)
+  startdate                    Int
+  enddate                      Int
+  events                       events[]
+  date_seasons_enddateTodate   date     @relation("seasons_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  date_seasons_startdateTodate date     @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model seasontickets {
+  seasonticketid        Int              @id @default(autoincrement())
+  orderitemid_fk        Int
+  eventticketid_fk      Int?
+  eventid_fk            Int
+  seasontickettypeid_fk Int
+  ticketwasswapped      Boolean?         @default(false)
+  events                events           @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction)
+  eventtickets          eventtickets?    @relation(fields: [eventticketid_fk], references: [eventticketid], onDelete: NoAction, onUpdate: NoAction)
+  orderitems            orderitems       @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: NoAction, onUpdate: NoAction)
+  seasontickettype      seasontickettype @relation(fields: [seasontickettypeid_fk], references: [seasontickettypeid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model seasontickettype {
+  seasontickettypeid Int             @id @default(autoincrement())
+  description        String          @db.VarChar(100)
+  price              Decimal         @db.Money
+  seasontickets      seasontickets[]
+}
+
+model singletickets {
+  singleticketid   Int          @id @default(autoincrement())
+  eventticketid_fk Int
+  orderitemid_fk   Int
+  ticketwasswapped Boolean?     @default(false)
+  eventtickets     eventtickets @relation(fields: [eventticketid_fk], references: [eventticketid], onDelete: NoAction, onUpdate: NoAction)
+  orderitems       orderitems   @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model task {
+  taskid                        Int         @id @default(autoincrement())
+  parentid_fk                   Int?
+  assignto_fk                   Int?
+  reportto_fk                   Int?
+  subject                       String?     @db.VarChar(255)
+  description                   String?     @db.VarChar(255)
+  status                        state?
+  datecreated                   Int?
+  dateassigned                  Int?
+  datedue                       Int?
+  ref_contact                   Int?
+  ref_donation                  Int?
+  ref_order                     Int?
+  ref_user                      Int?
+  users_task_assignto_fkTousers users?      @relation("task_assignto_fkTousers", fields: [assignto_fk], references: [userid], onDelete: NoAction, onUpdate: NoAction, map: "task_assign_to_fkey")
+  date_task_dateassignedTodate  date?       @relation("task_dateassignedTodate", fields: [dateassigned], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  date_task_datecreatedTodate   date?       @relation("task_datecreatedTodate", fields: [datecreated], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  date_task_datedueTodate       date?       @relation("task_datedueTodate", fields: [datedue], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  task                          task?       @relation("taskTotask", fields: [parentid_fk], references: [taskid], onDelete: NoAction, onUpdate: NoAction, map: "task_parent_id_fkey")
+  other_task                    task[]      @relation("taskTotask")
+  users_task_reportto_fkTousers users?      @relation("task_reportto_fkTousers", fields: [reportto_fk], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+  tasknotes                     tasknotes[]
+}
+
+model tasknotes {
+  tasknoteid Int     @id @default(autoincrement())
+  taskid_fk  Int?
+  date       Int?
+  notes      String?
+  task       task?   @relation(fields: [taskid_fk], references: [taskid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model ticketrestrictions {
+  ticketrestrictionsid Int            @id @default(autoincrement())
+  eventinstanceid_fk   Int
+  tickettypeid_fk      Int
+  ticketlimit          Int
+  ticketssold          Int?           @default(0)
+  eventinstances       eventinstances @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction)
+  tickettype           tickettype     @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model tickettype {
+  tickettypeid       Int                  @id @default(autoincrement())
+  description        String               @db.VarChar(100)
+  price              Decimal              @db.Money
+  concessions        Decimal              @db.Money
+  deprecated         Boolean?             @default(false)
+  discounts          discounts[]
+  eventinstances     eventinstances[]
+  eventtickets       eventtickets[]
+  ticketrestrictions ticketrestrictions[]
+}
+
+model users {
+  userid                       Int         @id @default(autoincrement())
+  username                     String      @db.VarChar(255)
+  is_superadmin                Boolean     @default(false)
+  auth0_id                     String?     @db.VarChar(255)
+  discounts                    discounts[]
+  task_task_assignto_fkTousers task[]      @relation("task_assignto_fkTousers")
+  task_task_reportto_fkTousers task[]      @relation("task_reportto_fkTousers")
+}
+
+enum freq {
+  one_time @map("one-time")
+  weekly
+  monthly
+  yearly
+}
+
+enum state {
+  not_started
+  in_progress
+  completed
 }
