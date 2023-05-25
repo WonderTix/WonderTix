@@ -1,5 +1,4 @@
 import React from 'react';
-import TicketExchangeForm from './TicketExchangeForm';
 
 const TicketExchanges = () => {
   return (
@@ -8,11 +7,11 @@ const TicketExchanges = () => {
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
         <h1 className='font-bold text-5xl bg-clip-text
            text-transparent bg-gradient-to-r from-sky-500
-            to-indigo-500 mb-14'>Ticket Exchanges</h1>
+            to-indigo-500 mb-10 text-center h-16'>Ticket Exchanges</h1>
 
         <div className="flex h-fit space-x-4">
           <div className="w-1/2 border-4
-          border-blue-500 border-opacity-75">
+          border-blue-500 border-opacity-75 text-center rounded">
             <h2 className="text-xl font-bold text-blue-500">
               Customer&apos;s Ticket
             </h2>
@@ -30,7 +29,7 @@ const TicketExchanges = () => {
           </div>
 
           <div className="w-1/2 border-4
-           border-blue-500 border-opacity-75">
+           border-blue-500 border-opacity-75 text-center rounded">
             <h2 className="text-xl font-bold text-blue-500">
               New Ticket
             </h2>
