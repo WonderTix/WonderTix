@@ -401,6 +401,16 @@ export const insertAllShowings = async (
                 VALUES
                   ($1, $2, $3, $4, $5, true, $6)
                 RETURNING *;`;
+      // this is temp fix 1 should be set to defaulttickettype, and updateShowings needs to have a way to remove tickets        
+      const ticket_query = `
+                    INSERT INTO eventtickets (
+                      eventinstanceid_fk,
+                      tickettypeid_fk,
+                      purchased,
+                      redeemed,
+                      donated
+                    ) VALUES ($1, 1, false, false, false);
+  `;
   const res = [];
   let results: response = {
     data: <any[]>[],
@@ -425,6 +435,10 @@ export const insertAllShowings = async (
       showing.totalseats,
       showing.ispreview,
     ]);
+    // for each seat create the entry in the eventtickets table
+    for (const seat of [...Array(showing.totalseats).keys()]) {
+      await pool.query(ticket_query, [rows[0].id]);
+    }
     toReturn.push(showing);
     rowCount += 1;
     res.push({
