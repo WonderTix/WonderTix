@@ -7,42 +7,59 @@ const TicketExchanges = () => {
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
         <h1 className='font-bold text-5xl bg-clip-text
            text-transparent bg-gradient-to-r from-sky-500
-            to-indigo-500 mb-10 text-center h-16'>Ticket Exchanges</h1>
+            to-indigo-500 mb-10 h-16'>Ticket Exchanges</h1>
 
         <div className="flex h-fit space-x-4">
-          <div className="w-1/2 border-4
-          border-blue-500 border-opacity-75 text-center rounded">
-            <h2 className="text-xl font-bold text-blue-500">
+          <div className="w-1/2 bg-blue-500 text-center rounded-xl">
+            <h2 className="text-xl font-bold text-white pt-5 pb-4">
               Customer&apos;s Ticket
             </h2>
-            <div className="text-l" id="select-event-id">Select Event</div>
-            <select className="mt-2 border border-gray-300 px-2 py-1 rounded">
-              <option value="">Select Event</option>
+            <div className="text-white text-l" id="select-event-id">
+              Select Event
+            </div>
+            <select className="mt-1 mb-3 border border-gray-300
+              px-2 py-1 rounded">
+              <option value="">select event</option>
             </select>
-            <div className="text-l" id="select-date-id">Select Date</div>
-            <select className="mt-2 border border-gray-300 px-2 py-1 rounded">
-              <option value="">Select Date</option>
+            <div className="text-white text-l" id="select-date-id">
+              Select Date
+            </div>
+            <select className="mt-1 mb-3 border border-gray-300
+              px-2 py-1 rounded">
+              <option value="">select date</option>
             </select>
-            <div className="text-l" id="tickets-purchased-list-id">
+            <div className="text-white text-l px-3"
+              id="tickets-purchased-list-id">
               List of Tickets Purchased
+            </div>
+            <div className="flex justify-center mt-1 mb-5 px-3">
+              <div className="w-64 h-64 bg-white rounded-lg"></div>
             </div>
           </div>
 
-          <div className="w-1/2 border-4
-           border-blue-500 border-opacity-75 text-center rounded">
-            <h2 className="text-xl font-bold text-blue-500">
+          <div className="w-1/2 w-1/2 bg-blue-500 text-center rounded-xl">
+            <h2 className="text-white text-xl font-bold text-black pt-5 pb-4">
               New Ticket
             </h2>
-            <div className="text-l" id="select-event-id">Select Event</div>
-            <select className="mt-2 border border-gray-300 px-2 py-1 rounded">
-              <option value="">Select Event</option>
+            <div className="text-white text-l" id="select-event-id">
+              Select Event
+            </div>
+            <select className="mt-1 mb-3 border border-gray-300
+              px-2 py-1 rounded">
+              <option value="">select event</option>
             </select>
-            <div className="text-l" id="select-date-id">Select Date</div>
-            <select className="mt-2 border border-gray-300 px-2 py-1 rounded">
-              <option value="">Select Date</option>
+            <div className="text-white text-l" id="select-date-id">
+              Select Date
+            </div>
+            <select className="mt-1 mb-3 border border-gray-300
+              px-2 py-1 rounded">
+              <option value="">select date</option>
             </select>
-            <div className="text-l" id="tickets-purchased-list-id">
+            <div className="text-white text-l" id="tickets-purchased-list-id">
               Tickets Free to Switch
+            </div>
+            <div className="flex justify-center mt-1 mb-5 px-3">
+              <div className="w-64 h-64 bg-white rounded-lg"></div>
             </div>
           </div>
         </div>
