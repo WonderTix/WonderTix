@@ -32,7 +32,7 @@ const CreateEventPage = () => {
   const {getAccessTokenSilently} = useAuth0();
   const nav = useNavigate();
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes');
+    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes');
     setTicketTypes(await res.json());
   };
 
@@ -49,7 +49,7 @@ const CreateEventPage = () => {
     const {imageUrl, eventName, eventDesc, showings} = formData;
     const seasonid_fk = 7;
 
-    const createPlayRes = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
+    const createPlayRes = await fetch(process.env.REACT_APP_API_1_URL + '/events', {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const CreateEventPage = () => {
       const eventData = await createPlayRes.json();
       id = eventData.data[0].eventid;
       const showingdata = showings.map(formatShowingData(id));
-      const postShowings = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/instances', {
+      const postShowings = await fetch(process.env.REACT_APP_API_1_URL + '/events/instances', {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',

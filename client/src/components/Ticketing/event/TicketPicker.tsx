@@ -180,7 +180,7 @@ const TicketPicker = (props: TicketPickerProps) => {
   }, dispatch] = useReducer(TicketPickerReducer, initialState);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes')
+    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes')
         .then((res) => {
           if (!res.ok) {
             throw new Error('Failed to retrieve ticket types');

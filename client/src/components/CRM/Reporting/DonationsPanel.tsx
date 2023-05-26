@@ -50,7 +50,7 @@ const DonationsPanel = ({
         query_attr: `donations/?${parseUrl()}`,
       };
 
-      fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
+      fetch(process.env.REACT_APP_API_1_URL + `/saved_reports`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',

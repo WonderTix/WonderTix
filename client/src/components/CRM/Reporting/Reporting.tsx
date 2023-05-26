@@ -71,7 +71,7 @@ const ReportingTest = (): React.ReactElement => {
 
     setColumns(headers);
 
-    let url = process.env.REACT_APP_ROOT_URL + `/api/${route}`;
+    let url = process.env.REACT_APP_API_1_URL + `/${route}`;
 
     // TODO need to remove this, query uses the weird filter syntax
     if (query !== '') url += `?${query}`;

@@ -28,8 +28,8 @@ const SearchBar = (props: any): React.ReactElement => {
         });
         await axios
             .get(
-                process.env.REACT_APP_ROOT_URL +
-                `/api/contacts/search?name=${params.id}`, {
+                process.env.REACT_APP_API_1_URL +
+                `/contacts/search?name=${params.id}`, {
                   headers: {
                     'Authorization': `Bearer ${token}`,
                   },

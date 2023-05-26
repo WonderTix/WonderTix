@@ -70,7 +70,7 @@ const TicketTypes = () => {
           console.log('Ticket type has changed');
 
           const response = await fetch(
-              process.env.REACT_APP_ROOT_URL+'/api/tickets/updateType', {
+              process.env.REACT_APP_API_1_URL+'/tickets/updateType', {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_ROOT_URL + '/api/tickets/' + ticketId, {
+          process.env.REACT_APP_API_1_URL + '/tickets/' + ticketId, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_ROOT_URL + '/api/tickets/newType',
+          process.env.REACT_APP_API_1_URL + '/tickets/newType',
           {
             method: 'POST',
             headers: {
@@ -299,7 +299,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes',
+          process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
           {
             credentials: 'omit',
             method: 'GET',
@@ -310,7 +310,7 @@ const TicketTypes = () => {
           },
       );
 
-      console.log('Access token --> ' + process.env.REACT_APP_ROOT_URL);
+      console.log('Access token --> ' + process.env.REACT_APP_API_1_URL);
       const jsonRes = await response.json();
 
       setTicketTypes(jsonRes.data);

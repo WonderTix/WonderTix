@@ -40,7 +40,7 @@ const ShowingInputContainer = ({initialData, id, showingNum, addShow, deleteShow
 
   const dateFieldValue = typeof eventdate === 'string' ? eventdate.split('T') : '';
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/allTypes');
+    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/allTypes');
     const data = await res.json();
     setTicketTypes(data.data);
   };

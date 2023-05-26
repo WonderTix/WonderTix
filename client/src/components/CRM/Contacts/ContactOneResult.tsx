@@ -30,7 +30,7 @@ export const ContactOneResult = () => {
       });
       await axios
           .get(
-              process.env.REACT_APP_ROOT_URL + `/api/contacts/show/${params.contactid}`,
+              process.env.REACT_APP_API_1_URL + `/contacts/show/${params.contactid}`,
               {
                 headers: {
                   'Authorization': `Bearer ${token}`,
@@ -209,7 +209,7 @@ export const ContactDisplayTicket = ({
       const refMode = 1;
 
       const response = await fetch(
-          process.env.REACT_APP_ROOT_URL + '/api/refunds', {
+          process.env.REACT_APP_API_1_URL + '/refunds', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

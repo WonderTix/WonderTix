@@ -28,7 +28,7 @@ const Contacts = (): React.ReactElement => {
       });
       await axios
           .get(
-              process.env.REACT_APP_ROOT_URL + `/api/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
+              process.env.REACT_APP_API_1_URL + `/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
               {
                 headers: {
                   'Authorization': `Bearer ${token}`,
