@@ -297,11 +297,6 @@ const TicketPicker = (props: TicketPickerProps) => {
       </Collapse>
 
       <div className='flex flex-col gap-2 mt-7'>
-        {ticketTypes.map((t) => (
-          <p key={t.id}>
-            hello {t.name}
-          </p>
-        ))}
         <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
         <select
           // labelId="ticket-type-select-label"
