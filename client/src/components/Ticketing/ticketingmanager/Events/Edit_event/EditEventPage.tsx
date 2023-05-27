@@ -46,7 +46,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   }else {
     console.log("event id: " + initValues.eventid);
   }
-  console.log("fetched: " + JSON.stringify(initValues));
+  // console.log("fetched: " + JSON.stringify(initValues));
   
   const params = useParams();
   const nav = useNavigate();

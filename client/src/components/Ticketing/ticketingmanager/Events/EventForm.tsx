@@ -11,7 +11,7 @@
 import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 // import {FieldArray} from 'react-final-form-arrays';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
 import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
@@ -131,6 +131,9 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const [showings, setShowings] = useState(def.showings);
   //console.log("showings after useState: " + JSON.stringify(def.showings));
 
+  useEffect(() => {
+    console.log(initialValues);
+  })
   // FIELDS CALLBACK
   // Set event name
   const addeventname = useCallback((eventname) => {

@@ -69,8 +69,8 @@ const ShowingInputContainer = ({
     showingData.starttime !== undefined ? showingData.starttime.slice(0, 8) : ""
   );
   const [eventdate, setEventDate] = useState(showingData.eventdate);
-  const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
-  const [seatsForType, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
+  const [ticketTypeId, setTicketTypeId] = useState(showingData.tickettypeids ? showingData.tickettypeids : []); // TODO: Fill this initial data out to properly load
+  const [seatsForType, setSeatsForType] = useState(showingData.seatsForType ? showingData.seatsForType : []); // TODO: Fill this initial data out to properly load
   const [availableSeats, setAvailableSeats] = useState(
     showingData.availableseats !== undefined ? showingData.availableseats : 0
   );
