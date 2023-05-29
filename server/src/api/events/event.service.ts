@@ -421,16 +421,27 @@ export const insertAllShowings = async (
   };
   const toReturn = [];
   let rowCount = 0;
+  // Using 2020-01-01 as a default value or it will not save
+  let dateAct = '20200101'
+  let startTime = '00:00'
   for (const showing of showings) {
-    if (showing.tickettypeids.length === 0) {
-      //throw new Error("No ticket type provided");
+    if (showing.eventdate !== '') {
+      const date = showing.eventdate.split('-');
+      dateAct = date.join('');
     }
-    const date = showing.eventdate; //.split('-');
-    //const dateAct = date.join('');
-    const { rows } = await pool.query(query, [
+    else {
+      dateAct = '20200101'
+    }
+    if (showing.starttime !== '') {
+      startTime = showing.starttime
+    }
+    else {
+      startTime = '00:00'
+    }
+    const {rows} = await pool.query(query, [
       showing.eventid,
-      showing.eventdate,
-      showing.starttime,
+      dateAct,
+      startTime,
       showing.totalseats,
       showing.totalseats,
       showing.ispreview,
@@ -454,7 +465,6 @@ export const insertAllShowings = async (
       message: `${rowCount} ${rowCount === 1 ? "row" : "rows"} inserted.`,
     },
   };
-  console.log(results);
   return res;
 };
 

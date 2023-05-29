@@ -15,6 +15,7 @@ import React, {useCallback, useState, useEffect} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
 import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
+import PopUp from '../../Pop-up';
 
 /**
  * Type of ticket
@@ -129,7 +130,8 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const active = def.active;
   //console.log("showings before useState: " + JSON.stringify(def.showings));
   const [showings, setShowings] = useState(def.showings);
-  //console.log("showings after useState: " + JSON.stringify(def.showings));
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [err, setErr] = useState('');
 
   useEffect(() => {
     console.log(initialValues);
@@ -162,30 +164,82 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       image_url,
       showings: showings,
     };
-    //console.log("handle submit called with showings: " + JSON.stringify(showings));
+    console.log(data);
+    if (showings.length === 0) {
+      setErr('Please enter at least one showing.');
+      setShowPopUp(true);
+      return;
+    }
+    if (eventName === '' || eventDesc === '' || showings.length === 0) {
+      const conditions = [];
+      if (eventName === '') {
+        conditions.push('Event name');
+      }
+      if (eventDesc === '') {
+        conditions.push('Event description');
+      }
+      let message = '';
+      if (conditions.length > 0) {
+        message += conditions.slice(0, -1).join(', ');
+        if (conditions.length > 1) {
+          message += ' and ';
+        }
+        message += conditions[conditions.length - 1];
+      }
+      if (conditions.length === 1) {
+        message += ' field is missing.';
+      } else {
+        message += ' fields are missing.';
+      }
+      setErr(message);
+      setShowPopUp(true);
+      return;
+    }
+    for (let i = 0; i < data.showings.length; i++) {
+      if (data.showings[i].eventdate === '' || data.showings[i].starttime === '') {
+        setErr('Each showing must have an event date and an event time.');
+        setShowPopUp(true);
+        return;
+      }
+      if (data.showings[i].totalseats < 1) {
+        setErr('Each showing must have at least 1 ticket.');
+        setShowPopUp(true);
+        return;
+      }
+    }
+    for (let i = 0; i < data.showings.length; i++) {
+      for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
+        if (data.showings[i].ticketTypeId[j] === 'NaN') {
+          data.showings[i].seatsForType.splice(j, 1);
+          data.showings[i].ticketTypeId.splice(j, 1);
+        }
+      }
+    }
     onSubmit(data);
   };
 
   return (
-    <Form
-      onSubmit={handleSubmit}
-      initialValues={initialValues ?? initialState}
-      mutators={{...arrayMutators}}
-      
-      render={({
-        handleSubmit,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
-            <div className='text-3xl font-semibold mb-5'>
-                Event Information
-            </div>
-            <div className='w-full flex flex-col '>
-              <InputFieldForEvent
-                name={'eventname'}
-                id={'eventname'} headerText={'Enter Event Name'}
-                action={addeventname} actionType={'onChange'} value={def.eventname}
-                placeholder={def.eventname ? def.eventname: 'Event Name'} />
+    <div>
+      {showPopUp ? <PopUp message={err} title='Failed to save.' handleClose={() => setShowPopUp(false)}/> : null}
+      <Form
+        onSubmit={handleSubmit}
+        initialValues={initialValues ?? initialState}
+        mutators={{...arrayMutators}}
+        
+        render={({
+          handleSubmit,
+        }) => (
+          <form onSubmit={handleSubmit}>
+            <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
+              <div className='text-3xl font-semibold mb-5'>
+                  Event Information
+              </div>
+              <div className='w-full flex flex-col '>
+                <InputFieldForEvent
+                  name={'eventname'}
+                  id={'eventname'} headerText={'Enter Event Name'}
+                  action={addeventname} actionType={'onChange'} value={def.eventname}
+                  placeholder={def.eventname ? def.eventname: 'Event Name'} />
 
               <InputFieldForEvent
                 name={'eventdescription'}
@@ -216,15 +270,16 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
             </div>
           </div>
 
-          <button
-            className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
-            type='submit'
-          >
-            Save
-          </button>
-        </form>
-      )}
-    />
+            <button
+              className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
+              type='submit'
+            >
+              Save
+            </button>
+          </form>
+        )}
+      />
+    </div>
   );
 };
 

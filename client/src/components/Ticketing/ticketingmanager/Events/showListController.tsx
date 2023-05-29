@@ -34,15 +34,12 @@ const ShowListController = ({
   setShowingsHandler,
 }: ShowListControllerProps) => {
   const [shows, setShow] = useState(showsData ? showsData : []);
-  const [numOfShowings, setNumOfShowings] = useState(
-    showsData ? showsData.length : 0
-  );
+  const [numOfShowings, setNumOfShowings] = useState(showsData ? showsData.length : 0);
 
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
     setNumOfShowings(numOfShowings + 1);
-    
     const show: Showing = {
       id: 0,
       index: numOfShowings,
