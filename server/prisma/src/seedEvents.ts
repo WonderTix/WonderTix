@@ -1,0 +1,40 @@
+const fs = require('fs');
+const yaml = require('js-yaml');
+const {PrismaClient} = require('@prisma/client');
+const prisma = new PrismaClient();
+
+/**
+ * Import events from YAML file to database
+ */
+async function seedEvents() {
+  try {
+    const eventsCount = await prisma.events.count();
+    if (eventsCount > 0) {
+      console.log('Events table already seeded.');
+      return;
+    }
+
+    const yamlData = fs.readFileSync('./prisma/legacy-data/events.yaml', 'utf8');
+    const data: any[] = yaml.load(yamlData);
+
+    const preparedData = data.map((item) => ({
+      eventid: item.eventid,
+      seasonid_fk: item.seasonid_fk,
+      eventname: item.eventname,
+      eventdescription: item.eventdescription,
+      active: item.active === 'true',
+      seasonticketeligible: item.seasonticketeligible === 'true',
+      imageurl: item.imageurl,
+    }));
+
+    await prisma.events.createMany({
+      data: preparedData,
+    });
+
+    console.log('Events seeding completed.');
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports = seedEvents;
