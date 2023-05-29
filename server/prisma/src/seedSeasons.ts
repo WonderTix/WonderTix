@@ -1,12 +1,12 @@
+import {PrismaClient} from '@prisma/client';
 const fs = require('fs');
 const yaml = require('js-yaml');
-const {PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
 
 /**
  * Import seasons from YAML file to database
+ * @param {PrismaClient} prisma
  */
-async function seedSeasons() {
+async function seedSeasons(prisma: PrismaClient) {
   try {
     const seasonsCount = await prisma.seasons.count();
     if (seasonsCount > 0) {

@@ -1,12 +1,12 @@
+import {PrismaClient} from '@prisma/client';
 const fs = require('fs');
 const yaml = require('js-yaml');
-const {PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
 
 /**
  * Import season ticket types from YAML file to database
+ * @param {PrismaClient} prisma
  */
-async function seedSeasonTicketTypes() {
+async function seedSeasonTicketTypes(prisma: PrismaClient) {
   try {
     const seasonTicketTypesCount = await prisma.seasontickettype.count();
     if (seasonTicketTypesCount > 0) {

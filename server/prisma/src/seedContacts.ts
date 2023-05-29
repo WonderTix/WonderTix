@@ -1,12 +1,12 @@
+import {PrismaClient} from '@prisma/client';
 const fs = require('fs');
 const yaml = require('js-yaml');
-const {PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
 
 /**
  * Import contacts from YAML file to database
+ * @param {PrismaClient} prisma
  */
-async function seedContacts() {
+async function seedContacts(prisma: PrismaClient) {
   try {
     const contactsCount = await prisma.contacts.count();
     if (contactsCount > 0) {

@@ -1,12 +1,12 @@
+import {PrismaClient} from '@prisma/client';
 const fs = require('fs');
 const yaml = require('js-yaml');
-const {PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
 
 /**
  * Import order items from YAML file to database
+ * @param {PrismaClient} prisma
  */
-async function seedOrderItems() {
+async function seedOrderItems(prisma: PrismaClient) {
   try {
     const oderItemsCount = await prisma.orderitems.count();
     if (oderItemsCount > 0) {

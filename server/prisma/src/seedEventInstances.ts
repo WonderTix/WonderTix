@@ -1,14 +1,14 @@
+import {PrismaClient} from '@prisma/client';
 const fs = require('fs');
 const yaml = require('js-yaml');
-const {PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
 
 import parseDateTime from './../src/parseDateTime';
 
 /**
  * Import event instances from YAML file to database
+ * @param {PrismaClient} prisma
  */
-async function seedEventInstances() {
+async function seedEventInstances(prisma: PrismaClient) {
   try {
     const eventinstancesCount = await prisma.eventinstances.count();
     if (eventinstancesCount > 0) {

@@ -1,14 +1,13 @@
-import {freq} from "@prisma/client";
-
+import {freq, PrismaClient} from '@prisma/client';
 const fs = require('fs');
 const yaml = require('js-yaml');
-const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 
 /**
  * Import events from YAML file to database
+ * @param {PrismaClient} prisma
  */
-async function seedDonations() {
+async function seedDonations(prisma: PrismaClient) {
   try {
     const donationsCount = await prisma.donations.count();
     if (donationsCount > 0) {

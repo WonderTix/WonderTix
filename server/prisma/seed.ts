@@ -1,42 +1,42 @@
 const {PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
-const seedContacts = require('./src/seedContacts');
-const seedDates = require('./src/seedDates');
-const seedDiscounts = require('./src/seedDiscounts');
-const seedDonations = require('./src/seedDonations');
-const seedEvents = require('./src/seedEvents');
-const seedEventInstances = require('./src/seedEventInstances');
-const seedEventTickets = require('./src/seedEventTickets');
-const seedOrders = require('./src/seedOrders');
-const seedOrderItems = require('./src/seedOrderItems');
-const seedSeasons = require('./src/seedSeasons');
-const seedSeasonTickets = require('./src/seedSeasonTickets');
-const seedSeasonTicketTypes = require('./src/seedSeasonTicketTypes');
-const seedSingleTickets = require('./src/seedSingleTickets');
-const seedTicketRestrictions = require('./src/seedTicketRestrictions');
-const seedTicketTypes = require('./src/seedTicketTypes');
-const seedUsers = require('./src/seedUsers');
+const importContacts = require('./src/seedContacts');
+const importDates = require('./src/seedDates');
+const importDiscounts = require('./src/seedDiscounts');
+const importDonations = require('./src/seedDonations');
+const importEvents = require('./src/seedEvents');
+const importEventInstances = require('./src/seedEventInstances');
+const importEventTickets = require('./src/seedEventTickets');
+const importOrders = require('./src/seedOrders');
+const importOrderItems = require('./src/seedOrderItems');
+const importSeasons = require('./src/seedSeasons');
+const importSeasonTickets = require('./src/seedSeasonTickets');
+const importSeasonTicketTypes = require('./src/seedSeasonTicketTypes');
+const importSingleTickets = require('./src/seedSingleTickets');
+const importTicketRestrictions = require('./src/seedTicketRestrictions');
+const importTicketTypes = require('./src/seedTicketTypes');
+const importUsers = require('./src/seedUsers');
 
 /**
  * Seed database
  */
 async function main() {
-  await seedDates();
-  await seedUsers();
-  await seedContacts();
-  await seedDonations();
-  await seedSeasons();
-  await seedDiscounts();
-  await seedTicketTypes();
-  await seedTicketRestrictions();
-  await seedEvents();
-  await seedEventInstances();
-  await seedEventTickets();
-  await seedOrders();
-  await seedOrderItems();
-  await seedSeasonTicketTypes();
-  await seedSeasonTickets();
-  await seedSingleTickets();
+  await importDates(prisma);
+  await importUsers(prisma);
+  await importContacts(prisma);
+  await importDonations(prisma);
+  await importSeasons(prisma);
+  await importDiscounts(prisma);
+  await importTicketTypes(prisma);
+  await importEvents(prisma);
+  await importEventInstances(prisma);
+  await importTicketRestrictions(prisma);
+  await importEventTickets(prisma);
+  await importOrders(prisma);
+  await importOrderItems(prisma);
+  await importSeasonTicketTypes(prisma);
+  await importSeasonTickets(prisma);
+  await importSingleTickets(prisma);
 }
 
 main()
