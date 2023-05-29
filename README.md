@@ -37,6 +37,15 @@ Future features include managing/creating email campaigns and ticket exchanges.
 8. The swagger docs will be available at https://localhost:8000/api/1/docs
    1. To log in to swagger, login to the client and copy the value of the `access_token` from the request to `<AUTH0_URL>/oath/token`. Paste this value into the `Authorize` dialog in swagger.
 
+## Connecting to the database
+### Use CLI in container
+1. SSH into to the container with `docker compose exec database sh`.
+2. Run `psql -U <PG_USER> <PG_DB>` to connect to the database.
+### Use PGAdmin
+1. Download PGAdmin: https://www.pgadmin.org/download/
+2. Open PGAdmin and create a new server.
+3. Set the credentials to the values in the `.env` file.
+
 ## Troubleshooting
 This list will be updated as new issues arise. If you your issue is not listed, please create an issue and we will look into it.
 
