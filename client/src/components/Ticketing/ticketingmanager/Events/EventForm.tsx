@@ -197,6 +197,11 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
         setShowPopUp(true);
         return;
       }
+      if (data.showings[i].totalseats < 1) {
+        setErr('Each showing must have at least 1 ticket.');
+        setShowPopUp(true);
+        return;
+      }
     }
     for (let i = 0; i < data.showings.length; i++) {
       for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
@@ -211,7 +216,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
 
   return (
     <div>
-      {showPopUp ? <PopUp message={err} title='Failed to save' handleClose={() => setShowPopUp(false)}/> : null}
+      {showPopUp ? <PopUp message={err} title='Failed to save.' handleClose={() => setShowPopUp(false)}/> : null}
       <Form
         onSubmit={handleSubmit}
         initialValues={initialValues ?? initialState}
