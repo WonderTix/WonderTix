@@ -29,12 +29,12 @@ interface ShowListControllerProps{
  */
 const ShowListController = ({showsData, eventid, setShowingsHandler}: ShowListControllerProps) => {
   const [shows, setShow] = useState(showsData ? showsData : []);
-  const [numOfShowings, setNumoOfShowings] = useState(showsData ? showsData.length : 0);
+  const [numOfShowings, setNumOfShowings] = useState(showsData ? showsData.length : 0);
 
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
-    setNumoOfShowings(numOfShowings + 1);
+    setNumOfShowings(numOfShowings + 1);
     const show: Showing = {
       id: numOfShowings,
       eventid: eventid,
@@ -49,25 +49,24 @@ const ShowListController = ({showsData, eventid, setShowingsHandler}: ShowListCo
     setShow((shows) => [...shows, show]);
   };
 
-  const handleSetShow = useCallback((show) => {
+  const handleSetShow = (show) => {
     const showItems = [...shows];
     showItems[show.id] = show;
     setShow(showItems);
-  }, [shows]);
+  };
 
-  const handleDeleteShow = useCallback((e) => {
+  const handleDeleteShow = (e) => {
     const newShowItems = shows.filter((_, i) => i !== parseInt(e.target.id));
     newShowItems.forEach((e, i) => {
       e.id = i;
     });
     console.log(newShowItems);
-    setNumoOfShowings(numOfShowings - 1);
+    setNumOfShowings(numOfShowings - 1);
     setShow(newShowItems);
-  }, [shows]);
+  };
 
 
   useEffect(() => {
-    console.log(shows);
     setShowingsHandler(shows);
   }, [handleSetShow, handleDeleteShow]);
 

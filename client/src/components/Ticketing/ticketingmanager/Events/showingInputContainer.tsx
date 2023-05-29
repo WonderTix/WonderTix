@@ -2,6 +2,7 @@
 import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
+import DeleteConfirm from './deleteConfirm';
 
 /**
  * Used to map props to input container correctly
@@ -62,6 +63,7 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
   const [seatsForType, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
   const [availableSeats, setAvailableSeats] = useState(showingData.availableseats !== undefined ? showingData.availableseats : 0);
   const [totalSeats, setTotalSeats] = useState(showingData.totalseats !== undefined ? showingData.totalseats : 0);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [ticketTypes, setTicketTypes] = useState([]);
 
@@ -93,7 +95,7 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
 
   const handleAddTicketOption = (e) => {
     setSeatsForType((data) => [...data, 0]);
-    setTicketTypeId((data) => [...data, 0]);
+    setTicketTypeId((data) => [...data, 'NaN']);
   };
 
   const handleSeatChange = (e) => {
@@ -116,12 +118,16 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
 
   const handleChangeOption = (e) => {
     const newList = [...ticketTypeId];
-    newList[e.target.id] = parseInt(e.target.value);
+    if (e.target.value === 'Select Ticket Type') newList[e.target.id] = 'NaN';
+    else newList[e.target.id] = parseInt(e.target.value);
     setTicketTypeId(newList);
   };
 
   return (
     <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={id}>
+      { showConfirm ?
+      <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(id)}/> : null
+      }
       <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
         <label className='font-semibold text-white mb-7 mt-7  '>Show # {id + 1}</label>
         <div className='flex flex-col gap-5 mt-5 md:pr-20'>
@@ -139,6 +145,7 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
             }
           />
           <div className='w-full'>
+
             <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
             {
               seatsForType.map((seats, i) => (
@@ -192,7 +199,7 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
             </div>
           </div>
         </div>
-        <button className='px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm' type='button' onClick={handleDeleteShow} id={String(id)}>
+        <button className='px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm' type='button' onClick={() => setShowConfirm(true)} id={String(id)}>
           Delete
         </button>
       </div>
