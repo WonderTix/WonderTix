@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// customer information
+/// customer information
 model contacts {
   contactid     Int         @id @default(autoincrement())
   firstname     String?     @db.VarChar(255)
@@ -24,7 +24,7 @@ model contacts {
   orders        orders[]
 }
 
-// date is used to store information about specific dates to simplify queries
+/// date is used to store information about specific dates to simplify queries
 model date {
   dateid                              Int              @id
   date_actual                         DateTime         @db.Date
@@ -60,9 +60,9 @@ model date {
   task_task_datedueTodate             task[]           @relation("task_datedueTodate")
 }
 
-// discounts are applied to orders and may be limited to specific ticket types, event and/or dates
-// amount is a fixed amount discount, percent is a percentage discount
-// discounts with a percent and amount value will use the percent value capped at the amount value
+/// discounts are applied to orders and may be limited to specific ticket types, event and/or dates
+/// amount is a fixed amount discount, percent is a percentage discount
+/// discounts with a percent and amount value will use the percent value capped at the amount value
 model discounts {
   discountid                     Int         @id @default(autoincrement())
   code                           String?     @db.VarChar(32)
@@ -82,9 +82,9 @@ model discounts {
   orders                         orders[]
 }
 
-// customer or anonymous donations
-// donations can be one time or recurring, stored in the frequency field
-// payment_intent and refund_intent are stripe payment intent ids
+/// customer or anonymous donations
+/// donations can be one time or recurring, stored in the frequency field
+/// payment_intent and refund_intent are stripe payment intent ids
 model donations {
   donationid     Int       @id @default(autoincrement())
   contactid_fk   Int?
@@ -100,9 +100,9 @@ model donations {
   contacts       contacts? @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "donations_donoid_fkey")
 }
 
-// an event instance is a specific showing of an event
-// tickets are sold for event instances only if the salesstatus is true and the event date is in the future
-// preview events are are pre showings of an event before the event is open to the public
+/// an event instance is a specific showing of an event
+/// tickets are sold for event instances only if the salesstatus is true and the event date is in the future
+/// preview events are are pre showings of an event before the event is open to the public
 model eventinstances {
   eventinstanceid    Int                  @id @default(autoincrement())
   eventid_fk         Int
@@ -121,8 +121,8 @@ model eventinstances {
   ticketrestrictions ticketrestrictions[]
 }
 
-// an event is a performance, a class, a workshop, etc.
-// the showings of an event are eventinstances
+/// an event is a performance, a class, a workshop, etc.
+/// the showings of an event are eventinstances
 model events {
   eventid              Int              @id @default(autoincrement())
   seasonid_fk          Int
@@ -136,9 +136,9 @@ model events {
   seasontickets        seasontickets[]
 }
 
-// event tickets is a ticket that can be purchased for an event instance
-// a ticket is redeemed when it is used to enter an event instance
-// tickets can be donated back to wondertix or refunded
+/// event tickets is a ticket that can be purchased for an event instance
+/// a ticket is redeemed when it is used to enter an event instance
+/// tickets can be donated back to wondertix or refunded
 model eventtickets {
   eventticketid      Int             @id(map: "tickets_pkey") @default(autoincrement())
   eventinstanceid_fk Int
@@ -153,8 +153,8 @@ model eventtickets {
   singletickets      singletickets[]
 }
 
-// a line item in a customers order
-// the price is the price of the item at the time of purchase before any discounts are applied
+/// a line item in a customers order
+/// the price is the price of the item at the time of purchase before any discounts are applied
 model orderitems {
   orderitemid   Int             @id @default(autoincrement())
   orderid_fk    Int
@@ -164,8 +164,8 @@ model orderitems {
   singletickets singletickets[]
 }
 
-// a customers order
-// refund and payment intents are the uuids from stripe when a refund or payment is made
+/// a customers order
+/// refund and payment intents are the uuids from stripe when a refund or payment is made
 model orders {
   orderid        Int          @id @default(autoincrement())
   contactid_fk   Int
@@ -181,14 +181,14 @@ model orders {
   date           date         @relation(fields: [orderdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
 }
 
-// provides a way to store reports
+/// provides a way to store reports
 model savedreports {
   savedreportid Int     @id @default(autoincrement())
   tablename     String? @db.VarChar(255)
   queryattr     String?
 }
 
-// a season is a collection of events over a period of time (e.g. a summer season)
+/// a season is a collection of events over a period of time (e.g. a summer season)
 model seasons {
   seasonid                     Int      @id @default(autoincrement())
   name                         String   @db.VarChar(100)
@@ -199,11 +199,11 @@ model seasons {
   date_seasons_startdateTodate date     @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
 }
 
-// a season ticket is a ticket that is not part of a bulk package of tickets during a season
-// season tickets may be sold before the event is scheduled so the eventid_fk is nullable
-// tickets can be swapped for another event ticket
-// when swapped the old season ticket is marked and the old event ticket is marked as not purcahsed
-// a new season ticket is created for the new event ticket and the orderitem is updated to point to the new season ticket
+/// a season ticket is a ticket that is not part of a bulk package of tickets during a season
+/// season tickets may be sold before the event is scheduled so the eventid_fk is nullable
+/// tickets can be swapped for another event ticket
+/// when swapped the old season ticket is marked and the old event ticket is marked as not purcahsed
+/// a new season ticket is created for the new event ticket and the orderitem is updated to point to the new season ticket
 model seasontickets {
   seasonticketid        Int              @id @default(autoincrement())
   orderitemid_fk        Int
@@ -217,7 +217,7 @@ model seasontickets {
   seasontickettype      seasontickettype @relation(fields: [seasontickettypeid_fk], references: [seasontickettypeid], onDelete: NoAction, onUpdate: NoAction)
 }
 
-// ticket types for season tickets
+/// ticket types for season tickets
 model seasontickettype {
   seasontickettypeid Int             @id @default(autoincrement())
   description        String          @db.VarChar(100)
@@ -225,10 +225,10 @@ model seasontickettype {
   seasontickets      seasontickets[]
 }
 
-// a single ticket is a purchased event instance ticket
-// a single ticket can be swapped for another event instance ticket
-// when swapped, the original single ticket is marked as swapped,
-// the old event ticket is marked as not purchased and a new single ticket is created with the old order item id and new event ticket id
+/// a single ticket is a purchased event instance ticket
+/// a single ticket can be swapped for another event instance ticket
+/// when swapped, the original single ticket is marked as swapped,
+/// the old event ticket is marked as not purchased and a new single ticket is created with the old order item id and new event ticket id
 model singletickets {
   singleticketid   Int          @id @default(autoincrement())
   eventticketid_fk Int
@@ -238,8 +238,8 @@ model singletickets {
   orderitems       orderitems   @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: NoAction, onUpdate: NoAction)
 }
 
-// used to create and assign tasks such as a todo-list, memo, investigate and issue, etc.
-// task may relate to a contact, donation, order, user, or other task
+/// used to create and assign tasks such as a todo-list, memo, investigate and issue, etc.
+/// task may relate to a contact, donation, order, user, or other task
 model task {
   taskid                        Int         @id @default(autoincrement())
   parentid_fk                   Int?
@@ -265,7 +265,7 @@ model task {
   tasknotes                     tasknotes[]
 }
 
-// contains additional notes for a task that can not fit in the description field
+/// contains additional notes for a task that can not fit in the description field
 model tasknotes {
   tasknoteid Int     @id @default(autoincrement())
   taskid_fk  Int?
@@ -274,7 +274,7 @@ model tasknotes {
   task       task?   @relation(fields: [taskid_fk], references: [taskid], onDelete: NoAction, onUpdate: NoAction)
 }
 
-// ticket restrictions for an event are used to limit the number of tickets that can be sold for a ticket type for an event instance
+/// ticket restrictions for an event are used to limit the number of tickets that can be sold for a ticket type for an event instance
 model ticketrestrictions {
   ticketrestrictionsid Int            @id @default(autoincrement())
   eventinstanceid_fk   Int
@@ -285,7 +285,7 @@ model ticketrestrictions {
   tickettype           tickettype     @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
 }
 
-// types of tickets that can be assigned to an event
+/// types of tickets that can be assigned to an event
 model tickettype {
   tickettypeid       Int                  @id @default(autoincrement())
   description        String               @db.VarChar(100)
@@ -298,8 +298,8 @@ model tickettype {
   ticketrestrictions ticketrestrictions[]
 }
 
-// users have access to the admin area to manage events, tickets, etc
-// only users with the is_superadmin flag can access the reports
+/// users have access to the admin area to manage events, tickets, etc
+/// only users with the is_superadmin flag can access the reports
 model users {
   userid                       Int         @id @default(autoincrement())
   username                     String      @db.VarChar(255)
