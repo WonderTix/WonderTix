@@ -18,8 +18,8 @@ import {WtixEvent} from '../../../../../interfaces/showing.interface';
 let id = 0;
 
 const formatShowingData = (eventid: number) => (data: any) => {
-  const {starttime, eventdate, totalseats, ticketTypeId, seatsForType} = data;
-  return {eventid, eventdate, starttime, totalseats, ticketTypeId: ticketTypeId, seatsForType};
+  const {starttime, eventdate, totalseats, tickettypeids, seatsForType} = data;
+  return {eventid, eventdate, starttime, totalseats, ticketTypeId: tickettypeids, seatsForType};
 };
 
 /**
