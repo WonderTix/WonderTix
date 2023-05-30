@@ -98,7 +98,7 @@ const ShowingInputContainer = ({
       starttime: starttime,
       salestatus: true,
       totalseats: totalSeats,
-      tickettypeids: ticketTypeId,
+      tickettypes: ticketTypeId,
       seatsfortype: seatsfortype,
       availableseats: availableSeats ? availableSeats : totalSeats,
       eventid: showingData.eventid,
