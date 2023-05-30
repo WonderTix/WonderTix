@@ -41,15 +41,18 @@ export interface MapPropsToShowingInputContainer {
 // eslint-disable-next-line react/prop-types
 
 const toDateStringFormat = (date) => {
-  console.log(date);
-  if (date === undefined || date === "") return null;
+  if (date === undefined || date === "") return "";
   const dateString = String(date);
+  if (dateString.includes('-')) return date;
   if (dateString.split("-").length === 3) {
     const [year, month, day] = dateString.split("-").map(Number);
     const Dateobject = new Date(year, month - 1, day);
     return Dateobject.getTime();
   }
-  return date;
+  const year = dateString.substring(0, 4);
+  const month = dateString.substring(4, 6);
+  const day = dateString.substring(6, 8);
+  return `${year}-${month}-${day}`
 };
 
 const toTimeStringFormat = (time) => {
@@ -70,8 +73,8 @@ const ShowingInputContainer = ({
     showingData.starttime !== undefined ? showingData.starttime.slice(0, 8) : ""
   );
   const [eventdate, setEventDate] = useState(showingData.eventdate);
-  const [ticketTypeId, setTicketTypeId] = useState(showingData.tickettypeids ? showingData.tickettypeids : []); // TODO: Fill this initial data out to properly load
-  const [seatsForType, setSeatsForType] = useState(showingData.seatsForType ? showingData.seatsForType : []); // TODO: Fill this initial data out to properly load
+  const [ticketTypeId, setTicketTypeId] = useState(showingData.tickettypeids ? showingData.tickettypeids : []);
+  const [seatsForType, setSeatsForType] = useState(showingData.seatsForType ? showingData.seatsForType : []);
   const [availableSeats, setAvailableSeats] = useState(
     showingData.availableseats !== undefined ? showingData.availableseats : 0
   );
@@ -214,7 +217,7 @@ const ShowingInputContainer = ({
                 type="date"
                 id="date"
                 className="input w-full p-2 rounded-lg bg-violet-100 mb-7"
-                value={showingData.eventdate}
+                value={toDateStringFormat(showingData.eventdate)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   console.log(ev.target.value);
                   setEventDate(ev.target.value);
@@ -229,11 +232,7 @@ const ShowingInputContainer = ({
                 name="starttime"
                 placeholder="00:00:00"
                 className="w-full p-2 rounded-lg bg-violet-100 mb-7 "
-                value={toTimeStringFormat(
-                  showingData.starttime
-                    ? showingData.starttime
-                    : showingData.starttime
-                )}
+                value={toTimeStringFormat(showingData.starttime)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setStartTime(ev.target.value);
                 }}
