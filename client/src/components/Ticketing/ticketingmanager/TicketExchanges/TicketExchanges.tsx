@@ -9,13 +9,19 @@ const TicketExchanges = () => {
            text-transparent bg-gradient-to-r from-sky-500
             to-indigo-500 mb-10 pb-4 h-fit'>Ticket Exchanges</h1>
 
-        <div className="flex flex-wrap justify-center h-fit gap-x-48">
+        <div className="flex flex-wrap justify-center h-fit gap-x-24">
           <div className="w-80 bg-blue-400 drop-shadow-xl
             text-center rounded-xl m-3 p-3">
             <h2 className="text-xl font-bold text-white m-4">
               Customer&apos;s Ticket
             </h2>
             <div className="flex flex-wrap w-64 mx-auto">
+              <div className="text-white text-l" id="select-event-id">
+                Order Number
+              </div>
+              <input className="w-full mt-1 mb-3 px-2 py-2 rounded" type="text"
+                id="order-number" name="order-number"
+                placeholder="enter order number"></input>
               <div className="text-white text-l" id="select-event-id">
                 Select Event
               </div>
