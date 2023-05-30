@@ -33,4 +33,5 @@ export default interface Showing {
   purchaseuri: string;
   ispreview: boolean;
   eventinstanceid: number;
+  ticketTypeId: number[]; // This and tickettypeids are the same, but this is a temp fix for a type error
 }

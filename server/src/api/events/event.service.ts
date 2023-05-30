@@ -193,9 +193,9 @@ export const createShowing = async (params: any): Promise<response> => {
   const newInstances = await insertAllShowings(params.instances);
   // Link showtime to ticket type
   const linkingdata = newInstances.map((s) => ({
-    id: <number>Object.values(s)[0],
-    tickettypes: <number[]>Object.values(s)[10], // Keeps changing?
-    seatsfortype: <number[]>Object.values(s)[11], // Keeps changing?
+    id: s.id,
+    tickettypeids: s.tickettypeids,
+    seatsfortype: s.seatsForType,
   }));
   const myQuery = {
     text: `INSERT INTO ticketrestrictions (id_fk, tickettypeid_fk,
@@ -212,13 +212,13 @@ export const createShowing = async (params: any): Promise<response> => {
   const toReturn = [];
   let rowCount = 0;
   for (const show of linkingdata) {
-    const len = show.tickettypes.length;
+    const len = show.tickettypeids.length;
     for (let i = 0; i < len; i += 1) {
       let queryResults;
       try {
         queryResults = await pool.query(myQuery, [
           show.id,
-          show.tickettypes[i],
+          show.tickettypeids[i],
           show.seatsfortype[i],
         ]);
         toReturn.push(queryResults);
@@ -260,7 +260,7 @@ export const createTickets = async (params: any): Promise<response> => {
   const toReturn = [];
   let rowCount = 0;
   for (let k = 0; k < numberOfShowings; k += 1) {
-    const numOfTypes = data[k].tickettypes.length;
+    const numOfTypes = data[k].tickettypeids.length;
     for (let i = 0; i < numOfTypes; i += 1) {
       const numOfSeats = data[k].seatsfortype[i];
       for (let j = 0; j < numOfSeats; j += 1) {
@@ -268,7 +268,7 @@ export const createTickets = async (params: any): Promise<response> => {
         try {
           queryResults = await pool.query(myQuery, [
             data[k].id,
-            data[k].tickettypes[i],
+            data[k].tickettypeids[i],
           ]);
           toReturn.push(queryResults);
           rowCount += queryResults.rowCount;
@@ -333,10 +333,10 @@ export const createEvent = async (params: any): Promise<response> => {
           RETURNING *;`,
     values: [
       params.seasonid_fk,
-      params.eventName,
-      params.eventDesc,
-      params.seasonticketeligible,
-      params.imageUrl,
+      params.eventname,
+      params.eventdescription,
+      params.ticketElligible,
+      params.image_url,
     ],
   };
   return buildResponse(myQuery, "POST");
@@ -422,18 +422,18 @@ export const insertAllShowings = async (
   const toReturn = [];
   let rowCount = 0;
   // Using 2020-01-01 as a default value or it will not save
-  let dateAct = '20200101'
-  let startTime = '00:00'
+  let dateAct = '20200101';
+  let startTime = '00:00';
   for (const showing of showings) {
     if (showing.eventdate !== '') {
       const date = showing.eventdate.split('-');
       dateAct = date.join('');
     }
     else {
-      dateAct = '20200101'
+      dateAct = '20200101';
     }
     if (showing.starttime !== '') {
-      startTime = showing.starttime
+      startTime = showing.starttime;
     }
     else {
       startTime = '00:00'
@@ -454,7 +454,7 @@ export const insertAllShowings = async (
     rowCount += 1;
     res.push({
       ...rows[0],
-      tickettypeids: showing.tickettypeids,
+      tickettypeids: showing.ticketTypeId,
       seatsForType: showing.seatsForType,
     });
   }
@@ -465,6 +465,7 @@ export const insertAllShowings = async (
       message: `${rowCount} ${rowCount === 1 ? "row" : "rows"} inserted.`,
     },
   };
+  // console.log(results)
   return res;
 };
 
