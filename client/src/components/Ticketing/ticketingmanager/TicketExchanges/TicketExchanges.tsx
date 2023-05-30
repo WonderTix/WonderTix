@@ -41,7 +41,7 @@ const TicketExchanges = () => {
                 List of Tickets Purchased
               </div>
               <div className="flex justify-center mt-1 mb-5 w-full">
-                <div className="w-full h-64 bg-white rounded-lg"></div>
+                <div className="w-full h-44 bg-white rounded-lg"></div>
               </div>
             </div>
           </div>
