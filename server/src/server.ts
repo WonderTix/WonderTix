@@ -36,13 +36,13 @@ import {reportingRouter} from './api/reporting/reporting.router';
 import {refundsRouter} from './api/refunds/refunds.router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import {ticketTypesRouter} from "./api/ticket_types/ticket_types.router";
+import {ticketTypesRouter} from './api/ticket_types/ticket_types.router';
 
 const openapiSpecification = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
     servers: [{
-      url: 'https://localhost:8000/api',
+      url: 'https://localhost:8000/api/1',
     }],
     info: {
       title: 'Wondertix API',
@@ -68,16 +68,6 @@ const createServer = async () => {
   dotenv.config({path: path.join(__dirname, '../../.env')});
 
   const app = express();
-  const hostname = process.env.HOSTNAME || 'localhost';
-
-
-  // const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
-  //   process.env.PRIVATE_STRIPE_KEY : '';
-
-  // const stripe = new Stripe(stripeKey, {
-  //   apiVersion: '2020-08-27',
-  // });
-
 
   /* Middleware */
   app.use(express.json());
@@ -94,26 +84,24 @@ const createServer = async () => {
 
   /* Connect Routers */
 
-  app.use('/api/donations', donationsRouter);
-  app.use('/api/contacts', contactsRouter);
-  app.use('/api/accounts', accountsRouter);
-  app.use('/api/tasks', tasksRouter);
-  app.use('/api/task_notes', taskNotesRouter);
-  app.use('/api/saved_reports', savedReportsRouter);
-  app.use('/api/newsletter/', newsletterRouter);
-  app.use('/api/events', eventRouter);
-  app.use('/api/email_subscriptions', subscriptionRouter);
-  app.use('/api/tickets', ticketRouter);
-  app.use('/api/ticket-types', ticketTypesRouter);
-  app.use('/api/doorlist', doorlistRouter);
-  app.use('/api/discounts', discountsRouter);
-  app.use('/api/refunds', refundsRouter);
-  app.use('/api/reporting', reportingRouter);
-  app.use('/api/order', orderRouter);
-
-  app.get('/', (_req, res) => res.send('Hello World.'));
-
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+  app.use('/api/1/donations', donationsRouter);
+  app.use('/api/1/contacts', contactsRouter);
+  app.use('/api/1/accounts', accountsRouter);
+  app.use('/api/1/tasks', tasksRouter);
+  app.use('/api/1/task_notes', taskNotesRouter);
+  app.use('/api/1/saved_reports', savedReportsRouter);
+  app.use('/api/1/newsletter/', newsletterRouter);
+  app.use('/api/1/events', eventRouter);
+  app.use('/api/1/email_subscriptions', subscriptionRouter);
+  app.use('/api/1/tickets', ticketRouter);
+  app.use('/api/1/ticket-types', ticketTypesRouter);
+  app.use('/api/1/doorlist', doorlistRouter);
+  app.use('/api/1/discounts', discountsRouter);
+  app.use('/api/1/refunds', refundsRouter);
+  app.use('/api/1/reporting', reportingRouter);
+  app.use('/api/1/order', orderRouter);
+  app.use('/api/1/docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+  app.get('/', (_req, res) => res.redirect('/api/1/docs'));
 
   return https
       .createServer(

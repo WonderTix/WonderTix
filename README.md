@@ -30,11 +30,11 @@ Future features include managing/creating email campaigns and ticket exchanges.
 4. Run `docker-compose up -d`
 5. To test the checkout process with Stripe, make sure the Stripe CLI is installed. 
    1. Run `stripe login` and press enter to accept access. This only needs to be done once.
-   2. Run `stripe listen --forward-to https://localhost:8000/api/order/webhook` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
+   2. Run `stripe listen --forward-to https://localhost:8000/api/1/order/webhook` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
 6. The client will be available at https://localhost:3000 
    1. You will need to accept the self-signed certificate. In chrome click anywhere on the page and type `thisisunsafe`. This will allow you to continue to the site.
 7. The server will be available at https://localhost:8000
-8. The swagger docs will be available at https://localhost:8000/api/docs
+8. The swagger docs will be available at https://localhost:8000/api/1/docs
    1. To log in to swagger, login to the client and copy the value of the `access_token` from the request to `<AUTH0_URL>/oath/token`. Paste this value into the `Authorize` dialog in swagger.
 
 ## Troubleshooting

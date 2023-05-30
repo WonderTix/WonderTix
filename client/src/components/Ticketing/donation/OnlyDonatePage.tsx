@@ -31,7 +31,7 @@ export default function OnlyDonationPage(): ReactElement {
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/checkout', {
+    const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
