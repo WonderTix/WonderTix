@@ -113,6 +113,7 @@ const ShowListController = ({
             index={index}
             handleSetShow={handleSetShow}
             handleDeleteShow={handleDeleteShow}
+            key={element.id}
           />
         );
       })}
