@@ -170,12 +170,12 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       setShowPopUp(true);
       return;
     }
-    if (eventName === '' || eventDesc === '' || showings.length === 0) {
+    if (eventname === '' || eventdescription === '' || showings.length === 0) {
       const conditions = [];
-      if (eventName === '') {
+      if (eventname === '') {
         conditions.push('Event name');
       }
-      if (eventDesc === '') {
+      if (eventdescription === '') {
         conditions.push('Event description');
       }
       let message = '';
@@ -208,10 +208,10 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       }
     }
     for (let i = 0; i < data.showings.length; i++) {
-      for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
-        if (data.showings[i].ticketTypeId[j] === 'NaN') {
+      for (let j = data.showings[i].tickettypeids.length - 1; j >= 0; j--) {
+        if (data.showings[i].tickettypeids[j] === 'NaN') {
           data.showings[i].seatsForType.splice(j, 1);
-          data.showings[i].ticketTypeId.splice(j, 1);
+          data.showings[i].tickettypeids.splice(j, 1);
         }
       }
     }
@@ -220,7 +220,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
 
   return (
     <div>
-      {showPopUp ? <PopUp message={err} title='Failed to save.' handleClose={() => setShowPopUp(false)}/> : null}
+      {showPopUp ? <PopUp message={err} title='Failed to save.' handleClose={() => setShowPopUp(false)} handleProceed={() => setShowPopUp(false)}/> : null}
       <Form
         onSubmit={handleSubmit}
         initialValues={initialValues ?? initialState}
