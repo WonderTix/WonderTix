@@ -70,7 +70,7 @@ const ShowingInputContainer = ({
   );
   const [eventdate, setEventDate] = useState(showingData.eventdate);
   const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
-  const [seatsForType, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
+  const [seatsfortype, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
   const [availableSeats, setAvailableSeats] = useState(
     showingData.availableseats !== undefined ? showingData.availableseats : 0
   );
@@ -99,7 +99,7 @@ const ShowingInputContainer = ({
       salestatus: true,
       totalseats: totalSeats,
       tickettypeids: ticketTypeId,
-      seatsForType: seatsForType,
+      seatsfortype: seatsfortype,
       availableseats: availableSeats ? availableSeats : totalSeats,
       eventid: showingData.eventid,
       id: id,
@@ -113,7 +113,7 @@ const ShowingInputContainer = ({
     ticketTypeId,
     totalSeats,
     availableSeats,
-    seatsForType,
+    seatsfortype,
   ]);
 
   const handleAddTicketOption = (e) => {
@@ -122,13 +122,13 @@ const ShowingInputContainer = ({
   };
 
   const handleSeatChange = (e) => {
-    const newSeats = [...seatsForType];
+    const newSeats = [...seatsfortype];
     newSeats[parseInt(e.target.id)] = parseInt(e.target.value);
     setSeatsForType(newSeats);
   };
 
   const handleRemoveOption = (e) => {
-    const newSeats = seatsForType.filter(
+    const newSeats = seatsfortype.filter(
       (_, i) => i !== parseInt(e.target.value)
     );
     const newTypes = ticketTypeId.filter(
@@ -171,7 +171,7 @@ const ShowingInputContainer = ({
               className="toAdd flex flex-col gap-5 md:pr-20 w-full"
               id="toAdd"
             ></div>
-            {seatsForType.map((seats, i) => (
+            {seatsfortype.map((seats, i) => (
               <div
                 key={i}
                 className="flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5"
@@ -183,7 +183,7 @@ const ShowingInputContainer = ({
                   type="number"
                   placeholder="# of Seats"
                   onChange={handleSeatChange}
-                  value={seatsForType[i]}
+                  value={seatsfortype[i]}
                 ></input>
                 <select
                   className="p-2 rounded-lg bg-violet-100"

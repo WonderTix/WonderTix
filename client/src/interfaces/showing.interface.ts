@@ -27,8 +27,8 @@ export interface Showing {
   starttime: string;
   eventdate: string;
   salestatus: boolean;
-  tickettypeids: number[];
-  seatsForType: number[];
+  tickettypes: number[];
+  seatsfortype: number[];
   totalseats: number;
   availableseats: number;
   ispreview: boolean;

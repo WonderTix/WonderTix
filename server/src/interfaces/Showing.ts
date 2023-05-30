@@ -28,9 +28,16 @@ export default interface Showing {
   salestatus: boolean;
   totalseats: number;
   availableseats: number;
-  tickettypeids: number[];
-  seatsForType: number[];
+  tickettypes: number[];
+  seatsfortype: number[];
   purchaseuri: string;
   ispreview: boolean;
   eventinstanceid: number;
+}
+
+export interface TicketType {
+  id: number,
+  name: string,
+  price: number,
+  concessions: number,
 }

@@ -114,8 +114,8 @@ export const updateInstances = async (
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
   // rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
   rowsToInsert.forEach((show: Showing) => {
-    if (typeof show.tickettypeids[0] !== "undefined") {
-      show.tickettypeids[0] = 0;
+    if (typeof show.tickettypes[0] !== "undefined") {
+      show.tickettypes[0] = 0;
     }
   });
   // @TODO set default ticket type
@@ -212,19 +212,21 @@ export const createShowing = async (params: any): Promise<response> => {
   const toReturn = [];
   let rowCount = 0;
   for (const show of linkingdata) {
-    const len = show.tickettypes.length;
-    for (let i = 0; i < len; i += 1) {
-      let queryResults;
-      try {
-        queryResults = await pool.query(myQuery, [
-          show.id,
-          show.tickettypes[i],
-          show.seatsfortype[i],
-        ]);
-        toReturn.push(queryResults);
-        rowCount += queryResults.rowCount;
-      } catch (error: any) {
-        res.status.message = error.message;
+    if (show.tickettypes != undefined) {
+      const len = show.tickettypes.length;
+      for (let i = 0; i < len; i += 1) {
+        let queryResults;
+        try {
+          queryResults = await pool.query(myQuery, [
+            show.id,
+            show.tickettypes[i],
+            show.seatsfortype[i],
+          ]);
+          toReturn.push(queryResults);
+          rowCount += queryResults.rowCount;
+        } catch (error: any) {
+          res.status.message = error.message;
+        }
       }
     }
   }
@@ -260,20 +262,22 @@ export const createTickets = async (params: any): Promise<response> => {
   const toReturn = [];
   let rowCount = 0;
   for (let k = 0; k < numberOfShowings; k += 1) {
-    const numOfTypes = data[k].tickettypes.length;
-    for (let i = 0; i < numOfTypes; i += 1) {
-      const numOfSeats = data[k].seatsfortype[i];
-      for (let j = 0; j < numOfSeats; j += 1) {
-        let queryResults;
-        try {
-          queryResults = await pool.query(myQuery, [
-            data[k].id,
-            data[k].tickettypes[i],
-          ]);
-          toReturn.push(queryResults);
-          rowCount += queryResults.rowCount;
-        } catch (error: any) {
-          res.status.message = error.message;
+    if (data[k].tickettypes != undefined) {
+      const numOfTypes = data[k].tickettypes.length;
+      for (let i = 0; i < numOfTypes; i += 1) {
+        const numOfSeats = data[k].seatsfortype[i];
+        for (let j = 0; j < numOfSeats; j += 1) {
+          let queryResults;
+          try {
+            queryResults = await pool.query(myQuery, [
+              data[k].id,
+              data[k].tickettypes[i],
+            ]);
+            toReturn.push(queryResults);
+            rowCount += queryResults.rowCount;
+          } catch (error: any) {
+            res.status.message = error.message;
+          }
         }
       }
     }
@@ -333,10 +337,10 @@ export const createEvent = async (params: any): Promise<response> => {
           RETURNING *;`,
     values: [
       params.seasonid_fk,
-      params.eventName,
-      params.eventDesc,
+      params.eventname,
+      params.eventdescription,
       params.seasonticketeligible,
-      params.imageUrl,
+      params.image_url,
     ],
   };
   return buildResponse(myQuery, "POST");
@@ -422,9 +426,9 @@ export const insertAllShowings = async (
   const toReturn = [];
   let rowCount = 0;
   for (const showing of showings) {
-    if (showing.tickettypeids.length === 0) {
+    //if (showing.tickettypes.length === 0) {
       //throw new Error("No ticket type provided");
-    }
+    //}
     const date = showing.eventdate; //.split('-');
     //const dateAct = date.join('');
     const { rows } = await pool.query(query, [
@@ -443,8 +447,8 @@ export const insertAllShowings = async (
     rowCount += 1;
     res.push({
       ...rows[0],
-      tickettypeids: showing.tickettypeids,
-      seatsForType: showing.seatsForType,
+      tickettypes: showing.tickettypes,
+      seatsfortype: showing.seatsfortype,
     });
   }
   results = {
@@ -527,7 +531,7 @@ export const getShowingsById = async (id: string): Promise<Showing[]> => {
                     salestatus,
                     totalseats,
                     availableseats,
-                    defaulttickettype AS tickettypeids,
+                    defaulttickettype AS tickettypes,
                     purchaseuri,
                     ispreview
                 FROM
