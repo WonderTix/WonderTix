@@ -81,6 +81,14 @@ const Dashboard = () => {
               <h5 className="mb-2 ml-1 text-2xl font-bold tracking-tight  text-white">Manage Ticket Types</h5>
             </div>
           </a>
+          <a onClick={() => navigate('/ticketing/ticketexchanges')} className="border-none hover:border-none hover:scale-105    transition duration-300 ease-in-out  bg-gradient-to-r from-red-500 to-blue-600 rounded-3xl   shadow-xl  ">
+            <div className="m-8 flex flex-col items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+              </svg>
+              <h5 className="mb-2 ml-1 text-2xl font-bold tracking-tight  text-white">Ticket Exchanges</h5>
+            </div>
+          </a>
         </div>
 
 
