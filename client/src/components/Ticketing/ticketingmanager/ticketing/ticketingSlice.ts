@@ -452,7 +452,7 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
 export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {data: {byId: {}, allIds: []}},
-  tickettype: {id: 0, name: '', price: 0, concessions: 0},
+  tickettype: {id: 0, name: '', price: '', concessions: 0},
   events: [],
   status: 'idle',
   discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},
