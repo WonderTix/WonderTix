@@ -294,12 +294,21 @@ const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) =
  * @param {Array} data - ticket, event, qty, CartItem
  * @returns appended statements to the cartfield, appends: name, qty, product_img_url
  */
-export const createCartItem = (data: {ticket: Ticket, tickettype: TicketType, event: Event, qty: number}): CartItem =>
-  [data.tickettype].map(tickettype => toPartialCartItem(tickettype, data.ticket))
-      .map(appendCartField('date' , `- ${format(new Date(data.ticket.date), 'eee, MMM dd - h:mm a')}`))
-      .map(appendCartField('name', `${titleCase(data.event.title)} Ticket${(data.qty>1) ? 's' : ''}`))
-      .map(appendCartField('qty', data.qty))
-      .map(appendCartField('product_img_url', data.event.image_url))[0];
+export const createCartItem = (data: { ticket: Ticket, tickettype: TicketType, event: Event, qty: number }): CartItem => {
+  const { ticket, tickettype, event, qty } = data;
+  if(ticket && tickettype && event && qty)
+  {
+    const partialCartItem = toPartialCartItem(tickettype, ticket);
+
+    const cartItem = [partialCartItem]
+      .map(appendCartField('date', `- ${format(new Date(ticket.date), 'eee, MMM dd - h:mm a')}`))
+      .map(appendCartField('name', `${titleCase(event.title)} Ticket${qty > 1 ? 's' : ''}`))
+      .map(appendCartField('qty', qty))
+      .map(appendCartField('product_img_url', event.image_url))[0];
+  
+    return cartItem;
+  }
+};
 
 /**  @param {string} EventId */
 type EventId = string
