@@ -391,7 +391,7 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   const inCart = state.cart.find(byId(id));
   const validRange = bound(0, ticket.availableseats);
 
-  console.log(payWhatPrice);
+
 
   if (inCart) {
     return {
@@ -404,7 +404,7 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
     };
   } else {
     const event = state.events.find(byId(ticket.eventid));
-    console.log("TicketType:", state.tickettype);
+
     const newCartItem = event ? createCartItem({ticket, tickettype, event, qty}) : null;
     if (event && payWhatPrice > 0) {
       payWhatFunc(newCartItem, payWhatPrice, qty);
