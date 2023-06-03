@@ -1,6 +1,8 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import * as ticketUtils from './ticket.service';
+import {pool} from '../db'
+
 
 export const ticketRouter = Router();
 
@@ -363,6 +365,23 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
     const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (error: any) {
+    res.sendStatus(500).send(error.message);
+  }
+});
+
+ticketRouter.get('/restrictions', async(req, res) => {
+  let ticketquery = `
+    SELECT * FROM ticketrestrictions
+  `;
+  try { 
+    let result = await pool.query(ticketquery);
+    
+    let resp = {
+      message: result.rows,
+      status: "success",
+    };
+    res.status(200).send(resp);
+  }catch (error: any) {
     res.sendStatus(500).send(error.message);
   }
 });

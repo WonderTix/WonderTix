@@ -45,7 +45,7 @@ const InstancesPage = () => {
             to-indigo-500 mb-14' >Select Event</h1>
         <ul className='md:grid md:grid-cols-2 md:gap-8 sm:grid sm:grid-cols-1 sm:gap-4 mt-9'>
           {allEvents.map((eventss) => (
-            <>
+            <div key={eventss.id}>
               <button onClick={() => navigate(`/ticketing/showings/${eventss.id}`)}
                 className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out " style={{backgroundImage: `url(${eventss.image_url})`}}>
                 <div className=' backdrop-blur-sm  md:flex-row sm:flex-col
@@ -68,7 +68,7 @@ const InstancesPage = () => {
                   </div>
                 </div>
               </button>
-            </>
+            </div>
           ),
           )}
         </ul>

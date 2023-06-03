@@ -198,7 +198,7 @@ export const createShowing = async (params: any): Promise<response> => {
     seatsfortype: s.seatsForType,
   }));
   const myQuery = {
-    text: `INSERT INTO ticketrestrictions (id_fk, tickettypeid_fk,
+    text: `INSERT INTO ticketrestrictions (eventinstanceid_fk, tickettypeid_fk,
       ticketlimit) VALUES ($1, $2, $3) `,
     values: <number[]>[],
   };
@@ -245,7 +245,7 @@ export const createTickets = async (params: any): Promise<response> => {
   const myQuery = {
     text: `INSERT INTO
             eventtickets
-            (id_fk, tickettypeid_fk)
+            (eventinstanceid_fk, tickettypeid_fk)
           VALUES ($1, $2)
           RETURNING *;`,
     values: <number[]>[],
