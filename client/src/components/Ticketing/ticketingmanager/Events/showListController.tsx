@@ -107,14 +107,15 @@ const ShowListController = ({
         element.index = index;
         //console.log("id: " + element.id);
         return (
-          <ShowingInputContainer
-            showingData={element}
-            id={element.id}
-            index={index}
-            handleSetShow={handleSetShow}
-            handleDeleteShow={handleDeleteShow}
-            key={element.id}
-          />
+          <div key={element.index}>
+            <ShowingInputContainer
+              showingData={element}
+              id={element.id}
+              index={index}
+              handleSetShow={handleSetShow}
+              handleDeleteShow={handleDeleteShow}
+            />
+          </div>
         );
       })}
       <div>

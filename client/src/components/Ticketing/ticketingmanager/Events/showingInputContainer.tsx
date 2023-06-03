@@ -161,7 +161,7 @@ const ShowingInputContainer = ({
       <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(id)}/> : null
       }
       <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
-        <label className='font-semibold text-white mb-7 mt-7  '>Show # {id + 1}</label>
+        <label className='font-semibold text-white mb-7 mt-7  '>Show # {index + 1}</label>
         <div className='flex flex-col gap-5 mt-5 md:pr-20'>
           <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
           <input

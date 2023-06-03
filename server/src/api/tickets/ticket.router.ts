@@ -375,10 +375,9 @@ ticketRouter.get('/restrictions/:eventid', async(req, res) => {
   `;
   try { 
     let result = await pool.query(ticketquery, [req.params.eventid]);
-
     
     let resp = {
-      message: result.rows,
+      data: result.rows,
       status: "success",
     };
     res.status(200).send(resp);

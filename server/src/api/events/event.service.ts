@@ -213,7 +213,7 @@ export const createShowing = async (params: any): Promise<response> => {
   let rowCount = 0;
   for (const show of linkingdata) {
     const len = show.tickettypeids.length;
-    for (let i = 0; i < len; i += 1) {
+    for (let i = 0; i < len; i++) {
       let queryResults;
       try {
         queryResults = await pool.query(myQuery, [

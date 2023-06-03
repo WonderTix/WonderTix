@@ -45,35 +45,25 @@ const Editeventmain = () => {
           eventData.showings = data.data;
         });
     console.log(eventData.showings)
-    await fetch(process.env.REACT_APP_ROOT_URL +
-          `/api/tickets`)
-        .then((response) => {
-          return response.json();
-        }).then((data)=>{
-          for (let i = 0; i < eventData.showings.length; i++) {
-            console.log(eventData.showings[i])
-            if (eventData.showings[i].tickettypeids === null) {
-              eventData.showings[i].tickettypeids = []
-            }
-            if (!eventData.showings[i].seatsForType) {
-              eventData.showings[i].seatsForType = []
-            }
-            // Will be annoying to scale for more ticket types
-            if (eventData.showings[i].id in data.data.byId) {
-              if (data.data.byId[eventData.showings[i].id].admission_type === 'General Admission - Adult') {
-                eventData.showings[i].tickettypeids.push(1)
+    for (let i = 0; i < eventData.showings.length; i++) {
+      await fetch(process.env.REACT_APP_ROOT_URL +
+            `/api/tickets/restrictions/${eventData.showings[i].id}`)
+          .then((response) => {
+            return response.json();
+          }).then((res)=>{
+            for (let j = 0; j < res.data.length; j++) {
+              console.log(res.data[j].ticketlimit, res.data[j].tickettypeid_fk)
+              if (!eventData.showings[i].seatsForType) {
+                eventData.showings[i].seatsForType = []
               }
-              if (data.data.byId[eventData.showings[i].id].admission_type === 'General Admission - Child') {
-                eventData.showings[i].tickettypeids.push(2)
+              if (eventData.showings[i].tickettypeids === null) {
+                eventData.showings[i].tickettypeids = []
               }
-              if (data.data.byId[eventData.showings[i].id].admission_type === 'VIP') {
-                eventData.showings[i].tickettypeids.push(3)
-              }
-              eventData.showings[i].seatsForType.push(data.data.byId[eventData.showings[i].id].totalseats)
+              eventData.showings[i].seatsForType.push(res.data[j].ticketlimit);
+              eventData.showings[i].tickettypeids.push(res.data[j].tickettypeid_fk);
             }
-          }
-          console.log(eventData.showings)
-        });
+          });
+    }
     setEventData(eventData);
     if (eventData.showings !== undefined) {
       setLoading(false);

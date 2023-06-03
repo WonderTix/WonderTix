@@ -208,10 +208,12 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       }
     }
     for (let i = 0; i < data.showings.length; i++) {
-      for (let j = data.showings[i].tickettypeids.length - 1; j >= 0; j--) {
-        if (data.showings[i].tickettypeids[j] === 'NaN') {
-          data.showings[i].seatsForType.splice(j, 1);
-          data.showings[i].tickettypeids.splice(j, 1);
+      if (data.showings[i].tickettypeids) {
+        for (let j = data.showings[i].tickettypeids.length - 1; j >= 0; j--) {
+          if (data.showings[i].tickettypeids[j] === 'NaN') {
+            data.showings[i].seatsForType.splice(j, 1);
+            data.showings[i].tickettypeids.splice(j, 1);
+          }
         }
       }
     }
