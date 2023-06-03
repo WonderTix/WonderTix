@@ -45,7 +45,7 @@ export interface TicketType {
  * @param {string} image_url - why is this name scheme different
  * @param {Showing} showings
  */
-/*export interface WtixEvent {
+/* export interface WtixEvent {
     seasonID?: number,
     eventid?: number,
     eventname: string,
@@ -128,14 +128,14 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
   const [eventdescription, setEventDesc] = useState(def.eventdescription);
   const [image_url, setImageURL] = useState(def.image_url);
   const active = def.active;
-  //console.log("showings before useState: " + JSON.stringify(def.showings));
+  // console.log("showings before useState: " + JSON.stringify(def.showings));
   const [showings, setShowings] = useState(def.showings);
   const [showPopUp, setShowPopUp] = useState(false);
   const [err, setErr] = useState('');
 
   useEffect(() => {
     console.log(initialValues);
-  })
+  });
   // FIELDS CALLBACK
   // Set event name
   const addeventname = useCallback((eventname) => {
@@ -227,7 +227,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
         onSubmit={handleSubmit}
         initialValues={initialValues ?? initialState}
         mutators={{...arrayMutators}}
-        
         render={({
           handleSubmit,
         }) => (
@@ -243,34 +242,34 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
                   action={addeventname} actionType={'onChange'} value={def.eventname}
                   placeholder={def.eventname ? def.eventname: 'Event Name'} />
 
-              <InputFieldForEvent
-                name={'eventdescription'}
-                id={'eventdescription'} headerText={'Enter Short Event Description'}
-                actionType={'onChange'}
-                action={addEventDesc} value={def.eventdescription}
-                placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
+                <InputFieldForEvent
+                  name={'eventdescription'}
+                  id={'eventdescription'} headerText={'Enter Short Event Description'}
+                  actionType={'onChange'}
+                  action={addEventDesc} value={def.eventdescription}
+                  placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
 
-              <InputFieldForEvent
-                name={'image_url'}
-                id={'image_url'} headerText={'Upload Image for Event'}
-                action={addURL} actionType={'onChange'} value={def.image_url}
-                placeholder={def.image_url ? def.image_url : 'image URL'}/>
-            </div>
-            {/* Showings container*/}
-            <div className='text-3xl font-semibold mt-5'>
-                Showings
-            </div>
-            <div className='mb-3 text-sm text-zinc-600'>
-                You can configure occurances of this event below.
-                To add more, click the &quot;Add Showing&quot; button.
-            </div>
-            <div>
-              {/*  Button to trigger add of new show*/}
-              <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
+                <InputFieldForEvent
+                  name={'image_url'}
+                  id={'image_url'} headerText={'Upload Image for Event'}
+                  action={addURL} actionType={'onChange'} value={def.image_url}
+                  placeholder={def.image_url ? def.image_url : 'image URL'}/>
+              </div>
+              {/* Showings container*/}
+              <div className='text-3xl font-semibold mt-5'>
+                  Showings
+              </div>
+              <div className='mb-3 text-sm text-zinc-600'>
+                  You can configure occurances of this event below.
+                  To add more, click the &quot;Add Showing&quot; button.
+              </div>
+              <div>
+                {/*  Button to trigger add of new show*/}
+                <div id="show-table">
+                  <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
+                </div>
               </div>
             </div>
-          </div>
 
             <button
               className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'

@@ -1,9 +1,10 @@
-/* eslint-disable camelcase */
+/* eslint-disable camelcase*/
+/* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
 import Udash_nav from '../../udash_navbar';
 import EditEventPage from './EditEventPage';
 import {useParams} from 'react-router-dom';
-import { WtixEvent } from '../../../../../interfaces/showing.interface';
+import {WtixEvent} from '../../../../../interfaces/showing.interface';
 
 /**
  * As the name says
@@ -44,7 +45,7 @@ const Editeventmain = () => {
         }).then((data)=>{
           eventData.showings = data.data;
         });
-    console.log(eventData.showings)
+    // console.log(eventData.showings);
     for (let i = 0; i < eventData.showings.length; i++) {
       await fetch(process.env.REACT_APP_ROOT_URL +
             `/api/tickets/restrictions/${eventData.showings[i].id}`)
@@ -52,12 +53,11 @@ const Editeventmain = () => {
             return response.json();
           }).then((res)=>{
             for (let j = 0; j < res.data.length; j++) {
-              console.log(res.data[j].ticketlimit, res.data[j].tickettypeid_fk)
               if (!eventData.showings[i].seatsForType) {
-                eventData.showings[i].seatsForType = []
+                eventData.showings[i].seatsForType = [];
               }
               if (eventData.showings[i].tickettypeids === null) {
-                eventData.showings[i].tickettypeids = []
+                eventData.showings[i].tickettypeids = [];
               }
               eventData.showings[i].seatsForType.push(res.data[j].ticketlimit);
               eventData.showings[i].tickettypeids.push(res.data[j].tickettypeid_fk);
