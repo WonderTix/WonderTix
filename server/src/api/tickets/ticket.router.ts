@@ -369,6 +369,39 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ *  /tickets/restrictions/{eventid}:
+ *    get:
+ *      summary: Delete ticket type
+ *      tags:
+ *        - Tickets
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *      - in: path
+ *        name: eventid
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items: {type: object}
+ *                  status:
+ *                    type: object
+ *                    properties:
+ *                      success: {type: boolean}
+ *                      message: {type: string}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
 ticketRouter.get('/restrictions/:eventid', async(req, res) => {
   let ticketquery = `
     SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
