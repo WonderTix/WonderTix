@@ -369,12 +369,13 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
   }
 });
 
-ticketRouter.get('/restrictions', async(req, res) => {
+ticketRouter.get('/restrictions/:eventid', async(req, res) => {
   let ticketquery = `
-    SELECT * FROM ticketrestrictions
+    SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
   `;
   try { 
-    let result = await pool.query(ticketquery);
+    let result = await pool.query(ticketquery, [req.params.eventid]);
+
     
     let resp = {
       message: result.rows,
