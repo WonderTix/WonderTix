@@ -20,7 +20,6 @@ services:
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules
-    command: ["/usr/wait-for-it.sh", "database:5432", "--", "npm", "run", "dev"]
   client:
     build:
       context: ./client
