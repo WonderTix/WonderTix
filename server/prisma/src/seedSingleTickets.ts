@@ -21,7 +21,7 @@ async function seedSingleTickets(prisma: PrismaClient) {
       singleticketid: item.singleticketid,
       eventticketid_fk: item.eventticketid_fk,
       orderitemid_fk: item.orderitemid_fk,
-      ticketwasswapped: item.ticketwasswapped === 'true',
+      ticketwasswapped: item.ticketwasswapped,
     }));
 
     await prisma.singletickets.createMany({

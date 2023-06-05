@@ -21,10 +21,10 @@ async function seedEventTickets(prisma: PrismaClient) {
       eventticketid: item.eventticketid,
       eventinstanceid_fk: item.eventinstanceid_fk,
       tickettypeid_fk: item.tickettypeid_fk,
-      purchased: item.purchased === 'true',
-      redeemed: item.redeemed === 'true',
+      purchased: item.purchased,
+      redeemed: item.redeemed,
       redeemed_ts: item.redeemed_ts,
-      donated: item.donated === 'true',
+      donated: item.donated,
     }));
 
     await prisma.eventtickets.createMany({

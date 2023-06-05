@@ -24,11 +24,11 @@ async function seedContacts(prisma: PrismaClient) {
       address: item.address,
       email: item.email,
       phone: item.phone,
-      donorbadge: item.donorbadge === 'true',
-      seatingaccom: item.seatingaccom === 'true',
-      vip: item.vip === 'true',
-      volunteerlist: item.volunteerlist === 'true',
-      newsletter: item.newsletter === 'true',
+      donorbadge: item.donorbadge,
+      seatingaccom: item.seatingaccom,
+      vip: item.vip,
+      volunteerlist: item.volunteerlist,
+      newsletter: item.newsletter,
     }));
 
     await prisma.contacts.createMany({

@@ -28,7 +28,7 @@ async function seedDonations(prisma: PrismaClient) {
     const preparedData = data.map((item) => ({
       donationid: item.donationid,
       contactid_fk: item.contactid_fk,
-      isanonymous: item.isanonymous === 'true',
+      isanonymous: item.isanonymous,
       amount: parseFloat(item.amount.replace('$', '')),
       donorname: item.donorname,
       frequency: frequencyMapping[item.frequency.toLowerCase() as keyof typeof frequencyMapping],

@@ -22,8 +22,8 @@ async function seedEvents(prisma: PrismaClient) {
       seasonid_fk: item.seasonid_fk,
       eventname: item.eventname,
       eventdescription: item.eventdescription,
-      active: item.active === 'true',
-      seasonticketeligible: item.seasonticketeligible === 'true',
+      active: item.active,
+      seasonticketeligible: item.seasonticketeligible,
       imageurl: item.imageurl,
     }));
 

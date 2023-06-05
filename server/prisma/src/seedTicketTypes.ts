@@ -22,7 +22,7 @@ async function seedTicketTypes(prisma: PrismaClient) {
       description: item.description,
       price: parseFloat(item.price.replace('$', '')),
       concessions: parseFloat(item.concessions.replace('$', '')),
-      deprecated: item.deprecated === 'true',
+      deprecated: item.deprecated,
     }));
 
     await prisma.tickettype.createMany({

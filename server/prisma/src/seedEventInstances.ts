@@ -24,11 +24,11 @@ async function seedEventInstances(prisma: PrismaClient) {
       eventid_fk: item.eventid_fk,
       eventdate: item.eventdate,
       eventtime: parseDateTime(item.eventtime),
-      salestatus: item.salestatus === 'true',
+      salestatus: item.salestatus,
       totalseats: item.totalseats,
       availableseats: item.availableseats,
       purchaseuri: item.purchaseuri,
-      ispreview: item.ispreview === 'true',
+      ispreview: item.ispreview,
       defaulttickettype: item.defaulttickettype,
     }));
 

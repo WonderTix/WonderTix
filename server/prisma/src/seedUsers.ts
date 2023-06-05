@@ -20,7 +20,7 @@ async function seedUsers(prisma: PrismaClient) {
     const preparedData = data.map((item) => ({
       userid: item.userid,
       username: item.username,
-      is_superadmin: item.is_superadmin === 'true',
+      is_superadmin: item.is_superadmin,
       auth0_id: item.auth0_id,
     }));
 

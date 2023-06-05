@@ -23,7 +23,7 @@ async function seedSeasonTickets(prisma: PrismaClient) {
       eventticketid_fk: item.eventticketid_fk,
       eventid_fk: item.eventid_fk,
       seasontickettypeid_fk: item.seasontickettypeid_fk,
-      ticketwasswapped: item.ticketwasswapped === 'true',
+      ticketwasswapped: item.ticketwasswapped,
     }));
 
     await prisma.seasontickets.createMany({
