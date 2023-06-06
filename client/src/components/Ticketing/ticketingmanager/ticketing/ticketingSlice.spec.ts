@@ -14,6 +14,7 @@ import ticketReducer, {
   addTicketToCart,
   editItemQty,
   Ticket,
+  TicketType,
   Event,
   ticketingState,
   selectEventData,
@@ -40,6 +41,7 @@ const ticket: Ticket = {
   concession_price: 4.99,
   availableseats: 34,
 };
+
 const ticket2: Ticket = {
   event_instance_id: 2,
   eventid: '1',
@@ -49,6 +51,14 @@ const ticket2: Ticket = {
   concession_price: 9.99,
   availableseats: 20,
 };
+
+const tickettype: TicketType = {
+  id: 1,
+  name: 'General Admission - Adult',
+  price: '$20.00',
+  concessions: 0,
+};
+
 const discount1: DiscountItem = {
   code: '',
   amount: 0,
@@ -68,6 +78,7 @@ const ticketingInitState: ticketingState = {
       allIds: [1, 2],
     },
   },
+  tickettype: tickettype,
   events: [event],
   status: 'idle',
   discount: discount1,
@@ -177,7 +188,7 @@ describe('ticketing slice', () => {
   describe('reduers', () => {
     let init = ticketingInitState;
     it('addTicketReducer: new ticket', () => {
-      const payload = {id: 1, qty: 1, concessions: false};
+      const payload = {id: 1, tickettype: tickettype, qty: 1, concessions: false};
       const res = ticketReducer(init, addTicketToCart(payload));
       expect(res)
           .toEqual({
@@ -188,7 +199,7 @@ describe('ticketing slice', () => {
     });
 
     it('addTicketReducer: exists in cart', () => {
-      const payload = {id: 1, qty: 1, concessions: false};
+      const payload = {id: 1, tickettype: tickettype, qty: 1, concessions: false};
       expect(ticketReducer(init, addTicketToCart(payload)))
           .toEqual({
             ...init,
@@ -197,13 +208,13 @@ describe('ticketing slice', () => {
     });
 
     it('addTicketReducer: in cart & add concessions', () => {
-      const res = ticketReducer(init, addTicketToCart({id: 1, qty: 1, concessions: true}));
+      const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: tickettype, qty: 1, concessions: true}));
       expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 2}]});
       init = res;
     });
 
     it('addTicketReducer: in cart (w/ concession) & add w/o concessions', () => {
-      const res = ticketReducer(init, addTicketToCart({id: 1, qty: 1, concessions: false}));
+      const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: tickettype, qty: 1, concessions: false}));
       expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 3}]});
       init = res;
     });

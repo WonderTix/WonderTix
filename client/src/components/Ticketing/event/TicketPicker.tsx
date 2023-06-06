@@ -228,7 +228,6 @@ const TicketPicker = (props: TicketPickerProps) => {
     const ticketInfo = {
       qty: qty,
       selectedDate: selectedDate,
-      ticketType: selectedTicketType,
     };
 
     // send ticket info to parent to display

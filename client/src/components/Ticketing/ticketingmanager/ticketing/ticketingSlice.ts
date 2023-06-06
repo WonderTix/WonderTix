@@ -111,6 +111,7 @@ export type DiscountItem = {code: string, amount: number, percent: number, minTi
  * @module
  * @param {Array} cart - Array called CartItem
  * @param {Array} tickets - TicketsState has a key(string), byId(ticket), allIds is a number array
+ * @param {Array} tickettype - TicketsState has a key(string), byId(ticket), allIds is a number array
  * @param {Array} events - Event Array
  * @param {Array} status - Array of different loading states
  * @param {Array} discount - Discount has a code(string), amount(number), percent(number)
@@ -418,7 +419,7 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
     if (event && payWhatPrice > 0) {
       payWhatFunc(newCartItem, payWhatPrice, qty);
     }
-    console.log(newCartItem);
+
     return newCartItem ?
             {
               ...state,
