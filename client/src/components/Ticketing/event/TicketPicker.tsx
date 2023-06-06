@@ -231,7 +231,7 @@ const TicketPicker = (props: TicketPickerProps) => {
     };
 
     // send ticket info to parent to display
-    const selectedTicketTyper = selectedTicketType.selectedTicketType
+    const selectedTicketTyper = selectedTicketType.selectedTicketType;
     props.onSubmit(ticketInfo);
 
     if (selectedTicket && qty) {
@@ -265,38 +265,39 @@ const TicketPicker = (props: TicketPickerProps) => {
   };
 
   const [filteredTicketTypes, setFilteredTicketTypes] = useState([]);
-  
+
+  const getDefaultType = ticketTypesState.ticketTypes.filter((t) => {
+    if (!selectedTicket) {
+      return;
+    }
+
+    return t.name === ticketTypesState.ticketTypes[1].name && selectedTicket.availableseats > 0;
+  });
+
+  console.log(numAvail);
+  console.log(selectedTicket);
+
   useEffect(() => {
-    if(selectedTicket) {
+    if (selectedTicket) {
       const fetchData = async () => {
         try {
           const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/restrictions/${selectedTicket.event_instance_id}`);
-          console.log("resonse",response);
           const data = await response.json();
-          console.log("data", data);
+          // console.log('data', data);
           const restriction = data;
-          const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter(t =>
-            restriction.rows.some(row => row.tickettypeid_fk === t.id) && selectedTicket.availableseats > 0
+          const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter((t) =>
+            restriction.rows.some((row) => row.tickettypeid_fk === t.id) && selectedTicket.availableseats > 0,
           );
           setFilteredTicketTypes(finalFilteredTicketTypes);
         } catch (error) {
           console.log(error);
         }
       };
-  
-      fetchData();      
-    }
-  }, [ticketTypesState.ticketTypes]);
-  
-  const getDefaultType = ticketTypesState.ticketTypes.filter((t) => {
-    if (!selectedTicket) {
-      return;
-    }
-    return t.name === selectedTicket.admission_type && selectedTicket.availableseats > 0;
-  });
 
-  console.log(numAvail);
-  console.log(selectedTicket);
+      fetchData();
+    }
+  }, [selectedTicket]);
+
   return (
     <>
       <Collapse in={showClearBtn}>
@@ -327,14 +328,13 @@ const TicketPicker = (props: TicketPickerProps) => {
           eventInstanceSelected={(t) => dispatch(timeSelected(t))}
         />
       </Collapse>
-
       <div className='flex flex-col gap-2 mt-7'>
         {ticketTypes.map((t) => (
           <p key={t.id}>
             hello {t.name}
           </p>
         ))}
-      <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
+        <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
         <select
           // labelId="ticket-type-select-label"
           value={selectedTicketType.name}
@@ -352,14 +352,13 @@ const TicketPicker = (props: TicketPickerProps) => {
             ))
           ) : (
              getDefaultType.map((t) => (
-              <option className="text-white" key={t.id} value={t.name}>
-                {t.name}: {t.price}
-              </option>
-            ))
+               <option className="text-white" key={t.id} value={t.name}>
+                 {t.name}: {t.price}
+               </option>
+             ))
           )}
         </select>
       </div>
-
       <div className='flex flex-col gap-2 mt-3'>
         <div className='text-center text-zinc-300' id="qty-select-label">
           {selectedTicket ?
@@ -387,7 +386,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           onChange={() => dispatch({type: 'toggle_concession'})} name='concessions' />
         <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
       </div>
-      
+
       <div className={selectedTicketType && selectedTicketType.selectedTicketType && selectedTicketType.selectedTicketType.name === 'Pay What You Can' ? 'show flex-col': 'hidden'}>
         <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
           <div className='justify-center items-center text-white rounded-xl'>
