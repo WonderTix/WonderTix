@@ -56,7 +56,7 @@ const tickettype: TicketType = {
   id: 1,
   name: 'General Admission - Adult',
   price: '$20.00',
-  concessions: 0,
+  concessions: '$0.00',
 };
 
 const discount1: DiscountItem = {
@@ -96,11 +96,11 @@ const ROOT_INIT_STATE: RootState = {
 describe('ticketing slice', () => {
   const newCartItem = {
     product_id: ticket.event_instance_id,
-    qty: 1,
+    qty: 2,
     name: 'Event 1 Ticket',
     desc: 'General Admission - Adult - Sat, Jul 31 - 7:00 PM',
     product_img_url: 'https://image',
-    price: 15.99,
+    price: 20,
   };
 
   const concessionsItem = {
@@ -115,9 +115,12 @@ describe('ticketing slice', () => {
       product_id: 1, // references state.tickets.event_instance_id
       qty: 2,
       name: 'thing',
+      date: new Date('2021-08-08T16:00:00'),
       desc: 'desc1',
       product_img_url: 'www.com',
+      payWhatCan: false, 
       price: 2.99,
+
     };
     const init: RootState = {
       ...ROOT_INIT_STATE,
@@ -129,6 +132,8 @@ describe('ticketing slice', () => {
             product_id: 2, // references state.tickets.event_instance_id
             qty: 4,
             name: 'thing2',
+            date: new Date('2021-08-07T16:00:00'),
+            payWhatCan: false,
             desc: 'desc2',
             product_img_url: 'www.com',
             price: 3.99,

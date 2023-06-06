@@ -65,19 +65,18 @@ export interface Ticket {
 
 /**
  * TicketType Info
- * 
  * @module
  * @param {number} id
  * @param {string} name
  * @param {string} price
- * @param {number} concessions
+ * @param {string} concessions
  */
 
 export interface TicketType {
   id: number,
   name: string,
   price: string,
-  concessions: number,
+  concessions: string,
 }
 
 /**
@@ -280,7 +279,7 @@ export interface Discount {
 
 export const toPartialCartItem = <T extends TicketType>(type: T, tickets: Ticket) => ({
   product_id: type.id,
-  price: parseFloat(type.price.replace(/[^0-9.-]+/g, "")),
+  price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
   desc: `${type.name} - ${format(new Date(tickets.date), 'eee, MMM dd - h:mm a')}`,
 });
 
@@ -296,17 +295,16 @@ const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) =
  * @returns appended statements to the cartfield, appends: name, qty, product_img_url
  */
 export const createCartItem = (data: { ticket: Ticket, tickettype: TicketType, event: Event, qty: number }): CartItem => {
-  const { ticket, tickettype, event, qty } = data;
-  if(ticket && tickettype && event && qty)
-  {
+  const {ticket, tickettype, event, qty} = data;
+  if (ticket && tickettype && event && qty) {
     const partialCartItem = toPartialCartItem(tickettype, ticket);
 
     const cartItem = [partialCartItem]
-      .map(appendCartField('date', `- ${format(new Date(ticket.date), 'eee, MMM dd - h:mm a')}`))
-      .map(appendCartField('name', `${titleCase(event.title)} Ticket${qty > 1 ? 's' : ''}`))
-      .map(appendCartField('qty', qty))
-      .map(appendCartField('product_img_url', event.image_url))[0];
-  
+        .map(appendCartField('date', `- ${format(new Date(ticket.date), 'eee, MMM dd - h:mm a')}`))
+        .map(appendCartField('name', `${titleCase(event.title)} Ticket${qty > 1 ? 's' : ''}`))
+        .map(appendCartField('qty', qty))
+        .map(appendCartField('product_img_url', event.image_url))[0];
+
     return cartItem;
   }
 };
@@ -401,8 +399,6 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   const inCart = state.cart.find(byId(id));
   const validRange = bound(0, ticket.availableseats);
 
-
-
   if (inCart) {
     return {
       ...state,
@@ -462,7 +458,7 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
 export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {data: {byId: {}, allIds: []}},
-  tickettype: {id: 0, name: '', price: '', concessions: 0},
+  tickettype: {id: 0, name: '', price: '', concessions: ''},
   events: [],
   status: 'idle',
   discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},

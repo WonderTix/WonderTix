@@ -20,7 +20,6 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import {TicketType} from '../ticketingmanager/Events/EventForm';
 import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 
 /**
@@ -53,6 +52,13 @@ interface TicketPickerState {
     prompt: 'selectDate' | 'selectTime' | 'showSelection',
 }
 
+export interface TicketType {
+  id: number,
+  name: string,
+  price: string,
+  concessions: string,
+}
+
 /**
 * Initial state
 * displayedShowings: [],
@@ -73,8 +79,8 @@ const initialState: TicketPickerState = {
   selectedTicketType: {
     id: 0,
     name: '',
-    price: 0,
-    concessions: 0,
+    price: '',
+    concessions: '',
   },
   showCalendar: true,
   showTimes: false,
@@ -143,7 +149,7 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
       return {...state, payWhatPrice: action.payload};
     }
     case 'change_ticket_type': {
-      return {...state, selectedTicketType: action.payload};
+      return {...state, selectedTicketType: action.payload.selectedTicketType};
     }
     default:
       throw new Error('Received undefined action type');
@@ -231,11 +237,9 @@ const TicketPicker = (props: TicketPickerProps) => {
     };
 
     // send ticket info to parent to display
-    const selectedTicketTyper = selectedTicketType.selectedTicketType;
     props.onSubmit(ticketInfo);
-
     if (selectedTicket && qty) {
-      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, tickettype: selectedTicketTyper, qty, concessions, payWhatPrice}));
+      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, tickettype: selectedTicketType, qty, concessions, payWhatPrice}));
       appDispatch(openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`));
       dispatch(resetWidget());
     }
@@ -387,7 +391,7 @@ const TicketPicker = (props: TicketPickerProps) => {
         <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
       </div>
 
-      <div className={selectedTicketType && selectedTicketType.selectedTicketType && selectedTicketType.selectedTicketType.name === 'Pay What You Can' ? 'show flex-col': 'hidden'}>
+      <div className={selectedTicketType && selectedTicketType && selectedTicketType.name === 'Pay What You Can' ? 'show flex-col': 'hidden'}>
         <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
           <div className='justify-center items-center text-white rounded-xl'>
             <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What You Can</h1>
