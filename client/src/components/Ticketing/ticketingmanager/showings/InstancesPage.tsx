@@ -47,10 +47,10 @@ const InstancesPage = () => {
           {allEvents.map((eventss) => (
             <div key={eventss.id}>
               <button onClick={() => navigate(`/ticketing/showings/${eventss.id}`)}
-                className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out " style={{backgroundImage: `url(${eventss.image_url})`}}>
+                className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full" style={{backgroundImage: `url(${eventss.image_url})`}}>
                 <div className=' backdrop-blur-sm  md:flex-row sm:flex-col
          sm:items-center w-full rounded-xl  bg-zinc-900/70 h-full'>
-                  <div className='flex flex-col items-center'>
+                  <div className='flex flex-col overflow-clip'>
                     <div className='w-full h-40'>
                       <img className='object-cover h-full w-full rounded-t-xl' src={eventss.image_url}/>
                     </div>
