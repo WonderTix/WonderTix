@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, {CSSProperties} from 'react';
 import popupProps from '../../interfaces/popup.interface';
 
@@ -37,7 +38,7 @@ const box: CSSProperties ={
  * @returns {ReactElement} PopUp - Function named PopUp that can be interacted
  * with
  */
-const PopUp = ({title, message, handleClose, handleProceed}: popupProps) => {
+const PopUp = ({title, message, handleClose, handleProceed, success}: popupProps) => {
   return (
     <div style={popUpContainer}>
       <div id="popup-modal"
@@ -70,11 +71,9 @@ const PopUp = ({title, message, handleClose, handleProceed}: popupProps) => {
               </p>
               <button data-modal-toggle="popup-modal"
                 onClick={handleProceed}
-                type="button" className="text-white bg-red-600
-                hover:bg-red-800 focus:ring-4 focus:outline-none
-                focus:ring-red-300 dark:focus:ring-red-800 font-medium
-                 rounded-lg text-sm inline-flex items-center
-                  px-5 py-2.5 text-center mr-2">
+                type="button" className={`text-white ${success ?
+                  'bg-green-600 hover:bg-green-800 focus:ring-green-300 dark:focus:ring-green-800': 'bg-red-600 hover:bg-red-800 focus:ring-red-300 dark:focus:ring-red-800'}
+                   focus:ring-4 focus:outline-none font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2`}>
                     Proceed
               </button>
             </div>

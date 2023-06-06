@@ -222,7 +222,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
 
   return (
     <div>
-      {showPopUp ? <PopUp message={err} title='Failed to save.' handleClose={() => setShowPopUp(false)} handleProceed={() => setShowPopUp(false)}/> : null}
+      {showPopUp ? <PopUp message={err} title='Failed to save.' handleClose={() => setShowPopUp(false)} handleProceed={() => setShowPopUp(false)} success={false}/> : null}
       <Form
         onSubmit={handleSubmit}
         initialValues={initialValues ?? initialState}
