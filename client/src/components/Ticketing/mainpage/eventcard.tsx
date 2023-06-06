@@ -26,7 +26,8 @@ const ListComponent = (props: Event) => {
         <img className=" md:w-[14rem] h-96
          sm:h-40 md:h-auto object-cover rounded-t-lg
            md:rounded-lg " src={props.image_url} alt="/" />
-        <div className="p-6 flex flex-col justify-start text-center relative">
+        <div className="p-6 flex flex-col justify-start text-center
+        relative w-full">
           <h5 className="text-gray-100 text-xl
            font-medium mb-2">{titleCase(props.title)}</h5>
           <p className="text-gray-200 text-base mb-4">
@@ -40,8 +41,7 @@ const ListComponent = (props: Event) => {
               className='py-2
             text-white  border bg-indigo-600 border-indigo-600
              hover:bg-transparent hover:text-white rounded-2xl
-             px-4 sm:w-[60%] my-3 mx-1
-            hover:border-white'>See Showings</button>
+             px-6 my-3 mx-1 hover:border-white'>See Showings</button>
           </div>
 
         </div>

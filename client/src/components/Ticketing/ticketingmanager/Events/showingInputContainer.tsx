@@ -35,6 +35,7 @@ export interface MapPropsToShowingInputContainer {
 /**
  *
  * @param {MapPropsToShowingInputContainer} {initialData, id, handleSetShow}
+ * @param date
  * @returns {ReactElement}
  */
 // eslint-disable-next-line react/prop-types
@@ -166,33 +167,40 @@ const ShowingInputContainer = ({
             <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
             {
               seatsForType.map((seats, i) => (
-                <div key={i} className='flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5'>
-                  <input
-                    id={String(i)}
-                    className='input rounded-lg p-2 bg-violet-100 w-full flex flex-col'
-                    name='numInput'
-                    type='number'
-                    placeholder='# of Seats'
-                    onChange={handleSeatChange}
-                    value={seatsForType[i]}
-                  >
-                  </input>
-                  <select className='p-2 rounded-lg bg-violet-100' name='typeSelect' onChange={handleChangeOption} id={String(i)} value={ticketTypeId[i]}>
-                    <option className='text-sm text-zinc-700'>
+                <div key={i} className='flex flex-col gap-6 mt-2 md:pr-20 bg-violet-800 rounded-xl p-5 pt-5'>
+                  <label className='font-semibold text-white flex flex-col'>
+                    Ticket Type
+                    <select className='p-2 mt-2 rounded-lg bg-violet-100 text-zinc-700 font-normal' name='typeSelect' onChange={handleChangeOption} id={String(i)} value={ticketTypeId[i]}>
+                      <option className='text-sm text-zinc-700'>
                       Select Ticket Type
-                    </option>
-                    {ticketTypes.map((ticketType, j) => <option key={j} className='text-sm text-zinc-700' value={ticketType.id}>
-                      {ticketType.description}: {ticketType.price} (+{ticketType.concessions} concessions)
-                    </option>)}
-                  </select>
-                  <button className='w-min block px-2 py-1 bg-red-500 disabled:opacity-30 mb-4 text-white rounded-lg text-sm'
-                    type='button' onClick={handleRemoveOption} value={i}>
+                      </option>
+                      {ticketTypes.map((ticketType, j) => <option key={j} className='text-sm text-zinc-700' value={ticketType.id}>
+                        {ticketType.description}: {ticketType.price} (+{ticketType.concessions} concessions)
+                      </option>)}
+                    </select>
+                  </label>
+                  <label className='font-semibold text-white'>
+                    Number of tickets per type
+                    <input
+                      id={String(i)}
+                      className='input rounded-lg p-2 mt-2 bg-violet-100 w-full flex flex-col text-zinc-700 font-normal'
+                      name='numInput'
+                      type='number'
+                      placeholder='# of Seats'
+                      onChange={handleSeatChange}
+                      value={seatsForType[i]}
+                    >
+                    </input>
+                  </label>
+                  <button className='w-min block px-4 py-1 bg-red-700 disabled:opacity-30 text-white rounded-3xl font-semibold
+                  transition ease-in-out delay-50 hover:scale-105 hover:bg-red-600'
+                  type='button' onClick={handleRemoveOption} value={i}>
                     Remove
                   </button>
                 </div>))
             }
-            <button className='block px-2 py-1 bg-blue-500 disabled:opacity-30
-              mt-4 mb-2 text-white rounded-lg text-sm'
+            <button className='block px-3 py-2 bg-blue-500 disabled:opacity-30
+              mt-4 mb-2 text-white rounded-xl transition ease-in-out delay-50 hover:scale-105 hover:bg-blue-400'
             type='button'
             onClick={handleAddTicketOption}>Add Ticket Option</button>
           </div>
@@ -202,7 +210,7 @@ const ShowingInputContainer = ({
               <input
                 type='date'
                 id='date'
-                className='input w-full p-2 rounded-lg bg-violet-100 mb-7'
+                className='input w-full p-2 mt-1 rounded-lg bg-violet-100 mb-7'
                 value={toDateStringFormat(showingData.eventdate)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   console.log(ev.target.value);
@@ -217,7 +225,7 @@ const ShowingInputContainer = ({
                 id='time'
                 name='starttime'
                 placeholder='00:00:00'
-                className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
+                className='w-full p-2 mt-1 rounded-lg bg-violet-100 mb-7 '
                 value={toTimeStringFormat(showingData.starttime)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setStartTime(ev.target.value);
@@ -227,12 +235,13 @@ const ShowingInputContainer = ({
           </div>
         </div>
         <button
-          className='px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm'
+          className='px-4 py-2 bg-red-700 disabled:opacity-30 mt-2 mb-4 text-white font-semibold rounded-3xl
+          transition ease-in-out delay-50 hover:scale-105 hover:bg-red-600'
           type='button'
           onClick={handleDeleteShow}
           id={String(index)}
         >
-          Delete
+          Delete Showing
         </button>
       </div>
     </div>
