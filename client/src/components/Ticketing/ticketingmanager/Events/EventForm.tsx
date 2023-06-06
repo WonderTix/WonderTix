@@ -87,7 +87,7 @@ const initialState = {
  */
 interface EventFormProps {
     onSubmit: (formData: WtixEvent) => void
-    ticketTypes: TicketType[],
+    tickettypes: number[],
     initialValues?: Partial<WtixEvent>,
 }
 
@@ -101,12 +101,12 @@ interface EventFormProps {
  * @param active - initialValues.active || false
  * @param showings - initialValues.showings || []
  * @param eventname.onSubmit
- * @param eventname.ticketTypes
+ * @param {TicketType} eventname.tickettypes
  * @param eventname.initialValues
  * @returns {Form} EventForm
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
+const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   const def: WtixEvent = (initialValues !== undefined) ? {
     eventname: initialValues.eventname,
     eventid: initialValues.eventid,

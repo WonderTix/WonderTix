@@ -34,7 +34,7 @@ interface mapDataToEditEventProps {
  * @param params - useParams()
  * @param nav - useNavigate()
  * @param dispatch - useAppDispatch()
- * @param ticketTypes, setTicketTypes - useState([])
+ * @param {number} tickettypes, setTicketTypes - useState([])
  * @param getAccessTokenSilently - useAuth0()
  * @returns {ReactElement}
  */
@@ -51,7 +51,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   const params = useParams();
   const nav = useNavigate();
   const dispatch = useAppDispatch();
-  const [ticketTypes, setTicketTypes] = useState([]);
+  const [tickettypes, setTicketTypes] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
   useEffect(() => {
     fetchTicketTypes();
@@ -114,7 +114,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
           Edit {initValues.eventname ?? 'Your Event'}
         </h1>
         <EventForm
-          ticketTypes={ticketTypes}
+          tickettypes={tickettypes}
           onSubmit={onSubmit}
           initialValues={initValues}
         />

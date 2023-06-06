@@ -28,7 +28,7 @@ const formatShowingData = (eventid: number) => (data: any) => {
  * @returns {ReactElement} and all data, or console error, EventForm and PopUp
  */
 const CreateEventPage = () => {
-  const [ticketTypes, setTicketTypes] = useState([]);
+  const [tickettypes, setTicketTypes] = useState([]);
   const [visible, setVisible] = useState(false);
   const {getAccessTokenSilently} = useAuth0();
   const nav = useNavigate();
@@ -101,7 +101,7 @@ const CreateEventPage = () => {
          <></> }
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-violet-500 to-fuchsia-500' >Add New Event</h1>
-        <EventForm onSubmit={onSubmit} ticketTypes={ticketTypes}/>
+        <EventForm onSubmit={onSubmit} tickettypes={tickettypes}/>
       </div>
     </div>
   );
