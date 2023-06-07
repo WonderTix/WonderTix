@@ -121,7 +121,11 @@ export const updateInstances = async (
   // @TODO set default ticket type
 
   console.log("Rows to insert", rowsToInsert);
-  const rowsInserted = await insertAllShowings(rowsToInsert);
+  const rowsInsertedResult = await insertAllShowings(rowsToInsert);
+  const rowsInserted = rowsInsertedResult.data;
+  if(rowsInsertedResult.status.success == false) {
+    return rowsInsertedResult;
+  }
 
   return {
     data: [
@@ -190,7 +194,11 @@ export const updateEvent = async (params: any): Promise<response> => {
 // linkedtickets is depracated, will require refactor
 //
 export const createShowing = async (params: any): Promise<response> => {
-  const newInstances = await insertAllShowings(params.instances);
+  const result: response = await insertAllShowings(params.instances);
+  if(result.status.success == false) {
+    return result;
+  }
+  const newInstances = result.data;
   // Link showtime to ticket type
   const linkingdata = newInstances.map((s) => ({
     id: <number>Object.values(s)[0],
@@ -198,57 +206,54 @@ export const createShowing = async (params: any): Promise<response> => {
     seatsfortype: <number[]>Object.values(s)[11], // Keeps changing?
   }));
   const myQuery = {
-    text: `INSERT INTO ticketrestrictions (id_fk, tickettypeid_fk,
+    text: `INSERT INTO ticketrestrictions (eventinstanceid_fk, tickettypeid_fk,
       ticketlimit) VALUES ($1, $2, $3) `,
     values: <number[]>[],
   };
+  // no longer needed because of createEmptyTickets call in insertAllShowing
+  //await createTickets(linkingdata);
+  return result;
+};
+/**
+ * @Param {count} the number of tickets to create
+ * @Param {id} the eventid foreign key to be used
+ * @Returns a response with message, success or failure, and the id inserted
+ */
+const createEmptyTickets = async (count: number, id: number): Promise<response> => {
   let res: response = {
     data: <any[]>[],
     status: {
       success: false,
-      message: "",
+      message: ""
     },
   };
-  const toReturn = [];
-  let rowCount = 0;
-  for (const show of linkingdata) {
-    if (show.tickettypes != undefined) {
-      const len = show.tickettypes.length;
-      for (let i = 0; i < len; i += 1) {
-        let queryResults;
-        try {
-          queryResults = await pool.query(myQuery, [
-            show.id,
-            show.tickettypes[i],
-            show.seatsfortype[i],
-          ]);
-          toReturn.push(queryResults);
-          rowCount += queryResults.rowCount;
-        } catch (error: any) {
-          res.status.message = error.message;
-        }
-      }
+  let toReturn = [];
+  let query = `
+    INSERT INTO eventtickets (id) values ($1) RETURNING *;
+  `;
+  for(let i = 0; i < count; i++) {
+    try {
+      let queryResults = await pool.query(query, [id]);
+      toReturn.push(queryResults);
+    }catch(error: any) {
+      res.status.message = error.message;
+      res.status.success = false;
+      return res;
     }
   }
-  res = {
-    data: toReturn,
-    status: {
-      success: true,
-      message: `${rowCount} ${rowCount === 1 ? "row" : "rows"} inserted.`,
-    },
-  };
-  await createTickets(linkingdata);
+  res.status.success = true;
+  res.data = toReturn;
   return res;
-};
+}
 
-export const createTickets = async (params: any): Promise<response> => {
+export const createTickets = async (params: {id: number, tickettypes: number[], seatsfortype: number[]}[]): Promise<response> => {
   const data = params;
   const numberOfShowings = data.length;
   const myQuery = {
     text: `INSERT INTO
             eventtickets
-            (id_fk, tickettypeid_fk)
-          VALUES ($1, $2)
+            (eventinstanceid_fk)
+          VALUES ($1)
           RETURNING *;`,
     values: <number[]>[],
   };
@@ -389,7 +394,7 @@ export const getActiveEventsAndInstances = async (): Promise<response> => {
 
 export const insertAllShowings = async (
   showings: Showing[]
-): Promise<Showing[]> => {
+): Promise<response> => {
   // Breaking change: added ispreview
   // Will need to add defaulttickettype for event instances when field add/db updated
   const query = `
@@ -405,19 +410,18 @@ export const insertAllShowings = async (
                 VALUES
                   ($1, $2, $3, $4, $5, true, $6)
                 RETURNING *;`;
-      // this is temp fix 1 should be set to defaulttickettype, and updateShowings needs to have a way to remove tickets        
-      const ticket_query = `
-                    INSERT INTO eventtickets (
-                      eventinstanceid_fk,
-                      tickettypeid_fk,
-                      purchased,
-                      redeemed,
-                      donated
-                    ) VALUES ($1, 1, false, false, false);
-  `;
-  const res = [];
-  let results: response = {
-    data: <any[]>[],
+
+      const restrictions_query = `
+          INSERT INTO ticketrestrictions (
+            eventinstanceid_fk,
+            tickettypeid_fk,
+            ticketlimit,
+            ticketssold
+          ) VALUES ($1, $2, $3, 0);
+      `;
+
+  let res: response = {
+    data: [],
     status: {
       success: false,
       message: "",
@@ -426,9 +430,7 @@ export const insertAllShowings = async (
   const toReturn = [];
   let rowCount = 0;
   for (const showing of showings) {
-    //if (showing.tickettypes.length === 0) {
-      //throw new Error("No ticket type provided");
-    //}
+    
     const date = showing.eventdate; //.split('-');
     //const dateAct = date.join('');
     const { rows } = await pool.query(query, [
@@ -439,28 +441,75 @@ export const insertAllShowings = async (
       showing.totalseats,
       showing.ispreview,
     ]);
-    // for each seat create the entry in the eventtickets table
-    for (const seat of [...Array(showing.totalseats).keys()]) {
-      await pool.query(ticket_query, [rows[0].id]);
+    
+    // the only new data is the id generated by auto increment
+    showing.id = rows[0].id;
+
+    res = await createRestrictions(restrictions_query, showing);
+    if(res.status.success != true) {
+      return res;
     }
-    toReturn.push(showing);
+
+    res = await createEmptyTickets(showing.totalseats, rows[0].id);
+    if(res.status.success != true) {
+      return res;
+    }
+
     rowCount += 1;
-    res.push({
-      ...rows[0],
-      tickettypes: showing.tickettypes,
-      seatsfortype: showing.seatsfortype,
-    });
+    
+    res.data.push(showing);
   }
-  results = {
-    data: toReturn,
-    status: {
-      success: true,
-      message: `${rowCount} ${rowCount === 1 ? "row" : "rows"} inserted.`,
-    },
-  };
-  console.log(results);
+  
+  console.log(res);
+  
   return res;
 };
+
+export const createRestrictions = async (restriction_query: string, showing: Showing): Promise<response> => {
+  
+  let res: response = {
+    data: <any[]>[],
+    status: {
+      success: false,
+      message: "",
+    },
+  };
+  
+  let toReturn = [];
+  let rowCount: number = 0;
+
+  let seat_count = showing.totalseats;
+  let typed_count = 0;
+    
+    if (showing.tickettypes != undefined && showing.seatsfortype != undefined) {
+      const len = showing.tickettypes.length;
+      for (let i = 0; i < len; i += 1) {
+        let queryResults;
+        try {
+          queryResults = await pool.query(restriction_query, [
+            showing.id,
+            showing.tickettypes[i],
+            showing.seatsfortype[i],
+          ]);
+          toReturn.push(queryResults);
+          rowCount += queryResults.rowCount;
+        } catch (error: any) {
+          res.status.message = error.message;
+          res.status.success = false;
+          return res;
+        }
+      }
+    }
+    if(typed_count > seat_count) {
+      res.status.message = "total restriction limit is greater than available seats";
+      res.status.success = false;
+      return res;
+    }
+    
+    res.status.success = true;
+    res.data = toReturn;
+    return res;
+}
 
 // takes in an array of Showings to be updated in DB
 export const updateShowings = async (showings: Showing[]): Promise<number> => {
@@ -480,6 +529,15 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
 
                       WHERE
                         id = $1;`;
+  const update_restrictions = `
+    UPDATE
+      ticketrestrictions
+    SET
+      tickettypeid_fk = $2,
+      ticketlimit = $3
+    where
+      eventinstanceid_fk = $1
+  `;
   let rowsUpdated = 0;
   for (const showing of showings) {
     //console.log("Update Current: ", showings);
@@ -494,8 +552,13 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
       showing.ispreview,
       showing.eventid,
     ]);
+    let res = await createRestrictions(update_restrictions, showing);
+    if(res.status.success == false){
+      return 0;
+    }
     rowsUpdated += queryResult.rowCount;
   }
+  
   return rowsUpdated;
 };
 

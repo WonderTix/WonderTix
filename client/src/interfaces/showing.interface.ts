@@ -20,6 +20,14 @@ export interface WtixEvent {
   showings: Showing[];
 }
 
+export interface Restriction {
+  id: number;
+  eventinstanceid: number;
+  tickettypeid: number;
+  ticketlimit: number;
+  ticketssold: number;
+}
+
 export interface Showing {
   id: number;
   index: number;
@@ -32,4 +40,5 @@ export interface Showing {
   totalseats: number;
   availableseats: number;
   ispreview: boolean;
+  restrictions?: Restriction[];
 }

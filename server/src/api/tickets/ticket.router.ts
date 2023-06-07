@@ -1,5 +1,6 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
+import { pool } from '../db';
 import * as ticketUtils from './ticket.service';
 
 export const ticketRouter = Router();
@@ -366,3 +367,4 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
     res.sendStatus(500).send(error.message);
   }
 });
+

@@ -71,6 +71,7 @@ const ShowingInputContainer = ({
   const [eventdate, setEventDate] = useState(showingData.eventdate);
   const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
   const [seatsfortype, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
+  //const [restrictions, setRestrictions] = useState([]);
   const [availableSeats, setAvailableSeats] = useState(
     showingData.availableseats !== undefined ? showingData.availableseats : 0
   );
@@ -105,6 +106,8 @@ const ShowingInputContainer = ({
       id: id,
       index: index,
       ispreview: false,
+      // this is how it should operate, its more concise, and clearer
+      //restrictions: restrictions,
     };
     handleSetShow(showing);
   }, [
@@ -114,6 +117,7 @@ const ShowingInputContainer = ({
     totalSeats,
     availableSeats,
     seatsfortype,
+    //restrictions
   ]);
 
   const handleAddTicketOption = (e) => {

@@ -20,6 +20,16 @@
  * @param {string} purchaseuri -
  */
 
+import { AxiosInterceptorManager } from "axios";
+
+export interface Restriction {
+  id: number;
+  eventinstanceid: number;
+  tickettypeid: number;
+  ticketlimit: number;
+  ticketssold: number;
+}
+
 export default interface Showing {
   id: number;
   eventid: string;
@@ -33,6 +43,7 @@ export default interface Showing {
   purchaseuri: string;
   ispreview: boolean;
   eventinstanceid: number;
+  restrictions: Restriction[];
 }
 
 export interface TicketType {
