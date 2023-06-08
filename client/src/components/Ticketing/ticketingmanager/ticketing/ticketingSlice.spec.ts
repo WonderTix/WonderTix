@@ -106,9 +106,16 @@ describe('ticketing slice', () => {
 
   const concessionsItem = {
     ...newCartItem,
-    name: 'Event 1 Ticket + Concessions',
+    name: 'Event 1 Tickets + Concessions',
     price: newCartItem.price + ticket.concession_price,
     desc: newCartItem.desc + ' with concessions ticket',
+  };
+
+  const addtoconcessionsItem = {
+    ...newCartItem,
+    name: 'Event 1 Tickets',
+    price: newCartItem.price + ticket.concession_price,
+    desc: newCartItem.desc,
   };
 
   describe('selectors', () => {
@@ -169,7 +176,7 @@ describe('ticketing slice', () => {
               eventid: '1',
               admission_type: 'General Admission - Adult',
               ticket_price: 15.99,
-              concession_price: 4.99,
+              concession_price: 0,
               availableseats: 34,
               date: new Date('2021-07-31T19:00:00'),
             }, {
@@ -205,7 +212,7 @@ describe('ticketing slice', () => {
     });
 
     it('addTicketReducer: exists in cart', () => {
-      const payload = {id: 1, tickettype: tickettype, qty: 3, concessions: false};
+      const payload = {id: 1, tickettype: tickettype, qty: 1, concessions: false};
       expect(ticketReducer(init, addTicketToCart(payload)))
           .toEqual({
             ...init,
@@ -215,31 +222,31 @@ describe('ticketing slice', () => {
 
     it('addTicketReducer: in cart & add concessions', () => {
       const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: tickettype, qty: 1, concessions: true}));
-      expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 1}]});
+      expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 3}]});
       init = res;
     });
 
     it('addTicketReducer: in cart (w/ concession) & add w/o concessions', () => {
       const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: tickettype, qty: 1, concessions: false}));
-      expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 1}]});
+      expect(res).toEqual({...init, cart: [{...addtoconcessionsItem, qty: 3}]});
       init = res;
     });
 
     // ticket 1 currently in cart
     it('editItemQty: can set qty = available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats})))
-          .toEqual({...init, cart: [{...concessionsItem, qty: ticket.availableseats}]});
+          .toEqual({...init, cart: [{...addtoconcessionsItem, qty: ticket.availableseats}]});
     });
 
     it('editItemQty: can\'t set qty > available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats + 1})))
-          .toEqual({...init, cart: [{...concessionsItem, qty: 3}]});
+          .toEqual({...init, cart: [{...addtoconcessionsItem, qty: 3}]});
     });
 
     it('editItemQty: item exists in cart', () => {
       const res = ticketReducer(init, editItemQty({id: 1, qty: 4}));
       expect(res)
-          .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
+          .toEqual({...init, cart: [{...addtoconcessionsItem, qty: 4}]});
       init = res;
     });
 
@@ -250,7 +257,7 @@ describe('ticketing slice', () => {
 
     it('editItemQty: can\'t set negative qty', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: -1})))
-          .toEqual({...init, cart: [{...concessionsItem, qty: 0}]});
+          .toEqual({...init, cart: [{...addtoconcessionsItem, qty: 0}]});
     });
   });
 });
