@@ -14,7 +14,9 @@ import arrayMutators from 'final-form-arrays';
 import React, {useCallback, useState} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
+
 import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
+import PopUp from '../../Pop-up';
 
 /**
  * Type of ticket
@@ -67,13 +69,13 @@ function validate(formData: any) {
 /**
  * Sets initial state
  *
- * @param {Array} showings: DateTime: undefined, ticketType: undefined, ticketTypeId: undefined
+ * @param {Array} showings: DateTime: undefined, ticketType: undefined, tickettypes: undefined
  */
 const initialState = {
   showings: [{
     DateTime: undefined,
     ticketType: undefined,
-    ticketTypeId: undefined,
+    tickettypes: undefined,
   }],
 };
 
@@ -129,11 +131,13 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   const active = def.active;
   //console.log("showings before useState: " + JSON.stringify(def.showings));
   const [showings, setShowings] = useState(def.showings);
-  //console.log("showings after useState: " + JSON.stringify(def.showings));
+
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [err, setErr] = useState('');
 
   // FIELDS CALLBACK
   // Set event name
-  const addeventname = useCallback((eventname) => {
+  const addEventName = useCallback((eventname) => {
     seteventname(eventname.target.value);
   }, [eventname]);
   // Set description
@@ -159,69 +163,124 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       image_url,
       showings: showings,
     };
-    //console.log("handle submit called with showings: " + JSON.stringify(showings));
+
+    console.log(data);
+    if (showings.length === 0) {
+      setErr('Please enter at least one showing.');
+      setShowPopUp(true);
+      return;
+    }
+    if (eventname === '' || eventdescription === '' || showings.length === 0) {
+      const conditions = [];
+      if (eventname === '') {
+        conditions.push('Event name');
+      }
+      if (eventdescription === '') {
+        conditions.push('Event description');
+      }
+      let message = '';
+      if (conditions.length > 0) {
+        message += conditions.slice(0, -1).join(', ');
+        if (conditions.length > 1) {
+          message += ' and ';
+        }
+        message += conditions[conditions.length - 1];
+      }
+      if (conditions.length === 1) {
+        message += ' field is missing.';
+      } else {
+        message += ' fields are missing.';
+      }
+      setErr(message);
+      setShowPopUp(true);
+      return;
+    }
+    for (let i = 0; i < data.showings.length; i++) {
+      if (data.showings[i].eventdate === '' || data.showings[i].starttime === '') {
+        setErr('Each showing must have an event date and an event time.');
+        setShowPopUp(true);
+        return;
+      }
+      if (data.showings[i].totalseats < 1) {
+        setErr('Each showing must have at least 1 ticket.');
+        setShowPopUp(true);
+        return;
+      }
+    }
+    for (let i = 0; i < data.showings.length; i++) {
+      for (let j = data.showings[i].tickettypes.length - 1; j >= 0; j--) {
+        if (data.showings[i].tickettypes[j] === NaN) {
+          data.showings[i].seatsfortype.splice(j, 1);
+          data.showings[i].tickettypes.splice(j, 1);
+        }
+      }
+    }
     onSubmit(data);
   };
 
   return (
-    <Form
-      onSubmit={handleSubmit}
-      initialValues={initialValues ?? initialState}
-      mutators={{...arrayMutators}}
-      
-      render={({
-        handleSubmit,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
-            <div className='text-3xl font-semibold mb-5'>
-                Event Information
-            </div>
-            <div className='w-full flex flex-col '>
-              <InputFieldForEvent
-                name={'eventname'}
-                id={'eventname'} headerText={'Enter Event Name'}
-                action={addeventname} actionType={'onChange'} value={def.eventname}
-                placeholder={def.eventname ? def.eventname: 'Event Name'} />
 
-              <InputFieldForEvent
-                name={'eventdescription'}
-                id={'eventdescription'} headerText={'Enter Short Event Description'}
-                actionType={'onChange'}
-                action={addEventDesc} value={def.eventdescription}
-                placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
+    <div>
+      {showPopUp ? <PopUp message={err} title='Failed to save.' handleClose={() => setShowPopUp(false)} handleProceed={() => { console.log("should close popup now"); }}/> : null}
+      <Form
+        onSubmit={handleSubmit}
+        initialValues={initialValues ?? initialState}
+        mutators={{...arrayMutators}}
+        validate={validate}
+        render={({
+          handleSubmit,
+        }) => (
+          <form onSubmit={handleSubmit}>
+            <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
+              <div className='text-3xl font-semibold mb-5'>
+                  Event Information
+              </div>
+              <div className='w-full flex flex-col '>
+                <InputFieldForEvent
+                  name={'eventname'}
+                  id={'eventname'} headerText={'Enter Event Name'}
+                  action={addEventName} actionType={'onChange'} value={def.eventname}
+                  placeholder={def.eventname ? def.eventname: 'Event Name'} />
 
-              <InputFieldForEvent
-                name={'image_url'}
-                id={'image_url'} headerText={'Upload Image for Event'}
-                action={addURL} actionType={'onChange'} value={def.image_url}
-                placeholder={def.image_url ? def.image_url : 'image URL'}/>
-            </div>
-            {/* Showings container*/}
-            <div className='text-3xl font-semibold mt-5'>
-                Showings
-            </div>
-            <div className='mb-3 text-sm text-zinc-600'>
-                You can configure occurances of this event below.
-                To add more, click the &quot;Add Showing&quot; button.
-            </div>
-            <div>
-              {/*  Button to trigger add of new show*/}
-              <div id="show-table">
-                <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
+                <InputFieldForEvent
+                  name={'eventdescription'}
+                  id={'eventdescription'} headerText={'Enter Short Event Description'}
+                  actionType={'onChange'}
+                  action={addEventDesc} value={def.eventdescription}
+                  placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
+
+                <InputFieldForEvent
+                  name={'image_url'}
+                  id={'image_url'} headerText={'Upload Image for Event'}
+                  action={addURL} actionType={'onChange'} value={def.image_url}
+                  placeholder={def.image_url ? def.image_url : 'image URL'}/>
+              </div>
+              {/* Showings container*/}
+              <div className='text-3xl font-semibold mt-5'>
+                  Showings
+              </div>
+              <div className='mb-3 text-sm text-zinc-600'>
+                  You can configure occurances of this event below.
+                  To add more, click the &quot;Add Showing&quot; button.
+              </div>
+              <div>
+                {/*  Button to trigger add of new show*/}
+                <div id="show-table">
+                  <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
+                </div>
               </div>
             </div>
-          </div>
 
-          <button
-            className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
-            type='submit'
-          >
-            Save
-          </button>
-        </form>
-      )}
-    />
+            <button
+              className='px-3 py-2 bg-blue-600 text-white rounded-xl mt-5'
+              type='submit'
+            >
+              Save
+            </button>
+          </form>
+        )}
+      />
+    </div>
   );
 };
 

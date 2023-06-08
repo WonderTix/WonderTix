@@ -154,7 +154,7 @@ export const getEventByName = async (params: any): Promise<response> => {
             events
           WHERE
             eventname = $1;`,
-    values: [params.eventName],
+    values: [params.eventname],
   };
   return buildResponse(myQuery, "GET");
 };
@@ -336,7 +336,8 @@ export const createEvent = async (params: any): Promise<response> => {
                 eventdescription,
                 active,
                 seasonticketeligible,
-                image_url)
+                imageurl
+                )
           VALUES
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
@@ -345,7 +346,7 @@ export const createEvent = async (params: any): Promise<response> => {
       params.eventname,
       params.eventdescription,
       params.seasonticketeligible,
-      params.image_url,
+      params.image_url
     ],
   };
   return buildResponse(myQuery, "POST");
@@ -429,14 +430,28 @@ export const insertAllShowings = async (
   };
   const toReturn = [];
   let rowCount = 0;
+  // Using 2020-01-01 as a default value or it will not save
+  let dateAct = '20200101'
+  let startTime = '00:00'
   for (const showing of showings) {
-    
-    const date = showing.eventdate; //.split('-');
-    //const dateAct = date.join('');
-    const { rows } = await pool.query(query, [
+
+    if (showing.eventdate !== '') {
+      const date = showing.eventdate.split('-');
+      dateAct = date.join('');
+    }
+    else {
+      dateAct = '20200101'
+    }
+    if (showing.starttime !== '') {
+      startTime = showing.starttime
+    }
+    else {
+      startTime = '00:00'
+    }
+    const {rows} = await pool.query(query, [
       showing.eventid,
-      showing.eventdate,
-      showing.starttime,
+      dateAct,
+      startTime,
       showing.totalseats,
       showing.totalseats,
       showing.ispreview,
@@ -455,13 +470,9 @@ export const insertAllShowings = async (
       return res;
     }
 
-    rowCount += 1;
-    
+    rowCount += 1; 
     res.data.push(showing);
   }
-  
-  console.log(res);
-  
   return res;
 };
 

@@ -1,7 +1,9 @@
 /* eslint-disable max-len */
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { Showing } from "../../../../interfaces/showing.interface";
+
+import React, {useEffect} from 'react';
+import {useState} from 'react';
+import {Showing} from '../../../../interfaces/showing.interface';
+import DeleteConfirm from './deleteConfirm';
 
 /**
  * Used to map props to input container correctly
@@ -70,14 +72,11 @@ const ShowingInputContainer = ({
   );
   const [eventdate, setEventDate] = useState(showingData.eventdate);
   const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
-  const [seatsfortype, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
-  //const [restrictions, setRestrictions] = useState([]);
-  const [availableSeats, setAvailableSeats] = useState(
-    showingData.availableseats !== undefined ? showingData.availableseats : 0
-  );
-  const [totalSeats, setTotalSeats] = useState(
-    showingData.totalseats !== undefined ? showingData.totalseats : 0
-  );
+
+  const [seatsForType, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
+  const [availableSeats, setAvailableSeats] = useState(showingData.availableseats !== undefined ? showingData.availableseats : 0);
+  const [totalSeats, setTotalSeats] = useState(showingData.totalseats !== undefined ? showingData.totalseats : 0);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [ticketTypes, setTicketTypes] = useState([]);
 
@@ -100,7 +99,7 @@ const ShowingInputContainer = ({
       salestatus: true,
       totalseats: totalSeats,
       tickettypes: ticketTypeId,
-      seatsfortype: seatsfortype,
+      seatsfortype: seatsForType,
       availableseats: availableSeats ? availableSeats : totalSeats,
       eventid: showingData.eventid,
       id: id,
@@ -116,23 +115,30 @@ const ShowingInputContainer = ({
     ticketTypeId,
     totalSeats,
     availableSeats,
-    seatsfortype,
+    seatsForType,
     //restrictions
   ]);
 
   const handleAddTicketOption = (e) => {
     setSeatsForType((data) => [...data, 0]);
-    setTicketTypeId((data) => [...data, 0]);
+    setTicketTypeId((data) => [...data, 'NaN']);
   };
 
   const handleSeatChange = (e) => {
-    const newSeats = [...seatsfortype];
-    newSeats[parseInt(e.target.id)] = parseInt(e.target.value);
-    setSeatsForType(newSeats);
+
+    const newSeats = [...seatsForType];
+    if (parseInt(e.target.value) >= 0) {
+      newSeats[parseInt(e.target.id)] = parseInt(e.target.value);
+      setSeatsForType(newSeats);
+    } else {
+      newSeats[parseInt(e.target.id)] = 0;
+      setSeatsForType(newSeats);
+    }
+
   };
 
   const handleRemoveOption = (e) => {
-    const newSeats = seatsfortype.filter(
+    const newSeats = seatsForType.filter(
       (_, i) => i !== parseInt(e.target.value)
     );
     const newTypes = ticketTypeId.filter(
@@ -144,20 +150,22 @@ const ShowingInputContainer = ({
 
   const handleChangeOption = (e) => {
     const newList = [...ticketTypeId];
-    newList[e.target.id] = parseInt(e.target.value);
+    if (e.target.value === 'Select Ticket Type') newList[e.target.id] = 'NaN';
+    else newList[e.target.id] = parseInt(e.target.value);
     setTicketTypeId(newList);
   };
 
   return (
-    <div className="bg-violet-200 rounded-xl p-10 shadow-md mb-4" key={id}>
-      <div key={id} className="shadow-xl p-5 rounded-xl mb-9 bg-violet-700">
-        <label className="font-semibold text-white mb-7 mt-7  ">
-          Show # {id + 1}
-        </label>
-        <div className="flex flex-col gap-5 mt-5 md:pr-20">
-          <h3 className="font-semibold text-white">
-            Total Tickets For Showing
-          </h3>
+
+    <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={id}>
+      { showConfirm ?
+      <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(id)}/> : null
+      }
+      <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
+        <label className='font-semibold text-white mb-7 mt-7  '>Show # {id + 1}</label>
+        <div className='flex flex-col gap-5 mt-5 md:pr-20'>
+          <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
+
           <input
             className="input rounded-lg p-2 bg-violet-100 w-full md:w-7/8"
             value={showingData.totalseats}
@@ -170,45 +178,28 @@ const ShowingInputContainer = ({
                 setTotalSeats(parseInt(ev.target.value));
             }}
           />
-          <div className="w-full">
-            <div
-              className="toAdd flex flex-col gap-5 md:pr-20 w-full"
-              id="toAdd"
-            ></div>
-            {seatsfortype.map((seats, i) => (
-              <div
-                key={i}
-                className="flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5"
-              >
-                <input
-                  id={String(i)}
-                  className="input rounded-lg p-2 bg-violet-100 w-full flex flex-col"
-                  name="numInput"
-                  type="number"
-                  placeholder="# of Seats"
-                  onChange={handleSeatChange}
-                  value={seatsfortype[i]}
-                ></input>
-                <select
-                  className="p-2 rounded-lg bg-violet-100"
-                  name="typeSelect"
-                  onChange={handleChangeOption}
-                  id={String(i)}
-                  value={ticketTypeId[i]}
-                >
-                  <option className="text-sm text-zinc-700">
-                    Select Ticket Type
-                  </option>
-                  {ticketTypes.map((ticketType, j) => (
-                    <option
-                      key={j}
-                      className="text-sm text-zinc-700"
-                      value={ticketType.id}
-                    >
-                      {ticketType.description}: {ticketType.price} (+
-                      {ticketType.concessions} concessions)
+
+          <div className='w-full'>
+
+            <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
+            {
+              seatsForType.map((seats, i) => {
+                <div key={i} className='flex flex-col gap-5 mt-2 md:pr-20 bg-violet-800 rounded-xl p-2 pt-5'>
+                  <input
+                    id={String(i)}
+                    className='input rounded-lg p-2 bg-violet-100 w-full flex flex-col'
+                    name='numInput'
+                    type='number'
+                    placeholder='# of Seats'
+                    onChange={handleSeatChange}
+                    value={seatsForType[i]}
+                  >
+                  </input>
+                  <select className='p-2 rounded-lg bg-violet-100' name='typeSelect' onChange={handleChangeOption} id={String(i)} value={ticketTypeId[i]}>
+                    <option className='text-sm text-zinc-700'>
+                      Select Ticket Type
+
                     </option>
-                  ))}
                 </select>
                 <button
                   className="w-min block px-2 py-1 bg-red-500 disabled:opacity-30 mb-4 text-white rounded-lg text-sm"
@@ -219,7 +210,7 @@ const ShowingInputContainer = ({
                   Remove
                 </button>
               </div>
-            ))}
+          })}
             <button
               className="block px-2 py-1 bg-blue-500 disabled:opacity-30
               mt-4 mb-2 text-white rounded-lg text-sm"

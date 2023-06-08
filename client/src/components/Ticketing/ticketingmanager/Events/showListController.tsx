@@ -34,23 +34,25 @@ const ShowListController = ({
   setShowingsHandler,
 }: ShowListControllerProps) => {
   const [shows, setShow] = useState(showsData ? showsData : []);
+
   const [numOfShowings, setNumOfShowings] = useState(
     showsData ? showsData.length : 0
   );
+
 
   // SHOWINGS ACTIONS:
   const addShowBox = (event) => {
     event.preventDefault();
     setNumOfShowings(numOfShowings + 1);
-    
+
     const show: Showing = {
       id: 0,
       index: numOfShowings,
       eventid: eventid,
       starttime: "",
       eventdate: "",
-      tickettypeids: [],
-      seatsForType: [],
+      tickettypes: [],
+      seatsfortype: [],
       availableseats: 0,
       totalseats: 0,
       salestatus: true,
