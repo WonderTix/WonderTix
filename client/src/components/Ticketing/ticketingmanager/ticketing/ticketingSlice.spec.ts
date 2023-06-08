@@ -97,7 +97,8 @@ describe('ticketing slice', () => {
   const newCartItem = {
     product_id: ticket.event_instance_id,
     qty: 2,
-    name: 'Event 1 Ticket',
+    name: 'Event 1 Tickets',
+    date: '- Sat, Jul 31 - 7:00 PM',
     desc: 'General Admission - Adult - Sat, Jul 31 - 7:00 PM',
     product_img_url: 'https://image',
     price: 20,
