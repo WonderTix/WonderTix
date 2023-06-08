@@ -379,7 +379,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
           <option value={0} disabled>select qty</option>
-          {range(numAvail, false).map((n) => <option className='text-white' key={n} value={n}>{n}</option>)}
+          {range(numAvail, false).map((n) => (numAvail > 20 && n > 20) ? null : <option className='text-white' key={n} value={n}>{n}</option>)}
         </select>
       </div>
       <div className='flex flex-row gap-2 mt-3 mb-7'>

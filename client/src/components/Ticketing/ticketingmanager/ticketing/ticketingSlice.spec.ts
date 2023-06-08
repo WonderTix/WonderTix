@@ -113,7 +113,7 @@ describe('ticketing slice', () => {
   describe('selectors', () => {
     const item1 = {
       product_id: 1, // references state.tickets.event_instance_id
-      qty: 2,
+      qty: 1,
       name: 'thing',
       date: new Date('2021-08-08T16:00:00'),
       desc: 'desc1',
