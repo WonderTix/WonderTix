@@ -96,7 +96,7 @@ const ROOT_INIT_STATE: RootState = {
 describe('ticketing slice', () => {
   const newCartItem = {
     product_id: ticket.event_instance_id,
-    qty: 2,
+    qty: 1,
     name: 'Event 1 Ticket',
     desc: 'General Admission - Adult - Sat, Jul 31 - 7:00 PM',
     product_img_url: 'https://image',
@@ -113,7 +113,7 @@ describe('ticketing slice', () => {
   describe('selectors', () => {
     const item1 = {
       product_id: 1, // references state.tickets.event_instance_id
-      qty: 2,
+      qty: 1,
       name: 'thing',
       date: new Date('2021-08-08T16:00:00'),
       desc: 'desc1',
@@ -152,7 +152,7 @@ describe('ticketing slice', () => {
 
     it('selectCartTicketCount', () => {
       expect(selectCartTicketCount(init))
-          .toEqual({1: 2, 2: 4});
+          .toEqual({1: 1, 2: 4});
     });
 
     it('selectEventData', () => {
@@ -208,19 +208,19 @@ describe('ticketing slice', () => {
       expect(ticketReducer(init, addTicketToCart(payload)))
           .toEqual({
             ...init,
-            cart: [{...newCartItem, qty: 2}],
+            cart: [{...newCartItem, qty: 1}],
           });
     });
 
     it('addTicketReducer: in cart & add concessions', () => {
       const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: tickettype, qty: 1, concessions: true}));
-      expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 2}]});
+      expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 1}]});
       init = res;
     });
 
     it('addTicketReducer: in cart (w/ concession) & add w/o concessions', () => {
       const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: tickettype, qty: 1, concessions: false}));
-      expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 3}]});
+      expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 1}]});
       init = res;
     });
 
