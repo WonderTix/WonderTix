@@ -53,7 +53,7 @@ const Showing = () => {
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/${eventToDelete}`,
+    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/${eventToDelete}`,
         {
           method: 'DELETE',
           headers: {

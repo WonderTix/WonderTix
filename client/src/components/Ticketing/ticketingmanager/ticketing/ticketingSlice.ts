@@ -129,9 +129,9 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
     'ticketing/fetch',
     async () => {
-      const eventData = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/events');
+      const eventData = await fetchData(process.env.REACT_APP_API_1_URL + '/events');
       const events: Event[] = eventData.data;
-      const ticketRes: TicketsState = await fetchData(process.env.REACT_APP_ROOT_URL + '/api/tickets');
+      const ticketRes: TicketsState = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets');
       const tickets = Object.entries(ticketRes.data.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date).toString()}}), {});
       console.log('Tickets', tickets);
       return {events, tickets: {data: {byId: tickets, allIds: ticketRes.data.allIds}}};
@@ -174,7 +174,7 @@ export interface Discount {
 export const fetchDiscountData = createAsyncThunk(
     'ticketing/fetchDiscount',
     async (code: string) => {
-      const url = process.env.REACT_APP_ROOT_URL + '/api/discounts/search?code=' + code;
+      const url = process.env.REACT_APP_API_1_URL + '/discounts/search?code=' + code;
       const discountData = await fetchData(url);
       const discountArray: Discount[] = discountData.data;
       const discount: DiscountItem = {

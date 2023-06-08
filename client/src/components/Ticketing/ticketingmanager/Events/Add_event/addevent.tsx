@@ -42,7 +42,7 @@ export default function CreateEvents() {
       scope: 'admin',
     });
 
-    const req = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events', {
+    const req = await fetch(process.env.REACT_APP_API_1_URL + '/events', {
       credentials: 'include',
       method: 'POST',
       headers: {

@@ -180,7 +180,7 @@ const TicketPicker = (props: TicketPickerProps) => {
   }, dispatch] = useReducer(TicketPickerReducer, initialState);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/validTypes')
+    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes')
         .then((res) => {
           if (!res.ok) {
             throw new Error('Failed to retrieve ticket types');
@@ -297,11 +297,6 @@ const TicketPicker = (props: TicketPickerProps) => {
       </Collapse>
 
       <div className='flex flex-col gap-2 mt-7'>
-        {ticketTypes.map((t) => (
-          <p key={t.id}>
-            hello {t.name}
-          </p>
-        ))}
         <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
         <select
           // labelId="ticket-type-select-label"

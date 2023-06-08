@@ -39,7 +39,7 @@ export default function ManageAccounts() {
         scope: 'admin',
       });
       /** @param {Response} r - Get data from Accounts Table */
-      const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
+      const r = await fetch(process.env.REACT_APP_API_1_URL + `/accounts`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -71,7 +71,7 @@ export default function ManageAccounts() {
         scope: 'admin',
       });
       /** @param {Response} r - Delete data from Accounts Table */
-      const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts/${userid}`, {
+      const r = await fetch(process.env.REACT_APP_API_1_URL + `/accounts/${userid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -89,7 +89,7 @@ export default function ManageAccounts() {
   const submitNewUser = async (e: any) => {
     e.preventDefault();
     /** @param {Response} r - Post data to Accounts Table */
-    const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
+    const r = await fetch(process.env.REACT_APP_API_1_URL + `/accounts`, {
       body: JSON.stringify({username, password}),
       credentials: 'include',
       method: 'POST',
@@ -115,7 +115,7 @@ export default function ManageAccounts() {
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    await fetch(process.env.REACT_APP_ROOT_URL + '/api/changeUser', {
+    await fetch(process.env.REACT_APP_API_1_URL + '/changeUser', {
       body: JSON.stringify({id: userid, ...user}),
       credentials: 'include',
       method: 'post',
