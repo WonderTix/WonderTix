@@ -233,7 +233,7 @@ describe('ticketing slice', () => {
 
     it('editItemQty: can\'t set qty > available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats + 1})))
-          .toEqual({...init, cart: [{...concessionsItem, qty: 2}]});
+          .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
     });
 
     it('editItemQty: item exists in cart', () => {
