@@ -113,7 +113,7 @@ describe('ticketing slice', () => {
   describe('selectors', () => {
     const item1 = {
       product_id: 1, // references state.tickets.event_instance_id
-      qty: 1,
+      qty: 2,
       name: 'thing',
       date: new Date('2021-08-08T16:00:00'),
       desc: 'desc1',
@@ -193,7 +193,7 @@ describe('ticketing slice', () => {
   describe('reduers', () => {
     let init = ticketingInitState;
     it('addTicketReducer: new ticket', () => {
-      const payload = {id: 1, tickettype: tickettype, qty: 1, concessions: false};
+      const payload = {id: 1, tickettype: tickettype, qty: 2, concessions: false};
       const res = ticketReducer(init, addTicketToCart(payload));
       expect(res)
           .toEqual({
@@ -204,7 +204,7 @@ describe('ticketing slice', () => {
     });
 
     it('addTicketReducer: exists in cart', () => {
-      const payload = {id: 1, tickettype: tickettype, qty: 1, concessions: false};
+      const payload = {id: 1, tickettype: tickettype, qty: 2, concessions: false};
       expect(ticketReducer(init, addTicketToCart(payload)))
           .toEqual({
             ...init,
