@@ -152,7 +152,7 @@ describe('ticketing slice', () => {
 
     it('selectCartTicketCount', () => {
       expect(selectCartTicketCount(init))
-          .toEqual({1: 1, 2: 4});
+          .toEqual({1: 2, 2: 4});
     });
 
     it('selectEventData', () => {
@@ -193,7 +193,7 @@ describe('ticketing slice', () => {
   describe('reduers', () => {
     let init = ticketingInitState;
     it('addTicketReducer: new ticket', () => {
-      const payload = {id: 1, tickettype: tickettype, qty: 3, concessions: false};
+      const payload = {id: 1, tickettype: tickettype, qty: 2, concessions: false};
       const res = ticketReducer(init, addTicketToCart(payload));
       expect(res)
           .toEqual({
@@ -204,11 +204,11 @@ describe('ticketing slice', () => {
     });
 
     it('addTicketReducer: exists in cart', () => {
-      const payload = {id: 1, tickettype: tickettype, qty: 4, concessions: false};
+      const payload = {id: 1, tickettype: tickettype, qty: 3, concessions: false};
       expect(ticketReducer(init, addTicketToCart(payload)))
           .toEqual({
             ...init,
-            cart: [{...newCartItem, qty: 1}],
+            cart: [{...newCartItem, qty: 3}],
           });
     });
 
