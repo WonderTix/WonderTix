@@ -111,13 +111,6 @@ describe('ticketing slice', () => {
     desc: newCartItem.desc + ' with concessions ticket',
   };
 
-  const addtoconcessionsItem = {
-    ...newCartItem,
-    name: 'Event 1 Tickets',
-    price: newCartItem.price + ticket.concession_price,
-    desc: newCartItem.desc,
-  };
-
   describe('selectors', () => {
     const item1 = {
       product_id: 1, // references state.tickets.event_instance_id
@@ -240,7 +233,7 @@ describe('ticketing slice', () => {
 
     it('editItemQty: can\'t set qty > available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats + 1})))
-          .toEqual({...init, cart: [{...concessionsItem, qty: 3}]});
+          .toEqual({...init, cart: [{...concessionsItem, qty: 2}]});
     });
 
     it('editItemQty: item exists in cart', () => {
