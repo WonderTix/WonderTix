@@ -176,7 +176,7 @@ describe('ticketing slice', () => {
               eventid: '1',
               admission_type: 'General Admission - Adult',
               ticket_price: 15.99,
-              concession_price: 0,
+              concession_price: 4.99,
               availableseats: 34,
               date: new Date('2021-07-31T19:00:00'),
             }, {
@@ -228,25 +228,25 @@ describe('ticketing slice', () => {
 
     it('addTicketReducer: in cart (w/ concession) & add w/o concessions', () => {
       const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: tickettype, qty: 1, concessions: false}));
-      expect(res).toEqual({...init, cart: [{...addtoconcessionsItem, qty: 3}]});
+      expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
       init = res;
     });
 
     // ticket 1 currently in cart
     it('editItemQty: can set qty = available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats})))
-          .toEqual({...init, cart: [{...addtoconcessionsItem, qty: ticket.availableseats}]});
+          .toEqual({...init, cart: [{...concessionsItem, qty: ticket.availableseats}]});
     });
 
     it('editItemQty: can\'t set qty > available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats + 1})))
-          .toEqual({...init, cart: [{...addtoconcessionsItem, qty: 3}]});
+          .toEqual({...init, cart: [{...concessionsItem, qty: 3}]});
     });
 
     it('editItemQty: item exists in cart', () => {
       const res = ticketReducer(init, editItemQty({id: 1, qty: 4}));
       expect(res)
-          .toEqual({...init, cart: [{...addtoconcessionsItem, qty: 4}]});
+          .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
       init = res;
     });
 
@@ -257,7 +257,7 @@ describe('ticketing slice', () => {
 
     it('editItemQty: can\'t set negative qty', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: -1})))
-          .toEqual({...init, cart: [{...addtoconcessionsItem, qty: 0}]});
+          .toEqual({...init, cart: [{...concessionsItem, qty: 0}]});
     });
   });
 });
