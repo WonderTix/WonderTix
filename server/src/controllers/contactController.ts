@@ -91,7 +91,7 @@ contactController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               items: $ref: '#/components/schemas/Contact'
+ *               $ref: '#/components/schemas/Contact'
  *       400:
  *         description: bad request
  *         content:
