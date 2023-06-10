@@ -12,7 +12,7 @@ export const contactController = Router();
  *   post:
  *     summary: Create a contact
  *     tags:
- *     - Contact
+ *     - New Contact
  *     requestBody:
  *       description: Updated contact information
  *       content:
@@ -83,7 +83,7 @@ contactController.use(checkScopes);
  *   get:
  *     summary: get all contacts
  *     tags:
- *     - Contact
+ *     - New Contact
  *     responses:
  *       200:
  *         description: Contact updated successfully.
