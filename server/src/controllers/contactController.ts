@@ -8,7 +8,7 @@ export const contactController = Router();
 
 /**
  * @swagger
- * /api2/contact:
+ * /2/contact:
  *   post:
  *     summary: Create a contact
  *     tags:
@@ -79,7 +79,7 @@ contactController.use(checkScopes);
 
 /**
  * @swagger
- * /api2/contact:
+ * /2/contact:
  *   get:
  *     summary: get all contacts
  *     tags:
@@ -191,7 +191,7 @@ contactController.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /contact/{id}:
+ * /2/contact/{id}:
  *   get:
  *     summary: get a contact
  *     tags:
@@ -256,7 +256,7 @@ contactController.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /contact/{id}:
+ * /2/contact/{id}:
  *   put:
  *     summary: update a contact
  *     tags:
@@ -324,7 +324,7 @@ contactController.put('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /contact/{id}:
+ * /2/contact/{id}:
  *   delete:
  *     summary: delete a contact
  *     tags:

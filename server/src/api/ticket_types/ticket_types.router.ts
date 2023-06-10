@@ -7,7 +7,7 @@ export const ticketTypesRouter = Router();
 
 /**
  * @swagger
- *  /ticket-types/{id}:
+ *  /1/ticket-types/{id}:
  *    put:
  *      summary: update ticket type
  *      tags:

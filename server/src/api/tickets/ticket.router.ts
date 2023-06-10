@@ -6,7 +6,7 @@ export const ticketRouter = Router();
 
 /**
  * @swagger
- *  /tickets:
+ *  /1/tickets:
  *    get:
  *      summary: get available tickets
  *      tags:
@@ -65,7 +65,7 @@ ticketRouter.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *  /tickets/validTypes:
+ *  /1/tickets/validTypes:
  *    get:
  *      summary: get valid ticket types
  *      tags:
@@ -112,7 +112,7 @@ ticketRouter.get('/validTypes', async (req, res) => {
 
 /**
  * @swagger
- *  /tickets/allTypes:
+ *  /1/tickets/allTypes:
  *    get:
  *      summary: get all ticket types
  *      tags:
@@ -158,7 +158,7 @@ ticketRouter.get('/allTypes', async (req, res) => {
 
 /**
  * @swagger
- *  /tickets/types:
+ *  /1/tickets/types:
  *    post:
  *      summary: set default ticket type for event
  *      tags:
@@ -209,7 +209,7 @@ ticketRouter.post('/types', checkJwt, checkScopes, async (req, res) => {
 
 /**
  * @swagger
- *  /tickets/newType:
+ *  /1/tickets/newType:
  *    post:
  *      summary: create new ticket type
  *      tags:
@@ -271,7 +271,7 @@ ticketRouter.post('/newType', checkJwt, checkScopes, async (req, res) => {
 
 /**
  * @swagger
- *  /tickets/updateType:
+ *  /1/tickets/updateType:
  *    put:
  *      summary: update ticket type
  *      tags:
@@ -326,7 +326,7 @@ ticketRouter.put('/updateType', checkJwt, checkScopes, async (req, res) => {
 
 /**
  * @swagger
- *  /tickets/{id}:
+ *  /1/tickets/{id}:
  *    delete:
  *      summary: Delete ticket type
  *      tags:
