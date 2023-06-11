@@ -8,7 +8,7 @@
     "dev": "npm run prisma:init && nodemon --exec npx ts-node ./src/server.ts",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "prisma:init": "prisma generate && prisma migrate dev && prisma db seed"
+    "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
