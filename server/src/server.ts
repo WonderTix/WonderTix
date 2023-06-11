@@ -37,12 +37,13 @@ import {refundsRouter} from './api/refunds/refunds.router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import {ticketTypesRouter} from './api/ticket_types/ticket_types.router';
+import {contactController} from './controllers/contactController';
 
-const openapiSpecification = swaggerJsdoc({
+const openApiSpec = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
     servers: [{
-      url: 'https://localhost:8000/api/1',
+      url: 'https://localhost:8000/api',
     }],
     info: {
       title: 'Wondertix API',
@@ -56,12 +57,64 @@ const openapiSpecification = swaggerJsdoc({
           bearerFormat: 'JWT',
         },
       },
+      parameters: {
+        id: {
+          name: 'id',
+          in: 'path',
+          description: 'ID',
+          schema: {
+            type: 'integer',
+          },
+        },
+      },
+      schemas: {
+        Contact: {
+          type: 'object',
+          properties: {
+            contactid: {type: 'integer'},
+            firstname: {type: 'string'},
+            lastname: {type: 'string'},
+            email: {type: 'string'},
+            phone: {type: 'string'},
+            donorbadge: {type: 'boolean'},
+            seatingaccom: {type: 'string'},
+            vip: {type: 'boolean'},
+            volunteerlist: {type: 'string'},
+            newsletter: {type: 'boolean'},
+          },
+        },
+        Error: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'string',
+              description: 'Error message from the server.',
+            },
+          },
+        },
+      },
+      requestBodies: {
+        Contact: {
+          type: 'object',
+          properties: {
+            firstname: {type: 'string'},
+            lastname: {type: 'string'},
+            email: {type: 'string'},
+            phone: {type: 'string'},
+            donorbadge: {type: 'boolean'},
+            seatingaccom: {type: 'string'},
+            vip: {type: 'boolean'},
+            volunteerlist: {type: 'string'},
+            newsletter: {type: 'boolean'},
+          },
+        },
+      },
     },
     security: [{
       bearerAuth: ['admin'],
     }],
   },
-  apis: ['./src/api/**/*.ts'],
+  apis: ['./src/api/**/*.ts', './src/controllers/**/*.ts'],
 });
 
 const createServer = async () => {
@@ -82,8 +135,7 @@ const createServer = async () => {
   );
 
 
-  /* Connect Routers */
-
+  // api 1
   app.use('/api/1/donations', donationsRouter);
   app.use('/api/1/contacts', contactsRouter);
   app.use('/api/1/accounts', accountsRouter);
@@ -100,7 +152,12 @@ const createServer = async () => {
   app.use('/api/1/refunds', refundsRouter);
   app.use('/api/1/reporting', reportingRouter);
   app.use('/api/1/order', orderRouter);
-  app.use('/api/1/docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+
+  // api 2
+  app.use('/api/2/contact', contactController);
+
+  // other
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
   app.get('/', (_req, res) => res.redirect('/api/1/docs'));
 
   return https

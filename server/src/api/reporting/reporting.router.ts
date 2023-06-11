@@ -5,7 +5,7 @@ export const reportingRouter = Router();
 
 /**
  * @swagger
- *   /reporting:
+ *   /1/reporting:
  *   get:
  *     summary: Get all active event sales
  *     tags:

@@ -115,7 +115,7 @@ contactsRouter.get('/search', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /contacts/show/{id}:
+ * /1/contacts/show/{id}:
  *   get:
  *     summary: Get contact details by show ID
  *     description: Returns the details of a contact by ID
@@ -170,7 +170,7 @@ contactsRouter.get('/show/:id', async (req: Request, res: Response) => {
 /**
  * @swagger
  *
- * /contacts/{id}:
+ * /1/contacts/{id}:
  *   get:
  *     summary: Get contact by ID
  *     description: Retrieve a contact by their ID.
@@ -233,7 +233,7 @@ contactsRouter.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /contacts/{id}:
+ * /1/contacts/{id}:
  *   delete:
  *     summary: Remove a contact by ID
  *     description: Deletes a contact by its ID.
@@ -271,7 +271,7 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /contacts/{id}:
+ * /1/contacts/{id}:
  *   put:
  *     summary: Update a contact by ID
  *     description: Update a contact by providing its unique ID.

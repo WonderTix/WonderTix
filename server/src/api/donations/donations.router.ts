@@ -21,7 +21,7 @@ donationsRouter.use(checkScopes);
 
 /**
  * @swagger
- * /donations:
+ * /1/donations:
  *   get:
  *     summary: Retrieves all donations
  *     security:
@@ -88,7 +88,7 @@ donationsRouter.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /donations/search:
+ * /1/donations/search:
  *   get:
  *     summary: Search for donations by donor name.
  *     description: Retrieve donation info based on donor full name
@@ -160,7 +160,7 @@ donationsRouter.get('/search', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /donations/{id}:
+ * /1/donations/{id}:
  *   get:
  *     summary: Get a donation by ID.
  *     description: Retrieve a donation based on its ID.
@@ -236,7 +236,7 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /donations/{id}:
+ * /1/donations/{id}:
  *   delete:
  *     summary: Delete a donation by ID.
  *     description: Delete a single donation based on its ID.
@@ -274,7 +274,7 @@ donationsRouter.delete('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /donations/{id}:
+ * /1/donations/{id}:
  *   put:
  *     summary: Update a donation
  *     description: Update a donation by donation ID

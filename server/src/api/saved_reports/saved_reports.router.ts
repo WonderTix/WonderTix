@@ -6,7 +6,7 @@ export const savedReportsRouter = Router();
 
 /**
  * @swagger
- *   /saved_reports:
+ *   /1/saved_reports:
  *     get:
  *       summary: Get all saved reports
  *       tags:
@@ -42,7 +42,7 @@ savedReportsRouter.get('/', async (req, res) => {
 
 /**
  * @swagger
- *   /saved_reports/{id}:
+ *   /1/saved_reports/{id}:
  *     get:
  *       summary: Get a saved report by id
  *       tags:
@@ -81,7 +81,7 @@ savedReportsRouter.get('/:id', async (req, res) => {
 
 /**
  * @swagger
- *   /saved_reports/:
+ *   /1/saved_reports/:
  *     post:
  *       summary: Create a new saved report
  *       tags:
@@ -127,7 +127,7 @@ savedReportsRouter.post('/', async (req, res) => {
 
 /**
  * @swagger
- *   /saved_reports/{id}:
+ *   /1/saved_reports/{id}:
  *     delete:
  *       summary: Delete a saved report by id
  *       tags:

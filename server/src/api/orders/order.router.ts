@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 
 /**
  * @swagger
- *  /order/webhook:
+ *  /1/order/webhook:
  *    post:
  *      summary: >
  *        Stripe webhook. See https://stripe.com/docs/stripe-cli,

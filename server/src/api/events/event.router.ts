@@ -25,7 +25,7 @@ const bodyParser = require('body-parser');
 
 /**
  * @swagger
- * /events/search:
+ * /1/events/search:
  *   get:
  *     summary: Search events by name
  *     description: Returns a list of event IDs and event names matching the provided event name
@@ -58,7 +58,7 @@ eventRouter.get('/search', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /events/{id}:
+ * /1/events/{id}:
  *   get:
  *     summary: Get event by ID
  *     description: Returns an event with the provided ID
@@ -96,7 +96,7 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /events/instances/{id}:
+ * /1/events/instances/{id}:
  *   get:
  *     summary: Get instance by ID
  *     description: Returns an instance with the provided ID
@@ -131,7 +131,7 @@ eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /events/list/active:
+ * /1/events/list/active:
  *   get:
  *     summary: Get a list of active events and their instances
  *     description: Returns a list of active events and their instances
@@ -381,7 +381,7 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
 // PRIVATE ROUTE
 /**
  * @swagger
- *  /events/checkin:
+ *  /1/events/checkin:
  *    put:
  *      summary: Check-in to an event
  *      description: Allows authenticated users to check-in to an event
@@ -415,7 +415,7 @@ eventRouter.put('/checkin', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- * /events:
+ * /1/events:
  *   post:
  *     summary: Create a new event
  *     description: Allows authenticated users to create a new event
@@ -474,7 +474,7 @@ eventRouter.post('/', checkJwt, checkScopes, async (
 // End point to create a new showing
 /**
  * @swagger
- * /events/instances:
+ * /1/events/instances:
  *   post:
  *     summary: Create new showings for an event
  *     description: Allows authenticated users to create new showings for an event
@@ -532,7 +532,7 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
 // PRIVATE ROUTE
 /**
  * @swagger
- *  /events:
+ *  /1/events:
  *    put:
  *      summary: Update the details for an event
  *      description: Allows authenticated users to update the details of an event
@@ -591,7 +591,7 @@ eventRouter.put('/', checkJwt, checkScopes, async (
 // PRIVATE ROUTE
 /**
  * @swagger
- *  /events/instances/{id}:
+ *  /1/events/instances/{id}:
  *    put:
  *      summary: Update the details for an event instance
  *      description: Allows authenticated users to update the details for an event instance
@@ -658,7 +658,7 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
 // and active flag in plays table when given a play id
 /**
  * @swagger
- * /events/{id}:
+ * /1/events/{id}:
  *   delete:
  *     summary: Delete an event by ID
  *     description: Allows user to delete an event by ID
@@ -702,7 +702,7 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- * /events:
+ * /1/events:
  *   get:
  *     summary: Retrieve all active events and their showings
  *     security:
