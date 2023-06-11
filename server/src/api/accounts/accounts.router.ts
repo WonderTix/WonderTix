@@ -10,7 +10,7 @@ accountsRouter.use(checkScopes);
 
 /**
  * @swagger
- * /accounts:
+ * /1/accounts:
  *   get:
  *     summary: Retrieve all accounts.
  *     description: >
@@ -66,7 +66,7 @@ accountsRouter.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /accounts/search:
+ * /1/accounts/search:
  *   get:
  *     summary: Search for an account by username.
  *     description: Retrieve an account by username.
@@ -120,7 +120,7 @@ accountsRouter.get('/search', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /accounts/{id}:
+ * /1/accounts/{id}:
  *   get:
  *     summary: Get an account by id.
  *     description: Retrieve an account by its id.
@@ -178,7 +178,7 @@ accountsRouter.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /accounts:
+ * /1/accounts:
  *   post:
  *     summary: Create a new account.
  *     description: Create a new account with the provided information.
@@ -251,7 +251,7 @@ accountsRouter.post('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /accounts/{id}:
+ * /1/accounts/{id}:
  *   delete:
  *     summary: Delete an account by id
  *     parameters:
@@ -317,7 +317,7 @@ accountsRouter.delete('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /accounts/{id}:
+ * /1/accounts/{id}:
  *   put:
  *     summary: Update an account.
  *     parameters:

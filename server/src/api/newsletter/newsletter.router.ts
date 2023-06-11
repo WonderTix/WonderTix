@@ -8,7 +8,7 @@ export const newsletterRouter = Router();
 
 /**
  * @swagger
- *   /newsletter/count:
+ *   /1/newsletter/count:
  *     get:
  *       summary: get newsletter count by email
  *       tags:
@@ -57,7 +57,7 @@ newsletterRouter.get('/count', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- *   /newsletter/:
+ *   /1/newsletter/:
  *     put:
  *       summary: update newsletter by email
  *       tags:
@@ -106,7 +106,7 @@ newsletterRouter.put('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /newsletter/:
+ *   /1/newsletter/:
  *     post:
  *       summary: Create newsletter
  *       tags:
