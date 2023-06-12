@@ -8,16 +8,18 @@ services:
       - "8000:8000"
     environment:
       DB_DATABASE: ${PG_DB}
-      DB_HOST: '172.17.0.1'
+      DB_HOST: ${PG_HOST}
       DB_PASSWORD: ${PG_PASS}
       DB_USER: ${PG_USER}
-      DB_PORT: 5432
+      DB_PORT: ${PG_PORT}
       PRIVATE_STRIPE_KEY: ${PRIVATE_STRIPE_KEY}
       FRONTEND_URL: ${FRONTEND_URL}
+      AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
+      AUTH0_URL: ${AUTH0_URL}
+      DATABASE_URL: postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:${PG_PORT}/${PG_DB}?schema=public
     volumes:
-      - ./server:/wondertix
-      - /wondertix/node_modules
-    command: npm run dev
+      - ./server:/usr/app
+      - /usr/app/node_modules
   client:
     build:
       context: ./client
@@ -26,9 +28,13 @@ services:
     environment:
       REACT_APP_ROOT_URL: ${ROOT_URL}
       REACT_APP_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
+      REACT_APP_AUTH0_URL: ${AUTH0_URL}
+      REACT_APP_AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID}
+      REACT_APP_AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
+      REACT_APP_API_1_URL:  ${ROOT_URL}/api/1
     volumes:
-      - ./client:/wondertix
-      - /wondertix/node_modules
+      - ./client:/usr/app
+      - /usr/app/node_modules
     command: npm run start
   database:
     image: postgres
@@ -39,5 +45,3 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASS}
-    volumes:
-      - ./task_sql/mywtix_dump.sql:/docker-entrypoint-initdb.d/wtix.sql

@@ -40,7 +40,7 @@ const SavedPanel = ({
         scope: 'admin',
       });
       const response = await fetch(
-          process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
+          process.env.REACT_APP_API_1_URL + `/saved_reports`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -63,7 +63,7 @@ const SavedPanel = ({
 
     setColumns(headers);
     // TODO need to rework all the api POST requests for reporting
-    fetch(process.env.REACT_APP_ROOT_URL + `/api/${value}`)
+    fetch(process.env.REACT_APP_API_1_URL + `/${value}`)
         .then((data) => data.json())
         .then((data) => setRows(data.data));
   };
@@ -77,7 +77,7 @@ const SavedPanel = ({
 
     if (id === -1) return;
 
-    fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports/${id}`, {
+    fetch(process.env.REACT_APP_API_1_URL + `/saved_reports/${id}`, {
       method: 'delete',
     });
 

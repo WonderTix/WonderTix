@@ -108,8 +108,7 @@ export const updateInstances = async (
   // insert new showings
   // showings with id = 0 have not yet been added to the table
   const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
-  // rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
-  rowsToInsert.forEach((show: Showing) => show.ticketTypeId[0] = 0);
+  // @TODO set default ticket type
 
   console.log('Rows to insert', rowsToInsert);
   const rowsInserted = (await insertAllShowings(rowsToInsert));
@@ -412,19 +411,8 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
   let dateAct = '20200101'
   let startTime = '00:00'
   for (const showing of showings) {
-    if (showing.eventdate !== '') {
-      const date = showing.eventdate.split('-');
-      dateAct = date.join('');
-    }
-    else {
-      dateAct = '20200101'
-    }
-    if (showing.starttime !== '') {
-      startTime = showing.starttime
-    }
-    else {
-      startTime = '00:00'
-    }
+    const date = showing.eventdate.split('-');
+    const dateAct = date.join('');
     const {rows} = await pool.query(query, [
       showing.eventid,
       dateAct,
@@ -463,7 +451,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         salestatus = $4,
                         totalseats = $5,
                         availableseats = $6,
-                        purchaseuri = $7
+                        purchaseuri = $7,
                         ispreview = $8
                       WHERE
                         eventinstanceid = $1;`;
@@ -510,7 +498,16 @@ const eventFields = ['eventname', 'eventdescription', 'imageurl'];
 export const getShowingsById = async (id: string): Promise<Showing[]> => {
   // Breaking change: ispreview is new field, defaulttickettype will be added soon
   const query = `
-                SELECT *
+                SELECT eventinstanceid AS id,
+                    eventid_fk AS eventid,
+                    eventdate,
+                    eventtime AS starttime,
+                    salestatus,
+                    totalseats,
+                    availableseats,
+                    defaulttickettype AS ticketTypeId,
+                    purchaseuri,
+                    ispreview
                 FROM
                   eventinstances
                 WHERE

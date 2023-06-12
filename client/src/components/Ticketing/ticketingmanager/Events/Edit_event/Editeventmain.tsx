@@ -26,7 +26,7 @@ const Editeventmain = () => {
       imageUrl: '',
       showings: [],
     };
-    await fetch(process.env.REACT_APP_ROOT_URL +'/api/events/' + params.eventid)
+    await fetch(process.env.REACT_APP_API_1_URL +'/events/' + params.eventid)
         .then((response) => {
           return response.json();
         }).then((data)=>{
@@ -37,8 +37,8 @@ const Editeventmain = () => {
           eventData.eventID = data.data[0].id;
           eventData.seasonID= data.data[0].seasonid;
         });
-    await fetch(process.env.REACT_APP_ROOT_URL +
-          `/api/events/instances/${params.eventid}`)
+    await fetch(process.env.REACT_APP_API_1_URL +
+          `/events/instances/${params.eventid}`)
         .then((response) => {
           return response.json();
         }).then((data)=>{

@@ -19,9 +19,7 @@ import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 
-// Your Stripe public key should be retrieved from an
-// enviroment variable in .env, but this is still low risk
-const pk = `pk_test_51LYvt2L95zqXUSVMjbBbBmIeGvvFTrq6p1zwj3RmMGQ0zgKOGcqeUCNFsgLAt7bcn01fnzz3rnwehrLBSfSFQUb300J5jCAfOE`;
+const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
 
 /**
@@ -38,7 +36,7 @@ export default function CheckoutPage(): ReactElement {
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/checkout`, {
+    const response = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkout`, {
       credentials: 'include',
       method: 'POST',
       headers: {

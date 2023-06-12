@@ -26,7 +26,7 @@ import PopUp from '../../Pop-up';
  * @param {number} price
  * @param {number} concessions
  */
-interface TicketType {
+export interface TicketType {
     id: number,
     name: string,
     price: number,

@@ -23,9 +23,29 @@ const stripe = require('stripe')(stripeKey);
 const bodyParser = require('body-parser');
 
 
-// Endpoint to get event id
-// Event route
-// GET /api/events/search?eventName={eventName}
+/**
+ * @swagger
+ * /1/events/search:
+ *   get:
+ *     summary: Search events by name
+ *     description: Returns a list of event IDs and event names matching the provided event name
+ *     parameters:
+ *       - in: query
+ *         name: event_name
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: A list of event IDs and names matching the provided event name
+ *       '404':
+ *         description: No events were found matching the provided name
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *      - Event
+ */
 eventRouter.get('/search', async (req: Request, res: Response) => {
   try {
     const ids = await getEventByName(req.query);
@@ -36,6 +56,29 @@ eventRouter.get('/search', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /1/events/{id}:
+ *   get:
+ *     summary: Get event by ID
+ *     description: Returns an event with the provided ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: An event was found with the provided ID
+ *       '404':
+ *         description: No event was found with the provided ID
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *       - Event
+ */
 // Endpoint to get event by ID
 eventRouter.get('/:id', async (req: Request, res: Response) => {
   try {
@@ -51,6 +94,29 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /1/events/instances/{id}:
+ *   get:
+ *     summary: Get instance by ID
+ *     description: Returns an instance with the provided ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: An instance was found with the provided ID
+ *       '404':
+ *         description: No instance was found with the provided ID
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *       - Event
+ */
 // Endpoint to get event instance by ID
 eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
   try {
@@ -62,6 +128,25 @@ eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 });
+
+/**
+ * @swagger
+ * /1/events/list/active:
+ *   get:
+ *     summary: Get a list of active events and their instances
+ *     description: Returns a list of active events and their instances
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: A list of active events and their instances were found
+ *       '404':
+ *         description: No active events were found
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *       - Event
+ */
 // Endpoint to get the list of all event instances that are currently active
 // Even route
 eventRouter.get('/list/active', async (_req: Request, res: Response) => {
@@ -294,6 +379,24 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
 });
 
 // PRIVATE ROUTE
+/**
+ * @swagger
+ *  /1/events/checkin:
+ *    put:
+ *      summary: Check-in to an event
+ *      description: Allows authenticated users to check-in to an event
+ *      security:
+ *        - bearerAuth: []
+ *      responses:
+ *        '200':
+ *          description: Successfully checked in to the event
+ *        '404':
+ *          description: The specified event or event instance was not found
+ *        '500':
+ *          description: An error occurred while processing the request
+ *      tags:
+ *        - Event
+ */
 // TODO: Check that provided ticket ID is valid
 eventRouter.put('/checkin', checkJwt, checkScopes, async (
     req: Request,
@@ -310,6 +413,47 @@ eventRouter.put('/checkin', checkJwt, checkScopes, async (
   }
 });
 
+/**
+ * @swagger
+ * /1/events:
+ *   post:
+ *     summary: Create a new event
+ *     description: Allows authenticated users to create a new event
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Request body containing details for the new event
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               seasonid_fk:
+ *                 type: integer
+ *               eventname:
+ *                 type: string
+ *                 description: The name of the event
+ *               eventdescription:
+ *                 type: string
+ *                 description: The description of the event
+ *               active:
+ *                 type: boolean
+ *               seasonticketelligible:
+ *                 type: boolean
+ *               imageurl:
+ *                 type: string
+ *               eventid:
+ *                 type: integer
+ *     responses:
+ *       '200':
+ *         description: Successfully created a new event
+ *       '404':
+ *         description: The new event was not created
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *       - Event
+ */
 // End point to create a new event
 eventRouter.post('/', checkJwt, checkScopes, async (
     req: Request,
@@ -328,6 +472,47 @@ eventRouter.post('/', checkJwt, checkScopes, async (
 
 // PRIVATE
 // End point to create a new showing
+/**
+ * @swagger
+ * /1/events/instances:
+ *   post:
+ *     summary: Create new showings for an event
+ *     description: Allows authenticated users to create new showings for an event
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Array of objects containing details for each new showing
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 eventid:
+ *                   type: integer
+ *                 eventdate:
+ *                   type: string
+ *                   format: integer
+ *                 eventtime:
+ *                   type: string
+ *                   format: time
+ *                 totalseats:
+ *                   type: integer
+ *                   description: The total number of seats available for the showing
+ *                 tickettype:
+ *                   type: string
+ *                   description: The type of ticket for the showing
+ *     responses:
+ *       '200':
+ *         description: Successfully created new showings
+ *       '404':
+ *         description: The new showings were not created
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *       - Event
+ */
 // req body: array of {eventid, eventdate, starttime, totalseats, tickettype}
 eventRouter.post('/instances', checkJwt, checkScopes, async (
     req: Request,
@@ -347,40 +532,45 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
 // PRIVATE ROUTE
 /**
  * @swagger
- *  /events/
+ *  /1/events:
  *    put:
  *      summary: Update the details for an event
+ *      description: Allows authenticated users to update the details of an event
+ *      security:
+ *        - bearerAuth: []
  *      requestBody:
+ *        description: Request body containing updated details for the event
  *        required: true
  *        content:
  *          application/json:
  *            schema:
  *              type: object
  *              properties:
- *                id: integer
- *                seasonid: integer
- *                eventname: string
- *                eventdescription: string
- *                active: boolean
- *                image_url: string
+ *                id:
+ *                  type: integer
+ *                  description: The ID of the event to update
+ *                seasonid:
+ *                  type: integer
+ *                  description: The ID of the season that the event belongs to
+ *                eventname:
+ *                  type: string
+ *                  description: The name of the event
+ *                eventdescription:
+ *                  type: string
+ *                  description: The description of the event
+ *                active:
+ *                  type: boolean
+ *                  description: Whether the event is active or not
+ *                image_url:
+ *                  type: string
+ *                  description: The URL of the image associated with the event
  *      responses:
- *        200:
- *          description: OK
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                  type: object
- *                  properties:
- *                    id: integer
- *                    seasonid: integer
- *                    eventname: string
- *                    eventdescription: string
- *                    active: boolean
- *                    image_url: string
- *        404:
- *          description: An error occured querying the database
+ *        '200':
+ *          description: The event details were updated successfully
+ *        '404':
+ *          description: An error occurred while updating the event details
+ *      tags:
+ *        - Event
  */
 eventRouter.put('/', checkJwt, checkScopes, async (
     req: Request,
@@ -401,44 +591,51 @@ eventRouter.put('/', checkJwt, checkScopes, async (
 // PRIVATE ROUTE
 /**
  * @swagger
- *  /events/instances/:id
+ *  /1/events/instances/{id}:
  *    put:
- *      summary: Updates the list of showings for a given event
+ *      summary: Update the details for an event instance
+ *      description: Allows authenticated users to update the details for an event instance
  *      parameters:
  *        - in: path
  *          name: id
+ *          description: The ID of the event instance to update
  *          schema:
  *            type: integer
- *          description: The ID of the event
  *      requestBody:
- *        required: true
+ *        description: Request body containing updated details for the event instance
  *        content:
  *          application/json:
  *            schema:
- *              type: array
- *              items:
- *                type: object
- *                properties:
- *                  id: integer
- *                  eventdate: string
- *                  starttime: string
- *                  salestatus: boolean
- *                  totalseats: integer
- *                  availableseats: integer
- *                  purchaseuri: string
+ *              type: object
+ *              properties:
+ *                eventid:
+ *                  type: integer
+ *                  description: The ID of the event associated with this instance
+ *                eventdate:
+ *                  type: string
+ *                  format: date-time
+ *                  description: The date and time of the event instance
+ *                starttime:
+ *                  type: string
+ *                  format: time
+ *                  description: The start time of the event instance in HH:MM format
+ *                totalseats:
+ *                  type: integer
+ *                  description: The total number of seats available for this instance
+ *                tickettype:
+ *                  type: string
+ *                  description: The type of ticket available for this instance
+ *      security:
+ *        - bearerAuth: []
  *      responses:
- *        200:
- *          description: OK
- *          content:
- *            application/json:
- *              schema:
- *                type: object
- *                properties:
- *                  numRowsUpdated: integer
- *                  numRowsDeleted: integer
- *                  numRowsInserted: integer
- *          404:
- *            description: An error occured querying the database
+ *        '200':
+ *          description: Successfully updated the event instance
+ *        '404':
+ *          description: The event instance was not found or could not be updated
+ *        '500':
+ *          description: An error occurred while processing the request
+ *      tags:
+ *        - Event
  */
 eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     req: Request,
@@ -452,13 +649,37 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     }
     res.status(code).send(resp);
   } catch (error: any) {
-    res.status(500).send(error.message);
+    res.status(500).send(error);
   }
 });
 
 // PRIVATE ROUTE
 // Updates salestatus in showtimes table
 // and active flag in plays table when given a play id
+/**
+ * @swagger
+ * /1/events/{id}:
+ *   delete:
+ *     summary: Delete an event by ID
+ *     description: Allows user to delete an event by ID
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID of the event to delete
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: Successfully deleted the event instance
+ *       '404':
+ *         description: The event instance was not found or could not be deleted
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *       - Event
+ */
 eventRouter.delete('/:id', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
@@ -479,6 +700,56 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
   }
 });
 
+/**
+ * @swagger
+ * /1/events:
+ *   get:
+ *     summary: Retrieve all active events and their showings
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Active events and coorelated showings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                     message:
+ *                       type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       seasonid:
+ *                         type: string
+ *                       eventname:
+ *                         type: string
+ *                       eventdescription:
+ *                         type: string
+ *                       active:
+ *                         type: boolean
+ *                       seasonticketeligible:
+ *                         type: boolean
+ *                       image_url:
+ *                         type: string
+ *                       numShow:
+ *                         type: integer
+ *       404:
+ *         description: An error occurred querying the database
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *       - Event
+ */
 eventRouter.get('/', async (_req: Request, res: Response) => {
   try {
     // query to retrieve all active events, and the number of showings for each

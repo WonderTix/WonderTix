@@ -32,7 +32,7 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/checkin`, {
+    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -88,7 +88,7 @@ const DoorList = () => {
 
   const getEvents = async () => {
     try {
-      const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
+      const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/active');
       const jsonRes = await response.json();
       const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
@@ -114,7 +114,7 @@ const DoorList = () => {
       });
 
       const getuser = event.target.value;
-      const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/doorlist?eventinstanceid=${getuser}`, {
+      const response = await fetch(process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${getuser}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

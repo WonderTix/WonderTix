@@ -37,7 +37,7 @@ const box: CSSProperties ={
  * @returns {ReactElement} PopUp - Function named PopUp that can be interacted
  * with
  */
-const PopUp = ({title, message, handleClose}: popupProps) => {
+const PopUp = ({title, message, handleClose, handleProceed}: popupProps) => {
   return (
     <div style={popUpContainer}>
       <div id="popup-modal"
@@ -69,10 +69,10 @@ const PopUp = ({title, message, handleClose}: popupProps) => {
                 {message}
               </p>
               <button data-modal-toggle="popup-modal"
-                onClick={handleClose}
-                type="button" className="text-white bg-red-600
-                hover:bg-red-800 focus:ring-4 focus:outline-none
-                focus:ring-red-300 dark:focus:ring-red-800 font-medium
+                onClick={handleProceed}
+                type="button" className="text-white bg-green-600
+                hover:bg-green-800 focus:ring-4 focus:outline-none
+                focus:ring-green-300 dark:focus:ring-green-800 font-medium
                  rounded-lg text-sm inline-flex items-center
                   px-5 py-2.5 text-center mr-2">
                     Proceed

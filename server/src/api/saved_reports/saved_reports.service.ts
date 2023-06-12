@@ -5,14 +5,14 @@ import {Report} from './report';
 
 export const findAll = () => {
   const myQuery = {
-    text: `SELECT * FROM saved_reports;`,
+    text: `SELECT * FROM savedreports;`,
   };
   return pool.query(myQuery);
 };
 
 export const find = (id: string) => {
   const myQuery = {
-    text: 'SELECT * FROM saved_reports WHERE $1',
+    text: 'SELECT * FROM savedreports WHERE $1',
     values: [id],
   };
   return pool.query(myQuery);
@@ -21,7 +21,7 @@ export const find = (id: string) => {
 export const create = (newReport: Report) => {
   const myQuery = {
     text: `
-      INSERT INTO saved_reports
+      INSERT INTO savedreports
       VALUES (DEFAULT, $1, $2)
       RETURNING *
     `,
@@ -32,7 +32,7 @@ export const create = (newReport: Report) => {
 
 export const remove = (id: string) => {
   const myQuery = {
-    text: 'DELETE FROM saved_reports WHERE id = $1',
+    text: 'DELETE FROM savedreports WHERE id = $1',
     values: [id],
   };
   return pool.query(myQuery);

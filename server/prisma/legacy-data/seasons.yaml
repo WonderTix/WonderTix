@@ -1,0 +1,28 @@
+- seasonid: 1
+  name: Test Season 2015-0
+  startdate: 20150101
+  enddate: 20150822
+- seasonid: 2
+  name: Test Season 2016-1
+  startdate: 20160420
+  enddate: 20161103
+- seasonid: 3
+  name: Test Season 2017-2
+  startdate: 20170525
+  enddate: 20171207
+- seasonid: 4
+  name: Test Season 2018-3
+  startdate: 20180707
+  enddate: 20190120
+- seasonid: 5
+  name: Test Season 2019-4
+  startdate: 20190810
+  enddate: 20200209
+- seasonid: 6
+  name: Test Season 2020-5
+  startdate: 20200818
+  enddate: 20210220
+- seasonid: 7
+  name: Test Season 2021-6
+  startdate: 20210901
+  enddate: 20220423

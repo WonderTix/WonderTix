@@ -8,7 +8,8 @@
 {
     title: string;
     message: string;
-    handleClose:( event: any) => void;
+    handleClose: (event: any) => void;
+    handleProceed: (event: any) => void;
 }
 
 export default popupProps;

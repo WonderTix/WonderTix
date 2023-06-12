@@ -50,7 +50,7 @@ const AccountsPanel = ({
       });
 
       const response = await fetch(
-          `${process.env.REACT_APP_ROOT_URL}/api/saved_reports`, {
+          `${process.env.REACT_APP_API_1_URL}/saved_reports`, {
             method: 'post',
             headers: {
               'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ const AccountsPanel = ({
         {accountFiltersSwitch.map((filter) => {
           console.log(filter);
           return (
-            <div className="form-check">
+            <div className="form-check" key={filter.id}>
               <input key={filter.id} id={filter.id} onChange={handleChange}
                 type="checkbox" className="
                   form-check-input appearance-non h-4 w-4 border

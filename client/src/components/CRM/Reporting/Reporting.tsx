@@ -71,7 +71,7 @@ const ReportingTest = (): React.ReactElement => {
 
     setColumns(headers);
 
-    let url = process.env.REACT_APP_ROOT_URL + `/api/${route}`;
+    let url = process.env.REACT_APP_API_1_URL + `/${route}`;
 
     // TODO need to remove this, query uses the weird filter syntax
     if (query !== '') url += `?${query}`;
@@ -177,6 +177,12 @@ const ReportingTest = (): React.ReactElement => {
           </div>
           <div className='h-[50rem] w-[50rem] m-2 flex-grow-1 shadow-xl rounded-xl bg-white' >
             <DataGrid
+              getRowId={(data) => {
+                if (data.userid >= 0) return data.userid;
+                if (data.donationid >= 0) return data.donationid;
+                if (data.contactid >= 0) return data.contactid;
+              }
+              }
               rows={rows}
               columns={columns}
               // experimentalFeatures={{ newEditingApi: true }}

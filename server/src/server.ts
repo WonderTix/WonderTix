@@ -34,51 +34,93 @@ import {ticketRouter} from './api/tickets/ticket.router';
 import {discountsRouter} from './api/discounts/discounts.router';
 import {reportingRouter} from './api/reporting/reporting.router';
 import {refundsRouter} from './api/refunds/refunds.router';
+import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import yamljs from 'yamljs';
-import {resolveRefs} from 'json-refs';
+import {ticketTypesRouter} from './api/ticket_types/ticket_types.router';
+import {contactController} from './controllers/contactController';
 
-
-/**
- * Return JSON object. Source: https://github.com/chuve/swagger-multi-file-spec
- * @param {array | object} root
- * @return {Promise.<JSON>}
- */
-const multiFileSwagger = (root: any) => {
-  const options = {
-    filter: ['relative', 'remote'],
-    loaderOptions: {
-      processContent: function(res: any, callback: any) {
-        callback(null, yamljs.parse(res.text));
+const openApiSpec = swaggerJsdoc({
+  definition: {
+    openapi: '3.0.0',
+    servers: [{
+      url: 'https://localhost:8000/api',
+    }],
+    info: {
+      title: 'Wondertix API',
+      version: '1.0.0',
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+      parameters: {
+        id: {
+          name: 'id',
+          in: 'path',
+          description: 'ID',
+          schema: {
+            type: 'integer',
+          },
+        },
+      },
+      schemas: {
+        Contact: {
+          type: 'object',
+          properties: {
+            contactid: {type: 'integer'},
+            firstname: {type: 'string'},
+            lastname: {type: 'string'},
+            email: {type: 'string'},
+            phone: {type: 'string'},
+            donorbadge: {type: 'boolean'},
+            seatingaccom: {type: 'string'},
+            vip: {type: 'boolean'},
+            volunteerlist: {type: 'string'},
+            newsletter: {type: 'boolean'},
+          },
+        },
+        Error: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'string',
+              description: 'Error message from the server.',
+            },
+          },
+        },
+      },
+      requestBodies: {
+        Contact: {
+          type: 'object',
+          properties: {
+            firstname: {type: 'string'},
+            lastname: {type: 'string'},
+            email: {type: 'string'},
+            phone: {type: 'string'},
+            donorbadge: {type: 'boolean'},
+            seatingaccom: {type: 'string'},
+            vip: {type: 'boolean'},
+            volunteerlist: {type: 'string'},
+            newsletter: {type: 'boolean'},
+          },
+        },
       },
     },
-  };
-
-  return resolveRefs(root, options).then(
-      function(results: any) {
-        console.log(results);
-        return results.resolved;
-      },
-      function(err: any) {
-        console.log(err.stack);
-      },
-  );
-};
+    security: [{
+      bearerAuth: ['admin'],
+    }],
+  },
+  apis: ['./src/api/**/*.ts', './src/controllers/**/*.ts'],
+});
 
 const createServer = async () => {
   dotenv.config({path: path.join(__dirname, '../../.env')});
 
   const app = express();
-  const hostname = process.env.HOSTNAME || 'localhost';
-
-
-  // const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
-  //   process.env.PRIVATE_STRIPE_KEY : '';
-
-  // const stripe = new Stripe(stripeKey, {
-  //   apiVersion: '2020-08-27',
-  // });
-
 
   /* Middleware */
   app.use(express.json());
@@ -93,41 +135,36 @@ const createServer = async () => {
   );
 
 
-  /* Connect Routers */
+  // api 1
+  app.use('/api/1/donations', donationsRouter);
+  app.use('/api/1/contacts', contactsRouter);
+  app.use('/api/1/accounts', accountsRouter);
+  app.use('/api/1/tasks', tasksRouter);
+  app.use('/api/1/task_notes', taskNotesRouter);
+  app.use('/api/1/saved_reports', savedReportsRouter);
+  app.use('/api/1/newsletter/', newsletterRouter);
+  app.use('/api/1/events', eventRouter);
+  app.use('/api/1/email_subscriptions', subscriptionRouter);
+  app.use('/api/1/tickets', ticketRouter);
+  app.use('/api/1/ticket-types', ticketTypesRouter);
+  app.use('/api/1/doorlist', doorlistRouter);
+  app.use('/api/1/discounts', discountsRouter);
+  app.use('/api/1/refunds', refundsRouter);
+  app.use('/api/1/reporting', reportingRouter);
+  app.use('/api/1/order', orderRouter);
 
-  app.use('/api/donations', donationsRouter);
-  app.use('/api/contacts', contactsRouter);
-  app.use('/api/accounts', accountsRouter);
-  app.use('/api/tasks', tasksRouter);
-  app.use('/api/task_notes', taskNotesRouter);
-  app.use('/api/saved_reports', savedReportsRouter);
-  app.use('/api/newsletter/', newsletterRouter);
-  app.use('/api/events', eventRouter);
-  app.use('/api/email_subscriptions', subscriptionRouter);
-  app.use('/api/tickets', ticketRouter);
-  app.use('/api/doorlist', doorlistRouter);
-  app.use('/api/discounts', discountsRouter);
-  app.use('/api/refunds', refundsRouter);
-  app.use('/api/reporting', reportingRouter);
-  app.use('/api/order', orderRouter);
+  // api 2
+  app.use('/api/2/contact', contactController);
 
-  app.get('/', (_req, res) => res.send('Hello World.'));
-
-  const swaggerDocument = await multiFileSwagger(
-      yamljs.load(path.resolve(__dirname, './schema/test.yaml')),
-  );
-
-  console.log(swaggerDocument);
-
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  // other
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
+  app.get('/', (_req, res) => res.redirect('/api/1/docs'));
 
   return https
       .createServer(
           {
-            key: fs.readFileSync(
-                path.join(__dirname, '../localhost-key.pem'),
-            ),
-            cert: fs.readFileSync(path.join(__dirname, '../localhost.pem')),
+            key: fs.readFileSync('/usr/app/localhost-key.pem'),
+            cert: fs.readFileSync('/usr/app/localhost.pem'),
           }, app);
 };
 
