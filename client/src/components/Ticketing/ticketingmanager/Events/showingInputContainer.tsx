@@ -100,7 +100,7 @@ const ShowingInputContainer = ({
       seatsForType: seatsForType,
       ticketTypeId: ticketTypeId,
       totalseats: totalSeats,
-      index: index
+      index: index,
     };
     handleSetShow(showing);
   }, [
@@ -145,7 +145,7 @@ const ShowingInputContainer = ({
   return (
     <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={index}>
       { showConfirm ?
-      <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(id)}/> : null
+      <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(index)}/> : null
       }
       <div key={index} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
         <label className='font-semibold text-white mb-7 mt-7  '>Show # {index + 1}</label>
@@ -229,7 +229,7 @@ const ShowingInputContainer = ({
         <button
           className='px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm'
           type='button'
-          onClick={handleDeleteShow}
+          onClick={() => setShowConfirm(true)}
           id={String(index)}
         >
           Delete

@@ -21,7 +21,7 @@ export interface WtixEvent {
 }
 
 export interface Showing {
-  id: number;
+  id?: number;
   index: number;
   eventinstanceid: number;
   eventid_fk: number;
