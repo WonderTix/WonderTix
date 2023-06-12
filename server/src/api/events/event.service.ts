@@ -90,22 +90,25 @@ export const updateInstances = async (
 
   // get existing showings for this event
   const currentShowings = await getShowingsById(params.id);
+  console.log(currentShowings)
 
   console.log("retrieved " + currentShowings.length + " showings");
   // see which showings are not present in the updated showings
-  const instancesSet = new Set(instances.map((show) => show.eventinstanceid));
+  console.log('-------------------------------------------------=============================')
   console.log(instances)
+  console.log('-------------------------------------------------=============================')
+  const instancesSet = new Set(instances.map((show) => show.eventinstanceid));
   const rowsToDelete = currentShowings
-    .filter((show: Showing) => !instancesSet.has(show.eventinstanceid))
-    .map((show) => show.eventinstanceid);
+    .filter((show: Showing) => !instancesSet.has(show.id))
+    .map((show) => show.id);
   
   // delete them
   const rowsDeleted = await deleteShowings(rowsToDelete);
-  console.log("to delete: " + rowsToDelete);
+  // console.log("to delete: " + rowsToDelete);
 
   // update existing showings
   const rowsToUpdate = instances.filter(
-    (show: Showing) => show.eventid_fk && show.eventinstanceid !== 0
+    (show: Showing) => show.eventinstanceid && show.eventinstanceid !== 0
   );
   console.log(rowsToUpdate)
   const rowsUpdated = await updateShowings(rowsToUpdate);
@@ -135,8 +138,8 @@ export const updateInstances = async (
     status: {
       success: true,
       message:
-        `${rowsUpdated} rows updated, ` +
-        `${rowsDeleted} rows deleted, ${rowsInserted.length} rows inserted`,
+        `${rowsUpdated} rows updated, +
+        ${rowsDeleted} rows deleted, ${rowsInserted.length} rows inserted`,
     },
   };
 };
@@ -482,7 +485,7 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
   for (const showing of showings) {
     //console.log("Update Current: ", showings);
     const queryResult = await pool.query(updateQuery, [
-      showing.id,
+      showing.eventinstanceid,
       showing.eventdate,
       showing.eventtime,
       showing.salestatus,

@@ -93,7 +93,7 @@ const ShowingInputContainer = ({
       availableseats: availableSeats ? availableSeats : totalSeats,
       eventdate: eventdate,
       eventid_fk: showingData.eventid_fk,
-      eventinstanceid: showingData.eventinstanceid,
+      eventinstanceid: eventinstanceid,
       eventtime: eventtime,
       ispreview: false,
       salestatus: true,

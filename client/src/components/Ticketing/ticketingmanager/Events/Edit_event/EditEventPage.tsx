@@ -62,19 +62,22 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     setTicketTypes(await res.json());
   };
 
+  useEffect(() => {
+    console.log(initValues)
+  }, [])
+
   const onSubmit = async (updatedData: WtixEvent) => {
     console.log("onSubmit called for edit event");
     console.log(updatedData)
-    let showings = updatedData.showings.map((show: Showing) => {
-      show.eventinstanceid = initValues.eventid;
-      return show;
-    });
-    updatedData.showings = showings;
-    console.log("sending data: ", updatedData.showings);
+    const showings = updatedData.showings.map((show) => show.eventinstanceid);
+    // updatedData.showings = showings;
+    // console.log("sending data: ", updatedData.showings);
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
+
+    // Updates the event data (everything before showings)
     const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/`, {
       credentials: 'include',
       method: 'PUT',
@@ -84,6 +87,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       },
       body: JSON.stringify(updatedData),
     });
+    console.log(params)
 
     await fetch(process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`, {
       credentials: 'include',

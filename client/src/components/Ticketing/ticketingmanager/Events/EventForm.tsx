@@ -125,7 +125,8 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   };
 
   useEffect(() => {
-    console.log(initialValues)
+    if (initialValues)
+      console.log(initialValues.showings)
   }, [])
   const [eventname, seteventname] = useState(def.eventname);
   const eventid = def.eventid;
@@ -152,6 +153,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   }, [imageurl]);
 
   const setShowingsHandler = (shows) => {
+    console.log(shows)
     setShowings(shows);
   };
 
@@ -165,7 +167,8 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       imageurl,
       showings: showings,
     };
-    console.log(data);
+    console.log('swag2')
+    console.log(data)
     if (showings.length === 0) {
       setErr('Please enter at least one showing.');
       setShowPopUp(true);
@@ -218,6 +221,8 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
         }
       }
     }
+    console.log('swag1')
+    console.log(data)
     onSubmit(data);
   };
 
@@ -267,7 +272,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
               <div>
                 {/*  Button to trigger add of new show*/}
                 <div id="show-table">
-                  <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
+                  <ShowListController showsData={def.showings.length != 0 ? def.showings : []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
                 </div>
               </div>
             </div>

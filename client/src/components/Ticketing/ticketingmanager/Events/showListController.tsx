@@ -35,6 +35,10 @@ const ShowListController = ({
   const [shows, setShow] = useState(showsData ? showsData : []);
   const [numOfShowings, setNumOfShowings] = useState(showsData ? showsData.length : 0);
 
+  useEffect(() => {
+    console.log(showsData)
+  }, [])
+
   // SHOWINGS ACTIONS:
   // const addShowBox = (event) => {
   //   event.preventDefault();
@@ -82,7 +86,7 @@ const ShowListController = ({
         // console.log(
         //   'handle set show called with event instance id ' + show.id
         // );
-        console.log('id: ' + show.eventid_fk);
+        console.log('id: ' + show.eventinstanceid);
         showItems[show.index] = show;
 
         setShow(showItems);
