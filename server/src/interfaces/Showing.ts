@@ -21,15 +21,24 @@
  */
 
 export default interface Showing {
-    id: number;
-    eventid: string;
-    eventdate: string;
-    starttime: string;
-    salestatus: boolean;
-    totalseats: number;
-    availableseats: number;
-    ticketTypeId: number[],
-    seatsForType: number[],
-    purchaseuri: string;
-    ispreview: boolean;
+  id: number;
+  eventid: string;
+  eventdate: string;
+  starttime: string;
+  salestatus: boolean;
+  totalseats: number;
+  availableseats: number;
+  tickettypes: number[];
+  seatsfortype: number[];
+  purchaseuri: string;
+  ispreview: boolean;
+  eventinstanceid: number;
+  ticketTypeId: number[]; // This and tickettypeids are the same, but this is a temp fix for a type error
+}
+
+export interface TicketType {
+  id: number,
+  name: string,
+  price: number,
+  concessions: number,
 }

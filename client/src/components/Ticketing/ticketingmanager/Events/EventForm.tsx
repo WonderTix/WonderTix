@@ -11,10 +11,10 @@
 import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 // import {FieldArray} from 'react-final-form-arrays';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
-import {Showing} from '../../../../interfaces/showing.interface';
+import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
 import PopUp from '../../Pop-up';
 
 /**
@@ -38,22 +38,22 @@ export interface TicketType {
  *
  * @module
  * @param {number} seasonID?
- * @param {number} eventID?
- * @param {string} eventName
- * @param {string} eventDesc
- * @param {boolean} isPublished
- * @param {string} imageUrl - why is this name scheme different
+ * @param {number} eventid?
+ * @param {string} eventname
+ * @param {string} eventdescription
+ * @param {boolean} active
+ * @param {string} image_url - why is this name scheme different
  * @param {Showing} showings
  */
-export interface NewEventData {
+/* export interface WtixEvent {
     seasonID?: number,
-    eventID?: number,
-    eventName: string,
-    eventDesc: string,
-    isPublished: boolean,
-    imageUrl: string,
+    eventid?: number,
+    eventname: string,
+    eventdescription: string,
+    active: boolean,
+    image_url: string,
     showings: Showing []
-}
+}*/
 
 /**
  * Validates form data
@@ -81,70 +81,74 @@ const initialState = {
 /**
  * Used for submission
  *
- * @param {NewEventData} formData - starts void
+ * @param {WtixEvent} formData - starts void
  * @param {TicketType} tickeTypes - starts empty
- * @param {Partial<NewEventData>} InitialValues?
+ * @param {Partial<WtixEvent>} InitialValues?
  */
 interface EventFormProps {
-    onSubmit: (formData: NewEventData) => void
-    ticketTypes: TicketType[],
-    initialValues?: Partial<NewEventData>,
+    onSubmit: (formData: WtixEvent) => void
+    tickettypes: number[],
+    initialValues?: Partial<WtixEvent>,
 }
 
 /**
  * Event Form values, set all of them
  *
- * @param eventName - initialValues.eventName || ''
- * @param eventID - initialValues.eventID || -1
- * @param eventDesc - initialValues.eventDesc || ''
- * @param imageUrl - initialValues.imageUrl || ''
- * @param isPublished - initialValues.isPublished || false
+ * @param eventname - initialValues.eventname || ''
+ * @param eventid - initialValues.eventid || -1
+ * @param eventdescription - initialValues.eventdescription || ''
+ * @param image_url - initialValues.image_url || ''
+ * @param active - initialValues.active || false
  * @param showings - initialValues.showings || []
- * @param eventName.onSubmit
- * @param eventName.ticketTypes
- * @param eventName.initialValues
+ * @param eventname.onSubmit
+ * @param {TicketType} eventname.tickettypes
+ * @param eventname.initialValues
  * @returns {Form} EventForm
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
-  const def = (initialValues !== undefined) ? {
-    eventName: initialValues.eventName,
-    eventID: initialValues.eventID,
-    eventDesc: initialValues.eventDesc,
-    imageUrl: initialValues.imageUrl,
-    isPublished: initialValues.isPublished,
+const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
+  const def: WtixEvent = (initialValues !== undefined) ? {
+    eventname: initialValues.eventname,
+    eventid: initialValues.eventid,
+    eventdescription: initialValues.eventdescription,
+    image_url: initialValues.image_url,
+    active: initialValues.active,
     showings: initialValues.showings,
   }:
   {
-    eventName: '',
-    eventID: -1,
-    eventDesc: '',
-    imageUrl: '',
-    isPublished: false,
+    eventname: '',
+    eventid: -1,
+    eventdescription: '',
+    image_url: '',
+    active: false,
     showings: [],
   };
-  const [eventName, setEventName] = useState(def.eventName);
-  const eventID = def.eventID;
-  const [eventDesc, setEventDesc] = useState(def.eventDesc);
-  const [imageUrl, setImageURL] = useState(def.imageUrl);
-  const isPublished = def.isPublished;
+  const [eventname, seteventname] = useState(def.eventname);
+  const eventid = def.eventid;
+  const [eventdescription, setEventDesc] = useState(def.eventdescription);
+  const [image_url, setImageURL] = useState(def.image_url);
+  const active = def.active;
+  // console.log("showings before useState: " + JSON.stringify(def.showings));
   const [showings, setShowings] = useState(def.showings);
   const [showPopUp, setShowPopUp] = useState(false);
   const [err, setErr] = useState('');
 
+  useEffect(() => {
+    console.log(initialValues);
+  });
   // FIELDS CALLBACK
   // Set event name
-  const addEventName = useCallback((eventName) => {
-    setEventName(eventName.target.value);
-  }, [eventName]);
+  const addeventname = useCallback((eventname) => {
+    seteventname(eventname.target.value);
+  }, [eventname]);
   // Set description
   const addEventDesc = useCallback((event) => {
     setEventDesc(event.target.value);
-  }, [eventDesc]);
+  }, [eventdescription]);
   // Set url
   const addURL = useCallback((url) => {
     setImageURL(url.target.value);
-  }, [imageUrl]);
+  }, [image_url]);
 
   const setShowingsHandler = (shows) => {
     setShowings(shows);
@@ -152,12 +156,12 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
 
   // Handle new play and the show options
   const handleSubmit = () => {
-    const data: NewEventData = {
-      eventName,
-      eventID,
-      eventDesc,
-      isPublished,
-      imageUrl,
+    const data: WtixEvent = {
+      eventname,
+      eventid: eventid,
+      eventdescription,
+      active,
+      image_url,
       showings: showings,
     };
     console.log(data);
@@ -166,12 +170,12 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       setShowPopUp(true);
       return;
     }
-    if (eventName === '' || eventDesc === '' || showings.length === 0) {
+    if (eventname === '' || eventdescription === '' || showings.length === 0) {
       const conditions = [];
-      if (eventName === '') {
+      if (eventname === '') {
         conditions.push('Event name');
       }
-      if (eventDesc === '') {
+      if (eventdescription === '') {
         conditions.push('Event description');
       }
       let message = '';
@@ -204,10 +208,12 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
       }
     }
     for (let i = 0; i < data.showings.length; i++) {
-      for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
-        if (data.showings[i].ticketTypeId[j] === 'NaN') {
-          data.showings[i].seatsForType.splice(j, 1);
-          data.showings[i].ticketTypeId.splice(j, 1);
+      if (data.showings[i].tickettypeids) {
+        for (let j = data.showings[i].tickettypeids.length - 1; j >= 0; j--) {
+          if (data.showings[i].tickettypeids[j] === 'NaN') {
+            data.showings[i].seatsForType.splice(j, 1);
+            data.showings[i].tickettypeids.splice(j, 1);
+          }
         }
       }
     }
@@ -221,7 +227,6 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
         onSubmit={handleSubmit}
         initialValues={initialValues ?? initialState}
         mutators={{...arrayMutators}}
-        validate={validate}
         render={({
           handleSubmit,
         }) => (
@@ -232,23 +237,23 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
               </div>
               <div className='w-full flex flex-col '>
                 <InputFieldForEvent
-                  name={'eventName'}
-                  id={'eventName'} headerText={'Enter Event Name'}
-                  action={addEventName} actionType={'onChange'} value={def.eventName}
-                  placeholder={def.eventName ? def.eventName: 'Event Name'} />
+                  name={'eventname'}
+                  id={'eventname'} headerText={'Enter Event Name'}
+                  action={addeventname} actionType={'onChange'} value={def.eventname}
+                  placeholder={def.eventname ? def.eventname: 'Event Name'} />
 
                 <InputFieldForEvent
-                  name={'eventDesc'}
-                  id={'eventDesc'} headerText={'Enter Short Event Description'}
+                  name={'eventdescription'}
+                  id={'eventdescription'} headerText={'Enter Short Event Description'}
                   actionType={'onChange'}
-                  action={addEventDesc} value={def.eventDesc}
-                  placeholder={def.eventDesc ? def.eventDesc : 'Event Description'} />
+                  action={addEventDesc} value={def.eventdescription}
+                  placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
 
                 <InputFieldForEvent
-                  name={'imageUrl'}
-                  id={'imageUrl'} headerText={'Upload Image for Event'}
-                  action={addURL} actionType={'onChange'} value={def.imageUrl}
-                  placeholder={def.imageUrl ? def.imageUrl : 'image URL'}/>
+                  name={'image_url'}
+                  id={'image_url'} headerText={'Upload Image for Event'}
+                  action={addURL} actionType={'onChange'} value={def.image_url}
+                  placeholder={def.image_url ? def.image_url : 'image URL'}/>
               </div>
               {/* Showings container*/}
               <div className='text-3xl font-semibold mt-5'>
@@ -261,7 +266,7 @@ const EventForm = ({onSubmit, ticketTypes, initialValues}: EventFormProps) => {
               <div>
                 {/*  Button to trigger add of new show*/}
                 <div id="show-table">
-                  <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventID} setShowingsHandler={setShowingsHandler}/>
+                  <ShowListController showsData={def.showings.length != 0 ? def.showings: []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
                 </div>
               </div>
             </div>

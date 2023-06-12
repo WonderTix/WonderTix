@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
-import React, {useEffect} from 'react';
-import {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
 import DeleteConfirm from './deleteConfirm';
 
@@ -12,27 +11,26 @@ import DeleteConfirm from './deleteConfirm';
  * @param {number} id
  * @param {Function} handleSetShow
  */
-interface InitialData {
-  availableseats?: number,
-  defaulttickettype?: number,
-  eventdate?: number | string,
-  eventid_fk?: number,
-  eventinstanceid?: number,
-  eventtime?: string,
-  ispreview?: boolean,
-  purchaseuri?: string,
-  salestatus?: boolean,
-  totalseats?: number,
-  starttime?: number | string,
-}
+/* interface InitialData {
+  availableseats?: number;
+  defaulttickettype?: number;
+  eventdate: string;
+  eventid: number;
+  index: number;
+  ispreview?: boolean;
+  purchaseuri?: string;
+  salestatus?: boolean;
+  totalseats?: number;
+  starttime: string;
+}*/
 
 export interface MapPropsToShowingInputContainer {
-  showingData: InitialData;
+  showingData: Showing;
   id: number;
+  index: number,
   handleSetShow: (show: Showing) => void;
   handleDeleteShow: (e: any) => void;
 }
-
 
 /**
  *
@@ -41,12 +39,19 @@ export interface MapPropsToShowingInputContainer {
  */
 // eslint-disable-next-line react/prop-types
 
-
 const toDateStringFormat = (date) => {
   if (date === undefined || date === '') return '';
   const dateString = String(date);
-  if (dateString.split('-').length === 3) return dateString;
-  return `${dateString.slice(0, 4)}-${dateString.slice(4, 6)}-${dateString.slice(6, 8)}`;
+  if (dateString.includes('-')) return date;
+  if (dateString.split('-').length === 3) {
+    const [year, month, day] = dateString.split('-').map(Number);
+    const Dateobject = new Date(year, month - 1, day);
+    return Dateobject.getTime();
+  }
+  const year = dateString.substring(0, 4);
+  const month = dateString.substring(4, 6);
+  const day = dateString.substring(6, 8);
+  return `${year}-${month}-${day}`;
 };
 
 const toTimeStringFormat = (time) => {
@@ -56,17 +61,22 @@ const toTimeStringFormat = (time) => {
   return timeString.split(/[+-]/)[0];
 };
 
-const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow}:MapPropsToShowingInputContainer) => {
-  const [starttime, setStartTime] = useState(showingData.eventtime !== undefined ? showingData.eventtime.slice(0, 8): '');
-  const [eventdate, setEventDate] = useState(showingData.eventdate !== undefined ? toDateStringFormat(showingData.eventdate) : '');
-  const [ticketTypeId, setTicketTypeId] = useState([]); // TODO: Fill this initial data out to properly load
-  const [seatsForType, setSeatsForType] = useState([]); // TODO: Fill this initial data out to properly load
+const ShowingInputContainer = ({
+  showingData,
+  id,
+  index,
+  handleSetShow,
+  handleDeleteShow,
+}: MapPropsToShowingInputContainer) => {
+  const [starttime, setStartTime] = useState(showingData.starttime !== undefined ? showingData.starttime.slice(0, 8) : '');
+  const [eventdate, setEventDate] = useState(showingData.eventdate);
+  const [ticketTypeId, setTicketTypeId] = useState(showingData.tickettypeids ? showingData.tickettypeids : []);
+  const [seatsForType, setSeatsForType] = useState(showingData.seatsForType ? showingData.seatsForType : []);
   const [availableSeats, setAvailableSeats] = useState(showingData.availableseats !== undefined ? showingData.availableseats : 0);
   const [totalSeats, setTotalSeats] = useState(showingData.totalseats !== undefined ? showingData.totalseats : 0);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [ticketTypes, setTicketTypes] = useState([]);
-
 
   const fetchTicketTypes = async () => {
     const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/allTypes');
@@ -80,18 +90,27 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
 
   useEffect(() => {
     const showing: Showing = {
-      id: id,
-      eventid: showingData.eventid_fk,
-      starttime: starttime,
       eventdate: eventdate,
-      ticketTypeId: ticketTypeId,
+      starttime: starttime,
+      salestatus: true,
+      totalseats: totalSeats,
+      tickettypeids: ticketTypeId,
       seatsForType: seatsForType,
       availableseats: availableSeats ? availableSeats : totalSeats,
-      totalseats: totalSeats,
-      salestatus: true,
+      eventid: showingData.eventid,
+      id: id,
+      index: index,
+      ispreview: false,
     };
     handleSetShow(showing);
-  }, [starttime, eventdate, ticketTypeId, totalSeats, availableSeats, seatsForType]);
+  }, [
+    starttime,
+    eventdate,
+    ticketTypeId,
+    totalSeats,
+    availableSeats,
+    seatsForType,
+  ]);
 
   const handleAddTicketOption = (e) => {
     setSeatsForType((data) => [...data, 0]);
@@ -129,7 +148,7 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
       <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(id)}/> : null
       }
       <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
-        <label className='font-semibold text-white mb-7 mt-7  '>Show # {id + 1}</label>
+        <label className='font-semibold text-white mb-7 mt-7  '>Show # {index + 1}</label>
         <div className='flex flex-col gap-5 mt-5 md:pr-20'>
           <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
           <input
@@ -141,11 +160,9 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
             onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
               if (isNaN(parseInt(ev.target.value))) setTotalSeats(0);
               if (parseInt(ev.target.value) >= 0) setTotalSeats(parseInt(ev.target.value));
-            }
-            }
+            }}
           />
           <div className='w-full'>
-
             <div className='toAdd flex flex-col gap-5 md:pr-20 w-full' id='toAdd'></div>
             {
               seatsForType.map((seats, i) => (
@@ -179,27 +196,42 @@ const ShowingInputContainer = ({showingData, id, handleSetShow, handleDeleteShow
             type='button'
             onClick={handleAddTicketOption}>Add Ticket Option</button>
           </div>
-          <div className="flex md:flex-row gap-10 flex-col">
+          <div className='flex md:flex-row gap-10 flex-col'>
             <div>
               <h3 className='font-semibold text-white'>Enter Date</h3>
-              <input type="date" id="date" className='input w-full p-2 rounded-lg bg-violet-100 mb-7'
+              <input
+                type='date'
+                id='date'
+                className='input w-full p-2 rounded-lg bg-violet-100 mb-7'
                 value={toDateStringFormat(showingData.eventdate)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+                  console.log(ev.target.value);
                   setEventDate(ev.target.value);
-                } }/>
+                }}
+              />
             </div>
-            <div >
+            <div>
               <h3 className='font-semibold text-white'>Enter time</h3>
-              <input type="time" id="time" name="starttime" placeholder='00:00:00'className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
-                value={toTimeStringFormat(showingData.eventtime ? showingData.eventtime : showingData.starttime)}
-                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>{
+              <input
+                type='time'
+                id='time'
+                name='starttime'
+                placeholder='00:00:00'
+                className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
+                value={toTimeStringFormat(showingData.starttime)}
+                onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setStartTime(ev.target.value);
-                }
-                }/>
+                }}
+              />
             </div>
           </div>
         </div>
-        <button className='px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm' type='button' onClick={() => setShowConfirm(true)} id={String(id)}>
+        <button
+          className='px-2 py-1 bg-red-500 disabled:opacity-30  mt-2 mb-4 text-white rounded-lg text-sm'
+          type='button'
+          onClick={handleDeleteShow}
+          id={String(index)}
+        >
           Delete
         </button>
       </div>

@@ -11,6 +11,7 @@
     success: boolean;
     handleClose: (event: any) => void;
     handleProceed: (event: any) => void;
+    success: boolean;
 }
 
 export default popupProps;

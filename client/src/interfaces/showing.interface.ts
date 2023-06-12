@@ -9,14 +9,27 @@
  * during initial add totall seats equal to available seats
  */
 
+export interface WtixEvent {
+  eventid: number;
+  seasonid?: number;
+  eventname: string;
+  eventdescription: string;
+  active: boolean;
+  seasonticketeligible?: boolean;
+  image_url: string;
+  showings: Showing[];
+}
+
 export interface Showing {
-    id?: number,
-    eventid?: number,
-    starttime: string,
-    eventdate: string,
-    salestatus: boolean,
-    ticketTypeId: (string | number)[],
-    seatsForType: number[],
-    totalseats: number,
-    availableseats: number
-  }
+  id: number;
+  index: number;
+  eventid: number;
+  starttime: string;
+  eventdate: string;
+  salestatus: boolean;
+  tickettypeids: (string | number) [];
+  seatsForType: number[];
+  totalseats: number;
+  availableseats: number;
+  ispreview: boolean;
+}

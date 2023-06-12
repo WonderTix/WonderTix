@@ -84,7 +84,7 @@ export const buildResponse = async (
   };
   try {
     const res = await pool.query(query);
-    console.log(res);
+    console.log("query result code: " + res.rowCount);
     let verificationString;
     switch (type) {
       case 'UPDATE':
@@ -111,6 +111,8 @@ export const buildResponse = async (
       },
     };
   } catch (error: any) {
+    console.log("stack: ");
+    console.log(error.stack);
     resp.status.message = error.message;
   }
   return resp;
