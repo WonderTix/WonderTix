@@ -20,7 +20,7 @@ const event = {
   title: 'test',
   description: 'test',
   imageUrl: 'https://test.com/image.jpg',
-  image_url: 'https://test.com/image.jpg',
+  imageurl: 'https://test.com/image.jpg',
   id: '0',
   instances: [],
 };

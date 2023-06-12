@@ -69,13 +69,13 @@ export interface Ticket {
  * @param {string} id - Event id
  * @param {string} title - title of event showing
  * @param {string} description
- * @param {string} image_url
+ * @param {string} imageurl
  */
 export interface Event {
     id: string,
     title: string,
     description: string,
-    image_url: string,
+    imageurl: string,
 }
 
 type TicketsState = {data: {byId: {[key: string]: Ticket}, allIds: number[]}}
@@ -272,7 +272,7 @@ export const createCartItem = (data: {ticket: Ticket, event: Event, qty: number}
   [data.ticket].map(toPartialCartItem)
       .map(appendCartField('name', `${titleCase(data.event.title)} Ticket${(data.qty>1) ? 's' : ''}`))
       .map(appendCartField('qty', data.qty))
-      .map(appendCartField('product_img_url', data.event.image_url))[0];
+      .map(appendCartField('product_img_url', data.event.imageurl))[0];
 
 /**  @param {string} EventId */
 type EventId = string
@@ -544,13 +544,13 @@ const filterTicketsReducer = (ticketsById: {[key: number]: Ticket}, eventid: Eve
  * @module
  * @param {string} title
  * @param {string} description
- * @param {string} image_url
+ * @param {string} imageurl
  * @param {Array} tickets
  */
 export interface EventPageData {
     title: string,
     description: string,
-    image_url: string,
+    imageurl: string,
     tickets: Ticket[],
 }
 

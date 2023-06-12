@@ -8,7 +8,6 @@
 {
     title: string;
     message: string;
-    success: boolean;
     handleClose: (event: any) => void;
     handleProceed: (event: any) => void;
     success: boolean;

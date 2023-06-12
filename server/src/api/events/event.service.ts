@@ -16,12 +16,12 @@ export const getActiveEvents = async (): Promise<response> => {
             e.eventdescription description,
             e.active,
             e.seasonticketeligible,
-            e.image_url,
-            count(ei.id) as numShows
+            e.imageurl,
+            count(ei.eventinstanceid) as numShows
           FROM
             events e
             JOIN eventinstances ei
-              ON e.eventid = ei.eventid WHERE ei.salestatus = true
+              ON e.eventid = ei.eventid_fk WHERE ei.salestatus = true
           GROUP BY
             e.eventid,
             e.seasonid_fk,
@@ -29,7 +29,7 @@ export const getActiveEvents = async (): Promise<response> => {
             e.eventdescription,
             e.active,
             e.seasonticketeligible,
-            e.image_url
+            e.imageurl
           HAVING
             e.active = true 
           ORDER BY
@@ -47,11 +47,11 @@ export const getInstanceById = async (params: any): Promise<response> => {
           FROM
             eventinstances
           WHERE
-            eventid = $1
+            eventid_fk = $1
           AND
             salestatus = true
           ORDER BY
-            id;`,
+            eventid_fk;`,
     values: [params.id],
   };
   return await buildResponse(query, "GET");
@@ -68,7 +68,7 @@ export const getEventById = async (params: any): Promise<response> => {
             eventdescription description,
             active,
             seasonticketeligible,
-            image_url
+            imageurl
           FROM
             events
           WHERE
@@ -167,7 +167,7 @@ export const updateEvent = async (params: any): Promise<response> => {
             eventdescription,
             active,
             seasonticketeligible,
-            image_url)
+            imageurl)
             = ($1, $2, $3, $4, $5, $6)
           WHERE
             eventid = $7
@@ -178,7 +178,7 @@ export const updateEvent = async (params: any): Promise<response> => {
       params.eventdescription,
       params.active,
       params.seasonticketeligible,
-      params.image_url,
+      params.imageurl,
       params.eventid,
     ],
   };
@@ -193,7 +193,7 @@ export const createShowing = async (params: any): Promise<response> => {
   const newInstances = await insertAllShowings(params.instances);
   // Link showtime to ticket type
   const linkingdata = newInstances.map((s) => ({
-    id: s.id,
+    eventinstanceid: s.eventinstanceid,
     tickettypeids: s.tickettypeids,
     seatsfortype: s.seatsForType,
   }));
@@ -215,9 +215,10 @@ export const createShowing = async (params: any): Promise<response> => {
     const len = show.tickettypeids.length;
     for (let i = 0; i < len; i++) {
       let queryResults;
+      console.log(show)
       try {
         queryResults = await pool.query(myQuery, [
-          show.id,
+          show.eventinstanceid,
           show.tickettypeids[i],
           show.seatsfortype[i],
         ]);
@@ -267,7 +268,7 @@ export const createTickets = async (params: any): Promise<response> => {
         let queryResults;
         try {
           queryResults = await pool.query(myQuery, [
-            data[k].id,
+            data[k].eventinstanceid,
             data[k].tickettypeids[i],
           ]);
           toReturn.push(queryResults);
@@ -327,7 +328,7 @@ export const createEvent = async (params: any): Promise<response> => {
                 eventdescription,
                 active,
                 seasonticketeligible,
-                image_url)
+                imageurl)
           VALUES
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
@@ -336,7 +337,7 @@ export const createEvent = async (params: any): Promise<response> => {
       params.eventname,
       params.eventdescription,
       params.ticketElligible,
-      params.image_url,
+      params.imageurl,
     ],
   };
   return buildResponse(myQuery, "POST");
@@ -360,25 +361,25 @@ export const getActiveEventsAndInstances = async (): Promise<response> => {
   const myQuery = {
     text: `
           SELECT
-            ei.id,
+            ei.eventinstanceid,
             e.eventid,
             e.eventname,
             e.eventdescription,
-            e.image_url,
+            e.imageurl,
             ei.eventdate,
-            ei.starttime,
+            ei.eventtime,
             ei.totalseats,
             ei.availableseats
           FROM
             eventinstances ei
             JOIN events e
-              ON e.eventid = ei.eventid
+              ON e.eventid = ei.eventid_fk
           WHERE
             e.active = true
           AND
             ei.salestatus = true
           ORDER BY
-            ei.id;`,
+            ei.eventinstanceid;`,
   };
   return buildResponse(myQuery, "GET");
 };
@@ -391,9 +392,9 @@ export const insertAllShowings = async (
   const query = `
                 INSERT INTO
                   eventinstances (
-                      eventid,
+                      eventid_fk,
                       eventdate,
-                      starttime,
+                      eventtime,
                       totalseats,
                       availableseats,
                       salestatus,
@@ -421,23 +422,21 @@ export const insertAllShowings = async (
   };
   const toReturn = [];
   let rowCount = 0;
-  // Using 2020-01-01 as a default value or it will not save
-  let dateAct = '20200101';
-  let startTime = '00:00';
   for (const showing of showings) {
     const date = showing.eventdate.split('-');
     const dateAct = date.join('');
     const {rows} = await pool.query(query, [
       showing.eventid,
       dateAct,
-      startTime,
+      showing.starttime,
       showing.totalseats,
       showing.totalseats,
       showing.ispreview,
     ]);
     // for each seat create the entry in the eventtickets table
+    console.log(rows)
     for (const seat of [...Array(showing.totalseats).keys()]) {
-      await pool.query(ticket_query, [rows[0].id]);
+      await pool.query(ticket_query, [rows[0].eventinstanceid]);
     }
     toReturn.push(showing);
     rowCount += 1;
@@ -515,7 +514,7 @@ export const deleteShowings = async (ids: number[]): Promise<number> => {
 
 const isShowingChange = (d: Delta) => d.path.includes("showings");
 const isEventChange = (d: Delta) => !isShowingChange(d) && d.kind === "E";
-const eventFields = ["eventname", "eventdescription", "image_url"];
+const eventFields = ["eventname", "eventdescription", "imageurl"];
 
 export const getShowingsById = async (id: string): Promise<Showing[]> => {
   // Breaking change: ispreview is new field, defaulttickettype will be added soon
@@ -533,9 +532,9 @@ export const getShowingsById = async (id: string): Promise<Showing[]> => {
                 FROM
                   eventinstances
                 WHERE
-                  eventid = $1 AND salestatus = true
+                  eventid_fk = $1 AND salestatus = true
                 ORDER BY
-                  id;`;
+                  eventid;`;
   const queryResult = await pool.query(query, [id]);
   return queryResult.rows;
 };

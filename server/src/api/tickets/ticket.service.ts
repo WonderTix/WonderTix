@@ -22,10 +22,10 @@ export const getAvailableTickets = async (): Promise<response> => {
   try {
     const myQuery = `
         SELECT
-          ei.id event_instance_id,
-          ei.eventid,
+          ei.eventinstanceid event_instance_id,
+          ei.eventid_fk,
           ei.eventdate,
-          ei.starttime,
+          ei.eventtime,
           ei.totalseats,
           ei.availableseats,
           tt.description AS admission_type,
@@ -34,7 +34,7 @@ export const getAvailableTickets = async (): Promise<response> => {
         FROM
           eventtickets et
           JOIN eventinstances ei 
-            ON et.eventinstanceid_fk = ei.id
+            ON et.eventinstanceid_fk = ei.eventinstanceid
           JOIN tickettype tt 
             ON et.tickettypeid_fk = tt.tickettypeid
         WHERE 
@@ -66,14 +66,14 @@ export const getAvailableTickets = async (): Promise<response> => {
 
 
 const toTicket = (row:any): Ticket => {
-  const {eventdate, starttime, ...rest} = row;
-  const [hour, min] = starttime.split(':');
+  const {eventdate, eventtime, ...rest} = row;
+  const [hour, min] = eventtime.split(':');
   const date = parseIntToDate(eventdate);
   date.setHours(hour, min);
   return {
     ...rest,
     date: date.toJSON(),
-    eventid: row.eventid.toString(),
+    eventid: row.eventid_fk.toString(),
     ticket_price: parseMoneyString(row.ticket_price),
     concession_price: parseMoneyString(row.concession_price),
   };

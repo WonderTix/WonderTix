@@ -561,7 +561,7 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
  *                active:
  *                  type: boolean
  *                  description: Whether the event is active or not
- *                image_url:
+ *                imageurl:
  *                  type: string
  *                  description: The URL of the image associated with the event
  *      responses:
@@ -740,7 +740,7 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
  *                         type: boolean
  *                       seasonticketeligible:
  *                         type: boolean
- *                       image_url:
+ *                       imageurl:
  *                         type: string
  *                       numShow:
  *                         type: integer

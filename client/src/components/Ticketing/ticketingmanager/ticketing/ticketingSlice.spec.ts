@@ -28,7 +28,7 @@ const event: Event = {
   id: '1',
   title: 'Event 1',
   description: 'lorem ipsum donor',
-  image_url: 'https://image',
+  imageurl: 'https://image',
 };
 
 const ticket: Ticket = {
@@ -146,7 +146,7 @@ describe('ticketing slice', () => {
             id: '1',
             title: 'Event 1',
             description: 'lorem ipsum donor',
-            image_url: 'https://image',
+            imageurl: 'https://image',
             tickets: [{
               event_instance_id: 1,
               eventid: '1',

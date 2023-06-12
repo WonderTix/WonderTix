@@ -42,7 +42,7 @@ export interface TicketType {
  * @param {string} eventname
  * @param {string} eventdescription
  * @param {boolean} active
- * @param {string} image_url - why is this name scheme different
+ * @param {string} imageurl - why is this name scheme different
  * @param {Showing} showings
  */
 /* export interface WtixEvent {
@@ -51,7 +51,7 @@ export interface TicketType {
     eventname: string,
     eventdescription: string,
     active: boolean,
-    image_url: string,
+    imageurl: string,
     showings: Showing []
 }*/
 
@@ -97,7 +97,7 @@ interface EventFormProps {
  * @param eventname - initialValues.eventname || ''
  * @param eventid - initialValues.eventid || -1
  * @param eventdescription - initialValues.eventdescription || ''
- * @param image_url - initialValues.image_url || ''
+ * @param imageurl - initialValues.imageurl || ''
  * @param active - initialValues.active || false
  * @param showings - initialValues.showings || []
  * @param eventname.onSubmit
@@ -111,7 +111,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
     eventname: initialValues.eventname,
     eventid: initialValues.eventid,
     eventdescription: initialValues.eventdescription,
-    image_url: initialValues.image_url,
+    imageurl: initialValues.imageurl,
     active: initialValues.active,
     showings: initialValues.showings,
   }:
@@ -119,14 +119,18 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
     eventname: '',
     eventid: -1,
     eventdescription: '',
-    image_url: '',
+    imageurl: '',
     active: false,
     showings: [],
   };
+
+  useEffect(() => {
+    console.log(initialValues)
+  }, [])
   const [eventname, seteventname] = useState(def.eventname);
   const eventid = def.eventid;
   const [eventdescription, setEventDesc] = useState(def.eventdescription);
-  const [image_url, setImageURL] = useState(def.image_url);
+  const [imageurl, setImageURL] = useState(def.imageurl);
   const active = def.active;
   // console.log("showings before useState: " + JSON.stringify(def.showings));
   const [showings, setShowings] = useState(def.showings);
@@ -148,7 +152,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   // Set url
   const addURL = useCallback((url) => {
     setImageURL(url.target.value);
-  }, [image_url]);
+  }, [imageurl]);
 
   const setShowingsHandler = (shows) => {
     setShowings(shows);
@@ -161,7 +165,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       eventid: eventid,
       eventdescription,
       active,
-      image_url,
+      imageurl,
       showings: showings,
     };
     console.log(data);
@@ -250,10 +254,10 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                   placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
 
                 <InputFieldForEvent
-                  name={'image_url'}
-                  id={'image_url'} headerText={'Upload Image for Event'}
-                  action={addURL} actionType={'onChange'} value={def.image_url}
-                  placeholder={def.image_url ? def.image_url : 'image URL'}/>
+                  name={'imageurl'}
+                  id={'imageurl'} headerText={'Upload Image for Event'}
+                  action={addURL} actionType={'onChange'} value={def.imageurl}
+                  placeholder={def.imageurl ? def.imageurl : 'image URL'}/>
               </div>
               {/* Showings container*/}
               <div className='text-3xl font-semibold mt-5'>

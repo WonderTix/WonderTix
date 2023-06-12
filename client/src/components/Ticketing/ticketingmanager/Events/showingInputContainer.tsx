@@ -68,7 +68,7 @@ const ShowingInputContainer = ({
   handleSetShow,
   handleDeleteShow,
 }: MapPropsToShowingInputContainer) => {
-  const [starttime, setStartTime] = useState(showingData.starttime !== undefined ? showingData.starttime.slice(0, 8) : '');
+  const [starttime, setStartTime] = useState(showingData.eventtime !== undefined ? showingData.eventtime.slice(0, 8) : '');
   const [eventdate, setEventDate] = useState(showingData.eventdate);
   const [ticketTypeId, setTicketTypeId] = useState(showingData.tickettypeids ? showingData.tickettypeids : []);
   const [seatsForType, setSeatsForType] = useState(showingData.seatsForType ? showingData.seatsForType : []);
@@ -218,7 +218,7 @@ const ShowingInputContainer = ({
                 name='starttime'
                 placeholder='00:00:00'
                 className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
-                value={toTimeStringFormat(showingData.starttime)}
+                value={toTimeStringFormat(showingData.eventtime)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
                   setStartTime(ev.target.value);
                 }}

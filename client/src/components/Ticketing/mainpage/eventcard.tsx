@@ -25,7 +25,7 @@ const ListComponent = (props: Event) => {
         ease-in-out">
         <img className=" md:w-[14rem] h-96
          sm:h-40 md:h-auto object-cover rounded-t-lg
-           md:rounded-lg " src={props.image_url} alt="/" />
+           md:rounded-lg " src={props.imageurl} alt="/" />
         <div className="p-6 flex flex-col justify-start text-center relative">
           <h5 className="text-gray-100 text-xl
            font-medium mb-2">{titleCase(props.title)}</h5>

@@ -21,7 +21,7 @@ import {Dictionary} from '../../../../../utils/arrays';
  * @param {number} eventid
  * @param {string} eventname
  * @param {string} eventdescription
- * @param {string} image_url
+ * @param {string} imageurl
  * @param {string} eventdate
  * @param {string} starttime
  * @param {number} totalseats
@@ -32,7 +32,7 @@ export interface EventInstance {
      eventid: number,
      eventname: string,
      eventdescription?: string,
-     image_url: string,
+     imageurl: string,
      eventdate: string,
      starttime: string,
      totalseats: number,
@@ -40,24 +40,24 @@ export interface EventInstance {
 }
 
 /**
- * Omits 'eventid','eventname','eventdescription','image_url'
+ * Omits 'eventid','eventname','eventdescription','imageurl'
  *
  * @module
  */
-export type Instance = Omit<EventInstance, 'eventid'|'eventname'|'eventdescription'|'image_url'>
+export type Instance = Omit<EventInstance, 'eventid'|'eventname'|'eventdescription'|'imageurl'>
 
 /**
  * @module
  * @param {string} eventname
  * @param {string} eventdescription
- * @param {string} image_url
+ * @param {string} imageurl
  * @param {number} eventid
  * @param {Instance[]} instances
  */
 export interface Event {
     eventname: string,
     eventdescription?: string,
-    image_url: string,
+    imageurl: string,
     eventid: number,
     instances: Instance[],
 }
@@ -69,11 +69,11 @@ export interface Event {
  */
 export const aggregateInstances = (events: EventInstance[]) =>
   events.reduce<Dictionary<Event>>((events, event) => {
-    const {eventname, eventdescription, image_url, eventid, ...instance} = event;
+    const {eventname, eventdescription, imageurl, eventid, ...instance} = event;
 
     return (events[eventid]) ?
             {...events, [eventid]: {...events[eventid], instances: [...events[eventid].instances, instance] as Instance[]}} :
-            {...events, [eventid]: {eventid, eventname, eventdescription, image_url, instances: [instance]}};
+            {...events, [eventid]: {eventid, eventname, eventdescription, imageurl, instances: [instance]}};
   }, {});
 
 /**
@@ -142,17 +142,17 @@ const eventsSlice = createSlice({
  *
  * @module
  * @param {RootState} state
- * @returns {eventname, eventdescription, image_url}[]
+ * @returns {eventname, eventdescription, imageurl}[]
  */
-// Returns {eventname, eventdescription, image_url}[]
+// Returns {eventname, eventdescription, imageurl}[]
 export const selectAllEventInstances = (state: RootState) =>
   Object.keys(state.events.data).map((key) => {
-    const {eventname, eventdescription, image_url, eventid} = state.events.data[key];
+    const {eventname, eventdescription, imageurl, eventid} = state.events.data[key];
     return {
       eventname,
       eventdescription: (eventdescription) ?
                 eventdescription : '',
-      image_url,
+      imageurl,
       eventid,
     };
   });

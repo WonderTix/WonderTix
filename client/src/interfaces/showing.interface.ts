@@ -16,7 +16,7 @@ export interface WtixEvent {
   eventdescription: string;
   active: boolean;
   seasonticketeligible?: boolean;
-  image_url: string;
+  imageurl: string;
   showings: Showing[];
 }
 

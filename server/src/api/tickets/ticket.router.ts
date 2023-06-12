@@ -371,7 +371,7 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
 
 /**
  * @swagger
- *  /tickets/restrictions/{eventid}:
+ *  /1/tickets/restrictions/{eventid}:
  *    get:
  *      summary: Delete ticket type
  *      tags:

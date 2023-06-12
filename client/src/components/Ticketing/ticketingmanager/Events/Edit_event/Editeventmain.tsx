@@ -24,7 +24,7 @@ const Editeventmain = () => {
       eventname: '',
       eventdescription: '',
       active: false,
-      image_url: '',
+      imageurl: '',
       showings: [],
     };
     await fetch(process.env.REACT_APP_API_1_URL +'/events/' + params.eventid)
@@ -34,7 +34,7 @@ const Editeventmain = () => {
           eventData.eventname = data.data[0].title;
           eventData.eventdescription = data.data[0].description;
           eventData.active = data.data[0].active;
-          eventData.image_url = data.data[0].image_url;
+          eventData.imageurl = data.data[0].imageurl;
           eventData.eventid = data.data[0].eventid;
           eventData.seasonid = data.data[0].seasonid;
         });
@@ -45,10 +45,10 @@ const Editeventmain = () => {
         }).then((data)=>{
           eventData.showings = data.data;
         });
-    // console.log(eventData.showings);
+    console.log(eventData.showings);
     for (let i = 0; i < eventData.showings.length; i++) {
-      await fetch(process.env.REACT_APP_ROOT_URL +
-            `/api/tickets/restrictions/${eventData.showings[i].id}`)
+      await fetch(process.env.REACT_APP_API_1_URL +
+            `/tickets/restrictions/${eventData.showings[i].eventinstanceid}`)
           .then((response) => {
             return response.json();
           }).then((res)=>{
@@ -59,8 +59,12 @@ const Editeventmain = () => {
               if (eventData.showings[i].tickettypeids === null) {
                 eventData.showings[i].tickettypeids = [];
               }
-              eventData.showings[i].seatsForType.push(res.data[j].ticketlimit);
-              eventData.showings[i].tickettypeids.push(res.data[j].tickettypeid_fk);
+              if (eventData.showings[i].seatsForType) {
+                eventData.showings[i].seatsForType.push(res.data[j].ticketlimit);
+              }
+              if (eventData.showings[i].tickettypeids) {
+                eventData.showings[i].tickettypeids.push(res.data[j].tickettypeid_fk);
+              }
             }
           });
     }

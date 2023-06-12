@@ -30,10 +30,13 @@ export default interface Showing {
   availableseats: number;
   tickettypes: number[];
   seatsfortype: number[];
+  seatsForType: number[]; // Temp fix
   purchaseuri: string;
   ispreview: boolean;
   eventinstanceid: number;
   ticketTypeId: number[]; // This and tickettypeids are the same, but this is a temp fix for a type error
+  tickettypesids: number[]; // Temp fix
+  tickettypeids: number[]; // Temp fix
 }
 
 export interface TicketType {

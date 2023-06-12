@@ -77,9 +77,9 @@ const Showing = () => {
   const {eventid} = useParams<EventPageProps>();
   const eventData = useAppSelector((state) => selectEventData(state, eventid));
   if (eventData === undefined) return <p>Whoops! Event not found</p>;
-  const {title, description, image_url, tickets} = eventData;
+  const {title, description, imageurl, tickets} = eventData;
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute bg-cover' style={{backgroundImage: `url(${image_url})`}}>
+    <div className='w-full h-screen overflow-x-hidden absolute bg-cover' style={{backgroundImage: `url(${imageurl})`}}>
       <div className='backdrop-blur-sm h-screen overflow-x-hidden w-full absolute bg-zinc-900/70'>
         <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
