@@ -323,7 +323,8 @@ export const createEvent = async (params: any): Promise<response> => {
                 eventdescription,
                 active,
                 seasonticketeligible,
-                imageurl)
+                imageurl
+                )
           VALUES
             ($1, $2, $3, true, $4, $5)
           RETURNING *;`,
@@ -332,7 +333,8 @@ export const createEvent = async (params: any): Promise<response> => {
       params.eventName,
       params.eventDesc,
       params.seasonticketeligible,
-      params.imageUrl],
+      params.imageUrl
+    ],
   };
   return buildResponse(myQuery, 'POST');
 };
@@ -405,13 +407,16 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
   };
   const toReturn = [];
   let rowCount = 0;
+  // Using 2020-01-01 as a default value or it will not save
+  let dateAct = '20200101'
+  let startTime = '00:00'
   for (const showing of showings) {
     const date = showing.eventdate.split('-');
     const dateAct = date.join('');
     const {rows} = await pool.query(query, [
       showing.eventid,
       dateAct,
-      showing.starttime,
+      startTime,
       showing.totalseats,
       showing.totalseats,
       showing.ispreview,
@@ -431,7 +436,6 @@ export const insertAllShowings = async (showings: Showing[]): Promise<Showing[]>
       } inserted.`,
     },
   };
-  console.log(results);
   return res;
 };
 

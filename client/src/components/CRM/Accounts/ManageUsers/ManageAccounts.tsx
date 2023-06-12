@@ -182,7 +182,8 @@ export default function ManageAccounts() {
               onCellEditCommit={editCommit}
               autoHeight
               style={{width: '100%'}}
-              pageSize={10} />
+              pageSize={10}
+              getRowId={(row) => row.userid}/>
           </div>
           <div className='mt-7 ml-2 text-xl font-bold mb-2 text-zinc-700 '>
             Create New Account
