@@ -21,12 +21,12 @@ import DeleteConfirm from './deleteConfirm';
   purchaseuri?: string;
   salestatus?: boolean;
   totalseats?: number;
-  starttime: string;
+  eventtime: string;
 }*/
 
 export interface MapPropsToShowingInputContainer {
   showingData: Showing;
-  id: number;
+  eventinstanceid: number;
   index: number,
   handleSetShow: (show: Showing) => void;
   handleDeleteShow: (e: any) => void;
@@ -63,14 +63,14 @@ const toTimeStringFormat = (time) => {
 
 const ShowingInputContainer = ({
   showingData,
-  id,
+  eventinstanceid,
   index,
   handleSetShow,
   handleDeleteShow,
 }: MapPropsToShowingInputContainer) => {
-  const [starttime, setStartTime] = useState(showingData.eventtime !== undefined ? showingData.eventtime.slice(0, 8) : '');
+  const [eventtime, setStartTime] = useState(showingData.eventtime !== undefined ? showingData.eventtime.slice(0, 8) : '');
   const [eventdate, setEventDate] = useState(showingData.eventdate);
-  const [ticketTypeId, setTicketTypeId] = useState(showingData.tickettypeids ? showingData.tickettypeids : []);
+  const [ticketTypeId, setTicketTypeId] = useState(showingData.ticketTypeId ? showingData.ticketTypeId : []);
   const [seatsForType, setSeatsForType] = useState(showingData.seatsForType ? showingData.seatsForType : []);
   const [availableSeats, setAvailableSeats] = useState(showingData.availableseats !== undefined ? showingData.availableseats : 0);
   const [totalSeats, setTotalSeats] = useState(showingData.totalseats !== undefined ? showingData.totalseats : 0);
@@ -90,21 +90,21 @@ const ShowingInputContainer = ({
 
   useEffect(() => {
     const showing: Showing = {
-      eventdate: eventdate,
-      starttime: starttime,
-      salestatus: true,
-      totalseats: totalSeats,
-      tickettypeids: ticketTypeId,
-      seatsForType: seatsForType,
       availableseats: availableSeats ? availableSeats : totalSeats,
-      eventid: showingData.eventid,
-      id: id,
-      index: index,
+      eventdate: eventdate,
+      eventid_fk: showingData.eventid_fk,
+      eventinstanceid: showingData.eventinstanceid,
+      eventtime: eventtime,
       ispreview: false,
+      salestatus: true,
+      seatsForType: seatsForType,
+      ticketTypeId: ticketTypeId,
+      totalseats: totalSeats,
+      index: index
     };
     handleSetShow(showing);
   }, [
-    starttime,
+    eventtime,
     eventdate,
     ticketTypeId,
     totalSeats,
@@ -143,11 +143,11 @@ const ShowingInputContainer = ({
   };
 
   return (
-    <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={id}>
+    <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={index}>
       { showConfirm ?
       <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(id)}/> : null
       }
-      <div key={id} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
+      <div key={index} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
         <label className='font-semibold text-white mb-7 mt-7  '>Show # {index + 1}</label>
         <div className='flex flex-col gap-5 mt-5 md:pr-20'>
           <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
@@ -156,7 +156,7 @@ const ShowingInputContainer = ({
             value={showingData.totalseats}
             type='number'
             required
-            key={id}
+            key={index}
             onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
               if (isNaN(parseInt(ev.target.value))) setTotalSeats(0);
               if (parseInt(ev.target.value) >= 0) setTotalSeats(parseInt(ev.target.value));
@@ -215,7 +215,7 @@ const ShowingInputContainer = ({
               <input
                 type='time'
                 id='time'
-                name='starttime'
+                name='eventtime'
                 placeholder='00:00:00'
                 className='w-full p-2 rounded-lg bg-violet-100 mb-7 '
                 value={toTimeStringFormat(showingData.eventtime)}

@@ -38,6 +38,7 @@ const Editeventmain = () => {
           eventData.eventid = data.data[0].eventid;
           eventData.seasonid = data.data[0].seasonid;
         });
+    console.log(eventData)
     await fetch(process.env.REACT_APP_API_1_URL +
           `/events/instances/${params.eventid}`)
         .then((response) => {
@@ -45,7 +46,6 @@ const Editeventmain = () => {
         }).then((data)=>{
           eventData.showings = data.data;
         });
-    console.log(eventData.showings);
     for (let i = 0; i < eventData.showings.length; i++) {
       await fetch(process.env.REACT_APP_API_1_URL +
             `/tickets/restrictions/${eventData.showings[i].eventinstanceid}`)
@@ -56,14 +56,14 @@ const Editeventmain = () => {
               if (!eventData.showings[i].seatsForType) {
                 eventData.showings[i].seatsForType = [];
               }
-              if (eventData.showings[i].tickettypeids === null) {
-                eventData.showings[i].tickettypeids = [];
+              if (!eventData.showings[i].ticketTypeId) {
+                eventData.showings[i].ticketTypeId = [];
               }
               if (eventData.showings[i].seatsForType) {
                 eventData.showings[i].seatsForType.push(res.data[j].ticketlimit);
               }
-              if (eventData.showings[i].tickettypeids) {
-                eventData.showings[i].tickettypeids.push(res.data[j].tickettypeid_fk);
+              if (eventData.showings[i].ticketTypeId) {
+                eventData.showings[i].ticketTypeId.push(res.data[j].tickettypeid_fk);
               }
             }
           });

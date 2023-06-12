@@ -93,10 +93,11 @@ export const updateInstances = async (
 
   console.log("retrieved " + currentShowings.length + " showings");
   // see which showings are not present in the updated showings
-  const instancesSet = new Set(instances.map((show) => show.id));
+  const instancesSet = new Set(instances.map((show) => show.eventinstanceid));
+  console.log(instances)
   const rowsToDelete = currentShowings
-    .filter((show: Showing) => !instancesSet.has(show.id))
-    .map((show) => show.id);
+    .filter((show: Showing) => !instancesSet.has(show.eventinstanceid))
+    .map((show) => show.eventinstanceid);
   
   // delete them
   const rowsDeleted = await deleteShowings(rowsToDelete);
@@ -104,18 +105,18 @@ export const updateInstances = async (
 
   // update existing showings
   const rowsToUpdate = instances.filter(
-    (show: Showing) => show.id && show.id !== 0
+    (show: Showing) => show.eventid_fk && show.eventinstanceid !== 0
   );
-  
+  console.log(rowsToUpdate)
   const rowsUpdated = await updateShowings(rowsToUpdate);
   console.log("updated " + rowsToUpdate.length + " showings");
   // insert new showings
   // showings with id = 0 have not yet been added to the table
-  const rowsToInsert = instances.filter((show: Showing) => show.id === 0);
+  const rowsToInsert = instances.filter((show: Showing) => show.eventinstanceid === 0);
   // rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
   rowsToInsert.forEach((show: Showing) => {
-    if (typeof show.tickettypeids[0] !== "undefined") {
-      show.tickettypeids[0] = 0;
+    if (typeof show.ticketTypeId[0] !== "undefined") {
+      show.ticketTypeId[0] = 0;
     }
   });
   // @TODO set default ticket type
@@ -191,10 +192,11 @@ export const updateEvent = async (params: any): Promise<response> => {
 //
 export const createShowing = async (params: any): Promise<response> => {
   const newInstances = await insertAllShowings(params.instances);
+  console.log(newInstances)
   // Link showtime to ticket type
   const linkingdata = newInstances.map((s) => ({
     eventinstanceid: s.eventinstanceid,
-    tickettypeids: s.tickettypeids,
+    ticketTypeId: s.ticketTypeId,
     seatsfortype: s.seatsForType,
   }));
   const myQuery = {
@@ -212,14 +214,14 @@ export const createShowing = async (params: any): Promise<response> => {
   const toReturn = [];
   let rowCount = 0;
   for (const show of linkingdata) {
-    const len = show.tickettypeids.length;
+    const len = show.ticketTypeId.length;
     for (let i = 0; i < len; i++) {
       let queryResults;
       console.log(show)
       try {
         queryResults = await pool.query(myQuery, [
           show.eventinstanceid,
-          show.tickettypeids[i],
+          show.ticketTypeId[i],
           show.seatsfortype[i],
         ]);
         toReturn.push(queryResults);
@@ -261,7 +263,7 @@ export const createTickets = async (params: any): Promise<response> => {
   const toReturn = [];
   let rowCount = 0;
   for (let k = 0; k < numberOfShowings; k += 1) {
-    const numOfTypes = data[k].tickettypeids.length;
+    const numOfTypes = data[k].ticketTypeId.length;
     for (let i = 0; i < numOfTypes; i += 1) {
       const numOfSeats = data[k].seatsfortype[i];
       for (let j = 0; j < numOfSeats; j += 1) {
@@ -269,7 +271,7 @@ export const createTickets = async (params: any): Promise<response> => {
         try {
           queryResults = await pool.query(myQuery, [
             data[k].eventinstanceid,
-            data[k].tickettypeids[i],
+            data[k].ticketTypeId[i],
           ]);
           toReturn.push(queryResults);
           rowCount += queryResults.rowCount;
@@ -309,7 +311,7 @@ export const archivePlays = async (params: any): Promise<response> => {
                   SET
                     salestatus = false
                   WHERE
-                    id = $1;`;
+                    eventinstanceid = $1;`;
 
   const secondResponse = await buildResponse(myQuery, "UPDATE");
   secondResponse.data.concat(intermediateResponse.data);
@@ -423,18 +425,19 @@ export const insertAllShowings = async (
   const toReturn = [];
   let rowCount = 0;
   for (const showing of showings) {
+    console.log('swag')
+    console.log(showing)
     const date = showing.eventdate.split('-');
     const dateAct = date.join('');
     const {rows} = await pool.query(query, [
-      showing.eventid,
+      showing.eventid_fk,
       dateAct,
-      showing.starttime,
+      showing.eventtime,
       showing.totalseats,
       showing.totalseats,
       showing.ispreview,
     ]);
     // for each seat create the entry in the eventtickets table
-    console.log(rows)
     for (const seat of [...Array(showing.totalseats).keys()]) {
       await pool.query(ticket_query, [rows[0].eventinstanceid]);
     }
@@ -442,7 +445,7 @@ export const insertAllShowings = async (
     rowCount += 1;
     res.push({
       ...rows[0],
-      tickettypeids: showing.ticketTypeId,
+      ticketTypeId: showing.ticketTypeId,
       seatsForType: showing.seatsForType,
     });
   }
@@ -465,29 +468,29 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         eventinstances
                       SET
                         eventdate = $2,
-                        starttime = $3,
+                        eventtime = $3,
                         salestatus = $4,
                         totalseats = $5,
                         availableseats = $6,
                         purchaseuri = $7,
                         ispreview = $8,
-                        eventid = $9
+                        eventid_fk = $9
 
                       WHERE
-                        id = $1;`;
+                        eventinstanceid = $1;`;
   let rowsUpdated = 0;
   for (const showing of showings) {
     //console.log("Update Current: ", showings);
     const queryResult = await pool.query(updateQuery, [
       showing.id,
       showing.eventdate,
-      showing.starttime,
+      showing.eventtime,
       showing.salestatus,
       showing.totalseats,
       showing.availableseats,
       showing.purchaseuri,
       showing.ispreview,
-      showing.eventid,
+      showing.eventid_fk,
     ]);
     rowsUpdated += queryResult.rowCount;
   }
@@ -502,7 +505,7 @@ export const deleteShowings = async (ids: number[]): Promise<number> => {
                       SET
                         salestatus = false
                       WHERE
-                        id = $1;`;
+                        eventinstanceid = $1;`;
   let rowsDeleted = 0;
   for (const id of ids) {
     const queryResult = await pool.query(deleteQuery, [id]);
@@ -519,14 +522,14 @@ const eventFields = ["eventname", "eventdescription", "imageurl"];
 export const getShowingsById = async (id: string): Promise<Showing[]> => {
   // Breaking change: ispreview is new field, defaulttickettype will be added soon
   const query = `
-                SELECT id AS id,
-                    eventid,
+                SELECT eventinstanceid AS id,
+                    eventid_fk,
                     eventdate,
-                    starttime,
+                    eventtime,
                     salestatus,
                     totalseats,
                     availableseats,
-                    defaulttickettype AS tickettypeids,
+                    defaulttickettype AS ticketTypeId,
                     purchaseuri,
                     ispreview
                 FROM
@@ -534,7 +537,7 @@ export const getShowingsById = async (id: string): Promise<Showing[]> => {
                 WHERE
                   eventid_fk = $1 AND salestatus = true
                 ORDER BY
-                  eventid;`;
+                  eventinstanceid;`;
   const queryResult = await pool.query(query, [id]);
   return queryResult.rows;
 };

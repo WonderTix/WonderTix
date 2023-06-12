@@ -36,23 +36,43 @@ const ShowListController = ({
   const [numOfShowings, setNumOfShowings] = useState(showsData ? showsData.length : 0);
 
   // SHOWINGS ACTIONS:
+  // const addShowBox = (event) => {
+  //   event.preventDefault();
+  //   setNumOfShowings(numOfShowings + 1);
+  //   const show: Showing = {
+  //     id: 0,
+  //     index: numOfShowings,
+  //     eventid: eventid,
+  //     eventtime: '',
+  //     eventdate: '',
+  //     tickettypeids: [],
+  //     seatsForType: [],
+  //     availableseats: 0,
+  //     totalseats: 0,
+  //     salestatus: true,
+  //     ispreview: false,
+  //   };
+  //   console.log('created new show with id: ' + show.id);
+  //   setShow((shows) => [...shows, show]);
+  // };
+
   const addShowBox = (event) => {
     event.preventDefault();
     setNumOfShowings(numOfShowings + 1);
     const show: Showing = {
-      id: 0,
+      eventinstanceid: 0,
       index: numOfShowings,
-      eventid: eventid,
-      starttime: '',
+      eventid_fk: eventid,
+      eventtime: '',
       eventdate: '',
-      tickettypeids: [],
+      ticketTypeId: [],
       seatsForType: [],
       availableseats: 0,
       totalseats: 0,
       salestatus: true,
       ispreview: false,
     };
-    console.log('created new show with id: ' + show.id);
+    console.log('created new show with id: ' + show.eventinstanceid);
     setShow((shows) => [...shows, show]);
   };
 
@@ -62,7 +82,7 @@ const ShowListController = ({
         // console.log(
         //   'handle set show called with event instance id ' + show.id
         // );
-        console.log('id: ' + show.id);
+        console.log('id: ' + show.eventid_fk);
         showItems[show.index] = show;
 
         setShow(showItems);
@@ -91,12 +111,11 @@ const ShowListController = ({
   return (
     <>
       {shows.map((element: Showing, index) => {
-        element.index = index;
         return (
-          <div key={element.index}>
+          <div key={index}>
             <ShowingInputContainer
               showingData={element}
-              id={element.id}
+              eventinstanceid={element.eventinstanceid}
               index={index}
               handleSetShow={handleSetShow}
               handleDeleteShow={handleDeleteShow}

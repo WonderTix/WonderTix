@@ -13,13 +13,13 @@ import EventForm from '../EventForm';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../../Pop-up';
-import {WtixEvent} from '../../../../../interfaces/showing.interface';
+import {Showing, WtixEvent} from '../../../../../interfaces/showing.interface';
 
 let id = 0;
 
-const formatShowingData = (eventid: number) => (data: any) => {
-  const {starttime, eventdate, totalseats, tickettypeids, seatsForType} = data;
-  return {eventid, eventdate, starttime, totalseats, ticketTypeId: tickettypeids, seatsForType};
+const formatShowingData = (eventid_fk: number) => (data: Showing) => {
+  const {eventtime, eventdate, totalseats, ticketTypeId, seatsForType} = data;
+  return {eventid_fk, eventdate, eventtime, totalseats, ticketTypeId, seatsForType};
 };
 
 /**
@@ -64,6 +64,7 @@ const CreateEventPage = () => {
       const eventData = await createPlayRes.json();
       id = eventData.data[0].eventid;
       const showingdata = showings.map(formatShowingData(id));
+      console.log(showingdata)
       const postShowings = await fetch(process.env.REACT_APP_API_1_URL + '/events/instances', {
         credentials: 'include',
         headers: {

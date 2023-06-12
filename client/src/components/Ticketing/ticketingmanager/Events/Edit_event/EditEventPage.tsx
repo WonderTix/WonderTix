@@ -64,8 +64,9 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
 
   const onSubmit = async (updatedData: WtixEvent) => {
     console.log("onSubmit called for edit event");
+    console.log(updatedData)
     let showings = updatedData.showings.map((show: Showing) => {
-      show.eventid = initValues.eventid;
+      show.eventinstanceid = initValues.eventid;
       return show;
     });
     updatedData.showings = showings;

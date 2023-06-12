@@ -121,6 +121,7 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
 eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
   try {
     const data = await getInstanceById(req.params);
+    console.log(data)
     const code = data.status.success ? 200 : 404;
     res.status(code).send(data);
   } catch (error) {
@@ -513,7 +514,7 @@ eventRouter.post('/', checkJwt, checkScopes, async (
  *     tags:
  *       - Event
  */
-// req body: array of {eventid, eventdate, starttime, totalseats, tickettype}
+// req body: array of {eventid, eventdate, eventtime, totalseats, tickettype}
 eventRouter.post('/instances', checkJwt, checkScopes, async (
     req: Request,
     res: Response,
@@ -521,6 +522,7 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
+    console.log(req.body)
     const showings = await createShowing(req.body);
     const code = showings.status.success ? 200 : 404;
     res.status(code).send(showings);
@@ -615,7 +617,7 @@ eventRouter.put('/', checkJwt, checkScopes, async (
  *                  type: string
  *                  format: date-time
  *                  description: The date and time of the event instance
- *                starttime:
+ *                eventtime:
  *                  type: string
  *                  format: time
  *                  description: The start time of the event instance in HH:MM format

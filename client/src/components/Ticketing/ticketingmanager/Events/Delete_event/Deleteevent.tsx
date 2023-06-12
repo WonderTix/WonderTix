@@ -52,7 +52,7 @@ export default function DeleteEvents() {
     {field: 'eventname', headerName: 'Event', width: 150},
     {field: 'eventdescription', headerName: 'Event Description', width: 150},
     {field: 'eventdate', headerName: 'Date', width: 150},
-    {field: 'starttime', headerName: 'Time', width: 100},
+    {field: 'eventtime', headerName: 'Time', width: 100},
     {field: 'Delete', headerName: 'Delete', width: 150, renderCell: (params: any) => (
       <button className='px-3 py-1 text-sm bg-red-600 text-white rounded-xl' onClick={() => deleteEvent(JSON.stringify(params.row.id))}>Delete</button>
     )},
@@ -70,7 +70,7 @@ export default function DeleteEvents() {
       const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
-        jsonData[key].starttime = militaryToCivilian(jsonData[key].starttime);
+        jsonData[key].eventtime = militaryToCivilian(jsonData[key].eventtime);
       });
       setEventList(jsonData);
     } catch (error) {

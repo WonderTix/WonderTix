@@ -137,9 +137,6 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   const [showPopUp, setShowPopUp] = useState(false);
   const [err, setErr] = useState('');
 
-  useEffect(() => {
-    console.log(initialValues);
-  });
   // FIELDS CALLBACK
   // Set event name
   const addeventname = useCallback((eventname) => {
@@ -200,7 +197,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       return;
     }
     for (let i = 0; i < data.showings.length; i++) {
-      if (data.showings[i].eventdate === '' || data.showings[i].starttime === '') {
+      if (data.showings[i].eventdate === '' || data.showings[i].eventtime === '') {
         setErr('Each showing must have an event date and an event time.');
         setShowPopUp(true);
         return;
@@ -212,11 +209,11 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       }
     }
     for (let i = 0; i < data.showings.length; i++) {
-      if (data.showings[i].tickettypeids) {
-        for (let j = data.showings[i].tickettypeids.length - 1; j >= 0; j--) {
-          if (data.showings[i].tickettypeids[j] === 'NaN') {
+      if (data.showings[i].ticketTypeId) {
+        for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
+          if (data.showings[i].ticketTypeId[j] === 'NaN') {
             data.showings[i].seatsForType.splice(j, 1);
-            data.showings[i].tickettypeids.splice(j, 1);
+            data.showings[i].ticketTypeId.splice(j, 1);
           }
         }
       }

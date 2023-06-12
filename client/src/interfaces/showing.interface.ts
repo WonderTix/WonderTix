@@ -23,11 +23,12 @@ export interface WtixEvent {
 export interface Showing {
   id: number;
   index: number;
-  eventid: number;
-  starttime: string;
+  eventinstanceid: number;
+  eventid_fk: number;
+  eventtime: string;
   eventdate: string;
   salestatus: boolean;
-  tickettypeids: (string | number) [];
+  ticketTypeId: (string | number) [];
   seatsForType: number[];
   totalseats: number;
   availableseats: number;

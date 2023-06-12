@@ -23,7 +23,7 @@ import {Dictionary} from '../../../../../utils/arrays';
  * @param {string} eventdescription
  * @param {string} imageurl
  * @param {string} eventdate
- * @param {string} starttime
+ * @param {string} eventtime
  * @param {number} totalseats
  * @param {number} availableseats
  */
@@ -34,7 +34,7 @@ export interface EventInstance {
      eventdescription?: string,
      imageurl: string,
      eventdate: string,
-     starttime: string,
+     eventtime: string,
      totalseats: number,
      availableseats: number,
 }
