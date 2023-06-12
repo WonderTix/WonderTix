@@ -6,7 +6,7 @@ export const refundsRouter = Router();
 
 /**
  * @swagger
- *  /refunds:
+ *  /1/refunds:
  *    post:
  *      summary: Create refund
  *      tags:

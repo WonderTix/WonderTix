@@ -12,7 +12,7 @@ export const discountsRouter = Router();
 
 /**
  * @swagger
- * /discounts:
+ * /1/discounts:
  *   get:
  *     summary: Retrieve all discount codes
  *     description: Retrieve all discounts codes available.
@@ -74,7 +74,7 @@ discountsRouter.get('/', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- * /discounts/search:
+ * /1/discounts/search:
  *   get:
  *     summary: Search for a discount code
  *     description: Search information given the discount code.
@@ -134,7 +134,7 @@ discountsRouter.get('/search', async (
 /**
  * @swagger
  *
- * /discounts:
+ * /1/discounts:
  *   post:
  *     summary: Create a new discount code
  *     description: Creates a new discount code.
@@ -256,7 +256,7 @@ discountsRouter.post('/', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- * /discounts/{id}:
+ * /1/discounts/{id}:
  *   put:
  *     summary: Update a discount code's usage limit by ID
  *     description: Update the usage limit of a discount code with the ID.
@@ -310,7 +310,7 @@ discountsRouter.put('/:id', checkJwt, checkScopes, async (
 
 /**
  * @swagger
- * /discounts/{id}:
+ * /1/discounts/{id}:
  *   delete:
  *     summary: Delete a discount code by ID
  *     description: Deletes a discount code given the ID.

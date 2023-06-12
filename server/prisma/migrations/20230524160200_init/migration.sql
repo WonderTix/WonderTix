@@ -358,3 +358,18 @@ ALTER TABLE "ticketrestrictions" ADD CONSTRAINT "ticketrestrictions_eventinstanc
 -- AddForeignKey
 ALTER TABLE "ticketrestrictions" ADD CONSTRAINT "ticketrestrictions_tickettypeid_fk_fkey" FOREIGN KEY ("tickettypeid_fk") REFERENCES "tickettype"("tickettypeid") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
+ALTER SEQUENCE contacts_contactid_seq RESTART WITH 8193;
+ALTER SEQUENCE discounts_discountid_seq RESTART WITH 4;
+ALTER SEQUENCE donations_donationid_seq RESTART WITH 2893;
+ALTER SEQUENCE eventinstances_eventinstanceid_seq RESTART WITH 452;
+ALTER SEQUENCE events_eventid_seq RESTART WITH 37;
+ALTER SEQUENCE eventtickets_eventticketid_seq RESTART WITH 37;
+ALTER SEQUENCE orderitems_orderitemid_seq RESTART WITH 25528;
+ALTER SEQUENCE orders_orderid_seq RESTART WITH 8618;
+ALTER SEQUENCE seasons_seasonid_seq RESTART WITH 8;
+ALTER SEQUENCE seasontickets_seasonticketid_seq RESTART WITH 247;
+ALTER SEQUENCE seasontickettype_seasontickettypeid_seq RESTART WITH 4;
+ALTER SEQUENCE singletickets_singleticketid_seq RESTART WITH 25479;
+ALTER SEQUENCE ticketrestrictions_ticketrestrictionsid_seq RESTART WITH 42;
+ALTER SEQUENCE tickettype_tickettypeid_seq RESTART WITH 4;
+ALTER SEQUENCE users_userid_seq RESTART WITH 4;

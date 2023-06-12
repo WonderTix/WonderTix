@@ -9,7 +9,7 @@ taskNotesRouter.use(checkScopes);
 
 /**
  * @swagger
- *   /task_notes:
+ *   /1/task_notes:
  *     get:
  *       summary: Get all task notes
  *       tags:
@@ -56,7 +56,7 @@ taskNotesRouter.get('/', async (_req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /task_notes/{id}:
+ *   /1/task_notes/{id}:
  *     get:
  *       summary: Get a task note
  *       tags:
@@ -109,7 +109,7 @@ taskNotesRouter.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /task_notes:
+ *   /1/task_notes:
  *     post:
  *       summary: Create a task note
  *       tags:
@@ -163,7 +163,7 @@ taskNotesRouter.post('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /task_notes/{id}:
+ *   /1/task_notes/{id}:
  *     delete:
  *       summary: Delete a task note
  *       tags:
@@ -210,7 +210,7 @@ taskNotesRouter.delete('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- *   /task_notes/{id}:
+ *   /1/task_notes/{id}:
  *     put:
  *       summary: Update a task note
  *       tags:
