@@ -57,8 +57,8 @@ const toDateStringFormat = (date) => {
 const toTimeStringFormat = (time) => {
   if (time === undefined || time === '') return '';
   const timeString = String(time);
-  if (timeString.split(/[+-]/).length === 1) return timeString;
-  return timeString.split(/[+-]/)[0];
+  const splitTime = timeString.split(/[+.-]/)[0];
+  return splitTime;
 };
 
 const ShowingInputContainer = ({

@@ -167,7 +167,6 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       imageurl,
       showings: showings,
     };
-    console.log('swag2')
     console.log(data)
     if (showings.length === 0) {
       setErr('Please enter at least one showing.');
@@ -221,8 +220,6 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
         }
       }
     }
-    console.log('swag1')
-    console.log(data)
     onSubmit(data);
   };
 

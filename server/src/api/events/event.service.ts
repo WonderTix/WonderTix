@@ -428,8 +428,6 @@ export const insertAllShowings = async (
   const toReturn = [];
   let rowCount = 0;
   for (const showing of showings) {
-    console.log('swag')
-    console.log(showing)
     const date = showing.eventdate.split('-');
     const dateAct = date.join('');
     const {rows} = await pool.query(query, [
