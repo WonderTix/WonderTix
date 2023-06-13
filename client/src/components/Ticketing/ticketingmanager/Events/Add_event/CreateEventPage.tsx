@@ -64,7 +64,7 @@ const CreateEventPage = () => {
       const eventData = await createPlayRes.json();
       id = eventData.data[0].eventid;
       const showingdata = showings.map(formatShowingData(id));
-      console.log(showingdata)
+      console.log(showingdata);
       const postShowings = await fetch(process.env.REACT_APP_API_1_URL + '/events/instances', {
         credentials: 'include',
         headers: {

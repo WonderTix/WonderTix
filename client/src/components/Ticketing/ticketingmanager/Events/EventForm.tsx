@@ -125,9 +125,10 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   };
 
   useEffect(() => {
-    if (initialValues)
-      console.log(initialValues.showings)
-  }, [])
+    if (initialValues) {
+      console.log(initialValues.showings);
+    }
+  }, []);
   const [eventname, seteventname] = useState(def.eventname);
   const eventid = def.eventid;
   const [eventdescription, setEventDesc] = useState(def.eventdescription);
@@ -153,7 +154,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   }, [imageurl]);
 
   const setShowingsHandler = (shows) => {
-    console.log(shows)
+    console.log(shows);
     setShowings(shows);
   };
 
@@ -167,7 +168,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       imageurl,
       showings: showings,
     };
-    console.log(data)
+    console.log(data);
     if (showings.length === 0) {
       setErr('Please enter at least one showing.');
       setShowPopUp(true);

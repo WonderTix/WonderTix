@@ -38,7 +38,7 @@ const Editeventmain = () => {
           eventData.eventid = data.data[0].eventid;
           eventData.seasonid = data.data[0].seasonid;
         });
-    console.log(eventData)
+    console.log(eventData);
     await fetch(process.env.REACT_APP_API_1_URL +
           `/events/instances/${params.eventid}`)
         .then((response) => {

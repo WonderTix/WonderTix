@@ -39,15 +39,14 @@ interface mapDataToEditEventProps {
  * @returns {ReactElement}
  */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
-  
   if (initValues.eventid == null) {
-    console.log("initValues: " + JSON.stringify(initValues));
-    throw new TypeError("eventid must be set");
-  }else {
-    console.log("event id: " + initValues.eventid);
+    console.log('initValues: ' + JSON.stringify(initValues));
+    throw new TypeError('eventid must be set');
+  } else {
+    console.log('event id: ' + initValues.eventid);
   }
   // console.log("fetched: " + JSON.stringify(initValues));
-  
+
   const params = useParams();
   const nav = useNavigate();
   const dispatch = useAppDispatch();
@@ -63,12 +62,12 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   };
 
   useEffect(() => {
-    console.log(initValues)
-  }, [])
+    console.log(initValues);
+  }, []);
 
   const onSubmit = async (updatedData: WtixEvent) => {
-    console.log("onSubmit called for edit event");
-    console.log(updatedData)
+    console.log('onSubmit called for edit event');
+    console.log(updatedData);
     const showings = updatedData.showings.map((show) => show.eventinstanceid);
     // updatedData.showings = showings;
     // console.log("sending data: ", updatedData.showings);
@@ -87,7 +86,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       },
       body: JSON.stringify(updatedData),
     });
-    console.log(params)
+    console.log(params);
 
     await fetch(process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`, {
       credentials: 'include',

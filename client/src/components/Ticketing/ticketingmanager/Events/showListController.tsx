@@ -36,8 +36,8 @@ const ShowListController = ({
   const [numOfShowings, setNumOfShowings] = useState(showsData ? showsData.length : 0);
 
   useEffect(() => {
-    console.log(showsData)
-  }, [])
+    console.log(showsData);
+  }, []);
 
   // SHOWINGS ACTIONS:
   // const addShowBox = (event) => {
