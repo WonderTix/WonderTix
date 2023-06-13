@@ -483,10 +483,14 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
                         eventinstanceid = $1;`;
   let rowsUpdated = 0;
   for (const showing of showings) {
+    let eventDate: String|Number = showing.eventdate;
+    if (typeof showing.eventdate === 'string') {
+      eventDate = parseInt(showing.eventdate.split('-').join(''))
+    }
     //console.log("Update Current: ", showings);
     const queryResult = await pool.query(updateQuery, [
       showing.eventinstanceid,
-      showing.eventdate,
+      eventDate,
       showing.eventtime,
       showing.salestatus,
       showing.totalseats,
