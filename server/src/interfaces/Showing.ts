@@ -7,7 +7,7 @@
  *
  * @param {string} eventdate - date of the show
  *
- * @param {string} starttime - time when following show is presented
+ * @param {string} eventtime - time when following show is presented
  *
  * @param {boolean} salestatus - status of the show, if it is
  * available for general audinace purchase or not
@@ -21,15 +21,24 @@
  */
 
 export default interface Showing {
-    id: number;
-    eventid: string;
-    eventdate: string;
-    starttime: string;
-    salestatus: boolean;
-    totalseats: number;
-    availableseats: number;
-    ticketTypeId: number[],
-    seatsForType: number[],
-    purchaseuri: string;
-    ispreview: boolean;
+  id: number;
+  index: number;
+  eventinstanceid: number;
+  eventid_fk: number;
+  eventtime: string;
+  eventdate: string;
+  salestatus: boolean;
+  ticketTypeId: (string | number) []; // This and tickettypeids are the same, temp fix
+  seatsForType: number[];
+  totalseats: number;
+  availableseats: number;
+  ispreview: boolean;
+  purchaseuri?: string;
+}
+
+export interface TicketType {
+  id: number,
+  name: string,
+  price: number,
+  concessions: number,
 }

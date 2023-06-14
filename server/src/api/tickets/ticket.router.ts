@@ -1,6 +1,8 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import * as ticketUtils from './ticket.service';
+import {pool} from '../db'
+
 
 export const ticketRouter = Router();
 
@@ -363,6 +365,56 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
     const code = resp.status.success ? 200 : 404;
     res.status(code).send(resp);
   } catch (error: any) {
+    res.sendStatus(500).send(error.message);
+  }
+});
+
+/**
+ * @swagger
+ *  /1/tickets/restrictions/{eventid}:
+ *    get:
+ *      summary: Delete ticket type
+ *      tags:
+ *        - Tickets
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *      - in: path
+ *        name: eventid
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items: {type: object}
+ *                  status:
+ *                    type: object
+ *                    properties:
+ *                      success: {type: boolean}
+ *                      message: {type: string}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
+ticketRouter.get('/restrictions/:eventid', async(req, res) => {
+  let ticketquery = `
+    SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
+  `;
+  try { 
+    let result = await pool.query(ticketquery, [req.params.eventid]);
+    
+    let resp = {
+      data: result.rows,
+      status: "success",
+    };
+    res.status(200).send(resp);
+  }catch (error: any) {
     res.sendStatus(500).send(error.message);
   }
 });

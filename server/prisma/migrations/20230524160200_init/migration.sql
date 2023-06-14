@@ -363,7 +363,7 @@ ALTER SEQUENCE discounts_discountid_seq RESTART WITH 4;
 ALTER SEQUENCE donations_donationid_seq RESTART WITH 2893;
 ALTER SEQUENCE eventinstances_eventinstanceid_seq RESTART WITH 452;
 ALTER SEQUENCE events_eventid_seq RESTART WITH 37;
-ALTER SEQUENCE eventtickets_eventticketid_seq RESTART WITH 37;
+ALTER SEQUENCE eventtickets_eventticketid_seq RESTART WITH 45101;
 ALTER SEQUENCE orderitems_orderitemid_seq RESTART WITH 25528;
 ALTER SEQUENCE orders_orderid_seq RESTART WITH 8618;
 ALTER SEQUENCE seasons_seasonid_seq RESTART WITH 8;

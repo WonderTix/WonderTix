@@ -77,9 +77,9 @@ const Showing = () => {
   const {eventid} = useParams<EventPageProps>();
   const eventData = useAppSelector((state) => selectEventData(state, eventid));
   if (eventData === undefined) return <p>Whoops! Event not found</p>;
-  const {title, description, image_url, tickets} = eventData;
+  const {title, description, imageurl, tickets} = eventData;
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute bg-cover' style={{backgroundImage: `url(${image_url})`}}>
+    <div className='w-full h-screen overflow-x-hidden absolute bg-cover' style={{backgroundImage: `url(${imageurl})`}}>
       <div className='backdrop-blur-sm h-screen overflow-x-hidden w-full absolute bg-zinc-900/70'>
         <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
@@ -90,7 +90,7 @@ const Showing = () => {
           <h1 className='text-zinc-200 font-semibold mb-4 text-xl mt-6'>Event Showings</h1>
           <div className='grid grid-cols-2 gap-6'>
             {tickets.map((showing) => (
-              <>
+              <div key={showing.event_instance_id}>
                 <div className='bg-zinc-900/60 text-zinc-100 p-7
                 flex flex-row rounded-xl gap-1 justify-between'>
                   <div className='flex flex-col gap-2'>
@@ -146,7 +146,7 @@ const Showing = () => {
                     </div>
                   </div>
                 </div>
-              </>
+              </div>
             ),
             )}
           </div>
@@ -194,5 +194,6 @@ const Showing = () => {
     </div>
   );
 };
+
 
 export default Showing;
