@@ -38,6 +38,8 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import {ticketTypesRouter} from './api/ticket_types/ticket_types.router';
 import {contactController} from './controllers/contactController';
+import {userController} from './controllers/userController';
+import {ticketTypeController} from './controllers/ticketTypeController';
 
 const openApiSpec = swaggerJsdoc({
   definition: {
@@ -155,8 +157,8 @@ const createServer = async () => {
 
   // api 2
   app.use('/api/2/contact', contactController);
-  app.use('/api/2/user', contactController);
-  app.use('/api/2/ticket-type', contactController);
+  app.use('/api/2/user', userController);
+  app.use('/api/2/ticket-type', ticketTypeController);
 
   // other
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
