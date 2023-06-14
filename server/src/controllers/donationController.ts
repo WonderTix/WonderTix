@@ -18,14 +18,14 @@ export const donationController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/donation'
+ *             $ref: '#/components/requestBodies/Donation'
  *     responses:
  *       201:
  *         description: donation updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/donation'
+ *               $ref: '#/components/schemas/Donation'
  *       400:
  *         description: bad request
  *         content:
@@ -91,7 +91,7 @@ donationController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/donation'
+ *               $ref: '#/components/schemas/Donation'
  *       400:
  *         description: bad request
  *         content:
@@ -196,7 +196,7 @@ donationController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/donation'
+ *               $ref: '#/components/schemas/Donation'
  *       400:
  *         description: bad request
  *         content:
@@ -260,7 +260,7 @@ donationController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/donation'
+ *             $ref: '#/components/requestBodies/Donation'
  *     responses:
  *       204:
  *         description: donation updated successfully.

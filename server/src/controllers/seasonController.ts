@@ -18,14 +18,14 @@ export const seasonController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/season'
+ *             $ref: '#/components/requestBodies/Season'
  *     responses:
  *       201:
  *         description: season updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/season'
+ *               $ref: '#/components/schemas/Season'
  *       400:
  *         description: bad request
  *         content:
@@ -85,7 +85,7 @@ seasonController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/season'
+ *               $ref: '#/components/schemas/Season'
  *       400:
  *         description: bad request
  *         content:
@@ -160,7 +160,7 @@ seasonController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/season'
+ *               $ref: '#/components/schemas/Season'
  *       400:
  *         description: bad request
  *         content:
@@ -224,7 +224,7 @@ seasonController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/season'
+ *             $ref: '#/components/requestBodies/Season'
  *     responses:
  *       204:
  *         description: season updated successfully.

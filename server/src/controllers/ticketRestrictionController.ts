@@ -18,14 +18,14 @@ export const ticketRestrictionController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/ticket-restriction'
+ *             $ref: '#/components/requestBodies/TicketRestriction'
  *     responses:
  *       201:
  *         description: Ticket restriction updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ticket-restriction'
+ *               $ref: '#/components/schemas/TicketRestriction'
  *       400:
  *         description: bad request
  *         content:
@@ -86,7 +86,7 @@ ticketRestrictionController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/ticket-restriction'
+ *               $ref: '#/components/schemas/TicketRestriction'
  *       400:
  *         description: bad request
  *         content:
@@ -161,7 +161,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ticket-restriction'
+ *               $ref: '#/components/schemas/TicketRestriction'
  *       400:
  *         description: bad request
  *         content:
@@ -225,7 +225,7 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/ticket-restriction'
+ *             $ref: '#/components/requestBodies/TicketRestriction'
  *     responses:
  *       204:
  *         description: Ticket restriction updated successfully.

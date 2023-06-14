@@ -18,14 +18,14 @@ export const userController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/user'
+ *             $ref: '#/components/requestBodies/User'
  *     responses:
  *       201:
  *         description: user updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/user'
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: bad request
  *         content:
@@ -85,7 +85,7 @@ userController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/user'
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: bad request
  *         content:
@@ -160,7 +160,7 @@ userController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/user'
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: bad request
  *         content:
@@ -224,7 +224,7 @@ userController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/user'
+ *             $ref: '#/components/requestBodies/User'
  *     responses:
  *       204:
  *         description: user updated successfully.

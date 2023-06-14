@@ -18,14 +18,14 @@ export const eventTicketController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/event-ticket'
+ *             $ref: '#/components/requestBodies/EventTicket'
  *     responses:
  *       201:
  *         description: event ticket updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/event-ticket'
+ *               $ref: '#/components/schemas/EventTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -88,7 +88,7 @@ eventTicketController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/event-ticket'
+ *               $ref: '#/components/schemas/EventTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -178,7 +178,7 @@ eventTicketController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/event-ticket'
+ *               $ref: '#/components/schemas/EventTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -242,7 +242,7 @@ eventTicketController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/event-ticket'
+ *             $ref: '#/components/requestBodies/EventTicket'
  *     responses:
  *       204:
  *         description: event ticket updated successfully.

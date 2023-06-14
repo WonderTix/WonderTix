@@ -18,14 +18,14 @@ export const discountController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/discount'
+ *             $ref: '#/components/requestBodies/Discount'
  *     responses:
  *       201:
  *         description: discount updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/discount'
+ *               $ref: '#/components/schemas/Discount'
  *       400:
  *         description: bad request
  *         content:
@@ -92,7 +92,7 @@ discountController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/discount'
+ *               $ref: '#/components/schemas/Discount'
  *       400:
  *         description: bad request
  *         content:
@@ -177,7 +177,7 @@ discountController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/discount'
+ *               $ref: '#/components/schemas/Discount'
  *       400:
  *         description: bad request
  *         content:
@@ -241,7 +241,7 @@ discountController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/discount'
+ *             $ref: '#/components/requestBodies/Discount'
  *     responses:
  *       204:
  *         description: discount updated successfully.

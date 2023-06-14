@@ -18,14 +18,14 @@ export const singleTicketController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/single-ticket'
+ *             $ref: '#/components/requestBodies/SingleTicket'
  *     responses:
  *       201:
  *         description: Single Ticket updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/single-ticket'
+ *               $ref: '#/components/schemas/SingleTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -85,7 +85,7 @@ singleTicketController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/single-ticket'
+ *               $ref: '#/components/schemas/SingleTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -165,7 +165,7 @@ singleTicketController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/single-ticket'
+ *               $ref: '#/components/schemas/SingleTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -229,7 +229,7 @@ singleTicketController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/single-ticket'
+ *             $ref: '#/components/requestBodies/SingleTicket'
  *     responses:
  *       204:
  *         description: Single Ticket updated successfully.

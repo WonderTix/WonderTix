@@ -18,14 +18,14 @@ export const eventInstanceController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/event-instance'
+ *             $ref: '#/components/requestBodies/EventInstance'
  *     responses:
  *       201:
  *         description: event instance updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/event-instance'
+ *               $ref: '#/components/schemas/EventInstance'
  *       400:
  *         description: bad request
  *         content:
@@ -91,7 +91,7 @@ eventInstanceController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/event-instance'
+ *               $ref: '#/components/schemas/EventInstance'
  *       400:
  *         description: bad request
  *         content:
@@ -181,7 +181,7 @@ eventInstanceController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/event-instance'
+ *               $ref: '#/components/schemas/EventInstance'
  *       400:
  *         description: bad request
  *         content:
@@ -245,7 +245,7 @@ eventInstanceController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/event-instance'
+ *             $ref: '#/components/requestBodies/EventInstance'
  *     responses:
  *       204:
  *         description: event instance updated successfully.

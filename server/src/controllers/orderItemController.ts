@@ -18,14 +18,14 @@ export const orderItemController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/order-item'
+ *             $ref: '#/components/requestBodies/OrderItem'
  *     responses:
  *       201:
  *         description: order item updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/order-item'
+ *               $ref: '#/components/schemas/OrderItem'
  *       400:
  *         description: bad request
  *         content:
@@ -84,7 +84,7 @@ orderItemController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/order-item'
+ *               $ref: '#/components/schemas/OrderItem'
  *       400:
  *         description: bad request
  *         content:
@@ -159,7 +159,7 @@ orderItemController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/order-item'
+ *               $ref: '#/components/schemas/OrderItem'
  *       400:
  *         description: bad request
  *         content:
@@ -223,7 +223,7 @@ orderItemController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/order-item'
+ *             $ref: '#/components/requestBodies/OrderItem'
  *     responses:
  *       204:
  *         description: order item updated successfully.

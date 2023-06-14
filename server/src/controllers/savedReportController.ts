@@ -18,14 +18,14 @@ export const savedreportController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/saved-report'
+ *             $ref: '#/components/requestBodies/SavedReport'
  *     responses:
  *       201:
  *         description: saved report updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/saved-report'
+ *               $ref: '#/components/schemas/SavedReport'
  *       400:
  *         description: bad request
  *         content:
@@ -84,7 +84,7 @@ savedreportController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/saved-report'
+ *               $ref: '#/components/schemas/SavedReport'
  *       400:
  *         description: bad request
  *         content:
@@ -154,7 +154,7 @@ savedreportController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/saved-report'
+ *               $ref: '#/components/schemas/SavedReport'
  *       400:
  *         description: bad request
  *         content:
@@ -218,7 +218,7 @@ savedreportController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/saved-report'
+ *             $ref: '#/components/requestBodies/SavedReport'
  *     responses:
  *       204:
  *         description: saved report updated successfully.

@@ -18,14 +18,14 @@ export const taskController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/task'
+ *             $ref: '#/components/requestBodies/Task'
  *     responses:
  *       201:
  *         description: task updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/task'
+ *               $ref: '#/components/schemas/Task'
  *       400:
  *         description: bad request
  *         content:
@@ -93,7 +93,7 @@ taskController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/task'
+ *               $ref: '#/components/schemas/Task'
  *       400:
  *         description: bad request
  *         content:
@@ -178,7 +178,7 @@ taskController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/task'
+ *               $ref: '#/components/schemas/Task'
  *       400:
  *         description: bad request
  *         content:
@@ -242,7 +242,7 @@ taskController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/task'
+ *             $ref: '#/components/requestBodies/Task'
  *     responses:
  *       204:
  *         description: task updated successfully.

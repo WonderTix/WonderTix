@@ -18,14 +18,14 @@ export const seasonTicketController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/season-ticket'
+ *             $ref: '#/components/requestBodies/SeasonTicket'
  *     responses:
  *       201:
  *         description: season ticket updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/season-ticket'
+ *               $ref: '#/components/schemas/SeasonTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -87,7 +87,7 @@ seasonTicketController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/season-ticket'
+ *               $ref: '#/components/schemas/SeasonTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -177,7 +177,7 @@ seasonTicketController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/season-ticket'
+ *               $ref: '#/components/schemas/SeasonTicket'
  *       400:
  *         description: bad request
  *         content:
@@ -241,7 +241,7 @@ seasonTicketController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/season-ticket'
+ *             $ref: '#/components/requestBodies/SeasonTicket'
  *     responses:
  *       204:
  *         description: season ticket updated successfully.

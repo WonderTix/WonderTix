@@ -18,14 +18,14 @@ export const seasonTicketTypeController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/season-ticket-type'
+ *             $ref: '#/components/requestBodies/SeasonTticketType'
  *     responses:
  *       201:
  *         description: Season Ticket Type updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/season-ticket-type'
+ *               $ref: '#/components/schemas/SeasonTticketType'
  *       400:
  *         description: bad request
  *         content:
@@ -84,7 +84,7 @@ seasonTicketTypeController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/season-ticket-type'
+ *               $ref: '#/components/schemas/SeasonTticketType'
  *       400:
  *         description: bad request
  *         content:
@@ -154,7 +154,7 @@ seasonTicketTypeController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/season-ticket-type'
+ *               $ref: '#/components/schemas/SeasonTticketType'
  *       400:
  *         description: bad request
  *         content:
@@ -218,7 +218,7 @@ seasonTicketTypeController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/season-ticket-type'
+ *             $ref: '#/components/requestBodies/SeasonTticketType'
  *     responses:
  *       204:
  *         description: season ticket type updated successfully.

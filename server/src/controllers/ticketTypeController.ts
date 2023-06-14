@@ -18,14 +18,14 @@ export const ticketTypeController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/tickettype'
+ *             $ref: '#/components/requestBodies/TicketType'
  *     responses:
  *       201:
  *         description: ticketType updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/tickettype'
+ *               $ref: '#/components/schemas/TicketType'
  *       400:
  *         description: bad request
  *         content:
@@ -86,7 +86,7 @@ ticketTypeController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/tickettype'
+ *               $ref: '#/components/schemas/TicketType'
  *       400:
  *         description: bad request
  *         content:
@@ -161,7 +161,7 @@ ticketTypeController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/tickettype'
+ *               $ref: '#/components/schemas/TicketType'
  *       400:
  *         description: bad request
  *         content:
@@ -225,7 +225,7 @@ ticketTypeController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/tickettype'
+ *             $ref: '#/components/requestBodies/TicketType'
  *     responses:
  *       204:
  *         description: ticketType updated successfully.

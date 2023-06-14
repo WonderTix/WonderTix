@@ -18,14 +18,14 @@ export const taskNoteController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/task-note'
+ *             $ref: '#/components/requestBodies/TaskNote'
  *     responses:
  *       201:
  *         description: Task note updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/task-note'
+ *               $ref: '#/components/schemas/TaskNote'
  *       400:
  *         description: bad request
  *         content:
@@ -85,7 +85,7 @@ taskNoteController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/task-note'
+ *               $ref: '#/components/schemas/TaskNote'
  *       400:
  *         description: bad request
  *         content:
@@ -160,7 +160,7 @@ taskNoteController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/task-note'
+ *               $ref: '#/components/schemas/TaskNote'
  *       400:
  *         description: bad request
  *         content:
@@ -224,7 +224,7 @@ taskNoteController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/task-note'
+ *             $ref: '#/components/requestBodies/TaskNote'
  *     responses:
  *       204:
  *         description: Task note updated successfully.

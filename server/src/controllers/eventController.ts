@@ -18,14 +18,14 @@ export const eventController = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/event'
+ *             $ref: '#/components/requestBodies/Event'
  *     responses:
  *       201:
  *         description: event updated successfully.
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/event'
+ *               $ref: '#/components/schemas/Event'
  *       400:
  *         description: bad request
  *         content:
@@ -88,7 +88,7 @@ eventController.use(checkScopes);
  *           application/json:
  *             schema:
  *               type: array
- *               $ref: '#/components/schemas/event'
+ *               $ref: '#/components/schemas/Event'
  *       400:
  *         description: bad request
  *         content:
@@ -178,7 +178,7 @@ eventController.get('/', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/event'
+ *               $ref: '#/components/schemas/Event'
  *       400:
  *         description: bad request
  *         content:
@@ -242,7 +242,7 @@ eventController.get('/:id', async (req: Request, res: Response) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/requestBodies/event'
+ *             $ref: '#/components/requestBodies/Event'
  *     responses:
  *       204:
  *         description: event updated successfully.
