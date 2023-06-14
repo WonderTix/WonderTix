@@ -93,7 +93,7 @@ const DoorList = () => {
       const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
-        jsonData[key].starttime = militaryToCivilian(jsonData[key].starttime);
+        jsonData[key].eventtime = militaryToCivilian(jsonData[key].eventtime);
       });
       setEventList(jsonData);
     } catch (error) {
@@ -126,7 +126,7 @@ const DoorList = () => {
       setDoorList(jsonData.data);
       setEventName(jsonData.data[0].eventname);
       setDate(dayMonthDate(jsonData.data[0].eventdate));
-      setTime(militaryToCivilian(jsonData.data[0].starttime));
+      setTime(militaryToCivilian(jsonData.data[0].eventtime));
     } catch (error) {
       console.error(error.message);
     }
@@ -149,7 +149,7 @@ const DoorList = () => {
           {eventList.map((eventss) => (
             <>
               <option value={eventss.id} className="px-6 py-3">
-                {eventss.eventdate} at {eventss.starttime}
+                {eventss.eventdate} at {eventss.eventtime}
               </option>
             </>
           ),

@@ -60,7 +60,7 @@ const Eventshowings = () => {
   if (eventData === undefined) return <p>Whoops! Event not found</p>;
   const {title, description, tickets} = eventData;
   // eslint-disable-next-line camelcase
-  const imageUrl = eventData.image_url;
+  const imageUrl = eventData.imageurl;
   return (
     <div className = ' w-full h-screen  ' >
       <div className=' w-full h-screen bg-zinc-100
