@@ -155,6 +155,8 @@ const createServer = async () => {
 
   // api 2
   app.use('/api/2/contact', contactController);
+  app.use('/api/2/user', contactController);
+  app.use('/api/2/ticket-type', contactController);
 
   // other
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
