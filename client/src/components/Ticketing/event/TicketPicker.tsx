@@ -303,26 +303,21 @@ const TicketPicker = (props: TicketPickerProps) => {
           const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/ticketrestrictions/${selectedTicket.event_instance_id}`);
           const data = await response.json();
           const restriction = data;
-          const matchingRow = restriction.rows.find(row => row.tickettypeid_fk === selectedTicketType.id);
+          const matchingRow = restriction.rows.find((row) => row.tickettypeid_fk === selectedTicketType.id);
           if (matchingRow) {
             const numAvail = matchingRow.ticketlimit;
             setnumAvail(numAvail);
-          }
-          else
-          {
+          } else {
             const numAvail = selectedTicket.availableseats;
             setnumAvail(numAvail);
           }
-  
         } catch (error) {
           console.log(error);
         }
       };
-  
       fetchData();
     }
   }, [selectedTicketType]);
-  
 
   return (
     <>
