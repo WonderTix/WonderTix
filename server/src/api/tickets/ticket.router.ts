@@ -384,3 +384,53 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
     res.sendStatus(500).send(error.message);
   }
 });
+
+/**
+ * @swagger
+ *  /1/tickets/restrictions/{eventid}:
+ *    get:
+ *      summary: get number of tickets in each ticket type for an event instance (a showing)
+ *      tags:
+ *        - Tickets
+ *      security:
+ *        - bearerAuth: []
+ *      parameters:
+ *      - in: path
+ *        name: eventinstanceid
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items: {type: object}
+ *                  status:
+ *                    type: object
+ *                    properties:
+ *                      success: {type: boolean}
+ *                      message: {type: string}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
+ticketRouter.get('/restrictions/:eventinstanceid', async(req, res) => {
+  let ticketquery = `
+    SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
+  `;
+  try { 
+    let result = await pool.query(ticketquery, [req.params.eventinstanceid]);
+    
+    let resp = {
+      data: result.rows,
+      status: "success",
+    };
+    res.status(200).send(resp);
+  }catch (error: any) {
+    res.sendStatus(500).send(error.message);
+  }
+});

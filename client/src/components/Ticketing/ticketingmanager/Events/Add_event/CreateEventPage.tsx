@@ -9,16 +9,17 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import React, {useEffect, useState} from 'react';
-import EventForm, {NewEventData} from '../EventForm';
+import EventForm from '../EventForm';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../../Pop-up';
+import {Showing, WtixEvent} from '../../../../../interfaces/showing.interface';
 
 let id = 0;
 
-const formatShowingData = (eventid: number) => (data: any) => {
-  const {starttime, eventdate, totalseats, ticketTypeId, seatsForType} = data;
-  return {eventid, eventdate, starttime, totalseats, ticketTypeId: ticketTypeId, seatsForType};
+const formatShowingData = (eventid_fk: number) => (data: Showing) => {
+  const {eventtime, eventdate, totalseats, ticketTypeId, seatsForType} = data;
+  return {eventid_fk, eventdate, eventtime, totalseats, ticketTypeId, seatsForType};
 };
 
 /**
@@ -27,7 +28,7 @@ const formatShowingData = (eventid: number) => (data: any) => {
  * @returns {ReactElement} and all data, or console error, EventForm and PopUp
  */
 const CreateEventPage = () => {
-  const [ticketTypes, setTicketTypes] = useState([]);
+  const [tickettypes, setTicketTypes] = useState([]);
   const [visible, setVisible] = useState(false);
   const {getAccessTokenSilently} = useAuth0();
   const nav = useNavigate();
@@ -41,12 +42,12 @@ const CreateEventPage = () => {
   }, []);
 
   // TODO: create endpoint that combines /api/create-event & /api/create-showings
-  const onSubmit = async (formData: NewEventData) => {
+  const onSubmit = async (formData: WtixEvent) => {
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const {imageUrl, eventName, eventDesc, showings} = formData;
+    const {imageurl, eventname, eventdescription, showings} = formData;
     const seasonid_fk = 7;
 
     const createPlayRes = await fetch(process.env.REACT_APP_API_1_URL + '/events', {
@@ -56,13 +57,14 @@ const CreateEventPage = () => {
         'Authorization': `Bearer ${token}`,
       },
       method: 'POST',
-      body: JSON.stringify({seasonid_fk, eventName, eventDesc, imageUrl}),
+      body: JSON.stringify({seasonid_fk, eventname, eventdescription, imageurl}),
     });
 
     if (createPlayRes.ok) {
       const eventData = await createPlayRes.json();
       id = eventData.data[0].eventid;
       const showingdata = showings.map(formatShowingData(id));
+      console.log(showingdata);
       const postShowings = await fetch(process.env.REACT_APP_API_1_URL + '/events/instances', {
         credentials: 'include',
         headers: {
@@ -96,11 +98,11 @@ const CreateEventPage = () => {
       <div className='md:ml-[18rem] md:mr-[5rem] sm:mt-40 sm:mt-[11rem]
        sm:mr-[2rem] sm:ml-[2rem] sm:mb-[11rem]'>
         {visible == true ?
-        <PopUp title="Success" message='New event has been successfully added.' handleClose={handleClose} handleProceed={handleProceed} /> :
+        <PopUp title="Success" message='New event has been successfully added.' handleClose={handleClose} handleProceed={handleProceed} success={true}/> :
          <></> }
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-violet-500 to-fuchsia-500' >Add New Event</h1>
-        <EventForm onSubmit={onSubmit} ticketTypes={ticketTypes}/>
+        <EventForm onSubmit={onSubmit} tickettypes={tickettypes}/>
       </div>
     </div>
   );

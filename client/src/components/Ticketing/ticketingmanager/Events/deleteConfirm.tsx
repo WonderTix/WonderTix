@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React, {CSSProperties} from 'react';
-import popupProps from '../../interfaces/popup.interface';
+import popupProps from '../../../../interfaces/popup.interface';
 
 /**
  * @property {object} popUpContainer - A property container for pop up
@@ -29,16 +29,29 @@ const box: CSSProperties ={
   'marginLeft': '30%',
 };
 
+interface DeleteConfirmProps {
+  message: string;
+  setShowConfirm;
+  handleDelete;
+  id;
+}
 /**
  * Popup makes use of both popUpContainer and box for styles
  *
  * @module
- * @param {string} title - Title of popup
  * @param {string} message - Message of popup
  * @returns {ReactElement} PopUp - Function named PopUp that can be interacted
  * with
  */
-const PopUp = ({title, message, handleClose, handleProceed, success}: popupProps) => {
+
+const DeleteConfirm = ({message, setShowConfirm, handleDelete, id}: DeleteConfirmProps) => {
+  const handleClose = (e) => {
+    if (e.target.value === 'Yes') {
+      handleDelete(e);
+    }
+    setShowConfirm(false);
+  };
+
   return (
     <div style={popUpContainer}>
       <div id="popup-modal"
@@ -52,29 +65,30 @@ const PopUp = ({title, message, handleClose, handleProceed, success}: popupProps
           className="relative p-4 w-full max-w-md h-full md:h-auto">
           <div className="relative bg-white
           rounded-lg shadow dark:bg-white-700">
-            <button type="button" onClick={handleClose}
-              className="absolute top-3
-            right-2.5 text-gray-400 bg-transparent hover:bg-gray-200
-             hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto
-             inline-flex items-center dark:hover:bg-gray-800
-             dark:hover:text-white" data-modal-toggle="popup-modal">
-              <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
-              <span className="sr-only">Close modal</span>
-            </button>
             <div className="p-6 text-center">
-              <h3 className="mb-5 text-lg font-normal
-               text-black-500 dark:text-black-400">
-                {title}</h3>
               <p className="mb-5 text-lg font-normal
                text-black-500 dark:text-black-400">
                 {message}
               </p>
               <button data-modal-toggle="popup-modal"
-                onClick={handleProceed}
-                type="button" className={`text-white ${success ?
-                  'bg-green-600 hover:bg-green-800 focus:ring-green-300 dark:focus:ring-green-800': 'bg-red-600 hover:bg-red-800 focus:ring-red-300 dark:focus:ring-red-800'}
-                   focus:ring-4 focus:outline-none font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2`}>
-                    Proceed
+                onClick={handleClose}
+                id={id}
+                type="button" className="text-white bg-gray-600
+                hover:bg-gray-800 focus:ring-4 focus:outline-none
+                focus:ring-gray-300 dark:focus:ring-gray-800 font-medium
+                 rounded-lg text-sm inline-flex items-center
+                  px-5 py-2.5 text-center mr-2" value="No">
+                    Return
+              </button>
+              <button data-modal-toggle="popup-modal"
+                id={id}
+                onClick={handleClose}
+                type="button" className="text-white bg-red-600
+                hover:bg-red-800 focus:ring-4 focus:outline-none
+                focus:ring-red-300 dark:focus:ring-red-800 font-medium
+                 rounded-lg text-sm inline-flex items-center
+                  px-5 py-2.5 text-center mr-2" value="Yes">
+                    Delete
               </button>
             </div>
           </div>
@@ -85,4 +99,4 @@ const PopUp = ({title, message, handleClose, handleProceed, success}: popupProps
   );
 };
 
-export default PopUp;
+export default DeleteConfirm;

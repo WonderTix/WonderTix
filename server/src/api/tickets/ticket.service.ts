@@ -23,9 +23,9 @@ export const getAvailableTickets = async (): Promise<response> => {
     const myQuery = `
         SELECT
           ei.eventinstanceid event_instance_id,
-          ei.eventid_fk eventid,
+          ei.eventid_fk,
           ei.eventdate,
-          ei.eventtime starttime,
+          ei.eventtime,
           ei.totalseats,
           ei.availableseats,
           tt.description AS admission_type,
@@ -66,14 +66,14 @@ export const getAvailableTickets = async (): Promise<response> => {
 
 
 const toTicket = (row:any): Ticket => {
-  const {eventdate, starttime, ...rest} = row;
-  const [hour, min] = starttime.split(':');
+  const {eventdate, eventtime, ...rest} = row;
+  const [hour, min] = eventtime.split(':');
   const date = parseIntToDate(eventdate);
   date.setHours(hour, min);
   return {
     ...rest,
     date: date.toJSON(),
-    eventid: row.eventid.toString(),
+    eventid: row.eventid_fk.toString(),
     ticket_price: parseMoneyString(row.ticket_price),
     concession_price: parseMoneyString(row.concession_price),
   };
@@ -151,9 +151,9 @@ export const setDefaultTicketForEvent = async (params: any): Promise<response> =
           SET 
             defaulttickettype = $1
           WHERE
-            eventinstanceid = $2;`,
+            id = $2;`,
     values: [
-      params.eventinstanceid,
+      params.id,
       params.tickettypeid,
     ],
   };

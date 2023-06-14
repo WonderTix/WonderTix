@@ -86,13 +86,13 @@ export interface TicketType {
  * @param {string} id - Event id
  * @param {string} title - title of event showing
  * @param {string} description
- * @param {string} image_url
+ * @param {string} imageurl
  */
 export interface Event {
     id: string,
     title: string,
     description: string,
-    image_url: string,
+    imageurl: string,
 }
 
 type TicketsState = {data: {byId: {[key: string]: Ticket}, allIds: number[]}}
@@ -579,13 +579,13 @@ const filterTicketsReducer = (ticketsById: {[key: number]: Ticket}, eventid: Eve
  * @module
  * @param {string} title
  * @param {string} description
- * @param {string} image_url
+ * @param {string} imageurl
  * @param {Array} tickets
  */
 export interface EventPageData {
     title: string,
     description: string,
-    image_url: string,
+    imageurl: string,
     tickets: Ticket[],
 }
 
