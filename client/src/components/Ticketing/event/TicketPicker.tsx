@@ -285,7 +285,7 @@ const TicketPicker = (props: TicketPickerProps) => {
     if (selectedTicket) {
       const fetchData = async () => {
         try {
-          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/restrictions/${selectedTicket.event_instance_id}`);
+          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/ticketrestrictions/${selectedTicket.event_instance_id}`);
           const data = await response.json();
           // console.log('data', data);
           const restriction = data;

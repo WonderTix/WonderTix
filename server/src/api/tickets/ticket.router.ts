@@ -64,7 +64,7 @@ ticketRouter.get('/', async (req: Request, res: Response) => {
   }
 });
 
-ticketRouter.get('/restrictions/:eventid', async(req: Request, res: Response) => {
+ticketRouter.get('/ticketrestrictions/:eventid', async(req: Request, res: Response) => {
   let ticketquery = `
     SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
   `;
