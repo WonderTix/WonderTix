@@ -373,14 +373,14 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
  * @swagger
  *  /1/tickets/restrictions/{eventid}:
  *    get:
- *      summary: Delete ticket type
+ *      summary: get number of tickets in each ticket type for an event instance (a showing)
  *      tags:
  *        - Tickets
  *      security:
  *        - bearerAuth: []
  *      parameters:
  *      - in: path
- *        name: eventid
+ *        name: eventinstanceid
  *      responses:
  *        200:
  *          description: OK
@@ -402,12 +402,12 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
  *        404:
  *          description: Not Found
  */
-ticketRouter.get('/restrictions/:eventid', async(req, res) => {
+ticketRouter.get('/restrictions/:eventinstanceid', async(req, res) => {
   let ticketquery = `
     SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
   `;
   try { 
-    let result = await pool.query(ticketquery, [req.params.eventid]);
+    let result = await pool.query(ticketquery, [req.params.eventinstanceid]);
     
     let resp = {
       data: result.rows,
