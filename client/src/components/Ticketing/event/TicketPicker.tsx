@@ -278,12 +278,10 @@ const TicketPicker = (props: TicketPickerProps) => {
     if (selectedTicket) {
       const fetchData = async () => {
         try {
-          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/ticketrestrictions/${selectedTicket.event_instance_id}`);
+          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/restrictions/${selectedTicket.event_instance_id}`);
           const data = await response.json();
-          console.log('data', data);
-          const restriction = data;
           const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter((t) =>
-            restriction.rows.some((row) => row.tickettypeid_fk === t.id && row.ticketssold < row.ticketlimit),
+            data.data.some((row) => row.tickettypeid_fk === t.id && row.ticketssold < row.ticketlimit),
           );
           setFilteredTicketTypes(finalFilteredTicketTypes);
         } catch (error) {
@@ -300,10 +298,9 @@ const TicketPicker = (props: TicketPickerProps) => {
     if (selectedTicket) {
       const fetchData = async () => {
         try {
-          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/ticketrestrictions/${selectedTicket.event_instance_id}`);
+          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/restrictions/${selectedTicket.event_instance_id}`);
           const data = await response.json();
-          const restriction = data;
-          const matchingRow = restriction.rows.find((row) => row.tickettypeid_fk === selectedTicketType.id);
+          const matchingRow = data.data.find((row) => row.tickettypeid_fk === selectedTicketType.id);
           if (matchingRow) {
             const numAvail = matchingRow.ticketlimit;
             setnumAvail(numAvail);

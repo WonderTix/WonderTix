@@ -64,23 +64,6 @@ ticketRouter.get('/', async (req: Request, res: Response) => {
   }
 });
 
-ticketRouter.get('/ticketrestrictions/:eventid', async(req: Request, res: Response) => {
-  let ticketquery = `
-    SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
-  `;
-  try { 
-    console.log("req.params.id", req.params.eventid);
-    const result = await pool.query(ticketquery, [req.params.eventid]);
-    let resp = {
-      message: result.rows,
-      status: "success",
-    };
-    res.status(200).send(result);
-  }catch (error: any) {
-    res.sendStatus(500).send(error.message);
-  }
-});
-
 /**
  * @swagger
  *  /1/tickets/validTypes:
