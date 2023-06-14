@@ -245,12 +245,6 @@ const TicketPicker = (props: TicketPickerProps) => {
     }
   };
 
-  const numAvail = selectedTicket ?
-        cartTicketCount[selectedTicket.event_instance_id] ?
-            selectedTicket.availableseats - cartTicketCount[selectedTicket.event_instance_id] :
-            selectedTicket.availableseats :
-        0;
-
   const promptMarkup = {
     selectDate: <div className='text-zinc-300 font-semibold text-xl '>Select date below ({tickets.length} showings)</div>,
     selectTime: <div className='text-white'>
@@ -278,7 +272,6 @@ const TicketPicker = (props: TicketPickerProps) => {
     return t.name === ticketTypesState.ticketTypes[1].name && selectedTicket.availableseats > 0;
   });
 
-  console.log(numAvail);
   console.log(selectedTicket);
 
   useEffect(() => {
@@ -287,10 +280,10 @@ const TicketPicker = (props: TicketPickerProps) => {
         try {
           const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/ticketrestrictions/${selectedTicket.event_instance_id}`);
           const data = await response.json();
-          // console.log('data', data);
+          console.log('data', data);
           const restriction = data;
           const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter((t) =>
-            restriction.rows.some((row) => row.tickettypeid_fk === t.id) && selectedTicket.availableseats > 0,
+            restriction.rows.some((row) => row.tickettypeid_fk === t.id && row.ticketssold < row.ticketlimit),
           );
           setFilteredTicketTypes(finalFilteredTicketTypes);
         } catch (error) {
@@ -301,6 +294,35 @@ const TicketPicker = (props: TicketPickerProps) => {
       fetchData();
     }
   }, [selectedTicket]);
+
+  const [numAvail, setnumAvail] = useState(Number);
+  useEffect(() => {
+    if (selectedTicket) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/ticketrestrictions/${selectedTicket.event_instance_id}`);
+          const data = await response.json();
+          const restriction = data;
+          const matchingRow = restriction.rows.find(row => row.tickettypeid_fk === selectedTicketType.id);
+          if (matchingRow) {
+            const numAvail = matchingRow.ticketlimit;
+            setnumAvail(numAvail);
+          }
+          else
+          {
+            const numAvail = selectedTicket.availableseats;
+            setnumAvail(numAvail);
+          }
+  
+        } catch (error) {
+          console.log(error);
+        }
+      };
+  
+      fetchData();
+    }
+  }, [selectedTicketType]);
+  
 
   return (
     <>
@@ -343,7 +365,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           // labelId="ticket-type-select-label"
           value={selectedTicketType.name}
           defaultValue={''}
-          disabled={selectedTicket===undefined || numAvail < 1}
+          disabled={selectedTicket===undefined}
           onChange={(e) => dispatch(changeTicketType(ticketTypesState.ticketTypes.find((t) => t.name === e.target.value)))}
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
