@@ -303,7 +303,7 @@ export const createCartItem = (data: { ticket: Ticket, tickettype: TicketType, e
         .map(appendCartField('date', `- ${format(new Date(ticket.date), 'eee, MMM dd - h:mm a')}`))
         .map(appendCartField('name', `${titleCase(event.title)} Ticket${qty > 1 ? 's' : ''}`))
         .map(appendCartField('qty', qty))
-        .map(appendCartField('product_img_url', event.image_url))[0];
+        .map(appendCartField('product_img_url', event.imageurl))[0];
 
     return cartItem;
   }
