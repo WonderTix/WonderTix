@@ -51,7 +51,7 @@ export const getInstanceById = async (params: any): Promise<response> => {
           AND
             salestatus = true
           ORDER BY
-            eventid_fk;`,
+            eventinstanceid;`,
     values: [params.id],
   };
   return await buildResponse(query, "GET");
