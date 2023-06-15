@@ -380,6 +380,7 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
 const payWhatFunc = (cart: CartItem, num: number, qty: number) => {
   cart.payWhatCan = true;
   cart.payWhatPrice = num * qty;
+  cart.price = num;
   console.log(cart.payWhatCan);
 };
 
