@@ -29,6 +29,7 @@ import {bound, titleCase} from '../../../../utils/arrays';
 export interface CartItem {
     product_id: number, // references state.tickets.event_instance_id
     qty: number,
+    date: Date,
     name: string,
     desc: string,
     product_img_url: string,
@@ -63,6 +64,22 @@ export interface Ticket {
 }
 
 /**
+ * TicketType Info
+ * @module
+ * @param {number} id
+ * @param {string} name
+ * @param {string} price
+ * @param {string} concessions
+ */
+
+export interface TicketType {
+  id: number,
+  name: string,
+  price: string,
+  concessions: string,
+}
+
+/**
  * The interface for event
  *
  * @module
@@ -93,6 +110,7 @@ export type DiscountItem = {code: string, amount: number, percent: number, minTi
  * @module
  * @param {Array} cart - Array called CartItem
  * @param {Array} tickets - TicketsState has a key(string), byId(ticket), allIds is a number array
+ * @param {Array} tickettype - TicketsState has a key(string), byId(ticket), allIds is a number array
  * @param {Array} events - Event Array
  * @param {Array} status - Array of different loading states
  * @param {Array} discount - Discount has a code(string), amount(number), percent(number)
@@ -100,6 +118,7 @@ export type DiscountItem = {code: string, amount: number, percent: number, minTi
 export interface ticketingState {
     cart: CartItem[],
     tickets: TicketsState,
+    tickettype: TicketType,
     events: Event[],
     status: LoadStatus,
     discount: DiscountItem,
@@ -251,10 +270,17 @@ export interface Discount {
  *
  * @param {T} ticketLike - based on ticket object?
  */
-export const toPartialCartItem = <T extends Ticket>(ticketLike: T) => ({
-  product_id: ticketLike.event_instance_id,
-  price: ticketLike.ticket_price,
-  desc: `${ticketLike.admission_type} - ${format(new Date(ticketLike.date), 'eee, MMM dd - h:mm a')}`,
+
+// export const toPartialCartItem = <T extends Ticket>(ticketLike: T) => ({
+//   product_id: ticketLike.event_instance_id,
+//   price: ticketLike.ticket_price,
+//   desc: `${ticketLike.admission_type} - ${format(new Date(ticketLike.date), 'eee, MMM dd - h:mm a')}`,
+// });
+
+export const toPartialCartItem = <T extends TicketType>(type: T, tickets: Ticket) => ({
+  product_id: type.id,
+  price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
+  desc: `${type.name} - ${format(new Date(tickets.date), 'eee, MMM dd - h:mm a')}`,
 });
 
 const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) => (obj: any) => ({...obj, [key]: val});
@@ -268,11 +294,20 @@ const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) =
  * @param {Array} data - ticket, event, qty, CartItem
  * @returns appended statements to the cartfield, appends: name, qty, product_img_url
  */
-export const createCartItem = (data: {ticket: Ticket, event: Event, qty: number}): CartItem =>
-  [data.ticket].map(toPartialCartItem)
-      .map(appendCartField('name', `${titleCase(data.event.title)} Ticket${(data.qty>1) ? 's' : ''}`))
-      .map(appendCartField('qty', data.qty))
-      .map(appendCartField('product_img_url', data.event.imageurl))[0];
+export const createCartItem = (data: { ticket: Ticket, tickettype: TicketType, event: Event, qty: number }): CartItem => {
+  const {ticket, tickettype, event, qty} = data;
+  if (ticket && tickettype && event && qty) {
+    const partialCartItem = toPartialCartItem(tickettype, ticket);
+
+    const cartItem = [partialCartItem]
+        .map(appendCartField('date', `- ${format(new Date(ticket.date), 'eee, MMM dd - h:mm a')}`))
+        .map(appendCartField('name', `${titleCase(event.title)} Ticket${qty > 1 ? 's' : ''}`))
+        .map(appendCartField('qty', qty))
+        .map(appendCartField('product_img_url', event.imageurl))[0];
+
+    return cartItem;
+  }
+};
 
 /**  @param {string} EventId */
 type EventId = string
@@ -342,9 +377,10 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
         item,
   );
 
-const payWhatFunc = (cart: CartItem, num: number) => {
+const payWhatFunc = (cart: CartItem, num: number, qty: number) => {
   cart.payWhatCan = true;
-  cart.payWhatPrice = num;
+  cart.payWhatPrice = num * qty;
+  cart.price = num;
   console.log(cart.payWhatCan);
 };
 
@@ -354,8 +390,8 @@ const payWhatFunc = (cart: CartItem, num: number) => {
  * @param state
  * @param action
  */
-const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, qty: number, concessions: boolean, payWhatPrice?: number }>> = (state, action) => {
-  const {id, qty, concessions, payWhatPrice} = action.payload;
+const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, tickettype: TicketType, qty: number, concessions: boolean, payWhatPrice?: number }>> = (state, action) => {
+  const {id, tickettype, qty, concessions, payWhatPrice} = action.payload;
   const tickets = state.tickets;
 
   if (!tickets.data.allIds.includes(id)) return state;
@@ -363,8 +399,6 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   const ticket = tickets.data.byId[id];
   const inCart = state.cart.find(byId(id));
   const validRange = bound(0, ticket.availableseats);
-
-  console.log(payWhatPrice);
 
   if (inCart) {
     return {
@@ -377,11 +411,12 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
     };
   } else {
     const event = state.events.find(byId(ticket.eventid));
-    const newCartItem = event ? createCartItem({ticket, event, qty}) : null;
+
+    const newCartItem = event ? createCartItem({ticket, tickettype, event, qty}) : null;
     if (event && payWhatPrice > 0) {
-      payWhatFunc(newCartItem, payWhatPrice);
+      payWhatFunc(newCartItem, payWhatPrice, qty);
     }
-    console.log(newCartItem);
+
     return newCartItem ?
             {
               ...state,
@@ -424,6 +459,7 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
 export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {data: {byId: {}, allIds: []}},
+  tickettype: {id: 0, name: '', price: '', concessions: ''},
   events: [],
   status: 'idle',
   discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},

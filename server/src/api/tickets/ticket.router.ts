@@ -1,7 +1,7 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
 import * as ticketUtils from './ticket.service';
-import {pool} from '../db'
+import {pool} from '../db';
 
 
 export const ticketRouter = Router();
@@ -63,7 +63,6 @@ ticketRouter.get('/', async (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 });
-
 
 /**
  * @swagger

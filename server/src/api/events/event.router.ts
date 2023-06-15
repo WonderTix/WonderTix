@@ -292,26 +292,30 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
 
 
     // Queries the database to get item prices
-    const costVect = [];
-    for (let i = 0; i < data.length; i++) {
-      try {
-        const priceQueryi = await pool.query(
-            'SELECT price FROM orderitems WHERE orderitemid = $1;',
-            [data[i].product_id],
-        );
-        if (priceQueryi.rows[0].price) {
-          console.log(priceQueryi);
-          console.log(priceQueryi.rows[0].price);
-          data[i].price = (Number((priceQueryi.rows[0].price).replace(/[^0-9\.-]+/g, '')));
-        } else {
-          throw new Error('No price in database');
-        }
-      } catch (err: any) {
-        console.error(err.message);
-        throw new Error('Cost Calculation Error');
-      };
-    };
-    console.log(data);
+    // I commented out this 'for' loop as it goes through the tickets in the cart and checks the orderitem based on the produce_id to get the price
+    // However, the tickets already have a price stored that is based on the type of ticket, therefore this loop is unnecessary.
+    // const costVect = [];
+    // for (let i = 0; i < data.length; i++) {
+    //   try {
+    //     const priceQueryi = await pool.query(
+    //         'SELECT price FROM orderitems WHERE orderitemid = $1;',
+    //         [data[i].product_id],
+    //     );
+    //     console.log('data:', data[i]);
+    //     console.log('1', priceQueryi);
+    //     if (priceQueryi.rows[0].price) {
+    //       console.log('1', priceQueryi);
+    //       console.log('2',priceQueryi.rows[0].price);
+    //       data[i].price = (Number((priceQueryi.rows[0].price).replace(/[^0-9\.-]+/g, '')));
+    //     } else {
+    //       throw new Error('No price in database');
+    //     }
+    //   } catch (err: any) {
+    //     console.error(err.message);
+    //     throw new Error('Cost Calculation Error');
+    //   };
+    // };
+    // console.log(data);
 
 
     const stripeCheckoutData: JsonObject = {

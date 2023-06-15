@@ -20,7 +20,6 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import {TicketType} from '../ticketingmanager/Events/EventForm';
 import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 
 /**
@@ -53,6 +52,13 @@ interface TicketPickerState {
     prompt: 'selectDate' | 'selectTime' | 'showSelection',
 }
 
+export interface TicketType {
+  id: number,
+  name: string,
+  price: string,
+  concessions: string,
+}
+
 /**
 * Initial state
 * displayedShowings: [],
@@ -73,8 +79,8 @@ const initialState: TicketPickerState = {
   selectedTicketType: {
     id: 0,
     name: '',
-    price: 0,
-    concessions: 0,
+    price: '',
+    concessions: '',
   },
   showCalendar: true,
   showTimes: false,
@@ -143,7 +149,7 @@ const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPicke
       return {...state, payWhatPrice: action.payload};
     }
     case 'change_ticket_type': {
-      return {...state, selectedTicketType: action.payload};
+      return {...state, selectedTicketType: action.payload.selectedTicketType};
     }
     default:
       throw new Error('Received undefined action type');
@@ -180,7 +186,7 @@ const TicketPicker = (props: TicketPickerProps) => {
   }, dispatch] = useReducer(TicketPickerReducer, initialState);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes')
+    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/AllTypes')
         .then((res) => {
           if (!res.ok) {
             throw new Error('Failed to retrieve ticket types');
@@ -232,19 +238,12 @@ const TicketPicker = (props: TicketPickerProps) => {
 
     // send ticket info to parent to display
     props.onSubmit(ticketInfo);
-
     if (selectedTicket && qty) {
-      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, qty, concessions, payWhatPrice}));
+      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, tickettype: selectedTicketType, qty, concessions, payWhatPrice}));
       appDispatch(openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`));
       dispatch(resetWidget());
     }
   };
-
-  const numAvail = selectedTicket ?
-        cartTicketCount[selectedTicket.event_instance_id] ?
-            selectedTicket.availableseats - cartTicketCount[selectedTicket.event_instance_id] :
-            selectedTicket.availableseats :
-        0;
 
   const promptMarkup = {
     selectDate: <div className='text-zinc-300 font-semibold text-xl '>Select date below ({tickets.length} showings)</div>,
@@ -263,8 +262,60 @@ const TicketPicker = (props: TicketPickerProps) => {
     dispatch(changePayWhat(tempPay));
   };
 
-  console.log(numAvail);
+  const [filteredTicketTypes, setFilteredTicketTypes] = useState([]);
+
+  const getDefaultType = ticketTypesState.ticketTypes.filter((t) => {
+    if (!selectedTicket) {
+      return;
+    }
+
+    return t.name === ticketTypesState.ticketTypes[1].name && selectedTicket.availableseats > 0;
+  });
+
   console.log(selectedTicket);
+
+  useEffect(() => {
+    if (selectedTicket) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/restrictions/${selectedTicket.event_instance_id}`);
+          const data = await response.json();
+          const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter((t) =>
+            data.data.some((row) => row.tickettypeid_fk === t.id && row.ticketssold < row.ticketlimit),
+          );
+          setFilteredTicketTypes(finalFilteredTicketTypes);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [selectedTicket]);
+
+  const [numAvail, setnumAvail] = useState(Number);
+  useEffect(() => {
+    if (selectedTicket) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/restrictions/${selectedTicket.event_instance_id}`);
+          const data = await response.json();
+          const matchingRow = data.data.find((row) => row.tickettypeid_fk === selectedTicketType.id);
+          if (matchingRow) {
+            const numAvail = matchingRow.ticketlimit;
+            setnumAvail(numAvail);
+          } else {
+            const numAvail = selectedTicket.availableseats;
+            setnumAvail(numAvail);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchData();
+    }
+  }, [selectedTicketType]);
+
   return (
     <>
       <Collapse in={showClearBtn}>
@@ -295,22 +346,37 @@ const TicketPicker = (props: TicketPickerProps) => {
           eventInstanceSelected={(t) => dispatch(timeSelected(t))}
         />
       </Collapse>
-
       <div className='flex flex-col gap-2 mt-7'>
+        {ticketTypes.map((t) => (
+          <p key={t.id}>
+            hello {t.name}
+          </p>
+        ))}
         <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
         <select
           // labelId="ticket-type-select-label"
           value={selectedTicketType.name}
           defaultValue={''}
-          disabled={selectedTicket===undefined || numAvail < 1}
+          disabled={selectedTicket===undefined}
           onChange={(e) => dispatch(changeTicketType(ticketTypesState.ticketTypes.find((t) => t.name === e.target.value)))}
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
           <option value={''} disabled>select ticket type</option>
-          {ticketTypesState.ticketTypes.map((t) => <option className='text-white' key={t.id} value={t.name}>{t.name}: {t.price}</option>)}
+          {filteredTicketTypes.length > 0 ? (
+            filteredTicketTypes.map((t) => (
+              <option className="text-white" key={t.id} value={t.name}>
+                {t.name}: {t.price}
+              </option>
+            ))
+          ) : (
+             getDefaultType.map((t) => (
+               <option className="text-white" key={t.id} value={t.name}>
+                 {t.name}: {t.price}
+               </option>
+             ))
+          )}
         </select>
       </div>
-
       <div className='flex flex-col gap-2 mt-3'>
         <div className='text-center text-zinc-300' id="qty-select-label">
           {selectedTicket ?
@@ -327,7 +393,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
           <option value={0} disabled>select qty</option>
-          {range(numAvail, false).map((n) => <option className='text-white' key={n} value={n}>{n}</option>)}
+          {range(numAvail, false).map((n) => (numAvail > 20 && n > 20) ? null : <option className='text-white' key={n} value={n}>{n}</option>)}
         </select>
       </div>
       <div className='flex flex-row gap-2 mt-3 mb-7'>
@@ -338,7 +404,8 @@ const TicketPicker = (props: TicketPickerProps) => {
           onChange={() => dispatch({type: 'toggle_concession'})} name='concessions' />
         <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
       </div>
-      <div className={tickets[0].admission_type == 'Pay What You Can' ? 'show flex-col': 'hidden'}>
+
+      <div className={selectedTicketType && selectedTicketType && selectedTicketType.name === 'Pay What You Can' ? 'show flex-col': 'hidden'}>
         <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
           <div className='justify-center items-center text-white rounded-xl'>
             <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What You Can</h1>
