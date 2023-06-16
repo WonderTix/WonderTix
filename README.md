@@ -35,7 +35,7 @@ Future features include managing/creating email campaigns and ticket exchanges.
 7. The client will be available at https://localhost:3000 
    1. You will need to accept the self-signed certificate. In chrome click anywhere on the page and type `thisisunsafe`. This will allow you to continue to the site.
 8. The server will be available at https://localhost:8000
-9. The swagger docs will be available at https://localhost:8000/api/1/docs
+9. The swagger docs will be available at https://localhost:8000/api/docs
    1. To log in to swagger, login to the client and copy the value of the `access_token` from the request to `<AUTH0_URL>/oath/token`. Paste this value into the `Authorize` dialog in swagger.
 
 ## Connecting to the database
