@@ -1,22 +1,18 @@
-## Description
-
+### Description
+*Brief description of changes*
 
 ### Risks
+*Potential areas of concern that you would like looked at more closely*
 
-Briefly list things that were broken as a result of this PR.
+### Validation
+*How you verified that these changes work*
 
-## Validation
+### Issue
+*Link to corresponding issue*
 
-Describe tests that were used, along with instructions for testing.
-
-
-## Issue
-
-
-**System Specifications**:
-* Operating System:
+### Operating System
 - [ ] Windows 10
-- [ ] windows 11
+- [ ] Windows 11
 - [ ] MacOS (Intel)
 - [ ] MacOS (M Series)
 - [ ] Linux
