@@ -11,8 +11,4 @@
 *Link to corresponding issue*
 
 ### Operating System
-- [ ] Windows 10
-- [ ] Windows 11
-- [ ] MacOS (Intel)
-- [ ] MacOS (M Series)
-- [ ] Linux
+*If you're on Mac, please include whether you are on an Intel or M-series CPU*
