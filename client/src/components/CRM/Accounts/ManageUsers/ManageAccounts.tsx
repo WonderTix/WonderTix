@@ -9,28 +9,37 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {DataGrid, GridColumns, GridCellParams, GridCellEditCommitParams} from '@mui/x-data-grid';
 import {useEffect, useState} from 'react';
 import {useAppDispatch} from '../../../Ticketing/app/hooks';
 import {openSnackbar} from '../../../Ticketing/ticketingmanager/snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 
-
+/**
+ * Manage Users accounts, reset password, delete account and add new account
+ *
+ * @returns {ReactElement}
+ */
 export default function ManageAccounts() {
+/** @param {any} rows - Accounts table rows */
   const [rows, setRows] = useState([]);
+  /** @param {string} username - Username */
   const [username, setUsername] = useState('');
+  /** @param {string} password - password */
   const [password, setPassword] = useState('');
   const dispatch = useAppDispatch();
   const {getAccessTokenSilently} = useAuth0();
 
   const getAccounts = async () => {
     try {
+      /** @param {string} token - AccessToken */
       const token = await getAccessTokenSilently({
         audience: 'https://localhost:8000',
         scope: 'admin',
       });
-      const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
+      /** @param {Response} r - Get data from Accounts Table */
+      const r = await fetch(process.env.REACT_APP_API_1_URL + `/accounts`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -38,6 +47,7 @@ export default function ManageAccounts() {
         method: 'GET',
       });
       if (r.ok) {
+        /** @param {any} accounts - Accounts data */
         const accounts = await r.json();
         setRows(accounts.data);
       } else {
@@ -55,11 +65,13 @@ export default function ManageAccounts() {
 
   const deleteUser = (userid: number) => async () => {
     try {
+      /** @param {string} token - AccessToken */
       const token = await getAccessTokenSilently({
         audience: 'https://localhost:8000',
         scope: 'admin',
       });
-      const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts/${userid}`, {
+      /** @param {Response} r - Delete data from Accounts Table */
+      const r = await fetch(process.env.REACT_APP_API_1_URL + `/accounts/${userid}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -74,10 +86,10 @@ export default function ManageAccounts() {
       console.log(error.message);
     }
   };
-
   const submitNewUser = async (e: any) => {
     e.preventDefault();
-    const r = await fetch(process.env.REACT_APP_ROOT_URL + `/api/accounts`, {
+    /** @param {Response} r - Post data to Accounts Table */
+    const r = await fetch(process.env.REACT_APP_API_1_URL + `/accounts`, {
       body: JSON.stringify({username, password}),
       credentials: 'include',
       method: 'POST',
@@ -97,12 +109,13 @@ export default function ManageAccounts() {
     }
   };
 
-  const editUser = async (userid: number, user: {}) => {
+  const editUser = async (userid: number, user: Record<string, unknown>) => {
+    /** @param {string} token - AccessToken */
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    await fetch(process.env.REACT_APP_ROOT_URL + '/api/changeUser', {
+    await fetch(process.env.REACT_APP_API_1_URL + '/changeUser', {
       body: JSON.stringify({id: userid, ...user}),
       credentials: 'include',
       method: 'post',
@@ -161,13 +174,15 @@ export default function ManageAccounts() {
           </div>
           <div className=' bg-white shadow-xl p-4 rounded-xl'>
             <DataGrid
+              getRowId={(data) => data.userid}
+              rowsPerPageOptions={[10]}
               columns={columns}
               rows={rows}
               disableSelectionOnClick
               onCellEditCommit={editCommit}
               autoHeight
               style={{width: '100%'}}
-              pageSize={10} />
+              pageSize={10}/>
           </div>
           <div className='mt-7 ml-2 text-xl font-bold mb-2 text-zinc-700 '>
             Create New Account
@@ -187,5 +202,5 @@ export default function ManageAccounts() {
 
     </div>
   );
-};
+}
 

@@ -3,14 +3,18 @@
 // import React from 'react';
 // import Login from './Login';
 import {useNavigate} from 'react-router-dom';
-
+/**
+ * CRM Dashboard
+ *
+ * @returns {React.ReactElement}
+ */
 const Dashboard = () => {
   const navigate = useNavigate();
   return (
     <div className='w-full h-screen   overflow-x-hidden absolute    '>
       <div className='md:ml-[22rem] md:mt-40  sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]   '>
 
-        <h1 className='font-bold text-5xl mb-14   pb-8 w-[60rem] ' >Dashboard</h1>
+        <h1 className='font-bold text-5xl mb-14   pb-8 w-[60rem] ' >Admin Dashboard</h1>
 
         <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-5 '>
           <a onClick={() => navigate('/admin/accounts')} className="hover:scale-105 md:h-80 md:w- transition duration-300 ease-in-out border-none  bg-gradient-to-r from-sky-500 to-indigo-500 rounded-3xl  shadow-xl  ">

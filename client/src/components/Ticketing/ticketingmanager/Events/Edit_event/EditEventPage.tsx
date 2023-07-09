@@ -7,58 +7,88 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import React, {useState, useEffect} from 'react';
-import EventForm, {NewEventData} from '../EventForm';
+import EventForm from '../EventForm';
 import {useParams} from 'react-router-dom';
 import {useAppDispatch} from '../../../app/hooks';
 import {openSnackbar} from '../../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
+import {Showing, WtixEvent} from '../../../../../interfaces/showing.interface';
 
+/**
+ * Maps edit data to the event props
+ *
+ * @param {WtixEvent} initValues
+ */
 interface mapDataToEditEventProps {
-  initValues: NewEventData;
+  initValues: WtixEvent;
 }
 
+/**
+ * Self explanatory
+ *
+ * @module
+ * @param {mapDataToEditEventProps} initValues
+ * @param params - useParams()
+ * @param nav - useNavigate()
+ * @param dispatch - useAppDispatch()
+ * @param {number} tickettypes, setTicketTypes - useState([])
+ * @param getAccessTokenSilently - useAuth0()
+ * @returns {ReactElement}
+ */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
+  if (initValues.eventid == null) {
+    console.log('initValues: ' + JSON.stringify(initValues));
+    throw new TypeError('eventid must be set');
+  } else {
+    console.log('event id: ' + initValues.eventid);
+  }
+  // console.log("fetched: " + JSON.stringify(initValues));
+
   const params = useParams();
   const nav = useNavigate();
   const dispatch = useAppDispatch();
-  const [ticketTypes, setTicketTypes] = useState([]);
+  const [tickettypes, setTicketTypes] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
   useEffect(() => {
     fetchTicketTypes();
   }, []);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + '/api/tickets/types');
+    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes');
     setTicketTypes(await res.json());
   };
 
-  const onSubmit = async (updatedData: NewEventData) => {
-    const dataToSave = {
-      id: params.eventid,
-      eventname: updatedData.eventName,
-      eventdescription: updatedData.eventDesc,
-      active: updatedData.isPublished,
-      image_url: updatedData.imageUrl,
-      seasonid: updatedData.seasonID,
-    };
+  useEffect(() => {
+    console.log(initValues);
+  }, []);
+
+  const onSubmit = async (updatedData: WtixEvent) => {
+    console.log('onSubmit called for edit event');
+    console.log(updatedData);
+    const showings = updatedData.showings.map((show) => show.eventinstanceid);
+    // updatedData.showings = showings;
+    // console.log("sending data: ", updatedData.showings);
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/`, {
+
+    // Updates the event data (everything before showings)
+    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(dataToSave),
+      body: JSON.stringify(updatedData),
     });
+    console.log(params);
 
-    await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/instances/${params.eventid}`, {
+    await fetch(process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -72,11 +102,11 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       const results = await res.json();
       console.log(results);
       // dispatch(fetchTicketingData());
-      dispatch(openSnackbar(`Saved edit to ${initValues.eventName ?? 'event'}`));
+      dispatch(openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`));
     } else {
       dispatch(openSnackbar('Save failed'));
     }
-    nav('/ticketing/manageevent');
+    nav('/ticketing/showings');
   };
 
   return (
@@ -85,10 +115,10 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
      sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
          bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 ' >
-          Edit {initValues.eventName ?? 'Your Event'}
+          Edit {initValues.eventname ?? 'Your Event'}
         </h1>
         <EventForm
-          ticketTypes={ticketTypes}
+          tickettypes={tickettypes}
           onSubmit={onSubmit}
           initialValues={initValues}
         />

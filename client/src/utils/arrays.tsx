@@ -16,7 +16,7 @@ export const contactHeaders = [
   { field: "custname", headerName: "Name", minWidth: 200 },
   { field: "email", headerName: "Email", minWidth: 250 },
   { field: "phone", headerName: "Phone", minWidth: 150 },
-  { field: "custaddress", headerName: "Address", minWidth: 300 },
+  { field: "address", headerName: "Address", minWidth: 300 },
   { field: "newsletter", headerName: "Newsletter", minWidth: 50 },
   { field: "donor badge", headerName: "Donor", minWidth: 50 },
   { field: "seatingaccom", headerName: "Seating Accomodation", minWidth: 200 },
@@ -42,7 +42,7 @@ export const contactFiltersTextField = [
   { label: "Name", id: "custname" },
   { label: "Email", id: "email" },
   { label: "Phone", id: "phone" },
-  { label: "Address", id: "custaddress" },
+  { label: "Address", id: "address" },
 ];
 
 export const contactFiltersSwitch = [
@@ -73,32 +73,38 @@ export const anchors = [
   // { title: "Tasks", link: "/tasks" },
 ];
 
+// These fields match https://localhost:8000/api/accounts
 export const accountHeaders = [
-  {field: 'id', headerName: 'ID', flex: 1},
+  {field: 'userid', headerName: 'ID', flex: 1},
   {field: 'username', headerName: 'Username', flex: 10},
   {field: 'is_superadmin', headerName: 'Admin', flex: 1},
 ];
+
+// These fields matchhttps://localhost:8000/api/contacts
 export const contactHeaders = [
-  {field: 'id', headerName: 'ID', minWidth: 50},
-  {field: 'custname', headerName: 'Name', minWidth: 200},
+  {field: 'contactid', headerName: 'ID', minWidth: 50},
+  {field: 'lastname', headerName: 'Last Name', minWidth: 200},
+  {field: 'firstname', headerName: 'First Name', minWidth: 200},
   {field: 'email', headerName: 'Email', minWidth: 250},
   {field: 'phone', headerName: 'Phone', minWidth: 150},
-  {field: 'custaddress', headerName: 'Address', minWidth: 300},
+  {field: 'address', headerName: 'Address', minWidth: 300},
   {field: 'newsletter', headerName: 'Newsletter', minWidth: 50},
-  {field: 'donor badge', headerName: 'Donor', minWidth: 50},
+  {field: 'donorbadge', headerName: 'Donor', minWidth: 50},
   {field: 'seatingaccom', headerName: 'Seating Accomodation', minWidth: 200},
   {field: 'vip', headerName: 'VIP', minWidth: 50},
-  {field: 'volunteer list', headerName: 'Volunteer List', minWidth: 150},
+  {field: 'volunteerlist', headerName: 'Volunteer List', minWidth: 150},
 ];
+
+// These fields match https://localhost:8000/api/donations
 export const donationHeaders = [
-  {field: 'id', headerName: 'ID'},
-  {field: 'donorid', headerName: 'Donor ID', minWidth: 150},
+  {field: 'donationid', headerName: 'ID'},
+  {field: 'contactid_fk', headerName: 'Contact ID', minWidth: 150},
   {field: 'isanonymous', headerName: 'Anonymous', minWidth: 150},
   {field: 'amount', headerName: 'Amount', minWidth: 150},
-  {field: 'dononame', headerName: 'Name', minWidth: 150},
+  {field: 'donorname', headerName: 'Name', minWidth: 150},
   {field: 'frequency', headerName: 'Frequency', minWidth: 150},
   {field: 'comments', headerName: 'Comments', minWidth: 200},
-  {field: 'donodate', headerName: 'Date', minWidth: 200},
+  {field: 'donationdate', headerName: 'Date', minWidth: 200},
 ];
 
 export const accountFiltersTextField = [{label: 'Username', id: 'username'}];
@@ -109,7 +115,7 @@ export const contactFiltersTextField = [
   {label: 'Name', id: 'custname'},
   {label: 'Email', id: 'email'},
   {label: 'Phone', id: 'phone'},
-  {label: 'Address', id: 'custaddress'},
+  {label: 'Address', id: 'address'},
 ];
 
 export const contactFiltersSwitch = [
@@ -144,11 +150,12 @@ type time = {hours: number, minutes: number, ampm?: 'AM'|'PM'}
 
 /**
  * Checks if days are equal
+ *
  * @param {Date} a date1 to compare
  * @param {Date} b date2 to compare
- * @return {boolean}
+ * @returns {boolean}
  */
-export function isSameDay(a: Date, b: Date): Boolean {
+export function isSameDay(a: Date, b: Date): boolean {
   const sameDay = a.getDate() == b.getDate();
   const sameMonth = a.getMonth() == b.getMonth();
   const sameYear = a.getFullYear() == b.getFullYear();

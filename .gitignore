@@ -1,12 +1,4 @@
-*/node_modules
-.env
-
-*/build
-
-server/src/prisma/generated
-
 .idea
 .vscode
 
-*.pem
-/
+*.env

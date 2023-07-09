@@ -3,7 +3,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 /**
- * @return {React.ReactElement}
+ * filter tasks componenet
+ *
+ * @returns {React.ReactElement}
  */
 const OutlinedCard = (): React.ReactElement => {
   const [toDate, setToDate] = React.useState(null);
@@ -13,7 +15,7 @@ const OutlinedCard = (): React.ReactElement => {
 
   /**
    * @param {any} props Properties to be passed to Item
-   * @return {React.ReactElement} HTMLElement for Item
+   * @returns {React.ReactElement} HTMLElement for Item
    */
   const Item = (props: any): React.ReactElement => {
     const {sx, ...other} = props;

@@ -7,11 +7,27 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 // import {input type='text', Checkboxes} from 'mui-rff';
 import {Form} from 'react-final-form';
 import React, {ReactElement, useState} from 'react';
 
+/**
+ * Info for checkout form
+ *
+ * @module
+ * @param {boolean} optIn
+ * @param {string} firstName
+ * @param {string} lastName
+ * @param {string} streetAddress
+ * @param {string} postalCode
+ * @param {stirng} country
+ * @param {string} phone
+ * @param {string} email
+ * @param {string} visitSource
+ * @param {boolean} seatingAcc
+ * @param {string} comments
+ */
 export interface CheckoutFormInfo {
     optIn: boolean,
     firstName: string,
@@ -26,6 +42,14 @@ export interface CheckoutFormInfo {
     comments?: string
 }
 
+/**
+ * Used to complete order
+ *
+ * @param {Function} onSubmit
+ * @param {Function} onBack
+ * @param {boolean} disabled
+ * @param {boolean} donationForm
+ */
 type CompleteOrderFormProps = {
     onSubmit: (formData: CheckoutFormInfo) => any,
     onBack: () => any,
@@ -46,9 +70,10 @@ function validateEmail(email: string) {
 */
 /**
  * Displays the complete order form
- * @param {function} onSubmit onSubmit callback function
- * @param {function} onBack onBack callback function
- * @return {ReactElement}
+ *
+ * @param {Function} onSubmit onSubmit callback function
+ * @param {Function} onBack onBack callback function
+ * @returns {ReactElement}
  */
 export default function CompleteOrderForm(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -90,7 +115,7 @@ export default function CompleteOrderForm(
           onSubmit={handleSubmit}
           initialValues={{'opt-in': false, 'seating-accommodation': false}}
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          render={({handleSubmit, values, valid}) => (
+          render={({handleSubmit}) => (
             <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-9 rounded-xl flex flex-col  justify-between'>
               <div className='flex flex-col w-full  '>
                 <div className='grid grid-cols-2 gap-5'>
@@ -172,7 +197,7 @@ export default function CompleteOrderForm(
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     <input type='checkbox' onChange={(): void =>
                       setOptIn(!optIn)} name="opt-in" />
-                    <div>I would like to receive email info from portland playhouse</div>
+                    <div>I would like to receive email info from Portland Playhouse</div>
                   </div>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     {!donationForm && <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
@@ -187,9 +212,8 @@ export default function CompleteOrderForm(
               </div>
 
               <div className='w-full flex flex-row justify-between'>
-                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40' type="submit">Next</button>
                 <button className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600' onClick={onBack}>Back</button>
-
+                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40' type="submit">Next</button>
               </div>
 
             </form>

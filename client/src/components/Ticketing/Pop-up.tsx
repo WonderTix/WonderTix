@@ -1,7 +1,10 @@
+/* eslint-disable max-len */
 import React, {CSSProperties} from 'react';
 import popupProps from '../../interfaces/popup.interface';
 
-
+/**
+ * @property {object} popUpContainer - A property container for pop up
+ */
 const popUpContainer: CSSProperties = {
   'position': 'fixed',
   'background': '#00000050',
@@ -11,6 +14,9 @@ const popUpContainer: CSSProperties = {
   'left': '0',
 };
 
+/**
+ * @property {object} box - A property container for the box used for pop up
+ */
 const box: CSSProperties ={
   'position': 'relative',
   'width': '50%',
@@ -23,7 +29,16 @@ const box: CSSProperties ={
   'marginLeft': '30%',
 };
 
-const PopUp = ({title, message, handleClose}: popupProps) => {
+/**
+ * Popup makes use of both popUpContainer and box for styles
+ *
+ * @module
+ * @param {string} title - Title of popup
+ * @param {string} message - Message of popup
+ * @returns {ReactElement} PopUp - Function named PopUp that can be interacted
+ * with
+ */
+const PopUp = ({title, message, handleClose, handleProceed, success}: popupProps) => {
   return (
     <div style={popUpContainer}>
       <div id="popup-modal"
@@ -55,12 +70,10 @@ const PopUp = ({title, message, handleClose}: popupProps) => {
                 {message}
               </p>
               <button data-modal-toggle="popup-modal"
-                onClick={handleClose}
-                type="button" className="text-white bg-red-600
-                hover:bg-red-800 focus:ring-4 focus:outline-none
-                focus:ring-red-300 dark:focus:ring-red-800 font-medium
-                 rounded-lg text-sm inline-flex items-center
-                  px-5 py-2.5 text-center mr-2">
+                onClick={handleProceed}
+                type="button" className={`text-white ${success ?
+                  'bg-green-600 hover:bg-green-800 focus:ring-green-300 dark:focus:ring-green-800': 'bg-red-600 hover:bg-red-800 focus:ring-red-300 dark:focus:ring-red-800'}
+                   focus:ring-4 focus:outline-none font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2`}>
                     Proceed
               </button>
             </div>

@@ -6,6 +6,9 @@ import eventsReducer from '../ticketingmanager/Events/events_pages/eventsSlice';
 import snackbarReducer from '../ticketingmanager/snackbarSlice';
 import ticketingReducer from '../ticketingmanager/ticketing/ticketingSlice';
 
+/**
+ * Handles store configuration
+ */
 const store = configureStore(
     {
       reducer: {

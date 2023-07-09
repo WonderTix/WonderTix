@@ -4,7 +4,16 @@ import {
   contactFiltersSwitch,
 } from '../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * Contact panal in reporting
+ *
+ * @param root0
+ * @param root0.fetchData
+ * @param root0.setOpen
+ * @param root0.savedName
+ * @param root0.setSavedName
+ * @returns {ReactElement}
+ */
 const ContactsPanel = ({
   fetchData,
   setOpen,
@@ -43,7 +52,7 @@ const ContactsPanel = ({
         query_attr: `contacts/?${parseUrl()}`,
       };
 
-      fetch(process.env.REACT_APP_ROOT_URL + `/api/saved_reports`, {
+      fetch(process.env.REACT_APP_API_1_URL + `/saved_reports`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -72,6 +81,7 @@ const ContactsPanel = ({
           `${filter[0]}=${filter[1]}`,
       );
     });
+    console.log(filters.join('&'));
 
     return filters.join('&');
   };
@@ -89,7 +99,7 @@ const ContactsPanel = ({
       case 'phone':
         setPhone(e.target.value);
         break;
-      case 'email':
+      case 'address':
         setAddress(e.target.value);
         break;
       case 'vip':
@@ -119,7 +129,7 @@ const ContactsPanel = ({
         {contactFiltersSwitch.map((filter) => {
           return (
             // eslint-disable-next-line react/jsx-key
-            <div className="form-control">
+            <div className="form-control" key={filter.id}>
               <label className="label cursor-pointer">
                 <input key={filter.id} onChange={handleChange}
                   type="checkbox" className="checkbox"/>

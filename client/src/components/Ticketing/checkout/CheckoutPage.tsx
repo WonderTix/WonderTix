@@ -8,9 +8,9 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import YourOrder from '../cart/YourOrder';
-import {selectCartContents} from '../ticketingmanager/ticketing/ticketingSlice';
+import {selectCartContents, selectDiscount} from '../ticketingmanager/ticketing/ticketingSlice';
 import {useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
@@ -19,35 +19,36 @@ import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 
-// FYI this is ok to stay here; it's the public key so other people can't do anything with it anyway.
-// Replace this with your stripe public key
-const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
+const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
+const stripePromise = loadStripe(pk);
 
 /**
  * Displays Checkout Page
- * @return {ReactElement}
+ *
+ * @returns {ReactElement}
  */
 export default function CheckoutPage(): ReactElement {
   const navigate = useNavigate();
-
   const cartItems = useAppSelector(selectCartContents);
+  const discount = useAppSelector(selectDiscount);
   const donation = useAppSelector(selectDonation);
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>('donation');
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/checkout', {
+    const response = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkout`, {
       credentials: 'include',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({cartItems, formData, donation}),
+      body: JSON.stringify({cartItems, formData, donation, discount}),
     });
     const session = await response.json();
-    const result = await stripe.redirectToCheckout({
-      sessionId: session.id,
-    });
+    console.log(session.id);
+    console.log(pk);
+    const paymentIntent = session.payment_intent;
+    const result = await(stripe.redirectToCheckout({sessionId: session.id}));
     if (result.error) {
       console.log(result.error.message);
     }

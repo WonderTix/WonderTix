@@ -7,7 +7,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 // import DataGrid from 'react-data-grid';
 import {DataGrid, GridCellParams} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
@@ -18,6 +18,13 @@ import {useAuth0} from '@auth0/auth0-react';
 
 const renderCheckbox = ((params: GridCellParams) => <Checkbox checked={params.value as boolean} />);
 
+/**
+ * Used to check the guests in
+ *
+ * @param {boolean} isCheckedIn
+ * @param {string} ticketID
+ * @returns
+ */
 const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   const {getAccessTokenSilently} = useAuth0();
   try {
@@ -25,7 +32,7 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const res = await fetch(process.env.REACT_APP_ROOT_URL + `/api/events/checkin`, {
+    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -40,6 +47,12 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   }
 };
 
+/**
+ * renders in the check in for guests
+ *
+ * @param {GridCellParams} params
+ * @returns edits the checkInGuest value
+ */
 const renderCheckin = ((params: GridCellParams) =>
   <Checkbox
     color='primary'
@@ -47,6 +60,9 @@ const renderCheckin = ((params: GridCellParams) =>
     onChange={(e) => checkInGuest(e.target.checked, params.getValue(params.id, 'ticketno') as string)}
   />);
 
+/**
+ * columns uses name, vip, donorbadge, accomodations, num_tickets, arrived and renders
+ */
 const columns = [
   {field: 'name', headerName: 'Name', width: 200},
   {field: 'vip', headerName: 'VIP', width: 100, renderCell: renderCheckbox},
@@ -56,7 +72,11 @@ const columns = [
   {field: 'arrived', headerName: 'Arrived', width: 130, renderCell: renderCheckin},
 ];
 
-
+/**
+ * Doorlist gets data about the event, time of the event
+ *
+ * @returns {ReactElement} DoorList also has a datagrid
+ */
 const DoorList = () => {
   const {getAccessTokenSilently} = useAuth0();
   const [doorList, setDoorList] = useState([]);
@@ -68,12 +88,12 @@ const DoorList = () => {
 
   const getEvents = async () => {
     try {
-      const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/list/active');
+      const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/active');
       const jsonRes = await response.json();
       const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
         jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
-        jsonData[key].starttime = militaryToCivilian(jsonData[key].starttime);
+        jsonData[key].eventtime = militaryToCivilian(jsonData[key].eventtime);
       });
       setEventList(jsonData);
     } catch (error) {
@@ -94,7 +114,7 @@ const DoorList = () => {
       });
 
       const getuser = event.target.value;
-      const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/doorlist?eventinstanceid=${getuser}`, {
+      const response = await fetch(process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${getuser}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -106,7 +126,7 @@ const DoorList = () => {
       setDoorList(jsonData.data);
       setEventName(jsonData.data[0].eventname);
       setDate(dayMonthDate(jsonData.data[0].eventdate));
-      setTime(militaryToCivilian(jsonData.data[0].starttime));
+      setTime(militaryToCivilian(jsonData.data[0].eventtime));
     } catch (error) {
       console.error(error.message);
     }
@@ -129,7 +149,7 @@ const DoorList = () => {
           {eventList.map((eventss) => (
             <>
               <option value={eventss.id} className="px-6 py-3">
-                {eventss.eventdate} at {eventss.starttime}
+                {eventss.eventdate} at {eventss.eventtime}
               </option>
             </>
           ),

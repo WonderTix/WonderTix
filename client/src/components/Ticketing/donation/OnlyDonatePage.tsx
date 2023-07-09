@@ -7,7 +7,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {useAppSelector} from '../app/hooks';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import React, {ReactElement, useState} from 'react';
@@ -17,7 +17,8 @@ import {loadStripe} from '@stripe/stripe-js';
 
 /**
  * Renders the Donations page without checkout
- * @return {ReactElement}
+ *
+ * @returns {ReactElement}
  */
 export default function OnlyDonationPage(): ReactElement {
   const donation = useAppSelector(selectDonation);
@@ -30,7 +31,7 @@ export default function OnlyDonationPage(): ReactElement {
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch(process.env.REACT_APP_ROOT_URL + '/api/events/checkout', {
+    const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ export default function OnlyDonationPage(): ReactElement {
       <div className='flex flex-col w-full items-start'>
         <div className='text-sm text-zinc-600 ml-2'>Donation Amount $</div>
         <input
-          placeholder="donation amount"
+          placeholder="Donation Amount"
           onChange={(e) => setAmount(+e.target.value)}
           type="number"
           className='w-full mb-7 bg-zinc-200 text-black p-5 rounded-xl'

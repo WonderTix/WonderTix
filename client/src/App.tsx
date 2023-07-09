@@ -8,6 +8,7 @@ import ProtectedRoute from './components/Authentication/protected-route';
 import Dashmain from './components/CRM/Dashmain';
 import AccountsMain from './components/CRM/Accounts/AccountsMain';
 import ContactMain from './components/CRM/Contacts/ContactMain';
+import {ContactOneResult} from './components/CRM/Contacts/ContactOneResult';
 import ReportingMain from './components/CRM/Reporting/ReportingMain';
 import TasksEditMain from './components/CRM/Tasks/TasksEditMain';
 import TasksMain from './components/CRM/Tasks/TasksMain';
@@ -27,10 +28,12 @@ import Addeventmain from './components/Ticketing/ticketingmanager/Events/Add_eve
 import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
 import Deleteeventmain from './components/Ticketing/ticketingmanager/Events/Delete_event/Deleteventmain';
 import Editeventmain from './components/Ticketing/ticketingmanager/Events/Edit_event/Editeventmain';
-import Manageventmain from './components/Ticketing/ticketingmanager/Events/Manageventsmain';
 import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsletter/NewsletterCreatemain';
 import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showingsmain';
 import showingmain from './components/Ticketing/ticketingmanager/showings/showing/showingmain';
+import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
+import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
+
 const App = () => {
   return (
     <>
@@ -58,8 +61,9 @@ const App = () => {
           path="/admin/contacts"
           element={<ProtectedRoute component={ContactMain} />}
         >
-          <Route path=":id" element={<ProtectedRoute component={ContactMain} />} />
+          <Route path=":id" element={<ProtectedRoute component={ContactOneResult} />} />
         </Route>
+        <Route path="/admin/contacts/show/:contactid" element={<ProtectedRoute component={ContactOneResult} />} />
         <Route
           path="/admin/reporting"
           element={<ProtectedRoute component={ReportingMain} />}
@@ -78,11 +82,11 @@ const App = () => {
         <Route path="/ticketing/addevent" element={<ProtectedRoute component={Addeventmain} />} />
         <Route path="/ticketing/deleteevent" element={<ProtectedRoute component={Deleteeventmain} />} />
         <Route path="/ticketing/editevent/:eventid" element={<ProtectedRoute component={Editeventmain} />} />
-        <Route path="/ticketing/manageevent" element={<ProtectedRoute component={Manageventmain} />} />
         <Route path="/ticketing/addnewsletter" element={<ProtectedRoute component={NewsletterCreatemain} />} />
         <Route path="/ticketing/showings" element={<ProtectedRoute component={Showingsmain} />} />
         <Route path="/ticketing/showings/:eventid" element={<ProtectedRoute component={showingmain} />} />
-
+        <Route path="/ticketing/tickettypes" element={<ProtectedRoute component={Tickettypesmain} />} />
+        <Route path="/ticketing/ticketexchanges" element={<ProtectedRoute component={TicketExchangesmain} />} />
       </Routes>
     </>
   );

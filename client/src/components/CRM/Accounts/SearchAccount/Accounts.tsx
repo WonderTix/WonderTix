@@ -4,7 +4,11 @@ import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import AccountResults from './AccountResults';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * handle searching for user`s account
+ *
+ * @returns {ReactElement}
+ */
 const Accounts = (): React.ReactElement => {
   const params = useParams();
   const navigate = useNavigate();
@@ -25,7 +29,7 @@ const Accounts = (): React.ReactElement => {
         setAccount(params.id);
         await axios
             .get(
-                process.env.REACT_APP_ROOT_URL + `/api/accounts/search?username=${params.id}`, {
+                process.env.REACT_APP_API_1_URL + `/accounts/search?username=${params.id}`, {
                   headers: {
                     Authorization: `Bearer ${token}`,
                   },

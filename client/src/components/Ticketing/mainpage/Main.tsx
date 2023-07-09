@@ -6,6 +6,11 @@ import {useAuth0} from '@auth0/auth0-react';
 import bgImg from '../../../assets/pp_logo_white.png';
 import React from 'react';
 
+/**
+ * Page that loads everything after getting through auth0
+ *
+ * @returns {Navbar, Hero, Seasonaltickets, Footer, ReactElement}
+ */
 const Mainpage = () => {
   const {isLoading} = useAuth0();
 
@@ -38,7 +43,7 @@ const Mainpage = () => {
         </div>;
       </>
     );
-  };
+  }
 
   return (
     <div>

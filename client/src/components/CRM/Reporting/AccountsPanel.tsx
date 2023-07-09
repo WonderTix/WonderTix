@@ -5,7 +5,16 @@ import {
   accountFiltersSwitch,
 } from '../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
-
+/**
+ * Account panal in reporting
+ *
+ * @param root0
+ * @param root0.fetchData
+ * @param root0.setOpen
+ * @param root0.savedName
+ * @param root0.setSavedName
+ * @returns {ReactElement}
+ */
 const AccountsPanel = ({
   fetchData,
   setOpen,
@@ -41,7 +50,7 @@ const AccountsPanel = ({
       });
 
       const response = await fetch(
-          `${process.env.REACT_APP_ROOT_URL}/api/saved_reports`, {
+          `${process.env.REACT_APP_API_1_URL}/saved_reports`, {
             method: 'post',
             headers: {
               'Content-Type': 'application/json',
@@ -104,7 +113,7 @@ const AccountsPanel = ({
         {accountFiltersSwitch.map((filter) => {
           console.log(filter);
           return (
-            <div className="form-check">
+            <div className="form-check" key={filter.id}>
               <input key={filter.id} id={filter.id} onChange={handleChange}
                 type="checkbox" className="
                   form-check-input appearance-non h-4 w-4 border

@@ -24,6 +24,7 @@ const InputFieldForEvent =
               id={id} type='input' name={name}
               onSubmit={action} placeholder={placeholder}
               defaultValue={value} value={value}
+              maxLength={255}
             />
           </>
         );
@@ -36,6 +37,7 @@ const InputFieldForEvent =
               id={id} type={type} name={name}
               onChange={action} placeholder={placeholder}
               defaultValue={value}
+              maxLength={255}
             />
           </>
         );

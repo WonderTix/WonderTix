@@ -7,13 +7,22 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import React, {useState} from 'react';
 import {Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
 import format from 'date-fns/format';
 
-interface EventInstanceSelectProps {eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
+/**
+ * EventInstanceSelectProps holds tickets, showings and such
+ */
+interface EventInstanceSelectProps {check: string, eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
 
+/**
+ * This is the handler
+ *
+ * @param {EventInstanceSelectProps} props
+ * @returns the selection of date and others once clicked
+ */
 const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
   const [selectedId, setSelectedId] = useState(-1);
 
@@ -30,9 +39,9 @@ const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
 
   return (
     <select defaultValue={0} onChange={((ev: React.ChangeEvent<HTMLSelectElement>): void => (handleClick(parseFloat(ev.target.value))))} className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
-      <option value={0} disabled >select time</option>
+      <option disabled selected={props.check === 'selectTime'}>select time</option>
       {props.eventInstances.map((s) =>
-        <option key={s.event_instance_id} selected={s.event_instance_id===selectedId} value={s.event_instance_id} >
+        <option key={s.event_instance_id} value={s.event_instance_id} >
           {format(new Date(s.date), 'hh:mm a')}
           {console.log(s.date)}
         </option>,

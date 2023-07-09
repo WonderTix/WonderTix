@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import CartRow from './CartItem';
 import {toDollarAmount} from '../../../utils/arrays';
@@ -7,14 +7,39 @@ import {
   removeTicketFromCart,
   removeAllTicketsFromCart,
   selectCartContents,
+  selectDiscount,
+  fetchDiscountData,
+  removeDiscountFromCart,
+  DiscountItem,
 } from '../ticketingmanager/ticketing/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
 
 
-type Item = {price: number, qty: number}
+/**
+ * @param {Item} price: number, qty: number
+ * @param {Function} itemCost - item: Item, item.price * item.qty
+ * @param {Function} subtotalReducer - acc: number, item: Item, acc + itemCost(item)
+ * @param {Function} totalReducer - subtotal: number, discount: DiscountItem
+ */
+type Item = {price: number, qty: number, payWhatCan: boolean, payWhatPrice?: number}
 const itemCost = (item: Item) => item.price * item.qty;
-const subtotalReducer = (acc: number, item: Item) => acc + itemCost(item);
+const subtotalReducer = (acc: number, item: Item) => {
+  if (!item.payWhatCan) {
+    return acc + itemCost(item);
+  } else {
+    return acc + item.payWhatPrice;
+  }
+};
+const totalReducer = (subtotal: number, discount: DiscountItem) => {
+  const total = subtotal * (1-(discount.percent/100)) - discount.amount;
+  return (total < 0) ? 0 : total;
+};
 
+/**
+ * Cart handler on clicks, resets and complete orders
+ *
+ * @returns {ReactElement}
+ */
 const Cart = () => {
   const history = useNavigate();
   const navigate = useNavigate();
@@ -23,7 +48,7 @@ const Cart = () => {
   {
       single,
       all,
-  };
+  }
 
   const [show, setShow] = useState(false);
   const handleClick2 = () => setShow(!show);
@@ -34,6 +59,18 @@ const Cart = () => {
   const [targetItem, setTargetItem] = useState<number|null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
   const [removeContextMessage, setRemoveContextMessage] = useState('');
+  const [discountText, setDiscountText] = useState<string|null>(null);
+  const [validDiscount, setValidDiscount] = useState(false);
+  const [discountClicked, setDiscountClicked] = useState(false);
+  const discount = useAppSelector(selectDiscount);
+  const total = totalReducer(subtotal, discount);
+
+  useEffect(() => {
+    if (discount.code !== '') {
+      setValidDiscount(true);
+      setDiscountClicked(false);
+    } else setValidDiscount(false);
+  });
 
   const resetModal = () => {
     setTargetItem(null);
@@ -56,6 +93,31 @@ const Cart = () => {
     setRemoveContext(RemoveContext.all);
     setRemoveContextMessage('all items');
     handleClick2();
+  };
+
+  const printDiscountText = (disc: DiscountItem) => {
+    if (disc.code === '' ) return;
+
+    if (disc.amount === 0) {
+      return (disc.percent + '% discount');
+    } else {
+      return ('$' + disc.amount + ' discount');
+    }
+  };
+
+  /**
+   * Searches for (and applies if found) discount code based on user input
+   */
+  async function applyDiscount() {
+    await dispatch(fetchDiscountData(discountText));
+    setDiscountClicked(true);
+  }
+
+  const removeDiscount = () => {
+    setValidDiscount(false);
+    setDiscountClicked(false);
+    setDiscountText('');
+    dispatch(removeDiscountFromCart());
   };
 
   const displayModal = (id: number) => {
@@ -87,8 +149,7 @@ const Cart = () => {
             </svg>
             <div className='text-3xl font-bold ml-2 mt-2'>My Cart</div>
           </div>
-          <div className='flex flex-col md:flex-row sm:flex-col
-        sm:items-center w-full h-full'>
+          <div className='flex flex-col md:flex-row sm:flex-col sm:items-center w-full h-full'>
             <div className='w-full h-full md:mt-20 sm:mt-20 bg-zinc-300 p-9 flex flex-col gap-5 items-start rounded-xl'>
               {(items.length > 0) ?
                   items.map((data) => <CartRow key={data.product_id} item={data} removeHandler={displayModal} />) :
@@ -100,10 +161,43 @@ const Cart = () => {
               flex-col items-center rounded-xl justify-between'>
               <div className='flex flex-col items-center'>
                 <div className='text-zinc-100 text-xl font-semibold'>Subtotal</div>
-                <div className='text-white'>{toDollarAmount(subtotal)}</div>
+                <div className='text-amber-300 italic'>{printDiscountText(discount)}</div>
+                <div className='text-white'>{toDollarAmount(total)}</div>
               </div>
 
-              <div className='flex flex-col items-center gap-3'>
+
+              <div className='flex flex-col items-center gap-3 '>
+
+                <div className='flex flex-col items-center form-control disabled:opacity-50 '>
+                  {!validDiscount && discountClicked ? (
+                    <div className='text-amber-300 italic'>Invalid discount code</div>
+                  ) : ('')}
+                  <div className='input-group flex flex-row items-center w-full px-3 py-1 text-black rounded-xl bg-sky-500'>
+                    <input type="text" placeholder="Discount code..."
+                      className='input input-bordered rounded-md pl-2'
+                      value={(discountText) ? discountText : discount.code}
+                      onChange={(e) => {
+                        setDiscountText(e.target.value);
+                        setDiscountClicked(false);
+                      }}
+                      disabled={discount.code !== ''}
+                    />
+                    {!validDiscount ? (
+                      <button className='btn btn-square bg-sky-500 ml-1' onClick={applyDiscount}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                          stroke="white"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                      </button>
+                    ) : (
+                      <button className='btn btn-square bg-sky-500 ml-1' onClick={removeDiscount}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                          stroke="white"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                            d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
                 <button className='bg-red-600 flex flex-col items-center w-full px-3 py-3 text-white rounded-xl disabled:opacity-50 'disabled={items.length === 0} onClick={removeAllCartItems}>
                   <div className='flex flex-row items-center gap-1'>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -111,7 +205,6 @@ const Cart = () => {
                     </svg>
                     Empty Cart
                   </div>
-
                 </button>
                 <button className='bg-yellow-600 px-3 py-2 flex flex-col items-center w-full text-white rounded-xl disabled:opacity-50 ' disabled={items.length === 0} onClick={navigateToCompleteOrder}>
                   <div className='flex flex-row items-center gap-1'>

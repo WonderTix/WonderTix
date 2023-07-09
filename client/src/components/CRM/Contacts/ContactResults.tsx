@@ -7,7 +7,15 @@ import {useParams} from 'react-router-dom';
 // import { useInput } from './hooks/input-hook';
 import {useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
+import {useNavigate} from 'react-router-dom';
 
+/**
+ * Display the results of contacts search
+ *
+ * @param root0
+ * @param root0.data
+ * @returns {ReactElement}
+ */
 const ContactResults = ({
   data,
 }: {
@@ -15,13 +23,18 @@ const ContactResults = ({
 }): React.ReactElement => {
   if (!data) return <div>Empty</div>;
   const {getAccessTokenSilently} = useAuth0();
+  const navigate = useNavigate();
 
-  async function deleteEvent(showId: Number) {
+  /**
+   *
+   * @param showId
+   */
+  async function deleteEvent(showId: number) {
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
       scope: 'admin',
     });
-    const response = await fetch(process.env.REACT_APP_ROOT_URL + `/api/contacts/${showId}`,
+    const response = await fetch(process.env.REACT_APP_API_1_URL + `/contacts/${showId}`,
         {
           credentials: 'include',
           method: 'DELETE',
@@ -33,18 +46,18 @@ const ContactResults = ({
   }
   // What is this?
   const {
-    custname,
-    id,
+    firstname,
+    lastname,
+    contactid,
     email,
     phone,
-    custaddress,
+    address,
     newsletter,
     donorbadge,
     seatingaccom,
     vip,
     volunteerlist,
   } = data;
-
   return (
     <div className='flec flex-row w-full bg-white
      shadow-lg border border-zinc-300 rounded-lg'>
@@ -60,7 +73,7 @@ const ContactResults = ({
           Customer name:
           </div>
           <div>
-            {custname}
+            {firstname +' '+lastname}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -68,7 +81,7 @@ const ContactResults = ({
             ID:
           </div>
           <div>
-            {id}
+            {contactid}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -92,7 +105,7 @@ const ContactResults = ({
             Customer Address:
           </div>
           <div>
-            {custaddress}
+            {address}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -135,28 +148,28 @@ const ContactResults = ({
             {'' + volunteerlist}
           </div>
         </div>
-        <button disabled className='bg-blue-600 disabled:opacity-40
+        <button className='bg-blue-600 disabled:opacity-40
         mt-4 text-white px-5 py-2
         rounded-xl justify-end
-          ' >Edit info</button>
+          ' onClick={() => navigate(`/admin/contacts/show/${contactid}`)}>Show All Information</button>
         <button className='bg-red-600 hover:bg-red-700
         mt-4 text-white px-5 py-2
         rounded-xl justify-end
-          ' onClick={() => deleteEvent(id)} >Remove Customer</button>
+          ' onClick={() => deleteEvent(contactid)} >Remove Customer</button>
       </div>
     </div>
   );
 };
 
-
 export const contactForm = (data: any): React.ReactElement => {
-  const [Custname, setName] = useState(data.custname);
-  setName(data.custname);
+  const [Custname, setName] = useState(data.name);
+
+  setName(data.name);
   const [id, setID] = useState(0);
   setID(data.id);
   const [Email, setEmail] = useState(data.email);
   const [Phone, setPhone] = useState(data.phone);
-  const [Custaddress, setCustaddress] = useState(data.custaddress);
+  const [Address, setaddress] = useState(data.address);
   const [Newsletter, setNewsletter] = useState(data.newsletter);
   const [Donorbadge, setDonorbage] = useState(data.donorbage);
   const [Seatingaccom, setSeatingaccom] = useState(data.seatingaccom);
@@ -188,12 +201,12 @@ export const contactForm = (data: any): React.ReactElement => {
       custname: Custname,
       email: Email,
       phone: Phone,
-      custaddress: Custaddress,
+      address: Address,
       newsletter: Newsletter,
       donorbadge: Donorbadge,
       seatingaccom: Seatingaccom,
       vip: VIP,
-      volunteer_list: false,
+      volunteerlist: false,
     };
     const token = await getAccessTokenSilently({
       audience: 'https://localhost:8000',
@@ -206,9 +219,9 @@ export const contactForm = (data: any): React.ReactElement => {
     // and establish a link with the background data from here
     // However, in the actual url, param.id
     // is not the id but the user's name, which causes the update to fail
-    const url=process.env.REACT_APP_ROOT_URL + `/api/contacts/${data.id}`;
-    // const url=process.env.REACT_APP_ROOT_URL + '/api/contacts/'+params.id;
-    // const url = process.env.REACT_APP_ROOT_URL + '/api/contacts?filters[custname][$eq]=${params.id}';
+    const url=process.env.REACT_APP_API_1_URL + `/contacts/${data.id}`;
+    // const url=process.env.REACT_APP_API_1_URL + '/contacts/'+params.id;
+    // const url = process.env.REACT_APP_API_1_URL + '/contacts?filters[custname][$eq]=${params.id}';
     console.log(body);
 
     // This function contains the relevant methods of the operation
@@ -268,10 +281,10 @@ export const contactForm = (data: any): React.ReactElement => {
           <input
             name="Address"
             type="text"
-            value={Custaddress}
+            value={Address}
             className="input w-full max-w-xs border
             border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setCustaddress(e.target.value)} />
+            onChange={(e) => setaddress(e.target.value)} />
         </div>
         <br/>
 

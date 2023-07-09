@@ -2,7 +2,11 @@
 import Navigation from '../Navigation';
 import TaskForm from './TaskForm';
 
-
+/**
+ * Create new Task
+ *
+ * @returns {ReactElement}
+ */
 const CreateTask=() =>{
   return (
     <div className='flex flex-row  '>

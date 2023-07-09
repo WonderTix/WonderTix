@@ -4,7 +4,11 @@ import {ListComponent} from './eventcard';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 
-
+/**
+ * Events page
+ *
+ * @returns {ReactElement} state.event.ticketing also returned
+ */
 const Hero = () => {
   const allEvents = useAppSelector((state) => {
     console.log('State:', state.ticketing);

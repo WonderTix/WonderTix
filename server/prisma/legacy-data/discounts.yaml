@@ -1,0 +1,33 @@
+- discountid: 1
+  code: SAVE10
+  amount: 0
+  percent: 10
+  startdate:
+  enddate:
+  tickettypeid_fk:
+  createdby_fk:
+  usagelimit:
+  min_tickets:
+  min_events:
+- discountid: 2
+  code: FIVEOFF
+  amount: 5
+  percent: 0
+  startdate:
+  enddate:
+  tickettypeid_fk:
+  createdby_fk:
+  usagelimit:
+  min_tickets:
+  min_events:
+- discountid: 3
+  code: TENOFF
+  amount: 5
+  percent: 0
+  startdate:
+  enddate:
+  tickettypeid_fk:
+  createdby_fk:
+  usagelimit:
+  min_tickets:
+  min_events:

@@ -10,13 +10,19 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-**/
+ */
 import {useEffect} from 'react';
 import {titleCase} from '../../../../utils/arrays';
 import {fetchTicketingData} from '../ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../../app/hooks';
 import {useNavigate} from 'react-router-dom';
 
+/**
+ * Uses dispatch, navigate, allEvents, and getData
+ *
+ * @module
+ * @returns {ReactElements} and dispatch(fetchTicketingData())
+ */
 const InstancesPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -39,14 +45,14 @@ const InstancesPage = () => {
             to-indigo-500 mb-14' >Select Event</h1>
         <ul className='md:grid md:grid-cols-2 md:gap-8 sm:grid sm:grid-cols-1 sm:gap-4 mt-9'>
           {allEvents.map((eventss) => (
-            <>
+            <div key={eventss.id}>
               <button onClick={() => navigate(`/ticketing/showings/${eventss.id}`)}
-                className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out " style={{backgroundImage: `url(${eventss.image_url})`}}>
+                className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full" style={{backgroundImage: `url(${eventss.imageurl})`}}>
                 <div className=' backdrop-blur-sm  md:flex-row sm:flex-col
          sm:items-center w-full rounded-xl  bg-zinc-900/70 h-full'>
-                  <div className='flex flex-col items-center'>
+                  <div className='flex flex-col overflow-clip'>
                     <div className='w-full h-40'>
-                      <img className='object-cover h-full w-full rounded-t-xl' src={eventss.image_url}/>
+                      <img className='object-cover h-full w-full rounded-t-xl' src={eventss.imageurl}/>
                     </div>
                     <div className='text-white p-9 flex flex-col items-start '>
                       <div className='text-xl font-bold'>
@@ -62,7 +68,7 @@ const InstancesPage = () => {
                   </div>
                 </div>
               </button>
-            </>
+            </div>
           ),
           )}
         </ul>
@@ -72,4 +78,3 @@ const InstancesPage = () => {
 };
 
 export default InstancesPage;
-
