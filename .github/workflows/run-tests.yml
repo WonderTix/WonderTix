@@ -33,7 +33,6 @@ jobs:
   test-server:
     name: Run Tests on server
     runs-on: ubuntu-latest
-    environment: production
     permissions:
       pull-requests: write
       actions: read
