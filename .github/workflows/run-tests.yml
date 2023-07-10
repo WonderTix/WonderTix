@@ -19,7 +19,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: 18.7.0
           cache: 'npm'
           cache-dependency-path: ./client/package-lock.json
       - name: npm install
@@ -50,7 +50,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: 18.7.0
           cache: 'npm'
           cache-dependency-path: ./client/package-lock.json
       - name: npm install
