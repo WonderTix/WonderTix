@@ -15,6 +15,10 @@
   },
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "dependencies": {
     "@prisma/client": "^4.14.1",
     "@types/supertest": "^2.0.12",
