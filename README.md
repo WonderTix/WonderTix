@@ -54,3 +54,5 @@ This list will be updated as new issues arise. If you your issue is not listed, 
 The client and server are built with docker. In most cases you can restart the containers with `docker-compose restart`. 
 
 If that does not work, you can try `docker-compose down`, `docker-compose build --no-cache`, `docker compose up -d --build`.
+
+test actions
