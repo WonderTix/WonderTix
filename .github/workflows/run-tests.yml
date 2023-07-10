@@ -7,19 +7,12 @@ jobs:
   test-client:
     name: Run Tests on client
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      actions: read
-      checks: read
-      contents: read
-      deployments: read
-      issues: write
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.7.0
+          node-version: '18.x'
           cache: 'npm'
           cache-dependency-path: ./client/package-lock.json
       - name: npm install
@@ -43,7 +36,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.7.0
+          node-version: '18.x'
           cache: 'npm'
           cache-dependency-path: ./client/package-lock.json
       - name: npm install
