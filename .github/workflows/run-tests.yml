@@ -33,13 +33,11 @@ jobs:
   test-server:
     name: Run Tests on server
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      actions: read
-      checks: read
-      contents: read
-      deployments: read
-      issues: write
+    env:
+      AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+      AUTH0_URL: ${{ secrets.AUTH0_URL }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -53,10 +51,5 @@ jobs:
         working-directory: ./server
 
       - name: Check Unit Tests
-        env:
-          AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
-          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-          AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-          AUTH0_URL: ${{ secrets.AUTH0_URL }}
         run: npm test
         working-directory: ./server
