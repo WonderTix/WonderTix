@@ -2,6 +2,10 @@
   "name": "wondertix-crm",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "dependencies": {
     "@auth0/auth0-react": "^1.10.1",
     "@emotion/react": "^11.10.5",
