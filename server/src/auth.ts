@@ -12,6 +12,4 @@ export const checkJwt = auth({
   issuerBaseURL: process.env.AUTH0_URL,
 });
 
-
 export const checkScopes = requiredScopes('admin');
-
