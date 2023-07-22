@@ -20,6 +20,7 @@ Future features include managing/creating email campaigns and ticket exchanges.
     ```
 - [Stripe CLI](https://stripe.com/docs/stripe-cli)
 
+
 ## Setup
 1. Clone the repository.
 2. Copy `.env.dist` to `.env`
