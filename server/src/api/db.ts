@@ -2,32 +2,19 @@
 
 import dotenv from 'dotenv';
 import path from 'path';
-import {Pool} from 'pg';
+import {Pool, PoolConfig} from 'pg';
 
 dotenv.config({path: path.join(__dirname, '../../../.env')});
-// console.log(path.join(__dirname, '../../.env'));
 
-/**
- * define database configuration from .env environment file
- *
- * @typedef {Object} Config
- * @property {string} user - db username
- * @property {string} database - db name
- * @property {string} password - db password
- * @property {number} port - server tcp port
- * @property {string} host - server fqdn or ip address
- */
+const dbPort = process.env.DB_PORT as number | undefined ? process.env.DB_PORT as number | undefined : 5432;
 
-const config = {
+const config: PoolConfig = {
   user: process.env.DB_USER,
   database: process.env.DB_DATABASE,
   password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT ?
-      +process.env.DB_PORT : 5432,
+  port: dbPort,
   host: process.env.DB_HOST,
 };
-
-console.log('DB_HOST: ' + process.env.DB_HOST);
 
 /**
  * create pool object from configuration
@@ -35,7 +22,7 @@ console.log('DB_HOST: ' + process.env.DB_HOST);
  * @type {?}
  */
 
-export const pool = new Pool(config);
+export const pool: any = new Pool(config);
 
 /**
  * connect pool to database host
@@ -48,14 +35,6 @@ pool.on('connect', () => {
       `,
   );
 });
-
-/**
- * define response for pool queries
- *
- * @typedef {Object} Response
- * @property {Array<any>} data - array of rows in query response
- * @property {{success: boolean, message: string}} status - success indicator and result message(s)
- */
 
 export type response = {
   data: Array<any>,
@@ -76,7 +55,7 @@ export const buildResponse = async (
     type: string,
 ): Promise<response> => {
   let resp: response = {
-    data: <any[]>([]),
+    data: [],
     status: {
       success: false,
       message: '',
@@ -84,7 +63,7 @@ export const buildResponse = async (
   };
   try {
     const res = await pool.query(query);
-    console.log("query result code: " + res.rowCount);
+    console.log('query result code: ' + res.rowCount);
     let verificationString;
     switch (type) {
       case 'UPDATE':
@@ -111,7 +90,7 @@ export const buildResponse = async (
       },
     };
   } catch (error: any) {
-    console.log("stack: ");
+    console.log('stack: ');
     console.log(error.stack);
     resp.status.message = error.message;
   }
