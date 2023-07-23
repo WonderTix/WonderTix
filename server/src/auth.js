@@ -10,6 +10,6 @@ exports.checkScopes = exports.checkJwt = void 0;
 const jwtBearerToken = require('express-oauth2-jwt-bearer');
 exports.checkJwt = (0, jwtBearerToken.auth)({
   audience: 'https://localhost:8000',
-  issuerBaseURL: 'https://introvertedninja.auth0.com/',
+  issuerBaseURL: 'https://wtix-dev.us.auth0.com',
 });
 exports.checkScopes = (0, jwtBearerToken.requiredScopes)('admin');

@@ -1,0 +1,33 @@
+{
+	"folders": [
+		{
+			"name": "WonderTix Root",
+			"path": "./"
+		},
+		{
+			"name": "WonderTix Server",
+			"path": "server"
+		},
+		{
+			"name": "WonderTix Client",
+			"path": "client"
+		},
+		{
+			"name": "WonderTix DB",
+			"path": "prisma"
+		},
+		{
+			"name": "WonderTix Deploy",
+			"path": "terraform"
+		},
+	],
+	"settings": {
+		"jest.jestCommandLine": "npx jest --config jest.config.js",
+		"jest.disabledWorkspaceFolders": [
+			"WonderTix Client",
+			"WonderTix Root",
+			"WonderTix Deploy",
+			"WonderTix DB",
+		],
+	},
+}
