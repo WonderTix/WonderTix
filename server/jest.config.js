@@ -6,6 +6,9 @@ const config = {
   testEnvironment: 'node',
   setupFilesAfterEnv: ['./src/testSetup.ts'],
   testMatch: ['**/*.test.ts'],
+  detectLeaks: true,
+  detectOpenHandles: true,
+  displayName: 'WonderTix Server',
 };
 
 module.exports = config;

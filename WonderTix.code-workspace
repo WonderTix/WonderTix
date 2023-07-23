@@ -13,10 +13,6 @@
 			"path": "client"
 		},
 		{
-			"name": "WonderTix DB",
-			"path": "prisma"
-		},
-		{
 			"name": "WonderTix Deploy",
 			"path": "terraform"
 		},
@@ -27,7 +23,6 @@
 			"WonderTix Client",
 			"WonderTix Root",
 			"WonderTix Deploy",
-			"WonderTix DB",
 		],
 	},
 }
