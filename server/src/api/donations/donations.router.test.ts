@@ -63,7 +63,7 @@ describe('test donations routes', function() {
   describe('/:id', () => {
     it('/:id get pass', async () => {
       // @ts-ignore
-      donationsService.find.mockImplementationOnce(() => {
+      donationsService.findById.mockImplementationOnce(() => {
         return {data: [0], status: {success: true, message: ''}};
       });
       const res = await request(app).get('/:id')
@@ -73,7 +73,7 @@ describe('test donations routes', function() {
 
     it('/:id get fail', async () => {
       // @ts-ignore
-      donationsService.find.mockImplementationOnce(() => {
+      donationsService.findById.mockImplementationOnce(() => {
         throw new Error();
       });
 
