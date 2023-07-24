@@ -727,3 +727,9 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode,visualstudio,jetbrains+all,osx,macos,linux,windows,react
+
+# Added certificates to be ignored
+**/localhost*.pem
+**/*.pem
+**/*.key
+**/*.crt
