@@ -72,7 +72,7 @@ Future features include managing/creating email campaigns and ticket exchanges.
 2. Log into the client. 
 3. Once you're logged in, open the dev tools menu (Chrome), refresh the page, and find the `token` in the Network tab.
 4. Go to the Preview section for that token and then right click on the `access_token` and `Copy string contents`. 
-5. Paste that into the bearerAuth input (labeled "Authorize") in Swagger (https://localhost:8000/api/docs).
+5. Paste that into the bearerAuth input after clicking the "Authorize" button in Swagger (https://localhost:8000/api/docs).
 
 ## Troubleshooting
 This list will be updated as new issues arise. If you your issue is not listed, please create an issue and we will look into it.
