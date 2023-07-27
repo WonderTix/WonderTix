@@ -81,7 +81,7 @@ This list will be updated as new issues arise. If you your issue is not listed, 
 ## Running Live Development server (client or server)
 Start a live backend development server with client and database running in docker:
 1. Navigate to `<path/to/WonderTix/server>`
-2. Copy .env file from project root into server/prisma directory (cp ../.env prisma)
+2. Copy prisma/.env.dist as prisma/.env directory (cp prisma/.env.dist prisma./env)
 3. Run npm i to install any missing package dependencies 
 4. Run npm run liveDev to build the Client and Database containers, as well as start the live development server
 5. When you are ready to close the server and tear down the containers terminate with CTRL+c
@@ -89,7 +89,7 @@ Start a live backend development server with client and database running in dock
 
 Run live frontend development server with server running in docker:
 1. Navigate to `<path/to/WonderTix/server>`
-2. Copy .env file from project root into client directory (cp ../.env .)
+2. Copy client/.env.dist as client/.env (cp .env.dist .env), and replace REACT_APP_AUTH0_CLIENT_ID with your id. 
 3. Run npm i to install any missing package dependencies
 4. Run npm run liveDev to build the Server and Database containers, as well as start the live development server
 5. When you are ready to close the server and tear down the containers terminate with CTRL+c
