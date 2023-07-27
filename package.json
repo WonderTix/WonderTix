@@ -1,0 +1,9 @@
+{
+  "name": "tickets_root",
+  "main": "index.js",
+  "scripts": {
+    "composeBuild": "docker compose --profile full_compose build --no-cache",
+    "composeUp": "docker compose --profile full_compose up -d",
+    "composeDown": "docker compose --profile full_compose down -v"
+  }
+}

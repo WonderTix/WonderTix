@@ -1,30 +1,57 @@
 version: '3'
 
 services:
+  database:
+    image: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   server:
     build:
       context: ./server
     ports:
       - "8000:8000"
+    profiles:
+      - client_dev
+      - full_compose
     environment:
-      DB_DATABASE: ${PG_DB}
-      DB_HOST: ${PG_HOST}
-      DB_PASSWORD: ${PG_PASS}
-      DB_USER: ${PG_USER}
-      DB_PORT: ${PG_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: ${DB_HOST_DOCKER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_USER: ${DB_USER}
+      DB_PORT: ${DB_PORT}
       PRIVATE_STRIPE_KEY: ${PRIVATE_STRIPE_KEY}
       FRONTEND_URL: ${FRONTEND_URL}
       AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
       AUTH0_URL: ${AUTH0_URL}
-      DATABASE_URL: postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:${PG_PORT}/${PG_DB}?schema=public
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST_DOCKER}:${DB_PORT}/${DB_DATABASE}?schema=public
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules
+    depends_on:
+      database:
+        condition: service_healthy
+
   client:
     build:
       context: ./client
     ports:
       - "3000:3000"
+    profiles:
+      - server_dev
+      - full_compose
     environment:
       REACT_APP_ROOT_URL: ${ROOT_URL}
       REACT_APP_PUBLIC_STRIPE_KEY: ${PUBLIC_STRIPE_KEY}
@@ -37,12 +64,8 @@ services:
       - ./client:/usr/app
       - /usr/app/node_modules
     command: npm run start
-  database:
-    image: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: ${PG_DB}
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: ${PG_USER}
-      POSTGRES_PASSWORD: ${PG_PASS}
+
+volumes:
+  db:
+    driver: local
+

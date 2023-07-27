@@ -47,7 +47,7 @@ Future features include managing/creating email campaigns and ticket exchanges.
    1. Navigate to `<path/to/WonderTix/server>` 
    2. Run `mkcert -install` to install the local certificate authority
    3. Run `mkcert localhost` to create a certificate.   
-4. Run `docker-compose up -d`
+4. Run `docker-compose --profile full_compose -d`
 5. To test the checkout process with Stripe, make sure the Stripe CLI is installed. 
    1. Run `stripe login` and press enter to accept access. This only needs to be done once.
    2. Run `stripe listen --forward-to https://localhost:8000/api/1/order/webhook` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
@@ -77,7 +77,33 @@ Future features include managing/creating email campaigns and ticket exchanges.
 ## Troubleshooting
 This list will be updated as new issues arise. If you your issue is not listed, please create an issue and we will look into it.
 
+
+## Running Live Development server (client or server)
+Start a live backend development server with client and database running in docker:
+1. Navigate to `<path/to/WonderTix/server>`
+2. Copy .env file from project root into server/prisma directory (cp ../.env prisma)
+3. Run npm i to install any missing package dependencies 
+4. Run npm run liveDev to build the Client and Database containers, as well as start the live development server
+5. When you are ready to close the server and tear down the containers terminate with CTRL+c
+
+
+Run live frontend development server with server running in docker:
+1. Navigate to `<path/to/WonderTix/server>`
+2. Copy .env file from project root into client directory (cp ../.env .)
+3. Run npm i to install any missing package dependencies
+4. Run npm run liveDev to build the Server and Database containers, as well as start the live development server
+5. When you are ready to close the server and tear down the containers terminate with CTRL+c
+
+To create a clean docker build for all services:
+1. Run npm run composeBuild or docker compose --profile full_compose build --no-cache
+
+Please note profiles were added to the docker-compose.yaml, so in order to run all services inside docker 
+one of the following commands must be used in place of docker compose up -d and docker compose down -v:
+- To build the containers use npm run composeUp or docker compose --profile full_compose up -d --wait
+- To tear down the contains use npm run composeDown or docker compose --profile full_compose down -v
+
+
 ### Changes are not being reflected
 The client and server are built with docker. In most cases you can restart the containers with `docker-compose restart`. 
 
-If that does not work, you can try `docker-compose down`, `docker-compose build --no-cache`, `docker compose up -d --build`.
+If that does not work, you can try `docker-compose --profile full_compose down -v`, `docker-compose --profile full_compose build --no-cache`, `docker compose --profile full_compose up -d --build`.
