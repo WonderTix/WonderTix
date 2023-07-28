@@ -9,6 +9,14 @@ export const findAll = async (): Promise<response> => {
   return buildResponse(myQuery, 'GET');
 };
 
+export const findById = async (id: string): Promise<response> => {
+  const myQuery = {
+    text: 'SELECT * FROM donations WHERE donationid = $1',
+    values: [id],
+  };
+  return buildResponse(myQuery, 'GET');
+};
+
 export const findByName = async (name: string): Promise<response> => {
   const myQuery = {
     text: `SELECT * FROM donations WHERE lower(donorname) = lower($1)`,
@@ -17,10 +25,10 @@ export const findByName = async (name: string): Promise<response> => {
   return buildResponse(myQuery, 'GET');
 };
 
-export const find = async (id: string): Promise<response> => {
+export const findByDonationDate = async (donationdate: string): Promise<response> => {
   const myQuery = {
-    text: 'SELECT * FROM donations WHERE donationid = $1',
-    values: [id],
+    text: 'SELECT * FROM donations WHERE donationdate = $1',
+    values: [donationdate],
   };
   return buildResponse(myQuery, 'GET');
 };

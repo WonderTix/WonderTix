@@ -28,7 +28,7 @@ Future features include managing/creating email campaigns and ticket exchanges.
 ## Setup
 
 1. Clone the repository.
-2. Copy `.env.dist` to `.env`
+2. Create a `.env` file and copy over the contents from the `.env.dist` (.env example) file (or copy `.env.dist` to `.env` and edit)
    1. Set the values for `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. *you can get these values from the team lead*
    2. Set the value for `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. *you can get this value from the team lead*
    3. Set the value for `PRIVATE_STRIPE_WEBHOOK`. *explained in step 5*
@@ -61,8 +61,8 @@ Future features include managing/creating email campaigns and ticket exchanges.
 
 Open the folder where you downloaded your repository to then:
 
-   1. Double click the `WonderTix.code-workspace` file to open it in VSCode
-   2. You can click `File -> Open Workspace from File...` to open it if VSCode is open already
+1. Double click the `WonderTix.code-workspace` file to open it in VSCode
+2. You can click `File -> Open Workspace from File...` to open it if VSCode is open already
 
 Once it is open, you will notice 4 folders in the Explorer pane on the left side of the screen.
 
