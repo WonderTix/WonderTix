@@ -2,10 +2,6 @@
   "name": "wondertix-crm",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
-  },
   "dependencies": {
     "@auth0/auth0-react": "^1.10.1",
     "@emotion/react": "^11.10.5",
@@ -51,7 +47,7 @@
    
   },
   "scripts": {
-    "start": "cross-env HTTPS=true cross-env SSL_CRT_FILE=cert.pem react-scripts start",
+    "start": "cross-env HTTPS=true cross-env SSL_CRT_FILE=/usr/app/localhost.pem SSL_KEY_FILE=/usr/app/localhost-key.pem react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
