@@ -77,30 +77,29 @@ Future features include managing/creating email campaigns and ticket exchanges.
 ## Troubleshooting
 This list will be updated as new issues arise. If you your issue is not listed, please create an issue and we will look into it.
 
-
-## Running Live Development server (client or server)
-Start a live backend development server with client and database running in docker:
+## Running Live Development Server (Client or Server)
+Start a live backend development server with client and database running in docker containers:
 1. Navigate to `<path/to/WonderTix/server>`
-2. Copy prisma/.env.dist as prisma/.env directory (cp prisma/.env.dist prisma./env)
-3. Run npm i to install any missing package dependencies 
-4. Run npm run liveDev to build the Client and Database containers, as well as start the live development server
-5. When you are ready to close the server and tear down the containers terminate with CTRL+c
+2. Copy prisma/.env.dist as prisma/.env  (cp prisma/.env.dist prisma./env)
+3. Run `npm i` to install any missing package dependencies 
+4. Return to Set Up Step 3 if you are missing files: localhost-pem or localhost-key.pem
+5. Run `npm run liveDev` to build the Client and Database containers, as well as start the live development server
+6. When you are ready to close the server and tear down the containers terminate with CTRL+c
 
-
-Run live frontend development server with server running in docker:
+Run live frontend development server with server and database running in docker containers:
 1. Navigate to `<path/to/WonderTix/server>`
-2. Copy client/.env.dist as client/.env (cp .env.dist .env), and replace REACT_APP_AUTH0_CLIENT_ID with your id. 
-3. Run npm i to install any missing package dependencies
-4. Run npm run liveDev to build the Server and Database containers, as well as start the live development server
+2. Copy client/.env.dist as client/.env (cp .env.dist .env), and replace REACT_APP_AUTH0_CLIENT_ID with your information. 
+3. Run `npm i -force` to install any missing package dependencies
+4. Run `npm run liveDev` to build the Server and Database containers, as well as start the live development server
 5. When you are ready to close the server and tear down the containers terminate with CTRL+c
 
 To create a clean docker build for all services:
-1. Run npm run composeBuild or docker compose --profile full_compose build --no-cache
+1. Run `npm run composeBuild` or `docker compose --profile full_compose build --no-cache`
 
 Please note profiles were added to the docker-compose.yaml, so in order to run all services inside docker 
-one of the following commands must be used in place of docker compose up -d and docker compose down -v:
-- To build the containers use npm run composeUp or docker compose --profile full_compose up -d --wait
-- To tear down the contains use npm run composeDown or docker compose --profile full_compose down -v
+one of the following commands must be used in place of `docker compose up -d` and `docker compose down -v`:
+- To build the containers use `npm run composeUp` or `docker compose --profile full_compose up -d --wait`
+- To tear down the containers use `npm run composeDown` or `docker compose --profile full_compose down -v`
 
 
 ### Changes are not being reflected

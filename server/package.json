@@ -11,7 +11,7 @@
     "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed",
     "liveDev": "npm run devUp; npm run devDown",
     "devUp": "docker compose --profile server_dev up -d && sleep 60 && cross-env NODE_ENV=DEV npm run dev",
-    "devDown": "docker compose --profile server_dev down",
+    "devDown": "docker compose --profile server_dev down -v",
     "composeBuild": "docker compose --profile full_compose build --no-cache",
     "composeUp": "docker compose --profile full_compose up -d",
     "composeDown": "docker compose --profile full_compose down -v"
