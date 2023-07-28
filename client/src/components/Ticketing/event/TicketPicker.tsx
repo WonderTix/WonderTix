@@ -15,12 +15,11 @@ import {openSnackbar} from '../ticketingmanager/snackbarSlice';
 import {
   Collapse,
 } from '@mui/material';
-// import MultiSelectCalendar from './MultiSelectCalendar';
 import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
+import React, {useEffect, useState, useReducer} from 'react';
 
 /**
 * @module
@@ -169,6 +168,12 @@ interface TicketPickerProps {
 */
 const TicketPicker = (props: TicketPickerProps) => {
   const [ticketTypesState, setTicketTypesState] = useState<TicketPickerState>(initialState);
+  const [filteredTicketTypes, setFilteredTicketTypes] = useState([]);
+  const [numAvail, setnumAvail] = useState(Number);
+
+  const appDispatch = useAppDispatch();
+  const cartTicketCount = useAppSelector(selectCartTicketCount);
+  const tickets = props.tickets;
 
   const [{
     qty,
@@ -212,18 +217,6 @@ const TicketPicker = (props: TicketPickerProps) => {
         });
   };
 
-  useEffect(() => {
-    fetchTicketTypes();
-  }, []);
-
-  useEffect(() => {
-    console.log(ticketTypesState.ticketTypes);
-  }, [ticketTypesState.ticketTypes]);
-
-  const appDispatch = useAppDispatch();
-  const cartTicketCount = useAppSelector(selectCartTicketCount);
-  const tickets = props.tickets;
-
   const handleClick = (d: Date, t: Ticket[]) => {
     dispatch(dateSelected(d, t));
   };
@@ -262,8 +255,6 @@ const TicketPicker = (props: TicketPickerProps) => {
     dispatch(changePayWhat(tempPay));
   };
 
-  const [filteredTicketTypes, setFilteredTicketTypes] = useState([]);
-
   const getDefaultType = ticketTypesState.ticketTypes.filter((t) => {
     if (!selectedTicket) {
       return;
@@ -273,6 +264,15 @@ const TicketPicker = (props: TicketPickerProps) => {
   });
 
   console.log(selectedTicket);
+
+
+  useEffect(() => {
+    fetchTicketTypes();
+  }, []);
+
+  useEffect(() => {
+    console.log(ticketTypesState.ticketTypes);
+  }, [ticketTypesState.ticketTypes]);
 
   useEffect(() => {
     if (selectedTicket) {
@@ -293,7 +293,6 @@ const TicketPicker = (props: TicketPickerProps) => {
     }
   }, [selectedTicket]);
 
-  const [numAvail, setnumAvail] = useState(Number);
   useEffect(() => {
     if (selectedTicket) {
       const fetchData = async () => {
@@ -347,14 +346,8 @@ const TicketPicker = (props: TicketPickerProps) => {
         />
       </Collapse>
       <div className='flex flex-col gap-2 mt-7'>
-        {ticketTypes.map((t) => (
-          <p key={t.id}>
-            hello {t.name}
-          </p>
-        ))}
         <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
         <select
-          // labelId="ticket-type-select-label"
           value={selectedTicketType.name}
           defaultValue={''}
           disabled={selectedTicket===undefined}
