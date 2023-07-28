@@ -80,7 +80,7 @@ This list will be updated as new issues arise. If you your issue is not listed, 
 ## Running Live Development Server (Client or Server)
 Start a live backend development server with client and database running in docker containers:
 1. Navigate to `<path/to/WonderTix/server>`
-2. Copy prisma/.env.dist as prisma/.env  (cp prisma/.env.dist prisma./env)
+2. Copy prisma/.env.dist as prisma/.env  (cp prisma/.env.dist prisma/.env)
 3. Run `npm i` to install any missing package dependencies 
 4. Return to Set Up Step 3 if you are missing files: localhost-pem or localhost-key.pem
 5. Run `npm run liveDev` to build the Client and Database containers, as well as start the live development server
