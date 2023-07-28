@@ -119,7 +119,10 @@ const orderFulfillment = async (params:any): Promise<response> => {
   }
   const orderdate = Number(st);
   console.log('order date = ' + orderdate);
-  const ordertime = odate.getHours() +':'+ odate.getMinutes() +':'+ odate.getSeconds() +'-'+ odate.getTimezoneOffset();
+  const ordertime = odate.getHours() +
+    ':'+ odate.getMinutes() +
+    ':'+ odate.getSeconds() +
+    '-'+ odate.getTimezoneOffset();
   // Needs discount codes added
   const query = {
     text: `INSERT INTO orders
