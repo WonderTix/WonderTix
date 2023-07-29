@@ -401,19 +401,19 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
  *        404:
  *          description: Not Found
  */
-ticketRouter.get('/restrictions/:eventinstanceid', async(req, res) => {
-  let ticketquery = `
+ticketRouter.get('/restrictions/:eventinstanceid', async (req, res) => {
+  const ticketquery = `
     SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
   `;
-  try { 
-    let result = await pool.query(ticketquery, [req.params.eventinstanceid]);
-    
-    let resp = {
+  try {
+    const result = await pool.query(ticketquery, [req.params.eventinstanceid]);
+
+    const resp = {
       data: result.rows,
-      status: "success",
+      status: 'success',
     };
     res.status(200).send(resp);
-  }catch (error: any) {
+  } catch (error: any) {
     res.sendStatus(500).send(error.message);
   }
 });
