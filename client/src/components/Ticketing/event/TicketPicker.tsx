@@ -19,6 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
+import {useAuth0} from '@auth0/auth0-react';
 import React, {useEffect, useState, useReducer} from 'react';
 
 /**
@@ -174,6 +175,7 @@ const TicketPicker = (props: TicketPickerProps) => {
   const [ticketTypesState, setTicketTypesState] = useState<TicketPickerState>(initialState);
   const [filteredTicketTypes, setFilteredTicketTypes] = useState([]);
   const [numAvail, setnumAvail] = useState(Number);
+  const {getAccessTokenSilently} = useAuth0();
   const [{
     qty,
     concessions,
@@ -206,9 +208,13 @@ const TicketPicker = (props: TicketPickerProps) => {
 
   const fetchTicketTypes = async () => {
     try {
+      const token = await getAccessTokenSilently({
+        audience: 'https://localhost:8000',
+        scope: 'admin',
+      });
       const response = await fetch(process.env.REACT_APP_API_2_URL + '/ticket-type', {
         headers: {
-          Authorization: `Bearer ${process.env.REACT_APP_AUTHO_JWT}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const ticketTypeDataJson = await response.json();
@@ -218,6 +224,7 @@ const TicketPicker = (props: TicketPickerProps) => {
         price: ticketType.price,
         concessions: ticketType.concessions,
       }));
+
       setTicketTypesState((prevState) => ({
         ...prevState,
         ticketTypes: ticketTypeData,
