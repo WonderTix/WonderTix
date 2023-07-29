@@ -205,30 +205,26 @@ const TicketPicker = (props: TicketPickerProps) => {
   };
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/AllTypes')
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error('Failed to retrieve ticket types');
-          }
-          console.log('Response containing ticket types received successfully');
-          return res.json();
-        })
-        .then((resData) => {
-          const data: TicketType[] = resData.data.map((t) => ({
-            id: t.id,
-            name: t.description,
-            price: t.price,
-            concessions: t.concessions,
-          }));
-
-          setTicketTypesState((prevState) => ({
-            ...prevState,
-            ticketTypes: data,
-          }));
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    try {
+      const response = await fetch(process.env.REACT_APP_API_2_URL + '/ticket-type', {
+        headers: {
+          Authorization: `Bearer ${process.env.REACT_APP_AUTHO_JWT}`,
+        },
+      });
+      const ticketTypeDataJson = await response.json();
+      const ticketTypeData = ticketTypeDataJson.map((ticketType) => ({
+        id: ticketType.id,
+        name: ticketType.description,
+        price: ticketType.price,
+        concessions: ticketType.concessions,
+      }));
+      setTicketTypesState((prevState) => ({
+        ...prevState,
+        ticketTypes: ticketTypeData,
+      }));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDateSelect = (d: Date, t: Ticket[]) => {
@@ -320,7 +316,7 @@ const TicketPicker = (props: TicketPickerProps) => {
         </button>
       </Collapse>
 
-      {promptMarkup[prompt]};
+      {promptMarkup[prompt]}
       <Collapse in={showCalendar}>
         <div className='flex flex-col w-full'>
           <div className='flex flex-col text-white w-full px-20'>
