@@ -89,13 +89,13 @@ Here you will see:
 This allows VSCode to keep your files organized, as well as getting the Jest tests running properly. Simply double click a folder for the project you want to work on and everything will run in that particular project, including opening a new terminal.
 
 ### Using Swagger:
-1. To get the bearer token, create a user by going through the signup process. 
+1. To get the bearer token, create a user by going through the signup process in WonderTix.
    - For admin functions, make sure the user has an admin role (contact team lead for admin role).
    - Team Leads: In the User section of Auth0, you can grant individual users an admin role.
-2. Log into the client 
-3. Once you're logged in, open the dev tools menu(Chrome), refresh the page, and find the token in the Network tab.
-4. Go to the Preview section for that token and then `copy string contents`. 
-5. Paste that into the bearerAuth input in Swagger (https://localhost:8000/api/docs).
+2. Log into the client.
+3. Once you're logged in, open the dev tools menu (Chrome), refresh the page, and find the `token` in the Network tab.
+4. Go to the Preview section for that token and then right click on the `access_token` and `Copy string contents`.
+5. Paste that into the bearerAuth input after clicking the "Authorize" button within Swagger (https://localhost:8000/api/docs).
 
 ## Troubleshooting
 
