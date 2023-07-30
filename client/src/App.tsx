@@ -33,6 +33,7 @@ import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showi
 import showingmain from './components/Ticketing/ticketingmanager/showings/showing/showingmain';
 import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
+import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 
 const App = () => {
   return (
@@ -87,6 +88,7 @@ const App = () => {
         <Route path="/ticketing/showings/:eventid" element={<ProtectedRoute component={showingmain} />} />
         <Route path="/ticketing/tickettypes" element={<ProtectedRoute component={Tickettypesmain} />} />
         <Route path="/ticketing/ticketexchanges" element={<ProtectedRoute component={TicketExchangesmain} />} />
+        <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>
   );
