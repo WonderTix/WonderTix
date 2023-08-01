@@ -1,12 +1,44 @@
+# steps:
+#   # Build the image(s)
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['compose', 'up', '--build']
+#     env:
+#       - 'DB_USER=${_DB_USER}'
+#       - 'DB_DATABASE=${_DB_DATABASE}'
+#       - 'DB_PASSWORD=${_DB_PASSWORD}'
+#       - 'DB_HOST=${_DB_HOST}'
+#     dir: .
+
+#   # Push the images to Artifact Registry (formerly Google Container Registry)
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['tag', 'server', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['tag', 'client', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+
+#   # Deploy to Google App Engine
+#   - name: 'gcr.io/cloud-builders/gcloud'
+#     args:
+#       - 'app'
+#       - 'deploy'
+#       - 'app.yaml'
+#       - '--project=wondertix-394321'
+#       # - '--no-promote'  # Deploy without promoting to the default service
+#       # - '--quiet'       # Do not prompt for user confirmation
+#     dir: .
+
 steps:
-  # Build the image(s)
+  # Build the server image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['compose', 'up', '--build']
-    env:
-      - 'DB_USER=${_DB_USER}'
-      - 'DB_DATABASE=${_DB_DATABASE}'
-      - 'DB_PASSWORD=${_DB_PASSWORD}'
-      - 'DB_HOST=${_DB_HOST}'
+    args: ['build', '-t', 'server', 'server']
+    dir: .
+
+  # Build the client image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'client', 'client']
     dir: .
 
   # Push the images to Artifact Registry (formerly Google Container Registry)
@@ -21,5 +53,9 @@ steps:
 
   # Deploy to Google App Engine
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'app.yaml']
+    args:
+      - 'app'
+      - 'deploy'
+      - 'app.yaml'
+      - '--project=wondertix-394321'
     dir: .

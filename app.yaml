@@ -4,7 +4,9 @@ env_variables:
   DB_USER: ${{ secrets.CLOUD_DB_USER }}
   DB_DATABASE: ${{ secrets.CLOUD_DB_DATABASE }}
   DB_PASSWORD: ${{ secrets.CLOUD_DB_PASSWORD }}
-  DB_HOST: ${{ secrets.CLOUD_DB_HOST }}
+  # DB_HOST: ${{ secrets.CLOUD_DB_HOST }}
+  DB_HOST: /cloudsql/wondertix-394321:us-west1:wondertix-cd-test-database
+
 
 service: wondertix-cd-test
 version: v1
