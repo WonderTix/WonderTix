@@ -33,13 +33,12 @@
 steps:
   # Build the server image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'server', '.']
-    dir: .
+    args: ['build', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server', './server']
 
   # Build the client image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'client', '.']
-    dir: .
+    args: ['build', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client', './client']
+
 
   # Push the images to Artifact Registry (formerly Google Container Registry)
   - name: 'gcr.io/cloud-builders/docker'
