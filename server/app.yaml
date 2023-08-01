@@ -1,0 +1,19 @@
+runtime: nodejs18 
+
+env_variables:
+  DB_USER: ${{ secrets.CLOUD_DB_USER }}
+  DB_DATABASE: ${{ secrets.CLOUD_DB_DATABASE }}
+  DB_PASSWORD: ${{ secrets.CLOUD_DB_PASSWORD }}
+  DB_HOST: ${{ secrets.CLOUD_DB_HOST }}
+
+service: wondertix-cd-test
+version: v1
+
+handlers:
+- url: /api/.*
+  script: auto
+- url: /.*
+  static_files: client/index.html
+  upload: client/index.html
+  # static_files: build/index.html #we should consider have a build folder for production optimized code
+  # upload: build/index.html

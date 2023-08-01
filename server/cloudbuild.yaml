@@ -1,0 +1,25 @@
+steps:
+  # Build the image(s)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['compose', 'up', '--build']
+    env:
+      - 'DB_USER=${_DB_USER}'
+      - 'DB_DATABASE=${_DB_DATABASE}'
+      - 'DB_PASSWORD=${_DB_PASSWORD}'
+      - 'DB_HOST=${_DB_HOST}'
+    dir: .
+
+  # Push the images to Artifact Registry (formerly Google Container Registry)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'server', 'us-west1-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'client', 'us-west1-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-west1-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-west1-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+
+  # Deploy to Google App Engine
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy', 'app.yaml']
+    dir: .
