@@ -121,7 +121,7 @@ eventRouter.get('/:id', async (req: Request, res: Response) => {
 eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
   try {
     const data = await getInstanceById(req.params);
-    console.log(data)
+    console.log(data);
     const code = data.status.success ? 200 : 404;
     res.status(code).send(data);
   } catch (error) {
@@ -165,7 +165,6 @@ eventRouter.get('/list/active', async (_req: Request, res: Response) => {
 // TODO: when we add confirmation emails we can do it like this:
 // https://stripe.com/docs/payments/checkout/custom-success-page
 eventRouter.post('/checkout', async (req: Request, res: Response) => {
-
   // Prices are fetched from db so customers cannot change the price they
   // submit their order. Some data such as itemname and description can be.
   // Should not be an issue becuase this is only stored in stripe, and not used
@@ -292,8 +291,10 @@ eventRouter.post('/checkout', async (req: Request, res: Response) => {
 
 
     // Queries the database to get item prices
-    // I commented out this 'for' loop as it goes through the tickets in the cart and checks the orderitem based on the produce_id to get the price
-    // However, the tickets already have a price stored that is based on the type of ticket, therefore this loop is unnecessary.
+    // I commented out this 'for' loop as it goes through the tickets
+    // in the cart and checks the orderitem based on the produce_id to get the price
+    // However, the tickets already have a price stored that is based on the type of ticket,
+    // therefore this loop is unnecessary.
     // const costVect = [];
     // for (let i = 0; i < data.length; i++) {
     //   try {
@@ -526,7 +527,7 @@ eventRouter.post('/instances', checkJwt, checkScopes, async (
   // going to need to use auth0 authentication middleware
   // deleted isAuthenticated function
   try {
-    console.log(req.body)
+    console.log(req.body);
     const showings = await createShowing(req.body);
     const code = showings.status.success ? 200 : 404;
     res.status(code).send(showings);
@@ -655,7 +656,7 @@ eventRouter.put('/instances/:id', checkJwt, checkScopes, async (
     }
     res.status(code).send(resp);
   } catch (error: any) {
-    console.log("error: " + error);
+    console.log('error: ' + error);
     res.status(500).send(error);
   }
 });

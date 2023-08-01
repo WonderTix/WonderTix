@@ -3,7 +3,6 @@
 import {response, buildResponse} from '../db';
 
 export const findAll = async (): Promise<response> => {
-  // const myQuery = 'SELECT * FROM donations';
   const myQuery = {
     text: `SELECT * FROM donations;`,
   };

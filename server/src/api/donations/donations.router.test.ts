@@ -5,8 +5,8 @@ import * as donationsService from './donations.service';
 import {donationsRouter} from './donations.router';
 
 const app = express();
-app.use('/', donationsRouter);
 
+app.use('/', donationsRouter);
 jest.mock('./donations.service');
 
 afterEach(() => {
