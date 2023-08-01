@@ -29,25 +29,41 @@
 #       # - '--quiet'       # Do not prompt for user confirmation
 #     dir: .
 
+# steps:
+#   # Build the server image
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: [ 'build', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server', '-f', './server/Dockerfile', './server' ]
+
+# #   # Build the client image
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: [ 'build', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client', '-f', './client/Dockerfile', './client' ]
+
+
+#   # Push the images to Artifact Registry (formerly Google Container Registry)
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['tag', 'server', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['tag', 'client', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+
 steps:
-  # Build the server image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server', '-f', './server/Dockerfile', './server' ]
+  # Build the Docker images using Docker Compose
+  - name: 'gcr.io/cloud-builders/docker-compose'
+    args: ['build']
 
-#   # Build the client image
+  # Push the server and client images to Artifact Registry (formerly Google Container Registry)
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client', '-f', './client/Dockerfile', './client' ]
-
-
-  # Push the images to Artifact Registry (formerly Google Container Registry)
+    args: ['tag', 'wondertix_server', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'server', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'client', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+    args: ['tag', 'wondertix_client', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+
 
   # Deploy to Google App Engine
   - name: 'gcr.io/cloud-builders/gcloud'
