@@ -191,7 +191,7 @@ describe('ticketing slice', () => {
     });
   });
 
-  describe('reduers', () => {
+  describe('reducers', () => {
     let init = ticketingInitState;
     it('addTicketReducer: new ticket', () => {
       const payload = {id: 1, tickettype: tickettype, qty: 2, concessions: false};
