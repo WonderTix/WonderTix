@@ -119,7 +119,7 @@ describe('ticketing slice', () => {
       date: new Date('2021-08-08T16:00:00'),
       desc: 'desc1',
       product_img_url: 'www.com',
-      payWhatCan: false, 
+      payWhatCan: false,
       price: 2.99,
 
     };
@@ -191,7 +191,7 @@ describe('ticketing slice', () => {
     });
   });
 
-  describe('reduers', () => {
+  describe('reducers', () => {
     let init = ticketingInitState;
     it('addTicketReducer: new ticket', () => {
       const payload = {id: 1, tickettype: tickettype, qty: 2, concessions: false};
