@@ -13,6 +13,7 @@ Future features include managing/creating email campaigns and ticket exchanges.
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - mkcert
+
   - Mac: install with [Brew](https://brew.sh) `brew install mkcert nss`
   - Windows: install with [Chocolatey](https://chocolatey.org) `choco install mkcert`
   - Linux: install with your favorite package manager. If mkcert is not available using your favorite package manager, run the following:
@@ -28,7 +29,8 @@ Future features include managing/creating email campaigns and ticket exchanges.
 ## Setup
 
 1. Clone the repository.
-   1. Open your command line. 
+
+   1. Open your command line.
    2. Navigate to desired folder to install WonderTix repository
    3. Execute the following command:
       ```
@@ -36,21 +38,21 @@ Future features include managing/creating email campaigns and ticket exchanges.
       ```
 
 2. Create a `.env` file and copy over the contents from the `.env.dist` (.env example) file
-   1. Set the values for `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. *you must get these values from the team lead*
-   2. Set the value for `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. *you must get this value from the team lead*
+   1. Set the values for `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. _you must get these values from the team lead_
+   2. Set the value for `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. _you must get this value from the team lead_
    3. Set the value for `PRIVATE_STRIPE_WEBHOOK`. **explained in step 5**
-   4. Team Leads Auth0 Key provisioning instructions: 
-      1. Obtain access to the wtix-dev Auth0 account. 
+   4. Team Leads Auth0 Key provisioning instructions:
+      1. Obtain access to the wtix-dev Auth0 account.
       2. Go to Applications > Applications > Default App
-      3. Use a secure note transfer service to send the Client ID and Client Secret to your team members. 
+      3. Use a secure note transfer service to send the Client ID and Client Secret to your team members.
 3. Create mkcert certificate
-   1. Navigate to `<path/to/WonderTix/server>` 
+   1. Navigate to `<path/to/WonderTix/server>`
    2. Run `mkcert -install` to install the local certificate authority
-   3. Run `mkcert localhost` to create a certificate.   
+   3. Run `mkcert localhost` to create a certificate.
 4. Run `docker-compose up -d`
 5. To test the checkout process with Stripe, make sure the Stripe CLI is installed.
    1. Run `stripe login` and press enter to accept access. This only needs to be done once.
-   2. Run `stripe listen --forward-to https://localhost:8000/api/1/order/webhook` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
+   2. Run `stripe listen --forward-to https://localhost:8000/api/1/order/webhook` and copy the resulting **_signing secret_** as your `PRIVATE_STRIPE_WEBHOOK` variable.
 6. The client will be available at <https://localhost:3000>
    1. You will need to accept the self-signed certificate. In chrome click anywhere on the page and type `thisisunsafe`. This will allow you to continue to the site.
 7. The server will be available at <https://localhost:8000>
@@ -89,6 +91,7 @@ Here you will see:
 This allows VSCode to keep your files organized, as well as getting the Jest tests running properly. Simply double click a folder for the project you want to work on and everything will run in that particular project, including opening a new terminal.
 
 ### Using Swagger:
+
 1. To get the bearer token, create a user by going through the signup process in WonderTix.
    - For admin functions, make sure the user has an admin role (contact team lead for admin role).
    - Team Leads: In the User section of Auth0, you can grant individual users an admin role.
