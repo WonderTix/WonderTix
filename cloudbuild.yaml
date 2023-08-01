@@ -34,12 +34,12 @@ steps:
   # Build the server image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'server', 'server']
-    dir: .
+    dir: ./server
 
   # Build the client image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'client', 'client']
-    dir: .
+    dir: ./client
 
   # Push the images to Artifact Registry (formerly Google Container Registry)
   - name: 'gcr.io/cloud-builders/docker'
