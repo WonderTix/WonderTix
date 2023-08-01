@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import { query } from "express";
-import { link } from "fs";
-import Delta from "../../interfaces/Delta";
-import Showing from "../../interfaces/Showing";
-import { pool, response, buildResponse } from "../db";
+import {query} from 'express';
+import {link} from 'fs';
+import Delta from '../../interfaces/Delta';
+import Showing from '../../interfaces/Showing';
+import {pool, response, buildResponse} from '../db';
 
 export const getActiveEvents = async (): Promise<response> => {
   const myQuery = {
@@ -31,12 +31,12 @@ export const getActiveEvents = async (): Promise<response> => {
             e.seasonticketeligible,
             e.imageurl
           HAVING
-            e.active = true 
+            e.active = true
           ORDER BY
             e.eventid;`,
   };
 
-  return buildResponse(myQuery, "GET");
+  return buildResponse(myQuery, 'GET');
 };
 
 export const getInstanceById = async (params: any): Promise<response> => {
@@ -54,7 +54,7 @@ export const getInstanceById = async (params: any): Promise<response> => {
             eventinstanceid;`,
     values: [params.id],
   };
-  return await buildResponse(query, "GET");
+  return await buildResponse(query, 'GET');
 };
 
 export const getEventById = async (params: any): Promise<response> => {
@@ -75,56 +75,56 @@ export const getEventById = async (params: any): Promise<response> => {
             eventid = $1;`,
     values: [params.id],
   };
-  return await buildResponse(query, "GET");
+  return await buildResponse(query, 'GET');
 };
 
 export const updateInstances = async (
-  body: any,
-  params: any
+    body: any,
+    params: any,
 ): Promise<response> => {
   const instances: Showing[] = body;
-  
-  if(params.id === undefined) {
-    console.log("param id undefined in updateInstances");
+
+  if (params.id === undefined) {
+    console.log('param id undefined in updateInstances');
   }
 
   // get existing showings for this event
   const currentShowings = await getShowingsById(params.id);
-  console.log(currentShowings)
+  console.log(currentShowings);
 
-  console.log("retrieved " + currentShowings.length + " showings");
+  console.log('retrieved ' + currentShowings.length + ' showings');
   // see which showings are not present in the updated showings
-  console.log('-------------------------------------------------=============================')
-  console.log(instances)
-  console.log('-------------------------------------------------=============================')
+  console.log('-------------------------------------------------=============================');
+  console.log(instances);
+  console.log('-------------------------------------------------=============================');
   const instancesSet = new Set(instances.map((show) => show.eventinstanceid));
   const rowsToDelete = currentShowings
-    .filter((show: Showing) => !instancesSet.has(show.id))
-    .map((show) => show.id);
-  
+      .filter((show: Showing) => !instancesSet.has(show.id))
+      .map((show) => show.id);
+
   // delete them
   const rowsDeleted = await deleteShowings(rowsToDelete);
   // console.log("to delete: " + rowsToDelete);
 
   // update existing showings
   const rowsToUpdate = instances.filter(
-    (show: Showing) => show.eventinstanceid && show.eventinstanceid !== 0
+      (show: Showing) => show.eventinstanceid && show.eventinstanceid !== 0,
   );
-  console.log(rowsToUpdate)
+  console.log(rowsToUpdate);
   const rowsUpdated = await updateShowings(rowsToUpdate);
-  console.log("updated " + rowsToUpdate.length + " showings");
+  console.log('updated ' + rowsToUpdate.length + ' showings');
   // insert new showings
   // showings with id = 0 have not yet been added to the table
   const rowsToInsert = instances.filter((show: Showing) => show.eventinstanceid === 0);
   // rowsToInsert.forEach((show: Showing) => show.tickettype = 0);
   rowsToInsert.forEach((show: Showing) => {
-    if (typeof show.ticketTypeId[0] !== "undefined") {
+    if (typeof show.ticketTypeId[0] !== 'undefined') {
       show.ticketTypeId[0] = 0;
     }
   });
   // @TODO set default ticket type
 
-  console.log("Rows to insert", rowsToInsert);
+  console.log('Rows to insert', rowsToInsert);
   const rowsInserted = await insertAllShowings(rowsToInsert);
 
   return {
@@ -156,7 +156,7 @@ export const getEventByName = async (params: any): Promise<response> => {
             eventname = $1;`,
     values: [params.eventName],
   };
-  return buildResponse(myQuery, "GET");
+  return buildResponse(myQuery, 'GET');
 };
 
 export const updateEvent = async (params: any): Promise<response> => {
@@ -186,7 +186,7 @@ export const updateEvent = async (params: any): Promise<response> => {
       params.eventid,
     ],
   };
-  return buildResponse(myQuery, "UPDATE");
+  return buildResponse(myQuery, 'UPDATE');
 };
 
 //
@@ -195,7 +195,7 @@ export const updateEvent = async (params: any): Promise<response> => {
 //
 export const createShowing = async (params: any): Promise<response> => {
   const newInstances = await insertAllShowings(params.instances);
-  console.log(newInstances)
+  console.log(newInstances);
   // Link showtime to ticket type
   const linkingdata = newInstances.map((s) => ({
     eventinstanceid: s.eventinstanceid,
@@ -211,7 +211,7 @@ export const createShowing = async (params: any): Promise<response> => {
     data: <any[]>[],
     status: {
       success: false,
-      message: "",
+      message: '',
     },
   };
   const toReturn = [];
@@ -220,7 +220,7 @@ export const createShowing = async (params: any): Promise<response> => {
     const len = show.ticketTypeId.length;
     for (let i = 0; i < len; i++) {
       let queryResults;
-      console.log(show)
+      console.log(show);
       try {
         queryResults = await pool.query(myQuery, [
           show.eventinstanceid,
@@ -238,7 +238,7 @@ export const createShowing = async (params: any): Promise<response> => {
     data: toReturn,
     status: {
       success: true,
-      message: `${rowCount} ${rowCount === 1 ? "row" : "rows"} inserted.`,
+      message: `${rowCount} ${rowCount === 1 ? 'row' : 'rows'} inserted.`,
     },
   };
   await createTickets(linkingdata);
@@ -260,7 +260,7 @@ export const createTickets = async (params: any): Promise<response> => {
     data: <any[]>[],
     status: {
       success: false,
-      message: "",
+      message: '',
     },
   };
   const toReturn = [];
@@ -288,7 +288,7 @@ export const createTickets = async (params: any): Promise<response> => {
     data: toReturn,
     status: {
       success: true,
-      message: `${rowCount} ${rowCount === 1 ? "row" : "rows"} inserted.`,
+      message: `${rowCount} ${rowCount === 1 ? 'row' : 'rows'} inserted.`,
     },
   };
   return res;
@@ -306,7 +306,7 @@ export const archivePlays = async (params: any): Promise<response> => {
             eventid = $1;`,
     values: [id],
   };
-  const intermediateResponse = await buildResponse(myQuery, "UPDATE");
+  const intermediateResponse = await buildResponse(myQuery, 'UPDATE');
 
   myQuery.text = `
                   UPDATE
@@ -316,7 +316,7 @@ export const archivePlays = async (params: any): Promise<response> => {
                   WHERE
                     eventinstanceid = $1;`;
 
-  const secondResponse = await buildResponse(myQuery, "UPDATE");
+  const secondResponse = await buildResponse(myQuery, 'UPDATE');
   secondResponse.data.concat(intermediateResponse.data);
 
   return secondResponse;
@@ -345,7 +345,7 @@ export const createEvent = async (params: any): Promise<response> => {
       params.imageurl,
     ],
   };
-  return buildResponse(myQuery, "POST");
+  return buildResponse(myQuery, 'POST');
 };
 
 export const checkIn = async (params: any): Promise<response> => {
@@ -359,7 +359,7 @@ export const checkIn = async (params: any): Promise<response> => {
             eventticketid = $2;`,
     values: [params.isCheckedIn, params.ticketID],
   };
-  return buildResponse(myQuery, "UPDATE");
+  return buildResponse(myQuery, 'UPDATE');
 };
 
 export const getActiveEventsAndInstances = async (): Promise<response> => {
@@ -386,11 +386,11 @@ export const getActiveEventsAndInstances = async (): Promise<response> => {
           ORDER BY
             ei.eventinstanceid;`,
   };
-  return buildResponse(myQuery, "GET");
+  return buildResponse(myQuery, 'GET');
 };
 
 export const insertAllShowings = async (
-  showings: Showing[]
+    showings: Showing[],
 ): Promise<Showing[]> => {
   // Breaking change: added ispreview
   // Will need to add defaulttickettype for event instances when field add/db updated
@@ -407,8 +407,8 @@ export const insertAllShowings = async (
                 VALUES
                   ($1, $2, $3, $4, $5, true, $6)
                 RETURNING *;`;
-      // this is temp fix 1 should be set to defaulttickettype, and updateShowings needs to have a way to remove tickets        
-      const ticket_query = `
+  // this is temp fix 1 should be set to defaulttickettype, and updateShowings needs to have a way to remove tickets
+  const ticketQuery = `
                     INSERT INTO eventtickets (
                       eventinstanceid_fk,
                       tickettypeid_fk,
@@ -422,7 +422,7 @@ export const insertAllShowings = async (
     data: <any[]>[],
     status: {
       success: false,
-      message: "",
+      message: '',
     },
   };
   const toReturn = [];
@@ -440,7 +440,7 @@ export const insertAllShowings = async (
     ]);
     // for each seat create the entry in the eventtickets table
     for (const seat of [...Array(showing.totalseats).keys()]) {
-      await pool.query(ticket_query, [rows[0].eventinstanceid]);
+      await pool.query(ticketQuery, [rows[0].eventinstanceid]);
     }
     toReturn.push(showing);
     rowCount += 1;
@@ -454,7 +454,7 @@ export const insertAllShowings = async (
     data: toReturn,
     status: {
       success: true,
-      message: `${rowCount} ${rowCount === 1 ? "row" : "rows"} inserted.`,
+      message: `${rowCount} ${rowCount === 1 ? 'row' : 'rows'} inserted.`,
     },
   };
   // console.log(results)
@@ -483,9 +483,9 @@ export const updateShowings = async (showings: Showing[]): Promise<number> => {
   for (const showing of showings) {
     let eventDate: String|Number = showing.eventdate;
     if (typeof showing.eventdate === 'string') {
-      eventDate = parseInt(showing.eventdate.split('-').join(''))
+      eventDate = parseInt(showing.eventdate.split('-').join(''));
     }
-    //console.log("Update Current: ", showings);
+    // console.log("Update Current: ", showings);
     const queryResult = await pool.query(updateQuery, [
       showing.eventinstanceid,
       eventDate,
@@ -514,15 +514,15 @@ export const deleteShowings = async (ids: number[]): Promise<number> => {
   let rowsDeleted = 0;
   for (const id of ids) {
     const queryResult = await pool.query(deleteQuery, [id]);
-    console.log("Deleted");
+    console.log('Deleted');
     rowsDeleted += queryResult.rowCount;
   }
   return rowsDeleted;
 };
 
-const isShowingChange = (d: Delta) => d.path.includes("showings");
-const isEventChange = (d: Delta) => !isShowingChange(d) && d.kind === "E";
-const eventFields = ["eventname", "eventdescription", "imageurl"];
+const isShowingChange = (d: Delta) => d.path.includes('showings');
+const isEventChange = (d: Delta) => !isShowingChange(d) && d.kind === 'E';
+const eventFields = ['eventname', 'eventdescription', 'imageurl'];
 
 export const getShowingsById = async (id: string): Promise<Showing[]> => {
   // Breaking change: ispreview is new field, defaulttickettype will be added soon

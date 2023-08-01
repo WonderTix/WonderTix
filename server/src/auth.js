@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /**
  * Auth
  * Authentification for user longin
@@ -7,9 +7,9 @@
  */
 exports.__esModule = true;
 exports.checkScopes = exports.checkJwt = void 0;
-var express_oauth2_jwt_bearer_1 = require("express-oauth2-jwt-bearer");
-exports.checkJwt = (0, express_oauth2_jwt_bearer_1.auth)({
-    audience: 'https://localhost:8000',
-    issuerBaseURL: "https://wtix-dev.us.auth0.com/"
+const jwtBearerToken = require('express-oauth2-jwt-bearer');
+exports.checkJwt = (0, jwtBearerToken.auth)({
+  audience: 'https://localhost:8000',
+  issuerBaseURL: 'https://wtix-dev.us.auth0.com',
 });
-exports.checkScopes = (0, express_oauth2_jwt_bearer_1.requiredScopes)('admin');
+exports.checkScopes = (0, jwtBearerToken.requiredScopes)('admin');

@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../../auth';
-import {create, find, findAll, findByName, remove, update}
+import {create, findById, findAll, findByName, findByDonationDate, remove, update}
   from './donations.service';
 
 export const donationsRouter = Router();
@@ -222,7 +222,7 @@ donationsRouter.get('/search', async (req: Request, res: Response) => {
  */
 donationsRouter.get('/:id', async (req: Request, res: Response) => {
   try {
-    const donation = await find(req.params.id);
+    const donation = await findById(req.params.id);
     let code = donation.status.success ? 200 : 404;
     if (code === 200 && donation.data.length === 0) {
       code = 404;
@@ -233,6 +233,83 @@ donationsRouter.get('/:id', async (req: Request, res: Response) => {
     res.status(500).send(err.message);
   }
 });
+
+/**
+ * @swagger
+ * /1/donations/date/{donationdate}:
+ *   get:
+ *     summary: Get a donation by Donation Date.
+ *     description: Retrieve a donation based on its Donation Date.
+ *     parameters:
+ *       - in: path
+ *         name: donationdate
+ *         schema:
+ *           type: integer
+ *         description: The Donation Date of the donation to retrieve.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: The donation with the given ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                     message:
+ *                       type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       contactid_fk:
+ *                         type: integer
+ *                       isanonymous:
+ *                         type: boolean
+ *                       amount:
+ *                         type: number
+ *                         format: float
+ *                       donorname:
+ *                         type: string
+ *                       frequency:
+ *                         type: string
+ *                       comments:
+ *                         type: string
+ *                       payment_intent:
+ *                         type: string
+ *                       refund_intent:
+ *                         type: string
+ *                       donationdate:
+ *                         type: integer
+ *                       donationid:
+ *                         type: integer
+ *       '404':
+ *         description: No donation found with the given ID.
+ *       '500':
+ *         description: Internal server error.
+ *     tags:
+ *       - Donations
+ */
+donationsRouter.get('/date/:donationdate', async (req: Request, res: Response) => {
+  try {
+    const donation = await findByDonationDate(req.params.donationdate);
+    let code = donation.status.success ? 200 : 404;
+    if (code === 200 && donation.data.length === 0) {
+      code = 404;
+      donation.status.success = false;
+    }
+    res.status(code).send(donation);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+});
+
 
 /**
  * @swagger
