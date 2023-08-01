@@ -11,13 +11,13 @@ steps:
 
   # Push the images to Artifact Registry (formerly Google Container Registry)
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'server', 'us-west1-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
+    args: ['tag', 'server', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'client', 'us-west1-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+    args: ['tag', 'client', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west1-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
+    args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/server']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west1-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
+    args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/client']
 
   # Deploy to Google App Engine
   - name: 'gcr.io/cloud-builders/gcloud'
