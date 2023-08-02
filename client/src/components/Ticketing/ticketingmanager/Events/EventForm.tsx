@@ -16,6 +16,7 @@ import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
 import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
 import PopUp from '../../Pop-up';
+import {validImageURLCheck} from '../../../../utils/imageURLValidation';
 
 /**
  * Type of ticket
@@ -138,6 +139,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   const [showings, setShowings] = useState(def.showings);
   const [showPopUp, setShowPopUp] = useState(false);
   const [err, setErr] = useState('');
+  const [disabledUrl, setDisabledUrl] = useState(false);
 
   // FIELDS CALLBACK
   // Set event name
@@ -159,7 +161,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   };
 
   // Handle new play and the show options
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data: WtixEvent = {
       eventname,
       eventid: eventid,
@@ -169,48 +171,45 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       showings: showings,
     };
     console.log(data);
+    const name = data.eventname?.trim() === '';
+    const desc = data.eventdescription?.trim() === '';
+    const count = (name?1:0)+(desc?1:0);
+    if (count) {
+      const len = count>1;
+      setErr( `${name?'Event Name':''}${len?', and ':''}${desc?'Event Description':''}${len?' fields are missing':' field is missing'}`);
+      setShowPopUp(true);
+      return;
+    }
     if (showings.length === 0) {
       setErr('Please enter at least one showing.');
       setShowPopUp(true);
       return;
     }
-    if (eventname === '' || eventdescription === '' || showings.length === 0) {
-      const conditions = [];
-      if (eventname === '') {
-        conditions.push('Event name');
-      }
-      if (eventdescription === '') {
-        conditions.push('Event description');
-      }
-      let message = '';
-      if (conditions.length > 0) {
-        message += conditions.slice(0, -1).join(', ');
-        if (conditions.length > 1) {
-          message += ' and ';
-        }
-        message += conditions[conditions.length - 1];
-      }
-      if (conditions.length === 1) {
-        message += ' field is missing.';
-      } else {
-        message += ' fields are missing.';
-      }
-      setErr(message);
+    if (!(await validImageURLCheck(data.imageurl))) {
+      setErr(`Image Url provided is invalid, please input a valid URL or select default`);
       setShowPopUp(true);
       return;
     }
-    for (let i = 0; i < data.showings.length; i++) {
-      if (data.showings[i].eventdate === '' || data.showings[i].eventtime === '') {
+    data.showings.forEach((showing) => {
+      if (showing.eventdate === '' || showing.eventtime === '') {
         setErr('Each showing must have an event date and an event time.');
         setShowPopUp(true);
         return;
       }
-      if (data.showings[i].totalseats < 1) {
+      if (showing.totalseats < 1) {
         setErr('Each showing must have at least 1 ticket.');
         setShowPopUp(true);
         return;
       }
-    }
+      const seatsTypeSum = showing.seatsForType.reduce((acc, seats) => acc+seats, 0);
+      if (showing.totalseats != seatsTypeSum) {
+        setErr(`Showing on ${showing.eventdate} at ${showing.eventtime} 
+        total seat count of ${showing.totalseats} does not 
+        match sum of available seats per type of ${seatsTypeSum}`);
+        setShowPopUp(true);
+        return;
+      }
+    });
     for (let i = 0; i < data.showings.length; i++) {
       if (data.showings[i].ticketTypeId) {
         for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
@@ -256,8 +255,28 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                 <InputFieldForEvent
                   name={'imageurl'}
                   id={'imageurl'} headerText={'Upload Image for Event'}
-                  action={addURL} actionType={'onChange'} value={def.imageurl}
+                  action={addURL} actionType={'onChange'} value={imageurl}
                   placeholder={def.imageurl ? def.imageurl : 'image URL'}/>
+                <div className='col-span-2 md:col-span-1 flex flex-col mb-4'>
+                  <label
+                    htmlFor={'defaultImageUrl'}
+                    className={'text-sm text-zinc-600 text-center'}
+                  >
+                    Use Default Image
+                  </label>
+                  <input
+                    name={'defaultImageUrl'}
+                    id={'defaultImageUrl'}
+                    type='checkbox'
+                    value={'default'}
+                    checked={disabledUrl}
+                    onClick={ () => {
+                      setImageURL((!disabledUrl?'defaultEventImage':''));
+                      setDisabledUrl(!disabledUrl);
+                    }}
+                    className={'appearance-none w-8 h-8 p-2 mx-auto checked:bg-blue-500 rounded-lg border border-zinc-300 my-auto my-aut my-auto'}
+                  />
+                </div>
               </div>
               {/* Showings container*/}
               <div className='text-3xl font-semibold mt-5'>
