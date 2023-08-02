@@ -566,6 +566,19 @@ const createServer = async () => {
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
   app.get('/', (_req, res) => res.redirect('/api/1/docs'));
 
+  let server;
+
+  if (process.env.USE_SSL === 'true') {
+    const privateKey = fs.readFileSync('localhost-key.pem', 'utf8');
+    const certificate = fs.readFileSync('localhost.pem', 'utf8');
+    const credentials = { key: privateKey, cert: certificate };
+    server = https.createServer(credentials, app);
+  } else {
+    server = https.createServer(app);
+  }
+  
+  return server; 
+
   return https
       .createServer(
           {
@@ -575,7 +588,7 @@ const createServer = async () => {
 };
 
 createServer().then((server) => {
-  const port = 8000;
+  const port = process.env.PORT || 8000;
   server.listen(port);
   console.log(`Listening on port ${port}`);
 })

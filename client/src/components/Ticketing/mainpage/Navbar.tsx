@@ -35,6 +35,10 @@ const Navbar = ({bMode}: NavbarProps) => {
     picture = user.picture;
     name = user.name;
   }
+  const serverUrl = process.env.REACT_APP_ROOT_URL || 'https://localhost:8000';
+
+  console.log('serverUrl');
+  console.log(serverUrl);
 
   const showMenu = async () => {
     if (isAuthenticated) {
@@ -44,8 +48,10 @@ const Navbar = ({bMode}: NavbarProps) => {
       audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
+    console.log('token');
+    console.log(token);
 
-    if (token.undefineduser_authorization.permissions[0] == 'admin') {
+    if (token && token.undefineduser_authorization.permissions[0] == 'admin') {
       isAdmin(true);
     }
   };

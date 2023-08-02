@@ -1,0 +1,27 @@
+# Use the Node.js 18 Alpine image as the base image
+FROM node:18-alpine
+
+# Set the working directory inside the container
+# WORKDIR /usr/app
+
+# Copy the .env.dev file into the container
+COPY .env.dev .env
+
+# Copy the package.json and package-lock.json files into the container
+COPY ./package*.json ./
+
+# Install the npm dependencies
+RUN npm install --force
+
+# Copy the rest of the application code into the container
+COPY . .
+
+# Build the client application (if using a build tool like Create React App)
+# RUN npm run build
+
+# Expose the port the application will run on
+EXPOSE 8080
+
+# Start the client application
+CMD ["npm", "run", "start:dev"]
+

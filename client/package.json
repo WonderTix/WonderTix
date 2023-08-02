@@ -20,7 +20,6 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.11.41",
     "@types/react": "^17.0.47",
     "@types/react-dom": "^18.0.5",
     "axios": "^0.25.0",
@@ -52,6 +51,7 @@
   "scripts": {
     "postinstall": "npx playwright install",
     "start": "cross-env HTTPS=true cross-env SSL_CRT_FILE=/usr/app/localhost.pem SSL_KEY_FILE=/usr/app/localhost-key.pem react-scripts start",
+    "start:dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:playwright": "npx playwright test",
@@ -79,6 +79,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.36.2",
+    "@types/node": "^20.4.5",
     "@types/redux-mock-store": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
