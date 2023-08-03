@@ -1,5 +1,5 @@
 steps:
-  # Build the Docker image for the server using Dockerfile.prod
+  # Build the Docker image for the server using Dockerfile.dev
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-server', '.']
 

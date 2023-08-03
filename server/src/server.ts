@@ -516,6 +516,12 @@ const createServer = async () => {
   app.use(express.urlencoded({extended: true}));
   app.use(morgan('dev'));
   app.use(helmet());
+  // app.use(
+  //     cors({
+  //       origin: 'https://localhost:3000',
+  //       credentials: true,
+  //     }),
+  // );
   app.use(
       cors({
         origin: process.env.FRONTEND_URL,
