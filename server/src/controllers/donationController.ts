@@ -181,6 +181,71 @@ donationController.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /2/donation/search:
+ *   get:
+ *     summary: Search for donations by donor name
+ *     description: Retrieve donation info based on donor name
+ *     parameters:
+ *       - in: query
+ *         name: donorname
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The name of the donor to search for
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The donation info for the donor name
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: object
+ *                   properties:
+ *                     success:
+ *                       type: boolean
+ *                     message:
+ *                       type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Donation'
+ *       404:
+ *         description: The donation was not found for the given donor name
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ *     tags:
+ *      - Donation
+ */
+donationController.get('/search', async (req: Request, res: Response) => {
+  try {
+    const donorname = req.query.donorname as string;
+    const donations = await prisma.donations.findMany({
+      where: {
+        donorname: {
+          contains: donorname,
+        },
+      },
+    });
+    if (donations.length > 0) {
+      res.status(200).json(donations);
+
+      return;
+    }
+
+    res.status(404).json({error: 'Not Found'});
+
+    return;
+  } catch (error) {
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
  * /2/donation/{id}:
  *   get:
  *     summary: get a donation
@@ -208,7 +273,7 @@ donationController.get('/', async (req: Request, res: Response) => {
  */
 donationController.get('/:id', async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
+    const id = req.params.donationid;
     const donationExists = await prisma.donations.findUnique({
       where: {
         donationid: Number(id),
@@ -240,6 +305,124 @@ donationController.get('/:id', async (req: Request, res: Response) => {
       return;
     }
 
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/donation/{donationdate}:
+ *   get:
+ *     summary: Get a donation by donation date.
+ *     description: Retrieve a donation based on the date it was made.
+ *     parameters:
+ *       - in: path
+ *         name: donationDate
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The donation date of the donation to search for
+ *   security:
+ *    - bearerAuth: []
+ *   responses:
+ *    200:
+ *      description: The donation info for the donation date
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              status:
+ *                type: object
+ *                properties:
+ *                  success:
+ *                    type: boolean
+ *                  message:
+ *                    type: string
+ *              data:
+ *                type: array
+ *                items:
+ *                  $ref: '#/components/schemas/Donation'
+ *    404:
+ *      description: The donation was not found for the given donation date
+ *    500:
+ *      description: Internal Server Error. An error occurred while processing the request.
+ * tags:
+ *   - Donation
+ */
+donationController.get(
+    '/:donationdate',
+    async (req: Request, res: Response) => {
+      try {
+        const donationDate = req.params.donationdate;
+        const donationID = res.locals.donationid;
+        const donation = await prisma.donations.findUnique({
+          where: {
+            donationdate: Number(donationDate),
+            donationid: Number(donationID),
+          },
+        });
+        if (!donation) {
+          res.status(404).json({error: 'Not Found'});
+
+          return;
+        }
+
+        res.status(200).json(donation);
+
+        return;
+      } catch (error) {
+        res.status(500).json({error: 'Internal Server Error'});
+      }
+    },
+);
+
+/**
+ * @swagger
+ *   delete:
+ *     summary: delete a donation by ID
+ *     description: delete a single donation based on the provided id
+ *     parameters:
+ *       - in: path
+ *         name: donationId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The donation id
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The donation was deleted
+ *       404:
+ *         description: The donation was not found
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ *     tags:
+ *       - Donations
+ */
+donationController.delete('/:id', async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const donationExists = await prisma.donations.findUnique({
+      where: {
+        donationid: Number(id),
+      },
+    });
+    if (!donationExists) {
+      res.status(404).json({error: 'donation not found'});
+
+      return;
+    }
+    await prisma.donations.delete({
+      where: {
+        donationid: Number(id),
+      },
+    });
+    res.status(200).json({success: 'donation deleted'});
+
+    return;
+  } catch (error) {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
