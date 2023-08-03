@@ -264,7 +264,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                   Showings
               </div>
               <div className='mb-3 text-sm text-zinc-600'>
-                  You can configure occurances of this event below.
+                  You can configure occurrences of this event below.
                   To add more, click the &quot;Add Showing&quot; button.
               </div>
               <div>
