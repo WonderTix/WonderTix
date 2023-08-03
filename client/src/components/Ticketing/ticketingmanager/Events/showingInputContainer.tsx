@@ -189,7 +189,7 @@ const ShowingInputContainer = ({
                       type='number'
                       placeholder='# of Seats'
                       onChange={handleSeatChange}
-                      value={seatsForType[i]}
+                      value={seatsForType[i].toString()}
                     >
                     </input>
                   </label>

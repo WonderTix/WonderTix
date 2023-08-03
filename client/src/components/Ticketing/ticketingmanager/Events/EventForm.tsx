@@ -16,7 +16,6 @@ import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
 import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
 import PopUp from '../../Pop-up';
-import {validImageURLCheck} from '../../../../utils/imageURLValidation';
 
 /**
  * Type of ticket
@@ -185,11 +184,6 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       setShowPopUp(true);
       return;
     }
-    if (!(await validImageURLCheck(data.imageurl))) {
-      setErr(`Image Url provided is invalid, please input a valid URL or select default`);
-      setShowPopUp(true);
-      return;
-    }
     data.showings.forEach((showing) => {
       if (showing.eventdate === '' || showing.eventtime === '') {
         setErr('Each showing must have an event date and an event time.');
@@ -202,10 +196,12 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
         return;
       }
       const seatsTypeSum = showing.seatsForType.reduce((acc, seats) => acc+seats, 0);
+      const eventDate = new Date(showing.eventdate+ ' '+ showing.eventtime);
       if (showing.totalseats != seatsTypeSum) {
-        setErr(`Showing on ${showing.eventdate} at ${showing.eventtime} 
-        total seat count of ${showing.totalseats} does not 
-        match sum of available seats per type of ${seatsTypeSum}`);
+        setErr(`The ${eventDate.toLocaleDateString()} 
+        ${eventDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})} 
+        showing's total ticket count does not match
+        the sum of available tickets per type`);
         setShowPopUp(true);
         return;
       }
@@ -242,40 +238,44 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                 <InputFieldForEvent
                   name={'eventname'}
                   id={'eventname'} headerText={'Enter Event Name'}
-                  action={addeventname} actionType={'onChange'} value={def.eventname}
+                  action={addeventname} actionType={'onChange'} value={eventname}
                   placeholder={def.eventname ? def.eventname: 'Event Name'} />
 
                 <InputFieldForEvent
                   name={'eventdescription'}
                   id={'eventdescription'} headerText={'Enter Short Event Description'}
                   actionType={'onChange'}
-                  action={addEventDesc} value={def.eventdescription}
+                  action={addEventDesc} value={eventdescription}
                   placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
 
-                <InputFieldForEvent
-                  name={'imageurl'}
-                  id={'imageurl'} headerText={'Upload Image for Event'}
-                  action={addURL} actionType={'onChange'} value={imageurl}
-                  placeholder={def.imageurl ? def.imageurl : 'image URL'}/>
-                <div className='col-span-2 md:col-span-1 flex flex-col mb-4'>
-                  <label
-                    htmlFor={'defaultImageUrl'}
-                    className={'text-sm text-zinc-600 text-center'}
-                  >
-                    Use Default Image
-                  </label>
-                  <input
-                    name={'defaultImageUrl'}
-                    id={'defaultImageUrl'}
-                    type='checkbox'
-                    value={'default'}
-                    checked={disabledUrl}
-                    onClick={ () => {
-                      setImageURL((!disabledUrl?'defaultEventImage':''));
-                      setDisabledUrl(!disabledUrl);
-                    }}
-                    className={'appearance-none w-8 h-8 p-2 mx-auto checked:bg-blue-500 rounded-lg border border-zinc-300 my-auto my-aut my-auto'}
-                  />
+                <div className={'grid grid-cols-5'}>
+                  <div className='col-span-3 md:col-span-4'>
+                    <InputFieldForEvent
+                      name={'imageurl'}
+                      id={'imageurl'} headerText={'Upload Image for Event'}
+                      action={addURL} actionType={'onChange'} value={imageurl}
+                      placeholder={def.imageurl ? def.imageurl : 'image URL'}/>
+                  </div>
+                  <div className='col-span-2 md:col-span-1 flex flex-col mb-4'>
+                    <label
+                      htmlFor={'defaultImageUrl'}
+                      className={'text-sm text-zinc-600 text-center'}
+                    >
+                      Use Default Image
+                    </label>
+                    <input
+                      name={'defaultImageUrl'}
+                      id={'defaultImageUrl'}
+                      type='checkbox'
+                      value={'default'}
+                      checked={disabledUrl}
+                      onChange={ () => {
+                        setImageURL((!disabledUrl?'defaultEventImage':''));
+                        setDisabledUrl(!disabledUrl);
+                      }}
+                      className={'appearance-none w-8 h-8 p-2 mx-auto checked:bg-blue-500 rounded-lg border border-zinc-300 my-auto my-aut my-auto'}
+                    />
+                  </div>
                 </div>
               </div>
               {/* Showings container*/}
