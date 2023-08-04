@@ -88,12 +88,21 @@ export default function ManageAccounts() {
   };
   const submitNewUser = async (e: any) => {
     e.preventDefault();
+    /** @param {string} token - AccessToken */
+    const token = await getAccessTokenSilently({
+      audience: 'https://localhost:8000',
+      scope: 'admin',
+    });
     /** @param {Response} r - Post data to Accounts Table */
     const r = await fetch(process.env.REACT_APP_API_1_URL + `/accounts`, {
       body: JSON.stringify({username, password}),
       credentials: 'include',
       method: 'POST',
-      headers: {'Content-type': 'application/json'},
+      // headers: {'Content-type': 'application/json'},
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
     });
     if (r.ok) {
       const j = await r.json();
