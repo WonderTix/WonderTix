@@ -24,9 +24,13 @@ const ListComponent = (props: Event) => {
        bg-zinc-900/60 shadow-lg mx-7 hover:scale-110
        transition duration-300
         ease-in-out">
-        <EventImage className=" md:w-[14rem] h-96
-         sm:h-40 md:h-auto object-cover rounded-t-lg
-           md:rounded-lg " src={props.imageurl}/>
+        <EventImage
+          className=" md:w-[14rem] h-96
+          sm:h-40 md:h-auto object-cover rounded-t-lg
+          md:rounded-lg "
+          src={props.imageurl}
+          title={props.title}
+        />
         <div className="p-6 flex flex-col justify-start text-center
          relative w-full">
           <h5 className="text-gray-100 text-xl

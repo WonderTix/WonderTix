@@ -1,8 +1,8 @@
 import React from 'react';
-import defaultImage from '../assets/pp_logo_black.png';
+import defaultImage from '../assets/DefaultEventImage.png';
 
 export const getImageDefault = (url?:string) => {
-  if (url == undefined || url === 'defaultEventImage') {
+  if (url == undefined || url === 'Default Event Image') {
     return defaultImage;
   }
   return url;
@@ -15,15 +15,16 @@ export const imageOnError = (event) => {
 interface EventImageProps {
   className:string;
   src:string;
+  title:string;
 }
 export const EventImage = (props:EventImageProps) => {
-  const {src, className} = props;
+  const {src, className, title} = props;
   return (
     <>
       <img
         className={className}
         src={getImageDefault(src)}
-        alt={'Event Playbill'}
+        alt={`${title} Playbill`}
         onError={imageOnError}/>
     </>);
 };

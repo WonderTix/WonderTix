@@ -80,7 +80,7 @@ const Eventshowings = () => {
           <div>
             <div className='bg-zinc-700/30 p-9 flex flex-col items-center rounded-xl'>
               <div className='flex md:flex-row sm:flex-col'>
-                <EventImage src={imageUrl} className='w-full h-full rounded-xl mr-12'/>
+                <EventImage src={imageUrl} className='w-[75%] h-auto rounded-xl mr-12' title={title}/>
                 <div className='items-center'>
                   <div className='text-white text-4xl font-bold mt-6'>
                     {titleCase(title)}</div>

@@ -56,7 +56,11 @@ const InstancesPage = () => {
          sm:items-center w-full rounded-xl  bg-zinc-900/70 h-full'>
                   <div className='flex flex-col overflow-clip'>
                     <div className='w-full h-40'>
-                      <EventImage className='object-cover h-full w-full rounded-t-xl' src={eventss.imageurl}/>
+                      <EventImage
+                        className='object-cover h-full w-full rounded-t-xl'
+                        src={eventss.imageurl}
+                        title={eventss.title}
+                      />
                     </div>
                     <div className='text-white p-9 flex flex-col items-start '>
                       <div className='text-xl font-bold'>

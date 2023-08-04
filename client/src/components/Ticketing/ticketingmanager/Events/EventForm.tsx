@@ -127,6 +127,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   useEffect(() => {
     if (initialValues) {
       console.log(initialValues.showings);
+      setDisabledUrl(initialValues.imageurl==='Default Event Image');
     }
   }, []);
   const [eventname, seteventname] = useState(def.eventname);
@@ -175,7 +176,9 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
     const count = (name?1:0)+(desc?1:0);
     if (count) {
       const len = count>1;
-      setErr( `${name?'Event Name':''}${len?', and ':''}${desc?'Event Description':''}${len?' fields are missing':' field is missing'}`);
+      setErr( `The ${name?'Event Name':''}${len?', and ':''}
+      ${desc?'Event Description':''}
+      ${len?' fields are missing':' field is missing'}`);
       setShowPopUp(true);
       return;
     }
@@ -184,6 +187,11 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       setShowPopUp(true);
       return;
     }
+
+    if (data.imageurl==='') {
+      data.imageurl = 'Default Event Image';
+    }
+
     data.showings.forEach((showing) => {
       if (showing.eventdate === '' || showing.eventtime === '') {
         setErr('Each showing must have an event date and an event time.');
@@ -192,16 +200,6 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       }
       if (showing.totalseats < 1) {
         setErr('Each showing must have at least 1 ticket.');
-        setShowPopUp(true);
-        return;
-      }
-      const seatsTypeSum = showing.seatsForType.reduce((acc, seats) => acc+seats, 0);
-      const eventDate = new Date(showing.eventdate+ ' '+ showing.eventtime);
-      if (showing.totalseats != seatsTypeSum) {
-        setErr(`The ${eventDate.toLocaleDateString()} 
-        ${eventDate.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})} 
-        showing's total ticket count does not match
-        the sum of available tickets per type`);
         setShowPopUp(true);
         return;
       }
@@ -239,14 +237,14 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                   name={'eventname'}
                   id={'eventname'} headerText={'Enter Event Name'}
                   action={addeventname} actionType={'onChange'} value={eventname}
-                  placeholder={def.eventname ? def.eventname: 'Event Name'} />
+                  placeholder={'Event Name'} />
 
                 <InputFieldForEvent
                   name={'eventdescription'}
                   id={'eventdescription'} headerText={'Enter Short Event Description'}
                   actionType={'onChange'}
                   action={addEventDesc} value={eventdescription}
-                  placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
+                  placeholder={'Event Description'} />
 
                 <div className={'grid grid-cols-5'}>
                   <div className='col-span-3 md:col-span-4'>
@@ -254,7 +252,8 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                       name={'imageurl'}
                       id={'imageurl'} headerText={'Upload Image for Event'}
                       action={addURL} actionType={'onChange'} value={imageurl}
-                      placeholder={def.imageurl ? def.imageurl : 'image URL'}/>
+                      disabled={disabledUrl}
+                      placeholder={'image URL'}/>
                   </div>
                   <div className='col-span-2 md:col-span-1 flex flex-col mb-4'>
                     <label
@@ -270,10 +269,11 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                       value={'default'}
                       checked={disabledUrl}
                       onChange={ () => {
-                        setImageURL((!disabledUrl?'defaultEventImage':''));
+                        setImageURL((!disabledUrl?'Default Event Image':''));
                         setDisabledUrl(!disabledUrl);
                       }}
-                      className={'appearance-none w-8 h-8 p-2 mx-auto checked:bg-blue-500 rounded-lg border border-zinc-300 my-auto my-aut my-auto'}
+                      className={'appearance-none w-8 h-8 p-2 m-auto checked:bg-blue-500 ' +
+                        'rounded-lg border border-zinc-300'}
                     />
                   </div>
                 </div>
