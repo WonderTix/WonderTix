@@ -2,9 +2,83 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {PrismaClient, Prisma} from '@prisma/client';
 
+const stripe = require('stripe')(process.env.PRIVATE_STRIPE_KEY);
+const endpointSecret = process.env.PRIVATE_STRIPE_WEBHOOK;
 const prisma = new PrismaClient();
 
 export const donationController = Router();
+
+/**
+ * @swagger
+ * /2/donation/webhook:
+ *   post:
+ *     summary: Stripe webhook endpoint
+ *     tags:
+ *     - Donation
+ *     requestBody:
+ *       description: Stripe webhook event
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StripeWebhook'
+ *     responses:
+ *       200:
+ *         description: donation updated successfully.
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+donationController.post('/webhook', async (req: Request, res: Response) => {
+  try {
+    let event = req.body;
+    if (endpointSecret) {
+      const signature = req.headers['stripe-signature'];
+      try {
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            signature,
+            endpointSecret,
+        );
+      } catch (err: any) {
+        console.log(`⚠️  Webhook signature verification failed.`, err.message);
+        return res.sendStatus(400);
+      }
+    }
+    switch (event.type) {
+      case 'payment_intent.created':
+        const paymentIntent = event.data.object;
+        console.log('PaymentIntent was successful!');
+        console.log(paymentIntent);
+        break;
+      case 'payment_intent.succeeded':
+        const paymentIntentSucceeded = event.data.object;
+        console.log('PaymentIntent was successful!');
+        console.log(paymentIntentSucceeded);
+        break;
+      case 'charge.succeeded':
+        const charge = event.data.object;
+        console.log('Charge was successful!');
+        console.log(charge);
+        break;
+      case 'payment_method.attached':
+        const paymentMethod = event.data.object;
+        console.log('PaymentMethod was attached to a Customer!');
+        console.log(paymentMethod);
+        break;
+      default:
+        console.log(`Unhandled event type ${event.type}.`);
+    }
+    res.json({received: true});
+  } catch (err: any) {
+    console.log(err);
+    res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+});
 
 /**
  * @swagger
@@ -529,3 +603,4 @@ donationController.delete('/:id', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
+
