@@ -171,13 +171,13 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       showings: showings,
     };
     console.log(data);
-    const name = data.eventname?.trim() === '';
-    const desc = data.eventdescription?.trim() === '';
-    const count = (name?1:0)+(desc?1:0);
-    if (count) {
-      const len = count>1;
-      setErr( `The ${name?'Event Name':''}${len?', and ':''}
-      ${desc?'Event Description':''}
+    const nameMissing= data.eventname?.trim() === '';
+    const descriptionMissing= data.eventdescription?.trim() === '';
+    const missingFieldCount= (nameMissing?1:0)+(descriptionMissing?1:0);
+    if (missingFieldCount) {
+      const len = missingFieldCount>1;
+      setErr( `The ${nameMissing?'Event Name':''}${len?' and ':''}
+      ${descriptionMissing?'Event Description':''}
       ${len?' fields are missing':' field is missing'}`);
       setShowPopUp(true);
       return;
@@ -272,8 +272,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                         setImageURL((!disabledUrl?'Default Event Image':''));
                         setDisabledUrl(!disabledUrl);
                       }}
-                      className={'appearance-none w-8 h-8 p-2 m-auto checked:bg-blue-500 ' +
-                        'rounded-lg border border-zinc-300'}
+                      className={'m-auto'}
                     />
                   </div>
                 </div>

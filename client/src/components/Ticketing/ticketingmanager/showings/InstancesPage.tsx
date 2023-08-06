@@ -45,12 +45,12 @@ const InstancesPage = () => {
            text-transparent bg-gradient-to-r from-sky-500
             to-indigo-500 mb-14' >Select Event</h1>
         <ul className='md:grid md:grid-cols-2 md:gap-8 sm:grid sm:grid-cols-1 sm:gap-4 mt-9'>
-          {allEvents.map((eventss) => (
-            <div key={eventss.id}>
+          {allEvents.map((event) => (
+            <div key={event.id}>
               <button
-                onClick={() => navigate(`/ticketing/showings/${eventss.id}`)}
+                onClick={() => navigate(`/ticketing/showings/${event.id}`)}
                 className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full"
-                style={{backgroundImage: `url(${getImageDefault(eventss.imageurl)}),url(${getImageDefault()})`}}
+                style={{backgroundImage: `url(${getImageDefault(event.imageurl)}),url(${getImageDefault()})`}}
               >
                 <div className=' backdrop-blur-sm  md:flex-row sm:flex-col
          sm:items-center w-full rounded-xl  bg-zinc-900/70 h-full'>
@@ -58,19 +58,19 @@ const InstancesPage = () => {
                     <div className='w-full h-40'>
                       <EventImage
                         className='object-cover h-full w-full rounded-t-xl'
-                        src={eventss.imageurl}
-                        title={eventss.title}
+                        src={event.imageurl}
+                        title={event.title}
                       />
                     </div>
                     <div className='text-white p-9 flex flex-col items-start '>
                       <div className='text-xl font-bold'>
-                        {titleCase(eventss.title)}
+                        {titleCase(event.title)}
                       </div>
                       <div className='text-md font-semibold '>
                         Description
                       </div>
                       <div className='text-sm text-start'>
-                        {eventss.description}
+                        {event.description}
                       </div>
                     </div>
                   </div>
