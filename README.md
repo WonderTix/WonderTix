@@ -106,3 +106,21 @@ This list will be updated as new issues arise. If you your issue is not listed, 
 The client and server are built with docker. In most cases you can restart the containers with `docker-compose restart`.
 
 If that does not work, you can try `docker-compose down`, `docker-compose build --no-cache`, `docker compose up -d --build`.
+
+## Playwright Testing
+
+This section covers the Playwright automated testing setup that has been configured for this project. Currently, the `./client/` directory is the only part with Playwright setup. The `./server/` folder will get it later once authentication issues have been resolved (Currently reworking the server tests to work without the need to connect to Auth0 as we will blow through the limit for API calls in no time as it currently does 2-5 Auth0 API requests per test and 2 times per login/page refresh).
+
+Here is how you run the playwright tests (once they have been written, currently there is an example test in `./client/tests/` and an example Page Object Modle style setup for playwright tests in `./client/tests-examples/`:
+
+- While in the `./client` folder, type `npm run test:playwright`. This will start the playwright tests using Chromium, Firefox, and Webkit (Safari)o
+    - In the future, the command will become `npm run test` once we replace the current react tests
+- You can use the Code Generator to record your steps as you interact with a webpage to make a simple test. Simply run the following: `npm run codegen`. This will automatically open your browser and a recording window. The URL will be `https://localhost:3000`. From there, as you interact with the page, the recorder window will record your steps. You simply copy and paste that into a new test file in the `./client/tests/<test type folder>/testname.spec.ts`. It is important to note that all test file *must* end with `*.spec.ts` and be within the `./client/tests/` folder/subfolder.
+- You can view a trace (recording of the test) by typing `npx playwright show-trace test-results/<folder for test trace>/trace.zip` and a window will open that will let you step through all of the tests steps to see where it failed or is flaky.
+
+If you have any issues with the tests starting, or it complains about needing requirements, type the following in the `./client/` directory: `npx playwright install --with-deps`. This does require root/admin access on the machine, so you may be prompted to type your password, as this will install things such as Chromium, Firefox, Webkit (Safari) and any other required dependencies that may be needed. This should be done automatically after you do the initial `npm install --legacy-peer-deps` or `npm install --force` in the `./client/` directory.
+
+Once tests have been written, they can be organized in various ways. Possibly create the folders: `./client/tests/{events,tickets,donation,general}`. Once that is done, you can put specific tests in each subfolder.
+
+Expect a much more detailed Playwright tutorial and how-to in the very near future. Currently, I recommend visiting the [Playwright](https://playwright.dev/docs/intro)
+

@@ -736,3 +736,8 @@ FodyWeavers.xsd
 **/*.pem
 **/*.key
 **/*.crt
+
+test-results
+playwright-report
+playwright/.cache
+playwright/.auth
