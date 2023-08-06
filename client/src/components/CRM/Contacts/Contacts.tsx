@@ -23,7 +23,7 @@ const Contacts = (): React.ReactElement => {
       setIsLoading(true);
       setContact(params.id);
       const token = await getAccessTokenSilently({
-        audience: 'https://localhost:8000',
+        audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
       await axios
