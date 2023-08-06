@@ -43,7 +43,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
-
+    healthcheck:
+      test: ['CMD-SHELL', 'bash -c "if netstat -ltn | grep -c 8000; then exit 0; else exit 1; fi"']
   client:
     build:
       context: ./client
