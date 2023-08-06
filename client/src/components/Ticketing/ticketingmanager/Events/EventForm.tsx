@@ -127,6 +127,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   useEffect(() => {
     if (initialValues) {
       console.log(initialValues.showings);
+      setDisabledUrl(initialValues.imageurl==='Default Event Image');
     }
   }, []);
   const [eventname, seteventname] = useState(def.eventname);
@@ -138,6 +139,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   const [showings, setShowings] = useState(def.showings);
   const [showPopUp, setShowPopUp] = useState(false);
   const [err, setErr] = useState('');
+  const [disabledUrl, setDisabledUrl] = useState(false);
 
   // FIELDS CALLBACK
   // Set event name
@@ -159,7 +161,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   };
 
   // Handle new play and the show options
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data: WtixEvent = {
       eventname,
       eventid: eventid,
@@ -169,48 +171,39 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       showings: showings,
     };
     console.log(data);
+    const nameMissing= data.eventname?.trim() === '';
+    const descriptionMissing= data.eventdescription?.trim() === '';
+    const missingFieldCount= (nameMissing?1:0)+(descriptionMissing?1:0);
+    if (missingFieldCount) {
+      const len = missingFieldCount>1;
+      setErr( `The ${nameMissing?'Event Name':''}${len?' and ':''}
+      ${descriptionMissing?'Event Description':''}
+      ${len?' fields are missing':' field is missing'}`);
+      setShowPopUp(true);
+      return;
+    }
     if (showings.length === 0) {
       setErr('Please enter at least one showing.');
       setShowPopUp(true);
       return;
     }
-    if (eventname === '' || eventdescription === '' || showings.length === 0) {
-      const conditions = [];
-      if (eventname === '') {
-        conditions.push('Event name');
-      }
-      if (eventdescription === '') {
-        conditions.push('Event description');
-      }
-      let message = '';
-      if (conditions.length > 0) {
-        message += conditions.slice(0, -1).join(', ');
-        if (conditions.length > 1) {
-          message += ' and ';
-        }
-        message += conditions[conditions.length - 1];
-      }
-      if (conditions.length === 1) {
-        message += ' field is missing.';
-      } else {
-        message += ' fields are missing.';
-      }
-      setErr(message);
-      setShowPopUp(true);
-      return;
+
+    if (data.imageurl==='') {
+      data.imageurl = 'Default Event Image';
     }
-    for (let i = 0; i < data.showings.length; i++) {
-      if (data.showings[i].eventdate === '' || data.showings[i].eventtime === '') {
+
+    data.showings.forEach((showing) => {
+      if (showing.eventdate === '' || showing.eventtime === '') {
         setErr('Each showing must have an event date and an event time.');
         setShowPopUp(true);
         return;
       }
-      if (data.showings[i].totalseats < 1) {
+      if (showing.totalseats < 1) {
         setErr('Each showing must have at least 1 ticket.');
         setShowPopUp(true);
         return;
       }
-    }
+    });
     for (let i = 0; i < data.showings.length; i++) {
       if (data.showings[i].ticketTypeId) {
         for (let j = data.showings[i].ticketTypeId.length - 1; j >= 0; j--) {
@@ -243,21 +236,46 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                 <InputFieldForEvent
                   name={'eventname'}
                   id={'eventname'} headerText={'Enter Event Name'}
-                  action={addeventname} actionType={'onChange'} value={def.eventname}
-                  placeholder={def.eventname ? def.eventname: 'Event Name'} />
+                  action={addeventname} actionType={'onChange'} value={eventname}
+                  placeholder={'Event Name'} />
 
                 <InputFieldForEvent
                   name={'eventdescription'}
                   id={'eventdescription'} headerText={'Enter Short Event Description'}
                   actionType={'onChange'}
-                  action={addEventDesc} value={def.eventdescription}
-                  placeholder={def.eventdescription ? def.eventdescription : 'Event Description'} />
+                  action={addEventDesc} value={eventdescription}
+                  placeholder={'Event Description'} />
 
-                <InputFieldForEvent
-                  name={'imageurl'}
-                  id={'imageurl'} headerText={'Upload Image for Event'}
-                  action={addURL} actionType={'onChange'} value={def.imageurl}
-                  placeholder={def.imageurl ? def.imageurl : 'image URL'}/>
+                <div className={'grid grid-cols-5'}>
+                  <div className='col-span-3 md:col-span-4'>
+                    <InputFieldForEvent
+                      name={'imageurl'}
+                      id={'imageurl'} headerText={'Upload Image for Event'}
+                      action={addURL} actionType={'onChange'} value={imageurl}
+                      disabled={disabledUrl}
+                      placeholder={'image URL'}/>
+                  </div>
+                  <div className='col-span-2 md:col-span-1 flex flex-col mb-4'>
+                    <label
+                      htmlFor={'defaultImageUrl'}
+                      className={'text-sm text-zinc-600 text-center'}
+                    >
+                      Use Default Image
+                    </label>
+                    <input
+                      name={'defaultImageUrl'}
+                      id={'defaultImageUrl'}
+                      type='checkbox'
+                      value={'default'}
+                      checked={disabledUrl}
+                      onChange={ () => {
+                        setImageURL((!disabledUrl?'Default Event Image':''));
+                        setDisabledUrl(!disabledUrl);
+                      }}
+                      className={'m-auto'}
+                    />
+                  </div>
+                </div>
               </div>
               {/* Showings container*/}
               <div className='text-3xl font-semibold mt-5'>

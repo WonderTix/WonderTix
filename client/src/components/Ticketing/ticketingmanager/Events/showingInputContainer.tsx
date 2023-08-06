@@ -151,10 +151,16 @@ const ShowingInputContainer = ({
       <div key={index} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
         <label className='font-semibold text-white mb-7 mt-7  '>Show # {index + 1}</label>
         <div className='flex flex-col gap-5 mt-5 md:pr-20'>
-          <h3 className='font-semibold text-white'>Total Tickets For Showing</h3>
+          <label
+            htmlFor={`${showingData.id}TotalSeats`}
+            className='font-semibold text-white'
+          >
+            Total Tickets For Showing
+          </label>
           <input
             className='input rounded-lg p-2 bg-violet-100 w-full md:w-7/8'
             value={showingData.totalseats}
+            id={`${showingData.id}TotalSeats`}
             type='number'
             required
             key={index}
@@ -189,7 +195,7 @@ const ShowingInputContainer = ({
                       type='number'
                       placeholder='# of Seats'
                       onChange={handleSeatChange}
-                      value={seatsForType[i]}
+                      value={seatsForType[i].toString()}
                     >
                     </input>
                   </label>
@@ -208,10 +214,15 @@ const ShowingInputContainer = ({
           </div>
           <div className='flex md:flex-row gap-10 flex-col'>
             <div>
-              <h3 className='font-semibold text-white'>Enter Date</h3>
+              <label
+                htmlFor={`${showingData.id}Date`}
+                className='font-semibold text-white'
+              >
+                Enter Date
+              </label>
               <input
                 type='date'
-                id='date'
+                id={`${showingData.id}Date`}
                 className='input w-full p-2 mt-1 rounded-lg bg-violet-100 mb-7'
                 value={toDateStringFormat(showingData.eventdate)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
@@ -221,10 +232,15 @@ const ShowingInputContainer = ({
               />
             </div>
             <div>
-              <h3 className='font-semibold text-white'>Enter time</h3>
+              <label
+                htmlFor={`${showingData.id}Time`}
+                className='font-semibold text-white'
+              >
+                Enter time
+              </label>
               <input
                 type='time'
-                id='time'
+                id={`${showingData.id}Time`}
                 name='eventtime'
                 placeholder='00:00:00'
                 className='w-full p-2 mt-1 rounded-lg bg-violet-100 mb-7 '
