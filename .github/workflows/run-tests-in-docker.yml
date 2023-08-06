@@ -1,0 +1,26 @@
+name: Docker Compose Test
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, edited, synchronized]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Test
+      run: |
+        docker-compose up -d
+        docker exec -it $(docker inspect -f '{{.Name}}' $(docker-compose ps -q client) | cut -c2-) './run_tests.sh'
+
+    - name: Clean up
+      run: docker-compose down

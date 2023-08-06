@@ -1,27 +1,27 @@
-name: Run unit tests on client
-on:
-  pull_request:
-    types: [opened, reopened, ready_for_review, edited, synchronize]
+# name: Run unit tests on client
+# on:
+#   pull_request:
+#     types: [opened, reopened, ready_for_review, edited, synchronize]
 
-jobs:
-  test-client:
-    name: Run Tests on client
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          cache: 'npm'
-          cache-dependency-path: ./client/package-lock.json
-      - name: npm install
-        run: npm install --force
-        working-directory: ./client
+# jobs:
+#   test-client:
+#     name: Run Tests on client
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Setup node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '18.x'
+#           cache: 'npm'
+#           cache-dependency-path: ./client/package-lock.json
+#       - name: npm install
+#         run: npm install --force
+#         working-directory: ./client
 
-      - name: Check Unit Tests
-        run: npm test
-        working-directory: ./client
+#       - name: Check Unit Tests
+#         run: npm test
+#         working-directory: ./client
 
   # test-server:
   #   name: Run Tests on server
