@@ -95,7 +95,7 @@ const Contacts = (): React.ReactElement => {
                   data={Cust}
                   key={Cust.contactid}
                   {...Cust}/>,
-          )},
+          )}
         </div>
       </div>
     </div>
