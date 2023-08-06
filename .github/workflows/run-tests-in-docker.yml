@@ -20,7 +20,7 @@ jobs:
     - name: Test
       run: |
         docker-compose up -d
-        docker exec -it $(docker inspect -f '{{.Name}}' $(docker-compose ps -q client) | cut -c2-) './run_tests.sh'
+        docker exec $(docker inspect -f '{{.Name}}' $(docker-compose ps -q client) | cut -c2-) './run_tests.sh'
 
     - name: Clean up
       run: docker-compose down
