@@ -130,13 +130,13 @@ const Navigation = () => {
                       <img src={logo} className="mt-[5rem] w-[6rem] " alt="/"/>
                     </button>
                   </div>
-                  <div id="closeSideBar" className="flex items-center justify-center h-10 w-10" onClick={() => setShowMobileMenu(!showMobileMenu)}>
+                  <button id="closeSideBar" className="flex items-center justify-center h-10 w-10" onClick={() => setShowMobileMenu(!showMobileMenu)}>
                     <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-x" width={20} height={20} viewBox="0 0 24 24" strokeWidth="1.5" stroke="white" fill="none" strokeLinecap="round" strokeLinejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" />
                       <line x1={18} y1={6} x2={6} y2={18} />
                       <line x1={6} y1={6} x2={18} y2={18} />
                     </svg>
-                  </div>
+                  </button>
                 </div>
                 <ul className=" space-y-7 mt-30  flex flex-col items-center  ">
                   <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
