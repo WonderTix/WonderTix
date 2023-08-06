@@ -10,17 +10,21 @@ const PageNotFound = () => {
   return (
     <>
       <Navbar />
-      <div className=" w-full relative h-[calc(100vh-80px)] top-[80px] bg-white flex flex-col md:grid md:grid-cols-3">
-        <div className="m-10 md:col-span-2 flex flex-col justify-center md:p-5 lg:p-40">
-          <img src={eImage} alt="404 error image"/>
+      <div className="w-full relative min-h-[calc(100vh-80px)] top-[80px] justify-center bg-white flex flex-col lg:grid lg:grid-cols-3">
+        <div className="md:col-span-2 flex flex-col justify-center">
+          <img src={eImage} alt="404 error image" className="m-auto w-[75%] h-auto" />
         </div>
-        <div className="md:col-span-1 grid grid-cols-1 content-start md:content-center px-2 md:p-10">
-          <h1 className=" mb-5 text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#95a8bb] text-center">{`It looks like you are lost...`}</h1>
-          <h2 className=" text-lg sm:text-xl md:text-2xl lg:text-3xl text-[#95a8bb] text-center">{`Click the button below to get back on the right path.`}</h2>
-          <div className="flex flex-row justify-start">
+        <div className="md:col-span-1 grid content-start md:content-center p-2 lg:pr-10">
+          <h1 className="mb-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#95a8bb] text-center">
+            It looks like you are lost...
+          </h1>
+          <h2 className="mb-3 text-lg sm:text-xl md:text-2xl lg:text-3xl text-[#95a8bb] text-center">
+            Click the button below to get back on the right path.
+          </h2>
+          <div className="flex justify-center">
             <button
               onClick={() => navigate('/')}
-              className='text-lg sm:text-xl md:text-2xl lg:text-3xl bg-[#557793] mx-auto mt-3 py-4 px-6 rounded-2xl text-zinc-100'
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl bg-[#557793] mx-auto mt-3 py-3 px-5 rounded-lg text-zinc-100"
             >
               Go Home
             </button>
