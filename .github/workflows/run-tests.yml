@@ -22,7 +22,7 @@ jobs:
 
     - name: Start WonderTix tests
       id: start-tests
-      run: docker exec --env-file .env.dist wondertix-client-1 /bin/sh -c 'CI=true /usr/local/bin/npm run test -- --ci'
+      run: docker exec --env-file .env.dist wondertix-client-1 /bin/sh -c 'echo -e "Waiting 2 minutes for system to finish initializing"; sleep 120; CI=true /usr/local/bin/npm run test -- --ci'
 
     - name: Shutdown docker containers
       id: bring-down
