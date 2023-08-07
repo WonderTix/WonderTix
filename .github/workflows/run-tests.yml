@@ -20,18 +20,15 @@ jobs:
       id: bring-up
       run: docker compose up client database server -d
 
-    - name: Sleeping for 2 minutes for system to initialize
+    - name: Sleeping for 1 minute for system to initialize
       id: system-sleep
-      run: sleep 120
+      run: sleep 60
 
     - name: Start WonderTix tests
       id: start-tests
-      run: docker exec wondertix-client-1 /bin/sh -c 'CI=true npm run test'
+      run: docker compose exec client /bin/sh -c 'CI=true npm run test'
 
     - name: Shutdown docker containers
       id: bring-down
       run: docker-compose down
 
-    - name: Clean docker system
-      id: clean-system
-      run: docker system prune --all --force

@@ -4,14 +4,6 @@ services:
   server:
     build:
       context: ./server
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 2048M
-        reservations:
-          cpus: '0.25'
-          memory: 512M
     ports:
       - "8000:8000"
     environment:
@@ -31,14 +23,6 @@ services:
   client:
     build:
       context: ./client
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 2048M
-        reservations:
-          cpus: '0.25'
-          memory: 512M
     ports:
       - "3000:3000"
     environment:
@@ -55,14 +39,6 @@ services:
     command: npm run start
   database:
     image: postgres
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 2048M
-        reservations:
-          cpus: '0.25'
-          memory: 1024M
     ports:
       - "5432:5432"
     environment:
