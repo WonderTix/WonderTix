@@ -18,7 +18,7 @@ jobs:
       id: run-tests
       run: |
         docker compose up -d
-        docker exec $(docker inspect -f '{{.Name}}' $(docker-compose ps -q client) | cut -c2-) './run_tests.sh'
+        docker exec wondertix-client-1 './run_tests.sh'
 
     - name: Shutdown docker containers
       run: docker-compose down
