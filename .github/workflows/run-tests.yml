@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: WonderTix Docker Tests
     container: docker
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -14,14 +15,17 @@ jobs:
     - name: Build the WonderTix containers
       id: build
       run: docker compose build
+        
     - name: Bring up the WonderTix containers and perform tests
       id: run-tests
       run: |
         docker compose up -d
-        docker exec wondertix-client-1 './run_tests.sh'
+        docker exec --env-file .env.dist wondertix-client-1 /bin/sh /usr/app/run_tests.sh
 
     - name: Shutdown docker containers
+      id: shutdown
       run: docker-compose down
 
     - name: Clean docker system
+      id: clean-system
       run: docker system prune --all --force
