@@ -26,7 +26,7 @@ jobs:
 
     - name: Start WonderTix tests
       id: start-tests
-      run: docker compose exec client /bin/sh -c 'CI=true npm run test'
+      run: docker exec wondertix-client-1 /bin/sh -c 'CI=true npm run test'
 
     - name: Shutdown docker containers
       id: bring-down
