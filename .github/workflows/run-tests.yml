@@ -16,14 +16,16 @@ jobs:
       id: build
       run: docker compose build
         
-    - name: Bring up the WonderTix containers and perform tests
-      id: run-tests
-      run: |
-        docker compose up -d
-        docker exec --env-file .env.dist wondertix-client-1 /bin/sh /usr/app/run_tests.sh
+    - name: Bring up the WonderTix containers
+      id: bring-up
+      run: docker compose up database server client -d
+
+    - name: Start WonderTix tests
+      id: start-tests
+      run: docker exec --env-file .env.dist wondertix-client-1 /bin/sh -c 'CI=true /usr/local/bin/npm run test -- --ci'
 
     - name: Shutdown docker containers
-      id: shutdown
+      id: bring-down
       run: docker-compose down
 
     - name: Clean docker system
