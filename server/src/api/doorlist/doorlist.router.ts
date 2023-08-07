@@ -41,7 +41,7 @@ export const doorlistRouter = Router();
  *                       firstname: {type: string}
  *                       lastname: {type: string}
  *                       vip: {type: boolean}
- *                       doorbadge: {type: string}
+ *                       donorbadge: {type: string}
  *                       seatingaccom: {type: string}
  *                       eventid: {type: integer}
  *                       eventname: {type: string}
@@ -64,3 +64,4 @@ doorlistRouter.get('/', checkJwt, checkScopes, async (
     res.status(500).send(err.message);
   }
 });
+
