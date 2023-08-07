@@ -1,5 +1,3 @@
-name: Docker Compose Test
-
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, edited, synchronize]
@@ -7,20 +5,23 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    name: WonderTix Docker Tests
+    container: docker
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Docker Compose
+    - name: Build the WonderTix containers
+      id: build
+      run: docker compose build
+    - name: Bring up the WonderTix containers and perform tests
+      id: run-tests
       run: |
-        sudo apt-get update
-        sudo apt-get install -y docker-compose
-
-    - name: Test
-      run: |
-        docker-compose up -d
+        docker compose up -d
         docker exec $(docker inspect -f '{{.Name}}' $(docker-compose ps -q client) | cut -c2-) './run_tests.sh'
 
-    - name: Clean up
+    - name: Shutdown docker containers
       run: docker-compose down
+
+    - name: Clean docker system
+      run: docker system prune --all --force

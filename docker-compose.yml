@@ -2,11 +2,6 @@ version: '3'
 
 services:
   server:
-    deploy:
-      resources:
-        limits:
-          cpus: 0.5
-          memory: 1024M
     build:
       context: ./server
     ports:
@@ -26,11 +21,6 @@ services:
       - ./server:/usr/app
       - /usr/app/node_modules
   client:
-    deploy:
-      resources:
-        limits:
-          cpus: 0.5
-          memory: 1024M
     build:
       context: ./client
     ports:
@@ -49,11 +39,6 @@ services:
     command: npm run start
   database:
     image: postgres
-    deploy:
-      resources:
-        limits:
-          cpus: 0.5
-          memory: 1024M
     ports:
       - "5432:5432"
     environment:
