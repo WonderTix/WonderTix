@@ -1,48 +1,26 @@
-name: Run unit tests on client
+name: Docker Compose Test
+
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, edited, synchronize]
 
 jobs:
-  test-client:
-    name: Run Tests on client
+  test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          cache: 'npm'
-          cache-dependency-path: ./client/package-lock.json
-      - name: npm install
-        run: npm install --force
-        working-directory: ./client
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Check Unit Tests
-        run: npm test
-        working-directory: ./client
+    - name: Set up Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
 
-  # test-server:
-  #   name: Run Tests on server
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
-  #     AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-  #     AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-  #     AUTH0_URL: ${{ secrets.AUTH0_URL }}
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Setup node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18.x'
-  #         cache: 'npm'
-  #         cache-dependency-path: ./client/package-lock.json
-  #     - name: npm install
-  #       run: npm install
-  #       working-directory: ./server
+    - name: Test
+      run: |
+        docker-compose up -d
+        docker exec $(docker inspect -f '{{.Name}}' $(docker-compose ps -q client) | cut -c2-) './run_tests.sh'
 
-  #     - name: Check Unit Tests
-  #       run: npm test
-  #       working-directory: ./server
+    - name: Clean up
+      run: docker-compose down
