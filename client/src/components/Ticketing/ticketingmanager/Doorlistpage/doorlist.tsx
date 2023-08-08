@@ -29,7 +29,7 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   const {getAccessTokenSilently} = useAuth0();
   try {
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkin`, {
@@ -109,7 +109,7 @@ const DoorList = () => {
   const getDoorList = async (event) => {
     try {
       const token = await getAccessTokenSilently({
-        audience: 'https://localhost:8000',
+        audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
 
