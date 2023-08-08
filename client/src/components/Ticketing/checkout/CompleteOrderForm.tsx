@@ -193,14 +193,13 @@ export default function CompleteOrderForm(
                   <select className="input w-full  border
             border-zinc-300 p-4 -mt-4 rounded-lg col-span-2 " name="seatingAcc" onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
                     setseatingAcc(ev.target.value)}>
-                    <option value="option1">None</option>
-                    <option value="option2">No, not at this time</option>
-                    <option value="option3">Yes, wheelchair seat(s)</option>
-                    <option value="option4">Yes, aisle seat(s)</option>
-                    <option value="option5">Yes, seat(s) on the ground or the first level</option>
-                    <option value="option6">Yes, seats in the ASL interpreters section</option>
-                    <option value="option7">Yes, wide seats</option>
-                    <option value="option8">Yes, other (describe accommodation in comment box below, if not listed)</option>
+                    <option value="option1">No, not at this time</option>
+                    <option value="option2">Yes, wheelchair seat(s)</option>
+                    <option value="option3">Yes, aisle seat(s)</option>
+                    <option value="option4">Yes, seat(s) on the ground or the first level</option>
+                    <option value="option5">Yes, seats in the ASL interpreters section</option>
+                    <option value="option6">Yes, wide seats</option>
+                    <option value="option7">Yes, other (describe accommodation in comment box below, if not listed)</option>
                   </select>
                   <span className=" block text-sm font-medium text-slate-700 ml-1">
                    Comments
