@@ -200,7 +200,7 @@ export default function CompleteOrderForm(
                     <option value="option5">Yes, seat(s) on the ground or the first level</option>
                     <option value="option6">Yes, seats in the ASL interpreters section</option>
                     <option value="option7">Yes, wide seats</option>
-                    <option value="option8">Yes, if not listed here, put accommodation in comment section</option>
+                    <option value="option8">Yes, other (describe accommodation in comment box below, if not listed)</option>
                   </select>
                   <span className=" block text-sm font-medium text-slate-700 ml-1">
                    Comments
