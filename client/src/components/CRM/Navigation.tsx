@@ -122,7 +122,7 @@ const Navigation = () => {
         <div className={showMobileMenu ? 'w-full h-full absolute z-40  transform  translate-x-0 ' : '   w-full h-full absolute z-40  transform -translate-x-full'} id="mobile-nav">
           <div className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden" onClick={() => setShowMobileMenu(!showMobileMenu)} />
           <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
-            <div className="flex flex-col justify-between h-full w-full">
+            <div className="flex flex-col justify-between h-full w-full overflow-auto">
               <div>
                 <div className="flex items-center justify-between px-6">
                   <div className="h-12  w-full flex flex-col ml-6 items-center ">
