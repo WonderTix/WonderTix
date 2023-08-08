@@ -52,12 +52,11 @@ const Dashboard = () => {
           </a>
           <a onClick={() => navigate('/ticketing/purchaseticket')} className="hover:scale-105 md:h-60 md:w- transition duration-300 ease-in-out border-none  bg-gradient-to-r from-green-500 to-zinc-500 rounded-3xl  shadow-xl  ">
             <div className="m-8 flex flex-col items-start">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="white" className="bi bi-credit-card h-12 w-12" viewBox="0 0 20 20">
-                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
-                <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
 
-              <h5 className="mb-2 ml-2 text-2xl font-bold tracking-tight text-white">Purchase Tickets</h5>
+              <h5 className="mb-2 ml-1 text-2xl font-bold tracking-tight text-white">Purchase Tickets</h5>
 
             </div>
           </a>
