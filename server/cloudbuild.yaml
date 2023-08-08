@@ -19,7 +19,13 @@ steps:
       - 'us-west2'
       - '--platform'
       - 'managed'
+      - '--memory=1Gi'
+      - '--allow-unauthenticated'
+      - '--min-instances=1'
+      - '--set-env-vars=ENV=dev'
+      - '--set-cloudsql-instances=wondertix-394321:us-west1:wondertix-cd-test-database'
+      - '--service-account=144838889706-compute@developer.gserviceaccount.com'
 
-# Define images to be stored in Artifact Registry
-images:
-  - 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-server'
+# # Define images to be stored in Artifact Registry
+# images:
+#   - 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-server'

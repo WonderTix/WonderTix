@@ -2,13 +2,13 @@
 FROM node:18-alpine
 
 # Upgrade packages and install OpenSSL and bash
-RUN apk upgrade --update-cache --available && \
-    apk add openssl bash && \
-    rm -rf /var/cache/apk/*
+# RUN apk upgrade --update-cache --available && \
+#     apk add openssl bash && \
+#     rm -rf /var/cache/apk/*
 
-# Copy the wait-for-it.sh script and make it executable
-COPY /bin/wait-for-it.sh /usr/wait-for-it.sh
-RUN chmod +x /usr/wait-for-it.sh
+# # Copy the wait-for-it.sh script and make it executable
+# COPY /bin/wait-for-it.sh /usr/wait-for-it.sh
+# RUN chmod +x /usr/wait-for-it.sh
 
 # Set the working directory inside the container
 WORKDIR /usr/app

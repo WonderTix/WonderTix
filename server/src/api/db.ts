@@ -4,7 +4,11 @@ import dotenv from 'dotenv';
 import path from 'path';
 import {Pool, PoolConfig} from 'pg';
 
-dotenv.config({path: path.join(__dirname, '../../../.env')});
+// dotenv.config({path: path.join(__dirname, '../../../.env')});
+dotenv.config({path: path.join(__dirname, '../../.env.dev')});
+console.log("process env in server db.ts");
+console.log(process.env);
+
 
 const dbPort = process.env.DB_PORT as number | undefined ? process.env.DB_PORT as number | undefined : 5432;
 

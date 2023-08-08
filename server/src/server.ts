@@ -17,6 +17,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 import https from 'https';
+import http from 'http';
 import fs from 'fs';
 import 'reflect-metadata';
 import {accountsRouter} from './api/accounts/accounts.router';
@@ -507,7 +508,8 @@ const openApiSpec = swaggerJsdoc({
 });
 
 const createServer = async () => {
-  dotenv.config({path: path.join(__dirname, '../../.env')});
+  // dotenv.config({path: path.join(__dirname, '../../.env')});
+  dotenv.config({path: path.join(__dirname, '../.env.dev')});
 
   const app = express();
 
@@ -580,17 +582,11 @@ const createServer = async () => {
     const credentials = { key: privateKey, cert: certificate };
     server = https.createServer(credentials, app);
   } else {
-    server = https.createServer(app);
+    server = http.createServer(app);
   }
   
   return server; 
 
-  return https
-      .createServer(
-          {
-            key: fs.readFileSync('/usr/app/localhost-key.pem'),
-            cert: fs.readFileSync('/usr/app/localhost.pem'),
-          }, app);
 };
 
 createServer().then((server) => {
