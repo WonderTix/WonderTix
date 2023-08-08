@@ -60,7 +60,7 @@ const openApiSpec = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',
     servers: [{
-      url: 'https://localhost:8000/api',
+      url: process.env.ROOT_URL + '/api',
     }],
     info: {
       title: 'Wondertix API',
@@ -518,7 +518,7 @@ const createServer = async () => {
   app.use(helmet());
   app.use(
       cors({
-        origin: 'https://localhost:3000',
+        origin: process.env.FRONTEND_URL,
         credentials: true,
       }),
   );
