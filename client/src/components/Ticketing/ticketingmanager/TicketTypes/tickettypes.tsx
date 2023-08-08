@@ -61,7 +61,7 @@ const TicketTypes = () => {
           ' ' + newRow.price + ' ' + newRow.concessions);
 
         const token = await getAccessTokenSilently({
-          audience: 'https://localhost:8000',
+          audience: process.env.REACT_APP_ROOT_URL,
           scope: 'admin',
         });
 
@@ -91,7 +91,7 @@ const TicketTypes = () => {
     ticketId.toString();
 
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
 
@@ -196,7 +196,7 @@ const TicketTypes = () => {
     console.log('Submit clicked');
 
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
 
@@ -293,7 +293,7 @@ const TicketTypes = () => {
   // Fetches all the ticket types from the API in the backend
   const getTicketTypes = async () => {
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
 

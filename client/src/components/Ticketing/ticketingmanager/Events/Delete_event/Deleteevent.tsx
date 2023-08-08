@@ -29,7 +29,7 @@ export default function DeleteEvents() {
    */
   async function deleteEvent(showId: string) {
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     const response = await fetch(process.env.REACT_APP_API_1_URL + `/events/${showId}`,

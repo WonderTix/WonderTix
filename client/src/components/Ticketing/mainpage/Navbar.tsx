@@ -41,7 +41,7 @@ const Navbar = ({bMode}: NavbarProps) => {
       setLogin(true);
     }
     const token = await getIdTokenClaims({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
 
@@ -101,9 +101,9 @@ const Navbar = ({bMode}: NavbarProps) => {
           </ul>
         </div>
         {/* Desktop top-right profile nav button */}
-        <div className='md:hidden relative' onClick={handleClick}>
+        <button className='md:hidden relative' onClick={handleClick}>
           {!nav ? <MenuIcon className='w-5'/> : <XIcon className = 'w-5' />}
-        </div>
+        </button>
         <div className="w-1/2 hidden md:flex mr-4 gap-4">
           <div className="w-full flex items-center pl-8 justify-end">
             {login ? (

@@ -12,6 +12,7 @@ import React, {useState, useEffect} from 'react';
 import {editItemQty, selectNumAvailable, CartItem} from '../ticketingmanager/ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {toDollarAmount} from '../../../utils/arrays';
+import {getImageDefault} from '../../../utils/imageURLValidation';
 
 interface CartRowProps {item: CartItem, removeHandler: (id: number) => void}
 
@@ -44,7 +45,7 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
 
   return (
     <div className='bg-zinc-200 w-full flex flex-row
-     h-40 gap-5 rounded-xl bg-cover' style={{backgroundImage: `url(${item.product_img_url})`}} >
+     h-40 gap-5 rounded-xl bg-cover' style={{backgroundImage: `url(${getImageDefault(item.product_img_url)}),url(${getImageDefault()})`}}>
       <div className='flex flex-col md:flex-row sm:flex-col
          sm:items-center w-full rounded-xl  bg-zinc-900/90 overflow-y-scroll justify-between'>
         <span className='ml-5'>

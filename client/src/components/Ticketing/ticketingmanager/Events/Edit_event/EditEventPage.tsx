@@ -72,7 +72,7 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     // updatedData.showings = showings;
     // console.log("sending data: ", updatedData.showings);
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
 
