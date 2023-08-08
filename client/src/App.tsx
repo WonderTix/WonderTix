@@ -15,6 +15,9 @@ import TasksMain from './components/CRM/Tasks/TasksMain';
 import CreateTask from './components/CRM/Tasks/CreateTask';
 import ManageAccountsmain from './components/CRM/Accounts/ManageUsers/ManageAccountsmain';
 import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchmain';
+/* Donor Management */
+import Dashboard from './components/DonorManagement/Dashboard';
+
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
 import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
@@ -35,6 +38,7 @@ import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 
+
 const App = () => {
   return (
     <>
@@ -45,7 +49,6 @@ const App = () => {
         <Route path="/completeorder" element={<Checkoutmain />} />
         <Route path="/success" element={<CheckoutSuccess />} />
         <Route path="/donate" element={<Donationmain />} />
-
 
         <Route path="/admin" element={<ProtectedRoute component={Dashmain} />} />
         <Route path="/admin/accounts" element={<ProtectedRoute component={AccountsMain} />} />
@@ -77,6 +80,7 @@ const App = () => {
         />
         <Route path="/admin/tasks/edit" element={<ProtectedRoute component={TasksEditMain}/>} />
         <Route path="/admin/tasks/accountInformation" element={<ProtectedRoute component={TasksMain}/>} />
+        <Route path ="/admin/donor/dashboard" element ={<ProtectedRoute component ={Dashboard}/>} />
 
         <Route path="/ticketing" element={<ProtectedRoute component={Udashmain} />} />
         <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
