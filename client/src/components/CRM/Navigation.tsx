@@ -59,7 +59,7 @@ const Navigation = () => {
                     </svg>
                   </div>
 
-                  <span className="">Dashboard</span>
+                  <span>Dashboard</span>
                 </div>
               </a>
             </li>
@@ -138,7 +138,7 @@ const Navigation = () => {
                     </svg>
                   </div>
 
-                  <span className="">Reporting</span>
+                  <span>Reporting</span>
                 </div>
               </a>
             </li>
@@ -165,7 +165,7 @@ const Navigation = () => {
                     </svg>
                   </div>
 
-                  <span className="">Task</span>
+                  <span>Task</span>
                 </div>
               </button>
             </li>
@@ -269,7 +269,7 @@ const Navigation = () => {
                           </svg>
                         </div>
 
-                        <span className="">Dashboard</span>
+                        <span>Dashboard</span>
                       </div>
                     </a>
                   </li>
@@ -294,7 +294,7 @@ const Navigation = () => {
                           />
                         </svg>
 
-                        <span className="">Accounts</span>
+                        <span>Accounts</span>
                       </div>
                     </a>
                   </li>
@@ -322,7 +322,7 @@ const Navigation = () => {
                           </svg>
                         </div>
 
-                        <span className="">Contacts</span>
+                        <span>Contacts</span>
                       </div>
                     </a>
                   </li>
@@ -350,7 +350,7 @@ const Navigation = () => {
                           </svg>
                         </div>
 
-                        <span className="">Reporting</span>
+                        <span>Reporting</span>
                       </div>
                     </a>
                   </li>
@@ -377,18 +377,18 @@ const Navigation = () => {
                           </svg>
                         </div>
 
-                        <span className="">Task</span>
+                        <span>Task</span>
                       </div>
                     </button>
                   </li>
                   <li
                     className={
-                      !showTaskMenu
-                        ? 'hidden'
-                        : ' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
+                      showTaskMenu
+                        ? ' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
+                        : 'hidden'
                     }
                   >
-                    <div className=" flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl">
+                    <div>
                       <div className="py-1 font-bold">
                         <a
                           onClick={() => navigate('/admin/tasks/create')}
