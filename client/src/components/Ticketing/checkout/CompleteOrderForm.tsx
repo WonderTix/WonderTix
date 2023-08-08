@@ -38,7 +38,7 @@ export interface CheckoutFormInfo {
     phone?: string,
     email: string,
     visitSource?: string,
-    seatingAcc: boolean,
+    seatingAcc: string,
     comments?: string
 }
 
@@ -87,7 +87,7 @@ export default function CompleteOrderForm(
   const [phone, setphoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [visitSource, setvisitSource] = useState('');
-  const [seatingAcc, setseatingAcc] = useState(false);
+  const [seatingAcc, setseatingAcc] = useState('');
   const [comments, setComments] = useState('');
   const [optIn, setOptIn] = useState(false);
   const handleSubmit = () => {
@@ -187,27 +187,34 @@ export default function CompleteOrderForm(
             border-zinc-300 p-4 rounded-lg " type='text' name="visit-source" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setvisitSource(ev.target.value)} placeholder="How did you hear about us?"/>
                   </div>
-
-
+                  <span className=" block text-sm font-medium text-slate-700 ml-1">
+                    Seating Accommodations
+                  </span>
+                  <select className="input w-full  border
+            border-zinc-300 p-4 -mt-4 rounded-lg col-span-2 " name="seatingAcc" onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
+                    setseatingAcc(ev.target.value)}>
+                    <option value="option1">None</option>
+                    <option value="option2">No, not at this time</option>
+                    <option value="option3">Yes, wheelchair seat(s)</option>
+                    <option value="option4">Yes, aisle seat(s)</option>
+                    <option value="option5">Yes, seat(s) on the ground or the first level</option>
+                    <option value="option6">Yes, seats in the ASL interpreters section</option>
+                    <option value="option7">Yes, wide seats</option>
+                    <option value="option8">Yes, if not listed here, put accommodation in comment section</option>
+                  </select>
+                  <span className=" block text-sm font-medium text-slate-700 ml-1">
+                   Comments
+                  </span>
                   <input className="input w-full  border
-            border-zinc-300 p-4 rounded-lg col-span-2 " type='text' name="comments" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+            border-zinc-300 p-4 -mt-4 rounded-lg col-span-2 " type='text' name="comments" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                     setComments(ev.target.value)} placeholder="Comments"/>
                 </div>
-                <div className='flex flex-col items-start gap-3 mt-10'>
+                <div className='flex flex-col items-start gap-3 mt-5' mb-5>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     <input type='checkbox' onChange={(): void =>
                       setOptIn(!optIn)} name="opt-in" />
                     <div>I would like to receive email info from Portland Playhouse</div>
                   </div>
-                  <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
-                    {!donationForm && <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
-                      <input type='checkbox' onChange={(): void =>
-                        setseatingAcc(!seatingAcc)} name="seating-accommodation"/>
-                      <div>I need seating accommodations</div>
-                    </div>
-                    }
-                  </div>
-
                 </div>
               </div>
 
