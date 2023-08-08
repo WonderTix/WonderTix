@@ -25,7 +25,7 @@ export const ContactOneResult = () => {
     if (params.contactid) {
       setIsLoading(true);
       const token = await getAccessTokenSilently({
-        audience: 'https://localhost:8000',
+        audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
       await axios
@@ -198,7 +198,7 @@ export const ContactDisplayTicket = ({
 
   const handleRefund = async (orderid, amount) => {
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
 

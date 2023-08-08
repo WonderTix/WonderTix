@@ -44,7 +44,7 @@ const CreateEventPage = () => {
   // TODO: create endpoint that combines /api/create-event & /api/create-showings
   const onSubmit = async (formData: WtixEvent) => {
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     const {imageurl, eventname, eventdescription, showings} = formData;

@@ -147,6 +147,9 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+# Build
+client/build
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -733,3 +736,8 @@ FodyWeavers.xsd
 **/*.pem
 **/*.key
 **/*.crt
+
+test-results
+playwright-report
+playwright/.cache
+playwright/.auth

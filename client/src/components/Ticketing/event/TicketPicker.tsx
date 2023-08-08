@@ -23,20 +23,20 @@ import isSameDay from 'date-fns/isSameDay';
 import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
 
 /**
-* @module
-* @param {Date} selectedDate
-* @param {Ticket[]} displayedShowings
-* @param {Ticket} selectedTicket
-* @param {number} qty
-* @param {boolean} concessions
-* @param {TicketType[]} ticketTypes
-* @param {TicketType} selectedTicketType
-* @param {boolean} showCalendar
-* @param {boolean} showTimes
-* @param {boolean} showClearBtn
-* @param {TicketType} ticketType
-* @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
-*/
+ * @module
+ * @param {Date} selectedDate
+ * @param {Ticket[]} displayedShowings
+ * @param {Ticket} selectedTicket
+ * @param {number} qty
+ * @param {boolean} concessions
+ * @param {TicketType[]} ticketTypes
+ * @param {TicketType} selectedTicketType
+ * @param {boolean} showCalendar
+ * @param {boolean} showTimes
+ * @param {boolean} showClearBtn
+ * @param {TicketType} ticketType
+ * @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
+ */
 interface TicketPickerState {
     selectedDate?: Date,
     displayedShowings: Ticket[],
@@ -60,17 +60,17 @@ export interface TicketType {
 }
 
 /**
-* Initial state
-* displayedShowings: [],
-* qty: 0,
-* concessions: false,
-* ticketTypes: [],
-* selectedTicketType: null,
-* showCalendar: true,
-* showTimes: false,
-* showClearBtn: false,
-* prompt: 'selectDate',
-*/
+ * Initial state
+ * displayedShowings: [],
+ * qty: 0,
+ * concessions: false,
+ * ticketTypes: [],
+ * selectedTicketType: null,
+ * showCalendar: true,
+ * showTimes: false,
+ * showClearBtn: false,
+ * prompt: 'selectDate',
+ */
 const initialState: TicketPickerState = {
   displayedShowings: [],
   qty: 0,
@@ -99,21 +99,21 @@ const changeTicketType = (t: TicketType) => ({type: 'change_ticket_type', payloa
 let tempPay = 0;
 
 /**
-* TicketPickerReducer is meant to be used to lower ticket numbers
-* Default:
-*      ...state,
-*      selectedDate: date,
-*      selectedTicket: undefined,
-*      displayedShowings: sameDayShows,
-*      showCalendar: false,
-*      showTimes: true,
-*      showClearBtn: true,
-*      prompt: 'selectTime',
-*
-* @param state
-* @param action
-* @returns a certain default state if failed
-*/
+ * TicketPickerReducer is meant to be used to lower ticket numbers
+ * Default:
+ *      ...state,
+ *      selectedDate: date,
+ *      selectedTicket: undefined,
+ *      displayedShowings: sameDayShows,
+ *      showCalendar: false,
+ *      showTimes: true,
+ *      showClearBtn: true,
+ *      prompt: 'selectTime',
+ *
+ * @param state
+ * @param action
+ * @returns a certain default state if failed
+ */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
   switch (action.type) {
     case 'date_selected': {
@@ -162,11 +162,11 @@ interface TicketPickerProps {
 }
 
 /**
-* Used to choose the tickets
-*
-* @param {TicketPickerProps} props
-* @returns {ReactElement} and the correct ticket when picking
-*/
+ * Used to choose the tickets
+ *
+ * @param {TicketPickerProps} props
+ * @returns {ReactElement} and the correct ticket when picking
+ */
 const TicketPicker = (props: TicketPickerProps) => {
   const [ticketTypesState, setTicketTypesState] = useState<TicketPickerState>(initialState);
 

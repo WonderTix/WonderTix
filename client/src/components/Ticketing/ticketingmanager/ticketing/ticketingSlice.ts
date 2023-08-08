@@ -65,6 +65,7 @@ export interface Ticket {
 
 /**
  * TicketType Info
+ *
  * @module
  * @param {number} id
  * @param {string} name
@@ -289,6 +290,7 @@ const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) =
  *
  * @module
  * @param data.ticket
+ * @param data.tickettype
  * @param data.event
  * @param data.qty
  * @param {Array} data - ticket, event, qty, CartItem
