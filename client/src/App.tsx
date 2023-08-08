@@ -80,7 +80,7 @@ const App = () => {
         />
         <Route path="/admin/tasks/edit" element={<ProtectedRoute component={TasksEditMain}/>} />
         <Route path="/admin/tasks/accountInformation" element={<ProtectedRoute component={TasksMain}/>} />
-        <Route path ="/admin/donor/dashboard" element ={<ProtectedRoute component ={Dashboard}/>} />
+        <Route path ="/admin/donor" element ={<ProtectedRoute component ={Dashboard}/>} />
 
         <Route path="/ticketing" element={<ProtectedRoute component={Udashmain} />} />
         <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
