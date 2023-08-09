@@ -26,7 +26,7 @@ const Navigation = () => {
   return (
     <div className="w-full h-full bg-gray-100  ">
       <div className="flex flex-no-wrap">
-        <div className="absolute md:relative w-[14rem] h-screen  bg-zinc-900 hidden md:block z-10">
+        <div className="absolute md:relative w-[14rem] h-screen  bg-zinc-900 hidden md:block z-10 overflow-auto">
           <div className="h-12 w-full flex flex-col items-center">
             <button
               onClick={() => navigate('/')}
