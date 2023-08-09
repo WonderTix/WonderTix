@@ -211,7 +211,10 @@ const Navigation = () => {
         >
           <div
             className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden"
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            onClick={() => {
+              setShowMobileMenu(!showMobileMenu);
+              setShowTaskMenu(false);
+            }}
           />
           <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
             <div className="flex flex-col justify-between h-full w-full overflow-auto">
@@ -225,7 +228,10 @@ const Navigation = () => {
                   <button
                     id="closeSideBar"
                     className="flex items-center justify-center h-10 w-10"
-                    onClick={() => setShowMobileMenu(!showMobileMenu)}
+                    onClick={() => {
+                      setShowMobileMenu(!showMobileMenu);
+                      setShowTaskMenu(false);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -245,7 +251,7 @@ const Navigation = () => {
                     </svg>
                   </button>
                 </div>
-                <ul className=" space-y-7 mt-30  flex flex-col items-center  ">
+                <ul className=" space-y-7 flex flex-col items-center  ">
                   <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                     <a
                       onClick={() => navigate('/admin')}
@@ -359,7 +365,7 @@ const Navigation = () => {
                       onClick={handleClick}
                       className="bg-transparent border-none rounded-none  transition duration-300 ease-in-out "
                     >
-                      <div className="flex flex-col gap-2 items-center">
+                      <div className="flex flex-col gap-2 items-center mb-4">
                         <div>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -385,7 +391,7 @@ const Navigation = () => {
                     className={
                       !showTaskMenu
                         ? ' hidden '
-                        : ' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
+                        : ' cursor-pointer text-zinc-200 font-semibold text-center text-md leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
                     }
                   >
                     <div className="flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl">
