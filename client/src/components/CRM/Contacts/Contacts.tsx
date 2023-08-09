@@ -60,7 +60,9 @@ const Contacts = (): React.ReactElement => {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='flex flex-col  md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
         <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500 mb-14     ' >Contacts</h1>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-cyan-500 to-blue-500 mb-10 pb-4'>
+            Contacts
+          </h1>
         </div>
         <form className='bg-white border border-zinc-300 w-full flex flex-row p-2
         rounded-lg shadow-md justify-between'

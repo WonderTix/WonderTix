@@ -22,7 +22,7 @@ import {useAuth0} from '@auth0/auth0-react';
  * @returns {ReactElement}
  */
 export default function ManageAccounts() {
-/** @param {any} rows - Accounts table rows */
+  /** @param {any} rows - Accounts table rows */
   const [rows, setRows] = useState([]);
   /** @param {string} username - Username */
   const [username, setUsername] = useState('');
@@ -175,13 +175,15 @@ export default function ManageAccounts() {
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-300 to-purple-400 mb-14     ' >Manage Accounts</h1>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-300 to-purple-400 mb-10 pb-4'>
+            Manage Accounts
+          </h1>
         </div>
         <div>
-          <div className='mt-7 ml-2 text-xl font-bold mb-2 text-zinc-700 '>
+          <div className='ml-2 text-xl font-bold mb-2 text-zinc-700 '>
             Edit Accounts
           </div>
-          <div className=' bg-white shadow-xl p-4 rounded-xl'>
+          <div className='bg-white shadow-xl p-4 rounded-xl'>
             <DataGrid
               getRowId={(data) => data.userid}
               rowsPerPageOptions={[10]}

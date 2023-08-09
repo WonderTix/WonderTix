@@ -10,7 +10,11 @@ import Eventshowings from './eventshowings';
  */
 const Eventshowingmain = () => {
   return (
-    <><Navbar bMode /><Eventshowings /><Footer /></>
+    <>
+      <Navbar bMode />
+      <Eventshowings />
+      <Footer />
+    </>
   );
 };
 
