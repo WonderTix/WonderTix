@@ -96,13 +96,12 @@ var multiFileSwagger = function (root) {
     });
 };
 var createServer = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var app, hostname, swaggerDocument;
+    var app, swaggerDocument;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 dotenv_1["default"].config({ path: path_1["default"].join(__dirname, '../../.env') });
                 app = (0, express_1["default"])();
-                hostname = process.env.HOSTNAME || 'localhost';
                 // const stripeKey = process.env.PRIVATE_STRIPE_KEY ?
                 //   process.env.PRIVATE_STRIPE_KEY : '';
                 // const stripe = new Stripe(stripeKey, {
@@ -114,7 +113,7 @@ var createServer = function () { return __awaiter(void 0, void 0, void 0, functi
                 app.use((0, morgan_1["default"])('dev'));
                 app.use((0, helmet_1["default"])());
                 app.use((0, cors_1["default"])({
-                    origin: 'https://localhost:3000',
+                    origin: process.env.FRONTEND_URL,
                     credentials: true
                 }));
                 /* Connect Routers */

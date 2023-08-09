@@ -35,7 +35,7 @@ export default function ManageAccounts() {
     try {
       /** @param {string} token - AccessToken */
       const token = await getAccessTokenSilently({
-        audience: 'https://localhost:8000',
+        audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
       /** @param {Response} r - Get data from Accounts Table */
@@ -67,7 +67,7 @@ export default function ManageAccounts() {
     try {
       /** @param {string} token - AccessToken */
       const token = await getAccessTokenSilently({
-        audience: 'https://localhost:8000',
+        audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
       /** @param {Response} r - Delete data from Accounts Table */
@@ -121,7 +121,7 @@ export default function ManageAccounts() {
   const editUser = async (userid: number, user: Record<string, unknown>) => {
     /** @param {string} token - AccessToken */
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     await fetch(process.env.REACT_APP_API_1_URL + '/changeUser', {

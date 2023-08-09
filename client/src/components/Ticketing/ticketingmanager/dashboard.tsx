@@ -50,6 +50,16 @@ const Dashboard = () => {
 
             </div>
           </a>
+          <a onClick={() => navigate('/ticketing/purchaseticket')} className="hover:scale-105 md:h-60 md:w- transition duration-300 ease-in-out border-none  bg-gradient-to-r from-green-500 to-zinc-500 rounded-3xl  shadow-xl  ">
+            <div className="m-8 flex flex-col items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+
+              <h5 className="mb-2 ml-1 text-2xl font-bold tracking-tight text-white">Purchase Tickets</h5>
+
+            </div>
+          </a>
           <a onClick={() => navigate('/ticketing/addnewsletter')} className="border-none hover:border-none hover:scale-105 transition duration-300 ease-in-out bg-gradient-to-r from-yellow-600 to-red-600 rounded-3xl  shadow-xl  ">
 
             <div className="m-8 flex flex-col items-start">

@@ -11,6 +11,7 @@ import format from 'date-fns/format';
 import {openSnackbar} from '../../snackbarSlice';
 import {fetchEventInstanceData} from '../../Events/events_pages/eventsSlice';
 import {useAuth0} from '@auth0/auth0-react';
+import {getImageDefault} from '../../../../../utils/imageURLValidation';
 
 /**
  * @param {string} eventid - EventPageProps uses this
@@ -50,7 +51,7 @@ const Showing = () => {
   const deleteEvent = async () => {
     handleClick2();
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/${eventToDelete}`,
@@ -79,7 +80,7 @@ const Showing = () => {
   if (eventData === undefined) return <p>Whoops! Event not found</p>;
   const {title, description, imageurl, tickets} = eventData;
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute bg-cover' style={{backgroundImage: `url(${imageurl})`}}>
+    <div className='w-full h-screen overflow-x-hidden absolute bg-cover' style={{backgroundImage: `url(${getImageDefault(imageurl)}),url(${getImageDefault()})`}}>
       <div className='backdrop-blur-sm h-screen overflow-x-hidden w-full absolute bg-zinc-900/70'>
         <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
