@@ -29,7 +29,7 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
   const {getAccessTokenSilently} = useAuth0();
   try {
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkin`, {
@@ -109,7 +109,7 @@ const DoorList = () => {
   const getDoorList = async (event) => {
     try {
       const token = await getAccessTokenSilently({
-        audience: 'https://localhost:8000',
+        audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
 
@@ -156,7 +156,7 @@ const DoorList = () => {
           )}
         </select>
         <div className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</div>
-        <div className='text-2xl font-bold text-zinc-700'>{`${date}, ${time}`}</div>
+        <div className='text-2xl font-bold text-zinc-700'>{date && time ? `${date}, ${time}` : `${date}${time}`}</div>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
           <DataGrid
             className='bg-white'

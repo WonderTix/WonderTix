@@ -8,10 +8,13 @@ import React from 'react';
  */
 const AccountResults = ({
   data,
+  hasSearched,
 }: {
   data: any,
+  hasSearched: boolean,
 }): React.ReactElement => {
-  if (!data) return <div>Empty</div>;
+  if (!data && hasSearched) return <p>Empty</p>;
+  if (!data) return null;
 
   const {username, id, is_superadmin: isSuperadmin} = data;
 

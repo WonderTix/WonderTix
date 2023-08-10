@@ -13,6 +13,7 @@ const Accounts = (): React.ReactElement => {
   const params = useParams();
   const navigate = useNavigate();
   const [account, setAccount] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
@@ -21,12 +22,13 @@ const Accounts = (): React.ReactElement => {
   useEffect(() => {
     const getData = async () => {
       const token = await getAccessTokenSilently({
-        audience: 'https://localhost:8000',
+        audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
       if (params.id) {
         setIsLoading(true);
         setAccount(params.id);
+        setHasSearched(true);
         await axios
             .get(
                 process.env.REACT_APP_API_1_URL + `/accounts/search?username=${params.id}`, {
@@ -89,7 +91,7 @@ const Accounts = (): React.ReactElement => {
         </form>
         <div className='mt-9 text-zinc-600 w-full'>
           {isLoading ? <div className="radial-progress"/> :
-         <AccountResults data={data} />}
+         <AccountResults data={data} hasSearched={hasSearched} />} {}
         </div>
       </div>
     </div>

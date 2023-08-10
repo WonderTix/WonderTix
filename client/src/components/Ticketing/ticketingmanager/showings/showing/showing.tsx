@@ -51,7 +51,7 @@ const Showing = () => {
   const deleteEvent = async () => {
     handleClick2();
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/${eventToDelete}`,
