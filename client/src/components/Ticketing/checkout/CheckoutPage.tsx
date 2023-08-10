@@ -71,8 +71,8 @@ export default function CheckoutPage(): ReactElement {
           </div>
           <div className='flex flex-col md:flex-row sm:flex-col
          sm:items-center w-full h-full'>
-            <div className='w-full h-full md:mt-20 sm:mt-20 bg-zinc-100 p-9 flex flex-col gap-5 items-start rounded-xl'>
-              <div className='flex flex-col items-center h-full w-full'>
+            <div className='w-full h-full md:mt-20 sm:mt-20 bg-zinc-100 p-9 flex flex-col gap-5 items-start rounded-xl overflow-auto'>
+              <div className='flex flex-col items-center h-auto w-full'>
                 <div className='text-5xl font-bold mb-9'>Complete Order</div>
                 {checkoutStep === 'donation' && <DonationPage onNext={() => setCheckoutStep('form')}/>}
                 {checkoutStep === 'form' && <CompleteOrderForm disabled={cartItems.length === 0} onSubmit={doCheckout} onBack={() => setCheckoutStep('donation')}/>}
