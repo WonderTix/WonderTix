@@ -169,37 +169,37 @@ const Navigation = () => {
                 </div>
               </button>
             </li>
-            <li
-              className={
-                !showTaskMenu
-                  ? 'hidden'
-                  : ' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
-              }
-            >
-              <div className=" flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl">
-                <div className="py-1 font-bold">
-                  <a
-                    onClick={() => navigate('/admin/tasks/create')}
-                    className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600"
-                  >
-                    Create
-                  </a>
-                  <a
-                    onClick={() => navigate('/admin/tasks/edit')}
-                    className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent "
-                  >
-                    Edit
-                  </a>
-                  <a
-                    onClick={() => navigate('/admin/tasks/accountInformation')}
-                    className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 "
-                  >
-                    Account Information
-                  </a>
-                </div>
-              </div>
-            </li>
           </ul>
+          <div
+            className={
+              !showTaskMenu
+                ? 'hidden'
+                : ' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
+            }
+          >
+            <div className=" flex flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl mx-2 mb-2">
+              <div className="py-1 font-bold">
+                <a
+                  onClick={() => navigate('/admin/tasks/create')}
+                  className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600"
+                >
+                  Create
+                </a>
+                <a
+                  onClick={() => navigate('/admin/tasks/edit')}
+                  className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent "
+                >
+                  Edit
+                </a>
+                <a
+                  onClick={() => navigate('/admin/tasks/accountInformation')}
+                  className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 "
+                >
+                  Account Information
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
         <div
           className={
@@ -387,39 +387,39 @@ const Navigation = () => {
                       </div>
                     </button>
                   </li>
-                  <li
-                    className={
-                      !showTaskMenu
-                        ? ' hidden '
-                        : ' cursor-pointer text-zinc-200 font-semibold text-center text-md leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
-                    }
-                  >
-                    <div className="flex- flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl">
-                      <div className="py-1 font-bold">
-                        <a
-                          onClick={() => navigate('/admin/tasks/create')}
-                          className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600"
-                        >
-                          Create
-                        </a>
-                        <a
-                          onClick={() => navigate('/admin/tasks/edit')}
-                          className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent "
-                        >
-                          Edit
-                        </a>
-                        <a
-                          onClick={() =>
-                            navigate('/admin/tasks/accountInformation')
-                          }
-                          className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 "
-                        >
-                          Account Information
-                        </a>
-                      </div>
-                    </div>
-                  </li>
                 </ul>
+                <div
+                  className={
+                    !showTaskMenu
+                      ? ' hidden '
+                      : ' cursor-pointer text-zinc-200 font-semibold text-center text-md leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
+                  }
+                >
+                  <div className="flex flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl mx-3 mb-2">
+                    <div className="py-1 font-bold">
+                      <a
+                        onClick={() => navigate('/admin/tasks/create')}
+                        className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600"
+                      >
+                        Create
+                      </a>
+                      <a
+                        onClick={() => navigate('/admin/tasks/edit')}
+                        className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent "
+                      >
+                        Edit
+                      </a>
+                      <a
+                        onClick={() =>
+                          navigate('/admin/tasks/accountInformation')
+                        }
+                        className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 "
+                      >
+                        Account Information
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Bottom corner nav elements */}
