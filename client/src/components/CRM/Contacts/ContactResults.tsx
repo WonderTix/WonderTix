@@ -31,7 +31,7 @@ const ContactResults = ({
    */
   async function deleteEvent(showId: number) {
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     const response = await fetch(process.env.REACT_APP_API_1_URL + `/contacts/${showId}`,
@@ -209,7 +209,7 @@ export const contactForm = (data: any): React.ReactElement => {
       volunteerlist: false,
     };
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
 

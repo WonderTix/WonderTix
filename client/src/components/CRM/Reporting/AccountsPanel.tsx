@@ -45,7 +45,7 @@ const AccountsPanel = ({
       };
 
       const token = await getAccessTokenSilently({
-        audience: 'https://localhost:8000',
+        audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
 

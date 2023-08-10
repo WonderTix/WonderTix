@@ -9,7 +9,7 @@ exports.__esModule = true;
 exports.checkScopes = exports.checkJwt = void 0;
 const jwtBearerToken = require('express-oauth2-jwt-bearer');
 exports.checkJwt = (0, jwtBearerToken.auth)({
-  audience: 'https://localhost:8000',
-  issuerBaseURL: 'https://wtix-dev.us.auth0.com',
+  audience: process.env.AUTH0_AUDIENCE,
+  issuerBaseURL: process.env.AUTH0_URL,
 });
 exports.checkScopes = (0, jwtBearerToken.requiredScopes)('admin');

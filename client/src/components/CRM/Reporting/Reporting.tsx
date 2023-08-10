@@ -48,7 +48,7 @@ const ReportingTest = (): React.ReactElement => {
     let headers: any;
     let route: any;
     const token = await getAccessTokenSilently({
-      audience: 'https://localhost:8000',
+      audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
     switch (value) {
