@@ -63,7 +63,7 @@ const SearchBar = (props: any): React.ReactElement => {
         rounded-lg shadow-md justify-between'
       >
         <input
-          type="input "
+          type="input"
           className='w-full p-2 rounded-lg'
           placeholder={props.data}
           value={contact}

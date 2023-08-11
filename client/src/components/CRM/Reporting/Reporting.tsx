@@ -118,7 +118,9 @@ const ReportingTest = (): React.ReactElement => {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className=' md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
         <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 mb-14     ' >Reporting</h1>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 mb-10 pb-4'>
+            Reporting
+          </h1>
         </div>
         <div className='flex md:flex-row md:items-start sm:flex-col sm:items-center
      container '>

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
 import {
   DataGrid,
@@ -147,8 +148,9 @@ const TicketTypes = () => {
                     <h3 className="text-lg leading-6 font-medium text-gray-900"
                       id="modal-title">Delete </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">Are you sure you
-                        want to delete this?</p>
+                      <p className="text-sm text-gray-500">
+                        Are you sure you want to delete this?
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -325,13 +327,11 @@ const TicketTypes = () => {
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
       <div
-        className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-         sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'
+        className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem]
+        sm:mb-[11rem]'
       >
-        <h1
-          className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-           bg-gradient-to-r from-green-400 to-teal-700'
-        >
+        <h1 className='font-bold text-5xl mb-10 pb-4 bg-clip-text text-transparent
+        bg-gradient-to-r from-green-400 to-teal-700'>
           Manage Ticket Types
         </h1>
         <button
@@ -352,7 +352,6 @@ const TicketTypes = () => {
           experimentalFeatures={{newEditingApi: true}}
           processRowUpdate={handleEditTicket}
           onProcessRowUpdateError={(err) => console.log(err)}
-          // }}
         />
         {confirmDeletePrompt && showConfirmDeletePrompt(cellData)}
       </div>
