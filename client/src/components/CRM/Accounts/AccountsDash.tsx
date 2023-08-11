@@ -3,6 +3,7 @@
 // import React from 'react';
 // import Login from './Login';
 import {useNavigate} from 'react-router-dom';
+
 /**
  * Account dashboard
  *
@@ -12,10 +13,11 @@ const AccountsDash = () => {
   const navigate = useNavigate();
   return (
     <div className='w-full h-screen   overflow-x-hidden absolute    '>
-      <div className='md:ml-[22rem] md:mt-40  sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]   '>
-
+      <div className='md:ml-[22rem] md:mt-40  sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14     ' >Accounts</h1>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-10 pb-4'>
+            Accounts
+          </h1>
         </div>
         <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-5 '>
           <a onClick={() => navigate('/admin/accounts/manageaccount')} className="hover:scale-105 md:h-80 md:w- transition duration-300 ease-in-out border-none  bg-gradient-to-b from-green-300 to-purple-400 rounded-3xl  shadow-xl  ">
@@ -39,10 +41,7 @@ const AccountsDash = () => {
             </div>
           </a>
         </div>
-
-
       </div>
-
     </div>
   );
 };

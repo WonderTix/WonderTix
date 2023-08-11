@@ -322,3 +322,22 @@ enum state {
   in_progress
   completed
 }
+
+model StripeWebhook {
+	id        Int     @id @default(autoincrement())
+	eventid   String
+	event     String
+	livemode  Boolean
+	created   Int
+	data      String
+	object    String
+	requestid String
+	type      String
+}
+
+model Error {
+	id        Int     @id @default(autoincrement())
+	message   String
+	stack     String
+	createdAt Int
+}

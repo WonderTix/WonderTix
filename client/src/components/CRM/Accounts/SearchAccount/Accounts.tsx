@@ -62,7 +62,9 @@ const Accounts = (): React.ReactElement => {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
         <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-rose-400 to-orange-300 mb-14     ' >Search Account</h1>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-rose-400 to-orange-300 mb-10 pb-4'>
+            Search Account
+          </h1>
         </div>
         <form className='border bg-white border-zinc-300 w-full flex flex-row p-2
         rounded-lg shadow-md justify-between'
