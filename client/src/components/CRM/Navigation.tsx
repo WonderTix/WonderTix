@@ -35,7 +35,7 @@ const Navigation = () => {
               <img src={logo} className="mt-[5rem] w-[6rem]" alt="/" />
             </button>
           </div>
-          <ul className="space-y-7 mt-30 ml-[rem] flex flex-col items-center   ">
+          <ul className="space-y-7 mt-30 ml-[rem] flex flex-col items-center mb-7">
             <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
               <a
                 onClick={() => navigate('/admin')}
@@ -251,7 +251,7 @@ const Navigation = () => {
                     </svg>
                   </button>
                 </div>
-                <ul className=" space-y-7 flex flex-col items-center  ">
+                <ul className=" space-y-7 flex flex-col items-center mb-7">
                   <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                     <a
                       onClick={() => navigate('/admin')}
@@ -365,7 +365,7 @@ const Navigation = () => {
                       onClick={handleClick}
                       className="bg-transparent border-none rounded-none  transition duration-300 ease-in-out "
                     >
-                      <div className="flex flex-col gap-2 items-center mb-4">
+                      <div className="flex flex-col gap-2 items-center">
                         <div>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

@@ -34,7 +34,7 @@ const Udash_nav = () => {
       <div className="w-full h-full bg-gray-200 ">
         <div className="flex flex-no-wrap">
           {/* Sidebar starts */}
-          <div className="absolute md:relative w-[14rem] h-screen  bg-zinc-900 hidden md:block z-10 overflow-y-scroll">
+          <div className="absolute md:relative w-[14rem] h-screen  bg-zinc-900 hidden md:block z-10 overflow-auto">
             <div className="h-12 w-full flex flex-col items-center ">
               <button
                 onClick={() => navigate('/')}
@@ -43,7 +43,7 @@ const Udash_nav = () => {
                 <img src={logoi} className="mt-[5rem] w-[6rem]" alt="/" />
               </button>
             </div>
-            <ul className=" space-y-7 mt-30 ml-[rem] flex flex-col items-center  ">
+            <ul className=" space-y-7 mt-30 ml-[rem] flex flex-col items-center mb-7 ">
               <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                 <a
                   onClick={() => navigate('/ticketing')}
@@ -136,7 +136,7 @@ const Udash_nav = () => {
               onClick={() => setShowMobileMenu(!showMobileMenu)}
             />
             <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow  bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
-              <div className="flex flex-col justify-between h-full w-full overflow-y-scroll">
+              <div className="flex flex-col justify-between h-full w-full overflow-auto">
                 <div>
                   <div className="flex items-center justify-between px-6">
                     <div className="h-12  w-full flex flex-col ml-6 items-center ">
@@ -174,7 +174,7 @@ const Udash_nav = () => {
                       </svg>
                     </button>
                   </div>
-                  <ul className=" space-y-7 mt-30  flex flex-col items-center  ">
+                  <ul className=" space-y-7 mt-30 flex flex-col items-center mb-4 ">
                     <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                       <a
                         onClick={() => navigate('/ticketing')}
