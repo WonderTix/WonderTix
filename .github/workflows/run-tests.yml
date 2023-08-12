@@ -59,7 +59,7 @@ jobs:
         run: docker-compose up -d
         
       - name: Check Unit Tests
-        run: npm test
+        run: npm run test::playwright
         working-directory: ./client
 
   # test-server:
