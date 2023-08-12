@@ -7,6 +7,18 @@ jobs:
   test-client:
     name: Run Tests on client
     runs-on: ubuntu-latest
+    env:
+      PG_USER: postgres
+      PG_PASS: postgres
+      PG_DB: wondertix
+      PG_PORT: 5432
+      PG_HOST: 172.17.0.1
+      ROOT_URL: https://localhost:8000
+      FRONTEND_URL: https://localhost:3000
+      AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+      AUTH0_URL: ${{ secrets.AUTH0_URL }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -15,10 +27,34 @@ jobs:
           node-version: '18.x'
           cache: 'npm'
           cache-dependency-path: ./client/package-lock.json
+      
       - name: npm install
         run: npm install --force
         working-directory: ./client
+      
+      - name: Install mkcert
+        run: |
+          sudo apt-get update
+          sudo apt-get install libnss3-tools
+          wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-amd64
+          chmod +x mkcert
+          sudo mv mkcert /usr/local/bin/
+      
+      - name: Install client CA
+        run: |
+          mkcert -install
+          mkcert localhost
+        working-directory: ./client
 
+      - name: Install server CA
+        run: |
+          mkcert -install
+          mkcert localhost
+        working-directory: ./server
+
+      - name: docker setup
+        run: docker-compose up -d
+        
       - name: Check Unit Tests
         run: npm test
         working-directory: ./client
