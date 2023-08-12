@@ -25,7 +25,7 @@ import React, {ReactElement, useState} from 'react';
  * @param {string} phone
  * @param {string} email
  * @param {string} visitSource
- * @param {boolean} seatingAcc
+ * @param {string} seatingAcc
  * @param {string} comments
  */
 export interface CheckoutFormInfo {
@@ -192,15 +192,15 @@ export default function CompleteOrderForm(
                     Seating Accommodations
                     </span>
                     <select className="input w-full  border
-            border-zinc-300 p-4 mt-1 rounded-lg col-span-2 " name="seatingAcc" onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
+            border-zinc-300 p-4 mt-1 rounded-lg col-span-2 " name="seatingAcc" value={seatingAcc} onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
                       setseatingAcc(ev.target.value)}>
-                      <option value="option1">No, not at this time</option>
-                      <option value="option2">Yes, wheelchair seat(s)</option>
-                      <option value="option3">Yes, aisle seat(s)</option>
-                      <option value="option4">Yes, seat(s) on the ground or the first level</option>
-                      <option value="option5">Yes, seats in the ASL interpreters section</option>
-                      <option value="option6">Yes, wide seats</option>
-                      <option value="option7">Yes, other (describe accommodation in comment box below, if not listed)</option>
+                      <option value="None">No, not at this time</option>
+                      <option value="Wheel Chair">Yes, wheelchair seat(s)</option>
+                      <option value="Aisle Seat">Yes, aisle seat(s)</option>
+                      <option value="First/Ground floor">Yes, seat(s) on the ground or the first level</option>
+                      <option value="ASL Interpreter">Yes, seats in the ASL interpreters section</option>
+                      <option value="Wide Seats">Yes, wide seats</option>
+                      <option value="Other">Yes, other (describe accommodation in comment box below, if not listed)</option>
                     </select>
                   </div>
                   <div>
@@ -220,12 +220,10 @@ export default function CompleteOrderForm(
                   </div>
                 </div>
               </div>
-
               <div className='w-full flex flex-wrap justify-center md:flex-row md:justify-between mt-4'>
                 <button className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600 m-2' onClick={onBack}>Back</button>
                 <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2' type="submit">Next</button>
               </div>
-
             </form>
           )}
         />
