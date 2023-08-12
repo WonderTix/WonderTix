@@ -46,11 +46,13 @@ jobs:
       - name: Install client CA
         run: |
           mkcert -install
+          mkcert -install
           mkcert localhost
         working-directory: ./client
 
       - name: Install server CA
         run: |
+          mkcert -install
           mkcert -install
           mkcert localhost
         working-directory: ./server
