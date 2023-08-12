@@ -17,7 +17,7 @@ const Editeventmain = () => {
   const [loading, setLoading] = useState(true);
   const [eventData, setEventData] = useState(undefined);
 
-  const getDataForEventAndShows = async () => {
+  const getDataForEventAndShows = async (eventID, setEventData, setLoading) => {
     const eventData: WtixEvent = {
       seasonid: undefined,
       eventid: undefined,
@@ -27,7 +27,7 @@ const Editeventmain = () => {
       imageurl: '',
       showings: [],
     };
-    await fetch(process.env.REACT_APP_API_1_URL +'/events/' + params.eventid)
+    await fetch(process.env.REACT_APP_API_1_URL +'/events/' + eventID)
         .then((response) => {
           return response.json();
         }).then((data)=>{
@@ -39,32 +39,30 @@ const Editeventmain = () => {
           eventData.seasonid = data.data[0].seasonid;
         });
     console.log(eventData);
+
     await fetch(process.env.REACT_APP_API_1_URL +
-          `/events/instances/${params.eventid}`)
+      `/events/instances/${params.eventid}`)
         .then((response) => {
           return response.json();
         }).then((data)=>{
           eventData.showings = data.data;
         });
-    for (let i = 0; i < eventData.showings.length; i++) {
+
+    for (const showing of eventData.showings) {
+      if (!showing.seatsForType) {
+        showing.seatsForType = [];
+      }
+      if (!showing.ticketTypeId) {
+        showing.ticketTypeId = [];
+      }
       await fetch(process.env.REACT_APP_API_1_URL +
-            `/tickets/restrictions/${eventData.showings[i].eventinstanceid}`)
+        `/tickets/restrictions/${showing.eventinstanceid}`)
           .then((response) => {
             return response.json();
-          }).then((res)=>{
-            for (let j = 0; j < res.data.length; j++) {
-              if (!eventData.showings[i].seatsForType) {
-                eventData.showings[i].seatsForType = [];
-              }
-              if (!eventData.showings[i].ticketTypeId) {
-                eventData.showings[i].ticketTypeId = [];
-              }
-              if (eventData.showings[i].seatsForType) {
-                eventData.showings[i].seatsForType.push(res.data[j].ticketlimit);
-              }
-              if (eventData.showings[i].ticketTypeId) {
-                eventData.showings[i].ticketTypeId.push(res.data[j].tickettypeid_fk);
-              }
+          }).then((res) => {
+            for (const item of res.data) {
+              showing.seatsForType.push(item.ticketlimit);
+              showing.ticketTypeId.push(item.tickettypeid_fk);
             }
           });
     }
@@ -74,7 +72,7 @@ const Editeventmain = () => {
     }
   };
   useEffect( () => {
-    getDataForEventAndShows();
+    getDataForEventAndShows(params.eventid, setEventData, setLoading);
   }, []);
 
   if (loading == true) {

@@ -17,3 +17,30 @@ export default interface Event {
   description: string;
   imageurl: string;
 }
+
+export interface instanceTicketType {
+  typeID: number;
+  typeQuantity: number;
+}
+
+export interface eventInstanceRequest {
+  availableseats: number;
+  eventdate: string;
+  eventid_fk: number;
+  eventinstanceid: number;
+  eventtime: string;
+  ispreview: boolean;
+  defaulttickettype: number
+  purchaseuri: string;
+  instanceTicketTypes: instanceTicketType[];
+  salestatus: boolean;
+  totalseats: number;
+}
+
+export interface ticketRestriction {
+  ticketrestrictionsid: number;
+  eventinstanceid_fk: number;
+  tickettypeid_fk: number;
+  ticketlimit:number;
+  ticketssold:number | null;
+}

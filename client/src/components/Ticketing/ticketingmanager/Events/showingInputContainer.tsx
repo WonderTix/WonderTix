@@ -40,7 +40,7 @@ export interface MapPropsToShowingInputContainer {
  */
 // eslint-disable-next-line react/prop-types
 
-const toDateStringFormat = (date) => {
+export const toDateStringFormat = (date) => {
   if (date === undefined || date === '') return '';
   const dateString = String(date);
   if (dateString.includes('-')) return date;
@@ -152,7 +152,7 @@ const ShowingInputContainer = ({
         <label className='font-semibold text-white mb-7 mt-7  '>Show # {index + 1}</label>
         <div className='flex flex-col gap-5 mt-5 md:pr-20'>
           <label
-            htmlFor={`${showingData.id}TotalSeats`}
+            htmlFor={`${index}TotalSeats`}
             className='font-semibold text-white'
           >
             Total Tickets For Showing
@@ -160,7 +160,7 @@ const ShowingInputContainer = ({
           <input
             className='input rounded-lg p-2 bg-violet-100 w-full md:w-7/8'
             value={showingData.totalseats}
-            id={`${showingData.id}TotalSeats`}
+            id={`${index}TotalSeats`}
             type='number'
             required
             key={index}
@@ -215,14 +215,14 @@ const ShowingInputContainer = ({
           <div className='flex md:flex-row gap-10 flex-col'>
             <div>
               <label
-                htmlFor={`${showingData.id}Date`}
+                htmlFor={`${index}Date`}
                 className='font-semibold text-white'
               >
                 Enter Date
               </label>
               <input
                 type='date'
-                id={`${showingData.id}Date`}
+                id={`${index}Date`}
                 className='input w-full p-2 mt-1 rounded-lg bg-violet-100 mb-7'
                 value={toDateStringFormat(showingData.eventdate)}
                 onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
@@ -233,14 +233,14 @@ const ShowingInputContainer = ({
             </div>
             <div>
               <label
-                htmlFor={`${showingData.id}Time`}
+                htmlFor={`${index}Time`}
                 className='font-semibold text-white'
               >
                 Enter time
               </label>
               <input
                 type='time'
-                id={`${showingData.id}Time`}
+                id={`${index}Time`}
                 name='eventtime'
                 placeholder='00:00:00'
                 className='w-full p-2 mt-1 rounded-lg bg-violet-100 mb-7 '
