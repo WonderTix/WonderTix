@@ -56,7 +56,7 @@ jobs:
           mkcert -install
           mkcert localhost
         working-directory: ./server
-
+        
       - name: check 1
         run: ls
         working-directory: ./client
@@ -64,7 +64,7 @@ jobs:
       - name: check 2
         run: ls
         working-directory: ./server
-      
+        
 #      - name: docker setup
 #        run: docker-compose up -d
         
