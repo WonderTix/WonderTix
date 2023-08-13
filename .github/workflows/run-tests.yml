@@ -42,9 +42,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libnss3-tools
-          wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-amd64
-          chmod +x mkcert
-          sudo mv mkcert /usr/local/bin/
+          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+          chmod +x mkcert-v*-linux-amd64
+          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
       
       - name: Install client CA
         run: |
