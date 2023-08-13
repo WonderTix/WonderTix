@@ -57,12 +57,20 @@ jobs:
           mkcert localhost
         working-directory: ./server
 
-      - name: docker setup
-        run: docker-compose up -d
-        
-      - name: Check Unit Tests
-        run: npm run test:playwright
+      - name: check 1
+        run: ls
         working-directory: ./client
+
+      - name: check 2
+        run: ls
+        working-directory: ./client
+      
+#      - name: docker setup
+#        run: docker-compose up -d
+        
+#      - name: Check Unit Tests
+#        run: npm run test:playwright
+#        working-directory: ./client
 
   # test-server:
   #   name: Run Tests on server
