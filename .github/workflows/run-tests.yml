@@ -63,7 +63,7 @@ jobs:
 
       - name: check 2
         run: ls
-        working-directory: ./client
+        working-directory: ./server
       
 #      - name: docker setup
 #        run: docker-compose up -d
