@@ -30,7 +30,7 @@ const DashboardLink = ({
   title,
 }: DashboardLinkProps): ReactElement => {
   const navigate = useNavigate();
-  const buttonClasses = `flex text-left flex-col p-8 ${sizeClass[size]} md:w- rounded-3xl shadow-xl hover:scale-105 transition duration-300 ease-in-out ` + gradientClasses;
+  const buttonClasses = `flex text-left flex-col p-8 ${sizeClass[size]} md:w- rounded-3xl shadow-xl hover:scale-105 transition duration-300 ease-in-out ${gradientClasses}`;
 
   return (
     <button
