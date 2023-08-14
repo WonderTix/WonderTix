@@ -25,7 +25,7 @@ import React, {ReactElement, useState} from 'react';
  * @param {string} phone
  * @param {string} email
  * @param {string} visitSource
- * @param {boolean} seatingAcc
+ * @param {string} seatingAcc
  * @param {string} comments
  */
 export interface CheckoutFormInfo {
@@ -110,15 +110,15 @@ export default function CompleteOrderForm(
   return (<>
     <div className='w-full h-full flex flex-col items-center '>
       <div className='text-2xl font-bold mb-5'>Contact</div>
-      <div className='w-full h-full'>
+      <div className='min-w-414 sm:w-full h-full'>
         <Form
           onSubmit={handleSubmit}
           initialValues={{'opt-in': false, 'seating-accommodation': false}}
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           render={({handleSubmit}) => (
-            <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-9 rounded-xl flex flex-col  justify-between'>
-              <div className='flex flex-col w-full  '>
-                <div className='grid grid-cols-2 gap-5'>
+            <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-4 rounded-xl flex flex-col  justify-between'>
+              <div className='flex flex-col w-auto'>
+                <div className='grid gap-5 md:grid-cols-2'>
                   <div>
                     <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
                      First Name
@@ -187,26 +187,30 @@ export default function CompleteOrderForm(
             border-zinc-300 p-4 rounded-lg " type='text' name="visit-source" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setvisitSource(ev.target.value)} placeholder="How did you hear about us?"/>
                   </div>
-                  <span className=" block text-sm font-medium text-slate-700 ml-1">
+                  <div>
+                    <span className=" block text-sm font-medium text-slate-700 ml-1">
                     Seating Accommodations
-                  </span>
-                  <select className="input w-full  border
-            border-zinc-300 p-4 -mt-4 rounded-lg col-span-2 " name="seatingAcc" onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
-                    setseatingAcc(ev.target.value)}>
-                    <option value="option1">No, not at this time</option>
-                    <option value="option2">Yes, wheelchair seat(s)</option>
-                    <option value="option3">Yes, aisle seat(s)</option>
-                    <option value="option4">Yes, seat(s) on the ground or the first level</option>
-                    <option value="option5">Yes, seats in the ASL interpreters section</option>
-                    <option value="option6">Yes, wide seats</option>
-                    <option value="option7">Yes, other (describe accommodation in comment box below, if not listed)</option>
-                  </select>
-                  <span className=" block text-sm font-medium text-slate-700 ml-1">
+                    </span>
+                    <select className="input w-full  border
+            border-zinc-300 p-4 mt-1 rounded-lg col-span-2 " name="seatingAcc" value={seatingAcc} onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
+                      setseatingAcc(ev.target.value)}>
+                      <option value="None">No, not at this time</option>
+                      <option value="Wheel Chair">Yes, wheelchair seat(s)</option>
+                      <option value="Aisle Seat">Yes, aisle seat(s)</option>
+                      <option value="First/Ground floor">Yes, seat(s) on the ground or the first level</option>
+                      <option value="ASL Interpreter">Yes, seats in the ASL interpreters section</option>
+                      <option value="Wide Seats">Yes, wide seats</option>
+                      <option value="Other">Yes, other (describe accommodation in comment box below, if not listed)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <span className=" block text-sm font-medium text-slate-700 ml-1">
                    Comments
-                  </span>
-                  <input className="input w-full  border
-            border-zinc-300 p-4 -mt-4 rounded-lg col-span-2 " type='text' name="comments" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                    setComments(ev.target.value)} placeholder="Comments"/>
+                    </span>
+                    <input className="input w-full  border
+            border-zinc-300 p-4 mt-1 rounded-lg col-span-2" type='text' name="comments" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setComments(ev.target.value)} placeholder="Comments"/>
+                  </div>
                 </div>
                 <div className='flex flex-col items-start gap-3 mt-5' mb-5>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
@@ -216,12 +220,10 @@ export default function CompleteOrderForm(
                   </div>
                 </div>
               </div>
-
-              <div className='w-full flex flex-row justify-between mt-4'>
-                <button className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600' onClick={onBack}>Back</button>
-                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40' type="submit">Next</button>
+              <div className='w-full flex flex-wrap justify-center md:flex-row md:justify-between mt-4'>
+                <button className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600 m-2' onClick={onBack}>Back</button>
+                <button className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2' type="submit">Next</button>
               </div>
-
             </form>
           )}
         />

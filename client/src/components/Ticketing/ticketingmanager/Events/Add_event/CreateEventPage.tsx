@@ -95,13 +95,12 @@ const CreateEventPage = () => {
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='md:ml-[18rem] md:mr-[5rem] sm:mt-40 sm:mt-[11rem]
-       sm:mr-[2rem] sm:ml-[2rem] sm:mb-[11rem]'>
+      <div className='md:ml-[18rem] md:mr-[5rem] sm:mt-40 sm:mt-[11rem] sm:mr-[2rem] sm:ml-[2rem] sm:mb-[11rem]'>
         {visible == true ?
         <PopUp title="Success" message='New event has been successfully added.' handleClose={handleClose} handleProceed={handleProceed} success={true}/> :
          <></> }
-        <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-         bg-gradient-to-r from-violet-500 to-fuchsia-500' >Add New Event</h1>
+        <h1 className='font-bold text-5xl mb-10 pb-4 bg-clip-text text-transparent
+         bg-gradient-to-r from-violet-500 to-fuchsia-500'>Add New Event</h1>
         <EventForm onSubmit={onSubmit} tickettypes={tickettypes}/>
       </div>
     </div>
