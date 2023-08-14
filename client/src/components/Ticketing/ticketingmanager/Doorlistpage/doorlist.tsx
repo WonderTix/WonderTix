@@ -64,23 +64,14 @@ const renderCheckin = ((params: GridCellParams) =>
  * columns uses name, vip, donorbadge, accomodations, num_tickets, arrived and renders
  */
 const columns = [
-  {field: 'name', headerName: 'Name', width: 200},
-  {field: 'vip', headerName: 'VIP', width: 100, renderCell: renderCheckbox},
-  {field: 'donorbadge', headerName: 'Donor', width: 125, renderCell: renderCheckbox},
-  {field: 'accomodations', headerName: 'Accomodations', width: 180, renderCell: renderCheckbox},
+  {field: 'firstname', headerName: 'First Name', width: 120},
+  {field: 'lastname', headerName: 'Last Name', width: 120},
   {field: 'num_tickets', headerName: 'Tickets', width: 130},
   {field: 'arrived', headerName: 'Arrived', width: 130, renderCell: renderCheckin},
+  {field: 'vip', headerName: 'VIP', width: 100, renderCell: renderCheckbox},
+  {field: 'donorbadge', headerName: 'Donor', width: 125, renderCell: renderCheckbox},
+  {field: 'accommodations', headerName: 'Accommodations', width: 180, renderCell: renderCheckbox},
 ];
-
-const extractEventName = (rowString) => {
-  // Split the row string by commas
-  const dataElements = rowString.slice(1, -1).split(',');
-
-  // Assuming eventname is the 8th element in the tuple (based on the provided data)
-  const eventName = dataElements[7].replace(/"/g, ''); // Remove double quotes
-
-  return eventName;
-};
 
 /**
  * Doorlist gets data about the event, time of the event
@@ -93,20 +84,15 @@ const DoorList = () => {
   const [eventName, setEventName] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-
   const [selectedEventId, setSelectedEventId] = useState(null);
-  const [selectedEventIId, setSelectedEventIId] = useState(null);
-  const [selectedEventTime, setSelectedEventTime] = useState(null);
-  const [availableTimes, setAvailableTimes] = useState([]);
   const [availableTimesEvents, setAvailableTimesEvents] = useState([]);
-
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/active');
+        const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/allevents');
         const jsonRes = await response.json();
         const jsonData = jsonRes.data;
         console.log('Fetched events:', jsonData);
@@ -114,7 +100,7 @@ const DoorList = () => {
           jsonData[key].eventdate = dayMonthDate(jsonData[key].eventdate);
           jsonData[key].eventtime = militaryToCivilian(jsonData[key].eventtime);
         });
-        // Deduplicate the events based on eventname
+        // deduplicate the events based on eventname
         const uniqueEventNames = new Set(jsonData.map((event) => event.eventname));
         console.log('Unique event names:', uniqueEventNames);
         const deduplicatedEvents = Array.from(uniqueEventNames).map((name) => jsonData.find((event) => event.eventname === name));
@@ -133,12 +119,9 @@ const DoorList = () => {
     console.log('Selected event ID:', eventId);
     setSelectedEventId(eventId);
 
-    // Filtering all events with the selected event ID
     const matchingEvents = eventListFull.filter((e) => e.eventid === eventId);
     console.log('Matching events:', matchingEvents);
-    // Extracting all times for the matching events
     const timesForThisEvent = matchingEvents.map((e) => e.eventtime);
-    setAvailableTimes(timesForThisEvent);
     setAvailableTimesEvents(matchingEvents);
     console.log('Available times:', timesForThisEvent);
     console.log('Available times events:', matchingEvents);
@@ -146,35 +129,54 @@ const DoorList = () => {
 
   const handleTimeChange = (event) => {
     const eventIId = parseInt(event.target.value);
-    setSelectedEventIId(eventIId);
     console.log('Selected event i id:', event.target.value);
     const matchingEvent = availableTimesEvents.find((e) => e.eventinstanceid === eventIId);
     console.log('Matching event:', matchingEvent);
-    getDoorList(selectedEventIId);
+    getDoorList(eventIId);
   };
 
   const getDoorList = async (event) => {
+    console.log('Getting door list for event:', event);
     try {
       const token = await getAccessTokenSilently({
         audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
-
-      const getuser = event.target.value;
-      const response = await fetch(process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${getuser}`, {
+      const response = await fetch(process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${event}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
       });
-      const jsonData = await response.json();
-      console.log(jsonData.data);
+      const jsonRes = await response.json();
+      const jsonData = jsonRes.data;
+      const doorListData = jsonData.map((item, index) => {
+        const row = item.row.slice(1, -1).split(',');
+        return {
+          id: index,
+          firstname: row[1],
+          lastname: row[2],
+          num_tickets: row[12],
+          // TODO: calculate arrived and update the database is selected
+          arrived: row[11] === 't',
+          vip: row[3] === 't',
+          donorbadge: row[4] === 't',
+          accommodations: row[5] === 't',
+        };
+      });
 
-      // doorlistData.data {id: custid, name, vip, donor: donorbadge, accomodations: seatingaccom, num_tickets, checkedin, ticketno }
-      setDoorList(jsonData.data.map((item, index) => ({...item, id: index})));
-      const eventNameFromData = extractEventName(jsonData.data[0].row);
+      setDoorList(doorListData);
+      const rowString = jsonData[0].row.slice(1, -1);
+      const rowParts = rowString.split(',');
+      console.log('Row parts:', rowParts);
+      const eventNameFromData = rowParts[7].replace(/"/g, '');
+      const eventDate = rowParts[9];
+      const formattedEventDate = eventDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'); // convert to "yyyy-mm-dd"
+      const eventTime = rowParts[10];
       setEventName(eventNameFromData);
-      setDate(dayMonthDate(jsonData.data[0].eventdate));
-      setTime(militaryToCivilian(jsonData.data[0].eventtime));
+      console.log('eventDate:', eventDate);
+      setDate(dayMonthDate(formattedEventDate));
+      setTime(militaryToCivilian(eventTime));
     } catch (error) {
       console.error(error.message);
     }
