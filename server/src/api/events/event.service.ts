@@ -389,6 +389,30 @@ export const getActiveEventsAndInstances = async (): Promise<response> => {
   return buildResponse(myQuery, 'GET');
 };
 
+export const getEventsAndInstances = async (): Promise<response> => {
+  const myQuery = {
+    text: `
+          SELECT
+              ei.eventinstanceid,
+              e.eventid,
+              e.eventname,
+              e.eventdescription,
+              e.imageurl,
+              ei.eventdate,
+              ei.eventtime,
+              ei.totalseats,
+              ei.availableseats,
+              e.active
+          FROM
+              eventinstances ei
+          JOIN
+              events e ON ei.eventid_fk = e.eventid
+          ORDER BY
+              ei.eventinstanceid;`,
+  };
+  return buildResponse(myQuery, 'GET');
+};
+
 export const insertAllShowings = async (
     showings: Showing[],
 ): Promise<Showing[]> => {
