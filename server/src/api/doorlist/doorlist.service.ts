@@ -11,7 +11,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
     text: `
           SELECT 
               FORMAT(
-                  '(%s,%s,%s,%s,%s,%s,%s,"%s",%s,%s,%s,%s,%s)',
+                  '(%s,%s,%s,%s,%s,%s,%s,"%s",%s,%s,%s,%s,%s,%s)',
                   c.contactid,
                   c.firstname,
                   c.lastname,
@@ -24,22 +24,23 @@ export const getDoorlist = async (params: any): Promise<response> => {
                   ei.eventdate,
                   ei.eventtime,
                   et.redeemed,
-                  COUNT(et.redeemed)
-              ) AS formatted_output
+                  COUNT(et.redeemed),
+                  SUM(CASE WHEN et.redeemed = true THEN 1 ELSE 0 END)
+              ) AS row
           FROM 
-              contacts c
-          JOIN 
-              orders o ON c.contactid = o.contactid_fk
-          JOIN 
-              orderitems oi ON o.orderid = oi.orderid_fk
-          JOIN 
-              eventtickets et ON oi.orderitemid = et.eventticketid
-          JOIN 
-              eventinstances ei ON et.eventinstanceid_fk = ei.eventinstanceid
-          JOIN 
+              eventinstances ei
+          LEFT JOIN 
+              eventtickets et ON ei.eventinstanceid = et.eventinstanceid_fk
+          LEFT JOIN 
+              orderitems oi ON et.eventticketid = oi.orderitemid
+          LEFT JOIN 
+              orders o ON oi.orderid_fk = o.orderid
+          LEFT JOIN 
+              contacts c ON o.contactid_fk = c.contactid
+          LEFT JOIN 
               events e ON ei.eventid_fk = e.eventid
           WHERE 
-              e.eventid = $1
+              ei.eventinstanceid = $1
           GROUP BY 
               c.contactid,
               c.firstname,

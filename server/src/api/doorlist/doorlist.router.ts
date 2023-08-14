@@ -48,6 +48,7 @@ export const doorlistRouter = Router();
  *                       eventinstanceid: {type: integer}
  *                       eventdate: {type: string}
  *                       eventtime: {type: string}
+ *                       tickets: {type: integer}
  *                       redeemed: {type: integer}
  *       401:
  *         description: Unauthorized
