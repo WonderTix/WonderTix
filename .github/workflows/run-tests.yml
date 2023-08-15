@@ -1,12 +1,27 @@
-name: Run unit tests on client
+name: Run E2E tests on client
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, edited, synchronize]
 
 jobs:
   test-client:
-    name: Run Tests on client
+    name: Run E2E Tests on client
     runs-on: ubuntu-latest
+    env:
+      PG_USER: postgres
+      PG_PASS: postgres
+      PG_DB: wondertix
+      PG_PORT: 5432
+      PG_HOST: 172.17.0.1
+      PUBLIC_STRIPE_KEY: pk_test_51NRiUaCPEq1DMXvlvEVJjRzAdzIgcX5c3kR2cNnXdbSEQ5L6y9FyApgDAV7txnD10SkAlw26OgZLq9OJKt8Gkxtm007Rj8ndZm
+      PRIVATE_STRIPE_KEY: sk_test_51NRiUaCPEq1DMXvlQ4nysGMLstk8YMOPs0AV5DBcKmQ0YJ4ki5LSG1MvwbPsqdiXIFvXCC4WrZkQrZMniQmcMbMf00u6Y9YDYY
+      PRIVATE_STRIPE_WEBHOOK: whsec_e2327bd0013f017f12d461249b950f0c73acd19ac2967174a557ee0f069e4076
+      ROOT_URL: https://localhost:8000
+      FRONTEND_URL: https://localhost:3000
+      AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+      AUTH0_URL: ${{ secrets.AUTH0_URL }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -15,12 +30,39 @@ jobs:
           node-version: '18.x'
           cache: 'npm'
           cache-dependency-path: ./client/package-lock.json
+      
       - name: npm install
         run: npm install --force
         working-directory: ./client
 
-      - name: Check Unit Tests
-        run: npm test
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      
+      - name: Install mkcert
+        run: |
+          sudo apt-get update
+          sudo apt-get install libnss3-tools
+          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+          chmod +x mkcert-v*-linux-amd64
+          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+      
+      - name: Install client CA
+        run: |
+          mkcert -install
+          mkcert localhost
+        working-directory: ./client
+
+      - name: Install server CA
+        run: |
+          mkcert -install
+          mkcert localhost
+        working-directory: ./server
+        
+      - name: docker setup
+        run: docker-compose up -d
+        
+      - name: Check client E2E(UI) Tests
+        run: npm run test:playwright
         working-directory: ./client
 
   # test-server:
