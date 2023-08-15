@@ -1,25 +1,25 @@
 import {Field, useField} from 'formik';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
-import {IconButton} from '@mui/material';
+import {Button, IconButton} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {green} from '@mui/material/colors';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import {getTicketTypePrice} from './EventInstanceForm';
+import {useEvent} from './EventProvider';
+import {getTicketTypePrice} from './ShowingUtils';
 
 interface TicketTypeTableProps {
   arrayHelpers;
   eventInstanceID: number;
-  ticketTypes: any[];
 }
 
-export const TicketTypeTable = (props: TicketTypeTableProps) => {
-  const {ticketTypes, arrayHelpers, eventInstanceID} = props;
+export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
+  const {arrayHelpers, eventInstanceID} = props;
+  const {ticketTypes} = useEvent();
   const [field] = useField('instanceTicketTypes');
 
   return (
-    <>
+    <div className={'max-h-[100%] flex flex-col'}>
       <table className={'table-fixed'}>
         <thead>
           <tr>
@@ -52,7 +52,6 @@ export const TicketTypeTable = (props: TicketTypeTableProps) => {
                   name={`${field.name}[${index}].typeID`}
                   type={'select'}
                   component={TicketTypeSelect}
-                  ticketTypes={ticketTypes}
                   id={eventInstanceID}
                   index={index}
                 />
@@ -102,15 +101,18 @@ export const TicketTypeTable = (props: TicketTypeTableProps) => {
           }
         </tbody>
       </table>
-      <IconButton
-        size={'small'}
-        aria-label={'add ticket type'}
-        onClick={() => {
-          arrayHelpers.push({typeID: 0, typeQuantity: 0});
-        }}
-        style={{color: green[500]}}
-      >
-        <AddCircleIcon fontSize={'small'}/>
-      </IconButton>
-    </>);
+      <div>
+        <Button
+          size={'small'}
+          variant={'contained'}
+          onClick={() => {
+            arrayHelpers.push({typeID: 0, typeQuantity: 0});
+          }}
+          color={'success'}
+          startIcon={<AddCircleIcon fontSize={'small'}/>}
+        >
+        Add Type
+        </Button>
+      </div>
+    </div>);
 };

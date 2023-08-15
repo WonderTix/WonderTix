@@ -1,49 +1,30 @@
-import React, {useState} from 'react';
-import {Field, Formik, useField, useFormikContext} from 'formik';
+import React from 'react';
+import {Field, Formik} from 'formik';
 import {InputControl} from './InputControl';
-import {getImageDefault, imageOnError}
-  from '../../../../../utils/imageURLValidation';
 import {eventGeneralSchema} from './event.schemas';
-import {Button} from '@mui/material';
-import {useAuth0} from '@auth0/auth0-react';
+import {FormDeleteButton} from './FormDeleteButton';
+import {ImageInputComponent} from './ImageInputComponent';
+import {FormSubmitButton} from './FormSubmitButton';
+import {useEvent} from './EventProvider';
 
 
-export interface EventGeneralProps {
-  initialValues?;
-}
-
-export const EventGeneralForm = ( props: EventGeneralProps) => {
-  const {initialValues} = props;
-  const {getAccessTokenSilently} = useAuth0();
+export const EventGeneralForm = (props: {onSubmit, onDelete}) => {
+  const {onSubmit, onDelete} = props;
+  const {eventData} = useEvent();
   const baseValues = {
-    eventname: (initialValues?initialValues.eventname:''),
-    eventid: (initialValues?initialValues.eventid:0),
-    eventdescription: (initialValues?initialValues.eventdescription:''),
-    imageurl: (initialValues?initialValues.imageurl:''),
-    active: (initialValues?initialValues.active:true),
+    eventname: (eventData?eventData.eventname:''),
+    eventid: (eventData?eventData.eventid:0),
+    eventdescription: (eventData?eventData.eventdescription:''),
+    imageurl: (eventData?eventData.imageurl:''),
+    active: (eventData?eventData.active:true),
+    seasonid_fk: (eventData?eventData.seasonid:7),
   };
-  const submitForm = async (event, actions) => {
-    const token = await getAccessTokenSilently({
-      audience: process.env.REACT_APP_ROOT_URL,
-      scope: 'admin',
-    });
 
-    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/`, {
-      credentials: 'include',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(event),
-    });
-    console.log(res);
-  };
 
   return (
     <Formik
       initialValues={baseValues}
-      onSubmit={submitForm}
+      onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}>
       {({handleSubmit}) => (
         <form
@@ -69,13 +50,8 @@ export const EventGeneralForm = ( props: EventGeneralProps) => {
           <div>
             <ImageInputComponent />
           </div>
-          <Button
-            variant={'contained'}
-            size={'small'}
-            type={'submit'}
-          >
-            Save
-          </Button>
+          <FormSubmitButton />
+          {eventData? <FormDeleteButton onDelete={onDelete} />:null}
         </form>
       )}
     </Formik>
@@ -83,51 +59,3 @@ export const EventGeneralForm = ( props: EventGeneralProps) => {
 };
 
 
-const ImageInputComponent = () => {
-  const [field] = useField('imageurl');
-  const [disabledURL, setDisabledURL] = useState(false);
-  const {setFieldValue} = useFormikContext();
-  return (
-    <div className={'flex flex-row'}>
-      <div className={'flex flex-col justify-evenly'}>
-        <div className={'flex flex-col'}>
-          <label
-            htmlFor={'defaultImageUrl'}
-            className={'text-sm text-zinc-600 text-center'}
-          >
-            Use Default Image
-          </label>
-          <input
-            name={'defaultImageUrl'}
-            id={'defaultImageUrl'}
-            type='checkbox'
-            value={'default'}
-            checked={disabledURL}
-            onChange={async () => {
-              await setFieldValue('imageurl',
-                !disabledURL?'Default Event Image':'');
-              setDisabledURL(!disabledURL);
-            }}
-            className={'m-auto'}
-          />
-        </div>
-        <Field
-          name={'imageurl'}
-          component={InputControl}
-          label={'Image URL'}
-          type={'text'}
-          id={0}
-          disabled={field.value==='Default Event Image'}
-        />
-      </div>
-      <div>
-        <img
-          className={'w-[50%] h-auto'}
-          src={getImageDefault(field.value)}
-          onError={imageOnError}
-          alt='Event image supplied by the user'
-        />
-      </div>
-    </div>
-  );
-};

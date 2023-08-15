@@ -44,3 +44,4 @@ export interface ticketRestriction {
   ticketlimit:number;
   ticketssold:number | null;
 }
+

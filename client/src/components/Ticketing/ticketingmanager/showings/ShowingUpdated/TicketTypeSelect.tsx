@@ -1,17 +1,38 @@
 import React from 'react';
+import {useEvent} from './EventProvider';
+import {useField, useFormikContext} from 'formik';
 
-export const TicketTypeSelect = (props: { field, ticketTypes, id, index }) => {
-  const {ticketTypes, field, id, index} = props;
+interface TicketTypeSelectProps {
+  field;
+  id: number;
+  index: number
+}
+export const TicketTypeSelect = (props: { field, id, index }) => {
+  const {field, id, index} = props;
+  const {ticketTypes} = useEvent();
+  // const [currentTypes] = useField('instanceTicketTypes');
   return (
-    <select
-      name={field.name}
-      onChange={field.onChange}
-      value={field.value}
-    >
-      {
+    <>
+      <label
+        hidden
+        htmlFor={`${field.name} ${id} ${index} select`}
+      >
+      Ticket Type Select number {index}
+      </label>
+      <select
+        name={field.name}
+        onChange={field.onChange}
+        value={field.value}
+      >
+        {
         ticketTypes ?
           ticketTypes
-              .map((ticketType: any) => (
+              // .filter((ticketType) =>
+              //   !currentTypes
+              //       .value
+              //       .slice(index, 1)
+              //       .find((type) => type.typeID == ticketType.id))
+              .map((ticketType: any) =>(
                 <option
                   key={id + index + ticketType.id +
                   'ticket type description'}
@@ -21,7 +42,8 @@ export const TicketTypeSelect = (props: { field, ticketTypes, id, index }) => {
                 </option>
               )) :
           null
-      }
-    </select>
+        }
+      </select>
+    </>
   );
 };

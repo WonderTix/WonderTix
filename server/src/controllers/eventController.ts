@@ -323,15 +323,24 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
       where: {
         eventid: Number(id),
       },
+      include: {
+        eventinstances: true,
+      },
     });
+
     if (!eventExists) {
       res.status(404).json({error: 'event not found'});
-
       return;
     }
-    const event = prisma.events.delete({
+    const event = prisma.events.update({
       where: {
         eventid: Number(id),
+      },
+      data: {
+        active: false,
+      },
+      include: {
+        eventinstances: true,
       },
     });
     res.status(204).json();
