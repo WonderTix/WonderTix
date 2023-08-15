@@ -149,14 +149,11 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
     'ticketing/fetch',
     async () => {
-      
+      console.log('process.env')
       console.log(process.env)
-      console.log("process.env")
       const eventData = await fetchData(process.env.REACT_APP_API_1_URL + '/events');
-      // const eventData = await fetchData('https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/1' + '/events');
       const events: Event[] = eventData.data;
       const ticketRes: TicketsState = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets');
-      // const ticketRes: TicketsState = await fetchData('https://wondertix-server-s2jfqf45ha-wl.a.run.app' + '/tickets');
       const tickets = Object.entries(ticketRes.data.byId).reduce((res, [key, val]) => ({...res, [key]: {...val, date: new Date(val.date).toString()}}), {});
       console.log('Tickets', tickets);
       return {events, tickets: {data: {byId: tickets, allIds: ticketRes.data.allIds}}};
