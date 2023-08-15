@@ -111,10 +111,8 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-     sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
-        <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-         bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 ' >
+      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+        <h1 className='font-bold text-5xl mb-10 pb-4 bg-clip-text text-transparent bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500'>
           Edit {initValues.eventname ?? 'Your Event'}
         </h1>
         <EventForm
@@ -128,5 +126,3 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
 };
 
 export default EditEventPage;
-
-

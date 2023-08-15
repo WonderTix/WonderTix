@@ -4,6 +4,7 @@ import React from 'react';
  *
  * @param root0
  * @param root0.data
+ * @param root0.hasSearched
  * @returns {ReactElement}
  */
 const AccountResults = ({
