@@ -21,7 +21,7 @@ import React, {ReactElement, useState} from 'react';
  * @param {string} lastName
  * @param {string} streetAddress
  * @param {string} postalCode
- * @param {stirng} country
+ * @param {string} country
  * @param {string} phone
  * @param {string} email
  * @param {string} visitSource
