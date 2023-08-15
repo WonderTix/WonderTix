@@ -7,9 +7,7 @@ import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 
 
 export const TestPage = () => {
-  const {eventID, setEventID, loading, token} = useEvent();
-
-  console.log('Here', eventID, loading);
+  const {eventID, loading, token} = useEvent();
 
   if (loading || !token || eventID === undefined) {
     return <LoadingScreen />;

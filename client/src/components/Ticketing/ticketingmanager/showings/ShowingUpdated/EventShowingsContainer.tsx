@@ -6,14 +6,15 @@ import AddIcon from '@mui/icons-material/Add';
 import {EventShowingContainer} from './EventShowingContainer';
 import {useEvent} from './EventProvider';
 import {createSubmitFunction} from './ShowingUtils';
+import {toDateStringFormat} from '../../Events/showingInputContainer';
 
 
 export const EventShowingsContainer = () => {
   const [add, setAdd] = useState(false);
-  const {token, eventID, setReload, reload, showingData} = useEvent();
+  const {token, setReloadShowing, showingData, editing} = useEvent();
 
   const onSuccessAddShowing = (event) => {
-    setReload((reload) => !reload);
+    setReloadShowing((reload) => !reload);
     setAdd((add) => !add);
     openSnackbar('Showing has been added successfully');
   };
@@ -21,6 +22,7 @@ export const EventShowingsContainer = () => {
     openSnackbar('Showing Update Failed');
   };
 
+  // @ts-ignore
   return (
     <div className='flex flex-col gap-2 p-3'>
       {showingData && showingData.length>0?
@@ -29,12 +31,16 @@ export const EventShowingsContainer = () => {
           'm-h-[calc(.5*100vh)] overflow-y-scroll'}
       >
         {
-          showingData.map((showing) => (
-            <EventShowingContainer
-              key={'showing ' + showing.eventinstanceid}
-              showing={showing}
-            />
-          ))
+          showingData
+              .sort((a, b) =>
+                new Date(toDateStringFormat(a.eventdate)).getTime() -
+                new Date(toDateStringFormat(b.eventdate)).getTime())
+              .map((showing) => (
+                <EventShowingContainer
+                  key={'showing ' + showing.eventinstanceid}
+                  showing={showing}
+                />
+              ))
         }
       </div>:
         null

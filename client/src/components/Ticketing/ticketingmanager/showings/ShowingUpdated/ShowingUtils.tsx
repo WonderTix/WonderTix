@@ -69,6 +69,7 @@ export const useFetchEventData = (eventID: number) => {
   const [eventData, setEventData] = useState(undefined);
   const [loading, setLoading] = useState(true);
   const [ticketTypes, setTicketTypes] = useState([]);
+  const [reload, setReloadEvent] = useState(false);
 
   useEffect(() => {
     void fetchTicketTypes(setTicketTypes);
@@ -76,9 +77,10 @@ export const useFetchEventData = (eventID: number) => {
       void getEventData(eventID, setEventData);
     }
     setLoading(false);
-  }, [eventID]);
+  }, [reload]);
 
-  return {eventData, loading, setLoading, ticketTypes};
+  // eslint-disable-next-line max-len
+  return {eventData, setReloadEvent, setEventData, loading, ticketTypes};
 };
 export const useFetchToken = () => {
   const [token, setToken] = useState('');
@@ -124,7 +126,7 @@ export const getEventData = async (eventID, setEventData) => {
 };
 export const useFetchShowingData = (eventID: number) => {
   const [showingData, setShowingData] = useState(undefined);
-  const [reload, setReload] = useState(true);
+  const [reload, setReloadShowing] = useState(true);
 
   useEffect(() => {
     if (eventID) {
@@ -132,7 +134,7 @@ export const useFetchShowingData = (eventID: number) => {
     }
   }, [reload, eventID]);
 
-  return {showingData, setReload, reload};
+  return {showingData, setReloadShowing, reload};
 };
 export const getShowingData = async (eventID, setShowingData) => {
   try {

@@ -9,22 +9,18 @@ import {createDeleteFunction, createSubmitFunction} from './ShowingUtils';
 import {EventGeneralView} from './EventGeneralView';
 
 export const EventGeneralContainer = () => {
-  const {eventID, setEventID, token} = useEvent();
+  const {eventID, setEventID, token, setReloadEvent} = useEvent();
   const navigate = useNavigate();
   const [edit, setEdit] = useState(!eventID);
 
-  const onPutSuccess = async (newEvent) => {
+  const onSuccess = async (newEvent) => {
     const res = await newEvent.json();
+    setReloadEvent((reload) => !reload);
     setEventID(res.data[0].eventid);
     setEdit((edit)=>!edit);
     openSnackbar('Event Updated');
   };
 
-  const onPostSuccess = async (newEvent) => {
-    const res = await newEvent.json();
-    setEventID(res.data[0].eventid);
-    openSnackbar('Event Created');
-  };
   const onSubmitError = () => {
     openSnackbar('Error Creating Event');
   };
@@ -40,8 +36,8 @@ export const EventGeneralContainer = () => {
   const onSubmit = createSubmitFunction(eventID === 0 ? 'POST' : 'PUT',
       `${process.env.REACT_APP_API_1_URL}/events`,
       token,
-    eventID?onPutSuccess: onPostSuccess,
-    onSubmitError,
+      onSuccess,
+      onSubmitError,
   );
 
   const onDelete = createDeleteFunction('DELETE',

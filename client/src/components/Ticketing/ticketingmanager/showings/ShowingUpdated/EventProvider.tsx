@@ -12,12 +12,13 @@ interface EventContextType {
   setEventID: (value) => void;
   eventData;
   ticketTypes: any[];
-  setLoading: (value) => void;
   loading: boolean;
   token: string;
   showingData: Showing[];
-  setReload: (value) => void;
-  reload: boolean;
+  setReloadShowing: (value) => void;
+  setReloadEvent: (value) => void;
+  editing: boolean;
+  setEditing: (value) => void;
 }
 
 export const EventContext = React.createContext<EventContextType>({
@@ -25,23 +26,24 @@ export const EventContext = React.createContext<EventContextType>({
   setEventID: undefined,
   eventData: undefined,
   ticketTypes: undefined,
-  setLoading: undefined,
   loading: true,
   token: undefined,
   showingData: undefined,
-  setReload: undefined,
-  reload: true,
+  setReloadShowing: undefined,
+  setReloadEvent: undefined,
+  editing: undefined,
+  setEditing: undefined,
 });
 export const useEvent = () => {
   return useContext(EventContext);
 };
 export const EventProvider = (props: { eventID: number, children }) => {
   const [eventID, setEventID] = useState(props.eventID ?? 0);
+  const [editing, setEditing] = useState(false);
   const {
-    eventData, loading, ticketTypes,
-    setLoading,
+    eventData, loading, ticketTypes, setReloadEvent,
   } = useFetchEventData(eventID);
-  const {setReload, showingData, reload} = useFetchShowingData(eventID);
+  const {setReloadShowing, showingData, reload} = useFetchShowingData(eventID);
   const {token} = useFetchToken();
 
   return (
@@ -50,14 +52,15 @@ export const EventProvider = (props: { eventID: number, children }) => {
         {
           eventID,
           setEventID,
+          editing,
+          setEditing,
           eventData,
           ticketTypes,
-          setLoading,
           loading,
           token,
           showingData,
-          setReload,
-          reload,
+          setReloadShowing,
+          setReloadEvent,
         }
       }
     >

@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 export const eventInstanceSchema = yup.object().shape({
   eventtime: yup.string().required('Required'),
-  eventdate: yup.date().min(new Date()).required('Required'),
+  eventdate: yup.date().required('Required'),
   totalseats: yup.number().integer().positive().required('Required'),
   instanceTicketTypes: yup.array().of(
       yup.object().shape({

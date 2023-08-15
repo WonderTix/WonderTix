@@ -13,12 +13,13 @@ interface EventShowingContainerProps {
 
 export const EventShowingContainer = (props: EventShowingContainerProps) => {
   const {showing} = props;
-  const {setReload, token} = useEvent();
+  const {setReloadShowing, token, setEditing, editing} = useEvent();
   const [edit, setEdit] = useState(false);
 
   const onSuccess = (event) => {
-    setReload((reload) => !reload);
+    setReloadShowing((reload) => !reload);
     setEdit((edit)=> !edit);
+    setEditing((edit) => !edit);
     openSnackbar(`Event Updated Successfully`);
   };
 
@@ -60,7 +61,11 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
           <Button
             color={'primary'}
             variant={'contained'}
-            onClick={() => setEdit((edit) => !edit)}
+            disabled={editing}
+            onClick={async () => {
+              setEdit((edit) => !edit);
+              setEditing((edit) => !edit);
+            }}
           >
             Edit
           </Button>:
