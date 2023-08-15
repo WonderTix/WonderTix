@@ -25,6 +25,7 @@
     ],
     "rules": {
         "no-unused-vars": "off",
+        "max-len": "off",
         "linebreak-style": 0,
         "valid-jsdoc": "off",
 

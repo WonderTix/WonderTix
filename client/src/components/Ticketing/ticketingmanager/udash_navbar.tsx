@@ -1,5 +1,4 @@
 /* eslint-disable operator-linebreak */
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
 import React, {useState} from 'react';
 import logoi from '../../../assets/pp_logo_white.png';
