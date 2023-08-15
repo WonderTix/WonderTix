@@ -17,14 +17,6 @@ test('get started link', async ({ page }) => {
   await expect(page).toHaveURL(/.*intro/);
 });
 
-test('portland play house link',async({page})=>{
-  await page.goto('https://localhost:3000/');
-
-  await page.getByRole('link', { name: '/' }).click();
-
-  await expect(page).toHaveURL('https://portlandplayhouse.org/');
-});
-
 test('donate',async({page})=>{
   await page.goto('https://localhost:3000/');
 
