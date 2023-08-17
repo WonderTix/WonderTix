@@ -72,7 +72,7 @@ const Navbar = ({bMode}: NavbarProps) => {
             <div className='sm:flex sm:flex-col sm:w-full sm:items-center'>
               <a href='https://portlandplayhouse.org/' >
                 <img className='w-12 h-full
-                object-cover md:mx-4 sm:ml-4' src={bgImg} alt="/" />
+                object-cover md:mx-4 sm:ml-16' src={bgImg} alt="/" />
               </a>
             </div>
           </div>
@@ -112,7 +112,7 @@ const Navbar = ({bMode}: NavbarProps) => {
           </ul>
         </div>
         {/* Desktop top-right profile nav button */}
-        <button className='md:hidden relative' onClick={handleClick}>
+        <button className='md:hidden relative ml-5 px-5' onClick={handleClick}>
           {!nav ? <MenuIcon className='w-5'/> : <XIcon className = 'w-5' />}
         </button>
         <div className="w-1/2 hidden md:flex mr-4 gap-4">
