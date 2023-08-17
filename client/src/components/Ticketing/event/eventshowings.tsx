@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {useParams} from 'react-router-dom';
@@ -60,7 +59,6 @@ const Eventshowings = () => {
   const eventData = useAppSelector((state) => selectEventData(state, eventid));
   if (eventData === undefined) return <p>Whoops! Event not found</p>;
   const {title, description, tickets} = eventData;
-  // eslint-disable-next-line camelcase
   const imageUrl = eventData.imageurl;
   return (
     <div className = ' w-full h-screen  ' >

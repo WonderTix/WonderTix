@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import React from 'react';
 import Dashboard from './dashboard';
 import Udash_nav from './udash_navbar';

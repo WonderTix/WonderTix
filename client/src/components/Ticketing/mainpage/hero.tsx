@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, {useEffect} from 'react';
 import {ListComponent} from './eventcard';
 import {useAppSelector, useAppDispatch} from '../app/hooks';

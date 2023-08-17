@@ -1,5 +1,4 @@
 /* eslint-disable operator-linebreak */
-/* eslint-disable camelcase */
 import React, {useState} from 'react';
 import logoi from '../../../assets/pp_logo_white.png';
 import {useNavigate} from 'react-router-dom';
