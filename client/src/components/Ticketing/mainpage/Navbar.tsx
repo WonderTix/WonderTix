@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {MenuIcon, XIcon} from '@heroicons/react/outline';
 import {useNavigate} from 'react-router-dom';
 import bgImg from '../../../assets/pp_logo_black.png';
@@ -29,6 +29,8 @@ const Navbar = ({bMode}: NavbarProps) => {
   const [admin, isAdmin] = useState(false);
   const navigate = useNavigate();
 
+  const dropdownRef = useRef(null);
+
   let picture: any;
   let name: any;
   if (isAuthenticated) {
@@ -52,6 +54,15 @@ const Navbar = ({bMode}: NavbarProps) => {
   useEffect(() => {
     showMenu();
   }, []);
+
+  useEffect(() => {
+    const outsideClickHandler = (e) => {
+      if (!dropdownRef.current.contains(e.target)) {
+        setNav(false);
+      }
+    };
+    document.addEventListener('mousedown', outsideClickHandler);
+  });
 
   return (
     <div className='w-screen h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg'>
@@ -154,7 +165,7 @@ const Navbar = ({bMode}: NavbarProps) => {
         </div>
 
         {/* Mobile top-left profile nav button */}
-        <div className='md:hidden   sm:z-10 sm:flex sm:absolute sm:flex-col sm:w-auto sm:items-start'>
+        <div className='md:hidden   sm:z-10 sm:flex sm:absolute sm:flex-col sm:w-auto sm:items-start' >
           {login ? (
             <div className="flex  items-center relative cursor-pointer px-4" onClick={() => setProfile(!profile)}>
               <div className="rounded-full">
@@ -188,7 +199,8 @@ const Navbar = ({bMode}: NavbarProps) => {
         </div>
       </div>
 
-      <ul className={!nav ? 'hidden' :'absolute  bg-zinc-200 w-full px-8 items-center '}>
+      {/* dropdown menu */}
+      <ul className={!nav ? 'hidden' :'absolute  bg-zinc-200 w-full px-8 items-center '} ref = {dropdownRef}>
         <li className='border-b-2 p-3 border-zinc-300 w-full flex flex-col
          items-center hover:scale-105 duration-300'>
           <button onClick={() => navigate('/')} className='border-none
