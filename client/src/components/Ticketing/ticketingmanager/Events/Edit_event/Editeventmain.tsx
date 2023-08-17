@@ -1,5 +1,3 @@
-/* eslint-disable camelcase*/
-/* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
 import Udash_nav from '../../udash_navbar';
 import EditEventPage from './EditEventPage';

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, {CSSProperties} from 'react';
 import popupProps from '../../../../interfaces/popup.interface';
 
