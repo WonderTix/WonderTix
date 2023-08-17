@@ -1,5 +1,4 @@
 /* eslint-disable operator-linebreak */
-/* eslint-disable max-len */
 import React, {useState} from 'react';
 import logo from '../../Logo/2011_Logo_white.png';
 import '../../Logo/logo.css';

@@ -1,5 +1,4 @@
 /* eslint-disable require-jsdoc */
-/* eslint-disable max-len */
 import React, {useState, useCallback, useEffect} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
 // import EventForm from './EventForm';
