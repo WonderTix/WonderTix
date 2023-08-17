@@ -24,7 +24,7 @@ const Navigation = () => {
   const {name} = user;
   const navigate = useNavigate();
   return (
-    <div className="w-full h-full bg-gray-100  ">
+    <div className="w-full h-full bg-gray-100">
       <div className="flex flex-no-wrap">
         <div className="absolute md:relative w-[14rem] h-screen  bg-zinc-900 hidden md:block z-10 overflow-auto">
           <div className="h-12 w-full flex flex-col items-center">
@@ -429,7 +429,7 @@ const Navigation = () => {
                     <div className="flex flex-col items-center ml-3">
                       <div className="flex flex-row mb-3 mt-2">
                         <img
-                          alt="profile-pic"
+                          alt="Profile picture"
                           src={picture}
                           className="w-8 h-8 rounded-md"
                         />
@@ -491,67 +491,52 @@ const Navigation = () => {
 
         {/* Navigation starts */}
         <div className="w-full">
-          <nav className="h-16 flex items-center md:items-stretch justify-end md:justify-between bg-white shadow relative z-10">
-            <div className="hidden md:flex w-full pr-6">
-              <div className="w-1/2 h-full hidden md:flex items-center pr-24">
-                <div className="relative w-full">
-                  <div className=" focus:outline-none focus:border-indigo-700 w-full text-lg text-zinc-500 pl-12 py-2 font-bold ">
-                    Welcome to WonderTix CRM
-                  </div>
+          <header className="h-16 flex items-center md:items-stretch justify-end md:justify-between bg-white shadow relative z-10">
+            <div className="hidden md:flex md:justify-between w-full">
+              <h2 className="flex items-center text-lg text-zinc-500 font-bold ml-12 mr-6">
+                Welcome to WonderTix CRM
+              </h2>
+              <button
+                className="relative flex items-center text-left cursor-pointer mx-6"
+                onClick={() => setProfile(!profile)}
+              >
+                <div>
+                  {profile && <AdminNavDropdown />}
+                  <img
+                    alt="Profile picture"
+                    src={picture}
+                    className="rounded-3xl w-12 h-12"
+                  />
                 </div>
-              </div>
-              <div className="w-1/2 hidden md:flex">
-                <div className="w-full flex items-center pl-8 justify-end">
-                  <div
-                    className="flex items-center relative cursor-pointer"
-                    onClick={() => setProfile(!profile)}
-                  >
-                    <div className="rounded-full">
-                      {profile ? <AdminNavDropdown /> : ''}
-                      <div className="relative">
-                        <div className="">
-                          <img
-                            src={picture}
-                            className="rounded-3xl w-12 h-12  "
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-gray-800 text-sm mx-3">{name}</p>
-                    <div className="cursor-pointer text-gray-600">
-                      <svg
-                        aria-haspopup="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="icon icon-tabler icon-tabler-chevron-down"
-                        width={20}
-                        height={20}
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <polyline points="6 9 12 15 18 9" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                <p className="text-gray-800 text-sm mx-3">{name}</p>
+                <svg
+                  aria-haspopup="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon icon-tabler icon-tabler-chevron-down text-gray-600"
+                  width={20}
+                  height={20}
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" />
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
             </div>
-            <div
+            <button
               className="text-gray-600 mr-8 visible md:hidden relative"
               onClick={() => setShowMobileMenu(!showMobileMenu)}
             >
-              {showMobileMenu ? (
-                ' '
-              ) : (
+              {!showMobileMenu && (
                 <svg
                   aria-label="Main Menu"
                   aria-haspopup="true"
                   xmlns="http://www.w3.org/2000/svg"
-                  className="icon icon-tabler icon-tabler-menu cursor-pointer"
+                  className="icon icon-tabler icon-tabler-menu"
                   width={30}
                   height={30}
                   viewBox="0 0 24 24"
@@ -566,8 +551,8 @@ const Navigation = () => {
                   <line x1={4} y1={16} x2={20} y2={16} />
                 </svg>
               )}
-            </div>
-          </nav>
+            </button>
+          </header>
         </div>
       </div>
     </div>
