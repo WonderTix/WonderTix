@@ -37,7 +37,7 @@ steps:
       - '--memory=1Gi'
       - '--allow-unauthenticated'
       - '--min-instances=1'
-       '--set-env-vars':
+      - '--set-env-vars':
         DB_USER=postgres,DB_PASSWORD=password,DB_DATABASE=wondertix,DB_PORT=5432,DB_HOST=35.247.65.190,DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?schema=public,
         PRIVATE_STRIPE_KEY=sk_test_51NRiUaCPEq1DMXvlQ4nysGMLstk8YMOPs0AV5DBcKmQ0YJ4ki5LSG1MvwbPsqdiXIFvXCC4WrZkQrZMniQmcMbMf00u6Y9YDYY,
         ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app,
