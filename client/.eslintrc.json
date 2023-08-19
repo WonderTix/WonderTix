@@ -8,8 +8,7 @@
     "google",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:jsdoc/recommended",
-    "prettier"
+    "plugin:jsdoc/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -26,6 +25,8 @@
     "max-len": "off",
     "no-unused-vars": "off",
     "valid-jsdoc": "off",
+    "operator-linebreak": "off",
+    "indent": ["warn", 2],
 
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/ban-ts-comment": "off",

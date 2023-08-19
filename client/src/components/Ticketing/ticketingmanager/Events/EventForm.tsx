@@ -26,10 +26,10 @@ import PopUp from '../../Pop-up';
  * @param {number} concessions
  */
 export interface TicketType {
-    id: number,
-    name: string,
-    price: number,
-    concessions: number,
+  id: number;
+  name: string;
+  price: number;
+  concessions: number;
 }
 
 /**
@@ -61,7 +61,9 @@ export interface TicketType {
  * @returns {ValidationErrors}
  */
 function validate(formData: any) {
-  return (formData.showings?.length > 0) ? undefined : {error: 'Need one or more showings added'};
+  return formData.showings?.length > 0
+    ? undefined
+    : {error: 'Need one or more showings added'};
 }
 
 /**
@@ -70,11 +72,13 @@ function validate(formData: any) {
  * @param {Array} showings: DateTime: undefined, ticketType: undefined, ticketTypeId: undefined
  */
 const initialState = {
-  showings: [{
-    DateTime: undefined,
-    ticketType: undefined,
-    ticketTypeId: undefined,
-  }],
+  showings: [
+    {
+      DateTime: undefined,
+      ticketType: undefined,
+      ticketTypeId: undefined,
+    },
+  ],
 };
 
 /**
@@ -85,9 +89,9 @@ const initialState = {
  * @param {Partial<WtixEvent>} InitialValues?
  */
 interface EventFormProps {
-    onSubmit: (formData: WtixEvent) => void
-    tickettypes: number[],
-    initialValues?: Partial<WtixEvent>,
+  onSubmit: (formData: WtixEvent) => void;
+  tickettypes: number[];
+  initialValues?: Partial<WtixEvent>;
 }
 
 /**
@@ -105,27 +109,29 @@ interface EventFormProps {
  * @returns {Form} EventForm
  */
 const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
-  const def: WtixEvent = (initialValues !== undefined) ? {
-    eventname: initialValues.eventname,
-    eventid: initialValues.eventid,
-    eventdescription: initialValues.eventdescription,
-    imageurl: initialValues.imageurl,
-    active: initialValues.active,
-    showings: initialValues.showings,
-  }:
-  {
-    eventname: '',
-    eventid: -1,
-    eventdescription: '',
-    imageurl: '',
-    active: false,
-    showings: [],
-  };
+  const def: WtixEvent =
+    initialValues !== undefined
+      ? {
+          eventname: initialValues.eventname,
+          eventid: initialValues.eventid,
+          eventdescription: initialValues.eventdescription,
+          imageurl: initialValues.imageurl,
+          active: initialValues.active,
+          showings: initialValues.showings,
+        }
+      : {
+          eventname: '',
+          eventid: -1,
+          eventdescription: '',
+          imageurl: '',
+          active: false,
+          showings: [],
+        };
 
   useEffect(() => {
     if (initialValues) {
       console.log(initialValues.showings);
-      setDisabledUrl(initialValues.imageurl==='Default Event Image');
+      setDisabledUrl(initialValues.imageurl === 'Default Event Image');
     }
   }, []);
   const [eventname, seteventname] = useState(def.eventname);
@@ -141,17 +147,26 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
 
   // FIELDS CALLBACK
   // Set event name
-  const addeventname = useCallback((eventname) => {
-    seteventname(eventname.target.value);
-  }, [eventname]);
+  const addeventname = useCallback(
+    (eventname) => {
+      seteventname(eventname.target.value);
+    },
+    [eventname],
+  );
   // Set description
-  const addEventDesc = useCallback((event) => {
-    setEventDesc(event.target.value);
-  }, [eventdescription]);
+  const addEventDesc = useCallback(
+    (event) => {
+      setEventDesc(event.target.value);
+    },
+    [eventdescription],
+  );
   // Set url
-  const addURL = useCallback((url) => {
-    setImageURL(url.target.value);
-  }, [imageurl]);
+  const addURL = useCallback(
+    (url) => {
+      setImageURL(url.target.value);
+    },
+    [imageurl],
+  );
 
   const setShowingsHandler = (shows) => {
     console.log(shows);
@@ -169,14 +184,15 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       showings: showings,
     };
     console.log(data);
-    const nameMissing= data.eventname?.trim() === '';
-    const descriptionMissing= data.eventdescription?.trim() === '';
-    const missingFieldCount= (nameMissing?1:0)+(descriptionMissing?1:0);
+    const nameMissing = data.eventname?.trim() === '';
+    const descriptionMissing = data.eventdescription?.trim() === '';
+    const missingFieldCount =
+      (nameMissing ? 1 : 0) + (descriptionMissing ? 1 : 0);
     if (missingFieldCount) {
-      const len = missingFieldCount>1;
-      setErr( `The ${nameMissing?'Event Name':''}${len?' and ':''}
-      ${descriptionMissing?'Event Description':''}
-      ${len?' fields are missing':' field is missing'}`);
+      const len = missingFieldCount > 1;
+      setErr(`The ${nameMissing ? 'Event Name' : ''}${len ? ' and ' : ''}
+      ${descriptionMissing ? 'Event Description' : ''}
+      ${len ? ' fields are missing' : ' field is missing'}`);
       setShowPopUp(true);
       return;
     }
@@ -186,7 +202,7 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
       return;
     }
 
-    if (data.imageurl==='') {
+    if (data.imageurl === '') {
       data.imageurl = 'Default Event Image';
     }
 
@@ -217,41 +233,58 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
 
   return (
     <div>
-      {showPopUp ? <PopUp message={err} title='Failed to save.' handleClose={() => setShowPopUp(false)} handleProceed={() => setShowPopUp(false)} success={false}/> : null}
+      {showPopUp ? (
+        <PopUp
+          message={err}
+          title='Failed to save.'
+          handleClose={() => setShowPopUp(false)}
+          handleProceed={() => setShowPopUp(false)}
+          success={false}
+        />
+      ) : null}
       <Form
         onSubmit={handleSubmit}
         initialValues={initialValues ?? initialState}
         mutators={{...arrayMutators}}
-        render={({
-          handleSubmit,
-        }) => (
+        render={({handleSubmit}) => (
           <form onSubmit={handleSubmit}>
             <div className='bg-white flex flex-col  p-6 rounded-xl shadow-xl'>
               <div className='text-3xl font-semibold mb-5'>
-                  Event Information
+                Event Information
               </div>
               <div className='w-full flex flex-col '>
                 <InputFieldForEvent
                   name={'eventname'}
-                  id={'eventname'} headerText={'Enter Event Name'}
-                  action={addeventname} actionType={'onChange'} value={eventname}
-                  placeholder={'Event Name'} />
+                  id={'eventname'}
+                  headerText={'Enter Event Name'}
+                  action={addeventname}
+                  actionType={'onChange'}
+                  value={eventname}
+                  placeholder={'Event Name'}
+                />
 
                 <InputFieldForEvent
                   name={'eventdescription'}
-                  id={'eventdescription'} headerText={'Enter Short Event Description'}
+                  id={'eventdescription'}
+                  headerText={'Enter Short Event Description'}
                   actionType={'onChange'}
-                  action={addEventDesc} value={eventdescription}
-                  placeholder={'Event Description'} />
+                  action={addEventDesc}
+                  value={eventdescription}
+                  placeholder={'Event Description'}
+                />
 
                 <div className={'grid grid-cols-5'}>
                   <div className='col-span-3 md:col-span-4'>
                     <InputFieldForEvent
                       name={'imageurl'}
-                      id={'imageurl'} headerText={'Upload Image for Event'}
-                      action={addURL} actionType={'onChange'} value={imageurl}
+                      id={'imageurl'}
+                      headerText={'Upload Image for Event'}
+                      action={addURL}
+                      actionType={'onChange'}
+                      value={imageurl}
                       disabled={disabledUrl}
-                      placeholder={'image URL'}/>
+                      placeholder={'image URL'}
+                    />
                   </div>
                   <div className='col-span-2 md:col-span-1 flex flex-col mb-4'>
                     <label
@@ -266,8 +299,8 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                       type='checkbox'
                       value={'default'}
                       checked={disabledUrl}
-                      onChange={ () => {
-                        setImageURL((!disabledUrl?'Default Event Image':''));
+                      onChange={() => {
+                        setImageURL(!disabledUrl ? 'Default Event Image' : '');
                         setDisabledUrl(!disabledUrl);
                       }}
                       className={'m-auto'}
@@ -276,17 +309,19 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
                 </div>
               </div>
               {/* Showings container*/}
-              <div className='text-3xl font-semibold mt-5'>
-                  Showings
-              </div>
+              <div className='text-3xl font-semibold mt-5'>Showings</div>
               <div className='mb-3 text-sm text-zinc-600'>
-                  You can configure occurrences of this event below.
-                  To add more, click the &quot;Add Showing&quot; button.
+                You can configure occurrences of this event below. To add more,
+                click the &quot;Add Showing&quot; button.
               </div>
               <div>
                 {/*  Button to trigger add of new show*/}
-                <div id="show-table">
-                  <ShowListController showsData={def.showings.length != 0 ? def.showings : []} eventid={def.eventid} setShowingsHandler={setShowingsHandler}/>
+                <div id='show-table'>
+                  <ShowListController
+                    showsData={def.showings.length != 0 ? def.showings : []}
+                    eventid={def.eventid}
+                    setShowingsHandler={setShowingsHandler}
+                  />
                 </div>
               </div>
             </div>

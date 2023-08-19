@@ -1,4 +1,7 @@
 {
   "singleQuote": true,
-  "bracketSpacing": false
+  "jsxSingleQuote": true,
+  "bracketSpacing": false,
+  "quoteProps": "consistent",
+  "trailingComma": "all"
 }

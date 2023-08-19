@@ -14,7 +14,7 @@ import {useAppDispatch} from '../../../app/hooks';
 import {openSnackbar} from '../../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
-import {Showing, WtixEvent} from '../../../../../interfaces/showing.interface';
+import {WtixEvent} from '../../../../../interfaces/showing.interface';
 
 /**
  * Maps edit data to the event props
@@ -56,7 +56,9 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   }, []);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes');
+    const res = await fetch(
+      process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
+    );
     setTicketTypes(await res.json());
   };
 
@@ -87,21 +89,26 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     });
     console.log(params);
 
-    await fetch(process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`, {
-      credentials: 'include',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+    await fetch(
+      process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`,
+      {
+        credentials: 'include',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData.showings),
       },
-      body: JSON.stringify(updatedData.showings),
-    });
+    );
 
     if (res.ok) {
       const results = await res.json();
       console.log(results);
       // dispatch(fetchTicketingData());
-      dispatch(openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`));
+      dispatch(
+        openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`),
+      );
     } else {
       dispatch(openSnackbar('Save failed'));
     }
