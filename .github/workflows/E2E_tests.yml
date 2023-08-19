@@ -61,6 +61,11 @@ jobs:
         
       - name: docker setup
         run: docker-compose up -d
+
+      - name: Wait for services to be ready
+        run: |
+          ./server/bin/wait-for-it.sh localhost:8000 -t 60
+          ./server/bin/wait-for-it.sh localhost:3000 -t 60
         
       - name: Check client E2E(UI) Tests
         run: npm run test:playwright
