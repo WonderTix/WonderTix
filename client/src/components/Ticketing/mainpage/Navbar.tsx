@@ -45,7 +45,7 @@ const Navbar = ({bMode}: NavbarProps) => {
       scope: 'admin',
     });
 
-    if (token && token.undefineduser_authorization.permissions[0] == 'admin') {
+    if (token.undefineduser_authorization.permissions[0] == 'admin') {
       isAdmin(true);
     }
   };
