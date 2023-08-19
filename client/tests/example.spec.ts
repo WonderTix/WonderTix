@@ -18,7 +18,7 @@ test('get started link', async ({ page }) => {
 });
 
 test('portland play house link',async({page})=>{
-  await page.goto('https://localhost:3000/');
+  await page.goto('https://127.0.0.1:3000/');
 
   await page.getByRole('link', { name: '/' }).click();
 
