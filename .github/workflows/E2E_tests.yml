@@ -64,8 +64,8 @@ jobs:
 
         
       - name: Check client E2E(UI) Tests
-        # run: npm run test:playwright
-        run: DEBUG=pw:api npx playwright test
+        run: npm run test:playwright
+        # run: DEBUG=pw:api npx playwright test
         working-directory: ./client
 
   # test-server:
