@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
@@ -105,7 +104,6 @@ interface EventFormProps {
  * @param eventname.initialValues
  * @returns {Form} EventForm
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   const def: WtixEvent = (initialValues !== undefined) ? {
     eventname: initialValues.eventname,
