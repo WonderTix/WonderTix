@@ -1,4 +1,11 @@
 steps:
+ # Debugging step: List contents of workspace directory
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'ls -la'
+
   # Build the Docker image for the server using Dockerfile.dev
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-server', '.']
