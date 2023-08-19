@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 
 import React, {ReactElement, useEffect, useState} from 'react';

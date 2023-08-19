@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
@@ -76,7 +75,6 @@ function validateEmail(email: string) {
  * @returns {ReactElement}
  */
 export default function CompleteOrderForm(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     {onSubmit, onBack, disabled, donationForm}: CompleteOrderFormProps,
 ): ReactElement {
   const [firstName, setfirstName] = useState('');
@@ -114,7 +112,6 @@ export default function CompleteOrderForm(
         <Form
           onSubmit={handleSubmit}
           initialValues={{'opt-in': false, 'seating-accommodation': false}}
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           render={({handleSubmit}) => (
             <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-4 rounded-xl flex flex-col  justify-between'>
               <div className='flex flex-col w-auto'>
