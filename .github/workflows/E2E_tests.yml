@@ -62,6 +62,9 @@ jobs:
       - name: docker setup
         run: docker-compose up -d
 
+      - name: Set permissions for wait-for-it script
+        run: chmod +x ./server/bin/wait-for-it.sh
+
       - name: Wait for services to be ready
         run: |
           ./server/bin/wait-for-it.sh localhost:8000 -t 60
