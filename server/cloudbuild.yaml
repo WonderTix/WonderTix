@@ -7,7 +7,6 @@ steps:
       - '-c'
       - |
         echo DB_USER=postgres >> server/.env.dev
-        echo DB_PASSWORD=password >> server/.env.dev
         echo DB_DATABASE=wondertix >> server/.env.dev
         echo DB_PORT=5432 >> server/.env.dev
         echo DB_HOST=35.247.65.190 >> server/.env.dev

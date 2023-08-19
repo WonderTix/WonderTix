@@ -64,7 +64,6 @@ export default function DeleteEvents() {
   const getEvents = async () => {
     try {
       const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/active');
-      console.log(process.env.REACT_APP_API_1_URL);
       const jsonRes = await response.json();
       const jsonData = jsonRes.data;
       Object.keys(jsonData).forEach(function(key) {
