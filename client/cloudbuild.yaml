@@ -1,8 +1,21 @@
 steps:
+
+  # Create the .env.dev file with environment variables for the client
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo REACT_APP_ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> .env.dev
+        echo REACT_APP_AUTH0_URL=https://wtix-dev.us.auth0.com >> .env.dev
+        echo REACT_APP_AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> .env.dev
+        echo REACT_APP_API_1_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/1 >> .env.dev
+        echo REACT_APP_API_2_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/2 >> .env.dev
+        echo ENV=dev >> .env.dev
+
   # Build the Docker image for the client
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-client', '.']
-
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -20,7 +33,3 @@ steps:
       - 'us-west2'
       - '--platform'
       - 'managed'
-
-# Define images to be stored in Artifact Registry
-images:
-  - 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-client'
