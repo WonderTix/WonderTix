@@ -146,8 +146,6 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
     'ticketing/fetch',
     async () => {
-      console.log('process.env');
-      console.log(process.env);
       const eventData = await fetchData(process.env.REACT_APP_API_1_URL + '/events');
       const events: Event[] = eventData.data;
       const ticketRes: TicketsState = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets');
