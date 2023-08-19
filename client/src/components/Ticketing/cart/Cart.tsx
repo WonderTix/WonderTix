@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import CartRow from './CartItem';

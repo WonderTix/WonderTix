@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {query} from 'express';
 import {link} from 'fs';
 import Delta from '../../interfaces/Delta';

@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable camelcase */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
