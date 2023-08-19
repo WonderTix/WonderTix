@@ -4,15 +4,15 @@ import dotenv from 'dotenv';
 import path from 'path';
 import {Pool, PoolConfig} from 'pg';
 
-let envPath;
-if (process.env.ENV === 'local') {
-    envPath = path.join(__dirname, '../../../.env');
-} else if (process.env.ENV === 'dev') {
-    envPath = path.join(__dirname, '../../.env.dev');
-} else {
-    throw new Error('Unknown ENV value');
-}
-dotenv.config({ path: envPath });
+// let envPath;
+// if (process.env.ENV === 'local') {
+//     envPath = path.join(__dirname, '../../../.env');
+// } else if (process.env.ENV === 'dev') {
+//     envPath = path.join(__dirname, '../../.env.dev');
+// } else {
+//     throw new Error('Unknown ENV value');
+// }
+// dotenv.config({ path: envPath });
 
 console.log("process env in server db.ts");
 console.log(process.env);

@@ -508,16 +508,16 @@ const openApiSpec = swaggerJsdoc({
 });
 
 const createServer = async () => {
-  let envPath;
-  if (process.env.ENV === 'local') {
-      envPath = path.join(__dirname, '../../.env');
-  } else if (process.env.ENV === 'dev') {
-      envPath = path.join(__dirname, '../.env.dev');
-  } else {
-      throw new Error('Unknown ENV value');
-  }
+  // let envPath;
+  // if (process.env.ENV === 'local') {
+  //     envPath = path.join(__dirname, '../../.env');
+  // } else if (process.env.ENV === 'dev') {
+  //     envPath = path.join(__dirname, '../.env.dev');
+  // } else {
+  //     throw new Error('Unknown ENV value');
+  // }
 
-  dotenv.config({ path: envPath });
+  // dotenv.config({ path: envPath });
 
 
   const app = express();
