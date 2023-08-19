@@ -6,12 +6,12 @@ steps:
     args:
       - '-c'
       - |
-        echo REACT_APP_ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> client/.env.dev
+        echo REACT_APP_ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> client/.env
         echo REACT_APP_AUTH0_URL=https://wtix-dev.us.auth0.com >> client/.env.dev
-        echo REACT_APP_AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> client/.env.dev
-        echo REACT_APP_API_1_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/1 >> client/.env.dev
-        echo REACT_APP_API_2_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/2 >> client/.env.dev
-        echo ENV=dev >> client/.env.dev
+        echo REACT_APP_AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> client/.env
+        echo REACT_APP_API_1_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/1 >> client/.env
+        echo REACT_APP_API_2_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/2 >> client/.env
+        echo ENV=dev >> client/.env
 
   # Build the Docker image for the client
   - name: 'gcr.io/cloud-builders/docker'
