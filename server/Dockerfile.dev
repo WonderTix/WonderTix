@@ -19,9 +19,6 @@ COPY ./package*.json ./
 # Install the npm dependencies
 RUN npm install
 
-# Copy the .env.dev file into the container for local gcloud builds
-COPY .env.dev .env
-
 # Copy the rest of the application code into the container
 COPY . .
 
