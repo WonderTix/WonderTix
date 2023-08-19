@@ -3,19 +3,6 @@ steps:
   # Build the Docker image for the server using Dockerfile.dev
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'server/Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-server', 'server']
-    env:
-      - 'DB_USER=postgres'
-      - 'DB_PASSWORD=password'
-      - 'DB_DATABASE=wondertix'
-      - 'DB_PORT=5432'
-      - 'DB_HOST=35.247.65.190'
-      - 'DATABASE_URL=postgresql://postgres:password@35.247.65.190:$5432/wondertix?schema=public'
-      - 'ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
-      - 'FRONTEND_URL=https://wondertix-client-s2jfqf45ha-wl.a.run.app'
-      - 'AUTH0_URL=https://wtix-dev.us.auth0.com'
-      - 'AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
-      - 'ENV=dev'
-   
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -44,13 +31,10 @@ steps:
       - 'DB_DATABASE=wondertix'
       - 'DB_PORT=5432'
       - 'DB_HOST=35.247.65.190'
-      - 'DATABASE_URL=postgresql://postgres:password@35.247.65.190:$5432/wondertix?schema=public'
+      - 'DATABASE_URL=postgresql://postgres:password@35.247.65.190:5432/wondertix?schema=public'
       - 'ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
       - 'FRONTEND_URL=https://wondertix-client-s2jfqf45ha-wl.a.run.app'
       - 'AUTH0_URL=https://wtix-dev.us.auth0.com'
       - 'AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
       - 'ENV=dev'
 
-# # Define images to be stored in Artifact Registry
-# images:
-#   - 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-server'
