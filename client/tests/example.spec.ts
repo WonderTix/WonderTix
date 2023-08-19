@@ -30,11 +30,11 @@ test('donate',async({page})=>{
 
   await page.getByRole('button', { name: 'Donate' }).click();
 
-  await expect(page).toHaveURL('https://127.0.0.1/donate');
+  await expect(page).toHaveURL('https://127.0.0.1:3000/donate');
 
   await page.getByRole('button', { name: 'Back to Events' }).click();
 
-  await expect(page).toHaveURL('https://127.0.0.1');
+  await expect(page).toHaveURL('https://127.0.0.1:3000');
 });
 
 test('events',async({page})=>{
@@ -42,9 +42,9 @@ test('events',async({page})=>{
 
   await page.getByRole('button', { name: 'See Showings' }).first().click();
 
-  await expect(page).toHaveURL('https://127.0.0.1/events/32');
+  await expect(page).toHaveURL('https://127.0.0.1:3000/events/32');
 
   await page.getByRole('button', { name: 'Back to Events' }).click();
 
-  await expect(page).toHaveURL('https://127.0.0.1');
+  await expect(page).toHaveURL('https://127.0.0.1:3000');
 });
