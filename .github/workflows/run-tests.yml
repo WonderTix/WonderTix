@@ -1,11 +1,11 @@
-name: Run unit tests on client
+name: Run E2E tests on client
 on:
   pull_request:
     types: [opened, reopened, ready_for_review, edited, synchronize]
 
 jobs:
   test-client:
-    name: Run Tests on client
+    name: Run E2E Tests on client
     runs-on: ubuntu-latest
     env:
       PG_USER: postgres
@@ -49,29 +49,19 @@ jobs:
       - name: Install client CA
         run: |
           mkcert -install
-          mkcert -install
           mkcert localhost
         working-directory: ./client
 
       - name: Install server CA
         run: |
           mkcert -install
-          mkcert -install
           mkcert localhost
-        working-directory: ./server
-        
-      - name: check 1
-        run: ls
-        working-directory: ./client
-
-      - name: check 2
-        run: ls
         working-directory: ./server
         
       - name: docker setup
         run: docker-compose up -d
         
-      - name: Check Unit Tests
+      - name: Check client E2E(UI) Tests
         run: npm run test:playwright
         working-directory: ./client
 
