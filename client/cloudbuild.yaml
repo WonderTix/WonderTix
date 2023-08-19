@@ -15,7 +15,7 @@ steps:
 
   # Build the Docker image for the client
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-client', '.']
+    args: ['build', '-f', 'client/Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-client', 'client']
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
