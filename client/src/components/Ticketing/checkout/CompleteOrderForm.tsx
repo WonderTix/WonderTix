@@ -88,6 +88,15 @@ export default function CompleteOrderForm(
   const [seatingAcc, setseatingAcc] = useState('');
   const [comments, setComments] = useState('');
   const [optIn, setOptIn] = useState(false);
+  const handleSeatingAccChange = (ev) => {
+    setseatingAcc(ev.target.value);
+  };
+  const handleCommentsChange = (ev) => {
+    setComments(ev.target.value);
+    if (seatingAcc === 'Other') {
+      setseatingAcc(ev.target.value);
+    }
+  };
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
       firstName,
@@ -117,80 +126,79 @@ export default function CompleteOrderForm(
               <div className='flex flex-col w-auto'>
                 <div className='grid gap-5 md:grid-cols-2'>
                   <div>
-                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                    <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1" htmlFor='first-name'>
                      First Name
-                    </span>
+                    </label>
                     <input className="input w-full  border
             border-zinc-300 p-4 rounded-lg " type='text'
-                    required name="first-name" placeholder="First Name" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                    required name="first-name" id="first-name" placeholder="First Name" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setfirstName(ev.target.value)
                     }/>
                   </div>
                   <div>
-                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                    <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1" htmlFor='last-name'>
                      Last Name
-                    </span>
+                    </label>
                     <input className="input w-full  border
             border-zinc-300 p-4 rounded-lg " type='text' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setlastName(ev.target.value)}
-                    required name="last-name" placeholder="Last Name"/>
+                    required name="last-name" id="last-name" placeholder="Last Name"/>
                   </div>
                   <div>
-                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                    <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1" htmlFor='address'>
                      Street Address
-                    </span>
+                    </label>
                     <input className="input w-full  border
-            border-zinc-300 p-4 rounded-lg " type='text' required onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+            border-zinc-300 p-4 rounded-lg " type='text' required id="address" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setstreetAddress(ev.target.value)} name="street-address" placeholder="Street Address"/>
                   </div>
                   <div>
-                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                    <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1" htmlFor='zipcode'>
                      Postal Code
-                    </span>
+                    </label>
                     <input className="input w-full  border
-            border-zinc-300 p-4 rounded-lg " type='text' required onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+            border-zinc-300 p-4 rounded-lg " type='text' required id="zipcode" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setpostalCode(ev.target.value)} name="postal-code" placeholder="Postal Code"/>
                   </div>
 
                   <div>
-                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                    <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1" htmlFor='country'>
                      Country
-                    </span>
+                    </label>
                     <input className="input w-full  border
             border-zinc-300 p-4 rounded-lg " type='text' onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                      setCountry(ev.target.value)} required name="country" placeholder="Country"/>
+                      setCountry(ev.target.value)} required id="country" name="country" placeholder="Country"/>
                   </div>
                   <div>
-                    <span className="block text-sm font-medium text-slate-700 ml-1">
+                    <label className="block text-sm font-medium text-slate-700 ml-1" htmlFor='phone-number'>
                      Phone Number
-                    </span>
+                    </label>
                     <input className="input w-full  border
-            border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 " type='tel' name="phone" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+            border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 " type='tel' name="phone" id="phone-number" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setphoneNumber(ev.target.value)} placeholder="Phone"/>
                   </div>
                   <div>
-                    <span className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1">
+                    <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1" htmlFor='contact-email'>
                      Email
-                    </span>
+                    </label>
                     <input className="input w-full  border
-            border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 " type="email" required onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+            border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 " type="email" required id="contact-email" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setEmail(ev.target.value)} name="email" placeholder="Email"/>
                   </div>
                   <div>
-                    <span className=" block text-sm font-medium text-slate-700 ml-1">
+                    <label className=" block text-sm font-medium text-slate-700 ml-1" htmlFor='visit-source'>
                      How did you hear about us?
-                    </span>
+                    </label>
                     <input className="input w-full  border
-            border-zinc-300 p-4 rounded-lg " type='text' name="visit-source" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+            border-zinc-300 p-4 rounded-lg " type='text' name="visit-source" id="visit-source" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
                       setvisitSource(ev.target.value)} placeholder="How did you hear about us?"/>
                   </div>
                   <div>
-                    <span className=" block text-sm font-medium text-slate-700 ml-1">
+                    <label className=" block text-sm font-medium text-slate-700 ml-1" htmlFor='seating-acc'>
                     Seating Accommodations
-                    </span>
+                    </label>
                     <select className="input w-full  border
-            border-zinc-300 p-4 mt-1 rounded-lg col-span-2 " name="seatingAcc" value={seatingAcc} onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
-                      setseatingAcc(ev.target.value)}>
+            border-zinc-300 p-4 mt-1 rounded-lg col-label-2 " name="seatingAcc" id="seating-acc" onChange={handleSeatingAccChange}>
                       <option value="None">No, not at this time</option>
                       <option value="Wheel Chair">Yes, wheelchair seat(s)</option>
                       <option value="Aisle Seat">Yes, aisle seat(s)</option>
@@ -201,15 +209,14 @@ export default function CompleteOrderForm(
                     </select>
                   </div>
                   <div>
-                    <span className=" block text-sm font-medium text-slate-700 ml-1">
+                    <label className=" block text-sm font-medium text-slate-700 ml-1" htmlFor='comments'>
                    Comments
-                    </span>
+                    </label>
                     <input className="input w-full  border
-            border-zinc-300 p-4 mt-1 rounded-lg col-span-2" type='text' name="comments" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
-                      setComments(ev.target.value)} placeholder="Comments"/>
+            border-zinc-300 p-4 mt-1 rounded-lg col-label-2" type='text' name="comments" id="comments" onChange={handleCommentsChange} placeholder="Comments"/>
                   </div>
                 </div>
-                <div className='flex flex-col items-start gap-3 mt-5' mb-5>
+                <div className='flex flex-col items-start gap-3 mt-5 mb-5'>
                   <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
                     <input type='checkbox' onChange={(): void =>
                       setOptIn(!optIn)} name="opt-in" />
