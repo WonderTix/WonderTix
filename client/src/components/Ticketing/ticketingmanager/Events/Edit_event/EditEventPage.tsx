@@ -27,7 +27,7 @@ interface mapDataToEditEventProps {
 
 /**
  * Displays the main edit page of an event to change event name
- * description, image, and option to add/remove showings
+ * description, image, and options to add/remove showings
  *
  * @module
  * @param {mapDataToEditEventProps} initValues
@@ -50,82 +50,105 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   const dispatch = useAppDispatch();
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(
-      process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
-    );
-    setTicketTypes(await res.json());
+    try {
+      const ticketTypeRes = await fetch(
+        process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
+      );
+      const ticketTypes = await ticketTypeRes.json();
+
+      if (!ticketTypeRes.ok) {
+        throw new Error(
+          `HTTP status error! Status returned: ${ticketTypeRes.status}`,
+        );
+      }
+
+      setTicketTypes(ticketTypes);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const toggleEventOff = async (eventData: WtixEvent) => {
-    console.log('inside toggle event off');
     try {
       const token = await getAccessTokenSilently({
         audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
 
-      const modifiedEvent: WtixEvent = {
+      const modifiedEventData: WtixEvent = {
         ...eventData,
         active: false,
       };
 
-      const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/`, {
-        credentials: 'include',
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+      const toggleEventRes = await fetch(
+        process.env.REACT_APP_API_1_URL + `/events/`,
+        {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(modifiedEventData),
         },
-        body: JSON.stringify(modifiedEvent),
-      });
+      );
+
+      if (!toggleEventRes.ok) {
+        throw new Error(
+          `HTTP status error! Status returned: ${toggleEventRes.status}`,
+        );
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
   const onSubmit = async (updatedData: WtixEvent) => {
-    console.log('onSubmit called for edit event');
-    console.log(updatedData);
     const showings = updatedData.showings.map((show) => show.eventinstanceid);
-    const token = await getAccessTokenSilently({
-      audience: process.env.REACT_APP_ROOT_URL,
-      scope: 'admin',
-    });
+    try {
+      const token = await getAccessTokenSilently({
+        audience: process.env.REACT_APP_ROOT_URL,
+        scope: 'admin',
+      });
 
-    // Updates the event data (everything before showings)
-    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/`, {
-      credentials: 'include',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedData),
-    });
-
-    await fetch(
-      process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`,
-      {
-        credentials: 'include',
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+      const updateEventRes = await fetch(
+        process.env.REACT_APP_API_1_URL + `/events/`,
+        {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedData),
         },
-        body: JSON.stringify(updatedData.showings),
-      },
-    );
-
-    if (res.ok) {
-      const results = await res.json();
-      console.log(results);
-      dispatch(
-        openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`),
       );
-    } else {
-      dispatch(openSnackbar('Save failed'));
+
+      const updateInstanceRes = await fetch(
+        process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`,
+        {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedData.showings),
+        },
+      );
+
+      if (updateEventRes.ok) {
+        const results = await updateEventRes.json();
+        dispatch(
+          openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`),
+        );
+      } else {
+        dispatch(openSnackbar('Save failed'));
+      }
+      nav('/ticketing/showings');
+    } catch (error) {
+      console.error(error);
     }
-    nav('/ticketing/showings');
   };
 
   useEffect(() => {
