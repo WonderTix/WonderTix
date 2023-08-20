@@ -30,6 +30,12 @@ const Showing = () => {
   const [show, setShow] = useState(false);
   const {getAccessTokenSilently} = useAuth0();
   const handleClick2 = () => setShow(!show);
+
+  const {eventid} = useParams<EventPageProps>();
+  const eventData = useAppSelector((state) => selectEventData(state, eventid));
+  if (eventData === undefined) return <p>Whoops! Event not found</p>;
+  const {title, description, imageurl, tickets} = eventData;
+
   const onEditClick = (id: number | string) => {
     navigate(`/ticketing/editevent/${id}`);
   };
@@ -53,13 +59,13 @@ const Showing = () => {
       scope: 'admin',
     });
     const res = await fetch(
-        process.env.REACT_APP_API_1_URL + `/events/${eventToDelete}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      process.env.REACT_APP_API_1_URL + `/events/${eventToDelete}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
+      },
     );
     if (res.ok) {
       dispatch(openSnackbar('Deleted Event'));
@@ -74,16 +80,13 @@ const Showing = () => {
   useEffect(() => {
     getData();
   }, []);
-  const {eventid} = useParams<EventPageProps>();
-  const eventData = useAppSelector((state) => selectEventData(state, eventid));
-  if (eventData === undefined) return <p>Whoops! Event not found</p>;
-  const {title, description, imageurl, tickets} = eventData;
+
   return (
     <div
       className='w-full h-screen overflow-x-hidden absolute bg-cover'
       style={{
         backgroundImage: `url(${getImageDefault(
-            imageurl,
+          imageurl,
         )}),url(${getImageDefault()})`,
       }}
     >

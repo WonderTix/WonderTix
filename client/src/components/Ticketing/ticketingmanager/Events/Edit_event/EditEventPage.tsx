@@ -26,7 +26,8 @@ interface mapDataToEditEventProps {
 }
 
 /**
- * Self explanatory
+ * Displays the main edit page of an event to change event name
+ * description, image, and option to add/remove showings
  *
  * @module
  * @param {mapDataToEditEventProps} initValues
@@ -39,21 +40,14 @@ interface mapDataToEditEventProps {
  */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   if (initValues.eventid == null) {
-    console.log('initValues: ' + JSON.stringify(initValues));
     throw new TypeError('eventid must be set');
-  } else {
-    console.log('event id: ' + initValues.eventid);
   }
-  // console.log("fetched: " + JSON.stringify(initValues));
+  const [tickettypes, setTicketTypes] = useState([]);
+  const {getAccessTokenSilently} = useAuth0();
 
   const params = useParams();
   const nav = useNavigate();
   const dispatch = useAppDispatch();
-  const [tickettypes, setTicketTypes] = useState([]);
-  const {getAccessTokenSilently} = useAuth0();
-  useEffect(() => {
-    fetchTicketTypes();
-  }, []);
 
   const fetchTicketTypes = async () => {
     const res = await fetch(
@@ -62,16 +56,37 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     setTicketTypes(await res.json());
   };
 
-  useEffect(() => {
-    console.log(initValues);
-  }, []);
+  const toggleEventOff = async (eventData: WtixEvent) => {
+    console.log('inside toggle event off');
+    try {
+      const token = await getAccessTokenSilently({
+        audience: process.env.REACT_APP_ROOT_URL,
+        scope: 'admin',
+      });
+
+      const modifiedEvent: WtixEvent = {
+        ...eventData,
+        active: false,
+      };
+
+      const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/`, {
+        credentials: 'include',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(modifiedEvent),
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const onSubmit = async (updatedData: WtixEvent) => {
     console.log('onSubmit called for edit event');
     console.log(updatedData);
     const showings = updatedData.showings.map((show) => show.eventinstanceid);
-    // updatedData.showings = showings;
-    // console.log("sending data: ", updatedData.showings);
     const token = await getAccessTokenSilently({
       audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
@@ -87,7 +102,6 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       },
       body: JSON.stringify(updatedData),
     });
-    console.log(params);
 
     await fetch(
       process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`,
@@ -105,7 +119,6 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     if (res.ok) {
       const results = await res.json();
       console.log(results);
-      // dispatch(fetchTicketingData());
       dispatch(
         openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`),
       );
@@ -114,6 +127,10 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
     }
     nav('/ticketing/showings');
   };
+
+  useEffect(() => {
+    fetchTicketTypes();
+  }, []);
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>

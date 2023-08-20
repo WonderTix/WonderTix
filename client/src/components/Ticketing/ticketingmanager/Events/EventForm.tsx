@@ -139,7 +139,6 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   const [eventdescription, setEventDesc] = useState(def.eventdescription);
   const [imageurl, setImageURL] = useState(def.imageurl);
   const active = def.active;
-  // console.log("showings before useState: " + JSON.stringify(def.showings));
   const [showings, setShowings] = useState(def.showings);
   const [showPopUp, setShowPopUp] = useState(false);
   const [err, setErr] = useState('');
