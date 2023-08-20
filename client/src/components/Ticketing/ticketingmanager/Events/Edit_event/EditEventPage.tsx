@@ -137,14 +137,18 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
         },
       );
 
-      if (updateEventRes.ok) {
-        const results = await updateEventRes.json();
-        dispatch(
-          openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`),
+      if (!updateEventRes.ok || !updateInstanceRes.ok) {
+        !updateEventRes.ok && dispatch(openSnackbar('Save failed'));
+        throw new Error(
+          `Error updating event and/or event instance! Status returned: ${
+            !updateEventRes ? updateEventRes.status : updateInstanceRes.status
+          }`,
         );
-      } else {
-        dispatch(openSnackbar('Save failed'));
       }
+
+      dispatch(
+        openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`),
+      );
       nav('/ticketing/showings');
     } catch (error) {
       console.error(error);
