@@ -196,7 +196,9 @@ const DoorList = () => {
       const rowParts = rowString.split(',');
       const eventNameFromData = rowParts[7].replace(/"/g, '');
       const eventDate = rowParts[9];
-      const formattedEventDate = eventDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'); // convert to "yyyy-mm-dd"
+      const eventDateObject = new Date(eventDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+      eventDateObject.setDate(eventDateObject.getDate() + 1); // Add one day
+      const formattedEventDate = eventDateObject.toISOString().split('T')[0]; // Convert to "yyyy-mm-dd"
       const eventTime = rowParts[10];
       setEventName(eventNameFromData);
       setDate(dayMonthDate(formattedEventDate));
@@ -232,7 +234,9 @@ const DoorList = () => {
         <select id="time-select" className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
           <option className="px-6 py-3">Select Time</option>
           {availableTimesEvents.map((event) => {
-            const formattedDate = dayMonthDate((event.eventdate.toString()).replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+            const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+            eventDateObject.setDate(eventDateObject.getDate() + 1); // Add one day
+            const formattedDate = dayMonthDate(eventDateObject.toISOString().split('T')[0]);
             return (
               <option key={event.eventinstanceid} value={event.eventinstanceid} className="px-6 py-3">{formattedDate} {militaryToCivilian(event.eventtime)}</option>
             );
