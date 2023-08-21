@@ -514,7 +514,7 @@ const createServer = async () => {
       console.log("local")
       console.log(process.env)
   } else if (process.env.ENV === 'dev') {
-      envPath = path.join(__dirname, '../.env.dev');
+      envPath = path.join(__dirname, '../.env');
       console.log("dev")
       console.log(process.env)
   } else {
