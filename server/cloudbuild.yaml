@@ -1,24 +1,18 @@
 steps:
 
-  # Create the .env.dev file with environment variables
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        echo DB_USER=postgres >> server/.env
-        echo DB_DATABASE=wondertix >> server/.env
-        echo DB_PORT=5432 >> server/.env
-        echo DB_HOST=35.247.65.190 >> server/.env
-        echo DATABASE_URL=postgresql://postgres:password@35.247.65.190:5432/wondertix?schema=public >> server/.env
-        echo ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> server/.env
-        echo FRONTEND_URL=https://wondertix-client-s2jfqf45ha-wl.a.run.app >> server/.env
-        echo AUTH0_URL=https://wtix-dev.us.auth0.com >> server/.env
-        echo AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> server/.env
-        echo ENV=dev >> server/.env
-
   # Build the Docker image for the server using Dockerfile.dev
   - name: 'gcr.io/cloud-builders/docker'
+    env:
+      - 'DB_USER=postgres'
+      - 'DB_DATABASE=wondertix'
+      - 'DB_PORT=5432'
+      - 'DB_HOST=35.247.65.190'
+      - 'DATABASE_URL=postgresql://postgres:password@35.247.65.190:5432/wondertix?schema=public'
+      - 'ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
+      - 'FRONTEND_URL=https://wondertix-client-s2jfqf45ha-wl.a.run.app'
+      - 'AUTH0_URL=https://wtix-dev.us.auth0.com'
+      - 'AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
+      - 'ENV=dev'
     args: ['build', '-f', 'server/Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-server', 'server']
 
   # Push the Docker image to Artifact Registry
