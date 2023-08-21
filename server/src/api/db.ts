@@ -8,7 +8,7 @@ let envPath;
 if (process.env.ENV === 'local') {
     envPath = path.join(__dirname, '../../../.env');
 } else if (process.env.ENV === 'dev') {
-    envPath = path.join(__dirname, '../../.env.dev');
+    envPath = path.join(__dirname, '../../.env');
 } else {
     throw new Error('Unknown ENV value');
 }
