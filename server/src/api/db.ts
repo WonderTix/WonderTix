@@ -14,8 +14,8 @@ if (process.env.ENV === 'local') {
 }
 dotenv.config({ path: envPath });
 
-console.log("process env in server db.ts");
-console.log(process.env);
+// console.log("process env in server db.ts");
+// console.log(process.env);
 
 
 const dbPort = process.env.DB_PORT as number | undefined ? process.env.DB_PORT as number | undefined : 5432;

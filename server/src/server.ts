@@ -511,17 +511,17 @@ const createServer = async () => {
   let envPath;
   if (process.env.ENV === 'local') {
       envPath = path.join(__dirname, '../../.env');
-      console.log("local")
-      console.log(process.env)
+      // console.log("local")
+      // console.log(process.env)
   } else if (process.env.ENV === 'dev') {
       envPath = path.join(__dirname, '../.env');
-      console.log("dev")
-      console.log(process.env)
+      // console.log("dev")
+      // console.log(process.env)
   } else {
       throw new Error('Unknown ENV value');
   }
-  console.log("process.env")
-  console.log(process.env)
+  // console.log("process.env in server.ts")
+  // console.log(process.env)
 
   dotenv.config({ path: envPath });
 
