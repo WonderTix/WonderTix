@@ -98,7 +98,7 @@ const App = () => {
         <Route path="/ticketing/showings/:eventid" element={<ProtectedRoute component={showingmain} />} />
         <Route path="/ticketing/tickettypes" element={<ProtectedRoute component={Tickettypesmain} />} />
         <Route path="/ticketing/ticketexchanges" element={<ProtectedRoute component={TicketExchangesmain} />} />
-        <Route path='/testingEventForm' element={<EventProvider eventID={33}> <TestPage/> </EventProvider>}/>
+        <Route path='/testingEventForm' element={<EventProvider eventID={32}> <TestPage/> </EventProvider>}/>
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>

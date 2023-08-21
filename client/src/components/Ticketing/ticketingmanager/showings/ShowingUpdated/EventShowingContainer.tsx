@@ -13,23 +13,25 @@ interface EventShowingContainerProps {
 
 export const EventShowingContainer = (props: EventShowingContainerProps) => {
   const {showing} = props;
-  const {setReloadShowing, token, setEditing, editing} = useEvent();
+  const {setReloadShowing, token, setEditing,
+    setShowPopUp, setPopUpProps} = useEvent();
   const [edit, setEdit] = useState(false);
 
-  const onSuccess = (event) => {
+  const onSuccess = async (event) => {
     setReloadShowing((reload) => !reload);
     setEdit((edit)=> !edit);
     setEditing((edit) => !edit);
-    openSnackbar(`Event Updated Successfully`);
+    setPopUpProps('Success', 'Showing Successfully Updated', true);
+    setShowPopUp(true);
   };
 
-  const onError = () => {
-    openSnackbar(`Event Update Failed`);
+  const onError = (event) => {
+    console.log(event);
+    setPopUpProps('Failure', 'Showing Update Failed', false);
+    setShowPopUp(true);
   };
-
   return (
-    <div className={'bg-zinc-900/60 p-7 ' +
-      'flex flex-row rounded-xl gap-1 justify-between'}>
+    <>
       {
         edit ?
           <EventShowingForm
@@ -53,24 +55,10 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
             }
           /> :
           <EventShowingView
+            setEdit={setEdit}
             showing={showing}
           />
       }
-      {
-        !edit?
-          <Button
-            color={'primary'}
-            variant={'contained'}
-            disabled={editing}
-            onClick={async () => {
-              setEdit((edit) => !edit);
-              setEditing((edit) => !edit);
-            }}
-          >
-            Edit
-          </Button>:
-          null
-      }
-    </div>
+    </>
   );
 };

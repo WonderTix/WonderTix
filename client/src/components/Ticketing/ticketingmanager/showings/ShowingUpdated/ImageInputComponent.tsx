@@ -12,8 +12,16 @@ export const ImageInputComponent = () => {
     useState(field.value === 'Default Event Image');
   const {setFieldValue} = useFormikContext();
   return (
-    <div className={'flex flex-row'}>
-      <div className={'flex flex-col justify-evenly'}>
+    <div className={'flex flex-col col-span-4'}>
+      <div className={'col-span-1 flex flex-row justify-center'}>
+        <img
+          className={'h-[50%] w-auto'}
+          src={getImageDefault(field.value)}
+          onError={imageOnError}
+          alt='Event image supplied by the user'
+        />
+      </div>
+      <div className={'flex flex-row justify-evenly'}>
         <div className={'flex flex-col'}>
           <label
             htmlFor={'defaultImageUrl'}
@@ -35,22 +43,7 @@ export const ImageInputComponent = () => {
             className={'m-auto'}
           />
         </div>
-        <Field
-          name={'imageurl'}
-          component={InputControl}
-          label={'Image URL'}
-          type={'text'}
-          id={0}
-          disabled={field.value === 'Default Event Image'}
-        />
-      </div>
-      <div>
-        <img
-          className={'w-[50%] h-auto'}
-          src={getImageDefault(field.value)}
-          onError={imageOnError}
-          alt='Event image supplied by the user'
-        />
+
       </div>
     </div>
   );

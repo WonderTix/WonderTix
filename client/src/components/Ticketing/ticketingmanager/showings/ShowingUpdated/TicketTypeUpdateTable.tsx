@@ -1,12 +1,13 @@
+/* eslint-disable max-len*/
 import {Field, useField} from 'formik';
 import React from 'react';
 import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
-import {Button, IconButton} from '@mui/material';
+import {IconButton} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {useEvent} from './EventProvider';
 import {getTicketTypePrice} from './ShowingUtils';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 interface TicketTypeTableProps {
   arrayHelpers;
@@ -19,34 +20,34 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const [field] = useField('instanceTicketTypes');
 
   return (
-    <div className={'max-h-[100%] flex flex-col'}>
-      <table className={'table-fixed'}>
-        <thead>
+    <div className={'overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl border border-white mx-auto rounded-xl bg-white w-[100%]'}>
+      <table className={'table table-fixed text-sm min-w-[100%]'}>
+        {/* eslint-disable-next-line max-len */}
+        <thead className={'text-left text-zinc-800 whitespace-nowrap bg-blue-200 sticky top-0 '}>
           <tr>
-            <th className={'font-bold p-2 border-b text-left'}>
-            Admission Type
-            </th>
-            <th className={'font-bold p-2 border-b text-left'}>
-            Ticket Price
-            </th>
-            <th className={'font-bold p-2 border-b text-left'}>
-            Concession Price
-            </th>
-            <th className={'font-bold p-2 border-b text-left'}>
-            Quantity
-            </th>
-            <th className={'font-bold p-2 border-b text-left'}>
-            Remove
+            <th className={'px-2 py-1 border border-white'}>Admission Type</th>
+            <th className={'px-2 py-1 border border-white'}>Ticket Price</th>
+            <th className={'px-2 py-1 border border-white'}>Concession Price</th>
+            <th className={'px-2 py-1 border border-white'}>Quantity</th>
+            <th className={'px-2 py-1 border border-white'}>
+              <IconButton
+                size={'small'}
+                aria-label={'delete'}
+                onClick={() => arrayHelpers.insert(0, {typeID: 0, typeQuantity: 0})}
+              >
+                <AddCircleIcon sx={{color: 'white'}} fontSize={'small'}/>
+              </IconButton>
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className={'text-sm whitespace-nowrap text-zinc-800'}>
           {field.value ?
           field.value.map((id, index) => (
             <tr key={eventInstanceID + index +
               'ticketTypeRow'}>
               <td
                 key={eventInstanceID + index + 'ticket type select'}
+                className={'px-2'}
               >
                 <Field
                   name={`${field.name}[${index}].typeID`}
@@ -58,6 +59,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               </td>
               <td
                 key={eventInstanceID + index + 'ticket type price'}
+                className={'px-2'}
               >
                 {
                   getTicketTypePrice(field.value[index].typeID,
@@ -67,6 +69,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               <td
                 key={eventInstanceID + index +
                   'ticket concession price'}
+                className={'px-2'}
               >
                 {
                   getTicketTypePrice(field.value[index].typeID,
@@ -76,6 +79,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               <td
                 key={eventInstanceID + index +
                   'ticket type quantity'}
+                className={'px-2'}
               >
                 <Field
                   name={`${field.name}[${index}].typeQuantity`}
@@ -84,6 +88,11 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   hidden={true}
                   label={'Ticket Quantity'}
                   id={eventInstanceID}
+                  className={{
+                    controlClass: 'px-2',
+                    inputClass: 'w-[50px]',
+                    labelClass: '',
+                  }}
                 />
               </td>
               <td>
@@ -101,18 +110,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
           }
         </tbody>
       </table>
-      <div>
-        <Button
-          size={'small'}
-          variant={'contained'}
-          onClick={() => {
-            arrayHelpers.push({typeID: 0, typeQuantity: 0});
-          }}
-          color={'success'}
-          startIcon={<AddCircleIcon fontSize={'small'}/>}
-        >
-        Add Type
-        </Button>
-      </div>
-    </div>);
+    </div>
+  );
 };

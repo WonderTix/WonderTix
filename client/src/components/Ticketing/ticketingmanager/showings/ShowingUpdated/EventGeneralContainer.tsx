@@ -1,36 +1,40 @@
 import React, {useState} from 'react';
 import {EventGeneralForm} from './EventGeneralForm';
-import {Button} from '@mui/material';
-
 import {useEvent} from './EventProvider';
-import {openSnackbar} from '../../snackbarSlice';
 import {useNavigate} from 'react-router';
 import {createDeleteFunction, createSubmitFunction} from './ShowingUtils';
 import {EventGeneralView} from './EventGeneralView';
 
 export const EventGeneralContainer = () => {
-  const {eventID, setEventID, token, setReloadEvent} = useEvent();
+  // eslint-disable-next-line max-len
+  const {eventID, setEventID, token, setReloadEvent, setShowPopUp, setPopUpProps} = useEvent();
   const navigate = useNavigate();
   const [edit, setEdit] = useState(!eventID);
 
   const onSuccess = async (newEvent) => {
     const res = await newEvent.json();
-    setReloadEvent((reload) => !reload);
     setEventID(res.data[0].eventid);
     setEdit((edit)=>!edit);
-    openSnackbar('Event Updated');
+    setPopUpProps(`Success`, 'Event Update Successful', true);
+    setShowPopUp(true);
+    setReloadEvent((reload) => !reload);
   };
 
-  const onSubmitError = () => {
-    openSnackbar('Error Creating Event');
+  const onSubmitError = (event) => {
+    console.log(event);
+    setPopUpProps(`Failure`, 'Event Update Failed', false);
+    setShowPopUp(true);
   };
   const onDeleteSuccess= () => {
-    openSnackbar(`Event Deleted`);
-    navigate(`${process.env.ROOT_URL}/ticketing/showings`);
+    setPopUpProps(`Success`, 'Event Successfully Set to Inactive', true);
+    setShowPopUp(true);
+    navigate(`/ticketing/showings`);
   };
 
-  const onDeleteError = () => {
-    openSnackbar(`Error Deleting Event`);
+  const onDeleteError = (event) => {
+    console.log('here', event);
+    setPopUpProps(`Failure`, 'Event Cannot Be Marked Inactive', false);
+    setShowPopUp(true);
   };
 
   const onSubmit = createSubmitFunction(eventID === 0 ? 'POST' : 'PUT',
@@ -41,43 +45,26 @@ export const EventGeneralContainer = () => {
   );
 
   const onDelete = createDeleteFunction('DELETE',
-      `${process.env.REACT_APP_API_1_URL}/events/${eventID}`,
+      `${process.env.REACT_APP_API_2_URL}/event/${eventID}`,
       token,
       onDeleteSuccess,
       onDeleteError,
   );
+
   return (
-    <div
-      className={'bg-zinc-900/60 p-7 ' +
-        'rounded-xl shadow-xl h-[calc(.3*100vh)] p-3'}
-    >
-      <h2 className={'text-center pb-2 text-xl text-white'}>
+    <div className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl h-[20%]'}>
+      <h2 className={'text-center text-3xl font-semibold mb-5'}>
         {eventID? 'Event Information' : 'Add Event'}
       </h2>
-      <div className={'grid grid-cols-10 gap-3'}>
-        <div className={`${edit?'col-span-10':'col-span-9'}`}>
-          {edit ?
+      {edit ?
         <EventGeneralForm
           onSubmit={onSubmit}
           onDelete={onDelete}
         /> :
-        <EventGeneralView />
-          }
-        </div>
-        {!edit?
-        <div className={'flex flex-col justify-center col-span-1'}>
-          <Button
-            color={'primary'}
-            variant={'contained'}
-            size={'large'}
-            onClick={() => setEdit((edit) => !edit)}
-          >
-          Edit
-          </Button>
-        </div> :
-        null
-        }
-      </div>
+        <EventGeneralView
+          setEdit={setEdit}
+        />
+      }
     </div>
   );
 };

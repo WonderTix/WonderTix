@@ -30,7 +30,7 @@ export const createSubmitFunction = (method: string, url: string, token: string,
           });
       actions.setSubmitting(false);
       if (onError) {
-        onError();
+        onError(error);
       }
     }
   };
@@ -47,13 +47,16 @@ export const createDeleteFunction = (method: string, url: string, token: string,
           'Authorization': `Bearer ${token}`,
         },
       });
+      if (!res.status.toString().startsWith('2')) {
+        throw res;
+      }
       if (res.status.toString().startsWith('2') && onSuccess) {
         onSuccess();
       }
     } catch (error) {
       console.log(error);
       if (onError) {
-        onError();
+        onError(error);
       }
     }
   };
@@ -62,7 +65,6 @@ export const fetchTicketTypes = async (setTicketTypes) => {
   const res = await fetch(process.env.REACT_APP_API_1_URL +
     '/tickets/allTypes');
   const data = await res.json();
-  console.log(data);
   setTicketTypes(data.data);
 };
 export const useFetchEventData = (eventID: number) => {

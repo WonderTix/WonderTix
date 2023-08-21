@@ -6,8 +6,7 @@ export const FormDeleteButton = (props: { onDelete: (event) => void }) => {
   const {onDelete} = props;
   return (
     <Button
-      color={'primary'}
-      startIcon={<DeleteIcon/>}
+      color={'error'}
       variant={'contained'}
       onClick={onDelete}
     >

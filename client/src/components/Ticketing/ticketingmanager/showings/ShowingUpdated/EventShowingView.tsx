@@ -5,78 +5,85 @@ import {toDateStringFormat} from '../../Events/showingInputContainer';
 
 import {useEvent} from './EventProvider';
 import {getTicketTypeArray, getTicketTypePrice} from './ShowingUtils';
-import {Item} from './InputControl';
+import {ShowingItem} from './InputControl';
+import {Button, Paper} from '@mui/material';
 
 interface EventInstanceViewProps {
   showing: Showing;
+  setEdit: (value) => void;
 }
 
 export const EventShowingView = (props: EventInstanceViewProps) => {
-  const {showing} = props;
-  const {ticketTypes} = useEvent();
+  const {showing, setEdit} = props;
+  const {ticketTypes, setEditing, editing} = useEvent();
   /* eslint-disable max-len */
   return (
-    <div key={showing.eventinstanceid}>
-      <div className='bg-zinc-900/60 text-zinc-100 p-7
-                grid grid-cols-2 rounded-xl gap-1'>
-        <div className={'col-span-1 flex flex-row justify-between'}>
-          <div className='flex flex-col gap-2'>
-            <Item label={'Showing ID'} information={showing.eventinstanceid}/>
-            <Item
-              label={'Showing Date'}
+    <div className={'bg-blue-100 rounded-xl p-2'}>
+      <div
+        className={`bg-blue-700 grid grid-cols-12 p-4 rounded-lg h-[300px] min-[1350px]:h-[175px] shadow-xl text-black gap-2`}
+      >
+        <div className={'col-span-12 min-[1350px]:col-span-4 rounded-lg p-2 w-[100%] bg-blue-200'}>
+          <div className={`flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%]`}>
+            <ShowingItem label={'Showing ID'} information={showing.eventinstanceid}/>
+            <ShowingItem
+              label={'Date'}
               information={format(new Date(toDateStringFormat(showing.eventdate)),
                   'eee, MMM dd yyyy')}
             />
-            <Item
-              label={'Showing Time'}
+            <ShowingItem
+              label={'Time'}
               information=
                 {format(new Date(`${toDateStringFormat(showing.eventdate)} ${showing.eventtime.slice(0, 8)}`), 'hh:mm a')}
             />
-          </div>
-          <div className='flex flex-col gap-2 justify-center'>
-            <Item
-              label={'Total Ticket Quantity'}
+            <ShowingItem
+              label={'Total Tickets'}
               information={showing.totalseats}
             />
-            <Item
-              label={'Available Ticket Quantity'}
+            <ShowingItem
+              label={'Available Tickets'}
               information={showing.availableseats}
             />
           </div>
         </div>
-        <div className={'col-span-1 w-[50%] max-h-[100%]'}>
-          <table className={'table table-fixed'}>
-            <thead>
+        <div className={'overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl border border-white mx-auto rounded-xl bg-white w-[100%]'}>
+          <table className={'table table-fixed text-sm min-w-[100%]'}>
+            <thead className={'text-left text-zinc-800 whitespace-nowrap bg-blue-200 sticky top-0 '}>
               <tr>
-                <th className={'font-bold p-2 border-b text-left'}>
-              Admission Type
-                </th>
-                <th className={'font-bold p-2 border-b text-left'}>
-              Ticket Price
-                </th>
-                <th className={'font-bold p-2 border-b text-left'}>
-              Concession Price
-                </th>
-                <th className={'font-bold p-2 border-b text-left'}>
-              Quantity
-                </th>
+                <th className={'px-2 py-1 border border-white'}>Admission Type</th>
+                <th className={'px-2 py-1 border border-white'}>Ticket Price</th>
+                <th className={'px-2 py-1 border border-white'}>Concession Price</th>
+                <th className={'px-2 py-1 border border-white'}>Quantity</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className={'whitespace-nowrap'}>
               {
-                showing.ticketTypeId?
+                showing.ticketTypeId&&showing.ticketTypeId.length>0?
                 getTicketTypeArray(showing.ticketTypeId, showing.seatsForType).map((type, index)=>(
                   <tr key={`${showing.eventinstanceid} ${type.typeID} ${index}`}>
-                    <td>{getTicketTypePrice(type.typeID, 'description', ticketTypes)}</td>
-                    <td>{getTicketTypePrice(type.typeID, 'price', ticketTypes)}</td>
-                    <td>{getTicketTypePrice(type.typeID, 'concessions', ticketTypes)}</td>
-                    <td>{type.typeQuantity}</td>
+                    <td className={'px-2'}>{getTicketTypePrice(type.typeID, 'description', ticketTypes)}</td>
+                    <td className={'px-2'}>{getTicketTypePrice(type.typeID, 'price', ticketTypes)}</td>
+                    <td className={'px-2'}>{getTicketTypePrice(type.typeID, 'concessions', ticketTypes)}</td>
+                    <td className={'px-2'}>{type.typeQuantity}</td>
                   </tr>
                 )):
-                  null
+                  <td className='px-2 text-zinc-800 font-semibold min-[1350px]:text-center' colSpan={4}>No Ticket Types Selected For Showing</td>
               }
             </tbody>
           </table>
+        </div>
+        <div className={'grid content-center mx-auto col-span-12 min-[1350px]:col-span-1'}>
+          <Button
+            color={'success'}
+            variant={'contained'}
+            disabled={editing}
+            onClick={async () => {
+              setEdit((edit) => !edit);
+              setEditing((edit) => !edit);
+            }}
+            sx={{maxHeight: '30px'}}
+          >
+      Edit
+          </Button>
         </div>
       </div>
     </div>

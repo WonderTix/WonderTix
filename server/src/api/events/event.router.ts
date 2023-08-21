@@ -698,6 +698,7 @@ eventRouter.delete('/:id', checkJwt, checkScopes, async (
     // playid
     const plays = await archivePlays(req.params);
     let code = plays.status.success ? 200 : 404;
+    console.log(plays.data);
     if (code === 200 && plays.data.length === 0) {
       code = 404;
       plays.status.success = false;

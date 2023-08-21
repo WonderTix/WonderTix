@@ -23,6 +23,7 @@ export const TicketTypeSelect = (props: { field, id, index }) => {
         name={field.name}
         onChange={field.onChange}
         value={field.value}
+        className={'w-full'}
       >
         {
         ticketTypes ?

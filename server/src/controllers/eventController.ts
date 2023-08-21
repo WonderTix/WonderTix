@@ -332,17 +332,28 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
       res.status(404).json({error: 'event not found'});
       return;
     }
-    const event = prisma.events.update({
+    const event = await prisma.events.update({
       where: {
         eventid: Number(id),
       },
       data: {
         active: false,
+        eventinstances: {
+          updateMany: {
+            where: {
+              eventid_fk: Number(id),
+            },
+            data: {
+              salestatus: false,
+            },
+          },
+        },
       },
       include: {
         eventinstances: true,
       },
     });
+
     res.status(204).json();
 
     return;
@@ -355,7 +366,6 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
