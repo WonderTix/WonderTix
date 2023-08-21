@@ -511,8 +511,12 @@ const createServer = async () => {
   let envPath;
   if (process.env.ENV === 'local') {
       envPath = path.join(__dirname, '../../.env');
+      console.log("local")
+      console.log(process.env)
   } else if (process.env.ENV === 'dev') {
       envPath = path.join(__dirname, '../.env.dev');
+      console.log("dev")
+      console.log(process.env)
   } else {
       throw new Error('Unknown ENV value');
   }
