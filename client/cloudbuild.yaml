@@ -1,20 +1,27 @@
 steps:
 
   # Create the .env.dev file with environment variables for the client
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        echo REACT_APP_ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> client/.env
-        echo REACT_APP_AUTH0_URL=https://wtix-dev.us.auth0.com >> client/.env.dev
-        echo REACT_APP_AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> client/.env
-        echo REACT_APP_API_1_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/1 >> client/.env
-        echo REACT_APP_API_2_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/2 >> client/.env
-        echo ENV=dev >> client/.env
+#  - name: 'gcr.io/cloud-builders/docker'
+#    entrypoint: 'bash'
+#    args:
+#      - '-c'
+#      - |
+#        echo REACT_APP_ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> client/.env
+#        echo REACT_APP_AUTH0_URL=https://wtix-dev.us.auth0.com >> client/.env.dev
+#        echo REACT_APP_AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app >> client/.env
+#        echo REACT_APP_API_1_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/1 >> client/.env
+#        echo REACT_APP_API_2_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/api/2 >> client/.env
+#        echo ENV=dev >> client/.env
 
   # Build the Docker image for the client
   - name: 'gcr.io/cloud-builders/docker'
+    env:
+      - 'REACT_APP_ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
+      - 'REACT_APP_AUTHO_URL=https://wtix-dev.us.authO.com'
+      - 'REACT_APP_AUTHO_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
+      - 'REACT_APP_API_1_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/1'
+      - 'REACT_APP_API_2_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/2'
+      - 'ENV=dev'
     args: ['build', '-f', 'client/Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-client', 'client']
 
   # Push the Docker image to Artifact Registry
