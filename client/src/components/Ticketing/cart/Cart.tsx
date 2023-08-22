@@ -124,9 +124,7 @@ const Cart = () => {
     setRemoveContext(RemoveContext.single);
     setRemoveContextMessage('this');
     setTargetItem(id);
-    //setModalOpen(true);
     handleClick2();
-    console.log('button was clicked');
   };
 
   const navigateToCompleteOrder = () => {
