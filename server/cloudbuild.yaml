@@ -1,7 +1,7 @@
 steps:
   # Build the Docker image for the server using Dockerfile.dev
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'server/Dockerfile.dev', '-t', "${{ env.GCP_ARTIFACTS }}/wondertix-server", 'server']
+    args: ['build', '-f', 'server/Dockerfile.dev', '-t', "${{ github.events.GCP_ARTIFACTS }}/wondertix-server", 'server']
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
