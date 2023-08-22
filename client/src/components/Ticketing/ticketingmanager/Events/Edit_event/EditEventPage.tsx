@@ -44,10 +44,13 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   }
   const [tickettypes, setTicketTypes] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
-
   const params = useParams();
   const nav = useNavigate();
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    fetchTicketTypes();
+  }, []);
 
   const fetchTicketTypes = async () => {
     try {
@@ -154,10 +157,6 @@ const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    fetchTicketTypes();
-  }, []);
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
