@@ -14,7 +14,7 @@ steps:
       - 'DB_DATABASE=wondertix'
       - 'DB_PORT=5432'
       - 'DB_HOST=35.247.65.190'
-      - 'DATABASE_URL=$DATABASE_URL'
+      - "DATABASE_URL=$DATABASE_URL"
       - 'ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
       - 'FRONTEND_URL=https://wondertix-client-s2jfqf45ha-wl.a.run.app'
       - 'AUTH0_URL=https://wtix-dev.us.auth0.com'
