@@ -17,13 +17,6 @@ steps:
 
   # Deploy the client image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
-    env:
-      - 'REACT_APP_ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
-      - 'REACT_APP_AUTH0_URL=https://wtix-dev.us.auth0.com'
-      - 'REACT_APP_AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
-      - 'REACT_APP_API_1_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/1'
-      - 'REACT_APP_API_2_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/2'
-      - 'ENV=dev'
     args:
       - 'run'
       - 'deploy'
