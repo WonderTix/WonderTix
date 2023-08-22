@@ -14,7 +14,7 @@ import {useAppDispatch} from '../../../app/hooks';
 import {openSnackbar} from '../../snackbarSlice';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
-import {Showing, WtixEvent} from '../../../../../interfaces/showing.interface';
+import {WtixEvent} from '../../../../../interfaces/showing.interface';
 
 /**
  * Maps edit data to the event props
@@ -26,7 +26,8 @@ interface mapDataToEditEventProps {
 }
 
 /**
- * Self explanatory
+ * Displays the main edit page of an event to change event name
+ * description, image, and options to add/remove showings
  *
  * @module
  * @param {mapDataToEditEventProps} initValues
@@ -39,73 +40,122 @@ interface mapDataToEditEventProps {
  */
 const EditEventPage = ({initValues}: mapDataToEditEventProps) => {
   if (initValues.eventid == null) {
-    console.log('initValues: ' + JSON.stringify(initValues));
     throw new TypeError('eventid must be set');
-  } else {
-    console.log('event id: ' + initValues.eventid);
   }
-  // console.log("fetched: " + JSON.stringify(initValues));
-
+  const [tickettypes, setTicketTypes] = useState([]);
+  const {getAccessTokenSilently} = useAuth0();
   const params = useParams();
   const nav = useNavigate();
   const dispatch = useAppDispatch();
-  const [tickettypes, setTicketTypes] = useState([]);
-  const {getAccessTokenSilently} = useAuth0();
+
   useEffect(() => {
     fetchTicketTypes();
   }, []);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes');
-    setTicketTypes(await res.json());
+    try {
+      const ticketTypeRes = await fetch(
+        process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
+      );
+      const ticketTypes = await ticketTypeRes.json();
+
+      if (!ticketTypeRes.ok) {
+        throw new Error(
+          `HTTP status error! Status returned: ${ticketTypeRes.status}`,
+        );
+      }
+
+      setTicketTypes(ticketTypes);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  useEffect(() => {
-    console.log(initValues);
-  }, []);
+  const toggleEventOff = async (eventData: WtixEvent) => {
+    try {
+      const token = await getAccessTokenSilently({
+        audience: process.env.REACT_APP_ROOT_URL,
+        scope: 'admin',
+      });
+
+      const modifiedEventData: WtixEvent = {
+        ...eventData,
+        active: false,
+      };
+
+      const toggleEventRes = await fetch(
+        process.env.REACT_APP_API_1_URL + `/events/`,
+        {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(modifiedEventData),
+        },
+      );
+
+      if (!toggleEventRes.ok) {
+        throw new Error(
+          `HTTP status error! Status returned: ${toggleEventRes.status}`,
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const onSubmit = async (updatedData: WtixEvent) => {
-    console.log('onSubmit called for edit event');
-    console.log(updatedData);
     const showings = updatedData.showings.map((show) => show.eventinstanceid);
-    // updatedData.showings = showings;
-    // console.log("sending data: ", updatedData.showings);
-    const token = await getAccessTokenSilently({
-      audience: process.env.REACT_APP_ROOT_URL,
-      scope: 'admin',
-    });
+    try {
+      const token = await getAccessTokenSilently({
+        audience: process.env.REACT_APP_ROOT_URL,
+        scope: 'admin',
+      });
 
-    // Updates the event data (everything before showings)
-    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/`, {
-      credentials: 'include',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedData),
-    });
-    console.log(params);
+      const updateEventRes = await fetch(
+        process.env.REACT_APP_API_1_URL + `/events/`,
+        {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedData),
+        },
+      );
 
-    await fetch(process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`, {
-      credentials: 'include',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedData.showings),
-    });
+      const updateInstanceRes = await fetch(
+        process.env.REACT_APP_API_1_URL + `/events/instances/${params.eventid}`,
+        {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedData.showings),
+        },
+      );
 
-    if (res.ok) {
-      const results = await res.json();
-      console.log(results);
-      // dispatch(fetchTicketingData());
-      dispatch(openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`));
-    } else {
-      dispatch(openSnackbar('Save failed'));
+      if (!updateEventRes.ok || !updateInstanceRes.ok) {
+        !updateEventRes.ok && dispatch(openSnackbar('Save failed'));
+        throw new Error(
+          `Error updating event and/or event instance! Status returned: ${
+            !updateEventRes ? updateEventRes.status : updateInstanceRes.status
+          }`,
+        );
+      }
+
+      dispatch(
+        openSnackbar(`Saved edit to ${initValues.eventname ?? 'event'}`),
+      );
+      nav('/ticketing/showings');
+    } catch (error) {
+      console.error(error);
     }
-    nav('/ticketing/showings');
   };
 
   return (
