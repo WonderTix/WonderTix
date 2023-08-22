@@ -3,17 +3,17 @@ steps:
   # Build the Docker image for the client
   - name: 'gcr.io/cloud-builders/docker'
     env:
-      - 'REACT_APP_ROOT_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
-      - 'REACT_APP_AUTH0_URL=https://wtix-dev.us.auth0.com'
-      - 'REACT_APP_AUTH0_AUDIENCE=https://wondertix-server-s2jfqf45ha-wl.a.run.app'
-      - 'REACT_APP_API_1_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/1'
-      - 'REACT_APP_API_2_URL=https://wondertix-server-s2jfqf45ha-wl.a.run.app/2'
+      - 'REACT_APP_ROOT_URL=$_REACT_APP_ROOT_URL'
+      - 'REACT_APP_AUTH0_URL=$_REACT_APP_AUTH0_URL'
+      - 'REACT_APP_AUTH0_AUDIENCE=$_REACT_APP_AUTH0_AUDIENCE'
+      - 'REACT_APP_API_1_URL=$_REACT_APP_API_1_URL'
+      - 'REACT_APP_API_2_URL=$_REACT_APP_API_2_URL'
       - 'ENV=dev'
-    args: ['build', '-f', 'client/Dockerfile.dev', '-t', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-client', 'client']
+    args: ['build', '-f', 'client/Dockerfile.dev', '-t', '$_GCP_ARTIFACTS/wondertix-client', 'client']
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-client']
+    args: ['push', '$_GCP_ARTIFACTS/wondertix-client']
 
   # Deploy the client image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -22,8 +22,8 @@ steps:
       - 'deploy'
       - 'wondertix-client'
       - '--image'
-      - 'us-west2-docker.pkg.dev/wondertix-394321/wondertix-cd-test-artifact-registry-repository/wondertix-client'
+      - '$_GCP_ARTIFACTS/wondertix-client'
       - '--region'
-      - 'us-west2'
+      - '$_GCP_REGION'
       - '--platform'
       - 'managed'
