@@ -75,7 +75,7 @@ function validateEmail(email: string) {
  * @returns {ReactElement}
  */
 export default function CompleteOrderForm(
-    {onSubmit, onBack, disabled, donationForm}: CompleteOrderFormProps,
+  {onSubmit, onBack, disabled, donationForm}: CompleteOrderFormProps,
 ): ReactElement {
   const [firstName, setfirstName] = useState('');
   const [lastName, setlastName] = useState('');
