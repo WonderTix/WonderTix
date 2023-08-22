@@ -92,9 +92,10 @@ export default function CompleteOrderForm(
     setseatingAcc(ev.target.value);
   };
   const handleCommentsChange = (ev) => {
-    setComments(ev.target.value);
+    const newCommentValue = ev.target.value;
+    setComments(newCommentValue);
     if (seatingAcc === 'Other') {
-      setseatingAcc(ev.target.value);
+      setseatingAcc(newCommentValue);
     }
   };
   const handleSubmit = () => {
