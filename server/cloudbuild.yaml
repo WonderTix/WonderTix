@@ -1,4 +1,5 @@
 steps:
+
   # Build the Docker image for the server using Dockerfile.dev
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-f', 'server/Dockerfile.dev', '-t', "$_GCP_ARTIFACTS/wondertix-server", 'server']
