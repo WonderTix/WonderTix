@@ -17,24 +17,22 @@ const EditTask = (): React.ReactElement => {
         <div className='flex flex-row'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent
            bg-gradient-to-r from-yellow-600 to-red-600
-            mb-14' >Edit Tasks</h1>
+            mb-10 pb-4'>Edit Tasks</h1>
         </div>
-        <div className=' mt-6 '>
-          <div className='text-3xl text-zinc-600 font-bold mb-3'>Tasks</div>
+        <div>
+          <h2 className='text-3xl text-zinc-600 font-bold mb-3'>Tasks</h2>
           <TaskForm
             title='View/Edit Task'
             fullWidth={true}
             threeButtonForm={true}
           />
         </div>
-        <div className='mt-6'>
-          <div className='text-3xl text-zinc-600 font-bold mb-3 '>
-          Filter</div>
+        <div className='mt-10'>
+          <h2 className='text-3xl text-zinc-600 font-bold mb-3'>Filter</h2>
           <Filter />
         </div>
-        <div className=' mt-6'>
-          <div className='text-3xl text-zinc-600
-           font-bold mb-3 mt-10'>Notes</div>
+        <div className='mt-10'>
+          <h2 className='text-3xl text-zinc-600 font-bold mb-3'>Notes</h2>
           <Note />
         </div>
       </div>

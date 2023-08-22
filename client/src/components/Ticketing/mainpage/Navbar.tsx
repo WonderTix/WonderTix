@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
 import React, {useState, useEffect} from 'react';
 import {MenuIcon, XIcon} from '@heroicons/react/outline';
 import {useNavigate} from 'react-router-dom';
@@ -107,7 +105,7 @@ const Navbar = ({bMode}: NavbarProps) => {
         <div className="w-1/2 hidden md:flex mr-4 gap-4">
           <div className="w-full flex items-center pl-8 justify-end">
             {login ? (
-              <div className="flex items-center relative cursor-pointer px-4" onClick={() => setProfile(!profile)}>
+              <div className="flex items-center relative cursor-pointer px-4 flex-shrink-0" onClick={() => setProfile(!profile)}>
                 <div className="rounded-full">
                   {profile ? (
                     <div>

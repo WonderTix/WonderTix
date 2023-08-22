@@ -1,57 +1,55 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "google",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jsdoc/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "extends": [
-        "eslint:recommended",
-        "google",
-        "plugin:react/recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:jsdoc/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "plugins": [
-        "react",
-        "jsdoc",
-        "@typescript-eslint"
-    ],
-    "rules": {
-        "no-unused-vars": "off",
-        "linebreak-style": 0,
-        "valid-jsdoc": "off",
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["react", "jsdoc", "@typescript-eslint"],
+  "rules": {
+    "camelcase": "off",
+    "linebreak-style": 0,
+    "max-len": "off",
+    "no-unused-vars": "off",
+    "valid-jsdoc": "off",
+    "operator-linebreak": "off",
+    "indent": ["warn", 2],
 
-        "@typescript-eslint/no-unused-vars": "off",
-        "camelcase": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
 
-        "react/no-unknown-property": "off",
+    "react/no-unknown-property": "off",
 
-        // These jsdoc rules are not applicable for documenting the react code
-        "jsdoc/require-param-type": 0,
-        "jsdoc/check-param-names": 0,
-        "jsdoc/require-param-description": 0,
-        "jsdoc/require-param-name": 0,
-        "jsdoc/require-returns": 0,
-        "jsdoc/require-returns-type": 0,
-        "jsdoc/require-returns-check": 0,
-        "jsdoc/require-returns-description": 0,
-        "jsdoc/valid-types": 0,
-        "jsdoc/no-undefined-types": 0
-        
-    },
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
+    // These jsdoc rules are not applicable for documenting the react code
+    "jsdoc/require-param-type": 0,
+    "jsdoc/check-param-names": 0,
+    "jsdoc/require-param-description": 0,
+    "jsdoc/require-param-name": 0,
+    "jsdoc/require-returns": 0,
+    "jsdoc/require-returns-type": 0,
+    "jsdoc/require-returns-check": 0,
+    "jsdoc/require-returns-description": 0,
+    "jsdoc/valid-types": 0,
+    "jsdoc/no-undefined-types": 0
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
     }
+  }
 }

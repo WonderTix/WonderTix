@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
@@ -133,30 +132,28 @@ const DoorList = () => {
   };
 
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute '>
-      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
-        <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text
-           text-transparent bg-gradient-to-r from-sky-500
-            to-indigo-500 mb-14' >Door List</h1>
-        </div>
+    <div className='w-full h-screen overflow-x-hidden absolute'>
+      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+        <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-10 pb-4'>
+          Door List
+        </h1>
         <div className='text-sm text-zinc-500 ml-1 mb-2'>Choose Event Date and time</div>
         <select id="search-select" className="select w-full
            max-w-xs bg-white border border-zinc-300
            rounded-lg p-3 text-zinc-600 mb-7" onChange={(e) => (getDoorList(e))}>
           <option className="px-6 py-3">select date</option>
-          {eventList.map((eventss) => (
+          {eventList.map((event) => (
             <>
-              <option value={eventss.id} className="px-6 py-3">
-                {eventss.eventdate} at {eventss.eventtime}
+              <option value={event.id} className="px-6 py-3">
+                {event.eventdate} at {event.eventtime}
               </option>
             </>
-          ),
-          )}
+          ))}
         </select>
         <div className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</div>
-        <div className='text-2xl font-bold text-zinc-700'>{date && time ? `${date}, ${time}` : `${date}${time}`}</div>
+        <div className='text-2xl font-bold text-zinc-700'>
+          {date && time ? `${date}, ${time}` : `${date}${time}`}
+        </div>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
           <DataGrid
             className='bg-white'
@@ -167,7 +164,6 @@ const DoorList = () => {
             pageSize={10}/>
         </div>
       </div>
-
     </div>
   );
 };

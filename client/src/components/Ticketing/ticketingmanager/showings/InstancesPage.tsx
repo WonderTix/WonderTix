@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 /* eslint-disable react/react-in-jsx-scope */
 /**
@@ -38,18 +36,16 @@ const InstancesPage = () => {
   }, []);
 
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute '>
+    <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
-        <h1 className='font-bold text-5xl bg-clip-text
-           text-transparent bg-gradient-to-r from-sky-500
-            to-indigo-500 mb-14' >Select Event</h1>
+       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+        <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-10 pb-4'>Select Event</h1>
         <ul className='md:grid md:grid-cols-2 md:gap-8 sm:grid sm:grid-cols-1 sm:gap-4 mt-9'>
           {allEvents.map((event) => (
-            <div key={event.id}>
+            <li key={event.id}>
               <button
                 onClick={() => navigate(`/ticketing/showings/${event.id}`)}
-                className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full"
+                className="shadow-xl rounded-xl hover:scale-105 transition duration-300 ease-in-out w-full"
                 style={{backgroundImage: `url(${getImageDefault(event.imageurl)}),url(${getImageDefault()})`}}
               >
                 <div className=' backdrop-blur-sm  md:flex-row sm:flex-col
@@ -76,7 +72,7 @@ const InstancesPage = () => {
                   </div>
                 </div>
               </button>
-            </div>
+            </li>
           ),
           )}
         </ul>
