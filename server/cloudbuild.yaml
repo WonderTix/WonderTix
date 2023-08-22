@@ -35,4 +35,4 @@ steps:
       - '--allow-unauthenticated'
       - '--min-instances=1'
       - "--set-cloudsql-instances=${{ env.CLOUD_SQL_INSTANCE }}"
-      - '--service-account=${{ secrets.GCP_SERVICE_ACCOUNT }}"
+      - "--service-account=${{ secrets.GCP_SERVICE_ACCOUNT }}"
