@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 // Bug description: Unable to display column headers with full user information,
 // When moving the scroll bar to the right, everything goes back to normal.
 import React from 'react';
@@ -105,7 +104,6 @@ const ReportingTest = (): React.ReactElement => {
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round"
-              // eslint-disable-next-line max-len
               d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
           </svg>
           Export
@@ -118,7 +116,9 @@ const ReportingTest = (): React.ReactElement => {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className=' md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
         <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 mb-14     ' >Reporting</h1>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 mb-10 pb-4'>
+            Reporting
+          </h1>
         </div>
         <div className='flex md:flex-row md:items-start sm:flex-col sm:items-center
      container '>

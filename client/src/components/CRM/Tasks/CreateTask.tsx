@@ -16,8 +16,8 @@ const CreateTask=() =>{
             sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
           <div className='flex flex-row'>
             <h1 className='font-bold text-5xl bg-clip-text text-transparent
-           bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500
-            mb-14' >Create Task</h1>
+            bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500
+            mb-10 pb-4'>Create Task</h1>
           </div>
           <TaskForm
             title="Create New Task"

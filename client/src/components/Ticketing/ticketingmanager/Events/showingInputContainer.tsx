@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
 import DeleteConfirm from './deleteConfirm';

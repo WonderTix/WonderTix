@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /**
  * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
  *
@@ -21,8 +20,7 @@ export default function NewsletterCreate(): ReactElement {
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
         <div className='w-full h-full'>
-          <h1 className='font-bold text-5xl mb-14 bg-clip-text text-transparent
-         bg-gradient-to-r from-yellow-600 to-red-600'>Newsletter Creation!</h1>
+          <h1 className='font-bold text-5xl mb-10 pb-4 bg-clip-text text-transparent bg-gradient-to-r from-yellow-600 to-red-600'>Newsletter Creation!</h1>
           <hr/>
           <div className='bg-white w-full h-full p-10 shadow-xl rounded-xl'>
             <div className='grid grid-cols-4 gap-2'>

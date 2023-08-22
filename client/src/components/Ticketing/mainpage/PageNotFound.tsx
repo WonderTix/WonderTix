@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-
 import React from 'react';
 import Navbar from './Navbar';
 import {useNavigate} from 'react-router';
@@ -9,8 +7,8 @@ const PageNotFound = () => {
   const navigate = useNavigate();
   return (
     <>
-      <Navbar />
-      <div className="w-full relative min-h-[calc(100vh-80px)] top-[80px] justify-center bg-white flex flex-col lg:grid lg:grid-cols-3">
+      <Navbar bMode/>
+      <div className="w-full relative h-[calc(100vh-80px)] top-[80px] justify-center bg-white flex flex-col lg:grid lg:grid-cols-3">
         <div className="md:col-span-2 flex flex-col justify-center">
           <img src={eImage} alt="404 error image" className="m-auto w-[75%] h-auto" />
         </div>
