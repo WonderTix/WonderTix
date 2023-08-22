@@ -88,16 +88,6 @@ export default function CompleteOrderForm(
   const [seatingAcc, setseatingAcc] = useState('');
   const [comments, setComments] = useState('');
   const [optIn, setOptIn] = useState(false);
-  // const handleSeatingAccChange = (ev) => {
-  // setseatingAcc(ev.target.value);
-  // };
-  // const handleCommentsChange = (ev) => {
-  // const newCommentValue = ev.target.value;
-  // setComments(newCommentValue);
-  // if (seatingAcc === 'Other') {
-  // setseatingAcc(newCommentValue);
-  // }
-  // };
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
       firstName,
