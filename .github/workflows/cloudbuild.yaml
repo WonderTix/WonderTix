@@ -1,32 +1,31 @@
-runs-on: ubuntu-latest
 steps:
   # Build the Docker image for the server using Dockerfile.dev
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'server/Dockerfile.dev', '-t', "${{ env._GCP_ARTIFACTS }}/wondertix-server", 'server']
+    args: ['build', '-f', 'server/Dockerfile.dev', '-t', "${{ env.GCP_ARTIFACTS }}/wondertix-server", 'server']
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', "${{ env._GCP_ARTIFACTS }}/wondertix-server"]
+    args: ['push', "${{ env.GCP_ARTIFACTS }}/wondertix-server"]
 
   # Deploy the server image to Cloud Run with environment variables
   - name: 'gcr.io/cloud-builders/gcloud'
     env:
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_DATABASE: ${{ secrets.DB_DATABASE }}
-      DB_PORT: ${{ env.DB_PORT }}
-      DB_HOST: ${{ env.DB_HOST }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      ROOT_URL: ${{ env.ROOT_URL }}
-      FRONTEND_URL: ${{ env.FRONTEND_URL }}
-      AUTH0_URL: ${{ env.AUTH0_URL }}
-      AUTH0_AUDIENCE: ${{ env.AUTH0_AUDIENCE }}
-      ENV: dev
+      - "DB_USER=${{ secrets.DB_USER }}"
+      - "DB_DATABASE=${{ secrets.DB_DATABASE }}"
+      - "DB_PORT=${{ env.DB_PORT }}"
+      - "DB_HOST=${{ env.DB_HOST }}"
+      - "DATABASE_URL=${{ secrets.DATABASE_URL }}"
+      - "ROOT_URL=${{ env.ROOT_URL }}"
+      - "FRONTEND_URL=${{ env.FRONTEND_URL }}"
+      - "AUTH0_URL=${{ env.AUTH0_URL }}"
+      - "AUTH0_AUDIENCE=${{ env.AUTH0_AUDIENCE }}"
+      - 'ENV=dev'
     args:
       - 'run'
       - 'deploy'
       - 'wondertix-server'
       - '--image'
-      - "${{ env._GCP_ARTIFACTS }}/wondertix-server"
+      - "${{ env.GCP_ARTIFACTS }}/wondertix-server"
       - '--region'
       - "${{ env.GCP_REGION }}"
       - '--platform'
