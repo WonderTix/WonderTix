@@ -6,7 +6,6 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import Navigation from '../Navigation';
-import {getDataGridUtilityClass} from '@mui/x-data-grid';
 /**
  * @returns {object} ContactOneResult - has Navigation
  *  and Contacts to reroute to other components
@@ -27,25 +26,25 @@ export const ContactOneResult = () => {
         scope: 'admin',
       });
       await axios
-          .get(
-              process.env.REACT_APP_API_1_URL + `/contacts/show/${params.contactid}`,
-              {
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                },
-              },
-          )
-          .then((res) => {
-            setData(res.data.data);
-            console.log(res);
-          })
-          .catch((err) => {
-            setError(err.message);
-            console.log(error);
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
+        .get(
+          process.env.REACT_APP_API_1_URL + `/contacts/show/${params.contactid}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          },
+        )
+        .then((res) => {
+          setData(res.data.data);
+          console.log(res);
+        })
+        .catch((err) => {
+          setError(err.message);
+          console.log(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
   useEffect(() => {
@@ -61,7 +60,7 @@ export const ContactOneResult = () => {
               <div>
                 <div className='mt-9 text-zinc-600 w-full '>
                   {isLoading ? <div className="radial-progress"/> :
-                  <ContactDisplayForm data={data[0]} />}
+                    <ContactDisplayForm data={data[0]} />}
                 </div>
               </div>
             }
@@ -69,12 +68,13 @@ export const ContactOneResult = () => {
             <div>
               <br/>
               {data.map(
-                  (Cust) =>
-                    <ContactDisplayTicket
-                      data={Cust}
-                      key={Cust.orderid}
-                      {...Cust}/>,
-              )},
+                (Cust) =>
+                  <ContactDisplayTicket
+                    data={Cust}
+                    key={Cust.orderid}
+                    {...Cust}
+                  />,
+              )}
             </div>
             }
           </div>
@@ -164,7 +164,7 @@ export const ContactDisplayForm = ({
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
-               Seating Accomdation:
+               Seating Accommodation:
             </div>
             <div>{ '' + seatingaccom }</div>
           </div>
@@ -207,14 +207,14 @@ export const ContactDisplayTicket = ({
       const refMode = 1;
 
       const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/refunds', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({refMode, id, amount}),
-          });
+        process.env.REACT_APP_API_1_URL + '/refunds', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({refMode, id, amount}),
+        });
 
       const responseData = await response.json();
       console.log(responseData);
