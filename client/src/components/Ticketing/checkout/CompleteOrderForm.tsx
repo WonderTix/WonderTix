@@ -88,16 +88,16 @@ export default function CompleteOrderForm(
   const [seatingAcc, setseatingAcc] = useState('');
   const [comments, setComments] = useState('');
   const [optIn, setOptIn] = useState(false);
-  const handleSeatingAccChange = (ev) => {
-    setseatingAcc(ev.target.value);
-  };
-  const handleCommentsChange = (ev) => {
-    const newCommentValue = ev.target.value;
-    setComments(newCommentValue);
-    if (seatingAcc === 'Other') {
-      setseatingAcc(newCommentValue);
-    }
-  };
+  // const handleSeatingAccChange = (ev) => {
+  // setseatingAcc(ev.target.value);
+  // };
+  // const handleCommentsChange = (ev) => {
+  // const newCommentValue = ev.target.value;
+  // setComments(newCommentValue);
+  // if (seatingAcc === 'Other') {
+  // setseatingAcc(newCommentValue);
+  // }
+  // };
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
       firstName,
@@ -199,7 +199,8 @@ export default function CompleteOrderForm(
                     Seating Accommodations
                     </label>
                     <select className="input w-full  border
-            border-zinc-300 p-4 mt-1 rounded-lg col-label-2 " name="seatingAcc" id="seating-acc" onChange={handleSeatingAccChange}>
+            border-zinc-300 p-4 mt-1 rounded-lg col-label-2 " name="seatingAcc" id="seating-acc" onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
+                      setseatingAcc(ev.target.value)}>
                       <option value="None">No, not at this time</option>
                       <option value="Wheel Chair">Yes, wheelchair seat(s)</option>
                       <option value="Aisle Seat">Yes, aisle seat(s)</option>
@@ -214,7 +215,8 @@ export default function CompleteOrderForm(
                    Comments
                     </label>
                     <input className="input w-full  border
-            border-zinc-300 p-4 mt-1 rounded-lg col-label-2" type='text' name="comments" id="comments" onChange={handleCommentsChange} placeholder="Comments"/>
+            border-zinc-300 p-4 mt-1 rounded-lg col-label-2" type='text' name="comments" id="comments" onChange={(ev: React.ChangeEvent<HTMLInputElement>): void =>
+                      setComments(ev.target.value)} placeholder="Comments"/>
                   </div>
                 </div>
                 <div className='flex flex-col items-start gap-3 mt-5 mb-5'>

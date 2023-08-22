@@ -33,6 +33,9 @@ export default function CheckoutPage(): ReactElement {
   const donation = useAppSelector(selectDonation);
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>('donation');
   const doCheckout = async (formData: CheckoutFormInfo) => {
+    if (formData.seatingAcc === 'Other') {
+      formData.seatingAcc = formData.comments;
+    }
     const stripe = await stripePromise;
     if (!stripe) return;
     const response = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkout`, {
