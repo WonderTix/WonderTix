@@ -38,9 +38,6 @@ import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {
-  TestPage,
-} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventPage';
-import {
   EventProvider,
 } from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
 
@@ -98,7 +95,7 @@ const App = () => {
         <Route path="/ticketing/showings/:eventid" element={<ProtectedRoute component={showingmain} />} />
         <Route path="/ticketing/tickettypes" element={<ProtectedRoute component={Tickettypesmain} />} />
         <Route path="/ticketing/ticketexchanges" element={<ProtectedRoute component={TicketExchangesmain} />} />
-        <Route path='/testingEventForm' element={<EventProvider eventID={32}> <TestPage/> </EventProvider>}/>
+        <Route path='/ticketing/showings/v2/:eventid' element={<ProtectedRoute component ={EventProvider} />}/>
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>

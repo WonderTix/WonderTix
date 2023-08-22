@@ -7,10 +7,15 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
+import {Button} from '@mui/material';
 
-
-export const EventGeneralForm = (props: {onSubmit, onDelete}) => {
-  const {onSubmit, onDelete} = props;
+interface EventGeneralFormProps {
+ onSubmit: (event, actions) => void;
+ onDelete: (event) => void;
+ onLeaveEdit?: () => void;
+}
+export const EventGeneralForm = (props: EventGeneralFormProps) => {
+  const {onSubmit, onDelete, onLeaveEdit} = props;
   const {eventData} = useEvent();
   const [disabledURL, setDisabledURL] = useState(eventData?.imageurl === 'Default Event Image');
 
@@ -115,6 +120,7 @@ export const EventGeneralForm = (props: {onSubmit, onDelete}) => {
               </div>
             </div>
           </div>
+          {/* Need to fix image sizing so height does not grow past needs of sibling div */}
           <div className={'grid grid-cols-12 col-span-12 min-[450px]:col-span-6'}>
             <div className={'grid content-center col-span-9 w-[100%] h-[100%]'}>
               <EventImage
@@ -125,7 +131,20 @@ export const EventGeneralForm = (props: {onSubmit, onDelete}) => {
             </div>
             <div className={'grid col-span-3 content-center gap-4'}>
               <FormSubmitButton />
-              {eventData? <FormDeleteButton onDelete={onDelete} />:null}
+              {eventData?
+                <FormDeleteButton onDelete={onDelete} />:
+                null}
+              {
+                onLeaveEdit && eventData?
+                  <Button
+                    variant={'contained'}
+                    color={'secondary'}
+                    onClick={onLeaveEdit}
+                  >
+                    Return
+                  </Button>:
+                  null
+              }
             </div>
           </div>
         </form>

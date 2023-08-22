@@ -1,16 +1,10 @@
 import React from 'react';
 import {useEvent} from './EventProvider';
-import {useField, useFormikContext} from 'formik';
 
-interface TicketTypeSelectProps {
-  field;
-  id: number;
-  index: number
-}
 export const TicketTypeSelect = (props: { field, id, index }) => {
   const {field, id, index} = props;
   const {ticketTypes} = useEvent();
-  // const [currentTypes] = useField('instanceTicketTypes');
+
   return (
     <>
       <label

@@ -1,7 +1,6 @@
 import {useFormikContext} from 'formik';
 import {LoadingButton} from '@mui/lab';
 import React from 'react';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 export const FormSubmitButton = () => {
   const {
@@ -13,16 +12,13 @@ export const FormSubmitButton = () => {
     if (isSubmitting) {
       return 'Saving';
     }
-    if (!isValid) {
-      return 'Invalid';
-    }
     return 'Save';
   };
   return (
     <>
       <LoadingButton
         variant={'contained'}
-        color={isValid ? 'success' : 'error'}
+        color={'success'}
         loadingPosition={'start'}
         type={'submit'}
         disabled={disabled}
@@ -30,14 +26,6 @@ export const FormSubmitButton = () => {
       >
         {getButtonText()}
       </LoadingButton>
-      {status && status.error ?
-        (
-          <div
-            className={` text-center text-danger`}
-          >
-            {status.message}
-          </div>
-        ) : null}
     </>
   );
 };

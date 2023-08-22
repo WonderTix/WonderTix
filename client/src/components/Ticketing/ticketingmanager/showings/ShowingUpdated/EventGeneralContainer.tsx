@@ -11,36 +11,35 @@ export const EventGeneralContainer = () => {
   const navigate = useNavigate();
   const [edit, setEdit] = useState(!eventID);
 
-  const onSuccess = async (newEvent) => {
+  const onSubmitSuccess = async (newEvent) => {
     const res = await newEvent.json();
+    console.log(newEvent);
     setEventID(res.data[0].eventid);
     setEdit((edit)=>!edit);
-    setPopUpProps(`Success`, 'Event Update Successful', true);
+    setPopUpProps(`Success`, 'Event update successful', true);
     setShowPopUp(true);
     setReloadEvent((reload) => !reload);
   };
 
   const onSubmitError = (event) => {
     console.log(event);
-    setPopUpProps(`Failure`, 'Event Update Failed', false);
+    setPopUpProps(`Failure`, 'Event update failed', false);
     setShowPopUp(true);
   };
   const onDeleteSuccess= () => {
-    setPopUpProps(`Success`, 'Event Successfully Set to Inactive', true);
-    setShowPopUp(true);
     navigate(`/ticketing/showings`);
   };
 
   const onDeleteError = (event) => {
-    console.log('here', event);
-    setPopUpProps(`Failure`, 'Event Cannot Be Marked Inactive', false);
+    console.log(event);
+    setPopUpProps(`Failure`, 'Event cannot be marked inactive', false);
     setShowPopUp(true);
   };
 
   const onSubmit = createSubmitFunction(eventID === 0 ? 'POST' : 'PUT',
       `${process.env.REACT_APP_API_1_URL}/events`,
       token,
-      onSuccess,
+      onSubmitSuccess,
       onSubmitError,
   );
 
@@ -52,14 +51,15 @@ export const EventGeneralContainer = () => {
   );
 
   return (
-    <div className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl h-[20%]'}>
-      <h2 className={'text-center text-3xl font-semibold mb-5'}>
+    <div className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'}>
+      <h2 className={'text-center text-3xl font-semibold mb-5 text-zinc-800'}>
         {eventID? 'Event Information' : 'Add Event'}
       </h2>
       {edit ?
         <EventGeneralForm
           onSubmit={onSubmit}
           onDelete={onDelete}
+          onLeaveEdit={()=> setEdit((edit) => !edit)}
         /> :
         <EventGeneralView
           setEdit={setEdit}

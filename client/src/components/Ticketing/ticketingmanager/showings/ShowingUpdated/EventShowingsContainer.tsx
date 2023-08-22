@@ -1,15 +1,12 @@
 /* eslint-disable max-len */
 import {EventShowingForm} from './EventShowingForm';
 import React, {useState} from 'react';
-import {openSnackbar} from '../../snackbarSlice';
 import {EventShowingContainer} from './EventShowingContainer';
 import {useEvent} from './EventProvider';
 import {createSubmitFunction} from './ShowingUtils';
 import {toDateStringFormat} from '../../Events/showingInputContainer';
 import {Button} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import PopUp from '../../../Pop-up';
-import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 
 
 export const EventShowingsContainer = () => {
@@ -20,11 +17,14 @@ export const EventShowingsContainer = () => {
     setShowPopUp(true);
     setReloadShowing((reload) => !reload);
     setAdd((add) => !add);
-    openSnackbar('Showing has been added successfully');
   };
-  const onError = (event) => {
-    console.log(event);
-    setPopUpProps('Failure', 'Showing Creation Failed', false);
+  const onError = async (event) => {
+    const message = 'Showing Creation Failed';
+    if (event.status === 422 || event.status === 404) {
+      // Where in the res is the custom actual error message
+      console.log(event);
+    }
+    setPopUpProps('Failure', message, false);
     setShowPopUp(true);
   };
 
@@ -58,7 +58,7 @@ export const EventShowingsContainer = () => {
                         onSuccessAddShowing,
                         onError,
                     )}
-                  onDelete={() => setAdd((add)=>!add)}
+                  onLeaveEdit={() => setAdd((add)=>!add)}
                 /> :
             null
         }

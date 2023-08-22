@@ -1,11 +1,12 @@
 import {Showing} from '../../../../../interfaces/showing.interface';
 import React, {useContext, useState} from 'react';
-
 import {
   useFetchEventData,
   useFetchShowingData,
   useFetchToken,
 } from './ShowingUtils';
+import {useParams} from 'react-router-dom';
+import {EventPageV2} from './EventPageV2';
 
 interface EventContextType {
   eventID: number;
@@ -49,8 +50,13 @@ export const EventContext = React.createContext<EventContextType>({
 export const useEvent = () => {
   return useContext(EventContext);
 };
-export const EventProvider = (props: { eventID: number, children }) => {
-  const [eventID, setEventID] = useState(props.eventID ?? 0);
+
+type EventProviderParams = {
+  eventid: string;
+}
+export const EventProvider = () => {
+  const providedEventID = useParams<EventProviderParams>();
+  const [eventID, setEventID] = useState(Number(providedEventID.eventid) ?? 0);
   const [editing, setEditing] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
   const [message, setMessage] = useState('');
@@ -59,7 +65,7 @@ export const EventProvider = (props: { eventID: number, children }) => {
   const {
     eventData, loading, ticketTypes, setReloadEvent,
   } = useFetchEventData(eventID);
-  const {setReloadShowing, showingData, reload} = useFetchShowingData(eventID);
+  const {setReloadShowing, showingData} = useFetchShowingData(eventID);
   const {token} = useFetchToken();
 
   const setPopUpProps = (title, message, success) => {
@@ -93,7 +99,7 @@ export const EventProvider = (props: { eventID: number, children }) => {
         }
       }
     >
-      {props.children}
+      <EventPageV2 />
     </EventContext.Provider>
   );
 };

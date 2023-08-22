@@ -1,34 +1,43 @@
 /* eslint-disable max-len */
 import {useEvent} from './EventProvider';
 import React from 'react';
-import {EventItem} from './InputControl';
 import {EventImage} from '../../../../../utils/imageURLValidation';
 import {Button} from '@mui/material';
+import {LineItem} from './InputControl';
 
-export const EventGeneralView = (props: {setEdit: (value) => void}) => {
+
+interface EventGeneralViewProps {
+  setEdit: (value)=>void;
+}
+export const EventGeneralView = (props:EventGeneralViewProps)=> {
   const {eventData} = useEvent();
   const {setEdit} = props;
 
   if (!eventData) {
     return null;
   }
+
   return (
     <div className={'grid grid-cols-12'}>
       <div className={'flex flex-col col-span-12 min-[450px]:col-span-6'}>
-        <EventItem
+        <LineItem
           label={'Event ID'}
           information={eventData.eventid}
+          event
         />
-        <EventItem
+        <LineItem
           label={'Event Name'}
           information={eventData.eventname}
+          event
         />
-        <EventItem
+        <LineItem
           description
           label={'Event Description'}
           information={eventData.eventdescription}
+          event
         />
       </div>
+      {/* Need to fix image sizing so that it does not exceed height requiremen */}
       <div className={'grid grid-cols-12 col-span-12 min-[450px]:col-span-6'}>
         <div className={'grid content-center col-span-9'}>
           <EventImage

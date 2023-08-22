@@ -2,12 +2,13 @@ import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma, PrismaClient} from '@prisma/client';
 import {eventInstanceRequest} from '../interfaces/Event';
-
 import {
+  InvalidInputError,
   validateDateAndTime,
-  validateShowingUpdate,
+  validateShowingOnUpdate,
   validateTicketRestrictionsOnUpdate,
 } from './eventInstanceController.service';
+import * as wasi from 'wasi';
 
 const prisma = new PrismaClient();
 
@@ -17,7 +18,7 @@ export const eventInstanceController = Router();
  * @swagger
  * /2/event-instance:
  *   post:
- *     summary: Create an event instance
+ *     summary: Create an event instance, associated event tickets, and ticket restrictions
  *     tags:
  *     - New event instance
  *     requestBody:
@@ -111,7 +112,9 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
 
       return;
     }
-
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).json({error: error.message});
+    }
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
@@ -297,13 +300,16 @@ eventInstanceController.get('/:id', async (req: Request, res: Response) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       422:
+ *          description: invalid input.
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
+// Need to determine how eventtickets should be updated with eventinstance update
 eventInstanceController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const requestInstance: eventInstanceRequest = req.body;
+    const requestEventInstance: eventInstanceRequest = req.body;
     const eventInstanceToUpdate= await prisma.eventinstances.findUnique({
       where: {
         eventinstanceid: Number(id),
@@ -318,22 +324,20 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
       throw new Error(`Showing ${id} does not exist`);
     }
 
-    console.log(eventInstanceToUpdate.eventtickets.length);
-    const updatedShowing = validateShowingUpdate( eventInstanceToUpdate, requestInstance);
+    const updatedEventInstance = validateShowingOnUpdate(eventInstanceToUpdate, requestEventInstance);
     // eslint-disable-next-line max-len
     const {restrictionsToAdd, restrictionsToRemove, restrictionsToUpdate} = validateTicketRestrictionsOnUpdate(
         eventInstanceToUpdate.ticketrestrictions,
-        requestInstance.instanceTicketTypes,
-        requestInstance.totalseats);
+        requestEventInstance.instanceTicketTypes,
+        requestEventInstance.totalseats);
 
-    console.log(updatedShowing);
     //  update showing
-    const updatedEventInstance= await prisma.eventinstances.update({
+    await prisma.eventinstances.update({
       where: {
         eventinstanceid: Number(id),
       },
       data: {
-        ...updatedShowing,
+        ...updatedEventInstance,
       },
     });
     //  update ticket restrictions
@@ -341,7 +345,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
         [...restrictionsToRemove.map((restriction) =>
           prisma.ticketrestrictions.delete({
             where: {
-              ticketrestrictionsid: restriction.ticketrestrictionsid,
+              ticketrestrictionsid: Number(restriction.ticketrestrictionsid),
             },
           })), ...restrictionsToUpdate.map((restriction) =>
           prisma.ticketrestrictions.update({
@@ -349,12 +353,12 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
               ticketrestrictionsid: restriction.ticketrestrictionsid,
             },
             data: {
-              ticketlimit: restriction.ticketlimit,
+              ticketlimit: Number(restriction.ticketlimit),
             },
           })), ...restrictionsToAdd.map((restriction) =>
           prisma.ticketrestrictions.create({
             data: {
-              eventinstanceid_fk: Number(requestInstance.eventinstanceid),
+              eventinstanceid_fk: Number(requestEventInstance.eventinstanceid),
               tickettypeid_fk: Number(restriction.typeID),
               ticketlimit: Number(restriction.typeQuantity),
               ticketssold: 0,
@@ -362,8 +366,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
           }),
         )],
     );
-    //  update eventtickets
-    res.status(204).json();
+    res.status(204).send('Showing successfully updated');
     return;
   } catch (error) {
     console.log(error);
@@ -378,7 +381,10 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
 
       return;
     }
-
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).send({error: error.message});
+      return;
+    }
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
@@ -422,15 +428,15 @@ eventInstanceController.delete('/:id', async (req: Request, res: Response) => {
     });
 
     if (!eventInstanceExists) {
-      res.status(404).json({error: 'event instance not found'});
+      res.status(404).json({error: 'Event instance not found'});
       return;
     }
     if (eventInstanceExists.eventtickets.find((ticket:any) => ticket.purchased)) {
-      res.status(404).json({error: `Can not delete a showing for which tickets have already been sold`});
+      res.status(422).json({error: `Can not delete a showing for which tickets have already been sold`});
       return;
     }
 
-    const eventInstance = await prisma.eventinstances.update({
+    await prisma.eventinstances.update({
       where: {
         eventinstanceid: Number(id),
       },
@@ -438,7 +444,7 @@ eventInstanceController.delete('/:id', async (req: Request, res: Response) => {
         salestatus: false,
       },
     });
-    res.status(204).json();
+    res.status(204).json('Showing successfully changed to inactive');
     return;
   } catch (error) {
     console.log(error);

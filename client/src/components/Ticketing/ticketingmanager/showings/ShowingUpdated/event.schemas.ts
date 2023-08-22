@@ -9,9 +9,9 @@ export const eventInstanceSchema = yup.object().shape({
         typeID: yup.number().integer().required('Required'),
         typeQuantity: yup.number()
             .integer()
-            .min(1, 'Must have at least one ticket per type')
+            .min(1, 'Must Be Greater Than 0')
             .test('ticket count check',
-                'ticket quantity can not exceed total ticket count',
+                'Cannot Exceed Total Seats',
                 function test(value) {
                   // eslint-disable-next-line no-invalid-this
                   return value <= this.options.context.totalseats;

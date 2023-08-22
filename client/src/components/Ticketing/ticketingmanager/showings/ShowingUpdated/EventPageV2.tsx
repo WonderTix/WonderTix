@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {Container} from '@mui/material';
+import React from 'react';
 import {EventShowingsContainer} from './EventShowingsContainer';
 import {EventGeneralContainer} from './EventGeneralContainer';
 import {useEvent} from './EventProvider';
@@ -8,7 +7,7 @@ import Udash_nav from '../../udash_navbar';
 import PopUp from '../../../Pop-up';
 
 
-export const TestPage = () => {
+export const EventPageV2 = () => {
   // eslint-disable-next-line max-len
   const {eventID, loading, token, showPopUp,
     setShowPopUp, message, success, title} = useEvent();

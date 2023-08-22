@@ -1,8 +1,7 @@
-// eslint-disable max-len
+/* eslint-disable max-len */
 import {useEffect, useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 
-// eslint-disable-next-line max-len
 export const createSubmitFunction = (method: string, url: string, token: string, onSuccess?, onError?) => {
   return async (event, actions) => {
     console.log(event);
@@ -18,19 +17,16 @@ export const createSubmitFunction = (method: string, url: string, token: string,
         body: JSON.stringify(event),
       });
       actions.setSubmitting(false);
-      actions.setStatus(undefined);
+      if (!res.status.toString().startsWith('2')) {
+        throw res;
+      }
       if (onSuccess) {
         await onSuccess(res);
       }
     } catch (error) {
-      actions.setStatus(
-          {
-            error: true,
-            message: 'Submit Failed Please Try Again',
-          });
       actions.setSubmitting(false);
       if (onError) {
-        onError(error);
+        await onError(error);
       }
     }
   };
@@ -50,7 +46,7 @@ export const createDeleteFunction = (method: string, url: string, token: string,
       if (!res.status.toString().startsWith('2')) {
         throw res;
       }
-      if (res.status.toString().startsWith('2') && onSuccess) {
+      if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
@@ -120,7 +116,6 @@ export const getEventData = async (eventID, setEventData) => {
           eventData.eventid = data.data[0].eventid;
           eventData.seasonid = data.data[0].seasonid_fk;
         });
-    console.log(eventData);
     setEventData(eventData);
   } catch (error) {
     console.log(error);

@@ -16,14 +16,14 @@ interface TicketTypeTableProps {
 
 export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
-  const {ticketTypes} = useEvent();
+  const {ticketTypes, showPopUp} = useEvent();
   const [field] = useField('instanceTicketTypes');
 
   return (
     <div className={'overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl border border-white mx-auto rounded-xl bg-white w-[100%]'}>
       <table className={'table table-fixed text-sm min-w-[100%]'}>
         {/* eslint-disable-next-line max-len */}
-        <thead className={'text-left text-zinc-800 whitespace-nowrap bg-blue-200 sticky top-0 '}>
+        <thead className={`text-left text-zinc-800 whitespace-nowrap bg-blue-200 ${showPopUp?'':'sticky'} top-0 `}>
           <tr>
             <th className={'px-2 py-1 border border-white'}>Admission Type</th>
             <th className={'px-2 py-1 border border-white'}>Ticket Price</th>

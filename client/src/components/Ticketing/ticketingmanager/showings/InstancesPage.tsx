@@ -17,6 +17,8 @@ import {fetchTicketingData} from '../ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../../app/hooks';
 import {useNavigate} from 'react-router-dom';
 import {EventImage, getImageDefault} from '../../../../utils/imageURLValidation';
+import {Button} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 /**
  * Uses dispatch, navigate, allEvents, and getData
@@ -41,14 +43,25 @@ const InstancesPage = () => {
     <div className='w-full h-screen overflow-x-hidden absolute '>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
-        <h1 className='font-bold text-5xl bg-clip-text
+        <div className ={'grid grid-cols-2 mb-14'}>
+          <h1 className='col-span-2 min-[678px]:col-span-1 font-bold text-5xl bg-clip-text
            text-transparent bg-gradient-to-r from-sky-500
-            to-indigo-500 mb-14' >Select Event</h1>
+            to-indigo-500' >Select Event</h1>
+          <Button
+            variant={'contained'}
+            color={'success'}
+            startIcon={<AddIcon/>}
+            onClick={() => navigate(`/ticketing/showings/v2/0`)}
+            sx={{marginLeft: 'auto', padding: '0px 5px'}}
+          >
+            Add Event
+          </Button>
+        </div>
         <ul className='md:grid md:grid-cols-2 md:gap-8 sm:grid sm:grid-cols-1 sm:gap-4 mt-9'>
           {allEvents.map((event) => (
             <div key={event.id}>
               <button
-                onClick={() => navigate(`/ticketing/showings/${event.id}`)}
+                onClick={() => navigate(`/ticketing/showings/v2/${event.id}`)}
                 className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full"
                 style={{backgroundImage: `url(${getImageDefault(event.imageurl)}),url(${getImageDefault()})`}}
               >
