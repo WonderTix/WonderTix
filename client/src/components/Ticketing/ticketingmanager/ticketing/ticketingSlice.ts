@@ -276,7 +276,7 @@ export interface Discount {
 // });
 
 export const toPartialCartItem = <T extends TicketType>(type: T, tickets: Ticket) => ({
-  product_id: type.id,
+  product_id: tickets.event_instance_id,
   price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
   desc: `${type.name} - ${format(new Date(tickets.date), 'eee, MMM dd - h:mm a')}`,
 });
