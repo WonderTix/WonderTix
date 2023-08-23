@@ -28,7 +28,7 @@ beforeAll(async () => {
     if (!token) {
       writeFileSync(
           '.env',
-          `\nAUTH0_TOKEN=${process.env.AUTH0_TOKEN}`,
+          `AUTH0_TOKEN=${process.env.AUTH0_TOKEN}`,
           {flag: 'w'},
       );
     }
