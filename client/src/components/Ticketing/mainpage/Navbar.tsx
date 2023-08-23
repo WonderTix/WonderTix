@@ -35,8 +35,6 @@ const Navbar = ({bMode}: NavbarProps) => {
   }
 
   const showMenu = async () => {
-  // console.log('process.env in client Navbar.tsx');
-  // console.log(process.env);
     if (isAuthenticated) {
       setLogin(true);
     }
