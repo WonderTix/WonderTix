@@ -2,13 +2,6 @@ steps:
 
   # Build the Docker image for the client
   - name: 'gcr.io/cloud-builders/docker'
-    env:
-      - 'REACT_APP_ROOT_URL=$_REACT_APP_ROOT_URL'
-      - 'REACT_APP_AUTH0_URL=$_REACT_APP_AUTH0_URL'
-      - 'REACT_APP_AUTH0_AUDIENCE=$_REACT_APP_AUTH0_AUDIENCE'
-      - 'REACT_APP_API_1_URL=$_REACT_APP_API_1_URL'
-      - 'REACT_APP_API_2_URL=$_REACT_APP_API_2_URL'
-      - 'ENV=dev'
     args: ['build', '-f', 'client/Dockerfile.dev', '-t', '$_GCP_ARTIFACTS/wondertix-client', 'client']
 
   # Push the Docker image to Artifact Registry
@@ -17,6 +10,13 @@ steps:
 
   # Deploy the client image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
+    env:
+      - 'REACT_APP_ROOT_URL=$_REACT_APP_ROOT_URL'
+      - 'REACT_APP_AUTH0_URL=$_REACT_APP_AUTH0_URL'
+      - 'REACT_APP_AUTH0_AUDIENCE=$_REACT_APP_AUTH0_AUDIENCE'
+      - 'REACT_APP_API_1_URL=$_REACT_APP_API_1_URL'
+      - 'REACT_APP_API_2_URL=$_REACT_APP_API_2_URL'
+      - 'ENV=dev'
     args:
       - 'run'
       - 'deploy'
