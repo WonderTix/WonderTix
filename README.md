@@ -124,3 +124,10 @@ Once tests have been written, they can be organized in various ways. Possibly cr
 
 Expect a much more detailed Playwright tutorial and how-to in the very near future. Currently, I recommend visiting the [Playwright](https://playwright.dev/docs/intro)
 
+
+## Deployment
+`/gcbrun` comment:
+When an external contributor submits a pull request, the trigger won't automatically run.
+A repository collaborator or owner must review the pull request.
+If they deem the changes safe and want to proceed with the build or whatever the trigger initiates, they will comment on the pull request with `/gcbrun`.
+Only after this comment is made will the trigger be invoked, and the GCP build and deployment will proceed.

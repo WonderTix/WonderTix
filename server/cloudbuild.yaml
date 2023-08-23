@@ -1,0 +1,38 @@
+steps:
+
+  # Build the Docker image for the server using Dockerfile.dev
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'server/Dockerfile.dev', '-t', "$_GCP_ARTIFACTS/wondertix-server", 'server']
+
+  # Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', "$_GCP_ARTIFACTS/wondertix-server"]
+
+  # Deploy the server image to Cloud Run with environment variables
+  - name: 'gcr.io/cloud-builders/gcloud'
+    env:
+      - "DB_USER=$_DB_USER"
+      - "DB_DATABASE=$_DB_DATABASE"
+      - "DB_PORT=$_DB_PORT"
+      - "DB_HOST=$_DB_HOST"
+      - "DATABASE_URL=$_DATABASE_URL"
+      - "ROOT_URL=$_ROOT_URL"
+      - "FRONTEND_URL=$_FRONTEND_URL"
+      - "AUTH0_URL=$_AUTH0_URL"
+      - "AUTH0_AUDIENCE=$_AUTH0_AUDIENCE"
+      - 'ENV=dev'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'wondertix-server'
+      - '--image'
+      - "$_GCP_ARTIFACTS/wondertix-server"
+      - '--region'
+      - "$_GCP_REGION"
+      - '--platform'
+      - 'managed'
+      - '--memory=1Gi'
+      - '--allow-unauthenticated'
+      - '--min-instances=1'
+      - "--set-cloudsql-instances=$_CLOUD_SQL_INSTANCE"
+      - "--service-account=$_GCP_SERVICE_ACCOUNT"
