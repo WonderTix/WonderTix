@@ -4,8 +4,8 @@ import Showing from './showing';
 const showingmain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav/>
-      <Showing/>
+      <Udash_nav />
+      <Showing />
     </div>
   );
 };
