@@ -123,7 +123,7 @@ const Cart = () => {
     setRemoveContext(RemoveContext.single);
     setRemoveContextMessage('this');
     setTargetItem(id);
-    setModalOpen(true);
+    handleClick2();
   };
 
   const navigateToCompleteOrder = () => {
@@ -134,7 +134,7 @@ const Cart = () => {
     <div className='w-full h-screen'>
       <div className='w-full h-screen bg-zinc-200'>
         <div className='flex flex-col md:flex-col sm:flex-col
-        sm:items-center w-full h-full p-20 overflow-y-scroll'>
+        sm:items-center w-full h-full p-20'>
           <div className='w-full flex flex-row mb-5'>
             <button onClick={() => navigate('/')} className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
