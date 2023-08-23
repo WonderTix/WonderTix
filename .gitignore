@@ -221,6 +221,8 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+.env.dev
+
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

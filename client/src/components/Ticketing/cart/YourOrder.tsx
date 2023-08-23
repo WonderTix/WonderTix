@@ -42,7 +42,7 @@ const YourOrder = () => {
 
   return (
     <div className='flex flex-col justify-between h-full w-full'>
-      <div className='flex flex-col items-center w-full'>
+      <div className='flex flex-col items-center w-full mb-5'>
         <div className='text-zinc-100 text-2xl font-bold'>Your order</div>
         <div className='text-zinc-100 mt-10 w-full'>
           {lineItems.length > 0 ? lineItems : <p>Your cart is empty</p>}
