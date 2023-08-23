@@ -1,21 +1,64 @@
+# # Use the Node.js 18 Alpine image as the base image
+# FROM node:18-alpine
+
+# # Set the working directory inside the container
+# # WORKDIR /usr/app
+
+# # Copy the package.json and package-lock.json files into the container
+# COPY ./package*.json ./
+
+# # Install the npm dependencies
+# RUN npm install --force
+
+# # Copy the rest of the application code into the container
+# COPY . .
+
+# # Expose the port the application will run on
+# EXPOSE 8080
+
+# # Start the client application
+# CMD ["npm", "run", "start:dev"]
+
+
 # Use the Node.js 18 Alpine image as the base image
 FROM node:18-alpine
 
 # Set the working directory inside the container
-# WORKDIR /usr/app
+WORKDIR /usr/app
 
 # Copy the package.json and package-lock.json files into the container
 COPY ./package*.json ./
 
 # Install the npm dependencies
-RUN npm install --force
+# Using --force might not be recommended for all scenarios as it can produce unstable builds. 
+# Consider removing it unless you have a specific need.
+RUN npm install
 
 # Copy the rest of the application code into the container
 COPY . .
+
+# Accept environment variables passed during the Docker build process
+ARG REACT_APP_ROOT_URL
+ARG REACT_APP_AUTH0_URL
+ARG REACT_APP_AUTH0_AUDIENCE
+ARG REACT_APP_API_1_URL
+ARG REACT_APP_API_2_URL
+ARG REACT_APP_AUTH0_CLIENT_ID
+ARG REACT_APP_PUBLIC_STRIPE_KEY
+ARG ENV
+
+# Set the environment variables inside the container
+ENV REACT_APP_ROOT_URL=$REACT_APP_ROOT_URL
+ENV REACT_APP_AUTH0_URL=$REACT_APP_AUTH0_URL
+ENV REACT_APP_AUTH0_AUDIENCE=$REACT_APP_AUTH0_AUDIENCE
+ENV REACT_APP_API_1_URL=$REACT_APP_API_1_URL
+ENV REACT_APP_API_2_URL=$REACT_APP_API_2_URL
+ENV REACT_APP_AUTH0_CLIENT_ID=$REACT_APP_AUTH0_CLIENT_ID
+ENV REACT_APP_PUBLIC_STRIPE_KEY=$REACT_APP_PUBLIC_STRIPE_KEY
+ENV ENV=$ENV
 
 # Expose the port the application will run on
 EXPOSE 8080
 
 # Start the client application
 CMD ["npm", "run", "start:dev"]
-
