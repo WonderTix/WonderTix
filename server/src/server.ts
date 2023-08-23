@@ -520,8 +520,8 @@ const createServer = async () => {
   } else {
       throw new Error('Unknown ENV value');
   }
-  // console.log("process.env in server.ts")
-  // console.log(process.env)
+  // console.log('process.env in server.ts');
+  // console.log(process.env);
 
   dotenv.config({ path: envPath });
 

@@ -1,15 +1,29 @@
 steps:
-
   # Build the Docker image for the client
   - name: 'gcr.io/cloud-builders/docker'
-    env:
+    args: 
+      - 'build'
+      - '--build-arg'
       - 'REACT_APP_ROOT_URL=$_REACT_APP_ROOT_URL'
+      - '--build-arg'
       - 'REACT_APP_AUTH0_URL=$_REACT_APP_AUTH0_URL'
+      - '--build-arg'
       - 'REACT_APP_AUTH0_AUDIENCE=$_REACT_APP_AUTH0_AUDIENCE'
+      - '--build-arg'
       - 'REACT_APP_API_1_URL=$_REACT_APP_API_1_URL'
+      - '--build-arg'
       - 'REACT_APP_API_2_URL=$_REACT_APP_API_2_URL'
-      - 'ENV=dev'
-    args: ['build', '-f', 'client/Dockerfile.dev', '-t', '$_GCP_ARTIFACTS/wondertix-client', 'client']
+      # Add the secrets as build args
+      - '--build-arg'
+      - 'REACT_APP_AUTH0_CLIENT_ID'
+      - '--build-arg'
+      - 'REACT_APP_PUBLIC_STRIPE_KEY'
+      - '-f'
+      - 'client/Dockerfile.dev'
+      - '-t'
+      - '$_GCP_ARTIFACTS/wondertix-client'
+      - 'client'
+    secretEnv: ['REACT_APP_AUTH0_CLIENT_ID', 'REACT_APP_PUBLIC_STRIPE_KEY']
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -17,6 +31,8 @@ steps:
 
   # Deploy the client image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
+    env:
+      - 'ENV=dev'
     args:
       - 'run'
       - 'deploy'
@@ -27,3 +43,11 @@ steps:
       - '$_GCP_REGION'
       - '--platform'
       - 'managed'
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/144838889706/secrets/AUTH0_CLIENT_ID/versions/latest
+    env: 'REACT_APP_AUTH0_CLIENT_ID'
+  - versionName: projects/144838889706/secrets/PUBLIC_STRIPE_KEY_DEV/versions/latest
+    env: 'REACT_APP_PUBLIC_STRIPE_KEY'
+
