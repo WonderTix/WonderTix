@@ -33,6 +33,9 @@ export default function CheckoutPage(): ReactElement {
   const donation = useAppSelector(selectDonation);
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>('donation');
   const doCheckout = async (formData: CheckoutFormInfo) => {
+    if (formData.seatingAcc === 'Other') {
+      formData.seatingAcc = formData.comments;
+    }
     const stripe = await stripePromise;
     if (!stripe) return;
     const response = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkout`, {
@@ -54,35 +57,30 @@ export default function CheckoutPage(): ReactElement {
   };
 
   return (
-    <div className='w-full h-screen'>
-      <div className='w-full h-screen bg-zinc-200'>
-        <div className='flex flex-col md:flex-col sm:flex-col
-         sm:items-center w-full h-full p-20 overflow-y-scroll'>
-          <div className='w-full flex flex-row mb-5'>
-            <button onClick={() => navigate('/')} className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
-              </svg>
+    <div className='bg-zinc-200 flex flex-col md:flex-col sm:flex-col
+         sm:items-center w-full h-full p-20'>
+      <div className='w-full flex flex-row mb-5'>
+        <button onClick={() => navigate('/')} className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
               back to Events</button>
+      </div>
+      <div className='flex flex-row items-center mt-2 text-zinc-800'>
+        <div className='text-4xl font-bold'>Checkout</div>
+      </div>
+      <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
+        <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-9 flex flex-col gap-5 items-start rounded-xl overflow-auto'>
+          <div className='flex flex-col items-center h-auto w-full'>
+            <div className='text-2xl lg:text-5xl font-bold mb-5'>Complete Order</div>
+            {checkoutStep === 'donation' && <DonationPage onNext={() => setCheckoutStep('form')}/>}
+            {checkoutStep === 'form' && <CompleteOrderForm disabled={cartItems.length === 0} onSubmit={doCheckout} onBack={() => setCheckoutStep('donation')}/>}
           </div>
-          <div className='flex flex-row items-center mt-2 text-zinc-800'>
-            <div className='text-4xl font-bold mt-2 mb-5'>Checkout</div>
-          </div>
-          <div className='flex flex-col md:flex-row sm:flex-col
-         sm:items-center w-full h-full'>
-            <div className='w-full h-full md:mt-20 sm:mt-20 bg-zinc-100 p-9 flex flex-col gap-5 items-start rounded-xl'>
-              <div className='flex flex-col items-center h-full w-full'>
-                <div className='text-5xl font-bold mb-9'>Complete Order</div>
-                {checkoutStep === 'donation' && <DonationPage onNext={() => setCheckoutStep('form')}/>}
-                {checkoutStep === 'form' && <CompleteOrderForm disabled={cartItems.length === 0} onSubmit={doCheckout} onBack={() => setCheckoutStep('donation')}/>}
-              </div>
-            </div>
-            <div className='md:w-[30rem] sm:w-full sm:mt-10
-               md:ml-5 h-full md:mt-20 bg-zinc-900 p-9 flex
+        </div>
+        <div className='md:w-[30rem] sm:w-full sm:mt-10
+               md:ml-5 md:mt-10 bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'>
-              <YourOrder />
-            </div>
-          </div>
+          <YourOrder />
         </div>
       </div>
     </div>

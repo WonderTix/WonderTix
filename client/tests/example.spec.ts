@@ -17,6 +17,7 @@ test('get started link', async ({page}) => {
   await expect(page).toHaveURL(/.*intro/);
 });
 
+
 test('portland play house link', async ({page})=>{
   // Timeout for client to load
   test.setTimeout(100000);
@@ -40,6 +41,7 @@ test('donate', async ({page})=>{
   await expect(page).toHaveURL('https://localhost:3000/');
 });
 
+
 test('events', async ({page})=>{
   // Timeout for server to load
   test.setTimeout(120000);
@@ -54,3 +56,5 @@ test('events', async ({page})=>{
 
   await expect(page).toHaveURL('https://localhost:3000/');
 });
+
+
