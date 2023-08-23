@@ -16,7 +16,7 @@ model contacts {
   address       String?     @db.VarChar(255)
   phone         String?     @db.VarChar(15)
   donorbadge    Boolean?    @default(false)
-  seatingaccom  Boolean?    @default(false)
+  seatingaccom  String?     @db.VarChar(255)
   vip           Boolean?    @default(false)
   volunteerlist Boolean?    @default(false)
   newsletter    Boolean?    @default(false)
