@@ -100,18 +100,17 @@ const DoorList = () => {
         const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/allevents');
         const jsonRes = await response.json();
         const jsonData = jsonRes.data as any[];
-        // Filter only active events
-        const activeEvents = jsonData.filter((event) => event.active);
-        // Deduplicate the events based on eventname for full event list
-        const uniqueEventNames = Array.from(new Set(jsonData.map((event) => event.eventname)));
-        const deduplicatedEvents = uniqueEventNames.map((name) => jsonData.find((event) => event.eventname === name));
-        // Deduplicate the active events
-        const uniqueEventNamesActive = Array.from(new Set(activeEvents.map((event) => event.eventname)));
-        const deduplicatedEventsActive = uniqueEventNamesActive.map((name) => activeEvents.find((event) => event.eventname === name));
+
+        // Deduplicate the events based on eventid
+        const uniqueEventIds = Array.from(new Set(jsonData.map((event) => event.eventid)));
+        let deduplicatedEvents = uniqueEventIds.map((id) => jsonData.find((event) => event.eventid === id));
+
+        // Sort the events in alphabetical order by eventname
+        deduplicatedEvents = deduplicatedEvents.sort((a, b) => a.eventname.localeCompare(b.eventname));
+
         setEventList(deduplicatedEvents);
         setEventListFull(jsonData);
-        // Set the new state variables for active events
-        setEventListActive(deduplicatedEventsActive);
+        setEventListActive(deduplicatedEvents.filter((event) => event.active));
       } catch (error) {
         console.error(error.message);
       }
@@ -224,10 +223,16 @@ const DoorList = () => {
           />
         </div>
         <div className='text-sm text-zinc-500 ml-1 mb-2'>Choose Event</div>
-        <select id="event-select" className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleEventChange}>
+        <select
+          id="event-select"
+          className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7"
+          onChange={handleEventChange}
+        >
           <option className="px-6 py-3">Select Event</option>
           {(showInactiveEvents ? eventList : eventListActive).map((event) => (
-            <option key={event.eventinstanceid} value={event.eventid} className="px-6 py-3">{event.eventname}</option>
+            <option key={event.eventinstanceid} value={event.eventid} className="px-6 py-3">
+              {event.eventname} - {event.eventid}
+            </option>
           ))}
         </select>
         <div className='text-sm text-zinc-500 ml-1 mb-2'>Choose Time</div>
