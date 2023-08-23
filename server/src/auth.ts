@@ -1,15 +1,18 @@
-/**
- * Auth
- * Authentification for user longin
- * Wired with Auth Express Library
- * Performs scoping of users and route availabe for them
- */
+const jwksRsa = require('jwks-rsa');
+const jwt = require('express-jwt');
+const jwtScope = require('express-jwt-scope');
 
-import {auth, requiredScopes} from 'express-oauth2-jwt-bearer';
-
-export const checkJwt = auth({
+export const checkJwt = jwt({
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 1,
+    jwksUri: `${process.env.AUTH0_URL}/.well-known/jwks.json`,
+  }),
+  credentialsRequired: false,
   audience: process.env.AUTH0_AUDIENCE,
-  issuerBaseURL: process.env.AUTH0_URL,
+  issuer: process.env.AUTH0_URL,
+  algorighms: [`RS256`],
 });
 
-export const checkScopes = requiredScopes('admin');
+export const checkScopes = jwtScope('admin');
