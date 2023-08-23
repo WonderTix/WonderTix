@@ -33,8 +33,6 @@ const Navbar = ({bMode}: NavbarProps) => {
     picture = user.picture;
     name = user.name;
   }
-  const serverUrl = process.env.REACT_APP_ROOT_URL;
-
 
   const showMenu = async () => {
     if (isAuthenticated) {
