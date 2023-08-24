@@ -8,8 +8,8 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 // import DataGrid from 'react-data-grid';
-import {DataGrid, GridCellParams, useGridApiContext, useGridApiRef} from '@mui/x-data-grid';
-import {Checkbox, Button} from '@mui/material';
+import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
+import {Checkbox} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 // import RequireLogin from './RequireLogin';
 import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
@@ -62,7 +62,7 @@ const renderCheckin = ((params: GridCellParams) =>
   />);
 
 /**
- * columns uses name, vip, donorbadge, accomodations, num_tickets, arrived and renders
+ * columns uses first name, last name, # of tickets purchased, arrival status, vip, donorbadge, accomodations
  */
 const columns = [
   {field: 'firstname', headerName: 'First Name', width: 120},
@@ -127,8 +127,8 @@ const DoorList = () => {
   };
 
   const handleTimeChange = (event) => {
-    const eventIId = parseInt(event.target.value);
-    getDoorList(eventIId);
+    const eventInstanceID = parseInt(event.target.value);
+    getDoorList(eventInstanceID);
   };
 
   const CustomToolbar = () => {
@@ -147,7 +147,6 @@ const DoorList = () => {
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round"
-              // eslint-disable-next-line max-len
               d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
           </svg>
           Export
@@ -214,43 +213,47 @@ const DoorList = () => {
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>Door List</h1>
         </div>
         <div className='flex flex-row items-center mb-3'>
-          <label className='text-sm text-zinc-500 mr-2' htmlFor="enable-inactive-events">Enable inactive events</label>
           <Checkbox
             id="enable-inactive-events"
             color='primary'
             checked={showInactiveEvents}
             onChange={(e) => setShowInactiveEvents(e.target.checked)}
           />
+          <label className='text-sm text-zinc-500 mr-2' htmlFor="enable-inactive-events">Enable inactive events</label>
         </div>
-        <div className='text-sm text-zinc-500 ml-1 mb-2'>Choose Event</div>
-        <select
-          id="event-select"
-          className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7"
-          onChange={handleEventChange}
-        >
-          <option className="px-6 py-3">Select Event</option>
-          {(showInactiveEvents ? eventList : eventListActive).map((event) => (
-            <option key={event.eventinstanceid} value={event.eventid} className="px-6 py-3">
-              {event.eventname} - {event.eventid}
-            </option>
-          ))}
-        </select>
-        <div className='text-sm text-zinc-500 ml-1 mb-2'>Choose Time</div>
-        <select id="time-select" className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
-          <option className="px-6 py-3">Select Time</option>
-          {availableTimesEvents.map((event) => {
-            const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
-            eventDateObject.setDate(eventDateObject.getDate() + 1); // Add one day
-            const formattedDate = dayMonthDate(eventDateObject.toISOString().split('T')[0]);
-            return (
-              <option key={event.eventinstanceid} value={event.eventinstanceid} className="px-6 py-3">{formattedDate} {militaryToCivilian(event.eventtime)}</option>
-            );
-          })}
-        </select>
-        <div className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</div>
-        <div className='text-2xl font-bold text-zinc-700'>
+        <div className="mb-3">
+          <label htmlFor="event-select" className='text-sm text-zinc-500 ml-1 mb-2 block'>Choose Event</label>
+          <select
+            id="event-select"
+            className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7"
+            onChange={handleEventChange}
+          >
+            <option className="px-6 py-3">Select Event</option>
+            {(showInactiveEvents ? eventList : eventListActive).map((event) => (
+              <option key={event.eventinstanceid} value={event.eventid} className="px-6 py-3">
+                {event.eventname} - {event.eventid}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="time-select" className='text-sm text-zinc-500 ml-1 mb-2 block'>Choose Time</label>
+          <select id="time-select" className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
+            <option className="px-6 py-3">Select Time</option>
+            {availableTimesEvents.map((event) => {
+              const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+              eventDateObject.setDate(eventDateObject.getDate() + 1); // Add one day
+              const formattedDate = dayMonthDate(eventDateObject.toISOString().split('T')[0]);
+              return (
+                <option key={event.eventinstanceid} value={event.eventinstanceid} className="px-6 py-3">{formattedDate} {militaryToCivilian(event.eventtime)}</option>
+              );
+            })}
+          </select>
+        </div>
+        <h2 className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</h2>
+        <h3 className='text-2xl font-bold text-zinc-700'>
           {date && time ? `${date}, ${time}` : `${date}${time}`}
-        </div>
+        </h3>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
           {ticketsSold ? (
             <DataGrid
