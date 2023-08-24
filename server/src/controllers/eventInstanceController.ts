@@ -8,7 +8,6 @@ import {
   validateShowingOnUpdate,
   validateTicketRestrictionsOnUpdate,
 } from './eventInstanceController.service';
-import * as wasi from 'wasi';
 
 const prisma = new PrismaClient();
 
@@ -114,6 +113,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
     }
     if (error instanceof InvalidInputError) {
       res.status(error.code).json({error: error.message});
+      return;
     }
     res.status(500).json({error: 'Internal Server Error'});
   }

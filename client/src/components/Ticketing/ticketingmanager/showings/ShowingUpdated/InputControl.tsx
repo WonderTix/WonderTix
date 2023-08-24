@@ -44,7 +44,7 @@ export const InputControl = (props: InputControlProps) => {
       <div className={className?.inputGroupClass}>
         {
           type==='textarea'?
-          <textarea {...inputProps} />:
+            <textarea {...inputProps} />:
             <input {...inputProps}/>
         }
         <ErrorMessage
@@ -80,9 +80,9 @@ export const LineItem = (props: itemProps) => {
   const informationClass = !event?
     `text-sm pl-1 whitespace-nowrap min-[768px]:col-span-6`:
     `text-sm min-[450px]:text-md w-full rounded-lg ${
-    description?
-      'col-span-12':
-      'col-span-7 min-[450px]:col-span-12'
+      description?
+        'col-span-12':
+        'col-span-7 min-[450px]:col-span-12'
     }`;
   return (
     <div className={divClass}>

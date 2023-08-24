@@ -41,19 +41,17 @@ const InstancesPage = () => {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
        sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
-        <div className ={'grid grid-cols-2 mb-14'}>
+        <div className ={'flex flex-row justify-between w-full mb-14'}>
           <h1 className='col-span-2 min-[678px]:col-span-1 font-bold text-5xl bg-clip-text
            text-transparent bg-gradient-to-r from-sky-500
             to-indigo-500' >Select Event</h1>
-          <Button
-            variant={'contained'}
-            color={'success'}
-            startIcon={<AddIcon/>}
+          <button
             onClick={() => navigate(`/ticketing/showings/v2/0`)}
-            sx={{marginLeft: 'auto', padding: '0px 5px'}}
+            className={'bg-green-600 hover:bg-green-700 h-fit disabled:bg-gray-600 text-white p-3 font-bold rounded-xl flex flex-row'}
           >
+            <AddIcon/>
             Add Event
-          </Button>
+          </button>
         </div>
         <ul className='md:grid md:grid-cols-2 md:gap-8 sm:grid sm:grid-cols-1 sm:gap-4 mt-9'>
           {allEvents.map((event) => (

@@ -1,8 +1,6 @@
-/* eslint-disable max-len */
 import {useEvent} from './EventProvider';
 import React from 'react';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {Button} from '@mui/material';
 import {LineItem} from './InputControl';
 
 
@@ -10,7 +8,7 @@ interface EventGeneralViewProps {
   setEdit: (value)=>void;
 }
 export const EventGeneralView = (props:EventGeneralViewProps)=> {
-  const {eventData} = useEvent();
+  const {eventData, editing, setEditing} = useEvent();
   const {setEdit} = props;
 
   if (!eventData) {
@@ -37,23 +35,26 @@ export const EventGeneralView = (props:EventGeneralViewProps)=> {
           event
         />
       </div>
-      {/* Need to fix image sizing so that it does not exceed height requiremen */}
       <div className={'grid grid-cols-12 col-span-12 min-[450px]:col-span-6'}>
         <div className={'grid content-center col-span-9'}>
           <EventImage
-            className={'block mx-auto w-[50%] h-auto'}
+            className={'block mx-auto w-[50%] h-auto max-w-[200px]'}
             src={eventData.imageurl}
             title={'Event Image'}
           />
         </div>
         <div className={'grid content-center col-span-3'}>
-          <Button
-            color={'primary'}
-            variant={'contained'}
-            onClick={() => setEdit((edit) => !edit)}
+          <button
+            type={'button'}
+            disabled={editing}
+            onClick={async () => {
+              setEdit((edit) => !edit);
+              setEditing((edit)=> !edit);
+            }}
+            className={'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-bold p-2 px-4 rounded-xl'}
           >
-          Edit
-          </Button>
+            Edit
+          </button>
         </div>
       </div>
     </div>

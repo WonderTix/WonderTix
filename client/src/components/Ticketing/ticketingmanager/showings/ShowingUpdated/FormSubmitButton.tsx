@@ -7,7 +7,7 @@ export const FormSubmitButton = () => {
     isSubmitting, isValid,
     isValidating, dirty, status,
   } = useFormikContext();
-  const disabled = isSubmitting && !isValid && !dirty && isValidating;
+  const disabled = isSubmitting || !isValid || isValidating;
   const getButtonText = () => {
     if (isSubmitting) {
       return 'Saving';
@@ -16,16 +16,13 @@ export const FormSubmitButton = () => {
   };
   return (
     <>
-      <LoadingButton
-        variant={'contained'}
-        color={'success'}
-        loadingPosition={'start'}
-        type={'submit'}
+      <button
+        type='submit'
         disabled={disabled}
-        loading={isSubmitting}
+        className={'bg-green-600 hover:bg-green-700  disabled:bg-gray-600 text-white font-bold p-2 rounded-xl'}
       >
         {getButtonText()}
-      </LoadingButton>
+      </button>
     </>
   );
 };

@@ -55,15 +55,23 @@ const validateTicketQuantity = (totalseats: number, ticketsSold: number) => {
   };
 };
 export const validateDateAndTime = (date: string, time: string) => {
-  const toReturn = new Date(`${date} ${time}`);
-  console.log('time', `${date} ${time}`);
-  console.log(toReturn.toDateString(), toReturn.toLocaleTimeString());
+  const dateSplit = date.split('-');
+  const timeSplit = time.split(':');
+  if (dateSplit.length < 3 || timeSplit.length <2) {
+    throw new InvalidInputError(422, `Invalid Event Date and time`);
+  }
+
+  const toReturn = new Date(
+      `${dateSplit[0]}-${dateSplit[1]}-${dateSplit[2]}T${timeSplit[0]}:${timeSplit[1]}:00.000Z`,
+  );
+
+  console.log('here', toReturn, toReturn.getDate());
   if (isNaN(toReturn.getTime())) {
     throw new InvalidInputError(422, `Invalid Event Date and time`);
   }
   return {
-    eventdate: parseDateToInt(toReturn),
-    eventtime: toReturn,
+    eventdate: Number(dateSplit[0])*10000+Number(dateSplit[1])*100+Number(dateSplit[2]),
+    eventtime: toReturn.toISOString(),
   };
 };
 export const validateShowingOnUpdate = (oldEvent: any, newEvent: eventInstanceRequest) => {

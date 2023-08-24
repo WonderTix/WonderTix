@@ -11,13 +11,13 @@ import {EventPageV2} from './EventPageV2';
 interface EventContextType {
   eventID: number;
   setEventID: (value) => void;
+  setEventData: (value) => void;
   eventData;
   ticketTypes: any[];
   loading: boolean;
   token: string;
   showingData: Showing[];
   setReloadShowing: (value) => void;
-  setReloadEvent: (value) => void;
   editing: boolean;
   setEditing: (value) => void;
   setShowPopUp: (value) => void;
@@ -31,13 +31,13 @@ interface EventContextType {
 export const EventContext = React.createContext<EventContextType>({
   eventID: undefined,
   setEventID: undefined,
+  setEventData: undefined,
   eventData: undefined,
   ticketTypes: undefined,
   loading: true,
   token: undefined,
   showingData: undefined,
   setReloadShowing: undefined,
-  setReloadEvent: undefined,
   editing: undefined,
   setEditing: undefined,
   setShowPopUp: undefined,
@@ -47,6 +47,7 @@ export const EventContext = React.createContext<EventContextType>({
   success: undefined,
   setPopUpProps: undefined,
 });
+
 export const useEvent = () => {
   return useContext(EventContext);
 };
@@ -57,13 +58,13 @@ type EventProviderParams = {
 export const EventProvider = () => {
   const providedEventID = useParams<EventProviderParams>();
   const [eventID, setEventID] = useState(Number(providedEventID.eventid) ?? 0);
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(!eventID);
   const [showPopUp, setShowPopUp] = useState(false);
   const [message, setMessage] = useState('');
   const [title, setTitle]=useState('');
   const [success, setSuccess] = useState(false);
   const {
-    eventData, loading, ticketTypes, setReloadEvent,
+    setEventData, eventData, loading, ticketTypes,
   } = useFetchEventData(eventID);
   const {setReloadShowing, showingData} = useFetchShowingData(eventID);
   const {token} = useFetchToken();
@@ -72,6 +73,7 @@ export const EventProvider = () => {
     setTitle(title);
     setMessage(message);
     setSuccess(success);
+    setShowPopUp(true);
     return;
   };
 
@@ -81,15 +83,15 @@ export const EventProvider = () => {
         {
           eventID,
           setEventID,
+          eventData,
+          setEventData,
           editing,
           setEditing,
-          eventData,
           ticketTypes,
           loading,
           token,
           showingData,
           setReloadShowing,
-          setReloadEvent,
           setShowPopUp,
           showPopUp,
           message,

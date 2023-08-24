@@ -11,24 +11,26 @@ interface EventShowingContainerProps {
 
 export const EventShowingContainer = (props: EventShowingContainerProps) => {
   const {showing} = props;
-  const {setReloadShowing, token, setEditing,
-    setShowPopUp, setPopUpProps} = useEvent();
+  const {setReloadShowing, token, setEditing, setPopUpProps} = useEvent();
   const [edit, setEdit] = useState(false);
 
   const onSuccess = async (event) => {
-    console.log(event);
     setReloadShowing((reload) => !reload);
     setEdit((edit)=> !edit);
     setEditing((editing) => !editing);
     setPopUpProps('Success', 'Showing successfully updated', true);
-    setShowPopUp(true);
   };
 
   const onError = async (event) => {
-    console.log(event.error);
+    console.log(event);
     setPopUpProps('Failure', 'Showing update failed', false);
-    setShowPopUp(true);
   };
+
+  const onEditClick = async () => {
+    setEditing((edit) => !edit);
+    setEdit((edit) => !edit);
+  };
+
   return (
     <>
       {
@@ -37,31 +39,24 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
             initialValues={showing}
             onSubmit={
               createSubmitFunction('PUT',
-                  // eslint-disable-next-line max-len
-                  `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
-                  token,
-                  onSuccess,
-                  onError,
+                `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
+                token,
+                onSuccess,
+                onError,
               )
             }
             onDelete = {
               createDeleteFunction('DELETE',
-                  // eslint-disable-next-line max-len
-                  `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
-                  token,
-                  onSuccess,
-                  onError,
+                `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
+                token,
+                onSuccess,
+                onError,
               )
             }
-            onLeaveEdit = {
-              () => {
-                setEditing((edit) => !edit);
-                setEdit((edit) => !edit);
-              }
-            }
+            onLeaveEdit = {onEditClick}
           /> :
           <EventShowingView
-            setEdit={setEdit}
+            setEdit={onEditClick}
             showing={showing}
           />
       }

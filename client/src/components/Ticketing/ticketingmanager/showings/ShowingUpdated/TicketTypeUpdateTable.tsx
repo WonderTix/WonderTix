@@ -20,93 +20,94 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const [field] = useField('instanceTicketTypes');
 
   return (
-    <div className={'overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl border border-white mx-auto rounded-xl bg-white w-[100%]'}>
+    <div className={'overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl border-4 border-gray-300 mx-auto rounded-xl bg-white w-[100%] min-h-[100px]'}>
       <table className={'table table-fixed text-sm min-w-[100%]'}>
-        {/* eslint-disable-next-line max-len */}
-        <thead className={`text-left text-zinc-800 whitespace-nowrap bg-blue-200 ${showPopUp?'':'sticky'} top-0 `}>
-          <tr>
-            <th className={'px-2 py-1 border border-white'}>Admission Type</th>
-            <th className={'px-2 py-1 border border-white'}>Ticket Price</th>
-            <th className={'px-2 py-1 border border-white'}>Concession Price</th>
-            <th className={'px-2 py-1 border border-white'}>Quantity</th>
-            <th className={'px-2 py-1 border border-white'}>
+        <thead className={`text-left text-zinc-800 whitespace-nowrap bg-gray-300 ${showPopUp?'':'sticky z-50'} top-0`}>
+          <tr className={'rounded-xl'}>
+            <th className={'px-2 py-1 border-b border-r border-white'}>Admission Type</th>
+            <th className={'px-2 py-1 border-b border-l border-r border-white'}>Ticket Price</th>
+            <th className={'px-2 py-1 border-b border-l border-r border-white'}>Concession Price</th>
+            <th className={'px-2 py-1 border-b border-l border-r border-white'}>Quantity</th>
+            <th className={'px-2 py-1 border-b border-l border-white'}>
               <IconButton
                 size={'small'}
-                aria-label={'delete'}
+                aria-label={'add ticket type'}
                 onClick={() => arrayHelpers.insert(0, {typeID: 0, typeQuantity: 0})}
               >
-                <AddCircleIcon sx={{color: 'white'}} fontSize={'small'}/>
+                <AddCircleIcon sx={{color: 'black'}} fontSize={'small'}/>
               </IconButton>
             </th>
           </tr>
         </thead>
         <tbody className={'text-sm whitespace-nowrap text-zinc-800'}>
-          {field.value ?
-          field.value.map((id, index) => (
-            <tr key={eventInstanceID + index +
+          {field.value && field.value.length>0?
+            field.value.map((id, index) => (
+              <tr key={eventInstanceID + index +
               'ticketTypeRow'}>
-              <td
-                key={eventInstanceID + index + 'ticket type select'}
-                className={'px-2'}
-              >
-                <Field
-                  name={`${field.name}[${index}].typeID`}
-                  type={'select'}
-                  component={TicketTypeSelect}
-                  id={eventInstanceID}
-                  index={index}
-                />
-              </td>
-              <td
-                key={eventInstanceID + index + 'ticket type price'}
-                className={'px-2'}
-              >
-                {
-                  getTicketTypePrice(field.value[index].typeID,
-                      'price', ticketTypes)
-                }
-              </td>
-              <td
-                key={eventInstanceID + index +
-                  'ticket concession price'}
-                className={'px-2'}
-              >
-                {
-                  getTicketTypePrice(field.value[index].typeID,
-                      'concessions', ticketTypes)
-                }
-              </td>
-              <td
-                key={eventInstanceID + index +
-                  'ticket type quantity'}
-                className={'px-2'}
-              >
-                <Field
-                  name={`${field.name}[${index}].typeQuantity`}
-                  type={'number'}
-                  component={InputControl}
-                  hidden={true}
-                  label={'Ticket Quantity'}
-                  id={eventInstanceID}
-                  className={{
-                    controlClass: 'px-2',
-                    inputClass: 'w-[50px]',
-                    labelClass: '',
-                  }}
-                />
-              </td>
-              <td>
-                <IconButton
-                  size={'small'}
-                  aria-label={'delete'}
-                  onClick={() => arrayHelpers.remove(index)}
+                <td
+                  key={eventInstanceID + index + 'ticket type select'}
+                  className={'px-2'}
                 >
-                  <DeleteIcon fontSize={'small'}/>
-                </IconButton>
-              </td>
+                  <Field
+                    name={`${field.name}[${index}].typeID`}
+                    type={'select'}
+                    component={TicketTypeSelect}
+                    id={eventInstanceID}
+                    index={index}
+                  />
+                </td>
+                <td
+                  key={eventInstanceID + index + 'ticket type price'}
+                  className={'px-2'}
+                >
+                  {
+                    getTicketTypePrice(field.value[index].typeID,
+                      'price', ticketTypes)
+                  }
+                </td>
+                <td
+                  key={eventInstanceID + index +
+                  'ticket concession price'}
+                  className={'px-2'}
+                >
+                  {
+                    getTicketTypePrice(field.value[index].typeID,
+                      'concessions', ticketTypes)
+                  }
+                </td>
+                <td
+                  key={eventInstanceID + index +
+                  'ticket type quantity'}
+                  className={'px-2'}
+                >
+                  <Field
+                    name={`${field.name}[${index}].typeQuantity`}
+                    type={'number'}
+                    component={InputControl}
+                    hidden={true}
+                    label={'Ticket Quantity'}
+                    id={eventInstanceID}
+                    className={{
+                      controlClass: 'px-2',
+                      inputClass: 'w-[50px]',
+                      labelClass: '',
+                    }}
+                  />
+                </td>
+                <td>
+                  <IconButton
+                    size={'small'}
+                    aria-label={'delete ticket type'}
+                    onClick={() => arrayHelpers.remove(index)}
+                  >
+                    <DeleteIcon fontSize={'small'}/>
+                  </IconButton>
+                </td>
+              </tr>
+            )) :
+            <tr>
+              <td className='px-2 text-zinc-800 font-semibold min-[650px]:text-center' colSpan={4}>No Ticket Types Selected For Showing</td>
             </tr>
-          )) :
-          null
           }
         </tbody>
       </table>

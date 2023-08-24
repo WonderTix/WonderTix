@@ -20,8 +20,8 @@ export const TicketTypeSelect = (props: { field, id, index }) => {
         className={'w-full'}
       >
         {
-        ticketTypes ?
-          ticketTypes
+          ticketTypes ?
+            ticketTypes
               // .filter((ticketType) =>
               //   !currentTypes
               //       .value
@@ -30,13 +30,13 @@ export const TicketTypeSelect = (props: { field, id, index }) => {
               .map((ticketType: any) =>(
                 <option
                   key={id + index + ticketType.id +
-                  'ticket type description'}
+                    'ticket type description'}
                   value={Number.parseInt(ticketType.id)}
                 >
                   {ticketType.description}
                 </option>
               )) :
-          null
+            null
         }
       </select>
     </>

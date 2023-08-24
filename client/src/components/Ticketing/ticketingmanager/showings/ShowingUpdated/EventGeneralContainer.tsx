@@ -6,48 +6,51 @@ import {createDeleteFunction, createSubmitFunction} from './ShowingUtils';
 import {EventGeneralView} from './EventGeneralView';
 
 export const EventGeneralContainer = () => {
-  // eslint-disable-next-line max-len
-  const {eventID, setEventID, token, setReloadEvent, setShowPopUp, setPopUpProps} = useEvent();
+  const {eventID, setEventID, token, setEventData, setPopUpProps, setEditing} = useEvent();
   const navigate = useNavigate();
   const [edit, setEdit] = useState(!eventID);
 
-  const onSubmitSuccess = async (newEvent) => {
+  const onUpdateSuccess = async (newEvent) => {
     const res = await newEvent.json();
-    console.log(newEvent);
+    setEventData(res.data[0]);
     setEventID(res.data[0].eventid);
     setEdit((edit)=>!edit);
+    setEditing((edit)=>!edit);
     setPopUpProps(`Success`, 'Event update successful', true);
-    setShowPopUp(true);
-    setReloadEvent((reload) => !reload);
   };
 
+  const onCreateSuccess = async (newEvent) => {
+    const res = await newEvent.json();
+    navigate(`/ticketing/showings/v2/${res.data[0].eventid}`);
+    setEventData(res.data[0]);
+    setEventID(res.data[0].eventid);
+    setEdit((edit)=>!edit);
+    setEditing((edit)=>!edit);
+    setPopUpProps(`Success`, 'Event creation successful', true);
+  };
   const onSubmitError = (event) => {
-    console.log(event);
     setPopUpProps(`Failure`, 'Event update failed', false);
-    setShowPopUp(true);
   };
   const onDeleteSuccess= () => {
     navigate(`/ticketing/showings`);
   };
 
   const onDeleteError = (event) => {
-    console.log(event);
     setPopUpProps(`Failure`, 'Event cannot be marked inactive', false);
-    setShowPopUp(true);
   };
 
   const onSubmit = createSubmitFunction(eventID === 0 ? 'POST' : 'PUT',
-      `${process.env.REACT_APP_API_1_URL}/events`,
-      token,
-      onSubmitSuccess,
-      onSubmitError,
+    `${process.env.REACT_APP_API_1_URL}/events`,
+    token,
+    eventID?onUpdateSuccess:onCreateSuccess,
+    onSubmitError,
   );
 
   const onDelete = createDeleteFunction('DELETE',
-      `${process.env.REACT_APP_API_2_URL}/event/${eventID}`,
-      token,
-      onDeleteSuccess,
-      onDeleteError,
+    `${process.env.REACT_APP_API_2_URL}/event/${eventID}`,
+    token,
+    onDeleteSuccess,
+    onDeleteError,
   );
 
   return (
@@ -59,7 +62,10 @@ export const EventGeneralContainer = () => {
         <EventGeneralForm
           onSubmit={onSubmit}
           onDelete={onDelete}
-          onLeaveEdit={()=> setEdit((edit) => !edit)}
+          onLeaveEdit={()=> {
+            setEdit((edit) => !edit);
+            setEditing((edit) => !edit);
+          }}
         /> :
         <EventGeneralView
           setEdit={setEdit}

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {Showing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import {Field, FieldArray, Formik} from 'formik';
@@ -10,12 +9,11 @@ import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
 import {getTicketTypeArray} from './ShowingUtils';
-import {Button} from '@mui/material';
 
 interface EventShowingFormProps {
   initialValues?: Showing;
   onSubmit: (event, action) => void;
-  onDelete?: () => void;
+  onDelete?: (isDeleting) => void;
   onLeaveEdit?: ()=>void;
 }
 
@@ -35,7 +33,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues?
       getTicketTypeArray(initialValues.ticketTypeId,
-          initialValues.seatsForType):
+        initialValues.seatsForType):
       [],
     salestatus: true,
     totalseats: initialValues?initialValues.totalseats:0,
@@ -46,6 +44,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     inputClass: 'text-sm w-full rounded-lg p-1 border border-zinc-500',
     controlClass: 'grid grid-cols-2 pb-1 text-zinc-800',
   };
+
   return (
     <Formik
       initialValues={baseValues}
@@ -55,20 +54,20 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
       {({handleSubmit, values}) => (
         <form
           onSubmit={handleSubmit}
-          className={'bg-blue-100 rounded-xl p-2'}
+          className={'bg-gray-300 rounded-xl p-2'}
         >
-          <div className={'bg-blue-700 grid grid-cols-12 p-4 rounded-lg h-[500px] min-[1350px]:h-[250px] gap-2'}>
-            <div className={'col-span-12 min-[1350px]:col-span-4 rounded-lg p-2 w-[100%] bg-blue-200'}>
+          <div className={'bg-gray-100 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[250px] gap-2'}>
+            <div className={'col-span-12 min-[1350px]:col-span-4 rounded-lg p-2 w-[100%] bg-gray-300'}>
               <div className={'flex flex-col justify-center bg-white m-auto rounded-lg p-3 w-[100%] h-[100%]'}>
                 {
-              values.eventinstanceid?
-            <div className={'grid grid-cols-2 pb-1 text-sm'}>
-              <p className={'text-md font-bold'}>Showing Id</p>
-              <p className={'text-md p-1'}>
-                {values.eventinstanceid}
-              </p>
-            </div>:
-                null
+                  values.eventinstanceid?
+                    <div className={'grid grid-cols-2 pb-1 text-sm'}>
+                      <p className={'text-md font-bold'}>Showing Id</p>
+                      <p className={'text-md p-1'}>
+                        {values.eventinstanceid}
+                      </p>
+                    </div>:
+                    null
                 }
                 <Field
                   name='eventdate'
@@ -121,13 +120,12 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
               }
               {
                 onLeaveEdit?
-                  <Button
-                    variant={'contained'}
-                    color={'secondary'}
+                  <button
+                    className={'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl p-2 font-bold'}
                     onClick={onLeaveEdit}
                   >
-                    Return
-                  </Button>:
+                    Cancel
+                  </button>:
                   null
               }
             </div>
