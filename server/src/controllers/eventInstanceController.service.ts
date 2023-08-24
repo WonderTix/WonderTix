@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {eventInstanceRequest, instanceTicketType, ticketRestriction} from '../interfaces/Event';
 
 /* eslint-disable require-jsdoc */
