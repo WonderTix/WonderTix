@@ -15,6 +15,7 @@ const importSingleTickets = require('./src/seedSingleTickets');
 const importTicketRestrictions = require('./src/seedTicketRestrictions');
 const importTicketTypes = require('./src/seedTicketTypes');
 const importUsers = require('./src/seedUsers');
+const importTestInfo = require('./src/seedTestInfo');
 
 const prisma = new PrismaClient();
 
@@ -38,6 +39,7 @@ async function main() {
   await importSeasonTicketTypes(prisma);
   await importSeasonTickets(prisma);
   await importSingleTickets(prisma);
+  await importTestInfo(prisma);
 }
 
 main()

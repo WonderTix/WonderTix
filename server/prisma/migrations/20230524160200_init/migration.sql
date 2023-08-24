@@ -228,6 +228,12 @@ CREATE TABLE "tasknotes" (
 );
 
 -- CreateTable
+CREATE TABLE "testInfo" (
+    "id" SERIAL NOT NULL,
+		"token" TEXT
+);
+
+-- CreateTable
 CREATE TABLE "ticketrestrictions" (
     "ticketrestrictionsid" SERIAL NOT NULL,
     "eventinstanceid_fk" INTEGER NOT NULL,

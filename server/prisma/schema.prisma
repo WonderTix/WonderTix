@@ -274,6 +274,12 @@ model tasknotes {
   task       task?   @relation(fields: [taskid_fk], references: [taskid], onDelete: NoAction, onUpdate: NoAction)
 }
 
+/// contains the token for running automated tests
+model testInfo {
+	id    Int     @id @default(autoincrement())
+  token String  @unique
+}
+
 /// ticket restrictions for an event are used to limit the number of tickets that can be sold for a ticket type for an event instance
 model ticketrestrictions {
   ticketrestrictionsid Int            @id @default(autoincrement())

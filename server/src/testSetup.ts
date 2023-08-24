@@ -1,39 +1,69 @@
-import axios from 'axios';
-import {readFileSync, writeFileSync} from 'fs';
+import {PrismaClient} from '@prisma/client';
 
-const envFile = readFileSync('.env', 'utf8');
-const token = RegExp(/AUTH0_TOKEN=(.*)/).exec(envFile)?.[1] ?? null;
+const prisma = new PrismaClient();
+const axios = require('axios').default;
 
+let token = '';
+
+// Set up a token for the API tests
 beforeAll(async () => {
+  try {
+    const testInfo = await prisma.testInfo.findFirst({
+      where: {
+        id: 1,
+      },
+    });
+    if (testInfo) {
+      const tokenValue = testInfo.token;
+      token = tokenValue;
+    } else {
+      console.info('No token value found');
+    }
+  } catch (error) {
+    console.error('Error getting token value: ', error);
+  } finally {
+    await prisma.$disconnect();
+  }
   if (!token) {
-    console.log('Setting up Auth0 token for API tests');
-    const headers = {
-      'content-type': 'application/json',
+    console.info('Setting up Auth0 token for API tests');
+
+    const options = {
+      method: 'POST',
+      url: `${process.env.AUTH0_URL}/oauth/token`,
+      headers: {'content-type': 'application/json'},
+      data: {
+        client_id: process.env.AUTH0_SERVER_ID,
+        client_secret: process.env.AUTH0_SERVER_SECRET,
+        audience: process.env.AUTH0_AUDIENCE,
+        grant_type: 'client_credentials',
+      },
     };
-    const body = {
-      client_id: process.env.AUTH0_CLIENT_ID_TK,
-      client_secret: process.env.AUTH0_CLIENT_SECRET_TK,
-      audience: process.env.AUTH0_AUDIENCE,
-      grant_type: 'client_credentials',
-    };
-    const config = {
-      headers: headers,
-    };
-    const tokenRequest = axios.post(
-        `${process.env.AUTH0_URL}/oauth/token`,
-        body,
-        config,
+    token = await axios.request(options).then(
+        function(response: { data: { access_token: any } }) {
+          return response.data.access_token;
+        },
+        function(error: any) {
+          console.error(error);
+        },
     );
-    process.env.AUTH0_TOKEN = (await tokenRequest).data.access_token;
-    if (!token) {
-      writeFileSync(
-          '.env',
-          `AUTH0_TOKEN=${process.env.AUTH0_TOKEN}`,
-          {flag: 'w'},
-      );
+    const tokenRequest = await axios.request(options);
+    token = tokenRequest.data.access_token;
+    try {
+      await prisma.testInfo.update({
+        where: {
+          id: 1,
+        },
+        data: {
+          token: token,
+        },
+      });
+    } catch (error) {
+      console.error('Error updating token value: ', error);
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
-    console.log('Auth0 token already set');
+    console.info('Auth0 token already set');
   }
 });
 
