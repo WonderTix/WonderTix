@@ -145,11 +145,25 @@ After the system is up and running again, you can run the tests by typing the fo
 cd server
 ```
 
-Followed by:
+Copy .env.dist to .env (this file is different than the one in the root directory, this is for the server only):
+
+```bash
+cp .env.dist .env
+```
+
+Edit the DATABASE_URL in .env:
+
+```plaintext
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/wondertix?schema=public
+```
+
+Then finally, run the tests:
 
 ```bash
 npm run test
 ```
+
+If all goes well, you should see the Jest tests start and complete successfully.
 
 The reason that you need to run `docker-compose up -d` prior to running `npm run test` is because you need the database to be running in order for the test setup to look for and retrieve the oauth token. If you do not run the `docker-compose up -d` command, the tests will fail because it cannot connect to the database.
 

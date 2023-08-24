@@ -230,7 +230,9 @@ CREATE TABLE "tasknotes" (
 -- CreateTable
 CREATE TABLE "testInfo" (
     "id" SERIAL NOT NULL,
-		"token" TEXT
+	"token" TEXT,
+
+	CONSTRAINT "testInfo_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable

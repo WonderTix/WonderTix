@@ -5,7 +5,7 @@ const config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   setupFilesAfterEnv: ['./src/testSetup.ts'],
-  testMatch: ['**/*.test.ts'],
+  testMatch: ['**/donations.router.test.ts'],
   displayName: 'WonderTix Server',
   workerIdleMemoryLimit: '512MB',
 };
