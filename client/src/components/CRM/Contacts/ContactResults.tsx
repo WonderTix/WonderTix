@@ -2,7 +2,6 @@
 
 import React from 'react';
 import {useParams} from 'react-router-dom';
-// import { useInput } from './hooks/input-hook';
 import {useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
@@ -33,13 +32,13 @@ const ContactResults = ({
       scope: 'admin',
     });
     const response = await fetch(process.env.REACT_APP_API_1_URL + `/contacts/${showId}`,
-        {
-          credentials: 'include',
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      {
+        credentials: 'include',
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     return response.json();
   }
   // What is this?
@@ -58,13 +57,13 @@ const ContactResults = ({
   } = data;
   return (
     <div className='flec flex-row w-full bg-white
-     shadow-lg border border-zinc-300 rounded-lg'>
+     shadow-lg border border-zinc-300 rounded-lg mb-5'>
       <div className='flex flex-col mt-2 p-5 '>
         <div className='flex flex-row gap-3 text-3xl items-center border-b pb-5 font-bold text-zinc-700'>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
           </svg>
-          <div >Customer Information</div>
+          <div>Customer Information</div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-5 w-full'>
           <div className='font-semibold'>
@@ -124,7 +123,7 @@ const ContactResults = ({
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <div className='font-semibold'>
-            Seating Accomdation:
+            Seating Accommodation:
           </div>
           <div>
             { '' + seatingaccom }

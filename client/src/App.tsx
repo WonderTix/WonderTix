@@ -1,3 +1,6 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
+
 /* CRM */
 import React from 'react';
 import {Routes, Route} from 'react-router-dom';
@@ -13,7 +16,8 @@ import CreateTask from './components/CRM/Tasks/CreateTask';
 import ManageAccountsmain from './components/CRM/Accounts/ManageUsers/ManageAccountsmain';
 import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchmain';
 /* Donor Management */
-import Dashboard from './components/DonorManagement/Dashboard';
+import DmDashmain from './components/DonorManagement/DmDashmain';
+import DonorReporting from './components/DonorManagement/Reporting/DonorReporting';
 
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
@@ -80,7 +84,8 @@ const App = () => {
         />
         <Route path="/admin/tasks/edit" element={<ProtectedRoute component={TasksEditMain}/>} />
         <Route path="/admin/tasks/accountInformation" element={<ProtectedRoute component={TasksMain}/>} />
-        <Route path ="/admin/donor" element ={<ProtectedRoute component ={Dashboard}/>} />
+        <Route path ="/admin/donor" element ={<ProtectedRoute component ={DmDashmain}/>} />
+        <Route path = "/admin/donor/reporting" element ={<ProtectedRoute component ={DonorReporting}/>} />
 
         <Route path="/ticketing" element={<ProtectedRoute component={Udashmain} />} />
         <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
