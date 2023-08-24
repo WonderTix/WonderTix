@@ -276,8 +276,8 @@ model tasknotes {
 
 /// contains the token for running automated tests
 model testInfo {
-	id    Int     @id @default(autoincrement())
-  token String  @unique
+  id    Int    @id @default(autoincrement())
+  token String @unique @db.VarChar(255)
 }
 
 /// ticket restrictions for an event are used to limit the number of tickets that can be sold for a ticket type for an event instance
