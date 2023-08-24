@@ -17,6 +17,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 import https from 'https';
+import http from 'http';
 import fs from 'fs';
 import 'reflect-metadata';
 import {accountsRouter} from './api/accounts/accounts.router';
@@ -507,7 +508,23 @@ const openApiSpec = swaggerJsdoc({
 });
 
 const createServer = async () => {
-  dotenv.config({path: path.join(__dirname, '../../.env')});
+  let envPath;
+  if (process.env.ENV === 'local') {
+      envPath = path.join(__dirname, '../../.env');
+      // console.log("local")
+      // console.log(process.env)
+  } else if (process.env.ENV === 'dev') {
+      envPath = path.join(__dirname, '../.env');
+      // console.log("dev")
+      // console.log(process.env)
+  } else {
+      throw new Error('Unknown ENV value');
+  }
+  // console.log('process.env in server.ts');
+  // console.log(process.env);
+
+  dotenv.config({ path: envPath });
+
 
   const app = express();
 
@@ -566,16 +583,26 @@ const createServer = async () => {
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
   app.get('/', (_req, res) => res.redirect('/api/1/docs'));
 
-  return https
-      .createServer(
-          {
-            key: fs.readFileSync('/usr/app/localhost-key.pem'),
-            cert: fs.readFileSync('/usr/app/localhost.pem'),
-          }, app);
+  let server;
+
+  console.log("process.env")
+  console.log(process.env)
+
+  if (process.env.ENV === 'local') {
+    const privateKey = fs.readFileSync('localhost-key.pem', 'utf8');
+    const certificate = fs.readFileSync('localhost.pem', 'utf8');
+    const credentials = { key: privateKey, cert: certificate };
+    server = https.createServer(credentials, app);
+  } else {
+    server = http.createServer(app);
+  }
+  
+  return server; 
+
 };
 
 createServer().then((server) => {
-  const port = 8000;
+  const port = process.env.PORT || 8000;
   server.listen(port);
   console.log(`Listening on port ${port}`);
 })
