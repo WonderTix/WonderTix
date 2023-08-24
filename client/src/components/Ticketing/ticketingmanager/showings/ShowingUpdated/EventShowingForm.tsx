@@ -14,29 +14,30 @@ interface EventShowingFormProps {
   initialValues?: Showing;
   onSubmit: (event, action) => void;
   onDelete?: (isDeleting) => void;
-  onLeaveEdit?: ()=>void;
+  onLeaveEdit?: () => void;
 }
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
   const {initialValues, onSubmit, onDelete, onLeaveEdit} = props;
   const {eventID} = useEvent();
 
-
   const baseValues = {
-    availableseats: initialValues?initialValues.availableseats:0,
-    eventdate: initialValues?toDateStringFormat(initialValues.eventdate):'',
-    eventid_fk: initialValues?initialValues.eventid_fk:eventID,
-    eventinstanceid: initialValues?initialValues.eventinstanceid:0,
-    eventtime: initialValues?initialValues.eventtime.slice(0, 8):'',
+    availableseats: initialValues ? initialValues.availableseats : 0,
+    eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
+    eventid_fk: initialValues ? initialValues.eventid_fk : eventID,
+    eventinstanceid: initialValues ? initialValues.eventinstanceid : 0,
+    eventtime: initialValues ? initialValues.eventtime.slice(0, 8) : '',
     ispreview: false,
     defaulttickettype: 1,
     purchaseuri: 'http://null.com',
-    instanceTicketTypes: initialValues?
-      getTicketTypeArray(initialValues.ticketTypeId,
-        initialValues.seatsForType):
-      [],
+    instanceTicketTypes: initialValues
+      ? getTicketTypeArray(
+        initialValues.ticketTypeId,
+        initialValues.seatsForType,
+      )
+      : [],
     salestatus: true,
-    totalseats: initialValues?initialValues.totalseats:0,
+    totalseats: initialValues ? initialValues.totalseats : 0,
   };
 
   const inputControlClassName = {
@@ -52,23 +53,28 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
       onSubmit={onSubmit}
     >
       {({handleSubmit, values}) => (
-        <form
-          onSubmit={handleSubmit}
-          className={'bg-gray-300 rounded-xl p-2'}
-        >
-          <div className={'bg-gray-100 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[250px] gap-2'}>
-            <div className={'col-span-12 min-[1350px]:col-span-4 rounded-lg p-2 w-[100%] bg-gray-300'}>
-              <div className={'flex flex-col justify-center bg-white m-auto rounded-lg p-3 w-[100%] h-[100%]'}>
-                {
-                  values.eventinstanceid?
-                    <div className={'grid grid-cols-2 pb-1 text-sm'}>
-                      <p className={'text-md font-bold'}>Showing Id</p>
-                      <p className={'text-md p-1'}>
-                        {values.eventinstanceid}
-                      </p>
-                    </div>:
-                    null
+        <form onSubmit={handleSubmit} className={'bg-gray-300 rounded-xl p-2'}>
+          <div
+            className={
+              'bg-gray-100 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[250px] gap-2'
+            }
+          >
+            <div
+              className={
+                'col-span-12 min-[1350px]:col-span-4 rounded-lg p-2 w-[100%] bg-gray-300'
+              }
+            >
+              <div
+                className={
+                  'flex flex-col justify-center bg-white m-auto rounded-lg p-3 w-[100%] h-[100%]'
                 }
+              >
+                {values.eventinstanceid ? (
+                  <div className={'grid grid-cols-2 pb-1 text-sm'}>
+                    <p className={'text-md font-bold'}>Showing Id</p>
+                    <p className={'text-md p-1'}>{values.eventinstanceid}</p>
+                  </div>
+                ) : null}
                 <Field
                   name='eventdate'
                   component={InputControl}
@@ -96,38 +102,41 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 <div className={'grid grid-cols-2 text-zinc-800'}>
                   <p className={'text-sm font-bold'}>Available Seats</p>
                   <p className={'text-sm p-1'}>
-                    {values.eventinstanceid?values.availableseats:values.totalseats}
+                    {values.eventinstanceid
+                      ? values.availableseats
+                      : values.totalseats}
                   </p>
                 </div>
               </div>
             </div>
             <FieldArray
               name={'instanceTicketTypes'}
-              render={(arrayHelpers) =>{
+              render={(arrayHelpers) => {
                 return (
                   <TicketTypeUpdateTable
                     arrayHelpers={arrayHelpers}
                     eventInstanceID={values.eventinstanceid}
                   />
                 );
-              }}/>
-            <div className={'grid content-center grid-cols-3 min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'}>
+              }}
+            />
+            <div
+              className={
+                'grid content-center grid-cols-3 min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
+              }
+            >
               <FormSubmitButton />
-              {
-                onDelete?
-                  <FormDeleteButton onDelete={onDelete} />:
-                  null
-              }
-              {
-                onLeaveEdit?
-                  <button
-                    className={'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl p-2 font-bold'}
-                    onClick={onLeaveEdit}
-                  >
-                    Cancel
-                  </button>:
-                  null
-              }
+              {onDelete ? <FormDeleteButton onDelete={onDelete} /> : null}
+              {onLeaveEdit ? (
+                <button
+                  className={
+                    'border border-blue-900 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl p-2 font-bold'
+                  }
+                  onClick={onLeaveEdit}
+                >
+                  Cancel
+                </button>
+              ) : null}
             </div>
           </div>
         </form>
@@ -135,5 +144,3 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     </Formik>
   );
 };
-
-

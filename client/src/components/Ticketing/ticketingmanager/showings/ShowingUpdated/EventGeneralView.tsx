@@ -1,13 +1,13 @@
 import {useEvent} from './EventProvider';
 import React from 'react';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {LineItem} from './InputControl';
 
+import {LineItem} from './LineItem';
 
 interface EventGeneralViewProps {
-  setEdit: (value)=>void;
+  setEdit: (value) => void;
 }
-export const EventGeneralView = (props:EventGeneralViewProps)=> {
+export const EventGeneralView = (props: EventGeneralViewProps) => {
   const {eventData, editing, setEditing} = useEvent();
   const {setEdit} = props;
 
@@ -18,11 +18,7 @@ export const EventGeneralView = (props:EventGeneralViewProps)=> {
   return (
     <div className={'grid grid-cols-12'}>
       <div className={'flex flex-col col-span-12 min-[450px]:col-span-6'}>
-        <LineItem
-          label={'Event ID'}
-          information={eventData.eventid}
-          event
-        />
+        <LineItem label={'Event ID'} information={eventData.eventid} event />
         <LineItem
           label={'Event Name'}
           information={eventData.eventname}
@@ -49,9 +45,11 @@ export const EventGeneralView = (props:EventGeneralViewProps)=> {
             disabled={editing}
             onClick={async () => {
               setEdit((edit) => !edit);
-              setEditing((edit)=> !edit);
+              setEditing((edit) => !edit);
             }}
-            className={'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-bold p-2 px-4 rounded-xl'}
+            className={
+              'border border-blue-900 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-bold p-2 px-4 rounded-xl'
+            }
           >
             Edit
           </button>
@@ -60,4 +58,3 @@ export const EventGeneralView = (props:EventGeneralViewProps)=> {
     </div>
   );
 };
-

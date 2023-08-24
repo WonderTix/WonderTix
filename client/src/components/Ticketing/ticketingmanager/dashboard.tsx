@@ -56,30 +56,8 @@ const Dashboard = (): ReactElement => {
               </svg>
             )}
             size="lg"
-            title="Showings"
+            title="Events"
             route="/ticketing/showings"
-          />
-          <DashboardLink
-            gradientClasses="bg-gradient-to-r from-violet-500 to-fuchsia-500"
-            icon={(
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            )}
-            size="md"
-            title="Add New Events"
-            route="/ticketing/addevent"
           />
           <DashboardLink
             gradientClasses="bg-gradient-to-r from-green-500 to-zinc-500"

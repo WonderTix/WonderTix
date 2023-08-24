@@ -1,6 +1,4 @@
-/* eslint-disable max-len */
 import {eventInstanceRequest, instanceTicketType, ticketRestriction} from '../interfaces/Event';
-import {parseDateToInt} from '../api/db';
 
 /* eslint-disable require-jsdoc */
 export class InvalidInputError extends Error {
@@ -12,6 +10,8 @@ export class InvalidInputError extends Error {
     this.name = 'InvalidInputError';
   }
 }
+
+
 export const validateTicketRestrictionsOnUpdate = (oldRestrictions: ticketRestriction[], newRestrictions: instanceTicketType[], totalseats: number) => {
   if (newRestrictions.find((type) => type.typeQuantity > totalseats)) {
     throw new InvalidInputError(422, `Individual Ticket Type quantity can not exceed Total Ticket quantity`);
@@ -46,8 +46,7 @@ export const validateTicketRestrictionsOnUpdate = (oldRestrictions: ticketRestri
 const validateTicketQuantity = (totalseats: number, ticketsSold: number) => {
   if (!(totalseats >= ticketsSold)) {
     throw new InvalidInputError(422, `Can not reduce total ticket quantity 
-        below quantity of tickets sold to date 
-        ${ticketsSold}`);
+        below ${ticketsSold} tickets sold to date`);
   }
   return {
     totalseats,
@@ -65,7 +64,6 @@ export const validateDateAndTime = (date: string, time: string) => {
       `${dateSplit[0]}-${dateSplit[1]}-${dateSplit[2]}T${timeSplit[0]}:${timeSplit[1]}:00.000Z`,
   );
 
-  console.log('here', toReturn, toReturn.getDate());
   if (isNaN(toReturn.getTime())) {
     throw new InvalidInputError(422, `Invalid Event Date and time`);
   }

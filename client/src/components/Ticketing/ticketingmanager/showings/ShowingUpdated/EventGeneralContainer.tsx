@@ -6,7 +6,8 @@ import {createDeleteFunction, createSubmitFunction} from './ShowingUtils';
 import {EventGeneralView} from './EventGeneralView';
 
 export const EventGeneralContainer = () => {
-  const {eventID, setEventID, token, setEventData, setPopUpProps, setEditing} = useEvent();
+  const {eventID, setEventID, token, setEventData, setPopUpProps, setEditing} =
+    useEvent();
   const navigate = useNavigate();
   const [edit, setEdit] = useState(!eventID);
 
@@ -14,8 +15,8 @@ export const EventGeneralContainer = () => {
     const res = await newEvent.json();
     setEventData(res.data[0]);
     setEventID(res.data[0].eventid);
-    setEdit((edit)=>!edit);
-    setEditing((edit)=>!edit);
+    setEdit((edit) => !edit);
+    setEditing((edit) => !edit);
     setPopUpProps(`Success`, 'Event update successful', true);
   };
 
@@ -24,29 +25,41 @@ export const EventGeneralContainer = () => {
     navigate(`/ticketing/showings/v2/${res.data[0].eventid}`);
     setEventData(res.data[0]);
     setEventID(res.data[0].eventid);
-    setEdit((edit)=>!edit);
-    setEditing((edit)=>!edit);
+    setEdit((edit) => !edit);
+    setEditing((edit) => !edit);
     setPopUpProps(`Success`, 'Event creation successful', true);
   };
-  const onSubmitError = (event) => {
-    setPopUpProps(`Failure`, 'Event update failed', false);
+  const onSubmitError = async (event) => {
+    try {
+      const res = event.json();
+      setPopUpProps(`Failure`, res.error, false);
+    } catch (error) {
+      setPopUpProps(`Failure`, 'Event update failed', false);
+    }
   };
-  const onDeleteSuccess= () => {
+  const onDeleteSuccess = async () => {
     navigate(`/ticketing/showings`);
   };
 
-  const onDeleteError = (event) => {
-    setPopUpProps(`Failure`, 'Event cannot be marked inactive', false);
+  const onDeleteError = async (event) => {
+    try {
+      const res = event.json();
+      setPopUpProps(`Failure`, res.error, false);
+    } catch (error) {
+      setPopUpProps(`Failure`, 'Event cannot be marked inactive', false);
+    }
   };
 
-  const onSubmit = createSubmitFunction(eventID === 0 ? 'POST' : 'PUT',
+  const onSubmit = createSubmitFunction(
+    eventID === 0 ? 'POST' : 'PUT',
     `${process.env.REACT_APP_API_1_URL}/events`,
     token,
-    eventID?onUpdateSuccess:onCreateSuccess,
+    eventID ? onUpdateSuccess : onCreateSuccess,
     onSubmitError,
   );
 
-  const onDelete = createDeleteFunction('DELETE',
+  const onDelete = createDeleteFunction(
+    'DELETE',
     `${process.env.REACT_APP_API_2_URL}/event/${eventID}`,
     token,
     onDeleteSuccess,
@@ -56,21 +69,20 @@ export const EventGeneralContainer = () => {
   return (
     <div className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'}>
       <h2 className={'text-center text-3xl font-semibold mb-5 text-zinc-800'}>
-        {eventID? 'Event Information' : 'Add Event'}
+        {eventID ? 'Event Information' : 'Add Event'}
       </h2>
-      {edit ?
+      {edit ? (
         <EventGeneralForm
           onSubmit={onSubmit}
           onDelete={onDelete}
-          onLeaveEdit={()=> {
+          onLeaveEdit={() => {
             setEdit((edit) => !edit);
             setEditing((edit) => !edit);
           }}
-        /> :
-        <EventGeneralView
-          setEdit={setEdit}
         />
-      }
+      ) : (
+        <EventGeneralView setEdit={setEdit} />
+      )}
     </div>
   );
 };

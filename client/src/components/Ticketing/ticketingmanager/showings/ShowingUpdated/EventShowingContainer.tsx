@@ -16,14 +16,18 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
 
   const onSuccess = async (event) => {
     setReloadShowing((reload) => !reload);
-    setEdit((edit)=> !edit);
+    setEdit((edit) => !edit);
     setEditing((editing) => !editing);
     setPopUpProps('Success', 'Showing successfully updated', true);
   };
 
   const onError = async (event) => {
-    console.log(event);
-    setPopUpProps('Failure', 'Showing update failed', false);
+    try {
+      const res = await event.json();
+      setPopUpProps('Failure', res.error, false);
+    } catch (error) {
+      setPopUpProps('Failure', 'Showing update failed', false);
+    }
   };
 
   const onEditClick = async () => {
@@ -33,33 +37,28 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
 
   return (
     <>
-      {
-        edit ?
-          <EventShowingForm
-            initialValues={showing}
-            onSubmit={
-              createSubmitFunction('PUT',
-                `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
-                token,
-                onSuccess,
-                onError,
-              )
-            }
-            onDelete = {
-              createDeleteFunction('DELETE',
-                `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
-                token,
-                onSuccess,
-                onError,
-              )
-            }
-            onLeaveEdit = {onEditClick}
-          /> :
-          <EventShowingView
-            setEdit={onEditClick}
-            showing={showing}
-          />
-      }
+      {edit ? (
+        <EventShowingForm
+          initialValues={showing}
+          onSubmit={createSubmitFunction(
+            'PUT',
+            `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
+            token,
+            onSuccess,
+            onError,
+          )}
+          onDelete={createDeleteFunction(
+            'DELETE',
+            `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
+            token,
+            onSuccess,
+            onError,
+          )}
+          onLeaveEdit={onEditClick}
+        />
+      ) : (
+        <EventShowingView setEdit={onEditClick} showing={showing} />
+      )}
     </>
   );
 };

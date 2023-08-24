@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {useEffect, useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
@@ -7,7 +6,13 @@ export interface eventInstanceTicketType {
   typeID: number | string;
   typeQuantity: number | string;
 }
-export const createSubmitFunction = (method: string, url: string, token: string, onSuccess?, onError?) => {
+export const createSubmitFunction = (
+  method: string,
+  url: string,
+  token: string,
+  onSuccess?,
+  onError?,
+) => {
   return async (event, actions) => {
     actions.setStatus('Submitting...');
     try {
@@ -36,7 +41,13 @@ export const createSubmitFunction = (method: string, url: string, token: string,
   };
 };
 // eslint-disable-next-line max-len
-export const createDeleteFunction = (method: string, url: string, token: string, onSuccess?, onError?) => {
+export const createDeleteFunction = (
+  method: string,
+  url: string,
+  token: string,
+  onSuccess?,
+  onError?,
+) => {
   return async (setIsDeleting) => {
     try {
       const res = await fetch(url, {
@@ -66,8 +77,9 @@ export const createDeleteFunction = (method: string, url: string, token: string,
 
 export const fetchTicketTypes = async (setTicketTypes) => {
   try {
-    const res = await fetch(process.env.REACT_APP_API_1_URL +
-    '/tickets/allTypes');
+    const res = await fetch(
+      process.env.REACT_APP_API_1_URL + '/tickets/allTypes',
+    );
     if (!res.ok) {
       throw new Error('Unable to fetch ticket types');
     }
@@ -89,7 +101,8 @@ export const getEventData = async (eventID, setEventData) => {
   await fetch(process.env.REACT_APP_API_1_URL + '/events/' + eventID)
     .then((response) => {
       return response.json();
-    }).then((data) => {
+    })
+    .then((data) => {
       eventData.eventname = data.data[0].title;
       eventData.eventdescription = data.data[0].description;
       eventData.active = data.data[0].active;
@@ -122,10 +135,12 @@ export const useFetchEventData = (eventID: number) => {
 
 export const fetchToken = async (getAccessTokenSilently, setToken) => {
   try {
-    setToken(await getAccessTokenSilently({
-      audience: process.env.REACT_APP_ROOT_URL,
-      scope: 'admin',
-    }));
+    setToken(
+      await getAccessTokenSilently({
+        audience: process.env.REACT_APP_ROOT_URL,
+        scope: 'admin',
+      }),
+    );
   } catch (error) {
     console.log(error);
   }
@@ -153,7 +168,9 @@ export const useFetchShowingData = (eventID: number) => {
 };
 export const getShowingData = async (eventID, setShowingData) => {
   try {
-    const showingRes = await fetch(`${process.env.REACT_APP_API_1_URL}/events/instances/${eventID}`);
+    const showingRes = await fetch(
+      `${process.env.REACT_APP_API_1_URL}/events/instances/${eventID}`,
+    );
 
     if (!showingRes.ok) {
       throw new Error('Unable to fetch showings');
@@ -171,7 +188,8 @@ export const getShowingData = async (eventID, setShowingData) => {
       }
       const ticketRestrictionRes = await fetch(
         `${process.env.REACT_APP_API_1_URL}/tickets/restrictions/
-          ${showing.eventinstanceid}`);
+          ${showing.eventinstanceid}`,
+      );
       const ticketRestrictionData = await ticketRestrictionRes.json();
       for (const item of ticketRestrictionData.data) {
         showing.seatsForType.push(item.ticketlimit);
@@ -184,18 +202,18 @@ export const getShowingData = async (eventID, setShowingData) => {
   }
 };
 
-
-export const getTicketTypeArray =
-  (types: (string | number)[], count: (string | number)[]):eventInstanceTicketType[] => {
-    if (!types || !count || count.length != types.length) return [];
-    return types
-      .map((id, index) => {
-        return {
-          typeID: id,
-          typeQuantity: count[index],
-        };
-      });
-  };
+export const getTicketTypeArray = (
+  types: (string | number)[],
+  count: (string | number)[],
+): eventInstanceTicketType[] => {
+  if (!types || !count || count.length != types.length) return [];
+  return types.map((id, index) => {
+    return {
+      typeID: id,
+      typeQuantity: count[index],
+    };
+  });
+};
 
 export const getTicketTypePrice = (id, priceType, ticketTypes) => {
   if (id === undefined || id < 0 || id >= ticketTypes.length) return 0;

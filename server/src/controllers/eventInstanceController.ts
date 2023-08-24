@@ -50,13 +50,22 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
   try {
     const eventToCreate: eventInstanceRequest = req.body;
 
-    if (eventToCreate.instanceTicketTypes.find((type) => type.typeQuantity>eventToCreate.totalseats)) {
-      throw new Error(`No individual ticket type quantity cane exceed total ticket quantity`);
+    if (
+      eventToCreate.instanceTicketTypes.find(
+          (type) => type.typeQuantity > eventToCreate.totalseats,
+      )
+    ) {
+      throw new Error(
+          `No individual ticket type quantity can exceed total ticket quantity`,
+      );
     }
     const eventInstance = await prisma.eventinstances.create({
       data: {
         eventid_fk: eventToCreate.eventid_fk,
-        ...validateDateAndTime(eventToCreate.eventdate, eventToCreate.eventtime),
+        ...validateDateAndTime(
+            eventToCreate.eventdate,
+            eventToCreate.eventtime,
+        ),
         salestatus: eventToCreate.salestatus,
         totalseats: eventToCreate.totalseats,
         availableseats: eventToCreate.totalseats,
@@ -64,19 +73,23 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
         ispreview: eventToCreate.ispreview,
         defaulttickettype: eventToCreate.defaulttickettype,
         eventtickets: {
-          create: [...eventToCreate.instanceTicketTypes.map((type) =>
-            Array(type.typeQuantity).fill({
-              tickettypeid_fk: Number(type.typeID),
+          create: [
+            ...eventToCreate.instanceTicketTypes
+                .map((type) =>
+                  Array(type.typeQuantity).fill({
+                    tickettypeid_fk: Number(type.typeID),
+                    purchased: false,
+                    redeemed: false,
+                    donated: false,
+                  }),
+                )
+                .flat(),
+            ...Array(eventToCreate.totalseats).fill({
+              tickettypeid_fk: 1,
               purchased: false,
               redeemed: false,
               donated: false,
-            })).flat(),
-          ...Array(eventToCreate.totalseats).fill({
-            tickettypeid_fk: 1,
-            purchased: false,
-            redeemed: false,
-            donated: false,
-          }),
+            }),
           ],
         },
         ticketrestrictions: {
@@ -95,27 +108,27 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json(eventInstance);
+    res.status(201).send(eventInstance);
 
     return;
   } catch (error) {
     console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
 
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
 
       return;
     }
     if (error instanceof InvalidInputError) {
-      res.status(error.code).json({error: error.message});
+      res.status(error.code).send({error: error.message});
       return;
     }
-    res.status(500).json({error: 'Internal Server Error'});
+    res.status(500).send({error: 'Internal Server Error'});
   }
 });
 
@@ -183,29 +196,29 @@ eventInstanceController.get('/', async (req: Request, res: Response) => {
       const eventInstances = await prisma.eventinstances.findMany({
         where: filters,
       });
-      res.status(200).json(eventInstances);
+      res.status(200).send(eventInstances);
 
       return;
     }
 
     const eventInstances = await prisma.eventinstances.findMany();
-    res.status(200).json(eventInstances);
+    res.status(200).send(eventInstances);
 
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
 
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
 
       return;
     }
 
-    res.status(500).json({error: 'Internal Server Error'});
+    res.status(500).send({error: 'Internal Server Error'});
   }
 });
 
@@ -245,7 +258,7 @@ eventInstanceController.get('/:id', async (req: Request, res: Response) => {
       },
     });
     if (!eventInstanceExists) {
-      res.status(404).json({error: 'event instance not found'});
+      res.status(404).send({error: 'event instance not found'});
 
       return;
     }
@@ -254,23 +267,23 @@ eventInstanceController.get('/:id', async (req: Request, res: Response) => {
         eventinstanceid: Number(id),
       },
     });
-    res.status(200).json(eventInstance);
+    res.status(200).send(eventInstance);
 
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
 
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
 
       return;
     }
 
-    res.status(500).json({error: 'Internal Server Error'});
+    res.status(500).send({error: 'Internal Server Error'});
   }
 });
 
@@ -310,7 +323,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const requestEventInstance: eventInstanceRequest = req.body;
-    const eventInstanceToUpdate= await prisma.eventinstances.findUnique({
+    const eventInstanceToUpdate = await prisma.eventinstances.findUnique({
       where: {
         eventinstanceid: Number(id),
       },
@@ -324,12 +337,17 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
       throw new Error(`Showing ${id} does not exist`);
     }
 
-    const updatedEventInstance = validateShowingOnUpdate(eventInstanceToUpdate, requestEventInstance);
+    const updatedEventInstance = validateShowingOnUpdate(
+        eventInstanceToUpdate,
+        requestEventInstance,
+    );
     // eslint-disable-next-line max-len
-    const {restrictionsToAdd, restrictionsToRemove, restrictionsToUpdate} = validateTicketRestrictionsOnUpdate(
-        eventInstanceToUpdate.ticketrestrictions,
-        requestEventInstance.instanceTicketTypes,
-        requestEventInstance.totalseats);
+    const {restrictionsToAdd, restrictionsToRemove, restrictionsToUpdate} =
+      validateTicketRestrictionsOnUpdate(
+          eventInstanceToUpdate.ticketrestrictions,
+          requestEventInstance.instanceTicketTypes,
+          requestEventInstance.totalseats,
+      );
 
     //  update showing
     await prisma.eventinstances.update({
@@ -341,43 +359,47 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
       },
     });
     //  update ticket restrictions
-    await prisma.$transaction(
-        [...restrictionsToRemove.map((restriction) =>
-          prisma.ticketrestrictions.delete({
-            where: {
-              ticketrestrictionsid: Number(restriction.ticketrestrictionsid),
-            },
-          })), ...restrictionsToUpdate.map((restriction) =>
-          prisma.ticketrestrictions.update({
-            where: {
-              ticketrestrictionsid: restriction.ticketrestrictionsid,
-            },
-            data: {
-              ticketlimit: Number(restriction.ticketlimit),
-            },
-          })), ...restrictionsToAdd.map((restriction) =>
-          prisma.ticketrestrictions.create({
-            data: {
-              eventinstanceid_fk: Number(requestEventInstance.eventinstanceid),
-              tickettypeid_fk: Number(restriction.typeID),
-              ticketlimit: Number(restriction.typeQuantity),
-              ticketssold: 0,
-            },
-          }),
-        )],
-    );
+    await prisma.$transaction([
+      ...restrictionsToRemove.map((restriction) =>
+        prisma.ticketrestrictions.delete({
+          where: {
+            ticketrestrictionsid: Number(restriction.ticketrestrictionsid),
+          },
+        }),
+      ),
+      ...restrictionsToUpdate.map((restriction) =>
+        prisma.ticketrestrictions.update({
+          where: {
+            ticketrestrictionsid: restriction.ticketrestrictionsid,
+          },
+          data: {
+            ticketlimit: Number(restriction.ticketlimit),
+          },
+        }),
+      ),
+      ...restrictionsToAdd.map((restriction) =>
+        prisma.ticketrestrictions.create({
+          data: {
+            eventinstanceid_fk: Number(requestEventInstance.eventinstanceid),
+            tickettypeid_fk: Number(restriction.typeID),
+            ticketlimit: Number(restriction.typeQuantity),
+            ticketssold: 0,
+          },
+        }),
+      ),
+    ]);
     res.status(204).send('Showing successfully updated');
     return;
   } catch (error) {
     console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
 
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
 
       return;
     }
@@ -385,10 +407,9 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
       res.status(error.code).send({error: error.message});
       return;
     }
-    res.status(500).json({error: 'Internal Server Error'});
+    res.status(500).send({error: 'Internal Server Error'});
   }
 });
-
 
 /**
  * @swagger
@@ -428,11 +449,7 @@ eventInstanceController.delete('/:id', async (req: Request, res: Response) => {
     });
 
     if (!eventInstanceExists) {
-      res.status(404).json({error: 'Event instance not found'});
-      return;
-    }
-    if (eventInstanceExists.eventtickets.find((ticket:any) => ticket.purchased)) {
-      res.status(422).json({error: `Can not delete a showing for which tickets have already been sold`});
+      res.status(404).send({error: 'Event instance not found'});
       return;
     }
 
@@ -444,18 +461,18 @@ eventInstanceController.delete('/:id', async (req: Request, res: Response) => {
         salestatus: false,
       },
     });
-    res.status(204).json('Showing successfully changed to inactive');
+    res.status(204).send('Showing successfully changed to inactive');
     return;
   } catch (error) {
     console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
       return;
     }
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
+      res.status(400).send({error: error.message});
       return;
     }
-    res.status(500).json({error: 'Internal Server Error'});
+    res.status(500).send({error: 'Internal Server Error'});
   }
 });

@@ -22,10 +22,10 @@ interface EventContextType {
   setEditing: (value) => void;
   setShowPopUp: (value) => void;
   showPopUp: boolean;
-  message:string;
-  title:string;
-  success:boolean;
-  setPopUpProps: (title:string, message:string, success:boolean) => void;
+  message: string;
+  title: string;
+  success: boolean;
+  setPopUpProps: (title: string, message: string, success: boolean) => void;
 }
 
 export const EventContext = React.createContext<EventContextType>({
@@ -54,18 +54,17 @@ export const useEvent = () => {
 
 type EventProviderParams = {
   eventid: string;
-}
+};
 export const EventProvider = () => {
   const providedEventID = useParams<EventProviderParams>();
   const [eventID, setEventID] = useState(Number(providedEventID.eventid) ?? 0);
   const [editing, setEditing] = useState(!eventID);
   const [showPopUp, setShowPopUp] = useState(false);
   const [message, setMessage] = useState('');
-  const [title, setTitle]=useState('');
+  const [title, setTitle] = useState('');
   const [success, setSuccess] = useState(false);
-  const {
-    setEventData, eventData, loading, ticketTypes,
-  } = useFetchEventData(eventID);
+  const {setEventData, eventData, loading, ticketTypes} =
+    useFetchEventData(eventID);
   const {setReloadShowing, showingData} = useFetchShowingData(eventID);
   const {token} = useFetchToken();
 
@@ -79,27 +78,25 @@ export const EventProvider = () => {
 
   return (
     <EventContext.Provider
-      value={
-        {
-          eventID,
-          setEventID,
-          eventData,
-          setEventData,
-          editing,
-          setEditing,
-          ticketTypes,
-          loading,
-          token,
-          showingData,
-          setReloadShowing,
-          setShowPopUp,
-          showPopUp,
-          message,
-          title,
-          success,
-          setPopUpProps,
-        }
-      }
+      value={{
+        eventID,
+        setEventID,
+        eventData,
+        setEventData,
+        editing,
+        setEditing,
+        ticketTypes,
+        loading,
+        token,
+        showingData,
+        setReloadShowing,
+        setShowPopUp,
+        showPopUp,
+        message,
+        title,
+        success,
+        setPopUpProps,
+      }}
     >
       <EventPageV2 />
     </EventContext.Provider>
