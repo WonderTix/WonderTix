@@ -28,25 +28,27 @@ Future features include managing/creating email campaigns and ticket exchanges.
 ## Setup
 
 1. Clone the repository.
-   1. Open your command line. 
+   1. Open your command line.
    2. Navigate to desired folder to install WonderTix repository
    3. Execute the following command:
-      ```
+
+      ```bash
       git clone https://github.com/WonderTix/WonderTix.git
       ```
 
 2. Create a `.env` file and copy over the contents from the `.env.dist` (.env example) file
    1. Set the values for `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. *you must get these values from the team lead*
-   2. Set the value for `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. *you must get this value from the team lead*
-   3. Set the value for `PRIVATE_STRIPE_WEBHOOK`. **explained in step 5**
-   4. Team Leads Auth0 Key provisioning instructions: 
-      1. Obtain access to the wtix-dev Auth0 account. 
+   2. Set the values for `AUTH0_SERVER_ID` and `AUTH0_SERVER_SECRET`. *you must get these values from the team lead*
+   3. Set the value for `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. *you must get this value from the team lead*
+   4. Set the value for `PRIVATE_STRIPE_WEBHOOK`. **explained in step 5**
+   5. Team Leads Auth0 Key provisioning instructions:
+      1. Obtain access to the wtix-dev Auth0 account.
       2. Go to Applications > Applications > Default App
-      3. Use a secure note transfer service to send the Client ID and Client Secret to your team members. 
+      3. Use a secure note transfer service to send the Client ID and Client Secret to your team members.
 3. Create mkcert certificate
-   1. Navigate to `<path/to/WonderTix/server>` 
+   1. Navigate to `<path/to/WonderTix/server>`
    2. Run `mkcert -install` to install the local certificate authority
-   3. Run `mkcert localhost` to create a certificate.   
+   3. Run `mkcert localhost` to create a certificate.
 4. Run `docker-compose up -d`
 5. To test the checkout process with Stripe, make sure the Stripe CLI is installed.
    1. Run `stripe login` and press enter to accept access. This only needs to be done once.
@@ -89,14 +91,15 @@ Here you will see:
 
 This allows VSCode to keep your files organized, as well as getting the Jest tests running properly. Simply double click a folder for the project you want to work on and everything will run in that particular project, including opening a new terminal.
 
-### Using Swagger:
+### Using Swagger
+
 1. To get the bearer token, create a user by going through the signup process in WonderTix.
    - For admin functions, make sure the user has an admin role (contact team lead for admin role).
    - Team Leads: In the User section of Auth0, you can grant individual users an admin role.
 2. Log into the client.
 3. Once you're logged in, open the dev tools menu (Chrome), refresh the page, and find the `token` in the Network tab.
 4. Go to the Preview section for that token and then right click on the `access_token` and `Copy string contents`.
-5. Paste that into the bearerAuth input after clicking the "Authorize" button within Swagger (https://localhost:8000/api/docs).
+5. Paste that into the bearerAuth input after clicking the "Authorize" button within Swagger (<https://localhost:8000/api/docs>).
 
 ## Troubleshooting
 
@@ -108,7 +111,57 @@ The client and server are built with docker. In most cases you can restart the c
 
 If that does not work, you can try `docker-compose down`, `docker-compose build --no-cache`, `docker compose up -d --build`.
 
+## Running Jest Tests (server only)
+
+**Make sure you have recreated your `.env` file as the `.env.dist` file has been changed to reflect new environment variables.**
+
+Jest has been reintroduced with a newly redesigned authentication method to get an oauth token and store it in the database. Because of this change, you will need to delete your database and start fresh.
+
+To do this, run the following commands, but be warned, **this will wipe out all data in your docker system**, so if you run other containers, you will need to **manually** remove the ones associated with `WonderTix` and **NOT** follow the steps below.
+
+You will need to make sure you get the `AUTH0_SERVER_ID` and `AUTH0_SERVER_SECRET` tokens from a team lead and enter them in their corresponding fields in the `.env` file. These are different than the `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. The server makes use of the `WonderTix API (Test Application)` Application on Auth0 and it's associated tokens, while the client makes use of the `Default App` Application on Auth0 and it's associated tokens.
+
+Start by taking down the containers:
+
+```bash
+docker-compose down
+```
+
+Next, clean the docker system:
+
+```bash
+docker system prune -a
+```
+
+Once that is done, you can run the following command to start the containers back up with a fresh database:
+
+```bash
+docker-compose up -d
+```
+
+After the system is up and running again, you can run the tests by typing the following command:
+
+```bash
+cd server
+```
+
+Followed by:
+
+```bash
+npm run test
+```
+
+The reason that you need to run `docker-compose up -d` prior to running `npm run test` is because you need the database to be running in order for the test setup to look for and retrieve the oauth token. If you do not run the `docker-compose up -d` command, the tests will fail because it cannot connect to the database.
+
+The current token timeout is set to: `9 days`
+
+This means that you will need to run the `docker-compose up -d` command at least once every 9 days in order to get a new token. If you do not, the tests will fail because the token will have expired.
+
+In short, every time you run `docker-compose up -d`, it will wipe out the token in the database (for security), and will need to fetch a new one when you run the tests. After that, it will not need to fetch a new one until the token expires, or you run `docker-compose up -d` again. Expect this to change in the future as we get closer to production. Refreshing the token will be fully automated and will not require any manual intervention or running `docker-compose up -d` to refresh the token.
+
 ## Playwright Testing
+
+Note: *Playwright tests will get the same authentication method for API testing as Jest uses above in the near future*
 
 This section covers the Playwright automated testing setup that has been configured for this project. Currently, the `./client/` directory is the only part with Playwright setup. The `./server/` folder will get it later once authentication issues have been resolved (Currently reworking the server tests to work without the need to connect to Auth0 as we will blow through the limit for API calls in no time as it currently does 2-5 Auth0 API requests per test and 2 times per login/page refresh).
 
@@ -117,8 +170,8 @@ tests.
 
 Here is how you run the playwright tests (once they have been written, currently there is an example test in `./client/tests/` and an example Page Object Modle style setup for playwright tests in `./client/tests-examples/`:
 
-- While in the `./client` folder, type `npm run test:playwright`. This will start the playwright tests using Chromium, Firefox, and Webkit (Safari)o
-    - In the future, the command will become `npm run test` once we replace the current react tests
+- While in the `./client` folder, type `npm run test:playwright`. This will start the playwright tests using Chromium, Firefox, and Webkit (Safari)
+  - In the future, the command will become `npm run test` once we replace the current react tests
 - You can use the Code Generator to record your steps as you interact with a webpage to make a simple test. Simply run the following: `npm run codegen`. This will automatically open your browser and a recording window. The URL will be `https://localhost:3000`. From there, as you interact with the page, the recorder window will record your steps. You simply copy and paste that into a new test file in the `./client/tests/<test type folder>/testname.spec.ts`. It is important to note that all test file *must* end with `*.spec.ts` and be within the `./client/tests/` folder/subfolder.
 - You can view a trace (recording of the test) by typing `npx playwright show-trace test-results/<folder for test trace>/trace.zip` and a window will open that will let you step through all of the tests steps to see where it failed or is flaky.
 

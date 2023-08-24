@@ -24,7 +24,8 @@ const importPPHRecordTypes = require('./src/seedPPH_RecordTypes');
 const importPPHTicketOrders = require('./src/seedPPH_TicketOrders');
 const importPPHTicketOrderItems = require('./src/seedPPH_TicketOrderItems');
 const importPPHTransactions = require('./src/seedPPH_Transactions');
-
+// Save a api test token
+const importTestInfo = require('./src/seedTestInfo');
 
 const prisma = new PrismaClient();
 
@@ -57,6 +58,7 @@ async function main() {
   await importPPHTicketOrders(prisma);
   await importPPHTicketOrderItems(prisma);
   await importPPHTransactions(prisma);
+  await importTestInfo(prisma);
 }
 
 main()
