@@ -2,8 +2,7 @@ import {useFormikContext} from 'formik';
 import React from 'react';
 
 export const FormSubmitButton = () => {
-  const {isSubmitting, isValid, isValidating} =
-    useFormikContext();
+  const {isSubmitting, isValid, isValidating} = useFormikContext();
   const disabled = isSubmitting || !isValid || isValidating;
   const getButtonText = () => {
     if (isSubmitting) {

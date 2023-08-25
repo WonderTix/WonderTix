@@ -3,10 +3,8 @@ import React, {useState} from 'react';
 import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {useEvent} from './EventProvider';
 import {getTicketTypePrice} from './ShowingUtils';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 interface TicketTypeTableProps {
   arrayHelpers;
@@ -53,7 +51,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               Quantity
             </th>
             <th className={'px-2 py-1 border-b border-l border-white'}>
-              {availableTypes && availableTypes.length > 0 ? (
+              {availableTypes ? (
                 <IconButton
                   size={'small'}
                   aria-label={'add ticket type'}
@@ -66,8 +64,24 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       availableTypes.slice(1, availableTypes.length),
                     );
                   }}
+                  disabled={availableTypes.length === 0}
                 >
-                  <AddCircleIcon sx={{color: 'black'}} fontSize={'small'} />
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 24 24'
+                    fill='currentColor'
+                    className={`w-5 h-5 ${
+                      availableTypes.length > 0
+                        ? 'text-zinc-900'
+                        : 'text-gray-300'
+                    }`}
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
                 </IconButton>
               ) : null}
             </th>
@@ -141,7 +155,20 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       arrayHelpers.remove(index);
                     }}
                   >
-                    <DeleteIcon fontSize={'small'} />
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                      strokeWidth={1.5}
+                      stroke='currentColor'
+                      className='w-4 h-4 text-zinc-900'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
+                      />
+                    </svg>
                   </IconButton>
                 </td>
               </tr>

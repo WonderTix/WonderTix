@@ -15,8 +15,6 @@ import {fetchTicketingData} from '../ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../../app/hooks';
 import {useNavigate} from 'react-router-dom';
 import {EventImage, getImageDefault} from '../../../../utils/imageURLValidation';
-import {Button} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 
 /**
  * Uses dispatch, navigate, allEvents, and getData
@@ -49,7 +47,10 @@ const InstancesPage = () => {
             onClick={() => navigate(`/ticketing/showings/v2/0`)}
             className={'bg-green-600 hover:bg-green-700 h-fit disabled:bg-gray-600 text-white p-3 font-bold rounded-xl flex flex-row'}
           >
-            <AddIcon/>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 my-auto pr-1">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
+            </svg>
+
             Add Event
           </button>
         </div>

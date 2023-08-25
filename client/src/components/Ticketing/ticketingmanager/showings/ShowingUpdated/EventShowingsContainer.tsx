@@ -4,7 +4,6 @@ import {EventShowingContainer} from './EventShowingContainer';
 import {useEvent} from './EventProvider';
 import {createSubmitFunction} from './ShowingUtils';
 import {toDateStringFormat} from '../../Events/showingInputContainer';
-import AddIcon from '@mui/icons-material/Add';
 
 export const EventShowingsContainer = () => {
   const {
@@ -91,9 +90,9 @@ export const EventShowingsContainer = () => {
               disabled={editing}
               value={sortBy}
               onChange={async (event) => setSortBy(Number(event.target.value))}
-              className={
-                `h-fit m-auto text-xs border border-zinc-500 rounded-xl mr-2 ${showPopUp?'hidden':''}`
-              }
+              className={`h-fit m-auto text-xs border border-zinc-500 rounded-xl mr-2 ${
+                showPopUp ? 'hidden' : ''
+              }`}
             >
               <option value={0}>Date - Ascending</option>
               <option value={1}>Showing ID - Ascending</option>
@@ -108,7 +107,7 @@ export const EventShowingsContainer = () => {
           <button
             className={
               'border border-green-900 bg-green-700 hover:bg-green-800 w-fit h-fit my-auto ' +
-              'disabled:bg-gray-600 text-white p-2 font-bold rounded-xl col-span-6 flex flex-row'
+              'disabled:bg-gray-600 text-white p-1 rounded-xl col-span-6 flex flex-row'
             }
             onClick={async () => {
               setAdd((add) => !add);
@@ -117,7 +116,21 @@ export const EventShowingsContainer = () => {
             disabled={!eventData}
             aria-label={'Add Showing'}
           >
-            <AddIcon /> Showing
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 20 20'
+              strokeWidth='1.5'
+              stroke='currentColor'
+              className='w-5 h-5 my-auto pr-1'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M12 6v12m6-6H6'
+              />
+            </svg>
+            Showing
           </button>
         </div>
       </div>
