@@ -16,7 +16,7 @@ export const createSubmitFunction = (
   return async (event, actions) => {
     actions.setStatus('Submitting...');
     try {
-      const res = await fetch(url, {
+      const submitRes = await fetch(url, {
         credentials: 'include',
         method: method,
         headers: {
@@ -26,11 +26,11 @@ export const createSubmitFunction = (
         body: JSON.stringify(event),
       });
       actions.setSubmitting(false);
-      if (!res.status.toString().startsWith('2')) {
-        throw res;
+      if (!submitRes.ok) {
+        throw submitRes;
       }
       if (onSuccess) {
-        await onSuccess(res);
+        await onSuccess(submitRes);
       }
     } catch (error) {
       actions.setSubmitting(false);
@@ -50,7 +50,7 @@ export const createDeleteFunction = (
 ) => {
   return async (setIsDeleting) => {
     try {
-      const res = await fetch(url, {
+      const deleteRes = await fetch(url, {
         credentials: 'include',
         method: method,
         headers: {
@@ -58,18 +58,18 @@ export const createDeleteFunction = (
           'Authorization': `Bearer ${token}`,
         },
       });
-      if (!res.status.toString().startsWith('2')) {
-        throw res;
+      if (!deleteRes.ok) {
+        throw deleteRes;
       }
       setIsDeleting(false);
       if (onSuccess) {
-        onSuccess();
+        await onSuccess();
       }
     } catch (error) {
       console.log(error);
       setIsDeleting(false);
       if (onError) {
-        onError(error);
+        await onError(error);
       }
     }
   };
@@ -77,13 +77,13 @@ export const createDeleteFunction = (
 
 export const fetchTicketTypes = async (setTicketTypes) => {
   try {
-    const res = await fetch(
+    const ticketTypeRes = await fetch(
       process.env.REACT_APP_API_1_URL + '/tickets/allTypes',
     );
-    if (!res.ok) {
+    if (!ticketTypeRes.ok) {
       throw new Error('Unable to fetch ticket types');
     }
-    setTicketTypes((await res.json()).data);
+    setTicketTypes((await ticketTypeRes.json()).data);
   } catch (error) {
     console.log(error);
   }
@@ -100,6 +100,9 @@ export const getEventData = async (eventID, setEventData) => {
   };
   await fetch(process.env.REACT_APP_API_1_URL + '/events/' + eventID)
     .then((response) => {
+      if (!response.ok) {
+        throw new Error('Unable to fetch event');
+      }
       return response.json();
     })
     .then((data) => {
@@ -190,6 +193,9 @@ export const getShowingData = async (eventID, setShowingData) => {
         `${process.env.REACT_APP_API_1_URL}/tickets/restrictions/
           ${showing.eventinstanceid}`,
       );
+      if (!ticketRestrictionRes.ok) {
+        throw new Error(`Unable to fetch ticket restrictions for ${showing.eventinstanceid}`);
+      }
       const ticketRestrictionData = await ticketRestrictionRes.json();
       for (const item of ticketRestrictionData.data) {
         showing.seatsForType.push(item.ticketlimit);
@@ -203,14 +209,14 @@ export const getShowingData = async (eventID, setShowingData) => {
 };
 
 export const getTicketTypeArray = (
-  types: (string | number)[],
-  count: (string | number)[],
+  ticketsTypes: (string | number)[],
+  seatsForType: (string | number)[],
 ): eventInstanceTicketType[] => {
-  if (!types || !count || count.length != types.length) return [];
-  return types.map((id, index) => {
+  if (!ticketsTypes || !seatsForType || seatsForType.length != ticketsTypes.length) return [];
+  return ticketsTypes.map((id, index) => {
     return {
       typeID: id,
-      typeQuantity: count[index],
+      typeQuantity: seatsForType[index],
     };
   });
 };

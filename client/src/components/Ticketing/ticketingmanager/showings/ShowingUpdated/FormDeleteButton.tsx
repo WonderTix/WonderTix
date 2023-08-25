@@ -7,7 +7,7 @@ export const FormDeleteButton = (props: {onDelete: (event) => void}) => {
     <button
       onClick={async () => {
         setIsDeleting(true);
-        void onDelete(setIsDeleting);
+        await onDelete(setIsDeleting);
       }}
       disabled={isDeleting}
       className={

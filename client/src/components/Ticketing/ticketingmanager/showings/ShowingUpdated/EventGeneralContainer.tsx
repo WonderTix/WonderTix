@@ -12,26 +12,34 @@ export const EventGeneralContainer = () => {
   const [edit, setEdit] = useState(!eventID);
 
   const onUpdateSuccess = async (newEvent) => {
-    const res = await newEvent.json();
-    setEventData(res.data[0]);
-    setEventID(res.data[0].eventid);
-    setEdit((edit) => !edit);
-    setEditing((edit) => !edit);
-    setPopUpProps(`Success`, 'Event update successful', true);
+    try {
+      const res = await newEvent.json();
+      setEventData(res.data[0]);
+      setEventID(res.data[0].eventid);
+      setEdit((edit) => !edit);
+      setEditing((edit) => !edit);
+      setPopUpProps(`Success`, 'Event update successful', true);
+    } catch (error) {
+      console.log('error updating event');
+    }
   };
 
   const onCreateSuccess = async (newEvent) => {
-    const res = await newEvent.json();
-    navigate(`/ticketing/showings/v2/${res.data[0].eventid}`);
-    setEventData(res.data[0]);
-    setEventID(res.data[0].eventid);
-    setEdit((edit) => !edit);
-    setEditing((edit) => !edit);
-    setPopUpProps(`Success`, 'Event creation successful', true);
+    try {
+      const res = await newEvent.json();
+      navigate(`/ticketing/showings/v2/${res.data[0].eventid}`);
+      setEventData(res.data[0]);
+      setEventID(res.data[0].eventid);
+      setEdit((edit) => !edit);
+      setEditing((edit) => !edit);
+      setPopUpProps(`Success`, 'Event creation successful', true);
+    } catch (error) {
+      console.log('error updating event after creation');
+    }
   };
   const onSubmitError = async (event) => {
     try {
-      const res = event.json();
+      const res = await event.json();
       setPopUpProps(`Failure`, res.error, false);
     } catch (error) {
       setPopUpProps(`Failure`, 'Event update failed', false);
@@ -43,7 +51,7 @@ export const EventGeneralContainer = () => {
 
   const onDeleteError = async (event) => {
     try {
-      const res = event.json();
+      const res = await event.json();
       setPopUpProps(`Failure`, res.error, false);
     } catch (error) {
       setPopUpProps(`Failure`, 'Event cannot be marked inactive', false);
