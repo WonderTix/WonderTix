@@ -188,7 +188,7 @@ const DoorList = () => {
           id: index,
           firstname: row[1],
           lastname: row[2],
-          num_tickets: row[12],
+          num_tickets: row[11],
           arrived: false,
           vip: row[3] === 't',
           donorbadge: row[4] === 't',
