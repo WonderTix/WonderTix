@@ -197,10 +197,10 @@ export const getShowingData = async (eventID, setShowingData) => {
         throw new Error(`Unable to fetch ticket restrictions for ${showing.eventinstanceid}`);
       }
       const ticketRestrictionData = await ticketRestrictionRes.json();
-      for (const item of ticketRestrictionData.data) {
-        showing.seatsForType.push(item.ticketlimit);
-        showing.ticketTypeId.push(item.tickettypeid_fk);
-      }
+      ticketRestrictionData.data.forEach((ticketRestriction) => {
+        showing.seatsForType.push(ticketRestriction.ticketlimit);
+        showing.ticketTypeId.push(ticketRestriction.tickettypeid_fk);
+      });
     }
     setShowingData(showingData);
   } catch (error) {
@@ -225,3 +225,4 @@ export const getTicketTypePrice = (id, priceType, ticketTypes) => {
   if (id === undefined || id < 0 || id >= ticketTypes.length) return 0;
   return ticketTypes.find((type) => type.id == id)[priceType];
 };
+

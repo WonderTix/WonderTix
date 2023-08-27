@@ -43,7 +43,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
           <button
             type={'button'}
             disabled={editing}
-            onClick={async () => {
+            onClick={() => {
               setEdit((edit) => !edit);
               setEditing((edit) => !edit);
             }}

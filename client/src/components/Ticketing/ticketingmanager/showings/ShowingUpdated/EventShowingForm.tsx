@@ -122,7 +122,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
             />
             <div
               className={
-                'grid content-center grid-cols-3 min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
+                'flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
               }
             >
               <FormSubmitButton />

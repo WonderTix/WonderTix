@@ -14,7 +14,7 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
   const {setReloadShowing, token, setEditing, setPopUpProps} = useEvent();
   const [edit, setEdit] = useState(false);
 
-  const onSuccess = async (event) => {
+  const onSuccess = () => {
     setReloadShowing((reload) => !reload);
     setEdit((edit) => !edit);
     setEditing((editing) => !editing);
@@ -30,7 +30,7 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
     }
   };
 
-  const onEditClick = async () => {
+  const onEditClick = () => {
     setEditing((edit) => !edit);
     setEdit((edit) => !edit);
   };

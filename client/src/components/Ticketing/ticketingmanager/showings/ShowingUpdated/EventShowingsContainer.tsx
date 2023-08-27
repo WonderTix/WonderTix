@@ -18,7 +18,7 @@ export const EventShowingsContainer = () => {
   } = useEvent();
   const [add, setAdd] = useState(false);
   const [sortBy, setSortBy] = useState(0);
-  const onSuccessAddShowing = async (event) => {
+  const onSuccessAddShowing = () => {
     setEditing((edit) => !edit);
     setPopUpProps('Success', 'Showing Successfully Created', true);
     setReloadShowing((reload) => !reload);
@@ -89,19 +89,19 @@ export const EventShowingsContainer = () => {
             <select
               disabled={editing}
               value={sortBy}
-              onChange={async (event) => setSortBy(Number(event.target.value))}
+              onChange={(event) => setSortBy(Number(event.target.value))}
               className={`h-fit m-auto text-xs border border-zinc-500 rounded-xl mr-2 ${
                 showPopUp ? 'hidden' : ''
               }`}
             >
               <option value={0}>Date - Ascending</option>
               <option value={1}>Showing ID - Ascending</option>
-              <option value={2}>Total Seats - Ascending</option>
-              <option value={3}>Available Seats - Ascending</option>
+              <option value={2}>Total Tickets - Ascending</option>
+              <option value={3}>Available Tickets - Ascending</option>
               <option value={4}>Date - Descending</option>
               <option value={5}>Showing ID - Descending</option>
-              <option value={6}>Total Seats - Descending</option>
-              <option value={7}>Available Seats - Descending</option>
+              <option value={6}>Total Tickets - Descending</option>
+              <option value={7}>Available Tickets - Descending</option>
             </select>
           </div>
           <button
@@ -109,7 +109,7 @@ export const EventShowingsContainer = () => {
               'border border-green-900 bg-green-700 hover:bg-green-800 w-fit h-fit my-auto ' +
               'disabled:bg-gray-600 text-white p-1 rounded-xl col-span-6 flex flex-row'
             }
-            onClick={async () => {
+            onClick={() => {
               setAdd((add) => !add);
               setEditing((edit) => !edit);
             }}

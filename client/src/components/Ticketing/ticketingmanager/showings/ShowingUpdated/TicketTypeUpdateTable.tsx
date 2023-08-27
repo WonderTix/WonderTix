@@ -147,7 +147,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   <IconButton
                     size={'small'}
                     aria-label={'delete ticket type'}
-                    onClick={async () => {
+                    onClick={() => {
                       setAvailableTypes([
                         ...availableTypes,
                         field.value[index].typeID,

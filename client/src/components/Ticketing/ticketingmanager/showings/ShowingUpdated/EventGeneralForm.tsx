@@ -122,7 +122,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   value={values.active}
                   checked={values.active}
                   onChange={async () => {
-                    void setFieldValue('active', !values.active);
+                    await setFieldValue('active', !values.active);
                   }}
                 />
               </div>

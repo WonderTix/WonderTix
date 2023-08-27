@@ -45,7 +45,7 @@ export const EventGeneralContainer = () => {
       setPopUpProps(`Failure`, 'Event update failed', false);
     }
   };
-  const onDeleteSuccess = async () => {
+  const onDeleteSuccess = () => {
     navigate(`/ticketing/showings`);
   };
 
