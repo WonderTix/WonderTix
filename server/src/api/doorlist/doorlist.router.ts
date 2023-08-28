@@ -41,13 +41,14 @@ export const doorlistRouter = Router();
  *                       firstname: {type: string}
  *                       lastname: {type: string}
  *                       vip: {type: boolean}
- *                       doorbadge: {type: string}
+ *                       donorbadge: {type: string}
  *                       seatingaccom: {type: string}
  *                       eventid: {type: integer}
  *                       eventname: {type: string}
  *                       eventinstanceid: {type: integer}
  *                       eventdate: {type: string}
  *                       eventtime: {type: string}
+ *                       tickets: {type: integer}
  *                       redeemed: {type: integer}
  *       401:
  *         description: Unauthorized
@@ -64,3 +65,4 @@ doorlistRouter.get('/', checkJwt, checkScopes, async (
     res.status(500).send(err.message);
   }
 });
+
