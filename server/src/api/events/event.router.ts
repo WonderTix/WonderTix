@@ -5,6 +5,7 @@ import {checkIn,
   getEventById,
   getEventByName,
   getActiveEventsAndInstances,
+  getEventsAndInstances,
   createEvent,
   createShowing,
   updateEvent,
@@ -153,6 +154,36 @@ eventRouter.get('/instances/:id', async (req: Request, res: Response) => {
 eventRouter.get('/list/active', async (_req: Request, res: Response) => {
   try {
     const events = await getActiveEventsAndInstances();
+    const code = events.status.success ? 200 : 404;
+    res.status(code).send(events);
+  } catch (error: any) {
+    res.status(500).send(error.message);
+  }
+});
+
+/**
+ * @swagger
+ * /1/events/list/allevents:
+ *   get:
+ *     summary: Get a list of all events and their instances
+ *     description: Returns a list of events and their instances
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: A list of all events and their instances were found
+ *       '404':
+ *         description: No events were found
+ *       '500':
+ *         description: An error occurred while processing the request
+ *     tags:
+ *       - Event
+ */
+// Endpoint to get the list of all event instances
+
+eventRouter.get('/list/allevents', async (_req: Request, res: Response) => {
+  try {
+    const events = await getEventsAndInstances();
     const code = events.status.success ? 200 : 404;
     res.status(code).send(events);
   } catch (error: any) {
