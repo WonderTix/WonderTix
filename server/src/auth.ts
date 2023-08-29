@@ -12,7 +12,7 @@ export const checkJwt = jwt({
   credentialsRequired: false,
   audience: process.env.AUTH0_AUDIENCE,
   issuer: process.env.AUTH0_URL,
-  algorighms: [`RS256`],
+  algorithms: [`RS256`],
 });
 
 export const checkScopes = jwtScope('admin');
