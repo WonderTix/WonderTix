@@ -19,16 +19,15 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
     ticketTypes
       .filter(
         (type) =>
-          !field.value.find((value) => value.typeID == type.id) && type.id != 1,
+          !field.value.find((value) => value.typeID === Number(type.id)) && Number(type.id) !== 1,
       )
-      .map((value) => value.id),
+      .map((value) => Number(value.id)),
   );
 
   return (
     <div
       className={
-        'overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 ' +
-        'shadow-xl border-4 border-gray-300 mx-auto rounded-xl bg-white w-[100%] min-h-[100px]'
+        'overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl mx-auto rounded-xl bg-white w-[100%] min-h-[100px]'
       }
     >
       <table className={'table table-fixed text-sm min-w-[100%]'}>
@@ -51,7 +50,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               Quantity
             </th>
             <th className={'px-2 py-1 border-b border-l border-white'}>
-              {availableTypes ? (
+              {availableTypes && (
                 <IconButton
                   size={'small'}
                   aria-label={'add ticket type'}
@@ -70,10 +69,12 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
                     fill='currentColor'
-                    className={`w-5 h-5 ${
+                    stroke='white'
+                    strokeWidth={1.5}
+                    className={`w-[1.5rem] h-[1.5rem] ${
                       availableTypes.length > 0
-                        ? 'text-zinc-900'
-                        : 'text-gray-300'
+                        ? 'text-green-500'
+                        : 'text-gray-600'
                     }`}
                   >
                     <path
@@ -83,7 +84,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                     />
                   </svg>
                 </IconButton>
-              ) : null}
+              )}
             </th>
           </tr>
         </thead>
@@ -150,7 +151,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                     onClick={() => {
                       setAvailableTypes([
                         ...availableTypes,
-                        field.value[index].typeID,
+                        Number(field.value[index].typeID),
                       ]);
                       arrayHelpers.remove(index);
                     }}
@@ -161,7 +162,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       viewBox='0 0 24 24'
                       strokeWidth={1.5}
                       stroke='currentColor'
-                      className='w-4 h-4 text-zinc-900'
+                      className='w-4 h-4 text-red-700'
                     >
                       <path
                         strokeLinecap='round'
@@ -177,7 +178,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
             <tr>
               <td
                 className='px-2 text-zinc-800 font-semibold min-[650px]:text-center'
-                colSpan={4}
+                colSpan={5}
               >
                 No Ticket Types Selected For Showing
               </td>

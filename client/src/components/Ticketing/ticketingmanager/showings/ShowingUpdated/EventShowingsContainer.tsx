@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {EventShowingContainer} from './EventShowingContainer';
 import {useEvent} from './EventProvider';
 import {createSubmitFunction} from './ShowingUtils';
-import {toDateStringFormat} from '../../Events/showingInputContainer';
+import {toDateStringFormat} from '../../Events/showingInputContainer_deprecated';
 
 export const EventShowingsContainer = () => {
   const {
@@ -64,65 +64,37 @@ export const EventShowingsContainer = () => {
         'bg-white flex flex-col mt-6 p-6 rounded-xl shadow-xl text-zinc-800'
       }
     >
-      <div className={'grid grid-cols-12 p-2'}>
-        <h2
-          className={
-            'col-span-12 min-[650px]:col-span-6 text-xl md:text-2xl text-center min-[650px]:text-start pb-1'
-          }
-        >
-          {eventData?.eventname} Showings
-        </h2>
+      <div className={'grid grid-cols-12 p-2 gap-2'}>
         <div
           className={
-            'col-span-12 min-[650px]:col-span-6 flex flex-row justify-center min-[650px]:justify-end'
+            'col-span-12 min-[768px]:col-span-7 flex flex-row flex-wrap justify-center min-[768px]:justify-start gap-2'
           }
         >
-          <div className={'col-span-6 grid min-[1350px]:grid-cols-2 pr-1'}>
-            <label
-              htmlFor={'sortMethod'}
-              className={
-                'text-xs text-zinc-800 my-auto pr-2 text-center min-[1350px]:text-end'
-              }
-            >
-              Sort By:
-            </label>
-            <select
-              disabled={editing}
-              value={sortBy}
-              onChange={(event) => setSortBy(Number(event.target.value))}
-              className={`h-fit m-auto text-xs border border-zinc-500 rounded-xl mr-2 ${
-                showPopUp ? 'hidden' : ''
-              }`}
-            >
-              <option value={0}>Date - Ascending</option>
-              <option value={1}>Showing ID - Ascending</option>
-              <option value={2}>Total Tickets - Ascending</option>
-              <option value={3}>Available Tickets - Ascending</option>
-              <option value={4}>Date - Descending</option>
-              <option value={5}>Showing ID - Descending</option>
-              <option value={6}>Total Tickets - Descending</option>
-              <option value={7}>Available Tickets - Descending</option>
-            </select>
-          </div>
+          <h2
+            className={
+              ' text-xl md:text-2xl text-center min-[768px]:text-start w-fit h-fit my-auto'
+            }
+          >
+            {eventData?.eventname} Showings
+          </h2>
           <button
             className={
-              'border border-green-900 bg-green-700 hover:bg-green-800 w-fit h-fit my-auto ' +
-              'disabled:bg-gray-600 text-white p-1 rounded-xl col-span-6 flex flex-row'
+              'bg-green-500 hover:bg-green-700 w-fit h-fit font-bold disabled:bg-gray-500 text-white px-2 py-1 rounded-xl flex flex-row'
             }
             onClick={() => {
               setAdd((add) => !add);
               setEditing((edit) => !edit);
             }}
-            disabled={!eventData}
+            disabled={!eventData || editing}
             aria-label={'Add Showing'}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
               fill='none'
               viewBox='0 0 20 20'
-              strokeWidth='1.5'
+              strokeWidth='2'
               stroke='currentColor'
-              className='w-5 h-5 my-auto pr-1'
+              className='w-[1.5rem] h-[1.5rem] my-auto pr-1'
             >
               <path
                 strokeLinecap='round'
@@ -130,13 +102,38 @@ export const EventShowingsContainer = () => {
                 d='M12 6v12m6-6H6'
               />
             </svg>
-            Showing
+            <span className={'my-auto'}>Showing</span>
           </button>
         </div>
+        <div className={'col-span-12 min-[768px]:col-span-5 my-auto flex flex-row flex-wrap justify-center min-[1230px]:justify-end'}>
+          <label
+            htmlFor={'sortMethod'}
+            className={
+              'text-zinc-800 my-auto pr-2 text-center w-fit'
+            }
+          >
+              Sort By:
+          </label>
+          <select
+            disabled={editing}
+            value={sortBy}
+            onChange={(event) => setSortBy(Number(event.target.value))}
+            className={`h-fit w-fit border border-zinc-500 rounded-lg ${showPopUp ? 'hidden' : ''} p-1`}
+          >
+            <option value={0}>Date - Ascending</option>
+            <option value={1}>Showing ID - Ascending</option>
+            <option value={2}>Total Tickets - Ascending</option>
+            <option value={3}>Available Tickets - Ascending</option>
+            <option value={4}>Date - Descending</option>
+            <option value={5}>Showing ID - Descending</option>
+            <option value={6}>Total Tickets - Descending</option>
+            <option value={7}>Available Tickets - Descending</option>
+          </select>
+        </div>
       </div>
-      {eventData && showingData ? (
+      {eventData && showingData && (
         <div className={'flex flex-col gap-4'}>
-          {add ? (
+          {add && (
             <EventShowingForm
               onSubmit={createSubmitFunction(
                 'POST',
@@ -150,7 +147,7 @@ export const EventShowingsContainer = () => {
                 setAdd((add) => !add);
               }}
             />
-          ) : null}
+          )}
           {showingData.sort(getSortingFunction()).map((showing) => (
             <EventShowingContainer
               key={'showing ' + showing.eventinstanceid}
@@ -158,7 +155,7 @@ export const EventShowingsContainer = () => {
             />
           ))}
         </div>
-      ) : null}
+      )}
     </div>
   );
 };

@@ -112,7 +112,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
 
     return;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).send({error: error.message});
 
@@ -341,7 +341,6 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
         eventInstanceToUpdate,
         requestEventInstance,
     );
-    // eslint-disable-next-line max-len
     const {restrictionsToAdd, restrictionsToRemove, restrictionsToUpdate} =
       validateTicketRestrictionsOnUpdate(
           eventInstanceToUpdate.ticketrestrictions,
@@ -391,7 +390,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
     res.status(204).send('Showing successfully updated');
     return;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).send({error: error.message});
 
@@ -464,7 +463,7 @@ eventInstanceController.delete('/:id', async (req: Request, res: Response) => {
     res.status(204).send('Showing successfully changed to inactive');
     return;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).send({error: error.message});
       return;

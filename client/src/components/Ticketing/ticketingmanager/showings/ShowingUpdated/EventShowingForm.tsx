@@ -2,7 +2,7 @@ import {Showing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import {Field, FieldArray, Formik} from 'formik';
 import {InputControl} from './InputControl';
-import {toDateStringFormat} from '../../Events/showingInputContainer';
+import {toDateStringFormat} from '../../Events/showingInputContainer_deprecated';
 import {TicketTypeUpdateTable} from './TicketTypeUpdateTable';
 import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
@@ -56,57 +56,51 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
         <form onSubmit={handleSubmit} className={'bg-gray-300 rounded-xl p-2'}>
           <div
             className={
-              'bg-gray-100 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[250px] gap-2'
+              'bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[250px] gap-2'
             }
           >
             <div
               className={
-                'col-span-12 min-[1350px]:col-span-4 rounded-lg p-2 w-[100%] bg-gray-300'
+                'flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%] shadow-xl'
               }
             >
-              <div
-                className={
-                  'flex flex-col justify-center bg-white m-auto rounded-lg p-3 w-[100%] h-[100%]'
-                }
-              >
-                {values.eventinstanceid ? (
-                  <div className={'grid grid-cols-2 pb-1 text-sm'}>
-                    <p className={'text-md font-bold'}>Showing Id</p>
-                    <p className={'text-md p-1'}>{values.eventinstanceid}</p>
-                  </div>
-                ) : null}
-                <Field
-                  name='eventdate'
-                  component={InputControl}
-                  label='Event Date'
-                  type='date'
-                  id={values.eventinstanceid}
-                  className={inputControlClassName}
-                />
-                <Field
-                  name='eventtime'
-                  component={InputControl}
-                  label='Event Time'
-                  type='time'
-                  id={values.eventinstanceid}
-                  className={inputControlClassName}
-                />
-                <Field
-                  name='totalseats'
-                  component={InputControl}
-                  label='Ticket Quantity'
-                  type='number'
-                  id={values.eventinstanceid}
-                  className={inputControlClassName}
-                />
-                <div className={'grid grid-cols-2 text-zinc-800'}>
-                  <p className={'text-sm font-bold'}>Available Seats</p>
-                  <p className={'text-sm p-1'}>
-                    {values.eventinstanceid
-                      ? values.availableseats
-                      : values.totalseats}
-                  </p>
+              {values.eventinstanceid > 0 && (
+                <div className={'grid grid-cols-2 pb-1 text-sm'}>
+                  <p className={'text-md font-bold'}>Showing Id</p>
+                  <p className={'text-md p-1'}>{values.eventinstanceid}</p>
                 </div>
+              )}
+              <Field
+                name='eventdate'
+                component={InputControl}
+                label='Event Date'
+                type='date'
+                id={values.eventinstanceid}
+                className={inputControlClassName}
+              />
+              <Field
+                name='eventtime'
+                component={InputControl}
+                label='Event Time'
+                type='time'
+                id={values.eventinstanceid}
+                className={inputControlClassName}
+              />
+              <Field
+                name='totalseats'
+                component={InputControl}
+                label='Ticket Quantity'
+                type='number'
+                id={values.eventinstanceid}
+                className={inputControlClassName}
+              />
+              <div className={'grid grid-cols-2 text-zinc-800'}>
+                <p className={'text-sm font-bold'}>Available Seats</p>
+                <p className={'text-sm p-1'}>
+                  {values.eventinstanceid
+                    ? values.availableseats
+                    : values.totalseats}
+                </p>
               </div>
             </div>
             <FieldArray
@@ -126,17 +120,22 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
               }
             >
               <FormSubmitButton />
-              {onDelete ? <FormDeleteButton onDelete={onDelete} /> : null}
-              {onLeaveEdit ? (
+              {onDelete && (
+                <FormDeleteButton
+                  onDelete={onDelete}
+                  label={`Delete Showing ${values.eventinstanceid}`}
+                />
+              )}
+              {onLeaveEdit && (
                 <button
                   className={
-                    'border border-blue-900 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl p-2 font-bold'
+                    'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
                   }
                   onClick={onLeaveEdit}
                 >
                   Cancel
                 </button>
-              ) : null}
+              )}
             </div>
           </div>
         </form>

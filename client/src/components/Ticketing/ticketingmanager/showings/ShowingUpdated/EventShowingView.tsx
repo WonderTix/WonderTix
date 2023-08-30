@@ -1,7 +1,7 @@
 import {Showing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import format from 'date-fns/format';
-import {toDateStringFormat} from '../../Events/showingInputContainer';
+import {toDateStringFormat} from '../../Events/showingInputContainer_deprecated';
 import {useEvent} from './EventProvider';
 import {getTicketTypeArray, getTicketTypePrice} from './ShowingUtils';
 
@@ -22,37 +22,31 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
   return (
     <div className={'bg-gray-300 rounded-xl p-2'}>
       <div
-        className={`bg-gray-100 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[175px] gap-2`}
+        className={`bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[175px] gap-2`}
       >
         <div
-          className={
-            'col-span-12 min-[1350px]:col-span-4 rounded-lg p-2 w-[100%] bg-gray-300'
-          }
+          className={`flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%] shadow-xl`}
         >
-          <div
-            className={`flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%]`}
-          >
-            <LineItem
-              label={'Showing ID'}
-              information={showing.eventinstanceid}
-            />
-            <LineItem
-              label={'Date'}
-              information={format(showingDate, 'eee, MMM dd yyyy')}
-            />
-            <LineItem
-              label={'Time'}
-              information={format(showingDate, 'hh:mm a')}
-            />
-            <LineItem
-              label={'Total Tickets'}
-              information={showing.totalseats}
-            />
-            <LineItem
-              label={'Available Tickets'}
-              information={showing.availableseats}
-            />
-          </div>
+          <LineItem
+            label={'Showing ID'}
+            information={showing.eventinstanceid}
+          />
+          <LineItem
+            label={'Date'}
+            information={format(showingDate, 'eee, MMM dd yyyy')}
+          />
+          <LineItem
+            label={'Time'}
+            information={format(showingDate, 'hh:mm a')}
+          />
+          <LineItem
+            label={'Total Tickets'}
+            information={showing.totalseats}
+          />
+          <LineItem
+            label={'Available Tickets'}
+            information={showing.availableseats}
+          />
         </div>
         <div
           className={
@@ -130,7 +124,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             type={'button'}
             onClick={setEdit}
             className={
-              'border border-blue-900 bg-blue-600 hover:bg-blue-700  disabled:bg-gray-700 text-white font-bold p-2 px-4 rounded-xl'
+              ' bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold p-2 px-4 rounded-xl'
             }
           >
             Edit

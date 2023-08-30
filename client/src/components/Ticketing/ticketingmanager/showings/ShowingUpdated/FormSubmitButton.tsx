@@ -11,17 +11,15 @@ export const FormSubmitButton = () => {
     return 'Save';
   };
   return (
-    <>
-      <button
-        type='submit'
-        disabled={disabled}
-        className={
-          'border border-green-900 bg-green-700 hover:bg-green-800  disabled:bg-gray-600 text-white font-bold p-2 rounded-xl'
-        }
-        aria-label={'Save'}
-      >
-        {getButtonText()}
-      </button>
-    </>
+    <button
+      type='submit'
+      disabled={disabled}
+      className={
+        'bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-4 rounded-xl h-fit'
+      }
+      aria-label={'Save'}
+    >
+      {getButtonText()}
+    </button>
   );
 };

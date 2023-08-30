@@ -3,8 +3,8 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 
 export interface eventInstanceTicketType {
-  typeID: number | string;
-  typeQuantity: number | string;
+  typeID: number;
+  typeQuantity: number;
 }
 export const createSubmitFunction = (
   method: string,
@@ -40,7 +40,6 @@ export const createSubmitFunction = (
     }
   };
 };
-// eslint-disable-next-line max-len
 export const createDeleteFunction = (
   method: string,
   url: string,
@@ -66,7 +65,7 @@ export const createDeleteFunction = (
         await onSuccess();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setIsDeleting(false);
       if (onError) {
         await onError(error);
@@ -75,21 +74,22 @@ export const createDeleteFunction = (
   };
 };
 
-export const fetchTicketTypes = async (setTicketTypes) => {
+export const fetchTicketTypes = async (setTicketTypes, signal) => {
   try {
     const ticketTypeRes = await fetch(
       process.env.REACT_APP_API_1_URL + '/tickets/allTypes',
+      {signal},
     );
     if (!ticketTypeRes.ok) {
       throw new Error('Unable to fetch ticket types');
     }
     setTicketTypes((await ticketTypeRes.json()).data);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
-export const getEventData = async (eventID, setEventData) => {
+export const getEventData = async (eventID, setEventData, signal) => {
   const eventData = {
     seasonid_fk: undefined,
     eventid: undefined,
@@ -98,7 +98,7 @@ export const getEventData = async (eventID, setEventData) => {
     active: false,
     imageurl: '',
   };
-  await fetch(process.env.REACT_APP_API_1_URL + '/events/' + eventID)
+  await fetch(process.env.REACT_APP_API_1_URL + '/events/' + eventID, {signal})
     .then((response) => {
       if (!response.ok) {
         throw new Error('Unable to fetch event');
@@ -123,16 +123,18 @@ export const useFetchEventData = (eventID: number) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    void fetchTicketTypes(setTicketTypes);
+    const controller = new AbortController();
+    const signal = controller.signal;
+    void fetchTicketTypes(setTicketTypes, signal);
     if (eventID) {
-      getEventData(eventID, setEventData)
-        .then(() => console.log('Event load success'))
-        .catch(() => navigate(`/ticketing/showings/v2/${eventID}/notFound`));
+      getEventData(eventID, setEventData, signal).catch(() =>
+        navigate(`/ticketing/showings/${eventID}/notFound`),
+      );
     }
     setLoading(false);
+    return () => controller.abort();
   }, [eventID]);
 
-  // eslint-disable-next-line max-len
   return {eventData, setEventData, loading, ticketTypes};
 };
 
@@ -145,7 +147,7 @@ export const fetchToken = async (getAccessTokenSilently, setToken) => {
       }),
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 export const useFetchToken = () => {
@@ -162,18 +164,19 @@ export const useFetchShowingData = (eventID: number) => {
   const [reload, setReloadShowing] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     if (eventID) {
-      void getShowingData(eventID, setShowingData);
+      void getShowingData(eventID, setShowingData, signal);
     }
+    return () => controller.abort();
   }, [eventID, reload]);
-
   return {showingData, setReloadShowing, reload};
 };
-export const getShowingData = async (eventID, setShowingData) => {
+export const getShowingData = async (eventID, setShowingData, signal) => {
   try {
     const showingRes = await fetch(
-      `${process.env.REACT_APP_API_1_URL}/events/instances/${eventID}`,
-    );
+      `${process.env.REACT_APP_API_1_URL}/events/instances/${eventID}`, {signal});
 
     if (!showingRes.ok) {
       throw new Error('Unable to fetch showings');
@@ -184,45 +187,53 @@ export const getShowingData = async (eventID, setShowingData) => {
 
     for (const showing of showingData) {
       if (!showing.seatsForType) {
-        showing.seatsForType = [];
+        showing.seatsForType = Array<number>();
       }
       if (!showing.ticketTypeId) {
-        showing.ticketTypeId = [];
+        showing.ticketTypeId = Array<number>();
       }
       const ticketRestrictionRes = await fetch(
         `${process.env.REACT_APP_API_1_URL}/tickets/restrictions/
           ${showing.eventinstanceid}`,
       );
       if (!ticketRestrictionRes.ok) {
-        throw new Error(`Unable to fetch ticket restrictions for ${showing.eventinstanceid}`);
+        throw new Error(
+          `Unable to fetch ticket restrictions for ${showing.eventinstanceid}`,
+        );
       }
       const ticketRestrictionData = await ticketRestrictionRes.json();
       ticketRestrictionData.data.forEach((ticketRestriction) => {
-        showing.seatsForType.push(ticketRestriction.ticketlimit);
-        showing.ticketTypeId.push(ticketRestriction.tickettypeid_fk);
+        showing.seatsForType.push(Number(ticketRestriction.ticketlimit));
+        showing.ticketTypeId.push(Number(ticketRestriction.tickettypeid_fk));
       });
     }
     setShowingData(showingData);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
 export const getTicketTypeArray = (
-  ticketsTypes: (string | number)[],
-  seatsForType: (string | number)[],
+  ticketsTypes: (number | string) [],
+  seatsForType: (number | string) [],
 ): eventInstanceTicketType[] => {
-  if (!ticketsTypes || !seatsForType || seatsForType.length != ticketsTypes.length) return [];
+  if (
+    !ticketsTypes ||
+    !seatsForType ||
+    seatsForType.length !== ticketsTypes.length
+  ) {
+    return [];
+  }
   return ticketsTypes.map((id, index) => {
     return {
-      typeID: id,
-      typeQuantity: seatsForType[index],
+      typeID: Number(id),
+      typeQuantity: Number(seatsForType[index]),
     };
   });
 };
 
-export const getTicketTypePrice = (id, priceType, ticketTypes) => {
-  if (id === undefined || id < 0 || id >= ticketTypes.length) return 0;
-  return ticketTypes.find((type) => type.id == id)[priceType];
+export const getTicketTypePrice = (id:number, priceType:string, ticketTypes) => {
+  const foundType = ticketTypes.find((type) => Number(type.id) === id);
+  if (!foundType) return 0;
+  return foundType[priceType];
 };
-

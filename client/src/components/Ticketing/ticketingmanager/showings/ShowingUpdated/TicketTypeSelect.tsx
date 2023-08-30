@@ -15,10 +15,10 @@ export const TicketTypeSelect = (props: {
   const {setFieldValue} = useFormikContext();
 
   const handleChange = async (event) => {
-    const value = event.target.value;
+    const value = Number(event.target.value);
     setAvailableTypes([
-      ...availableTypes.filter((type) => type != value),
-      field.value,
+      ...availableTypes.filter((type) => type !== value),
+      Number(field.value),
     ]);
     await setFieldValue(field.name, value);
   };
@@ -36,8 +36,8 @@ export const TicketTypeSelect = (props: {
         <option value={Number.parseInt(field.value)}>
           {getTicketTypePrice(Number(field.value), 'description', ticketTypes)}
         </option>
-        {availableTypes
-          ? availableTypes.map((ticketTypeID: any) => (
+        {availableTypes &&
+          availableTypes.map((ticketTypeID: any) => (
             <option
               key={id + index + ticketTypeID + 'ticket type description'}
               value={Number.parseInt(ticketTypeID)}
@@ -48,8 +48,7 @@ export const TicketTypeSelect = (props: {
                 ticketTypes,
               )}
             </option>
-          ))
-          : null}
+          ))}
       </select>
     </>
   );

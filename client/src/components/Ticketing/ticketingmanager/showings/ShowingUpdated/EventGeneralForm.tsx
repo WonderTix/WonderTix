@@ -29,129 +29,139 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   };
 
   return (
+
     <Formik
       initialValues={baseValues}
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
     >
       {({handleSubmit, values, setFieldValue}) => (
-        <form className={'grid grid-cols-12'} onSubmit={handleSubmit}>
-          <div className={'flex flex-col col-span-12 min-[450px]:col-span-6'}>
-            <Field
-              name='eventname'
-              component={InputControl}
-              type='text'
-              label='Event Name'
-              id={0}
-              className={{
-                labelClass:
-                  'text-sm font-semibold col-span-5 min-[450px]:col-span-12',
-                inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
-                inputGroupClass: 'col-span-7 min-[450px]:col-span-12',
-                controlClass: 'grid grid-cols-12 text-zinc-800 gap-1 mb-2',
-              }}
-            />
-            <Field
-              name='eventdescription'
-              component={InputControl}
-              type='textarea'
-              label='Event Description'
-              id={0}
-              className={{
-                labelClass: 'text-sm font-semibold',
-                inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
-                inputGroupClass: 'flex flex-col',
-                controlClass: 'flex flex-col mb-2 text-zinc-800',
-              }}
-            />
-            <Field
-              name={'imageurl'}
-              component={InputControl}
-              label={'Image URL'}
-              type={'text'}
-              id={0}
-              disabled={values.imageurl === 'Default Event Image'}
-              className={{
-                labelClass: 'text-sm font-semibold',
-                inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200',
-                inputGroupClass: 'flex flex-col',
-                controlClass: 'flex flex-col mb-2 text-zinc-800',
-              }}
-            />
-            <div className={'grid grid-cols-12 mb-2'}>
-              <div className={'flex flex-col justify-evenly col-span-6'}>
-                <label
-                  htmlFor={'defaultImageUrl'}
-                  className={
-                    'text-sm text-zinc-800 font-semibold text-center pb-1'
-                  }
-                >
-                  Use Default Image
-                </label>
-                <input
-                  name={'defaultImageUrl'}
-                  id={'defaultImageUrl'}
-                  type='checkbox'
-                  value={'default'}
-                  checked={disabledURL}
-                  onChange={async () => {
-                    await setFieldValue(
-                      'imageurl',
-                      !disabledURL ? 'Default Event Image' : '',
-                    );
-                    setDisabledURL(!disabledURL);
-                  }}
-                />
-              </div>
-              <div className={'flex flex-col justify-evenly col-span-6'}>
-                <label
-                  htmlFor={'active'}
-                  className={
-                    'text-sm text-zinc-800 font-semibold text-center pb-1'
-                  }
-                >
-                  Active
-                </label>
-                <input
-                  name={'active'}
-                  id={'active'}
-                  type='checkbox'
-                  value={values.active}
-                  checked={values.active}
-                  onChange={async () => {
-                    await setFieldValue('active', !values.active);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          {/* Need to fix image sizing so height does not grow past needs of sibling div */}
-          <div
-            className={'grid grid-cols-12 col-span-12 min-[450px]:col-span-6'}
-          >
-            <div className={'grid content-center col-span-9 w-[100%] h-[100%]'}>
-              <EventImage
-                className={'mx-auto w-[50%] h-auto max-w-[200px]'}
-                src={values.imageurl}
-                title='Supplied By User for Event'
-              />
-            </div>
-            <div className={'grid col-span-3 content-center gap-4'}>
+        <form className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'} onSubmit={handleSubmit}>
+          <div className={'grid grid-cols-12 mb-5 gap-2'}>
+            <h2 className={'col-span-12 min-[650px]:col-span-6 text-center min-[650px]:text-start text-3xl font-semibold text-zinc-800'}>
+              {eventData? 'Edit Event': 'Add Event'}
+            </h2>
+            <div className={'col-span-12 min-[650px]:col-span-6 flex flex-row gap-4 flex-wrap justify-center min-[650px]:justify-end'}>
               <FormSubmitButton />
-              {eventData ? <FormDeleteButton onDelete={onDelete} /> : null}
-              {onLeaveEdit && eventData ? (
+              {eventData && (
+                <FormDeleteButton
+                  onDelete={onDelete}
+                  label={`Delete event ${values.eventid}`}
+                />
+              )}
+              {onLeaveEdit && eventData && (
                 <button
                   className={
-                    'border border-blue-900 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-xl p-2 font-bold'
+                    'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold h-fit'
                   }
                   onClick={onLeaveEdit}
                 >
-                  Cancel
+                      Cancel
                 </button>
-              ) : null}
+              )}
+            </div>
+          </div>
+          <div className={'grid grid-cols-12'}>
+            <div className={'flex flex-col col-span-12 min-[450px]:col-span-6'}>
+              <Field
+                name='eventname'
+                component={InputControl}
+                type='text'
+                label='Event Name'
+                id={0}
+                className={{
+                  labelClass:
+                  'text-sm font-semibold col-span-5 min-[450px]:col-span-12',
+                  inputClass:
+                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
+                  inputGroupClass: 'col-span-7 min-[450px]:col-span-12',
+                  controlClass: 'grid grid-cols-12 text-zinc-800 gap-1 mb-2',
+                }}
+              />
+              <Field
+                name='eventdescription'
+                component={InputControl}
+                type='textarea'
+                label='Event Description'
+                id={0}
+                className={{
+                  labelClass: 'text-sm font-semibold',
+                  inputClass:
+                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
+                  inputGroupClass: 'flex flex-col',
+                  controlClass: 'flex flex-col mb-2 text-zinc-800',
+                }}
+              />
+              <Field
+                name={'imageurl'}
+                component={InputControl}
+                label={'Image URL'}
+                type={'text'}
+                id={0}
+                disabled={values.imageurl === 'Default Event Image'}
+                className={{
+                  labelClass: 'text-sm font-semibold',
+                  inputClass:
+                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200',
+                  inputGroupClass: 'flex flex-col',
+                  controlClass: 'flex flex-col mb-2 text-zinc-800',
+                }}
+              />
+              <div className={'grid grid-cols-12 mb-2'}>
+                <div className={'flex flex-col justify-evenly col-span-6'}>
+                  <label
+                    htmlFor={'defaultImageUrl'}
+                    className={
+                      'text-sm text-zinc-800 font-semibold text-center pb-1'
+                    }
+                  >
+                  Use Default Image
+                  </label>
+                  <input
+                    name={'defaultImageUrl'}
+                    id={'defaultImageUrl'}
+                    type='checkbox'
+                    value={'default'}
+                    checked={disabledURL}
+                    onChange={async () => {
+                      await setFieldValue(
+                        'imageurl',
+                        !disabledURL ? 'Default Event Image' : '',
+                      );
+                      setDisabledURL(!disabledURL);
+                    }}
+                  />
+                </div>
+                <div className={'flex flex-col justify-evenly col-span-6'}>
+                  <label
+                    htmlFor={'active'}
+                    className={
+                      'text-sm text-zinc-800 font-semibold text-center pb-1'
+                    }
+                  >
+                  Active
+                  </label>
+                  <input
+                    name={'active'}
+                    id={'active'}
+                    type='checkbox'
+                    value={values.active}
+                    checked={values.active}
+                    onChange={async () => {
+                      await setFieldValue('active', !values.active);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              className={'col-span-12 min-[450px]:col-span-6'}
+            >
+              <EventImage
+                className={'mx-auto w-[50%] h-auto max-w-[150px]'}
+                src={values.imageurl}
+                title='Supplied By User for Event'
+              />
             </div>
           </div>
         </form>
