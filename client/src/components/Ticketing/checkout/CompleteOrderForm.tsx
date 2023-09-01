@@ -113,7 +113,7 @@ export default function CompleteOrderForm(
           onSubmit={handleSubmit}
           initialValues={{'opt-in': false}}
           render={({handleSubmit}) => (
-            <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-2 md:p-4 rounded-xl flex flex-col  justify-between'>
+            <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-2 md:p-4 rounded-xl flex flex-col justify-between'>
               <div className='flex flex-col w-auto'>
                 <div className='grid gap-5 md:grid-cols-2'>
                   <div>

@@ -58,7 +58,7 @@ export default function CheckoutPage(): ReactElement {
 
   return (
     <div className='bg-zinc-200 flex flex-col md:flex-col sm:flex-col
-         sm:items-center w-full h-full p-2 md:p-20'>
+         max-md:items center w-full h-full p-2 md:p-20'>
       <div className='flex flex-row items-center h-auto mt-12 md:w-full mb-5'>
         <button onClick={() => navigate('/')} className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
