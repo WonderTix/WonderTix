@@ -111,9 +111,9 @@ export default function CompleteOrderForm(
       <div className='min-w-414 sm:w-full h-full'>
         <Form
           onSubmit={handleSubmit}
-          initialValues={{'opt-in': false, 'seating-accommodation': false}}
+          initialValues={{'opt-in': false}}
           render={({handleSubmit}) => (
-            <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-4 rounded-xl flex flex-col  justify-between'>
+            <form onSubmit={handleSubmit} noValidate className='w-full h-full bg-zinc-200 p-2 md:p-4 rounded-xl flex flex-col  justify-between'>
               <div className='flex flex-col w-auto'>
                 <div className='grid gap-5 md:grid-cols-2'>
                   <div>
@@ -197,7 +197,7 @@ export default function CompleteOrderForm(
                       <option value="First/Ground floor">Yes, seat(s) on the ground or the first level</option>
                       <option value="ASL Interpreter">Yes, seats in the ASL interpreters section</option>
                       <option value="Wide Seats">Yes, wide seats</option>
-                      <option value="Other">Yes, other (describe accommodation in comment box below, if not listed)</option>
+                      <option value="Other">Yes, other (comment below)</option>
                     </select>
                   </div>
                   <div>
