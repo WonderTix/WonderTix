@@ -14,12 +14,11 @@ import {openSnackbar} from '../ticketingmanager/snackbarSlice';
 import {
   Collapse,
 } from '@mui/material';
-// import MultiSelectCalendar from './MultiSelectCalendar';
 import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {ChangeEvent, useEffect, useState, useReducer} from 'react';
+import React, {useEffect, useState, useReducer} from 'react';
 
 /**
  * @module
@@ -115,49 +114,49 @@ let tempPay = 0;
  */
 const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
   switch (action.type) {
-    case 'date_selected': {
-      const {tickets, date} = action.payload;
-      const sameDayShows = tickets.filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)));
-      console.log(sameDayShows);
-      // (t: Ticket) => console.log(t.date);
+  case 'date_selected': {
+    const {tickets, date} = action.payload;
+    const sameDayShows = tickets.filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)));
+    console.log(sameDayShows);
+    // (t: Ticket) => console.log(t.date);
 
-      return {
-        ...state,
-        selectedDate: date,
-        selectedTicket: undefined,
-        displayedShowings: sameDayShows,
-        showCalendar: false,
-        showTimes: true,
-        showClearBtn: true,
-        prompt: 'selectTime',
-      };
-    }
-    case 'time_selected': {
-      return {...state, selectedTicket: action.payload, showTimes: false, prompt: 'showSelection'};
-    }
-    case 'reset': {
-      return initialState;
-    }
-    case 'change_qty': {
-      return {...state, qty: action.payload};
-    }
-    case 'toggle_concession': {
-      return {...state, concessions: !state.concessions};
-    }
-    case 'change_pay_what': {
-      return {...state, payWhatPrice: action.payload};
-    }
-    case 'change_ticket_type': {
-      return {...state, selectedTicketType: action.payload.selectedTicketType};
-    }
-    default:
-      throw new Error('Received undefined action type');
+    return {
+      ...state,
+      selectedDate: date,
+      selectedTicket: undefined,
+      displayedShowings: sameDayShows,
+      showCalendar: false,
+      showTimes: true,
+      showClearBtn: true,
+      prompt: 'selectTime',
+    };
+  }
+  case 'time_selected': {
+    return {...state, selectedTicket: action.payload, showTimes: false, prompt: 'showSelection'};
+  }
+  case 'reset': {
+    return initialState;
+  }
+  case 'change_qty': {
+    return {...state, qty: action.payload};
+  }
+  case 'toggle_concession': {
+    return {...state, concessions: !state.concessions};
+  }
+  case 'change_pay_what': {
+    return {...state, payWhatPrice: action.payload};
+  }
+  case 'change_ticket_type': {
+    return {...state, selectedTicketType: action.payload.selectedTicketType};
+  }
+  default:
+    throw new Error('Received undefined action type');
   }
 };
 
 interface TicketPickerProps {
-    onSubmit: (ticketInfo: any) => void,
-    tickets: Ticket[]
+  onSubmit: (ticketInfo: any) => void,
+  tickets: Ticket[]
 }
 
 /**
@@ -186,29 +185,29 @@ const TicketPicker = (props: TicketPickerProps) => {
 
   const fetchTicketTypes = async () => {
     const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/AllTypes')
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error('Failed to retrieve ticket types');
-          }
-          console.log('Response containing ticket types received successfully');
-          return res.json();
-        })
-        .then((resData) => {
-          const data: TicketType[] = resData.data.map((t) => ({
-            id: t.id,
-            name: t.description,
-            price: t.price,
-            concessions: t.concessions,
-          }));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Failed to retrieve ticket types');
+        }
+        console.log('Response containing ticket types received successfully');
+        return res.json();
+      })
+      .then((resData) => {
+        const data: TicketType[] = resData.data.map((t) => ({
+          id: t.id,
+          name: t.description,
+          price: t.price,
+          concessions: t.concessions,
+        }));
 
-          setTicketTypesState((prevState) => ({
-            ...prevState,
-            ticketTypes: data,
-          }));
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+        setTicketTypesState((prevState) => ({
+          ...prevState,
+          ticketTypes: data,
+        }));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   useEffect(() => {
@@ -368,11 +367,11 @@ const TicketPicker = (props: TicketPickerProps) => {
               </option>
             ))
           ) : (
-             getDefaultType.map((t) => (
-               <option className="text-white" key={t.id} value={t.name}>
-                 {t.name}: {t.price}
-               </option>
-             ))
+            getDefaultType.map((t) => (
+              <option className="text-white" key={t.id} value={t.name}>
+                {t.name}: {t.price}
+              </option>
+            ))
           )}
         </select>
       </div>

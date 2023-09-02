@@ -151,8 +151,8 @@ const Cart = () => {
           <div className='flex flex-col md:flex-row sm:flex-col sm:items-center w-full h-full'>
             <div className='w-full h-full md:mt-20 sm:mt-20 bg-zinc-300 p-9 flex flex-col gap-5 items-start rounded-xl'>
               {(items.length > 0) ?
-                  items.map((data) => <CartRow key={data.product_id} item={data} removeHandler={displayModal} />) :
-                  <div className='text-zinc-400 '>There&apos;s nothing in your cart</div>
+                items.map((data) => <CartRow key={data.product_id} item={data} removeHandler={displayModal} />) :
+                <div className='text-zinc-400 '>There&apos;s nothing in your cart</div>
               }
             </div>
             <div className='md:w-[30rem] sm:w-full sm:mt-10
@@ -197,7 +197,7 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <button className='bg-red-600 flex flex-col items-center w-full px-3 py-3 text-white rounded-xl disabled:opacity-50 'disabled={items.length === 0} onClick={removeAllCartItems}>
+                <button className='bg-red-600 flex flex-col items-center w-full px-3 py-3 text-white rounded-xl disabled:opacity-50' disabled={items.length === 0} onClick={removeAllCartItems}>
                   <div className='flex flex-row items-center gap-1'>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

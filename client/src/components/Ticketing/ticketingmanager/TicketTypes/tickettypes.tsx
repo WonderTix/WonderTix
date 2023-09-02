@@ -56,33 +56,33 @@ const TicketTypes = () => {
 
   // handles editing a ticket type
   const handleEditTicket = React.useCallback(
-      async (newRow: GridRowModel, prevRow: GridRowModel) => {
-        console.log('New row: ' + newRow.id + ' ' + newRow.description +
-          ' ' + newRow.price + ' ' + newRow.concessions);
+    async (newRow: GridRowModel, prevRow: GridRowModel) => {
+      console.log('New row: ' + newRow.id + ' ' + newRow.description +
+        ' ' + newRow.price + ' ' + newRow.concessions);
 
-        const token = await getAccessTokenSilently({
-          audience: process.env.REACT_APP_ROOT_URL,
-          scope: 'admin',
-        });
+      const token = await getAccessTokenSilently({
+        audience: process.env.REACT_APP_ROOT_URL,
+        scope: 'admin',
+      });
 
-        if (newRow.description !== prevRow.description ||
-          newRow.price !== prevRow.price) {
-          console.log('Ticket type has changed');
+      if (newRow.description !== prevRow.description ||
+        newRow.price !== prevRow.price) {
+        console.log('Ticket type has changed');
 
-          const response = await fetch(
-              process.env.REACT_APP_API_1_URL+'/tickets/updateType', {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(newRow),
-              },
-          );
-          console.log(response);
-        }
-        return newRow;
-      }, [ticketTypes],
+        const response = await fetch(
+          process.env.REACT_APP_API_1_URL+'/tickets/updateType', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(newRow),
+          },
+        );
+        console.log(response);
+      }
+      return newRow;
+    }, [ticketTypes],
   );
 
   // handles the click event of the delete button
@@ -97,13 +97,14 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/tickets/' + ticketId, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-          });
+        process.env.REACT_APP_API_1_URL + '/tickets/' + ticketId, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        },
+      );
 
       const responseData = await response.json();
       console.log(responseData);
@@ -203,21 +204,21 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/tickets/newType',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(
-                {
-                  name: newTicketType,
-                  price: newTicketPrice,
-                  concessions: newConcessionsPrice,
-                },
-            ),
+        process.env.REACT_APP_API_1_URL + '/tickets/newType',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           },
+          body: JSON.stringify(
+            {
+              name: newTicketType,
+              price: newTicketPrice,
+              concessions: newConcessionsPrice,
+            },
+          ),
+        },
       );
       if (response.ok) {
         console.log('Ticket type added successfully');
@@ -300,15 +301,15 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
-          {
-            credentials: 'omit',
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
+        process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
+        {
+          credentials: 'omit',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           },
+        },
       );
 
       console.log('Access token --> ' + process.env.REACT_APP_API_1_URL);

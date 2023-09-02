@@ -9,11 +9,10 @@
  */
 import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
-// import {FieldArray} from 'react-final-form-arrays';
 import React, {useCallback, useState, useEffect} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from '../Events/showListController';
-import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
+import {WtixEvent} from '../../../../interfaces/showing.interface';
 import PopUp from '../../Pop-up';
 
 /**
@@ -112,21 +111,21 @@ const EventForm = ({onSubmit, tickettypes, initialValues}: EventFormProps) => {
   const def: WtixEvent =
     initialValues !== undefined
       ? {
-          eventname: initialValues.eventname,
-          eventid: initialValues.eventid,
-          eventdescription: initialValues.eventdescription,
-          imageurl: initialValues.imageurl,
-          active: initialValues.active,
-          showings: initialValues.showings,
-        }
+        eventname: initialValues.eventname,
+        eventid: initialValues.eventid,
+        eventdescription: initialValues.eventdescription,
+        imageurl: initialValues.imageurl,
+        active: initialValues.active,
+        showings: initialValues.showings,
+      }
       : {
-          eventname: '',
-          eventid: -1,
-          eventdescription: '',
-          imageurl: '',
-          active: false,
-          showings: [],
-        };
+        eventname: '',
+        eventid: -1,
+        eventdescription: '',
+        imageurl: '',
+        active: false,
+        showings: [],
+      };
 
   useEffect(() => {
     if (initialValues) {

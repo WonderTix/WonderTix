@@ -80,30 +80,30 @@ const ShowListController = ({
   };
 
   const handleSetShow = useCallback(
-      (show) => {
-        const showItems = [...shows];
-        // console.log(
-        //   'handle set show called with event instance id ' + show.id
-        // );
-        console.log('id: ' + show.eventinstanceid);
-        showItems[show.index] = show;
+    (show) => {
+      const showItems = [...shows];
+      // console.log(
+      //   'handle set show called with event instance id ' + show.id
+      // );
+      console.log('id: ' + show.eventinstanceid);
+      showItems[show.index] = show;
 
-        setShow(showItems);
-      },
-      [shows],
+      setShow(showItems);
+    },
+    [shows],
   );
 
   const handleDeleteShow = useCallback(
-      (e) => {
-        const newShowItems = shows.filter((_, i) => i !== parseInt(e.target.id));
-        newShowItems.forEach((e, i) => {
-          e.index = i;
-        });
-        console.log('Begin HandleDelete', newShowItems);
-        setNumOfShowings(numOfShowings - 1);
-        setShow(newShowItems);
-      },
-      [shows],
+    (e) => {
+      const newShowItems = shows.filter((_, i) => i !== parseInt(e.target.id));
+      newShowItems.forEach((e, i) => {
+        e.index = i;
+      });
+      console.log('Begin HandleDelete', newShowItems);
+      setNumOfShowings(numOfShowings - 1);
+      setShow(newShowItems);
+    },
+    [shows],
   );
 
   useEffect(() => {
