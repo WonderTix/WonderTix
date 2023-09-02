@@ -1,0 +1,54 @@
+import React from 'react';
+import {EventShowingsContainer} from './EventShowingsContainer';
+import {EventGeneralContainer} from './EventGeneralContainer';
+import {useEvent} from './EventProvider';
+import {LoadingScreen} from '../../../mainpage/LoadingScreen';
+import Udash_nav from '../../udash_navbar';
+import PopUp from '../../../Pop-up';
+
+export const EventPageV2 = () => {
+  const {
+    eventID,
+    loading,
+    token,
+    showPopUp,
+    setShowPopUp,
+    message,
+    success,
+    title,
+    handleProceed,
+    ticketTypes,
+  } = useEvent();
+
+
+  if (loading || token === '' || eventID === undefined || !ticketTypes) {
+    return <LoadingScreen />;
+  } else {
+    return (
+      <div className={'flex flex-row'}>
+        <Udash_nav />
+        <div className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
+          {showPopUp && (
+            <PopUp
+              message={message}
+              title={title}
+              handleClose={() => setShowPopUp(false)}
+              handleProceed={async () => {
+                setShowPopUp(false);
+                if (handleProceed) {
+                  await handleProceed();
+                }
+              }
+              }
+              success={success}
+            />
+          )}
+          <div className='md:ml-[18rem] md:mr-[5rem] mt-[7rem] sm:mr-[2rem] sm:ml-[2rem] sm:mb-[11rem]'>
+            <EventGeneralContainer />
+            <EventShowingsContainer />
+          </div>
+        </div>
+      </div>
+    );
+  }
+};

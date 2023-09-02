@@ -28,4 +28,3 @@ export const EventImage = (props:EventImageProps) => {
       onError={imageOnError}/>
   );
 };
-

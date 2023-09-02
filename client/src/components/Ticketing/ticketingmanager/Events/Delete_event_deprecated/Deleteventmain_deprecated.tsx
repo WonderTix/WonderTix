@@ -1,6 +1,6 @@
 import React from 'react';
 import Udash_nav from '../../udash_navbar';
-import DeleteEvents from './Deleteevent';
+import DeleteEvents from './Deleteevent_deprecated';
 
 /**
  * Deletes the event from main
