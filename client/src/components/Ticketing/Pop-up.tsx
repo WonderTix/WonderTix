@@ -20,7 +20,7 @@ const PopUp = ({
 }: popupProps): ReactElement => {
   return (
     <div
-      className='fixed flex items-center bg-gray-500 bg-opacity-75 transition-opacity z-10 w-full h-full'
+      className='fixed flex sm:items-center items-end bg-gray-500 bg-opacity-75 transition-opacity z-10 w-full h-full'
       aria-labelledby='popup-title'
       aria-describedby='popup-description'
       aria-modal='true'
@@ -30,7 +30,7 @@ const PopUp = ({
         id='popup-modal'
         tabIndex={-1}
         className='relative z-10 bg-white rounded-lg overflow-hidden
-          mx-2 sm:mx-auto my-0 sm:max-w-lg w-full shadow-xl transform transition-all
+          mx-2 sm:mx-auto my-2 sm:max-w-lg w-full shadow-xl transform transition-all
           dark:bg-white-700'
       >
         <button
