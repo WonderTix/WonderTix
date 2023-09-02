@@ -55,10 +55,9 @@ const Footer = () => {
         </form>
       </div>
 
-      <div className="text-center text-gray-700 p-4">
-            © 2022 Copyright:
-        <a className="text-gray-800" href="https://portlandplayhouse.org/">  Portland Playhouse</a>
-      </div>
+      <p className="text-center text-gray-700 p-4">
+        &#169; 2023 Copyright: <a className="text-gray-800" href="https://portlandplayhouse.org/">Portland Playhouse</a>
+      </p>
     </footer>
   );
 };
