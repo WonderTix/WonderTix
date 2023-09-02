@@ -16,9 +16,12 @@ export const EventPageV2 = () => {
     message,
     success,
     title,
+    handleProceed,
+    ticketTypes,
   } = useEvent();
 
-  if (loading || token === '' || eventID === undefined) {
+
+  if (loading || token === '' || eventID === undefined || !ticketTypes) {
     return <LoadingScreen />;
   } else {
     return (
@@ -30,7 +33,13 @@ export const EventPageV2 = () => {
               message={message}
               title={title}
               handleClose={() => setShowPopUp(false)}
-              handleProceed={() => setShowPopUp(false)}
+              handleProceed={async () => {
+                setShowPopUp(false);
+                if (handleProceed) {
+                  await handleProceed();
+                }
+              }
+              }
               success={success}
             />
           )}

@@ -54,7 +54,7 @@ export const EventGeneralContainer = () => {
       const res = await event.json();
       setPopUpProps(`Failure`, res.error, false);
     } catch (error) {
-      setPopUpProps(`Failure`, 'Event cannot be marked inactive', false);
+      setPopUpProps(`Failure`, 'Event cannot be deleted', false);
     }
   };
 
@@ -73,14 +73,19 @@ export const EventGeneralContainer = () => {
     onDeleteSuccess,
     onDeleteError,
   );
-
+  const onConfirmDelete = () => {
+    setPopUpProps('Confirm deletion',
+      'Click continue to delete this event',
+      false,
+      async () => await onDelete());
+  };
   return (
     <>
       {
         edit ?
           <EventGeneralForm
             onSubmit={onSubmit}
-            onDelete={onDelete}
+            onDelete={onConfirmDelete}
             onLeaveEdit={() => {
               setEdit((edit) => !edit);
               setEditing((edit) => !edit);

@@ -14,7 +14,7 @@ interface EventGeneralFormProps {
 }
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onDelete, onLeaveEdit} = props;
-  const {eventData} = useEvent();
+  const {eventData, showPopUp} = useEvent();
   const [disabledURL, setDisabledURL] = useState(
     eventData?.imageurl === 'Default Event Image',
   );
@@ -55,6 +55,8 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold h-fit'
                   }
                   onClick={onLeaveEdit}
+                  disabled={showPopUp}
+                  type={'button'}
                 >
                       Cancel
                 </button>

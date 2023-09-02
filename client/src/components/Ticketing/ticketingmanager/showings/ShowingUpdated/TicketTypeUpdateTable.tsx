@@ -14,12 +14,13 @@ interface TicketTypeTableProps {
 export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
   const {ticketTypes, showPopUp} = useEvent();
-  const [field] = useField('instanceTicketTypes');
+  const [InstanceTicketTypesField] = useField('instanceTicketTypes');
+  const [totalTickets] = useField('totalseats');
   const [availableTypes, setAvailableTypes] = useState(
     ticketTypes
       .filter(
         (type) =>
-          !field.value.find((value) => value.typeID === Number(type.id)) && Number(type.id) !== 1,
+          !InstanceTicketTypesField.value.find((value) => value.typeID === Number(type.id)) && Number(type.id) !== 1,
       )
       .map((value) => Number(value.id)),
   );
@@ -33,7 +34,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
       <table className={'table table-fixed text-sm min-w-[100%]'}>
         <thead
           className={`text-left text-zinc-800 whitespace-nowrap bg-gray-300 ${
-            showPopUp ? '' : 'sticky z-50'
+            showPopUp ? '' : 'sticky'
           } top-0`}
         >
           <tr className={'rounded-xl'}>
@@ -89,15 +90,30 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
           </tr>
         </thead>
         <tbody className={'text-sm whitespace-nowrap text-zinc-800'}>
-          {field.value && field.value.length > 0 ? (
-            field.value.map((id, index) => (
+          <tr className={'bg-gray-200'}>
+            <td className={'px-2 border border-white'}>
+              {getTicketTypePrice(1, 'description', ticketTypes)}
+            </td>
+            <td className={'px-2 border border-white'}>
+              {getTicketTypePrice(1, 'price', ticketTypes)}
+            </td>
+            <td className={'px-2 border border-white'}>
+              {getTicketTypePrice(1, 'concessions', ticketTypes)}
+            </td>
+            <td className={'px-2 border border-white'}>
+              {totalTickets.value}
+            </td>
+            <td className={'border border-white'}></td>
+          </tr>
+          {InstanceTicketTypesField.value && InstanceTicketTypesField.value.length > 0 &&(
+            InstanceTicketTypesField.value.map((id, index) => (
               <tr key={eventInstanceID + index + 'ticketTypeRow'}>
                 <td
                   key={eventInstanceID + index + 'ticket type select'}
                   className={'px-2'}
                 >
                   <Field
-                    name={`${field.name}[${index}].typeID`}
+                    name={`${InstanceTicketTypesField.name}[${index}].typeID`}
                     type={'select'}
                     component={TicketTypeSelect}
                     availableTypes={availableTypes}
@@ -111,7 +127,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   className={'px-2'}
                 >
                   {getTicketTypePrice(
-                    field.value[index].typeID,
+                    InstanceTicketTypesField.value[index].typeID,
                     'price',
                     ticketTypes,
                   )}
@@ -121,7 +137,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   className={'px-2'}
                 >
                   {getTicketTypePrice(
-                    field.value[index].typeID,
+                    InstanceTicketTypesField.value[index].typeID,
                     'concessions',
                     ticketTypes,
                   )}
@@ -131,14 +147,14 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   className={'px-2'}
                 >
                   <Field
-                    name={`${field.name}[${index}].typeQuantity`}
+                    name={`${InstanceTicketTypesField.name}[${index}].typeQuantity`}
                     type={'number'}
                     component={InputControl}
                     hidden={true}
                     label={'Ticket Quantity'}
                     id={eventInstanceID}
                     className={{
-                      controlClass: 'px-2',
+                      controlClass: '',
                       inputClass: 'w-[50px]',
                       labelClass: '',
                     }}
@@ -151,7 +167,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                     onClick={() => {
                       setAvailableTypes([
                         ...availableTypes,
-                        Number(field.value[index].typeID),
+                        Number(InstanceTicketTypesField.value[index].typeID),
                       ]);
                       arrayHelpers.remove(index);
                     }}
@@ -174,15 +190,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                 </td>
               </tr>
             ))
-          ) : (
-            <tr>
-              <td
-                className='px-2 text-zinc-800 font-semibold min-[650px]:text-center'
-                colSpan={5}
-              >
-                No Ticket Types Selected For Showing
-              </td>
-            </tr>
           )}
         </tbody>
       </table>

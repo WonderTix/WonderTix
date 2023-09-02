@@ -8,7 +8,7 @@ interface EventGeneralViewProps {
   setEdit: (value) => void;
 }
 export const EventGeneralView = (props: EventGeneralViewProps) => {
-  const {eventData, editing, setEditing} = useEvent();
+  const {eventData, editing, setEditing, showPopUp} = useEvent();
   const {setEdit} = props;
 
   if (!eventData) {
@@ -23,7 +23,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
         </h2>
         <button
           type={'button'}
-          disabled={editing}
+          disabled={editing || showPopUp}
           onClick={() => {
             setEdit((edit) => !edit);
             setEditing((edit) => !edit);

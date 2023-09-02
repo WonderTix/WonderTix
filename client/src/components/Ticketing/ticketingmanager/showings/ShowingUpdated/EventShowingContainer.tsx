@@ -14,13 +14,18 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
   const {setReloadShowing, token, setEditing, setPopUpProps} = useEvent();
   const [edit, setEdit] = useState(false);
 
-  const onSuccess = () => {
+  const onSubmitSuccess = () => {
     setReloadShowing((reload) => !reload);
     setEdit((edit) => !edit);
-    setEditing((editing) => !editing);
     setPopUpProps('Success', 'Showing successfully updated', true);
+    setEditing((editing) => !editing);
   };
-
+  const onDeleteSuccess = () => {
+    setReloadShowing((reload) => !reload);
+    setEdit((edit) => !edit);
+    setPopUpProps('Success', 'Showing successfully deleted', true);
+    setEditing((editing) => !editing);
+  };
   const onError = async (event) => {
     try {
       const res = await event.json();
@@ -44,14 +49,14 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
             'PUT',
             `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
             token,
-            onSuccess,
+            onSubmitSuccess,
             onError,
           )}
           onDelete={createDeleteFunction(
             'DELETE',
             `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
             token,
-            onSuccess,
+            onDeleteSuccess,
             onError,
           )}
           onLeaveEdit={onEditClick}

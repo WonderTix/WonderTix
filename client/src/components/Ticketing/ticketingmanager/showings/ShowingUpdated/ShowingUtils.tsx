@@ -6,6 +6,7 @@ export interface eventInstanceTicketType {
   typeID: number;
   typeQuantity: number;
 }
+
 export const createSubmitFunction = (
   method: string,
   url: string,
@@ -40,6 +41,7 @@ export const createSubmitFunction = (
     }
   };
 };
+
 export const createDeleteFunction = (
   method: string,
   url: string,
@@ -47,7 +49,7 @@ export const createDeleteFunction = (
   onSuccess?,
   onError?,
 ) => {
-  return async (setIsDeleting) => {
+  return async (setIsDeleting?) => {
     try {
       const deleteRes = await fetch(url, {
         credentials: 'include',
@@ -60,13 +62,15 @@ export const createDeleteFunction = (
       if (!deleteRes.ok) {
         throw deleteRes;
       }
-      setIsDeleting(false);
+
       if (onSuccess) {
         await onSuccess();
       }
     } catch (error) {
       console.error(error);
-      setIsDeleting(false);
+      if (setIsDeleting) {
+        setIsDeleting(false);
+      }
       if (onError) {
         await onError(error);
       }
@@ -150,6 +154,7 @@ export const fetchToken = async (getAccessTokenSilently, setToken) => {
     console.error(error);
   }
 };
+
 export const useFetchToken = () => {
   const [token, setToken] = useState('');
   const {getAccessTokenSilently, isAuthenticated} = useAuth0();
@@ -173,6 +178,7 @@ export const useFetchShowingData = (eventID: number) => {
   }, [eventID, reload]);
   return {showingData, setReloadShowing, reload};
 };
+
 export const getShowingData = async (eventID, setShowingData, signal) => {
   try {
     const showingRes = await fetch(
@@ -233,7 +239,7 @@ export const getTicketTypeArray = (
 };
 
 export const getTicketTypePrice = (id:number, priceType:string, ticketTypes) => {
-  const foundType = ticketTypes.find((type) => Number(type.id) === id);
+  const foundType = ticketTypes?.find((type) => Number(type.id) === id);
   if (!foundType) return 0;
   return foundType[priceType];
 };

@@ -1,9 +1,11 @@
 import {useFormikContext} from 'formik';
 import React from 'react';
+import {useEvent} from './EventProvider';
 
 export const FormSubmitButton = () => {
   const {isSubmitting, isValid, isValidating} = useFormikContext();
-  const disabled = isSubmitting || !isValid || isValidating;
+  const {showPopUp} = useEvent();
+  const disabled = isSubmitting || !isValid || isValidating || showPopUp;
   const getButtonText = () => {
     if (isSubmitting) {
       return 'Saving';

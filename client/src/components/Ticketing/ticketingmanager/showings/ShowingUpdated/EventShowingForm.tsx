@@ -13,13 +13,13 @@ import {getTicketTypeArray} from './ShowingUtils';
 interface EventShowingFormProps {
   initialValues?: Showing;
   onSubmit: (event, action) => void;
-  onDelete?: (isDeleting) => void;
+  onDelete?: (event?) => void;
   onLeaveEdit?: () => void;
 }
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
   const {initialValues, onSubmit, onDelete, onLeaveEdit} = props;
-  const {eventID} = useEvent();
+  const {eventID, showPopUp} = useEvent();
 
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,
@@ -132,6 +132,8 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                     'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
                   }
                   onClick={onLeaveEdit}
+                  disabled={showPopUp}
+                  type={'button'}
                 >
                   Cancel
                 </button>

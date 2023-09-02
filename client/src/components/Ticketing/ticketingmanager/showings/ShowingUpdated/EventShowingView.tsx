@@ -73,43 +73,36 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
               </tr>
             </thead>
             <tbody className={'whitespace-nowrap'}>
-              {showing.ticketTypeId && showing.ticketTypeId.length > 0 ? (
-                getTicketTypeArray(
-                  showing.ticketTypeId,
-                  showing.seatsForType,
-                ).map((type, index) => (
-                  <tr
-                    key={`${showing.eventinstanceid} ${type.typeID} ${index}`}
-                  >
-                    <td className={'px-2'}>
-                      {getTicketTypePrice(
-                        type.typeID,
-                        'description',
-                        ticketTypes,
-                      )}
-                    </td>
-                    <td className={'px-2'}>
-                      {getTicketTypePrice(type.typeID, 'price', ticketTypes)}
-                    </td>
-                    <td className={'px-2'}>
-                      {getTicketTypePrice(
-                        type.typeID,
-                        'concessions',
-                        ticketTypes,
-                      )}
-                    </td>
-                    <td className={'px-2'}>{type.typeQuantity}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    className='px-2 text-zinc-800 font-semibold min-[650px]:text-center'
-                    colSpan={4}
-                  >
-                    No Ticket Types Selected For Showing
-                  </td>
-                </tr>
+              {showing.ticketTypeId && ticketTypes && (
+                [{typeID: 1, typeQuantity: showing.totalseats},
+                  ...getTicketTypeArray(
+                    showing.ticketTypeId,
+                    showing.seatsForType,
+                  )]
+                  .map((type, index) => (
+                    <tr
+                      key={`${showing.eventinstanceid} ${type.typeID} ${index}`}
+                    >
+                      <td className={'px-2'}>
+                        {getTicketTypePrice(
+                          type.typeID,
+                          'description',
+                          ticketTypes,
+                        )}
+                      </td>
+                      <td className={'px-2'}>
+                        {getTicketTypePrice(type.typeID, 'price', ticketTypes)}
+                      </td>
+                      <td className={'px-2'}>
+                        {getTicketTypePrice(
+                          type.typeID,
+                          'concessions',
+                          ticketTypes,
+                        )}
+                      </td>
+                      <td className={'px-2'}>{type.typeQuantity}</td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>
@@ -120,7 +113,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
           }
         >
           <button
-            disabled={editing}
+            disabled={editing || showPopUp}
             type={'button'}
             onClick={setEdit}
             className={

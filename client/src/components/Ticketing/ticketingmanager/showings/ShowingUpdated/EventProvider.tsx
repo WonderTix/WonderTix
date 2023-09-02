@@ -25,7 +25,8 @@ interface EventContextType {
   message: string;
   title: string;
   success: boolean;
-  setPopUpProps: (title: string, message: string, success: boolean) => void;
+  setPopUpProps: (title: string, message: string, success: boolean, handleProceed?) => void;
+  handleProceed: () => void;
 }
 
 export const EventContext = React.createContext<EventContextType>({
@@ -46,6 +47,7 @@ export const EventContext = React.createContext<EventContextType>({
   title: undefined,
   success: undefined,
   setPopUpProps: undefined,
+  handleProceed: undefined,
 });
 
 export const useEvent = () => {
@@ -63,15 +65,16 @@ export const EventProvider = () => {
   const [message, setMessage] = useState('');
   const [title, setTitle] = useState('');
   const [success, setSuccess] = useState(false);
+  const [handleProceed, setHandleProceed] = useState(undefined);
   const {setEventData, eventData, loading, ticketTypes} =
     useFetchEventData(eventID);
   const {setReloadShowing, showingData} = useFetchShowingData(eventID);
   const {token} = useFetchToken();
-
-  const setPopUpProps = (title, message, success) => {
+  const setPopUpProps = (title, message, success, handleProceedFunction?) => {
     setTitle(title);
     setMessage(message);
     setSuccess(success);
+    setHandleProceed(handleProceedFunction? () => handleProceedFunction: undefined);
     setShowPopUp(true);
     return;
   };
@@ -96,6 +99,7 @@ export const EventProvider = () => {
         title,
         success,
         setPopUpProps,
+        handleProceed,
       }}
     >
       <EventPageV2 />
