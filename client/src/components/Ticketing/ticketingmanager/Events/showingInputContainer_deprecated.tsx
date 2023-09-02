@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
-import DeleteConfirm from './deleteConfirm';
+import DeleteConfirm from './deleteConfirm_depreciated';
 
 /**
  * Used to map props to input container correctly

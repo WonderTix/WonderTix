@@ -12,6 +12,7 @@ interface EventGeneralFormProps {
   onDelete: (event) => void;
   onLeaveEdit?: () => void;
 }
+
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onDelete, onLeaveEdit} = props;
   const {eventData, showPopUp} = useEvent();
@@ -29,7 +30,6 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   };
 
   return (
-
     <Formik
       initialValues={baseValues}
       onSubmit={onSubmit}
@@ -58,7 +58,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   disabled={showPopUp}
                   type={'button'}
                 >
-                      Cancel
+                  Cancel
                 </button>
               )}
             </div>
@@ -117,7 +117,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                       'text-sm text-zinc-800 font-semibold text-center pb-1'
                     }
                   >
-                  Use Default Image
+                    Use Default Image
                   </label>
                   <input
                     name={'defaultImageUrl'}
@@ -141,7 +141,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                       'text-sm text-zinc-800 font-semibold text-center pb-1'
                     }
                   >
-                  Active
+                    Active
                   </label>
                   <input
                     name={'active'}
