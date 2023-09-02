@@ -150,7 +150,7 @@ const Udash_nav = () => {
                   </div>
                   <button
                     id="closeSideBar"
-                    className="flex items-center justify-center h-10 w-10"
+                    className="flex items-center justify-center h-10 w-10 text-gray-200 hover:text-indigo-700"
                     onClick={() => setShowMobileMenu(!showMobileMenu)}
                   >
                     <svg
@@ -159,8 +159,8 @@ const Udash_nav = () => {
                       width={20}
                       height={20}
                       viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="white"
+                      strokeWidth="2"
+                      stroke="currentColor"
                       fill="none"
                       strokeLinecap="round"
                       strokeLinejoin="round"
