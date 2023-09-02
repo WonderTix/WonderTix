@@ -79,28 +79,15 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
                 )}
               </button>
             </li>
-            <li>
-              <button
-                className={
-                  !bMode
-                    ? 'hover:text-indigo-600 text-zinc-600 font-semibold px-4 py-2 transition duration-300 ease-in-out'
-                    : ''
-                }
-              >
-                {!bMode ? (
-                  <Link
-                    to='seasontickets'
-                    path='/'
-                    smooth={true}
-                    duration={600}
-                  >
+            {!bMode && (
+              <li>
+                <button className='hover:text-indigo-600 text-zinc-600 font-semibold px-4 py-2 transition duration-300 ease-in-out'>
+                  <Link to='seasontickets' smooth={true} duration={600}>
                     Seasonal Tickets
                   </Link>
-                ) : (
-                  <div></div>
-                )}
-              </button>
-            </li>
+                </button>
+              </li>
+            )}
             <li>
               <button
                 onClick={() => navigate('/donate')}
