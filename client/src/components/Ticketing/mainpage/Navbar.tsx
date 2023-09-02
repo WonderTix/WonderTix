@@ -230,13 +230,15 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
             Events
           </button>
         </li>
-        <li className='border-b-2 p-3 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300'>
-          <button className='border-none bg-transparent text-black font-semibold'>
-            <Link to='seasontickets' smooth={true} duration={500}>
-              Seasonal Tickets
-            </Link>
-          </button>
-        </li>
+        {!bMode && (
+          <li className='border-b-2 p-3 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300'>
+            <button className='border-none bg-transparent text-black font-semibold'>
+              <Link to='seasontickets' smooth={true} duration={500}>
+                Seasonal Tickets
+              </Link>
+            </button>
+          </li>
+        )}
         <li className='border-b-2 p-3 border-zinc-300 w-full flex flex-col items-center font-semibold hover:scale-105 duration-300'>
           <button
             onClick={() => navigate('/donate')}
