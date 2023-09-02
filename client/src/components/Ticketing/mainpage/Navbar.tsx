@@ -67,34 +67,35 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
               alt=''
             />
           </a>
-          <ul className='hidden md:flex md:flex-row'>
-            <li>
-              <button className='hover:text-indigo-600 text-zinc-600 font-semibold px-4 py-2 transition duration-300 ease-in-out'>
-                {!bMode ? (
-                  <Link to='home' smooth={true} duration={600}>
-                    Events
-                  </Link>
-                ) : (
-                  <button onClick={() => navigate('/')}>Events</button>
-                )}
-              </button>
+          <ul className='hidden md:flex'>
+            <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
+              {!bMode ? (
+                <Link
+                  to='home'
+                  smooth={true}
+                  duration={600}
+                  className='cursor-pointer px-4 py-2 inline-block'
+                >
+                  Events
+                </Link>
+              ) : (
+                <button onClick={() => navigate('/')} className="px-4 py-2">Events</button>
+              )}
             </li>
             {!bMode && (
-              <li>
-                <button className='hover:text-indigo-600 text-zinc-600 font-semibold px-4 py-2 transition duration-300 ease-in-out'>
-                  <Link to='seasontickets' smooth={true} duration={600}>
-                    Seasonal Tickets
-                  </Link>
-                </button>
+              <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
+                <Link
+                  to='seasontickets'
+                  smooth={true}
+                  duration={600}
+                  className='cursor-pointer px-4 py-2 inline-block'
+                >
+                  Seasonal Tickets
+                </Link>
               </li>
             )}
-            <li>
-              <button
-                onClick={() => navigate('/donate')}
-                className='hover:text-indigo-600 text-zinc-600 font-semibold px-4 py-2 transition duration-300 ease-in-out'
-              >
-                Donate
-              </button>
+            <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
+              <button onClick={() => navigate('/donate')} className='px-4 py-2'>Donate</button>
             </li>
           </ul>
         </div>
@@ -162,8 +163,8 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
           </div>
           <button
             onClick={() => navigate('/cart')}
-            className='flex flex-row gap-1 items-center bg-indigo-600
-               hover:bg-transparent border border-indigo-600  font-semibold px-3 py-2 transition duration-300 ease-in-out hover:text-indigo-600 rounded-xl text-zinc-200'
+            className='flex gap-1 items-center bg-indigo-600
+               hover:bg-transparent border border-indigo-600 font-semibold px-3 py-2 transition duration-300 ease-in-out hover:text-indigo-600 rounded-xl text-zinc-200'
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -198,13 +199,11 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
                     )}
                   </div>
                 )}
-                <div className='relative'>
-                  <img
-                    src={picture}
-                    className='rounded-3xl w-10 h-10'
-                    alt='Profile picture'
-                  />
-                </div>
+                <img
+                  src={picture}
+                  className='rounded-3xl w-10 h-10'
+                  alt='Profile picture'
+                />
               </div>
             </div>
           ) : (
@@ -222,35 +221,44 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
             : 'absolute md:hidden bg-zinc-200 w-full px-8 items-center'
         }
       >
-        <li className='border-b-2 p-3 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300'>
-          <button
-            onClick={() => navigate('/')}
-            className='border-none bg-transparent text-black font-semibold'
-          >
-            Events
-          </button>
+        <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300 text-black font-semibold'>
+          {!bMode ? (
+            <Link
+              to='home'
+              smooth={true}
+              duration={600}
+              className='cursor-pointer p-3'
+            >
+              Events
+            </Link>
+          ) : (
+            <button
+              onClick={() => navigate('/')}
+              className='border-none bg-transparent p-3'
+            >
+              Events
+            </button>
+          )}
         </li>
         {!bMode && (
-          <li className='border-b-2 p-3 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300'>
-            <button className='border-none bg-transparent text-black font-semibold'>
-              <Link to='seasontickets' smooth={true} duration={500}>
-                Seasonal Tickets
-              </Link>
-            </button>
+          <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300 text-black font-semibold'>
+            <Link to='seasontickets' smooth={true} duration={500} className='cursor-pointer p-3'>
+              Seasonal Tickets
+            </Link>
           </li>
         )}
-        <li className='border-b-2 p-3 border-zinc-300 w-full flex flex-col items-center font-semibold hover:scale-105 duration-300'>
+        <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center text-black font-semibold hover:scale-105 duration-300'>
           <button
             onClick={() => navigate('/donate')}
-            className='border-none bg-transparent text-black font-semibold'
+            className='border-none bg-transparent p-3'
           >
             Donate
           </button>
         </li>
-        <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300'>
+        <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center text-black font-semibold hover:scale-105 duration-300'>
           <button
             onClick={() => navigate('/cart')}
-            className='border-none bg-transparent text-black font-semibold p-3'
+            className='border-none bg-transparent p-3'
           >
             Cart
           </button>
