@@ -49,7 +49,6 @@ export default function CreateEvents() {
       },
       body: JSON.stringify(data),
     });
-
     return req.json();
   };
 

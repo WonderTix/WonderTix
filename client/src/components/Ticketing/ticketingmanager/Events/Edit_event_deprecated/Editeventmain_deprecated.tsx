@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Udash_nav from '../../udash_navbar';
-import EditEventPage from './EditEventPage';
+import EditEventPage from './EditEventPage_deprecated';
 import {useParams} from 'react-router-dom';
 import {WtixEvent} from '../../../../../interfaces/showing.interface';
 

@@ -9,10 +9,11 @@
  */
 import {Form} from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
+// import {FieldArray} from 'react-final-form-arrays';
 import React, {useCallback, useState, useEffect} from 'react';
 import InputFieldForEvent from './InputField';
-import ShowListController from '../Events/showListController';
-import {WtixEvent} from '../../../../interfaces/showing.interface';
+import ShowListController from './showListController_deprecated';
+import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
 import PopUp from '../../Pop-up';
 
 /**

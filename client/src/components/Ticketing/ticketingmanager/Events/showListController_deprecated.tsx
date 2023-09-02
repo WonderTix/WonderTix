@@ -2,7 +2,7 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {Showing} from '../../../../interfaces/showing.interface';
 // import EventForm from './EventForm';
-import ShowingInputContainer from './showingInputContainer';
+import ShowingInputContainer from './showingInputContainer_deprecated';
 
 /**
  * Used to help process shows correctly

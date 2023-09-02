@@ -113,7 +113,7 @@ const Udash_nav = () => {
                       d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                     />
                   </svg>
-                  <span>Showings</span>
+                  <span>Events</span>
                 </div>
               </a>
             </li>
@@ -150,7 +150,7 @@ const Udash_nav = () => {
                   </div>
                   <button
                     id="closeSideBar"
-                    className="flex items-center justify-center h-10 w-10"
+                    className="flex items-center justify-center h-10 w-10 text-gray-200 hover:text-indigo-700"
                     onClick={() => setShowMobileMenu(!showMobileMenu)}
                   >
                     <svg
@@ -159,8 +159,8 @@ const Udash_nav = () => {
                       width={20}
                       height={20}
                       viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="white"
+                      strokeWidth="2"
+                      stroke="currentColor"
                       fill="none"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -244,7 +244,7 @@ const Udash_nav = () => {
                             d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                           />
                         </svg>
-                        <span>Showings</span>
+                        <span>Events</span>
                       </div>
                     </a>
                   </li>
