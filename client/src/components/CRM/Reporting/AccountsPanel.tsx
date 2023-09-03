@@ -49,7 +49,7 @@ const AccountsPanel = ({
         scope: 'admin',
       });
 
-      const response= await fetch(
+      const response = await fetch(
         `${process.env.REACT_APP_API_1_URL}/saved_reports`, {
           method: 'post',
           headers: {
