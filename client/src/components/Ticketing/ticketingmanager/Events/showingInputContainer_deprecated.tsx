@@ -144,8 +144,8 @@ const ShowingInputContainer = ({
 
   return (
     <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4' key={index}>
-      { showConfirm ?
-      <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(index)}/> : null
+      {showConfirm &&
+        <DeleteConfirm message='Are you sure you want to delete this showing?' setShowConfirm={setShowConfirm} handleDelete={handleDeleteShow} id={String(index)}/>
       }
       <div key={index} className='shadow-xl p-5 rounded-xl mb-9 bg-violet-700'>
         <label className='font-semibold text-white mb-7 mt-7  '>Show # {index + 1}</label>

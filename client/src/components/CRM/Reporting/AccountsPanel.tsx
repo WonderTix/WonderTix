@@ -50,14 +50,14 @@ const AccountsPanel = ({
       });
 
       const response = await fetch(
-          `${process.env.REACT_APP_API_1_URL}/saved_reports`, {
-            method: 'post',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(body),
-          });
+        `${process.env.REACT_APP_API_1_URL}/saved_reports`, {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
+        });
       console.log(response.text);
 
       setSavedName('');
@@ -73,7 +73,7 @@ const AccountsPanel = ({
       if (filter[1] === '' || filter[1] === false) return;
 
       filters.push(
-          `${filter[0]}=${filter[1]}`,
+        `${filter[0]}=${filter[1]}`,
       );
     });
 
@@ -85,14 +85,14 @@ const AccountsPanel = ({
     console.log(e.target.id);
 
     switch (e.target.id) {
-      case 'username':
-        setUsername(e.target.value);
-        break;
-      case 'is_superadmin':
-        setIsAdmin(e.target.checked);
-        break;
-      default:
-        break;
+    case 'username':
+      setUsername(e.target.value);
+      break;
+    case 'is_superadmin':
+      setIsAdmin(e.target.checked);
+      break;
+    default:
+      break;
     }
   };
 

@@ -60,10 +60,10 @@ const YourOrder = () => {
           </div>
         </div>
         {discount.code !== '' ? (
-        <div className='flex flex-row items-center gap-2 justify-between w-full'>
-          <div className='text-zinc-100 text-sm '>Discount</div>
-          <div className='text-amber-300 text-lg font-bold'>{toDollar(subtotal-total)}</div>
-        </div>
+          <div className='flex flex-row items-center gap-2 justify-between w-full'>
+            <div className='text-zinc-100 text-sm '>Discount</div>
+            <div className='text-amber-300 text-lg font-bold'>{toDollar(subtotal-total)}</div>
+          </div>
         ) : ('')}
         <div className='flex flex-row items-center gap-2 justify-between w-full'>
           <div className='text-zinc-100 text-sm '>Donation</div>
@@ -83,15 +83,15 @@ const YourOrder = () => {
 const LineItem = (props: {className: string, id: number}) => {
   const data = useAppSelector((state) => selectCartItem(state, props.id));
   return data ?
-        <div className={props.className}>
-          <div>{data.qty} <b>x</b> {data.name}</div>
-          <div>{
-            data.payWhatCan ?
-              toDollar(data.payWhatPrice) :
-              toDollar(data.qty * data.price)
-          }</div>
-        </div> :
-        <div></div>;
+    <div className={props.className}>
+      <div>{data.qty} <b>x</b> {data.name}</div>
+      <div>{
+        data.payWhatCan ?
+          toDollar(data.payWhatPrice) :
+          toDollar(data.qty * data.price)
+      }</div>
+    </div> :
+    <div></div>;
 };
 
 export default YourOrder;
