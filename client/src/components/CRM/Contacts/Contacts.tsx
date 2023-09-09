@@ -26,26 +26,26 @@ const Contacts = (): React.ReactElement => {
         scope: 'admin',
       });
       await axios
-          .get(
-              process.env.REACT_APP_API_1_URL + `/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
-              {
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                },
-              },
-          )
-          .then((res) => {
-            // setData(res.data);
-            setDataList(res.data.data);
-            console.log(res);
-          })
-          .catch((err) => {
-            setError(err.message);
-            console.log(error);
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
+        .get(
+          process.env.REACT_APP_API_1_URL + `/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          },
+        )
+        .then((res) => {
+          // setData(res.data);
+          setDataList(res.data.data);
+          console.log(res);
+        })
+        .catch((err) => {
+          setError(err.message);
+          console.log(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
   useEffect(() => {
@@ -90,11 +90,12 @@ const Contacts = (): React.ReactElement => {
         <div>
           <br/>
           {datalist.map(
-              (Cust) =>
-                <ContactResults
-                  data={Cust}
-                  key={Cust.contactid}
-                  {...Cust}/>,
+            (Cust) =>
+              <ContactResults
+                data={Cust}
+                key={Cust.contactid}
+                {...Cust}
+              />,
           )}
         </div>
       </div>

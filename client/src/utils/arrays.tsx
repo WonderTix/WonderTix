@@ -176,17 +176,16 @@ const appendAMPM = (time: time): time => ({
 
 const toCivilianHours = (time: time): time => ({
   ...time,
-  hours: (time.hours > 12) ?
-        time.hours - 12 : time.hours,
+  hours: (time.hours > 12) ? time.hours - 12 : time.hours,
 });
 
 const formatTime = (time: time, template='hh:mm tt') =>
   template
-      .replace('hh', time.hours.toString())
-      .replace('mm', (time.minutes < 10) ?
-            '0'+time.minutes.toString() :
-            time.minutes.toString())
-      .replace('tt', time.ampm!);
+    .replace('hh', time.hours.toString())
+    .replace('mm', (time.minutes < 10) ?
+      '0' + time.minutes.toString() :
+      time.minutes.toString())
+    .replace('tt', time.ampm!);
 
 // Input=19:00:00 => Output=7:00 PM
 export const militaryToCivilian = (milT: string) =>
@@ -201,9 +200,9 @@ const getDay = (d: Date) => DAYS[d.getDay()];
 const getDate = (d: Date) => d.getDate().toString();
 const formatDate = (d: Date, template='dy, mm dt') =>
   template
-      .replace('dy', getDay(d))
-      .replace('mm', getMonth(d))
-      .replace('dt', getDate(d));
+    .replace('dy', getDay(d))
+    .replace('mm', getMonth(d))
+    .replace('dt', getDate(d));
 
 export const dayMonthDate = (datestr: string) =>
   formatDate(serializeDate(datestr));
@@ -216,7 +215,7 @@ export const toDollarAmount = (n: number): string => {
 
 const add1 = (n: number) => n+1;
 export const range = (n: number, zeroIndexed = true) => zeroIndexed ?
-    Array.from(Array(n).keys()) :
-    Array.from(Array(n).keys()).map(add1);
+  Array.from(Array(n).keys()) :
+  Array.from(Array(n).keys()).map(add1);
 
 export const bound = (min: number, max: number) => (n: number) => Math.min(Math.max(n, min), max);
