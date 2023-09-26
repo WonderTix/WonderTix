@@ -11,8 +11,8 @@ import DashboardLink from '../userdashboard/DashboardLink';
 const Dashboard = (): ReactElement => {
   return (
     <div className="w-full h-screen overflow-x-hidden absolute">
-      <div className="md:ml-[22rem] md:mt-40 sm:mx-[5rem] sm:my-[11rem]">
-        <h1 className="font-bold text-5xl mb-14 pb-8 w-[60rem]">
+      <div className="md:ml-[22rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]">
+        <h1 className="font-bold text-5xl mb-14 md:pb-8">
           Ticketing Dashboard
         </h1>
         <div className="grid md:grid-cols-2 sm:grid-cols-1 gap-5">
