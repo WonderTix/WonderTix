@@ -43,7 +43,7 @@ export const EventPageV2 = () => {
               success={success}
             />
           )}
-          <div className='md:ml-[18rem] md:mr-[5rem] md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
+          <div className='md:ml-[18rem] md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
             <EventGeneralContainer />
             <EventShowingsContainer />
           </div>
