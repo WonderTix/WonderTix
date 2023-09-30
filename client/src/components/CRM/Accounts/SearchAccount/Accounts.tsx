@@ -29,24 +29,24 @@ const Accounts = (): React.ReactElement => {
         setAccount(params.id);
         setHasSearched(true);
         await axios
-            .get(
-                process.env.REACT_APP_API_1_URL + `/accounts/search?username=${params.id}`, {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                },
-            )
-            .then((res) => {
-              setData(res.data.data[0]);
-              console.log(res);
-            })
-            .catch((err) => {
-              setError(err.message);
-              console.log(error);
-            })
-            .finally(() => {
-              setIsLoading(false);
-            });
+          .get(
+            process.env.REACT_APP_API_1_URL + `/accounts/search?username=${params.id}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          )
+          .then((res) => {
+            setData(res.data.data[0]);
+            console.log(res);
+          })
+          .catch((err) => {
+            setError(err.message);
+            console.log(error);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
       }
     };
     getData();
@@ -90,8 +90,9 @@ const Accounts = (): React.ReactElement => {
           </button>
         </form>
         <div className='mt-9 text-zinc-600 w-full'>
-          {isLoading ? <div className="radial-progress"/> :
-         <AccountResults data={data} hasSearched={hasSearched} />} {}
+          {isLoading ?
+            <div className="radial-progress"/> : <AccountResults data={data} hasSearched={hasSearched} />
+          }
         </div>
       </div>
     </div>

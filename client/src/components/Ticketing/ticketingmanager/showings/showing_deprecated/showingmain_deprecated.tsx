@@ -1,6 +1,6 @@
 import React from 'react';
 import Udash_nav from '../../udash_navbar';
-import Showing from './showing';
+import Showing from './showing_deprecated';
 const showingmain = () => {
   return (
     <div className='flex flex-row'>

@@ -323,18 +323,38 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
       where: {
         eventid: Number(id),
       },
+      include: {
+        eventinstances: true,
+      },
     });
-    if (!eventExists) {
-      res.status(404).json({error: 'event not found'});
 
+    if (!eventExists) {
+      res.status(404).json({error: 'Event does not exist'});
       return;
     }
-    const event = prisma.events.delete({
+    await prisma.events.update({
       where: {
         eventid: Number(id),
       },
+      data: {
+        active: false,
+        eventinstances: {
+          updateMany: {
+            where: {
+              eventid_fk: Number(id),
+            },
+            data: {
+              salestatus: false,
+            },
+          },
+        },
+      },
+      include: {
+        eventinstances: true,
+      },
     });
-    res.status(204).json();
+
+    res.status(204).json('Event successfully deactivated');
 
     return;
   } catch (error) {
@@ -343,13 +363,10 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
 
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });

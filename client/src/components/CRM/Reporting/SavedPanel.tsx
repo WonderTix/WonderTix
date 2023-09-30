@@ -14,7 +14,7 @@ import {
 } from '../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
 /**
- * Saved panal in reporting
+ * Saved panel in reporting
  *
  * @param root0
  * @param root0.setColumns
@@ -40,11 +40,11 @@ const SavedPanel = ({
         scope: 'admin',
       });
       const response = await fetch(
-          process.env.REACT_APP_API_1_URL + `/saved_reports`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+        process.env.REACT_APP_API_1_URL + `/saved_reports`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       if (response.json.length > 0) {
         setSaved(response.json);
       } else {
@@ -64,8 +64,8 @@ const SavedPanel = ({
     setColumns(headers);
     // TODO need to rework all the api POST requests for reporting
     fetch(process.env.REACT_APP_API_1_URL + `/${value}`)
-        .then((data) => data.json())
-        .then((data) => setRows(data.data));
+      .then((data) => data.json())
+      .then((data) => setRows(data.data));
   };
 
   const handleClickDelete = () => {

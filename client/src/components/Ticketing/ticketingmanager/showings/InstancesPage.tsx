@@ -38,14 +38,29 @@ const InstancesPage = () => {
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
-        <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-10 pb-4'>Select Event</h1>
+       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
+        <div className ={'flex flex-row justify-between w-full mb-14'}>
+          <h1 className='col-span-2 min-[678px]:col-span-1 font-bold text-5xl bg-clip-text
+           text-transparent bg-gradient-to-r from-sky-500
+            to-indigo-500' >Select Event</h1>
+          <button
+            onClick={() => navigate(`/ticketing/showings/0`)}
+            className={'bg-green-500 hover:bg-green-700 h-fit disabled:bg-gray-500 text-white p-2 font-bold rounded-xl flex flex-row'}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-[2rem] h-[2rem] pr-1">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
+            </svg>
+            <span className={'my-auto text-lg'}>
+            Add Event
+            </span>
+          </button>
+        </div>
         <ul className='md:grid md:grid-cols-2 md:gap-8 sm:grid sm:grid-cols-1 sm:gap-4 mt-9'>
           {allEvents.map((event) => (
             <li key={event.id}>
               <button
                 onClick={() => navigate(`/ticketing/showings/${event.id}`)}
-                className="shadow-xl rounded-xl hover:scale-105 transition duration-300 ease-in-out w-full"
+                className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full"
                 style={{backgroundImage: `url(${getImageDefault(event.imageurl)}),url(${getImageDefault()})`}}
               >
                 <div className=' backdrop-blur-sm  md:flex-row sm:flex-col

@@ -82,14 +82,14 @@ const DonationsPanel = ({
 
   const handleChange = (e: any) => {
     switch (e.target.id) {
-      case 'dononame':
-        setDononame(e.target.value);
-        break;
-      case 'amount':
-        setAmount(e.target.value);
-        break;
-      default:
-        break;
+    case 'dononame':
+      setDononame(e.target.value);
+      break;
+    case 'amount':
+      setAmount(e.target.value);
+      break;
+    default:
+      break;
     }
   };
 

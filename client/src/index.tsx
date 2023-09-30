@@ -9,14 +9,14 @@ import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import store from './components/Ticketing/app/store';
 ReactDOM.render(
-    <Provider store={store}>
-      <Router>
-        <Auth0ProviderWithHistory>
-          <App />
-        </Auth0ProviderWithHistory>
-      </Router>
-    </Provider>,
-    document.getElementById('root'),
+  <Provider store={store}>
+    <Router>
+      <Auth0ProviderWithHistory>
+        <App />
+      </Auth0ProviderWithHistory>
+    </Router>
+  </Provider>,
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function

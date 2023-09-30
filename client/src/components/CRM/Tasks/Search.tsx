@@ -27,24 +27,24 @@ const SearchBar = (props: any): React.ReactElement => {
           scope: 'admin',
         });
         await axios
-            .get(
-                process.env.REACT_APP_API_1_URL +
-                `/contacts/search?name=${params.id}`, {
-                  headers: {
-                    'Authorization': `Bearer ${token}`,
-                  },
-                })
-            .then((res) => {
-              setData(res.data.data[0]);
-              console.log(res);
+          .get(
+            process.env.REACT_APP_API_1_URL +
+            `/contacts/search?name=${params.id}`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
             })
-            .catch((err) => {
-              setError(err.message);
-              console.log(error);
-            })
-            .finally(() => {
-              setIsLoading(false);
-            });
+          .then((res) => {
+            setData(res.data.data[0]);
+            console.log(res);
+          })
+          .catch((err) => {
+            setError(err.message);
+            console.log(error);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
       }
     };
     getData();
@@ -85,7 +85,8 @@ const SearchBar = (props: any): React.ReactElement => {
       </div>
       <div className='p-3 text-zinc-600'>
         {isLoading ? <div className="radial-progress"/> :
-        <ContactResults data={data} />}
+          <ContactResults data={data} />
+        }
       </div>
     </div>
   );

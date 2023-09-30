@@ -28,17 +28,16 @@ import CheckoutSuccess from './components/Ticketing/checkout/CheckoutSuccess';
 import Donationmain from './components/Ticketing/donation/Donationmain';
 /* Ticketing Manager */
 import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
-import Addeventmain from './components/Ticketing/ticketingmanager/Events/Add_event/addeventmain';
 import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
-import Deleteeventmain from './components/Ticketing/ticketingmanager/Events/Delete_event/Deleteventmain';
-import Editeventmain from './components/Ticketing/ticketingmanager/Events/Edit_event/Editeventmain';
 import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsletter/NewsletterCreatemain';
 import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showingsmain';
-import showingmain from './components/Ticketing/ticketingmanager/showings/showing/showingmain';
 import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
+import {
+  EventProvider,
+} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
 
 
 const App = () => {
@@ -87,14 +86,11 @@ const App = () => {
 
         <Route path="/ticketing" element={<ProtectedRoute component={Udashmain} />} />
         <Route path="/ticketing/doorlist" element={<ProtectedRoute component={Doorlistmain} />} />
-        <Route path="/ticketing/addevent" element={<ProtectedRoute component={Addeventmain} />} />
-        <Route path="/ticketing/deleteevent" element={<ProtectedRoute component={Deleteeventmain} />} />
-        <Route path="/ticketing/editevent/:eventid" element={<ProtectedRoute component={Editeventmain} />} />
         <Route path="/ticketing/addnewsletter" element={<ProtectedRoute component={NewsletterCreatemain} />} />
         <Route path="/ticketing/showings" element={<ProtectedRoute component={Showingsmain} />} />
-        <Route path="/ticketing/showings/:eventid" element={<ProtectedRoute component={showingmain} />} />
         <Route path="/ticketing/tickettypes" element={<ProtectedRoute component={Tickettypesmain} />} />
         <Route path="/ticketing/ticketexchanges" element={<ProtectedRoute component={TicketExchangesmain} />} />
+        <Route path='/ticketing/showings/:eventid' element={<ProtectedRoute component={EventProvider} />}/>
         <Route path="/ticketing/purchaseticket" element={<ProtectedRoute component={AdminPurchasemain} />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
