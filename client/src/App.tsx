@@ -34,6 +34,7 @@ import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showi
 import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
+import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {
   EventProvider,
@@ -92,6 +93,7 @@ const App = () => {
         <Route path="/ticketing/ticketexchanges" element={<ProtectedRoute component={TicketExchangesmain} />} />
         <Route path='/ticketing/showings/:eventid' element={<ProtectedRoute component={EventProvider} />}/>
         <Route path="/ticketing/purchaseticket" element={<ProtectedRoute component={AdminPurchasemain} />} />
+        <Route path="/ticketing/admincheckout" element={<ProtectedRoute component={AdminCheckoutmain} />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>
