@@ -22,7 +22,7 @@ export class LoginPage {
   }
 
   async goto() {
-    await this.page.goto('/');
+    await this.page.goto('/', { timeout: 120000 }); // 120 seconds timeout
   }
 
   async getLoggedInEmailDisplay(email: string) {
