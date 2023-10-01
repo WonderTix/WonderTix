@@ -16,7 +16,7 @@ const authFile = 'playwright/.auth/user.json';
 setup('authenticate', async ({ page }) => {
   const loginPage = new LoginPage(page);
 
-    const email = process.env.TEST_USERNAME as string;
+    const email = process.env.TEST_EMAIL as string;
     const password = process.env.TEST_PASSWORD as string;
 
   await loginPage.login(email, password);
