@@ -211,7 +211,7 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
               </div>
             </div>
           ) : (
-            <div className='flex px-5 flex-row gap-1 items-center text-zinc-500 font-semibold rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out '>
+            <div className='flex pr-5 flex-row gap-1 items-center text-zinc-500 font-semibold rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out '>
               <AuthNav />
             </div>
           )}
