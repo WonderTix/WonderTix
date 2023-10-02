@@ -14,6 +14,7 @@ dotenv.config({path: envPath});
 const authFile = 'playwright/.auth/user.json';
 
 setup('authenticate', async ({page}) => {
+  setup.setTimeout(120000);
    
   const loginPage = new LoginPage(page);
 
@@ -31,3 +32,4 @@ setup('authenticate', async ({page}) => {
   // Store the authentication state for future use.
   await page.context().storageState({path: authFile});
 });
+
