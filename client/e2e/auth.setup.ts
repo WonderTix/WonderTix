@@ -32,6 +32,8 @@ setup('authenticate', async ({page}) => {
   console.log('Login completed.');
   console.log('Current URL:', await page.url());
 
+  await expect(page.getByText('Wrong email or password')).not.toBeVisible();
+
   // Wait for the URL to change.
   await page.waitForURL('/');
 
