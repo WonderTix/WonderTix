@@ -48,6 +48,6 @@ availableSecrets:
   secretManager:
   - versionName: projects/131818279954/secrets/AUTH0_CLIENT_ID/versions/latest
     env: 'REACT_APP_AUTH0_CLIENT_ID'
-  - versionName: projects/131818279954/secrets/PUBLIC_STRIPE_KEY_DEV/versions/latest
+  - versionName: projects/131818279954/secrets/PUBLIC_STRIPE_KEY/versions/latest
     env: 'REACT_APP_PUBLIC_STRIPE_KEY'
 
