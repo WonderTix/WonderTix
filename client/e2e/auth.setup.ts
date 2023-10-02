@@ -10,6 +10,8 @@ if (!process.env.CI) {
   const envPath = path.join(__dirname, '../../.env');
   dotenv.config({path: envPath});
 }
+console.log(`process env tes email is ${process.env.TEST_EMAIL}`);
+console.log(JSON.stringify(process.env, null, 2))
 
 /**
  * https://playwright.dev/docs/auth
