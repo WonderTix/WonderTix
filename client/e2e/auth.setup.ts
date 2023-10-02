@@ -53,6 +53,7 @@ setup('authenticate', async ({page}) => {
   console.log(htmlContent);
   await page.reload();
 
+  await loginPage.login(email, password);
 
   // Ensuring visibility and correctness of page elements post-login.
   await expect(await loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:90000 });
