@@ -40,7 +40,9 @@ const Footer = () => {
                              focus:border-indigo-600 focus:outline-none
                             "
                 id="exampleFormControlInput1"
-                placeholder="Email address"/>
+                placeholder="Email address"
+                aria-label='Email address'
+              />
             </div>
 
             <div className="md:mr-auto mb-6">

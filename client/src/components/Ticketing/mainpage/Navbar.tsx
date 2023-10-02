@@ -101,7 +101,11 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
         </div>
 
         {/* Desktop top-right profile nav button */}
-        <button className='md:hidden relative' onClick={handleClick}>
+        <button
+          className='md:hidden relative'
+          onClick={handleClick}
+          aria-label={!nav ? 'Expand menu' : 'Close menu'}
+        >
           {!nav ? <MenuIcon className='w-6' /> : <XIcon className='w-6' />}
         </button>
         <div className='hidden md:flex gap-4'>

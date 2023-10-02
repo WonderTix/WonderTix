@@ -7,7 +7,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, ReactElement} from 'react';
 import {
   editItemQty,
   selectNumAvailable,
@@ -25,10 +25,11 @@ interface CartRowProps {
 /**
  * Entire thing is meant to handle increments and decrements in prices and item qty
  *
- * @param {CartRowProps} item - remove handler
+ * @param {CartRowProps} item - cart item
+ * @param removeHandler
  * @returns {ReactElement}
  */
-const CartRow = ({item, removeHandler}: CartRowProps) => {
+const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
   const dispatch = useAppDispatch();
   const [cost, setCost] = useState(item.price * item.qty);
   const numAvailable = useAppSelector((state) =>
@@ -37,7 +38,7 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
 
   useEffect(() => setCost(item.qty * item.price), [item.qty]);
 
-  const decrement = () => {
+  const handleDecrement = () => {
     if (item.qty > 1) {
       dispatch(editItemQty({id: item.product_id, qty: item.qty - 1}));
     } else {
@@ -60,17 +61,16 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
         )}),url(${getImageDefault()})`,
       }}
     >
-      <div className='flex flex-col gap-5 p-5 justify-center items-center h-full md:flex-row md:justify-between rounded-xl bg-zinc-900/90'>
-        <span>
-          <p className='text-white font-semibold'>{item.name}</p>
+      <div className='flex flex-col md:flex-row justify-center md:justify-between items-center gap-5 p-5 h-full rounded-xl text-white bg-zinc-900/90'>
+        <div>
+          <p className='font-semibold'>{item.name}</p>
           <p className='text-zinc-200'>{item.desc}</p>
-        </span>
-        <span className='flex items-center gap-7'>
+        </div>
+        <div className='flex items-center gap-7'>
           <div className='flex items-center gap-2'>
             <button
-              className='text-white items-center'
-              aria-label={`remove one ${item.name} to cart`}
-              onClick={decrement}
+              aria-label={`Remove one ${item.name} from cart`}
+              onClick={handleDecrement}
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -85,10 +85,9 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
                 />
               </svg>
             </button>
-            <span className='text-white'>{item.qty}</span>
+            <p>{item.qty}</p>
             <button
-              className='text-white items-center'
-              aria-label={`add one ${item.name} to cart`}
+              aria-label={`Add one ${item.name} to cart`}
               onClick={handleIncrement}
             >
               <svg
@@ -105,13 +104,12 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
               </svg>
             </button>
           </div>
-          <div className='text-white font-semibold'>
+          <p className='font-semibold'>
             {item.payWhatCan
               ? toDollarAmount(item.payWhatPrice)
               : toDollarAmount(cost)}
-          </div>
+          </p>
           <button
-            className='text-white'
             aria-label={`Remove ${item.name} from cart`}
             onClick={() => removeHandler(item.product_id)}
           >
@@ -130,7 +128,7 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
               />
             </svg>
           </button>
-        </span>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import CartRow from './CartItem';
 import {toDollarAmount} from '../../../utils/arrays';
@@ -43,7 +43,7 @@ const totalReducer = (subtotal: number, discount: DiscountItem) => {
  *
  * @returns {ReactElement}
  */
-const Cart = () => {
+const Cart = (): ReactElement => {
   const history = useNavigate();
   const navigate = useNavigate();
 
@@ -134,28 +134,27 @@ const Cart = () => {
   };
 
   return (
-    <div className='flex flex-col items-center h-full py-[5rem] px-[1rem] tab:px-[5rem] bg-zinc-200'>
-      <div className='w-full mb-5'>
-        <button
-          onClick={() => navigate('/')}
-          className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'
+    <main className='flex flex-col items-center h-full py-[5rem] px-[1rem] tab:px-[5rem] bg-zinc-200'>
+      <button
+        onClick={() => navigate('/')}
+        className='bg-blue-500 mt-10 mb-7 hover:bg-blue-600 px-3 py-2 rounded-xl flex items-center gap-1 self-start text-white'
+      >
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          className='h-5 w-5'
+          viewBox='0 0 20 20'
+          fill='currentColor'
+          aria-hidden='true'
         >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            className='h-5 w-5'
-            viewBox='0 0 20 20'
-            fill='currentColor'
-          >
-            <path
-              fillRule='evenodd'
-              d='M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z'
-              clipRule='evenodd'
-            />
-          </svg>
-          back to Events
-        </button>
-      </div>
-      <h1 className='flex items-center mt-2 gap-2 text-zinc-800'>
+          <path
+            fillRule='evenodd'
+            d='M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z'
+            clipRule='evenodd'
+          />
+        </svg>
+        back to Events
+      </button>
+      <h1 className='flex items-center gap-2 text-zinc-800'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           className='h-12 w-12'
@@ -173,8 +172,8 @@ const Cart = () => {
         </svg>
         <span className='text-3xl font-bold'>My Cart</span>
       </h1>
-      <div className='flex flex-col md:flex-row gap-10 md:gap-5 mt-14 md:mt-20 items-center w-full h-full'>
-        <div className='w-full bg-zinc-300 p-5 tab:p-9 flex flex-col gap-5 items-start rounded-xl'>
+      <div className='flex flex-col md:flex-row gap-10 md:gap-5 mt-14 md:mt-20 items-center w-full'>
+        <div className='flex flex-col w-full p-5 tab:p-9 gap-5 rounded-xl bg-zinc-300'>
           {items.length > 0 ? (
             items.map((data) => (
               <CartRow
@@ -187,25 +186,24 @@ const Cart = () => {
             <p className='text-zinc-500'>There&apos;s nothing in your cart</p>
           )}
         </div>
-        <div className='md:w-[30rem] w-full bg-zinc-900 p-9 flex flex-col items-center rounded-xl justify-between'>
-          <div className='flex flex-col items-center mb-3'>
-            <p className='text-zinc-100 text-xl font-semibold'>Subtotal</p>
+        <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-900'>
+          <div className='mb-3'>
+            <h2 className='text-zinc-100 text-xl font-semibold'>Subtotal</h2>
             <p className='text-amber-300 italic'>
               {printDiscountText(discount)}
             </p>
             <p className='text-white'>{toDollarAmount(total)}</p>
           </div>
-          <div className='flex flex-col items-center gap-3'>
-            <div className='flex flex-col items-center form-control disabled:opacity-50'>
-              {!validDiscount && discountClicked ? (
+          <div className='flex flex-col gap-3'>
+            <div className='flex flex-col form-control disabled:opacity-50'>
+              {!validDiscount && discountClicked && (
                 <p className='text-amber-300 italic'>Invalid discount code</p>
-              ) : (
-                ''
               )}
-              <div className='input-group flex flex-row items-center w-full px-3 py-1 text-black rounded-xl bg-sky-500'>
+              <div className='input-group flex items-center gap-1 w-full p-3 rounded-xl bg-sky-500'>
                 <input
                   type='text'
                   placeholder='Discount code...'
+                  aria-label='Discount code'
                   className='input input-bordered rounded-md pl-2'
                   value={discountText ? discountText : discount.code}
                   onChange={(e) => {
@@ -216,8 +214,8 @@ const Cart = () => {
                 />
                 {!validDiscount ? (
                   <button
-                    className='btn btn-square bg-sky-500 ml-1'
                     onClick={applyDiscount}
+                    aria-label='Apply discount code'
                   >
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
@@ -225,18 +223,17 @@ const Cart = () => {
                       fill='none'
                       viewBox='0 0 24 24'
                       stroke='white'
+                      strokeWidth='3'
                     >
                       <path
                         strokeLinecap='round'
                         strokeLinejoin='round'
-                        strokeWidth='2'
                         d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
                       />
                     </svg>
                   </button>
                 ) : (
                   <button
-                    className='btn btn-square bg-sky-500 ml-1'
                     onClick={removeDiscount}
                   >
                     <svg
@@ -245,11 +242,11 @@ const Cart = () => {
                       fill='none'
                       viewBox='0 0 24 24'
                       stroke='white'
+                      strokeWidth='3'
                     >
                       <path
                         strokeLinecap='round'
                         strokeLinejoin='round'
-                        strokeWidth='2'
                         d='M6 18L18 6M6 6l12 12'
                       />
                     </svg>
@@ -258,7 +255,7 @@ const Cart = () => {
               </div>
             </div>
             <button
-              className='bg-red-600 flex items-center justify-center gap-1 w-full p-3 text-white rounded-xl disabled:opacity-50'
+              className='bg-red-600 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
               disabled={items.length === 0}
               onClick={removeAllCartItems}
             >
@@ -268,7 +265,7 @@ const Cart = () => {
                 fill='none'
                 viewBox='0 0 24 24'
                 stroke='currentColor'
-                strokeWidth={2}
+                strokeWidth='2'
               >
                 <path
                   strokeLinecap='round'
@@ -279,7 +276,7 @@ const Cart = () => {
               Empty Cart
             </button>
             <button
-              className='bg-yellow-600 flex items-center justify-center gap-1 w-full p-3 text-white rounded-xl disabled:opacity-50'
+              className='bg-yellow-600 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
               disabled={items.length === 0}
               onClick={navigateToCompleteOrder}
             >
@@ -288,6 +285,7 @@ const Cart = () => {
                 className='h-5 w-5'
                 viewBox='0 0 20 20'
                 fill='currentColor'
+                strokeWidth='2'
               >
                 <path
                   fillRule='evenodd'
@@ -304,7 +302,7 @@ const Cart = () => {
             role='dialog'
             aria-modal='true'
           >
-            <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity'></div>
+            <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity' />
             <div className='fixed z-10 inset-0 overflow-y-auto'>
               <div className='flex items-end tab:items-center justify-center min-h-full p-4 text-center tab:p-0'>
                 <div className='relative w-full bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all tab:my-8 tab:max-w-lg'>
@@ -346,9 +344,9 @@ const Cart = () => {
                       onClick={handleRemove}
                       type='button'
                       className='w-full inline-flex justify-center rounded-md border border-transparent
-              shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700
-              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
-                tab:ml-3 tab:w-auto tab:text-sm'
+                        shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700
+                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
+                        tab:ml-3 tab:w-auto tab:text-sm'
                     >
                       Yes
                     </button>
@@ -356,9 +354,9 @@ const Cart = () => {
                       onClick={resetModal}
                       type='button'
                       className='mt-3 w-full inline-flex
-              justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
-              font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
-                focus:ring-offset-2 focus:ring-indigo-500 tab:mt-0 tab:ml-3 tab:w-auto tab:text-sm'
+                        justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
+                        font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
+                        focus:ring-offset-2 focus:ring-indigo-500 tab:mt-0 tab:ml-3 tab:w-auto tab:text-sm'
                     >
                       Cancel
                     </button>
@@ -367,9 +365,9 @@ const Cart = () => {
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 
