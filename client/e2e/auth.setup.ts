@@ -51,6 +51,8 @@ setup('authenticate', async ({page}) => {
 
   const htmlContent = await page.content();
   console.log(htmlContent);
+  await page.reload();
+
 
   await page.waitForURL('/', {timeout: 120000}); // Set a higher timeout
 
