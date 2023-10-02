@@ -4,9 +4,15 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Construct the path to the .env file based on __dirname
+console.log(`process env CI is ${process.env.CI}`);
+console.log(`process env CI is ${process.env.CI}`);
+console.log(`process env CI is ${process.env.CI}`);
 if (!process.env.CI) {
+  console.log("using dotenv");
+  console.log("using dotenv");
   dotenv.config({path: path.join(__dirname, '../../.env')});
 }
+console.log(`process env is ${process.env}`);
 
 /**
  * https://playwright.dev/docs/auth
