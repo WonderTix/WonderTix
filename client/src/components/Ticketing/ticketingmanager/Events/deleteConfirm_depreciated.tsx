@@ -1,5 +1,4 @@
 import React, {CSSProperties} from 'react';
-import popupProps from '../../../../interfaces/popup.interface';
 
 /**
  * @property {object} popUpContainer - A property container for pop up

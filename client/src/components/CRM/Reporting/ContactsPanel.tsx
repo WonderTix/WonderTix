@@ -78,7 +78,7 @@ const ContactsPanel = ({
       if (filter[1] === '' || filter[1] === false) return;
 
       filters.push(
-          `${filter[0]}=${filter[1]}`,
+        `${filter[0]}=${filter[1]}`,
       );
     });
     console.log(filters.join('&'));
@@ -90,26 +90,26 @@ const ContactsPanel = ({
     e.preventDefault();
 
     switch (e.target.id) {
-      case 'custname':
-        setCustname(e.target.value);
-        break;
-      case 'email':
-        setEmail(e.target.value);
-        break;
-      case 'phone':
-        setPhone(e.target.value);
-        break;
-      case 'address':
-        setAddress(e.target.value);
-        break;
-      case 'vip':
-        setIsVip(e.target.checked);
-        break;
-      case 'volunteer list':
-        setIsVolunteerList(e.target.checked);
-        break;
-      default:
-        break;
+    case 'custname':
+      setCustname(e.target.value);
+      break;
+    case 'email':
+      setEmail(e.target.value);
+      break;
+    case 'phone':
+      setPhone(e.target.value);
+      break;
+    case 'address':
+      setAddress(e.target.value);
+      break;
+    case 'vip':
+      setIsVip(e.target.checked);
+      break;
+    case 'volunteer list':
+      setIsVolunteerList(e.target.checked);
+      break;
+    default:
+      break;
     }
   };
 

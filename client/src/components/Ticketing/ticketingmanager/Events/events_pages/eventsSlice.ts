@@ -26,15 +26,15 @@ import {Dictionary} from '../../../../../utils/arrays';
  * @param {number} availableseats
  */
 export interface EventInstance {
-     id: number,
-     eventid: number,
-     eventname: string,
-     eventdescription?: string,
-     imageurl: string,
-     eventdate: string,
-     eventtime: string,
-     totalseats: number,
-     availableseats: number,
+  id: number,
+  eventid: number,
+  eventname: string,
+  eventdescription?: string,
+  imageurl: string,
+  eventdate: string,
+  eventtime: string,
+  totalseats: number,
+  availableseats: number,
 }
 
 /**
@@ -53,11 +53,11 @@ export type Instance = Omit<EventInstance, 'eventid'|'eventname'|'eventdescripti
  * @param {Instance[]} instances
  */
 export interface Event {
-    eventname: string,
-    eventdescription?: string,
-    imageurl: string,
-    eventid: number,
-    instances: Instance[],
+  eventname: string,
+  eventdescription?: string,
+  imageurl: string,
+  eventid: number,
+  instances: Instance[],
 }
 
 /**
@@ -70,8 +70,8 @@ export const aggregateInstances = (events: EventInstance[]) =>
     const {eventname, eventdescription, imageurl, eventid, ...instance} = event;
 
     return (events[eventid]) ?
-            {...events, [eventid]: {...events[eventid], instances: [...events[eventid].instances, instance] as Instance[]}} :
-            {...events, [eventid]: {eventid, eventname, eventdescription, imageurl, instances: [instance]}};
+      {...events, [eventid]: {...events[eventid], instances: [...events[eventid].instances, instance] as Instance[]}} :
+      {...events, [eventid]: {eventid, eventname, eventdescription, imageurl, instances: [instance]}};
   }, {});
 
 /**
@@ -81,16 +81,16 @@ export const aggregateInstances = (events: EventInstance[]) =>
  * @returns aggregateInstances(allEventInstances) or console prints error
  */
 export const fetchEventInstanceData = createAsyncThunk(
-    'events/fetchAll',
-    async () => {
-      try {
-        const res = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/active');
-        const allEventInstances: EventInstance[] = await res.json();
-        return aggregateInstances(allEventInstances);
-      } catch (err) {
-        console.error(err.message);
-      }
-    },
+  'events/fetchAll',
+  async () => {
+    try {
+      const res = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/active');
+      const allEventInstances: EventInstance[] = await res.json();
+      return aggregateInstances(allEventInstances);
+    } catch (err) {
+      console.error(err.message);
+    }
+  },
 );
 
 /**
@@ -122,16 +122,16 @@ const eventsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-        .addCase(fetchEventInstanceData.pending, (state) => {
-          state.status = 'loading';
-        })
-        .addCase(fetchEventInstanceData.fulfilled, (state, action) => {
-          state.status = 'success';
-          state.data = (action.payload) ? action.payload : {};
-        })
-        .addCase(fetchEventInstanceData.rejected, (state) => {
-          state.status = 'failed';
-        });
+      .addCase(fetchEventInstanceData.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchEventInstanceData.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.data = (action.payload) ? action.payload : {};
+      })
+      .addCase(fetchEventInstanceData.rejected, (state) => {
+        state.status = 'failed';
+      });
   },
 });
 
@@ -149,7 +149,7 @@ export const selectAllEventInstances = (state: RootState) =>
     return {
       eventname,
       eventdescription: (eventdescription) ?
-                eventdescription : '',
+        eventdescription : '',
       imageurl,
       eventid,
     };
@@ -165,11 +165,11 @@ export const selectAllEventInstances = (state: RootState) =>
  */
 // Returns list of instances for given event, or undefined if play doesn't exist
 export const selectEventInstanceData =
-    (state: RootState, id: number): Event | undefined => {
-      const key = id;
-      return (state.events.data[key]) ?
-            state.events.data[key] :
-            undefined;
-    };
+  (state: RootState, id: number): Event | undefined => {
+    const key = id;
+    return (state.events.data[key]) ?
+      state.events.data[key] :
+      undefined;
+  };
 
 export default eventsSlice.reducer;

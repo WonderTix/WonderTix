@@ -18,13 +18,13 @@ test('get started link', async ({page}) => {
 });
 
 
-test('portland play house link', async ({page})=>{
+test('portland playhouse link', async ({page})=>{
   // Timeout for client to load
   test.setTimeout(100000);
 
   await page.goto('https://localhost:3000/');
 
-  await page.getByRole('link', {name: '/'}).click();
+  await page.getByRole('link', {name: 'Portland Playhouse site'}).click();
 
   await expect(page).toHaveURL('https://portlandplayhouse.org/');
 });

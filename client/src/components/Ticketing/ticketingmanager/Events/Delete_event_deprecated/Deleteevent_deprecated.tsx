@@ -32,13 +32,13 @@ export default function DeleteEvents() {
       scope: 'admin',
     });
     const response = await fetch(process.env.REACT_APP_API_1_URL + `/events/${showId}`,
-        {
-          credentials: 'include',
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      {
+        credentials: 'include',
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
     getEvents();
     return response.json();
   }

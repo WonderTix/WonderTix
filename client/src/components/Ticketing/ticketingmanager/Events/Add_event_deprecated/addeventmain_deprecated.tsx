@@ -1,7 +1,7 @@
 import React from 'react';
 import Udash_nav from '../../udash_navbar';
 // import CreateEvents from './addevent';
-import CreateEventPage from './CreateEventPage';
+import CreateEventPage from './CreateEventPage_deprecated';
 
 /**
  * Used to add events

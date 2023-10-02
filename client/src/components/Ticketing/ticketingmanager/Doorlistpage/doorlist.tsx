@@ -38,6 +38,9 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
       },
       body: JSON.stringify({isCheckedIn, ticketID}),
     });
+    if (!res.ok) {
+      throw new Error(`Failed to check in guest. HTTP status: ${res.status}`);
+    }
     return res.json();
   } catch (err) {
     console.log(err.message);
@@ -68,7 +71,6 @@ const columns = [
   {field: 'firstname', headerName: 'First Name', width: 120},
   {field: 'lastname', headerName: 'Last Name', width: 120},
   {field: 'num_tickets', headerName: 'Tickets', width: 100},
-  // TODO: Fix link from renderCheckin to checkInGuest
   {field: 'arrived', headerName: 'Arrived', width: 100, renderCell: renderCheckin},
   {field: 'vip', headerName: 'VIP', width: 100, renderCell: renderCheckbox},
   {field: 'donorbadge', headerName: 'Donor', width: 100, renderCell: renderCheckbox},
@@ -98,18 +100,21 @@ const DoorList = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/allevents');
-        const jsonRes = await response.json();
-        const jsonData = jsonRes.data as any[];
+        if (!response.ok) {
+          throw new Error(`Failed to fetch events. HTTP status: ${response.status}`);
+        }
+        const allEventRes = await response.json();
+        const allEventResJson = allEventRes.data as any[];
 
         // Deduplicate the events based on eventid
-        const uniqueEventIds = Array.from(new Set(jsonData.map((event) => event.eventid)));
-        let deduplicatedEvents = uniqueEventIds.map((id) => jsonData.find((event) => event.eventid === id));
+        const uniqueEventIds = Array.from(new Set(allEventResJson.map((event) => event.eventid)));
+        let deduplicatedEvents = uniqueEventIds.map((id) => allEventResJson.find((event) => event.eventid === id));
 
         // Sort the events in alphabetical order by eventname
         deduplicatedEvents = deduplicatedEvents.sort((a, b) => a.eventname.localeCompare(b.eventname));
 
         setEventList(deduplicatedEvents);
-        setEventListFull(jsonData);
+        setEventListFull(allEventResJson);
         setEventListActive(deduplicatedEvents.filter((event) => event.active));
       } catch (error) {
         console.error(error.message);
@@ -167,9 +172,12 @@ const DoorList = () => {
           'Authorization': `Bearer ${token}`,
         },
       });
-      const jsonRes = await response.json();
-      const jsonData = jsonRes.data;
-      const doorListData = jsonData.map((item, index) => {
+      const eventInstanceJson = await response.json();
+      if (!response.ok) {
+        throw new Error(`Failed to fetch door list. HTTP status: ${response.status}`);
+      }
+      const eventInstanceData = eventInstanceJson.data;
+      const doorListData = eventInstanceData.map((item, index) => {
         const row = item.row.slice(1, -1).split(',');
         if (!row || !row[0]) { // Check if the value in column 0 is present
           setTicketsSold(false);
@@ -180,8 +188,7 @@ const DoorList = () => {
           id: index,
           firstname: row[1],
           lastname: row[2],
-          num_tickets: row[12],
-          // TODO: hook arrived with redeemed vaue
+          num_tickets: row[11],
           arrived: false,
           vip: row[3] === 't',
           donorbadge: row[4] === 't',
@@ -190,11 +197,11 @@ const DoorList = () => {
       }).filter(Boolean);
 
       setDoorList(doorListData);
-      const rowString = jsonData[0].row.slice(1, -1);
+      const rowString = eventInstanceData[0].row.slice(1, -1);
       const rowParts = rowString.split(',');
       const eventNameFromData = rowParts[7].replace(/"/g, '');
       const eventDate = rowParts[9];
-      const eventDateObject = new Date(eventDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+      const eventDateObject = new Date(eventDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
       eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
       const formattedEventDate = eventDateObject.toISOString().split('T')[0]; // Convert to "yyyy-mm-dd"
       const eventTime = rowParts[10];
@@ -241,7 +248,7 @@ const DoorList = () => {
           <select id="time-select" className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
             <option className="px-6 py-3">Select Time</option>
             {availableTimesEvents.map((event) => {
-              const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'));
+              const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
               eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
               const formattedDate = dayMonthDate(eventDateObject.toISOString().split('T')[0]);
               return (
@@ -267,7 +274,7 @@ const DoorList = () => {
                 Toolbar: CustomToolbar,
               }} />
           ) : (
-            <div className="text-xl font-bold text-red-600">No tickets sold for this show</div>
+            <p className="text-xl font-bold text-red-600">No tickets sold for this show</p>
           )}
         </div>
       </div>

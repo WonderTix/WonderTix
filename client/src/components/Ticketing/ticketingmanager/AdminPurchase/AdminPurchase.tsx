@@ -16,6 +16,7 @@ import React, {useEffect, useState} from 'react';
 // import RequireLogin from './RequireLogin';
 import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
+import {Link} from 'react-router-dom';
 
 type EventRow = {
   id?: number;
@@ -181,9 +182,11 @@ const AdminPurchase = () => {
             <div className="text-xl font-bold text-red-600">No tickets sold for this show</div>
           )}
           {/* Add the purchase button here */}
-          <Button variant="contained" color="primary" onClick={handlePurchase}>
-            Proceed To Purchase
-          </Button>
+          <Link to="/ticketing/admincheckout">
+            <Button variant="contained" color="primary">
+              Proceed To Purchase
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

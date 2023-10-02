@@ -51,20 +51,20 @@ const ReportingTest = (): React.ReactElement => {
       scope: 'admin',
     });
     switch (value) {
-      case '0':
-        route = 'accounts';
-        headers = accountHeaders;
-        break;
-      case '1':
-        route = 'contacts';
-        headers = contactHeaders;
-        break;
-      case '2':
-        route = 'donations';
-        headers = donationHeaders;
-        break;
-      default:
-        break;
+    case '0':
+      route = 'accounts';
+      headers = accountHeaders;
+      break;
+    case '1':
+      route = 'contacts';
+      headers = contactHeaders;
+      break;
+    case '2':
+      route = 'donations';
+      headers = donationHeaders;
+      break;
+    default:
+      break;
     }
     console.log(route);
 
@@ -82,10 +82,10 @@ const ReportingTest = (): React.ReactElement => {
         Authorization: `Bearer ${token}`,
       },
     })
-        .then((data) => data.json())
-        .then((data) => {
-          setRows(data.data);
-        });
+      .then((data) => data.json())
+      .then((data) => {
+        setRows(data.data);
+      });
   };
 
   const CustomToolbar = () => {
