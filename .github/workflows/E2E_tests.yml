@@ -70,14 +70,6 @@ jobs:
         run: npm run test:playwright
         # run: DEBUG=pw:api npx playwright test
         working-directory: ./client
-        # Upload screenshot as an artifact
-      - name: Upload Screenshots
-        if: always() # This ensures that screenshots are uploaded even if the test step fails
-        uses: actions/upload-artifact@v3
-        with:
-          name: screenshots
-          path: '*.png' # Path to the screenshots
-          retention-days: 5
 
 
   # test-server:

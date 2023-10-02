@@ -28,10 +28,23 @@ setup('authenticate', async ({page}) => {
   const password = process.env.TEST_PASSWORD as string;
 
   console.log('Logging in...');
-  await page.screenshot({ path: 'before-login.png' });
+  // await page.screenshot({path: 'before-login.png'});
 
   await loginPage.login(email, password);
-  await page.screenshot({ path: 'after-login.png' });
+  // await page.screenshot({path: 'after-login.png'});
+  // Wait for the Accept button to appear on the page.
+  let acceptButton;
+  try {
+    acceptButton = await page.waitForSelector('button[name="action"][value="accept"]', { timeout: 5000 });
+  } catch (error) {
+    console.log('Accept button did not appear within 5 seconds.');
+  
+  }
+
+  // If the Accept button is found, click it.
+  if (acceptButton) {
+    await acceptButton.click();
+  }
 
   console.log('Login completed.');
   console.log('Current URL:', await page.url());
@@ -40,11 +53,13 @@ setup('authenticate', async ({page}) => {
   console.log(htmlContent);
 
   await expect(page.getByText('Wrong email or password')).not.toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Oops!, something went wrong' })).not.toBeVisible();
+  await expect(
+    page.getByRole('heading', {name: 'Oops!, something went wrong'}),
+  ).not.toBeVisible();
 
   // Ensuring visibility and correctness of page elements post-login.
   await expect(await loginPage.getLoggedInEmailDisplay(email)).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Events' })).toBeVisible();
+  await expect(page.getByRole('heading', {name: 'Events'})).toBeVisible();
 
   // Store the authentication state for future use.
   await page.context().storageState({path: authFile});
