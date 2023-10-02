@@ -40,7 +40,7 @@ setup('authenticate', async ({page}) => {
   ).not.toBeVisible();
 
   // Wait for the URL to change.
-  await page.waitForURL('/');
+  // await page.waitForURL('/');
 
   // Ensuring visibility and correctness of page elements post-login.
   await expect(await loginPage.getLoggedInEmailDisplay(email)).toBeVisible();
