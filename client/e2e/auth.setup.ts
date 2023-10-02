@@ -33,6 +33,7 @@ setup('authenticate', async ({page}) => {
   console.log('Current URL:', await page.url());
 
   await expect(page.getByText('Wrong email or password')).not.toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Oops!, something went wrong' })).not.toBeVisible();
 
   // Wait for the URL to change.
   await page.waitForURL('/');
