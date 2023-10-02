@@ -2,13 +2,13 @@ import { type Locator, type Page } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
-  readonly frontEndUrl: string;
 
   readonly loginButton: Locator;
   readonly loginWelcomeMessage: Locator;
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginContinueButton: Locator;
+
   readonly postLoginAuthAcceptButton: Locator;
 
   constructor(page: Page) {
@@ -20,11 +20,12 @@ export class LoginPage {
     this.emailInput = page.getByLabel('Email address');
     this.passwordInput = page.getByLabel('Password');
     this.loginContinueButton = page.getByRole('button', { name: 'Continue', exact: true });
+
     this.postLoginAuthAcceptButton = page.getByRole('button', { name: 'Accept' });
   }
 
   async goto() {
-    await this.page.goto('/', { timeout: 90000 }); //  seconds timeout
+    await this.page.goto('/', { timeout: 90000 }); // 90 seconds timeout
   }
 
   getLoggedInEmailDisplay(email: string) {
