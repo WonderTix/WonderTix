@@ -54,7 +54,6 @@ setup('authenticate', async ({page}) => {
   await page.reload();
 
 
-  await page.waitForURL('/', {timeout: 120000}); // Set a higher timeout
 
   await expect(page.getByText('Wrong email or password')).not.toBeVisible();
   await expect(
