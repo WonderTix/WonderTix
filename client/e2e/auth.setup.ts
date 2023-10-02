@@ -28,7 +28,11 @@ setup('authenticate', async ({page}) => {
   const password = process.env.TEST_PASSWORD as string;
 
   console.log('Logging in...');
+  await page.screenshot({ path: 'before-login.png' });
+
   await loginPage.login(email, password);
+  await page.screenshot({ path: 'after-login.png' });
+
   console.log('Login completed.');
   console.log('Current URL:', await page.url());
 
