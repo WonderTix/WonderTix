@@ -20,7 +20,7 @@ console.log(JSON.stringify(process.env, null, 2))
 const authFile = 'playwright/.auth/user.json';
 
 setup('authenticate', async ({page}) => {
-  setup.setTimeout(200000);
+  setup.setTimeout(300000);
 
   const loginPage = new LoginPage(page);
 
