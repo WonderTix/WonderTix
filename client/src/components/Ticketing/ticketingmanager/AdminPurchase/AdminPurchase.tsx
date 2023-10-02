@@ -11,7 +11,7 @@
 
 // import DataGrid from 'react-data-grid';
 import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
-import {Checkbox, Button} from '@mui/material';
+import {Checkbox, Button, FormControlLabel} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 // import RequireLogin from './RequireLogin';
 import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
@@ -22,7 +22,9 @@ type EventRow = {
   id?: number;
   eventid?: number;
   eventname?: string;
-  // ... other properties ...
+  ticketTypes?: string;
+  price?: number;
+  complementary?: boolean;
 };
 
 const AdminPurchase = () => {
@@ -31,18 +33,19 @@ const AdminPurchase = () => {
   const [events, setEvents] = useState([]);
   const [selectedTime, setSelectedTime] = useState(null);
   const {getAccessTokenSilently} = useAuth0();
-  const [availableTimesEvents, setAvailableTimesEvents] = useState([]);
+  const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
   const [eventListActive, setEventListActive] = useState([]);
   const [ticketsSold, setTicketsSold] = useState(true);
+  const [priceByRowId, setPriceByRowId] = useState({});
 
 
   const columns = [
     {
       field: 'eventname',
       headerName: 'Event Name',
-      width: 200,
+      width: 250,
       renderCell: (params) => (
         <select onChange={(e) => handleEventChange(e, params.row)}>
           <option>Select Event</option>
@@ -54,24 +57,71 @@ const AdminPurchase = () => {
         </select>
       ),
     },
+    {field: 'eventid', headerName: 'ID', width: 50},
     {
       field: 'eventtime',
       headerName: 'Time',
-      width: 100,
-      renderCell: (params) => params.row.eventid ? (
-        <select onChange={(e) => handleTimeChange(e, params.row)} disabled={!params.row.eventid}>
+      width: 150,
+      renderCell: (params) => (
+        <select
+          onChange={(e) => handleTimeChange(e, params.row)}
+          disabled={!params.row.eventid}
+        >
           <option>Select Time</option>
-          {availableTimesEvents.map((event) => (
+          {availableTimesByRowId[params.row.id]?.map((event) => (
             <option key={event.eventinstanceid} value={event.eventinstanceid}>
               {militaryToCivilian(event.eventtime)}
             </option>
           ))}
         </select>
-      ) : null,
+      ),
     },
-    {field: 'eventid', headerName: 'ID', width: 120},
-    {field: 'generalticket', headerName: '# General', width: 100},
-    {field: 'vipticket', headerName: '# VIP', width: 100},
+    {
+      field: 'ticketTypes',
+      headerName: 'Ticket Type',
+      width: 150,
+      renderCell: (params) => (
+        <select disabled={!params.row.eventtime}>  {/* Disabled if time not selected */}
+          <option>Select Type</option>
+          <option value="general">General</option>
+          <option value="vip">VIP</option>
+        </select>
+      ),
+    },
+    {
+      field: 'price',
+      headerName: 'Price',
+      width: 100,
+      renderCell: (params) => (
+        <div style={{display: 'flex', alignItems: 'center'}}>
+          <span>$</span>
+          <input
+            type="text"
+            value={priceByRowId[params.row.id] || ''}
+            onChange={(e) => handlePriceChange(e, params.row)}
+            onBlur={(e) => handlePriceBlur(e, params.row)}
+            disabled={!params.row.eventid || params.row.complementary} // Disable if no event or complementary is true
+            style={{width: '60px'}}
+          />
+        </div>
+      ),
+    },
+    {
+      field: 'complementary',
+      headerName: 'Complementary',
+      width: 150,
+      renderCell: (params) => (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={params.row.complementary || false}
+              onChange={(e) => handleComplementaryChange(e, params.row)}
+            />
+          }
+          label=""
+        />
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -98,9 +148,18 @@ const AdminPurchase = () => {
     fetchEvents();
   }, []);
 
+  const updateAvailableTimes = (eventId, rowId) => {
+    const matchingEvents = eventListFull.filter((e) => e.eventid === eventId);
+    setAvailableTimesByRowId((prevState) => ({
+      ...prevState,
+      [rowId]: matchingEvents,
+    }));
+  };
+
   const handleEventChange = (event: React.ChangeEvent<HTMLSelectElement>, row: EventRow) => {
     const eventId = parseInt(event.target.value);
     const matchingEvent = eventListFull.find((e) => e.eventid === eventId);
+    updateAvailableTimes(eventId, row.id);
     // Create a new array with the updated row data
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
@@ -117,6 +176,42 @@ const AdminPurchase = () => {
     // You can update the state based on the selected time and the row data.
     // For example, you might want to set the selected time for the current row.
     setSelectedTime(eventInstanceID);
+  };
+
+  const handlePriceChange = (event, row) => {
+    if (row.complementary) return; // If complementary, no changes allowed
+    const newPrice = event.target.value;
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: newPrice,
+    }));
+  };
+
+  const handlePriceBlur = (event, row) => {
+    const newPrice = parseFloat(event.target.value).toFixed(2);
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: newPrice,
+    }));
+  };
+
+  const handleComplementaryChange = (event, row) => {
+    const isChecked = event.target.checked;
+    // Update row with complementary flag
+    const updatedRows = eventData.map((r) => {
+      if (r.id === row.id) {
+        return {...row, complementary: isChecked, price: isChecked ? 0 : row.price};
+      }
+      return r;
+    });
+    setEventData(updatedRows);
+    // Also update the priceByRowId to reflect the change in the price
+    if (isChecked) {
+      setPriceByRowId((prevState) => ({
+        ...prevState,
+        [row.id]: '0.00', // Set to $0 if complementary
+      }));
+    }
   };
 
   const handlePurchase = () => {
