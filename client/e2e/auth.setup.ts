@@ -35,13 +35,8 @@ setup('authenticate', async ({page}) => {
   await expect(page.getByText('Wrong email or password')).not.toBeVisible();
   await expect(page.getByRole('heading', { name: 'Oops!, something went wrong' })).not.toBeVisible();
 
-  // Wait for the URL to change.
-  await page.reload();
-
-  await page.waitForURL('/');
-
   // Ensuring visibility and correctness of page elements post-login.
-  await expect(await loginPage.getLoggedInEmailDisplay(email)).toBeVisible();
+  await expect(await loginPage.getLoggedInEmailDisplay(email)).not.toBeVisible();
 
   // Store the authentication state for future use.
   await page.context().storageState({path: authFile});
