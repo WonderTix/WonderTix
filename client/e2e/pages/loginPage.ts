@@ -9,6 +9,7 @@ export class LoginPage {
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginContinueButton: Locator;
+  readonly postLoginAuthAcceptButton: Locator;
 
   constructor(page: Page) {
    
@@ -19,13 +20,14 @@ export class LoginPage {
     this.emailInput = page.getByLabel('Email address');
     this.passwordInput = page.getByLabel('Password');
     this.loginContinueButton = page.getByRole('button', { name: 'Continue', exact: true });
+    this.postLoginAuthAcceptButton = page.getByRole('button', { name: 'Accept' });
   }
 
   async goto() {
-    await this.page.goto('/', { timeout: 120000 }); //  seconds timeout
+    await this.page.goto('/', { timeout: 90000 }); //  seconds timeout
   }
 
-  async getLoggedInEmailDisplay(email: string) {
+  getLoggedInEmailDisplay(email: string) {
     return this.page.getByText(`${email}`);
   }
 

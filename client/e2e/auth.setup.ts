@@ -4,13 +4,11 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Construct the path to the .env file based on __dirname
-// console.log(`process env CI is ${process.env.CI}`);
 if (!process.env.CI) {
   console.log('using dotenv');
   const envPath = path.join(__dirname, '../../.env');
   dotenv.config({path: envPath});
 }
-// console.log(`process env tes email is ${process.env.TEST_EMAIL}`);
 // console.log(JSON.stringify(process.env, null, 2));
 
 /**
@@ -28,35 +26,29 @@ setup('authenticate', async ({page}) => {
   const password = process.env.TEST_PASSWORD as string;
 
   console.log('Logging in...');
-  // await page.screenshot({path: 'before-login.png'});
 
   await loginPage.login(email, password);
-  // await page.screenshot({path: 'after-login.png'});
-  // Wait for the Accept button to appear on the page.
-  let acceptButton;
+
+  // Edge case for "Default App is trying to access your wtix-xxx account"
   try {
-    acceptButton = await page.waitForSelector('button[name="action"][value="accept"]', { timeout: 5000 });
+    // Wait for the Accept button to appear on the page.
+    await loginPage.postLoginAuthAcceptButton.waitFor({ timeout: 5000 });
+    // If the Post-first-login Auth0 Accept button is found, click it.
+    await loginPage.postLoginAuthAcceptButton.click();
   } catch (error) {
     console.log('Accept button did not appear within 5 seconds.');
-  
-  }
-
-  // If the Accept button is found, click it.
-  if (acceptButton) {
-    await acceptButton.click();
   }
 
   console.log('Login completed.');
-  console.log('Current URL:', await page.url());
+  console.log('Current URL:', page.url());
 
-  const htmlContent = await page.content();
-  await page.reload();
-  console.log(htmlContent);
-
+  // await page.reload();
+  // const htmlContent = await page.content();
+  // console.log(htmlContent);
 
   // Ensuring visibility and correctness of page elements post-login.
-  await expect(await loginPage.loginButton).not.toBeVisible();
-  await expect(await loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:30000 });
+  await expect(loginPage.loginButton).not.toBeVisible(); // Sign-in button should be gone
+  await expect(loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:30000 }); // User email in its place
   await expect(page.getByRole('heading', {name: 'Events'})).toBeVisible();
 
   // Store the authentication state for future use.
