@@ -36,6 +36,9 @@ setup('authenticate', async ({page}) => {
   console.log('Login completed.');
   console.log('Current URL:', await page.url());
 
+  const htmlContent = await page.content();
+  console.log(htmlContent);
+
   await expect(page.getByText('Wrong email or password')).not.toBeVisible();
   await expect(page.getByRole('heading', { name: 'Oops!, something went wrong' })).not.toBeVisible();
 

@@ -73,10 +73,12 @@ jobs:
         # Upload screenshot as an artifact
       - name: Upload Screenshots
         if: always() # This ensures that screenshots are uploaded even if the test step fails
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: '*.png' # Path to the screenshots
+          retention-days: 5
+
 
   # test-server:
   #   name: Run Tests on server
