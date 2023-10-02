@@ -52,6 +52,8 @@ setup('authenticate', async ({page}) => {
   const htmlContent = await page.content();
   console.log(htmlContent);
 
+  await page.waitForURL('/', {timeout: 120000}); // Set a higher timeout
+
   await expect(page.getByText('Wrong email or password')).not.toBeVisible();
   await expect(
     page.getByRole('heading', {name: 'Oops!, something went wrong'}),
