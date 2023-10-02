@@ -4,8 +4,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Construct the path to the .env file based on __dirname
-const envPath = path.join(__dirname, '../../.env');
-dotenv.config({path: envPath});
+if (!process.env.CI) {
+  dotenv.config({path: path.join(__dirname, '../../.env')});
+}
 
 /**
  * https://playwright.dev/docs/auth
