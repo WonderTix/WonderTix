@@ -4,14 +4,14 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Construct the path to the .env file based on __dirname
-console.log(`process env CI is ${process.env.CI}`);
+// console.log(`process env CI is ${process.env.CI}`);
 if (!process.env.CI) {
   console.log('using dotenv');
   const envPath = path.join(__dirname, '../../.env');
   dotenv.config({path: envPath});
 }
-console.log(`process env tes email is ${process.env.TEST_EMAIL}`);
-console.log(JSON.stringify(process.env, null, 2));
+// console.log(`process env tes email is ${process.env.TEST_EMAIL}`);
+// console.log(JSON.stringify(process.env, null, 2));
 
 /**
  * https://playwright.dev/docs/auth
@@ -50,13 +50,13 @@ setup('authenticate', async ({page}) => {
   console.log('Current URL:', await page.url());
 
   const htmlContent = await page.content();
-  console.log(htmlContent);
   await page.reload();
+  console.log(htmlContent);
 
-  await loginPage.login(email, password);
 
   // Ensuring visibility and correctness of page elements post-login.
-  await expect(await loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:90000 });
+  await expect(await loginPage.loginButton).not.toBeVisible();
+  await expect(await loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:30000 });
   await expect(page.getByRole('heading', {name: 'Events'})).toBeVisible();
 
   // Store the authentication state for future use.
