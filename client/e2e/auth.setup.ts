@@ -11,7 +11,7 @@ if (!process.env.CI) {
   dotenv.config({path: envPath});
 }
 console.log(`process env tes email is ${process.env.TEST_EMAIL}`);
-console.log(JSON.stringify(process.env, null, 2))
+console.log(JSON.stringify(process.env, null, 2));
 
 /**
  * https://playwright.dev/docs/auth
@@ -20,14 +20,17 @@ console.log(JSON.stringify(process.env, null, 2))
 const authFile = 'playwright/.auth/user.json';
 
 setup('authenticate', async ({page}) => {
-  setup.setTimeout(300000);
+  setup.setTimeout(90000);
 
   const loginPage = new LoginPage(page);
 
   const email = process.env.TEST_EMAIL as string;
   const password = process.env.TEST_PASSWORD as string;
 
+  console.log('Logging in...');
   await loginPage.login(email, password);
+  console.log('Login completed.');
+  console.log('Current URL:', await page.url());
 
   // Wait for the URL to change.
   await page.waitForURL('/');
