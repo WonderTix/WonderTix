@@ -28,19 +28,17 @@ setup('authenticate', async ({page}) => {
   const password = process.env.TEST_PASSWORD as string;
 
   console.log('Logging in...');
-  await page.screenshot({path: 'before-login.png'});
   await loginPage.login(email, password);
-  await page.screenshot({path: 'after-login.png'});
   console.log('Login completed.');
   console.log('Current URL:', await page.url());
 
   await expect(page.getByText('Wrong email or password')).not.toBeVisible();
-  await expect(
-    page.getByRole('heading', {name: 'Oops!, something went wrong'}),
-  ).not.toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Oops!, something went wrong' })).not.toBeVisible();
 
   // Wait for the URL to change.
-  // await page.waitForURL('/');
+  await page.reload();
+
+  await page.waitForURL('/');
 
   // Ensuring visibility and correctness of page elements post-login.
   await expect(await loginPage.getLoggedInEmailDisplay(email)).toBeVisible();
