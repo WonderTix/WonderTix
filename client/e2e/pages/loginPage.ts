@@ -24,12 +24,14 @@ export class LoginPage {
     this.postLoginAuthAcceptButton = page.getByRole('button', { name: 'Accept' });
   }
 
-  async goto() {
-    await this.page.goto('/', { timeout: 90000 }); // 90 seconds timeout
-  }
-
+  // Dynamic Locators
   getLoggedInEmailDisplay(email: string) {
     return this.page.getByText(`${email}`);
+  }
+
+  // Page Object Functions
+  async goto() {
+    await this.page.goto('/', { timeout: 90000 }); // 90 seconds timeout
   }
 
   async setEmail(email: string) {

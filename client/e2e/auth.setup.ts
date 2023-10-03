@@ -5,11 +5,9 @@ import path from 'path';
 
 // Construct the path to the .env file based on __dirname
 if (!process.env.CI) {
-  console.log('using dotenv');
   const envPath = path.join(__dirname, '../../.env');
   dotenv.config({path: envPath});
 }
-// console.log(JSON.stringify(process.env, null, 2));
 
 /**
  * https://playwright.dev/docs/auth
@@ -25,11 +23,7 @@ setup('authenticate', async ({page}) => {
   const email = process.env.TEST_EMAIL as string;
   const password = process.env.TEST_PASSWORD as string;
 
-  console.log('Logging in...');
-  await page.screenshot({ path: 'before-login.png' });
-
   await loginPage.login(email, password);
-
 
   // Edge case for "Default App is trying to access your wtix-xxx account"
   try {
@@ -40,14 +34,6 @@ setup('authenticate', async ({page}) => {
   } catch (error) {
     console.log('Accept button did not appear within 5 seconds.');
   }
-
-  console.log('Login completed.');
-  console.log('Current URL:', page.url());
-  await page.screenshot({ path: 'after-login.png' });
-
-  // await page.reload();
-  // const htmlContent = await page.content();
-  // console.log(htmlContent);
 
   // Ensuring visibility and correctness of page elements post-login.
   await expect(loginPage.loginButton).not.toBeVisible(); // Sign-in button should be gone
