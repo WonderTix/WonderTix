@@ -10,11 +10,11 @@
 // import DataGrid from 'react-data-grid';
 
 // import DataGrid from 'react-data-grid';
-import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
+import {DataGrid} from '@mui/x-data-grid';
 import {Checkbox, Button, FormControlLabel} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 // import RequireLogin from './RequireLogin';
-import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
+import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
 import {Link} from 'react-router-dom';
 
@@ -22,13 +22,16 @@ type EventRow = {
   id?: number;
   eventid?: number;
   eventname?: string;
+  eventtime?: string;
   ticketTypes?: string;
   price?: number;
   complementary?: boolean;
+  availableSeats?: number;
 };
 
 const AdminPurchase = () => {
-  const emptyRows: EventRow[] = Array.from({length: 10}, (_, id) => ({id}));
+  const [numberOfRows, setNumberOfRows] = useState(1);
+  const emptyRows: EventRow[] = Array.from({length: numberOfRows}, (_, id) => ({id}));
   const [eventData, setEventData] = useState<EventRow[]>(emptyRows);
   const [events, setEvents] = useState([]);
   const [selectedTime, setSelectedTime] = useState(null);
@@ -40,6 +43,15 @@ const AdminPurchase = () => {
   const [ticketsSold, setTicketsSold] = useState(true);
   const [priceByRowId, setPriceByRowId] = useState({});
 
+  const addNewRow = () => {
+    // Find the maximum id in the current rows to make sure the new id is unique
+    const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
+    setEventData([...eventData, {id: maxId}]);
+  };
+
+  const removeRow = (rowId) => {
+    setEventData(eventData.filter((row) => row.id !== rowId));
+  };
 
   const columns = [
     {
@@ -61,19 +73,32 @@ const AdminPurchase = () => {
     {
       field: 'eventtime',
       headerName: 'Time',
-      width: 150,
+      width: 200,
       renderCell: (params) => (
         <select
           onChange={(e) => handleTimeChange(e, params.row)}
           disabled={!params.row.eventid}
         >
           <option>Select Time</option>
-          {availableTimesByRowId[params.row.id]?.map((event) => (
-            <option key={event.eventinstanceid} value={event.eventinstanceid}>
-              {militaryToCivilian(event.eventtime)}
-            </option>
-          ))}
+          {availableTimesByRowId[params.row.id]?.map((event) => {
+            const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
+            eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
+            const formattedDate = dayMonthDate(eventDateObject.toISOString().split('T')[0]);
+            return (
+              <option key={event.eventinstanceid} value={event.eventinstanceid}>
+                {formattedDate} {militaryToCivilian(event.eventtime)}
+              </option>
+            );
+          })}
         </select>
+      ),
+    },
+    {
+      field: 'seatsAvailable',
+      headerName: 'Seats Available',
+      width: 150,
+      renderCell: (params) => (
+        <span>{params.row.availableSeats ?? ''}</span>
       ),
     },
     {
@@ -81,7 +106,10 @@ const AdminPurchase = () => {
       headerName: 'Ticket Type',
       width: 150,
       renderCell: (params) => (
-        <select disabled={!params.row.eventtime}>  {/* Disabled if time not selected */}
+        <select
+          onChange={(e) => handleTicketTypeChange(e, params.row)}
+          disabled={!params.row.eventtime}
+        >
           <option>Select Type</option>
           <option value="general">General</option>
           <option value="vip">VIP</option>
@@ -100,7 +128,7 @@ const AdminPurchase = () => {
             value={priceByRowId[params.row.id] || ''}
             onChange={(e) => handlePriceChange(e, params.row)}
             onBlur={(e) => handlePriceBlur(e, params.row)}
-            disabled={!params.row.eventid || params.row.complementary} // Disable if no event or complementary is true
+            disabled={params.row.complementary || !params.row.ticketTypes}
             style={{width: '60px'}}
           />
         </div>
@@ -120,6 +148,20 @@ const AdminPurchase = () => {
           }
           label=""
         />
+      ),
+    },
+    {
+      field: 'action',
+      headerName: '',
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => removeRow(params.row.id)}
+        >
+          Remove
+        </Button>
       ),
     },
   ];
@@ -158,8 +200,26 @@ const AdminPurchase = () => {
 
   const handleEventChange = (event: React.ChangeEvent<HTMLSelectElement>, row: EventRow) => {
     const eventId = parseInt(event.target.value);
+
+    // If no event is selected, reset the ID and available times.
+    if (isNaN(eventId)) {
+      const updatedRows = eventData.map((r) => {
+        if (r.id === row.id) {
+          return {...row, eventid: null, eventname: null};
+        }
+        return r;
+      });
+      setEventData(updatedRows);
+      setAvailableTimesByRowId((prevState) => ({
+        ...prevState,
+        [row.id]: [],
+      }));
+      return;
+    }
+
     const matchingEvent = eventListFull.find((e) => e.eventid === eventId);
     updateAvailableTimes(eventId, row.id);
+
     // Create a new array with the updated row data
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
@@ -170,12 +230,34 @@ const AdminPurchase = () => {
     setEventData(updatedRows);
   };
 
-  const handleTimeChange = (event, row) => {
+  const handleTimeChange = (event: React.ChangeEvent<HTMLSelectElement>, row: EventRow) => {
     const eventInstanceID = parseInt(event.target.value);
-
-    // You can update the state based on the selected time and the row data.
-    // For example, you might want to set the selected time for the current row.
+    const selectedEvent = availableTimesByRowId[row.id]?.find(
+      (e) => e.eventinstanceid === eventInstanceID,
+    );
+    const updatedRows = eventData.map((r) => {
+      if (r.id === row.id) {
+        return {
+          ...row,
+          eventtime: selectedEvent?.eventtime,
+          availableSeats: selectedEvent?.availableseats,
+        };
+      }
+      return r;
+    });
+    setEventData(updatedRows);
     setSelectedTime(eventInstanceID);
+  };
+
+  const handleTicketTypeChange = (event, row) => {
+    const ticketType = event.target.value;
+    const updatedRows = eventData.map((r) => {
+      if (r.id === row.id) {
+        return {...row, ticketTypes: ticketType};
+      }
+      return r;
+    });
+    setEventData(updatedRows);
   };
 
   const handlePriceChange = (event, row) => {
@@ -188,7 +270,10 @@ const AdminPurchase = () => {
   };
 
   const handlePriceBlur = (event, row) => {
-    const newPrice = parseFloat(event.target.value).toFixed(2);
+    let newPrice = parseFloat(event.target.value).toFixed(2);
+    if (isNaN(parseFloat(newPrice))) {
+      newPrice = '0.00';
+    }
     setPriceByRowId((prevState) => ({
       ...prevState,
       [row.id]: newPrice,
@@ -244,7 +329,6 @@ const AdminPurchase = () => {
           firstname: row[1],
           lastname: row[2],
           num_tickets: row[12],
-          // TODO: hook arrived with redeemed vaue
           arrived: false,
           vip: row[3] === 't',
           donorbadge: row[4] === 't',
@@ -272,16 +356,27 @@ const AdminPurchase = () => {
               disableSelectionOnClick
               rows={eventData}
               columns={columns}
-              pageSize={10} />
+              pageSize={100}
+              hideFooter
+            />
           ) : (
             <div className="text-xl font-bold text-red-600">No tickets sold for this show</div>
           )}
-          {/* Add the purchase button here */}
-          <Link to="/ticketing/admincheckout">
-            <Button variant="contained" color="primary">
-              Proceed To Purchase
+          <div className="mt-4">
+            <Button variant="contained" color="primary" onClick={addNewRow}>
+              Add Ticket
             </Button>
-          </Link>
+          </div>
+          <div className="mt-4 text-center">
+            <Link to="/ticketing/admincheckout">
+              <Button
+                variant="contained"
+                style={{backgroundColor: 'green', color: 'white', fontSize: 'larger'}}
+              >
+                Proceed To Purchase
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
