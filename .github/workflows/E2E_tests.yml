@@ -70,6 +70,13 @@ jobs:
         run: npm run test:playwright
         # run: DEBUG=pw:api npx playwright test
         working-directory: ./client
+      
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: ./client/test-results
+          retention-days: 30
 
 
   # test-server:

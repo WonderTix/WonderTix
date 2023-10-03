@@ -26,8 +26,10 @@ setup('authenticate', async ({page}) => {
   const password = process.env.TEST_PASSWORD as string;
 
   console.log('Logging in...');
+  await page.screenshot({ path: 'before-login.png' });
 
   await loginPage.login(email, password);
+
 
   // Edge case for "Default App is trying to access your wtix-xxx account"
   try {
@@ -41,6 +43,7 @@ setup('authenticate', async ({page}) => {
 
   console.log('Login completed.');
   console.log('Current URL:', page.url());
+  await page.screenshot({ path: 'after-login.png' });
 
   // await page.reload();
   // const htmlContent = await page.content();
