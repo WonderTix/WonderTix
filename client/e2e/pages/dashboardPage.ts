@@ -9,7 +9,7 @@ export class DashboardPage {
 
   //../ticketing
   readonly TicketingHeading: Locator;
-  readonly DoorListbutton: Locator;
+  readonly DoorListButton: Locator;
   readonly EventsButton: Locator;
   readonly PurchaseTicketsButton: Locator;
   readonly CreateNewsletterButton: Locator;
@@ -30,7 +30,7 @@ export class DashboardPage {
 
     //..//ticketing
     this.TicketingHeading = page.getByRole('heading', { name: 'Ticketing Dashboard' });
-    this.DoorListbutton = page.getByRole('button', { name: 'Door List' });
+    this.DoorListButton = page.getByRole('button', { name: 'Door List' });
     this.EventsButton = page.getByRole('button', { name: 'Events' });
     this.PurchaseTicketsButton = page.getByRole('button', { name: 'Purchase Tickets' });
     this.CreateNewsletterButton = page.getByRole('button', { name: 'Create Newsletter' });
@@ -54,34 +54,6 @@ export class DashboardPage {
 
   async backtoDashboard(){
     await this.DashboardButton.click();
-  }
-
-  async DoorList(){
-    await this.DoorListbutton.click();
-  }
-
-  async Events(){
-    await this.EventsButton.click();
-  }
-
-  async PurchaseTickets(){
-    await this.PurchaseTicketsButton.click();
-  }
-
-  async CreateNewsletter(){
-    await this.CreateNewsletterButton.click();
-  }
-
-  async ManageSeasonalTickets(){
-    await this.ManageSeasonalTicketsButton.click();
-  }
-
-  async ManageTicketTypes(){
-    await this.ManageTicketTypesButton.click();
-  }
-
-  async TicketExchanges(){
-    await this.TicketExchangesButton.click();
   }
 
 }

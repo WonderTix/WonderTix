@@ -2,8 +2,6 @@ import {test , expect} from '@playwright/test';
 import {DashboardPage} from './pages/dashboardPage';
 
 test('Homepage->Ticketing Dashboard',async({page}) => {
-  test.setTimeout(180000);
-
   const dashboard = new DashboardPage(page);
 
   await dashboard.goto();
@@ -12,12 +10,10 @@ test('Homepage->Ticketing Dashboard',async({page}) => {
 });
 
 test('Ticketing Dashboard->Door List',async({page}) => {
-  test.setTimeout(180000);
-
   const dashboard = new DashboardPage(page);
 
   await dashboard.goto();
-  await dashboard.DoorList();
+  await dashboard.DoorListButton.click();
   await expect(dashboard.page.getByRole('heading', { name: 'Door List' })).toBeVisible();
   await expect(dashboard.page).toHaveURL('/ticketing/doorlist');
   await dashboard.backtoDashboard();
@@ -26,12 +22,10 @@ test('Ticketing Dashboard->Door List',async({page}) => {
 });
 
 test('Ticketing Dashboard->Events',async({page}) => {
-  test.setTimeout(180000);
-
   const dashboard = new DashboardPage(page);
 
   await dashboard.goto();
-  await dashboard.Events();
+  await dashboard.EventsButton.click();
   await expect(dashboard.page.getByRole('heading', { name: 'Select Event' })).toBeVisible();
   await expect(dashboard.page).toHaveURL('/ticketing/showings');
   await dashboard.backtoDashboard();
@@ -40,12 +34,10 @@ test('Ticketing Dashboard->Events',async({page}) => {
 });
 
 test('Ticketing Dashboard->PurchaseTickets',async({page}) => {
-  test.setTimeout(180000);
-
   const dashboard = new DashboardPage(page);
 
   await dashboard.goto();
-  await dashboard.PurchaseTickets();
+  await dashboard.PurchaseTicketsButton.click();
   await expect(dashboard.page.getByRole('img', { name: '404 error image' })).toBeVisible();
   await expect(dashboard.page).toHaveURL('/ticketing/purchaseticket');
   await dashboard.ticketingURL();
@@ -54,12 +46,10 @@ test('Ticketing Dashboard->PurchaseTickets',async({page}) => {
 });
 
 test('Ticketing Dashboard->CreateNewsletter',async({page}) => {
-  test.setTimeout(180000);
-
   const dashboard = new DashboardPage(page);
 
   await dashboard.goto();
-  await dashboard.CreateNewsletter();
+  await dashboard.CreateNewsletterButton.click();
   await expect(dashboard.page.getByRole('heading', { name: 'Newsletter Creation!' })).toBeVisible();
   await expect(dashboard.page).toHaveURL('/ticketing/addnewsletter');
   await dashboard.backtoDashboard();
@@ -68,12 +58,10 @@ test('Ticketing Dashboard->CreateNewsletter',async({page}) => {
 });
 
 test('Ticketing Dashboard->ManageSeasonalTickets',async({page}) => {
-  test.setTimeout(180000);
-
   const dashboard = new DashboardPage(page);
 
   await dashboard.goto();
-  await dashboard.ManageSeasonalTickets();
+  await dashboard.ManageSeasonalTicketsButton.click();
   await expect(dashboard.page.getByRole('img', { name: '404 error image' })).toBeVisible();
   await expect(dashboard.page).toHaveURL('/ticketing/seasonaltickets');
   await dashboard.ticketingURL();
@@ -82,12 +70,10 @@ test('Ticketing Dashboard->ManageSeasonalTickets',async({page}) => {
 });
 
 test('Ticketing Dashboard->ManageTicketTypes',async({page}) => {
-  test.setTimeout(180000);
-
   const dashboard = new DashboardPage(page);
 
   await dashboard.goto();
-  await dashboard.ManageTicketTypes();
+  await dashboard.ManageTicketTypesButton.click();
   await expect(dashboard.page.getByRole('heading', { name: 'Manage Ticket Types' })).toBeVisible();
   await expect(dashboard.page).toHaveURL('/ticketing/tickettypes');
   await dashboard.backtoDashboard();
@@ -96,12 +82,10 @@ test('Ticketing Dashboard->ManageTicketTypes',async({page}) => {
 });
 
 test('Ticketing Dashboard->TicketExchanges',async({page}) => {
-  test.setTimeout(180000);
-
   const dashboard = new DashboardPage(page);
 
   await dashboard.goto();
-  await dashboard.TicketExchanges();
+  await dashboard.TicketExchangesButton.click();
   await expect(dashboard.page.getByRole('heading', { name: 'Ticket Exchanges' })).toBeVisible();
   await expect(dashboard.page).toHaveURL('/ticketing/ticketexchanges');
   await dashboard.backtoDashboard();
