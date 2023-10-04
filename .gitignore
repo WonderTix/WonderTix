@@ -737,6 +737,6 @@ FodyWeavers.xsd
 **/*.crt
 
 test-results
-playwright-report
-playwright/.cache
-playwright/.auth
+*/playwright-report/
+*/playwright/.cache/
+*/playwright/.auth/
