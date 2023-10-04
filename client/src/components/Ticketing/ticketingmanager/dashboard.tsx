@@ -82,21 +82,6 @@ const Dashboard = (): ReactElement => {
             route='/ticketing/purchaseticket'
           />
           <DashboardLink
-            gradientClasses='bg-gradient-to-r from-yellow-600 to-red-600'
-            icon={
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-12 w-12'
-                viewBox='0 0 20 20'
-                fill='white'
-              >
-                <path d='M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z' />
-              </svg>
-            }
-            title='Create Newsletter'
-            route='/ticketing/addnewsletter'
-          />
-          <DashboardLink
             gradientClasses='bg-gradient-to-r from-violet-500 to-fuchsia-500'
             icon={
               <svg
@@ -116,6 +101,21 @@ const Dashboard = (): ReactElement => {
             }
             title='Seasons'
             route='/ticketing/seasons'
+          />
+          <DashboardLink
+            gradientClasses='bg-gradient-to-r from-yellow-600 to-red-600'
+            icon={
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-12 w-12'
+                viewBox='0 0 20 20'
+                fill='white'
+              >
+                <path d='M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z' />
+              </svg>
+            }
+            title='Create Newsletter'
+            route='/ticketing/addnewsletter'
           />
           <DashboardLink
             gradientClasses='bg-gradient-to-r from-purple-400 to-yellow-400'

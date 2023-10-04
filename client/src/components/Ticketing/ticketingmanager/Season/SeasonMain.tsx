@@ -11,7 +11,7 @@ import InstancesPage from '../showings/InstancesPage';
 
 const SeasonsMain = () => {
   return (
-    <div className='flex flex-row'>
+    <div className='flex'>
       <Udash_nav />
     </div>
   );
