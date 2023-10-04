@@ -8,13 +8,19 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import {selectCartContents, selectDiscount} from '../ticketing/ticketingSlice';
+import YourOrder from '../../cart/YourOrder';
+import {
+  selectCartContents,
+  selectDiscount,
+} from '../../ticketingmanager/ticketing/ticketingSlice';
 import {useAppSelector} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
-import CompleteOrderForm, {
+import DonationPage from '../../donation/DonationPage';
+import AdminCompleteOrderForm, {
   CheckoutFormInfo,
-} from '../../checkout/CompleteOrderForm';
+} from './AdminCompleteOrderForm';
+import {selectDonation} from '../../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
@@ -29,6 +35,7 @@ export default function CheckoutPage(): ReactElement {
   const navigate = useNavigate();
   const cartItems = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);
+  const donation = useAppSelector(selectDonation);
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>(
     'donation',
   );
@@ -46,7 +53,7 @@ export default function CheckoutPage(): ReactElement {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({cartItems, formData, discount}),
+        body: JSON.stringify({cartItems, formData, donation, discount}),
       },
     );
     const session = await response.json();
@@ -62,9 +69,9 @@ export default function CheckoutPage(): ReactElement {
   return (
     <div
       className='bg-zinc-200 flex flex-col md:flex-col sm:flex-col
-         sm:items-center w-full h-full p-20'
+         max-md:items-center w-full h-full p-2 md:p-20'
     >
-      <div className='w-full flex flex-row mb-5'>
+      <div className='flex flex-row items-center h-auto mt-12 md:w-full mb-5'>
         <button
           onClick={() => navigate('/')}
           className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'
@@ -88,13 +95,16 @@ export default function CheckoutPage(): ReactElement {
         <div className='text-4xl font-bold'>Checkout</div>
       </div>
       <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
-        <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-9 flex flex-col gap-5 items-start rounded-xl overflow-auto'>
+        <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 md:p-9 flex flex-col gap-5 items-start rounded-xl overflow-auto'>
           <div className='flex flex-col items-center h-auto w-full'>
             <div className='text-2xl lg:text-5xl font-bold mb-5'>
               Complete Order
             </div>
+            {checkoutStep === 'donation' && (
+              <DonationPage onNext={() => setCheckoutStep('form')} />
+            )}
             {checkoutStep === 'form' && (
-              <CompleteOrderForm
+              <AdminCompleteOrderForm
                 disabled={cartItems.length === 0}
                 onSubmit={doCheckout}
                 onBack={() => setCheckoutStep('donation')}
@@ -106,7 +116,9 @@ export default function CheckoutPage(): ReactElement {
           className='md:w-[30rem] sm:w-full sm:mt-10
                md:ml-5 md:mt-10 bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'
-        ></div>
+        >
+          <YourOrder />
+        </div>
       </div>
     </div>
   );

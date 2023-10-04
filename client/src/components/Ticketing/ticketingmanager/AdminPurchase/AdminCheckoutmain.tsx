@@ -1,6 +1,6 @@
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-// import AdminCheckout from './AdminCheckout'; //uncomment this line to use AdminCheckout
+import AdminCheckout from './AdminCheckout';
 
 /**
  * Main page to host door list
@@ -11,8 +11,8 @@ import Udash_nav from '../udash_navbar';
 const AdminCheckoutmain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav/>
-      {/*   <AdminCheckout/> uncomment this to use AdminCheckout    */}
+      <Udash_nav />
+      <AdminCheckout />
     </div>
   );
 };
