@@ -38,7 +38,7 @@ export class DashboardPage {
     this.ManageTicketTypesButton = page.getByRole('button', { name: 'Manage Ticket Types' });
     this.TicketExchangesButton = page.getByRole('heading', { name: 'Ticket Exchanges' });
   
-    //
+    //Left sidebar
     this.DashboardButton = page.getByRole('list').locator('a').filter({ hasText: 'Dashboard' });
   }
 

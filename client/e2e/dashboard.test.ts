@@ -10,6 +10,8 @@ if (!process.env.CI) {
 }
 
 const authFile = 'playwright/.auth/user.json';
+
+
 setup('dashboard_test',async({page})=>{
   setup.setTimeout(180000);
 
