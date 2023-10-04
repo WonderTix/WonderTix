@@ -48,68 +48,40 @@ export class DashboardPage {
     await this.ManageTicketing.click();
   }
 
+  async ticketingURL(){
+    await this.page.goto('/ticketing', { timeout: 90000 });
+  }
+
   async backtoDashboard(){
     await this.DashboardButton.click();
-    await expect(this.page).toHaveURL('/ticketing');
   }
 
   async DoorList(){
     await this.DoorListbutton.click();
-    await expect(this.page.getByRole('heading', { name: 'Door List' })).toBeVisible();
-    await expect(this.page).toHaveURL('/ticketing/doorlist');
-    await this.backtoDashboard();
   }
 
   async Events(){
     await this.EventsButton.click();
-    await expect(this.page.getByRole('heading', { name: 'Select Event' })).toBeVisible();
-    await expect(this.page).toHaveURL('/ticketing/showings');
-    await this.backtoDashboard();
   }
 
   async PurchaseTickets(){
     await this.PurchaseTicketsButton.click();
-    await expect(this.page.getByRole('img', { name: '404 error image' })).toBeVisible();
-    await expect(this.page).toHaveURL('/ticketing/purchaseticket');
-    await this.page.goto('/ticketing',{timeout: 90000});
   }
 
   async CreateNewsletter(){
     await this.CreateNewsletterButton.click();
-    await expect(this.page.getByRole('heading', { name: 'Newsletter Creation!' })).toBeVisible();
-    await expect(this.page).toHaveURL('/ticketing/addnewsletter');
-    await this.backtoDashboard();
   }
 
   async ManageSeasonalTickets(){
     await this.ManageSeasonalTicketsButton.click();
-    await expect(this.page.getByRole('img', { name: '404 error image' })).toBeVisible();
-    await expect(this.page).toHaveURL('/ticketing/seasonaltickets');
-    await this.page.goto('/ticketing',{timeout: 90000});
   }
 
   async ManageTicketTypes(){
     await this.ManageTicketTypesButton.click();
-    await expect(this.page.getByRole('heading', { name: 'Manage Ticket Types' })).toBeVisible();
-    await expect(this.page).toHaveURL('/ticketing/tickettypes');
-    await this.backtoDashboard();
   }
 
   async TicketExchanges(){
     await this.TicketExchangesButton.click();
-    await expect(this.page.getByRole('heading', { name: 'Ticket Exchanges' })).toBeVisible();
-    await expect(this.page).toHaveURL('/ticketing/ticketexchanges');
-    await this.backtoDashboard();
   }
 
-  async TicketingDashboard(){
-    await this.goto();
-    await this.DoorList();
-    await this.Events();
-    await this.PurchaseTickets();
-    await this.CreateNewsletter();
-    await this.ManageSeasonalTickets();
-    await this.ManageTicketTypes();
-    await this.TicketExchanges();
-  }
 }
