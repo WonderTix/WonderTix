@@ -11,8 +11,8 @@ import AdminPurchase from './AdminPurchase';
 const AdminPurchasemain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav/>
-      <AdminPurchase/>
+      <Udash_nav />
+      <AdminPurchase />
     </div>
   );
 };
