@@ -8,7 +8,7 @@ import Navigation from './Navigation';
  */
 const Dashmain = () => {
   return (
-    <main className="flex flex-row  ">
+    <main className='flex flex-row  '>
       <Navigation />
       <Dashboard />
     </main>
