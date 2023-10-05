@@ -9,7 +9,7 @@ const LogoutButton = (): React.ReactElement => {
   const {logout} = useAuth0();
   return (
     <button
-      className='flex items-center gap-1'
+      className='flex items-center gap-2'
       onClick={() =>
         logout({
           returnTo: window.location.origin,
