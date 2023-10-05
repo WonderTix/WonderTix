@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 /**
  * logout button
  *
- * @returns {React.ReactElement}
+ * @returns {ReactElement}
  */
-const LogoutButton = (): React.ReactElement => {
+const LogoutButton = (): ReactElement => {
   const {logout} = useAuth0();
   return (
     <button
