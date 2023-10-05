@@ -35,10 +35,16 @@ const InstancesPage = () => {
     getData();
   }, []);
 
+/**
+ * Based on active/inactive/all
+ */
+  const handleEventChange = (event) => {
+    // TODO
+  };
+
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
+      <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
         <div className ={'flex flex-row justify-between w-full mb-14'}>
           <h1 className='col-span-2 min-[678px]:col-span-1 font-bold text-5xl bg-clip-text
            text-transparent bg-gradient-to-r from-sky-500
@@ -55,7 +61,19 @@ const InstancesPage = () => {
             </span>
           </button>
         </div>
-        <ul className='md:grid md:grid-cols-2 md:gap-8 sm:grid sm:grid-cols-1 sm:gap-4 mt-9'>
+        <div className="mb-3">
+          <label htmlFor="event-select" className='text-sm text-zinc-500 ml-1 mb-2 block'>Filter (Currently Unavailable)</label>
+          <select
+            id="event-select"
+            className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7"
+            onChange={handleEventChange}
+          >
+            <option value="active" className="px-6 py-3">Active</option>
+            <option value="inactive" className="px-6 py-3">Inactive</option>
+            <option value="all" className="px-6 py-3">All</option>
+          </select>
+        </div>
+        <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
           {allEvents.map((event) => (
             <li key={event.id}>
               <button
@@ -63,8 +81,8 @@ const InstancesPage = () => {
                 className="shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full"
                 style={{backgroundImage: `url(${getImageDefault(event.imageurl)}),url(${getImageDefault()})`}}
               >
-                <div className=' backdrop-blur-sm  md:flex-row sm:flex-col
-         sm:items-center w-full rounded-xl  bg-zinc-900/70 h-full'>
+                <div className='backdrop-blur-sm  md:flex-row flex-col
+         items-center w-full rounded-xl  bg-zinc-900/70 h-full'>
                   <div className='flex flex-col overflow-clip'>
                     <div className='w-full h-40'>
                       <EventImage

@@ -8,7 +8,7 @@ const Tasks = (): React.ReactElement => {
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className=' md:ml-[18rem] md:mt-40 md:mr-40
-         sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+         md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
         <TaskForm />
       </div>
     </div>

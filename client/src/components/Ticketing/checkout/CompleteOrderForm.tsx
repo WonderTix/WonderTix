@@ -120,7 +120,7 @@ export default function CompleteOrderForm({
               <form
                 onSubmit={handleSubmit}
                 noValidate
-                className='w-full h-full bg-zinc-200 p-2 md:p-4 rounded-xl flex flex-col justify-between'
+                className='w-full h-full bg-zinc-200 p-4 rounded-xl flex flex-col justify-between'
               >
                 <div className='flex flex-col w-auto'>
                   <div className='grid gap-5 md:grid-cols-2'>
