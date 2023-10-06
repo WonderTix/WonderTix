@@ -29,4 +29,22 @@ export class DoorListPage {
   async setTime(time: string) {
     await this.chooseTime.selectOption(time);
   }
+
+  async getHeader() {
+    return this.pageHeader.textContent();
+  }
+
+  async selectRandomShow() {
+    const shows = this.chooseEvent.allInnerTexts();
+    const randShow = shows[Math.floor(Math.random() * (await shows).length)];
+    this.setEvent(randShow);
+    return this.chooseEvent.textContent();
+  }
+
+  async selectRandomTime() {
+    const times = this.chooseTime.allInnerTexts();
+    const randTime = times[Math.floor(Math.random() * (await times).length)];
+    this.setTime(randTime);
+    return this.chooseTime.textContent();
+  }
 }
