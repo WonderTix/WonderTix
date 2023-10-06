@@ -146,11 +146,11 @@ const App = () => {
           path='/ticketing/showings/:eventid'
           element={<ProtectedRoute component={EventProvider} />}
         />
-                <Route
+        <Route
           path='/ticketing/purchaseticket'
           element={<ProtectedRoute component={AdminPurchasemain} />}
         />
-                <Route
+        <Route
           path='/ticketing/admincheckout'
           element={<ProtectedRoute component={AdminCheckoutmain} />}
         />
