@@ -7,9 +7,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-// import DataGrid from 'react-data-grid';
-
-// import DataGrid from 'react-data-grid';
 import {DataGrid} from '@mui/x-data-grid';
 import {Checkbox, Button, FormControlLabel} from '@mui/material';
 import React, {useEffect, useState} from 'react';
@@ -42,6 +39,7 @@ const AdminPurchase = () => {
   const [eventListActive, setEventListActive] = useState([]);
   const [ticketsSold, setTicketsSold] = useState(true);
   const [priceByRowId, setPriceByRowId] = useState({});
+  const [ticketTypes, setTicketTypes] = useState([]);
 
   const addNewRow = () => {
     // Find the maximum id in the current rows to make sure the new id is unique
@@ -62,14 +60,13 @@ const AdminPurchase = () => {
         <select onChange={(e) => handleEventChange(e, params.row)}>
           <option>Select Event</option>
           {eventList.map((event) => (
-            <option key={event.eventinstanceid} value={event.eventid}>
-              {event.eventname}
+            <option key={event.eventinstanceid} value={`${event.eventid}-${event.eventname}`}>
+              {`${event.eventname} - ${event.eventid}`}
             </option>
           ))}
         </select>
       ),
     },
-    {field: 'eventid', headerName: 'ID', width: 50},
     {
       field: 'eventtime',
       headerName: 'Time',
@@ -84,9 +81,10 @@ const AdminPurchase = () => {
             const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
             eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
             const formattedDate = dayMonthDate(eventDateObject.toISOString().split('T')[0]);
+            const formattedTime = militaryToCivilian(event.eventtime);
             return (
               <option key={event.eventinstanceid} value={event.eventinstanceid}>
-                {formattedDate} {militaryToCivilian(event.eventtime)}
+                {`${formattedDate} - ${formattedTime}`}
               </option>
             );
           })}
@@ -104,15 +102,18 @@ const AdminPurchase = () => {
     {
       field: 'ticketTypes',
       headerName: 'Ticket Type',
-      width: 150,
+      width: 200,
       renderCell: (params) => (
         <select
           onChange={(e) => handleTicketTypeChange(e, params.row)}
           disabled={!params.row.eventtime}
         >
           <option>Select Type</option>
-          <option value="general">General</option>
-          <option value="vip">VIP</option>
+          {ticketTypes.map((type) => (
+            <option key={type.id} value={type.id}>
+              {type.description}
+            </option>
+          ))}
         </select>
       ),
     },
@@ -190,6 +191,24 @@ const AdminPurchase = () => {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    const fetchTicketTypes = async () => {
+      try {
+        const response = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes', {
+          headers: {
+            'accept': 'application/json',
+          },
+        });
+        const jsonRes = await response.json();
+        setTicketTypes(jsonRes.data);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    fetchTicketTypes();
+  }, []);
+
   const updateAvailableTimes = (eventId, rowId) => {
     const matchingEvents = eventListFull.filter((e) => e.eventid === eventId);
     setAvailableTimesByRowId((prevState) => ({
@@ -199,7 +218,8 @@ const AdminPurchase = () => {
   };
 
   const handleEventChange = (event: React.ChangeEvent<HTMLSelectElement>, row: EventRow) => {
-    const eventId = parseInt(event.target.value);
+    const [eventIdString, eventName] = event.target.value.split('-');
+    const eventId = parseInt(eventIdString);
 
     // If no event is selected, reset the ID and available times.
     if (isNaN(eventId)) {
@@ -250,14 +270,26 @@ const AdminPurchase = () => {
   };
 
   const handleTicketTypeChange = (event, row) => {
-    const ticketType = event.target.value;
+    const ticketTypeId = parseInt(event.target.value);
+    const selectedType = ticketTypes.find((type) => type.id === ticketTypeId);
+
+    // Extract the numerical value of the price
+    const price = parseFloat(selectedType?.price.replace(/[^\d.-]/g, '')) || 0;
+
+    // Update the eventData
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        return {...row, ticketTypes: ticketType};
+        return {...row, ticketTypes: selectedType.description, price: price};
       }
       return r;
     });
     setEventData(updatedRows);
+
+    // Update the priceByRowId
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: price.toFixed(2),
+    }));
   };
 
   const handlePriceChange = (event, row) => {
@@ -371,9 +403,9 @@ const AdminPurchase = () => {
             <Link to="/ticketing/admincheckout">
               <Button
                 variant="contained"
-                style={{backgroundColor: 'green', color: 'white', fontSize: 'larger'}}
+                style={{backgroundColor: 'green', color: 'white', fontSize: 'larger', textTransform: 'none'}}
               >
-                Proceed To Purchase
+                Proceed To Checkout
               </Button>
             </Link>
           </div>
