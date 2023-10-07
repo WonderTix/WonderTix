@@ -4,6 +4,9 @@ module.exports = {
   theme: {
     screens: {
       'sm': '360px',
+      // => @media (min-width: 360px) { ... }
+
+      'tab': '576px',
       // => @media (min-width: 576px) { ... }
 
       'md': '960px',
