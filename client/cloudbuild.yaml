@@ -52,4 +52,6 @@ availableSecrets:
     env: 'REACT_APP_AUTH0_CLIENT_ID'
   - versionName: projects/131818279954/secrets/PUBLIC_STRIPE_KEY/versions/latest
     env: 'REACT_APP_PUBLIC_STRIPE_KEY'
+  - versionName: projects/131818279954/secrets/AUTH0_CLIENT_SECRET/versions/latest
+    env: 'AUTH0_CLIENT_SECRET'
 
