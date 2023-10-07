@@ -159,7 +159,7 @@ model orderitems {
   orderitemid   Int             @id @default(autoincrement())
   orderid_fk    Int
   price         Decimal?        @db.Money
-  orders        orders          @relation(fields: [orderid_fk], references: [orderid], onDelete: NoAction, onUpdate: NoAction, map: "orderitems_orderid_fkey")
+  orders        orders          @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: NoAction, map: "orderitems_orderid_fkey")
   seasontickets seasontickets[]
   singletickets singletickets[]
 }
@@ -235,7 +235,7 @@ model singletickets {
   orderitemid_fk   Int
   ticketwasswapped Boolean?     @default(false)
   eventtickets     eventtickets @relation(fields: [eventticketid_fk], references: [eventticketid], onDelete: NoAction, onUpdate: NoAction)
-  orderitems       orderitems   @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: NoAction, onUpdate: NoAction)
+  orderitems       orderitems   @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: Cascade, onUpdate: NoAction)
 }
 
 /// used to create and assign tasks such as a todo-list, memo, investigate and issue, etc.
@@ -324,20 +324,20 @@ enum state {
 }
 
 model StripeWebhook {
-	id        Int     @id @default(autoincrement())
-	eventid   String
-	event     String
-	livemode  Boolean
-	created   Int
-	data      String
-	object    String
-	requestid String
-	type      String
+  id        Int     @id @default(autoincrement())
+  eventid   String
+  event     String
+  livemode  Boolean
+  created   Int
+  data      String
+  object    String
+  requestid String
+  type      String
 }
 
 model Error {
-	id        Int     @id @default(autoincrement())
-	message   String
-	stack     String
-	createdAt Int
+  id        Int    @id @default(autoincrement())
+  message   String
+  stack     String
+  createdAt Int
 }

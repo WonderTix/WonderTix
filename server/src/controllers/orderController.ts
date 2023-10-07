@@ -1,11 +1,43 @@
-import {Router, Request, Response} from 'express';
+import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {PrismaClient, Prisma} from '@prisma/client';
+import {Prisma, PrismaClient} from '@prisma/client';
+import {orderCancel, ticketingWebhook} from './orderController.service';
 
+const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
+const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
+const stripe = require('stripe')(stripeKey);
+const bodyParser = require('body-parser');
 const prisma = new PrismaClient();
 
 export const orderController = Router();
 
+orderController.post('/webhook', express.raw({type: 'application/json'}), async (req: Request, res: Response) => {
+  const sig = req.headers['stripe-signature'];
+  try {
+    const event = await stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        webhookKey,
+    );
+    const type = event.type;
+    const metaData = event.data.object.metadata;
+
+    if (metaData.sessionType === '__ticketing') {
+      await ticketingWebhook(prisma, type, metaData, event.id);
+    } else if (metaData.sessionType === '__donation') {
+      // donation control flow
+    }
+
+    res.status(200).send();
+    return;
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send();
+  }
+});
+
+
+orderController.use(express.json());
 /**
  * @swagger
  * /2/order:

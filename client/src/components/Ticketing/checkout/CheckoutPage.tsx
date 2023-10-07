@@ -38,21 +38,25 @@ export default function CheckoutPage(): ReactElement {
     }
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkout`, {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({cartItems, formData, donation, discount}),
-    });
-    const session = await response.json();
-    console.log(session.id);
-    console.log(pk);
-    const paymentIntent = session.payment_intent;
-    const result = await(stripe.redirectToCheckout({sessionId: session.id}));
-    if (result.error) {
-      console.log(result.error.message);
+    try {
+      const response = await fetch(process.env.REACT_APP_API_2_URL + `/events/checkout`, {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({cartItems, formData, donation, discount}),
+      });
+      if (!response.ok) {
+        throw response;
+      }
+      const session = await response.json();
+      if (session.id) {
+        const result = await (stripe.redirectToCheckout({sessionId: session.id}));
+        if (result.error) throw result;
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

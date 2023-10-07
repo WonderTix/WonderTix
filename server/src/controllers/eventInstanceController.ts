@@ -337,17 +337,23 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
       throw new Error(`Showing ${id} does not exist`);
     }
 
-    const updatedEventInstance = validateShowingOnUpdate(
-        eventInstanceToUpdate,
-        requestEventInstance,
-    );
-    const {restrictionsToAdd, restrictionsToRemove, restrictionsToUpdate} =
-      validateTicketRestrictionsOnUpdate(
-          eventInstanceToUpdate.ticketrestrictions,
-          requestEventInstance.instanceTicketTypes,
-          requestEventInstance.totalseats,
-      );
+    const {
+      updatedEventInstance,
+      GAEventTicketsUpdate,
+    } = validateShowingOnUpdate(eventInstanceToUpdate, requestEventInstance);
 
+    const {
+      restrictionsToAdd,
+      restrictionsToRemove,
+      restrictionsToUpdate,
+    } = validateTicketRestrictionsOnUpdate(
+        eventInstanceToUpdate.ticketrestrictions,
+        requestEventInstance.instanceTicketTypes,
+        updatedEventInstance.availableseats,
+        eventInstanceToUpdate.eventtickets.filter(
+            (ticket) => !ticket.purchased,
+        ),
+    );
     //  update showing
     await prisma.eventinstances.update({
       where: {
@@ -357,36 +363,79 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
         ...updatedEventInstance,
       },
     });
-    //  update ticket restrictions
+    //  update ticket restrictions and eventtickets
     await prisma.$transaction([
-      ...restrictionsToRemove.map((restriction) =>
-        prisma.ticketrestrictions.delete({
+      GAEventTicketsUpdate.difference > 0 ?
+        prisma.eventtickets.createMany({
+          data: Array(GAEventTicketsUpdate.difference).fill({
+            eventinstanceid_fk: eventInstanceToUpdate.eventinstanceid,
+            tickettypeid_fk: 1,
+          }),
+        }) :
+        prisma.eventtickets.deleteMany({
           where: {
-            ticketrestrictionsid: Number(restriction.ticketrestrictionsid),
+            eventticketid: {in: GAEventTicketsUpdate.ticketsToRemove ?? []},
           },
         }),
-      ),
-      ...restrictionsToUpdate.map((restriction) =>
-        prisma.ticketrestrictions.update({
-          where: {
-            ticketrestrictionsid: restriction.ticketrestrictionsid,
-          },
-          data: {
-            ticketlimit: Number(restriction.ticketlimit),
-          },
-        }),
-      ),
-      ...restrictionsToAdd.map((restriction) =>
-        prisma.ticketrestrictions.create({
-          data: {
-            eventinstanceid_fk: Number(requestEventInstance.eventinstanceid),
-            tickettypeid_fk: Number(restriction.typeID),
-            ticketlimit: Number(restriction.typeQuantity),
-            ticketssold: 0,
-          },
-        }),
-      ),
+      ...restrictionsToRemove
+          .map((restriction) => [
+            prisma.ticketrestrictions.delete({
+              where: {
+                ticketrestrictionsid: Number(restriction.ticketrestrictionsid),
+              },
+            }),
+            prisma.eventtickets.deleteMany({
+              where: {
+                eventinstanceid_fk: Number(eventInstanceToUpdate.eventinstanceid),
+                tickettypeid_fk: restriction.tickettypeid_fk,
+              },
+            }),
+          ])
+          .flat(),
+      ...restrictionsToUpdate
+          .map(([restriction, update]) => [
+            prisma.ticketrestrictions.update({
+              where: {
+                ticketrestrictionsid: restriction.ticketrestrictionsid,
+              },
+              data: {
+                ticketlimit: Number(restriction.ticketlimit),
+              },
+            }),
+          update.difference > 0 ?
+            prisma.eventtickets.createMany({
+              data: Array(update.difference).fill({
+                eventinstanceid_fk: eventInstanceToUpdate.eventinstanceid,
+                tickettypeid_fk: restriction.tickettypeid_fk,
+              }),
+            }) :
+            prisma.eventtickets.deleteMany({
+              where: {
+                eventticketid: {in: update.ticketsToRemove ?? []},
+              },
+            }),
+          ])
+          .flat(),
+      ...restrictionsToAdd
+          .map((restriction) => [
+            prisma.ticketrestrictions.create({
+              data: {
+                eventinstanceid_fk: Number(requestEventInstance.eventinstanceid),
+                tickettypeid_fk: Number(restriction.typeID),
+                ticketlimit: Number(restriction.typeQuantity),
+                ticketssold: 0,
+              },
+            }),
+            prisma.eventtickets.createMany({
+              data: Array(restriction.typeQuantity).fill({
+                eventinstanceid_fk: eventInstanceToUpdate.eventinstanceid,
+                tickettypeid_fk: Number(restriction.typeID),
+              }),
+            }),
+          ])
+          .flat(),
     ]);
+
     res.status(204).send('Showing successfully updated');
     return;
   } catch (error) {
