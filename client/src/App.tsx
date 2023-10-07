@@ -146,6 +146,14 @@ const App = () => {
           path='/ticketing/showings/:eventid'
           element={<ProtectedRoute component={EventProvider} />}
         />
+        <Route
+          path='/ticketing/purchaseticket'
+          element={<ProtectedRoute component={AdminPurchasemain} />}
+        />
+        <Route
+          path='/ticketing/admincheckout'
+          element={<ProtectedRoute component={AdminCheckoutmain} />}
+        />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>
