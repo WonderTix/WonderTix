@@ -18,12 +18,14 @@ steps:
       - 'REACT_APP_AUTH0_CLIENT_ID'
       - '--build-arg'
       - 'REACT_APP_PUBLIC_STRIPE_KEY'
+	  - '--build-arg'
+	  - 'AUTH0_CLIENT_SECRET'
       - '-f'
       - 'client/Dockerfile.dev'
       - '-t'
       - '$_GCP_ARTIFACTS/wondertix-client'
       - 'client'
-    secretEnv: ['REACT_APP_AUTH0_CLIENT_ID', 'REACT_APP_PUBLIC_STRIPE_KEY']
+    secretEnv: ['AUTH0_CLIENT_SECRET', 'REACT_APP_AUTH0_CLIENT_ID', 'REACT_APP_PUBLIC_STRIPE_KEY']
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
