@@ -1,17 +1,7 @@
 import {
   PrismaClient,
-  ticketrestrictions,
 } from '@prisma/client';
 
-interface TicketingMetaData {
-  sessionType: string;
-  primaryTicketIDs: string;
-  secondaryTicketIDs: string;
-  custid: number;
-  orderID: number;
-  donation: number;
-  discountCode: string | null; // when discounts are implemented should be discount foreign key.
-}
 export const ticketingWebhook = async (
     prisma: PrismaClient,
     eventType: string,
