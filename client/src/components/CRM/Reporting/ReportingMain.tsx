@@ -1,6 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import Reporting from './Reporting';
 import Navigation from '../Navigation';
+import CreditCardRecon from './CreditCardRecon';
 
 /**
  * @returns {object} ReportingMain - has Navigation
@@ -8,8 +9,8 @@ import Navigation from '../Navigation';
  */
 const ReportingMain=() =>{
   return (
-    <div className='flex flex-row  '>
-      <Reporting/>
+    <div>
+      <CreditCardRecon/>
       <Navigation/>
     </div>
   );
