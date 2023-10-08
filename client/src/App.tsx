@@ -146,8 +146,8 @@ const App = () => {
           path='/ticketing/showings/:eventid'
           element={<ProtectedRoute component={EventProvider} />}
         />
-        <Route 
-          path='/ticketing/Refund' 
+        <Route
+          path='/ticketing/Refund'
           element={<ProtectedRoute component={RefundMain} /> } />
         <Route path='*' element={<PageNotFound />} />
       </Routes>

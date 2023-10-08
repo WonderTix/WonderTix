@@ -10,8 +10,8 @@ import Refund from './RefundOrderTicket';
 const RefundMain = () => {
   return (
     <div className='flex flex-row'>
-        <Udash_nav/>
-        <Refund/>
+      <Udash_nav/>
+      <Refund/>
     </div>
   );
 };
