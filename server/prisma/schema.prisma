@@ -194,6 +194,7 @@ model seasons {
   name                         String   @db.VarChar(100)
   startdate                    Int
   enddate                      Int
+  imageurl                     String?  @db.VarChar(255)
   events                       events[]
   date_seasons_enddateTodate   date     @relation("seasons_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   date_seasons_startdateTodate date     @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
