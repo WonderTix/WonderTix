@@ -68,16 +68,16 @@ export default function CheckoutPage(): ReactElement {
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+      <div className='md:ml-[18rem] md:mt-20 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <div className='flex flex-row'>
           <div
             className='bg-zinc-200 flex flex-col md:flex-col sm:flex-col
          max-md:items-center w-full h-full p-2 md:p-20'
           >
-            <div className='flex flex-row items-center h-auto mt-12 md:w-full mb-5'>
+            <div className='flex flex-row items-center h-auto mt-5 md:w-full mb-5'>
               <button
                 onClick={() => navigate('../ticketing/purchaseticket')}
-                className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'
+                className='bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'
               >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
