@@ -91,7 +91,7 @@ const validateTicketQuantity = (
     totalseats: number,
     tickets: eventtickets[],
 ) => {
-  const unsoldTickets = tickets.filter((ticket) => !ticket.purchased);
+  const unsoldTickets = tickets.filter((ticket) => !ticket.singleticket_fk);
   const soldTicketCount = tickets.length - unsoldTickets.length;
   if (totalseats < soldTicketCount) {
     throw new InvalidInputError(

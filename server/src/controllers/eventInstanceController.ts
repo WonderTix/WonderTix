@@ -78,7 +78,6 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
                 .map((type) =>
                   Array(type.typeQuantity).fill({
                     tickettypeid_fk: Number(type.typeID),
-                    purchased: false,
                     redeemed: false,
                     donated: false,
                   }),
@@ -86,7 +85,6 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
                 .flat(),
             ...Array(eventToCreate.totalseats).fill({
               tickettypeid_fk: 1,
-              purchased: false,
               redeemed: false,
               donated: false,
             }),
@@ -351,7 +349,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
         requestEventInstance.instanceTicketTypes,
         updatedEventInstance.availableseats,
         eventInstanceToUpdate.eventtickets.filter(
-            (ticket) => !ticket.purchased,
+            (ticket) => !ticket.singleticket_fk,
         ),
     );
     //  update showing

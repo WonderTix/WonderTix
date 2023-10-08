@@ -16,22 +16,16 @@ export const eventController = Router();
 
 eventController.post('/checkout', async (req: Request, res: Response) => {
   const {cartItems, formData, donation, discount} = req.body;
+  let orderID = 0;
+  let toSend = {id: 'comp'};
+
   try {
     if (!cartItems.length && donation === 0) {
       return res.status(400).json(`Cart is empty`);
     }
-
     const {contactid} = await updateContact(formData, prisma);
-
-    const {
-      cartRows,
-      orderItems,
-      orderTotal,
-      primaryTicketIDs,
-      secondaryTicketIDs,
-      eventInstanceQueries,
-    } = await getOrderItems(cartItems, prisma);
-
+    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
+      await getOrderItems(cartItems, prisma);
     const donationItem: LineItem = {
       price_data: {
         currency: 'usd',
@@ -43,49 +37,47 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       },
       quantity: 1,
     };
+    if (donation + orderTotal > 0) {
+      toSend = await createStripeCheckoutSession(
+          contactid,
+          donation,
+        donation ? cartRows.concat(donationItem) : cartRows,
+        orderID,
+        discount,
+      );
+    }
 
-    const orderID = await orderFulfillment(
+    orderID = await orderFulfillment(
         prisma,
         orderItems,
         contactid,
         orderTotal,
         eventInstanceQueries,
+        toSend.id,
     );
-
-    try {
-      if (donation + orderTotal === 0) {
-        await prisma.orders.update({
-          where: {
-            orderid: orderID,
-          },
-          data: {
-            payment_intent: `order-comp-${orderID}`,
-          },
-        });
-        return res.status(200).json({id: 0, payment_intent: `order-comp-${orderID}`});
-      }
-      const toSend = await createStripeCheckoutSession(
-          contactid,
-          donation,
-        donation?cartRows.concat(donationItem): cartRows,
-        JSON.stringify(primaryTicketIDs),
-        JSON.stringify(secondaryTicketIDs),
-        orderID,
-        discount,
-      );
-      res.json(toSend);
-    } catch (error) {
-      await orderCancel(prisma, orderID, primaryTicketIDs, secondaryTicketIDs);
-      res.status(400).json(error);
-      return;
+    if (toSend.id === 'comp') {
+      await prisma.orders.update({
+        where: {
+          orderid: orderID,
+        },
+        data: {
+          checkout_sessions: `compedOrder${orderID}`,
+          payment_intent: `compedOrder${orderID}`,
+        },
+      });
     }
+    res.json(toSend);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    if (orderID) await orderCancel(prisma, orderID);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
     }
-    if (error instanceof Prisma.PrismaClientKnownRequestError || error instanceof Prisma.PrismaClientValidationError) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError ||
+      error instanceof Prisma.PrismaClientValidationError
+    ) {
       res.status(400).json(error.message);
       return;
     }

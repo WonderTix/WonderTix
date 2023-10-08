@@ -1,9 +1,7 @@
 import {
-  eventinstances,
   PrismaClient,
   ticketrestrictions,
 } from '@prisma/client';
-import {OrderItem} from './eventController.service';
 
 interface TicketingMetaData {
   sessionType: string;
@@ -17,22 +15,21 @@ interface TicketingMetaData {
 export const ticketingWebhook = async (
     prisma: PrismaClient,
     eventType: string,
-    orderData: TicketingMetaData,
     paymentIntent: string,
+    sessionID: string,
 ) => {
-  const {
-    orderID,
-    custid,
-    primaryTicketIDs,
-    secondaryTicketIDs,
-    donation,
-  } = orderData;
+  const order = await prisma.orders.findFirst({
+    where: {
+      checkout_sessions: sessionID,
+    },
+  });
+  if (!order) return;
 
   switch (eventType) {
-    case 'payment_intent.succeeded': {
+    case 'checkout.session.completed': {
       await prisma.orders.update({
         where: {
-          orderid: Number(orderID),
+          orderid: order.orderid,
         },
         data: {
           payment_intent: paymentIntent,
@@ -40,28 +37,28 @@ export const ticketingWebhook = async (
       });
       break;
     }
-    case 'payment_intent.canceled':
+    case 'checkout.session.expired':
       await orderCancel(
           prisma,
-          Number(orderID),
-          JSON.parse(primaryTicketIDs),
-          JSON.parse(secondaryTicketIDs),
+          order.orderid,
       );
       break;
   }
 };
 export const orderFulfillment = async (
     prisma: PrismaClient,
-    orderItems: OrderItem[],
+    orderItems: any[],
     contactid: number,
     ordertotal: number,
     eventInstanceQueries: any[],
+    sessionID: string,
     discount?: number,
 ) => {
   const result = await prisma.$transaction([
     prisma.orders.create({
       data: {
         ...getOrderDateAndTime(),
+        checkout_sessions: sessionID,
         contactid_fk: contactid,
         ordertotal,
         discountid_fk: discount,
@@ -77,94 +74,58 @@ export const orderFulfillment = async (
 export const orderCancel = async (
     prisma: PrismaClient,
     orderID: number,
-    primaryTicketIDs: number[],
-    secondaryTicketIDs: number[],
 ) => {
-  const primaryEventTickets = await prisma.eventtickets.findMany({
+  const queriesToBatch :any[] = [];
+  await prisma.orders.delete({
     where: {
-      eventticketid: {in: primaryTicketIDs.map((id) => Number(id))},
+      orderid: Number(orderID),
     },
+  });
+
+  const eventInstances = await prisma.eventinstances.findMany({
     include: {
-      eventinstances: {
-        include: {
-          ticketrestrictions: true,
-        },
-      },
+      eventtickets: true,
     },
   });
 
-  const eventInstances = new Map<
-    [number, number],
-    { instance: any; ticketQuantity: number }
-  >();
+  eventInstances.forEach((instance) => {
+    const ticketsSold = new Map<number, number>();
 
-  primaryEventTickets.forEach((ticket) => {
-    const entry = eventInstances.get([
-      ticket.eventinstanceid_fk,
-      ticket.tickettypeid_fk ?? 1,
-    ]);
-    if (!entry) {
-      eventInstances.set(
-          [ticket.eventinstanceid_fk, ticket.tickettypeid_fk ?? 1],
-          {instance: ticket.eventinstances, ticketQuantity: 1},
-      );
-      return;
-    }
-    entry.ticketQuantity += 1;
-  });
+    instance.eventtickets.forEach((ticket) => {
+      if (!ticket.singleticket_fk) return;
 
-  const queriesToBatch: any[] = [];
+      const count = ticketsSold.get(ticket.tickettypeid_fk??1) ?? 0;
+      ticketsSold.set(ticket.tickettypeid_fk??1, count+1);
+    });
+    const updatedAvailable = instance.totalseats??0 -(ticketsSold.get(1)??0);
 
-  for (const [
-    [, ticketTypeID],
-    {instance, ticketQuantity},
-  ] of eventInstances) {
-    const ticketRest = instance.ticketrestrictions.find(
-        (restriction: ticketrestrictions) =>
-          ticketTypeID === restriction.tickettypeid_fk,
-    );
+    if (updatedAvailable === instance.availableseats) return;
 
-    if (!ticketRest) {
-      throw new Error('ticket type does not exist');
-    }
-    queriesToBatch.push(
-        prisma.eventinstances.update({
-          where: {
-            eventinstanceid: instance.eventinstanceid,
-          },
-          data: {
-            availableseats: (instance.availableseats ?? 0) + ticketQuantity,
-            ticketrestrictions: {
-              update: {
-                where: {
-                  ticketrestrictionsid: ticketRest.tickettypeid_fk,
-                },
-                data: {
-                  ticketssold:
-                  (ticketRest.ticketssold ?? ticketQuantity) - ticketQuantity,
-                },
-              },
-            },
-          },
-        }),
-    );
-  }
-  await prisma.$transaction([
-    prisma.orders.delete({
+    queriesToBatch.push(prisma.eventinstances.update({
       where: {
-        orderid: orderID,
-      },
-    }),
-    ...queriesToBatch,
-    prisma.eventtickets.updateMany({
-      where: {
-        eventticketid: {in: [...primaryTicketIDs, ...secondaryTicketIDs]},
+        eventinstanceid: instance.eventinstanceid,
       },
       data: {
-        purchased: false,
+        availableseats: instance.totalseats??0 - (ticketsSold.get(1) ?? 0),
       },
-    }),
-  ]);
+    }));
+    for (const entry of ticketsSold) {
+      if (entry[0] === 1) continue;
+      queriesToBatch.push(
+          prisma.ticketrestrictions.updateMany({
+            where: {
+              tickettypeid_fk: entry[0],
+              eventinstanceid_fk: instance.eventinstanceid,
+            },
+            data: {
+              ticketssold: entry[1],
+            },
+          }),
+      );
+    }
+  });
+
+  await prisma.$transaction(queriesToBatch);
   return;
 };
 const getOrderDateAndTime = () => {

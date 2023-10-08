@@ -2,6 +2,7 @@ import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma, PrismaClient} from '@prisma/client';
 import {orderCancel, ticketingWebhook} from './orderController.service';
+import {on} from 'ws';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
@@ -19,20 +20,21 @@ orderController.post('/webhook', express.raw({type: 'application/json'}), async 
         sig,
         webhookKey,
     );
-    const type = event.type;
-    const metaData = event.data.object.metadata;
+
+    const object = event.data.object;
+    const metaData = object.metadata;
 
     if (metaData.sessionType === '__ticketing') {
-      await ticketingWebhook(prisma, type, metaData, event.id);
+      await ticketingWebhook(prisma, event.type, object.payment_intent, object.id);
+      // handle donation amount in metadata (will be a donation team task?)
     } else if (metaData.sessionType === '__donation') {
-      // donation control flow
+      // donation is handled
     }
-
     res.status(200).send();
     return;
   } catch (error) {
-    console.log(error);
-    return res.status(500).send();
+    console.error(error);
+    return res.status(400).send();
   }
 });
 

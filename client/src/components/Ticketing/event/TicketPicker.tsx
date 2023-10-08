@@ -300,7 +300,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           const data = await response.json();
           const matchingRow = data.data.find((row) => row.tickettypeid_fk === selectedTicketType.id);
           if (matchingRow) {
-            const numAvail = matchingRow.ticketlimit;
+            const numAvail = matchingRow.ticketlimit - matchingRow.ticketssold;
             setnumAvail(numAvail);
           } else {
             const numAvail = selectedTicket.availableseats;
