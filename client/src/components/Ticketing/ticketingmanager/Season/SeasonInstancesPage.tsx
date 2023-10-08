@@ -9,6 +9,7 @@ export interface Seasons {
   name: string;
   startdate: number;
   enddate: number;
+  imageurl?: string;
 }
 
 /**
