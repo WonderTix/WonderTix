@@ -48,16 +48,8 @@ const YourOrder = () => {
 
   const handleBackButton = () => {
     const currentPath = window.location.pathname;
-    console.log(currentPath);
-    // if (currentPath.includes('/CompleteOrder')) {
-    // navigate('/');
-    // } else if (currentPath.includes('/AdminCheckout')) {
-    // navigate('/AdminPurchase');
-    // } else {
-    // navigate(-1);
-    // }
-    if (currentPath.includes('/AdminCheckout')) {
-      navigate('/AdminPurchase');
+    if (currentPath.includes('/admincheckout')) {
+      navigate('/ticketing/purchaseticket');
     } else {
       navigate('/');
     }
