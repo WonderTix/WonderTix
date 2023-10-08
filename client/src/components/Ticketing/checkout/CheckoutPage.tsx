@@ -10,10 +10,11 @@
  */
 import YourOrder from '../cart/YourOrder';
 import {
+  removeAllTicketsFromCart,
   selectCartContents,
   selectDiscount,
 } from '../ticketingmanager/ticketing/ticketingSlice';
-import {useAppSelector} from '../app/hooks';
+import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
 import DonationPage from '../donation/DonationPage';
@@ -37,6 +38,7 @@ export default function CheckoutPage(): ReactElement {
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>(
     'donation',
   );
+  const dispatch = useAppDispatch();
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
       if (formData.seatingAcc === 'Other') {
@@ -59,12 +61,14 @@ export default function CheckoutPage(): ReactElement {
         throw response;
       }
       const session = await response.json();
-      console.log(session.id);
-      if (session.id === 0) return;
+      if (session.id === 'comp') {
+        dispatch(removeAllTicketsFromCart());
+        navigate(`/success`);
+      }
       const result = await stripe.redirectToCheckout({sessionId: session.id});
       if (result.error) throw result;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

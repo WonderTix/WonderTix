@@ -81,7 +81,7 @@ export const orderCancel = async (prisma: PrismaClient, orderID: number) => {
       );
     });
     const updatedAvailable =
-      instance.totalseats ?? 0 - (ticketsSold.get(1) ?? 0);
+      (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0);
 
     if (updatedAvailable === instance.availableseats) return;
 
@@ -91,7 +91,7 @@ export const orderCancel = async (prisma: PrismaClient, orderID: number) => {
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats: instance.totalseats ?? 0 - (ticketsSold.get(1) ?? 0),
+            availableseats: (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0),
           },
         }),
     );
