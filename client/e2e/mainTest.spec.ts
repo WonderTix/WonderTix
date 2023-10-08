@@ -5,7 +5,3 @@ test('Check Home', async ({page}) => {
   const main = new MainPage(page);
   await main.goto();
 });
-
-test('add ticket', async ({page}) => {
-    
-});
