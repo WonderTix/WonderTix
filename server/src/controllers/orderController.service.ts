@@ -96,9 +96,6 @@ export const orderCancel = async (prisma: PrismaClient, orderID: number) => {
         }),
     );
     for (const entry of ticketsSold) {
-      if (instance.eventinstanceid === 452) {
-        console.log(entry[0], entry[1]);
-      }
       if (entry[0] === 1) continue;
       queriesToBatch.push(
           prisma.ticketrestrictions.updateMany({

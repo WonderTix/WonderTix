@@ -335,23 +335,18 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
       throw new Error(`Showing ${id} does not exist`);
     }
 
-    const {
-      updatedEventInstance,
-      GAEventTicketsUpdate,
-    } = validateShowingOnUpdate(eventInstanceToUpdate, requestEventInstance);
+    const {updatedEventInstance, GAEventTicketsUpdate} =
+      validateShowingOnUpdate(eventInstanceToUpdate, requestEventInstance);
 
-    const {
-      restrictionsToAdd,
-      restrictionsToRemove,
-      restrictionsToUpdate,
-    } = validateTicketRestrictionsOnUpdate(
-        eventInstanceToUpdate.ticketrestrictions,
-        requestEventInstance.instanceTicketTypes,
-        updatedEventInstance.availableseats,
-        eventInstanceToUpdate.eventtickets.filter(
-            (ticket) => !ticket.singleticket_fk,
-        ),
-    );
+    const {restrictionsToAdd, restrictionsToRemove, restrictionsToUpdate} =
+      validateTicketRestrictionsOnUpdate(
+          eventInstanceToUpdate.ticketrestrictions,
+          requestEventInstance.instanceTicketTypes,
+          updatedEventInstance.availableseats,
+          eventInstanceToUpdate.eventtickets.filter(
+              (ticket) => !ticket.singleticket_fk,
+          ),
+      );
     //  update showing
     await prisma.eventinstances.update({
       where: {
