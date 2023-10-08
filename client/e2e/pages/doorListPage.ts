@@ -21,13 +21,13 @@ export class DoorListPage {
   }
 
   //  Will need to determine away to identify event specitically.
-  async setEvent(event: string) {
-    await this.chooseEvent.selectOption(event);
+  async setEventByLabel(event: string) {
+    await this.chooseEvent.selectOption({label: event});
   }
 
   //  Also need a way to identify the time
-  async setTime(time: string) {
-    await this.chooseTime.selectOption(time);
+  async setTimeByLabel(time: string) {
+    await this.chooseTime.selectOption({label: time});
   }
 
   async getHeader() {
@@ -35,16 +35,18 @@ export class DoorListPage {
   }
 
   async selectRandomShow() {
-    const shows = this.chooseEvent.allInnerTexts();
+    const showsUnit = await this.chooseEvent.allInnerTexts();
+    const shows = showsUnit[0].split('\n');
     const randShow = shows[Math.floor(Math.random() * (await shows).length)];
-    this.setEvent(randShow);
-    return this.chooseEvent.textContent();
+    await this.setEventByLabel(randShow);
+    return await randShow;
   }
 
   async selectRandomTime() {
-    const times = this.chooseTime.allInnerTexts();
+    const timesUnit = await this.chooseTime.allInnerTexts();
+    const times = timesUnit[0].split('\n');
     const randTime = times[Math.floor(Math.random() * (await times).length)];
-    this.setTime(randTime);
-    return this.chooseTime.textContent();
+    await this.setTimeByLabel(randTime);
+    return await randTime;
   }
 }
