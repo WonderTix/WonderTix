@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 
-import {type Locator, type Page} from '@playwright/test';
+import {type Locator, type Page, expect} from '@playwright/test';
 
 export class MainPage {
   readonly page: Page;
@@ -11,6 +11,7 @@ export class MainPage {
   readonly selectQuantity: Locator;
   readonly addConcessionsTicket: Locator;
   readonly getTickets: Locator;
+  readonly headingEvent: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -21,9 +22,11 @@ export class MainPage {
     this.selectQuantity = page.getByRole('combobox', {name: 'select-qty'});
     this.addConcessionsTicket = page.getByRole('checkbox', {name: 'checkbox-concessions'});
     this.getTickets = page.getByRole('button', {name: 'Get Tickets'});
+    this.headingEvent = page.getByRole('heading', {name: 'Events'});
   }
 
   async goto() {
-    this.page.goto('/', {timeout: 90000});
+    await this.page.goto('/', {timeout: 90000});
+    await expect(this.headingEvent).toBeVisible;
   }
 }
