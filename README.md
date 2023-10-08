@@ -111,6 +111,9 @@ If that does not work, you can try `docker-compose down`, `docker-compose build 
 
 This section covers the Playwright automated testing setup that has been configured for this project. Currently, the `./client/` directory is the only part with Playwright setup. The `./server/` folder will get it later once authentication issues have been resolved (Currently reworking the server tests to work without the need to connect to Auth0 as we will blow through the limit for API calls in no time as it currently does 2-5 Auth0 API requests per test and 2 times per login/page refresh).
 
+Before you begin running tests, make sure you have a TEST_EMAIL and TEST_PASSWORD set in your `.env`. Please refer to the `.env.dist` example. This will allow the `auth.setep.ts` test setup file to authenticate and save the authenticated browser context locally to be used for subsequent
+tests.
+
 Here is how you run the playwright tests (once they have been written, currently there is an example test in `./client/tests/` and an example Page Object Modle style setup for playwright tests in `./client/tests-examples/`:
 
 - While in the `./client` folder, type `npm run test:playwright`. This will start the playwright tests using Chromium, Firefox, and Webkit (Safari)o

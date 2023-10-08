@@ -325,10 +325,9 @@ const TicketTypes = () => {
   }, []);
 
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute '>
+    <div className='w-full h-screen overflow-x-hidden absolute'>
       <div
-        className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem]
-        sm:mb-[11rem]'
+        className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'
       >
         <h1 className='font-bold text-5xl mb-10 pb-4 bg-clip-text text-transparent
         bg-gradient-to-r from-green-400 to-teal-700'>
