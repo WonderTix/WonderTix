@@ -14,7 +14,7 @@ const Refund = () => {
               Stripe Order
             </h2>
             <div className='flex flex-wrap w-64 mx-auto'>
-              <label htmlFor='payment-intent' className='text-white text-l' id='payment-input'>
+              <label htmlFor='payment-intent' className='text-black text-l' id='payment-input'>
                 Payment Intent
               <input className='w-full mt-1 mb-3 px-2 py-2 rounded' type='text'
                 id='payment-intent' name='payment-intent'
@@ -22,7 +22,7 @@ const Refund = () => {
               </label>
             </div>
             <div className='flex flex-wrap w-64 mx-auto'>
-              <label htmlFor='refund-intent' className='text-white text-l' id='refund-input'>
+              <label htmlFor='refund-intent' className='text-black text-l' id='refund-input'>
                 Refund Intent
               <input className='w-full mt-1 mb-3 px-2 py-2 rounded' type='text'
                 id='refund-intent' name='refund-intent'
