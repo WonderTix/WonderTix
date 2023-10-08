@@ -59,7 +59,6 @@ const Eventshowings = () => {
   const eventData = useAppSelector((state) => selectEventData(state, eventid));
   if (eventData === undefined) return <p>Whoops! Event not found</p>;
   const {title, description, tickets} = eventData;
-  console.log(tickets);
   const imageUrl = eventData.imageurl;
   return (
     <div className = ' w-full h-screen  ' >
