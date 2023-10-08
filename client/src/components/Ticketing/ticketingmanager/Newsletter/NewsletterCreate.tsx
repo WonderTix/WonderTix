@@ -17,8 +17,7 @@ import React, {ReactElement} from 'react';
 export default function NewsletterCreate(): ReactElement {
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
-      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem]
-       sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] h-full'>
+      <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem] h-full'>
         <div className='w-full h-full'>
           <h1 className='font-bold text-5xl mb-10 pb-4 bg-clip-text text-transparent bg-gradient-to-r from-yellow-600 to-red-600'>Newsletter Creation!</h1>
           <hr/>

@@ -7,30 +7,40 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import React, {useState, useEffect} from 'react';
-import {editItemQty, selectNumAvailable, CartItem} from '../ticketingmanager/ticketing/ticketingSlice';
+import React, {useState, useEffect, ReactElement} from 'react';
+import {
+  editItemQty,
+  selectNumAvailable,
+  CartItem,
+} from '../ticketingmanager/ticketing/ticketingSlice';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {toDollarAmount} from '../../../utils/arrays';
 import {getImageDefault} from '../../../utils/imageURLValidation';
 
-interface CartRowProps {item: CartItem, removeHandler: (id: number) => void}
+interface CartRowProps {
+  item: CartItem;
+  removeHandler: (id: number) => void;
+}
 
 /**
  * Entire thing is meant to handle increments and decrements in prices and item qty
  *
- * @param {CartRowProps} item - remove handler
+ * @param {CartRowProps} item - cart item
+ * @param removeHandler
  * @returns {ReactElement}
  */
-const CartRow = ({item, removeHandler}: CartRowProps) => {
+const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
   const dispatch = useAppDispatch();
   const [cost, setCost] = useState(item.price * item.qty);
-  const numAvailable = useAppSelector((state) => selectNumAvailable(state, item.product_id));
+  const numAvailable = useAppSelector((state) =>
+    selectNumAvailable(state, item.product_id),
+  );
 
   useEffect(() => setCost(item.qty * item.price), [item.qty]);
 
-  const decrement = () => {
+  const handleDecrement = () => {
     if (item.qty > 1) {
-      dispatch(editItemQty({id: item.product_id, qty: item.qty-1}));
+      dispatch(editItemQty({id: item.product_id, qty: item.qty - 1}));
     } else {
       removeHandler(item.product_id);
     }
@@ -38,55 +48,89 @@ const CartRow = ({item, removeHandler}: CartRowProps) => {
 
   const handleIncrement = () => {
     if (numAvailable && item.qty < numAvailable) {
-      dispatch(editItemQty({id: item.product_id, qty: item.qty+1}));
+      dispatch(editItemQty({id: item.product_id, qty: item.qty + 1}));
     }
   };
 
   return (
-    <div className='bg-zinc-200 w-full flex flex-row
-     h-40 gap-5 rounded-xl bg-cover' style={{backgroundImage: `url(${getImageDefault(item.product_img_url)}),url(${getImageDefault()})`}}>
-      <div className='flex flex-col md:flex-row sm:flex-col
-         sm:items-center w-full rounded-xl  bg-zinc-900/90 overflow-y-scroll justify-between'>
-        <span className='ml-5'>
-          <div className='text-white font-semibold'>
-            {item.name}
-          </div>
+    <div
+      className='w-full h-40 rounded-xl bg-cover'
+      style={{
+        backgroundImage: `url(${getImageDefault(
+          item.product_img_url,
+        )}),url(${getImageDefault()})`,
+      }}
+    >
+      <div className='flex flex-col md:flex-row justify-center md:justify-between items-center gap-5 p-5 h-full rounded-xl text-white bg-zinc-900/90'>
+        <div>
+          <p className='font-semibold'>{item.name}</p>
           <p className='text-zinc-200'>{item.desc}</p>
-        </span>
-        <div className='flex flex-row items-center gap-7 mr-5'>
-          <div className='flex flex-row items-center gap-2'>
-            <button className='text-white items-center' aria-label={`remove one ${item.name} to cart`} onClick={decrement}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" />
+        </div>
+        <div className='flex items-center gap-7'>
+          <div className='flex items-center gap-2'>
+            <button
+              aria-label={`Remove one ${item.name} from cart`}
+              onClick={handleDecrement}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-5 w-5'
+                viewBox='0 0 20 20'
+                fill='currentColor'
+              >
+                <path
+                  fillRule='evenodd'
+                  d='M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z'
+                  clipRule='evenodd'
+                />
               </svg>
             </button>
-            <span className='text-white'>{item.qty}</span>
-            <button className='text-white items-center' aria-label={`add one ${item.name} to cart`} onClick={handleIncrement}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+            <p>{item.qty}</p>
+            <button
+              aria-label={`Add one ${item.name} to cart`}
+              onClick={handleIncrement}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-5 w-5'
+                viewBox='0 0 20 20'
+                fill='currentColor'
+              >
+                <path
+                  fillRule='evenodd'
+                  d='M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z'
+                  clipRule='evenodd'
+                />
               </svg>
             </button>
           </div>
-          <div className='text-white font-semibold'>
-            {item.payWhatCan ?
-              toDollarAmount(item.payWhatPrice) :
-              toDollarAmount(cost)
-            }
-          </div>
-          <button className='text-white'
+          <p className='font-semibold'>
+            {item.payWhatCan
+              ? toDollarAmount(item.payWhatPrice)
+              : toDollarAmount(cost)}
+          </p>
+          <button
             aria-label={`Remove ${item.name} from cart`}
             onClick={() => removeHandler(item.product_id)}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-6 w-6'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M6 18L18 6M6 6l12 12'
+              />
             </svg>
           </button>
         </div>
-
       </div>
     </div>
   );
 };
 export default CartRow;
-
-

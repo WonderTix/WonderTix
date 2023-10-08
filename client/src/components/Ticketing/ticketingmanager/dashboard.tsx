@@ -11,8 +11,8 @@ import DashboardLink from '../userdashboard/DashboardLink';
 const Dashboard = (): ReactElement => {
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='md:ml-[22rem] md:mt-40 sm:mx-[5rem] sm:my-[11rem]'>
-        <h1 className='font-bold text-5xl mb-14 pb-8 w-[60rem]'>
+      <div className='md:ml-[22rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
+        <h1 className='font-bold text-5xl mb-14 md:pb-8'>
           Ticketing Dashboard
         </h1>
         <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-5'>
@@ -177,6 +177,27 @@ const Dashboard = (): ReactElement => {
             }
             title='Ticket Exchanges'
             route='/ticketing/ticketexchanges'
+          />
+          <DashboardLink
+            gradientClasses='bg-gradient-to-r from-sky-700 to-yellow-200'
+            icon={
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-12 w-12'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='white'
+                strokeWidth={2}
+              >
+                <path
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                  d='M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z'
+                />
+              </svg>
+            }
+            title='Refund Ticket'
+            route='/ticketing/refund'
           />
         </div>
       </div>
