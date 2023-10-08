@@ -29,4 +29,8 @@ export class MainPage {
     await this.page.goto('/', {timeout: 90000});
     await expect(this.headingEvent).toBeVisible;
   }
+
+  async goFirstShowing() {
+    await this.firstShowing.click();
+  }
 }
