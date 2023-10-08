@@ -214,8 +214,8 @@ const DoorList = () => {
   };
 
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute '>
-      <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+    <div className='w-full h-screen overflow-x-hidden absolute'>
+      <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
         <div className='flex flex-row'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>Door List</h1>
         </div>

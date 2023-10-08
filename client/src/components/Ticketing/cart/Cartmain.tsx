@@ -9,7 +9,11 @@ import Footer from '../mainpage/footer';
  */
 const Cartmain = () => {
   return (
-    <><Navbar bMode /><Cart /><Footer /></>
+    <>
+      <Navbar bMode />
+      <Cart />
+      <Footer />
+    </>
   );
 };
 
