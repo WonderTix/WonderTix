@@ -1,6 +1,4 @@
-import {
-  PrismaClient,
-} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 
 export const ticketingWebhook = async (
     prisma: PrismaClient,
@@ -28,10 +26,7 @@ export const ticketingWebhook = async (
       break;
     }
     case 'checkout.session.expired':
-      await orderCancel(
-          prisma,
-          order.orderid,
-      );
+      await orderCancel(prisma, order.orderid);
       break;
   }
 };
@@ -61,11 +56,8 @@ export const orderFulfillment = async (
   ]);
   return result[0].orderid;
 };
-export const orderCancel = async (
-    prisma: PrismaClient,
-    orderID: number,
-) => {
-  const queriesToBatch :any[] = [];
+export const orderCancel = async (prisma: PrismaClient, orderID: number) => {
+  const queriesToBatch: any[] = [];
   await prisma.orders.delete({
     where: {
       orderid: Number(orderID),
@@ -82,24 +74,31 @@ export const orderCancel = async (
     const ticketsSold = new Map<number, number>();
 
     instance.eventtickets.forEach((ticket) => {
-      if (!ticket.singleticket_fk) return;
-
-      const count = ticketsSold.get(ticket.tickettypeid_fk??1) ?? 0;
-      ticketsSold.set(ticket.tickettypeid_fk??1, count+1);
+      const count = ticketsSold.get(ticket.tickettypeid_fk ?? 1) ?? 0;
+      ticketsSold.set(
+          ticket.tickettypeid_fk ?? 1,
+        ticket.singleticket_fk ? count + 1 : count,
+      );
     });
-    const updatedAvailable = instance.totalseats??0 -(ticketsSold.get(1)??0);
+    const updatedAvailable =
+      instance.totalseats ?? 0 - (ticketsSold.get(1) ?? 0);
 
     if (updatedAvailable === instance.availableseats) return;
 
-    queriesToBatch.push(prisma.eventinstances.update({
-      where: {
-        eventinstanceid: instance.eventinstanceid,
-      },
-      data: {
-        availableseats: instance.totalseats??0 - (ticketsSold.get(1) ?? 0),
-      },
-    }));
+    queriesToBatch.push(
+        prisma.eventinstances.update({
+          where: {
+            eventinstanceid: instance.eventinstanceid,
+          },
+          data: {
+            availableseats: instance.totalseats ?? 0 - (ticketsSold.get(1) ?? 0),
+          },
+        }),
+    );
     for (const entry of ticketsSold) {
+      if (instance.eventinstanceid === 452) {
+        console.log(entry[0], entry[1]);
+      }
       if (entry[0] === 1) continue;
       queriesToBatch.push(
           prisma.ticketrestrictions.updateMany({

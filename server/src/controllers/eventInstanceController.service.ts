@@ -45,7 +45,7 @@ export const validateTicketRestrictionsOnUpdate = (
       );
     }
 
-    if (restriction.ticketssold ?? 0 > type.typeQuantity) {
+    if ((restriction.ticketssold ?? 0) > type.typeQuantity) {
       throw new InvalidInputError(
           422,
           `Can not reduce individual ticket type quantity below quantity sold to date`,
@@ -60,7 +60,7 @@ export const validateTicketRestrictionsOnUpdate = (
       restrictionsToUpdate.push([
         {
           ...restriction,
-          ticketlimit: restriction.ticketlimit,
+          ticketlimit: restriction.ticketlimit + difference,
         },
         {
           difference,

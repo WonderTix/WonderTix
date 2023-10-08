@@ -195,14 +195,13 @@ const getTickets = (
     singletickets: {
       create: {
         eventtickets: {
-          connect: {
-            eventticketid:
-              typeID === 1 ?
-                ticket.eventticketid :
-                {
-                  in: [ticket.eventticketid, result[1][index].eventticketid],
-                },
-          },
+          connect:
+            typeID === 1 ?
+              {eventticketid: ticket.eventticketid} :
+              [
+                {eventticketid: ticket.eventticketid},
+                {eventticketid: result[1][index].eventticketid},
+              ],
         },
       },
     },
@@ -274,7 +273,7 @@ const validateContact = (formData: checkOutForm) => {
     address: validateWithRegex(
         formData.streetAddress,
         `Street Address: ${formData.streetAddress} is invalid`,
-        new RegExp('^(?!\\s*$).+'),
+        new RegExp('.*'),
     ),
     phone: validateWithRegex(
         formData.phone,

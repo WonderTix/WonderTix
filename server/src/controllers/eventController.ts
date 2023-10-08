@@ -61,8 +61,8 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           orderid: orderID,
         },
         data: {
-          checkout_sessions: `compedOrder${orderID}`,
-          payment_intent: `compedOrder${orderID}`,
+          checkout_sessions: `comp-${orderID}`,
+          payment_intent: `comp-${orderID}`,
         },
       });
     }
