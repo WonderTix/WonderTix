@@ -7,5 +7,8 @@ test('Check Home', async ({page}) => {
 });
 
 test('add ticket', async ({page}) => {
-    
+  const main = new MainPage(page);
+  await main.goto();
+  const showing = await main.goFirstShowing();
+  console.log(showing);
 });
