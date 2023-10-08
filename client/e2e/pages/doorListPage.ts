@@ -17,7 +17,7 @@ export class DoorListPage {
   }
 
   async goto() {
-    await this.page.goto('https://localhost:3000/ticketing/doorlist', {timeout: 90000});
+    await this.page.goto('/ticketing/doorlist', {timeout: 90000});
   }
 
   //  Will need to determine away to identify event specitically.
