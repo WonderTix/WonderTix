@@ -66,19 +66,11 @@ export class MainPage {
   }
 
   async selectRandomQuantity() {
-    const randonQuantity = await this.selectRandomOption(this.selectQuantity);
+    const randonQuantity = await this.selectRandomOption(this.selectTime);
     return await randonQuantity;
   }
 
   async clickGetTickets() {
     await this.getTickets.click();
   }
-
-  //   async selectRandomShow() {
-  //   const showsUnit = await this.chooseEvent.allInnerTexts();
-  //   const shows = showsUnit[0].split('\n');
-  //   const randShow = shows[Math.floor(Math.random() * (await shows).length)];
-  //   await this.setEventByLabel(randShow);
-  //   return await randShow;
-  // }
 }
