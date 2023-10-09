@@ -38,6 +38,7 @@ import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurc
 import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
+import RefundMain from './components/Ticketing/ticketingmanager/Refund/RefundOrderTicketMain';
 
 const App = () => {
   return (
@@ -153,6 +154,10 @@ const App = () => {
         <Route
           path='/ticketing/admincheckout'
           element={<ProtectedRoute component={AdminCheckoutmain} />}
+        />
+        <Route
+          path='/ticketing/Refund'
+          element={<ProtectedRoute component={RefundMain} />}
         />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
