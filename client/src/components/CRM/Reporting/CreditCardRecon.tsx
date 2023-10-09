@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Reporting from './Reporting';
-import Navigation from '../Navigation';
+import FilterComponent from './report_components/FilterComponent';
+import ReportComponent from './report_components/ReportComponent';
 
 import {Box, Grid} from '@mui/material';
 
@@ -43,21 +43,27 @@ const CreditCardRecon=() =>{
                         <Box
                             sx = {{
                                 'width': '90%',
-                                'height': '5rem',
-                                'background-color': 'red',
+                                'height': '15rem',
+                                'background-color': 'lightgrey',
+                                'border': '2px solid gray',
+                                'border-radius': '8px',
                             }}
-                        />
-                        <h1>Filter</h1>
+                        >
+                            <FilterComponent/>
+                        </Box>
                     </Grid>
                     <Grid item xs={8}>
                         <Box
                             sx = {{
-                                'width': '90%',
-                                'height': '10rem',
-                                'background-color': 'blue',
+                                'width': '95%',
+                                'height': '40rem',
+                                'background-color': 'lightgrey',
+                                'border': '2px solid gray',
+                                'border-radius': '8px',
                             }}
-                        />
-                        <h1>Report</h1>
+                        >
+                            <ReportComponent/>
+                        </Box>
                     </Grid>
                 </Grid>
             </Box>
