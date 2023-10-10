@@ -130,9 +130,9 @@ const DoorList = () => {
     setAvailableTimesEvents(matchingEvents);
   };
 
-  const handleTimeChange = (event) => {
+  const handleTimeChange = async (event) => {
     const eventInstanceID = parseInt(event.target.value);
-    getDoorList(eventInstanceID);
+    await getDoorList(eventInstanceID);
   };
 
   const CustomToolbar = () => {
