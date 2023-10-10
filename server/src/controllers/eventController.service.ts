@@ -132,13 +132,14 @@ export const getOrderItems = async (
       },
       quantity: item.qty,
     });
+
     eventInstanceQueries.push(
         prisma.eventinstances.update({
           where: {
             eventinstanceid: eventInstance.eventinstanceid,
           },
           data: {
-            availableseats: (eventInstance.availableseats ?? item.qty) - item.qty,
+            availableseats: (eventInstance.availableseats?eventInstance.availableseats-=item.qty: eventInstance.availableseats=0),
             ...(item.typeID !== 1 && {
               ticketrestrictions: {
                 update: {
@@ -187,7 +188,7 @@ const getTickets = (
     result[0].length < quantity ||
     (typeID !== 1 && result[1].length < quantity)
   ) {
-    throw new Error(`Requested Tickets no longer available`);
+    throw new InvalidInputError(422, `Requested Tickets no longer available`);
   }
 
   return result[0].slice(0, quantity).map((ticket, index) => ({
