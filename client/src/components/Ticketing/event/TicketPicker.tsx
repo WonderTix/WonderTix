@@ -279,15 +279,21 @@ const TicketPicker = (props: TicketPickerProps) => {
 
   const promptMarkup = {
     selectDate: (
-      <h2 className='text-white font-semibold text-xl'>
+      <label
+        className='text-white font-semibold text-xl'
+        htmlFor='date-select'
+      >
         Select date below ({tickets.length} showings)
-      </h2>
+      </label>
     ),
     selectTime: (
-      <p className='text-white'>
+      <label
+        className='text-white'
+        htmlFor='time-select'
+      >
         {selectedDate ? format(selectedDate, 'eee, MMM dd') : ''}
         <span className='text-white font-bold'> - Choose time:</span>
-      </p>
+      </label>
     ),
     showSelection: (
       <p className='text-white'>
@@ -388,6 +394,7 @@ const TicketPicker = (props: TicketPickerProps) => {
       <Collapse in={showCalendar}>
         <div className='text-white w-full px-20'>
           <select
+            id='date-select'
             defaultValue=''
             className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
             onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}

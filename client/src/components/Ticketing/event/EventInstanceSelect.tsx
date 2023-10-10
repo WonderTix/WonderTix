@@ -44,6 +44,7 @@ const EventInstanceSelect = (props: EventInstanceSelectProps) => {
         handleClick(parseFloat(ev.target.value))
       }
       className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl'
+      id='time-select'
     >
       <option className='text-zinc-300' disabled selected={props.check === 'selectTime'}>
         select time

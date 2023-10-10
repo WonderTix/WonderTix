@@ -157,12 +157,12 @@ const Eventshowings = (): ReactElement => {
                     </svg>
                   </button>
                   <div className='mt-3 text-center tab:mt-0 tab:ml-4 tab:text-left'>
-                    <h3
+                    <h2
                       className='text-lg leading-6 font-medium text-gray-900'
                       id='modal-title'
                     >
                       Success!
-                    </h3>
+                    </h2>
                     <p
                       id='cart-success-text'
                       className='mt-2 text-sm text-gray-500'
