@@ -583,7 +583,7 @@ const createServer = async () => {
 
   // other
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
-  app.get('/', (_req, res) => res.redirect('/api/1/docs'));
+  app.get('/', (_req, res) => res.redirect('/api/docs'));
 
   let server;
 
