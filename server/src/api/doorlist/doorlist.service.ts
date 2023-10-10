@@ -42,6 +42,8 @@ export const getDoorlist = async (params: any): Promise<response> => {
                 events e ON ei.eventid_fk = e.eventid
             WHERE 
                 ei.eventinstanceid = $1
+                and 
+                et.tickettypeid_fk = $2
             GROUP BY 
                 c.contactid,
                 c.firstname,
@@ -56,7 +58,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
                 ei.eventtime
             ORDER BY 
                 c.firstname, c.lastname;`,
-    values: [params.eventinstanceid],
+    values: [params.eventinstanceid, 1],
   };
 
   return buildResponse(myQuery, 'GET');
