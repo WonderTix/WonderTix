@@ -41,7 +41,7 @@ export const seasonController = Router();
  */
 seasonController.post('/', async (req: Request, res: Response) => {
   try {
-    const season = prisma.seasons.create({
+    const season = await prisma.seasons.create({
       data: {
         name: req.body.name,
         startdate: req.body.startdate,
