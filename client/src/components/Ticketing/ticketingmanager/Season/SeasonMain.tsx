@@ -1,6 +1,6 @@
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import InstancesPage from '../showings/InstancesPage';
+import SeasonInstancesPage from './SeasonInstancesPage';
 
 /**
  * Main page to host seasons page
@@ -13,6 +13,7 @@ const SeasonsMain = () => {
   return (
     <div className='flex'>
       <Udash_nav />
+      <SeasonInstancesPage />
     </div>
   );
 };
