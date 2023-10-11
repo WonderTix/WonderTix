@@ -235,7 +235,7 @@ const TicketPicker = (props: TicketPickerProps) => {
   };
 
   useEffect(() => {
-    fetchTicketTypes();
+    void fetchTicketTypes();
   }, []);
 
   useEffect(() => {
@@ -344,11 +344,11 @@ const TicketPicker = (props: TicketPickerProps) => {
           );
           setFilteredTicketTypes(finalFilteredTicketTypes);
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       };
 
-      fetchData();
+      void fetchData();
     }
   }, [selectedTicket]);
 
