@@ -91,7 +91,7 @@ const SeasonInstancesPage = () => {
                 d='M12 6v12m6-6H6'
               />
             </svg>
-            <p className='my-auto'>Add Season</p>
+            Add Season
           </button>
         </section>
         <div className='mb-6'>
