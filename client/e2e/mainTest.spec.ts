@@ -21,6 +21,8 @@ test('add ticket', async ({page}) => {
   console.log(showing);
   const date = await main.selectRandomDate();
   console.log(date);
+  const time = await main.selectRandomTime();
+  console.log(time);
   const ticketType = await main.selectRandomTicketType();
   console.log(ticketType);
   const quantity = await main.selectRandomQuantity();

@@ -44,6 +44,7 @@ export class MainPage {
 
   private async selectRandomOption(optionBox: Locator) {
     const allOptions = await (await optionBox.allInnerTexts())[0].split('\n');
+    expect(await allOptions.length).toBeGreaterThanOrEqual(2);
     allOptions.shift();
     const randomOption = allOptions[Math.floor(Math.random() * (await allOptions).length)];
     await optionBox.selectOption({label: randomOption});
@@ -66,7 +67,7 @@ export class MainPage {
   }
 
   async selectRandomQuantity() {
-    const randonQuantity = await this.selectRandomOption(this.selectTime);
+    const randonQuantity = await this.selectRandomOption(this.selectQuantity);
     return await randonQuantity;
   }
 
