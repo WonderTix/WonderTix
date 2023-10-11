@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../../utils/arrays';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
-import {getSeasonImage, formatSeasonDate} from './seasonUtils';
+import {getSeasonImage, formatSeasonDate, SeasonImage} from './seasonUtils';
 
 export interface Seasons {
   seasonid: number;
@@ -132,9 +132,9 @@ const SeasonInstancesPage = () => {
          sm:items-center w-full rounded-xl bg-zinc-900/70 h-full '
                 >
                   <div className='w-full h-48'>
-                    <img
+                    <SeasonImage
                       className='object-cover h-full w-full rounded-t-xl'
-                      src={getSeasonImage('')}
+                      src={getSeasonImage('')} // TODO, use season specific image after DB migration
                       alt={`Cover image for ${season.name} season`}
                     />
                   </div>
