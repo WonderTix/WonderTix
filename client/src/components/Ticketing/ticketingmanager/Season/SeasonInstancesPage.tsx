@@ -124,7 +124,7 @@ const SeasonInstancesPage = () => {
                 onClick={() => navigate(``)} // TODO, seasons edit page
                 className='shadow-xl rounded-xl hover:scale-105 transition duration-300 ease-in-out w-full'
                 style={{
-                  backgroundImage: `url(${getSeasonImage('')})`, // TODO, use season specific image after DB migration
+                  backgroundImage: `url(${getSeasonImage(season.imageurl)})`,
                 }}
               >
                 <article
@@ -134,7 +134,7 @@ const SeasonInstancesPage = () => {
                   <div className='w-full h-48'>
                     <SeasonImage
                       className='object-cover h-full w-full rounded-t-xl'
-                      src={getSeasonImage('')} // TODO, use season specific image after DB migration
+                      src={getSeasonImage(season.imageurl)}
                       alt={`Cover image for ${season.name} season`}
                     />
                   </div>
