@@ -113,7 +113,6 @@ const App = () => {
           path='/admin/donor/reporting'
           element={<ProtectedRoute component={DonorReporting} />}
         />
-
         <Route
           path='/ticketing'
           element={<ProtectedRoute component={Udashmain} />}
