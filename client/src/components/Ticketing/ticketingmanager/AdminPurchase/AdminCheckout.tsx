@@ -36,9 +36,10 @@ export default function CheckoutPage(): ReactElement {
   const cartItems = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);
   const donation = useAppSelector(selectDonation);
-  const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>(
-    'donation',
-  );
+  const [checkoutStep, setCheckoutStep] = useState('form');
+  const handleBackButton = () => {
+    navigate('/ticketing/purchaseticket');
+  };
   const doCheckout = async (formData: CheckoutFormInfo) => {
     if (formData.seatingAcc === 'Other') {
       formData.seatingAcc = formData.comments;
@@ -94,23 +95,18 @@ export default function CheckoutPage(): ReactElement {
                 back to Purchase
               </button>
             </div>
-            <div className='flex flex-row items-center mt-2 text-zinc-800'>
-              <div className='text-4xl font-bold'>Checkout</div>
-            </div>
+            <div className='flex flex-row items-center mt-2 text-zinc-800'></div>
             <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
               <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 md:p-9 flex flex-col gap-5 items-start rounded-xl overflow-auto'>
                 <div className='flex flex-col items-center h-auto w-full'>
                   <div className='text-2xl lg:text-5xl font-bold mb-5'>
                     Complete Order
                   </div>
-                  {checkoutStep === 'donation' && (
-                    <DonationPage onNext={() => setCheckoutStep('form')} />
-                  )}
                   {checkoutStep === 'form' && (
                     <AdminCompleteOrderForm
                       disabled={cartItems.length === 0}
                       onSubmit={doCheckout}
-                      onBack={() => setCheckoutStep('donation')}
+                      onBack={handleBackButton}
                     />
                   )}
                 </div>

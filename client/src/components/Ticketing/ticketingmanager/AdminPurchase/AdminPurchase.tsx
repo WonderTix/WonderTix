@@ -28,7 +28,9 @@ type EventRow = {
 
 const AdminPurchase = () => {
   const [numberOfRows, setNumberOfRows] = useState(1);
-  const emptyRows: EventRow[] = Array.from({length: numberOfRows}, (_, id) => ({id}));
+  const emptyRows: EventRow[] = Array.from({length: numberOfRows}, (_, id) => ({
+    id,
+  }));
   const [eventData, setEventData] = useState<EventRow[]>(emptyRows);
   const [events, setEvents] = useState([]);
   const [selectedTime, setSelectedTime] = useState(null);
@@ -60,7 +62,10 @@ const AdminPurchase = () => {
         <select onChange={(e) => handleEventChange(e, params.row)}>
           <option>Select Event</option>
           {eventList.map((event) => (
-            <option key={event.eventinstanceid} value={`${event.eventid}-${event.eventname}`}>
+            <option
+              key={event.eventinstanceid}
+              value={`${event.eventid}-${event.eventname}`}
+            >
               {`${event.eventname} - ${event.eventid}`}
             </option>
           ))}
@@ -78,9 +83,15 @@ const AdminPurchase = () => {
         >
           <option>Select Time</option>
           {availableTimesByRowId[params.row.id]?.map((event) => {
-            const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
+            const eventDateObject = new Date(
+              event.eventdate
+                .toString()
+                .replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'),
+            );
             eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
-            const formattedDate = dayMonthDate(eventDateObject.toISOString().split('T')[0]);
+            const formattedDate = dayMonthDate(
+              eventDateObject.toISOString().split('T')[0],
+            );
             const formattedTime = militaryToCivilian(event.eventtime);
             return (
               <option key={event.eventinstanceid} value={event.eventinstanceid}>
@@ -95,9 +106,7 @@ const AdminPurchase = () => {
       field: 'seatsAvailable',
       headerName: 'Seats Available',
       width: 150,
-      renderCell: (params) => (
-        <span>{params.row.availableSeats ?? ''}</span>
-      ),
+      renderCell: (params) => <span>{params.row.availableSeats ?? ''}</span>,
     },
     {
       field: 'ticketTypes',
@@ -125,7 +134,7 @@ const AdminPurchase = () => {
         <div style={{display: 'flex', alignItems: 'center'}}>
           <span>$</span>
           <input
-            type="text"
+            type='text'
             value={priceByRowId[params.row.id] || ''}
             onChange={(e) => handlePriceChange(e, params.row)}
             onBlur={(e) => handlePriceBlur(e, params.row)}
@@ -147,7 +156,7 @@ const AdminPurchase = () => {
               onChange={(e) => handleComplementaryChange(e, params.row)}
             />
           }
-          label=""
+          label=''
         />
       ),
     },
@@ -157,8 +166,8 @@ const AdminPurchase = () => {
       width: 150,
       renderCell: (params) => (
         <Button
-          variant="contained"
-          color="secondary"
+          variant='contained'
+          color='secondary'
           onClick={() => removeRow(params.row.id)}
         >
           Remove
@@ -170,16 +179,24 @@ const AdminPurchase = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_1_URL + '/events/list/active');
+        const response = await fetch(
+          process.env.REACT_APP_API_1_URL + '/events/list/active',
+        );
         const jsonRes = await response.json();
         const jsonData = jsonRes.data as any[];
 
         // Deduplicate the events based on eventid
-        const uniqueEventIds = Array.from(new Set(jsonData.map((event) => event.eventid)));
-        let deduplicatedEvents = uniqueEventIds.map((id) => jsonData.find((event) => event.eventid === id));
+        const uniqueEventIds = Array.from(
+          new Set(jsonData.map((event) => event.eventid)),
+        );
+        let deduplicatedEvents = uniqueEventIds.map((id) =>
+          jsonData.find((event) => event.eventid === id),
+        );
 
         // Sort the events in alphabetical order by eventname
-        deduplicatedEvents = deduplicatedEvents.sort((a, b) => a.eventname.localeCompare(b.eventname));
+        deduplicatedEvents = deduplicatedEvents.sort((a, b) =>
+          a.eventname.localeCompare(b.eventname),
+        );
 
         setEventList(deduplicatedEvents);
         setEventListFull(jsonData);
@@ -194,11 +211,14 @@ const AdminPurchase = () => {
   useEffect(() => {
     const fetchTicketTypes = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/validTypes', {
-          headers: {
-            'accept': 'application/json',
+        const response = await fetch(
+          process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
+          {
+            headers: {
+              accept: 'application/json',
+            },
           },
-        });
+        );
         const jsonRes = await response.json();
         setTicketTypes(jsonRes.data);
       } catch (error) {
@@ -217,7 +237,10 @@ const AdminPurchase = () => {
     }));
   };
 
-  const handleEventChange = (event: React.ChangeEvent<HTMLSelectElement>, row: EventRow) => {
+  const handleEventChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    row: EventRow,
+  ) => {
     const [eventIdString, eventName] = event.target.value.split('-');
     const eventId = parseInt(eventIdString);
 
@@ -250,7 +273,10 @@ const AdminPurchase = () => {
     setEventData(updatedRows);
   };
 
-  const handleTimeChange = (event: React.ChangeEvent<HTMLSelectElement>, row: EventRow) => {
+  const handleTimeChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    row: EventRow,
+  ) => {
     const eventInstanceID = parseInt(event.target.value);
     const selectedEvent = availableTimesByRowId[row.id]?.find(
       (e) => e.eventinstanceid === eventInstanceID,
@@ -317,7 +343,11 @@ const AdminPurchase = () => {
     // Update row with complementary flag
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        return {...row, complementary: isChecked, price: isChecked ? 0 : row.price};
+        return {
+          ...row,
+          complementary: isChecked,
+          price: isChecked ? 0 : row.price,
+        };
       }
       return r;
     });
@@ -341,32 +371,38 @@ const AdminPurchase = () => {
         audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
       });
-      const response = await fetch(process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${event}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+      const response = await fetch(
+        process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${event}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
         },
-      });
+      );
       const jsonRes = await response.json();
       const jsonData = jsonRes.data;
-      const eventData = jsonData.map((item, index) => {
-        const row = item.row.slice(1, -1).split(',');
-        if (!row || !row[0]) { // Check if the value in column 0 is present
-          setTicketsSold(false);
-          return null; // Exit early if no tickets sold
-        }
-        setTicketsSold(true);
-        return {
-          id: index,
-          firstname: row[1],
-          lastname: row[2],
-          num_tickets: row[12],
-          arrived: false,
-          vip: row[3] === 't',
-          donorbadge: row[4] === 't',
-          accommodations: row[5],
-        };
-      }).filter(Boolean);
+      const eventData = jsonData
+        .map((item, index) => {
+          const row = item.row.slice(1, -1).split(',');
+          if (!row || !row[0]) {
+            // Check if the value in column 0 is present
+            setTicketsSold(false);
+            return null; // Exit early if no tickets sold
+          }
+          setTicketsSold(true);
+          return {
+            id: index,
+            firstname: row[1],
+            lastname: row[2],
+            num_tickets: row[12],
+            arrived: false,
+            vip: row[3] === 't',
+            donorbadge: row[4] === 't',
+            accommodations: row[5],
+          };
+        })
+        .filter(Boolean);
 
       setEventData(eventData);
     } catch (error) {
@@ -378,7 +414,9 @@ const AdminPurchase = () => {
     <div className='w-full h-screen overflow-x-hidden absolute '>
       <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
         <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>Purchase Tickets</h1>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
+            Purchase Tickets
+          </h1>
         </div>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
           {ticketsSold ? (
@@ -392,18 +430,25 @@ const AdminPurchase = () => {
               hideFooter
             />
           ) : (
-            <div className="text-xl font-bold text-red-600">No tickets sold for this show</div>
+            <div className='text-xl font-bold text-red-600'>
+              No tickets sold for this show
+            </div>
           )}
-          <div className="mt-4">
-            <Button variant="contained" color="primary" onClick={addNewRow}>
+          <div className='mt-4'>
+            <Button variant='contained' color='primary' onClick={addNewRow}>
               Add Ticket
             </Button>
           </div>
-          <div className="mt-4 text-center">
-            <Link to="/ticketing/admincheckout">
+          <div className='mt-4 text-center'>
+            <Link to='/ticketing/admincheckout'>
               <Button
-                variant="contained"
-                style={{backgroundColor: 'green', color: 'white', fontSize: 'larger', textTransform: 'none'}}
+                variant='contained'
+                style={{
+                  backgroundColor: 'green',
+                  color: 'white',
+                  fontSize: 'larger',
+                  textTransform: 'none',
+                }}
               >
                 Proceed To Checkout
               </Button>

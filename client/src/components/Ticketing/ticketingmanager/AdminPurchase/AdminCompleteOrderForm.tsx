@@ -91,6 +91,7 @@ export default function CompleteOrderForm({
   const [seatingAcc, setseatingAcc] = useState('');
   const [comments, setComments] = useState('');
   const [optIn, setOptIn] = useState(false);
+  const [donation, setDonations] = useState(''); // TODO: may need to add donation to formData if going this route
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
       firstName,
@@ -111,7 +112,6 @@ export default function CompleteOrderForm({
   return (
     <>
       <div className='w-full h-full flex flex-col items-center '>
-        <div className='text-2xl font-bold mb-5'>Contact</div>
         <div className='min-w-414 sm:w-full h-full'>
           <Form
             onSubmit={handleSubmit}
@@ -333,18 +333,24 @@ export default function CompleteOrderForm({
                         placeholder='Comments'
                       />
                     </div>
-                  </div>
-                  <div className='flex flex-col items-start gap-3 mt-5 mb-5'>
-                    <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
+                    <div>
+                      <label
+                        className=' block text-sm font-medium text-slate-700 ml-1'
+                        htmlFor='donation'
+                      >
+                        Donations
+                      </label>
                       <input
-                        type='checkbox'
-                        onChange={(): void => setOptIn(!optIn)}
-                        name='opt-in'
+                        className='input w-full  border
+            border-zinc-300 p-4 mt-1 rounded-lg col-label-2'
+                        type='text'
+                        name='donation'
+                        id='donation'
+                        onChange={(
+                          ev: React.ChangeEvent<HTMLInputElement>,
+                        ): void => setDonations(ev.target.value)}
+                        placeholder='Enter donation amount'
                       />
-                      <div>
-                        I would like to receive email info from Portland
-                        Playhouse
-                      </div>
                     </div>
                   </div>
                 </div>
