@@ -72,7 +72,7 @@ const SeasonInstancesPage = () => {
             Select Season
           </h1>
           <button
-            onClick={() => navigate(``)} // TODO, create seasons page
+            onClick={() => navigate('/ticketing/seasons/0')}
             className={
               'bg-green-500 hover:bg-green-700 h-fit disabled:bg-gray-500 text-white p-2 rounded-xl flex justify-center align-center gap-1'
             }
