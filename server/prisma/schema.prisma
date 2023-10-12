@@ -125,14 +125,14 @@ model eventinstances {
 /// the showings of an event are eventinstances
 model events {
   eventid              Int              @id @default(autoincrement())
-  seasonid_fk          Int
+  seasonid_fk          Int?
   eventname            String           @db.VarChar(255)
   eventdescription     String?          @db.VarChar(255)
   active               Boolean?
   seasonticketeligible Boolean?
   imageurl             String?          @db.VarChar(255)
   eventinstances       eventinstances[]
-  seasons              seasons          @relation(fields: [seasonid_fk], references: [seasonid], onDelete: NoAction, onUpdate: NoAction, map: "events_seasonid_fkey")
+  seasons              seasons?          @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
   seasontickets        seasontickets[]
 }
 
