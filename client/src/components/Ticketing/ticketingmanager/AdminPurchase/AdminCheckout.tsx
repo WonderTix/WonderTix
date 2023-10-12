@@ -16,7 +16,6 @@ import {
 import {useAppSelector} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
-import DonationPage from '../../donation/DonationPage';
 import AdminCompleteOrderForm, {
   CheckoutFormInfo,
 } from './AdminCompleteOrderForm';
@@ -36,7 +35,6 @@ export default function CheckoutPage(): ReactElement {
   const cartItems = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);
   const donation = useAppSelector(selectDonation);
-  const [checkoutStep, setCheckoutStep] = useState('form');
   const handleBackButton = () => {
     navigate('/ticketing/purchaseticket');
   };
@@ -102,13 +100,11 @@ export default function CheckoutPage(): ReactElement {
                   <div className='text-2xl lg:text-5xl font-bold mb-5'>
                     Complete Order
                   </div>
-                  {checkoutStep === 'form' && (
-                    <AdminCompleteOrderForm
-                      disabled={cartItems.length === 0}
-                      onSubmit={doCheckout}
-                      onBack={handleBackButton}
-                    />
-                  )}
+                  <AdminCompleteOrderForm
+                    disabled={cartItems.length === 0}
+                    onSubmit={doCheckout}
+                    onBack={handleBackButton}
+                  />
                 </div>
               </div>
               <div
