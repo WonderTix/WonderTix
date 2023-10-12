@@ -21,7 +21,7 @@ import AdminCompleteOrderForm, {
   CheckoutFormInfo,
 } from './AdminCompleteOrderForm';
 import {selectDonation} from '../../ticketingmanager/donationSlice';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -32,6 +32,9 @@ const stripePromise = loadStripe(pk);
  * @returns {ReactElement}
  */
 export default function CheckoutPage(): ReactElement {
+  const location = useLocation();
+  const ticketData = location.state;
+  console.log('Ticket Data:, ticketData');
   const navigate = useNavigate();
   const cartItems = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);

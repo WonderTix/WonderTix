@@ -14,6 +14,7 @@ import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
 import {Link} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 type EventRow = {
   id?: number;
@@ -42,6 +43,8 @@ const AdminPurchase = () => {
   const [ticketsSold, setTicketsSold] = useState(true);
   const [priceByRowId, setPriceByRowId] = useState({});
   const [ticketTypes, setTicketTypes] = useState([]);
+  const navigate = useNavigate();
+  const [selectedTickets, setSelectedTickets] = useState([]);
 
   const addNewRow = () => {
     // Find the maximum id in the current rows to make sure the new id is unique
@@ -360,9 +363,20 @@ const AdminPurchase = () => {
       }));
     }
   };
-
   const handlePurchase = () => {
-    // Redirect to checkout page
+    // Gather ticket information from the rows
+    const ticketInfo = eventData.map((row) => ({
+      eventName: row.eventname,
+      eventTime: row.eventtime,
+      ticketType: row.ticketTypes,
+      price: row.price,
+      complementary: row.complementary,
+    }));
+    // Store this ticket info in the selectedTickets state
+    setSelectedTickets(ticketInfo);
+
+    // Navigate to the AdminCheckout page and pass the ticket info
+    navigate('/ticketing/admincheckout', {state: {tickets: ticketInfo}});
   };
 
   const getEventData = async (event) => {
@@ -440,19 +454,18 @@ const AdminPurchase = () => {
             </Button>
           </div>
           <div className='mt-4 text-center'>
-            <Link to='/ticketing/admincheckout'>
-              <Button
-                variant='contained'
-                style={{
-                  backgroundColor: 'green',
-                  color: 'white',
-                  fontSize: 'larger',
-                  textTransform: 'none',
-                }}
-              >
+            <Button
+              variant='contained'
+              style={{
+                backgroundColor: 'green',
+                color: 'white',
+                fontSize: 'larger',
+                textTransform: 'none',
+              }}
+              onClick={handlePurchase}
+            >
                 Proceed To Checkout
-              </Button>
-            </Link>
+            </Button>
           </div>
         </div>
       </div>
