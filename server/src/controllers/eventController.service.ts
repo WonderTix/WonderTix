@@ -1,5 +1,5 @@
 import {InvalidInputError} from './eventInstanceController.service';
-import {eventtickets, PrismaClient} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import CartItem from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
@@ -68,8 +68,8 @@ export const getOrderItems = async (
   eventInstanceQueries: any[];
 }> => {
   let orderItems: any[] = [];
-  const eventInstanceQueries = [];
   const cartRows: LineItem[] = [];
+  const eventInstanceQueries = [];
   const eventInstances = await prisma.eventinstances.findMany({
     where: {
       eventinstanceid: {in: cartItems.map((item) => Number(item.product_id))},
@@ -85,7 +85,22 @@ export const getOrderItems = async (
     },
   });
   const eventInstanceMap = new Map(
-      eventInstances.map((instance) => [instance.eventinstanceid, instance]),
+      eventInstances.map((instance) => {
+        const ticketTypeMap = new Map<number, number[]>();
+        instance.eventtickets.forEach((ticket) => {
+          ticketTypeMap.set(ticket.tickettypeid_fk ?? 1, [
+            ticket.eventticketid,
+            ...(ticketTypeMap.get(ticket.tickettypeid_fk ?? 1) ?? []),
+          ]);
+        });
+        return [
+          instance.eventinstanceid,
+          {
+            ...instance,
+            ticketTypeMap,
+          },
+        ];
+      }),
   );
   let orderTotal = 0;
 
@@ -97,16 +112,6 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-    eventInstance.availableseats=eventInstance.eventtickets.filter((ticket) => ticket.tickettypeid_fk===1).length;
-    const ticketRestriction = eventInstance.ticketrestrictions.find(
-        (restriction) => restriction.tickettypeid_fk === item.typeID,
-    );
-    if (item.typeID !== 1 && !ticketRestriction) {
-      throw new InvalidInputError(
-          422,
-          `Ticket Type ${item.typeID} is not available for showing ${item.product_id}`,
-      );
-    }
     if (item.price < 0) {
       throw new InvalidInputError(
           422,
@@ -116,7 +121,7 @@ export const getOrderItems = async (
     orderItems = orderItems.concat(
         getTickets(
             prisma,
-            eventInstance.eventtickets,
+            eventInstance.ticketTypeMap,
             item.typeID,
             item.qty,
             item.price,
@@ -134,29 +139,34 @@ export const getOrderItems = async (
       quantity: item.qty,
     });
 
+    orderTotal += item.price * item.qty;
+  }
+  for (const [, instance] of eventInstanceMap) {
     eventInstanceQueries.push(
         prisma.eventinstances.update({
           where: {
-            eventinstanceid: eventInstance.eventinstanceid,
+            eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats: eventInstance.availableseats-=item.qty,
-            ...(item.typeID !== 1 && {
-              ticketrestrictions: {
-                update: {
-                  where: {
-                    ticketrestrictionsid: ticketRestriction?.ticketrestrictionsid,
-                  },
-                  data: {
-                    ticketssold: (ticketRestriction?.ticketssold ?? 0) + item.qty,
-                  },
+            availableseats: (instance.ticketTypeMap.get(1) ?? []).length,
+            ticketrestrictions: {
+              update: instance.ticketrestrictions.map((restriction) => ({
+                where: {
+                  ticketrestrictionsid: restriction.ticketrestrictionsid,
                 },
-              },
-            }),
+                data: {
+                  ticketssold:
+                  restriction.ticketlimit -
+                  (
+                    instance.ticketTypeMap.get(restriction.tickettypeid_fk) ??
+                    []
+                  ).length,
+                },
+              })),
+            },
           },
         }),
     );
-    orderTotal += item.price * item.qty;
   }
   return {
     cartRows,
@@ -168,42 +178,36 @@ export const getOrderItems = async (
 
 const getTickets = (
     prisma: PrismaClient,
-    availableTickets: eventtickets[],
+    availableTickets: Map<number, number[]>,
     typeID: number,
     quantity: number,
     price: number,
 ) => {
-  const result = availableTickets.reduce(
-      (result: [eventtickets[], eventtickets[]], ticket) => {
-        if (ticket.tickettypeid_fk === typeID) {
-          result[0].push(ticket);
-        } else if (ticket.tickettypeid_fk === 1) {
-          result[1].push(ticket);
-        }
-        return result;
-      },
-      [[], []],
-  );
-  // fix error message
+  const ticketsForType = availableTickets.get(typeID) ?? [];
+  const ticketsForGA = availableTickets.get(1) ?? [];
   if (
-    result[0].length < quantity ||
-    (typeID !== 1 && result[1].length < quantity)
+    ticketsForType.length < quantity ||
+    (typeID !== 1 && ticketsForGA.length < quantity)
   ) {
     throw new InvalidInputError(422, `Requested Tickets no longer available`);
   }
 
-  return result[0].slice(0, quantity).map((ticket, index) => ({
+  const ticketsToSellForType = ticketsForType.splice(0, quantity);
+  const ticketsToSellForGA =
+    typeID != 1 ? ticketsForGA.splice(0, quantity) : [];
+
+  return ticketsToSellForType.map((ticketID, index) => ({
     price,
     singletickets: {
       create: {
         eventtickets: {
-          connect:
-            typeID === 1 ?
-              {eventticketid: ticket.eventticketid} :
-              [
-                {eventticketid: ticket.eventticketid},
-                {eventticketid: result[1][index].eventticketid},
-              ],
+          connect: [
+            {
+              eventticketid: ticketID,
+            },
+          ].concat(
+            typeID != 1 ? [{eventticketid: ticketsToSellForGA[index]}] : [],
+          ),
         },
       },
     },
