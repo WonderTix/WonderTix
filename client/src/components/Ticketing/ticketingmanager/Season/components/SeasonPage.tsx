@@ -1,15 +1,15 @@
 import React from 'react';
-import SeasonView from './SeasonView';
 import Udash_nav from '../../udash_navbar';
+import SeasonView from './SeasonView';
 
 /**
  * Page to view a single season
  *
  * @module
- * @returns SeasonContainer
+ * @returns Season page component
  */
 
-const SeasonContainer = () => {
+const SeasonPage = () => {
   return (
     <div className='flex'>
       <Udash_nav />
@@ -18,4 +18,4 @@ const SeasonContainer = () => {
   );
 };
 
-export default SeasonContainer;
+export default SeasonPage;

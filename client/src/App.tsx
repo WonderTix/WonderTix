@@ -32,7 +32,7 @@ import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
 import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsletter/NewsletterCreatemain';
 import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showingsmain';
 import SeasonsMain from './components/Ticketing/ticketingmanager/Season/SeasonMain';
-import SeasonContainer from './components/Ticketing/ticketingmanager/Season/components/SeasonContainer';
+import SeasonPage from './components/Ticketing/ticketingmanager/Season/components/SeasonPage';
 import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
@@ -134,7 +134,7 @@ const App = () => {
         />
         <Route
           path='/ticketing/seasons/:seasonid'
-          element={<ProtectedRoute component={SeasonContainer} />}
+          element={<ProtectedRoute component={SeasonPage} />}
         />
         <Route
           path='/ticketing/tickettypes'
