@@ -581,9 +581,6 @@ const createServer = async () => {
 
   let server;
 
-  console.log('process.env');
-  console.log(process.env);
-
   if (process.env.ENV === 'local') {
     const privateKey = fs.readFileSync('localhost-key.pem', 'utf8');
     const certificate = fs.readFileSync('localhost.pem', 'utf8');
