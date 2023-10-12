@@ -69,11 +69,11 @@ export default function CheckoutPage(): ReactElement {
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='md:ml-[18rem] md:mt-20 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]'>
+      <div className='mt-[5rem] md:ml-[15rem] md:mr-[2rem] md:mt-20 sm:mt-[5rem] sm:ml-[1rem] sm:mr-[1rem] sm:mb-[11rem]'>
         <div className='flex flex-row'>
           <div
             className='bg-zinc-200 flex flex-col md:flex-col sm:flex-col
-         max-md:items-center w-full h-full p-2 md:p-20'
+         max-md:items-center w-full h-full p-2 lg:p-[5rem] md:p-[1rem]'
           >
             <div className='flex flex-row items-center h-auto mt-5 md:w-full mb-5'>
               <button
@@ -97,7 +97,7 @@ export default function CheckoutPage(): ReactElement {
             </div>
             <div className='flex flex-row items-center mt-2 text-zinc-800'></div>
             <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
-              <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 md:p-9 flex flex-col gap-5 items-start rounded-xl overflow-auto'>
+              <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
                 <div className='flex flex-col items-center h-auto w-full'>
                   <div className='text-2xl lg:text-5xl font-bold mb-5'>
                     Complete Order

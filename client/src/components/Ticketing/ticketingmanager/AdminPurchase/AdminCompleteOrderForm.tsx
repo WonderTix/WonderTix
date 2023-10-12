@@ -123,7 +123,7 @@ export default function CompleteOrderForm({
                 className='w-full h-full bg-zinc-200 p-2 md:p-4 rounded-xl flex flex-col justify-between'
               >
                 <div className='flex flex-col w-auto'>
-                  <div className='grid gap-5 md:grid-cols-2'>
+                  <div className='grid gap-5 md:max-lg:grid-cols-1 lg:grid-cols-2'>
                     <div>
                       <label
                         className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
