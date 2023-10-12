@@ -97,6 +97,7 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
+    eventInstance.availableseats=eventInstance.eventtickets.filter((ticket) => ticket.tickettypeid_fk===1).length;
     const ticketRestriction = eventInstance.ticketrestrictions.find(
         (restriction) => restriction.tickettypeid_fk === item.typeID,
     );
@@ -139,7 +140,7 @@ export const getOrderItems = async (
             eventinstanceid: eventInstance.eventinstanceid,
           },
           data: {
-            availableseats: (eventInstance.availableseats?eventInstance.availableseats-=item.qty: eventInstance.availableseats=0),
+            availableseats: eventInstance.availableseats-=item.qty,
             ...(item.typeID !== 1 && {
               ticketrestrictions: {
                 update: {
