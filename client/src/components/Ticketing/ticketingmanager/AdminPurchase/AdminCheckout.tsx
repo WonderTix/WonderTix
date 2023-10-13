@@ -87,8 +87,8 @@ export default function CheckoutPage(): ReactElement {
           </button>
         </div>
         <div className='flex flex-row items-center mt-2 text-zinc-800'></div>
-        <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
-          <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
+        <div className='flex flex-col items-center md:flex-row rounded-[1rem] md:items-stretch md:bg-white sm:flex-col w-full h-full'>
+          <div className='min-w-414 sm:w-full h-full md:m-[2rem] sm:mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
             <div className='flex flex-col items-center h-auto w-full'>
               <div className='text-2xl lg:text-5xl font-bold mb-5'>
                 Complete Order
@@ -102,7 +102,7 @@ export default function CheckoutPage(): ReactElement {
           </div>
           <div
             className='md:w-[30rem] sm:w-full sm:mt-10
-               md:ml-5 md:mt-10 bg-zinc-900 p-9 flex
+               md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'
           >
             <YourOrder backButtonRoute='../ticketing/purchaseticket' />
