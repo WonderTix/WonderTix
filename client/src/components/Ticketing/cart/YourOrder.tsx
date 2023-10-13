@@ -7,7 +7,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {useAppSelector} from '../app/hooks';
 import {
   selectCartItem,
@@ -26,12 +26,17 @@ import {selectDonation} from '../ticketingmanager/donationSlice';
  */
 const toDollar = (x: number) => `$${(Math.round(x * 100) / 100).toFixed(2)}`;
 
+interface YourOrderProps {
+  backButtonRoute: string;
+}
 /**
  * Used to handle your order by using the app selector
  *
+ * @param YourOrderProps
+ * @param YourOrderProps.backButtonRoute
  * @returns {ReactElement}
  */
-const YourOrder = () => {
+const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
   const navigate = useNavigate();
   const cartIds = useAppSelector(selectCartIds);
   const donation = useAppSelector(selectDonation);
@@ -46,15 +51,6 @@ const YourOrder = () => {
     />
   ));
 
-  const handleBackButton = () => {
-    const currentPath = window.location.pathname;
-    if (currentPath.includes('/admincheckout')) {
-      navigate('/ticketing/purchaseticket');
-    } else {
-      navigate('/');
-    }
-  };
-
   return (
     <div className='flex flex-col justify-between h-full w-full'>
       <div className='flex flex-col items-center w-full mb-5'>
@@ -63,7 +59,7 @@ const YourOrder = () => {
           {lineItems.length > 0 ? lineItems : <p>Your cart is empty</p>}
         </div>
         <button
-          onClick={handleBackButton}
+          onClick={() => navigate(backButtonRoute)}
           className='bg-green-600 px-3 py-1 text-sm
          hover:bg-green-700 text-white rounded-xl mt-4 '
         >
@@ -77,15 +73,13 @@ const YourOrder = () => {
             {toDollar(subtotal)}
           </div>
         </div>
-        {discount.code !== '' ? (
+        {discount.code !== '' && (
           <div className='flex flex-row items-center gap-2 justify-between w-full'>
             <div className='text-zinc-100 text-sm '>Discount</div>
             <div className='text-amber-300 text-lg font-bold'>
               {toDollar(subtotal - total)}
             </div>
           </div>
-        ) : (
-          ''
         )}
         <div className='flex flex-row items-center gap-2 justify-between w-full'>
           <div className='text-zinc-100 text-sm '>Donation</div>

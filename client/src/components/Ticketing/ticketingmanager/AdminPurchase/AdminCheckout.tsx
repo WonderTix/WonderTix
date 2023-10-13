@@ -56,65 +56,56 @@ export default function CheckoutPage(): ReactElement {
       },
     );
     const session = await response.json();
-    console.log(session.id);
-    console.log(pk);
     const paymentIntent = session.payment_intent;
     const result = await stripe.redirectToCheckout({sessionId: session.id});
     if (result.error) {
-      console.log(result.error.message);
+      console.error(result.error.message);
     }
   };
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='mt-[5rem] md:ml-[15rem] md:mr-[2rem] md:mt-20 sm:mt-[5rem] sm:ml-[1rem] sm:mr-[1rem] sm:mb-[11rem]'>
-        <div className='flex flex-row'>
-          <div
-            className='bg-zinc-200 flex flex-col md:flex-col sm:flex-col
-         max-md:items-center w-full h-full p-2 lg:p-[5rem] md:p-[1rem]'
+      <div className='flex flex-col lg:ml-[15rem] lg:mx-[5rem] md:ml-[13rem] tab:mx-[2rem] mx-[0.5rem] mt=[5rem] mb-[9rem]'>
+        <div className='flex flex-row items-center h-auto mt-[7.25rem] md:w-full mb-5'>
+          <button
+            onClick={() => navigate('../ticketing/purchaseticket')}
+            className='bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'
           >
-            <div className='flex flex-row items-center h-auto mt-5 md:w-full mb-5'>
-              <button
-                onClick={() => navigate('../ticketing/purchaseticket')}
-                className='bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-5 w-5'
-                  viewBox='0 0 20 20'
-                  fill='currentColor'
-                >
-                  <path
-                    fillRule='evenodd'
-                    d='M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z'
-                    clipRule='evenodd'
-                  />
-                </svg>
-                back to Purchase
-              </button>
-            </div>
-            <div className='flex flex-row items-center mt-2 text-zinc-800'></div>
-            <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
-              <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
-                <div className='flex flex-col items-center h-auto w-full'>
-                  <div className='text-2xl lg:text-5xl font-bold mb-5'>
-                    Complete Order
-                  </div>
-                  <AdminCompleteOrderForm
-                    disabled={cartItems.length === 0}
-                    onSubmit={doCheckout}
-                    onBack={handleBackButton}
-                  />
-                </div>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-5 w-5'
+              viewBox='0 0 20 20'
+              fill='currentColor'
+            >
+              <path
+                fillRule='evenodd'
+                d='M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z'
+                clipRule='evenodd'
+              />
+            </svg>
+            back to Purchase
+          </button>
+        </div>
+        <div className='flex flex-row items-center mt-2 text-zinc-800'></div>
+        <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
+          <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
+            <div className='flex flex-col items-center h-auto w-full'>
+              <div className='text-2xl lg:text-5xl font-bold mb-5'>
+                Complete Order
               </div>
-              <div
-                className='md:w-[30rem] sm:w-full sm:mt-10
+              <AdminCompleteOrderForm
+                disabled={cartItems.length === 0}
+                onSubmit={doCheckout}
+                onBack={handleBackButton}
+              />
+            </div>
+          </div>
+          <div
+            className='md:w-[30rem] sm:w-full sm:mt-10
                md:ml-5 md:mt-10 bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'
-              >
-                <YourOrder />
-              </div>
-            </div>
+          >
+            <YourOrder backButtonRoute='../ticketing/purchaseticket' />
           </div>
         </div>
       </div>
