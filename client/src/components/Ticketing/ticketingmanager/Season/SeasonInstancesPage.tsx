@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../../utils/arrays';
-import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import {getSeasonImage, formatSeasonDate, SeasonImage} from './seasonUtils';
 
 export interface Seasons {
@@ -12,16 +11,21 @@ export interface Seasons {
   imageurl?: string;
 }
 
+interface SeasonInstancesProp {
+  token: string;
+}
+
 /**
  * Display all seasons page
  *
+ * @param props
  * @module
  * @returns Season Instances Page
  */
-const SeasonInstancesPage = () => {
+const SeasonInstancesPage = (props: SeasonInstancesProp) => {
   const navigate = useNavigate();
+  const {token} = props;
   const [seasons, setAllSeasons] = useState<Seasons[]>([]);
-  const {token} = useFetchToken();
 
   const getAllSeasons = async () => {
     try {
@@ -50,7 +54,7 @@ const SeasonInstancesPage = () => {
 
   useEffect(() => {
     getAllSeasons();
-  }, [token]);
+  }, []);
 
   /**
    * Based on active/inactive/all
