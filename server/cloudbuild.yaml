@@ -50,5 +50,5 @@ availableSecrets:
     env: 'DB_HOST'
   - versionName: projects/131818279954/secrets/DATABASE_URL/versions/latest
     env: 'DATABASE_URL'
-  - versionName: projects/131818279954/secrets/DATABASE_URL/versions/latest
+  - versionName: projects/131818279954/secrets/DB_PASSWORD/versions/latest
     env: 'DB_PASSWORD'
