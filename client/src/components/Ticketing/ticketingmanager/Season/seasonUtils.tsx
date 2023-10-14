@@ -1,13 +1,14 @@
 import React from 'react';
 import defaultSeasonImage from '../../../../assets/DefaultEventImage.png'; // TODO, change to default season image once completed
 
-export const formatSeasonDate = (date: number) => {
+export const formatSeasonDate = (date: number, fromApiResponse = false) => {
   const dateStr = date.toString();
   const year: string = dateStr.slice(0, 4);
   const month: string = dateStr.slice(4, 6);
   const day: string = dateStr.slice(6);
 
-  return `${month}/${day}/${year}`;
+  if (fromApiResponse) return `${year}-${month}-${day}`;
+  else return `${month}/${day}/${year}`;
 };
 
 export const getSeasonImage = (url?: string) => {

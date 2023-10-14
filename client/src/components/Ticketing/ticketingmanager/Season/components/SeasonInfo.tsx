@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
+import {formatSeasonDate} from '../seasonUtils';
 
 interface SeasonProps {
   seasonId: number;
-  token: number;
+  token: string;
   isFormEditing: boolean;
+  setIsFormEditing: (value) => void;
   setSeasonId: (value) => void;
 }
 
@@ -24,14 +26,14 @@ export const seasonDefaultValues: SeasonInfo = {
 };
 
 const SeasonInfo = (props: SeasonProps) => {
-  const {seasonId, token} = props;
+  const {seasonId, setSeasonId, isFormEditing, setIsFormEditing, token} = props;
   const [seasonValues, setSeasonValues] =
     useState<SeasonInfo>(seasonDefaultValues);
   const {name, startdate, enddate, imageurl} = seasonValues;
 
   useEffect(() => {
     void getSeasonInfo();
-  }, []);
+  }, [seasonId]);
 
   const getSeasonInfo = async () => {
     if (seasonId !== 0) {
@@ -52,8 +54,16 @@ const SeasonInfo = (props: SeasonProps) => {
           throw new Error('Failed to fetch season information');
         }
 
+        // Converting startdate and enddate response to string for form validation
         const seasonInfo = await getSeasonRes.json();
-        setSeasonValues(seasonInfo);
+        const {startdate: sdate, enddate: edate} = seasonInfo;
+        const modifiedSeasonInfo = {
+          ...seasonInfo,
+          startdate: formatSeasonDate(sdate, true),
+          enddate: formatSeasonDate(edate, true),
+        };
+
+        setSeasonValues(modifiedSeasonInfo);
       } catch (e) {
         console.error(e);
       }
@@ -78,6 +88,9 @@ const SeasonInfo = (props: SeasonProps) => {
       if (!createSeasonRes.ok) {
         throw new Error(`Failed to create new season`);
       }
+
+      const {seasonid} = await createSeasonRes.json();
+      setSeasonId(seasonid);
     } catch (error) {
       console.error(error);
     }
@@ -85,13 +98,19 @@ const SeasonInfo = (props: SeasonProps) => {
 
   const onSubmit = (event) => {
     event.preventDefault();
+
     const postReqObject = {
       ...seasonValues,
       startdate: Number(seasonValues.startdate.replaceAll('-', '')),
       enddate: Number(seasonValues.enddate.replaceAll('-', '')),
     };
-    void createNewSeason(postReqObject);
-    setSeasonValues(seasonDefaultValues);
+
+    setIsFormEditing(false);
+    if (seasonId === 0) {
+      void createNewSeason(postReqObject);
+    } else {
+      console.log('updating season');
+    }
   };
 
   const onChangeHandler = (event) => {
@@ -101,7 +120,7 @@ const SeasonInfo = (props: SeasonProps) => {
     }));
   };
 
-  return (
+  return seasonId === 0 || isFormEditing ? (
     <form onSubmit={onSubmit}>
       <label htmlFor='seasonName'>Season Name: </label>
       <input
@@ -141,6 +160,11 @@ const SeasonInfo = (props: SeasonProps) => {
       />
       <button>Save</button>
     </form>
+  ) : (
+    <div>
+      <h1>{name}</h1>
+      <button onClick={() => setIsFormEditing(true)}>Edit Season</button>
+    </div>
   );
 };
 

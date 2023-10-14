@@ -21,7 +21,8 @@ const SeasonView = () => {
             seasonId={seasonId}
             setSeasonId={setSeasonId}
             isFormEditing={isFormEditing}
-            token={Number(token)}
+            setIsFormEditing={setIsFormEditing}
+            token={token}
           />
         </div>
       </div>
