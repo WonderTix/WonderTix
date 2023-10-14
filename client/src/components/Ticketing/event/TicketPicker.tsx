@@ -326,7 +326,7 @@ const TicketPicker = (props: TicketPickerProps) => {
       <Collapse in={showCalendar}>
         <div className='flex flex-col w-full'>
           <div className='flex flex-col text-white w-full px-20'>
-            <select id='select-date' defaultValue={''} className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
+            <select data-testid='select-date' defaultValue={''} className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
               onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}>
               <option value='' disabled selected={prompt === 'selectDate'}>select date</option>
               {tickets.map((t) =>
@@ -352,7 +352,7 @@ const TicketPicker = (props: TicketPickerProps) => {
         ))}
         <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
         <select
-          id='select-ticket-type'
+          data-testid='select-ticket-type'
           value={selectedTicketType.name}
           defaultValue={''}
           disabled={selectedTicket===undefined}
@@ -383,7 +383,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           }
         </div>
         <select
-          id='select-qty'
+          data-testid='select-qty'
           value={qty}
           defaultValue={0}
           disabled={selectedTicket===undefined || numAvail < 1}
@@ -396,7 +396,7 @@ const TicketPicker = (props: TicketPickerProps) => {
       </div>
       <div className='flex flex-row gap-2 mt-3 mb-7'>
         <input type='checkbox'
-          id='checkbox-concessions'
+          data-testid='checkbox-concessions'
           disabled={!selectedTicket}
           checked={concessions}
           className='bg-zinc-700/50 disabled:opacity-30 disabled:cursor-not-allowed '
@@ -420,6 +420,7 @@ const TicketPicker = (props: TicketPickerProps) => {
       </div>
       <div>
         <button
+          data-testid='get-tickets'
           disabled={!qty || !selectedTicket || qty > selectedTicket.availableseats}
           className='< disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3
           bg-blue-500 text-white hover:bg-blue-600 rounded-xl '

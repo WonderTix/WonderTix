@@ -17,19 +17,21 @@ export class MainPage {
   readonly addConcessionsTicket: Locator;
   readonly getTickets: Locator;
   readonly titleEvent: Locator;
+  readonly successHeader: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
     this.firstShowing = page.getByRole('button', {name: 'See Showings'}).first();
     this.headingEvent = page.getByRole('heading', {name: 'Events'});
-    this.selectDate = page.locator('#select-date');
-    this.selectTime = page.locator('#select-time');
-    this.selectTicketType = page.locator('#select-ticket-type');
-    this.selectQuantity = page.locator('#select-qty');
-    this.addConcessionsTicket = page.locator('#checkbox-concessions');
-    this.getTickets = page.getByRole('button', {name: 'Get Tickets'});
-    this.titleEvent = page.locator('#event-title');
+    this.selectDate = page.getByTestId('select-date');
+    this.selectTime = page.getByTestId('select-time');
+    this.selectTicketType = page.getByTestId('select-ticket-type');
+    this.selectQuantity = page.getByTestId('select-qty');
+    this.addConcessionsTicket = page.getByTestId('checkbox-concessions');
+    this.getTickets = page.getByTestId('get-tickets');
+    this.titleEvent = page.getByTestId('event-title');
+    this.successHeader = page.getByRole('heading', {name: 'Success!'});
   }
 
   async goto() {
@@ -72,6 +74,15 @@ export class MainPage {
   }
 
   async clickGetTickets() {
+    // await this.page.getByTestId('get-tickets').click();
     await this.getTickets.click();
+  }
+
+  async checkAddTicketSucess(message: string) {
+    if (await this.successHeader.isVisible() && await this.page.getByText(message).isVisible()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

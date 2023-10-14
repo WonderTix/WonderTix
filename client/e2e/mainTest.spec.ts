@@ -27,4 +27,14 @@ test('add ticket', async ({page}) => {
   console.log(ticketType);
   const quantity = await main.selectRandomQuantity();
   console.log(quantity);
+  const dateParts = date.split(' ');
+  let confirmMessage;
+  confirmMessage = 'You added ' + quantity + ' ticket';
+  if (parseInt(quantity) > 1) {
+    confirmMessage += 's';
+  }
+  confirmMessage += ' to ' + showing + ' on ' + dateParts[1] + ' ' + dateParts[2] + ' to the cart.';
+  console.log(confirmMessage);
+  await main.clickGetTickets();
+  expect(await main.checkAddTicketSucess(confirmMessage)).toBeTruthy();
 });

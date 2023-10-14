@@ -80,7 +80,7 @@ const Eventshowings = () => {
               <div className='flex md:flex-row sm:flex-col'>
                 <EventImage src={imageUrl} className='w-[75%] h-auto rounded-xl mr-12' title={title}/>
                 <div className='items-center'>
-                  <div id='event-title' className='text-white text-4xl font-bold mt-6'>
+                  <div data-testid='event-title' className='text-white text-4xl font-bold mt-6'>
                     {titleCase(title)}</div>
                   <h1 className='text-zinc-200 font-semibold text-xl mt-6'>Event description</h1>
                   <div className='text-zinc-100 pr-7'>{(description) ? description : ''}</div>

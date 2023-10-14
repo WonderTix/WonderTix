@@ -37,7 +37,7 @@ const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
   console.log(props.eventInstances);
 
   return (
-    <select id='select-time' defaultValue={0} onChange={((ev: React.ChangeEvent<HTMLSelectElement>): void => (handleClick(parseFloat(ev.target.value))))} className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
+    <select data-testid='select-time' defaultValue={0} onChange={((ev: React.ChangeEvent<HTMLSelectElement>): void => (handleClick(parseFloat(ev.target.value))))} className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
       <option disabled selected={props.check === 'selectTime'}>select time</option>
       {props.eventInstances.map((s) =>
         <option key={s.event_instance_id} value={s.event_instance_id} >
