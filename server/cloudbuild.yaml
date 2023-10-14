@@ -7,8 +7,7 @@ steps:
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', "$_GCP_ARTIFACTS/wondertix-server"]
-
-  secretEnv: ['DB_USER', 'DB_DATABASE', 'DB_PORT', 'DB_USER', 'DB_HOST', 'DATABASE_URL']
+    secretEnv: ['DB_USER', 'DB_DATABASE', 'DB_PORT', 'DB_USER', 'DB_HOST', 'DATABASE_URL']
 
   # Deploy the server image to Cloud Run with environment variables
   - name: 'gcr.io/cloud-builders/gcloud'
