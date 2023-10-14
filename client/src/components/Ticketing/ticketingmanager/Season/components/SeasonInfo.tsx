@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {formatSeasonDate} from '../seasonUtils';
+import {useNavigate} from 'react-router';
 
 interface SeasonProps {
   seasonId: number;
@@ -29,6 +30,7 @@ const SeasonInfo = (props: SeasonProps) => {
   const {seasonId, setSeasonId, isFormEditing, setIsFormEditing, token} = props;
   const [seasonValues, setSeasonValues] =
     useState<SeasonInfo>(seasonDefaultValues);
+  const navigate = useNavigate();
   const {name, startdate, enddate, imageurl} = seasonValues;
 
   useEffect(() => {
@@ -91,6 +93,7 @@ const SeasonInfo = (props: SeasonProps) => {
 
       const {seasonid} = await createSeasonRes.json();
       setSeasonId(seasonid);
+      navigate(`/ticketing/seasons/${seasonid}`);
     } catch (error) {
       console.error(error);
     }
@@ -161,10 +164,24 @@ const SeasonInfo = (props: SeasonProps) => {
       <button>Save</button>
     </form>
   ) : (
-    <div>
-      <h1>{name}</h1>
-      <button onClick={() => setIsFormEditing(true)}>Edit Season</button>
-    </div>
+    <section className='rounded-xl border-black border-solid border-2 p-5 text-lg'>
+      <h1 className='text-4xl mb-3 font-semibold'>Season Information</h1>
+      <button
+        className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-4 rounded-xl'
+        onClick={() => setIsFormEditing(true)}
+      >
+        Edit
+      </button>
+
+      <h3 className='font-semibold'>Season Name:</h3>
+      <p className='mb-3 font-sm'>{name}</p>
+
+      <h3 className='font-semibold'>Start Date: </h3>
+      <p className='mb-3 font-xs'>{startdate}</p>
+
+      <h3 className='font-semibold'>End Date: </h3>
+      <p>{enddate}</p>
+    </section>
   );
 };
 

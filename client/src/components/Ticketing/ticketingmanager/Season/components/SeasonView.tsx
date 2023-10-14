@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import SeasonInfo from './SeasonInfo';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 import {useFetchToken} from '../../showings/ShowingUpdated/ShowingUtils';
-
 import {useParams} from 'react-router';
 
 const SeasonView = () => {

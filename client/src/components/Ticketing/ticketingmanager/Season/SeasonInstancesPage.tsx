@@ -125,7 +125,9 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
           {seasons.map((season) => (
             <li key={season.seasonid}>
               <button
-                onClick={() => navigate(``)} // TODO, seasons edit page
+                onClick={() =>
+                  navigate(`/ticketing/seasons/${season.seasonid}`)
+                }
                 className='shadow-xl rounded-xl hover:scale-105 transition duration-300 ease-in-out w-full'
                 style={{
                   backgroundImage: `url(${getSeasonImage(season.imageurl)})`,
