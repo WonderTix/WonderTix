@@ -34,16 +34,25 @@ export class MainPage {
     this.successHeader = page.getByRole('heading', {name: 'Success!'});
   }
 
+  // Initial page navigation - sends browser session to the root address
+  // Sets long timeout to account for various delays while testing in dev
   async goto() {
     await this.page.goto('/', {timeout: 90000});
   }
 
+  // Click the 'See Showings' button of the first event on the main page
+  // Return the name of that showing
   async goFirstShowing() {
     await this.firstShowing.click();
     const title = await this.titleEvent.textContent();
     return await title;
   }
 
+  // Helper function - selects a random option in a dropdown box
+  // allInnerTexts returns a newline seperated string, so we split by newline into a string array
+  // Array must have length of at least two, or no selectable options exist
+  // String shift removes the first item in the array
+  // Select a random option from the array, set that option, and return the text
   private async selectRandomOption(optionBox: Locator) {
     const allOptions = await (await optionBox.allInnerTexts())[0].split('\n');
     expect(await allOptions.length).toBeGreaterThanOrEqual(2);
@@ -53,6 +62,8 @@ export class MainPage {
     return await randomOption;
   }
 
+  // The below selectXX functions simply pass the option locator into the helper above and
+  // return the selected text
   async selectRandomDate() {
     const randomDate = await this.selectRandomOption(this.selectDate);
     return await randomDate;
@@ -73,11 +84,14 @@ export class MainPage {
     return await randonQuantity;
   }
 
+  // Click the Get Tickets button on the event page
   async clickGetTickets() {
-    // await this.page.getByTestId('get-tickets').click();
     await this.getTickets.click();
   }
 
+  // Verify specified elements are on the popup after clicking the Get Tickets button
+  // Verifies the 'Success!' header is visible and the event details text is correct
+  // Event details message must be composed in the calling test and passed into this function
   async checkAddTicketSucess(message: string) {
     if (await this.successHeader.isVisible() && await this.page.getByText(message).isVisible()) {
       return true;
