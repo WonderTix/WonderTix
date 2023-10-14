@@ -131,8 +131,8 @@ const AdminPurchase = () => {
       headerName: 'Price',
       width: 100,
       renderCell: (params) => (
-        <div style={{display: 'flex', alignItems: 'center'}}>
-          <span>$</span>
+        <div className="flex items-center">
+          $
           <input
             type='text'
             value={priceByRowId[params.row.id] || ''}
@@ -413,11 +413,9 @@ const AdminPurchase = () => {
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
       <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-        <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
-            Purchase Tickets
-          </h1>
-        </div>
+        <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
+          Purchase Tickets
+        </h1>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
           {ticketsSold ? (
             <DataGrid
@@ -430,9 +428,9 @@ const AdminPurchase = () => {
               hideFooter
             />
           ) : (
-            <div className='text-xl font-bold text-red-600'>
-              No tickets sold for this show
-            </div>
+            <p className='text-xl font-bold text-red-600'>
+            No tickets sold for this show
+            </p>
           )}
           <div className='mt-4'>
             <Button variant='contained' color='primary' onClick={addNewRow}>
