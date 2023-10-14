@@ -1,6 +1,6 @@
 import {formatSeasonDate} from '../../seasonUtils';
 
-interface PostReqBody {
+export interface RequestBody {
   seasonid: number;
   name: string;
   startdate: number;
@@ -8,7 +8,7 @@ interface PostReqBody {
   imageurl: string;
 }
 
-export const createNewSeason = async (reqBody: PostReqBody, token: string) => {
+export const createNewSeason = async (reqBody: RequestBody, token: string) => {
   try {
     const createSeasonRes = await fetch(
       process.env.REACT_APP_API_2_URL + '/season',
@@ -68,5 +68,36 @@ export const getSeasonInfo = async (seasonId: number, token: string) => {
       console.error(error);
       return null;
     }
+  }
+};
+
+export const updateSeasonInfo = async (
+  reqBody: RequestBody,
+  seasonId: number,
+  token: string,
+) => {
+  try {
+    const updateSeasonRes = await fetch(
+      process.env.REACT_APP_API_2_URL + `/season/${seasonId}`,
+      {
+        credentials: 'include',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(reqBody),
+      },
+    );
+
+    if (!updateSeasonRes.ok) {
+      throw new Error('Failed to update season information');
+    }
+
+    console.log('The season has been updated!');
+    console.log(updateSeasonRes.status);
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };

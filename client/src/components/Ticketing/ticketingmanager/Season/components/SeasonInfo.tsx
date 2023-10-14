@@ -1,7 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {formatSeasonDate, getSeasonImage} from '../seasonUtils';
 import {useNavigate} from 'react-router';
-import {createNewSeason, getSeasonInfo} from './utils/apiRequest';
+import {
+  createNewSeason,
+  getSeasonInfo,
+  updateSeasonInfo,
+  RequestBody,
+} from './utils/apiRequest';
 
 interface SeasonProps {
   seasonId: number;
@@ -46,29 +51,34 @@ const SeasonInfo = (props: SeasonProps) => {
     }
   };
 
-  const handleCreateNewSeason = async () => {
-    const postReqObject = {
-      ...seasonValues,
-      startdate: Number(startdate.replaceAll('-', '')),
-      enddate: Number(enddate.replaceAll('-', '')),
-      imageurl: getSeasonImage(imageurl),
-    };
-
-    const createdSeasonId = await createNewSeason(postReqObject, token);
+  const handleCreateNewSeason = async (reqObject: RequestBody) => {
+    const createdSeasonId = await createNewSeason(reqObject, token);
     if (createdSeasonId) {
       setSeasonId(createdSeasonId);
       navigate(`/ticketing/seasons/${createdSeasonId}`);
     }
   };
 
+  const handleUpdateSeason = async (reqObject: RequestBody) => {
+    const updateSeason = await updateSeasonInfo(reqObject, seasonId, token);
+  };
+
   const onSubmit = (event) => {
     event.preventDefault();
 
+    // formatting request body for POST and PUT request
+    const reqObject = {
+      ...seasonValues,
+      startdate: Number(startdate.replaceAll('-', '')),
+      enddate: Number(enddate.replaceAll('-', '')),
+      imageurl: getSeasonImage(imageurl),
+    };
+
     setIsFormEditing(false);
     if (seasonId === 0) {
-      void handleCreateNewSeason();
+      void handleCreateNewSeason(reqObject);
     } else {
-      console.log('updating season');
+      void handleUpdateSeason(reqObject);
     }
   };
 
