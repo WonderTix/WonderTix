@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {formatSeasonDate, getSeasonImage} from '../seasonUtils';
 import {useNavigate} from 'react-router';
+import {createNewSeason, getSeasonInfo} from './utils/apiRequest';
 
 interface SeasonProps {
   seasonId: number;
@@ -35,74 +36,17 @@ const SeasonInfo = (props: SeasonProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    void getSeasonInfo();
+    void handleGetSeasonInfo();
   }, [seasonId]);
 
-  const getSeasonInfo = async () => {
-    if (seasonId !== 0) {
-      try {
-        const getSeasonRes = await fetch(
-          process.env.REACT_APP_API_2_URL + `/season/${seasonId}`,
-          {
-            credentials: 'include',
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-          },
-        );
-
-        if (!getSeasonRes.ok) {
-          throw new Error('Failed to fetch season information');
-        }
-
-        // Converting startdate and enddate response to string for form validation
-        const seasonInfo = await getSeasonRes.json();
-        const {startdate: sdate, enddate: edate} = seasonInfo;
-        const modifiedSeasonInfo = {
-          ...seasonInfo,
-          startdate: formatSeasonDate(sdate, true),
-          enddate: formatSeasonDate(edate, true),
-        };
-
-        setSeasonValues(modifiedSeasonInfo);
-      } catch (e) {
-        console.error(e);
-      }
+  const handleGetSeasonInfo = async () => {
+    const fetchedSeasonInfo = await getSeasonInfo(seasonId, token);
+    if (fetchedSeasonInfo) {
+      setSeasonValues(fetchedSeasonInfo);
     }
   };
 
-  const createNewSeason = async (reqBody) => {
-    try {
-      const createSeasonRes = await fetch(
-        process.env.REACT_APP_API_2_URL + '/season',
-        {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(reqBody),
-        },
-      );
-
-      if (!createSeasonRes.ok) {
-        throw new Error(`Failed to create new season`);
-      }
-
-      const {seasonid} = await createSeasonRes.json();
-      setSeasonId(seasonid);
-      navigate(`/ticketing/seasons/${seasonid}`);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const onSubmit = (event) => {
-    event.preventDefault();
-
+  const handleCreateNewSeason = async () => {
     const postReqObject = {
       ...seasonValues,
       startdate: Number(startdate.replaceAll('-', '')),
@@ -110,9 +54,19 @@ const SeasonInfo = (props: SeasonProps) => {
       imageurl: getSeasonImage(imageurl),
     };
 
+    const createdSeasonId = await createNewSeason(postReqObject, token);
+    if (createdSeasonId) {
+      setSeasonId(createdSeasonId);
+      navigate(`/ticketing/seasons/${createdSeasonId}`);
+    }
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+
     setIsFormEditing(false);
     if (seasonId === 0) {
-      void createNewSeason(postReqObject);
+      void handleCreateNewSeason();
     } else {
       console.log('updating season');
     }
