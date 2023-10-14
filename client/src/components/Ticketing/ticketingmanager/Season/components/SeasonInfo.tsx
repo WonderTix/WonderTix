@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {formatSeasonDate} from '../seasonUtils';
+import {formatSeasonDate, getSeasonImage} from '../seasonUtils';
 import {useNavigate} from 'react-router';
 
 interface SeasonProps {
@@ -30,8 +30,9 @@ const SeasonInfo = (props: SeasonProps) => {
   const {seasonId, setSeasonId, isFormEditing, setIsFormEditing, token} = props;
   const [seasonValues, setSeasonValues] =
     useState<SeasonInfo>(seasonDefaultValues);
-  const navigate = useNavigate();
   const {name, startdate, enddate, imageurl} = seasonValues;
+  const [imageCheckbox, setImageCheckbox] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     void getSeasonInfo();
@@ -104,8 +105,9 @@ const SeasonInfo = (props: SeasonProps) => {
 
     const postReqObject = {
       ...seasonValues,
-      startdate: Number(seasonValues.startdate.replaceAll('-', '')),
-      enddate: Number(seasonValues.enddate.replaceAll('-', '')),
+      startdate: Number(startdate.replaceAll('-', '')),
+      enddate: Number(enddate.replaceAll('-', '')),
+      imageurl: getSeasonImage(imageurl),
     };
 
     setIsFormEditing(false);
@@ -157,10 +159,25 @@ const SeasonInfo = (props: SeasonProps) => {
         type='text'
         id='imageUrl'
         name='imageurl'
+        disabled={imageCheckbox}
         value={imageurl}
         onChange={onChangeHandler}
         required
       />
+      <input
+        type='checkbox'
+        id='defaultImage'
+        name='defaultImage'
+        checked={imageCheckbox}
+        onChange={() => {
+          setImageCheckbox((checked) => !checked);
+          setSeasonValues((seasonValues) => ({
+            ...seasonValues,
+            imageurl: '',
+          }));
+        }}
+      />
+      <label htmlFor='defaultImage'>Use Default Image</label>
       <button>Save</button>
     </form>
   ) : (
