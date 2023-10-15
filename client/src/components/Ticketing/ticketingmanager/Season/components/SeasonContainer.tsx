@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import SeasonInfo from './SeasonInfo';
+import SeasonEvents from './SeasonEvents';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 import {useFetchToken} from '../../showings/ShowingUpdated/ShowingUtils';
 import {useParams} from 'react-router';
 
-const SeasonView = () => {
+const SeasonContainer = () => {
   const providedSeasonId = useParams();
   const [seasonId, setSeasonId] = useState(Number(providedSeasonId.seasonid));
   const [isFormEditing, setIsFormEditing] = useState<boolean>(!seasonId);
@@ -23,10 +24,11 @@ const SeasonView = () => {
             setIsFormEditing={setIsFormEditing}
             token={token}
           />
+          <SeasonEvents />
         </div>
       </div>
     );
   }
 };
 
-export default SeasonView;
+export default SeasonContainer;
