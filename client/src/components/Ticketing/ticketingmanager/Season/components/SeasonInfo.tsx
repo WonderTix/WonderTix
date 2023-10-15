@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {formatSeasonDate, getSeasonImage} from '../seasonUtils';
+import {getSeasonImage, SeasonImage} from '../seasonUtils';
 import {useNavigate} from 'react-router';
 import {
   createNewSeason,
@@ -142,27 +142,52 @@ const SeasonInfo = (props: SeasonProps) => {
         }}
       />
       <label htmlFor='defaultImage'>Use Default Image</label>
-      <button>Save</button>
+      <button className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-10 rounded-xl'>
+        Save
+      </button>
+      <button
+        className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold py-2 px-10 rounded-xl'
+        onClick={() => {
+          seasonId === 0
+            ? navigate('/ticketing/seasons/')
+            : setIsFormEditing(false);
+        }}
+      >
+        Cancel
+      </button>
     </form>
   ) : (
-    <section className='rounded-xl border-black border-solid border-2 p-5 text-lg'>
-      <h1 className='text-4xl mb-3 font-semibold'>Season Information</h1>
-      <button
-        className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-4 rounded-xl'
-        onClick={() => setIsFormEditing(true)}
-      >
-        Edit
-      </button>
+    <header className='rounded-xl bg-white p-7 text-lg'>
+      <section className='flex flex-col text-center mb-5 justify-between tab:flex-row  '>
+        <h1 className='text-4xl mb-3 font-semibold'>Season Information</h1>
+        <button
+          className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-10 rounded-xl'
+          onClick={() => setIsFormEditing(true)}
+        >
+          Edit
+        </button>
+      </section>
 
-      <h3 className='font-semibold'>Season Name:</h3>
-      <p className='mb-3 font-sm'>{name}</p>
+      <article className='grid grid-cols-12'>
+        <div className='col-span-12 mb-5 text-center tab:text-start sm:col-span-6'>
+          <h3 className='font-semibold'>Season Name </h3>
+          <p className='mb-3 text-base'>{name}</p>
 
-      <h3 className='font-semibold'>Start Date: </h3>
-      <p className='mb-3 font-xs'>{startdate}</p>
+          <h3 className='font-semibold'>Start Date </h3>
+          <p className='mb-3 text-base'>{startdate}</p>
 
-      <h3 className='font-semibold'>End Date: </h3>
-      <p>{enddate}</p>
-    </section>
+          <h3 className='font-semibold'>End Date </h3>
+          <p className='text-base'>{enddate}</p>
+        </div>
+        <div className='col-span-12 sm:col-span-6'>
+          <SeasonImage
+            className='h-auto max-w-[125px] mx-auto'
+            src={imageurl}
+            alt={`Cover photo for ${name} season`}
+          />
+        </div>
+      </article>
+    </header>
   );
 };
 

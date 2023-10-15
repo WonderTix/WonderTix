@@ -14,7 +14,7 @@ const SeasonView = () => {
     return <LoadingScreen />;
   } else {
     return (
-      <div className='w-full h-screen overflow-x-hidden absolute'>
+      <div className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
           <SeasonInfo
             seasonId={seasonId}

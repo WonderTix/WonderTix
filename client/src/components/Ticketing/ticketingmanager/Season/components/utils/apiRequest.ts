@@ -94,6 +94,7 @@ export const updateSeasonInfo = async (
       throw new Error('Failed to update season information');
     }
 
+    // ADD POP UP LATER
     console.log('The season has been updated!');
     console.log(updateSeasonRes.status);
   } catch (error) {
