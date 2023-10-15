@@ -52,7 +52,7 @@ const App = () => {
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />
         <Route path='/donate' element={<Donationmain />} />
-
+        <Route path='/' element={<Mainpage />} />
         <Route
           path='/admin'
           element={<ProtectedRoute component={Dashmain} />}
@@ -74,7 +74,6 @@ const App = () => {
           path='/admin/accounts/manageaccount'
           element={<ProtectedRoute component={ManageAccountsmain} />}
         />
-
         <Route
           path='/admin/contacts'
           element={<ProtectedRoute component={ContactMain} />}
@@ -155,7 +154,8 @@ const App = () => {
         />
         <Route
           path='/ticketing/Refund'
-          element={<ProtectedRoute component={RefundMain} /> } />
+          element={<ProtectedRoute component={RefundMain} />}
+        />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>

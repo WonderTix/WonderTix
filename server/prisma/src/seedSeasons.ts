@@ -22,6 +22,7 @@ async function seedSeasons(prisma: PrismaClient) {
       name: item.name,
       startdate: item.startdate,
       enddate: item.enddate,
+      imageurl: item.imageurl,
     }));
 
     await prisma.seasons.createMany({
