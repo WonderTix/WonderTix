@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import Reporting from './Reporting';
 import Navigation from '../Navigation';
-import CreditCardReconciliationReport from './CreditCardReconciliationReport/CreditCardReconiliationReport';
+import CreditCardReconciliationReport from './CreditCardReconciliationReport/CreditCardReconciliationReport';
 import {Box} from '@mui/material';
 
 /**
