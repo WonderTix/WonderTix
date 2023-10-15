@@ -90,71 +90,102 @@ const SeasonInfo = (props: SeasonProps) => {
   };
 
   return seasonId === 0 || isFormEditing ? (
-    <form onSubmit={onSubmit}>
-      <label htmlFor='seasonName'>Season Name: </label>
-      <input
-        type='text'
-        id='seasonName'
-        name='name'
-        value={name}
-        onChange={onChangeHandler}
-        required
-      />
-      <label htmlFor='startDate'>Start Date: </label>
-      <input
-        type='date'
-        id='startDate'
-        name='startdate'
-        value={startdate}
-        onChange={onChangeHandler}
-        required
-      />
-      <label htmlFor='endDate'>End Date: </label>
-      <input
-        type='date'
-        id='endDate'
-        name='enddate'
-        value={enddate}
-        onChange={onChangeHandler}
-        required
-      />
-      <label htmlFor='imageUrl'>Image URL: </label>
-      <input
-        type='text'
-        id='imageUrl'
-        name='imageurl'
-        disabled={imageCheckbox}
-        value={imageurl}
-        onChange={onChangeHandler}
-        required
-      />
-      <input
-        type='checkbox'
-        id='defaultImage'
-        name='defaultImage'
-        checked={imageCheckbox}
-        onChange={() => {
-          setImageCheckbox((checked) => !checked);
-          setSeasonValues((seasonValues) => ({
-            ...seasonValues,
-            imageurl: '',
-          }));
-        }}
-      />
-      <label htmlFor='defaultImage'>Use Default Image</label>
-      <button className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-10 rounded-xl'>
-        Save
-      </button>
-      <button
-        className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold py-2 px-10 rounded-xl'
-        onClick={() => {
-          seasonId === 0
-            ? navigate('/ticketing/seasons/')
-            : setIsFormEditing(false);
-        }}
-      >
-        Cancel
-      </button>
+    <form onSubmit={onSubmit} className='rounded-xl p-7 bg-white text-lg'>
+      <section className='flex justify-between'>
+        <h1 className='text-4xl mb-3 font-semibold'>Edit Season</h1>
+        <article>
+          <button className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'>
+            Save
+          </button>
+          <button
+            className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl ml-3'
+            onClick={() => {
+              seasonId === 0
+                ? navigate('/ticketing/seasons/')
+                : setIsFormEditing(false);
+            }}
+          >
+            Cancel
+          </button>
+        </article>
+      </section>
+      <section className='grid grid-cols-12'>
+        <div className='flex flex-col gap-2 col-span-12 mb-5 text-center tab:text-start sm:col-span-6'>
+          <label htmlFor='seasonName'>
+            Season Name:
+            <input
+              type='text'
+              id='seasonName'
+              name='name'
+              value={name}
+              onChange={onChangeHandler}
+              className='text-sm w-full rounded-lg p-1 border border-zinc-400'
+              required
+            />
+          </label>
+          <label htmlFor='startDate'>
+            Start Date:
+            <input
+              type='date'
+              id='startDate'
+              name='startdate'
+              value={startdate}
+              onChange={onChangeHandler}
+              className='text-sm w-full rounded-lg p-1 border border-zinc-400'
+              required
+            />
+          </label>
+          <label htmlFor='endDate'>
+            End Date:
+            <input
+              type='date'
+              id='endDate'
+              name='enddate'
+              value={enddate}
+              onChange={onChangeHandler}
+              className='text-sm w-full rounded-lg p-1 border border-zinc-400'
+              required
+            />
+          </label>
+
+          <label htmlFor='imageUrl'>
+            Image URL:
+            <input
+              type='text'
+              id='imageUrl'
+              name='imageurl'
+              disabled={imageCheckbox}
+              value={imageurl}
+              onChange={onChangeHandler}
+              className='text-sm w-full rounded-lg p-1 border border-zinc-400'
+              required
+            />
+          </label>
+          <label htmlFor='defaultImage'>
+            Use Default Image{' '}
+            <input
+              type='checkbox'
+              id='defaultImage'
+              name='defaultImage'
+              checked={imageCheckbox}
+              onChange={() => {
+                setImageCheckbox((checked) => !checked);
+                setSeasonValues((seasonValues) => ({
+                  ...seasonValues,
+                  imageurl: '',
+                }));
+              }}
+            />
+          </label>
+        </div>
+        <article className='col-span-12 sm:col-span-6'>
+          <SeasonImage
+            className='h-auto max-w-[175px] mx-auto'
+            src={imageurl}
+            alt={`Cover photo for ${name} season`}
+          />
+        </article>
+      </section>
     </form>
   ) : (
     <header className='rounded-xl bg-white p-7 text-lg'>
@@ -168,8 +199,8 @@ const SeasonInfo = (props: SeasonProps) => {
         </button>
       </section>
 
-      <article className='grid grid-cols-12'>
-        <div className='col-span-12 mb-5 text-center tab:text-start sm:col-span-6'>
+      <section className='grid grid-cols-12'>
+        <article className='col-span-12 mb-5 text-center tab:text-start sm:col-span-6'>
           <h3 className='font-semibold'>Season Name </h3>
           <p className='mb-3 text-base'>{name}</p>
 
@@ -178,15 +209,15 @@ const SeasonInfo = (props: SeasonProps) => {
 
           <h3 className='font-semibold'>End Date </h3>
           <p className='text-base'>{enddate}</p>
-        </div>
-        <div className='col-span-12 sm:col-span-6'>
+        </article>
+        <article className='col-span-12 sm:col-span-6'>
           <SeasonImage
             className='h-auto max-w-[125px] mx-auto'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
-        </div>
-      </article>
+        </article>
+      </section>
     </header>
   );
 };
