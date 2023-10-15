@@ -93,7 +93,7 @@ export class DashboardPage {
     await this.goto();
     await this.PurchaseTicketsButton.click();
     await expect(
-      this.page.getByRole('img', {name: 'Purchase Tickets'}),
+      this.page.getByRole('heading', {name: 'Purchase Tickets'}),
     ).toBeVisible();
     await expect(this.page).toHaveURL('/ticketing/purchaseticket');
     await this.page.goto('/ticketing', {timeout: 90000});
