@@ -15,6 +15,8 @@ import TasksMain from './components/CRM/Tasks/TasksMain';
 import CreateTask from './components/CRM/Tasks/CreateTask';
 import ManageAccountsmain from './components/CRM/Accounts/ManageUsers/ManageAccountsmain';
 import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchmain';
+import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconiliationReport';
+
 /* Donor Management */
 import DmDashmain from './components/DonorManagement/DmDashmain';
 import DonorReporting from './components/DonorManagement/Reporting/DonorReporting';
@@ -37,6 +39,8 @@ import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketE
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
 import RefundMain from './components/Ticketing/ticketingmanager/Refund/RefundOrderTicketMain';
+
+
 
 const App = () => {
   return (
@@ -112,7 +116,10 @@ const App = () => {
           path='/admin/donor/reporting'
           element={<ProtectedRoute component={DonorReporting} />}
         />
-
+        <Route 
+          path='/admin/reporting/credit-card-reconciliation'
+          element={<ProtectedRoute component={CreditCardConciliationReport} />}
+        />
 
         <Route
           path='/ticketing'
