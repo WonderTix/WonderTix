@@ -207,6 +207,7 @@ const openApiSpec = swaggerJsdoc({
             name: {type: 'string'},
             startdate: {type: 'integer'},
             enddate: {type: 'integer'},
+            imageurl: {type: 'string'},
           },
         },
         SeasonTicket: {
@@ -417,6 +418,7 @@ const openApiSpec = swaggerJsdoc({
             name: {type: 'string'},
             startdate: {type: 'integer'},
             enddate: {type: 'integer'},
+            imageurl: {type: 'string'},
           },
         },
         SeasonTicket: {
@@ -510,20 +512,14 @@ const openApiSpec = swaggerJsdoc({
 const createServer = async () => {
   let envPath;
   if (process.env.ENV === 'local') {
-      envPath = path.join(__dirname, '../../.env');
-      // console.log("local")
-      // console.log(process.env)
+    envPath = path.join(__dirname, '../../.env');
   } else if (process.env.ENV === 'dev') {
-      envPath = path.join(__dirname, '../.env');
-      // console.log("dev")
-      // console.log(process.env)
+    envPath = path.join(__dirname, '../.env');
   } else {
-      throw new Error('Unknown ENV value');
+    throw new Error('Unknown ENV value');
   }
-  // console.log('process.env in server.ts');
-  // console.log(process.env);
 
-  dotenv.config({ path: envPath });
+  dotenv.config({path: envPath});
 
 
   const app = express();
@@ -581,24 +577,20 @@ const createServer = async () => {
 
   // other
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
-  app.get('/', (_req, res) => res.redirect('/api/1/docs'));
+  app.get('/', (_req, res) => res.redirect('/api/docs'));
 
   let server;
-
-  console.log("process.env")
-  console.log(process.env)
 
   if (process.env.ENV === 'local') {
     const privateKey = fs.readFileSync('localhost-key.pem', 'utf8');
     const certificate = fs.readFileSync('localhost.pem', 'utf8');
-    const credentials = { key: privateKey, cert: certificate };
+    const credentials = {key: privateKey, cert: certificate};
     server = https.createServer(credentials, app);
   } else {
     server = http.createServer(app);
   }
-  
-  return server; 
 
+  return server;
 };
 
 createServer().then((server) => {
