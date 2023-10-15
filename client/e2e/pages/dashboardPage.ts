@@ -96,7 +96,7 @@ export class DashboardPage {
       this.page.getByRole('heading', {name: 'Purchase Tickets'}),
     ).toBeVisible();
     await expect(this.page).toHaveURL('/ticketing/purchaseticket');
-    await this.page.goto('/ticketing', {timeout: 90000});
+    await this.backtoDashboard();
   }
   async CreateNewsletter() {
     await this.goto();
