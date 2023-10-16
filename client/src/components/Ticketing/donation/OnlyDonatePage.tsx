@@ -144,6 +144,16 @@ export default function OnlyDonationPage(): ReactElement {
         disabled={amount < 1}
         donationForm
       />
+      <div className='text-center text-xl py-4 '>
+        <p>
+        Your tax-deductible donation will make it possible to surprise,
+        delight, and challenge our community with the wonder of theater
+        for years to come.
+        <p>
+        Thank you!
+        </p>
+        </p>
+      </div>
     </div>
   );
 }
