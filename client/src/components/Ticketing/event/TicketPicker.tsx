@@ -502,42 +502,39 @@ const TicketPicker = (props: TicketPickerProps) => {
           Add concessions ticket
         </label>
       </div>
-
       <div
         className={
           selectedTicketType &&
           selectedTicketType &&
           selectedTicketType.name === 'Pay What You Can'
-            ? 'show flex-col'
+            ? 'flex flex-col gap-2 mt-3 mb-7 justify-center'
             : 'hidden'
         }
       >
-        <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
-          <div className='text-white rounded-xl'>
-            <h1 className='px-5 item-center text-white rounded-xl'>
-              Pay What You Can
-            </h1>
-          </div>
-          <input
-            disabled={!selectedTicket}
-            onChange={(e) => payWhatFunc(e)}
-            type='text'
-            placeholder='Enter Amount'
-            className='mt-1 mb-2 disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500'
-          />
-        </div>
-      </div>
-      <div>
-        <button
-          disabled={
-            !qty || !selectedTicket || qty > selectedTicket.availableseats
-          }
-          className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 bg-blue-500 text-white hover:bg-blue-600 rounded-xl'
-          onClick={handleSubmit}
+        <label
+          className='text-center text-zinc-200'
+          htmlFor='pay-what-can-input'
         >
-          Get Tickets
-        </button>
+          Pay What You Can
+        </label>
+        <input
+          id='pay-what-can-input'
+          disabled={!selectedTicket}
+          onChange={(e) => payWhatFunc(e)}
+          type='number'
+          placeholder='Enter Amount'
+          className='disabled:opacity-30 disabled:cursor-not-allowed input border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500'
+        />
       </div>
+      <button
+        disabled={
+          !qty || !selectedTicket || qty > selectedTicket.availableseats
+        }
+        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 bg-blue-500 text-white hover:bg-blue-600 rounded-xl'
+        onClick={handleSubmit}
+      >
+        Get Tickets
+      </button>
     </>
   );
 };
