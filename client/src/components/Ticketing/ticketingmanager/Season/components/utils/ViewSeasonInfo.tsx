@@ -1,6 +1,22 @@
 import React from 'react';
 import {SeasonInfo} from '../SeasonInfo';
 import {SeasonImage} from '../../seasonUtils';
+import {start} from 'repl';
+
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 interface ViewSeasonInfoProps extends SeasonInfo {
   setIsFormEditing: (value) => void;
@@ -8,6 +24,15 @@ interface ViewSeasonInfoProps extends SeasonInfo {
 
 const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
   const {name, startdate, enddate, imageurl, setIsFormEditing} = props;
+
+  const getlongDateFormat = (date: string) => {
+    const year: string = date.slice(0, 4);
+    const month = Number(date.slice(5, 7));
+    const day = date.slice(8);
+
+    return `${MONTHS[month - 1]} ${day}, ${year}`;
+  };
+
   return (
     <header className='rounded-xl bg-white p-7 text-lg'>
       <section className='flex flex-col text-center mb-5 justify-between tab:flex-row  '>
@@ -26,10 +51,10 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           <p className='mb-3 text-base'>{name}</p>
 
           <h3 className='font-semibold'>Start Date </h3>
-          <p className='mb-3 text-base'>{startdate}</p>
+          <p className='mb-3 text-base'>{getlongDateFormat(startdate)}</p>
 
           <h3 className='font-semibold'>End Date </h3>
-          <p className='text-base'>{enddate}</p>
+          <p className='text-base'>{getlongDateFormat(enddate)}</p>
         </article>
         <article className='col-span-12 sm:col-span-6'>
           <SeasonImage
