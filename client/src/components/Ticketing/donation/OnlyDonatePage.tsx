@@ -13,6 +13,7 @@ import React, {ReactElement, useState} from 'react';
 import CompleteOrderForm, {CheckoutFormInfo} from '../checkout/CompleteOrderForm';
 import {useNavigate} from 'react-router';
 import {loadStripe} from '@stripe/stripe-js';
+import DonationImage from '../../../assets/donation_page_image.png';
 
 /**
  * Renders the Donations page without checkout
@@ -57,7 +58,9 @@ export default function OnlyDonationPage(): ReactElement {
         </button>
       </div>
 
-      <div className='text-3xl text-black font-bold mb-12'>Thank you for donating</div>
+      <div>
+        <img src={DonationImage} alt="Donation Page Image" />
+      </div>
       <div className='flex flex-col w-full items-start'>
         <div className='text-sm text-zinc-600 ml-2'>Donation Amount $</div>
         <input
