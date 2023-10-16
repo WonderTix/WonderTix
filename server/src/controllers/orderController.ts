@@ -1,8 +1,7 @@
 import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma, PrismaClient} from '@prisma/client';
-import {ticketingWebhook} from './orderController.service';
-
+import {orderCancel, ticketingWebhook} from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -187,6 +186,65 @@ orderController.get('/', async (req: Request, res: Response) => {
   }
 });
 
+
+orderController.get('/active', async (req: Request, res: Response) => {
+  try {
+    const orders = prisma.orders.findMany({
+      where: {
+        refund_intent: null,
+        payment_intent: {not: null},
+      },
+      include: {
+        contacts: true,
+      },
+    });
+
+    if (!orders) {
+      return res.status(400).json({error: 'No refundable orders'});
+    }
+
+    return res.status(200).json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json(error);
+  }
+});
+
+orderController.put('/refund/:id', async (req, res) => {
+  try {
+    const orderID = req.params.id;
+    const order = await prisma.orders.findUnique({
+      where: {
+        orderid: Number(orderID),
+      },
+    });
+    if (!order) {
+      return res.status(400).json({error: `Order ${orderID} does not exist`});
+    }
+    if (!order.payment_intent) {
+      return res.status(400).json({error: `Order ${orderID} is still processing`});
+    }
+    if (order.refund_intent) {
+      return res.status(400).json({error: `Order ${orderID} has already been refunded`});
+    }
+
+    let refundIntent;
+    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
+    else {
+      const refund = await stripe.refunds.create({
+        payment_intent: order.payment_intent,
+      });
+      if (refund.status !== 'succeeded') {
+        throw new Error(`Refund failed`);
+      }
+      refundIntent = refund.id;
+    }
+    await orderCancel(prisma, order.orderid, refundIntent);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
 /**
  * @swagger
  * /2/order/{id}:
