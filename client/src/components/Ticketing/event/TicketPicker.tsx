@@ -130,8 +130,6 @@ const TicketPickerReducer = (
     const sameDayShows = tickets.filter((t: Ticket) =>
       isSameDay(new Date(date), new Date(t.date)),
     );
-    console.log(sameDayShows);
-    // (t: Ticket) => console.log(t.date);
 
     return {
       ...state,
@@ -238,10 +236,6 @@ const TicketPicker = (props: TicketPickerProps) => {
     void fetchTicketTypes();
   }, []);
 
-  useEffect(() => {
-    console.log(ticketTypesState.ticketTypes);
-  }, [ticketTypesState.ticketTypes]);
-
   const appDispatch = useAppDispatch();
   const cartTicketCount = useAppSelector(selectCartTicketCount);
   const tickets = props.tickets;
@@ -323,8 +317,6 @@ const TicketPicker = (props: TicketPickerProps) => {
     );
   });
 
-  console.log(selectedTicket);
-
   useEffect(() => {
     if (selectedTicket) {
       const fetchData = async () => {
@@ -373,7 +365,7 @@ const TicketPicker = (props: TicketPickerProps) => {
             setnumAvail(numAvail);
           }
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
       };
       fetchData();
@@ -448,7 +440,7 @@ const TicketPicker = (props: TicketPickerProps) => {
           }
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
         >
-          <option className='text-zinc-300' value={''} disabled>
+          <option className='text-zinc-300' value='' disabled>
             select ticket type
           </option>
           {filteredTicketTypes.length > 0

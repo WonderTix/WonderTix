@@ -63,8 +63,6 @@ const Eventshowings = (): ReactElement => {
   const {title, description, tickets} = eventData;
   const imageUrl = eventData.imageurl;
 
-  // tab:px-[5rem]
-
   return (
     <>
       <main
