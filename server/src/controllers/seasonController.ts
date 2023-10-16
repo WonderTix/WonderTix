@@ -41,11 +41,12 @@ export const seasonController = Router();
  */
 seasonController.post('/', async (req: Request, res: Response) => {
   try {
-    const season = prisma.seasons.create({
+    const season = await prisma.seasons.create({
       data: {
         name: req.body.name,
         startdate: req.body.startdate,
         enddate: req.body.enddate,
+        imageurl: req.body.imageurl,
       },
     });
     res.status(201).json(season);
@@ -240,7 +241,7 @@ seasonController.get('/:id', async (req: Request, res: Response) => {
 seasonController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const season = prisma.seasons.update({
+    const season = await prisma.seasons.update({
       where: {
         seasonid: Number(id),
       },
@@ -248,6 +249,7 @@ seasonController.put('/:id', async (req: Request, res: Response) => {
         name: req.body.name,
         startdate: req.body.startdate,
         enddate: req.body.enddate,
+        imageurl: req.body.imageurl,
       },
     });
     res.status(204).json();
@@ -308,7 +310,7 @@ seasonController.delete('/:id', async (req: Request, res: Response) => {
 
       return;
     }
-    const season = prisma.seasons.delete({
+    const season = await prisma.seasons.delete({
       where: {
         seasonid: Number(id),
       },
