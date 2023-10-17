@@ -320,7 +320,7 @@ export default function CompleteOrderForm({
                     <input
                       className='input w-full  border
             border-zinc-300 p-4 mt-1 rounded-lg col-label-2'
-                      type='text'
+                      type='number'
                       name='donation'
                       id='donation'
                       onChange={(
