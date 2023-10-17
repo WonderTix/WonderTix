@@ -5,7 +5,7 @@ import {MainPage} from './pages/mainPage';
 test('Check Home', async ({page}) => {
   const main = new MainPage(page);
   await main.goto();
-  expect(await main.headingEvent).toBeVisible();
+  await expect(main.headingEvent).toBeVisible();
 });
 
 // Navigate to the first showing on the main page and make sure the event title isn't blank
