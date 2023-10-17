@@ -18,7 +18,6 @@ const SeasonContainer = () => {
   const [seasonId, setSeasonId] = useState(Number(providedSeasonId.seasonid));
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
   const [popUpMessage, setPopUpMessage] = useState(defaultPopUpValues);
-  const [isFormEditing, setIsFormEditing] = useState<boolean>(!seasonId);
   const {token} = useFetchToken();
 
   if (token === '' || seasonId === undefined) {
@@ -37,13 +36,11 @@ const SeasonContainer = () => {
           <SeasonInfo
             seasonId={seasonId}
             setSeasonId={setSeasonId}
-            isFormEditing={isFormEditing}
-            setIsFormEditing={setIsFormEditing}
             setPopUpMessage={setPopUpMessage}
             setShowPopUp={setShowPopUp}
             token={token}
           />
-          <SeasonEvents />
+          {/* <SeasonEvents />  Work in progress*/}
         </div>
       </div>
     );
