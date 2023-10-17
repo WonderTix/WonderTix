@@ -9,7 +9,7 @@ import SeasonContainer from './SeasonContainer';
  * @returns Season page component
  */
 
-const SeasonPage = () => {
+const SingleSeasonMain = () => {
   return (
     <div className='flex'>
       <Udash_nav />
@@ -18,4 +18,4 @@ const SeasonPage = () => {
   );
 };
 
-export default SeasonPage;
+export default SingleSeasonMain;
