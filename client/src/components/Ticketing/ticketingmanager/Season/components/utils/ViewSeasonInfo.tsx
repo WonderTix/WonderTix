@@ -44,8 +44,8 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
         </button>
       </section>
 
-      <section className='grid grid-cols-12'>
-        <article className='col-span-12 mb-5 text-center tab:text-start sm:col-span-6'>
+      <div className='grid grid-cols-12'>
+        <article className='col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
           <h3 className='font-semibold'>Season Name </h3>
           <p className='mb-3 text-base'>{name}</p>
 
@@ -55,14 +55,14 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           <h3 className='font-semibold'>End Date </h3>
           <p className='text-base'>{getlongDateFormat(enddate)}</p>
         </article>
-        <article className='col-span-12 sm:col-span-6'>
+        <article className='col-span-12 tab:col-span-6'>
           <SeasonImage
-            className='h-auto max-w-[125px] mx-auto'
+            className='h-auto max-w-[150px] mx-auto'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
         </article>
-      </section>
+      </div>
     </header>
   );
 };

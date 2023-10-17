@@ -84,7 +84,7 @@ const SeasonInfo = (props: SeasonProps) => {
 
   return seasonId === 0 || isFormEditing ? (
     <form onSubmit={onSubmit} className='rounded-xl p-7 bg-white text-lg'>
-      <section className='flex justify-between'>
+      <section className='flex flex-col text-center tab:flex-row tab:text-start tab:justify-between'>
         <h1 className='text-4xl mb-3 font-semibold'>Edit Season</h1>
         <article>
           <button className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'>
@@ -102,8 +102,8 @@ const SeasonInfo = (props: SeasonProps) => {
           </button>
         </article>
       </section>
-      <section className='grid grid-cols-12'>
-        <div className='flex flex-col gap-2 col-span-12 mb-5 text-center tab:text-start sm:col-span-6'>
+      <div className='grid grid-cols-12'>
+        <div className='flex flex-col gap-2 col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
           <label htmlFor='seasonName'>
             Season Name:
             <input
@@ -140,7 +140,6 @@ const SeasonInfo = (props: SeasonProps) => {
               required
             />
           </label>
-
           <label htmlFor='imageUrl'>
             Image URL:
             <input
@@ -154,31 +153,47 @@ const SeasonInfo = (props: SeasonProps) => {
               required
             />
           </label>
-          <label htmlFor='defaultImage'>
-            Use Default Image{' '}
-            <input
-              type='checkbox'
-              id='defaultImage'
-              name='defaultImage'
-              checked={imageCheckbox}
-              onChange={() => {
-                setImageCheckbox((checked) => !checked);
-                setSeasonValues((seasonValues) => ({
-                  ...seasonValues,
-                  imageurl: '',
-                }));
-              }}
-            />
-          </label>
+          <div id='form-checkboxes' className='flex gap-7'>
+            <div className='checkbox-2'>
+              <input
+                type='checkbox'
+                id='defaultImage'
+                name='defaultImage'
+                className='mr-2'
+                checked={imageCheckbox}
+                onChange={() => {
+                  setImageCheckbox((checked) => !checked);
+                  setSeasonValues((seasonValues) => ({
+                    ...seasonValues,
+                    imageurl: '',
+                  }));
+                }}
+              />
+              <label className='text-base' htmlFor='defaultImage'>
+                Use Default Image
+              </label>
+            </div>
+            <div className='checkbox-2'>
+              <input
+                className='mr-2'
+                type='checkbox'
+                id='activeSeason'
+                name='activeSeason'
+              />
+              <label className='text-base' htmlFor='activeSeason'>
+                Active
+              </label>
+            </div>
+          </div>
         </div>
-        <article className='col-span-12 sm:col-span-6'>
+        <article className='col-span-12 tab:col-span-6'>
           <SeasonImage
             className='h-auto max-w-[175px] mx-auto'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
         </article>
-      </section>
+      </div>
     </form>
   ) : (
     <ViewSeasonInfo {...seasonValues} setIsFormEditing={setIsFormEditing} />
