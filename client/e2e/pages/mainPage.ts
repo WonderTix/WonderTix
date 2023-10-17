@@ -80,8 +80,8 @@ export class MainPage {
   }
 
   async selectRandomQuantity() {
-    const randonQuantity = await this.selectRandomOption(this.selectQuantity);
-    return await randonQuantity;
+    const randomQuantity = await this.selectRandomOption(this.selectQuantity);
+    return await randomQuantity;
   }
 
   // Click the Get Tickets button on the event page
