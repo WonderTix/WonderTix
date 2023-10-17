@@ -34,6 +34,8 @@ import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showi
 import SeasonsMain from './components/Ticketing/ticketingmanager/Season/SeasonMain';
 import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
+import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
+import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
 import RefundMain from './components/Ticketing/ticketingmanager/Refund/RefundOrderTicketMain';
@@ -142,6 +144,14 @@ const App = () => {
         <Route
           path='/ticketing/showings/:eventid'
           element={<ProtectedRoute component={EventProvider} />}
+        />
+        <Route
+          path='/ticketing/purchaseticket'
+          element={<ProtectedRoute component={AdminPurchasemain} />}
+        />
+        <Route
+          path='/ticketing/admincheckout'
+          element={<ProtectedRoute component={AdminCheckoutmain} />}
         />
         <Route
           path='/ticketing/Refund'
