@@ -7,36 +7,20 @@ import {
   updateSeasonInfo,
   RequestBody,
 } from './utils/apiRequest';
+import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
 
-interface SeasonProps {
-  seasonId: number;
-  token: string;
-  isFormEditing: boolean;
-  setIsFormEditing: (value) => void;
-  setSeasonId: (value) => void;
-}
-
-export interface SeasonInfo {
-  seasonid: number;
-  name: string;
-  startdate: string;
-  enddate: string;
-  imageurl: string;
-}
-
-export const seasonDefaultValues: SeasonInfo = {
-  seasonid: 0,
-  name: '',
-  startdate: '',
-  enddate: '',
-  imageurl: '',
-};
-
 const SeasonInfo = (props: SeasonProps) => {
-  const {seasonId, setSeasonId, isFormEditing, setIsFormEditing, token} = props;
-  const [seasonValues, setSeasonValues] =
-    useState<SeasonInfo>(seasonDefaultValues);
+  const {
+    seasonId,
+    setSeasonId,
+    isFormEditing,
+    setIsFormEditing,
+    setShowPopUp,
+    setPopUpMessage,
+    token,
+  } = props;
+  const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const {name, startdate, enddate, imageurl} = seasonValues;
   const [imageCheckbox, setImageCheckbox] = useState(false);
   const navigate = useNavigate();
@@ -55,6 +39,12 @@ const SeasonInfo = (props: SeasonProps) => {
   const handleCreateNewSeason = async (reqObject: RequestBody) => {
     const createdSeasonId = await createNewSeason(reqObject, token);
     if (createdSeasonId) {
+      setPopUpMessage({
+        title: 'Success',
+        message: 'Season created successfully!',
+        success: true,
+      });
+      setShowPopUp(true);
       setSeasonId(createdSeasonId);
       navigate(`/ticketing/seasons/${createdSeasonId}`);
     }
@@ -62,6 +52,14 @@ const SeasonInfo = (props: SeasonProps) => {
 
   const handleUpdateSeason = async (reqObject: RequestBody) => {
     const updateSeason = await updateSeasonInfo(reqObject, seasonId, token);
+    if (updateSeason) {
+      setPopUpMessage({
+        title: 'Success',
+        message: 'Season update successful!',
+        success: true,
+      });
+      setShowPopUp(true);
+    }
   };
 
   const onSubmit = (event) => {
@@ -158,7 +156,7 @@ const SeasonInfo = (props: SeasonProps) => {
               disabled={imageCheckbox}
               value={imageurl}
               onChange={onChangeHandler}
-              className='text-sm w-full rounded-lg p-1 border border-zinc-400'
+              className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-gray-200'
               required
             />
           </label>

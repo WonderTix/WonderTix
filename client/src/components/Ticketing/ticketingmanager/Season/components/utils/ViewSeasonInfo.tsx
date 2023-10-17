@@ -1,7 +1,6 @@
 import React from 'react';
-import {SeasonInfo} from '../SeasonInfo';
+import {SeasonInfo} from './seasonCommon';
 import {SeasonImage} from '../../seasonUtils';
-import {start} from 'repl';
 
 const MONTHS = [
   'January',
