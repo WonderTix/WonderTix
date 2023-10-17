@@ -379,6 +379,22 @@ const AdminPurchase = () => {
     navigate('/ticketing/admincheckout', {state: {tickets: ticketInfo}});
   };
 
+  const handleCart = () => {
+    // Gather ticket information from the rows
+    const ticketInfo = eventData.map((row) => ({
+      eventName: row.eventname,
+      eventTime: row.eventtime,
+      ticketType: row.ticketTypes,
+      price: row.price,
+      complementary: row.complementary,
+    }));
+    // Store this ticket info in the selectedTickets state
+    setSelectedTickets(ticketInfo);
+
+    // Navigate to the Cart page and pass the ticket info
+    navigate('../cart', {state: {tickets: ticketInfo}});
+  };
+
   const getEventData = async (event) => {
     try {
       const token = await getAccessTokenSilently({
@@ -459,10 +475,24 @@ const AdminPurchase = () => {
                 color: 'white',
                 fontSize: 'larger',
                 textTransform: 'none',
+                marginRight: '10px', // Added margin for spacing
               }}
               onClick={handlePurchase}
             >
                 Proceed To Checkout
+            </Button>
+            {/* New "Proceed to Cart" Button */}
+            <Button
+              variant='contained'
+              style={{
+                backgroundColor: 'blue',
+                color: 'white',
+                fontSize: 'larger',
+                textTransform: 'none',
+              }}
+              onClick={handleCart}
+            >
+                Proceed To Cart
             </Button>
           </div>
         </div>
