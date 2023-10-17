@@ -24,7 +24,7 @@ export const createNewSeason = async (reqBody: RequestBody, token: string) => {
     );
 
     if (!createSeasonRes.ok) {
-      throw new Error(`Failed to create new season`);
+      throw new Error('Failed to create new season');
     }
 
     const {seasonid} = await createSeasonRes.json();
