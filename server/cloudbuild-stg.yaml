@@ -35,10 +35,20 @@ steps:
       - '--min-instances=1'
       - "--set-cloudsql-instances=$_STG_SQL_INSTANCE"
       - "--service-account=$_GCP_SERVICE_ACCOUNT"
-    secretEnv: ['DB_USER', 'DB_DATABASE', 'DB_PORT', 'DB_HOST', 'DATABASE_URL', 'DB_PASSWORD']
+    secretEnv:
+      - 'AUTH0_CLIENT_SECRET'
+      - 'DB_USER'
+      - 'DB_DATABASE'
+      - 'DB_PORT'
+      - 'DB_HOST'
+      - 'DATABASE_URL'
+      - 'DB_PASSWORD'
 
+# Use stg versions for all secrets used in deployment step
 availableSecrets:
   secretManager:
+  - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_SECRET/versions/stg
+    env: 'AUTH0_CLIENT_SECRET'
   - versionName: projects/$PROJECT_ID/secrets/DB_USER/versions/stg
     env: 'DB_USER'
   - versionName: projects/$PROJECT_ID/secrets/DB_DATABASE/versions/stg
