@@ -9,7 +9,7 @@ interface popupProps {
   dataTestId?: string;
   title: string;
   message: string;
-  handleClose: (event: any) => void;
+  handleClose?: (event: any) => void;
   handleProceed: (event: any) => void;
   success: boolean;
   showSecondary?: boolean;
