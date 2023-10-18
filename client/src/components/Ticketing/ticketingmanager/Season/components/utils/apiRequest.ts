@@ -65,7 +65,6 @@ export const getSeasonInfo = async (seasonId: number, token: string) => {
         ...seasonInfo,
         startdate: formatSeasonDate(sdate, true),
         enddate: formatSeasonDate(edate, true),
-        imageurl: getSeasonImage(fetchedImage),
       };
 
       return modifiedSeasonInfo;
