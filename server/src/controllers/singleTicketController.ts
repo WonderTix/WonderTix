@@ -43,7 +43,6 @@ singleTicketController.post('/', async (req: Request, res: Response) => {
   try {
     const singleTicket = prisma.singletickets.create({
       data: {
-        eventticketid_fk: req.body.eventticket,
         orderitemid_fk: req.body.orderitem,
         ticketwasswapped: req.body.ticketwasswapped,
       },
@@ -250,7 +249,6 @@ singleTicketController.put('/:id', async (req: Request, res: Response) => {
         singleticketid: Number(id),
       },
       data: {
-        eventticketid_fk: req.body.eventticket,
         orderitemid_fk: req.body.orderitem,
         ticketwasswapped: req.body.ticketwasswapped,
       },

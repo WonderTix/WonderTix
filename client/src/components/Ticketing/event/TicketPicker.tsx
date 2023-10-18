@@ -358,7 +358,7 @@ const TicketPicker = (props: TicketPickerProps) => {
             (row) => row.tickettypeid_fk === selectedTicketType.id,
           );
           if (matchingRow) {
-            const numAvail = matchingRow.ticketlimit;
+            const numAvail = matchingRow.ticketlimit - matchingRow.ticketssold;
             setnumAvail(numAvail);
           } else {
             const numAvail = selectedTicket.availableseats;
