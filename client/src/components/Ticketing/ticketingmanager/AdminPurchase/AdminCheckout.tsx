@@ -3,10 +3,11 @@
 import YourOrder from '../../cart/YourOrder';
 import {
   CartItem,
+  removeAllTicketsFromCart,
   selectCartContents,
   selectDiscount,
 } from '../../ticketingmanager/ticketing/ticketingSlice';
-import {useAppSelector} from '../../app/hooks';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
 import AdminCompleteOrderForm, {
@@ -27,25 +28,32 @@ export default function AdminCheckout(): ReactElement {
   const location = useLocation();
   const ticketData = location.state;
   const navigate = useNavigate();
-  // const cartItems = useAppSelector(selectCartContents);
+  const cartItems = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);
   const donation = useAppSelector(selectDonation);
   const handleBackButton = () => {
     navigate('/ticketing/purchaseticket');
   };
+  const dispatch = useAppDispatch();
 
-  // hardcoded cart items for testing purposes
-  const cartItems = {
-    date: new Date(),
-    desc: 'General Admission - Adult - Wed, Sep 15 - 3:00 AM',
-    name: 'Angels In America Tickets',
-    price: 20,
-    product_id: 372,
-    product_img_url:
-      'https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg',
-    qty: 8,
-    typeID: 1,
-  };
+  // ***hardcoded cart items for testing purposes
+
+  // const todaysDate = new Date();
+
+  // const cartItems: CartItem[] = [
+  // {
+  // product_id: 2,
+  // price: 99,
+  // desc: 'this is a test',
+  // typeID: 1,
+  // date: todaysDate,
+  // name: 'Tou Show',
+  // product_img_url:
+  // 'https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg',
+  // qty: 22,
+  // payWhatCan: false,
+  // },
+  // ];
 
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
@@ -69,13 +77,22 @@ export default function AdminCheckout(): ReactElement {
         throw response;
       }
       const session = await response.json();
+      if (session.id == 'comp') {
+        dispatch(removeAllTicketsFromCart());
+        navigate(`/success`);
+      }
       const paymentIntent = session.payment_intent;
       const result = await stripe.redirectToCheckout({sessionId: session.id});
       if (result.error) {
         console.error(result.error.message);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error response status: ', error.status);
+      console.error('Error response status text: ', error.statusText);
+      if (error.json) {
+        const errorMessage = await error.json();
+        console.error('Error message from server: ', errorMessage);
+      }
     }
   };
 
