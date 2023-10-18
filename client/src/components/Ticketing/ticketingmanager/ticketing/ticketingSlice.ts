@@ -1,12 +1,3 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 import {createSlice, createAsyncThunk, PayloadAction, CaseReducer} from '@reduxjs/toolkit';
 import {RootState} from '../../app/store';
 import format from 'date-fns/format';
@@ -18,10 +9,14 @@ import {bound, titleCase} from '../../../../utils/arrays';
  * @module
  * @param {number} product_id - references state.tickets.event_instance_id
  * @param {number} qty - amount of that product (tickets)
+ * @param {Date} date
  * @param {string} name - name of the event/ticket for the event
  * @param {string} desc - description of the event
  * @param {string} product_img_url - URL to what the ticket looks like
  * @param {number} price - listed in dollars, like 60
+ * @param {boolean} payWhatCan
+ * @param {number?} payWhatPrice
+ * @param {number} typeID
  */
 export interface CartItem {
     product_id: number, // references state.tickets.event_instance_id
@@ -43,10 +38,11 @@ export interface CartItem {
  * @param {number} event_instance_id
  * @param {string} eventid
  * @param {string} admission_type - default is 'General Admission' type tickets
+ * @param {number?} payWhatYouCan
  * @param {Date} date - date format
  * @param {number} ticket_price - A number for the ticket price
  * @param {number} concession_price
- * @param {number} totalseats? - the total amount of seats available
+ * @param {number?} totalseats - the total amount of seats available
  * @param {number} availableseats - amount of leftover seats, gets subtracted when people buy
  */
 export interface Ticket {
@@ -95,6 +91,7 @@ export interface Event {
 }
 
 type TicketsState = {data: {byId: {[key: string]: Ticket}, allIds: number[]}}
+
 /**
  * Four states - 'idle', 'loading', 'success', 'failed'
  *
@@ -124,8 +121,6 @@ export interface ticketingState {
 }
 
 /**
- *
- * @param {string} url - gets data
  * @param {string} url - gets data
  * @returns Error message on fail, otherwise gets message
  */
@@ -237,45 +232,11 @@ export const fetchDiscountData = createAsyncThunk(
   },
 );
 
-
 /**
- * Discount code
- *
  * @module
- * @param {number} discountid
- * @param {string} code - the discount code itself
- * @param {number} amount - A set number of dollars off
- * @param {number} percent - A percentage to be taken off
- * @param {number} startdate - yyyymmdd format
- * @param {number} enddate - yyyymmdd format
- * @param {number} min_tickets - The minimum number of tickets for this discount to apply
- * @param {number} min_events - The minimum number of events for this discount to apply
- * @param {number} usagelimit - The maximum number of times this discount can be used
+ * @param type
+ * @param tickets
  */
-export interface Discount {
-  discountid: number,
-  code: string,
-  amount: number,
-  percent: number,
-  startdate: number,
-  enddate: number,
-  min_tickets: number,
-  min_events: number,
-  usagelimit: number,
-}
-
-/**
- * Shows some information on cartitem
- *
- * @param {T} ticketLike - based on ticket object?
- */
-
-// export const toPartialCartItem = <T extends Ticket>(ticketLike: T) => ({
-//   product_id: ticketLike.event_instance_id,
-//   price: ticketLike.ticket_price,
-//   desc: `${ticketLike.admission_type} - ${format(new Date(ticketLike.date), 'eee, MMM dd - h:mm a')}`,
-// });
-
 export const toPartialCartItem = <T extends TicketType>(type: T, tickets: Ticket) => ({
   product_id: tickets.event_instance_id,
   price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
@@ -314,14 +275,14 @@ export const createCartItem = (data: { ticket: Ticket, tickettype: TicketType, e
 type EventId = string
 
 /**
- * @param {boolean} isTicket - checks if ticket object matches event_instance_id
  * @param obj
+ * @returns {boolean} checks if ticket object matches event_instance_id
  */
 const isTicket = (obj: any): obj is Ticket => Object.keys(obj).some((k) => k==='event_instance_id');
 
 /**
- * @param {boolean} isCartItem - checks if cart object matches product_id
  * @param obj
+ * @returns {boolean} checks if cart object matches product_id
  */
 const isCartItem = (obj: any): obj is CartItem => Object.keys(obj).some((k) => k==='product_id');
 
@@ -378,6 +339,11 @@ const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
     item,
   );
 
+/**
+ * @param cart
+ * @param num
+ * @param qty
+ */
 const payWhatFunc = (cart: CartItem, num: number, qty: number) => {
   cart.payWhatCan = true;
   cart.payWhatPrice = num * qty;
@@ -448,11 +414,12 @@ const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty
 };
 
 /**
- * Makes an inital state for ticketing
+ * Makes an initial state for ticketing
  *
  * @module
  * @param {Array} cart - []
  * @param {Array} tickets - byId: {}, allIds: []
+ * @param {TicketType} tickettype - {0, '', '', ''}
  * @param {Array} events - []
  * @param {string} status - 'idle'
  * @param {DiscountItem} discount - {'', 0, 0, 0, 0}
@@ -563,9 +530,10 @@ export const selectCartContents = (state: RootState): CartItem[] => state.ticket
 export const selectDiscount = (state: RootState): DiscountItem => state.ticketing.discount;
 
 /**
- * filterTicketsReducer - self explanatory
+ * filterTicketsReducer - self-explanatory
  *
- * @param eventid
+ * @param ticketsById
+ * @param {EventId} eventid
  */
 const filterTicketsReducer = (ticketsById: {[key: number]: Ticket}, eventid: EventId) =>
   (filtered: Ticket[], id: number) => {
@@ -605,8 +573,10 @@ export const selectEventData = (state: RootState, eventid: EventId): EventPageDa
   const event = state.ticketing.events.find(byId(eventid));
   if (event) {
     const {...playData} = event;
-    const tickets = ticketData.data.allIds
-      .reduce(filterTicketsReducer(ticketData.data.byId, eventid), [] as Ticket[]);
+    const tickets = ticketData.data.allIds.reduce(
+      filterTicketsReducer(ticketData.data.byId, eventid),
+      [] as Ticket[],
+    );
     return {...playData, tickets};
   } else {
     return undefined;
@@ -637,7 +607,7 @@ interface EventSummaryData {
  * @param {RootState} state
  * @returns {Array} id: event.id, eventname: title, eventdescription: description, numShows: filteredTickets.length
  */
-export const selectPlaysData = (state: RootState) =>
+export const selectPlaysData = (state: RootState): Array<any> =>
   state.ticketing.events.reduce((res, event) => {
     const {id, title, description} = event;
     const filteredTickets = state.ticketing.tickets.data.allIds.reduce(
