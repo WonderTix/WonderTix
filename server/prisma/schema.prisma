@@ -143,14 +143,14 @@ model eventtickets {
   eventticketid      Int             @id(map: "tickets_pkey") @default(autoincrement())
   eventinstanceid_fk Int
   tickettypeid_fk    Int?
-  purchased          Boolean?        @default(false)
+  singleticket_fk    Int?
   redeemed           Boolean?        @default(false)
   redeemed_ts        DateTime?       @db.Timetz(6)
   donated            Boolean?        @default(false)
   tickettype         tickettype?     @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
   eventinstances     eventinstances  @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction, map: "tickets_eventinstanceid_fkey")
+  singleticket       singletickets?  @relation(fields: [singleticket_fk], references: [singleticketid], onDelete: SetNull, onUpdate: NoAction)
   seasontickets      seasontickets[]
-  singletickets      singletickets[]
 }
 
 /// a line item in a customers order
@@ -159,7 +159,7 @@ model orderitems {
   orderitemid   Int             @id @default(autoincrement())
   orderid_fk    Int
   price         Decimal?        @db.Money
-  orders        orders          @relation(fields: [orderid_fk], references: [orderid], onDelete: NoAction, onUpdate: NoAction, map: "orderitems_orderid_fkey")
+  orders        orders          @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: NoAction, map: "orderitems_orderid_fkey")
   seasontickets seasontickets[]
   singletickets singletickets[]
 }
@@ -167,18 +167,19 @@ model orderitems {
 /// a customers order
 /// refund and payment intents are the uuids from stripe when a refund or payment is made
 model orders {
-  orderid        Int          @id @default(autoincrement())
-  contactid_fk   Int
-  orderdate      Int
-  ordertime      DateTime?    @db.Timetz(6)
-  discountid_fk  Int?
-  payment_intent String?      @db.VarChar(255)
-  refund_intent  String?      @db.VarChar(255)
-  ordertotal     Decimal?     @db.Money
-  orderitems     orderitems[]
-  contacts       contacts     @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "orders_contactid_fkey")
-  discounts      discounts?   @relation(fields: [discountid_fk], references: [discountid], onDelete: NoAction, onUpdate: NoAction, map: "orders_discountid_fkey")
-  date           date         @relation(fields: [orderdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  orderid           Int          @id @default(autoincrement())
+  contactid_fk      Int
+  orderdate         Int
+  ordertime         DateTime?    @db.Timetz(6)
+  discountid_fk     Int?
+  payment_intent    String?      @db.VarChar(255)
+  checkout_sessions String?      @db.VarChar(255)
+  refund_intent     String?      @db.VarChar(255)
+  ordertotal        Decimal?     @db.Money
+  orderitems        orderitems[]
+  contacts          contacts     @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "orders_contactid_fkey")
+  discounts         discounts?   @relation(fields: [discountid_fk], references: [discountid], onDelete: NoAction, onUpdate: NoAction, map: "orders_discountid_fkey")
+  date              date         @relation(fields: [orderdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
 }
 
 /// provides a way to store reports
@@ -231,12 +232,11 @@ model seasontickettype {
 /// when swapped, the original single ticket is marked as swapped,
 /// the old event ticket is marked as not purchased and a new single ticket is created with the old order item id and new event ticket id
 model singletickets {
-  singleticketid   Int          @id @default(autoincrement())
-  eventticketid_fk Int
+  singleticketid   Int            @id @default(autoincrement())
   orderitemid_fk   Int
-  ticketwasswapped Boolean?     @default(false)
-  eventtickets     eventtickets @relation(fields: [eventticketid_fk], references: [eventticketid], onDelete: NoAction, onUpdate: NoAction)
-  orderitems       orderitems   @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: NoAction, onUpdate: NoAction)
+  ticketwasswapped Boolean?       @default(false)
+  eventtickets     eventtickets[]
+  orderitems       orderitems     @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: Cascade, onUpdate: NoAction)
 }
 
 /// used to create and assign tasks such as a todo-list, memo, investigate and issue, etc.
@@ -325,20 +325,20 @@ enum state {
 }
 
 model StripeWebhook {
-	id        Int     @id @default(autoincrement())
-	eventid   String
-	event     String
-	livemode  Boolean
-	created   Int
-	data      String
-	object    String
-	requestid String
-	type      String
+  id        Int     @id @default(autoincrement())
+  eventid   String
+  event     String
+  livemode  Boolean
+  created   Int
+  data      String
+  object    String
+  requestid String
+  type      String
 }
 
 model Error {
-	id        Int     @id @default(autoincrement())
-	message   String
-	stack     String
-	createdAt Int
+  id        Int    @id @default(autoincrement())
+  message   String
+  stack     String
+  createdAt Int
 }
