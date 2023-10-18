@@ -26,10 +26,19 @@ const SeasonInfo = (props: SeasonProps) => {
 
   const handleGetSeasonInfo = async () => {
     const fetchedSeasonInfo = await getSeasonInfo(seasonId, token);
-    const {imageurl} = fetchedSeasonInfo;
+    const {imageurl: fetchedImage} = fetchedSeasonInfo;
+
     if (fetchedSeasonInfo) {
+      if (fetchedImage === 'Default Season Image') {
+        setImageCheckbox(true);
+        setSeasonValues({
+          ...fetchedSeasonInfo,
+          imageurl: '',
+        });
+        return;
+      }
       setSeasonValues(fetchedSeasonInfo);
-      setTempImageUrl(imageurl);
+      setTempImageUrl(getSeasonImage(fetchedImage));
     }
   };
 
@@ -68,7 +77,7 @@ const SeasonInfo = (props: SeasonProps) => {
       ...seasonValues,
       startdate: Number(startdate.replaceAll('-', '')),
       enddate: Number(enddate.replaceAll('-', '')),
-      imageurl: getSeasonImage(imageurl),
+      imageurl: imageurl === '' && 'Default Season Image',
     };
 
     setIsFormEditing(false);
@@ -92,7 +101,7 @@ const SeasonInfo = (props: SeasonProps) => {
     } else {
       setIsFormEditing(false);
       setSeasonValues({...seasonValues, imageurl: tempImageUrl});
-      setImageCheckbox(false);
+      tempImageUrl !== '' ? setImageCheckbox(false) : setImageCheckbox(true);
     }
   };
 

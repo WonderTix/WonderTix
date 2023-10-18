@@ -56,11 +56,7 @@ export const getSeasonInfo = async (seasonId: number, token: string) => {
 
       // Converting startdate and enddate response to string for form validation
       const seasonInfo = await getSeasonRes.json();
-      const {
-        startdate: sdate,
-        enddate: edate,
-        imageurl: fetchedImage,
-      } = seasonInfo;
+      const {startdate: sdate, enddate: edate} = seasonInfo;
       const modifiedSeasonInfo = {
         ...seasonInfo,
         startdate: formatSeasonDate(sdate, true),
