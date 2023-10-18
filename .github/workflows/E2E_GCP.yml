@@ -1,0 +1,85 @@
+name: Run E2E tests for GCP
+on:
+  repository_dispatch:
+    types: [gcp_deployment]
+
+jobs:
+  test-client:
+    name: Run E2E Tests for GCP
+    runs-on: ubuntu-latest
+    env:
+      CI: true # SET CI TO TRUE FOR GITHUB ACTIONS
+      PG_USER: postgres
+      PG_PASS: postgres
+      PG_DB: wondertix
+      PG_PORT: 5432
+      PG_HOST: 172.17.0.1
+      PUBLIC_STRIPE_KEY: ${{ secrets.PUBLIC_STRIPE_KEY }}
+      PRIVATE_STRIPE_KEY: ${{ secrets.PRIVATE_STRIPE_KEY }}
+      PRIVATE_STRIPE_WEBHOOK: ${{ secrets.PRIVATE_STRIPE_WEBHOOK }}
+      ROOT_URL: https://wondertix-server-3ps4rkx4ga-wl.a.run.app
+      FRONTEND_URL: https://wondertix-client-3ps4rkx4ga-wl.a.run.app
+      AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+      AUTH0_URL: ${{ secrets.AUTH0_URL }}
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }} 
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }} 
+      ENV: local
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: ./client/package-lock.json
+      
+      - name: npm install
+        run: npm install --force
+        working-directory: ./client
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        
+      - name: Check client E2E(UI) Tests
+        run: npm run test:playwright
+        # run: DEBUG=pw:api npx playwright test
+        working-directory: ./client
+      
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: ./client/playwright
+          retention-days: 30
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: ./client/test-results
+          retention-days: 30
+
+  # test-server:
+  #   name: Run Tests on server
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+  #     AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+  #     AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+  #     AUTH0_URL: ${{ secrets.AUTH0_URL }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18.x'
+  #         cache: 'npm'
+  #         cache-dependency-path: ./client/package-lock.json
+  #     - name: npm install
+  #       run: npm install
+  #       working-directory: ./server
+
+  #     - name: Check Unit Tests
+  #       run: npm test
+  #       working-directory: ./server
