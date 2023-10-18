@@ -15,6 +15,7 @@ const SeasonInfo = (props: SeasonProps) => {
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [isFormEditing, setIsFormEditing] = useState<boolean>(!seasonId);
   const [imageCheckbox, setImageCheckbox] = useState(false);
+  const [tempImageUrl, setTempImageUrl] = useState('');
 
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const SeasonInfo = (props: SeasonProps) => {
     const {imageurl} = fetchedSeasonInfo;
     if (fetchedSeasonInfo) {
       setSeasonValues(fetchedSeasonInfo);
+      setTempImageUrl(imageurl);
     }
   };
 
@@ -54,6 +56,7 @@ const SeasonInfo = (props: SeasonProps) => {
         success: true,
       });
       setShowPopUp(true);
+      setTempImageUrl('');
     }
   };
 
@@ -88,6 +91,8 @@ const SeasonInfo = (props: SeasonProps) => {
       navigate('/ticketing/seasons/');
     } else {
       setIsFormEditing(false);
+      setSeasonValues({...seasonValues, imageurl: tempImageUrl});
+      setImageCheckbox(false);
     }
   };
 
