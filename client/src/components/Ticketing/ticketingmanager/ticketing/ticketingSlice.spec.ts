@@ -113,6 +113,7 @@ describe('ticketing slice', () => {
   describe('selectors', () => {
     const item1 = {
       product_id: 1, // references state.tickets.event_instance_id
+      typeID: 1,
       qty: 2,
       name: 'thing',
       date: new Date('2021-08-08T16:00:00'),
@@ -135,6 +136,7 @@ describe('ticketing slice', () => {
             date: new Date('2021-08-07T16:00:00'),
             payWhatCan: false,
             desc: 'desc2',
+            typeID: 1,
             product_img_url: 'www.com',
             price: 3.99,
           }],
@@ -147,40 +149,40 @@ describe('ticketing slice', () => {
 
     it('selectCartItem', () => {
       expect(selectCartItem(init, 1))
-          .toEqual(item1);
+        .toEqual(item1);
     });
 
     it('selectCartTicketCount', () => {
       expect(selectCartTicketCount(init))
-          .toEqual({1: 2, 2: 4});
+        .toEqual({1: 2, 2: 4});
     });
 
     it('selectEventData', () => {
       const eventid = '1';
       expect(selectEventData(ROOT_INIT_STATE, eventid))
-          .toEqual({
-            id: '1',
-            title: 'Event 1',
-            description: 'lorem ipsum donor',
-            imageurl: 'https://image',
-            tickets: [{
-              event_instance_id: 1,
-              eventid: '1',
-              admission_type: 'General Admission - Adult',
-              ticket_price: 15.99,
-              concession_price: 4.99,
-              availableseats: 34,
-              date: new Date('2021-07-31T19:00:00'),
-            }, {
-              event_instance_id: 2,
-              eventid: '1',
-              admission_type: 'General Admission - Adult',
-              ticket_price: 19.99,
-              concession_price: 9.99,
-              availableseats: 20,
-              date: new Date('2021-08-07T16:00:00'),
-            }],
-          });
+        .toEqual({
+          id: '1',
+          title: 'Event 1',
+          description: 'lorem ipsum donor',
+          imageurl: 'https://image',
+          tickets: [{
+            event_instance_id: 1,
+            eventid: '1',
+            admission_type: 'General Admission - Adult',
+            ticket_price: 15.99,
+            concession_price: 4.99,
+            availableseats: 34,
+            date: new Date('2021-07-31T19:00:00'),
+          }, {
+            event_instance_id: 2,
+            eventid: '1',
+            admission_type: 'General Admission - Adult',
+            ticket_price: 19.99,
+            concession_price: 9.99,
+            availableseats: 20,
+            date: new Date('2021-08-07T16:00:00'),
+          }],
+        });
     });
 
     it('Date data is deserialized', () => {
@@ -196,20 +198,20 @@ describe('ticketing slice', () => {
       const payload = {id: 1, tickettype: tickettype, qty: 2, concessions: false};
       const res = ticketReducer(init, addTicketToCart(payload));
       expect(res)
-          .toEqual({
-            ...ticketingInitState,
-            cart: [newCartItem],
-          });
+        .toEqual({
+          ...ticketingInitState,
+          cart: [newCartItem],
+        });
       init = res;
     });
 
     it('addTicketReducer: exists in cart', () => {
       const payload = {id: 1, tickettype: tickettype, qty: 1, concessions: false};
       expect(ticketReducer(init, addTicketToCart(payload)))
-          .toEqual({
-            ...init,
-            cart: [{...newCartItem, qty: 3}],
-          });
+        .toEqual({
+          ...init,
+          cart: [{...newCartItem, qty: 3}],
+        });
     });
 
     it('addTicketReducer: in cart & add concessions', () => {
@@ -227,29 +229,29 @@ describe('ticketing slice', () => {
     // ticket 1 currently in cart
     it('editItemQty: can set qty = available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats})))
-          .toEqual({...init, cart: [{...concessionsItem, qty: ticket.availableseats}]});
+        .toEqual({...init, cart: [{...concessionsItem, qty: ticket.availableseats}]});
     });
 
     it('editItemQty: can\'t set qty > available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats + 1})))
-          .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
+        .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
     });
 
     it('editItemQty: item exists in cart', () => {
       const res = ticketReducer(init, editItemQty({id: 1, qty: 4}));
       expect(res)
-          .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
+        .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
       init = res;
     });
 
     it('editItemQty: item not in cart', () => {
       expect(ticketReducer(init, editItemQty({id: 2, qty: 4})))
-          .toEqual({...init});
+        .toEqual({...init});
     });
 
     it('editItemQty: can\'t set negative qty', () => {
       expect(ticketReducer(init, editItemQty({id: 1, qty: -1})))
-          .toEqual({...init, cart: [{...concessionsItem, qty: 0}]});
+        .toEqual({...init, cart: [{...concessionsItem, qty: 0}]});
     });
   });
 });

@@ -435,10 +435,9 @@ export const insertAllShowings = async (
                     INSERT INTO eventtickets (
                       eventinstanceid_fk,
                       tickettypeid_fk,
-                      purchased,
                       redeemed,
                       donated
-                    ) VALUES ($1, 1, false, false, false);
+                    ) VALUES ($1, 1, false, false);
   `;
   const res = [];
   let results: response = {

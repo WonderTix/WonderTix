@@ -10,10 +10,11 @@
  */
 import YourOrder from '../cart/YourOrder';
 import {
+  removeAllTicketsFromCart,
   selectCartContents,
   selectDiscount,
 } from '../ticketingmanager/ticketing/ticketingSlice';
-import {useAppSelector} from '../app/hooks';
+import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
 import DonationPage from '../donation/DonationPage';
@@ -37,30 +38,37 @@ export default function CheckoutPage(): ReactElement {
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>(
     'donation',
   );
+  const dispatch = useAppDispatch();
   const doCheckout = async (formData: CheckoutFormInfo) => {
-    if (formData.seatingAcc === 'Other') {
-      formData.seatingAcc = formData.comments;
-    }
-    const stripe = await stripePromise;
-    if (!stripe) return;
-    const response = await fetch(
-      process.env.REACT_APP_API_1_URL + `/events/checkout`,
-      {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    try {
+      if (formData.seatingAcc === 'Other') {
+        formData.seatingAcc = formData.comments;
+      }
+      const stripe = await stripePromise;
+      if (!stripe) return;
+      const response = await fetch(
+        process.env.REACT_APP_API_2_URL + `/events/checkout`,
+        {
+          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({cartItems, formData, donation, discount}),
         },
-        body: JSON.stringify({cartItems, formData, donation, discount}),
-      },
-    );
-    const session = await response.json();
-    console.log(session.id);
-    console.log(pk);
-    const paymentIntent = session.payment_intent;
-    const result = await stripe.redirectToCheckout({sessionId: session.id});
-    if (result.error) {
-      console.log(result.error.message);
+      );
+      if (!response.ok) {
+        throw response;
+      }
+      const session = await response.json();
+      if (session.id === 'comp') {
+        dispatch(removeAllTicketsFromCart());
+        navigate(`/success`);
+      }
+      const result = await stripe.redirectToCheckout({sessionId: session.id});
+      if (result.error) throw result;
+    } catch (error) {
+      console.error(error);
     }
   };
 
