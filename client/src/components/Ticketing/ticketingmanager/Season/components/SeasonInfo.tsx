@@ -15,6 +15,7 @@ const SeasonInfo = (props: SeasonProps) => {
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [isFormEditing, setIsFormEditing] = useState<boolean>(!seasonId);
   const [imageCheckbox, setImageCheckbox] = useState(false);
+  const [currentImageUrl, setCurrentImageUrl] = useState('');
 
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
@@ -25,8 +26,10 @@ const SeasonInfo = (props: SeasonProps) => {
 
   const handleGetSeasonInfo = async () => {
     const fetchedSeasonInfo = await getSeasonInfo(seasonId, token);
+    const {imageurl} = fetchedSeasonInfo;
     if (fetchedSeasonInfo) {
       setSeasonValues(fetchedSeasonInfo);
+      setCurrentImageUrl(imageurl);
     }
   };
 
@@ -64,7 +67,8 @@ const SeasonInfo = (props: SeasonProps) => {
       ...seasonValues,
       startdate: Number(startdate.replaceAll('-', '')),
       enddate: Number(enddate.replaceAll('-', '')),
-      imageurl: getSeasonImage(imageurl),
+      imageurl:
+        imageurl === '' ? 'Default Season Image' : getSeasonImage(imageurl),
     };
 
     setIsFormEditing(false);
@@ -82,6 +86,18 @@ const SeasonInfo = (props: SeasonProps) => {
     }));
   };
 
+  const handleCancelButton = () => {
+    if (seasonId === 0) {
+      navigate('/ticketing/seasons/');
+    } else {
+      setIsFormEditing(false);
+      setSeasonValues((seasonValues) => ({
+        ...seasonValues,
+        imageurl: currentImageUrl,
+      }));
+    }
+  };
+
   return seasonId === 0 || isFormEditing ? (
     <form onSubmit={onSubmit} className='rounded-xl p-7 bg-white text-lg'>
       <section className='flex flex-col text-center tab:flex-row tab:text-start tab:justify-between'>
@@ -92,11 +108,7 @@ const SeasonInfo = (props: SeasonProps) => {
           </button>
           <button
             className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl ml-3'
-            onClick={() => {
-              seasonId === 0
-                ? navigate('/ticketing/seasons/')
-                : setIsFormEditing(false);
-            }}
+            onClick={handleCancelButton}
           >
             Cancel
           </button>

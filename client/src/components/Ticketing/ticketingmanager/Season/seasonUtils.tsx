@@ -12,7 +12,7 @@ export const formatSeasonDate = (date: number, fromApiResponse = false) => {
 };
 
 export const getSeasonImage = (url?: string) => {
-  if (url && url !== '') return url;
+  if (url && url !== '' && url) return url;
   return defaultSeasonImage;
 };
 
