@@ -70,7 +70,7 @@ const CreditCardReconciliationReport=() =>{
                     </Grid>
                 </Box>
             </Box>
-            <Navigation/>  
+            <Navigation/>
         </div>
     );
   };

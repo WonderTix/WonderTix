@@ -40,8 +40,6 @@ import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
 import RefundMain from './components/Ticketing/ticketingmanager/Refund/RefundOrderTicketMain';
 
-
-
 const App = () => {
   return (
     <>
@@ -115,7 +113,7 @@ const App = () => {
           path='/admin/donor/reporting'
           element={<ProtectedRoute component={DonorReporting} />}
         />
-        <Route 
+        <Route
           path='/admin/reporting/credit-card-reconciliation'
           element={<ProtectedRoute component={CreditCardConciliationReport} />}
         />
