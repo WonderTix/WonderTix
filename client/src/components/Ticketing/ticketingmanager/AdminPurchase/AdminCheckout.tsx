@@ -2,6 +2,7 @@
 
 import YourOrder from '../../cart/YourOrder';
 import {
+  CartItem,
   selectCartContents,
   selectDiscount,
 } from '../../ticketingmanager/ticketing/ticketingSlice';
@@ -22,39 +23,59 @@ const stripePromise = loadStripe(pk);
  *
  * @returns {ReactElement}
  */
-export default function CheckoutPage(): ReactElement {
+export default function AdminCheckout(): ReactElement {
   const location = useLocation();
   const ticketData = location.state;
-  console.log('Ticket Data:, ticketData');
   const navigate = useNavigate();
-  const cartItems = useAppSelector(selectCartContents);
+  // const cartItems = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);
   const donation = useAppSelector(selectDonation);
   const handleBackButton = () => {
     navigate('/ticketing/purchaseticket');
   };
+
+  // hardcoded cart items for testing purposes
+  const cartItems = {
+    date: new Date(),
+    desc: 'General Admission - Adult - Wed, Sep 15 - 3:00 AM',
+    name: 'Angels In America Tickets',
+    price: 20,
+    product_id: 372,
+    product_img_url:
+      'https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg',
+    qty: 8,
+    typeID: 1,
+  };
+
   const doCheckout = async (formData: CheckoutFormInfo) => {
-    if (formData.seatingAcc === 'Other') {
-      formData.seatingAcc = formData.comments;
-    }
-    const stripe = await stripePromise;
-    if (!stripe) return;
-    const response = await fetch(
-      process.env.REACT_APP_API_1_URL + `/events/checkout`,
-      {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    try {
+      if (formData.seatingAcc === 'Other') {
+        formData.seatingAcc = formData.comments;
+      }
+      const stripe = await stripePromise;
+      if (!stripe) return;
+      const response = await fetch(
+        process.env.REACT_APP_API_1_URL + `/events/checkout`,
+        {
+          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({cartItems, formData, donation, discount}),
         },
-        body: JSON.stringify({cartItems, formData, donation, discount}),
-      },
-    );
-    const session = await response.json();
-    const paymentIntent = session.payment_intent;
-    const result = await stripe.redirectToCheckout({sessionId: session.id});
-    if (result.error) {
-      console.error(result.error.message);
+      );
+      if (!response.ok) {
+        throw response;
+      }
+      const session = await response.json();
+      const paymentIntent = session.payment_intent;
+      const result = await stripe.redirectToCheckout({sessionId: session.id});
+      if (result.error) {
+        console.error(result.error.message);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -89,7 +110,7 @@ export default function CheckoutPage(): ReactElement {
                 Complete Order
               </div>
               <AdminCompleteOrderForm
-                disabled={cartItems.length === 0}
+                disabled={false} // {cartItems.length === 0}
                 onSubmit={doCheckout}
                 onBack={handleBackButton}
               />

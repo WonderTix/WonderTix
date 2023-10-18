@@ -52,7 +52,7 @@ type CompleteOrderFormProps = {
  * @param {Function} onBack onBack callback function
  * @returns {ReactElement}
  */
-export default function CompleteOrderForm({
+export default function AdminCompleteOrderForm({
   onSubmit,
   onBack,
   disabled,

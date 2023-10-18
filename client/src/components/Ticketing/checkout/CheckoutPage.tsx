@@ -47,7 +47,7 @@ export default function CheckoutPage(): ReactElement {
       const stripe = await stripePromise;
       if (!stripe) return;
       const response = await fetch(
-        process.env.REACT_APP_API_2_URL + `/events/checkout`,
+        process.env.REACT_APP_API_1_URL + `/events/checkout`,
         {
           credentials: 'include',
           method: 'POST',
