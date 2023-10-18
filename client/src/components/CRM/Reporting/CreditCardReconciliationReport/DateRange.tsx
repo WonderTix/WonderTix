@@ -2,40 +2,39 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-import DatePicker from 'react-datepicker'
+import DatePicker from 'react-datepicker';
 
 const DateRangePicker = ({start, end, onStartDateChange, onEndDateChange}) => {
     return (
         <div>
-            <div>
-                <label className='text-sm pr-2'>Start:</label>
-                <input
-                    type='date'
-                    id='startDate'
-                    name='startDate'
-                    className='border border-black rounded text-sm w-1/2'
-                    value={start}
+            <div className='flex justify-center'>
+                <h2 className='text-sm pr-2 mr-[35%]'>Start</h2>
+                <h2 className='text-sm pr-3'>End </h2>
+            </div>
+            <div className='flex pl-2 pb-2'>
+                <DatePicker
+                    name = 'startDate'
+                    className='border border-black rounded text-sm w-[90%]'
+                    selected={start}
                     onChange={onStartDateChange}
+                    dateFormat="MM/dd/yy"
                 />
-            </div>
-            <div className='pb-2'>
-                <label className='text-sm pr-3'>End: </label>
-                <input
-                    type='date'
-                    id='startDate'
-                    name='startDate'
-                    className='border border-black rounded text-sm w-1/2'
-                    value={end}
+                <DatePicker
+                    name = 'startDate'
+                    className='border border-black rounded text-sm w-[90%]'
+                    selected={end}
                     onChange={onEndDateChange}
+                    dateFormat="MM/dd/yy"
                 />
             </div>
+
         </div>
     );
 };
 
 DateRangePicker.propTypes = {
-    start: PropTypes.string.isRequired,
-    end: PropTypes.string.isRequired,
+    start: PropTypes.instanceOf(Date).isRequired,
+    end: PropTypes.instanceOf(Date).isRequired,
     onStartDateChange: PropTypes.func.isRequired,
     onEndDateChange: PropTypes.func.isRequired,
 };

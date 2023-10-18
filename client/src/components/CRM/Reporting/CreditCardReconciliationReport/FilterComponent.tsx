@@ -9,8 +9,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
 const FilterComponent = () => {
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [groupBy, setGroupBy] = useState('');
 
     const handleStartDateChange = (date) => {
@@ -35,7 +35,7 @@ const FilterComponent = () => {
             </div>
             <Divider
                 sx={{
-                    'background-color': 'darkgrey',
+                    'backgroundColor': 'darkgrey',
                     'height': '3px',
                 }}
             />
@@ -50,7 +50,7 @@ const FilterComponent = () => {
                     />
                     <Divider
                         sx={{
-                            'background-color': 'darkgrey',
+                            'backgroundColor': 'darkgrey',
                             }}
                     />
                     <FormControl>
@@ -68,7 +68,7 @@ const FilterComponent = () => {
                     </FormControl>
                     <Divider
                         sx={{
-                            'background-color': 'darkgrey',
+                            'backgroundColor': 'darkgrey',
                             }}
                     />
                     <div className="flex justify-center pt-1.5">

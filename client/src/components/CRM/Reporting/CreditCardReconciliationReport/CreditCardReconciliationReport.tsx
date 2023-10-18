@@ -15,21 +15,21 @@ const CreditCardReconciliationReport=() =>{
                     'width': '100%',
                     'height': '100%',
                     'position': 'absolute',
-                    'overflow-x': 'hidden',
+                    'overflowX': 'hidden',
                 }}
             >
                 <Box
                     sx={{
                         'width': '100%',
                         'height': '100%',
-                        'margin-left': '16.7rem',
-                        'margin-right': '4rem',
+                        'marginLeft': '16.7rem',
+                        'marginRight': '4rem',
                     }}
                 >
                     <Box
                         sx = {{
-                            'margin-top': '6rem',
-                            'margin-bottom': '1.5rem',
+                            'marginTop': '6rem',
+                            'marginBottom': '1.5rem',
                         }}
                     >
                         <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500'>
@@ -46,9 +46,9 @@ const CreditCardReconciliationReport=() =>{
                                 sx = {{
                                     'width': '90%',
                                     'height': '15rem',
-                                    'background-color': 'lightgrey',
+                                    'backgroundColor': 'lightgrey',
                                     'border': '2px solid gray',
-                                    'border-radius': '8px',
+                                    'borderRadius': '8px',
                                 }}
                             >
                                 <FilterComponent/>
@@ -59,9 +59,9 @@ const CreditCardReconciliationReport=() =>{
                                 sx = {{
                                     'width': '95%',
                                     'height': '40rem',
-                                    'background-color': 'lightgrey',
+                                    'backgroundColor': 'lightgrey',
                                     'border': '2px solid gray',
-                                    'border-radius': '8px',
+                                    'borderRadius': '8px',
                                 }}
                             >
                                 <ReportComponent/>

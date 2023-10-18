@@ -18,7 +18,7 @@ const ReportComponent = () => {
             </div>
             <Divider
                 sx={{
-                    'background-color': 'darkgrey',
+                    'backgroundColor': 'darkgrey',
                     'height': '3px',
                 }}
             />
@@ -28,7 +28,7 @@ const ReportComponent = () => {
                 <h3>Grouped By: {grouped}</h3>
             </div>
             <Divider
-                sx={{'background-color': 'darkgrey'}}
+                sx={{'backgroundColor': 'darkgrey'}}
             />
             <div className="px-4">
                 <h1 className="font-bold text-2xl">Credit Card Transaction Totals</h1>
@@ -36,7 +36,7 @@ const ReportComponent = () => {
             </div>
             <Divider
                 sx={{
-                    'background-color': 'darkgrey',
+                    'backgroundColor': 'darkgrey',
                     'width': '100%',
                 }}
             />
@@ -45,14 +45,14 @@ const ReportComponent = () => {
                 <TableComponent/>
             </div>
             <Divider
-                sx={{'background-color': 'darkgrey'}}
+                sx={{'backgroundColor': 'darkgrey'}}
             />
             <div className="px-4">
                 <h1 className="font-bold text-2xl"> Event Totals by Credit Card Type</h1>
                 <TableComponent/>
             </div>
             <Divider
-                sx={{'background-color': 'darkgrey'}}
+                sx={{'backgroundColor': 'darkgrey'}}
             />
         </div>
     );
