@@ -1,0 +1,44 @@
+steps:
+
+  # Build Docker image for client
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'build'
+      - '--build-arg=REACT_APP_ROOT_URL=$_REACT_APP_ROOT_URL'
+      - '--build-arg=REACT_APP_AUTH0_URL=$_REACT_APP_AUTH0_URL'
+      - '--build-arg=REACT_APP_AUTH0_AUDIENCE=$_REACT_APP_AUTH0_AUDIENCE'
+      - '--build-arg=REACT_APP_API_1_URL=$_REACT_APP_API_1_URL'
+      - '--build-arg=REACT_APP_API_2_URL=$_REACT_APP_API_2_URL'
+      - '-f=client/Dockerfile.dev'
+      - '-t=$_DEV_ARTIFACTS/client-img-dev'
+      - 'client'
+
+  # Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '$_DEV_ARTIFACTS/client-img-dev']
+
+  # Deploy the client image to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    env:
+      - 'ENV=dev'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'wtix-client-dev'
+      - '--image'
+      - '$_DEV_ARTIFACTS/client-img-dev'
+      - '--region'
+      - '$_GCP_REGION'
+      - '--platform'
+      - 'managed'
+    secretEnv: ['AUTH0_CLIENT_SECRET', 'REACT_APP_AUTH0_CLIENT_ID', 'REACT_APP_PUBLIC_STRIPE_KEY']
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_SECRET/versions/dev
+    env: 'AUTH0_CLIENT_SECRET'
+  - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_ID/versions/dev
+    env: 'REACT_APP_AUTH0_CLIENT_ID'
+  - versionName: projects/$PROJECT_ID/secrets/PUBLIC_STRIPE_KEY/versions/dev
+    env: 'REACT_APP_PUBLIC_STRIPE_KEY'
+

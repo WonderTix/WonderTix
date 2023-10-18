@@ -2,12 +2,11 @@ steps:
 
   # Build the Docker image for the server using Dockerfile.dev
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-f', 'server/Dockerfile.dev', '-t', "$_GCP_ARTIFACTS/wondertix-server", 'server']
+    args: ['build', '-f', 'server/Dockerfile.dev', '-t', "$_DEV_ARTIFACTS/server-img-dev", 'server']
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', "$_GCP_ARTIFACTS/wondertix-server"]
-    secretEnv: ['DB_USER', 'DB_DATABASE', 'DB_PORT', 'DB_HOST', 'DATABASE_URL','DB_PASSWORD']
+    args: ['push', "$_DEV_ARTIFACTS/server-img-dev"]
 
   # Deploy the server image to Cloud Run with environment variables
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -27,7 +26,7 @@ steps:
       - 'deploy'
       - 'wondertix-server'
       - '--image'
-      - "$_GCP_ARTIFACTS/wondertix-server"
+      - "$_DEV_ARTIFACTS/server-img-dev"
       - '--region'
       - "$_GCP_REGION"
       - '--platform'
@@ -35,20 +34,21 @@ steps:
       - '--memory=1Gi'
       - '--allow-unauthenticated'
       - '--min-instances=1'
-      - "--set-cloudsql-instances=$_CLOUD_SQL_INSTANCE"
+      - "--set-cloudsql-instances=$_DEV_SQL_INSTANCE"
       - "--service-account=$_GCP_SERVICE_ACCOUNT"
 
 availableSecrets:
   secretManager:
-  - versionName: projects/131818279954/secrets/DB_USER/versions/latest
+  - versionName: projects/$PROJECT_ID/secrets/DB_USER/versions/dev
     env: 'DB_USER'
-  - versionName: projects/131818279954/secrets/DB_DATABASE/versions/latest
+  - versionName: projects/$PROJECT_ID/secrets/DB_DATABASE/versions/dev
     env: 'DB_DATABASE'
-  - versionName: projects/131818279954/secrets/DB_PORT/versions/latest
+  - versionName: projects/$PROJECT_ID/secrets/DB_PORT/versions/dev
     env: 'DB_PORT'
-  - versionName: projects/131818279954/secrets/DB_HOST/versions/latest
+  - versionName: projects/$PROJECT_ID/secrets/DB_HOST/versions/dev
     env: 'DB_HOST'
-  - versionName: projects/131818279954/secrets/DATABASE_URL/versions/latest
+  - versionName: projects/$PROJECT_ID/secrets/DATABASE_URL/versions/dev
     env: 'DATABASE_URL'
-  - versionName: projects/131818279954/secrets/DB_PASSWORD/versions/latest
+  - versionName: projects/$PROJECT_ID/secrets/DB_PASSWORD/versions/dev
     env: 'DB_PASSWORD'
+
