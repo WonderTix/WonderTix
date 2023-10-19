@@ -30,7 +30,6 @@ export default function AdminCheckout(): ReactElement {
   const navigate = useNavigate();
   const cartItems = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);
-  const donation = useAppSelector(selectDonation);
   const handleBackButton = () => {
     navigate('/ticketing/purchaseticket');
   };
@@ -60,6 +59,7 @@ export default function AdminCheckout(): ReactElement {
       if (formData.seatingAcc === 'Other') {
         formData.seatingAcc = formData.comments;
       }
+      const donation = formData.donation;
       const stripe = await stripePromise;
       if (!stripe) return;
       const response = await fetch(

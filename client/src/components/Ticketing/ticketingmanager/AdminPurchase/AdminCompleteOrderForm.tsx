@@ -16,6 +16,7 @@ import React, {ReactElement, useState} from 'react';
  * @param {string} visitSource
  * @param {string} seatingAcc
  * @param {string} comments
+ * @param {number} donation
  */
 export interface CheckoutFormInfo {
   optIn: boolean;
@@ -29,6 +30,7 @@ export interface CheckoutFormInfo {
   visitSource?: string;
   seatingAcc: string;
   comments?: string;
+  donation?: number;
 }
 
 /**
@@ -69,7 +71,7 @@ export default function AdminCompleteOrderForm({
   const [seatingAcc, setseatingAcc] = useState('');
   const [comments, setComments] = useState('');
   const [optIn, setOptIn] = useState(false);
-  const [donation, setDonations] = useState(''); // TODO: may need to add donation to formData if going this route
+  const [donation, setDonations] = useState<number>(0); // TODO: may need to add donation to formData if going this route
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
       firstName,
@@ -82,6 +84,7 @@ export default function AdminCompleteOrderForm({
       visitSource,
       seatingAcc,
       comments,
+      donation,
       optIn,
     };
     onSubmit(formData);
@@ -325,7 +328,12 @@ export default function AdminCompleteOrderForm({
                       id='donation'
                       onChange={(
                         ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setDonations(ev.target.value)}
+                      ): void => {
+                        const donationValue: number = parseFloat(
+                          ev.target.value,
+                        );
+                        setDonations(donationValue);
+                      }}
                       placeholder='Enter donation amount'
                     />
                   </div>
