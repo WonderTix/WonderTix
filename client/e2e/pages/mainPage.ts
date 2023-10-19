@@ -45,7 +45,7 @@ export class MainPage {
   async goFirstShowing() {
     await this.firstShowing.click();
     const title = await this.titleEvent.textContent();
-    return await title;
+    return title;
   }
 
   // Helper function - selects a random option in a dropdown box
@@ -54,34 +54,34 @@ export class MainPage {
   // String shift removes the first item in the array
   // Select a random option from the array, set that option, and return the text
   private async selectRandomOption(optionBox: Locator) {
-    const allOptions = await (await optionBox.allInnerTexts())[0].split('\n');
-    expect(await allOptions.length).toBeGreaterThanOrEqual(2);
+    const allOptions = (await optionBox.allInnerTexts())[0].split('\n');
+    expect(allOptions.length).toBeGreaterThanOrEqual(2);
     allOptions.shift();
-    const randomOption = allOptions[Math.floor(Math.random() * (await allOptions).length)];
+    const randomOption = allOptions[Math.floor(Math.random() * (allOptions).length)];
     await optionBox.selectOption({label: randomOption});
-    return await randomOption;
+    return randomOption;
   }
 
   // The below selectXX functions simply pass the option locator into the helper above and
   // return the selected text
   async selectRandomDate() {
     const randomDate = await this.selectRandomOption(this.selectDate);
-    return await randomDate;
+    return randomDate;
   }
 
   async selectRandomTime() {
     const randomTime = await this.selectRandomOption(this.selectTime);
-    return await randomTime;
+    return randomTime;
   }
 
   async selectRandomTicketType() {
     const randomTicketType = await this.selectRandomOption(this.selectTicketType);
-    return await randomTicketType;
+    return randomTicketType;
   }
 
   async selectRandomQuantity() {
     const randomQuantity = await this.selectRandomOption(this.selectQuantity);
-    return await randomQuantity;
+    return randomQuantity;
   }
 
   // Click the Get Tickets button on the event page
