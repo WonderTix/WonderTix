@@ -1,7 +1,6 @@
 name: Run E2E tests for GCP
 on:
-  repository_dispatch:
-    types: [gcp_deployment]
+    workflow_dispatch:
 
 jobs:
   test-client:
