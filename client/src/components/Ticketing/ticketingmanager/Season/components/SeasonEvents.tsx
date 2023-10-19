@@ -5,10 +5,12 @@ import EventCard from './EventCard';
 interface SeasonEventsProp {
   token: string;
   seasonId: number;
+  isFormEditing: boolean;
+  setIsFormEditing: (value) => void;
 }
 
 const SeasonEvents = (props: SeasonEventsProp) => {
-  const {seasonId, token} = props;
+  const {seasonId, token, isFormEditing, setIsFormEditing} = props;
   const [allEventInfo, setAllEventInfo] = useState([]);
 
   const handleGetAllEvents = async () => {
@@ -50,6 +52,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
             name={event.title}
             imageurl={event.imageurl}
             eventId={event.id}
+            isFormEditing={isFormEditing}
           />
         );
       })}

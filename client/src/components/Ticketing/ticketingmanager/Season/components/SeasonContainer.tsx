@@ -16,6 +16,7 @@ const defaultPopUpValues = {
 const SeasonContainer = () => {
   const providedSeasonId = useParams();
   const [seasonId, setSeasonId] = useState(Number(providedSeasonId.seasonid));
+  const [isFormEditing, setIsFormEditing] = useState<boolean>(!seasonId);
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
   const [popUpMessage, setPopUpMessage] = useState(defaultPopUpValues);
   const {token} = useFetchToken();
@@ -35,12 +36,19 @@ const SeasonContainer = () => {
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
           <SeasonInfo
             seasonId={seasonId}
+            isFormEditing={isFormEditing}
+            setIsFormEditing={setIsFormEditing}
             setSeasonId={setSeasonId}
             setPopUpMessage={setPopUpMessage}
             setShowPopUp={setShowPopUp}
             token={token}
           />
-          <SeasonEvents token={token} seasonId={seasonId} />
+          <SeasonEvents
+            token={token}
+            seasonId={seasonId}
+            isFormEditing={isFormEditing}
+            setIsFormEditing={setIsFormEditing}
+          />
         </div>
       </div>
     );

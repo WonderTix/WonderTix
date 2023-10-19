@@ -6,10 +6,11 @@ interface EventCardProps {
   name: string;
   imageurl: string;
   eventId: string;
+  isFormEditing: boolean;
 }
 
 const EventCard = (props: EventCardProps) => {
-  const {name, imageurl, eventId} = props;
+  const {name, imageurl, eventId, isFormEditing} = props;
   const navigate = useNavigate();
 
   return (
@@ -30,10 +31,14 @@ const EventCard = (props: EventCardProps) => {
         <button
           onClick={() => navigate(`/ticketing/showings/${Number(eventId)}`)}
           className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl mb-2'
+          disabled={isFormEditing}
         >
           Go to Event Page
         </button>
-        <button className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl'>
+        <button
+          className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl'
+          disabled={isFormEditing}
+        >
           Remove Event
         </button>
       </article>

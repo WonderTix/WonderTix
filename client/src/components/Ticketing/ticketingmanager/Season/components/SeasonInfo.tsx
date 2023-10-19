@@ -11,9 +11,16 @@ import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
 
 const SeasonInfo = (props: SeasonProps) => {
-  const {seasonId, setSeasonId, setShowPopUp, setPopUpMessage, token} = props;
+  const {
+    seasonId,
+    isFormEditing,
+    setSeasonId,
+    setShowPopUp,
+    setPopUpMessage,
+    setIsFormEditing,
+    token,
+  } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
-  const [isFormEditing, setIsFormEditing] = useState<boolean>(!seasonId);
   const [imageCheckbox, setImageCheckbox] = useState(false);
   const [tempImageUrl, setTempImageUrl] = useState('');
 
@@ -77,7 +84,7 @@ const SeasonInfo = (props: SeasonProps) => {
       ...seasonValues,
       startdate: Number(startdate.replaceAll('-', '')),
       enddate: Number(enddate.replaceAll('-', '')),
-      imageurl: imageurl === '' && 'Default Season Image',
+      imageurl: imageurl === '' ? 'Default Season Image' : imageurl,
     };
 
     setIsFormEditing(false);
