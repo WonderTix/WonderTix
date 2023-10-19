@@ -49,6 +49,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
             key={event.id}
             name={event.title}
             imageurl={event.imageurl}
+            eventId={event.id}
           />
         );
       })}
