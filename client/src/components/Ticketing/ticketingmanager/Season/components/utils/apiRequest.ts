@@ -100,3 +100,29 @@ export const updateSeasonInfo = async (
     return null;
   }
 };
+
+export const getAllEvents = async (token: string) => {
+  try {
+    const getAllEventsRes = await fetch(
+      process.env.REACT_APP_API_1_URL + '/events',
+      {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!getAllEventsRes.ok) {
+      throw new Error('Failed to get all event information');
+    }
+
+    const eventsInfo = await getAllEventsRes.json();
+    return eventsInfo;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

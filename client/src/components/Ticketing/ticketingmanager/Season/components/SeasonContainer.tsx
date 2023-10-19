@@ -40,7 +40,7 @@ const SeasonContainer = () => {
             setShowPopUp={setShowPopUp}
             token={token}
           />
-          {/* <SeasonEvents />  Work in progress*/}
+          <SeasonEvents token={token} seasonId={seasonId} />
         </div>
       </div>
     );
