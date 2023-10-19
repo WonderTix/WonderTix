@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {getAllEvents} from './utils/apiRequest';
+import EventCard from './EventCard';
 
 interface SeasonEventsProp {
   token: string;
@@ -27,7 +28,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
 
   return (
     <div className='rounded-xl p-7 bg-white text-lg mt-5'>
-      <section className='flex flex-col items-center tab:flex-row tab: justify-between'>
+      <section className='flex flex-col items-center tab:flex-row tab: justify-between mb-6'>
         <h1 className='text-3xl'>Season Events </h1>
         <div>
           <label className='pr-2' htmlFor='eventSelect'>
@@ -42,6 +43,15 @@ const SeasonEvents = (props: SeasonEventsProp) => {
           </select>
         </div>
       </section>
+      {allEventInfo.map((event) => {
+        return (
+          <EventCard
+            key={event.id}
+            name={event.title}
+            imageurl={event.imageurl}
+          />
+        );
+      })}
     </div>
   );
 };
