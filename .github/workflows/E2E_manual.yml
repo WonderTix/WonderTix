@@ -1,6 +1,7 @@
 name: Run E2E tests manually
 on:
-    workflow_dispatch:
+  pull_request:
+    types: [opened, reopened, ready_for_review, edited, synchronize]
 
 jobs:
   test-client:
