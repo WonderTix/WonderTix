@@ -47,7 +47,6 @@ const SeasonContainer = () => {
             token={token}
             seasonId={seasonId}
             isFormEditing={isFormEditing}
-            setIsFormEditing={setIsFormEditing}
           />
         </div>
       </div>

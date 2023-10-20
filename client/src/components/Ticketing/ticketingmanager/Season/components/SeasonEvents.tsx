@@ -7,24 +7,27 @@ interface SeasonEventsProp {
   token: string;
   seasonId: number;
   isFormEditing: boolean;
-  setIsFormEditing: (value) => void;
 }
 
 const SeasonEvents = (props: SeasonEventsProp) => {
-  const {seasonId, token, isFormEditing, setIsFormEditing} = props;
+  const {seasonId, token, isFormEditing} = props;
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [allEventInfo, setAllEventInfo] = useState([]);
+  const [eventsNotInSeason, setEventsNotInSeason] = useState([]);
   const [eventToRemove, setEventToRemove] = useState<number>();
 
   const handleGetAllEvents = async () => {
     const allEvents = await getAllEvents(token);
     if (allEvents) {
       const {data} = allEvents;
-      const filteredEvents = data.filter(
+      const eventsInSeason = data.filter(
         (event) => event.seasonid === seasonId,
       );
-      console.log(filteredEvents);
-      setAllEventInfo(filteredEvents);
+      const eventsNotInSeason = data.filter(
+        (event) => event.seasonid !== seasonId,
+      );
+      setAllEventInfo(eventsInSeason);
+      setEventsNotInSeason(eventsNotInSeason);
     }
   };
 
@@ -90,9 +93,31 @@ const SeasonEvents = (props: SeasonEventsProp) => {
           />
         )}
       </div>
-      <section className='flex flex-col items-center tab:flex-row tab:justify-between mb-6'>
-        <h1 className='text-3xl'>Season Events </h1>
-        <div>
+      <section className='flex flex-col gap-4 items-center tab:flex-row tab:justify-between mb-6'>
+        <article className='flex gap-3'>
+          <h1 className='text-3xl'>Season Events </h1>
+          <button
+            className='flex gap-1 items-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white p-2 rounded-xl'
+            disabled={isFormEditing}
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 20 20'
+              strokeWidth='3'
+              stroke='currentColor'
+              className='w-5 h-5 mb-1'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M12 6v12m6-6H6'
+              />
+            </svg>
+            <p>Add event</p>
+          </button>
+        </article>
+        <article>
           <label className='pr-2' htmlFor='eventSelect'>
             Sort by:
           </label>
@@ -103,7 +128,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
           >
             <option value='eventName'>Event Name - Ascending</option>
           </select>
-        </div>
+        </article>
       </section>
       {allEventInfo.map((event) => {
         return (
