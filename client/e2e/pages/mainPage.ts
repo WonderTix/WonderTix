@@ -49,16 +49,25 @@ export class MainPage {
   }
 
   // Helper function - selects a random option in a dropdown box
-  // allInnerTexts returns a newline seperated string, so we split by newline into a string array
+  // allInnerTexts does not work on FireFox and WebKit
+  // The evaluate function sends a JS snippet to build a string that's roughly an equivalent
+  // There is a minor bug, but the error is discarded in the shift operation
   // Array must have length of at least two, or no selectable options exist
   // String shift removes the first item in the array
   // Select a random option from the array, set that option, and return the text
   private async selectRandomOption(optionBox: Locator) {
-    const allOptions = (await optionBox.allInnerTexts())[0].split('\n');
+    const allOptions = (await optionBox.evaluate((sel) => {
+      var list;
+      var i;
+      for (i=0; i< sel.options.length; i++) {
+        list = list + sel.options[i].text + "\n";
+      }
+      return list.slice(0, -1);
+    })).split('\n');
     expect(allOptions.length).toBeGreaterThanOrEqual(2);
     allOptions.shift();
     const randomOption = allOptions[Math.floor(Math.random() * (allOptions).length)];
-    await optionBox.selectOption({label: randomOption});
+    await optionBox.selectOption(randomOption);
     return randomOption;
   }
 
