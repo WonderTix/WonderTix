@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {getImageDefault} from '../../../../../utils/imageURLValidation';
 import {useNavigate} from 'react-router';
 
@@ -7,10 +7,12 @@ interface EventCardProps {
   imageurl: string;
   eventId: string;
   isFormEditing: boolean;
+  deleteConfirmationHandler: (value) => void;
 }
 
 const EventCard = (props: EventCardProps) => {
-  const {name, imageurl, eventId, isFormEditing} = props;
+  const {name, imageurl, eventId, isFormEditing, deleteConfirmationHandler} =
+    props;
   const navigate = useNavigate();
 
   return (
@@ -38,6 +40,7 @@ const EventCard = (props: EventCardProps) => {
         <button
           className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl'
           disabled={isFormEditing}
+          onClick={() => deleteConfirmationHandler(Number(eventId))}
         >
           Remove Event
         </button>

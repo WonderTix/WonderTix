@@ -8,6 +8,15 @@ export interface RequestBody {
   imageurl: string;
 }
 
+export interface EventRequestBody {
+  eventid: number;
+  seasonid: number;
+  eventname: string;
+  eventdescription: string;
+  active: boolean;
+  imageurl: string;
+}
+
 export const createNewSeason = async (reqBody: RequestBody, token: string) => {
   try {
     const createSeasonRes = await fetch(
@@ -121,6 +130,35 @@ export const getAllEvents = async (token: string) => {
 
     const eventsInfo = await getAllEventsRes.json();
     return eventsInfo;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const updateEventSeason = async (
+  reqBody: EventRequestBody,
+  token: string,
+) => {
+  try {
+    const updateEventSeasonRes = await fetch(
+      process.env.REACT_APP_API_1_URL + '/events',
+      {
+        credentials: 'include',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(reqBody),
+      },
+    );
+
+    if (!updateEventSeasonRes.ok) {
+      throw new Error('Failed to change event season information');
+    }
+
+    return true;
   } catch (error) {
     console.error(error);
     return null;
