@@ -23,6 +23,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       const filteredEvents = data.filter(
         (event) => event.seasonid === seasonId,
       );
+      console.log(filteredEvents);
       setAllEventInfo(filteredEvents);
     }
   };
@@ -32,11 +33,35 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       (event) => Number(event.id) !== eventIdToRemove,
     );
     let eventToUpdate = allEventInfo.find(
-      (event) => event.id === eventIdToRemove,
+      (event) => Number(event.id) === eventIdToRemove,
     );
-    eventToUpdate = {...eventToUpdate, seasonid: null};
+
+    const {
+      id: eventId,
+      description: eventDescription,
+      title: eventName,
+    } = eventToUpdate;
+    eventToUpdate = {
+      ...eventToUpdate,
+      eventid: eventId,
+      eventname: eventName,
+      eventdescription: eventDescription,
+      seasonid_fk: null,
+    };
+
+    // Temporary solution until Ben's changes
+    // Fetch all event API returns data with different names than what update event API expects as payload
+    delete eventToUpdate['id'];
+    delete eventToUpdate['seasonid'];
+    delete eventToUpdate['seasonticketeligible'];
+    delete eventToUpdate['numshows'];
+    delete eventToUpdate['description'];
+    delete eventToUpdate['title'];
+
     const updateEventCall = await updateEventSeason(eventToUpdate, token);
-    setAllEventInfo(updatedEvents);
+    if (updateEventCall) {
+      setAllEventInfo(updatedEvents);
+    }
     setShowDeleteConfirm(false);
   };
 
