@@ -65,6 +65,7 @@ const SeasonInfo = (props: SeasonProps) => {
 
   const handleUpdateSeason = async (reqObject: RequestBody) => {
     const updateSeason = await updateSeasonInfo(reqObject, seasonId, token);
+    const {imageurl} = reqObject;
     if (updateSeason) {
       setPopUpMessage({
         title: 'Success',
@@ -72,7 +73,7 @@ const SeasonInfo = (props: SeasonProps) => {
         success: true,
       });
       setShowPopUp(true);
-      setTempImageUrl('');
+      setTempImageUrl(imageurl === 'Default Season Image' ? '' : imageurl);
     }
   };
 
@@ -117,11 +118,11 @@ const SeasonInfo = (props: SeasonProps) => {
       <section className='flex flex-col text-center tab:flex-row tab:text-start tab:justify-between'>
         <h1 className='text-4xl mb-3 font-semibold'>Edit Season</h1>
         <article>
-          <button className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'>
+          <button className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'>
             Save
           </button>
           <button
-            className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl ml-3'
+            className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl ml-3'
             onClick={handleCancelButton}
           >
             Cancel
