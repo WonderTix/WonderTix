@@ -26,8 +26,8 @@ const Eventshowings = (): ReactElement => {
     return dispatch(fetchTicketingData());
   };
 
-  useEffect(() => {
-    getData();
+  useEffect(()=>{
+    void getData();
   }, []);
 
   const [show, setShow] = useState(false);

@@ -165,7 +165,7 @@ const openApiSpec = swaggerJsdoc({
             eventticketid: {type: 'integer'},
             eventinstanceid_fk: {type: 'integer'},
             tickettypeid_fk: {type: 'integer'},
-            purchased: {type: 'integer'},
+            singleticket_fk: {type: 'integer'},
             redeemed: {type: 'integer'},
             redeemed_ts: {type: 'string'},
             donated: {type: 'boolean'},
@@ -177,6 +177,7 @@ const openApiSpec = swaggerJsdoc({
             orderid: {type: 'integer'},
             contactid_fk: {type: 'integer'},
             orderdate: {type: 'integer'},
+            checkout_sessions: {type: 'string'},
             ordertime: {type: 'string'},
             disocuntid_fk: {type: 'integer'},
             payment_intent: {type: 'string'},
@@ -233,7 +234,6 @@ const openApiSpec = swaggerJsdoc({
           type: 'object',
           properties: {
             singleticketid: {type: 'integer'},
-            eventticketid_fk: {type: 'integer'},
             orderitemid_fk: {type: 'integer'},
             ticketwasswapped: {type: 'boolean'},
           },
@@ -380,7 +380,7 @@ const openApiSpec = swaggerJsdoc({
           properties: {
             eventinstanceid_fk: {type: 'integer'},
             tickettypeid_fk: {type: 'integer'},
-            purchased: {type: 'integer'},
+            singleticket_fk: {type: 'integer'},
             redeemed: {type: 'integer'},
             redeemed_ts: {type: 'string'},
             donated: {type: 'boolean'},
@@ -396,6 +396,7 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
+            checkout_sessions: {type: 'string'},
           },
         },
         OrderItem: {
@@ -441,7 +442,6 @@ const openApiSpec = swaggerJsdoc({
         SingleTicket: {
           type: 'object',
           properties: {
-            eventticketid_fk: {type: 'integer'},
             orderitemid_fk: {type: 'integer'},
             ticketwasswapped: {type: 'boolean'},
           },
@@ -525,6 +525,8 @@ const createServer = async () => {
   const app = express();
 
   /* Middleware */
+  // webhook needs raw request body
+  app.use('/api/2/order/webhook', express.raw({type: 'application/json'}));
   app.use(express.json());
   app.use(express.urlencoded({extended: true}));
   app.use(morgan('dev'));
@@ -559,7 +561,7 @@ const createServer = async () => {
   app.use('/api/2/contact', contactController);
   app.use('/api/2/discount', discountController);
   app.use('/api/2/donation', donationController);
-  app.use('/api/2/event', eventController);
+  app.use('/api/2/events', eventController);
   app.use('/api/2/event-instance', eventInstanceController);
   app.use('/api/2/event-ticket', eventTicketController);
   app.use('/api/2/order', orderController);
