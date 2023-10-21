@@ -400,7 +400,7 @@ const TicketPicker = (props: TicketPickerProps) => {
               select date
             </option>
             {tickets.map((t) => (
-              <option key={t.eventid} value={t.date.toString()}>
+              <option key={t.event_instance_id} value={t.date.toString()}>
                 {format(new Date(t.date), 'eee, MMM dd yyyy')}
               </option>
             ))}
