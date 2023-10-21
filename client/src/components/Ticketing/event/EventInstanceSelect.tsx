@@ -39,7 +39,6 @@ const EventInstanceSelect = (props: EventInstanceSelectProps) => {
 
   return (
     <select
-      data-testid='select-time'
       defaultValue={0}
       onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
         handleClick(parseFloat(ev.target.value))

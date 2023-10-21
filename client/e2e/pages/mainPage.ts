@@ -24,11 +24,11 @@ export class MainPage {
 
     this.firstShowing = page.getByRole('button', {name: 'See Showings'}).first();
     this.headingEvent = page.getByRole('heading', {name: 'Events'});
-    this.selectDate = page.getByTestId('select-date');
-    this.selectTime = page.getByTestId('select-time');
-    this.selectTicketType = page.getByTestId('select-ticket-type');
-    this.selectQuantity = page.getByTestId('select-qty');
-    this.addConcessionsTicket = page.getByTestId('checkbox-concessions');
+    this.selectDate = page.locator('#date-select');
+    this.selectTime = page.locator('#time-select');
+    this.selectTicketType = page.locator('#ticket-type-select');
+    this.selectQuantity = page.locator('#qty-select');
+    this.addConcessionsTicket = page.locator('#add-concessions-ticket');
     this.getTickets = page.getByTestId('get-tickets');
     this.titleEvent = page.getByTestId('event-title');
     this.successHeader = page.getByRole('heading', {name: 'Success!'});

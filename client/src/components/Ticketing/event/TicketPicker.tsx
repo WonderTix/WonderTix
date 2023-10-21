@@ -386,7 +386,6 @@ const TicketPicker = (props: TicketPickerProps) => {
       <Collapse in={showCalendar}>
         <div className='text-white w-full px-20'>
           <select
-            data-testid='select-date'
             id='date-select'
             defaultValue=''
             className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
@@ -426,7 +425,6 @@ const TicketPicker = (props: TicketPickerProps) => {
           Ticket Type
         </label>
         <select
-          data-testid='select-ticket-type'
           id='ticket-type-select'
           value={selectedTicketType.name}
           defaultValue=''
@@ -469,7 +467,6 @@ const TicketPicker = (props: TicketPickerProps) => {
         </label>
         <select
           id='qty-select'
-          data-testid='select-qty'
           value={qty}
           defaultValue={0}
           disabled={selectedTicket === undefined || numAvail < 1}
@@ -491,7 +488,6 @@ const TicketPicker = (props: TicketPickerProps) => {
       <div className='flex gap-2 mt-3 mb-7'>
         <input
           id='add-concessions-ticket'
-          data-testid='checkbox-concessions'
           type='checkbox'
           disabled={!selectedTicket}
           checked={concessions}
