@@ -244,21 +244,30 @@ export class EventsPage {
     await this.eventContinue.click();
     
     await this.showingCard
-    .filter({ hasText: 'Date: Wed, Oct 11 2023Time: 12:10 AM'})
+    .filter({ hasText: 'Wed, Oct 11 2023'})
     .getByRole('button', { name: 'Edit' })
     .click();
-
-  
-    
     await this.page.getByRole('button', { name: 'Delete' }).click();
     await this.eventContinue.click();
-   
 
+    await this.showingCard
+    .filter({ hasText: 'Tue, Oct 17 2023'})
+    .getByRole('button', { name: 'Edit' })
+    .click();
+    await this.page.getByRole('button', { name: 'Delete' }).click();
+    await this.eventContinue.click();
+
+   
     //The last paragraph of the URL is the id of the event
     //await this.page.getByLabel('Delete event 52').click();
     await this.editEventInfor.click();
     await this.page.getByRole('button', { name: 'Delete' }).click();
     await this.eventContinue.click();
+    await this.eventContinue.click();
+
+    await this.leftBarEvent.click();
+
+
     await expect(this.page.getByRole('button', { name: 'Test_event Playbill Test_event Description An event for testing' }).first()).not.toBeVisible();
    
   }
