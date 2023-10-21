@@ -84,7 +84,6 @@ const ticketingInitState: ticketingState = {
 };
 
 const ROOT_INIT_STATE: RootState = {
-  // user: {username: 'user1', id: 1, is_superadmin: false},
   events: eventsInitState,
   snackbar: {message: '', shown: false},
   ticketing: ticketingInitState,
@@ -228,29 +227,29 @@ describe('ticketing slice', () => {
 
     // ticket 1 currently in cart
     it('editItemQty: can set qty = available', () => {
-      expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats})))
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket.availableseats})))
         .toEqual({...init, cart: [{...concessionsItem, qty: ticket.availableseats}]});
     });
 
     it('editItemQty: can\'t set qty > available', () => {
-      expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats + 1})))
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket.availableseats + 1})))
         .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
     });
 
     it('editItemQty: item exists in cart', () => {
-      const res = ticketReducer(init, editItemQty({id: 1, qty: 4}));
+      const res = ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: 4}));
       expect(res)
         .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
       init = res;
     });
 
     it('editItemQty: item not in cart', () => {
-      expect(ticketReducer(init, editItemQty({id: 2, qty: 4})))
+      expect(ticketReducer(init, editItemQty({id: 2, tickettypeId: 1, qty: 4})))
         .toEqual({...init});
     });
 
     it('editItemQty: can\'t set negative qty', () => {
-      expect(ticketReducer(init, editItemQty({id: 1, qty: -1})))
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: -1})))
         .toEqual({...init, cart: [{...concessionsItem, qty: 0}]});
     });
   });

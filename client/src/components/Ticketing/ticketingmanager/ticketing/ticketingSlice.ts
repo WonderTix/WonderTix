@@ -1,4 +1,9 @@
-import {createSlice, createAsyncThunk, PayloadAction, CaseReducer} from '@reduxjs/toolkit';
+import {
+  CaseReducer,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import {RootState} from '../../app/store';
 import format from 'date-fns/format';
 import {bound, titleCase} from '../../../../utils/arrays';
@@ -16,7 +21,7 @@ import {bound, titleCase} from '../../../../utils/arrays';
  * @param {number} price - listed in dollars, like 60
  * @param {boolean} payWhatCan
  * @param {number?} payWhatPrice
- * @param {number} typeID
+ * @param {number} typeID - the id of the tickettype
  */
 export interface CartItem {
     product_id: number, // references state.tickets.event_instance_id
@@ -61,7 +66,7 @@ export interface Ticket {
  * TicketType Info
  *
  * @module
- * @param {number} id
+ * @param {number} id - Ticket type ID
  * @param {string} name
  * @param {string} price
  * @param {string} concessions
@@ -138,12 +143,12 @@ export type DiscountItem = {code: string, amount: number, percent: number, minTi
  * @param {Array} discount - Discount has a code(string), amount(number), percent(number)
  */
 export interface ticketingState {
-    cart: CartItem[],
-    tickets: TicketsState,
-    tickettype: TicketType,
-    events: Event[],
-    status: LoadStatus,
-    discount: DiscountItem,
+  cart: CartItem[],
+  tickets: TicketsState,
+  tickettype: TicketType,
+  events: Event[],
+  status: LoadStatus,
+  discount: DiscountItem,
 }
 
 /**
@@ -260,13 +265,11 @@ export const createCartItem = (data: { ticket: Ticket, tickettype: TicketType, e
   if (ticket && tickettype && event && qty) {
     const partialCartItem = toPartialCartItem(tickettype, ticket);
 
-    const cartItem = [partialCartItem]
+    return [partialCartItem]
       .map(appendCartField('date', `- ${format(new Date(ticket.date), 'eee, MMM dd - h:mm a')}`))
       .map(appendCartField('name', `${titleCase(event.title)} Ticket${qty > 1 ? 's' : ''}`))
       .map(appendCartField('qty', qty))
       .map(appendCartField('product_img_url', event.imageurl))[0];
-
-    return cartItem;
   }
 };
 
@@ -277,25 +280,26 @@ type EventId = string
  * @param obj
  * @returns {boolean} checks if ticket object matches event_instance_id
  */
-const isTicket = (obj: any): obj is Ticket => Object.keys(obj).some((k) => k==='event_instance_id');
+const isTicket = (obj: any): obj is Ticket => Object.keys(obj).some((key) => key === 'event_instance_id');
 
 /**
  * @param obj
  * @returns {boolean} checks if cart object matches product_id
  */
-const isCartItem = (obj: any): obj is CartItem => Object.keys(obj).some((k) => k==='product_id');
+const isCartItem = (obj: any): obj is CartItem => Object.keys(obj).some((key) => key === 'product_id');
 
 /**
  * byId does checks by ID
  *
  * @param id
+ * @param tickettypeId
  */
-const byId = (id: number|EventId) => (obj: Ticket|Event|CartItem) =>
+const byId = (id: number|EventId, tickettypeId?: number) => (obj: Ticket|Event|CartItem) =>
   (isTicket(obj)) ?
-    obj.event_instance_id===id :
+    obj.event_instance_id === id :
     isCartItem(obj) ?
-      obj.product_id===id :
-      obj.id===id;
+      obj.product_id === id && obj.typeID === tickettypeId:
+      obj.id === id;
 
 /**
  * hasConcessions checks if CartItem includes Concessions
@@ -318,8 +322,13 @@ const applyConcession = (c_price: number, item: CartItem) => (hasConcessions(ite
     desc: `${item.desc} with concessions ticket`,
   };
 
-/**  ItemData array is id, qty, concessions(bool) */
-interface ItemData {id: number, qty: number, concessions?: number}
+/**
+ * @param id
+ * @param tickettypeId
+ * @param qty
+ * @param concessions
+ */
+interface ItemData {id: number, tickettypeId: number, qty: number, concessions?: number}
 
 /**
  * updateCartItem edits the cart items like qty, id, and concessions
@@ -327,11 +336,12 @@ interface ItemData {id: number, qty: number, concessions?: number}
  * @param cart
  * @param root0
  * @param root0.id
+ * @param root0.tickettypeId
  * @param root0.qty
  * @param root0.concessions
  */
-const updateCartItem = (cart: CartItem[], {id, qty, concessions}: ItemData) =>
-  cart.map((item) => (item.product_id===id) ?
+const updateCartItem = (cart: CartItem[], {id, tickettypeId, qty, concessions}: ItemData) =>
+  cart.map((item) => (item.product_id === id && item.typeID === tickettypeId) ?
     (concessions) ?
       applyConcession(concessions, {...item, qty}) :
       {...item, qty} :
@@ -347,7 +357,6 @@ const payWhatFunc = (cart: CartItem, num: number, qty: number) => {
   cart.payWhatCan = true;
   cart.payWhatPrice = num * qty;
   cart.price = num;
-  console.log(cart.payWhatCan);
 };
 
 /**
@@ -363,15 +372,16 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
   if (!tickets.data.allIds.includes(id)) return state;
 
   const ticket = tickets.data.byId[id];
-  const inCart = state.cart.find(byId(id));
+  const cartItem = state.cart.find(byId(id, tickettype.id));
   const validRange = bound(0, ticket.availableseats);
 
-  if (inCart) {
+  if (cartItem) {
     return {
       ...state,
       cart: updateCartItem(state.cart, {
         id,
-        qty: validRange(qty+inCart.qty),
+        tickettypeId: tickettype.id,
+        qty: validRange(qty + cartItem.qty),
         concessions: concessions ? ticket.concession_price : undefined,
       }),
     };
@@ -401,14 +411,14 @@ const addTicketReducer: CaseReducer<ticketingState, PayloadAction<{ id: number, 
  * @param action
  */
 // Do not update state if 1) ticket doesn't exist, 2) try to set more than available
-const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, qty: number}>> = (state, action) => {
-  const {id, qty} = action.payload;
+const editQtyReducer: CaseReducer<ticketingState, PayloadAction<{id: number, tickettypeId: number, qty: number}>> = (state, action) => {
+  const {id, tickettypeId, qty} = action.payload;
   if (!state.tickets.data.allIds.includes(id)) return state;
   const avail = state.tickets.data.byId[id].availableseats;
   const validRange = bound(0, state.tickets.data.byId[id].availableseats);
 
   return (qty <= avail) ?
-    {...state, cart: updateCartItem(state.cart, {id, qty: validRange(qty)})} :
+    {...state, cart: updateCartItem(state.cart, {id, tickettypeId, qty: validRange(qty)})} :
     state;
 };
 
@@ -536,7 +546,7 @@ export const selectDiscount = (state: RootState): DiscountItem => state.ticketin
  */
 const filterTicketsReducer = (ticketsById: {[key: number]: Ticket}, eventid: EventId) =>
   (filtered: Ticket[], id: number) => {
-    return (ticketsById[id].eventid===eventid) ?
+    return (ticketsById[id].eventid === eventid) ?
       [...filtered, ticketsById[id]] :
       filtered;
   };

@@ -40,7 +40,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
 
   const handleDecrement = () => {
     if (item.qty > 1) {
-      dispatch(editItemQty({id: item.product_id, qty: item.qty - 1}));
+      dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty - 1}));
     } else {
       removeHandler(item.product_id);
     }
@@ -48,7 +48,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
 
   const handleIncrement = () => {
     if (numAvailable && item.qty < numAvailable) {
-      dispatch(editItemQty({id: item.product_id, qty: item.qty + 1}));
+      dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty + 1}));
     }
   };
 
