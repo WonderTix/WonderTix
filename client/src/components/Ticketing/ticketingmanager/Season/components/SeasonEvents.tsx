@@ -40,7 +40,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
     );
     const eventToUpdateCopy = {...eventToUpdate};
 
-    // Temporary solution until Events API updates (Line 46 - 65)
+    // Temporary solution until Events API is updated (Line 43 - 62)
     // Fetch all event API returns data with different property names than what update event API requires as payload
     const {
       id: eventId,
@@ -91,7 +91,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       return Number(event.id) !== eventIdToAdd;
     });
 
-    // Temporary solution until Events API update (Line 89 - 108)
+    // Temporary solution until Events API is updated (Line 94 - 113)
     // Fetch all event API returns data with different property names than what update event API requires as payload
     const {
       id: eventId,
@@ -113,9 +113,26 @@ const SeasonEvents = (props: SeasonEventsProp) => {
     delete eventToAdd['title'];
 
     const updateEventCall = await updateEventSeason(eventToAdd, token);
+    setShowPopUp(true);
     if (updateEventCall) {
       setAllEventInfo([...allEventInfo, eventToAddCopy]);
       setEventsNotInSeason(updatedEventsNotInSeason);
+      setPopUpMessage({
+        title: 'Success',
+        message: 'The event has been added to the season!',
+        success: true,
+        handleClose: () => setShowPopUp(false),
+        handleProceed: () => setShowPopUp(false),
+      });
+    } else {
+      setPopUpMessage({
+        title: 'Error',
+        message:
+          'There was a error adding the event to the season. Pleas try again.',
+        success: false,
+        handleClose: () => setShowPopUp(false),
+        handleProceed: () => setShowPopUp(false),
+      });
     }
   };
 
