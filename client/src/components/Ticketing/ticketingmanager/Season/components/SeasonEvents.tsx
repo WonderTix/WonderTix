@@ -143,7 +143,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
   return (
     <div className='rounded-xl p-7 bg-white text-lg mt-5'>
       <section className='flex flex-col gap-4 items-center tab:flex-row tab:justify-between mb-6'>
-        <article className='flex gap-3'>
+        <article className='flex flex-wrap gap-2'>
           <h1 className='text-3xl'>Season Events </h1>
           <button
             className='flex gap-1 items-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white p-2 rounded-xl'

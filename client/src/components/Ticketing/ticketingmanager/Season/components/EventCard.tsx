@@ -46,7 +46,7 @@ const EventCard = (props: EventCardProps) => {
             onClick={() => {
               addEventToSeason(Number(eventId));
             }}
-            className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-3 px-5 rounded-xl'
+            className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-3 px-5 rounded-xl mt-2 tab:m-0'
           >
             Add to Season
           </button>
