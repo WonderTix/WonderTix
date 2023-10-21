@@ -269,18 +269,18 @@ export const toPartialCartItem = <T extends TicketType>(
   type: T,
   tickets: Ticket,
 ) => ({
-  product_id: tickets.event_instance_id,
-  price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
-  desc: `${type.name} - ${format(
-    new Date(tickets.date),
-    'eee, MMM dd - h:mm a',
-  )}`,
-  typeID: type.id,
-});
+    product_id: tickets.event_instance_id,
+    price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
+    desc: `${type.name} - ${format(
+      new Date(tickets.date),
+      'eee, MMM dd - h:mm a',
+    )}`,
+    typeID: type.id,
+  });
 
 const appendCartField =
   <T extends CartItem>(key: keyof T, val: T[typeof key]) =>
-  (obj: any) => ({...obj, [key]: val});
+    (obj: any) => ({...obj, [key]: val});
 /**
  * Uses appendCartField to append to the cartfield
  *
@@ -345,12 +345,12 @@ const isCartItem = (obj: any): obj is CartItem =>
  */
 const byId =
   (id: number | EventId, tickettypeId?: number) =>
-  (obj: Ticket | Event | CartItem) =>
-    isTicket(obj)
-      ? obj.event_instance_id === id
-      : isCartItem(obj)
-      ? obj.product_id === id && obj.typeID === tickettypeId
-      : obj.id === id;
+    (obj: Ticket | Event | CartItem) =>
+      isTicket(obj)
+        ? obj.event_instance_id === id
+        : isCartItem(obj)
+          ? obj.product_id === id && obj.typeID === tickettypeId
+          : obj.id === id;
 
 /**
  * hasConcessions checks if CartItem includes Concessions
@@ -366,14 +366,12 @@ const hasConcessions = (item: CartItem) => item.name.includes('Concessions');
  * @param item
  */
 const applyConcession = (c_price: number, item: CartItem) =>
-  hasConcessions(item)
-    ? item
-    : {
-        ...item,
-        name: item.name + ' + Concessions',
-        price: c_price + item.price,
-        desc: `${item.desc} with concessions ticket`,
-      };
+  hasConcessions(item) ? item : {
+    ...item,
+    name: item.name + ' + Concessions',
+    price: c_price + item.price,
+    desc: `${item.desc} with concessions ticket`,
+  };
 
 /**
  * @param id
@@ -466,17 +464,14 @@ const addTicketReducer: CaseReducer<
       payWhatFunc(newCartItem, payWhatPrice, qty);
     }
 
-    return newCartItem
-      ? {
-          ...state,
-          cart: concessions
-            ? [
-                ...state.cart,
-                applyConcession(ticket.concession_price, newCartItem),
-              ]
-            : [...state.cart, newCartItem],
-        }
-      : state;
+    return newCartItem ? {
+      ...state,
+      cart: concessions
+        ? [
+          ...state.cart,
+          applyConcession(ticket.concession_price, newCartItem),
+        ] : [...state.cart, newCartItem],
+    } : state;
   }
 };
 
@@ -496,16 +491,14 @@ const editQtyReducer: CaseReducer<
   const avail = state.tickets.data.byId[id].availableseats;
   const validRange = bound(0, state.tickets.data.byId[id].availableseats);
 
-  return qty <= avail
-    ? {
-        ...state,
-        cart: updateCartItem(state.cart, {
-          id,
-          tickettypeId,
-          qty: validRange(qty),
-        }),
-      }
-    : state;
+  return qty <= avail ? {
+    ...state,
+    cart: updateCartItem(state.cart, {
+      id,
+      tickettypeId,
+      qty: validRange(qty),
+    }),
+  } : state;
 };
 
 /**
@@ -639,11 +632,11 @@ export const selectDiscount = (state: RootState): DiscountItem =>
  */
 const filterTicketsReducer =
   (ticketsById: {[key: number]: Ticket}, eventid: EventId) =>
-  (filtered: Ticket[], id: number) => {
-    return ticketsById[id].eventid === eventid
-      ? [...filtered, ticketsById[id]]
-      : filtered;
-  };
+    (filtered: Ticket[], id: number) => {
+      return ticketsById[id].eventid === eventid
+        ? [...filtered, ticketsById[id]]
+        : filtered;
+    };
 
 /**
  * Interface for EventPageData
