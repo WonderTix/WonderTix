@@ -68,7 +68,7 @@ export const EventGeneralContainer = () => {
 
   const onDelete = createDeleteFunction(
     'DELETE',
-    `${process.env.REACT_APP_API_2_URL}/event/${eventID}`,
+    `${process.env.REACT_APP_API_2_URL}/events/${eventID}`,
     token,
     onDeleteSuccess,
     onDeleteError,

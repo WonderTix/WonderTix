@@ -1,7 +1,7 @@
-import {PrismaClient} from '@prisma/client';
+import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 export const ticketingWebhook = async (
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
     eventType: string,
     paymentIntent: string,
     sessionID: string,
@@ -31,7 +31,7 @@ export const ticketingWebhook = async (
   }
 };
 export const orderFulfillment = async (
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
     orderItems: any[],
     contactid: number,
     ordertotal: number,
@@ -56,7 +56,7 @@ export const orderFulfillment = async (
   ]);
   return result[0].orderid;
 };
-export const orderCancel = async (prisma: PrismaClient, orderID: number) => {
+export const orderCancel = async (prisma: ExtendedPrismaClient, orderID: number) => {
   const queriesToBatch: any[] = [];
   await prisma.orders.delete({
     where: {

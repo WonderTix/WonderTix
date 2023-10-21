@@ -114,6 +114,7 @@ model eventinstances {
   purchaseuri        String?              @db.VarChar(255)
   ispreview          Boolean?             @default(false)
   defaulttickettype  Int?
+  deletedat          DateTime?
   tickettype         tickettype?          @relation(fields: [defaulttickettype], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
   date               date                 @relation(fields: [eventdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   events             events               @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction, map: "eventinstances_eventid_fkey")
@@ -131,8 +132,9 @@ model events {
   active               Boolean?
   seasonticketeligible Boolean?
   imageurl             String?          @db.VarChar(255)
+  deletedat            DateTime?
   eventinstances       eventinstances[]
-  seasons              seasons?          @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
+  seasons              seasons?         @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
   seasontickets        seasontickets[]
 }
 
