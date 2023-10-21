@@ -7,14 +7,14 @@ interface SeasonEventsProp {
   token: string;
   seasonId: number;
   isFormEditing: boolean;
+  setShowPopUp: (value) => void;
+  setPopUpMessage: (value) => void;
 }
 
 const SeasonEvents = (props: SeasonEventsProp) => {
-  const {seasonId, token, isFormEditing} = props;
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  const {seasonId, token, isFormEditing, setShowPopUp, setPopUpMessage} = props;
   const [allEventInfo, setAllEventInfo] = useState<any>([]);
   const [eventsNotInSeason, setEventsNotInSeason] = useState<any>([]);
-  const [eventToRemove, setEventToRemove] = useState<number>();
   const [isAddEventActive, setIsAddEventActive] = useState<boolean>(false);
 
   const handleGetAllEvents = async () => {
@@ -66,12 +66,20 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       setAllEventInfo(updatedEvents);
       setEventsNotInSeason([...eventsNotInSeason, eventToUpdateCopy]);
     }
-    setShowDeleteConfirm(false);
   };
 
-  const deleteConfirmationHandler = (eventId: number) => {
-    setShowDeleteConfirm(true);
-    setEventToRemove(eventId);
+  const deleteEventConfirmationHandler = (eventId: number) => {
+    setShowPopUp(true);
+    setPopUpMessage({
+      title: 'Remove event',
+      message: 'Are you sure you want to remove this event?',
+      success: false,
+      handleClose: () => setShowPopUp(false),
+      handleProceed: () => {
+        handleRemoveEvent(eventId);
+        setShowPopUp(false);
+      },
+    });
   };
 
   const handleAddEventToSeason = async (eventIdToAdd: number) => {
@@ -117,20 +125,6 @@ const SeasonEvents = (props: SeasonEventsProp) => {
 
   return (
     <div className='rounded-xl p-7 bg-white text-lg mt-5'>
-      <div className='absolute top-0 left-0'>
-        {showDeleteConfirm && (
-          <PopUp
-            title='Confirm deletion'
-            message={`Are you sure you want to remove this event?`}
-            handleClose={() => {
-              setShowDeleteConfirm(false);
-              setEventToRemove(null);
-            }}
-            handleProceed={() => handleRemoveEvent(eventToRemove)}
-            success={false}
-          />
-        )}
-      </div>
       <section className='flex flex-col gap-4 items-center tab:flex-row tab:justify-between mb-6'>
         <article className='flex gap-3'>
           <h1 className='text-3xl'>Season Events </h1>
@@ -207,7 +201,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
             eventId={event.id}
             isFormEditing={isFormEditing}
             isAddEventActive={isAddEventActive}
-            deleteConfirmationHandler={deleteConfirmationHandler}
+            deleteEventConfirmationHandler={deleteEventConfirmationHandler}
           />
         );
       })}

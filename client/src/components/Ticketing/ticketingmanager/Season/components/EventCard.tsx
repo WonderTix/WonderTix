@@ -10,7 +10,7 @@ interface EventCardProps {
   isFormEditing?: boolean;
   isAddEventActive?: boolean;
   addEventToSeason?: (value) => void;
-  deleteConfirmationHandler?: (value) => void;
+  deleteEventConfirmationHandler?: (value) => void;
 }
 
 const EventCard = (props: EventCardProps) => {
@@ -22,7 +22,7 @@ const EventCard = (props: EventCardProps) => {
     addEventCard = false,
     isAddEventActive = false,
     addEventToSeason,
-    deleteConfirmationHandler,
+    deleteEventConfirmationHandler,
   } = props;
   const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ const EventCard = (props: EventCardProps) => {
           <button
             className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl'
             disabled={isFormEditing || isAddEventActive}
-            onClick={() => deleteConfirmationHandler(Number(eventId))}
+            onClick={() => deleteEventConfirmationHandler(Number(eventId))}
           >
             Remove Event
           </button>

@@ -46,6 +46,8 @@ const SeasonContainer = () => {
           <SeasonEvents
             token={token}
             seasonId={seasonId}
+            setShowPopUp={setShowPopUp}
+            setPopUpMessage={setPopUpMessage}
             isFormEditing={isFormEditing}
           />
         </div>
