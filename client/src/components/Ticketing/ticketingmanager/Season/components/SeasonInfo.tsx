@@ -6,6 +6,7 @@ import {
   getSeasonInfo,
   updateSeasonInfo,
   RequestBody,
+  deleteSeasonInfo,
 } from './utils/apiRequest';
 import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
@@ -56,6 +57,8 @@ const SeasonInfo = (props: SeasonProps) => {
         title: 'Success',
         message: 'Season created successfully!',
         success: true,
+        handleClose: () => setShowPopUp(false),
+        handleProceed: () => setShowPopUp(false),
       });
       setShowPopUp(true);
       setSeasonId(createdSeasonId);
@@ -71,9 +74,18 @@ const SeasonInfo = (props: SeasonProps) => {
         title: 'Success',
         message: 'Season update successful!',
         success: true,
+        handleClose: () => setShowPopUp(false),
+        handleProceed: () => setShowPopUp(false),
       });
       setShowPopUp(true);
       setTempImageUrl(imageurl === 'Default Season Image' ? '' : imageurl);
+    }
+  };
+
+  const handleDeleteSeason = async (seasonId: number) => {
+    const deleteSeason = await deleteSeasonInfo(seasonId, token);
+    if (deleteSeason) {
+      navigate('/ticketing/seasons');
     }
   };
 
@@ -103,7 +115,8 @@ const SeasonInfo = (props: SeasonProps) => {
     }));
   };
 
-  const handleCancelButton = () => {
+  const handleCancelButton = (event) => {
+    event.preventDefault();
     if (seasonId === 0) {
       navigate('/ticketing/seasons/');
     } else {
@@ -111,6 +124,19 @@ const SeasonInfo = (props: SeasonProps) => {
       setSeasonValues({...seasonValues, imageurl: tempImageUrl});
       tempImageUrl !== '' ? setImageCheckbox(false) : setImageCheckbox(true);
     }
+  };
+
+  const deleteConfirmationHandler = (event) => {
+    event.preventDefault();
+    setPopUpMessage({
+      title: 'Delete Season',
+      message:
+        'Are you sure you want to delete this season? All events currently in the season will be unassigned.',
+      success: false,
+      handleClose: () => setShowPopUp(false),
+      handleProceed: () => handleDeleteSeason(seasonId),
+    });
+    setShowPopUp(true);
   };
 
   return seasonId === 0 || isFormEditing ? (
@@ -122,7 +148,13 @@ const SeasonInfo = (props: SeasonProps) => {
             Save
           </button>
           <button
-            className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl ml-3'
+            className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold py-2 px-7 ml-2 rounded-xl'
+            onClick={deleteConfirmationHandler}
+          >
+            Delete
+          </button>
+          <button
+            className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 ml-2 rounded-xl'
             onClick={handleCancelButton}
           >
             Cancel

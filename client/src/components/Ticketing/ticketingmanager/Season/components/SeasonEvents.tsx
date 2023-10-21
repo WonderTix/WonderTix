@@ -176,7 +176,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
             onClick={() => setIsAddEventActive(false)}
             className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-5 rounded-xl ml-3 mb-3'
           >
-            Cancel
+            Close
           </button>
           {eventsNotInSeason.length !== 0 ? (
             eventsNotInSeason.map((event) => {

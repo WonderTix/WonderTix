@@ -110,6 +110,31 @@ export const updateSeasonInfo = async (
   }
 };
 
+export const deleteSeasonInfo = async (seasonId: number, token: string) => {
+  try {
+    const deleteSeasonRes = await fetch(
+      process.env.REACT_APP_API_2_URL + `/season/${seasonId}`,
+      {
+        credentials: 'include',
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!deleteSeasonRes.ok) {
+      throw new Error('Failed to delete season informaiton');
+    }
+
+    return true;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 export const getAllEvents = async (token: string) => {
   try {
     const getAllEventsRes = await fetch(

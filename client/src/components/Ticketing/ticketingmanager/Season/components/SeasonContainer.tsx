@@ -11,6 +11,8 @@ const defaultPopUpValues = {
   title: '',
   message: '',
   success: false,
+  handleClose: () => undefined,
+  handleProcess: () => undefined,
 };
 
 const SeasonContainer = () => {
@@ -18,7 +20,11 @@ const SeasonContainer = () => {
   const [seasonId, setSeasonId] = useState(Number(providedSeasonId.seasonid));
   const [isFormEditing, setIsFormEditing] = useState<boolean>(!seasonId);
   const [showPopUp, setShowPopUp] = useState<boolean>(false);
-  const [popUpMessage, setPopUpMessage] = useState(defaultPopUpValues);
+  const [popUpMessage, setPopUpMessage] = useState({
+    ...defaultPopUpValues,
+    handleClose: () => setShowPopUp(false),
+    handleProceed: () => setShowPopUp(false),
+  });
   const {token} = useFetchToken();
 
   if (token === '' || seasonId === undefined) {
@@ -26,13 +32,7 @@ const SeasonContainer = () => {
   } else {
     return (
       <div className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
-        {showPopUp && (
-          <PopUp
-            {...popUpMessage}
-            handleClose={() => setShowPopUp(false)}
-            handleProceed={() => setShowPopUp(false)}
-          />
-        )}
+        {showPopUp && <PopUp {...popUpMessage} />}
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
           <SeasonInfo
             seasonId={seasonId}
