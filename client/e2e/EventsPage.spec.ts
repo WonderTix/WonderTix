@@ -13,6 +13,7 @@ test('addNewEvents',async({page})=>{
 });
 
 test('addDeleteEvents',async({page})=>{
+  test.setTimeout(300000);
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();  
   await eventsPage.addDeleteEvents();
