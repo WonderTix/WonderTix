@@ -7,21 +7,135 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Account information pulled from PPH
+model accounts {
+  id                                    Int         @id @default(autoincrement())
+  isdeleted                             Int                            @default(0)
+  name                                  String?     @db.VarChar(255)
+  type                                  patronType
+  shippingstreet                        String?     @db.VarChar(255)
+  shippingcity                          String?     @db.VarChar(255)
+  shippingstate                         String?     @db.VarChar(255)
+  shippingpostalcode                    String?     @db.VarChar(255)
+  shippingcountry                       String?     @db.VarChar(255)
+  phone                                 String?     @db.VarChar(20)
+  fax                                   String?     @db.VarChar(20)
+  website                               String?     @db.VarChar(255)
+  createddate                           DateTime                      @default(now())
+  lastmodifieddate                      DateTime
+  lastmodifiedbyid                      String?     @db.VarChar(255)
+  lastactivitydate                      DateTime?
+  do_not_call                           Int                           @default(0)
+  do_not_mail                           Int                           @default(0)
+  donor_recognition                     String?     @db.VarChar(255)
+  donor_email                           String?     @db.VarChar(255)
+  formal_salutation                     String?     @db.VarChar(255)
+  hasoptedoutofemail                    Int                           @default(0)
+  informal_address_name                 String?     @db.VarChar(255)
+  informal_salutation                   String?     @db.VarChar(255)
+  attn                                  String?     @db.VarChar(255)
+  grant_size                            String?     @db.VarChar(255)
+  will_give_it                          String?     @db.VarChar(255)
+  first_donation_date                   DateTime?
+  last_donation_date                    DateTime?
+  lifetime_donation_history_amount      Decimal   @db.Decimal(10, 2)  @default(0.0)
+  lifetime_donation_number              Int                           @default(0)
+  this_year_donation_history_amount     Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_donated_this_fiscal_year       Decimal   @db.Decimal(10, 2)  @default(0.0)
+  last_donation_amount                  Decimal   @db.Decimal(10, 2)  @default(0.0)
+  lifetimesingleticketamount            Decimal   @db.Decimal(10, 2)  @default(0.0)
+  lifetimesubscriptionamount            Decimal   @db.Decimal(10, 2)  @default(0.0)
+  board_member                          Int                           @default(0)
+  show_sponsor                          Int                           @default(0)
+  seating_accomodation                  Int                           @default(0)
+  amount_donated_CY20                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_donated_CY18                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  sort_name                             String?   @db.VarChar(255)
+  amount_donated_last_fiscal_year       Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_donated_CY21                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_donated_CY19                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_donated_FY20                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_donated_FY19                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_donated_FY18                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  lifetime_donations_included_pledged   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  first_donation_date_incl_pledged      DateTime?
+  amount_donated_FY21                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  firstdonationamount                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  largestdonationdate                   DateTime?
+  amount_donated_FY22                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_Donated_FY23                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_Donated_FY24                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  notes                                 notes[]
+  contacts                              contacts[]
+}
+
 /// customer information
 model contacts {
-  contactid     Int         @id @default(autoincrement())
-  firstname     String?     @db.VarChar(255)
-  lastname      String?     @db.VarChar(255)
-  email         String?     @db.VarChar(100)
-  address       String?     @db.VarChar(255)
-  phone         String?     @db.VarChar(15)
-  donorbadge    Boolean?    @default(false)
-  seatingaccom  String?     @db.VarChar(255)
-  vip           Boolean?    @default(false)
-  volunteerlist Boolean?    @default(false)
-  newsletter    Boolean?    @default(false)
-  donations     donations[]
-  orders        orders[]
+  id                        Int         @id @default(autoincrement())
+  is_deleted                Int                                         @default(0)
+  account_id                Int         @relation(fields: [account_id], references: [id])
+  salutation                String?     @db.VarChar(255)
+  firstname                 String?     @db.VarChar(255)
+  lastname                  String?     @db.VarChar(255)
+  otherstreet               String?     @db.VarChar(255)
+  othercity                 String?     @db.VarChar(255)
+  otherstate                String?     @db.VarChar(255)
+  otherpostalcode           String?     @db.VarChar(255)
+  othercountry              String?     @db.VarChar(255)
+  mailingstreet             String?     @db.VarChar(255)
+  mailingcity               String?     @db.VarChar(255)
+  mailingstate              String?     @db.VarChar(255)
+  mailingpostalcode         String?     @db.VarChar(255)
+  mailingcountry            String?     @db.VarChar(255)
+  phone                     String?     @db.VarChar(255)
+  fax                       String?     @db.VarChar(255)
+  mobilephone               String?     @db.VarChar(255)
+  homephone                 String?     @db.VarChar(255)
+  otherphone                String?     @db.VarChar(255)
+  email                     String?     @db.VarChar(255)
+  title                     String?     @db.VarChar(255)
+  department                String?     @db.VarChar(255)
+  birthdate                 DateTime?
+  description               String?     @db.VarChar(255)
+  hasoptedoutofemail        Int                           @default(0)
+  hasoptedoutoffax          Int                           @default(0)
+  donnotcall                Int                           @default(0)
+  createddate               DateTime?                     @default(now())
+  createdbyid               String?    @db.VarChar(255)
+  lastmodifieddate          DateTime?
+  lastmodifiedbyid          String?    @db.VarChar(255)
+  systemmodstamp            DateTime?
+  lastactivitydate          DateTime?
+  emailbouncereason         String?    @db.VarChar(255)
+  emailbouncedate           DateTime?
+  pronouns                  String?    @db.VarChar(255)
+  genderidentity            String?    @db.VarChar(255) 
+  donate_date_entered       DateTime?
+  deceased                  Int                           @default(0)
+  do_not_mail               Int                           @default(0)
+  donor_recognition         String?    @db.VarChar(255)
+  formalsalutation          String?    @db.VarChar(255)
+  informal_address_name     String?    @db.VarChar(255)
+  informal_salutation       String?    @db.VarChar(255)
+  volunteer_interests       String?    @db.VarChar(255)
+  other_email               String?    @db.VarChar(255)
+  company                   String?    @db.VarChar(255)
+  middlename                String?    @db.VarChar(255)
+  suffix                    String?    @db.VarChar(255)
+  contactorigin             String?    @db.VarChar(255)
+  emailstatus               emailStatus
+  current_season_subscriber Decimal?   @db.Decimal(10, 2)  @default(0.0) 
+  email_lists               String?    @db.VarChar(255)
+  board_member              Decimal?   @db.Decimal(10, 2)  @default(0.0)
+  seating_accomodation      Decimal?   @db.Decimal(10, 2)  @default(0.0)
+  reserved_seating          Decimal?   @db.Decimal(10, 2)  @default(0.0)
+  attending_next_dinner     Decimal?   @db.Decimal(10, 2)  @default(0.0)
+  chocolate_and_card        Decimal?   @db.Decimal(10, 2)  @default(0.0)
+  legacy_membership_circle  Decimal?   @db.Decimal(10, 2)  @default(0.0) 
+  email_list_notes          String?    @db.VarChar(255)
+  account                   accounts   @relation(fields: [account_id], references: [id])
+  donations                 donations[]
+  orders                    orders[]
 }
 
 /// date is used to store information about specific dates to simplify queries
@@ -152,6 +266,20 @@ model eventtickets {
   singleticket       singletickets?  @relation(fields: [singleticket_fk], references: [singleticketid], onDelete: SetNull, onUpdate: NoAction)
   seasontickets      seasontickets[]
 }
+
+// Note table taken from PPH:
+model notes {
+  id                Int       @id @default(autoincrement())
+  isdeleted         Int       @default(0)
+  contactid         Int?
+  accountid         Int       @relation(fields: [accountid], references: [id])
+  title             String    @db.VarChar(255)
+  body              String    @db.VarChar(255)
+  createddate       DateTime  @default(now())
+  lastmodifieddate  DateTime
+  account           accounts  @relation(fields: [accountid], references: [id])
+}
+
 
 /// a line item in a customers order
 /// the price is the price of the item at the time of purchase before any discounts are applied
@@ -341,4 +469,73 @@ model Error {
   message   String
   stack     String
   createdAt Int
+}
+
+enum patronType {
+  Business
+  Corporate Foundation
+  Corporation
+  Federal Agency
+  Foundation
+  Household
+  Individual
+  Local Agency
+  Nonprofit: Arts
+  Nonprofit: Community Development
+  Nonprofit: Education
+  Nonprofit: Environment
+  Nonprofit: Health Services
+  Nonprofit: Human Services
+  Nonprofit: Public Policy
+  Private Foundation
+  School
+  State Agency
+  Business
+  FederalAgency
+  Foundation
+  Household
+  Individual
+  LocalAgency
+  NonProfit
+  School
+  StateAgency
+  Corporation
+  Partnership
+  SoleProprietorship
+  Trust
+  Estate
+  ReligiousInstitution
+  University
+  Hospital
+  Library
+  TradeAssociation
+  InternationalOrganization
+  CommunityGroup
+  Club
+  Cooperative
+  GovernmentBody
+  ResearchInstitution
+  TradeUnion
+  ProfessionalAssociation
+  PoliticalParty
+  Charity
+  PublicInstitution
+  Military
+  NewsMedia
+  EntertainmentIndustry
+  StartUp
+  MultinationalCorporation
+  SmallMediumEnterprise
+  MicroEnterprise
+  ThinkTank
+  CulturalInstitution
+  SportsOrganization
+}
+
+
+enum emailStatus {
+  Opt-Out
+  Bounced
+  Collected
+  Confirmed Opt-In
 }
