@@ -27,8 +27,8 @@ const EventCard = (props: EventCardProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className='flex flex-col items-center bg-gray-200 rounded-xl border-8 border-solid border-zinc-300 mb-3 p-3 tab:flex-row tab:justify-between'>
-      <article className='flex flex-col items-center justify-center tab:flex-row'>
+    <div className='flex flex-col items-center bg-gray-200 rounded-xl border-8 border-solid border-zinc-300 mb-3 p-3 min-[768px]:flex-row min-[768px]:justify-between'>
+      <article className='flex flex-col gap-3 items-center justify-center min-[768px]:flex-row'>
         <div id='event-image-container' className='w-36'>
           <img
             className='h-auto'
@@ -38,7 +38,7 @@ const EventCard = (props: EventCardProps) => {
             alt={`Cover photo for ${name} event`}
           />
         </div>
-        <h3 className='text-3xl font-bold tab:ml-5'>{name}</h3>
+        <h3 className='text-3xl font-bold'>{name}</h3>
       </article>
       {addEventCard ? (
         <article>
@@ -52,7 +52,7 @@ const EventCard = (props: EventCardProps) => {
           </button>
         </article>
       ) : (
-        <article className='flex flex-col my-2'>
+        <article className='flex flex-col w-48 my-2'>
           <button
             onClick={() => navigate(`/ticketing/showings/${Number(eventId)}`)}
             className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl mb-2'
