@@ -1,7 +1,8 @@
 name: E2E tests after merge to main deployment
 on:
-  pull_request:
-    types: [opened, reopened, ready_for_review, edited, synchronize]
+  push:
+    branches:
+      - main
 
 jobs:
   test-client:
