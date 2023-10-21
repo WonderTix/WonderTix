@@ -90,6 +90,32 @@ export interface Event {
     imageurl: string,
 }
 
+/**
+ * Discount code
+ *
+ * @module
+ * @param {number} discountid
+ * @param {string} code - the discount code itself
+ * @param {number} amount - A set number of dollars off
+ * @param {number} percent - A percentage to be taken off
+ * @param {number} startdate - yyyymmdd format
+ * @param {number} enddate - yyyymmdd format
+ * @param {number} min_tickets - The minimum number of tickets for this discount to apply
+ * @param {number} min_events - The minimum number of events for this discount to apply
+ * @param {number} usagelimit - The maximum number of times this discount can be used
+ */
+export interface Discount {
+  discountid: number,
+  code: string,
+  amount: number,
+  percent: number,
+  startdate: number,
+  enddate: number,
+  min_tickets: number,
+  min_events: number,
+  usagelimit: number,
+}
+
 type TicketsState = {data: {byId: {[key: string]: Ticket}, allIds: number[]}}
 
 /**
@@ -150,33 +176,6 @@ export const fetchTicketingData = createAsyncThunk(
     return {events, tickets: {data: {byId: tickets, allIds: ticketRes.data.allIds}}};
   },
 );
-
-
-/**
- * Discount code
- *
- * @module
- * @param {number} discountid
- * @param {string} code - the discount code itself
- * @param {number} amount - A set number of dollars off
- * @param {number} percent - A percentage to be taken off
- * @param {number} startdate - yyyymmdd format
- * @param {number} enddate - yyyymmdd format
- * @param {number} min_tickets - The minimum number of tickets for this discount to apply
- * @param {number} min_events - The minimum number of events for this discount to apply
- * @param {number} usagelimit - The maximum number of times this discount can be used
- */
-export interface Discount {
-  discountid: number,
-  code: string,
-  amount: number,
-  percent: number,
-  startdate: number,
-  enddate: number,
-  min_tickets: number,
-  min_events: number,
-  usagelimit: number,
-}
 
 /**
  * Fetches all the data, and gets all the api routes then prints to console
