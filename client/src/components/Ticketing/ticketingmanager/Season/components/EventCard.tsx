@@ -6,13 +6,22 @@ interface EventCardProps {
   name: string;
   imageurl: string;
   eventId: string;
-  isFormEditing: boolean;
-  deleteConfirmationHandler: (value) => void;
+  addEventCard?: boolean;
+  isFormEditing?: boolean;
+  addEventToSeason?: (value) => void;
+  deleteConfirmationHandler?: (value) => void;
 }
 
 const EventCard = (props: EventCardProps) => {
-  const {name, imageurl, eventId, isFormEditing, deleteConfirmationHandler} =
-    props;
+  const {
+    name,
+    imageurl,
+    eventId,
+    isFormEditing,
+    addEventCard = false,
+    addEventToSeason,
+    deleteConfirmationHandler,
+  } = props;
   const navigate = useNavigate();
 
   return (
@@ -29,22 +38,35 @@ const EventCard = (props: EventCardProps) => {
         </div>
         <h3 className='ml-5 text-3xl font-bold'>{name}</h3>
       </article>
-      <article className='flex flex-col my-2'>
-        <button
-          onClick={() => navigate(`/ticketing/showings/${Number(eventId)}`)}
-          className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl mb-2'
-          disabled={isFormEditing}
-        >
-          Go to Event Page
-        </button>
-        <button
-          className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl'
-          disabled={isFormEditing}
-          onClick={() => deleteConfirmationHandler(Number(eventId))}
-        >
-          Remove Event
-        </button>
-      </article>
+      {addEventCard ? (
+        <article>
+          <button
+            onClick={() => {
+              addEventToSeason(Number(eventId));
+            }}
+            className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white py-2 px-7 rounded-xl'
+          >
+            Add to Season
+          </button>
+        </article>
+      ) : (
+        <article className='flex flex-col my-2'>
+          <button
+            onClick={() => navigate(`/ticketing/showings/${Number(eventId)}`)}
+            className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl mb-2'
+            disabled={isFormEditing}
+          >
+            Go to Event Page
+          </button>
+          <button
+            className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl'
+            disabled={isFormEditing}
+            onClick={() => deleteConfirmationHandler(Number(eventId))}
+          >
+            Remove Event
+          </button>
+        </article>
+      )}
     </div>
   );
 };
