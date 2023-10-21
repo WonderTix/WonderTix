@@ -1,8 +1,8 @@
 import { type Locator, type Page ,expect} from '@playwright/test';
 /*
-Since many locators' names are created while a specific test is being written, some names are ill-considered, 
-of course we could optimize them later in the process to create as few locators as possible and to share 
-the same locator with multiple tests. 
+Since many locators' names are created while a specific test is being written, some names are ill-considered,
+of course we could optimize them later in the process to create as few locators as possible and to share
+the same locator with multiple tests.
 */
 
 export class EventsPage {
@@ -12,17 +12,16 @@ export class EventsPage {
   readonly eventDesBlank: Locator;
   readonly imageURL: Locator;
   readonly pageHeader: Locator;
-  
+
   readonly newEventSave: Locator;
-  readonly leftBarEvent: Locator; 
+  readonly leftBarEvent: Locator;
   readonly eventContinue: Locator;
   readonly eventClose: Locator;
   readonly eventOption1: Locator;
   readonly eventOption2: Locator;
- 
-  readonly angelsInAmerica: Locator;
+
   readonly editEventInfor: Locator;
-  
+
   readonly editEventName: Locator;
   readonly editEventDes: Locator;
   readonly editOption1: Locator;
@@ -41,17 +40,17 @@ export class EventsPage {
   readonly backToEvents: Locator;
   readonly concessionTicket: Locator;
   readonly editShowingButton: Locator;
-  
-  readonly firstEvent:Locator; 
+
+  readonly firstEvent:Locator;
   readonly secondEvent: Locator;
-  
+
   readonly emailButton: Locator;
   readonly manageTicketingButton: Locator;
   readonly homePageRightSlide: Locator;
   readonly editEventsInfor: Locator;
   readonly ticketQuantityOption: Locator;
   readonly showingCard: Locator;
-
+  readonly deleteButton: Locator;
   constructor(page: Page) {
     this.page = page;
 
@@ -60,7 +59,7 @@ export class EventsPage {
     this.homePageRightSlide=page.locator('button:nth-child(4)');
     this.firstEvent=page.getByRole('button', { name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
     this.secondEvent=page.getByRole('button', { name: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
-    
+
     this.pageHeader=page.getByRole('heading', { name: 'Select Event' });
     this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
     this.emailButton= page.getByText('test@wondertix.com');
@@ -71,16 +70,14 @@ export class EventsPage {
     this.eventDesBlank= page.getByLabel('Event Description:');
     this.imageURL=page.getByLabel('Image URL:');
     this.newEventSave=page.getByLabel('Save');
-    
+
     this.eventContinue=page.getByRole('button', { name: 'Continue' });
     this.eventClose=page.getByRole('button', { name: 'Close', exact: true });
-    
+
     this.eventOption1=page.getByLabel('Use Default Image');
     this.eventOption2=page.getByLabel('Active');
 
-    this.angelsInAmerica=page.getByRole('button', { name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
     this.editEventInfor=page.locator('div').filter({ hasText: /^Event InformationEdit$/ }).getByRole('button');
-    
     this.editEventsInfor=page.getByRole('button', { name: 'Edit' });
     this.editEventName=page.getByLabel('Event Name:');
     this.editEventDes=page.getByLabel('Event Description:');
@@ -101,6 +98,7 @@ export class EventsPage {
     this.editShowingButton=page.locator('div').filter({ hasText: /^Edit$/ }).getByRole('button');
     this.ticketQuantityOption=page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
+    this.deleteButton = page.getByRole('button', { name: 'Delete' });
   }
 
   async clickLeftBar()
@@ -114,7 +112,7 @@ export class EventsPage {
   */
   async editEvents()
   {
-    await this.angelsInAmerica.click();
+    await this.firstEvent.click();
     await this.editEventInfor.click();
     await this.editEventName.click();
     await this.editEventDes.click();
@@ -126,21 +124,21 @@ export class EventsPage {
     await this.editCancelShowing.click();
     await this.editShowingId.click();
     await this.cancelShwoingId.click();
-  } 
+  }
 
   /*
   This test is basically testing the functionality of creating a new event without add any showing.
   For now, if we create an event withou showing, it won't appear on the homepage nor on the events page.
   */
-  async addnewevent()
+  async addnewevent(eventName:string, eventDescription:string,eventURL:string)
   {
      await this.addButton.click();
      await this.eventNameBlank.click();
-     await this.page.getByLabel('Event Name:').fill('S');
+     await this.page.getByLabel('Event Name:').fill(eventName);
      await this.eventDesBlank.click();
-     await this.page.getByLabel('Event Description:').fill('123');
+     await this.page.getByLabel('Event Description:').fill(eventDescription);
      await this.imageURL.click();
-     await this.page.getByLabel('Image URL:').fill('http://');
+     await this.page.getByLabel('Image URL:').fill(eventURL);
      await this.eventOption1.check();
      await this.eventOption1.uncheck();
      await this.eventOption2.check();
@@ -156,28 +154,28 @@ export class EventsPage {
   3. Go to the events page and click the newly created event.
   4. Delete its showing.
   5. Delete this event.
-  6. Make sure there's no such event anymore.  
-     Now the thing we could focus more on is that probably we wanna test canceling a specific 
+  6. Make sure there's no such event anymore.
+     Now the thing we could focus more on is that probably we wanna test canceling a specific
      showing of an event, we might need to pass in the showing's id. However, we'd better bring up a good way
-     to get that id. 
+     to get that id.
   */
-  async addDeleteEvents()
+  async addDeleteEvents(event1Name:string, event1Description:string, event1URL:string, event1Showing1Date:string, event1Showing1Time:string, event1Showing1Quantity:string, event1Showing2Date: string, event1Showing2Time: string, event1Showing2Quantity: string, event1FullName: string)
   {
     await this.addButton.click();
     await this.eventNameBlank.click();
-    await this.page.getByLabel('Event Name:').fill('Test_event');
+    await this.page.getByLabel('Event Name:').fill(event1Name);
     await this.eventDesBlank.click();
-    await this.page.getByLabel('Event Description:').fill('An event for testing');
+    await this.page.getByLabel('Event Description:').fill(event1Description);
     await this.imageURL.click();
-    await this.page.getByLabel('Image URL:').fill('https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg');
+    await this.page.getByLabel('Image URL:').fill(event1URL);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.editAddShowing.click();
-    await this.editEventDate.fill('2023-10-11');
+    await this.editEventDate.fill(event1Showing1Date);
     await this.editEventTime.click();
-    await this.editEventTime.fill('00:10');
+    await this.editEventTime.fill(event1Showing1Time);
     await this.editTicketQuatity.click();
-    await this.editTicketQuatity.fill('10');
+    await this.editTicketQuatity.fill(event1Showing1Quantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.homePage.click();
@@ -188,7 +186,7 @@ export class EventsPage {
     await this.homePageRightSlide.click();
     await this.seeEventShowings.click();
     await expect(this.page.getByRole('img', { name: 'Test_event Playbill' })).toBeVisible;
-     
+
     //We dont test buying ticket for this section.
     //await this.page.getByRole('combobox').first().selectOption('Wed Oct 11 2023 00:10:00 GMT-0700');
     //await this.page.getByRole('combobox').first().selectOption('452');
@@ -198,9 +196,8 @@ export class EventsPage {
     //await this.getTickets.click();
     //await this.takeMeThere.click();
     //await this.backToEvents.click();
-  
-   /* 
-    //Now we delete a showing --method0: only for currently there's only one showing    
+   /*
+    //Now we delete a showing --method0: only for currently there's only one showing
     //
     await this.emailButton.click();
     await this.manageTicketingButton.click();
@@ -228,84 +225,78 @@ export class EventsPage {
     await this.eventContinue.click();
     await expect(this.page.getByText('Date: Tue, Oct 17 2023Time: 10:20 AMTotal Tickets: 10Available Ti')).not.toBeVisible();
     */
-
-      
-    //Now we delete a showing --method2: search a specific showing then delete it  
+    //Now we delete a showing --method2: search a specific showing then delete it
     //
     await this.emailButton.click();
     await this.manageTicketingButton.click();
     await this.leftBarEvent.click();
-    await this.page.getByRole('button', { name: 'Test_event Playbill Test_event Description An event for testing' }).first().click();
+    await this.page.getByRole('button', { name: event1FullName }).first().click();
     await this.editAddShowing.click();
-    await this.editEventDate.fill('2023-10-17');
-    await this.editEventTime.fill('10:20');
-    await this.editTicketQuatity.fill('010');
+    await this.editEventDate.fill(event1Showing2Date);
+    await this.editEventTime.fill(event1Showing2Time);
+    await this.editTicketQuatity.fill(event1Showing2Quantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    
+
     await this.showingCard
     .filter({ hasText: 'Wed, Oct 11 2023'})
     .getByRole('button', { name: 'Edit' })
     .click();
-    await this.page.getByRole('button', { name: 'Delete' }).click();
+    await this.deleteButton.click();
     await this.eventContinue.click();
 
     await this.showingCard
     .filter({ hasText: 'Tue, Oct 17 2023'})
     .getByRole('button', { name: 'Edit' })
     .click();
-    await this.page.getByRole('button', { name: 'Delete' }).click();
+    await this.deleteButton.click();
     await this.eventContinue.click();
 
-   
+
     //The last paragraph of the URL is the id of the event
     //await this.page.getByLabel('Delete event 52').click();
     await this.editEventInfor.click();
-    await this.page.getByRole('button', { name: 'Delete' }).click();
+    await this.deleteButton.click();
     await this.eventContinue.click();
     await this.eventContinue.click();
-
     await this.leftBarEvent.click();
-
-
-    await expect(this.page.getByRole('button', { name: 'Test_event Playbill Test_event Description An event for testing' }).first()).not.toBeVisible();
-   
+    await expect(this.page.getByRole('button', { name: event1FullName }).first()).not.toBeVisible();
   }
 
 
 /*
 This test is for testing the functionality of editing an event, same for the showing
 */
-  async editEvents1()
+  async editEvents1(event2RevisedName: string, event2Name: string, event2RevisedDescription: string, event2Description: string, event2RevisedURL: string, event2URL: string)
   {
     await this.secondEvent.click();
     await this.editEventInfor.click();
     await this.editEventName.click();
-    await this.editEventName.fill('The Crucible1');
+    await this.editEventName.fill(event2RevisedName);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    await this.page.getByText('The Crucible1', { exact: true }).click();
+    await this.page.getByText(event2RevisedName, { exact: true }).click();
     await this.editEventInfor.click();
     await this.editEventName.click();
-    await this.editEventName.fill('The Crucible');
-    await this.eventDesBlank.fill('111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.');
+    await this.editEventName.fill(event2Name);
+    await this.eventDesBlank.fill(event2RevisedDescription);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    await this.page.getByText('111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempo').click();
+    await this.page.getByText(event2RevisedDescription).click();
     await this.editEventInfor.click();
     await this.eventDesBlank.click();
-    await this.eventDesBlank.fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.');
+    await this.eventDesBlank.fill(event2Description);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.editEventInfor.click();
     await this.imageURL.click();
-    await this.imageURL.fill('https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg');
+    await this.imageURL.fill(event2RevisedURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.page.getByRole('img', { name: 'Event Image Playbill' }).click();
     await this.editEventInfor.click();
     await this.imageURL.click();
-    await this.imageURL.fill('https://upload.wikimedia.org/wikipedia/en/7/75/Cruciblecover.jpg');
+    await this.imageURL.fill(event2URL);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.page.getByRole('img', { name: 'Event Image Playbill' }).click();
@@ -314,26 +305,25 @@ This test is for testing the functionality of editing an event, same for the sho
   /*
   This test is for checking the functionality of editing a showing
   */
-   async editShowing()
+   async editShowing(eventShowingDate: string, eventShowingQuantity: string, eventShowing1Date: string, eventShowing1Quantity:string, eventShowing1DateString:string)
    {
     await this.firstEvent.click();
     await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
     await this.page.getByText('372').click();
-    await this.editEventDate.fill('2021-09-16');
+    await this.editEventDate.fill(eventShowingDate);
     await this.ticketQuantityOption.click();
-    await this.ticketQuantityOption.fill('101');
+    await this.ticketQuantityOption.fill(eventShowingQuantity);
     await this.page.getByLabel('Save').click();
     await this.eventContinue.click();
 
     await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
-    await this.editEventDate.fill('2021-09-15');
+    await this.editEventDate.fill(eventShowing1Date);
     await this.ticketQuantityOption.click();
-    await this.ticketQuantityOption.fill('100');
+    await this.ticketQuantityOption.fill(eventShowing1Quantity);
     await this.page.getByLabel('Save').click();
     await this.eventContinue.click();
-    await this.page.getByText('Wed, Sep 15 2021').click();
+    await this.page.getByText(eventShowing1DateString).click();
     await this.page.locator('div:nth-child(4) > p:nth-child(2)').first().click();
-     
   }
 
 
