@@ -11,11 +11,11 @@ interface SeasonEventsProp {
 
 const SeasonEvents = (props: SeasonEventsProp) => {
   const {seasonId, token, isFormEditing} = props;
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [allEventInfo, setAllEventInfo] = useState([]);
-  const [eventsNotInSeason, setEventsNotInSeason] = useState([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  const [allEventInfo, setAllEventInfo] = useState<any>([]);
+  const [eventsNotInSeason, setEventsNotInSeason] = useState<any>([]);
   const [eventToRemove, setEventToRemove] = useState<number>();
-  const [isAddEventActive, setIsAddEventActive] = useState(false);
+  const [isAddEventActive, setIsAddEventActive] = useState<boolean>(false);
 
   const handleGetAllEvents = async () => {
     const allEvents = await getAllEvents(token);
@@ -24,9 +24,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       const eventsInSeason = data.filter(
         (event) => event.seasonid === seasonId,
       );
-      const eventsNotInSeason = data.filter(
-        (event) => event.seasonid !== seasonId,
-      );
+      const eventsNotInSeason = data.filter((event) => event.seasonid === null);
 
       setAllEventInfo(eventsInSeason);
       setEventsNotInSeason(eventsNotInSeason);
@@ -42,7 +40,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
     );
     const eventToUpdateCopy = {...eventToUpdate};
 
-    // Temporary solution until Ben's changes (Line 46 - 65)
+    // Temporary solution until Events API updates (Line 46 - 65)
     // Fetch all event API returns data with different property names than what update event API requires as payload
     const {
       id: eventId,
@@ -85,7 +83,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       return Number(event.id) !== eventIdToAdd;
     });
 
-    // Temporary solution until Ben's changes (Line 89 - 108)
+    // Temporary solution until Events API update (Line 89 - 108)
     // Fetch all event API returns data with different property names than what update event API requires as payload
     const {
       id: eventId,
@@ -111,7 +109,6 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       setAllEventInfo([...allEventInfo, eventToAddCopy]);
       setEventsNotInSeason(updatedEventsNotInSeason);
     }
-    setIsAddEventActive(false); // Change later
   };
 
   useEffect(() => {
@@ -174,18 +171,31 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       </section>
       {isAddEventActive && (
         <div className='h-96 overflow-scroll mb-3'>
-          {eventsNotInSeason.map((event) => {
-            return (
-              <EventCard
-                key={event.id}
-                eventId={event.id}
-                name={event.title}
-                imageurl={event.imageurl}
-                addEventCard={true}
-                addEventToSeason={handleAddEventToSeason}
-              />
-            );
-          })}
+          <h2 className='text-2xl mb-2 inline'>Unassigned Events</h2>
+          <button
+            onClick={() => setIsAddEventActive(false)}
+            className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-5 rounded-xl ml-3 mb-3'
+          >
+            Cancel
+          </button>
+          {eventsNotInSeason.length !== 0 ? (
+            eventsNotInSeason.map((event) => {
+              return (
+                <EventCard
+                  key={event.id}
+                  eventId={event.id}
+                  name={event.title}
+                  imageurl={event.imageurl}
+                  addEventCard={true}
+                  addEventToSeason={handleAddEventToSeason}
+                />
+              );
+            })
+          ) : (
+            <p className='text-xl italic'>
+              There are currently no events that are unassigned to a season
+            </p>
+          )}
         </div>
       )}
       {allEventInfo.map((event) => {
@@ -196,6 +206,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
             imageurl={event.imageurl}
             eventId={event.id}
             isFormEditing={isFormEditing}
+            isAddEventActive={isAddEventActive}
             deleteConfirmationHandler={deleteConfirmationHandler}
           />
         );

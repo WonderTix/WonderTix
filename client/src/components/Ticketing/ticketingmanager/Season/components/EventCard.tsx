@@ -8,6 +8,7 @@ interface EventCardProps {
   eventId: string;
   addEventCard?: boolean;
   isFormEditing?: boolean;
+  isAddEventActive?: boolean;
   addEventToSeason?: (value) => void;
   deleteConfirmationHandler?: (value) => void;
 }
@@ -19,6 +20,7 @@ const EventCard = (props: EventCardProps) => {
     eventId,
     isFormEditing,
     addEventCard = false,
+    isAddEventActive = false,
     addEventToSeason,
     deleteConfirmationHandler,
   } = props;
@@ -26,17 +28,17 @@ const EventCard = (props: EventCardProps) => {
 
   return (
     <div className='flex flex-col items-center bg-gray-200 rounded-xl border-8 border-solid border-zinc-300 mb-3 p-3 tab:flex-row tab:justify-between'>
-      <article className='flex flex-col items-center tab:flex-row'>
-        <div id='event-image-container' className='w-32'>
+      <article className='flex flex-col items-center justify-center tab:flex-row'>
+        <div id='event-image-container' className='w-36'>
           <img
-            className='h-auto w-full'
+            className='h-auto'
             src={
               imageurl === 'Default Event Image' ? getImageDefault() : imageurl
             }
             alt={`Cover photo for ${name} event`}
           />
         </div>
-        <h3 className='ml-5 text-3xl font-bold'>{name}</h3>
+        <h3 className='text-3xl font-bold tab:ml-5'>{name}</h3>
       </article>
       {addEventCard ? (
         <article>
@@ -44,7 +46,7 @@ const EventCard = (props: EventCardProps) => {
             onClick={() => {
               addEventToSeason(Number(eventId));
             }}
-            className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white py-2 px-7 rounded-xl'
+            className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-3 px-5 rounded-xl'
           >
             Add to Season
           </button>
@@ -54,13 +56,13 @@ const EventCard = (props: EventCardProps) => {
           <button
             onClick={() => navigate(`/ticketing/showings/${Number(eventId)}`)}
             className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl mb-2'
-            disabled={isFormEditing}
+            disabled={isFormEditing || isAddEventActive}
           >
             Go to Event Page
           </button>
           <button
             className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl'
-            disabled={isFormEditing}
+            disabled={isFormEditing || isAddEventActive}
             onClick={() => deleteConfirmationHandler(Number(eventId))}
           >
             Remove Event
