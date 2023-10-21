@@ -32,11 +32,36 @@ interface CartRowProps {
 const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
   const dispatch = useAppDispatch();
   const [cost, setCost] = useState(item.price * item.qty);
-  const numAvailable = useAppSelector((state) =>
-    selectNumAvailable(state, item.product_id),
-  );
+  const [numAvailable, setNumAvailable] = useState(Number);
+  const eventInstanceAvailableAmount = useAppSelector((state) =>
+    selectNumAvailable(state, item.product_id));
 
   useEffect(() => setCost(item.qty * item.price), [item.qty]);
+
+  useEffect(() => {
+    const fetchTicketRestrictionAmountAvailable = async () => {
+      try {
+        const resp = await fetch(
+          process.env.REACT_APP_API_1_URL +
+          `/tickets/restrictions/${item.product_id}`,
+        );
+        const data = await resp.json();
+        const matchingRow = data.data.find(
+          (row) => row.tickettypeid_fk === item.typeID,
+        );
+
+        if (matchingRow) {
+          const numAvail = matchingRow.ticketlimit - matchingRow.ticketssold;
+          setNumAvailable(Math.min(numAvail, eventInstanceAvailableAmount));
+        } else {
+          setNumAvailable(eventInstanceAvailableAmount);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    void fetchTicketRestrictionAmountAvailable();
+  }, [eventInstanceAvailableAmount]);
 
   const handleDecrement = () => {
     if (item.qty > 1) {

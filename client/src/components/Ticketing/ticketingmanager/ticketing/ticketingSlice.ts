@@ -193,7 +193,6 @@ export const fetchTicketingData = createAsyncThunk(
       }),
       {},
     );
-    console.log('Tickets', tickets);
     return {
       events,
       tickets: {data: {byId: tickets, allIds: ticketRes.data.allIds}},
@@ -437,6 +436,7 @@ const addTicketReducer: CaseReducer<
 > = (state, action) => {
   const {id, tickettype, qty, concessions, payWhatPrice} = action.payload;
   const tickets = state.tickets;
+  console.log('State: ', state);
 
   if (!tickets.data.allIds.includes(id)) return state;
 
