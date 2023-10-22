@@ -134,8 +134,6 @@ model contacts {
   legacy_membership_circle  Decimal?   @db.Decimal(10, 2)  @default(0.0) 
   email_list_notes          String?    @db.VarChar(255)
   account                   accounts   @relation(fields: [account_id], references: [id])
-  donations                 donations[]
-  orders                    orders[]
 }
 
 /// date is used to store information about specific dates to simplify queries
@@ -276,7 +274,7 @@ model notes {
   title             String    @db.VarChar(255)
   body              String    @db.VarChar(255)
   createddate       DateTime  @default(now())
-  lastmodifieddate  DateTime
+  lastmodifieddate  DateTimiiie?i
   account           accounts  @relation(fields: [accountid], references: [id])
 }
 
