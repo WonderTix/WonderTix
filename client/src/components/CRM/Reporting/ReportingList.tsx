@@ -56,7 +56,7 @@ const ReportingList = () => {
               }
               size='md'
               title='Donation Summary Report'
-              route='/donor/reports'
+              route='/admin/reporting/donation-summary'
               description='Report on all Donation transactions during a particular date range, and choose to group by Record Type, Fund, Donation Origin, or Campaign'
             />
             <ListLink
