@@ -1,13 +1,10 @@
 /**
- * Server
- * Responsable for routing correct server
+ * SERVER
+ * Responsible for routing correct server
  * execution on changes of url on front end
  *
- * @param app - instanciates express instnace
- * that is performs URI responce to client requests
- *
- *
- *
+ * @param app - instantiates express instance
+ * that performs URI response to client requests
  */
 
 import cors from 'cors';
@@ -64,7 +61,7 @@ const openApiSpec = swaggerJsdoc({
       url: process.env.ROOT_URL + '/api',
     }],
     info: {
-      title: 'Wondertix API',
+      title: 'WonderTix API',
       version: '1.0.0',
     },
     components: {
@@ -363,16 +360,16 @@ const openApiSpec = swaggerJsdoc({
         EventInstance: {
           type: 'object',
           properties: {
-            eventinstanceid: {type: 'integer'},
             eventid_fk: {type: 'integer'},
-            eventdate: {type: 'integer'},
+            eventdate: {type: 'string'},
             eventtime: {type: 'string'},
-            salesstatus: {type: 'string'},
+            salestatus: {type: 'boolean'},
             totalseats: {type: 'integer'},
             availableseats: {type: 'integer'},
-            purchaseurl: {type: 'string'},
+            purchaseuri: {type: 'string'},
             ispreview: {type: 'boolean'},
             defaulttickettype: {type: 'integer'},
+            instanceTicketTypes: {type: 'array'},
           },
         },
         EventTicket: {
