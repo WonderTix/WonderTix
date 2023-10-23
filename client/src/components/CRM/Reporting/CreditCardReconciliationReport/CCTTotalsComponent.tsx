@@ -4,9 +4,6 @@ import ReactDOM from 'react-dom';
 import {Box} from '@mui/system';
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
-// this should probably be a table and not a datagrid after all
-// specifically dense table
-// mui.com/material-ui/react-table/
 const CCTTotalsComponent = () => {
     const columns: GridColDef[] = [
         {field: 'title', headerName: '', flex: 1},
@@ -39,9 +36,10 @@ const CCTTotalsComponent = () => {
                 autoHeight={true}
                 pageSize={11}
                 sx={{
+                    'border': 'none',
                     '& .MuiDataGrid-cell': {
                         border: '0.5px solid black',
-                        fontSize: '12px',
+                        fontSize: '14px',
                     },
                 }}
             />

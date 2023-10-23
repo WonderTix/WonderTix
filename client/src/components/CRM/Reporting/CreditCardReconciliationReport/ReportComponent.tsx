@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import CCTTotalsComponent from './CCTTotalsComponent';
+import EventTotalsComponent from './EventTotalsComponent';
+import EventTotalsByCCComponent from './EventTotalsByCCComponent';
 
 import {Divider, Button} from '@mui/material';
 
@@ -47,12 +49,14 @@ const ReportComponent = () => {
             />
             <div className="px-4">
                 <h1 className="font-bold text-2xl">Event Totals</h1>
+                <EventTotalsComponent/>
             </div>
             <Divider
                 sx={{'backgroundColor': 'darkgrey'}}
             />
             <div className="px-4">
                 <h1 className="font-bold text-2xl"> Event Totals by Credit Card Type</h1>
+                <EventTotalsByCCComponent/>
             </div>
             <Divider
                 sx={{'backgroundColor': 'darkgrey'}}
