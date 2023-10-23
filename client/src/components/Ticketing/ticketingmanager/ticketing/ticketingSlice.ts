@@ -63,6 +63,24 @@ export interface Ticket {
 }
 
 /**
+ * Ticket Restriction Item
+ *
+ * @module
+ * @param {number} id
+ * @param {number} eventinstanceid
+ * @param {number} tickettypeid
+ * @param {number} ticketlimit
+ * @param {number?} ticketssold
+ */
+export interface TicketRestriction {
+  id: number;
+  eventinstanceid: number;
+  tickettypeid: number;
+  ticketlimit: number;
+  ticketssold?: number;
+}
+
+/**
  * TicketType Info
  *
  * @module
@@ -141,16 +159,18 @@ export type DiscountItem = {
  * Used to manage the ticketing states
  *
  * @module
- * @param {Array} cart - Array called CartItem
- * @param {Array} tickets - TicketsState has a key(string), byId(ticket), allIds is a number array
- * @param {Array} tickettype - TicketsState has a key(string), byId(ticket), allIds is a number array
- * @param {Array} events - Event Array
- * @param {Array} status - Array of different loading states
- * @param {Array} discount - Discount has a code(string), amount(number), percent(number)
+ * @param {Array} cart - CartItem array
+ * @param {TicketsState} tickets - TicketsState has a key(string), byId(ticket), allIds is a number array
+ * @param {Array} ticketrestrictions - TicketRestriction array
+ * @param {TicketType} tickettype - The ticket type
+ * @param {Array} events - Event array
+ * @param {LoadStatus} status - Array of different loading states
+ * @param {DiscountItem} discount - Discount has a code(string), amount(number), percent(number)
  */
 export interface ticketingState {
   cart: CartItem[];
   tickets: TicketsState;
+  ticketrestrictions: TicketRestriction[];
   tickettype: TicketType;
   events: Event[];
   status: LoadStatus;
@@ -197,6 +217,23 @@ export const fetchTicketingData = createAsyncThunk(
       events,
       tickets: {data: {byId: tickets, allIds: ticketRes.data.allIds}},
     };
+  },
+);
+
+/**
+ * Fetches all the ticket restrictions
+ *
+ * @module
+ * @returns {Array} ticket restrictions
+ */
+export const fetchTicketRestrictionData = createAsyncThunk(
+  'ticketing/fetchTicketRestriction',
+  async () => {
+    const restrictionData = await fetchData(
+      process.env.REACT_APP_API_1_URL + '/tickets/restrictions',
+    );
+    const ticketRestrictions: TicketRestriction[] = restrictionData.data;
+    return {ticketRestrictions};
   },
 );
 
@@ -337,19 +374,28 @@ const isCartItem = (obj: any): obj is CartItem =>
   Object.keys(obj).some((key) => key === 'product_id');
 
 /**
- * byId does checks by ID
+ * @param obj
+ * @returns {boolean} checks if ticket restriction object has ticketlimit key
+ */
+const isTicketRestriction = (obj: any): obj is TicketRestriction =>
+  Object.keys(obj).some((key) => key === 'ticketlimit');
+
+/**
+ * byId does checks by ID. If a cart item, checks both product_id and typeID
  *
  * @param id
  * @param tickettypeId
  */
 const byId =
   (id: number | EventId, tickettypeId?: number) =>
-    (obj: Ticket | Event | CartItem) =>
+    (obj: Ticket | Event | CartItem | TicketRestriction) =>
       isTicket(obj)
         ? obj.event_instance_id === id
         : isCartItem(obj)
           ? obj.product_id === id && obj.typeID === tickettypeId
-          : obj.id === id;
+          : isTicketRestriction(obj)
+            ? obj.eventinstanceid === id && obj.tickettypeid === tickettypeId
+            : obj.id === id;
 
 /**
  * hasConcessions checks if CartItem includes Concessions
@@ -436,13 +482,14 @@ const addTicketReducer: CaseReducer<
 > = (state, action) => {
   const {id, tickettype, qty, concessions, payWhatPrice} = action.payload;
   const tickets = state.tickets;
-  console.log('State: ', state);
 
   if (!tickets.data.allIds.includes(id)) return state;
 
   const ticket = tickets.data.byId[id];
   const cartItem = state.cart.find(byId(id, tickettype.id));
-  const validRange = bound(0, ticket.availableseats);
+  const ticketRestriction = state.ticketrestrictions.find(byId(id, tickettype.id));
+  const ticketRestrictionNumAvail = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
+  const validRange = bound(0, Math.min(ticket.availableseats, ticketRestrictionNumAvail));
 
   if (cartItem) {
     return {
@@ -488,10 +535,13 @@ const editQtyReducer: CaseReducer<
 > = (state, action) => {
   const {id, tickettypeId, qty} = action.payload;
   if (!state.tickets.data.allIds.includes(id)) return state;
-  const avail = state.tickets.data.byId[id].availableseats;
-  const validRange = bound(0, state.tickets.data.byId[id].availableseats);
 
-  return qty <= avail ? {
+  const avail = state.tickets.data.byId[id].availableseats;
+  const ticketRestriction = state.ticketrestrictions.find(byId(id, tickettypeId));
+  const ticketRestrictionNumAvail = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
+  const validRange = bound(0, Math.min(avail, ticketRestrictionNumAvail));
+
+  return qty <= avail && qty <= ticketRestrictionNumAvail ? {
     ...state,
     cart: updateCartItem(state.cart, {
       id,
@@ -507,6 +557,7 @@ const editQtyReducer: CaseReducer<
  * @module
  * @param {Array} cart - []
  * @param {Array} tickets - byId: {}, allIds: []
+ * @param {TicketRestriction} - []
  * @param {TicketType} tickettype - {0, '', '', ''}
  * @param {Array} events - []
  * @param {string} status - 'idle'
@@ -515,6 +566,7 @@ const editQtyReducer: CaseReducer<
 export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {data: {byId: {}, allIds: []}},
+  ticketrestrictions: [],
   tickettype: {id: 0, name: '', price: '', concessions: ''},
   events: [],
   status: 'idle',
@@ -567,12 +619,22 @@ const ticketingSlice = createSlice({
       })
       .addCase(fetchTicketingData.rejected, (state) => {
         state.status = 'failed';
+      })
+      .addCase(fetchTicketRestrictionData.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchTicketRestrictionData.fulfilled, (state, action) => {
+        state.status = 'success';
+        state.ticketrestrictions = action.payload.ticketRestrictions ? action.payload.ticketRestrictions : [];
+      })
+      .addCase(fetchTicketRestrictionData.rejected, (state) => {
+        state.status = 'failed';
       });
   },
 });
 
 /**
- * export selectCartSubtotal, selectCartIds, selectCartItem, selectCartTicketCount, selectNumInCart, selectCartContents - self explanatory
+ * export selectCartSubtotal, selectCartIds, selectCartItem, selectCartTicketCount, selectNumInCart, selectCartContents
  *
  * @param state
  */
@@ -590,13 +652,12 @@ export const selectCartTotal = (state: RootState): number =>
       state.ticketing.discount.amount,
     0,
   );
-export const selectCartIds = (state: RootState): number[] =>
-  state.ticketing.cart.map((i) => i.product_id);
 export const selectCartItem = (
   state: RootState,
-  id: number,
+  event_instance_id: number,
+  tickettypeId: number,
 ): CartItem | undefined =>
-  state.ticketing.cart.find((i) => i.product_id === id);
+  state.ticketing.cart.find((item) => item.product_id === event_instance_id && item.typeID === tickettypeId);
 export const selectCartTicketCount = (
   state: RootState,
 ): {[key: number]: number} =>

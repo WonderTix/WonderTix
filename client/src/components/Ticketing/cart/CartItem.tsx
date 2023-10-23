@@ -1,19 +1,9 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 import React, {useState, useEffect, ReactElement} from 'react';
 import {
   editItemQty,
-  selectNumAvailable,
   CartItem,
 } from '../ticketingmanager/ticketing/ticketingSlice';
-import {useAppSelector, useAppDispatch} from '../app/hooks';
+import {useAppDispatch} from '../app/hooks';
 import {toDollarAmount} from '../../../utils/arrays';
 import {getImageDefault} from '../../../utils/imageURLValidation';
 
@@ -25,43 +15,15 @@ interface CartRowProps {
 /**
  * Entire thing is meant to handle increments and decrements in prices and item qty
  *
- * @param {CartRowProps} item - cart item
- * @param removeHandler
+ * @param {CartItem} item
+ * @param {func} removeHandler
  * @returns {ReactElement}
  */
 const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
   const dispatch = useAppDispatch();
   const [cost, setCost] = useState(item.price * item.qty);
-  const [numAvailable, setNumAvailable] = useState(Number);
-  const eventInstanceAvailableAmount = useAppSelector((state) =>
-    selectNumAvailable(state, item.product_id));
 
   useEffect(() => setCost(item.qty * item.price), [item.qty]);
-
-  useEffect(() => {
-    const fetchTicketRestrictionAmountAvailable = async () => {
-      try {
-        const resp = await fetch(
-          process.env.REACT_APP_API_1_URL +
-          `/tickets/restrictions/${item.product_id}`,
-        );
-        const data = await resp.json();
-        const matchingRow = data.data.find(
-          (row) => row.tickettypeid_fk === item.typeID,
-        );
-
-        if (matchingRow) {
-          const numAvail = matchingRow.ticketlimit - matchingRow.ticketssold;
-          setNumAvailable(Math.min(numAvail, eventInstanceAvailableAmount));
-        } else {
-          setNumAvailable(eventInstanceAvailableAmount);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    void fetchTicketRestrictionAmountAvailable();
-  }, [eventInstanceAvailableAmount]);
 
   const handleDecrement = () => {
     if (item.qty > 1) {
@@ -72,9 +34,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
   };
 
   const handleIncrement = () => {
-    if (numAvailable && item.qty < numAvailable) {
-      dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty + 1}));
-    }
+    dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty + 1}));
   };
 
   return (
@@ -158,4 +118,5 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
     </div>
   );
 };
+
 export default CartRow;

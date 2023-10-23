@@ -402,11 +402,64 @@ ticketRouter.delete('/:id', checkJwt, checkScopes, async (req, res) => {
  *          description: Not Found
  */
 ticketRouter.get('/restrictions/:eventinstanceid', async (req, res) => {
-  const ticketquery = `
+  const ticketQuery = `
     SELECT * FROM ticketrestrictions where eventinstanceid_fk = $1
   `;
   try {
-    const result = await pool.query(ticketquery, [req.params.eventinstanceid]);
+    const result = await pool.query(ticketQuery, [req.params.eventinstanceid]);
+
+    const resp = {
+      data: result.rows,
+      status: 'success',
+    };
+    res.status(200).send(resp);
+  } catch (error: any) {
+    res.sendStatus(500).send(error.message);
+  }
+});
+
+/**
+ * @swagger
+ *  /1/tickets/restrictions:
+ *    get:
+ *      summary: get all ticket restrictions for all event instances (showings)
+ *      tags:
+ *        - Tickets
+ *      security:
+ *        - bearerAuth: []
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items: {type: object}
+ *                  status:
+ *                    type: object
+ *                    properties:
+ *                      success: {type: boolean}
+ *                      message: {type: string}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
+ */
+ticketRouter.get('/restrictions', async (req, res) => {
+  const ticketQuery = `
+    SELECT 
+      tr.ticketrestrictionsid id,
+      tr.eventinstanceid_fk eventinstanceid,
+      tr.tickettypeid_fk tickettypeid,
+      tr.ticketlimit,
+      tr.ticketssold
+    FROM ticketrestrictions tr;
+  `;
+  try {
+    const result = await pool.query(ticketQuery);
 
     const resp = {
       data: result.rows,
