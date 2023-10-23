@@ -1,4 +1,5 @@
 import { type Locator, type Page ,expect} from '@playwright/test';
+import { addDeleteEvents_Package, addNewEvents_Package, editShowing_Package, editevents1_Package } from '../testData/ConstsPackage';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
@@ -130,15 +131,15 @@ export class EventsPage {
   This test is basically testing the functionality of creating a new event without add any showing.
   For now, if we create an event withou showing, it won't appear on the homepage nor on the events page.
   */
-  async addnewevent(eventName:string, eventDescription:string,eventURL:string)
+  async addnewevent(ANE_Package1:addNewEvents_Package)
   {
      await this.addButton.click();
      await this.eventNameBlank.click();
-     await this.page.getByLabel('Event Name:').fill(eventName);
+     await this.page.getByLabel('Event Name:').fill(ANE_Package1.event_Name);
      await this.eventDesBlank.click();
-     await this.page.getByLabel('Event Description:').fill(eventDescription);
+     await this.page.getByLabel('Event Description:').fill(ANE_Package1.event_Description);
      await this.imageURL.click();
-     await this.page.getByLabel('Image URL:').fill(eventURL);
+     await this.page.getByLabel('Image URL:').fill(ANE_Package1.event_URL);
      await this.eventOption1.check();
      await this.eventOption1.uncheck();
      await this.eventOption2.check();
@@ -159,23 +160,23 @@ export class EventsPage {
      showing of an event, we might need to pass in the showing's id. However, we'd better bring up a good way
      to get that id.
   */
-  async addDeleteEvents(event1Name:string, event1Description:string, event1URL:string, event1Showing1Date:string, event1Showing1Time:string, event1Showing1Quantity:string, event1Showing2Date: string, event1Showing2Time: string, event1Showing2Quantity: string, event1FullName: string)
+  async addDeleteEvents(ADE_package1:addDeleteEvents_Package)
   {
     await this.addButton.click();
     await this.eventNameBlank.click();
-    await this.page.getByLabel('Event Name:').fill(event1Name);
+    await this.page.getByLabel('Event Name:').fill(ADE_package1.event_Name);
     await this.eventDesBlank.click();
-    await this.page.getByLabel('Event Description:').fill(event1Description);
+    await this.page.getByLabel('Event Description:').fill(ADE_package1.event_Description);
     await this.imageURL.click();
-    await this.page.getByLabel('Image URL:').fill(event1URL);
+    await this.page.getByLabel('Image URL:').fill(ADE_package1.event_URL);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.editAddShowing.click();
-    await this.editEventDate.fill(event1Showing1Date);
+    await this.editEventDate.fill(ADE_package1.event_Showing1Date);
     await this.editEventTime.click();
-    await this.editEventTime.fill(event1Showing1Time);
+    await this.editEventTime.fill(ADE_package1.event_Showing1Time);
     await this.editTicketQuatity.click();
-    await this.editTicketQuatity.fill(event1Showing1Quantity);
+    await this.editTicketQuatity.fill(ADE_package1.event_Showing1Quantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.homePage.click();
@@ -230,11 +231,11 @@ export class EventsPage {
     await this.emailButton.click();
     await this.manageTicketingButton.click();
     await this.leftBarEvent.click();
-    await this.page.getByRole('button', { name: event1FullName }).first().click();
+    await this.page.getByRole('button', { name: ADE_package1.event_FullName }).first().click();
     await this.editAddShowing.click();
-    await this.editEventDate.fill(event1Showing2Date);
-    await this.editEventTime.fill(event1Showing2Time);
-    await this.editTicketQuatity.fill(event1Showing2Quantity);
+    await this.editEventDate.fill(ADE_package1.event_Showing2Date);
+    await this.editEventTime.fill(ADE_package1.event_Showing2Time);
+    await this.editTicketQuatity.fill(ADE_package1.event_Showing2Quantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
 
@@ -260,43 +261,43 @@ export class EventsPage {
     await this.eventContinue.click();
     await this.eventContinue.click();
     await this.leftBarEvent.click();
-    await expect(this.page.getByRole('button', { name: event1FullName }).first()).not.toBeVisible();
+    await expect(this.page.getByRole('button', { name: ADE_package1.event_FullName }).first()).not.toBeVisible();
   }
 
 
 /*
 This test is for testing the functionality of editing an event, same for the showing
 */
-  async editEvents1(event2RevisedName: string, event2Name: string, event2RevisedDescription: string, event2Description: string, event2RevisedURL: string, event2URL: string)
+  async editEvents1(EDE_package1:editevents1_Package)
   {
     await this.secondEvent.click();
     await this.editEventInfor.click();
     await this.editEventName.click();
-    await this.editEventName.fill(event2RevisedName);
+    await this.editEventName.fill(EDE_package1.event_RevisedName);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    await this.page.getByText(event2RevisedName, { exact: true }).click();
+    await this.page.getByText(EDE_package1.event_RevisedName, { exact: true }).click();
     await this.editEventInfor.click();
     await this.editEventName.click();
-    await this.editEventName.fill(event2Name);
-    await this.eventDesBlank.fill(event2RevisedDescription);
+    await this.editEventName.fill(EDE_package1.event_Name);
+    await this.eventDesBlank.fill(EDE_package1.event_RevisedDescription);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    await this.page.getByText(event2RevisedDescription).click();
+    await this.page.getByText(EDE_package1.event_RevisedDescription).click();
     await this.editEventInfor.click();
     await this.eventDesBlank.click();
-    await this.eventDesBlank.fill(event2Description);
+    await this.eventDesBlank.fill(EDE_package1.event_Description);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.editEventInfor.click();
     await this.imageURL.click();
-    await this.imageURL.fill(event2RevisedURL);
+    await this.imageURL.fill(EDE_package1.event_RevisedURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.page.getByRole('img', { name: 'Event Image Playbill' }).click();
     await this.editEventInfor.click();
     await this.imageURL.click();
-    await this.imageURL.fill(event2URL);
+    await this.imageURL.fill(EDE_package1.event_URL);
     await this.newEventSave.click();
     await this.eventContinue.click();
     await this.page.getByRole('img', { name: 'Event Image Playbill' }).click();
@@ -305,24 +306,24 @@ This test is for testing the functionality of editing an event, same for the sho
   /*
   This test is for checking the functionality of editing a showing
   */
-   async editShowing(eventShowingDate: string, eventShowingQuantity: string, eventShowing1Date: string, eventShowing1Quantity:string, eventShowing1DateString:string)
+   async editShowing(ES_Package1:editShowing_Package)
    {
     await this.firstEvent.click();
     await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
     await this.page.getByText('372').click();
-    await this.editEventDate.fill(eventShowingDate);
+    await this.editEventDate.fill(ES_Package1.eventShowingDate);
     await this.ticketQuantityOption.click();
-    await this.ticketQuantityOption.fill(eventShowingQuantity);
+    await this.ticketQuantityOption.fill(ES_Package1.eventShowingQuantity);
     await this.page.getByLabel('Save').click();
     await this.eventContinue.click();
 
     await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
-    await this.editEventDate.fill(eventShowing1Date);
+    await this.editEventDate.fill(ES_Package1.eventShowing1Date);
     await this.ticketQuantityOption.click();
-    await this.ticketQuantityOption.fill(eventShowing1Quantity);
+    await this.ticketQuantityOption.fill(ES_Package1.eventShowing1Quantity);
     await this.page.getByLabel('Save').click();
     await this.eventContinue.click();
-    await this.page.getByText(eventShowing1DateString).click();
+    await this.page.getByText(ES_Package1.eventShowing1DateString).click();
     await this.page.locator('div:nth-child(4) > p:nth-child(2)').first().click();
   }
 
