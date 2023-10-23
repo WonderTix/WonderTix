@@ -7,7 +7,7 @@ import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 // this should probably be a table and not a datagrid after all
 // specifically dense table
 // mui.com/material-ui/react-table/
-const DataGridComponent = () => {
+const CCTTotalsComponent = () => {
     const columns: GridColDef[] = [
         {field: 'title', headerName: '', flex: 1},
         {field: 'cost', headerName: '', flex: 1},
@@ -49,4 +49,4 @@ const DataGridComponent = () => {
     );
 };
 
-export default DataGridComponent;
+export default CCTTotalsComponent;

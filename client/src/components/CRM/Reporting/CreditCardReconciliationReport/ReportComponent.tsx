@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import DataGridComponent from './DataGridComponent';
+import CCTTotalsComponent from './CCTTotalsComponent';
 
 import {Divider, Button} from '@mui/material';
 
@@ -37,7 +37,7 @@ const ReportComponent = () => {
             />
             <div className="px-4">
                 <h1 className="font-bold text-2xl">Credit Card Transaction Totals</h1>
-                <DataGridComponent/>
+                <CCTTotalsComponent/>
             </div>
             <Divider
                 sx={{
