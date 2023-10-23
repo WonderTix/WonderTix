@@ -58,7 +58,7 @@ const CreditCardReconciliationReport=() =>{
                             <Box
                                 sx = {{
                                     'width': '95%',
-                                    'height': '40rem',
+                                    'height': '100%',
                                     'backgroundColor': 'lightgrey',
                                     'border': '2px solid gray',
                                     'borderRadius': '8px',
