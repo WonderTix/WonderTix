@@ -40,6 +40,10 @@ export const getDoorlist = async (params: any): Promise<response> => {
             events e ON ei.eventid_fk = e.eventid
         WHERE 
             ei.eventinstanceid = $1
+        AND 
+            ei.deletedat is null
+        AND
+            e.deletedat is null
         GROUP BY 
             c.contactid,
             c.firstname,

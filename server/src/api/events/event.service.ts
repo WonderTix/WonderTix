@@ -35,6 +35,8 @@ export const getActiveEvents = async (): Promise<response> => {
             e.imageurl
           HAVING
             e.active = true
+          AND
+            e.deletedat is null
           ORDER BY
             e.eventid;`,
   };

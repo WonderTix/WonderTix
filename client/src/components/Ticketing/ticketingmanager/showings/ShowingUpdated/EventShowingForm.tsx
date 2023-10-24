@@ -25,11 +25,11 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
     eventid_fk: initialValues ? initialValues.eventid_fk : eventID,
     eventinstanceid: initialValues ? initialValues.eventinstanceid : 0,
-    eventtime: initialValues ? initialValues.eventtime.slice(0, 8) : '',
+    eventtime: initialValues ? initialValues.eventtime.split('T')[1].slice(0, 8) : '',
     ispreview: false,
     defaulttickettype: 1,
     purchaseuri: 'http://null.com',
-    instanceTicketTypes: initialValues.ticketrestrictions,
+    instanceTicketTypes: initialValues? initialValues.ticketrestrictions: [],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
   };

@@ -165,11 +165,8 @@ export const getShowingData = async (eventID, setShowingData, signal) => {
     if (!showingRes.ok) {
       throw new Error('Unable to fetch showings');
     }
-
     const data = await showingRes.json();
-    const showingData = data.data;
-
-    setShowingData(showingData);
+    setShowingData(data);
   } catch (error) {
     console.error(error);
   }

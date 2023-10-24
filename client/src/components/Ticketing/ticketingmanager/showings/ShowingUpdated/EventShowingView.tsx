@@ -16,7 +16,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
   const {ticketTypes, editing, showPopUp} = useEvent();
   const showingDate = new Date(
-    `${toDateStringFormat(showing.eventdate)} ${showing.eventtime.slice(0, 8)}`,
+    `${toDateStringFormat(showing.eventdate)} ${showing.eventtime.split('T')[1].slice(0, 8)}`,
   );
 
   return (
