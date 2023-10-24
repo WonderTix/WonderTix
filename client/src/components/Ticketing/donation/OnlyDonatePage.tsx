@@ -25,9 +25,14 @@ export default function OnlyDonationPage(): ReactElement {
   const [amount, setAmount] = useState(donation);
   const [anonymous, setAnonymous] = useState(false);
   const history = useNavigate();
+
   // 'onetime' | 'monthly' | 'quarterly';
   const [donationPeriod, setDonationPeriod] = useState<string>('onetime');
-  const amounts = [10, 25, 50, 100, 250, 500];
+
+  // amounts used for donation buttons
+  const oneTimeAmounts = [25, 50, 100, 150, 250, 500];
+  const monthlyAmounts = [5, 10, 25, 50, 100, 250];
+  const quarterlyAmounts = [50, 100, 150, 200, 250, 500];
 
   // Replace this with your stripe public key
   const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
@@ -137,55 +142,93 @@ export default function OnlyDonationPage(): ReactElement {
         </div>
       </div>
       <hr className="w-full border border-t border-zinc-300 my-4"></hr>
-      <div>
-        <form>
-          <label>
-            <input
-              type="radio"
-              value="onetime"
-              name="period"
-              checked={donationPeriod == 'onetime'}
-              onChange={handleRadioChange}
-            />
-            One Time
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="monthly"
-              name="period"
-              onChange={handleRadioChange}
-            />
-            Monthly
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="quarterly"
-              name="period"
-              onChange={handleRadioChange}
-            />
-            Quarterly
-          </label>
-          <p>Selected option: {donationPeriod}</p>
-        </form>
+      <div className='text-2xl font-bold mb-5'>Choose a donation amount</div>
+      <div className="self-start">
+        <label className='mr-10'>
+          <input
+            type="radio"
+            value="onetime"
+            name="period"
+            checked={donationPeriod == 'onetime'}
+            onChange={handleRadioChange}
+            className='mr-2'
+          />
+          One Time
+        </label>
+        <label className='mr-10'>
+          <input
+            type="radio"
+            value="monthly"
+            name="period"
+            onChange={handleRadioChange}
+            className='mr-2'
+          />
+          Monthly
+        </label>
+        <label className='mr-10'>
+          <input
+            type="radio"
+            value="quarterly"
+            name="period"
+            onChange={handleRadioChange}
+            className='mr-2'
+          />
+          Quarterly
+        </label>
       </div>
       {/* Donation buttons */}
       <div className='w-full py-4'>
-        <div className="grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7">
-          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
-          onClick= {() => setAmount(amounts[0]) }>$ {amounts[0]}</button>
-          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
-          onClick= {() => setAmount(amounts[1]) }>$ {amounts[1]}</button>
-          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
-          onClick= {() => setAmount(amounts[2]) }>$ {amounts[2]}</button>
-          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
-          onClick= {() => setAmount(amounts[3]) }>$ {amounts[3]}</button>
-          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
-          onClick= {() => setAmount(amounts[4]) }>$ {amounts[4]}</button>
-          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
-          onClick= {() => setAmount(amounts[5]) }>$ {amounts[5]}</button>
-        </div>
+        {
+          donationPeriod == 'onetime' && (
+            <div className="grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7">
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(oneTimeAmounts[0]) }>$ {oneTimeAmounts[0]}</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(oneTimeAmounts[1]) }>$ {oneTimeAmounts[1]}</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(oneTimeAmounts[2]) }>$ {oneTimeAmounts[2]}</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(oneTimeAmounts[3]) }>$ {oneTimeAmounts[3]}</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(oneTimeAmounts[4]) }>$ {oneTimeAmounts[4]}</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(oneTimeAmounts[5]) }>$ {oneTimeAmounts[5]}</button>
+            </div>
+          ) }
+        {
+          donationPeriod == 'monthly' && (
+            <div className="grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7">
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(monthlyAmounts[0]) }>$ {monthlyAmounts[0]} / Month</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(monthlyAmounts[1]) }>$ {monthlyAmounts[1]} / Month</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(monthlyAmounts[2]) }>$ {monthlyAmounts[2]} / Month</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(monthlyAmounts[3]) }>$ {monthlyAmounts[3]} / Month</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(monthlyAmounts[4]) }>$ {monthlyAmounts[4]} / Month</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(monthlyAmounts[5]) }>$ {monthlyAmounts[5]} / Month</button>
+            </div>
+          ) }
+        {
+          donationPeriod == 'quarterly' && (
+            <div className="grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7">
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(quarterlyAmounts[0]) }>$ {quarterlyAmounts[0]} / Quarter</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(quarterlyAmounts[1]) }>$ {quarterlyAmounts[1]} / Quarter</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(quarterlyAmounts[2]) }>$ {quarterlyAmounts[2]} / Quarter</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(quarterlyAmounts[3]) }>$ {quarterlyAmounts[3]} / Quarter</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(quarterlyAmounts[4]) }>$ {quarterlyAmounts[4]} / Quarter</button>
+              <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+              onClick= {() => setAmount(quarterlyAmounts[5]) }>$ {quarterlyAmounts[5]} / Quarter</button>
+            </div>
+          ) }
       </div>
       {/* Other amount text box */}
       <div className='flex flex-col w-full items-start py-4'>
