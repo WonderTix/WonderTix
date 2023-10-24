@@ -149,11 +149,40 @@ export default function OnlyDonationPage(): ReactElement {
         Your tax-deductible donation will make it possible to surprise,
         delight, and challenge our community with the wonder of theater
         for years to come.
-        <p>
-        Thank you!
+        <p className='mt-2 font-semibold'>
+          Thank you!
         </p>
         </p>
       </div>
+      <hr className="w-full border border-t border-zinc-300 my-4"></hr>
+      <div className="flex flex-col md:flex-row items-center min-w-full">
+        <div className="flex-1 p-4 text-xl">
+          <a className="hover:text-indigo-700 text-indigo-600 text-2xl md:px-10" href="https://portlandplayhouse.org/get-involved/giving/">
+            <b>
+              Other ways to donate
+            </b>
+          </a>
+        </div>
+        <div className='flex'>
+          <div className="py-4 px-10 text-sm">
+            <b>
+              Give by phone: <br />
+            </b>
+            (503)-488-5822
+          </div>
+          <div className="py-4 px-10 text-sm min-w-lg">
+            <div className=''>
+              <b>
+                Give by mail: <br />
+              </b>
+                Portland Playhouse <br />
+                602 NE Prescott St <br />
+                Portland, OR 97211
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }
