@@ -14,8 +14,8 @@ export const EventGeneralContainer = () => {
   const onUpdateSuccess = async (newEvent) => {
     try {
       const res = await newEvent.json();
-      setEventData(res.data);
-      setEventID(res.data.eventid);
+      setEventData(res);
+      setEventID(res.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
       setPopUpProps(`Success`, 'Event update successful', true, `update-modal-event-id-${eventID}`);
@@ -27,13 +27,14 @@ export const EventGeneralContainer = () => {
   const onCreateSuccess = async (newEvent) => {
     try {
       const res = await newEvent.json();
-      navigate(`/ticketing/showings/${res.data[0].eventid}`);
-      setEventData(res.data);
-      setEventID(res.data.eventid);
+      navigate(`/ticketing/showings/${res.eventid}`);
+      setEventData(res);
+      setEventID(res.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
       setPopUpProps(`Success`, 'Event creation successful', true, `create-modal-event-id-${eventID}`);
     } catch (error) {
+      console.log(error);
       console.error('error updating event after creation');
     }
   };

@@ -14,6 +14,7 @@ import {isBooleanString} from 'class-validator';
 const prisma = extendPrismaClient();
 
 export const eventController = Router();
+
 /**
  * @swagger
  * /2/events/checkout:
@@ -759,7 +760,7 @@ eventController.put('/', async (req: Request, res: Response) => {
         seasonid_fk: Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
-        active: req.body.active === 'true',
+        active: req.body.active,
         seasonticketeligible: req.body.seasonticketeligible,
         imageurl: req.body.imageurl,
       },

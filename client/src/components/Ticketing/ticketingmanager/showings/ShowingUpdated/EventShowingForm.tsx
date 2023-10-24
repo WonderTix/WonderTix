@@ -1,4 +1,4 @@
-import {Showing, UpdatedShowing} from '../../../../../interfaces/showing.interface';
+import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import {Field, FieldArray, Formik} from 'formik';
 import {InputControl} from './InputControl';
