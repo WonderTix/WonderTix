@@ -56,7 +56,10 @@ export const orderFulfillment = async (
   ]);
   return result[0].orderid;
 };
-export const orderCancel = async (prisma: ExtendedPrismaClient, orderID: number) => {
+export const orderCancel = async (
+    prisma: ExtendedPrismaClient,
+    orderID: number,
+) => {
   const queriesToBatch: any[] = [];
   await prisma.orders.delete({
     where: {
@@ -91,7 +94,8 @@ export const orderCancel = async (prisma: ExtendedPrismaClient, orderID: number)
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats: (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0),
+            availableseats:
+            (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0),
           },
         }),
     );

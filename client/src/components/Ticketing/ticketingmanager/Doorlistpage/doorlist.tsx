@@ -29,7 +29,7 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
       audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
-    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkin`, {
+    const res = await fetch(process.env.REACT_APP_API_2_URL + `/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
       headers: {

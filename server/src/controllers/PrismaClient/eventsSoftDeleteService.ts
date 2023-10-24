@@ -115,25 +115,46 @@ export default Prisma.defineExtension((prisma) => {
     },
     query: {
       eventinstances: {
+        async create({args, query}) {
+          const eventid = args.data.eventid_fk;
+          if (!eventid) {
+            throw new Error(`Event ID required`);
+          }
+
+          const event = await prisma.events.findUnique({where: {eventid}});
+          if (!event) {
+            throw new Error(`Event ${eventid} does not exist`);
+          }
+
+          return query(args);
+        },
         async findUnique({args}) {
           args.where = {deletedat: null, ...args.where};
-          return await prisma.eventinstances.findFirst(args);
+          return prisma.eventinstances.findFirst(args);
         },
         async findFirst({args, query}) {
           args.where = {deletedat: null, ...args.where};
-          return await query(args);
+          return query(args);
         },
         async findMany({args, query}) {
           args.where = {deletedat: null, ...args.where};
-          return await query(args);
+          return query(args);
         },
-        async update({args}) {
+        async update({args, query}) {
           args.where = {deletedat: null, ...args.where};
-          return await prisma.eventinstances.updateMany(args);
+          const eventinstance = await prisma.eventinstances.findUnique({
+            where: args.where,
+          });
+          if (!eventinstance) {
+            throw new Error(
+                `Event instance ${args.where.eventinstanceid} does not exist`,
+            );
+          }
+          return query(args);
         },
         async updateMany({args, query}) {
           args.where = {deletedat: null, ...args.where};
-          return await query(args);
+          return query(args);
         },
       },
       events: {
@@ -141,22 +162,26 @@ export default Prisma.defineExtension((prisma) => {
           args.where = {deletedat: null, ...args.where};
           if (args.include?.eventinstances) {
             args.include.eventinstances = {
-              ...(typeof args.include.eventinstances === 'object' && args.include.eventinstances),
+              ...(typeof args.include.eventinstances === 'object' &&
+                args.include.eventinstances),
               where: {
-                ...(typeof args.include.eventinstances === 'object' && args.include.eventinstances.where),
+                ...(typeof args.include.eventinstances === 'object' &&
+                  args.include.eventinstances.where),
                 deletedat: null,
               },
             };
           }
-          return await prisma.events.findFirst(args);
+          return prisma.events.findFirst(args);
         },
         async findFirst({args, query}) {
           args.where = {deletedat: null, ...args.where};
           if (args.include?.eventinstances) {
             args.include.eventinstances = {
-              ...(typeof args.include.eventinstances === 'object' && args.include.eventinstances),
+              ...(typeof args.include.eventinstances === 'object' &&
+                args.include.eventinstances),
               where: {
-                ...(typeof args.include.eventinstances === 'object' && args.include.eventinstances.where),
+                ...(typeof args.include.eventinstances === 'object' &&
+                  args.include.eventinstances.where),
                 deletedat: null,
               },
             };
@@ -167,22 +192,26 @@ export default Prisma.defineExtension((prisma) => {
           args.where = {deletedat: null, ...args.where};
           if (args.include?.eventinstances) {
             args.include.eventinstances = {
-              ...(typeof args.include.eventinstances === 'object' && args.include.eventinstances),
+              ...(typeof args.include.eventinstances === 'object' &&
+                args.include.eventinstances),
               where: {
-                ...(typeof args.include.eventinstances === 'object' && args.include.eventinstances.where),
+                ...(typeof args.include.eventinstances === 'object' &&
+                  args.include.eventinstances.where),
                 deletedat: null,
               },
             };
           }
           return query(args);
         },
-        async update({args}) {
+        async update({args, query}) {
           args.where = {deletedat: null, ...args.where};
           if (args.include?.eventinstances) {
             args.include.eventinstances = {
-              ...(typeof args.include.eventinstances === 'object' && args.include.eventinstances),
+              ...(typeof args.include.eventinstances === 'object' &&
+                args.include.eventinstances),
               where: {
-                ...(typeof args.include.eventinstances === 'object' && args.include.eventinstances.where),
+                ...(typeof args.include.eventinstances === 'object' &&
+                  args.include.eventinstances.where),
                 deletedat: null,
               },
             };
@@ -190,7 +219,10 @@ export default Prisma.defineExtension((prisma) => {
           const {where, ...everythingElse} = args;
           const event = await prisma.events.findFirst({where});
           if (!event) return null;
-          return await prisma.events.update({where: {eventid: event.eventid}, ...everythingElse});
+          return query({
+            where: {eventid: event.eventid},
+            ...everythingElse,
+          });
         },
         async updateMany({args, query}) {
           args.where = {deletedat: null, ...args.where};
