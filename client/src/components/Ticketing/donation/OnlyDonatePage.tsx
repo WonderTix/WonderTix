@@ -144,6 +144,23 @@ export default function OnlyDonationPage(): ReactElement {
           onClick= {() => setAmount(amounts[5]) }>$ {amounts[5]}</button>
         </div>
       </div>
+      <div className='flex flex-col w-full items-start py-4'>
+        <div className='text-md font-medium text-slate-700 ml-2 my-2 pl-4'>Donation Amount </div>
+        <div className='flex '>
+          <div className='pt-3 pr-3'>
+            <p>$</p>
+          </div>
+          <input
+            placeholder= {amount ? '' : 'Other Amount' }
+            onChange={(e) => setAmount(+e.target.value)}
+            type="number"
+            // className='w-full mb-7 bg-zinc-200 text-black p-5 rounded-xl'
+            // className='text-black '
+            className="appearance-none block bg-white border border-2 border-gray-300 text-gray-700 rounded-md pl-3 py-2 leading-5 focus:outline-none focus:ring focus:border-indigo-600 sm:text-lg"
+            value={amount || null}
+          />
+        </div>
+      </div>
       <div className='flex flex-col w-full items-start gap-3 mt-2 mb-10'>
         <div className='flex flex-row items-center gap-4 text-md text-zinc-700 '>
           <input
