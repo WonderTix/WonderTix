@@ -10,33 +10,34 @@
 import {DataGrid} from '@mui/x-data-grid';
 import {Checkbox, Button, FormControlLabel} from '@mui/material';
 import React, {useEffect, useState} from 'react';
-// import RequireLogin from './RequireLogin';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
-import {useAuth0} from '@auth0/auth0-react';
-import {Link} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
+
 
 type EventRow = {
   id?: number;
+  desc: string;
   eventid?: number;
+  eventinstanceid?: number;
   eventname?: string;
+  eventdate?: string;
   eventtime?: string;
   ticketTypes?: string;
   price?: number;
   complementary?: boolean;
   availableSeats?: number;
+  imageurl?: string;
+  qty?: number;
 };
 
 const AdminPurchase = () => {
   const [numberOfRows, setNumberOfRows] = useState(1);
   const emptyRows: EventRow[] = Array.from({length: numberOfRows}, (_, id) => ({
     id,
+    desc: '',
   }));
   const [eventData, setEventData] = useState<EventRow[]>(emptyRows);
-  const [events, setEvents] = useState([]);
   const [selectedTime, setSelectedTime] = useState(null);
-  const {getAccessTokenSilently} = useAuth0();
   const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
@@ -45,12 +46,10 @@ const AdminPurchase = () => {
   const [priceByRowId, setPriceByRowId] = useState({});
   const [ticketTypes, setTicketTypes] = useState([]);
   const navigate = useNavigate();
-  const [selectedTickets, setSelectedTickets] = useState([]);
 
   const addNewRow = () => {
-    // Find the maximum id in the current rows to make sure the new id is unique
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
-    setEventData([...eventData, {id: maxId}]);
+    setEventData([...eventData, {id: maxId, desc: ''}]);
   };
 
   const removeRow = (rowId) => {
@@ -267,7 +266,6 @@ const AdminPurchase = () => {
     const matchingEvent = eventListFull.find((e) => e.eventid === eventId);
     updateAvailableTimes(eventId, row.id);
 
-    // Create a new array with the updated row data
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {...row, ...matchingEvent};
@@ -277,10 +275,10 @@ const AdminPurchase = () => {
     setEventData(updatedRows);
   };
 
-  const handleTimeChange = (
+const handleTimeChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
     row: EventRow,
-  ) => {
+) => {
     const eventInstanceID = parseInt(event.target.value);
     const selectedEvent = availableTimesByRowId[row.id]?.find(
       (e) => e.eventinstanceid === eventInstanceID,
@@ -290,14 +288,15 @@ const AdminPurchase = () => {
         return {
           ...row,
           eventtime: selectedEvent?.eventtime,
-          availableSeats: selectedEvent?.availableseats,
+          availableSeats: selectedEvent?.availableSeats || selectedEvent?.availableseats,
+          eventinstanceid: eventInstanceID,
         };
       }
       return r;
     });
     setEventData(updatedRows);
     setSelectedTime(eventInstanceID);
-  };
+};
 
   const handleTicketTypeChange = (event, row) => {
     const ticketTypeId = parseInt(event.target.value);
@@ -309,17 +308,21 @@ const AdminPurchase = () => {
     // Update the eventData
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        return {...row, ticketTypes: selectedType.description, price: price};
+        // If complementary, don't change the price
+        const finalPrice = row.complementary ? 0 : price;
+        return {...row, ticketTypes: selectedType.description, price: finalPrice};
       }
       return r;
     });
     setEventData(updatedRows);
 
-    // Update the priceByRowId
-    setPriceByRowId((prevState) => ({
-      ...prevState,
-      [row.id]: price.toFixed(2),
-    }));
+    // If the row is not complementary, update the priceByRowId
+    if (!row.complementary) {
+      setPriceByRowId((prevState) => ({
+        ...prevState,
+        [row.id]: price.toFixed(2),
+      }));
+    }
   };
 
   const handlePriceChange = (event, row) => {
@@ -344,6 +347,7 @@ const AdminPurchase = () => {
 
   const handleComplementaryChange = (event, row) => {
     const isChecked = event.target.checked;
+
     // Update row with complementary flag
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
@@ -356,89 +360,47 @@ const AdminPurchase = () => {
       return r;
     });
     setEventData(updatedRows);
-    // Also update the priceByRowId to reflect the change in the price
-    if (isChecked) {
-      setPriceByRowId((prevState) => ({
-        ...prevState,
-        [row.id]: '0.00', // Set to $0 if complementary
-      }));
-    }
+
+    // Update the priceByRowId to reflect the change in the price
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: isChecked ? '0.00' : (row.price || 0).toFixed(2), // Set to $0 if complementary
+    }));
   };
 
   const handlePurchase = () => {
-    // Gather ticket information from the rows
-    const cartItems = eventData.map((row) => ({
-      product_id: row.id,
-      price: row.price,
-      desc: row.ticketTypes,
-      typeID: row.id, // Assuming typeID is same as row id for now
-      date: new Date(), // Defaulting to today's date
-      name: row.eventname,
-      product_img_url: '', // Placeholder for image URL
-      qty: 1, // Defaulting quantity to 1
-      payWhatCan: false, // Defaulting payWhatCan to false
-    }));
+    console.log('eventData', eventData);
+
+    const aggregatedCartItems = {};
+
+    eventData.forEach((row) => {
+      const key = row.eventinstanceid;
+      if (aggregatedCartItems[key]) {
+        // If this item already exists in the cart, qty++
+        aggregatedCartItems[key].qty += 1;
+        aggregatedCartItems[key].price += row.price;
+      } else {
+        // If this item doesn't exist in the cart, add it
+        aggregatedCartItems[key] = {
+          product_id: row.eventinstanceid,
+          price: row.price,
+          desc: row.desc,
+          typeID: row.id,
+          date: row.eventdate,
+          name: row.eventname,
+          product_img_url: row.imageurl,
+          qty: 1, // default 1
+          payWhatCan: false,
+        };
+      }
+    });
+
+    // Convert to array
+    const cartItems = Object.values(aggregatedCartItems);
+
     // Navigate to the AdminCheckout page and pass the cart items
+    console.log('cartItems', cartItems);
     navigate('/ticketing/admincheckout', {state: {cartItems}});
-  };
-
-  const handleCart = () => {
-    const ticketInfo = eventData.map((row) => ({
-      eventName: row.eventname,
-      eventTime: row.eventtime,
-      ticketType: row.ticketTypes,
-      price: row.price,
-      complementary: row.complementary,
-    }));
-
-    setSelectedTickets(ticketInfo);
-
-    navigate('../cart', {state: {tickets: ticketInfo}});
-  };
-
-  const getEventData = async (event) => {
-    try {
-      const token = await getAccessTokenSilently({
-        audience: process.env.REACT_APP_ROOT_URL,
-        scope: 'admin',
-      });
-      const response = await fetch(
-        process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${event}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        },
-      );
-      const jsonRes = await response.json();
-      const jsonData = jsonRes.data;
-      const eventData = jsonData
-        .map((item, index) => {
-          const row = item.row.slice(1, -1).split(',');
-          if (!row || !row[0]) {
-            // Check if the value in column 0 is present
-            setTicketsSold(false);
-            return null; // Exit early if no tickets sold
-          }
-          setTicketsSold(true);
-          return {
-            id: index,
-            firstname: row[1],
-            lastname: row[2],
-            num_tickets: row[12],
-            arrived: false,
-            vip: row[3] === 't',
-            donorbadge: row[4] === 't',
-            accommodations: row[5],
-          };
-        })
-        .filter(Boolean);
-
-      setEventData(eventData);
-    } catch (error) {
-      console.error(error.message);
-    }
   };
 
   return (
@@ -476,24 +438,10 @@ const AdminPurchase = () => {
                 color: 'white',
                 fontSize: 'larger',
                 textTransform: 'none',
-                marginRight: '10px', // Added margin for spacing
               }}
               onClick={handlePurchase}
             >
                 Proceed To Checkout
-            </Button>
-            {/* New "Proceed to Cart" Button */}
-            <Button
-              variant='contained'
-              style={{
-                backgroundColor: 'blue',
-                color: 'white',
-                fontSize: 'larger',
-                textTransform: 'none',
-              }}
-              onClick={handleCart}
-            >
-                Proceed To Cart
             </Button>
           </div>
         </div>
