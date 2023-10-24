@@ -23,6 +23,7 @@ steps:
         --region $$REGION \
         --platform managed \
         --memory $$SERVER_MEMORY \
+        --cpu $$SERVER_CPU \
         --allow-unauthenticated \
         --min-instances 1 \
         --set-cloudsql-instances $$SQL_INSTANCE \
@@ -50,6 +51,7 @@ steps:
       - 'FRONTEND_URL'
       - 'REGION'
       - 'ROOT_URL'
+      - 'SERVER_CPU'
       - 'SERVER_MEMORY'
       - 'SERVICE_ACCOUNT'
       - 'SQL_INSTANCE'
@@ -71,6 +73,8 @@ availableSecrets:
     env: 'REGION'
   - versionName: projects/$PROJECT_ID/secrets/ROOT_URL/versions/$_ENV
     env: 'ROOT_URL'
+  - versionName: projects/$PROJECT_ID/secrets/SERVER_CPU/versions/$_ENV
+    env: 'SERVER_CPU'
   - versionName: projects/$PROJECT_ID/secrets/SERVER_MEMORY/versions/$_ENV
     env: 'SERVER_MEMORY'
   - versionName: projects/$PROJECT_ID/secrets/SERVICE_ACCOUNT/versions/$_ENV

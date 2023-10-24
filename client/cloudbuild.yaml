@@ -44,6 +44,7 @@ steps:
         --region $$REGION \
         --platform managed \
         --memory $$CLIENT_MEMORY \
+        --cpu $$CLIENT_CPU \
         --allow-unauthenticated \
         --min-instances 1 \
         --set-env-vars=\
@@ -53,6 +54,7 @@ steps:
         REACT_APP_PUBLIC_STRIPE_KEY=REACT_APP_PUBLIC_STRIPE_KEY:$$ENV,\
     secretEnv:
       - 'ARTIFACTS'
+      - 'CLIENT_CPU'
       - 'CLIENT_MEMORY'
       - 'ENV'
       - 'REGION'
@@ -65,6 +67,8 @@ availableSecrets:
     env: 'ARTIFACTS'
   - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_SECRET/versions/$_ENV
     env: 'AUTH0_CLIENT_SECRET'
+  - versionName: projects/$PROJECT_ID/secrets/CLIENT_CPU/versions/$_ENV
+    env: 'CLIENT_CPU'
   - versionName: projects/$PROJECT_ID/secrets/CLIENT_MEMORY/versions/$_ENV
     env: 'CLIENT_MEMORY'
   - versionName: projects/$PROJECT_ID/secrets/ENV/versions/$_ENV
