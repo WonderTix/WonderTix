@@ -51,6 +51,7 @@ export default function OnlyDonationPage(): ReactElement {
 
   return (
     <div className='w-full py-[5rem] px-[1rem] tab:px-[5rem] flex flex-col items-center'>
+      {/* Back button*/}
       <div className='w-full flex flex-row mb-8'>
         <button onClick={() => history('/')} className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -59,15 +60,18 @@ export default function OnlyDonationPage(): ReactElement {
           back to Events
         </button>
       </div>
+      {/* Image */}
       <div>
         <img src={DonationImage} alt="Donation Page Image" />
       </div>
+      {/* Header text */}
       <div className="text-center text-2xl">
         <p>
         Double your impact! <br />
         Donate before June 30th and your gift will be matched 100%
         </p>
       </div>
+      {/* Intro text */}
       <div>
         <div className='py-1'>
           <p className='py-2'>Dear Friends,</p>
@@ -127,6 +131,7 @@ export default function OnlyDonationPage(): ReactElement {
         </div>
       </div>
       <hr className="w-full border border-t border-zinc-300 my-4"></hr>
+      {/* Donation buttons */}
       <div className='w-full py-4'>
         <div className="grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7">
           <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
@@ -143,6 +148,7 @@ export default function OnlyDonationPage(): ReactElement {
           onClick= {() => setAmount(amounts[5]) }>$ {amounts[5]}</button>
         </div>
       </div>
+      {/* Other amount text box */}
       <div className='flex flex-col w-full items-start py-4'>
         <div className='text-md font-medium text-slate-700 ml-2 my-2 pl-4'>Donation Amount </div>
         <div className='flex '>
@@ -160,6 +166,7 @@ export default function OnlyDonationPage(): ReactElement {
           />
         </div>
       </div>
+      {/* anonymous donation checkbox*/}
       <div className='flex flex-col w-full items-start gap-3 mt-2 mb-10'>
         <div className='flex flex-row items-center gap-4 text-md text-zinc-700 '>
           <input
@@ -178,6 +185,7 @@ export default function OnlyDonationPage(): ReactElement {
         disabled={amount < 1}
         donationForm
       />
+      {/* outro text*/}
       <div className='text-center text-xl py-4 '>
         <p>
         Your tax-deductible donation will make it possible to surprise,
@@ -189,6 +197,7 @@ export default function OnlyDonationPage(): ReactElement {
         </p>
       </div>
       <hr className="w-full border border-t border-zinc-300 my-4"></hr>
+      {/* Other ways to donate */}
       <div className="flex flex-col md:flex-row items-center min-w-full">
         <div className="flex-1 p-4 text-xl">
           <a className="hover:text-indigo-700 text-indigo-600 text-2xl md:px-10" href="https://portlandplayhouse.org/get-involved/giving/">
