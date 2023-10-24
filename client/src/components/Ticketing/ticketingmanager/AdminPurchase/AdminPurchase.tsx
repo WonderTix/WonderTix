@@ -275,10 +275,10 @@ const AdminPurchase = () => {
     setEventData(updatedRows);
   };
 
-const handleTimeChange = (
+  const handleTimeChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
     row: EventRow,
-) => {
+  ) => {
     const eventInstanceID = parseInt(event.target.value);
     const selectedEvent = availableTimesByRowId[row.id]?.find(
       (e) => e.eventinstanceid === eventInstanceID,
@@ -296,7 +296,7 @@ const handleTimeChange = (
     });
     setEventData(updatedRows);
     setSelectedTime(eventInstanceID);
-};
+  };
 
   const handleTicketTypeChange = (event, row) => {
     const ticketTypeId = parseInt(event.target.value);
@@ -399,7 +399,6 @@ const handleTimeChange = (
     const cartItems = Object.values(aggregatedCartItems);
 
     // Navigate to the AdminCheckout page and pass the cart items
-    console.log('cartItems', cartItems);
     navigate('/ticketing/admincheckout', {state: {cartItems}});
   };
 
