@@ -632,7 +632,6 @@ eventController.get('/:id', async (req: Request, res: Response) => {
 
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
@@ -763,9 +762,7 @@ eventController.put('/', async (req: Request, res: Response) => {
       },
     });
     if (!event) {
-      return res
-          .status(400)
-          .json({error: `Event ${req.body.eventid} not found`});
+      return res.status(400).json({error: `Event ${req.body.eventid} not found `});
     }
     res.status(200).json(event);
     return;
@@ -942,6 +939,7 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
+
 /**
  * @swagger
  * /2/events/checkin:
@@ -977,7 +975,7 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
  */
 eventController.put('/checkin', async (req: Request, res: Response) => {
   try {
-    const {ticketID, isCheckedIn} = req.body;
+    const {ticketID, isCheckedIn}= req.body;
     if (!ticketID) {
       return res.status(400).send('No Ticket ID provided');
     }
@@ -989,11 +987,7 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         redeemed: isCheckedIn,
       },
     });
-    return res.send(
-        `Ticket ${ticketID} successfully ${
-        isCheckedIn ? 'redeemed' : 'un-redeemed'
-        }`,
-    );
+    return res.send(`Ticket ${ticketID} successfully ${isCheckedIn?'redeemed':'un-redeemed'}`);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});

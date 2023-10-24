@@ -39,7 +39,7 @@ eventInstanceController.get(
     '/list/active',
     async (req: Request, res: Response) => {
       try {
-        const toReturn = await prisma.eventinstances.findMany({
+        const instances = await prisma.eventinstances.findMany({
           where: {
             salestatus: true,
           },
@@ -59,6 +59,16 @@ eventInstanceController.get(
             },
           },
         });
+
+        const toReturn = instances.map((instance) => {
+          const {events, ...everythingElse} = instance;
+          return {
+            ...events,
+            ...everythingElse,
+          };
+        },
+        )
+        ;
         return res.json(toReturn);
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -99,7 +109,7 @@ eventInstanceController.get(
     '/list/allevents',
     async (req: Request, res: Response) => {
       try {
-        const toReturn = await prisma.eventinstances.findMany({
+        const instances = await prisma.eventinstances.findMany({
           where: {},
           select: {
             eventinstanceid: true,
@@ -118,6 +128,16 @@ eventInstanceController.get(
             },
           },
         });
+
+        const toReturn = instances.map((instance) => {
+          const {events, ...everythingElse} = instance;
+          return {
+            ...events,
+            ...everythingElse,
+          };
+        },
+        );
+
         return res.json(toReturn);
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
