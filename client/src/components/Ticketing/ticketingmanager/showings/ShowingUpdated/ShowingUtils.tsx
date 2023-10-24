@@ -2,10 +2,6 @@ import {useEffect, useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 
-export interface eventInstanceTicketType {
-  typeID: number;
-  typeQuantity: number;
-}
 
 export const createSubmitFunction = (
   method: string,
@@ -94,30 +90,12 @@ export const fetchTicketTypes = async (setTicketTypes, signal) => {
 };
 
 export const getEventData = async (eventID, setEventData, signal) => {
-  const eventData = {
-    seasonid_fk: undefined,
-    eventid: undefined,
-    eventname: '',
-    eventdescription: '',
-    active: false,
-    imageurl: '',
-  };
-  await fetch(process.env.REACT_APP_API_1_URL + '/events/' + eventID, {signal})
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Unable to fetch event');
-      }
-      return response.json();
-    })
-    .then((data) => {
-      eventData.eventname = data.data[0].title;
-      eventData.eventdescription = data.data[0].description;
-      eventData.active = data.data[0].active;
-      eventData.imageurl = data.data[0].imageurl;
-      eventData.eventid = data.data[0].eventid;
-      eventData.seasonid_fk = data.data[0].seasonid_fk;
-    });
-  setEventData(eventData);
+  const response = await fetch(`${process.env.REACT_APP_API_2_URL}/events/${eventID}`, {signal});
+  if (!response.ok) {
+    throw new Error('Unable to fetch event');
+  }
+  const data = await response.json();
+  setEventData(data);
 };
 
 export const useFetchEventData = (eventID: number) => {
@@ -182,7 +160,7 @@ export const useFetchShowingData = (eventID: number) => {
 export const getShowingData = async (eventID, setShowingData, signal) => {
   try {
     const showingRes = await fetch(
-      `${process.env.REACT_APP_API_1_URL}/events/instances/${eventID}`, {signal});
+      `${process.env.REACT_APP_API_2_URL}/event-instance/event/${eventID}`, {signal});
 
     if (!showingRes.ok) {
       throw new Error('Unable to fetch showings');
@@ -191,51 +169,10 @@ export const getShowingData = async (eventID, setShowingData, signal) => {
     const data = await showingRes.json();
     const showingData = data.data;
 
-    for (const showing of showingData) {
-      if (!showing.seatsForType) {
-        showing.seatsForType = Array<number>();
-      }
-      if (!showing.ticketTypeId) {
-        showing.ticketTypeId = Array<number>();
-      }
-      const ticketRestrictionRes = await fetch(
-        `${process.env.REACT_APP_API_1_URL}/tickets/restrictions/
-          ${showing.eventinstanceid}`,
-      );
-      if (!ticketRestrictionRes.ok) {
-        throw new Error(
-          `Unable to fetch ticket restrictions for ${showing.eventinstanceid}`,
-        );
-      }
-      const ticketRestrictionData = await ticketRestrictionRes.json();
-      ticketRestrictionData.data.forEach((ticketRestriction) => {
-        showing.seatsForType.push(Number(ticketRestriction.ticketlimit));
-        showing.ticketTypeId.push(Number(ticketRestriction.tickettypeid_fk));
-      });
-    }
     setShowingData(showingData);
   } catch (error) {
     console.error(error);
   }
-};
-
-export const getTicketTypeArray = (
-  ticketsTypes: (number | string) [],
-  seatsForType: (number | string) [],
-): eventInstanceTicketType[] => {
-  if (
-    !ticketsTypes ||
-    !seatsForType ||
-    seatsForType.length !== ticketsTypes.length
-  ) {
-    return [];
-  }
-  return ticketsTypes.map((id, index) => {
-    return {
-      typeID: Number(id),
-      typeQuantity: Number(seatsForType[index]),
-    };
-  });
 };
 
 export const getTicketTypePrice = (id:number, priceType:string, ticketTypes) => {

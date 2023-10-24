@@ -58,8 +58,8 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
           (type) => type.typeQuantity > eventToCreate.totalseats,
       )
     ) {
-      throw new Error(
-          `No individual ticket type quantity can exceed total ticket quantity`,
+      return res.status(422).json({error:
+          `No individual ticket type quantity can exceed total ticket quantity`},
       );
     }
     const eventInstance = await prisma.eventinstances.create({
@@ -234,6 +234,66 @@ eventInstanceController.get('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /2/event-instance/event/{id}:
+ *   get:
+ *     summary: get all event instances related to a event
+ *     tags:
+ *     - New event instance
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: event instance fetch successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/EventInstance'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventInstanceController.get('/event/:id', async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const eventInstances = await prisma.eventinstances.findMany({
+      where: {
+        eventid_fk: Number(id),
+      },
+      include: {
+        ticketrestrictions: true,
+      },
+    });
+    const toReturn = eventInstances.map((instance) => ({
+      ...instance,
+      ticketrestrictions: instance.ticketrestrictions.map((restiction) => ({
+        typeID: restiction.tickettypeid_fk,
+        typeQuantity: restiction.ticketlimit,
+      })),
+    }));
+    res.status(200).send(toReturn);
+    return;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).send({error: error.message});
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).send({error: error.message});
+      return;
+    }
+    res.status(500).send({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
  * /2/event-instance/{id}:
  *   put:
  *     summary: update an event instance
@@ -279,7 +339,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
     });
 
     if (!eventInstanceToUpdate) {
-      throw new Error(`Showing ${id} does not exist`);
+      return res.status(400).send(`Showing ${id} does not exist`);
     }
 
     const {updatedEventInstance, GAEventTicketsUpdate} =

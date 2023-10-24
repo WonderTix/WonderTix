@@ -1,5 +1,4 @@
 import {InvalidInputError} from './eventInstanceController.service';
-import {PrismaClient} from '@prisma/client';
 import CartItem from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';

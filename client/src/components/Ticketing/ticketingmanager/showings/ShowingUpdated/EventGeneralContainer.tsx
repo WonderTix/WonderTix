@@ -14,8 +14,8 @@ export const EventGeneralContainer = () => {
   const onUpdateSuccess = async (newEvent) => {
     try {
       const res = await newEvent.json();
-      setEventData(res.data[0]);
-      setEventID(res.data[0].eventid);
+      setEventData(res.data);
+      setEventID(res.data.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
       setPopUpProps(`Success`, 'Event update successful', true);
@@ -28,8 +28,8 @@ export const EventGeneralContainer = () => {
     try {
       const res = await newEvent.json();
       navigate(`/ticketing/showings/${res.data[0].eventid}`);
-      setEventData(res.data[0]);
-      setEventID(res.data[0].eventid);
+      setEventData(res.data);
+      setEventID(res.data.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
       setPopUpProps(`Success`, 'Event creation successful', true);
@@ -60,7 +60,7 @@ export const EventGeneralContainer = () => {
 
   const onSubmit = createSubmitFunction(
     eventID === 0 ? 'POST' : 'PUT',
-    `${process.env.REACT_APP_API_1_URL}/events`,
+    `${process.env.REACT_APP_API_2_URL}/events`,
     token,
     eventID ? onUpdateSuccess : onCreateSuccess,
     onSubmitError,

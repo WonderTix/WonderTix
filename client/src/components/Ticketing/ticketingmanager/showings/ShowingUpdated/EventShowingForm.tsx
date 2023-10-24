@@ -1,4 +1,4 @@
-import {Showing} from '../../../../../interfaces/showing.interface';
+import {Showing, UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import {Field, FieldArray, Formik} from 'formik';
 import {InputControl} from './InputControl';
@@ -8,10 +8,9 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
-import {getTicketTypeArray} from './ShowingUtils';
 
 interface EventShowingFormProps {
-  initialValues?: Showing;
+  initialValues?: UpdatedShowing;
   onSubmit: (event, action) => void;
   onDelete?: (event?) => void;
   onLeaveEdit?: () => void;
@@ -30,12 +29,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     ispreview: false,
     defaulttickettype: 1,
     purchaseuri: 'http://null.com',
-    instanceTicketTypes: initialValues
-      ? getTicketTypeArray(
-        initialValues.ticketTypeId,
-        initialValues.seatsForType,
-      )
-      : [],
+    instanceTicketTypes: initialValues.ticketrestrictions,
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
   };
