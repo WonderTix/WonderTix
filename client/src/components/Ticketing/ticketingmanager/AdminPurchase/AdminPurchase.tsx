@@ -15,6 +15,7 @@ import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
 import {Link} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
 
 type EventRow = {
   id?: number;
@@ -363,24 +364,25 @@ const AdminPurchase = () => {
       }));
     }
   };
+
   const handlePurchase = () => {
     // Gather ticket information from the rows
-    const ticketInfo = eventData.map((row) => ({
-      eventName: row.eventname,
-      eventTime: row.eventtime,
-      ticketType: row.ticketTypes,
+    const cartItems = eventData.map((row) => ({
+      product_id: row.id,
       price: row.price,
-      complementary: row.complementary,
+      desc: row.ticketTypes,
+      typeID: row.id, // Assuming typeID is same as row id for now
+      date: new Date(), // Defaulting to today's date
+      name: row.eventname,
+      product_img_url: '', // Placeholder for image URL
+      qty: 1, // Defaulting quantity to 1
+      payWhatCan: false, // Defaulting payWhatCan to false
     }));
-    // Store this ticket info in the selectedTickets state
-    setSelectedTickets(ticketInfo);
-
-    // Navigate to the AdminCheckout page and pass the ticket info
-    navigate('/ticketing/admincheckout', {state: {tickets: ticketInfo}});
+    // Navigate to the AdminCheckout page and pass the cart items
+    navigate('/ticketing/admincheckout', {state: {cartItems}});
   };
 
   const handleCart = () => {
-    // Gather ticket information from the rows
     const ticketInfo = eventData.map((row) => ({
       eventName: row.eventname,
       eventTime: row.eventtime,
@@ -388,10 +390,9 @@ const AdminPurchase = () => {
       price: row.price,
       complementary: row.complementary,
     }));
-    // Store this ticket info in the selectedTickets state
+
     setSelectedTickets(ticketInfo);
 
-    // Navigate to the Cart page and pass the ticket info
     navigate('../cart', {state: {tickets: ticketInfo}});
   };
 
