@@ -23,6 +23,7 @@ import DonationImage from '../../../assets/donation_page_image.png';
 export default function OnlyDonationPage(): ReactElement {
   const donation = useAppSelector(selectDonation);
   const [amount, setAmount] = useState(donation);
+  const [anonymous, setAnonymous] = useState(false);
   const history = useNavigate();
 
   // Replace this with your stripe public key
@@ -125,19 +126,18 @@ export default function OnlyDonationPage(): ReactElement {
           </p>
         </div>
       </div>
-
-      {/* <div className='text-3xl text-black font-bold mb-12'>Thank you for donating</div>
-      <div className='flex flex-col w-full items-start'>
-        <div className='text-sm text-zinc-600 ml-2'>Donation Amount $</div>
-        <input
-          placeholder="Donation Amount"
-          onChange={(e) => setAmount(+e.target.value)}
-          type="number"
-          className='w-full mb-7 bg-zinc-200 text-black p-5 rounded-xl'
-          value={amount || null}
-        />
-      </div> */}
-
+      <div className='flex flex-col w-full items-start gap-3 mt-2 mb-10'>
+        <div className='flex flex-row items-center gap-4 text-md text-zinc-700 '>
+          <input
+            type='checkbox'
+            onChange={(): void => setAnonymous(!anonymous)}
+            name='anonymous'
+          />
+          <div>
+            I would like to make my donation anonymous
+          </div>
+        </div>
+      </div>
       <CompleteOrderForm
         onSubmit={doCheckout}
         onBack={() => history(-1)}
