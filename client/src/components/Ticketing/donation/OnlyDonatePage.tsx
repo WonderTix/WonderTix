@@ -59,7 +59,6 @@ export default function OnlyDonationPage(): ReactElement {
           back to Events
         </button>
       </div>
-
       <div>
         <img src={DonationImage} alt="Donation Page Image" />
       </div>
