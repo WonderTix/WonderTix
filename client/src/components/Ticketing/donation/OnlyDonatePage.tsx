@@ -25,6 +25,7 @@ export default function OnlyDonationPage(): ReactElement {
   const [amount, setAmount] = useState(donation);
   const [anonymous, setAnonymous] = useState(false);
   const history = useNavigate();
+  const amounts = [10, 25, 50, 100, 250, 500];
 
   // Replace this with your stripe public key
   const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
@@ -37,7 +38,7 @@ export default function OnlyDonationPage(): ReactElement {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({cartItems: [], formData, donation: amount}),
+      body: JSON.stringify({cartItems: [], formData, donation: amount, anonymous: anonymous}),
     });
     const session = await response.json();
     const result = await stripe.redirectToCheckout({
@@ -124,6 +125,23 @@ export default function OnlyDonationPage(): ReactElement {
             friends at
             <b> the Raymond Family Foundation!</b>
           </p>
+        </div>
+      </div>
+      <hr className="w-full border border-t border-zinc-300 my-4"></hr>
+      <div className='w-full py-4'>
+        <div className="grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7">
+          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+          onClick= {() => setAmount(amounts[0]) }>$ {amounts[0]}</button>
+          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+          onClick= {() => setAmount(amounts[1]) }>$ {amounts[1]}</button>
+          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+          onClick= {() => setAmount(amounts[2]) }>$ {amounts[2]}</button>
+          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+          onClick= {() => setAmount(amounts[3]) }>$ {amounts[3]}</button>
+          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+          onClick= {() => setAmount(amounts[4]) }>$ {amounts[4]}</button>
+          <button className="bg-indigo-600 hover:bg-indigo-700 active:bg-transparent active:text-indigo-600 border border-indigo-600 text-white font-bold py-4 px-4 rounded"
+          onClick= {() => setAmount(amounts[5]) }>$ {amounts[5]}</button>
         </div>
       </div>
       <div className='flex flex-col w-full items-start gap-3 mt-2 mb-10'>
