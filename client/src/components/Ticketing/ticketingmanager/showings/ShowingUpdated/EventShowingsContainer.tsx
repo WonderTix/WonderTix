@@ -18,18 +18,23 @@ export const EventShowingsContainer = () => {
   } = useEvent();
   const [add, setAdd] = useState(false);
   const [sortBy, setSortBy] = useState(0);
-  const onSuccessAddShowing = () => {
-    setEditing((edit) => !edit);
-    setPopUpProps('Success', 'Showing Successfully Created', true);
-    setReloadShowing((reload) => !reload);
-    setAdd((add) => !add);
+  const onSuccessAddShowing = async (newShowing: any) => {
+    try {
+      const resp = await newShowing.json();
+      setEditing((edit) => !edit);
+      setPopUpProps('Success', 'Showing Successfully Created', true, `create-modal-showing-id-${resp.eventinstanceid}`);
+      setReloadShowing((reload) => !reload);
+      setAdd((add) => !add);
+    } catch (error) {
+      setPopUpProps('Failure', 'Showing creation failed', false, 'failure-create-modal');
+    }
   };
-  const onError = async (event) => {
+  const onError = async (event: any) => {
     try {
       const res = await event.json();
-      setPopUpProps('Failure', res.error, false);
+      setPopUpProps('Failure', res.error, false, 'failure-modal');
     } catch (error) {
-      setPopUpProps('Failure', 'Showing creation failed', false);
+      setPopUpProps('Failure', 'Showing creation failed', false, `failure-create-modal`);
     }
   };
 
