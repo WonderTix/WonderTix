@@ -85,11 +85,19 @@ const openApiSpec = swaggerJsdoc({
           },
         },
         updatedStatus: {
-          name: 'Updated status',
+          name: 'updatedStatus',
           in: 'path',
           description: 'Updated Active status',
           schema: {
             type: 'boolean',
+          },
+        },
+        name: {
+          name: 'name',
+          in: 'path',
+          description: 'Item Name',
+          schema: {
+            type: 'string',
           },
         },
       },

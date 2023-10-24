@@ -139,14 +139,14 @@ eventController.use(checkScopes);
  *     tags:
  *     - New Event API
  *     requestBody:
- *       description: Updated event information
+ *       description: New event information
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/requestBodies/Event'
  *     responses:
  *       201:
- *         description: event updated successfully.
+ *         description: event created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -207,7 +207,7 @@ eventController.post('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /2/event/{id}:
+ * /2/events/{id}:
  *   put:
  *     summary: update an event
  *     tags:
@@ -259,6 +259,7 @@ eventController.put('/:id', async (req: Request, res: Response) => {
     if (!event) {
       return res.status(400).json({error: `Event ${id} not found`});
     }
+    console.log(event);
     res.status(200).json(event);
     return;
   } catch (error) {
@@ -278,7 +279,121 @@ eventController.put('/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /2/event/{id}:
+ * /2/events/recover/{id}:
+ *   put:
+ *     summary: update an event
+ *     tags:
+ *     - New Event API
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: event updated successfully.
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventController.put('/recover/:id', async (req: Request, res: Response) => {
+  try {
+    const event= await prisma.events.restore(Number(req.params.id));
+    return res.status(200).json(event);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/events/active/{id}/{updatedStatus}:
+ *   put:
+ *     summary: update an event's active status
+ *     tags:
+ *     - New Event API
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     - $ref: '#/components/parameters/updatedStatus'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: event updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Event'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       422:
+ *         description: invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventController.put(
+    '/active/:id/:updatedStatus',
+    async (req: Request, res: Response) => {
+      try {
+        const {id, updatedStatus} = req.params;
+
+        if (!isBooleanString(updatedStatus)) {
+          return res
+              .status(422)
+              .json({error: `Invalid status: ${updatedStatus}`});
+        }
+
+        const updatedEvent = await prisma.events.update({
+          where: {
+            eventid: Number(id),
+          },
+          data: {
+            active: (updatedStatus === 'true'),
+          },
+        });
+        if (!updatedEvent) {
+          return res.status(400).json({error: `Event ${id} not found`});
+        }
+        return res.json(updatedEvent);
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+          res.status(400).json({error: error.message});
+          return;
+        }
+        if (error instanceof Prisma.PrismaClientValidationError) {
+          res.status(400).json({error: error.message});
+          return;
+        }
+        res.status(500).json({error: 'Internal Server Error'});
+      }
+    },
+);
+
+/**
+ * @swagger
+ * /2/events/{id}:
  *   delete:
  *     summary: delete an event
  *     tags:
@@ -320,16 +435,13 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// All events active and inactive includes instances.
 /**
  * @swagger
- * /2/event/:
+ * /2/events/showings:
  *   get:
  *     summary: get all events including showings
  *     tags:
  *     - New Event API
- *     parameters:
- *     - $ref: '#/components/parameters/id'
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -344,7 +456,7 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.get('/', async (req: Request, res: Response) => {
+eventController.get('/showings', async (req: Request, res: Response) => {
   try {
     const events = await prisma.events.findMany({
       where: {},
@@ -361,7 +473,7 @@ eventController.get('/', async (req: Request, res: Response) => {
       ...event,
       eventinstances: event.eventinstances.map((instance) => ({
         ...instance,
-        ticketrestictions: instance.ticketrestrictions.map((restriction) => ({
+        ticketrestrictions: instance.ticketrestrictions.map((restriction) => ({
           typeID: restriction.tickettypeid_fk,
           typeQuantity: restriction.ticketlimit,
         })),
@@ -381,16 +493,13 @@ eventController.get('/', async (req: Request, res: Response) => {
   }
 });
 
-// All events active and inactive does not include showings
 /**
  * @swagger
- * /2/event/noshowings:
+ * /2/events/noshowings:
  *   get:
  *     summary: get all events not including showings
  *     tags:
  *     - New Event API
- *     parameters:
- *     - $ref: '#/components/parameters/id'
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -405,9 +514,9 @@ eventController.get('/', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.get('/noshowings', (req: Request, res: Response) => {
+eventController.get('/noshowings', async (req: Request, res: Response) => {
   try {
-    const events = prisma.events.findMany({});
+    const events = await prisma.events.findMany({});
     return res.json(events);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -424,7 +533,7 @@ eventController.get('/noshowings', (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /2/event/noshowings/{id}:
+ * /2/events/noshowings/{id}:
  *   get:
  *     summary: get an event do not include showings
  *     tags:
@@ -435,7 +544,7 @@ eventController.get('/noshowings', (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: event updated successfully.
+ *         description: event fetch successful.
  *         content:
  *           application/json:
  *             schema:
@@ -452,13 +561,14 @@ eventController.get('/noshowings', (req: Request, res: Response) => {
 eventController.get('/noshowings/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
+    console.log('here I am 1');
     const eventExists = await prisma.events.findUnique({
       where: {
         eventid: Number(id),
       },
     });
     if (!eventExists) {
-      res.status(400).json({error: 'event not found'});
+      res.status(400).json({error: `Event ${id} not found`});
       return;
     }
     res.status(200).json(eventExists);
@@ -482,7 +592,7 @@ eventController.get('/noshowings/:id', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /2/event/{id}:
+ * /2/events/showings/{id}:
  *   get:
  *     summary: get an event include showings
  *     tags:
@@ -507,9 +617,11 @@ eventController.get('/noshowings/:id', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.get('/:id', async (req: Request, res: Response) => {
+eventController.get('showings/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
+
+    console.log('here I am 2');
     const eventExists = await prisma.events.findUnique({
       where: {
         eventid: Number(id),
@@ -557,82 +669,10 @@ eventController.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// change active status of event (updated status true = active, false inactive)
-/**
- * @swagger
- * /2/event/{id}/{updatedStatus}:
- *   put:
- *     summary: update an event's active status
- *     tags:
- *     - New Event API
- *     parameters:
- *     - $ref: '#/components/parameters/id'
- *     - $ref: '#/components/parameters/updatedStatus'
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: event updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Event'
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       422:
- *         description: invalid input
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-eventController.put(
-    '/active/:id/:updatedStatus',
-    async (req: Request, res: Response) => {
-      try {
-        const {id, updatedStatus} = req.params;
-
-        if (isBooleanString(updatedStatus)) {
-          return res
-              .status(422)
-              .json({error: `Invalid status: ${updatedStatus}`});
-        }
-
-        const updatedEvent = await prisma.events.update({
-          where: {
-            eventid: Number(id),
-          },
-          data: {
-            active: Boolean(updatedStatus),
-          },
-        });
-        if (!updatedEvent) {
-          return res.status(400).json({error: `Event ${id} not found`});
-        }
-        return res.json(updatedEvent);
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        if (error instanceof Prisma.PrismaClientValidationError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        res.status(500).json({error: 'Internal Server Error'});
-      }
-    },
-);
 
 /**
  * @swagger
- * /2/event/active/noshowings:
+ * /2/events/active/noshowings:
  *   get:
  *     summary: get all active events not including showings
  *     tags:
@@ -641,7 +681,7 @@ eventController.put(
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: event updated successfully.
+ *         description: event fetch successful.
  *         content:
  *           application/json:
  *             schema:
@@ -679,10 +719,9 @@ eventController.get(
     },
 );
 
-// all active events includes showings
 /**
  * @swagger
- * /2/event/active:
+ * /2/events/active/showings:
  *   get:
  *     summary: get all active events including showings
  *     tags:
@@ -691,7 +730,7 @@ eventController.get(
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: event updated successfully.
+ *         description: event fetch successful.
  *         content:
  *           application/json:
  *             schema:
@@ -705,7 +744,7 @@ eventController.get(
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.get('/active', async (req: Request, res: Response) => {
+eventController.get('/active/showings', async (req: Request, res: Response) => {
   try {
     const activeEvents = await prisma.events.findMany({
       where: {
@@ -724,7 +763,7 @@ eventController.get('/active', async (req: Request, res: Response) => {
       ...event,
       eventinstances: event.eventinstances.map((instance) => ({
         ...instance,
-        ticketrestictions: instance.ticketrestrictions.map((restriction) => ({
+        ticketrestrictions: instance.ticketrestrictions.map((restriction) => ({
           typeID: restriction.tickettypeid_fk,
           typeQuantity: restriction.ticketlimit,
         })),
@@ -744,10 +783,9 @@ eventController.get('/active', async (req: Request, res: Response) => {
   }
 });
 
-// all inactive events does not include instances
 /**
  * @swagger
- * /2/event/inactive/noshowings:
+ * /2/events/inactive/noshowings:
  *   get:
  *     summary: get all inactive events not including showings
  *     tags:
@@ -756,7 +794,7 @@ eventController.get('/active', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: event updated successfully.
+ *         description: event fetch successful.
  *         content:
  *           application/json:
  *             schema:
@@ -796,7 +834,7 @@ eventController.get(
 
 /**
  * @swagger
- * /2/event/inactive:
+ * /2/events/inactive/showings:
  *   get:
  *     summary: get all inactive events include showings
  *     tags:
@@ -805,7 +843,7 @@ eventController.get(
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: event updated successfully.
+ *         description: event fetch successful.
  *         content:
  *           application/json:
  *             schema:
@@ -819,7 +857,7 @@ eventController.get(
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.get('/inactive', async (req: Request, res: Response) => {
+eventController.get('/inactive/showings', async (req: Request, res: Response) => {
   try {
     const inactiveEvents = await prisma.events.findMany({
       where: {
@@ -837,7 +875,7 @@ eventController.get('/inactive', async (req: Request, res: Response) => {
       ...event,
       eventinstances: event.eventinstances.map((instance) => ({
         ...instance,
-        ticketrestictions: instance.ticketrestrictions.map((restriction) => ({
+        ticketrestrictions: instance.ticketrestrictions.map((restriction) => ({
           typeID: restriction.tickettypeid_fk,
           typeQuantity: restriction.ticketlimit,
         })),
@@ -859,16 +897,18 @@ eventController.get('/inactive', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /2/event/season/:id:
+ * /2/events/season/{id}:
  *   get:
  *     summary: get all events associated with a season id
  *     tags:
  *     - New Event API
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: event updated successfully.
+ *         description: event fetch successful.
  *         content:
  *           application/json:
  *             schema:
@@ -882,10 +922,10 @@ eventController.get('/inactive', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.get('season/:id', async (req: Request, res: Response) => {
+eventController.get('/season/:id', async (req: Request, res: Response) => {
   try {
     const id= Number(req.params.id);
-    const events = prisma.events.findMany({
+    const events = await prisma.events.findMany({
       where: {
         seasonid_fk: id,
       },
@@ -903,3 +943,54 @@ eventController.get('season/:id', async (req: Request, res: Response) => {
     return res.status(500).json({error: 'Internal Server Error'});
   }
 });
+
+/**
+ * @swagger
+ * /2/events/name/{name}:
+ *   get:
+ *     summary: get all events associated with an event name
+ *     tags:
+ *     - New Event API
+ *     parameters:
+ *     - $ref: '#/components/parameters/name'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: event fetch successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Event'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventController.get('/season/:id', async (req: Request, res: Response) => {
+  try {
+    const name= req.params.id.trim();
+    const events = await prisma.events.findMany({
+      where: {
+        eventname: name,
+      },
+    });
+    return res.json(events);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+

@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma, PrismaClient} from '@prisma/client';
+import {Prisma} from '@prisma/client';
 import {eventInstanceRequest} from '../interfaces/Event';
 import {
   InvalidInputError,
@@ -8,10 +8,13 @@ import {
   validateShowingOnUpdate,
   validateTicketRestrictionsOnUpdate,
 } from './eventInstanceController.service';
+import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
-const prisma = new PrismaClient();
+const prisma = extendPrismaClient();
 
 export const eventInstanceController = Router();
+eventInstanceController.use(checkJwt);
+eventInstanceController.use(checkScopes);
 
 /**
  * @swagger
@@ -21,14 +24,14 @@ export const eventInstanceController = Router();
  *     tags:
  *     - New event instance
  *     requestBody:
- *       description: Updated event instance information
+ *       description: New Event Instance information
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/requestBodies/EventInstance'
  *     responses:
  *       201:
- *         description: event instance updated successfully.
+ *         description: event instance created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -130,8 +133,6 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
   }
 });
 
-eventInstanceController.use(checkJwt);
-eventInstanceController.use(checkScopes);
 
 /**
  * @swagger
@@ -139,10 +140,10 @@ eventInstanceController.use(checkScopes);
  *   get:
  *     summary: get all event instances
  *     tags:
- *     - New event instances
+ *     - New event instance
  *     responses:
  *       200:
- *         description: event instance updated successfully.
+ *         description: event instance fetch succesful.
  *         content:
  *           application/json:
  *             schema:
@@ -163,59 +164,17 @@ eventInstanceController.use(checkScopes);
  */
 eventInstanceController.get('/', async (req: Request, res: Response) => {
   try {
-    const filters: any = {};
-    if (req.params.event) {
-      filters.eventid_fk = {
-        equals: req.params.event,
-      };
-    }
-    if (req.params.date) {
-      filters.eventdate = {
-        equals: req.params.date,
-      };
-    }
-    if (req.params.sales_status) {
-      filters.salestatus = {
-        equals: req.params.sales_status,
-      };
-    }
-    if (req.params.purchase_uri) {
-      filters.purchaseuri = {
-        contains: req.params.purchase_uri,
-      };
-    }
-    if (req.params.is_preview) {
-      filters.ispreview = {
-        equals: req.params.is_preview,
-      };
-    }
-
-    if (Object.keys(filters).length > 0) {
-      const eventInstances = await prisma.eventinstances.findMany({
-        where: filters,
-      });
-      res.status(200).send(eventInstances);
-
-      return;
-    }
-
-    const eventInstances = await prisma.eventinstances.findMany();
-    res.status(200).send(eventInstances);
-
-    return;
+    const eventinstances = await prisma.eventinstances.findMany({});
+    return res.status(200).json(eventinstances);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).send({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).send({error: error.message});
-
       return;
     }
-
     res.status(500).send({error: 'Internal Server Error'});
   }
 });
@@ -233,7 +192,7 @@ eventInstanceController.get('/', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: event instance updated successfully.
+ *         description: event instance fetch successful.
  *         content:
  *           application/json:
  *             schema:
@@ -256,31 +215,19 @@ eventInstanceController.get('/:id', async (req: Request, res: Response) => {
       },
     });
     if (!eventInstanceExists) {
-      res.status(404).send({error: 'event instance not found'});
-
-      return;
+      return res.status(400).send({error: `Event instance ${id} does not exist`});
     }
-    const eventInstance = await prisma.eventinstances.findUnique({
-      where: {
-        eventinstanceid: Number(id),
-      },
-    });
-    res.status(200).send(eventInstance);
-
+    res.status(200).send(eventInstanceExists);
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).send({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).send({error: error.message});
-
       return;
     }
-
     res.status(500).send({error: 'Internal Server Error'});
   }
 });
@@ -465,7 +412,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       204:
- *         description: event instance updated successfully.
+ *         description: event instance deleted successfully.
  *       400:
  *         description: bad request
  *         content:
@@ -480,29 +427,13 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
 eventInstanceController.delete('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const eventInstanceExists = await prisma.eventinstances.findUnique({
-      where: {
-        eventinstanceid: Number(id),
-      },
-      include: {
-        eventtickets: true,
-      },
-    });
+    const eventInstanceExists = await prisma.eventinstances.softDelete(Number(id));
 
     if (!eventInstanceExists) {
-      res.status(404).send({error: 'Event instance not found'});
+      res.status(404).send({error: `Event instance ${id} not found`});
       return;
     }
-
-    await prisma.eventinstances.update({
-      where: {
-        eventinstanceid: Number(id),
-      },
-      data: {
-        salestatus: false,
-      },
-    });
-    res.status(204).send('Showing successfully changed to inactive');
+    res.status(204).send('Event Instance Deleted');
     return;
   } catch (error) {
     console.error(error);

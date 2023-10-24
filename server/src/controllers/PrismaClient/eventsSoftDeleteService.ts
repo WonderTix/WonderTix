@@ -1,4 +1,5 @@
 import {Prisma} from '@prisma/client';
+
 export default Prisma.defineExtension((prisma) => {
   return prisma.$extends({
     name: 'Events Soft Delete',
@@ -186,7 +187,10 @@ export default Prisma.defineExtension((prisma) => {
               },
             };
           }
-          return await prisma.events.updateMany(args);
+          const {where, ...everythingElse} = args;
+          const event = await prisma.events.findFirst({where});
+          if (!event) return null;
+          return await prisma.events.update({where: {eventid: event.eventid}, ...everythingElse});
         },
         async updateMany({args, query}) {
           args.where = {deletedat: null, ...args.where};
