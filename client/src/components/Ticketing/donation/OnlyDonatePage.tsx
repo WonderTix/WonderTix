@@ -25,6 +25,8 @@ export default function OnlyDonationPage(): ReactElement {
   const [amount, setAmount] = useState(donation);
   const [anonymous, setAnonymous] = useState(false);
   const history = useNavigate();
+  // 'onetime' | 'monthly' | 'quarterly';
+  const [donationPeriod, setDonationPeriod] = useState<string>('onetime');
   const amounts = [10, 25, 50, 100, 250, 500];
 
   // Replace this with your stripe public key
@@ -47,6 +49,10 @@ export default function OnlyDonationPage(): ReactElement {
     if (result.error) {
       console.log(result.error.message);
     }
+  };
+
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDonationPeriod(event.target.value);
   };
 
   return (
@@ -131,6 +137,39 @@ export default function OnlyDonationPage(): ReactElement {
         </div>
       </div>
       <hr className="w-full border border-t border-zinc-300 my-4"></hr>
+      <div>
+        <form>
+          <label>
+            <input
+              type="radio"
+              value="onetime"
+              name="period"
+              checked={donationPeriod == 'onetime'}
+              onChange={handleRadioChange}
+            />
+            One Time
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="monthly"
+              name="period"
+              onChange={handleRadioChange}
+            />
+            Monthly
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="quarterly"
+              name="period"
+              onChange={handleRadioChange}
+            />
+            Quarterly
+          </label>
+          <p>Selected option: {donationPeriod}</p>
+        </form>
+      </div>
       {/* Donation buttons */}
       <div className='w-full py-4'>
         <div className="grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7">
