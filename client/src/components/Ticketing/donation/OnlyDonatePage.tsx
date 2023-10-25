@@ -261,7 +261,6 @@ export default function OnlyDonationPage(): ReactElement {
           </div>
         </div>
       </div>
-
     </div>
   );
 }
