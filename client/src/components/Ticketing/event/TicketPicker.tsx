@@ -525,6 +525,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         />
       </div>
       <button
+        data-testid='get-tickets'
         disabled={
           !qty || !selectedTicket || qty > selectedTicket.availableseats
         }
