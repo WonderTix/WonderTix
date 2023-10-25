@@ -29,29 +29,18 @@ const FilterComponent = () => {
     };
 
     return (
-        <div>
-            <div className="flex justify-center font-bold text-2xl">
+        <div className='shadow-xl rounded-md bg-white border-t-4 border-black'>
+            <div className="flex p-3 justify-center border-b font-bold text-lg bg-slate-100">
                 <h1>Filter Settings</h1>
             </div>
-            <Divider
-                sx={{
-                    'backgroundColor': 'darkgrey',
-                    'height': '3px',
-                }}
-            />
-            <div className="px-1 py-1">
-                <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
+                <div className="px-1 py-1">
                     <h3 className="font-bold">Batch Date Range:</h3>
                     <DateRangePicker
                         start={startDate}
                         end={endDate}
                         onStartDateChange={handleStartDateChange}
                         onEndDateChange={handleEndDateChange}
-                    />
-                    <Divider
-                        sx={{
-                            'backgroundColor': 'darkgrey',
-                            }}
                     />
                     <FormControl>
                         <h3 className="font-bold">Group By:</h3>
@@ -66,16 +55,16 @@ const FilterComponent = () => {
                             </RadioGroup>
                         </div>
                     </FormControl>
-                    <Divider
-                        sx={{
-                            'backgroundColor': 'darkgrey',
-                            }}
-                    />
-                    <div className="flex justify-center pt-1.5">
-                        <Button type="submit" variant="contained">Generate</Button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <Divider
+                    sx={{
+                        'backgroundColor': 'slate-100',
+                        }}
+                />
+                <div className="flex justify-center pt-1.5 px-1 py-1">
+                    <Button className='font-bold bg-gradient-to-t from slate-400/50 to-slate-100 hover:bg-gradient-to-b hover:shadow-inner shadow shadow-slate-600 active:opacity-75' type="submit" variant="contained">Generate</Button>
+                </div>
+            </form>
         </div>
     );
 };

@@ -46,9 +46,6 @@ const CreditCardReconciliationReport=() =>{
                                 sx = {{
                                     'width': '90%',
                                     'height': '15rem',
-                                    'backgroundColor': 'lightgrey',
-                                    'border': '2px solid gray',
-                                    'borderRadius': '7px',
                                 }}
                             >
                                 <FilterComponent/>
@@ -59,9 +56,6 @@ const CreditCardReconciliationReport=() =>{
                                 sx = {{
                                     'width': '95%',
                                     'height': '100%',
-                                    'backgroundColor': 'lightgrey',
-                                    'border': '2px solid gray',
-                                    'borderRadius': '7px',
                                 }}
                             >
                                 <ReportComponent/>

@@ -6,7 +6,7 @@ import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
 const EventTotalsComponent = () => {
     const columns: GridColDef[] = [
-        {field: 'title', headerName: '', flex: 4},
+        {field: 'title', headerName: 'Event Type', flex: 4},
         {field: 'qty', headerName: 'Qty', flex: 1},
         {field: 'buyer_price', headerName: 'Buyer Price', flex: 1},
         {field: 'fee', headerName: 'Fee', flex: 1},
@@ -18,12 +18,12 @@ const EventTotalsComponent = () => {
         {id: 1, title: 'A Christmas Carol (Season 16)', qty: 6, buyer_price: 307.50, fee: 18.00, single_ticket_fee: 0.00, ptech_fee: -6.00},
         {id: 2, title: 'Gift Certificates', qty: 2, buyer_price: 200.00, fee: 0.00, single_ticket_fee: 0.00, ptech_fee: -2.00},
         {id: 3, title: 'Season 16 Subscriptions', qty: 32, buyer_price: 4208.00, fee: 0.00, single_ticket_fee: 0.00, ptech_fee: -96.00},
-        {id: 4, title: 'Event Totals', qty: 40, buyer_price: 4715.50, fee: 18.00, single_ticket_fee: 0.00, ptech_fee: -104.00},
+        {id: 4, title: 'EVENT TOTALS', qty: 40, buyer_price: 4715.50, fee: 18.00, single_ticket_fee: 0.00, ptech_fee: -104.00},
     ];
 
     return (
-        <Box>
-            <DataGrid className='bg-transparent my-1'
+        <div className='bg-slate-50'>
+            <DataGrid className='my-1'
                 rows={rows}
                 columns={columns}
                 disableSelectionOnClick={true}
@@ -31,15 +31,14 @@ const EventTotalsComponent = () => {
                 hideFooter={true}
                 autoHeight={true}
                 pageSize={11}
+                style={{borderRadius: 0}}
                 sx={{
-                    'border': 'none',
                     '& .MuiDataGrid-cell': {
-                        border: '0.5px solid black',
-                        fontSize: '14px',
+                        fontSize: '16px',
                     },
                 }}
             />
-        </Box>
+        </div>
     );
 };
 

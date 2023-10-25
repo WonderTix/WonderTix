@@ -14,14 +14,14 @@ const DateRangePicker = ({start, end, onStartDateChange, onEndDateChange}) => {
             <div className='flex pl-2 pb-2'>
                 <DatePicker
                     name = 'startDate'
-                    className='border border-black rounded text-sm w-[90%]'
+                    className='border border-black rounded text-sm bg-slate-50 w-[90%]'
                     selected={start}
                     onChange={onStartDateChange}
                     dateFormat="MM/dd/yy"
                 />
                 <DatePicker
                     name = 'startDate'
-                    className='border border-black rounded text-sm w-[90%]'
+                    className='border border-black rounded text-sm bg-slate-50 w-[90%]'
                     selected={end}
                     onChange={onEndDateChange}
                     dateFormat="MM/dd/yy"
