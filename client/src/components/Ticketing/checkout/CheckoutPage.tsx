@@ -123,7 +123,7 @@ export default function CheckoutPage(): ReactElement {
                md:ml-5 md:mt-10 bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'
         >
-          <YourOrder />
+          <YourOrder backButtonRoute='/' />
         </div>
       </div>
     </div>

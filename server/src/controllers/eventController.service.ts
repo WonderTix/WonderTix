@@ -274,7 +274,7 @@ const validateContact = (formData: checkOutForm) => {
     email: validateWithRegex(
         formData.email,
         `Email: ${formData.email} is invalid`,
-        new RegExp('.*'),
+        new RegExp('.+\\@.+\\..+'),
     ),
     address: validateWithRegex(
         formData.streetAddress,
