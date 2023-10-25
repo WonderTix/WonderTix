@@ -32,8 +32,11 @@ import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
 import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsletter/NewsletterCreatemain';
 import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showingsmain';
 import SeasonsMain from './components/Ticketing/ticketingmanager/Season/SeasonMain';
+import SingleSeasonMain from './components/Ticketing/ticketingmanager/Season/components/SingleSeasonMain';
 import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
+import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
+import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
 import RefundMain from './components/Ticketing/ticketingmanager/Refund/RefundOrderTicketMain';
@@ -132,6 +135,10 @@ const App = () => {
           element={<ProtectedRoute component={SeasonsMain} />}
         />
         <Route
+          path='/ticketing/seasons/:seasonid'
+          element={<ProtectedRoute component={SingleSeasonMain} />}
+        />
+        <Route
           path='/ticketing/tickettypes'
           element={<ProtectedRoute component={Tickettypesmain} />}
         />
@@ -142,6 +149,14 @@ const App = () => {
         <Route
           path='/ticketing/showings/:eventid'
           element={<ProtectedRoute component={EventProvider} />}
+        />
+        <Route
+          path='/ticketing/purchaseticket'
+          element={<ProtectedRoute component={AdminPurchasemain} />}
+        />
+        <Route
+          path='/ticketing/admincheckout'
+          element={<ProtectedRoute component={AdminCheckoutmain} />}
         />
         <Route
           path='/ticketing/Refund'

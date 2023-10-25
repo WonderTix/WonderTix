@@ -18,7 +18,7 @@ export const EventGeneralContainer = () => {
       setEventID(res.data[0].eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
-      setPopUpProps(`Success`, 'Event update successful', true);
+      setPopUpProps(`Success`, 'Event update successful', true, `update-modal-event-id-${eventID}`);
     } catch (error) {
       console.error('error updating event');
     }
@@ -32,7 +32,7 @@ export const EventGeneralContainer = () => {
       setEventID(res.data[0].eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
-      setPopUpProps(`Success`, 'Event creation successful', true);
+      setPopUpProps(`Success`, 'Event creation successful', true, `create-modal-event-id-${eventID}`);
     } catch (error) {
       console.error('error updating event after creation');
     }
@@ -40,9 +40,9 @@ export const EventGeneralContainer = () => {
   const onSubmitError = async (event) => {
     try {
       const res = await event.json();
-      setPopUpProps(`Failure`, res.error, false);
+      setPopUpProps(`Failure`, res.error, false, `failure-modal`);
     } catch (error) {
-      setPopUpProps(`Failure`, 'Event update failed', false);
+      setPopUpProps(`Failure`, 'Event update failed', false, `failure-update-modal-event-id-${eventID}`);
     }
   };
   const onDeleteSuccess = () => {
@@ -52,9 +52,9 @@ export const EventGeneralContainer = () => {
   const onDeleteError = async (event) => {
     try {
       const res = await event.json();
-      setPopUpProps(`Failure`, res.error, false);
+      setPopUpProps(`Failure`, res.error, false, `failure-modal`);
     } catch (error) {
-      setPopUpProps(`Failure`, 'Event cannot be deleted', false);
+      setPopUpProps(`Failure`, 'Event cannot be deleted', false, `failure-delete-modal-event-id-${eventID}`);
     }
   };
 
@@ -77,7 +77,9 @@ export const EventGeneralContainer = () => {
     setPopUpProps('Confirm deletion',
       'Click continue to delete this event',
       false,
-      async () => await onDelete());
+      `delete-modal-event-id-${eventID}`,
+      async () => await onDelete(),
+    );
   };
   return (
     <>

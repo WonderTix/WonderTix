@@ -245,7 +245,7 @@ const DoorList = () => {
         </div>
         <div className="mb-3">
           <label htmlFor="time-select" className='text-sm text-zinc-500 ml-1 mb-2 block'>Choose Time</label>
-          <select id="time-select" className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
+          <select className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
             <option className="px-6 py-3">Select Time</option>
             {availableTimesEvents.map((event) => {
               const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));

@@ -16,7 +16,7 @@ export const getActiveEventSales = async (): Promise<response> => {
               FROM eventinstances ei
                 JOIN eventtickets et on ei.eventinstanceid = et.eventinstanceid_fk
                 JOIN tickettype tt on et.tickettypeid_fk = tt.tickettypeid
-              WHERE et.purchased = true
+              WHERE et.singleticket_fk IS NOT NULL
                 AND eventid_fk 
                   IN 
                     (SELECT eventid 

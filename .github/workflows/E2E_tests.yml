@@ -1,7 +1,7 @@
 name: Run E2E tests on client
 on:
   pull_request:
-    types: [opened, reopened, ready_for_review, edited, synchronize]
+    types: [opened, reopened, ready_for_review, synchronize]
 
 jobs:
   test-client:
