@@ -42,7 +42,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
                 events e ON ei.eventid_fk = e.eventid
             WHERE 
                 ei.eventinstanceid = $1
-                and 
+                AND 
                 et.tickettypeid_fk = $2
             GROUP BY 
                 c.contactid,
