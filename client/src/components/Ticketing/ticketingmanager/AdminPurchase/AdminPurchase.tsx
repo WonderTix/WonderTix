@@ -384,9 +384,9 @@ const AdminPurchase = () => {
         aggregatedCartItems[key] = {
           product_id: row.eventinstanceid,
           price: row.price,
-          desc: row.desc,
+          desc: row.ticketTypes,
           typeID: row.id,
-          date: row.eventdate,
+          date: new Date(row.eventdate),
           name: row.eventname,
           product_img_url: row.imageurl,
           qty: 1, // default 1
