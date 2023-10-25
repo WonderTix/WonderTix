@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
-import PopUp from '../../Pop-up';
+import PopUp from '../../PopUp';
 
 
 const Refund = () => {
