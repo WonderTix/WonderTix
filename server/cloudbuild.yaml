@@ -22,15 +22,18 @@ steps:
         --image $$ARTIFACTS/server-img-$$ENV \
         --region $$REGION \
         --platform managed \
-        --memory 1Gi \
+        --memory $$SERVER_MEMORY \
+        --cpu $$SERVER_CPU \
         --allow-unauthenticated \
         --min-instances 1 \
         --set-cloudsql-instances $$SQL_INSTANCE \
         --service-account $$SERVICE_ACCOUNT \
         --set-env-vars=\
         AUTH0_AUDIENCE=$$AUTH0_AUDIENCE,\
+        AUTH0_URL=$$AUTH0_URL,\
+        ENV=$$ENV,\
         FRONTEND_URL=$$FRONTEND_URL,\
-        AUTH0_URL=$$AUTH0_URL, \
+        ROOT_URL=$$ROOT_URL, \
         --set-secrets=\
         AUTH0_CLIENT_SECRET=AUTH0_CLIENT_SECRET:$$ENV,\
         DATABASE_URL=DATABASE_URL:$$ENV,\
@@ -39,9 +42,7 @@ steps:
         DB_PASSWORD=DB_PASSWORD:$$ENV,\
         DB_PORT=DB_PORT:$$ENV,\
         DB_USER=DB_USER:$$ENV,\
-        ENV=ENV:$$ENV,\
         PRIVATE_STRIPE_KEY=PRIVATE_STRIPE_KEY:$$ENV,\
-        ROOT_URL=ROOT_URL:$$ENV,\
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_AUDIENCE'
@@ -50,10 +51,12 @@ steps:
       - 'FRONTEND_URL'
       - 'REGION'
       - 'ROOT_URL'
+      - 'SERVER_CPU'
+      - 'SERVER_MEMORY'
       - 'SERVICE_ACCOUNT'
       - 'SQL_INSTANCE'
 
-# Use dev or stg versions depending on _ENV value from trigger
+# Use dev, stg, or prd versions depending on _ENV value from trigger
 availableSecrets:
   secretManager:
   - versionName: projects/$PROJECT_ID/secrets/ARTIFACTS/versions/$_ENV
@@ -70,8 +73,11 @@ availableSecrets:
     env: 'REGION'
   - versionName: projects/$PROJECT_ID/secrets/ROOT_URL/versions/$_ENV
     env: 'ROOT_URL'
+  - versionName: projects/$PROJECT_ID/secrets/SERVER_CPU/versions/$_ENV
+    env: 'SERVER_CPU'
+  - versionName: projects/$PROJECT_ID/secrets/SERVER_MEMORY/versions/$_ENV
+    env: 'SERVER_MEMORY'
   - versionName: projects/$PROJECT_ID/secrets/SERVICE_ACCOUNT/versions/$_ENV
     env: 'SERVICE_ACCOUNT'
   - versionName: projects/$PROJECT_ID/secrets/SQL_INSTANCE/versions/$_ENV
     env: 'SQL_INSTANCE'
-
