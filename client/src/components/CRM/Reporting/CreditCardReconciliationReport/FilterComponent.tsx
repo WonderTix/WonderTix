@@ -2,30 +2,37 @@ import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 
 import DateRangePicker from './DateRange';
+import PropTypes from 'prop-types';
 
 import {Divider, Button, Radio, RadioGroup} from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
-const FilterComponent = () => {
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    const [groupBy, setGroupBy] = useState('');
+const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
+    const {startDate, endDate, groupBy} = filterData;
+
+    const [formData, setFormData] = useState({
+        startDate: '',
+        endDate: '',
+        groupBy: '',
+    });
 
     const handleStartDateChange = (date) => {
-        setStartDate(date);
+        onFilterChange('startDate', date);
     };
 
     const handleEndDateChange = (date) => {
-        setEndDate(date);
+        onFilterChange('endDate', date);
+    };
+
+    const handleGroupChange = (event) => {
+        onFilterChange('groupBy', event.target.value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Start Date:', startDate);
-        console.log('End Date: ', endDate);
-        console.log('Group By: ', groupBy);
+        onFilterSubmit();
     };
 
     return (
@@ -48,10 +55,10 @@ const FilterComponent = () => {
                             <RadioGroup
                                 row
                                 name="row-radio-buttons-group"
-                                defaultValue="event"
+                                defaultValue="Event"
                             >
-                                <FormControlLabel value="event" control={<Radio />} label="Event" />
-                                <FormControlLabel value="ql_code" control={<Radio />} label="QL Code" />
+                                <FormControlLabel value="Event" control={<Radio />} label="Event" />
+                                <FormControlLabel value="QL Code" control={<Radio />} label="QL Code" />
                             </RadioGroup>
                         </div>
                     </FormControl>
@@ -67,6 +74,16 @@ const FilterComponent = () => {
             </form>
         </div>
     );
+};
+
+FilterComponent.propTypes = {
+    filterData: PropTypes.shape({
+      startDate: PropTypes.instanceOf(Date).isRequired,
+      endDate: PropTypes.instanceOf(Date).isRequired,
+      groupBy: PropTypes.string.isRequired,
+    }).isRequired,
+    onFilterChange: PropTypes.func.isRequired,
+    onFilterSubmit: PropTypes.func.isRequired,
 };
 
 export default FilterComponent;

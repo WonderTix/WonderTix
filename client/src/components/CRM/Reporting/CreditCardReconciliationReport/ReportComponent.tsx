@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 import CCTTotalsComponent from './CCTTotalsComponent';
 import EventTotalsComponent from './EventTotalsComponent';
@@ -7,15 +8,24 @@ import EventTotalsByCCComponent from './EventTotalsByCCComponent';
 
 import {Divider, Button} from '@mui/material';
 
-const ReportComponent = () => {
+const ReportComponent = ({filterData}) => {
     const header = {'org': 'Portland Playhouse', 'range': 'Temp', 'grouped': 'Event'};
+    let start = '';
+    let end = '';
 
-    const sample_transaction_cols = ['titles', 'cost'];
-    const sample_transactions_totals = [7002.50, 4715.50, 18.00, 18.00, 0.00, 0.00, 0.00, 0.00, 2269.00, -104.00];
+    // dates are still not populating the report correctly
+    const formatDateToMMDDYYYY = (date: Date) => {
+        const month = (date.getMonth() + 1).toString();
+        const day = date.getDate().toString();
+        const year = date.getFullYear().toString();
 
-    const sample_event_cols = ['title', 'Qty', 'Buyer Price', 'Fee', 'Single Ticket Fee', 'PTech Fee'];
-    const sample_event_totals = [];
-    const sample_event_totals_by_cc = [];
+        return `${month}/${day}/${year}`;
+    };
+
+    useEffect(() => {
+        start = formatDateToMMDDYYYY(filterData.startDate);
+        end = formatDateToMMDDYYYY(filterData.endDate);
+    });
 
     return (
         <div className='shadow-xl rounded-md bg-white border-t-4 border-black'>
@@ -25,8 +35,8 @@ const ReportComponent = () => {
             </div>
             <div className="flex justify-evenly border-b px-4 py-1 bg-slate-100">
                 <h3><strong>Organization: </strong> {header.org}</h3>
-                <h3><strong>Batch Date Range: </strong>{header.range}</h3>
-                <h3><strong>Grouped By: </strong>{header.grouped}</h3>
+                <h3><strong>Batch Date Range: </strong>{start}</h3>
+                <h3><strong>Grouped By: </strong>{filterData.groupBy}</h3>
             </div>
             <div className="px-4">
                 <h1 className="font-bold text-2xl py-2">Credit Card Transaction Totals</h1>
@@ -45,6 +55,14 @@ const ReportComponent = () => {
             />
         </div>
     );
+};
+
+ReportComponent.propTypes = {
+    filterData: PropTypes.shape({
+        startDate: PropTypes.instanceOf(Date).isRequired,
+        endDate: PropTypes.instanceOf(Date).isRequired,
+        groupBy: PropTypes.string.isRequired,
+    }),
 };
 
 export default ReportComponent;

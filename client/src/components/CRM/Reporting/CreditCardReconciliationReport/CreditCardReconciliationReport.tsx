@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 
 import FilterComponent from './FilterComponent';
@@ -8,6 +8,28 @@ import Navigation from '../../Navigation';
 import {Box, Grid} from '@mui/material';
 
 const CreditCardReconciliationReport=() =>{
+    const [displayReport, setDisplayReport] = useState(false);
+
+    const [filterData, setFilterData] = useState({
+        startDate: new Date(),
+        endDate: new Date(),
+        groupBy: 'Event', // Default value
+      });
+
+      // the 2 functions below need reworking
+    const handleFilterChange = (name, value) => {
+        setFilterData({
+            ...filterData,
+            [name]: value,
+        });
+        console.log(filterData.groupBy);
+    };
+
+    const handleFilterSubmit = () => {
+        console.log('Filter Data:', filterData);
+        setDisplayReport(true);
+    };
+
     return (
         <div>
             <Box
@@ -48,7 +70,11 @@ const CreditCardReconciliationReport=() =>{
                                     'height': '15rem',
                                 }}
                             >
-                                <FilterComponent/>
+                            <FilterComponent
+                                filterData={filterData}
+                                onFilterChange={handleFilterChange}
+                                onFilterSubmit={handleFilterSubmit}
+                            />
                             </Box>
                         </Grid>
                         <Grid item xs={8}>
@@ -58,7 +84,7 @@ const CreditCardReconciliationReport=() =>{
                                     'height': '100%',
                                 }}
                             >
-                                <ReportComponent/>
+                                {displayReport && <ReportComponent filterData={filterData}/>}
                             </Box>
                         </Grid>
                     </Grid>
