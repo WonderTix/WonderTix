@@ -99,7 +99,7 @@ const Eventshowings = (): ReactElement => {
               title={title}
             />
             <div className='mt-6'>
-              <h1 className='text-white text-4xl font-bold'>
+              <h1 data-testid='event-title' className='text-white text-4xl font-bold'>
                 {titleCase(title)}
               </h1>
               <p className='text-zinc-200 font-semibold text-xl mt-6'>
