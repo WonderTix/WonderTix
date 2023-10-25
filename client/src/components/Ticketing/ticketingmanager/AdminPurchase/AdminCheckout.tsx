@@ -28,7 +28,8 @@ export default function AdminCheckout(): ReactElement {
   const location = useLocation();
   const ticketData = location.state;
   const navigate = useNavigate();
-  const cartItems = useAppSelector(selectCartContents);
+  const cartItems = location.state?.cartItems || [];
+  console.log('cartItems', cartItems);
   const discount = useAppSelector(selectDiscount);
   const handleBackButton = () => {
     navigate('/ticketing/purchaseticket');
