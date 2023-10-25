@@ -57,12 +57,22 @@ const renderCheckbox = (params: GridCellParams) => (
  * @param {GridCellParams} params
  * @returns edits the checkInGuest value
  */
-const renderCheckin = ((params: GridCellParams) =>
-  <Checkbox
-    color='primary'
-    defaultChecked={params.value as boolean}
-    onChange={(e) => checkInGuest(e.target.checked, params.getValue(params.id, 'ticketno') as string)}
-  />);
+const renderCheckin = (params: GridCellParams) => {
+  const isDisabled = params.getValue(params.id, 'lastname') === 'OPEN SEATS';
+
+  return (
+    <Checkbox
+      color='primary'
+      defaultChecked={params.value as boolean}
+      disabled={isDisabled}
+      onChange={(e) => {
+        if (!isDisabled) {
+          checkInGuest(e.target.checked, params.getValue(params.id, 'ticketno') as string);
+        }
+      }}
+    />
+  );
+};
 
 /**
  * columns uses first name, last name, # of tickets purchased, arrival status, vip, donorbadge, accomodations
