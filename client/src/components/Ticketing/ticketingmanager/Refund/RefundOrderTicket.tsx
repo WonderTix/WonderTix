@@ -14,9 +14,7 @@ const Refund = () => {
       setShow((p) => ({...p, showPopUp: false}));
     },
   });
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    const orderID = event.target.payment_intent.value;
+  const onSubmit = async (orderID) => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_2_URL}/order/refund/${orderID}`,
@@ -56,13 +54,15 @@ const Refund = () => {
     {
       name: 'John Doe',
       date: '2023-10-24',
-      showings: 'Gone With The Wind',
+      showings: ['Gone With The Wind', 'Sound Of Music'],
+      orderID: '12345',
       price: 19.99,
     },
     {
       name: 'John Doe',
       date: '2023-10-25',
       showings: 'Gone With The Wind',
+      orderID: '12345',
       price: 14.99,
     },
   ];
@@ -79,7 +79,7 @@ const Refund = () => {
       />
       }
       <div className='w-full h-screen overflow-x-hidden absolute '>
-        <div className='md:ml-[18rem] md:mt-40 sm:mt-[11rem] tab:mx-[5rem] mx-[5rem] my-[11rem]'>
+        <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
           <div className='flex'>
             <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>
               Refund Ticket
@@ -92,7 +92,7 @@ const Refund = () => {
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                 </svg>
-                <input
+                <input // search button
                   type='text'
                   className='text-black border-2 border-gray rounded-l-full pl-12 w-80 py-2'
                   id='email-search-input'
@@ -108,7 +108,7 @@ const Refund = () => {
               </div>
             </label>
           </div>
-          <div className='w-full'>
+          <div className='w-full min-w-min'>
             <div className='grid grid-cols-5 gap-2 bg-gray-200 h-18 rounded-lg shadow-md px-2 mb-2 font-bold'>
               <div className='row-start-1 justify-self-start py-2 col-span-1'>
                   Name
@@ -125,35 +125,46 @@ const Refund = () => {
               </div>
               <div className='row-start-1 justify-self-start py-2 col-span-1'>
                 <div className="border-l border-l-gray-500/50 pl-2">
-                  Price
+                  Total
                 </div>
               </div>
               <div className='row-start-1 justify-self-center py-2 col-span-1'></div>
             </div>
-            {mappedInstances.map((instance, index) => (
-              <div key={index} className='grid grid-cols-5 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'>
-                <div className='row-start-1 justify-self-start py-2 col-span-1'>
-                  {instance.name}
+            {mappedInstances.length === 0 ? (
+              <div className="text-center text-gray-600">No current results</div>
+            ) : (
+              mappedInstances.map((instance, index) => (
+                <div key={index} className='grid grid-cols-5 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'>
+                  <div className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                    {instance.name}
+                  </div>
+                  <div className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                    {instance.date}
+                  </div>
+                  <div className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                    {Array.isArray(instance.showings) ? (
+                      instance.showings.map((showing, showingIndex) => (
+                        <div key={showingIndex}>{showing}</div>
+                      ))
+                    ) : (
+                      <div>{instance.showings}</div>
+                    )}
+                  </div>
+                  <div className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                    {instance.price}
+                  </div>
+                  <div className='row-start-1 justify-self-start py-2 col-span-1'>
+                    <button
+                      onClick={async () => await onSubmit(instance.orderID)}
+                      type={'submit'}
+                      className='bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded'
+                    >
+                      Refund
+                    </button>
+                  </div>
                 </div>
-                <div className='row-start-1 justify-self-start py-2 col-span-1'>
-                  {instance.date}
-                </div>
-                <div className='row-start-1 justify-self-start py-2 col-span-1'>
-                  {instance.showings}
-                </div>
-                <div className='row-start-1 justify-self-start py-2 col-span-1'>
-                  {instance.price}
-                </div>
-                <div className='row-start-1 justify-self-center py-3 col-span-1'>
-                  <button
-                    type={'submit'}
-                    className='bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded'
-                  >
-                    Refund
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
