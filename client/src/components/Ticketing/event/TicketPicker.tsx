@@ -210,7 +210,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         if (!res.ok) {
           throw new Error('Failed to retrieve ticket types');
         }
-        console.log('Response containing ticket types received successfully');
         return res.json();
       })
       .then((resData) => {
