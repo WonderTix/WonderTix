@@ -247,12 +247,9 @@ export default function OnlyDonationPage(): ReactElement {
       {/* Other ways to donate */}
       <div className='flex flex-col md:flex-row items-center min-w-full'>
         <div className='flex-1 p-4 text-xl'>
-          <a
-            className='hover:text-indigo-700 text-indigo-600 text-2xl md:px-10'
-            // href='https://portlandplayhouse.org/get-involved/giving/'
-          >
+          <div className='text-indigo-600 text-2xl md:px-10'>
             <b>Other ways to donate</b>
-          </a>
+          </div>
         </div>
         <div className='flex'>
           <div className='py-4 px-10 text-sm'>
