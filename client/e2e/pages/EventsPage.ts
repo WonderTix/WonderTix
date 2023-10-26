@@ -1,5 +1,5 @@
 import { type Locator, type Page ,expect} from '@playwright/test';
-import { addDeleteEvents_Package, addNewEvents_Package, editShowing_Package, editevents1_Package } from '../testData/ConstsPackage';
+import { addNewEvents_Package, addNewShowing_Package,  editShowing_Package, goToEventFromManage_Package, searchDeleteShowing_Package } from '../testData/ConstsPackage';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
@@ -127,58 +127,62 @@ export class EventsPage {
     await this.cancelShwoingId.click();
   }
 
-  /*
+  /**
   This test is basically testing the functionality of creating a new event without add any showing.
-  For now, if we create an event withou showing, it won't appear on the homepage nor on the events page.
+  For now, if we create an event without any showing, it won't appear on the homepage nor on the events page.
+  And we need to pass in things like:
+   "S",
+  "123",
+  "http://"
   */
-  async addnewevent(ANE_Package1:addNewEvents_Package)
+  async addnewevent(ANE_Package:addNewEvents_Package)
   {
      await this.addButton.click();
      await this.eventNameBlank.click();
-     await this.page.getByLabel('Event Name:').fill(ANE_Package1.event_Name);
+     await this.page.getByLabel('Event Name:').fill(ANE_Package.event_Name);
      await this.eventDesBlank.click();
-     await this.page.getByLabel('Event Description:').fill(ANE_Package1.event_Description);
+     await this.page.getByLabel('Event Description:').fill(ANE_Package.event_Description);
      await this.imageURL.click();
-     await this.page.getByLabel('Image URL:').fill(ANE_Package1.event_URL);
-     await this.eventOption1.check();
-     await this.eventOption1.uncheck();
-     await this.eventOption2.check();
-     await this.eventOption2.uncheck();
-     await this.eventOption1.check();
+     await this.page.getByLabel('Image URL:').fill(ANE_Package.event_URL);
      await this.newEventSave.click();
      await this.eventContinue.click();
   }
 
-  /*
-  1. Create an event by giving its name, description, URL, *AND* adding a showing
-  2. Go back to homepage to check if an new event exists.
-  3. Go to the events page and click the newly created event.
-  4. Delete its showing.
-  5. Delete this event.
-  6. Make sure there's no such event anymore.
-     Now the thing we could focus more on is that probably we wanna test canceling a specific
-     showing of an event, we might need to pass in the showing's id. However, we'd better bring up a good way
-     to get that id.
-  */
-  async addDeleteEvents(ADE_package1:addDeleteEvents_Package)
+/**
+  We need to pass in things like:
+  "2023-10-17",
+  "10:20",
+  "010"
+*/
+  async addNewShowing(ANS_Package:addNewShowing_Package)
   {
-    await this.addButton.click();
-    await this.eventNameBlank.click();
-    await this.page.getByLabel('Event Name:').fill(ADE_package1.event_Name);
-    await this.eventDesBlank.click();
-    await this.page.getByLabel('Event Description:').fill(ADE_package1.event_Description);
-    await this.imageURL.click();
-    await this.page.getByLabel('Image URL:').fill(ADE_package1.event_URL);
-    await this.newEventSave.click();
-    await this.eventContinue.click();
     await this.editAddShowing.click();
-    await this.editEventDate.fill(ADE_package1.event_Showing1Date);
+    await this.editEventDate.fill(ANS_Package.event_ShowingDate);
     await this.editEventTime.click();
-    await this.editEventTime.fill(ADE_package1.event_Showing1Time);
+    await this.editEventTime.fill(ANS_Package.event_ShowingTime);
     await this.editTicketQuatity.click();
-    await this.editTicketQuatity.fill(ADE_package1.event_Showing1Quantity);
+    await this.editTicketQuatity.fill(ANS_Package.event_ShowingQuantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
+  }
+
+/**
+  * We need to pass in things to the filter like:
+  * "Wed, Oct 11 2023"
+*/
+  async searchDeleteShowing(SDS_Package:searchDeleteShowing_Package)
+  {
+    await this.showingCard
+    .filter({ hasText: SDS_Package.showing_Date})
+    .getByRole('button', { name: 'Edit' })
+    .click();
+    await this.deleteButton.click();
+    await this.eventContinue.click();
+  }
+
+  //**The weird thing is that Im not sure wheres the 'Playbill' comes from.
+  async checkNewEventOnHomePage()
+  {
     await this.homePage.click();
     await this.homePageRightSlide.click();
     await this.homePageRightSlide.click();
@@ -187,148 +191,60 @@ export class EventsPage {
     await this.homePageRightSlide.click();
     await this.seeEventShowings.click();
     await expect(this.page.getByRole('img', { name: 'Test_event Playbill' })).toBeVisible;
-
-    //We dont test buying ticket for this section.
-    //await this.page.getByRole('combobox').first().selectOption('Wed Oct 11 2023 00:10:00 GMT-0700');
-    //await this.page.getByRole('combobox').first().selectOption('452');
-    //await this.page.locator('div').filter({ hasText: /^Ticket Typeselect ticket typeGeneral Admission - Adult: \$20\.00$/ }).getByRole('combobox').selectOption('General Admission - Adult');
-    //await this.page.locator('div').filter({ hasText: /^Quantityselect qty12345678910$/ }).getByRole('combobox').selectOption('2');
-    //await this.concessionTicket.check();
-    //await this.getTickets.click();
-    //await this.takeMeThere.click();
-    //await this.backToEvents.click();
-   /*
-    //Now we delete a showing --method0: only for currently there's only one showing
-    //
-    await this.emailButton.click();
-    await this.manageTicketingButton.click();
-    await this.leftBarEvent.click();
-    await this.page.getByRole('button', { name: 'Test_event Playbill Test_event Description An event for testing' }).first().click();
-    await this.page.getByRole('button', { name: 'Edit' }).nth(1).click();
-    await this.page.getByRole('button', { name: 'Delete' }).click();
-    await this.eventContinue.click();
-   */
-  /*
-   //Now we delete a showing --method1: let's create a new showing then delete it(by clicking descending id to find the most recently created one)
-    await this.emailButton.click();
-    await this.manageTicketingButton.click();
-    await this.leftBarEvent.click();
-    await this.page.getByRole('button', { name: 'Test_event Playbill Test_event Description An event for testing' }).first().click();
-    await this.editAddShowing.click();
-    await this.editEventDate.fill('2023-10-17');
-    await this.editEventTime.fill('10:20');
-    await this.editTicketQuatity.fill('010');
-    await this.newEventSave.click();
-    await this.eventContinue.click();
-    await this.page.getByRole('combobox').selectOption('5');//display showings by descending showingid order
-    await this.page.getByRole('button', { name: 'Edit' }).nth(1).click();
-    await this.page.getByRole('button', { name: 'Delete' }).click();
-    await this.eventContinue.click();
-    await expect(this.page.getByText('Date: Tue, Oct 17 2023Time: 10:20 AMTotal Tickets: 10Available Ti')).not.toBeVisible();
-    */
-    //Now we delete a showing --method2: search a specific showing then delete it
-    //
-    await this.emailButton.click();
-    await this.manageTicketingButton.click();
-    await this.leftBarEvent.click();
-    await this.page.getByRole('button', { name: ADE_package1.event_FullName }).first().click();
-    await this.editAddShowing.click();
-    await this.editEventDate.fill(ADE_package1.event_Showing2Date);
-    await this.editEventTime.fill(ADE_package1.event_Showing2Time);
-    await this.editTicketQuatity.fill(ADE_package1.event_Showing2Quantity);
-    await this.newEventSave.click();
-    await this.eventContinue.click();
-
-    await this.showingCard
-    .filter({ hasText: 'Wed, Oct 11 2023'})
-    .getByRole('button', { name: 'Edit' })
-    .click();
-    await this.deleteButton.click();
-    await this.eventContinue.click();
-
-    await this.showingCard
-    .filter({ hasText: 'Tue, Oct 17 2023'})
-    .getByRole('button', { name: 'Edit' })
-    .click();
-    await this.deleteButton.click();
-    await this.eventContinue.click();
-
-
-    //The last paragraph of the URL is the id of the event
-    //await this.page.getByLabel('Delete event 52').click();
-    await this.editEventInfor.click();
-    await this.deleteButton.click();
-    await this.eventContinue.click();
-    await this.eventContinue.click();
-    await this.leftBarEvent.click();
-    await expect(this.page.getByRole('button', { name: ADE_package1.event_FullName }).first()).not.toBeVisible();
   }
 
-
-/*
-This test is for testing the functionality of editing an event, same for the showing
+/**
+ * We need to pass in a event's full name like:
+ * "Test_event Playbill Test_event Description An event for testing"
 */
-  async editEvents1(EDE_package1:editevents1_Package)
+  async goToEventFromManage(GTE_Package:goToEventFromManage_Package)
   {
-    await this.secondEvent.click();
-    await this.editEventInfor.click();
-    await this.editEventName.click();
-    await this.editEventName.fill(EDE_package1.event_RevisedName);
-    await this.newEventSave.click();
-    await this.eventContinue.click();
-    await this.page.getByText(EDE_package1.event_RevisedName, { exact: true }).click();
-    await this.editEventInfor.click();
-    await this.editEventName.click();
-    await this.editEventName.fill(EDE_package1.event_Name);
-    await this.eventDesBlank.fill(EDE_package1.event_RevisedDescription);
-    await this.newEventSave.click();
-    await this.eventContinue.click();
-    await this.page.getByText(EDE_package1.event_RevisedDescription).click();
-    await this.editEventInfor.click();
-    await this.eventDesBlank.click();
-    await this.eventDesBlank.fill(EDE_package1.event_Description);
-    await this.newEventSave.click();
-    await this.eventContinue.click();
-    await this.editEventInfor.click();
-    await this.imageURL.click();
-    await this.imageURL.fill(EDE_package1.event_RevisedURL);
-    await this.newEventSave.click();
-    await this.eventContinue.click();
-    await this.page.getByRole('img', { name: 'Event Image Playbill' }).click();
-    await this.editEventInfor.click();
-    await this.imageURL.click();
-    await this.imageURL.fill(EDE_package1.event_URL);
-    await this.newEventSave.click();
-    await this.eventContinue.click();
-    await this.page.getByRole('img', { name: 'Event Image Playbill' }).click();
+    await this.emailButton.click();
+    await this.manageTicketingButton.click();
+    await this.leftBarEvent.click();
+    await this.page.getByRole('button', { name: GTE_Package.event_FullName }).first().click();
   }
 
-  /*
-  This test is for checking the functionality of editing a showing
-  */
-   async editShowing(ES_Package1:editShowing_Package)
-   {
-    await this.firstEvent.click();
-    await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
-    await this.page.getByText('372').click();
-    await this.editEventDate.fill(ES_Package1.eventShowingDate);
-    await this.ticketQuantityOption.click();
-    await this.ticketQuantityOption.fill(ES_Package1.eventShowingQuantity);
-    await this.page.getByLabel('Save').click();
+/**
+ * We need to pass in a event's full name like:
+ * "Test_event Playbill Test_event Description An event for testing"
+*/
+  async deleteTheEvent(GTE_Package:goToEventFromManage_Package)
+  {
+    await this.editEventInfor.click();
+    await this.deleteButton.click();
     await this.eventContinue.click();
-
-    await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
-    await this.editEventDate.fill(ES_Package1.eventShowing1Date);
-    await this.ticketQuantityOption.click();
-    await this.ticketQuantityOption.fill(ES_Package1.eventShowing1Quantity);
-    await this.page.getByLabel('Save').click();
     await this.eventContinue.click();
-    await this.page.getByText(ES_Package1.eventShowing1DateString).click();
-    await this.page.locator('div:nth-child(4) > p:nth-child(2)').first().click();
+    await this.leftBarEvent.click();
+    await expect(this.page.getByRole('button', { name: GTE_Package.event_FullName }).first()).not.toBeVisible();
   }
 
+async editTheEventInfor(ANE_Package:addNewEvents_Package)
+{
+    await this.editEventInfor.click();
+    await this.editEventName.click();
+    await this.editEventName.fill(ANE_Package.event_Name);
+    await this.eventDesBlank.fill(ANE_Package.event_Description);
+    await this.imageURL.fill(ANE_Package.event_URL);
+    await this.newEventSave.click();
+    await this.eventContinue.click();
+}
 
-   async goto(){
+/**
+ * Only for change the first showing of an event
+*/
+async editShowingInfor(ES_Package:editShowing_Package)
+{
+  await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
+  await this.page.getByText('372').click();
+  await this.editEventDate.fill(ES_Package.eventShowingDate);
+  await this.ticketQuantityOption.click();
+  await this.ticketQuantityOption.fill(ES_Package.eventShowingQuantity);
+  await this.page.getByLabel('Save').click();
+  await this.eventContinue.click();
+}
+
+async goto(){
     await this.page.goto('/', { timeout: 90000 });
     await this.emailButton.click();
     await this.manageTicketingButton.click();
@@ -336,11 +252,11 @@ This test is for testing the functionality of editing an event, same for the sho
     await expect(this.pageHeader).toBeVisible();
   }
 
-  async ticketingURL(){
+async ticketingURL(){
     await this.page.goto('/ticketing', { timeout: 90000 });
   }
 
-  async backtoEvents(){
+async backtoEvents(){
     await this.leftBarEvent.click();
   }
 }
