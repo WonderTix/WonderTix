@@ -47,14 +47,14 @@ test('editEvents',async({page})=>{
   //Go to the event information page first
   await eventsPage.clickSecondEvent();
   //Change the event's information a little bit
-  await eventsPage.editTheEventInfor(ANE_Package3);
+  await eventsPage.editTheEventInfo(ANE_Package3);
   //Search for the event by its new name
   await eventsPage.searchForEventByName(ANE_Package3);
   //Search for the event by its new description
-  await eventsPage.editTheEventInfor(ANE_Package3);
+  await eventsPage.editTheEventInfo(ANE_Package3);
   await eventsPage.searchForEventByDes(ANE_Package3);
   //Now let's change everything back
-  await eventsPage.editTheEventInfor(ANE_Package4);
+  await eventsPage.editTheEventInfo(ANE_Package4);
 });
 
 test('editEvents1',async({page})=>{
@@ -70,9 +70,9 @@ test('editShowing',async({page})=>{
   //Go to the event page first
   await eventsPage.clickFirstEvent();
   //Now we change some showing's information a little bit
-  await eventsPage.editShowingInfor(ES_Package1);
+  await eventsPage.editShowingInfo(ES_Package1);
   //Then we change that back
-  await eventsPage.editShowingInfor(ES_Package2);
+  await eventsPage.editShowingInfo(ES_Package2);
   //Let search for the showing by its whole infomation string
   await eventsPage.clickSpecificShowing(ES_Package2);
 });

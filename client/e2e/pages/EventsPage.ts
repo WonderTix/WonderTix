@@ -21,7 +21,7 @@ export class EventsPage {
   readonly eventOption1: Locator;
   readonly eventOption2: Locator;
 
-  readonly editEventInfor: Locator;
+  readonly editEventInfo: Locator;
 
   readonly editEventName: Locator;
   readonly editEventDes: Locator;
@@ -33,7 +33,7 @@ export class EventsPage {
   readonly editEventDate: Locator;
   readonly editEventTime: Locator;
   readonly editTicketQuatity: Locator;
-  readonly cancelShwoingId: Locator;
+  readonly cancelShowingId: Locator;
   readonly homePage: Locator;
   readonly seeEventShowings: Locator;
   readonly takeMeThere: Locator;
@@ -48,7 +48,7 @@ export class EventsPage {
   readonly emailButton: Locator;
   readonly manageTicketingButton: Locator;
   readonly homePageRightSlide: Locator;
-  readonly editEventsInfor: Locator;
+  readonly editEventsInfo: Locator;
   readonly ticketQuantityOption: Locator;
   readonly showingCard: Locator;
   readonly deleteButton: Locator;
@@ -78,8 +78,8 @@ export class EventsPage {
     this.eventOption1=page.getByLabel('Use Default Image');
     this.eventOption2=page.getByLabel('Active');
 
-    this.editEventInfor=page.locator('div').filter({ hasText: /^Event InformationEdit$/ }).getByRole('button');
-    this.editEventsInfor=page.getByRole('button', { name: 'Edit' });
+    this.editEventInfo=page.locator('div').filter({ hasText: /^Event InformationEdit$/ }).getByRole('button');
+    this.editEventsInfo=page.getByRole('button', { name: 'Edit' });
     this.editEventName=page.getByLabel('Event Name:');
     this.editEventDes=page.getByLabel('Event Description:');
     this.editOption1=page.getByLabel('Active');
@@ -87,7 +87,7 @@ export class EventsPage {
     this.editAddShowing=page.getByLabel('Add Showing');
     this.editCancelShowing=page.getByRole('button', { name: 'Cancel' });
     this.editShowingId=page.locator('div:nth-child(3) > .bg-blue-500').first();
-    this.cancelShwoingId=page.getByRole('button', { name: 'Cancel' });
+    this.cancelShowingId=page.getByRole('button', { name: 'Cancel' });
     this.editEventDate=page.getByLabel('Event Date:');
     this.editEventTime=page.getByLabel('Event Time:');
     this.editTicketQuatity=page.getByLabel('Ticket Quantity:');
@@ -114,7 +114,7 @@ export class EventsPage {
   async editEvents()
   {
     await this.firstEvent.click();
-    await this.editEventInfor.click();
+    await this.editEventInfo.click();
     await this.editEventName.click();
     await this.editEventDes.click();
     await this.imageURL.click();
@@ -124,7 +124,7 @@ export class EventsPage {
     await this.editAddShowing.click();
     await this.editCancelShowing.click();
     await this.editShowingId.click();
-    await this.cancelShwoingId.click();
+    await this.cancelShowingId.click();
   }
 
   /**
@@ -211,7 +211,7 @@ export class EventsPage {
 */
   async deleteTheEvent(GTE_Package:goToEventFromManage_Package)
   {
-    await this.editEventInfor.click();
+    await this.editEventInfo.click();
     await this.deleteButton.click();
     await this.eventContinue.click();
     await this.eventContinue.click();
@@ -219,9 +219,9 @@ export class EventsPage {
     await expect(this.page.getByRole('button', { name: GTE_Package.event_FullName }).first()).not.toBeVisible();
   }
 
-async editTheEventInfor(ANE_Package:addNewEvents_Package)
+async editTheEventInfo(ANE_Package:addNewEvents_Package)
 {
-    await this.editEventInfor.click();
+    await this.editEventInfo.click();
     await this.editEventName.click();
     await this.editEventName.fill(ANE_Package.event_Name);
     await this.eventDesBlank.fill(ANE_Package.event_Description);
@@ -248,7 +248,7 @@ async searchForEventByDes(ANE_Package:addNewEvents_Package)
 /**
  * Only for change the first showing of an event
 */
-async editShowingInfor(ES_Package:editShowing_Package)
+async editShowingInfo(ES_Package:editShowing_Package)
 {
   await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
   await this.page.getByText('372').click();
