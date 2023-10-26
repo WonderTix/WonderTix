@@ -45,7 +45,7 @@ test('editEvents',async({page})=>{
   await eventsPage.goto();
   //This test we just use the second event "The Crucible" as an example
   //Go to the event information page first
-  await eventsPage.secondEvent.clcik();
+  await eventsPage.page.secondEvent.clcik();
   //Change the event's information a little bit
   await eventsPage.editTheEventInfor(ANE_Package3);
   //Search for the event by its new name
