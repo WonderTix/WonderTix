@@ -230,6 +230,21 @@ async editTheEventInfor(ANE_Package:addNewEvents_Package)
     await this.eventContinue.click();
 }
 
+async clickSecondEvent()
+{
+  await this.secondEvent.click();
+}
+
+async searchForEventByName(ANE_Package:addNewEvents_Package)
+{
+  await this.page.getByText(ANE_Package.event_Name, { exact: true }).click();
+}
+
+async searchForEventByDes(ANE_Package:addNewEvents_Package)
+{
+  await this.page.getByText(ANE_Package.event_Description).click();
+}
+
 /**
  * Only for change the first showing of an event
 */
@@ -243,6 +258,17 @@ async editShowingInfor(ES_Package:editShowing_Package)
   await this.page.getByLabel('Save').click();
   await this.eventContinue.click();
 }
+
+async clickFirstEvent()
+{
+  await this.firstEvent.click();
+}
+
+async clickSpecificShowing(ES_Package:editShowing_Package)
+  {
+    await this.page.getByText(ES_Package.eventShowingDateString).click();
+    await this.page.locator('div:nth-child(4) > p:nth-child(2)').first().click();
+  }
 
 async goto(){
     await this.page.goto('/', { timeout: 90000 });
