@@ -45,6 +45,7 @@ steps:
         --platform managed \
         --memory $$CLIENT_MEMORY \
         --cpu $$CLIENT_CPU \
+        --cpu-boost \
         --allow-unauthenticated \
         --min-instances 1 \
         --max-instances 10 \
