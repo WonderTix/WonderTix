@@ -116,7 +116,7 @@ export default function OnlyDonationPage(): ReactElement {
       <DonationIntro />
       <hr className='w-full border border-t border-zinc-300 my-4'></hr>
       <div className='text-2xl font-bold mb-5'>Choose a donation amount</div>
-      {/* Donation Period Radios*/}
+      {/* Donation period radios*/}
       <div className='self-start'>
         <label className='mr-10'>
           <input
@@ -200,13 +200,13 @@ export default function OnlyDonationPage(): ReactElement {
           </div>
           {/* Disable donation amount input box if monthly or quarterly radio box is checked*/}
           {donationPeriod == 'onetime' ? (
-          <input
-            placeholder={amount ? '' : 'Other Amount'}
-            onChange={(e) => setAmount(+e.target.value)}
-            type='number'
-            className='appearance-none block bg-white border border-2 border-gray-300 text-gray-700 rounded-md pl-3 py-2 leading-5 focus:outline-none focus:ring focus:border-indigo-600 sm:text-lg'
+            <input
+              placeholder={amount ? '' : 'Other Amount'}
+              onChange={(e) => setAmount(+e.target.value)}
+              type='number'
+              className='appearance-none block bg-white border border-2 border-gray-300 text-gray-700 rounded-md pl-3 py-2 leading-5 focus:outline-none focus:ring focus:border-indigo-600 sm:text-lg'
               value={amount === null ? '' : amount}
-          />
+            />
           ) : (
             <input
               placeholder={amount ? '' : 'Other Amount'}
@@ -217,7 +217,7 @@ export default function OnlyDonationPage(): ReactElement {
           )}
         </div>
       </div>
-      {/* anonymous donation checkbox*/}
+      {/* Anonymous donation checkbox*/}
       <div className='flex flex-col w-full items-start gap-3 mt-2 mb-10'>
         <div className='flex flex-row items-center gap-4 text-md text-zinc-700 '>
           <input
@@ -234,7 +234,7 @@ export default function OnlyDonationPage(): ReactElement {
         disabled={amount < 1}
         donationForm
       />
-      {/* outro text*/}
+      {/* Outro text*/}
       <div className='text-center text-xl py-4 '>
         <p>
           Your tax-deductible donation will make it possible to surprise,
