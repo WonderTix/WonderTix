@@ -33,7 +33,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
   };
 
   return (
-    <header className='rounded-xl bg-white p-7 text-lg'>
+    <header className='rounded-xl bg-white p-7 text-lg shadow-xl'>
       <section className='flex flex-col text-center mb-5 justify-between tab:flex-row tab:flex-wrap'>
         <h1 className='text-4xl mb-3 font-semibold'>Season Information</h1>
         <button

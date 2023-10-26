@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {getAllEvents, updateEventSeason} from './utils/apiRequest';
 import EventCard from './EventCard';
-import PopUp from '../../../Pop-up';
 
-interface SeasonEventsProp {
+interface SeasonEventsProps {
   token: string;
   seasonId: number;
   isFormEditing: boolean;
@@ -11,7 +10,7 @@ interface SeasonEventsProp {
   setPopUpMessage: (value) => void;
 }
 
-const SeasonEvents = (props: SeasonEventsProp) => {
+const SeasonEvents = (props: SeasonEventsProps) => {
   const {seasonId, token, isFormEditing, setShowPopUp, setPopUpMessage} = props;
   const [allEventInfo, setAllEventInfo] = useState<any>([]);
   const [eventsNotInSeason, setEventsNotInSeason] = useState<any>([]);
@@ -141,7 +140,7 @@ const SeasonEvents = (props: SeasonEventsProp) => {
   }, []);
 
   return (
-    <div className='rounded-xl p-7 bg-white text-lg mt-5'>
+    <div className='rounded-xl p-7 bg-white text-lg mt-5 shadow-xl'>
       <section className='flex flex-col gap-4 items-center mb-6 tab:flex-row tab:justify-center tab:flex-wrap min-[1076px]:justify-between'>
         <article className='flex flex-wrap gap-2'>
           <h1 className='text-3xl'>Season Events </h1>
@@ -182,13 +181,28 @@ const SeasonEvents = (props: SeasonEventsProp) => {
       </section>
       {isAddEventActive && (
         <div className='h-96 overflow-scroll mb-3'>
-          <h2 className='text-2xl mb-2 inline'>Unassigned Events</h2>
-          <button
-            onClick={() => setIsAddEventActive(false)}
-            className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-5 rounded-xl ml-3 mb-3'
-          >
-            Close
-          </button>
+          <div className='flex justify-between px-3'>
+            <h2 className='text-2xl mb-2 inline'>Unassigned Events</h2>
+            <button
+              onClick={() => setIsAddEventActive(false)}
+              className='flex gap-1 items-center bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-4 rounded-xl ml-3 mb-3'
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-5 w-5'
+                viewBox='0 0 20 20'
+                fill='currentColor'
+              >
+                <path
+                  fill-rule='evenodd'
+                  d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+                  clip-rule='evenodd'
+                />
+              </svg>
+              <p>Close</p>
+            </button>
+          </div>
+
           {eventsNotInSeason.length !== 0 ? (
             eventsNotInSeason.map((event) => {
               return (
