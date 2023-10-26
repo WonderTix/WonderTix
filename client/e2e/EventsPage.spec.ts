@@ -45,14 +45,14 @@ test('editEvents',async({page})=>{
   await eventsPage.goto();
   //This test we just use the second event "The Crucible" as an example
   //Go to the event information page first
-  await eventsPage.page.secondEvent.clcik();
+  await eventsPage.clickSecondEvent();
   //Change the event's information a little bit
   await eventsPage.editTheEventInfor(ANE_Package3);
   //Search for the event by its new name
-  await eventsPage.page.getByText(ANE_Package3.event_Name, { exact: true }).click();
+  await eventsPage.searchForEventByName(ANE_Package3);
   //Search for the event by its new description
   await eventsPage.editTheEventInfor(ANE_Package3);
-  await eventsPage.page.getByText(ANE_Package3.event_Description).click();
+  await eventsPage.searchForEventByDes(ANE_Package3);
   //Now let's change everything back
   await eventsPage.editTheEventInfor(ANE_Package4);
 });
@@ -68,14 +68,13 @@ test('editShowing',async({page})=>{
   await eventsPage.goto();
   //This test we just use the first event "Angels In America" as an example
   //Go to the event page first
-  await eventsPage.firstEvent.click();
+  await eventsPage.clickFirstEvent();
   //Now we change some showing's information a little bit
   await eventsPage.editShowingInfor(ES_Package1);
   //Then we change that back
   await eventsPage.editShowingInfor(ES_Package2);
   //Let search for the showing by its whole infomation string
-  await eventsPage.page.getByText(ES_Package2.eventShowingDateString).click();
-  await eventsPage.page.locator('div:nth-child(4) > p:nth-child(2)').first().click();
+  await eventsPage.clickSpecificShowing(ES_Package2);
 });
 
 
