@@ -26,6 +26,7 @@ steps:
         --cpu $$SERVER_CPU \
         --allow-unauthenticated \
         --min-instances 1 \
+        --max-instances 10 \
         --set-cloudsql-instances $$SQL_INSTANCE \
         --service-account $$SERVICE_ACCOUNT \
         --set-env-vars=\
