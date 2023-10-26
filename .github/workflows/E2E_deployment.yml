@@ -11,6 +11,8 @@ jobs:
     env:
       ROOT_URL: https://wtix-server-dev-3ps4rkx4ga-wl.a.run.app
       FRONTEND_URL: https://wtix-client-dev-3ps4rkx4ga-wl.a.run.app
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }} 
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }} 
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
