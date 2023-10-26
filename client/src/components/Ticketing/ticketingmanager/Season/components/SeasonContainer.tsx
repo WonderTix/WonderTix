@@ -4,7 +4,7 @@ import SeasonInfo from './SeasonInfo';
 import SeasonEvents from './SeasonEvents';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 import {useFetchToken} from '../../showings/ShowingUpdated/ShowingUtils';
-import PopUp from '../../../Pop-up';
+import PopUp from '../../../PopUp';
 import {useParams} from 'react-router';
 
 const defaultPopUpValues = {

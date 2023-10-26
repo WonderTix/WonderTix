@@ -14,7 +14,7 @@ import React, {useCallback, useState, useEffect} from 'react';
 import InputFieldForEvent from './InputField';
 import ShowListController from './showListController_deprecated';
 import {Showing, WtixEvent} from '../../../../interfaces/showing.interface';
-import PopUp from '../../Pop-up';
+import PopUp from '../../PopUp';
 
 /**
  * Type of ticket

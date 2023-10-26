@@ -1,31 +1,18 @@
-name: Run E2E tests on client
+name: E2E tests after merge to main deployment
 on:
-  pull_request:
-    types: [opened, reopened, ready_for_review, synchronize]
+  push:
+    branches:
+      - main
 
 jobs:
   test-client:
-    name: Run E2E Tests on client
+    name: Run E2E tests against GCP dev
     runs-on: ubuntu-latest
     env:
-      CI: true # SET CI TO TRUE FOR GITHUB ACTIONS
-      PG_USER: postgres
-      PG_PASS: postgres
-      PG_DB: wondertix
-      PG_PORT: 5432
-      PG_HOST: 172.17.0.1
-      PUBLIC_STRIPE_KEY: ${{ secrets.PUBLIC_STRIPE_KEY }}
-      PRIVATE_STRIPE_KEY: ${{ secrets.PRIVATE_STRIPE_KEY }}
-      PRIVATE_STRIPE_WEBHOOK: ${{ secrets.PRIVATE_STRIPE_WEBHOOK }}
-      ROOT_URL: https://localhost:8000
-      FRONTEND_URL: https://localhost:3000
-      AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
-      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-      AUTH0_URL: ${{ secrets.AUTH0_URL }}
+      ROOT_URL: https://wtix-server-dev-3ps4rkx4ga-wl.a.run.app
+      FRONTEND_URL: https://wtix-client-dev-3ps4rkx4ga-wl.a.run.app
       TEST_EMAIL: ${{ secrets.TEST_EMAIL }} 
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }} 
-      ENV: local
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -41,32 +28,9 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      
-      - name: Install mkcert
-        run: |
-          sudo apt-get update
-          sudo apt-get install libnss3-tools
-          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
-          chmod +x mkcert-v*-linux-amd64
-          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-      
-      - name: Install client CA
-        run: |
-          mkcert -install
-          mkcert localhost
-        working-directory: ./client
 
-      - name: Install server CA
-        run: |
-          mkcert -install
-          mkcert localhost
-        working-directory: ./server
-        
-      - name: docker setup
-        run: docker-compose up -d
-
-      - name: 90 second wait for client and server start
-        run: sleep 90s
+      - name: 6 minutes wait for deployment
+        run: sleep 360s
         
       - name: Check client E2E(UI) Tests
         run: npm run test:playwright
