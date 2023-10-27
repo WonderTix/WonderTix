@@ -139,6 +139,12 @@ const SeasonEvents = (props: SeasonEventsProps) => {
     void handleGetAllEvents();
   }, []);
 
+  useEffect(() => {
+    if (eventsNotInSeason.length > 0) {
+      eventsNotInSeason.sort((a, b) => b.id - a.id);
+    }
+  }, [eventsNotInSeason]);
+
   return (
     <div className='rounded-xl p-7 bg-white text-lg mt-5 shadow-xl'>
       <section className='flex flex-col gap-4 items-center mb-4 tab:flex-row tab:justify-center tab:flex-wrap min-[1076px]:justify-between'>
@@ -169,8 +175,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
       </section>
       {isAddEventActive && (
         <div className='h-96 overflow-auto mb-3'>
-          <div className='flex justify-between px-3'>
-            <h2 className='text-2xl mb-2 inline'>Unassigned Events</h2>
+          <div className='flex justify-between px-3 mt-3'>
+            <h2 className='text-2xl mb-2'>Unassigned Events</h2>
             <button
               onClick={() => setIsAddEventActive(false)}
               className='flex gap-1 items-center bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-4 rounded-xl ml-3 mb-3'
@@ -204,7 +210,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
               );
             })
           ) : (
-            <p className='text-xl italic'>
+            <p className='text-xl italic pl-3'>
               There are currently no events that are unassigned to a season
             </p>
           )}
