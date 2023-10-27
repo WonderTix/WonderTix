@@ -141,7 +141,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
 
   return (
     <div className='rounded-xl p-7 bg-white text-lg mt-5 shadow-xl'>
-      <section className='flex flex-col gap-4 items-center mb-6 tab:flex-row tab:justify-center tab:flex-wrap min-[1076px]:justify-between'>
+      <section className='flex flex-col gap-4 items-center mb-4 tab:flex-row tab:justify-center tab:flex-wrap min-[1076px]:justify-between'>
         <article className='flex flex-wrap gap-2'>
           <h1 className='text-3xl'>Season Events </h1>
           <button
@@ -165,18 +165,6 @@ const SeasonEvents = (props: SeasonEventsProps) => {
             </svg>
             <p>Add event</p>
           </button>
-        </article>
-        <article>
-          <label className='pr-2' htmlFor='eventSelect'>
-            Sort by:
-          </label>
-          <select
-            name='sortBy'
-            id='eventSelect'
-            className='p-1 border border-zinc-500 rounded-lg'
-          >
-            <option value='eventName'>Event Name - Ascending</option>
-          </select>
         </article>
       </section>
       {isAddEventActive && (
@@ -202,7 +190,6 @@ const SeasonEvents = (props: SeasonEventsProps) => {
               <p>Close</p>
             </button>
           </div>
-
           {eventsNotInSeason.length !== 0 ? (
             eventsNotInSeason.map((event) => {
               return (
