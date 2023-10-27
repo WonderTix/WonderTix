@@ -247,7 +247,7 @@ const SeasonInfo = (props: SeasonProps) => {
         </div>
         <article className='col-span-12 tab:col-span-6'>
           <SeasonImage
-            className='h-auto max-w-[175px] mx-auto'
+            className='h-auto max-w-[175px] mx-auto mt-5'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />

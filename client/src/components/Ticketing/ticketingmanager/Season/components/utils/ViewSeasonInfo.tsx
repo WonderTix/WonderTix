@@ -57,7 +57,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
         </article>
         <article className='col-span-12 tab:col-span-6'>
           <SeasonImage
-            className='h-auto max-w-[150px] mx-auto'
+            className='h-auto max-w-[150px] mx-auto mt-3'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
