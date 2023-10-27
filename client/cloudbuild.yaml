@@ -1,8 +1,6 @@
 steps:
 
-  # npm build
-  # npm test
-
+  # Build Docker image for client
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-client'
     entrypoint: 'bash'
