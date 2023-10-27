@@ -15,7 +15,7 @@ const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
     const [formData, setFormData] = useState({
         startDate: '',
         endDate: '',
-        groupBy: '',
+        groupBy: 'Event',
     });
 
     const handleStartDateChange = (date) => {
@@ -28,6 +28,10 @@ const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
 
     const handleGroupChange = (event) => {
         onFilterChange('groupBy', event.target.value);
+        setFormData({
+            ...formData,
+            groupBy: event.target.value,
+        });
     };
 
     const handleSubmit = (e) => {
@@ -55,7 +59,8 @@ const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
                             <RadioGroup
                                 row
                                 name="row-radio-buttons-group"
-                                defaultValue="Event"
+                                value={formData.groupBy}
+                                onChange={handleGroupChange}
                             >
                                 <FormControlLabel value="Event" control={<Radio />} label="Event" />
                                 <FormControlLabel value="QL Code" control={<Radio />} label="QL Code" />
