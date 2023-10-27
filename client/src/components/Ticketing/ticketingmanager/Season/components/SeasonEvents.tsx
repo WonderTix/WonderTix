@@ -168,7 +168,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         </article>
       </section>
       {isAddEventActive && (
-        <div className='h-96 overflow-scroll mb-3'>
+        <div className='h-96 overflow-auto mb-3'>
           <div className='flex justify-between px-3'>
             <h2 className='text-2xl mb-2 inline'>Unassigned Events</h2>
             <button
