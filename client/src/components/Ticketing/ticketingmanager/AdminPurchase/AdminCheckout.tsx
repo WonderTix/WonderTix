@@ -15,6 +15,7 @@ import AdminCompleteOrderForm, {
 } from './AdminCompleteOrderForm';
 import {selectDonation} from '../../ticketingmanager/donationSlice';
 import {useNavigate, useLocation} from 'react-router-dom';
+import AdminCart from './AdminCart';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -26,10 +27,8 @@ const stripePromise = loadStripe(pk);
  */
 export default function AdminCheckout(): ReactElement {
   const location = useLocation();
-  const ticketData = location.state;
   const navigate = useNavigate();
-  const cartItems = location.state?.cartItems || [];
-  console.log('cartItems', cartItems);
+  const cartItems = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);
   const handleBackButton = () => {
     navigate('/ticketing/purchaseticket');
@@ -64,7 +63,7 @@ export default function AdminCheckout(): ReactElement {
       const stripe = await stripePromise;
       if (!stripe) return;
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + `/events/checkout`,
+        process.env.REACT_APP_API_2_URL + `/events/checkout`,
         {
           credentials: 'include',
           method: 'POST',
@@ -139,7 +138,7 @@ export default function AdminCheckout(): ReactElement {
                md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'
           >
-            <YourOrder backButtonRoute='../ticketing/purchaseticket' />
+            <AdminCart />
           </div>
         </div>
       </div>
