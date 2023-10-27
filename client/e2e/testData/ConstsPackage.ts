@@ -1,104 +1,73 @@
 // This is the passin data template for the test:addNewEvents in EventsPage.spect.ts.
-export class addNewEvents_Package {
-  constructor(
-    public event_Name: string,
-    public event_Description: string,
-    public event_URL: string
-  ) {}
+export interface EventsInfo {
+  eventName: string;
+  eventDescription: string;
+  eventURL: string;
+  eventFullName: string;
+ }
+
+// This is an instance of the object
+export const EventsInfo1: EventsInfo = {
+  eventName: "S",
+  eventDescription: "123",
+  eventURL: "http://",
+  eventFullName: "S Playbill S Description 123"
+};
+
+export const EventsInfo2: EventsInfo = {
+  eventName: "Test_event",
+  eventDescription: "An event for testing",
+  eventURL: "https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg",
+  eventFullName: "Test_event Playbill Test_event Description An event for testing"
+};
+
+export const EventsInfo3: EventsInfo = {
+  eventName: "The Crucible1",
+  eventDescription: "111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  eventURL: "https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg",
+  eventFullName: "The Crucible1 Playbill The Crucible1 Description 111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+};
+
+export const EventsInfo4: EventsInfo = {
+  eventName: "The Crucible",
+  eventDescription: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  eventURL: "https://upload.wikimedia.org/wikipedia/en/7/75/Cruciblecover.jpg",
+  eventFullName: "The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+};
+
+//This is the passin data template for adding/editing a new showing
+export interface ShowingInfo {
+  showingDate: string;
+  showingTime: string;
+  showingQuantity: string;
+  showingWholeDate: string;
 }
 
 // This is an instance of the object
-export const ANE_Package1 = new addNewEvents_Package(
-  "S",
-  "123",
-  "http://"
-);
+export const ShowingInfo1: ShowingInfo = {
+  showingDate: "2023-10-11",
+  showingTime: "00:10",
+  showingQuantity: "10",
+  showingWholeDate: "Wed, Oct 11 2023"
+};
 
-export const ANE_Package2 = new addNewEvents_Package(
-  "Test_event",
-  "An event for testing",
-  "https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg"
-);
+export const ShowingInfo2: ShowingInfo = {
+  showingDate: "2023-10-17",
+  showingTime: "10:20",
+  showingQuantity: "010",
+  showingWholeDate: "Wed, Oct 17 2023"
+};
 
-export const ANE_Package3 = new addNewEvents_Package(
-  "The Crucible1",
-  "111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  "https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg"
-);
+export const ShowingInfo3: ShowingInfo = {
+  showingDate: "2021-09-16",
+  showingTime: "",
+  showingQuantity: "101",
+  showingWholeDate: ""
+};
 
-export const ANE_Package4 = new addNewEvents_Package(
-  "The Crucible",
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  "https://upload.wikimedia.org/wikipedia/en/7/75/Cruciblecover.jpg"
-);
-
-//This is the passin data template for adding a new showing
-export class addNewShowing_Package {
-  constructor(
-    public event_ShowingDate: string,
-    public event_ShowingTime: string,
-    public event_ShowingQuantity: string
-  ) {}
-}
-// This is an instance of the object
-export const ANS_Package1 = new addNewShowing_Package(
-  "2023-10-11",
-  "00:10",
-  "10"
-);
-
-export const ANS_Package2 = new addNewShowing_Package(
-  "2023-10-17",
-  "10:20",
-  "010"
-);
-
-// This is the passin date template for searching for a specific showing
-export class searchDeleteShowing_Package {
-  constructor(
-    public showing_Date:string
-  ) {}
-}
-
-// This is an instance of the object
-export const SDS_Package1 = new searchDeleteShowing_Package(
-  "Wed, Oct 11 2023"
-);
-
-export const SDS_Package2 = new searchDeleteShowing_Package(
-  "Tue, Oct 17 2023"
-);
-// This is the passin data template for the test:addDeleteEvents_Package in EventsPage.spect.ts.
-export class goToEventFromManage_Package {
-    constructor(
-      public event_FullName: string
-    ) {}
-  }
-
-// This is an instance of the object
-export const GTE_Package1 = new goToEventFromManage_Package(
-    "Test_event Playbill Test_event Description An event for testing"
-  );
-
-// This is the passin data template for the test:editShowing in EventsPage.spect.ts.
-export class editShowing_Package {
-  constructor(
-    public eventShowingDate: string,
-    public eventShowingQuantity: string,
-    public eventShowingDateString: string
-  ) {}
-}
-
-// This is an instance of the object
-
-export const ES_Package1 = new editShowing_Package(
-  "2021-09-16",
-  "101",
-  ""
-);
-
-export const ES_Package2 = new editShowing_Package(
-  "2021-09-15",
-  "100",
-  "Wed, Sep 15 2021"
-);
+export const ShowingInfo4: ShowingInfo = {
+  showingDate: "2021-09-15",
+  showingTime: "",
+  showingQuantity: "100",
+  showingWholeDate: "Wed, Sep 15 2021"
+};

@@ -1,10 +1,8 @@
 import {test , expect} from '@playwright/test';
 import {EventsPage} from './pages/EventsPage';
-import { addNewEvents_Package, ANE_Package1,ANE_Package2,ANE_Package3,ANE_Package4} from './testData/ConstsPackage';
-import { goToEventFromManage_Package, GTE_Package1} from './testData/ConstsPackage';
-import { editShowing_Package, ES_Package1,ES_Package2} from './testData/ConstsPackage';
-import { addNewShowing_Package,ANS_Package1,ANS_Package2 } from './testData/ConstsPackage';
-import { searchDeleteShowing_Package,SDS_Package1,SDS_Package2 } from './testData/ConstsPackage';
+import { EventsInfo1, EventsInfo2, EventsInfo3, EventsInfo4 } from './testData/ConstsPackage';
+import { ShowingInfo1, ShowingInfo2, ShowingInfo3,ShowingInfo4 } from './testData/ConstsPackage';
+
 
 
 test('Homepage->Events',async({page}) => {
@@ -15,7 +13,7 @@ test('Homepage->Events',async({page}) => {
 test('addNewEvents',async({page})=>{
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();
-  await eventsPage.addnewevent(ANE_Package1);
+  await eventsPage.addnewevent(EventsInfo1);
 });
 
 test('addDeleteEvents',async({page})=>{
@@ -24,20 +22,20 @@ test('addDeleteEvents',async({page})=>{
   await eventsPage.goto();
   //The ANE_Package2 is locate in ConstsPackage.ts file
   //First we create a new event
-  await eventsPage.addnewevent(ANE_Package2);
+  await eventsPage.addnewevent(EventsInfo2);
   //Then we add a new showing for it
-  await eventsPage.addNewShowing(ANS_Package1);
+  await eventsPage.addNewShowing(ShowingInfo1);
   //Go back to homepage to see if it exists on the homepage
   await eventsPage.checkNewEventOnHomePage();
   //Go to the newly created event from the manage ticketing page
-  await eventsPage.goToEventFromManage(GTE_Package1);
+  await eventsPage.goToEventFromManage(EventsInfo2.eventFullName);
   //Add one more showing for it
-  await eventsPage.addNewShowing(ANS_Package2);
+  await eventsPage.addNewShowing(ShowingInfo2);
   //Search for two corresponding showing by their date and delete them
-  await eventsPage.searchDeleteShowing(SDS_Package1);
-  await eventsPage.searchDeleteShowing(SDS_Package2);
+  await eventsPage.searchDeleteShowing(ShowingInfo2.showingDate);
+  await eventsPage.searchDeleteShowing(ShowingInfo1.showingDate);
   //Delete the newly created event
-  await eventsPage.deleteTheEvent(GTE_Package1);
+  await eventsPage.deleteTheEvent(EventsInfo2.eventFullName);
 });
 
 test('editEvents',async({page})=>{
@@ -47,14 +45,14 @@ test('editEvents',async({page})=>{
   //Go to the event information page first
   await eventsPage.clickSecondEvent();
   //Change the event's information a little bit
-  await eventsPage.editTheEventInfo(ANE_Package3);
+  await eventsPage.editTheEventInfo(EventsInfo3);
   //Search for the event by its new name
-  await eventsPage.searchForEventByName(ANE_Package3);
+  await eventsPage.searchForEventByName(EventsInfo3);
   //Search for the event by its new description
-  await eventsPage.editTheEventInfo(ANE_Package3);
-  await eventsPage.searchForEventByDes(ANE_Package3);
+  await eventsPage.editTheEventInfo(EventsInfo3);
+  await eventsPage.searchForEventByDes(EventsInfo3);
   //Now let's change everything back
-  await eventsPage.editTheEventInfo(ANE_Package4);
+  await eventsPage.editTheEventInfo(EventsInfo4);
 });
 
 test('editEvents1',async({page})=>{
@@ -70,11 +68,11 @@ test('editShowing',async({page})=>{
   //Go to the event page first
   await eventsPage.clickFirstEvent();
   //Now we change some showing's information a little bit
-  await eventsPage.editShowingInfo(ES_Package1);
+  await eventsPage.editShowingInfo(ShowingInfo3);
   //Then we change that back
-  await eventsPage.editShowingInfo(ES_Package2);
+  await eventsPage.editShowingInfo(ShowingInfo4);
   //Let search for the showing by its whole infomation string
-  await eventsPage.clickSpecificShowing(ES_Package2);
+  await eventsPage.clickSpecificShowing(ShowingInfo4.showingWholeDate);
 });
 
 
