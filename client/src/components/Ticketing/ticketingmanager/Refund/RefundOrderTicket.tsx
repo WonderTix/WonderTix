@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import PopUp from '../../PopUp';
 
@@ -14,7 +14,9 @@ const Refund = () => {
       setShow((p) => ({...p, showPopUp: false}));
     },
   });
-  const onSubmit = async (orderID) => {
+  const [orders, setOrders] = useState([]);
+
+  const onRefund = async (orderID) => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_2_URL}/order/refund/${orderID}`,
@@ -27,18 +29,17 @@ const Refund = () => {
           },
         },
       );
-
       if (!response.ok) {
         throw response;
       }
-
-      setShow({
+      setOrders((orders) => orders.filter((order) => order.orderid !== orderID));
+      setShow((show) => ({
         ...show,
         showPopUp: true,
         message: `Order ${orderID} successfully refunded`,
         title: `Order Refund Successful`,
         success: true,
-      });
+      }));
     } catch (error) {
       const errorMessage = await error.json();
       setShow({
@@ -50,22 +51,38 @@ const Refund = () => {
       });
     }
   };
-  const mappedInstances = [
-    {
-      name: 'John Doe',
-      date: '2023-10-24',
-      showings: ['Gone With The Wind', 'Sound Of Music'],
-      orderID: '12345',
-      price: 19.99,
-    },
-    {
-      name: 'John Doe',
-      date: '2023-10-25',
-      showings: 'Gone With The Wind',
-      orderID: '12345',
-      price: 14.99,
-    },
-  ];
+  const onFetchOrders = async (event) =>{
+    event.preventDefault();
+    const email = event.target[0].value;
+    if (!email) {
+      setShow({
+        ...show,
+        showPopUp: true,
+        message: `Email Required`,
+        title: `Invalid search`,
+        success: false,
+      });
+      return;
+    }
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_2_URL}/order/?email=${email}`,
+        {
+          credentials: 'include',
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+      if (!response.ok) {
+        throw response;
+      }
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -85,8 +102,9 @@ const Refund = () => {
               Refund Ticket
             </h1>
           </div>
-          <div className='mb-4'>
-            <label id='email-value' className='grid'>
+          <form className='mb-4' onSubmit={onFetchOrders}>
+            <label id='email-value' className='grid' hidden>
+              email
               <div className='flex'>
                 <svg xmlns="http://www.w3.org/2000/svg" className="pointer-events-none h-5 w-5 absolute ml-6 mt-3" viewBox="0 0 20 20" fill="gray">
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -95,10 +113,10 @@ const Refund = () => {
                 <input // search button
                   type='text'
                   className='text-black border-2 border-gray rounded-l-full pl-12 w-80 py-2'
-                  id='email-search-input'
+                  id='email'
                   placeholder='John_Smith@email.com'
                 />
-                <button id='email-search-input' type='button' className='px-0'>
+                <button id='email-search-input' type='submit' className='px-0'>
                   <div className='hover:bg-sky-500 w-20 rounded-r-full bg-indigo-500 hover:drop-shadow-md'>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-11 w-11 pl-6" viewBox="0 0 20 20" fill="white">
                       <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
@@ -107,7 +125,7 @@ const Refund = () => {
                 </button>
               </div>
             </label>
-          </div>
+          </form>
           <div className='w-full min-w-min'>
             <div className='grid grid-cols-5 gap-2 bg-gray-200 h-18 rounded-lg shadow-md px-2 mb-2 font-bold'>
               <div className='row-start-1 justify-self-start py-2 col-span-1'>
@@ -130,16 +148,16 @@ const Refund = () => {
               </div>
               <div className='row-start-1 justify-self-center py-2 col-span-1'></div>
             </div>
-            {mappedInstances.length === 0 ? (
+            {orders.length === 0 ? (
               <div className="text-center text-gray-600">No current results</div>
             ) : (
-              mappedInstances.map((instance, index) => (
+              orders.map((instance, index) => (
                 <div key={index} className='grid grid-cols-5 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'>
                   <div className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                     {instance.name}
                   </div>
                   <div className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                    {instance.date}
+                    {new Date(`${instance.orderdate} ${instance.ordertime.split('T')[1].slice(0, 6)}`).toLocaleString()}
                   </div>
                   <div className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                     {Array.isArray(instance.showings) ? (
@@ -155,8 +173,8 @@ const Refund = () => {
                   </div>
                   <div className='row-start-1 justify-self-start py-2 col-span-1'>
                     <button
-                      onClick={async () => await onSubmit(instance.orderID)}
-                      type={'submit'}
+                      onClick={async () => await onRefund(instance.orderid)}
+                      type='button'
                       className='bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded'
                     >
                       Refund
