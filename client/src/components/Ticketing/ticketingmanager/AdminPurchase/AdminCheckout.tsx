@@ -28,7 +28,7 @@ const stripePromise = loadStripe(pk);
 export default function AdminCheckout(): ReactElement {
   const location = useLocation();
   const navigate = useNavigate();
-  const cartItems = useAppSelector(selectCartContents);
+  const cartItems = location.state?.cartItems || [];
   const discount = useAppSelector(selectDiscount);
   const handleBackButton = () => {
     navigate('/ticketing/purchaseticket');
@@ -138,7 +138,7 @@ export default function AdminCheckout(): ReactElement {
                md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'
           >
-            <AdminCart />
+            <AdminCart backButtonRoute='../ticketing/purchaseticket' />
           </div>
         </div>
       </div>
