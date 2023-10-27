@@ -28,7 +28,7 @@ const AdminCart = ({backButtonRoute}: AdminCartProps): ReactElement => {
       className='flex flex-row gap-8 bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'
     >
       <div className='flex-auto text-left'>
-        {item.qty} x {item.name} :
+        {item.qty} x {item.name}
       </div>
       <div className='flex-auto text-right'>{toDollar(item.price)}</div>
     </div>

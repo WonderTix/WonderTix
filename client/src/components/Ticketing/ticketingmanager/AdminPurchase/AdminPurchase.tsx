@@ -382,7 +382,7 @@ const AdminPurchase = () => {
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
         aggregatedCartItems[key].qty += 1;
-        aggregatedCartItems[key].price += row.price;
+        aggregatedCartItems[key].price;
       } else {
         // If this item doesn't exist in the cart, add it
         aggregatedCartItems[key] = {
