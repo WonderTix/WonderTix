@@ -385,7 +385,7 @@ const AdminPurchase = () => {
           product_id: row.eventinstanceid,
           price: row.price,
           desc: row.ticketTypes,
-          typeID: row.id,
+          typeID: 1,
           date: new Date(row.eventdate),
           name: row.eventname,
           product_img_url: row.imageurl,
