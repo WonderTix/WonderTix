@@ -13,7 +13,6 @@ import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useNavigate} from 'react-router-dom';
 
-
 type EventRow = {
   id?: number;
   desc: string;
@@ -134,7 +133,7 @@ const AdminPurchase = () => {
       headerName: 'Price',
       width: 100,
       renderCell: (params) => (
-        <div className="flex items-center">
+        <div className='flex items-center'>
           $
           <input
             type='text'
@@ -142,7 +141,7 @@ const AdminPurchase = () => {
             onChange={(e) => handlePriceChange(e, params.row)}
             onBlur={(e) => handlePriceBlur(e, params.row)}
             disabled={params.row.complementary || !params.row.ticketTypes}
-            className="w-16"
+            className='w-16'
           />
         </div>
       ),
@@ -288,7 +287,8 @@ const AdminPurchase = () => {
         return {
           ...row,
           eventtime: selectedEvent?.eventtime,
-          availableSeats: selectedEvent?.availableSeats || selectedEvent?.availableseats,
+          availableSeats:
+            selectedEvent?.availableSeats || selectedEvent?.availableseats,
           eventinstanceid: eventInstanceID,
         };
       }
@@ -310,7 +310,11 @@ const AdminPurchase = () => {
       if (r.id === row.id) {
         // If complementary, don't change the price
         const finalPrice = row.complementary ? 0 : price;
-        return {...row, ticketTypes: selectedType.description, price: finalPrice};
+        return {
+          ...row,
+          ticketTypes: selectedType.description,
+          price: finalPrice,
+        };
       }
       return r;
     });
@@ -421,7 +425,7 @@ const AdminPurchase = () => {
             />
           ) : (
             <p className='text-xl font-bold text-red-600'>
-            No tickets sold for this show
+              No tickets sold for this show
             </p>
           )}
           <div className='mt-4'>
@@ -440,7 +444,7 @@ const AdminPurchase = () => {
               }}
               onClick={handlePurchase}
             >
-                Proceed To Checkout
+              Proceed To Checkout
             </Button>
           </div>
         </div>
