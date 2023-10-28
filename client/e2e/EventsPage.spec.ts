@@ -32,8 +32,8 @@ test('addDeleteEvents',async({page})=>{
   //Add one more showing for it
   await eventsPage.addNewShowing(ShowingInfo2);
   //Search for two corresponding showing by their date and delete them
-  await eventsPage.searchDeleteShowing(ShowingInfo2.showingDate);
-  await eventsPage.searchDeleteShowing(ShowingInfo1.showingDate);
+  await eventsPage.searchDeleteShowing(ShowingInfo2.showingWholeDate);
+  await eventsPage.searchDeleteShowing(ShowingInfo1.showingWholeDate);
   //Delete the newly created event
   await eventsPage.deleteTheEvent(EventsInfo2.eventFullName);
 });
