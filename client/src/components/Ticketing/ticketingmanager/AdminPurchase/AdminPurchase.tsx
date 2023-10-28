@@ -27,6 +27,7 @@ type EventRow = {
   availableSeats?: number;
   imageurl?: string;
   qty?: number;
+  typeID?: number;
 };
 
 const AdminPurchase = () => {
@@ -314,6 +315,7 @@ const AdminPurchase = () => {
           ...row,
           ticketTypes: selectedType.description,
           price: finalPrice,
+          typeID: ticketTypeId,
         };
       }
       return r;
@@ -331,22 +333,34 @@ const AdminPurchase = () => {
 
   const handlePriceChange = (event, row) => {
     if (row.complementary) return; // If complementary, no changes allowed
-    const newPrice = event.target.value;
+    const newPriceString = event.target.value;
+
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: newPrice,
+      [row.id]: newPriceString,
     }));
   };
 
   const handlePriceBlur = (event, row) => {
-    let newPrice = parseFloat(event.target.value).toFixed(2);
-    if (isNaN(parseFloat(newPrice))) {
-      newPrice = '0.00';
-    }
+    const newPrice = parseFloat(event.target.value);
+
+    // Format the value once the user moves out of the input
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: newPrice,
+      [row.id]: isNaN(newPrice) ? '0.00' : newPrice.toFixed(2),
     }));
+
+    // Update the eventData state with the parsed value
+    const updatedEventData = eventData.map((r) => {
+      if (r.id === row.id) {
+        return {
+          ...r,
+          price: isNaN(newPrice) ? 0 : newPrice,
+        };
+      }
+      return r;
+    });
+    setEventData(updatedEventData);
   };
 
   const handleComplementaryChange = (event, row) => {
@@ -378,18 +392,18 @@ const AdminPurchase = () => {
     const aggregatedCartItems = {};
 
     eventData.forEach((row) => {
-      const key = row.eventinstanceid;
+      // Use a composite key, now including eventtime
+      const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
         aggregatedCartItems[key].qty += 1;
-        aggregatedCartItems[key].price;
       } else {
         // If this item doesn't exist in the cart, add it
         aggregatedCartItems[key] = {
           product_id: row.eventinstanceid,
           price: row.price,
           desc: row.ticketTypes,
-          typeID: 1,
+          typeID: row.typeID, // <-- Ensure typeID is added to the cart
           date: new Date(row.eventdate),
           name: row.eventname,
           product_img_url: row.imageurl,
