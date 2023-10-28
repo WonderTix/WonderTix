@@ -2,27 +2,31 @@ steps:
 
   # Build server image
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Build server image'
+    id: 'build-server'
+    waitFor: ['-']
     entrypoint: 'bash'
     args: ['-c', 'docker build -f server/Dockerfile.dev -t $$ARTIFACTS/server-img-$$ENV:$SHORT_SHA server']
     secretEnv: ['ARTIFACTS', 'ENV']
 
   # Push server image
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Push server image'
+    id: 'push-server'
+    waitFor: ['build-server']
     entrypoint: 'bash'
     args: ['-c', 'docker push $$ARTIFACTS/server-img-$$ENV:$SHORT_SHA']
     secretEnv: ['ARTIFACTS', 'ENV']
 
   # Deploy server to Cloud Run, tag as a test revision (receiving no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Deploy server without traffic'
+    id: 'deploy-server'
+    waitFor: ['push-server']
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         gcloud run deploy wtix-server-$$ENV \
         --image $$ARTIFACTS/server-img-$$ENV:$SHORT_SHA \
+        --region $$REGION \
         --platform managed \
         --memory $$SERVER_MEMORY \
         --cpu $$SERVER_CPU \
@@ -35,7 +39,7 @@ steps:
         --set-cloudsql-instances $$SQL_INSTANCE \
         --service-account $$SERVICE_ACCOUNT \
         --set-env-vars=\
-        AUTH0_AUDIENCE=$$AUTH0_AUDIENCE,\
+        AUTH0_AUDIENCE=$$SERVER_REVISION,\
         AUTH0_URL=$$AUTH0_URL,\
         ENV=$$ENV,\
         FRONTEND_URL=$$CLIENT_REVISION,\
@@ -51,7 +55,6 @@ steps:
         PRIVATE_STRIPE_KEY=PRIVATE_STRIPE_KEY:$$ENV,\
     secretEnv:
       - 'ARTIFACTS'
-      - 'AUTH0_AUDIENCE'
       - 'AUTH0_URL'
       - 'CLIENT_REVISION'
       - 'ENV'
@@ -64,7 +67,8 @@ steps:
 
   # Build client image and pass in arguments needed by React at build time
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Build client image'
+    id: 'build-client'
+    waitFor: ['-']
     entrypoint: 'bash'
     args: 
       - '-c'
@@ -73,26 +77,26 @@ steps:
         --build-arg AUTH0_CLIENT_SECRET=$$AUTH0_CLIENT_SECRET \
         --build-arg REACT_APP_API_1_URL=$$REACT_APP_API_1_URL \
         --build-arg REACT_APP_API_2_URL=$$REACT_APP_API_2_URL \
-        --build-arg REACT_APP_AUTH0_AUDIENCE=$$REACT_APP_AUTH0_AUDIENCE \
-        --build-arg REACT_APP_AUTH0_CLIENT_ID=$$REACT_APP_AUTH0_CLIENT_ID \
-        --build-arg REACT_APP_AUTH0_URL=$$REACT_APP_AUTH0_URL \
-        --build-arg REACT_APP_PUBLIC_STRIPE_KEY=$$REACT_APP_PUBLIC_STRIPE_KEY \
+        --build-arg REACT_APP_AUTH0_AUDIENCE=$$SERVER_REVISION \
+        --build-arg REACT_APP_AUTH0_CLIENT_ID=$$AUTH0_CLIENT_ID \
+        --build-arg REACT_APP_AUTH0_URL=$$AUTH0_URL \
+        --build-arg REACT_APP_PUBLIC_STRIPE_KEY=$$PUBLIC_STRIPE_KEY \
         --build-arg REACT_APP_ROOT_URL=$$SERVER_REVISION
     secretEnv:
       - 'ARTIFACTS'
+      - 'AUTH0_CLIENT_ID'
       - 'AUTH0_CLIENT_SECRET'
+      - 'AUTH0_URL'
       - 'ENV'
+      - 'PUBLIC_STRIPE_KEY'
       - 'REACT_APP_API_1_URL'
       - 'REACT_APP_API_2_URL'
-      - 'REACT_APP_AUTH0_AUDIENCE'
-      - 'REACT_APP_AUTH0_CLIENT_ID'
-      - 'REACT_APP_AUTH0_URL'
-      - 'REACT_APP_PUBLIC_STRIPE_KEY'
       - 'SERVER_REVISION'
 
   # Push client image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Push to repo'
+    id: 'push-client'
+    waitFor: ['build-client']
     entrypoint: 'bash'
     args: ['-c', 'docker push $$ARTIFACTS/client-img-$$ENV:$SHORT_SHA']
     secretEnv: 
@@ -101,7 +105,8 @@ steps:
 
   # Deploy client to Cloud Run, tag as a test revision (receiving no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Deploy without traffic'
+    id: 'deploy-client'
+    waitFor: ['push-client']
     entrypoint: 'bash'
     args:
       - '-c'
@@ -121,8 +126,8 @@ steps:
         --set-env-vars=\
         ENV=$$ENV, \
         --set-secrets=\
-        REACT_APP_AUTH1_CLIENT_ID=REACT_APP_AUTH0_CLIENT_ID:$$ENV,\
-        REACT_APP_PUBLIC_STRIPE_KEY=REACT_APP_PUBLIC_STRIPE_KEY:$$ENV
+        REACT_APP_AUTH1_CLIENT_ID=AUTH0_CLIENT_ID:$$ENV,\
+        REACT_APP_PUBLIC_STRIPE_KEY=PUBLIC_STRIPE_KEY:$$ENV
     secretEnv:
       - 'ARTIFACTS'
       - 'CLIENT_CPU'
@@ -131,19 +136,19 @@ steps:
       - 'REGION'
       - 'SERVICE_ACCOUNT'
 
-  # Wait 3 minutes for client to load all content
+  # Wait 3.5 minutes for client to load all content
   - name: 'ubuntu'
-    id: 'Wait for revision'
+    id: 'wait-for-client'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         echo "Waiting for client to start up..."
-        sleep 180
+        sleep 210
     
   # Use client image to run E2E tests on test revision
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Run E2E tests'
+    id: 'run-e2e-tests'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -159,11 +164,12 @@ steps:
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
+      - 'TEST_EMAIL'
+      - 'TEST_PASSWORD'
     
   # Delete test revisions whether tests pass or fail
   - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Clean up'
-    finally: true
+    id: 'clean-up'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -187,8 +193,8 @@ availableSecrets:
   secretManager:
   - versionName: projects/$PROJECT_ID/secrets/ARTIFACTS/versions/$_ENV
     env: 'ARTIFACTS'
-  - versionName: projects/$PROJECT_ID/secrets/AUTH0_AUDIENCE/versions/$_ENV
-    env: 'AUTH0_AUDIENCE'
+  - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_ID/versions/$_ENV
+    env: 'AUTH0_CLIENT_ID'
   - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_SECRET/versions/$_ENV
     env: 'AUTH0_CLIENT_SECRET'
   - versionName: projects/$PROJECT_ID/secrets/AUTH0_URL/versions/$_ENV
@@ -197,22 +203,16 @@ availableSecrets:
     env: 'CLIENT_CPU'
   - versionName: projects/$PROJECT_ID/secrets/CLIENT_MEMORY/versions/$_ENV
     env: 'CLIENT_MEMORY'
+  - versionName: projects/$PROJECT_ID/secrets/CLIENT_REVISION/versions/$_ENV
+    env: 'CLIENT_REVISION'
   - versionName: projects/$PROJECT_ID/secrets/ENV/versions/$_ENV
     env: 'ENV'
-  - versionName: projects/$PROJECT_ID/secrets/CLIENT_REVISION/versions/$_ENV
-    env: 'FRONTEND_URL'
+  - versionName: projects/$PROJECT_ID/secrets/PUBLIC_STRIPE_KEY/versions/$_ENV
+    env: 'PUBLIC_STRIPE_KEY'
   - versionName: projects/$PROJECT_ID/secrets/REACT_APP_API_1_URL/versions/$_ENV
     env: 'REACT_APP_API_1_URL'
   - versionName: projects/$PROJECT_ID/secrets/REACT_APP_API_2_URL/versions/$_ENV
     env: 'REACT_APP_API_2_URL'
-  - versionName: projects/$PROJECT_ID/secrets/AUTH0_AUDIENCE/versions/$_ENV
-    env: 'REACT_APP_AUTH0_AUDIENCE'
-  - versionName: projects/$PROJECT_ID/secrets/REACT_APP_AUTH0_CLIENT_ID/versions/$_ENV
-    env: 'REACT_APP_AUTH0_CLIENT_ID'
-  - versionName: projects/$PROJECT_ID/secrets/AUTH0_URL/versions/$_ENV
-    env: 'REACT_APP_AUTH0_URL'
-  - versionName: projects/$PROJECT_ID/secrets/REACT_APP_PUBLIC_STRIPE_KEY/versions/$_ENV
-    env: 'REACT_APP_PUBLIC_STRIPE_KEY'
   - versionName: projects/$PROJECT_ID/secrets/REGION/versions/$_ENV
     env: 'REGION'
   - versionName: projects/$PROJECT_ID/secrets/SERVER_CPU/versions/$_ENV
@@ -229,4 +229,3 @@ availableSecrets:
     env: 'TEST_EMAIL'
   - versionName: projects/$PROJECT_ID/secrets/TEST_PASSWORD/versions/$_ENV
     env: 'TEST_PASSWORD'
-

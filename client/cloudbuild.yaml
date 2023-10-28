@@ -142,3 +142,4 @@ availableSecrets:
     env: 'ROOT_URL'
   - versionName: projects/${PROJECT_ID}/secrets/SERVICE_ACCOUNT/versions/${_ENV}
     env: 'SERVICE_ACCOUNT'
+
