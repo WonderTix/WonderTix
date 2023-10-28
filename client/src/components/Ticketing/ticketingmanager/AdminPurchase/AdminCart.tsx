@@ -1,4 +1,4 @@
-import React, {ReactElement} from 'react';
+import React, {ReactElement, useState, useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router';
 
 /**
@@ -9,19 +9,35 @@ import {useLocation, useNavigate} from 'react-router';
 const toDollar = (x: number) => `$${(Math.floor(x * 100) / 100).toFixed(2)}`;
 
 interface AdminCartProps {
-  backButtonRoute: string;
+  currentCart: [];
 }
 /**
  *
  * @param AdminCartProps
- * @param AdminCartProps.backButtonRoute
+ * @param AdminCartProps.currentCart
  * @returns {ReactElement}
  */
-const AdminCart = ({backButtonRoute}: AdminCartProps): ReactElement => {
+const AdminCart = ({currentCart}: AdminCartProps): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
-  const cartItems = location.state?.cartItems || [];
-  // console.log('admin cart: ', cartItems);
+  const [cartItems, setCartItems] = useState(currentCart || []);
+
+  useEffect(() => {
+    if (location.state?.cartItems) {
+      setCartItems(location.state.cartItems);
+    }
+  }, [location.state]);
+
+  const addToCart = (newItem) => {
+    setCartItems((prevCartItems) => [...prevCartItems, newItem]);
+    navigate('/ticketing/purchaseticket');
+  };
+  // const removeFromCart = (itemId) => {
+  // setCartItems((prevCartItems) =>
+  // prevCartItems.filter((item) => item.id !== itemId),
+  // );
+  // };
+
   const itemsInCart = cartItems.map((item, index) => (
     <div
       key={index}
@@ -46,7 +62,7 @@ const AdminCart = ({backButtonRoute}: AdminCartProps): ReactElement => {
           {itemsInCart.length > 0 ? itemsInCart : <p>Your cart is Empty</p>}
         </div>
         <button
-          onClick={() => navigate(backButtonRoute)}
+          onClick={addToCart}
           className='bg-green-600 px-3 py-1 text-sm hover:bg-green-700 text-white rounded-xl mt-4'
         >
           Add more items

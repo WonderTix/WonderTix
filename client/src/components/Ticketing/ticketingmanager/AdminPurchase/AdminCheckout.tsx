@@ -1,6 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
 
-import YourOrder from '../../cart/YourOrder';
 import {
   CartItem,
   removeAllTicketsFromCart,
@@ -13,9 +12,9 @@ import {ReactElement, useState} from 'react';
 import AdminCompleteOrderForm, {
   CheckoutFormInfo,
 } from './AdminCompleteOrderForm';
-import {selectDonation} from '../../ticketingmanager/donationSlice';
 import {useNavigate, useLocation} from 'react-router-dom';
 import AdminCart from './AdminCart';
+import CheckoutSuccess from '../../checkout/CheckoutSuccess';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -34,25 +33,6 @@ export default function AdminCheckout(): ReactElement {
     navigate('/ticketing/purchaseticket');
   };
   const dispatch = useAppDispatch();
-
-  // ***hardcoded cart items for testing purposes
-
-  // const todaysDate = new Date();
-
-  // const cartItems: CartItem[] = [
-  // {
-  // product_id: 2,
-  // price: 99,
-  // desc: 'this is a test',
-  // typeID: 1,
-  // date: todaysDate,
-  // name: 'Tou Show',
-  // product_img_url:
-  // 'https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg',
-  // qty: 22,
-  // payWhatCan: false,
-  // },
-  // ];
 
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
@@ -77,9 +57,10 @@ export default function AdminCheckout(): ReactElement {
         throw response;
       }
       const session = await response.json();
-      if (session.id == 'comp') {
+      if (session.id === 'comp') {
         dispatch(removeAllTicketsFromCart());
         navigate(`/success`);
+        // return <CheckoutSuccess />;
       }
       const paymentIntent = session.payment_intent;
       const result = await stripe.redirectToCheckout({sessionId: session.id});
@@ -88,7 +69,6 @@ export default function AdminCheckout(): ReactElement {
       }
     } catch (error) {
       console.error('Error response status: ', error.status);
-      console.error('Error response status text: ', error.statusText);
       if (error.json) {
         const errorMessage = await error.json();
         console.error('Error message from server: ', errorMessage);
@@ -138,7 +118,7 @@ export default function AdminCheckout(): ReactElement {
                md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'
           >
-            <AdminCart backButtonRoute='../ticketing/purchaseticket' />
+            <AdminCart currentCart={cartItems} />
           </div>
         </div>
       </div>
