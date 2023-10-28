@@ -55,7 +55,7 @@ export const ShowingInfo2: ShowingInfo = {
   showingDate: "2023-10-17",
   showingTime: "10:20",
   showingQuantity: "010",
-  showingWholeDate: "Wed, Oct 17 2023"
+  showingWholeDate: "Tue, Oct 17 2023"
 };
 
 export const ShowingInfo3: ShowingInfo = {
