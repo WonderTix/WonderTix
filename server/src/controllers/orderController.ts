@@ -187,6 +187,7 @@ orderController.get('/', async (req: Request, res: Response) => {
     }
     const orders = await prisma.orders.findMany({
       where: {
+        payment_intent: {not: null},
         refund_intent: null,
         ordertotal: {not: 0},
         contacts: {
@@ -272,29 +273,6 @@ orderController.get('/', async (req: Request, res: Response) => {
   }
 });
 
-
-orderController.get('/active', async (req: Request, res: Response) => {
-  try {
-    const orders = prisma.orders.findMany({
-      where: {
-        refund_intent: null,
-        payment_intent: {not: null},
-      },
-      include: {
-        contacts: true,
-      },
-    });
-
-    if (!orders) {
-      return res.status(400).json({error: 'No refundable orders'});
-    }
-
-    return res.status(200).json(orders);
-  } catch (error) {
-    console.error(error);
-    res.status(400).json(error);
-  }
-});
 
 orderController.put('/refund/:id', async (req, res) => {
   try {
