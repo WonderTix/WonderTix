@@ -1,5 +1,5 @@
 import React from 'react';
-import defaultSeasonImage from '../../../../assets/DefaultEventImage.png'; // TODO, change to default season image once completed
+import defaultSeasonImage from '../../../../assets/DefaultSeasonImage.png';
 
 export const formatSeasonDate = (date: number, fromApiResponse = false) => {
   const dateStr = date.toString();
