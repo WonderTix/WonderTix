@@ -1,6 +1,8 @@
 export interface SeasonProps {
   seasonId: number;
   token: string;
+  isFormEditing: boolean;
+  setIsFormEditing: (value) => void;
   setShowPopUp: (value) => void;
   setPopUpMessage: (value) => void;
   setSeasonId: (value) => void;

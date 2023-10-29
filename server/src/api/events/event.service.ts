@@ -176,7 +176,7 @@ export const updateEvent = async (params: any): Promise<response> => {
             eventid = $7
           RETURNING *;`,
     values: [
-      7,
+      params.seasonid_fk,
       params.eventname,
       params.eventdescription,
       params.active,
