@@ -14,9 +14,7 @@ interface TableActionsProps {
   ) => void;
 }
 
-const TableActions: React.FC<TableActionsProps> = (
-  {reloadTable, openModal},
-) => {
+const TableActions: React.FC<TableActionsProps> = ({reloadTable, openModal}) => {
   return (
     <div className='mb-3 flex justify-between items-center gap-8 px-6'>
       <div className='flex flex-col w-80'>

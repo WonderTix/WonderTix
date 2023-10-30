@@ -11,11 +11,11 @@ interface TableRowsProps {
     contact: string;
     dueDate: Date;
     priority: 'Important' | 'Normal';
-    status: 'Pending' | 'Started' | 'Complete';
+    status: 'Pending' | 'Started' | 'Completed';
   };
   taskPriority: (priority: string) => JSX.Element;
   taskStatus: (status: string) => string;
-  openModal: (type: 'update' | 'delete', task: any) => void;
+  openModal: (type: 'detail' | 'update' | 'delete', task: any) => void;
 }
 
 const TableRows: React.FC<TableRowsProps> = (
@@ -39,9 +39,14 @@ const TableRows: React.FC<TableRowsProps> = (
       <div className='table-cell p-2.5'>
         <div className='flex items-center'>
           {priority === 'Important' &&
-            <span className='mr-1'>{taskPriority(priority)}</span>}
+            <span className='mr-1'>{taskPriority(priority)}</span>
+          }
           <a
-            href='#'
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              openModal('detail', task);
+            }}
             className='text-blue-600 hover:text-indigo-900 focus:outline-none w-80'
           >
             {subject}
@@ -50,15 +55,15 @@ const TableRows: React.FC<TableRowsProps> = (
       </div>
       <div className='table-cell p-2.5'>{relatedTo}</div>
       <div className='table-cell p-2.5'>{contact}</div>
-      <div className='table-cell p-2.5'>{dueDate.toLocaleDateString()}</div>
+      <div className='table-cell w-24 p-2.5'>{dueDate.toLocaleDateString()}</div>
       <div className='table-cell p-2.5 text-center'>
         <span
-          className={`p-1 whitespace-nowrap font-medium bg-opacity-80
+          className={`py-1 px-1.5 whitespace-nowrap font-medium bg-opacity-80
           ${taskStatus(status)}`}
         > {status}
         </span>
       </div>
-      <div className='table-cell border-x border-gray-200 text-center p-2.5'>
+      <div className='table-cell border-x border-gray-200 text-center p-2.5 w-24'>
         <button
           title='Edit'
           aria-label='Edit'

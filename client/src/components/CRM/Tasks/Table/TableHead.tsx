@@ -14,8 +14,8 @@ const TableHead: React.FC<TableHeadProps> = ({headings, onSort}): React.ReactEle
         key={columnHeading}
         onClick={() => onSort(columnHeading)}
         aria-label={`Sort by ${columnHeading}`}
-        className={`table-cell cursor-pointer border-x border-t
-        hover:bg-gray-300 border-gray-300 p-3`}
+        className={`table-cell cursor-pointer border-l border-t border-gray-300 p-3
+        ${!isActionsHeading ? 'hover:bg-gray-300 shadow-inner' : ''}`}
       >
         <div className={`flex ${isActionsHeading ? 'justify-center' : 'justify-between'} items-center`}>
           {columnHeading} {!isActionsHeading && <ChevronUpDownIcon size='4'/>}
@@ -25,13 +25,9 @@ const TableHead: React.FC<TableHeadProps> = ({headings, onSort}): React.ReactEle
   };
 
   return (
-    <div className='table-header-group tracking-tight'>
-      <div
-        className='table-row rounded-tl-sm rounded-tr-sm bg-gradient-to-t relative shadow-sm
-        border-gray-500 shadow-gray-600/50 from-gray-400/40 to-gray-100/80'
-      >
-        {headings.map((heading) => renderTableColumn(heading))}
-      </div>
+    <div className='table-row tracking-tight bg-gradient-to-t relative shadow
+      border-gray-500 shadow-gray-600/50 from-gray-400/40 to-gray-100/80'>
+      {headings.map((heading) => renderTableColumn(heading))}
     </div>
   );
 };

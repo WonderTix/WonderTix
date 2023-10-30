@@ -92,10 +92,6 @@ const App = () => {
           element={<ProtectedRoute component={TasksMain} />}
         />
         <Route
-          path='/admin/tasks/accountInformation'
-          element={<ProtectedRoute component={TasksMain} />}
-        />
-        <Route
           path='/admin/donor'
           element={<ProtectedRoute component={DmDashmain} />}
         />
