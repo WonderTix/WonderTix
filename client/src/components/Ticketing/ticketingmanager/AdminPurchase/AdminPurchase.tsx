@@ -8,7 +8,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import {DataGrid} from '@mui/x-data-grid';
-import {Checkbox, Button, FormControlLabel} from '@mui/material';
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useLocation, useNavigate} from 'react-router-dom';
@@ -26,6 +26,7 @@ export type EventRow = {
   price?: number;
   complementary?: boolean;
   availableSeats?: number;
+  seatsForType?: number;
   imageurl?: string;
   qty?: number;
   typeID?: number;
@@ -36,8 +37,6 @@ const AdminPurchase = () => {
   const location = useLocation();
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
-  console.log('Initial Event Data:', initialEventData);
-  console.log('Location State:', location.state);
   const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
@@ -45,6 +44,8 @@ const AdminPurchase = () => {
   const [ticketTypes, setTicketTypes] = useState([]);
   const [isEventsLoading, setIsEventsLoading] = useState(true);
   const [isTicketTypesLoading, setIsTicketTypesLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openMissingSelectionDialog, setOpenMissingSelectionDialog] = useState(false);
   const navigate = useNavigate();
 
   const addNewRow = () => {
@@ -52,6 +53,14 @@ const AdminPurchase = () => {
     setEventData([...eventData, {id: maxId, desc: ''}]);
 
     setPriceByRowId((prevState) => ({...prevState, [maxId]: '0.00'}));
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleCloseMissingSelectionDialog = () => {
+    setOpenMissingSelectionDialog(false);
   };
 
   useEffect(() => {
@@ -80,8 +89,8 @@ const AdminPurchase = () => {
   const columns = [
     {
       field: 'eventname',
-      headerName: 'Event Name',
-      width: 250,
+      headerName: 'Event Name - ID',
+      width: 200,
       renderCell: (params) => (
         <select
           value={`${params.row.eventid}-${params.row.eventname}`}
@@ -101,7 +110,7 @@ const AdminPurchase = () => {
     },
     {
       field: 'eventtime',
-      headerName: 'Time',
+      headerName: 'Date - Time',
       width: 200,
       renderCell: (params) => (
         <select
@@ -132,9 +141,13 @@ const AdminPurchase = () => {
     },
     {
       field: 'seatsAvailable',
-      headerName: 'Seats Available',
-      width: 150,
-      renderCell: (params) => <span>{params.row.availableSeats ?? ''}</span>,
+      headerName: 'Seats',
+      width: 80,
+      renderCell: (params) => (
+        <span>
+          {params.row.typeID === 1 ? params.row.availableSeats : params.row.seatsForType}
+        </span>
+      ),
     },
     {
       field: 'ticketTypes',
@@ -173,10 +186,11 @@ const AdminPurchase = () => {
         </div>
       ),
     },
+    /* Dont think its necessary to have this checkbox
     {
       field: 'complementary',
-      headerName: 'Complementary',
-      width: 150,
+      headerName: 'Comp',
+      width: 60,
       renderCell: (params) => (
         <FormControlLabel
           control={
@@ -189,6 +203,7 @@ const AdminPurchase = () => {
         />
       ),
     },
+    */
     {
       field: 'action',
       headerName: '',
@@ -213,21 +228,12 @@ const AdminPurchase = () => {
         );
         const jsonRes = await response.json();
         const jsonData = jsonRes.data as any[];
-        console.log('API Response for Events:', jsonRes.data); // Log the API response
-
+        console.log('API Response for Events:', jsonData);
 
         // Deduplicate the events based on eventid
-        const uniqueEventIds = Array.from(
-          new Set(jsonData.map((event) => event.eventid)),
-        );
-        let deduplicatedEvents = uniqueEventIds.map((id) =>
-          jsonData.find((event) => event.eventid === id),
-        );
-
-        // Sort the events in alphabetical order by eventname
-        deduplicatedEvents = deduplicatedEvents.sort((a, b) =>
-          a.eventname.localeCompare(b.eventname),
-        );
+        const deduplicatedEvents = Array.from(new Set(jsonData.map((e) => e.eventid)))
+          .map((eventid) => jsonData.find((event) => event.eventid === eventid))
+          .sort((a, b) => a.eventname.localeCompare(b.eventname));
 
         setEventList(deduplicatedEvents);
         setEventListFull(jsonData);
@@ -260,7 +266,6 @@ const AdminPurchase = () => {
         );
         const jsonRes = await response.json();
         setTicketTypes(jsonRes.data);
-        console.log('API Response for Events:', jsonRes.data); // Log the API response
         setIsTicketTypesLoading(false);
       } catch (error) {
         console.error(error.message);
@@ -336,23 +341,46 @@ const AdminPurchase = () => {
     setEventData(updatedRows);
   };
 
-  const handleTicketTypeChange = (event, row) => {
+  const handleTicketTypeChange = async (event, row) => {
     const ticketTypeId = parseInt(event.target.value);
     const selectedType = ticketTypes.find((type) => type.id === ticketTypeId);
 
     // Extract the numerical value of the price
     const price = parseFloat(selectedType?.price.replace(/[^\d.-]/g, '')) || 0;
 
-    // Update the eventData
+    let seatsForType;
+
+    if (row.eventinstanceid) {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_1_URL}/tickets/restrictions/`,
+        );
+        const ticketRestrictionData = await response.json();
+
+        // Find the matching restriction
+        const restriction = ticketRestrictionData.data.find(
+          (tr) =>
+            tr.eventinstanceid === row.eventinstanceid &&
+            tr.tickettypeid === ticketTypeId,
+        );
+
+        // Calculate seatsForType value
+        seatsForType = restriction
+          ? restriction.ticketlimit - restriction.ticketssold
+          : 0;
+      } catch (error) {
+        console.error('Error fetching ticket restrictions:', error);
+      }
+    }
+
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        // If complementary, don't change the price
-        const finalPrice = row.complementary ? 0 : price;
         return {
           ...r,
           ticketTypes: selectedType.description,
-          price: finalPrice,
+          price: row.complementary ? 0 : price,
           typeID: ticketTypeId,
+          seatsForType: seatsForType,
         };
       }
       return r;
@@ -420,6 +448,12 @@ const AdminPurchase = () => {
   };
 
   const handlePurchase = () => {
+    for (const row of eventData) {
+      if (!row.eventid || !row.eventtime || !row.ticketTypes || typeof row.price === 'undefined') {
+        setOpenMissingSelectionDialog(true);
+        return;
+      }
+    }
     console.log('eventData', eventData);
 
     const aggregatedCartItems = {};
@@ -445,12 +479,23 @@ const AdminPurchase = () => {
       }
     });
 
-    // Convert to array
-    const cartItems = Object.values(aggregatedCartItems);
+    for (const key in aggregatedCartItems) {
+      if (Object.prototype.hasOwnProperty.call(aggregatedCartItems, key)) {
+        const item = aggregatedCartItems[key];
+        const correspondingRow = eventData.find((row) => row.eventinstanceid === item.product_id && row.typeID === item.typeID);
+        const available = correspondingRow.typeID === 1 ? correspondingRow.availableSeats : correspondingRow.seatsForType;
 
-    // Navigate to the AdminCheckout page and pass the cart items
+        if (item.qty > available) {
+          setOpenDialog(true);
+          return;
+        }
+      }
+    }
+
+    const cartItems = Object.values(aggregatedCartItems);
     navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
   };
+
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
@@ -493,6 +538,32 @@ const AdminPurchase = () => {
           </div>
         </div>
       </div>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>{'Error'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Quantity selected exceeds available seats.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openMissingSelectionDialog} onClose={handleCloseMissingSelectionDialog}>
+        <DialogTitle>{'Error'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Missing selection.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseMissingSelectionDialog} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
