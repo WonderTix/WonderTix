@@ -465,6 +465,37 @@ const payWhatFunc = (cart: CartItem, num: number, qty: number) => {
 };
 
 /**
+ * Checks if the ticketTypeId is General Admission - Adult (at the moment, ID=1)
+ *
+ * @param ticketTypeId
+ */
+const isGeneralAdmissionAdult = (ticketTypeId: number): boolean => {
+  return ticketTypeId === 1;
+};
+
+/**
+ * Gets a bounded range for how many tickets are available to purchase for a ticket
+ * type in a given event instance. If general admission, then total available seats.
+ * If any other type, then based on the limit set in ticket restriction.
+ *
+ * @param state
+ * @param eventInstanceId
+ * @param ticketTypeId
+ * @param ticket
+ */
+const getTicketQuantityRange = (state: ticketingState, eventInstanceId: number, ticketTypeId: number, ticket: Ticket) => {
+  const eventInstanceAvailableSeats = ticket.availableseats;
+
+  if (isGeneralAdmissionAdult(ticketTypeId)) {
+    return bound(0, eventInstanceAvailableSeats);
+  } else {
+    const ticketRestriction = state.ticketrestrictions.find(byId(eventInstanceId, ticketTypeId));
+    const ticketRestrictionAvailableSeats = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
+    return bound(0, Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats));
+  }
+};
+
+/**
  * addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer
  *
  * @param state
@@ -481,16 +512,14 @@ const addTicketReducer: CaseReducer<
   }>
 > = (state, action) => {
   const {id, tickettype, qty, concessions, payWhatPrice} = action.payload;
-  const tickets = state.tickets;
 
+  const tickets = state.tickets;
   if (!tickets.data.allIds.includes(id)) return state;
 
   const ticket = tickets.data.byId[id];
-  const cartItem = state.cart.find(byId(id, tickettype.id));
-  const ticketRestriction = state.ticketrestrictions.find(byId(id, tickettype.id));
-  const ticketRestrictionNumAvail = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
-  const validRange = bound(0, Math.min(ticket.availableseats, ticketRestrictionNumAvail));
+  const validRange = getTicketQuantityRange(state, id, tickettype.id, ticket);
 
+  const cartItem = state.cart.find(byId(id, tickettype.id));
   if (cartItem) {
     return {
       ...state,
@@ -536,19 +565,17 @@ const editQtyReducer: CaseReducer<
   const {id, tickettypeId, qty} = action.payload;
   if (!state.tickets.data.allIds.includes(id)) return state;
 
-  const avail = state.tickets.data.byId[id].availableseats;
-  const ticketRestriction = state.ticketrestrictions.find(byId(id, tickettypeId));
-  const ticketRestrictionNumAvail = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
-  const validRange = bound(0, Math.min(avail, ticketRestrictionNumAvail));
+  const ticket = state.tickets.data.byId[id];
+  const validRange = getTicketQuantityRange(state, id, tickettypeId, ticket);
 
-  return qty <= avail && qty <= ticketRestrictionNumAvail ? {
+  return {
     ...state,
     cart: updateCartItem(state.cart, {
       id,
       tickettypeId,
       qty: validRange(qty),
     }),
-  } : state;
+  };
 };
 
 /**
