@@ -37,25 +37,6 @@ export default function AdminCheckout(): ReactElement {
   };
   const dispatch = useAppDispatch();
 
-  // ***hardcoded cart items for testing purposes
-
-  // const todaysDate = new Date();
-
-  // const cartItems: CartItem[] = [
-  // {
-  // product_id: 2,
-  // price: 99,
-  // desc: 'this is a test',
-  // typeID: 1,
-  // date: todaysDate,
-  // name: 'Tou Show',
-  // product_img_url:
-  // 'https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg',
-  // qty: 22,
-  // payWhatCan: false,
-  // },
-  // ];
-
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
       if (formData.seatingAcc === 'Other') {
@@ -140,8 +121,10 @@ export default function AdminCheckout(): ReactElement {
                md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
                 flex-col items-center rounded-xl justify-between'
           >
-            <AdminCart backButtonRoute='../ticketing/purchaseticket' eventDataFromPurchase={eventDataFromPurchase} />
-
+            <AdminCart
+              backButtonRoute='../ticketing/purchaseticket'
+              eventDataFromPurchase={eventDataFromPurchase}
+            />
           </div>
         </div>
       </div>

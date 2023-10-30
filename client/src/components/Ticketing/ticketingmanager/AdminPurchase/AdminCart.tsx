@@ -20,11 +20,13 @@ interface AdminCartProps {
  * @param AdminCartProps.eventDataFromPurchase
  * @returns {ReactElement}
  */
-const AdminCart = ({backButtonRoute, eventDataFromPurchase}: AdminCartProps): ReactElement => {
+const AdminCart = ({
+  backButtonRoute,
+  eventDataFromPurchase,
+}: AdminCartProps): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
   const cartItems = location.state?.cartItems || [];
-  // console.log('admin cart: ', cartItems);
   const itemsInCart = cartItems.map((item, index) => (
     <div
       key={index}
@@ -49,7 +51,9 @@ const AdminCart = ({backButtonRoute, eventDataFromPurchase}: AdminCartProps): Re
           {itemsInCart.length > 0 ? itemsInCart : <p>Your cart is Empty</p>}
         </div>
         <button
-          onClick={() => navigate(backButtonRoute, {state: {eventDataFromPurchase}})}
+          onClick={() =>
+            navigate(backButtonRoute, {state: {eventDataFromPurchase}})
+          }
           className='bg-green-600 px-3 py-1 text-sm hover:bg-green-700 text-white rounded-xl mt-4'
         >
           Add more items
