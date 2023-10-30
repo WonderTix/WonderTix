@@ -209,10 +209,9 @@ const AdminPurchase = () => {
       renderCell: (params) => (
         <FormControlLabel
           control={
-            <Switch
+            <Checkbox
               checked={params.row.complementary || false}
               onChange={(e) => handleComplementaryChange(e, params.row)}
-              color="primary"
             />
           }
           label=''
