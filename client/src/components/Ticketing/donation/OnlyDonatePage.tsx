@@ -205,7 +205,7 @@ export default function OnlyDonationPage(): ReactElement {
               onChange={(e) => setAmount(+e.target.value)}
               type='number'
               className='appearance-none block bg-white border border-2 border-gray-300 text-gray-700 rounded-md pl-3 py-2 leading-5 focus:outline-none focus:ring focus:border-indigo-600 sm:text-lg'
-              value={amount === null ? '' : amount}
+              value={amount || null}
             />
           ) : (
             <input
