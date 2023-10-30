@@ -8,12 +8,13 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import {DataGrid} from '@mui/x-data-grid';
-import {Checkbox, Button, FormControlLabel} from '@mui/material';
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
-type EventRow = {
+
+export type EventRow = {
   id?: number;
   desc: string;
   eventid?: number;
@@ -25,32 +26,61 @@ type EventRow = {
   price?: number;
   complementary?: boolean;
   availableSeats?: number;
+  seatsForType?: number;
   imageurl?: string;
   qty?: number;
   typeID?: number;
 };
 
 const AdminPurchase = () => {
-  const [numberOfRows, setNumberOfRows] = useState(1);
-  const emptyRows: EventRow[] = Array.from({length: numberOfRows}, (_, id) => ({
-    id,
-    desc: '',
-  }));
-  const [eventData, setEventData] = useState<EventRow[]>(emptyRows);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const emptyRows: EventRow[] = [{id: 0, desc: ''}];
+  const location = useLocation();
+  const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
+  const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
   const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
-  const [eventListActive, setEventListActive] = useState([]);
-  const [ticketsSold, setTicketsSold] = useState(true);
   const [priceByRowId, setPriceByRowId] = useState({});
   const [ticketTypes, setTicketTypes] = useState([]);
+  const [isEventsLoading, setIsEventsLoading] = useState(true);
+  const [isTicketTypesLoading, setIsTicketTypesLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openMissingSelectionDialog, setOpenMissingSelectionDialog] = useState(false);
   const navigate = useNavigate();
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
     setEventData([...eventData, {id: maxId, desc: ''}]);
+
+    setPriceByRowId((prevState) => ({...prevState, [maxId]: '0.00'}));
   };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleCloseMissingSelectionDialog = () => {
+    setOpenMissingSelectionDialog(false);
+  };
+
+  useEffect(() => {
+    if (location.state?.eventDataFromPurchase) {
+      setEventData(location.state.eventDataFromPurchase);
+      const initialAvailableTimes = {};
+      location.state.eventDataFromPurchase.forEach((row) => {
+        if (row.eventid) {
+          initialAvailableTimes[row.id] = eventListFull.filter((e) => e.eventid === row.eventid);
+        }
+      });
+      setAvailableTimesByRowId(initialAvailableTimes);
+
+      const initialPrices = {};
+      location.state.eventDataFromPurchase.forEach((row) => {
+        initialPrices[row.id] = (row.price || 0).toFixed(2);
+      });
+      setPriceByRowId(initialPrices);
+    }
+  }, [location.state?.eventDataFromPurchase, eventListFull]);
 
   const removeRow = (rowId) => {
     setEventData(eventData.filter((row) => row.id !== rowId));
@@ -59,10 +89,13 @@ const AdminPurchase = () => {
   const columns = [
     {
       field: 'eventname',
-      headerName: 'Event Name',
-      width: 250,
+      headerName: 'Event Name - ID',
+      width: 200,
       renderCell: (params) => (
-        <select onChange={(e) => handleEventChange(e, params.row)}>
+        <select
+          value={`${params.row.eventid}-${params.row.eventname}`}
+          onChange={(e) => handleEventChange(e, params.row)}
+        >
           <option>Select Event</option>
           {eventList.map((event) => (
             <option
@@ -77,10 +110,11 @@ const AdminPurchase = () => {
     },
     {
       field: 'eventtime',
-      headerName: 'Time',
+      headerName: 'Date - Time',
       width: 200,
       renderCell: (params) => (
         <select
+          value={params.row.eventtime ? params.row.eventinstanceid : 'Select Time'}
           onChange={(e) => handleTimeChange(e, params.row)}
           disabled={!params.row.eventid}
         >
@@ -107,9 +141,13 @@ const AdminPurchase = () => {
     },
     {
       field: 'seatsAvailable',
-      headerName: 'Seats Available',
-      width: 150,
-      renderCell: (params) => <span>{params.row.availableSeats ?? ''}</span>,
+      headerName: 'Seats',
+      width: 80,
+      renderCell: (params) => (
+        <span>
+          {params.row.typeID === 1 ? params.row.availableSeats : params.row.seatsForType}
+        </span>
+      ),
     },
     {
       field: 'ticketTypes',
@@ -117,6 +155,7 @@ const AdminPurchase = () => {
       width: 200,
       renderCell: (params) => (
         <select
+          value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
           onChange={(e) => handleTicketTypeChange(e, params.row)}
           disabled={!params.row.eventtime}
         >
@@ -147,10 +186,11 @@ const AdminPurchase = () => {
         </div>
       ),
     },
+    /* Dont think its necessary to have this checkbox
     {
       field: 'complementary',
-      headerName: 'Complementary',
-      width: 150,
+      headerName: 'Comp',
+      width: 60,
       renderCell: (params) => (
         <FormControlLabel
           control={
@@ -163,6 +203,7 @@ const AdminPurchase = () => {
         />
       ),
     },
+    */
     {
       field: 'action',
       headerName: '',
@@ -187,23 +228,24 @@ const AdminPurchase = () => {
         );
         const jsonRes = await response.json();
         const jsonData = jsonRes.data as any[];
+        console.log('API Response for Events:', jsonData);
 
         // Deduplicate the events based on eventid
-        const uniqueEventIds = Array.from(
-          new Set(jsonData.map((event) => event.eventid)),
-        );
-        let deduplicatedEvents = uniqueEventIds.map((id) =>
-          jsonData.find((event) => event.eventid === id),
-        );
-
-        // Sort the events in alphabetical order by eventname
-        deduplicatedEvents = deduplicatedEvents.sort((a, b) =>
-          a.eventname.localeCompare(b.eventname),
-        );
+        const deduplicatedEvents = Array.from(new Set(jsonData.map((e) => e.eventid)))
+          .map((eventid) => jsonData.find((event) => event.eventid === eventid))
+          .sort((a, b) => a.eventname.localeCompare(b.eventname));
 
         setEventList(deduplicatedEvents);
         setEventListFull(jsonData);
-        setEventListActive(deduplicatedEvents.filter((event) => event.active));
+        setIsEventsLoading(false);
+
+        const initialAvailableTimes = {};
+        initialEventData.forEach((row) => {
+          if (row.eventid) {
+            initialAvailableTimes[row.id] = jsonData.filter((e) => e.eventid === row.eventid);
+          }
+        });
+        setAvailableTimesByRowId(initialAvailableTimes);
       } catch (error) {
         console.error(error.message);
       }
@@ -224,6 +266,7 @@ const AdminPurchase = () => {
         );
         const jsonRes = await response.json();
         setTicketTypes(jsonRes.data);
+        setIsTicketTypesLoading(false);
       } catch (error) {
         console.error(error.message);
       }
@@ -296,33 +339,54 @@ const AdminPurchase = () => {
       return r;
     });
     setEventData(updatedRows);
-    setSelectedTime(eventInstanceID);
   };
 
-  const handleTicketTypeChange = (event, row) => {
+  const handleTicketTypeChange = async (event, row) => {
     const ticketTypeId = parseInt(event.target.value);
     const selectedType = ticketTypes.find((type) => type.id === ticketTypeId);
 
     // Extract the numerical value of the price
     const price = parseFloat(selectedType?.price.replace(/[^\d.-]/g, '')) || 0;
 
-    // Update the eventData
+    let seatsForType;
+
+    if (row.eventinstanceid) {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_1_URL}/tickets/restrictions/`,
+        );
+        const ticketRestrictionData = await response.json();
+
+        // Find the matching restriction
+        const restriction = ticketRestrictionData.data.find(
+          (tr) =>
+            tr.eventinstanceid === row.eventinstanceid &&
+            tr.tickettypeid === ticketTypeId,
+        );
+
+        // Calculate seatsForType value
+        seatsForType = restriction
+          ? restriction.ticketlimit - restriction.ticketssold
+          : 0;
+      } catch (error) {
+        console.error('Error fetching ticket restrictions:', error);
+      }
+    }
+
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        // If complementary, don't change the price
-        const finalPrice = row.complementary ? 0 : price;
         return {
-          ...row,
+          ...r,
           ticketTypes: selectedType.description,
-          price: finalPrice,
+          price: row.complementary ? 0 : price,
           typeID: ticketTypeId,
+          seatsForType: seatsForType,
         };
       }
       return r;
     });
     setEventData(updatedRows);
 
-    // If the row is not complementary, update the priceByRowId
     if (!row.complementary) {
       setPriceByRowId((prevState) => ({
         ...prevState,
@@ -350,7 +414,6 @@ const AdminPurchase = () => {
       [row.id]: isNaN(newPrice) ? '0.00' : newPrice.toFixed(2),
     }));
 
-    // Update the eventData state with the parsed value
     const updatedEventData = eventData.map((r) => {
       if (r.id === row.id) {
         return {
@@ -365,8 +428,6 @@ const AdminPurchase = () => {
 
   const handleComplementaryChange = (event, row) => {
     const isChecked = event.target.checked;
-
-    // Update row with complementary flag
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {
@@ -387,12 +448,17 @@ const AdminPurchase = () => {
   };
 
   const handlePurchase = () => {
+    for (const row of eventData) {
+      if (!row.eventid || !row.eventtime || !row.ticketTypes || typeof row.price === 'undefined') {
+        setOpenMissingSelectionDialog(true);
+        return;
+      }
+    }
     console.log('eventData', eventData);
 
     const aggregatedCartItems = {};
 
     eventData.forEach((row) => {
-      // Use a composite key, now including eventtime
       const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
@@ -403,7 +469,7 @@ const AdminPurchase = () => {
           product_id: row.eventinstanceid,
           price: row.price,
           desc: row.ticketTypes,
-          typeID: row.typeID, // <-- Ensure typeID is added to the cart
+          typeID: row.typeID,
           date: new Date(row.eventdate),
           name: row.eventname,
           product_img_url: row.imageurl,
@@ -413,12 +479,23 @@ const AdminPurchase = () => {
       }
     });
 
-    // Convert to array
-    const cartItems = Object.values(aggregatedCartItems);
+    for (const key in aggregatedCartItems) {
+      if (Object.prototype.hasOwnProperty.call(aggregatedCartItems, key)) {
+        const item = aggregatedCartItems[key];
+        const correspondingRow = eventData.find((row) => row.eventinstanceid === item.product_id && row.typeID === item.typeID);
+        const available = correspondingRow.typeID === 1 ? correspondingRow.availableSeats : correspondingRow.seatsForType;
 
-    // Navigate to the AdminCheckout page and pass the cart items
-    navigate('/ticketing/admincheckout', {state: {cartItems}});
+        if (item.qty > available) {
+          setOpenDialog(true);
+          return;
+        }
+      }
+    }
+
+    const cartItems = Object.values(aggregatedCartItems);
+    navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
   };
+
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
@@ -427,7 +504,9 @@ const AdminPurchase = () => {
           Purchase Tickets
         </h1>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
-          {ticketsSold ? (
+          {isEventsLoading || isTicketTypesLoading ? (
+            <p>Loading...</p>
+          ) : (
             <DataGrid
               className='bg-white'
               autoHeight
@@ -437,10 +516,6 @@ const AdminPurchase = () => {
               pageSize={100}
               hideFooter
             />
-          ) : (
-            <p className='text-xl font-bold text-red-600'>
-              No tickets sold for this show
-            </p>
           )}
           <div className='mt-4'>
             <Button variant='contained' color='primary' onClick={addNewRow}>
@@ -463,6 +538,32 @@ const AdminPurchase = () => {
           </div>
         </div>
       </div>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>{'Error'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Quantity selected exceeds available seats.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openMissingSelectionDialog} onClose={handleCloseMissingSelectionDialog}>
+        <DialogTitle>{'Error'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Missing selection.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseMissingSelectionDialog} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
