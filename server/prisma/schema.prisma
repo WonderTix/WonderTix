@@ -132,7 +132,7 @@ model events {
   seasonticketeligible Boolean?
   imageurl             String?          @db.VarChar(255)
   eventinstances       eventinstances[]
-  seasons              seasons?          @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
+  seasons              seasons?         @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
   seasontickets        seasontickets[]
 }
 
@@ -159,6 +159,7 @@ model orderitems {
   orderitemid   Int             @id @default(autoincrement())
   orderid_fk    Int
   price         Decimal?        @db.Money
+  refunded      Boolean         @default(false)
   orders        orders          @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: NoAction, map: "orderitems_orderid_fkey")
   seasontickets seasontickets[]
   singletickets singletickets[]
