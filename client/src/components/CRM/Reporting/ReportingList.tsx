@@ -79,7 +79,7 @@ const ReportingList = () => {
               }
               size='md'
               title='Daily Sales Report'
-              route='/donor/reports'
+              route='/admin/reporting/Daily-Sales-Report'
               description='Use this to report on all box office transactions durin a particular date range (or choose "Yesterday"). The report is grouped by Payment Method and event, and includes donations and all fees.'
             />
             <ListLink
