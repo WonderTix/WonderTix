@@ -26,24 +26,7 @@ const AdminCart = ({
 }: AdminCartProps): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState(currentCart || []);
-
-  useEffect(() => {
-    if (location.state?.cartItems) {
-      setCartItems(location.state.cartItems);
-    }
-  }, [location.state]);
-
-  const addToCart = (newItem) => {
-    setCartItems((prevCartItems) => [...prevCartItems, newItem]);
-    navigate('/ticketing/purchaseticket');
-  };
-  // const removeFromCart = (itemId) => {
-  // setCartItems((prevCartItems) =>
-  // prevCartItems.filter((item) => item.id !== itemId),
-  // );
-  // };
-
+  const cartItems = location.state?.cartItems || [];
   const itemsInCart = cartItems.map((item, index) => (
     <div
       key={index}

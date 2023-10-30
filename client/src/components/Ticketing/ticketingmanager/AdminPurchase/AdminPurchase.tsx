@@ -8,11 +8,17 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import {DataGrid} from '@mui/x-data-grid';
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useLocation, useNavigate} from 'react-router-dom';
-
 
 export type EventRow = {
   id?: number;
@@ -45,7 +51,8 @@ const AdminPurchase = () => {
   const [isEventsLoading, setIsEventsLoading] = useState(true);
   const [isTicketTypesLoading, setIsTicketTypesLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openMissingSelectionDialog, setOpenMissingSelectionDialog] = useState(false);
+  const [openMissingSelectionDialog, setOpenMissingSelectionDialog] =
+    useState(false);
   const navigate = useNavigate();
 
   const addNewRow = () => {
@@ -69,7 +76,9 @@ const AdminPurchase = () => {
       const initialAvailableTimes = {};
       location.state.eventDataFromPurchase.forEach((row) => {
         if (row.eventid) {
-          initialAvailableTimes[row.id] = eventListFull.filter((e) => e.eventid === row.eventid);
+          initialAvailableTimes[row.id] = eventListFull.filter(
+            (e) => e.eventid === row.eventid,
+          );
         }
       });
       setAvailableTimesByRowId(initialAvailableTimes);
@@ -114,7 +123,9 @@ const AdminPurchase = () => {
       width: 200,
       renderCell: (params) => (
         <select
-          value={params.row.eventtime ? params.row.eventinstanceid : 'Select Time'}
+          value={
+            params.row.eventtime ? params.row.eventinstanceid : 'Select Time'
+          }
           onChange={(e) => handleTimeChange(e, params.row)}
           disabled={!params.row.eventid}
         >
@@ -145,7 +156,9 @@ const AdminPurchase = () => {
       width: 80,
       renderCell: (params) => (
         <span>
-          {params.row.typeID === 1 ? params.row.availableSeats : params.row.seatsForType}
+          {params.row.typeID === 1
+            ? params.row.availableSeats
+            : params.row.seatsForType}
         </span>
       ),
     },
@@ -231,7 +244,9 @@ const AdminPurchase = () => {
         console.log('API Response for Events:', jsonData);
 
         // Deduplicate the events based on eventid
-        const deduplicatedEvents = Array.from(new Set(jsonData.map((e) => e.eventid)))
+        const deduplicatedEvents = Array.from(
+          new Set(jsonData.map((e) => e.eventid)),
+        )
           .map((eventid) => jsonData.find((event) => event.eventid === eventid))
           .sort((a, b) => a.eventname.localeCompare(b.eventname));
 
@@ -242,7 +257,9 @@ const AdminPurchase = () => {
         const initialAvailableTimes = {};
         initialEventData.forEach((row) => {
           if (row.eventid) {
-            initialAvailableTimes[row.id] = jsonData.filter((e) => e.eventid === row.eventid);
+            initialAvailableTimes[row.id] = jsonData.filter(
+              (e) => e.eventid === row.eventid,
+            );
           }
         });
         setAvailableTimesByRowId(initialAvailableTimes);
@@ -449,7 +466,12 @@ const AdminPurchase = () => {
 
   const handlePurchase = () => {
     for (const row of eventData) {
-      if (!row.eventid || !row.eventtime || !row.ticketTypes || typeof row.price === 'undefined') {
+      if (
+        !row.eventid ||
+        !row.eventtime ||
+        !row.ticketTypes ||
+        typeof row.price === 'undefined'
+      ) {
         setOpenMissingSelectionDialog(true);
         return;
       }
@@ -482,8 +504,15 @@ const AdminPurchase = () => {
     for (const key in aggregatedCartItems) {
       if (Object.prototype.hasOwnProperty.call(aggregatedCartItems, key)) {
         const item = aggregatedCartItems[key];
-        const correspondingRow = eventData.find((row) => row.eventinstanceid === item.product_id && row.typeID === item.typeID);
-        const available = correspondingRow.typeID === 1 ? correspondingRow.availableSeats : correspondingRow.seatsForType;
+        const correspondingRow = eventData.find(
+          (row) =>
+            row.eventinstanceid === item.product_id &&
+            row.typeID === item.typeID,
+        );
+        const available =
+          correspondingRow.typeID === 1
+            ? correspondingRow.availableSeats
+            : correspondingRow.seatsForType;
 
         if (item.qty > available) {
           setOpenDialog(true);
@@ -495,7 +524,6 @@ const AdminPurchase = () => {
     const cartItems = Object.values(aggregatedCartItems);
     navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
   };
-
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute '>
@@ -546,20 +574,21 @@ const AdminPurchase = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={handleCloseDialog} color='primary'>
             OK
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={openMissingSelectionDialog} onClose={handleCloseMissingSelectionDialog}>
+      <Dialog
+        open={openMissingSelectionDialog}
+        onClose={handleCloseMissingSelectionDialog}
+      >
         <DialogTitle>{'Error'}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Missing selection.
-          </DialogContentText>
+          <DialogContentText>Missing selection.</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseMissingSelectionDialog} color="primary">
+          <Button onClick={handleCloseMissingSelectionDialog} color='primary'>
             OK
           </Button>
         </DialogActions>
