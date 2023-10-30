@@ -11,9 +11,10 @@ import {DataGrid} from '@mui/x-data-grid';
 import {Checkbox, Button, FormControlLabel} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
-type EventRow = {
+
+export type EventRow = {
   id?: number;
   desc: string;
   eventid?: number;
@@ -31,26 +32,46 @@ type EventRow = {
 };
 
 const AdminPurchase = () => {
-  const [numberOfRows, setNumberOfRows] = useState(1);
-  const emptyRows: EventRow[] = Array.from({length: numberOfRows}, (_, id) => ({
-    id,
-    desc: '',
-  }));
-  const [eventData, setEventData] = useState<EventRow[]>(emptyRows);
-  const [selectedTime, setSelectedTime] = useState(null);
+  const emptyRows: EventRow[] = [{id: 0, desc: ''}];
+  const location = useLocation();
+  const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
+  const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
+  console.log('Initial Event Data:', initialEventData);
+  console.log('Location State:', location.state);
   const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
-  const [eventListActive, setEventListActive] = useState([]);
-  const [ticketsSold, setTicketsSold] = useState(true);
   const [priceByRowId, setPriceByRowId] = useState({});
   const [ticketTypes, setTicketTypes] = useState([]);
+  const [isEventsLoading, setIsEventsLoading] = useState(true);
+  const [isTicketTypesLoading, setIsTicketTypesLoading] = useState(true);
   const navigate = useNavigate();
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
     setEventData([...eventData, {id: maxId, desc: ''}]);
+
+    setPriceByRowId((prevState) => ({...prevState, [maxId]: '0.00'}));
   };
+
+  useEffect(() => {
+    if (location.state?.eventDataFromPurchase) {
+      setEventData(location.state.eventDataFromPurchase);
+      const initialAvailableTimes = {};
+      location.state.eventDataFromPurchase.forEach((row) => {
+        if (row.eventid) {
+          initialAvailableTimes[row.id] = eventListFull.filter((e) => e.eventid === row.eventid);
+        }
+      });
+      setAvailableTimesByRowId(initialAvailableTimes);
+
+      const initialPrices = {};
+      location.state.eventDataFromPurchase.forEach((row) => {
+        initialPrices[row.id] = (row.price || 0).toFixed(2);
+      });
+      setPriceByRowId(initialPrices);
+    }
+  }, [location.state?.eventDataFromPurchase, eventListFull]);
 
   const removeRow = (rowId) => {
     setEventData(eventData.filter((row) => row.id !== rowId));
@@ -62,7 +83,10 @@ const AdminPurchase = () => {
       headerName: 'Event Name',
       width: 250,
       renderCell: (params) => (
-        <select onChange={(e) => handleEventChange(e, params.row)}>
+        <select
+          value={`${params.row.eventid}-${params.row.eventname}`}
+          onChange={(e) => handleEventChange(e, params.row)}
+        >
           <option>Select Event</option>
           {eventList.map((event) => (
             <option
@@ -81,6 +105,7 @@ const AdminPurchase = () => {
       width: 200,
       renderCell: (params) => (
         <select
+          value={params.row.eventtime ? params.row.eventinstanceid : 'Select Time'}
           onChange={(e) => handleTimeChange(e, params.row)}
           disabled={!params.row.eventid}
         >
@@ -117,6 +142,7 @@ const AdminPurchase = () => {
       width: 200,
       renderCell: (params) => (
         <select
+          value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
           onChange={(e) => handleTicketTypeChange(e, params.row)}
           disabled={!params.row.eventtime}
         >
@@ -187,6 +213,8 @@ const AdminPurchase = () => {
         );
         const jsonRes = await response.json();
         const jsonData = jsonRes.data as any[];
+        console.log('API Response for Events:', jsonRes.data); // Log the API response
+
 
         // Deduplicate the events based on eventid
         const uniqueEventIds = Array.from(
@@ -203,7 +231,15 @@ const AdminPurchase = () => {
 
         setEventList(deduplicatedEvents);
         setEventListFull(jsonData);
-        setEventListActive(deduplicatedEvents.filter((event) => event.active));
+        setIsEventsLoading(false);
+
+        const initialAvailableTimes = {};
+        initialEventData.forEach((row) => {
+          if (row.eventid) {
+            initialAvailableTimes[row.id] = jsonData.filter((e) => e.eventid === row.eventid);
+          }
+        });
+        setAvailableTimesByRowId(initialAvailableTimes);
       } catch (error) {
         console.error(error.message);
       }
@@ -224,6 +260,8 @@ const AdminPurchase = () => {
         );
         const jsonRes = await response.json();
         setTicketTypes(jsonRes.data);
+        console.log('API Response for Events:', jsonRes.data); // Log the API response
+        setIsTicketTypesLoading(false);
       } catch (error) {
         console.error(error.message);
       }
@@ -296,7 +334,6 @@ const AdminPurchase = () => {
       return r;
     });
     setEventData(updatedRows);
-    setSelectedTime(eventInstanceID);
   };
 
   const handleTicketTypeChange = (event, row) => {
@@ -312,7 +349,7 @@ const AdminPurchase = () => {
         // If complementary, don't change the price
         const finalPrice = row.complementary ? 0 : price;
         return {
-          ...row,
+          ...r,
           ticketTypes: selectedType.description,
           price: finalPrice,
           typeID: ticketTypeId,
@@ -322,7 +359,6 @@ const AdminPurchase = () => {
     });
     setEventData(updatedRows);
 
-    // If the row is not complementary, update the priceByRowId
     if (!row.complementary) {
       setPriceByRowId((prevState) => ({
         ...prevState,
@@ -350,7 +386,6 @@ const AdminPurchase = () => {
       [row.id]: isNaN(newPrice) ? '0.00' : newPrice.toFixed(2),
     }));
 
-    // Update the eventData state with the parsed value
     const updatedEventData = eventData.map((r) => {
       if (r.id === row.id) {
         return {
@@ -365,8 +400,6 @@ const AdminPurchase = () => {
 
   const handleComplementaryChange = (event, row) => {
     const isChecked = event.target.checked;
-
-    // Update row with complementary flag
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {
@@ -392,7 +425,6 @@ const AdminPurchase = () => {
     const aggregatedCartItems = {};
 
     eventData.forEach((row) => {
-      // Use a composite key, now including eventtime
       const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
@@ -403,7 +435,7 @@ const AdminPurchase = () => {
           product_id: row.eventinstanceid,
           price: row.price,
           desc: row.ticketTypes,
-          typeID: row.typeID, // <-- Ensure typeID is added to the cart
+          typeID: row.typeID,
           date: new Date(row.eventdate),
           name: row.eventname,
           product_img_url: row.imageurl,
@@ -417,7 +449,7 @@ const AdminPurchase = () => {
     const cartItems = Object.values(aggregatedCartItems);
 
     // Navigate to the AdminCheckout page and pass the cart items
-    navigate('/ticketing/admincheckout', {state: {cartItems}});
+    navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
   };
 
   return (
@@ -427,7 +459,9 @@ const AdminPurchase = () => {
           Purchase Tickets
         </h1>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
-          {ticketsSold ? (
+          {isEventsLoading || isTicketTypesLoading ? (
+            <p>Loading...</p>
+          ) : (
             <DataGrid
               className='bg-white'
               autoHeight
@@ -437,10 +471,6 @@ const AdminPurchase = () => {
               pageSize={100}
               hideFooter
             />
-          ) : (
-            <p className='text-xl font-bold text-red-600'>
-              No tickets sold for this show
-            </p>
           )}
           <div className='mt-4'>
             <Button variant='contained' color='primary' onClick={addNewRow}>

@@ -1,5 +1,6 @@
 import React, {ReactElement} from 'react';
 import {useLocation, useNavigate} from 'react-router';
+import {EventRow} from './AdminPurchase';
 
 /**
  * Math to dollar - `$${(Math.round(x * 100) / 100).toFixed(2)}`
@@ -10,14 +11,16 @@ const toDollar = (x: number) => `$${(Math.floor(x * 100) / 100).toFixed(2)}`;
 
 interface AdminCartProps {
   backButtonRoute: string;
+  eventDataFromPurchase: EventRow[];
 }
 /**
  *
  * @param AdminCartProps
  * @param AdminCartProps.backButtonRoute
+ * @param AdminCartProps.eventDataFromPurchase
  * @returns {ReactElement}
  */
-const AdminCart = ({backButtonRoute}: AdminCartProps): ReactElement => {
+const AdminCart = ({backButtonRoute, eventDataFromPurchase}: AdminCartProps): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
   const cartItems = location.state?.cartItems || [];
@@ -46,7 +49,7 @@ const AdminCart = ({backButtonRoute}: AdminCartProps): ReactElement => {
           {itemsInCart.length > 0 ? itemsInCart : <p>Your cart is Empty</p>}
         </div>
         <button
-          onClick={() => navigate(backButtonRoute)}
+          onClick={() => navigate(backButtonRoute, {state: {eventDataFromPurchase}})}
           className='bg-green-600 px-3 py-1 text-sm hover:bg-green-700 text-white rounded-xl mt-4'
         >
           Add more items
