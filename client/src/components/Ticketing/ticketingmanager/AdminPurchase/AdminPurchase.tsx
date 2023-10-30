@@ -15,6 +15,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Checkbox,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
@@ -151,18 +154,6 @@ const AdminPurchase = () => {
       ),
     },
     {
-      field: 'seatsAvailable',
-      headerName: 'Seats',
-      width: 80,
-      renderCell: (params) => (
-        <span>
-          {params.row.typeID === 1
-            ? params.row.availableSeats
-            : params.row.seatsForType}
-        </span>
-      ),
-    },
-    {
       field: 'ticketTypes',
       headerName: 'Ticket Type',
       width: 200,
@@ -179,6 +170,18 @@ const AdminPurchase = () => {
             </option>
           ))}
         </select>
+      ),
+    },
+    {
+      field: 'seatsAvailable',
+      headerName: 'Seats',
+      width: 80,
+      renderCell: (params) => (
+        <span>
+          {params.row.typeID === 1
+            ? params.row.availableSeats
+            : params.row.seatsForType}
+        </span>
       ),
     },
     {
@@ -199,7 +202,6 @@ const AdminPurchase = () => {
         </div>
       ),
     },
-    /* Dont think its necessary to have this checkbox
     {
       field: 'complementary',
       headerName: 'Comp',
@@ -207,16 +209,16 @@ const AdminPurchase = () => {
       renderCell: (params) => (
         <FormControlLabel
           control={
-            <Checkbox
+            <Switch
               checked={params.row.complementary || false}
               onChange={(e) => handleComplementaryChange(e, params.row)}
+              color="primary"
             />
           }
           label=''
         />
       ),
     },
-    */
     {
       field: 'action',
       headerName: '',
