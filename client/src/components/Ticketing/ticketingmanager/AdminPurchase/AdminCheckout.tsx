@@ -83,7 +83,7 @@ export default function AdminCheckout(): ReactElement {
       <div className='flex flex-col lg:ml-[15rem] lg:mx-[5rem] md:ml-[13rem] tab:mx-[2rem] mx-[0.5rem] mt=[5rem] mb-[9rem]'>
         <div className='flex flex-row items-center h-auto mt-[7.25rem] md:w-full mb-5'>
           <button
-            onClick={() => navigate('../ticketing/purchaseticket')}
+            onClick={() => navigate('../ticketing')}
             className='bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'
           >
             <svg
@@ -98,7 +98,7 @@ export default function AdminCheckout(): ReactElement {
                 clipRule='evenodd'
               />
             </svg>
-            back to Purchase
+            back to Ticketing Dashboard
           </button>
         </div>
         <div className='flex flex-row items-center mt-2 text-zinc-800'></div>
@@ -111,7 +111,8 @@ export default function AdminCheckout(): ReactElement {
               <AdminCompleteOrderForm
                 disabled={false} // {cartItems.length === 0}
                 onSubmit={doCheckout}
-                onBack={handleBackButton}
+                backButtonRoute='../ticketing/purchaseticket'
+                eventDataFromPurchase={eventDataFromPurchase}
               />
             </div>
           </div>
