@@ -1,12 +1,11 @@
-name: E2E tests after merge to main deployment
+name: E2E tests after request
 on:
-  push:
-    branches:
-      - main
+     repository_dispatch:
+       types: [run-playwright]
 
 jobs:
   test-client:
-    name: Run E2E tests against GCP dev
+    name: Run E2E tests
     runs-on: ubuntu-latest
     env:
       ROOT_URL: https://wtix-server-dev-3ps4rkx4ga-wl.a.run.app
@@ -29,8 +28,8 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: 6 minutes wait for deployment
-        run: sleep 360s
+      - name: 0.333 minutes wait for deployment
+        run: sleep 20s
         
       - name: Check client E2E(UI) Tests
         run: npm run test:playwright

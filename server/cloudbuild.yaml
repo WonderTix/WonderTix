@@ -24,8 +24,10 @@ steps:
         --platform managed \
         --memory $$SERVER_MEMORY \
         --cpu $$SERVER_CPU \
+        --cpu-boost \
         --allow-unauthenticated \
         --min-instances 1 \
+        --max-instances 10 \
         --set-cloudsql-instances $$SQL_INSTANCE \
         --service-account $$SERVICE_ACCOUNT \
         --set-env-vars=\
