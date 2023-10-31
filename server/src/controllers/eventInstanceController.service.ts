@@ -4,7 +4,6 @@ import {
   instanceTicketType,
   ticketRestriction,
 } from '../interfaces/Event';
-import {eventtickets} from '@prisma/client';
 export class InvalidInputError extends Error {
   code: number;
   name: string;
@@ -18,103 +17,64 @@ export class InvalidInputError extends Error {
 export const validateTicketRestrictionsOnUpdate = (
     oldRestrictions: ticketRestriction[],
     newRestrictions: instanceTicketType[],
-    availableseats: number,
-    availableTickets: eventtickets[],
+    totalseats: number,
 ) => {
-  const restrictionsToUpdate: [
-    ticketRestriction,
-    { difference: number; ticketsToRemove?: number[] },
-  ][] = [];
+  if (newRestrictions.find((type) => type.typeQuantity > totalseats)) {
+    throw new InvalidInputError(
+        422,
+        `Individual Ticket Type quantity can not exceed Total Ticket quantity`,
+    );
+  }
+  const restrictionsToUpdate: ticketRestriction[] = [];
   const restrictionsToRemove: ticketRestriction[] = [];
 
   oldRestrictions.forEach((restriction: any) => {
     const type = newRestrictions.find(
         (type) => type.typeID === restriction.tickettypeid_fk,
     );
-    const tickets = availableTickets.filter(
-        (ticket) => ticket.tickettypeid_fk == restriction.tickettypeid_fk,
-    );
-
-    if ((!type || !type.typeQuantity) && !restriction.ticketssold) {
+    if (!type && !restriction.ticketssold) {
       restrictionsToRemove.push(restriction);
       return;
-    } else if (!type || !type.typeQuantity) {
+    } else if (!type) {
       throw new InvalidInputError(
           422,
           `Can not remove ticket type for which tickets have already been sold`,
       );
-    }
-
-    if ((restriction.ticketssold ?? 0) > type.typeQuantity) {
+    } else if (
+      restriction.ticketssold &&
+      restriction.ticketssold > type.typeQuantity
+    ) {
       throw new InvalidInputError(
           422,
           `Can not reduce individual ticket type quantity below quantity sold to date`,
       );
-    }
-
-    const difference = Math.min(
-        availableseats - tickets.length,
-        type.typeQuantity - restriction.ticketlimit,
-    );
-    if (restriction.ticketlimit !== type.typeQuantity) {
-      restrictionsToUpdate.push([
-        {
-          ...restriction,
-          ticketlimit: restriction.ticketlimit + difference,
-        },
-        {
-          difference,
-          ...(difference < 0 && {
-            ticketsToRemove: tickets
-                .splice(0, Math.abs(difference))
-                .map((ticket) => ticket.eventticketid),
-          }),
-        },
-      ]);
+    } else if (restriction.ticketlimit !== type.typeQuantity) {
+      restrictionsToUpdate.push({
+        ...restriction,
+        ticketlimit: Number(type.typeQuantity),
+      });
     }
     newRestrictions.splice(newRestrictions.indexOf(type), 1);
   });
-  if (newRestrictions.find((type) => type.typeQuantity > availableseats)) {
-    throw new InvalidInputError(
-        422,
-        `New ticket type quantity can not exceed available seat quantity`,
-    );
-  }
   return {
     restrictionsToUpdate,
     restrictionsToRemove,
     restrictionsToAdd: newRestrictions,
   };
 };
-
-const validateTicketQuantity = (
-    totalseats: number,
-    tickets: eventtickets[],
-) => {
-  const unsoldTickets = tickets.filter((ticket) => !ticket.singleticket_fk);
-  const soldTicketCount = tickets.length - unsoldTickets.length;
-  if (totalseats < soldTicketCount) {
+const validateTicketQuantity = (totalseats: number, ticketsSold: number) => {
+  if (!(totalseats >= ticketsSold)) {
     throw new InvalidInputError(
         422,
         `Can not reduce total ticket quantity 
-        below ${soldTicketCount} tickets sold to date`,
+        below ${ticketsSold} tickets sold to date`,
     );
   }
-  const difference = totalseats - tickets.length;
   return {
     totalseats,
-    availableseats: totalseats - soldTicketCount,
-    update: {
-      difference,
-      ...(difference < 0 && {
-        ticketsToRemove: unsoldTickets
-            .slice(0, Math.abs(difference))
-            .map((ticket) => ticket.eventticketid),
-      }),
-    },
+    availableseats: totalseats - ticketsSold,
   };
 };
-
 export const validateDateAndTime = (date: string, time: string) => {
   const dateSplit = date.split('-');
   const timeSplit = time.split(':');
@@ -137,24 +97,18 @@ export const validateDateAndTime = (date: string, time: string) => {
     eventtime: toReturn.toISOString(),
   };
 };
-
 export const validateShowingOnUpdate = (
     oldEvent: any,
     newEvent: eventInstanceRequest,
 ) => {
-  const {availableseats, totalseats, update} = validateTicketQuantity(
-      newEvent.totalseats,
-      oldEvent.eventtickets.filter((ticket: any) => ticket.tickettypeid_fk === 1),
-  );
   return {
-    updatedEventInstance: {
-      ispreview: newEvent.ispreview,
-      purchaseuri: newEvent.purchaseuri,
-      salestatus: newEvent.salestatus,
-      availableseats,
-      totalseats,
-      ...validateDateAndTime(newEvent.eventdate, newEvent.eventtime),
-    },
-    GAEventTicketsUpdate: update,
+    ispreview: newEvent.ispreview,
+    purchaseuri: newEvent.purchaseuri,
+    salestatus: newEvent.salestatus,
+    ...validateTicketQuantity(
+        newEvent.totalseats,
+        oldEvent.eventtickets.filter((ticket: any) => ticket.purchased).length,
+    ),
+    ...validateDateAndTime(newEvent.eventdate, newEvent.eventtime),
   };
 };

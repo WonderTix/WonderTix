@@ -25,8 +25,7 @@ interface EventContextType {
   message: string;
   title: string;
   success: boolean;
-  dataTestId: string;
-  setPopUpProps: (title: string, message: string, success: boolean, dataTestId: string, handleProceed?) => void;
+  setPopUpProps: (title: string, message: string, success: boolean, handleProceed?) => void;
   handleProceed: () => void;
 }
 
@@ -47,7 +46,6 @@ export const EventContext = React.createContext<EventContextType>({
   message: undefined,
   title: undefined,
   success: undefined,
-  dataTestId: undefined,
   setPopUpProps: undefined,
   handleProceed: undefined,
 });
@@ -67,17 +65,15 @@ export const EventProvider = () => {
   const [message, setMessage] = useState('');
   const [title, setTitle] = useState('');
   const [success, setSuccess] = useState(false);
-  const [dataTestId, setDataTestId] = useState(undefined);
   const [handleProceed, setHandleProceed] = useState(undefined);
   const {setEventData, eventData, loading, ticketTypes} =
     useFetchEventData(eventID);
   const {setReloadShowing, showingData} = useFetchShowingData(eventID);
   const {token} = useFetchToken();
-  const setPopUpProps = (title, message, success, dataTestId, handleProceedFunction?) => {
+  const setPopUpProps = (title, message, success, handleProceedFunction?) => {
     setTitle(title);
     setMessage(message);
     setSuccess(success);
-    setDataTestId(dataTestId);
     setHandleProceed(handleProceedFunction? () => handleProceedFunction: undefined);
     setShowPopUp(true);
     return;
@@ -102,7 +98,6 @@ export const EventProvider = () => {
         message,
         title,
         success,
-        dataTestId,
         setPopUpProps,
         handleProceed,
       }}

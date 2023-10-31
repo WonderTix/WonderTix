@@ -1,4 +1,4 @@
-import React, {ReactElement} from 'react';
+import React from 'react';
 import Footer from '../mainpage/footer';
 import Navbar from '../mainpage/Navbar';
 import Eventshowings from './eventshowings';
@@ -8,7 +8,7 @@ import Eventshowings from './eventshowings';
  *
  * @returns {Navbar, Eventshowings, Footer}
  */
-const Eventshowingmain = (): ReactElement => {
+const Eventshowingmain = () => {
   return (
     <>
       <Navbar bMode />

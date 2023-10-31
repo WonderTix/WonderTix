@@ -10,9 +10,6 @@ FROM node:18-alpine
 # COPY /bin/wait-for-it.sh /usr/wait-for-it.sh
 # RUN chmod +x /usr/wait-for-it.sh
 
-RUN apk add --no-cache tzdata
-ENV TZ=America/Los_Angeles
-
 # Set the working directory inside the container
 WORKDIR /usr/app
 

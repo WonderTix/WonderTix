@@ -1,89 +1,11 @@
-import {Request, Response, Router} from 'express';
+import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma, PrismaClient} from '@prisma/client';
-import {InvalidInputError} from './eventInstanceController.service';
-import {
-  createStripeCheckoutSession,
-  getOrderItems,
-  LineItem,
-  updateContact,
-} from './eventController.service';
-import {orderCancel, orderFulfillment} from './orderController.service';
+import {PrismaClient, Prisma} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export const eventController = Router();
 
-eventController.post('/checkout', async (req: Request, res: Response) => {
-  const {cartItems, formData, donation, discount} = req.body;
-  let orderID = 0;
-  let toSend = {id: 'comp'};
-
-  try {
-    if (!cartItems.length && donation === 0) {
-      return res.status(400).json(`Cart is empty`);
-    }
-    const {contactid} = await updateContact(formData, prisma);
-    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma);
-    const donationItem: LineItem = {
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: 'Donation',
-          description: 'A generous donation',
-        },
-        unit_amount: donation * 100,
-      },
-      quantity: 1,
-    };
-    if (donation + orderTotal > 0) {
-      toSend = await createStripeCheckoutSession(
-          contactid,
-          donation,
-        donation ? cartRows.concat(donationItem) : cartRows,
-        orderID,
-        discount,
-      );
-    }
-
-    orderID = await orderFulfillment(
-        prisma,
-        orderItems,
-        contactid,
-        orderTotal,
-        eventInstanceQueries,
-        toSend.id,
-    );
-    if (toSend.id === 'comp') {
-      await prisma.orders.update({
-        where: {
-          orderid: orderID,
-        },
-        data: {
-          checkout_sessions: `comp-${orderID}`,
-          payment_intent: `comp-${orderID}`,
-        },
-      });
-    }
-    res.json(toSend);
-  } catch (error) {
-    console.error(error);
-    if (orderID) await orderCancel(prisma, orderID);
-    if (error instanceof InvalidInputError) {
-      res.status(error.code).json(error.message);
-      return;
-    }
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError ||
-      error instanceof Prisma.PrismaClientValidationError
-    ) {
-      res.status(400).json(error.message);
-      return;
-    }
-    res.status(500).json(error);
-  }
-});
 /**
  * @swagger
  * /2/event:

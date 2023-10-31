@@ -1,9 +1,14 @@
+/*
+This component is a wrapper for the
+Authentication button. It is kind of repetitive.
+but can be placed anywhere to create a dynamic login/logot btton.
+*/
 import React from 'react';
 import AuthenticationButton from './authentication-button';
-
 /**
- * A wrapper for the Authentication button. It is kind of repetitive,
- * but can be placed anywhere to create a dynamic login/logout button
+ * a wrapper for the
+Authentication button. It is kind of repetitive.
+but can be placed anywhere to create a dynamic login/logot btton
  *
  * @returns {React.ReactElement}
  */

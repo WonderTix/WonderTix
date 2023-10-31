@@ -13,7 +13,7 @@ CREATE TABLE "contacts" (
     "address" VARCHAR(255),
     "phone" VARCHAR(15),
     "donorbadge" BOOLEAN DEFAULT false,
-    "seatingaccom"  BOOLEAN DEFAULT false,
+    "seatingaccom" VARCHAR(255),
     "vip" BOOLEAN DEFAULT false,
     "volunteerlist" BOOLEAN DEFAULT false,
     "newsletter" BOOLEAN DEFAULT false,

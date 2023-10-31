@@ -11,7 +11,7 @@ import React, {useEffect, useState} from 'react';
 import EventForm from '../EventForm_deprecated';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
-import PopUp from '../../../PopUp';
+import PopUp from '../../../Pop-up';
 import {Showing, WtixEvent} from '../../../../../interfaces/showing.interface';
 
 let id = 0;

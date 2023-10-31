@@ -19,7 +19,6 @@ export default interface CartItem {
   qty: number;
   name: string;
   desc: string;
-  typeID: number;
   product_img_url: string;
   price: number;
 }

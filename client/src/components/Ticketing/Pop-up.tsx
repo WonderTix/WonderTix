@@ -1,48 +1,30 @@
 import React, {ReactElement} from 'react';
-
-/**
- * Interface for Pop up Component
- * Describes the title and the message that is sent to the component
- * Contains call back to parent component to close the Pop Up windows.
- */
-interface popupProps {
-  dataTestId?: string;
-  title: string;
-  message: string;
-  handleClose?: (event: any) => void;
-  handleProceed: (event: any) => void;
-  success: boolean;
-  showSecondary?: boolean;
-}
+import popupProps from '../../interfaces/popup.interface';
 
 /**
  * Popup makes use of both popUpContainer and box for styles
  *
- * @param {string} dataTestId - Test ID used for testing purposes
  * @param {string} title - Title of popup
  * @param {string} message - Message of popup
  * @param {func} handleClose - On close handler
  * @param {func} handleProceed - On proceed handler
  * @param {boolean} success - Success flag
- * @param {boolean} showSecondary - Flag for showing secondary button in PopUp
  * @returns {ReactElement} PopUp - Function named PopUp that can be interacted with
  */
 const PopUp = ({
-  dataTestId,
   title,
   message,
   handleClose,
   handleProceed,
   success,
-  showSecondary = true,
 }: popupProps): ReactElement => {
   return (
-    <dialog
+    <div
       className='fixed flex tab:items-center items-end bg-gray-500 bg-opacity-75 transition-opacity z-10 w-full h-full'
       aria-labelledby='popup-title'
       aria-describedby='popup-description'
       aria-modal='true'
-      data-testid={dataTestId}
+      role='dialog'
     >
       <div
         id='popup-modal'
@@ -73,7 +55,7 @@ const PopUp = ({
               fillRule='evenodd'
               d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
               clipRule='evenodd'
-            />
+            ></path>
           </svg>
         </button>
         <div className='flex flex-col tab:flex-row gap-3 p-4 pt-5 tab:p-6 tab:pb-4'>
@@ -111,18 +93,19 @@ const PopUp = ({
             </p>
           </div>
         </div>
-        <footer className='bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end'>
-          {showSecondary && (
-            <button
-              onClick={handleClose}
-              className='mt-3 w-full inline-flex
-                justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
-                font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
-                focus:ring-offset-2 focus:ring-indigo-500 tab:mt-0 tab:ml-3 tab:w-auto tab:text-sm'
-            >
-              Close
-            </button>
-          )}
+        <footer
+          className='bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse
+            tab:flex-row tab:justify-end'
+        >
+          <button
+            onClick={handleClose}
+            className='mt-3 w-full inline-flex
+              justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
+              font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
+              focus:ring-offset-2 focus:ring-indigo-500 tab:mt-0 tab:ml-3 tab:w-auto tab:text-sm'
+          >
+            Close
+          </button>
           <button
             data-modal-toggle='popup-modal'
             onClick={handleProceed}
@@ -140,7 +123,7 @@ const PopUp = ({
           </button>
         </footer>
       </div>
-    </dialog>
+    </div>
   );
 };
 

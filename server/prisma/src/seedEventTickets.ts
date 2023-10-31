@@ -20,7 +20,8 @@ async function seedEventTickets(prisma: PrismaClient) {
     const preparedData = data.map((item) => ({
       eventticketid: item.eventticketid,
       eventinstanceid_fk: item.eventinstanceid_fk,
-      tickettypeid_fk: item.tickettypeid_fk ?? 1,
+      tickettypeid_fk: item.tickettypeid_fk,
+      purchased: item.purchased,
       redeemed: item.redeemed,
       redeemed_ts: item.redeemed_ts,
       donated: item.donated,

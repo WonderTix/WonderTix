@@ -14,11 +14,7 @@ import format from 'date-fns/format';
 /**
  * EventInstanceSelectProps holds tickets, showings and such
  */
-interface EventInstanceSelectProps {
-  check: string;
-  eventInstances: Ticket[];
-  eventInstanceSelected?: (dateShowing: Ticket) => void;
-}
+interface EventInstanceSelectProps {check: string, eventInstances: Ticket[], eventInstanceSelected?: (dateShowing: Ticket) => void}
 
 /**
  * This is the handler
@@ -26,7 +22,7 @@ interface EventInstanceSelectProps {
  * @param {EventInstanceSelectProps} props
  * @returns the selection of date and others once clicked
  */
-const EventInstanceSelect = (props: EventInstanceSelectProps) => {
+const EventInstanceSelect=(props: EventInstanceSelectProps) =>{
   const [selectedId, setSelectedId] = useState(-1);
 
   const handleClick = (id: number) => {
@@ -34,28 +30,24 @@ const EventInstanceSelect = (props: EventInstanceSelectProps) => {
     const eventInstance = props.eventInstances.find((obj) => {
       return obj.event_instance_id === id;
     });
+    console.log(eventInstance);
     if (props.eventInstanceSelected) props.eventInstanceSelected(eventInstance);
+    console.log(selectedId);
   };
+  console.log(props.eventInstances);
 
   return (
-    <select
-      defaultValue={0}
-      onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
-        handleClick(parseFloat(ev.target.value))
-      }
-      className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl'
-      id='time-select'
-    >
-      <option className='text-zinc-300' disabled selected={props.check === 'selectTime'}>
-        select time
-      </option>
-      {props.eventInstances.map((s) => (
-        <option key={s.event_instance_id} value={s.event_instance_id}>
+    <select defaultValue={0} onChange={((ev: React.ChangeEvent<HTMLSelectElement>): void => (handleClick(parseFloat(ev.target.value))))} className='py-4 bg-zinc-700/50 text-white p-5 mt-5 mb-3 rounded-xl'>
+      <option disabled selected={props.check === 'selectTime'}>select time</option>
+      {props.eventInstances.map((s) =>
+        <option key={s.event_instance_id} value={s.event_instance_id} >
           {format(new Date(s.date), 'hh:mm a')}
-        </option>
-      ))}
+          {console.log(s.date)}
+        </option>,
+      )}
     </select>
   );
 };
 
 export default EventInstanceSelect;
+

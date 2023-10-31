@@ -9,13 +9,11 @@
  */
 
 import {useAppDispatch, useAppSelector} from '../app/hooks';
-import {
-  addTicketToCart,
-  selectCartTicketCount,
-  Ticket,
-} from '../ticketingmanager/ticketing/ticketingSlice';
+import {addTicketToCart, selectCartTicketCount, Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
 import {openSnackbar} from '../ticketingmanager/snackbarSlice';
-import {Collapse} from '@mui/material';
+import {
+  Collapse,
+} from '@mui/material';
 import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
@@ -38,25 +36,25 @@ import React, {useEffect, useState, useReducer} from 'react';
  * @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
  */
 interface TicketPickerState {
-  selectedDate?: Date;
-  displayedShowings: Ticket[];
-  selectedTicket?: Ticket;
-  qty: number;
-  payWhatPrice?: number;
-  concessions: boolean;
-  ticketTypes: TicketType[];
-  selectedTicketType?: TicketType;
-  showCalendar: boolean;
-  showTimes: boolean;
-  showClearBtn: boolean;
-  prompt: 'selectDate' | 'selectTime' | 'showSelection';
+    selectedDate?: Date,
+    displayedShowings: Ticket[],
+    selectedTicket?: Ticket,
+    qty: number,
+    payWhatPrice?: number,
+    concessions: boolean,
+    ticketTypes: TicketType[],
+    selectedTicketType?: TicketType,
+    showCalendar: boolean,
+    showTimes: boolean,
+    showClearBtn: boolean,
+    prompt: 'selectDate' | 'selectTime' | 'showSelection',
 }
 
 export interface TicketType {
-  id: number;
-  name: string;
-  price: string;
-  concessions: string;
+  id: number,
+  name: string,
+  price: string,
+  concessions: string,
 }
 
 /**
@@ -90,18 +88,12 @@ const initialState: TicketPickerState = {
 };
 
 // Action creators
-const dateSelected = (d: Date, t: Ticket[]) => ({
-  type: 'date_selected',
-  payload: {date: d, tickets: t},
-});
+const dateSelected = (d: Date, t: Ticket[]) => ({type: 'date_selected', payload: {date: d, tickets: t}});
 const timeSelected = (t: Ticket) => ({type: 'time_selected', payload: t});
 const resetWidget = () => ({type: 'reset'});
 const changeQty = (n: number) => ({type: 'change_qty', payload: n});
-const changePayWhat = (n: number) => ({type: 'change_pay_what', payload: n});
-const changeTicketType = (t: TicketType) => ({
-  type: 'change_ticket_type',
-  payload: {selectedTicketType: t},
-});
+const changePayWhat = (n:number) => ({type: 'change_pay_what', payload: n});
+const changeTicketType = (t: TicketType) => ({type: 'change_ticket_type', payload: {selectedTicketType: t}});
 let tempPay = 0;
 
 /**
@@ -120,16 +112,13 @@ let tempPay = 0;
  * @param action
  * @returns a certain default state if failed
  */
-const TicketPickerReducer = (
-  state: TicketPickerState,
-  action: any,
-): TicketPickerState => {
+const TicketPickerReducer = (state: TicketPickerState, action: any): TicketPickerState => {
   switch (action.type) {
   case 'date_selected': {
     const {tickets, date} = action.payload;
-    const sameDayShows = tickets.filter((t: Ticket) =>
-      isSameDay(new Date(date), new Date(t.date)),
-    );
+    const sameDayShows = tickets.filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)));
+    console.log(sameDayShows);
+    // (t: Ticket) => console.log(t.date);
 
     return {
       ...state,
@@ -143,12 +132,7 @@ const TicketPickerReducer = (
     };
   }
   case 'time_selected': {
-    return {
-      ...state,
-      selectedTicket: action.payload,
-      showTimes: false,
-      prompt: 'showSelection',
-    };
+    return {...state, selectedTicket: action.payload, showTimes: false, prompt: 'showSelection'};
   }
   case 'reset': {
     return initialState;
@@ -171,8 +155,8 @@ const TicketPickerReducer = (
 };
 
 interface TicketPickerProps {
-  onSubmit: (ticketInfo: any) => void;
-  tickets: Ticket[];
+  onSubmit: (ticketInfo: any) => void,
+  tickets: Ticket[]
 }
 
 /**
@@ -182,31 +166,25 @@ interface TicketPickerProps {
  * @returns {ReactElement} and the correct ticket when picking
  */
 const TicketPicker = (props: TicketPickerProps) => {
-  const [ticketTypesState, setTicketTypesState] =
-    useState<TicketPickerState>(initialState);
+  const [ticketTypesState, setTicketTypesState] = useState<TicketPickerState>(initialState);
 
-  const [
-    {
-      qty,
-      concessions,
-      prompt,
-      payWhatPrice,
-      selectedDate,
-      displayedShowings,
-      selectedTicket,
-      selectedTicketType,
-      ticketTypes,
-      showCalendar,
-      showTimes,
-      showClearBtn,
-    },
-    dispatch,
-  ] = useReducer(TicketPickerReducer, initialState);
+  const [{
+    qty,
+    concessions,
+    prompt,
+    payWhatPrice,
+    selectedDate,
+    displayedShowings,
+    selectedTicket,
+    selectedTicketType,
+    ticketTypes,
+    showCalendar,
+    showTimes,
+    showClearBtn,
+  }, dispatch] = useReducer(TicketPickerReducer, initialState);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(
-      process.env.REACT_APP_API_1_URL + '/tickets/AllTypes',
-    )
+    const res = await fetch(process.env.REACT_APP_API_1_URL + '/tickets/AllTypes')
       .then((res) => {
         if (!res.ok) {
           throw new Error('Failed to retrieve ticket types');
@@ -233,8 +211,12 @@ const TicketPicker = (props: TicketPickerProps) => {
   };
 
   useEffect(() => {
-    void fetchTicketTypes();
+    fetchTicketTypes();
   }, []);
+
+  useEffect(() => {
+    console.log(ticketTypesState.ticketTypes);
+  }, [ticketTypesState.ticketTypes]);
 
   const appDispatch = useAppDispatch();
   const cartTicketCount = useAppSelector(selectCartTicketCount);
@@ -255,47 +237,21 @@ const TicketPicker = (props: TicketPickerProps) => {
     // send ticket info to parent to display
     props.onSubmit(ticketInfo);
     if (selectedTicket && qty) {
-      appDispatch(
-        addTicketToCart({
-          id: selectedTicket.event_instance_id,
-          tickettype: selectedTicketType,
-          qty,
-          concessions,
-          payWhatPrice,
-        }),
-      );
-      appDispatch(
-        openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`),
-      );
+      appDispatch(addTicketToCart({id: selectedTicket.event_instance_id, tickettype: selectedTicketType, qty, concessions, payWhatPrice}));
+      appDispatch(openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`));
       dispatch(resetWidget());
     }
   };
 
   const promptMarkup = {
-    selectDate: (
-      <label
-        className='text-white font-semibold text-xl'
-        htmlFor='date-select'
-      >
-        Select date below ({tickets.length} showings)
-      </label>
-    ),
-    selectTime: (
-      <label
-        className='text-white'
-        htmlFor='time-select'
-      >
-        {selectedDate ? format(selectedDate, 'eee, MMM dd') : ''}
-        <span className='text-white font-bold'> - Choose time:</span>
-      </label>
-    ),
-    showSelection: (
-      <p className='text-white'>
-        {selectedTicket
-          ? format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a')
-          : ''}
-      </p>
-    ),
+    selectDate: <div className='text-zinc-300 font-semibold text-xl '>Select date below ({tickets.length} showings)</div>,
+    selectTime: <div className='text-white'>
+      {selectedDate ? format(selectedDate, 'eee, MMM dd') : ''}
+      <b className='text-white'> - Choose time:</b>
+    </div>,
+    showSelection: <div className='text-white'>
+      {selectedTicket ? format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a') : ''}
+    </div>,
   };
 
   const payWhatFunc = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -311,36 +267,27 @@ const TicketPicker = (props: TicketPickerProps) => {
       return;
     }
 
-    return (
-      t.name === ticketTypesState.ticketTypes[1].name &&
-      selectedTicket.availableseats > 0
-    );
+    return t.name === ticketTypesState.ticketTypes[1].name && selectedTicket.availableseats > 0;
   });
+
+  console.log(selectedTicket);
 
   useEffect(() => {
     if (selectedTicket) {
       const fetchData = async () => {
         try {
-          const response = await fetch(
-            process.env.REACT_APP_API_1_URL +
-              `/tickets/restrictions/${selectedTicket.event_instance_id}`,
-          );
+          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/restrictions/${selectedTicket.event_instance_id}`);
           const data = await response.json();
-          const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter(
-            (t) =>
-              data.data.some(
-                (row) =>
-                  row.tickettypeid_fk === t.id &&
-                  row.ticketssold < row.ticketlimit,
-              ),
+          const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter((t) =>
+            data.data.some((row) => row.tickettypeid_fk === t.id && row.ticketssold < row.ticketlimit),
           );
           setFilteredTicketTypes(finalFilteredTicketTypes);
         } catch (error) {
-          console.error(error);
+          console.log(error);
         }
       };
 
-      void fetchData();
+      fetchData();
     }
   }, [selectedTicket]);
 
@@ -349,23 +296,18 @@ const TicketPicker = (props: TicketPickerProps) => {
     if (selectedTicket) {
       const fetchData = async () => {
         try {
-          const response = await fetch(
-            process.env.REACT_APP_API_1_URL +
-              `/tickets/restrictions/${selectedTicket.event_instance_id}`,
-          );
+          const response = await fetch(process.env.REACT_APP_API_1_URL + `/tickets/restrictions/${selectedTicket.event_instance_id}`);
           const data = await response.json();
-          const matchingRow = data.data.find(
-            (row) => row.tickettypeid_fk === selectedTicketType.id,
-          );
+          const matchingRow = data.data.find((row) => row.tickettypeid_fk === selectedTicketType.id);
           if (matchingRow) {
-            const numAvail = matchingRow.ticketlimit - matchingRow.ticketssold;
+            const numAvail = matchingRow.ticketlimit;
             setnumAvail(numAvail);
           } else {
             const numAvail = selectedTicket.availableseats;
             setnumAvail(numAvail);
           }
         } catch (error) {
-          console.error(error);
+          console.log(error);
         }
       };
       fetchData();
@@ -375,36 +317,24 @@ const TicketPicker = (props: TicketPickerProps) => {
   return (
     <>
       <Collapse in={showClearBtn}>
-        <button
-          onClick={() => dispatch(resetWidget())}
-          className='bg-blue-600 px-3 py-1 rounded-xl text-white hover:bg-blue-700 mb-3'
-        >
+        <button onClick={() => dispatch(resetWidget())} className='bg-blue-600 px-3 py-1
+        rounded-xl text-white hover:bg-blue-700 mb-3'>
           Choose different date
         </button>
       </Collapse>
       {promptMarkup[prompt]}
       <Collapse in={showCalendar}>
-        <div className='text-white w-full px-20'>
-          <select
-            id='date-select'
-            defaultValue=''
-            className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
-            onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}
-          >
-            <option
-              className='text-zinc-300'
-              value=''
-              disabled
-              selected={prompt === 'selectDate'}
-            >
-              select date
-            </option>
-            {tickets.map((t) => (
-              <option key={t.eventid} value={t.date.toString()}>
-                {format(new Date(t.date), 'eee, MMM dd yyyy')}
-              </option>
-            ))}
-          </select>
+        <div className='flex flex-col w-full'>
+          <div className='flex flex-col text-white w-full px-20'>
+            <select defaultValue={''} className='py-7 bg-zinc-700/50 text-white p-5 mt-5 rounded-xl'
+              onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}>
+              <option value='' disabled selected={prompt === 'selectDate'}>select date</option>
+              {tickets.map((t) =>
+                <option key={t.eventid} value={(t.date).toString()}>
+                  {format(new Date(t.date), 'eee, MMM dd yyyy')}
+                </option>)}
+            </select>
+          </div>
         </div>
       </Collapse>
       <Collapse in={showTimes}>
@@ -416,126 +346,87 @@ const TicketPicker = (props: TicketPickerProps) => {
       </Collapse>
       <div className='flex flex-col gap-2 mt-7'>
         {ticketTypes.map((t) => (
-          <p key={t.id}>hello {t.name}</p>
+          <p key={t.id}>
+            hello {t.name}
+          </p>
         ))}
-        <label
-          htmlFor='ticket-type-select'
-          className='text-center text-zinc-200'
-        >
-          Ticket Type
-        </label>
+        <div className='text-center text-zinc-300' id="ticket-type-select-label">Ticket Type</div>
         <select
-          id='ticket-type-select'
+          // labelId="ticket-type-select-label"
           value={selectedTicketType.name}
-          defaultValue=''
-          disabled={selectedTicket === undefined}
-          onChange={(e) =>
-            dispatch(
-              changeTicketType(
-                ticketTypesState.ticketTypes.find(
-                  (t) => t.name === e.target.value,
-                ),
-              ),
-            )
-          }
-          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
+          defaultValue={''}
+          disabled={selectedTicket===undefined}
+          onChange={(e) => dispatch(changeTicketType(ticketTypesState.ticketTypes.find((t) => t.name === e.target.value)))}
+          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
         >
-          <option className='text-zinc-300' value='' disabled>
-            select ticket type
-          </option>
-          {filteredTicketTypes.length > 0
-            ? filteredTicketTypes.map((t) => (
-              <option className='text-white' key={t.id} value={t.name}>
+          <option value={''} disabled>select ticket type</option>
+          {filteredTicketTypes.length > 0 ? (
+            filteredTicketTypes.map((t) => (
+              <option className="text-white" key={t.id} value={t.name}>
                 {t.name}: {t.price}
               </option>
             ))
-            : getDefaultType.map((t) => (
-              <option className='text-white' key={t.id} value={t.name}>
+          ) : (
+            getDefaultType.map((t) => (
+              <option className="text-white" key={t.id} value={t.name}>
                 {t.name}: {t.price}
               </option>
-            ))}
-        </select>
-      </div>
-      <div className='flex flex-col gap-2 mt-3'>
-        <label htmlFor='qty-select' className='text-center text-zinc-200'>
-          {selectedTicket
-            ? numAvail > 0
-              ? 'Quantity'
-              : 'Can\'t add more to cart'
-            : 'Quantity (select ticket)'
-          }
-        </label>
-        <select
-          id='qty-select'
-          value={qty}
-          defaultValue={0}
-          disabled={selectedTicket === undefined || numAvail < 1}
-          onChange={(e) => dispatch(changeQty(parseInt(e.target.value)))}
-          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
-        >
-          <option className='text-zinc-300' value={0} disabled>
-            select qty
-          </option>
-          {range(numAvail, false).map((n) =>
-            numAvail > 20 && n > 20 ? null : (
-              <option className='text-white' key={n} value={n}>
-                {n}
-              </option>
-            ),
+            ))
           )}
         </select>
       </div>
-      <div className='flex gap-2 mt-3 mb-7'>
-        <input
-          id='add-concessions-ticket'
-          type='checkbox'
+      <div className='flex flex-col gap-2 mt-3'>
+        <div className='text-center text-zinc-300' id="qty-select-label">
+          {selectedTicket ?
+            (numAvail > 0) ? 'Quantity' : 'Can\'t add more to cart' :
+            'Quantity (select ticket)'
+          }
+        </div>
+        <select
+          // labelId="qty-select-label"
+          value={qty}
+          defaultValue={0}
+          disabled={selectedTicket===undefined || numAvail < 1}
+          onChange={(e) => dispatch(changeQty(parseInt(e.target.value)))}
+          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-700/50 p-5 px-5 text-white rounded-xl '
+        >
+          <option value={0} disabled>select qty</option>
+          {range(numAvail, false).map((n) => (numAvail > 20 && n > 20) ? null : <option className='text-white' key={n} value={n}>{n}</option>)}
+        </select>
+      </div>
+      <div className='flex flex-row gap-2 mt-3 mb-7'>
+        <input type='checkbox'
           disabled={!selectedTicket}
           checked={concessions}
-          className='bg-zinc-800/50 disabled:opacity-30 disabled:cursor-not-allowed'
-          onChange={() => dispatch({type: 'toggle_concession'})}
-          name='concessions'
-        />
-        <label
-          htmlFor='add-concessions-ticket'
-          className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed'
-        >
-          Add concessions ticket
-        </label>
+          className='bg-zinc-700/50 disabled:opacity-30 disabled:cursor-not-allowed '
+          onChange={() => dispatch({type: 'toggle_concession'})} name='concessions' />
+        <label className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed '>Add concessions ticket</label>
       </div>
-      <div
-        className={
-          selectedTicketType &&
-          selectedTicketType &&
-          selectedTicketType.name === 'Pay What You Can'
-            ? 'flex flex-col gap-2 mt-3 mb-7 justify-center'
-            : 'hidden'
-        }
-      >
-        <label
-          className='text-center text-zinc-200'
-          htmlFor='pay-what-can-input'
-        >
-          Pay What You Can
-        </label>
-        <input
-          id='pay-what-can-input'
-          disabled={!selectedTicket}
-          onChange={(e) => payWhatFunc(e)}
-          type='number'
-          placeholder='Enter Amount'
-          className='disabled:opacity-30 disabled:cursor-not-allowed input border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500'
-        />
+
+      <div className={selectedTicketType && selectedTicketType && selectedTicketType.name === 'Pay What You Can' ? 'show flex-col': 'hidden'}>
+        <div className='flex flex-col gap-2 mt-3 mb-1 justify-center'>
+          <div className='justify-center items-center text-white rounded-xl'>
+            <h1 className= 'px-5 item-center text-white rounded-xl'>Pay What You Can</h1>
+          </div>
+          <input
+            disabled={!selectedTicket}
+            onChange={(e) => payWhatFunc(e)}
+            type="text"
+            placeholder="Enter Amount"
+            className="mt-1 mb-2 disabled:opacity-30 disabled:cursor-not-allowed input pl-1 border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
       </div>
-      <button
-        data-testid='get-tickets'
-        disabled={
-          !qty || !selectedTicket || qty > selectedTicket.availableseats
-        }
-        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 bg-blue-500 text-white hover:bg-blue-600 rounded-xl'
-        onClick={handleSubmit}
-      >
-        Get Tickets
-      </button>
+      <div>
+        <button
+          disabled={!qty || !selectedTicket || qty > selectedTicket.availableseats}
+          className='< disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3
+          bg-blue-500 text-white hover:bg-blue-600 rounded-xl '
+          onClick={handleSubmit}
+        >
+          Get Tickets
+        </button>
+      </div>
     </>
   );
 };

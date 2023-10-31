@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../../utils/arrays';
+import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import {getSeasonImage, formatSeasonDate, SeasonImage} from './seasonUtils';
 
 export interface Seasons {
@@ -11,21 +12,16 @@ export interface Seasons {
   imageurl?: string;
 }
 
-interface SeasonInstancesProp {
-  token: string;
-}
-
 /**
  * Display all seasons page
  *
- * @param props
  * @module
  * @returns Season Instances Page
  */
-const SeasonInstancesPage = (props: SeasonInstancesProp) => {
+const SeasonInstancesPage = () => {
   const navigate = useNavigate();
-  const {token} = props;
   const [seasons, setAllSeasons] = useState<Seasons[]>([]);
+  const {token} = useFetchToken();
 
   const getAllSeasons = async () => {
     try {
@@ -54,7 +50,7 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
 
   useEffect(() => {
     getAllSeasons();
-  }, []);
+  }, [token]);
 
   /**
    * Based on active/inactive/all
@@ -76,7 +72,7 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
             Select Season
           </h1>
           <button
-            onClick={() => navigate('/ticketing/seasons/0')}
+            onClick={() => navigate(``)} // TODO, create seasons page
             className={
               'bg-green-500 hover:bg-green-700 h-fit disabled:bg-gray-500 text-white p-2 rounded-xl flex justify-center align-center gap-1'
             }
@@ -125,9 +121,7 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
           {seasons.map((season) => (
             <li key={season.seasonid}>
               <button
-                onClick={() =>
-                  navigate(`/ticketing/seasons/${season.seasonid}`)
-                }
+                onClick={() => navigate(``)} // TODO, seasons edit page
                 className='shadow-xl rounded-xl hover:scale-105 transition duration-300 ease-in-out w-full'
                 style={{
                   backgroundImage: `url(${getSeasonImage(season.imageurl)})`,

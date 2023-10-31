@@ -12,6 +12,7 @@ export class LoginPage {
   readonly postLoginAuthAcceptButton: Locator;
 
   constructor(page: Page) {
+   
     this.page = page;
 
     this.loginButton = page.getByRole('button', { name: 'Sign in' });
@@ -43,7 +44,7 @@ export class LoginPage {
 
   async login(email: string, password: string ) {
     await this.goto();
-    await this.loginButton.click();
+    await this.loginButton.click()
     await this.setEmail(email);
     await this.setPassword(password);
     await this.loginContinueButton.click();

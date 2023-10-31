@@ -1,10 +1,13 @@
 /**
- * SERVER
- * Responsible for routing correct server
+ * Server
+ * Responsable for routing correct server
  * execution on changes of url on front end
  *
- * @param app - instantiates express instance
- * that performs URI response to client requests
+ * @param app - instanciates express instnace
+ * that is performs URI responce to client requests
+ *
+ *
+ *
  */
 
 import cors from 'cors';
@@ -61,7 +64,7 @@ const openApiSpec = swaggerJsdoc({
       url: process.env.ROOT_URL + '/api',
     }],
     info: {
-      title: 'WonderTix API',
+      title: 'Wondertix API',
       version: '1.0.0',
     },
     components: {
@@ -162,7 +165,7 @@ const openApiSpec = swaggerJsdoc({
             eventticketid: {type: 'integer'},
             eventinstanceid_fk: {type: 'integer'},
             tickettypeid_fk: {type: 'integer'},
-            singleticket_fk: {type: 'integer'},
+            purchased: {type: 'integer'},
             redeemed: {type: 'integer'},
             redeemed_ts: {type: 'string'},
             donated: {type: 'boolean'},
@@ -174,7 +177,6 @@ const openApiSpec = swaggerJsdoc({
             orderid: {type: 'integer'},
             contactid_fk: {type: 'integer'},
             orderdate: {type: 'integer'},
-            checkout_sessions: {type: 'string'},
             ordertime: {type: 'string'},
             disocuntid_fk: {type: 'integer'},
             payment_intent: {type: 'string'},
@@ -231,6 +233,7 @@ const openApiSpec = swaggerJsdoc({
           type: 'object',
           properties: {
             singleticketid: {type: 'integer'},
+            eventticketid_fk: {type: 'integer'},
             orderitemid_fk: {type: 'integer'},
             ticketwasswapped: {type: 'boolean'},
           },
@@ -360,16 +363,16 @@ const openApiSpec = swaggerJsdoc({
         EventInstance: {
           type: 'object',
           properties: {
+            eventinstanceid: {type: 'integer'},
             eventid_fk: {type: 'integer'},
-            eventdate: {type: 'string'},
+            eventdate: {type: 'integer'},
             eventtime: {type: 'string'},
-            salestatus: {type: 'boolean'},
+            salesstatus: {type: 'string'},
             totalseats: {type: 'integer'},
             availableseats: {type: 'integer'},
-            purchaseuri: {type: 'string'},
+            purchaseurl: {type: 'string'},
             ispreview: {type: 'boolean'},
             defaulttickettype: {type: 'integer'},
-            instanceTicketTypes: {type: 'array'},
           },
         },
         EventTicket: {
@@ -377,7 +380,7 @@ const openApiSpec = swaggerJsdoc({
           properties: {
             eventinstanceid_fk: {type: 'integer'},
             tickettypeid_fk: {type: 'integer'},
-            singleticket_fk: {type: 'integer'},
+            purchased: {type: 'integer'},
             redeemed: {type: 'integer'},
             redeemed_ts: {type: 'string'},
             donated: {type: 'boolean'},
@@ -393,7 +396,6 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
-            checkout_sessions: {type: 'string'},
           },
         },
         OrderItem: {
@@ -439,6 +441,7 @@ const openApiSpec = swaggerJsdoc({
         SingleTicket: {
           type: 'object',
           properties: {
+            eventticketid_fk: {type: 'integer'},
             orderitemid_fk: {type: 'integer'},
             ticketwasswapped: {type: 'boolean'},
           },
@@ -510,7 +513,7 @@ const createServer = async () => {
   let envPath;
   if (process.env.ENV === 'local') {
     envPath = path.join(__dirname, '../../.env');
-  } else if (process.env.ENV === 'dev' || process.env.ENV === 'stg' || process.env.ENV === 'prd') {
+  } else if (process.env.ENV === 'dev') {
     envPath = path.join(__dirname, '../.env');
   } else {
     throw new Error('Unknown ENV value');
@@ -522,8 +525,6 @@ const createServer = async () => {
   const app = express();
 
   /* Middleware */
-  // webhook needs raw request body
-  app.use('/api/2/order/webhook', express.raw({type: 'application/json'}));
   app.use(express.json());
   app.use(express.urlencoded({extended: true}));
   app.use(morgan('dev'));
@@ -558,7 +559,7 @@ const createServer = async () => {
   app.use('/api/2/contact', contactController);
   app.use('/api/2/discount', discountController);
   app.use('/api/2/donation', donationController);
-  app.use('/api/2/events', eventController);
+  app.use('/api/2/event', eventController);
   app.use('/api/2/event-instance', eventInstanceController);
   app.use('/api/2/event-ticket', eventTicketController);
   app.use('/api/2/order', orderController);

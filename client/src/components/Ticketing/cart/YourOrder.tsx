@@ -7,7 +7,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import React, {ReactElement} from 'react';
+import React from 'react';
 import {useAppSelector} from '../app/hooks';
 import {
   selectCartItem,
@@ -26,30 +26,19 @@ import {selectDonation} from '../ticketingmanager/donationSlice';
  */
 const toDollar = (x: number) => `$${(Math.round(x * 100) / 100).toFixed(2)}`;
 
-interface YourOrderProps {
-  backButtonRoute: string;
-}
 /**
  * Used to handle your order by using the app selector
  *
- * @param YourOrderProps
- * @param YourOrderProps.backButtonRoute
  * @returns {ReactElement}
  */
-const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
-  const navigate = useNavigate();
+const YourOrder = () => {
+  const history = useNavigate();
   const cartIds = useAppSelector(selectCartIds);
   const donation = useAppSelector(selectDonation);
   const subtotal = useAppSelector(selectCartSubtotal);
   const total = useAppSelector(selectCartTotal);
   const discount = useAppSelector(selectDiscount);
-  const lineItems = cartIds.map((id) => (
-    <LineItem
-      key={id}
-      id={id}
-      className='bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'
-    />
-  ));
+  const lineItems = cartIds.map((id) => <LineItem key={id} id={id} className='bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'/>);
 
   return (
     <div className='flex flex-col justify-between h-full w-full'>
@@ -58,12 +47,9 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
         <div className='text-zinc-100 mt-10 w-full'>
           {lineItems.length > 0 ? lineItems : <p>Your cart is empty</p>}
         </div>
-        <button
-          onClick={() => navigate(backButtonRoute)}
-          className='bg-green-600 px-3 py-1 text-sm
-         hover:bg-green-700 text-white rounded-xl mt-4 '
-        >
-          Add more items
+        <button onClick={() => history('/')} className='bg-green-600 px-3 py-1 text-sm
+         hover:bg-green-700 text-white rounded-xl mt-4 '>
+        Add more items
         </button>
       </div>
       <div className='flex flex-col items-center gap-2 bg-zinc-800 rounded-xl px-5 py-3'>
@@ -73,47 +59,39 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
             {toDollar(subtotal)}
           </div>
         </div>
-        {discount.code !== '' && (
+        {discount.code !== '' ? (
           <div className='flex flex-row items-center gap-2 justify-between w-full'>
             <div className='text-zinc-100 text-sm '>Discount</div>
-            <div className='text-amber-300 text-lg font-bold'>
-              {toDollar(subtotal - total)}
-            </div>
+            <div className='text-amber-300 text-lg font-bold'>{toDollar(subtotal-total)}</div>
           </div>
-        )}
+        ) : ('')}
         <div className='flex flex-row items-center gap-2 justify-between w-full'>
           <div className='text-zinc-100 text-sm '>Donation</div>
-          <div className='text-white text-lg font-bold'>
-            {toDollar(donation)}
-          </div>
+          <div className='text-white text-lg font-bold'>{toDollar(donation)}</div>
         </div>
         <div className='flex flex-row items-center gap-2 justify-between w-full'>
           <div className='text-zinc-100 text-sm '>Total</div>
-          <div className='text-white text-lg font-bold'>
-            {toDollar(donation + total)}
-          </div>
+          <div className='text-white text-lg font-bold'>{toDollar(donation+total)}</div>
         </div>
       </div>
+
+
     </div>
   );
 };
 
-const LineItem = (props: {className: string; id: number}) => {
+const LineItem = (props: {className: string, id: number}) => {
   const data = useAppSelector((state) => selectCartItem(state, props.id));
-  return data ? (
+  return data ?
     <div className={props.className}>
-      <div>
-        {data.qty} <b>x</b> {data.name}
-      </div>
-      <div>
-        {data.payWhatCan
-          ? toDollar(data.payWhatPrice)
-          : toDollar(data.qty * data.price)}
-      </div>
-    </div>
-  ) : (
-    <div></div>
-  );
+      <div>{data.qty} <b>x</b> {data.name}</div>
+      <div>{
+        data.payWhatCan ?
+          toDollar(data.payWhatPrice) :
+          toDollar(data.qty * data.price)
+      }</div>
+    </div> :
+    <div></div>;
 };
 
 export default YourOrder;

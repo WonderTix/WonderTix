@@ -1,8 +1,6 @@
 import React from 'react';
 import Udash_nav from '../udash_navbar';
 import SeasonInstancesPage from './SeasonInstancesPage';
-import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
-import {LoadingScreen} from '../../mainpage/LoadingScreen';
 
 /**
  * Main page to host seasons page
@@ -12,18 +10,12 @@ import {LoadingScreen} from '../../mainpage/LoadingScreen';
  */
 
 const SeasonsMain = () => {
-  const {token} = useFetchToken();
-
-  if (token === '') {
-    return <LoadingScreen />;
-  } else {
-    return (
-      <div className='flex'>
-        <Udash_nav />
-        <SeasonInstancesPage token={token} />
-      </div>
-    );
-  }
+  return (
+    <div className='flex'>
+      <Udash_nav />
+      <SeasonInstancesPage />
+    </div>
+  );
 };
 
 export default SeasonsMain;

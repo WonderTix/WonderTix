@@ -33,7 +33,6 @@ export interface CartItem {
     price: number,
     payWhatCan: boolean,
     payWhatPrice?: number,
-    typeID: number,
 }
 
 /**
@@ -280,7 +279,6 @@ export const toPartialCartItem = <T extends TicketType>(type: T, tickets: Ticket
   product_id: tickets.event_instance_id,
   price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
   desc: `${type.name} - ${format(new Date(tickets.date), 'eee, MMM dd - h:mm a')}`,
-  typeID: type.id,
 });
 
 const appendCartField = <T extends CartItem>(key: keyof T, val: T[typeof key]) => (obj: any) => ({...obj, [key]: val});
