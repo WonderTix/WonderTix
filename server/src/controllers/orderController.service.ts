@@ -1,7 +1,7 @@
-import {PrismaClient} from '@prisma/client';
+import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 export const ticketingWebhook = async (
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
     eventType: string,
     paymentIntent: string,
     sessionID: string,
@@ -31,7 +31,7 @@ export const ticketingWebhook = async (
   }
 };
 export const orderFulfillment = async (
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
     orderItems: any[],
     contactid: number,
     ordertotal: number,
@@ -56,14 +56,9 @@ export const orderFulfillment = async (
   ]);
   return result[0].orderid;
 };
-export const orderCancel = async (prisma: PrismaClient, orderID: number) => {
-  const queriesToBatch: any[] = [];
-  await prisma.orders.delete({
-    where: {
-      orderid: Number(orderID),
-    },
-  });
 
+const updateAvailableSeats = async (prisma: ExtendedPrismaClient) => {
+  const queriesToBatch: any[] = [];
   const eventInstances = await prisma.eventinstances.findMany({
     include: {
       eventtickets: true,
@@ -91,7 +86,8 @@ export const orderCancel = async (prisma: PrismaClient, orderID: number) => {
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats: (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0),
+            availableseats:
+            (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0),
           },
         }),
     );
@@ -110,8 +106,63 @@ export const orderCancel = async (prisma: PrismaClient, orderID: number) => {
       );
     }
   });
-
   await prisma.$transaction(queriesToBatch);
+  return;
+};
+
+export const orderCancel = async (
+    prisma: ExtendedPrismaClient,
+    orderID: number,
+    refundIntent?: string,
+) => {
+  if (!refundIntent) {
+    await prisma.orders.delete({
+      where: {
+        orderid: Number(orderID),
+      },
+    });
+  } else {
+    const updatedOrder = await prisma.orders.update({
+      where: {
+        orderid: orderID,
+      },
+      data: {
+        refund_intent: refundIntent,
+      },
+      include: {
+        orderitems: {
+          include: {
+            singletickets: true,
+          },
+        },
+      },
+    });
+    await prisma.$transaction(
+        updatedOrder.orderitems.map((item) =>
+          prisma.orderitems.update({
+            where: {
+              orderitemid: item.orderitemid,
+            },
+            data: {
+              refunded: true,
+              singletickets: {
+                update: item.singletickets.map((singleticket) => ({
+                  where: {
+                    singleticketid: singleticket.singleticketid,
+                  },
+                  data: {
+                    eventtickets: {
+                      set: [],
+                    },
+                  },
+                })),
+              },
+            },
+          }),
+        ),
+    );
+  }
+  await updateAvailableSeats(prisma);
   return;
 };
 const getOrderDateAndTime = () => {

@@ -1,4 +1,4 @@
-import {Showing} from '../../../../../interfaces/showing.interface';
+import {Showing, UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React, {useContext, useState} from 'react';
 import {
   useFetchEventData,
@@ -16,7 +16,7 @@ interface EventContextType {
   ticketTypes: any[];
   loading: boolean;
   token: string;
-  showingData: Showing[];
+  showingData: UpdatedShowing[];
   setReloadShowing: (value) => void;
   editing: boolean;
   setEditing: (value) => void;

@@ -1,14 +1,14 @@
-import {Showing} from '../../../../../interfaces/showing.interface';
+import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from '../../Events/showingInputContainer_deprecated';
 import {useEvent} from './EventProvider';
-import {getTicketTypeArray, getTicketTypePrice} from './ShowingUtils';
+import {getTicketTypePrice} from './ShowingUtils';
 
 import {LineItem} from './LineItem';
 
 interface EventInstanceViewProps {
-  showing: Showing;
+  showing: UpdatedShowing;
   setEdit: () => void;
 }
 
@@ -16,13 +16,14 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
   const {ticketTypes, editing, showPopUp} = useEvent();
   const showingDate = new Date(
-    `${toDateStringFormat(showing.eventdate)} ${showing.eventtime.slice(0, 8)}`,
+    `${toDateStringFormat(showing.eventdate)} ${showing.eventtime.split('T')[1].slice(0, 8)}`,
   );
 
   return (
     <div className={'bg-gray-300 rounded-xl p-2'}>
-      <div
+            <div
         className={`bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[175px] gap-2`}
+        data-testid='showing-card'
       >
         <div
           className={`flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%] shadow-xl`}
@@ -73,12 +74,9 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
               </tr>
             </thead>
             <tbody className={'whitespace-nowrap'}>
-              {showing.ticketTypeId && ticketTypes && (
+              {showing.ticketrestrictions.length !== 0 && ticketTypes && (
                 [{typeID: 1, typeQuantity: showing.totalseats},
-                  ...getTicketTypeArray(
-                    showing.ticketTypeId,
-                    showing.seatsForType,
-                  )]
+                  ...showing.ticketrestrictions]
                   .map((type, index) => (
                     <tr
                       key={`${showing.eventinstanceid} ${type.typeID} ${index}`}

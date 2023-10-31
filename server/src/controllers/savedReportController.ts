@@ -1,8 +1,9 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {PrismaClient, Prisma} from '@prisma/client';
+import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
-const prisma = new PrismaClient();
+const prisma = extendPrismaClient();
 
 export const savedreportController = Router();
 
