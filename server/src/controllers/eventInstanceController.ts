@@ -279,7 +279,7 @@ eventInstanceController.get(
  *     - New event instance
  *     responses:
  *       200:
- *         description: event instance fetch succesful.
+ *         description: event instance fetch successful.
  *         content:
  *           application/json:
  *             schema:

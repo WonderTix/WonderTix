@@ -24,9 +24,6 @@ export const eventController = Router();
  *     - New Event API
  *     requestBody:
  *       description: Checkout information
- *       content:
- *         application/json:
- *           schema:
  *     responses:
  *       200:
  *         description: Contact, order, and Stripe session successfully created.
@@ -177,7 +174,7 @@ eventController.get('/showings', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /2/events/:
+ * /2/events:
  *   get:
  *     summary: get all events not including showings
  *     tags:
@@ -291,7 +288,6 @@ eventController.get('/showings/:id', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: event fetch successful.
  *         content:
  *           application/json:
  *             schema:
@@ -623,13 +619,11 @@ eventController.get('/:id', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
     res.status(500).json({error: 'Internal Server Error'});
@@ -699,23 +693,20 @@ eventController.post('/', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
 /**
  * @swagger
- * /2/events/:
+ * /2/events:
  *   put:
  *     summary: update an event
  *     tags:
@@ -762,7 +753,7 @@ eventController.put('/', async (req: Request, res: Response) => {
       },
     });
     if (!event) {
-      return res.status(400).json({error: `Event ${req.body.eventid} not found `});
+      return res.status(400).json({error: `Event ${req.body.eventid} not found`});
     }
     res.status(200).json(event);
     return;
@@ -771,12 +762,10 @@ eventController.put('/', async (req: Request, res: Response) => {
       res.status(400).json({error: error.message});
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
@@ -975,7 +964,7 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
  */
 eventController.put('/checkin', async (req: Request, res: Response) => {
   try {
-    const {ticketID, isCheckedIn}= req.body;
+    const {ticketID, isCheckedIn} = req.body;
     if (!ticketID) {
       return res.status(400).send('No Ticket ID provided');
     }
