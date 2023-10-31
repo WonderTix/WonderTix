@@ -1,14 +1,6 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-import {Form, Field} from 'react-final-form';
-import React, {ReactElement, useState} from 'react';
+import {Field, Form} from 'react-final-form';
+import React, {ReactElement} from 'react';
+import {FormInput} from './CheckoutFormInput';
 
 /**
  * Info for checkout form
@@ -80,10 +72,6 @@ export default function CompleteOrderForm({
     optIn: false,
   };
 
-  const handleSubmit = async (values, form) => {
-    console.log(values);
-    await onSubmit(values);
-  };
   const validate = (values) => {
     const errors = {};
     Object.keys(values).forEach((key) => {
@@ -93,26 +81,27 @@ export default function CompleteOrderForm({
       }
     });
     if (values.seatingAcc === 'Other' && values.comments === '') {
-      errors['comments'] = 'If other comment required';
+      errors['comments'] = 'Please Input Accommodation';
     }
     if (!values.postalCode?.match(new RegExp('.*'))) {
       errors['postalCode'] = 'Invalid';
     }
-    if (!values.email?.match(new RegExp('.*'))) {
+    if (!values.email?.match( new RegExp('.+\\@.+\\..+'))) {
       errors['email'] = 'Invalid';
     }
-    if (values.phone !== '' && !values.phone?.match(new RegExp('.*'))) {
+    if (values.phone !== '' && !values.phone?.match(new RegExp('^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
       errors['phone'] = 'Invalid';
     }
     return errors;
   };
+
   return (
     <>
       <div className='w-full h-full flex flex-col items-center '>
         <h2 className='text-2xl font-bold mb-5'>Contact</h2>
         <div className='min-w-414 sm:w-full h-full'>
           <Form
-            onSubmit={handleSubmit}
+            onSubmit={onSubmit}
             validate={validate}
             initialValues={baseValues}
             render={({handleSubmit, submitting}) => (
@@ -272,49 +261,3 @@ export default function CompleteOrderForm({
   );
 }
 
-interface FormInputProps {
-  input: {name, onChange, onBlur, onFocus, value}
-  meta,
-  name: string,
-  type: string,
-  id: string,
-  label: string,
-  labelClass: string,
-  inputClass: string,
-  divClass?: string,
-
-}
-const FormInput = (props: FormInputProps) => {
-  const {
-    id,
-    name,
-    type,
-    input,
-    inputClass,
-    labelClass,
-    divClass,
-    label,
-    meta,
-  } = props;
-
-  return (
-    <div className={divClass}>
-      <label
-        className={labelClass}
-        htmlFor={id}
-      >
-        {label}
-      </label>
-      <input
-        className={inputClass}
-        onChange={input.onChange}
-        value={input.value}
-        type={type}
-        name={name}
-        id={id}
-        style={meta.touched && meta.error? {border: '1px solid red'}: {}}
-      />
-      {/* {meta.error && meta.touched && <span className={'text-xs text-red-700'}>{meta.error}</span>}*/}
-    </div>
-  );
-};
