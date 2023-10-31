@@ -9,8 +9,8 @@ jobs:
     name: Run E2E tests against GCP dev
     runs-on: ubuntu-latest
     env:
-      ROOT_URL: https://wtix-server-dev-3ps4rkx4ga-wl.a.run.app
-      FRONTEND_URL: https://wtix-client-dev-3ps4rkx4ga-wl.a.run.app
+      ROOT_URL: ${{ secrets.CLOUD_ROOT_URL }} 
+      FRONTEND_URL: ${{ secrets.CLOUD_FRONTEND_URL }}
       TEST_EMAIL: ${{ secrets.TEST_EMAIL }} 
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }} 
     steps:

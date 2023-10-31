@@ -45,42 +45,6 @@ orderController.post(
 );
 
 orderController.use(express.json());
-orderController.post(
-    '/webhook',
-    express.raw({type: 'application/json'}),
-    async (req: Request, res: Response) => {
-      const sig = req.headers['stripe-signature'];
-      try {
-        const event = await stripe.webhooks.constructEvent(
-            req.body,
-            sig,
-            webhookKey,
-        );
-
-        const object = event.data.object;
-        const metaData = object.metadata;
-
-        if (metaData.sessionType === '__ticketing') {
-          await ticketingWebhook(
-              prisma,
-              event.type,
-              object.payment_intent,
-              object.id,
-          );
-        // handle donation amount in metadata (will be a donation team task?)
-        } else if (metaData.sessionType === '__donation') {
-        // donation is handled
-        }
-        res.status(200).send();
-        return;
-      } catch (error) {
-        console.error(error);
-        return res.status(400).send();
-      }
-    },
-);
-
-orderController.use(express.json());
 /**
  * @swagger
  * /2/order:
@@ -152,7 +116,7 @@ orderController.use(checkScopes);
 
 /**
  * @swagger
- * /2/order/:
+ * /2/order:
  *   get:
  *     summary: get all orders with email
  *     tags:
