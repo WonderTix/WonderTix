@@ -94,6 +94,8 @@ export const getEventData = async (eventID, setEventData, signal) => {
     {signal},
   );
   if (!response.ok) {
+    const error = await response.json();
+    console.error(error);
     throw new Error('Unable to fetch event');
   }
   const data = await response.json();
