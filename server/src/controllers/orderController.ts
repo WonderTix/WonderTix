@@ -117,7 +117,7 @@ orderController.use(checkScopes);
 
 /**
  * @swagger
- * /2/order:
+ * /2/order/refund:
  *   get:
  *     summary: get all orders with email
  *     tags:
@@ -144,7 +144,7 @@ orderController.use(checkScopes);
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-orderController.get('/', async (req: Request, res: Response) => {
+orderController.get('/refund', async (req: Request, res: Response) => {
   try {
     const {email} = req.query;
     if (!email || typeof email !== 'string') {
