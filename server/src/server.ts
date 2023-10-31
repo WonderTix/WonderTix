@@ -81,6 +81,22 @@ const openApiSpec = swaggerJsdoc({
             type: 'integer',
           },
         },
+        updatedStatus: {
+          name: 'updatedStatus',
+          in: 'path',
+          description: 'Updated Active status',
+          schema: {
+            type: 'boolean',
+          },
+        },
+        name: {
+          name: 'name',
+          in: 'path',
+          description: 'Item Name',
+          schema: {
+            type: 'string',
+          },
+        },
       },
       schemas: {
         Contact: {
@@ -303,6 +319,13 @@ const openApiSpec = swaggerJsdoc({
         },
       },
       requestBodies: {
+        CheckIn: {
+          type: 'object',
+          properties: {
+            isCheckedIn: {type: 'boolean'},
+            ticketID: {type: 'number'},
+          },
+        },
         Contact: {
           type: 'object',
           properties: {
@@ -349,6 +372,7 @@ const openApiSpec = swaggerJsdoc({
         Event: {
           type: 'object',
           properties: {
+            eventid: {type: 'integer'},
             seasonid_fk: {type: 'integer'},
             eventname: {type: 'string'},
             eventdescription: {type: 'string'},
