@@ -9,18 +9,13 @@
  */
 import {DataGrid} from '@mui/x-data-grid';
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Checkbox,
   FormControlLabel,
 } from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useLocation, useNavigate} from 'react-router-dom';
+import PopUp from '../../PopUp';
 
 export type EventRow = {
   id?: number;
@@ -52,9 +47,8 @@ const AdminPurchase = () => {
   const [ticketTypes, setTicketTypes] = useState([]);
   const [isEventsLoading, setIsEventsLoading] = useState(true);
   const [isTicketTypesLoading, setIsTicketTypesLoading] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [openMissingSelectionDialog, setOpenMissingSelectionDialog] =
-    useState(false);
+  const [openDialog, setDialog] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
 
   const addNewRow = () => {
@@ -65,11 +59,7 @@ const AdminPurchase = () => {
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-  const handleCloseMissingSelectionDialog = () => {
-    setOpenMissingSelectionDialog(false);
+    setDialog(false);
   };
 
   useEffect(() => {
@@ -222,13 +212,13 @@ const AdminPurchase = () => {
       headerName: '',
       width: 150,
       renderCell: (params) => (
-        <Button
-          variant='contained'
-          color='secondary'
+        <button
+          className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
+          type='submit'
           onClick={() => removeRow(params.row.id)}
         >
           Remove
-        </Button>
+        </button>
       ),
     },
   ];
@@ -328,7 +318,12 @@ const AdminPurchase = () => {
 
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        return {...row, ...matchingEvent};
+        return {
+          ...row,
+          ...matchingEvent,
+          eventtime: null,
+          eventinstanceid: null,
+        };
       }
       return r;
     });
@@ -472,7 +467,8 @@ const AdminPurchase = () => {
         !row.ticketTypes ||
         typeof row.price === 'undefined'
       ) {
-        setOpenMissingSelectionDialog(true);
+        setDialog(true);
+        setErrMsg('Missing selection.');
         return;
       }
     }
@@ -515,7 +511,8 @@ const AdminPurchase = () => {
             : correspondingRow.seatsForType;
 
         if (item.qty > available) {
-          setOpenDialog(true);
+          setDialog(true);
+          setErrMsg('Quantity selected exceeds available seats.');
           return;
         }
       }
@@ -526,73 +523,58 @@ const AdminPurchase = () => {
   };
 
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute '>
-      <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-        <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
-          Purchase Tickets
-        </h1>
-        <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
-          {isEventsLoading || isTicketTypesLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <DataGrid
-              className='bg-white'
-              autoHeight
-              disableSelectionOnClick
-              rows={eventData}
-              columns={columns}
-              pageSize={100}
-              hideFooter
-            />
-          )}
-          <div className='mt-4'>
-            <Button variant='contained' color='primary' onClick={addNewRow}>
-              Add Ticket
-            </Button>
-          </div>
-          <div className='mt-4 text-center'>
-            <Button
-              variant='contained'
-              style={{
-                backgroundColor: 'green',
-                color: 'white',
-                fontSize: 'larger',
-                textTransform: 'none',
-              }}
-              onClick={handlePurchase}
-            >
-              Proceed To Checkout
-            </Button>
+    <div className="w-full h-screen overflow-x-hidden absolute z-50">
+      <div className='w-full h-screen overflow-x-hidden absolute '>
+        <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
+            Purchase Tickets
+          </h1>
+          <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
+            {isEventsLoading || isTicketTypesLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <DataGrid
+                className='bg-white'
+                autoHeight
+                disableSelectionOnClick
+                rows={eventData}
+                columns={columns}
+                pageSize={100}
+                hideFooter
+              />
+            )}
+            <div className='mt-4'>
+              <button
+                className='bg-blue-500 px-2 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2'
+                type='submit'
+                onClick={addNewRow}
+              >
+                Add Ticket
+              </button>
+            </div>
+            <div className='mt-4 text-center'>
+              <button
+                className='bg-green-600 px-8 py-1 text-white rounded-xl hover:bg-green-700 disabled:opacity-40 m-2'
+                type='submit'
+                onClick={handlePurchase}
+              >
+                Proceed to Checkout
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{'Error'}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Quantity selected exceeds available seats.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color='primary'>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        open={openMissingSelectionDialog}
-        onClose={handleCloseMissingSelectionDialog}
-      >
-        <DialogTitle>{'Error'}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Missing selection.</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseMissingSelectionDialog} color='primary'>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {
+        openDialog && (
+          <PopUp
+            title="Error"
+            message={errMsg}
+            handleProceed={handleCloseDialog}
+            handleClose={handleCloseDialog}
+            success={false}
+          />
+        )
+      }
     </div>
   );
 };
