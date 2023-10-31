@@ -4,16 +4,35 @@ import PopUp from '../../PopUp';
 
 
 const Refund = () => {
+  const format = new Intl.NumberFormat(
+    'en-us',
+    {
+      currency: 'USD',
+      style: 'currency',
+    });
   const {token} = useFetchToken();
   const [show, setShow] = useState({
     showPopUp: false,
     message: '',
     title: '',
     success: true,
-    handle: () => {
-      setShow((p) => ({...p, showPopUp: false}));
-    },
+    showSecondary: false,
+    handleProceed: () => setShow({...show, showPopUp: false}),
+    handleClose: () => setShow({...show, showPopUp: false}),
   });
+  const handle = () => setShow((p) =>({...p, showPopUp: false}));
+  const setPopUp = (title:string, message:string, success:boolean, showPopUp: boolean, handle, secondary) => {
+    setShow({
+      ...show,
+      title,
+      message,
+      success,
+      showPopUp,
+      handleProceed: handle,
+      showSecondary: secondary,
+    });
+  };
+  const [submitting, setSubmitting] = useState(false);
   const [orders, setOrders] = useState([]);
 
   const onRefund = async (orderID) => {
@@ -33,35 +52,40 @@ const Refund = () => {
         throw response;
       }
       setOrders((orders) => orders.filter((order) => order.orderid !== orderID));
-      setShow((show) => ({
-        ...show,
-        showPopUp: true,
-        message: `Order ${orderID} successfully refunded`,
-        title: `Order Refund Successful`,
-        success: true,
-      }));
+      setPopUp(
+        'Order Refund Successful',
+        `Order ${orderID} successful refunded`,
+        true,
+        true,
+        handle,
+        false,
+      );
+      setSubmitting(false);
     } catch (error) {
       const errorMessage = await error.json();
-      setShow({
-        ...show,
-        showPopUp: true,
-        message: `Order ${orderID} refund unsuccessful ${errorMessage.error}`,
-        title: `Order Refund Failed`,
-        success: false,
-      });
+      setPopUp(
+        `Order Refund Failed`,
+        `Order ${orderID} refund unsuccessful ${errorMessage.error}`,
+        false,
+        true,
+        handle,
+        false,
+      );
+      setSubmitting(false);
     }
   };
-  const onFetchOrders = async (event) =>{
+  const onFetchOrders = async (event) => {
     event.preventDefault();
     const email = event.target[0].value;
     if (!email) {
-      setShow({
-        ...show,
-        showPopUp: true,
-        message: `Email Required`,
-        title: `Invalid search`,
-        success: false,
-      });
+      setPopUp(
+        `Invalid search`,
+        `Email Required`,
+        false,
+        true,
+        handle,
+        false,
+      );
       return;
     }
     try {
@@ -81,6 +105,13 @@ const Refund = () => {
       setOrders(data);
     } catch (error) {
       console.error(error);
+      setPopUp(
+        'Error',
+        'Return failed',
+        false,
+        true,
+        handle,
+        false);
     }
   };
 
@@ -90,9 +121,10 @@ const Refund = () => {
       <PopUp
         title={show.title}
         message={show.message}
-        handleClose={show.handle}
-        handleProceed={show.handle}
+        handleClose={show.handleClose}
+        handleProceed={show.handleProceed}
         success={show.success}
+        showSecondary={show.showSecondary}
       />
       }
       <div className='w-full h-screen overflow-x-hidden absolute '>
@@ -133,12 +165,12 @@ const Refund = () => {
               </div>
               <div className='row-start-1 justify-self-start py-2 col-span-1'>
                 <div className="border-l border-l-gray-500/50 pl-2">
-                  Date
+                  Order Date
                 </div>
               </div>
               <div className='row-start-1 justify-self-start py-2 col-span-1'>
                 <div className="border-l border-l-gray-500/50 pl-2">
-                  Showing(s)
+                  Events
                 </div>
               </div>
               <div className='row-start-1 justify-self-start py-2 col-span-1'>
@@ -169,13 +201,27 @@ const Refund = () => {
                     )}
                   </div>
                   <div className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                    {instance.price}
+                    {format.format(instance.price)}
                   </div>
                   <div className='row-start-1 justify-self-start py-2 col-span-1'>
                     <button
-                      onClick={async () => await onRefund(instance.orderid)}
+                      disabled={submitting}
+                      onClick={async () =>
+                        setPopUp(
+                          'Confirm Refund',
+                          'Click continue to refund',
+                          false,
+                          true,
+                          async () => {
+                            setSubmitting(true);
+                            handle();
+                            await onRefund(instance.orderid);
+                            return;
+                          },
+                          true,
+                        )}
                       type='button'
-                      className='bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded'
+                      className='bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded disabled:bg-gray-500'
                     >
                       Refund
                     </button>

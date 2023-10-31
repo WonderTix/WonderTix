@@ -18,7 +18,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   const {cartItems, formData, donation, discount} = req.body;
   let orderID = 0;
   let toSend = {id: 'comp'};
-
   try {
     if (!cartItems.length && donation === 0) {
       return res.status(400).json(`Cart is empty`);
