@@ -18,7 +18,7 @@ export const EventGeneralContainer = () => {
       setEventID(res.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
-      setPopUpProps(`Success`, 'Event update successful', true, `update-modal-event-id-${eventID}`);
+      setPopUpProps(`Success`, 'Event update successful', true, `update-modal-event-id-${res.eventid}`);
     } catch (error) {
       console.error('error updating event');
     }
@@ -32,7 +32,7 @@ export const EventGeneralContainer = () => {
       setEventID(res.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
-      setPopUpProps(`Success`, 'Event creation successful', true, `create-modal-event-id-${eventID}`);
+      setPopUpProps(`Success`, 'Event creation successful', true, `create-modal-event-id-${res.eventid}`);
     } catch (error) {
       console.log(error);
       console.error('error updating event after creation');
