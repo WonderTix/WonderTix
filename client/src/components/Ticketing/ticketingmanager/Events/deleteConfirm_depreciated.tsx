@@ -4,27 +4,27 @@ import React, {CSSProperties} from 'react';
  * @property {object} popUpContainer - A property container for pop up
  */
 const popUpContainer: CSSProperties = {
-  'position': 'fixed',
-  'background': '#00000050',
-  'width': '100%',
-  'height': '100vh',
-  'top': '0',
-  'left': '0',
+  position: 'fixed',
+  background: '#00000050',
+  width: '100%',
+  height: '100vh',
+  top: '0',
+  left: '0',
 };
 
 /**
  * @property {object} box - A property container for the box used for pop up
  */
-const box: CSSProperties ={
-  'position': 'relative',
-  'width': '50%',
-  'margin': '0 auto',
-  'alignContent': 'center',
-  'height': 'auto',
-  'maxHeight': '70vh',
-  'marginTop': 'calc(100vh - 60vh - 20px)',
-  'overflow': 'auto',
-  'marginLeft': '30%',
+const box: CSSProperties = {
+  position: 'relative',
+  width: '50%',
+  margin: '0 auto',
+  alignContent: 'center',
+  height: 'auto',
+  maxHeight: '70vh',
+  marginTop: 'calc(100vh - 60vh - 20px)',
+  overflow: 'auto',
+  marginLeft: '30%',
 };
 
 interface DeleteConfirmProps {
@@ -42,7 +42,12 @@ interface DeleteConfirmProps {
  * with
  */
 
-const DeleteConfirm = ({message, setShowConfirm, handleDelete, id}: DeleteConfirmProps) => {
+const DeleteConfirm = ({
+  message,
+  setShowConfirm,
+  handleDelete,
+  id,
+}: DeleteConfirmProps) => {
   const handleClose = (e) => {
     if (e.target.value === 'Yes') {
       handleDelete(e);
@@ -52,48 +57,63 @@ const DeleteConfirm = ({message, setShowConfirm, handleDelete, id}: DeleteConfir
 
   return (
     <div style={popUpContainer}>
-      <div id="popup-modal"
+      <div
+        id='popup-modal'
         tabIndex={-1}
-        style={box} className="overflow-y-auto
+        style={box}
+        className='overflow-y-auto
         text-center
          overflow-x-hidden fixed top-0 right-0
-         left-0 z-50 md:inset-0 h-modal md:h-full">
+         left-0 z-50 md:inset-0 h-modal md:h-full'
+      >
         <div
           style={{marginLeft: 'auto', marginRight: 'auto'}}
-          className="relative p-4 w-full max-w-md h-full md:h-auto">
-          <div className="relative bg-white
-          rounded-lg shadow dark:bg-white-700">
-            <div className="p-6 text-center">
-              <p className="mb-5 text-lg font-normal
-               text-black-500 dark:text-black-400">
+          className='relative p-4 w-full max-w-md h-full md:h-auto'
+        >
+          <div
+            className='relative bg-white
+          rounded-lg shadow dark:bg-white-700'
+          >
+            <div className='p-6 text-center'>
+              <p
+                className='mb-5 text-lg font-normal
+               text-black-500 dark:text-black-400'
+              >
                 {message}
               </p>
-              <button data-modal-toggle="popup-modal"
+              <button
+                data-modal-toggle='popup-modal'
                 onClick={handleClose}
                 id={id}
-                type="button" className="text-white bg-gray-600
+                type='button'
+                className='text-white bg-gray-600
                 hover:bg-gray-800 focus:ring-4 focus:outline-none
                 focus:ring-gray-300 dark:focus:ring-gray-800 font-medium
                  rounded-lg text-sm inline-flex items-center
-                  px-5 py-2.5 text-center mr-2" value="No">
-                    Return
+                  px-5 py-2.5 text-center mr-2'
+                value='No'
+              >
+                Return
               </button>
-              <button data-modal-toggle="popup-modal"
+              <button
+                data-modal-toggle='popup-modal'
                 id={id}
                 onClick={handleClose}
-                type="button" className="text-white bg-red-600
+                type='button'
+                className='text-white bg-red-600
                 hover:bg-red-800 focus:ring-4 focus:outline-none
                 focus:ring-red-300 dark:focus:ring-red-800 font-medium
                  rounded-lg text-sm inline-flex items-center
-                  px-5 py-2.5 text-center mr-2" value="Yes">
-                    Delete
+                  px-5 py-2.5 text-center mr-2'
+                value='Yes'
+              >
+                Delete
               </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
   );
 };
 
