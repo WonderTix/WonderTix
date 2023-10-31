@@ -1,8 +1,11 @@
 import React from 'react';
 
-const FilterEventCode: React.FC = (): React.ReactElement => {
+const FilterEventCode: React.FC<{
+  showGLCode: boolean;
+  onShowGLCodeChange: (show: boolean) => void;
+}> = ({showGLCode, onShowGLCodeChange}): React.ReactElement => {
   return (
-    <fieldset className='p-4 mt-4'>
+    <fieldset className='p-4 mt-2'>
       <legend className='text-sm font-bold leading-6'>
         Show GL code instead of Event Name?
       </legend>
@@ -13,6 +16,8 @@ const FilterEventCode: React.FC = (): React.ReactElement => {
             name='GLCodeView'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            checked={showGLCode}
+            onChange={() => onShowGLCodeChange(true)}
           />
           <label htmlFor='GL-Yes' className='block text-sm font-medium leading-6'>
             Yes
@@ -24,6 +29,8 @@ const FilterEventCode: React.FC = (): React.ReactElement => {
             name='GLCodeView'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            checked={!showGLCode}
+            onChange={() => onShowGLCodeChange(false)}
           />
           <label htmlFor='GL-No' className='block text-sm font-medium leading-6'>
             No

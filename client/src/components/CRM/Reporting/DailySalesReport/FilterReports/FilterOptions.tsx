@@ -1,8 +1,11 @@
 import React from 'react';
 
-const FilterOptions: React.FC = (): React.ReactElement => {
+const FilterOptions: React.FC<{
+  selectedView: string;
+  onViewChange: (view: string) => void;
+}> = ({selectedView, onViewChange}): React.ReactElement => {
   return (
-    <fieldset className='p-4 mt-3'>
+    <fieldset className='p-4 mt-2'>
       <legend className='text-sm font-bold leading-6'>
         View:
       </legend>
@@ -13,6 +16,8 @@ const FilterOptions: React.FC = (): React.ReactElement => {
             name='View'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            checked={selectedView === 'Today'}
+            onChange={() => onViewChange('Today')}
           />
           <label htmlFor='Today' className='text-sm font-medium leading-6'>
             Today
@@ -24,6 +29,8 @@ const FilterOptions: React.FC = (): React.ReactElement => {
             name='View'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            checked={selectedView === 'Yesterday'}
+            onChange={() => onViewChange('Yesterday')}
           />
           <label htmlFor='Yesterday' className='text-sm font-medium leading-6'>
             Yesterday
@@ -35,6 +42,7 @@ const FilterOptions: React.FC = (): React.ReactElement => {
             name='View'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            onChange={() => onViewChange('CustomDate')}
           />
           <label htmlFor='CustomDate' className='text-sm font-medium leading-6'>
             Custom Date

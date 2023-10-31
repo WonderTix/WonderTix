@@ -1,14 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import FilterReports from './FilterReports/FilterReports';
 import SalesSummaryReport from './DailyReports/SalesSummaryReport';
 import PaymentSummaryReport from './DailyReports/PaymentSummaryReport';
 import NetSalesSummaryReport from './DailyReports/NetSalesSummaryReport';
 
-const DailySalesReports: React.FC = (): React.ReactElement => {
+const DailySalesReport: React.FC = (): React.ReactElement => {
+  const [showTools, setShowTools] = useState(false);
+  const [selectedBeginDate, setSelectedBeginDate] = useState('');
+  const [selectedEndDate, setSelectedEndDate] = useState('');
+
   const tools = (): React.ReactElement => {
     return (
       <>
-        <div className='container flex flex-col border-b bg-slate-100 p-4'>
+        <div className='container flex flex-col bg-slate-100 p-4 border-t-4 border-black rounded-b-none rounded-md'>
           <div className="flex justify-between items-center">
             <h1 className='text-3xl font-bold bg-slate-100'>
               Daily Sales Report Summary
@@ -37,9 +41,14 @@ const DailySalesReports: React.FC = (): React.ReactElement => {
           </div>
           <div className='flex justify-evenly mt-6 gap-4 text-sm'>
             <p> <strong>Organization:</strong> Portland Playhouse</p>
-            <p> <strong>Date Range:</strong> mm/dd/yy - mm/dd/yy</p>
+            <p> <strong>Date Range:</strong> {selectedBeginDate} ~ {selectedEndDate}</p>
             <p> <strong>Group by:</strong> Event, Instance</p>
           </div>
+        </div>
+        <div className='border-t'>
+          <SalesSummaryReport />
+          <PaymentSummaryReport />
+          <NetSalesSummaryReport />
         </div>
       </>
     );
@@ -47,27 +56,23 @@ const DailySalesReports: React.FC = (): React.ReactElement => {
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className=' sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]
-        md:ml-[18rem] md:mt-40'
-      >
+      <div className='sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]
+        md:ml-[18rem] md:mt-40'>
         <div className='flex flex-row'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent
-            bg-gradient-to-r from-violet-500 to-fuchsia-500 mb-14'
-          >
+            bg-gradient-to-r from-violet-500 to-fuchsia-500 mb-14'>
             Daily Sales Reports
           </h1>
         </div>
         <div className='flex md:flex-row md:items-start
-          sm:flex-col sm:items-center container'
-        >
-          <FilterReports />
-          <div className='h-full w-full mx-2 flex-grow-1 shadow-xl rounded-md
-            bg-white border-t-4 border-black'
-          >
-            <div className='flex justify-between items-cente'> {tools()} </div>
-            <SalesSummaryReport />
-            <PaymentSummaryReport />
-            <NetSalesSummaryReport />
+          sm:flex-col sm:items-center container'>
+          <FilterReports onGenerateClick={(beginDate, endDate) => {
+            setSelectedBeginDate(beginDate);
+            setSelectedEndDate(endDate);
+            setShowTools(true);
+          }} />
+          <div className='h-full w-full mx-2 flex-grow-1 bg-white rounded-md shadow-xl'>
+            {showTools && tools()}
           </div>
         </div>
       </div>
@@ -75,4 +80,4 @@ const DailySalesReports: React.FC = (): React.ReactElement => {
   );
 };
 
-export default DailySalesReports;
+export default DailySalesReport;

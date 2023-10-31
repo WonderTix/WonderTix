@@ -1,6 +1,9 @@
 import React from 'react';
 
-const FilterPriceLevel: React.FC = (): React.ReactElement => {
+const FilterPriceLevel: React.FC<{
+  showPriceLevelDetail: boolean;
+  onShowPriceLevelDetailChange: (show: boolean) => void;
+}> = ({showPriceLevelDetail, onShowPriceLevelDetailChange}): React.ReactElement => {
   return (
     <fieldset className='p-4 mt-2'>
       <legend className='text-sm font-bold leading-6'>
@@ -13,6 +16,8 @@ const FilterPriceLevel: React.FC = (): React.ReactElement => {
             name='PriceLevelDetail'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            checked={showPriceLevelDetail}
+            onChange={() => onShowPriceLevelDetailChange(true)}
           />
           <label htmlFor='PL-Yes' className='block text-sm font-medium leading-6'>
             Yes
@@ -24,6 +29,8 @@ const FilterPriceLevel: React.FC = (): React.ReactElement => {
             name='PriceLevelDetail'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            checked={!showPriceLevelDetail}
+            onChange={() => onShowPriceLevelDetailChange(false)}
           />
           <label htmlFor='PL-No' className='block text-sm font-medium leading-6'>
             No
