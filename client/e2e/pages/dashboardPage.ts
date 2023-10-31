@@ -65,20 +65,10 @@ export class DashboardPage {
     await this.page.goto('/ticketing', {timeout: 90000});
   }
 
-  // async backtoDashboard() {
-  // await this.DashboardButton.click();
-  // await expect(this.TicketingHeading).toBeVisible();
-  // await expect(this.page).toHaveURL('/ticketing');
-  // }
-
-  async backToDashboard() {
-    await this.goto();
+  async backtoDashboard() {
     await this.DashboardButton.click();
-    await expect(
-      this.page.getByRole('heading', {name: 'Dashboard'}),
-    ).toBeVisible();
-    await expect(this.page).toHaveURL('/dashboard');
-    await this.backToDashboard();
+    await expect(this.TicketingHeading).toBeVisible();
+    await expect(this.page).toHaveURL('/ticketing');
   }
 
   async DoorList() {
