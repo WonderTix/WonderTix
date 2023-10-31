@@ -1,5 +1,7 @@
 import {Form} from 'react-final-form';
 import React, {ReactElement, useState} from 'react';
+import {useNavigate} from 'react-router';
+import {EventRow} from './AdminPurchase';
 
 /**
  * Info for checkout form
@@ -37,13 +39,13 @@ export interface CheckoutFormInfo {
  * Used to complete order
  *
  * @param {Function} onSubmit
- * @param {Function} onBack
  * @param {boolean} disabled
  * @param {boolean} donationForm
  */
 type CompleteOrderFormProps = {
   onSubmit: (formData: CheckoutFormInfo) => any;
-  onBack: () => any;
+  backButtonRoute: string;
+  eventDataFromPurchase: EventRow[];
   disabled: boolean;
   donationForm?: boolean;
 };
@@ -51,15 +53,18 @@ type CompleteOrderFormProps = {
  * Displays the complete order form
  *
  * @param {Function} onSubmit onSubmit callback function
- * @param {Function} onBack onBack callback function
+ * @param CompleteOrderFormProps.backButtonRoute
+ * @param CompleteOrderFormProps.eventDataFromPurchase
  * @returns {ReactElement}
  */
 export default function AdminCompleteOrderForm({
   onSubmit,
-  onBack,
+  backButtonRoute,
+  eventDataFromPurchase,
   disabled,
   donationForm,
 }: CompleteOrderFormProps): ReactElement {
+  const navigate = useNavigate();
   const [firstName, setfirstName] = useState('');
   const [lastName, setlastName] = useState('');
   const [streetAddress, setstreetAddress] = useState('');
@@ -342,7 +347,9 @@ export default function AdminCompleteOrderForm({
               <div className='w-full flex flex-wrap justify-center md:flex-row sm:justify-between mt-4'>
                 <button
                   className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600 m-2'
-                  onClick={onBack}
+                  onClick={() =>
+                    navigate(backButtonRoute, {state: {eventDataFromPurchase}})
+                  }
                 >
                   Back
                 </button>
