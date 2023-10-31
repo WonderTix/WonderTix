@@ -1,11 +1,12 @@
 import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma, PrismaClient} from '@prisma/client';
+import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {Prisma} from '@prisma/client';
 import {orderCancel, ticketingWebhook} from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
-const prisma = new PrismaClient();
+const prisma = extendPrismaClient();
 
 export const orderController = Router();
 
