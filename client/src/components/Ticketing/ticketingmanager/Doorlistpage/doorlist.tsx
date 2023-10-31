@@ -57,12 +57,22 @@ const renderCheckbox = (params: GridCellParams) => (
  * @param {GridCellParams} params
  * @returns edits the checkInGuest value
  */
-const renderCheckin = ((params: GridCellParams) =>
-  <Checkbox
-    color='primary'
-    defaultChecked={params.value as boolean}
-    onChange={(e) => checkInGuest(e.target.checked, params.getValue(params.id, 'ticketno') as string)}
-  />);
+const renderCheckin = (params: GridCellParams) => {
+  const isDisabled = params.getValue(params.id, 'lastname') === 'OPEN SEATS';
+
+  return (
+    <Checkbox
+      color='primary'
+      defaultChecked={params.value as boolean}
+      disabled={isDisabled}
+      onChange={(e) => {
+        if (!isDisabled) {
+          checkInGuest(e.target.checked, params.getValue(params.id, 'ticketno') as string);
+        }
+      }}
+    />
+  );
+};
 
 /**
  * columns uses first name, last name, # of tickets purchased, arrival status, vip, donorbadge, accomodations
@@ -93,7 +103,6 @@ const DoorList = () => {
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
   const [eventListActive, setEventListActive] = useState([]);
-  const [ticketsSold, setTicketsSold] = useState(true);
   const [showInactiveEvents, setShowInactiveEvents] = useState(false);
 
   useEffect(() => {
@@ -131,9 +140,9 @@ const DoorList = () => {
     setAvailableTimesEvents(matchingEvents);
   };
 
-  const handleTimeChange = (event) => {
+  const handleTimeChange = async (event) => {
     const eventInstanceID = parseInt(event.target.value);
-    getDoorList(eventInstanceID);
+    await getDoorList(eventInstanceID);
   };
 
   const CustomToolbar = () => {
@@ -179,22 +188,24 @@ const DoorList = () => {
       const eventInstanceData = eventInstanceJson.data;
       const doorListData = eventInstanceData.map((item, index) => {
         const row = item.row.slice(1, -1).split(',');
-        if (!row || !row[0]) { // Check if the value in column 0 is present
-          setTicketsSold(false);
-          return null; // Exit early if no tickets sold
-        }
-        setTicketsSold(true);
+        const firstName = row[1] || '';
+        const lastName = row[2] || 'OPEN SEATS';
         return {
           id: index,
-          firstname: row[1],
-          lastname: row[2],
+          firstname: firstName,
+          lastname: lastName,
           num_tickets: row[11],
           arrived: false,
           vip: row[3] === 't',
           donorbadge: row[4] === 't',
           accommodations: row[5],
         };
-      }).filter(Boolean);
+      // Places open seats row at the top of the list by default
+      }).filter(Boolean).sort((a, b) => {
+        if (a.lastname === 'OPEN SEATS') return -1;
+        if (b.lastname === 'OPEN SEATS') return 1;
+        return 0;
+      });
 
       setDoorList(doorListData);
       const rowString = eventInstanceData[0].row.slice(1, -1);
@@ -245,7 +256,7 @@ const DoorList = () => {
         </div>
         <div className="mb-3">
           <label htmlFor="time-select" className='text-sm text-zinc-500 ml-1 mb-2 block'>Choose Time</label>
-          <select id="time-select" className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
+          <select className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
             <option className="px-6 py-3">Select Time</option>
             {availableTimesEvents.map((event) => {
               const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
@@ -262,20 +273,16 @@ const DoorList = () => {
           {date && time ? `${date}, ${time}` : `${date}${time}`}
         </h3>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
-          {ticketsSold ? (
-            <DataGrid
-              className='bg-white'
-              autoHeight
-              disableSelectionOnClick
-              rows={doorList}
-              columns={columns}
-              pageSize={10}
-              components={{
-                Toolbar: CustomToolbar,
-              }} />
-          ) : (
-            <p className="text-xl font-bold text-red-600">No tickets sold for this show</p>
-          )}
+          <DataGrid
+            className='bg-white'
+            autoHeight
+            disableSelectionOnClick
+            rows={doorList}
+            columns={columns}
+            pageSize={10}
+            components={{
+              Toolbar: CustomToolbar,
+            }} />
         </div>
       </div>
     </div>

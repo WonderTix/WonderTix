@@ -45,7 +45,7 @@ eventTicketController.post('/', async (req: Request, res: Response) => {
       data: {
         eventinstanceid_fk: req.body.event_instance,
         tickettypeid_fk: req.body.ticket_type,
-        purchased: req.body.purchased,
+        singleticket_fk: req.body.singleticket_fk,
         redeemed: req.body.redeemed,
         redeemed_ts: req.body.redeemed_ts,
         donated: req.body.donated,
@@ -115,9 +115,9 @@ eventTicketController.get('/', async (req: Request, res: Response) => {
         equals: req.params.ticket_type,
       };
     }
-    if (req.params.purchased) {
-      filters.purchased = {
-        equals: req.params.purchased,
+    if (req.params.singleticket_fk) {
+      filters.singleticket_fk = {
+        equals: req.params.singleticket_fk,
       };
     }
     if (req.params.redeemed) {
@@ -265,7 +265,7 @@ eventTicketController.put('/:id', async (req: Request, res: Response) => {
       data: {
         eventinstanceid_fk: req.body.event_instance,
         tickettypeid_fk: req.body.ticket_type,
-        purchased: req.body.purchased,
+        singleticket_fk: req.body.singleticket_fk,
         redeemed: req.body.redeemed,
         redeemed_ts: req.body.redeemed_ts,
         donated: req.body.donated,

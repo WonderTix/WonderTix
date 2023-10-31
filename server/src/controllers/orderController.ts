@@ -1,11 +1,50 @@
-import {Router, Request, Response} from 'express';
+import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {PrismaClient, Prisma} from '@prisma/client';
-
+import {Prisma, PrismaClient} from '@prisma/client';
+import {orderCancel, ticketingWebhook} from './orderController.service';
+const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
+const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
+const stripe = require('stripe')(stripeKey);
 const prisma = new PrismaClient();
 
 export const orderController = Router();
 
+orderController.post(
+    '/webhook',
+    express.raw({type: 'application/json'}),
+    async (req: Request, res: Response) => {
+      const sig = req.headers['stripe-signature'];
+      try {
+        const event = await stripe.webhooks.constructEvent(
+            req.body,
+            sig,
+            webhookKey,
+        );
+
+        const object = event.data.object;
+        const metaData = object.metadata;
+
+        if (metaData.sessionType === '__ticketing') {
+          await ticketingWebhook(
+              prisma,
+              event.type,
+              object.payment_intent,
+              object.id,
+          );
+        // handle donation amount in metadata (will be a donation team task?)
+        } else if (metaData.sessionType === '__donation') {
+        // donation is handled
+        }
+        res.status(200).send();
+        return;
+      } catch (error) {
+        console.error(error);
+        return res.status(400).send();
+      }
+    },
+);
+
+orderController.use(express.json());
 /**
  * @swagger
  * /2/order:
@@ -147,6 +186,42 @@ orderController.get('/', async (req: Request, res: Response) => {
   }
 });
 
+
+orderController.put('/refund/:id', async (req, res) => {
+  try {
+    const orderID = req.params.id;
+    const order = await prisma.orders.findUnique({
+      where: {
+        orderid: Number(orderID),
+      },
+    });
+    if (!order) {
+      return res.status(400).json({error: `Order ${orderID} does not exist`});
+    }
+    if (!order.payment_intent) {
+      return res.status(400).json({error: `Order ${orderID} is still processing`});
+    }
+    if (order.refund_intent) {
+      return res.status(400).json({error: `Order ${orderID} has already been refunded`});
+    }
+
+    let refundIntent;
+    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
+    else {
+      const refund = await stripe.refunds.create({
+        payment_intent: order.payment_intent,
+      });
+      if (refund.status !== 'succeeded') {
+        throw new Error(`Refund failed`);
+      }
+      refundIntent = refund.id;
+    }
+    await orderCancel(prisma, order.orderid, refundIntent);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+});
 /**
  * @swagger
  * /2/order/{id}:

@@ -1,57 +1,95 @@
 steps:
-  # Build the Docker image for the client
+
+  # Build Docker image for client
   - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
     args: 
-      - 'build'
-      - '--build-arg'
-      - 'REACT_APP_ROOT_URL=$_REACT_APP_ROOT_URL'
-      - '--build-arg'
-      - 'REACT_APP_AUTH0_URL=$_REACT_APP_AUTH0_URL'
-      - '--build-arg'
-      - 'REACT_APP_AUTH0_AUDIENCE=$_REACT_APP_AUTH0_AUDIENCE'
-      - '--build-arg'
-      - 'REACT_APP_API_1_URL=$_REACT_APP_API_1_URL'
-      - '--build-arg'
-      - 'REACT_APP_API_2_URL=$_REACT_APP_API_2_URL'
-      # Add the secrets as build args
-      - '--build-arg'
-      - 'REACT_APP_AUTH0_CLIENT_ID'
-      - '--build-arg'
-      - 'REACT_APP_PUBLIC_STRIPE_KEY'
-      - '--build-arg'
+      - '-c'
+      - |
+        docker build -f client/Dockerfile.dev -t $$ARTIFACTS/client-img-$$ENV client \
+        --build-arg AUTH0_CLIENT_SECRET=$$AUTH0_CLIENT_SECRET \
+        --build-arg REACT_APP_API_1_URL=$$REACT_APP_API_1_URL \
+        --build-arg REACT_APP_API_2_URL=$$REACT_APP_API_2_URL \
+        --build-arg REACT_APP_AUTH0_AUDIENCE=$$REACT_APP_AUTH0_AUDIENCE \
+        --build-arg REACT_APP_AUTH0_CLIENT_ID=$$REACT_APP_AUTH0_CLIENT_ID \
+        --build-arg REACT_APP_AUTH0_URL=$$REACT_APP_AUTH0_URL \
+        --build-arg REACT_APP_PUBLIC_STRIPE_KEY=$$REACT_APP_PUBLIC_STRIPE_KEY \
+        --build-arg REACT_APP_ROOT_URL=$$REACT_APP_ROOT_URL \
+    secretEnv:
+      - 'ARTIFACTS'
       - 'AUTH0_CLIENT_SECRET'
-      - '-f'
-      - 'client/Dockerfile.dev'
-      - '-t'
-      - '$_GCP_ARTIFACTS/wondertix-client'
-      - 'client'
-    secretEnv: ['AUTH0_CLIENT_SECRET', 'REACT_APP_AUTH0_CLIENT_ID', 'REACT_APP_PUBLIC_STRIPE_KEY']
+      - 'ENV'
+      - 'REACT_APP_API_1_URL'
+      - 'REACT_APP_API_2_URL'
+      - 'REACT_APP_AUTH0_AUDIENCE'
+      - 'REACT_APP_AUTH0_CLIENT_ID'
+      - 'REACT_APP_AUTH0_URL'
+      - 'REACT_APP_PUBLIC_STRIPE_KEY'
+      - 'REACT_APP_ROOT_URL'
 
   # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', '$_GCP_ARTIFACTS/wondertix-client']
+    entrypoint: 'bash'
+    args: ['-c', 'docker push $$ARTIFACTS/client-img-$$ENV']
+    secretEnv: ['ARTIFACTS', 'ENV']
 
   # Deploy the client image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
-    env:
-      - 'ENV=dev'
+    entrypoint: 'bash'
     args:
-      - 'run'
-      - 'deploy'
-      - 'wondertix-client'
-      - '--image'
-      - '$_GCP_ARTIFACTS/wondertix-client'
-      - '--region'
-      - '$_GCP_REGION'
-      - '--platform'
-      - 'managed'
+      - '-c'
+      - |
+        gcloud run deploy wtix-client-$$ENV \
+        --image $$ARTIFACTS/client-img-$$ENV \
+        --region $$REGION \
+        --platform managed \
+        --memory $$CLIENT_MEMORY \
+        --cpu $$CLIENT_CPU \
+        --cpu-boost \
+        --allow-unauthenticated \
+        --min-instances 1 \
+        --max-instances 10 \
+        --set-env-vars=\
+        ENV=$$ENV, \
+        --set-secrets=\
+        REACT_APP_AUTH0_CLIENT_ID=REACT_APP_AUTH0_CLIENT_ID:$$ENV,\
+        REACT_APP_PUBLIC_STRIPE_KEY=REACT_APP_PUBLIC_STRIPE_KEY:$$ENV,\
+    secretEnv:
+      - 'ARTIFACTS'
+      - 'CLIENT_CPU'
+      - 'CLIENT_MEMORY'
+      - 'ENV'
+      - 'REGION'
+      - 'SERVICE_ACCOUNT'
 
+# Use dev, stg, or prd versions depending on _ENV value from trigger
 availableSecrets:
   secretManager:
-  - versionName: projects/131818279954/secrets/AUTH0_CLIENT_ID/versions/latest
-    env: 'REACT_APP_AUTH0_CLIENT_ID'
-  - versionName: projects/131818279954/secrets/PUBLIC_STRIPE_KEY/versions/latest
-    env: 'REACT_APP_PUBLIC_STRIPE_KEY'
-  - versionName: projects/131818279954/secrets/AUTH0_CLIENT_SECRET/versions/latest
+  - versionName: projects/$PROJECT_ID/secrets/ARTIFACTS/versions/$_ENV
+    env: 'ARTIFACTS'
+  - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_SECRET/versions/$_ENV
     env: 'AUTH0_CLIENT_SECRET'
-
+  - versionName: projects/$PROJECT_ID/secrets/CLIENT_CPU/versions/$_ENV
+    env: 'CLIENT_CPU'
+  - versionName: projects/$PROJECT_ID/secrets/CLIENT_MEMORY/versions/$_ENV
+    env: 'CLIENT_MEMORY'
+  - versionName: projects/$PROJECT_ID/secrets/ENV/versions/$_ENV
+    env: 'ENV'
+  - versionName: projects/$PROJECT_ID/secrets/REACT_APP_API_1_URL/versions/$_ENV
+    env: 'REACT_APP_API_1_URL'
+  - versionName: projects/$PROJECT_ID/secrets/REACT_APP_API_2_URL/versions/$_ENV
+    env: 'REACT_APP_API_2_URL'
+  - versionName: projects/$PROJECT_ID/secrets/AUTH0_AUDIENCE/versions/$_ENV
+    env: 'REACT_APP_AUTH0_AUDIENCE'
+  - versionName: projects/$PROJECT_ID/secrets/REACT_APP_AUTH0_CLIENT_ID/versions/$_ENV
+    env: 'REACT_APP_AUTH0_CLIENT_ID'
+  - versionName: projects/$PROJECT_ID/secrets/AUTH0_URL/versions/$_ENV
+    env: 'REACT_APP_AUTH0_URL'
+  - versionName: projects/$PROJECT_ID/secrets/REACT_APP_PUBLIC_STRIPE_KEY/versions/$_ENV
+    env: 'REACT_APP_PUBLIC_STRIPE_KEY'
+  - versionName: projects/$PROJECT_ID/secrets/ROOT_URL/versions/$_ENV
+    env: 'REACT_APP_ROOT_URL'
+  - versionName: projects/$PROJECT_ID/secrets/REGION/versions/$_ENV
+    env: 'REGION'
+  - versionName: projects/$PROJECT_ID/secrets/SERVICE_ACCOUNT/versions/$_ENV
+    env: 'SERVICE_ACCOUNT'

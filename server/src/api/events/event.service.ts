@@ -176,7 +176,7 @@ export const updateEvent = async (params: any): Promise<response> => {
             eventid = $7
           RETURNING *;`,
     values: [
-      7,
+      params.seasonid_fk,
       params.eventname,
       params.eventdescription,
       params.active,
@@ -435,10 +435,9 @@ export const insertAllShowings = async (
                     INSERT INTO eventtickets (
                       eventinstanceid_fk,
                       tickettypeid_fk,
-                      purchased,
                       redeemed,
                       donated
-                    ) VALUES ($1, 1, false, false, false);
+                    ) VALUES ($1, 1, false, false);
   `;
   const res = [];
   let results: response = {
