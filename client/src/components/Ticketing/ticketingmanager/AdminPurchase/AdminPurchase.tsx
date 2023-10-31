@@ -17,7 +17,6 @@ import {
   DialogTitle,
   Checkbox,
   FormControlLabel,
-  Switch,
 } from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
@@ -33,7 +32,7 @@ export type EventRow = {
   eventtime?: string;
   ticketTypes?: string;
   price?: number;
-  complementary?: boolean;
+  complimentary?: boolean;
   availableSeats?: number;
   seatsForType?: number;
   imageurl?: string;
@@ -196,22 +195,22 @@ const AdminPurchase = () => {
             value={priceByRowId[params.row.id] || ''}
             onChange={(e) => handlePriceChange(e, params.row)}
             onBlur={(e) => handlePriceBlur(e, params.row)}
-            disabled={params.row.complementary || !params.row.ticketTypes}
+            disabled={params.row.complimentary || !params.row.ticketTypes}
             className='w-16'
           />
         </div>
       ),
     },
     {
-      field: 'complementary',
+      field: 'complimentary',
       headerName: 'Comp',
       width: 60,
       renderCell: (params) => (
         <FormControlLabel
           control={
             <Checkbox
-              checked={params.row.complementary || false}
-              onChange={(e) => handleComplementaryChange(e, params.row)}
+              checked={params.row.complimentary || false}
+              onChange={(e) => handleComplimentaryChange(e, params.row)}
             />
           }
           label=''
@@ -396,7 +395,7 @@ const AdminPurchase = () => {
         return {
           ...r,
           ticketTypes: selectedType.description,
-          price: row.complementary ? 0 : price,
+          price: row.complimentary ? 0 : price,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
         };
@@ -405,7 +404,7 @@ const AdminPurchase = () => {
     });
     setEventData(updatedRows);
 
-    if (!row.complementary) {
+    if (!row.complimentary) {
       setPriceByRowId((prevState) => ({
         ...prevState,
         [row.id]: price.toFixed(2),
@@ -414,7 +413,7 @@ const AdminPurchase = () => {
   };
 
   const handlePriceChange = (event, row) => {
-    if (row.complementary) return; // If complementary, no changes allowed
+    if (row.complimentary) return; // If complimentary, no changes allowed
     const newPriceString = event.target.value;
 
     setPriceByRowId((prevState) => ({
@@ -444,13 +443,13 @@ const AdminPurchase = () => {
     setEventData(updatedEventData);
   };
 
-  const handleComplementaryChange = (event, row) => {
+  const handleComplimentaryChange = (event, row) => {
     const isChecked = event.target.checked;
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {
           ...row,
-          complementary: isChecked,
+          complimentary: isChecked,
           price: isChecked ? 0 : row.price,
         };
       }
@@ -461,7 +460,7 @@ const AdminPurchase = () => {
     // Update the priceByRowId to reflect the change in the price
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: isChecked ? '0.00' : (row.price || 0).toFixed(2), // Set to $0 if complementary
+      [row.id]: isChecked ? '0.00' : (row.price || 0).toFixed(2), // Set to $0 if complimentary
     }));
   };
 
