@@ -1,14 +1,14 @@
-import {Showing} from '../../../../../interfaces/showing.interface';
+import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from '../../Events/showingInputContainer_deprecated';
 import {useEvent} from './EventProvider';
-import {getTicketTypeArray, getTicketTypePrice} from './ShowingUtils';
+import {getTicketTypePrice} from './ShowingUtils';
 
 import {LineItem} from './LineItem';
 
 interface EventInstanceViewProps {
-  showing: Showing;
+  showing: UpdatedShowing;
   setEdit: () => void;
 }
 
@@ -16,7 +16,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
   const {ticketTypes, editing, showPopUp} = useEvent();
   const showingDate = new Date(
-    `${toDateStringFormat(showing.eventdate)} ${showing.eventtime.slice(0, 8)}`,
+    `${toDateStringFormat(showing.eventdate)} ${showing.eventtime.split('T')[1].slice(0, 8)}`,
   );
 
   return (
@@ -74,12 +74,9 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
               </tr>
             </thead>
             <tbody className={'whitespace-nowrap'}>
-              {showing.ticketTypeId && ticketTypes && (
+              {showing.ticketrestrictions.length !== 0 && ticketTypes && (
                 [{typeID: 1, typeQuantity: showing.totalseats},
-                  ...getTicketTypeArray(
-                    showing.ticketTypeId,
-                    showing.seatsForType,
-                  )]
+                  ...showing.ticketrestrictions]
                   .map((type, index) => (
                     <tr
                       key={`${showing.eventinstanceid} ${type.typeID} ${index}`}
