@@ -10,9 +10,14 @@
 import React, {ReactElement} from 'react';
 import {useNavigate} from 'react-router-dom';
 
+interface CheckoutSuccessProp {
+  completeOrderButton: string;
+}
+
 /**
  * Displays the CheckoutSuccess page
- *
+ * @param CheckoutSuccessProp
+ * @param CheckoutSuccessProp.completeOrderButton
  * @returns {ReactElement}
  */
 export default function CheckoutSuccess(): ReactElement {
