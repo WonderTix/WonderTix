@@ -161,6 +161,7 @@ model orderitems {
   orderitemid   Int             @id @default(autoincrement())
   orderid_fk    Int
   price         Decimal?        @db.Money
+  refunded      Boolean         @default(false)
   orders        orders          @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: NoAction, map: "orderitems_orderid_fkey")
   seasontickets seasontickets[]
   singletickets singletickets[]

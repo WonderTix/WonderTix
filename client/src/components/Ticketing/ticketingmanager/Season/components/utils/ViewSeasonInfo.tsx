@@ -33,8 +33,8 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
   };
 
   return (
-    <header className='rounded-xl bg-white p-7 text-lg'>
-      <section className='flex flex-col text-center mb-5 justify-between tab:flex-row  '>
+    <header className='rounded-xl bg-white p-7 text-lg shadow-xl'>
+      <section className='flex flex-col text-center mb-5 justify-between tab:flex-row tab:flex-wrap'>
         <h1 className='text-4xl mb-3 font-semibold'>Season Information</h1>
         <button
           className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-10 rounded-xl'
@@ -57,7 +57,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
         </article>
         <article className='col-span-12 tab:col-span-6'>
           <SeasonImage
-            className='h-auto max-w-[150px] mx-auto'
+            className='h-auto max-w-[150px] mx-auto mt-3'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
