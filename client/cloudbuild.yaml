@@ -2,6 +2,7 @@ steps:
 
   # Build Docker image for client
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-client'
     entrypoint: 'bash'
     args: 
       - '-c'
@@ -27,20 +28,25 @@ steps:
       - 'REACT_APP_PUBLIC_STRIPE_KEY'
       - 'REACT_APP_ROOT_URL'
 
-  # Push the Docker image to Artifact Registry
+  # Push image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-client'
     entrypoint: 'bash'
     args: ['-c', 'docker push $$ARTIFACTS/client-img-$$ENV']
-    secretEnv: ['ARTIFACTS', 'ENV']
+    secretEnv:
+      - 'ARTIFACTS'
+      - 'ENV'
 
-  # Deploy the client image to Cloud Run
+  # Deploy client image to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'deploy-client'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         gcloud run deploy wtix-client-$$ENV \
         --image $$ARTIFACTS/client-img-$$ENV \
+        --revision-suffix=$SHORT_SHA \
         --region $$REGION \
         --platform managed \
         --memory $$CLIENT_MEMORY \
@@ -49,11 +55,12 @@ steps:
         --allow-unauthenticated \
         --min-instances 1 \
         --max-instances 10 \
+        --no-traffic \
         --set-env-vars=\
         ENV=$$ENV, \
         --set-secrets=\
         REACT_APP_AUTH0_CLIENT_ID=REACT_APP_AUTH0_CLIENT_ID:$$ENV,\
-        REACT_APP_PUBLIC_STRIPE_KEY=REACT_APP_PUBLIC_STRIPE_KEY:$$ENV,\
+        REACT_APP_PUBLIC_STRIPE_KEY=REACT_APP_PUBLIC_STRIPE_KEY:$$ENV \
     secretEnv:
       - 'ARTIFACTS'
       - 'CLIENT_CPU'
@@ -62,7 +69,27 @@ steps:
       - 'REGION'
       - 'SERVICE_ACCOUNT'
 
-# Use dev, stg, or prd versions depending on _ENV value from trigger
+  # Send traffic to new revision
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'wait-and-send-traffic'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud run services update-traffic wtix-client-$$ENV \
+        --region $$REGION \
+        --to-revisions=wtix-client-$$ENV-$SHORT_SHA=10
+
+        sleep 75
+
+        gcloud run services update-traffic wtix-client-$$ENV \
+        --region $$REGION \
+        --to-revisions=wtix-client-$$ENV-$SHORT_SHA=100
+    secretEnv:
+      - 'ENV'
+      - 'REGION'
+
+# Use dev, stg, or prd versions depending on $_ENV value from trigger
 availableSecrets:
   secretManager:
   - versionName: projects/$PROJECT_ID/secrets/ARTIFACTS/versions/$_ENV
@@ -93,3 +120,4 @@ availableSecrets:
     env: 'REGION'
   - versionName: projects/$PROJECT_ID/secrets/SERVICE_ACCOUNT/versions/$_ENV
     env: 'SERVICE_ACCOUNT'
+
