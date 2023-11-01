@@ -201,7 +201,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         orderitems,
         ordertotal,
         orderdate,
-        ...evenythingElse
+        ...remainderOfOrder
       } = order;
       const names = orderitems.map((item) =>
         item.singletickets
@@ -218,7 +218,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
         orderdate: `${orderdate.toString().slice(4, 6)}/${orderdate.toString().slice(6, 8)}/${orderdate.toString().slice(0, 4)}`,
-        ...evenythingElse,
+        ...remainderOfOrder,
         showings: names,
       };
     });

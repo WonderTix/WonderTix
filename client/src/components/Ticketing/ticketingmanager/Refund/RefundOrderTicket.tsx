@@ -53,7 +53,7 @@ const Refund = () => {
       setOrders((orders) => orders.filter((order) => order.orderid !== orderID));
       setPopUp(
         'Refund Successful',
-        `Order ${orderID} successful refunded`,
+        `Order ${orderID} successfully refunded`,
         true,
         true,
         show.handleClose,
@@ -79,7 +79,7 @@ const Refund = () => {
     if (!email) {
       setPopUp(
         `Invalid Search`,
-        `Email Required`,
+        `Email required`,
         false,
         true,
         show.handleClose,
@@ -106,7 +106,7 @@ const Refund = () => {
       console.error(error);
       setPopUp(
         'Error',
-        'Return failed',
+        'Error fetching orders',
         false,
         true,
         show.handleClose,
@@ -177,8 +177,8 @@ const Refund = () => {
                 </tr>
               ) : (
                 orders.map((instance, index) => (
-                  <tr key={index} className = 'grid grid-cols-5 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'>
-                    <td className = 'row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                  <tr key={index} className='grid grid-cols-5 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'>
+                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {instance.name}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
