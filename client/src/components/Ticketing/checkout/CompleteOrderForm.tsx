@@ -1,6 +1,6 @@
 import {Field, Form} from 'react-final-form';
 import React, {ReactElement} from 'react';
-import {FormInput} from './CheckoutFormInput';
+import {FormInput} from './FormInput';
 import {useAuth0} from '@auth0/auth0-react';
 
 /**
@@ -78,7 +78,7 @@ export default function CompleteOrderForm({
 
   const validate = (values) => {
     const errors = {};
-    Object.keys(values).forEach((key) => {
+    Object.keys(baseValues).forEach((key) => {
       if (['visitSource', 'comments', 'optIn'].includes(key)) return;
       if (!values[key] || values[key] === '') {
         errors[key] = 'Required';
@@ -121,8 +121,8 @@ export default function CompleteOrderForm({
                     placeholder='First Name'
                     type='text'
                     id='first-name'
-                    labelClass="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClass="input w-full  border border-zinc-300 p-4 rounded-lg"
+                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full  border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
                     component={FormInput}
@@ -131,8 +131,8 @@ export default function CompleteOrderForm({
                     placeholder='Last Name'
                     type='text'
                     id='last-name'
-                    labelClass="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClass="input w-full  border border-zinc-300 p-4 rounded-lg"
+                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full  border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
                     component={FormInput}
@@ -141,8 +141,8 @@ export default function CompleteOrderForm({
                     placeholder='Street Address'
                     type='text'
                     id='address'
-                    labelClass="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClass="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
                     component={FormInput}
@@ -151,8 +151,8 @@ export default function CompleteOrderForm({
                     placeholder='Postal Code'
                     type='text'
                     id='zipcode'
-                    labelClass="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClass="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
                     component={FormInput}
@@ -161,8 +161,8 @@ export default function CompleteOrderForm({
                     placeholder='Country'
                     type='text'
                     id='country'
-                    labelClass="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClass="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
                     component={FormInput}
@@ -171,8 +171,8 @@ export default function CompleteOrderForm({
                     placeholder='Phone'
                     type='text'
                     id='phone-number'
-                    labelClass="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClass="input w-full border border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
                   />
                   <Field
                     component={FormInput}
@@ -181,8 +181,8 @@ export default function CompleteOrderForm({
                     placeholder='Email'
                     type='email'
                     id='contact-email'
-                    labelClass="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClass="input w-full border border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
                   />
                   <Field
                     component={FormInput}
@@ -191,8 +191,8 @@ export default function CompleteOrderForm({
                     placeholder='How did you hear about us?'
                     type='text'
                     id='visit-source'
-                    labelClass="block text-sm font-medium text-slate-700 ml-1"
-                    inputClass="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
                   <div>
                     <label
@@ -237,22 +237,21 @@ export default function CompleteOrderForm({
                     placeholder='What do you want us to know?'
                     id='comments'
                     label='Comments'
-                    labelClass='block text-sm font-medium text-slate-700 ml-1'
-                    inputClass='input w-full border border-zinc-300 p-4 rounded-lg'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                 </div>
-                <div className='flex flex-col items-start gap-3 mt-5 mb-5'>
-                  <div className='flex flex-row items-center gap-4 text-sm text-zinc-700'>
-                    <Field
-                      component='input'
-                      type='checkbox'
-                      name='optIn'
-                    />
-                    <div>
-                        I would like to receive email info from Portland
-                        Playhouse
-                    </div>
-                  </div>
+                <div className='flex flex-row gap-4 text-sm pt-2 text-zinc-700'>
+                  <Field
+                    component='input'
+                    type='checkbox'
+                    name='optIn'
+                    id={'opt-in'}
+                  />
+                  <label htmlFor={'opt-in'}>
+                    I would like to receive email info from Portland
+                    Playhouse
+                  </label>
                 </div>
               </div>
               <div className='w-full flex flex-wrap justify-center md:flex-row md:justify-between mt-4 disabled:opacity-40'>

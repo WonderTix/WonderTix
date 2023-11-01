@@ -7,9 +7,9 @@ interface FormInputProps {
   type: string,
   id: string,
   label: string,
-  labelClass: string,
-  inputClass: string,
-  divClass?: string,
+  labelClassName: string,
+  inputClassName: string,
+  divClassName?: string,
   placeholder: string,
 }
 
@@ -19,24 +19,24 @@ export const FormInput = (props: FormInputProps) => {
     name,
     type,
     input,
-    inputClass,
-    labelClass,
-    divClass,
+    inputClassName,
+    labelClassName,
+    divClassName,
     label,
     placeholder,
     meta,
   } = props;
 
   return (
-    <div className={divClass}>
+    <div className={divClassName}>
       <label
-        className={labelClass}
+        className={labelClassName}
         htmlFor={id}
       >
         {label}
       </label>
       <input
-        className={inputClass}
+        className={inputClassName}
         onChange={input.onChange}
         placeholder={placeholder}
         value={input.value}
