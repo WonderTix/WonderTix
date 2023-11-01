@@ -10,7 +10,6 @@ import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
  */
 const Hero = () => {
   const allEvents = useAppSelector((state) => {
-    console.log('State:', state.ticketing);
     return state.ticketing.events;
   });
   const dispatch = useAppDispatch();

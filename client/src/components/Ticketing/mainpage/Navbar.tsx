@@ -43,7 +43,7 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
       scope: 'admin',
     });
 
-    if (token.undefineduser_authorization.permissions[0] == 'admin') {
+    if (token?.undefineduser_authorization.permissions[0] == 'admin') {
       isAdmin(true);
     }
   };
