@@ -17,13 +17,23 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
   const onSubmitSuccess = () => {
     setReloadShowing((reload) => !reload);
     setEdit((edit) => !edit);
-    setPopUpProps('Success', 'Showing successfully updated', true, `update-modal-showing-id-${showing.eventinstanceid}`);
+    setPopUpProps(
+      'Success',
+      'Showing successfully updated',
+      true,
+      `update-modal-showing-id-${showing.eventinstanceid}`,
+    );
     setEditing((editing) => !editing);
   };
   const onDeleteSuccess = () => {
     setReloadShowing((reload) => !reload);
     setEdit((edit) => !edit);
-    setPopUpProps('Success', 'Showing successfully deleted', true, `delete-modal-showing-id-${showing.eventinstanceid}`);
+    setPopUpProps(
+      'Success',
+      'Showing successfully deleted',
+      true,
+      `delete-modal-showing-id-${showing.eventinstanceid}`,
+    );
     setEditing((editing) => !editing);
   };
   const onError = async (event) => {
@@ -31,7 +41,12 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
       const res = await event.json();
       setPopUpProps('Failure', res.error, false, `failure-modal`);
     } catch (error) {
-      setPopUpProps('Failure', 'Showing update failed', false, `failure-delete-modal-showing-id-${showing.eventinstanceid}`);
+      setPopUpProps(
+        'Failure',
+        'Showing update failed',
+        false,
+        `failure-delete-modal-showing-id-${showing.eventinstanceid}`,
+      );
     }
   };
 
