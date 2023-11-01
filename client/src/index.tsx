@@ -8,6 +8,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import store from './components/Ticketing/app/store';
+import readinessCheck from './readinessCheck';
+
+// Cloud Run needs this to avoid downtime when deploying new revisions
+readinessCheck();
 
 ReactDOM.render(
   <Provider store={store}>
