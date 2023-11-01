@@ -56,6 +56,8 @@ export class MainPage {
   async goSelectShowing(eventInfo: EventsInfo) {
     const eventCard = await this.getShowingLocator(eventInfo.eventName + eventInfo.eventDescription + 'See Showings');
     await eventCard.getByRole('button', {name: 'See Showings'}).click();
+    const title = await this.titleEvent.textContent();
+    return title;
   }
 
   // Helper function - selects a random option in a dropdown box

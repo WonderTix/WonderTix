@@ -51,19 +51,19 @@ test('add ticket2', async ({page}) => {
   await main.goto();
   // await main.goSelectShowing('Test_eventAn event for testingSee Showings');
   // Test_eventAn event for testingSee Showings
-  await main.goSelectShowing(EventsInfo2);
-  // const showing = await main.goFirstShowing();
-  // const date = await main.selectRandomDate();
-  // await main.selectRandomTime();
-  // await main.selectRandomTicketType();
-  // const quantity = await main.selectRandomQuantity();
-  // const dateParts = date.split(' ');
-  // let confirmMessage;
-  // confirmMessage = 'You added ' + quantity + ' ticket';
-  // if (parseInt(quantity) > 1) {
-  //   confirmMessage += 's';
-  // }
-  // confirmMessage += ' to ' + showing + ' on ' + dateParts[1] + ' ' + dateParts[2] + ' to the cart.';
-  // await main.clickGetTickets();
-  // expect(await main.checkAddTicketSucess(confirmMessage)).toBeTruthy();
+  const showing = await main.goSelectShowing(EventsInfo2);
+//   const showing = await main.goFirstShowing();
+  const date = await main.selectRandomDate();
+  await main.selectRandomTime();
+  await main.selectRandomTicketType();
+  const quantity = await main.selectRandomQuantity();
+  const dateParts = date.split(' ');
+  let confirmMessage;
+  confirmMessage = 'You added ' + quantity + ' ticket';
+  if (parseInt(quantity) > 1) {
+    confirmMessage += 's';
+  }
+  confirmMessage += ' to ' + showing + ' on ' + dateParts[1] + ' ' + dateParts[2] + ' to the cart.';
+  await main.clickGetTickets();
+  expect(await main.checkAddTicketSucess(confirmMessage)).toBeTruthy();
 });

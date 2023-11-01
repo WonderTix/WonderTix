@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 import {test , expect} from '@playwright/test';
 import {EventsPage} from './pages/EventsPage';
 import { EventsInfo1, EventsInfo2, EventsInfo3, EventsInfo4 } from './testData/ConstsPackage';
