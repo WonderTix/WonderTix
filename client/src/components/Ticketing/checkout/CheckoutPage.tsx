@@ -78,10 +78,8 @@ export default function CheckoutPage(): ReactElement {
       if (result.error) throw result;
     } catch (error) {
       let message = 'Checkout failed please try again';
-      console.log(error);
-      if (error instanceof Response) {
-        const parsedError = await error.json();
-        message = error.status === 422? parsedError: message;
+      if (error instanceof Response && error.status === 422) {
+        message = await error.json();
       }
       setPopUp({
         ...popUp,
