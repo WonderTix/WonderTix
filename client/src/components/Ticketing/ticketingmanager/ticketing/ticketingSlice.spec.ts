@@ -1,12 +1,3 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 import {RootState} from '../../app/store';
 import {INITIAL_STATE as eventsInitState} from '../Events/events_pages/eventsSlice';
 import ticketReducer, {
@@ -22,7 +13,6 @@ import ticketReducer, {
   selectCartSubtotal,
   DiscountItem,
 } from './ticketingSlice';
-// import User from '../../../../../../server/src/interfaces/User';
 
 const event: Event = {
   id: '1',
@@ -77,6 +67,7 @@ const ticketingInitState: ticketingState = {
       allIds: [1, 2],
     },
   },
+  ticketrestrictions: [],
   tickettype: tickettype,
   events: [event],
   status: 'idle',
@@ -84,7 +75,6 @@ const ticketingInitState: ticketingState = {
 };
 
 const ROOT_INIT_STATE: RootState = {
-  // user: {username: 'user1', id: 1, is_superadmin: false},
   events: eventsInitState,
   snackbar: {message: '', shown: false},
   ticketing: ticketingInitState,
@@ -148,7 +138,7 @@ describe('ticketing slice', () => {
     });
 
     it('selectCartItem', () => {
-      expect(selectCartItem(init, 1))
+      expect(selectCartItem(init, 1, 1))
         .toEqual(item1);
     });
 
@@ -228,29 +218,29 @@ describe('ticketing slice', () => {
 
     // ticket 1 currently in cart
     it('editItemQty: can set qty = available', () => {
-      expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats})))
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket.availableseats})))
         .toEqual({...init, cart: [{...concessionsItem, qty: ticket.availableseats}]});
     });
 
     it('editItemQty: can\'t set qty > available', () => {
-      expect(ticketReducer(init, editItemQty({id: 1, qty: ticket.availableseats + 1})))
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket.availableseats + 1})))
         .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
     });
 
     it('editItemQty: item exists in cart', () => {
-      const res = ticketReducer(init, editItemQty({id: 1, qty: 4}));
+      const res = ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: 4}));
       expect(res)
         .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
       init = res;
     });
 
     it('editItemQty: item not in cart', () => {
-      expect(ticketReducer(init, editItemQty({id: 2, qty: 4})))
+      expect(ticketReducer(init, editItemQty({id: 2, tickettypeId: 1, qty: 4})))
         .toEqual({...init});
     });
 
     it('editItemQty: can\'t set negative qty', () => {
-      expect(ticketReducer(init, editItemQty({id: 1, qty: -1})))
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: -1})))
         .toEqual({...init, cart: [{...concessionsItem, qty: 0}]});
     });
   });
