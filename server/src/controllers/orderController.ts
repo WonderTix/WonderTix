@@ -117,19 +117,20 @@ orderController.use(checkScopes);
 
 /**
  * @swagger
- * /2/order:
+ * /2/order/refund:
  *   get:
- *     summary: get all orders
+ *     summary: get all orders with email
  *     tags:
  *     - New Order
+ *     parameters:
+ *     - in: query
+ *       name: email
+ *       description: Email associated with order
+ *       schema:
+ *         type: string
  *     responses:
  *       200:
- *         description: order updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               $ref: '#/components/schemas/Order'
+ *         description: orders fetched successfully
  *       400:
  *         description: bad request
  *         content:
@@ -143,46 +144,95 @@ orderController.use(checkScopes);
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-orderController.get('/', async (req: Request, res: Response) => {
+orderController.get('/refund', async (req: Request, res: Response) => {
   try {
-    const filters: any = {};
-    if (req.params.ordername) {
-      filters.ordername = {
-        contains: req.params.ordername,
+    const {email} = req.query;
+    if (!email || typeof email !== 'string') {
+      return res.status(400).send('Email Required');
+    }
+    const orders = await prisma.orders.findMany({
+      where: {
+        payment_intent: {not: null},
+        refund_intent: null,
+        ordertotal: {not: 0},
+        contacts: {
+          email: {contains: email},
+        },
+      },
+      select: {
+        orderid: true,
+        ordertotal: true,
+        contacts: {
+          select: {
+            firstname: true,
+            lastname: true,
+            email: true,
+          },
+        },
+        orderdate: true,
+        ordertime: true,
+        orderitems: {
+          select: {
+            singletickets: {
+              select: {
+                ticketwasswapped: true,
+                eventtickets: {
+                  select: {
+                    eventinstances: {
+                      select: {
+                        events: {
+                          select: {
+                            eventname: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    const toReturn = orders.map((order) => {
+      const {
+        contacts,
+        orderitems,
+        ordertotal,
+        orderdate,
+        ...remainderOfOrder
+      } = order;
+      const names = orderitems.map((item) =>
+        item.singletickets
+            .filter((ticket) => !ticket.ticketwasswapped)
+            .map((ticket) => {
+              if (!ticket.eventtickets.length) return null;
+              return ticket.eventtickets[0].eventinstances.events.eventname;
+            }),
+      ).flat()
+          .filter((name, index, array) => name && array.indexOf(name)=== index);
+
+      return {
+        price: ordertotal,
+        email: contacts.email,
+        name: `${contacts.firstname} ${contacts.lastname}`,
+        orderdate: `${orderdate.toString().slice(4, 6)}/${orderdate.toString().slice(6, 8)}/${orderdate.toString().slice(0, 4)}`,
+        ...remainderOfOrder,
+        showings: names,
       };
-    }
-    if (req.params.auth0_id) {
-      filters.auth0_id = {
-        contains: req.params.auth0_id,
-      };
-    }
+    });
 
-    if (Object.keys(filters).length > 0) {
-      const orders = await prisma.orders.findMany({
-        where: filters,
-      });
-      res.status(200).json(orders);
-
-      return;
-    }
-
-    const orders = await prisma.orders.findMany();
-    res.status(200).json(orders);
-
-    return;
+    return res.json(toReturn);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
@@ -218,8 +268,8 @@ orderController.put('/refund/:id', async (req, res) => {
       refundIntent = refund.id;
     }
     await orderCancel(prisma, order.orderid, refundIntent);
+    return res.send(refundIntent);
   } catch (error) {
-    console.log(error);
     return res.status(500).json(error);
   }
 });
