@@ -21,7 +21,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
 
   return (
     <div className={'bg-gray-300 rounded-xl p-2'}>
-            <div
+      <div
         className={`bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[175px] gap-2`}
         data-testid='showing-card'
       >

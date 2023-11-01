@@ -2,7 +2,7 @@ import React, {ReactElement, useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {useParams} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
-import {selectEventData} from '../ticketingmanager/ticketing/ticketingSlice';
+import {fetchTicketRestrictionData, selectEventData} from '../ticketingmanager/ticketing/ticketingSlice';
 import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 import TicketPicker from './TicketPicker';
 import {useNavigate} from 'react-router-dom';
@@ -22,12 +22,9 @@ const Eventshowings = (): ReactElement => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const getData = async () => {
-    return dispatch(fetchTicketingData());
-  };
-
   useEffect(()=>{
-    void getData();
+    void dispatch(fetchTicketingData());
+    void dispatch(fetchTicketRestrictionData());
   }, []);
 
   const [show, setShow] = useState(false);
