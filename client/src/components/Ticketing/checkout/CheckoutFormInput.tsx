@@ -10,7 +10,7 @@ interface FormInputProps {
   labelClass: string,
   inputClass: string,
   divClass?: string,
-
+  placeholder: string,
 }
 
 export const FormInput = (props: FormInputProps) => {
@@ -23,6 +23,7 @@ export const FormInput = (props: FormInputProps) => {
     labelClass,
     divClass,
     label,
+    placeholder,
     meta,
   } = props;
 
@@ -37,13 +38,14 @@ export const FormInput = (props: FormInputProps) => {
       <input
         className={inputClass}
         onChange={input.onChange}
+        placeholder={placeholder}
         value={input.value}
         type={type}
         name={name}
         id={id}
-        style={meta.touched && meta.error ? {border: '1px solid red'} : {}}
+        style={meta.touched && meta.error ? {border: '1px solid red'}:{}}
       />
-      {meta.error && meta.touched && <span className={'text-xs text-red-600'}>{meta.error}</span>}
+      {meta.error && meta.touched && <span className={'pl-1 text-xs text-red-600'}>{meta.error}</span>}
     </div>
   );
 };

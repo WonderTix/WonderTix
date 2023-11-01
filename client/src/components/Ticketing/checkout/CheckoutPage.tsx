@@ -22,7 +22,6 @@ import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../PopUp';
-import {pop} from 'final-form-arrays';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -46,8 +45,8 @@ export default function CheckoutPage(): ReactElement {
     message: '',
     success: true,
     handleProceed: () => setPopUp((popUp) => ({...popUp, show: false})),
+    showSecondary: false,
   });
-
   const dispatch = useAppDispatch();
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
@@ -78,17 +77,20 @@ export default function CheckoutPage(): ReactElement {
       const result = await stripe.redirectToCheckout({sessionId: session.id});
       if (result.error) throw result;
     } catch (error) {
+      let message = 'Checkout failed please try again';
       console.log(error);
       if (error instanceof Response) {
-        const message = await error.json();
-        setPopUp({
-          ...popUp,
-          title: 'Checkout Error',
-          message: message,
-          success: false,
-          show: true,
-        });
+        const parsedError = await error.json();
+        message = error.status === 422? parsedError: message;
       }
+      setPopUp({
+        ...popUp,
+        title: 'Checkout Error',
+        message: message,
+        success: false,
+        show: true,
+        showSecondary: false,
+      });
     }
   };
 
@@ -100,6 +102,7 @@ export default function CheckoutPage(): ReactElement {
             title={popUp.title}
             message={popUp.message}
             handleProceed={popUp.handleProceed}
+            showSecondary={popUp.showSecondary}
             success={popUp.success}
           />
       }
