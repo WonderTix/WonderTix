@@ -208,7 +208,6 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             .filter((ticket) => !ticket.ticketwasswapped)
             .map((ticket) => {
               if (!ticket.eventtickets.length) return null;
-              console.log(ticket.eventtickets[0].eventinstances.events.eventname);
               return ticket.eventtickets[0].eventinstances.events.eventname;
             }),
       ).flat()
@@ -271,7 +270,6 @@ orderController.put('/refund/:id', async (req, res) => {
     await orderCancel(prisma, order.orderid, refundIntent);
     return res.send(refundIntent);
   } catch (error) {
-    console.log(error);
     return res.status(500).json(error);
   }
 });
