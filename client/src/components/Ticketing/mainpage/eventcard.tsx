@@ -1,6 +1,4 @@
 import React from 'react';
-// import bgImg2 from '../../../assets/My-project-24.png';
-
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
 import {Event} from '../ticketingmanager/ticketing/ticketingSlice';

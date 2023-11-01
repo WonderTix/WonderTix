@@ -11,7 +11,6 @@
 import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {
   addTicketToCart,
-  selectCartTicketCount,
   Ticket,
 } from '../ticketingmanager/ticketing/ticketingSlice';
 import {openSnackbar} from '../ticketingmanager/snackbarSlice';
@@ -20,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {useEffect, useState, useReducer} from 'react';
+import React, {useEffect, useState, useReducer, ReactElement} from 'react';
 
 /**
  * @module
@@ -181,7 +180,7 @@ interface TicketPickerProps {
  * @param {TicketPickerProps} props
  * @returns {ReactElement} and the correct ticket when picking
  */
-const TicketPicker = (props: TicketPickerProps) => {
+const TicketPicker = (props: TicketPickerProps): ReactElement => {
   const [ticketTypesState, setTicketTypesState] =
     useState<TicketPickerState>(initialState);
 
@@ -236,7 +235,6 @@ const TicketPicker = (props: TicketPickerProps) => {
   }, []);
 
   const appDispatch = useAppDispatch();
-  const cartTicketCount = useAppSelector(selectCartTicketCount);
   const tickets = props.tickets;
 
   const handleClick = (d: Date, t: Ticket[]) => {
@@ -398,7 +396,7 @@ const TicketPicker = (props: TicketPickerProps) => {
               select date
             </option>
             {tickets.map((t, index) => (
-              <option key={`${t.eventid} ${index}`} value={t.date.toString()}>
+              <option key={`${t.event_instance_id} ${index}`} value={t.date.toString()}>
                 {format(new Date(t.date), 'eee, MMM dd yyyy')}
               </option>
             ))}

@@ -58,6 +58,8 @@ type CompleteOrderFormProps = {
 export default function CompleteOrderForm({
   onSubmit,
   onBack,
+  disabled, // TODO: This prop is being used but has no functionality
+  donationForm, // TODO: This prop is being used but has no functionality
 }: CompleteOrderFormProps): ReactElement {
   const {isAuthenticated, user} = useAuth0();
   const baseValues = {
@@ -276,4 +278,3 @@ export default function CompleteOrderForm({
     </div>
   );
 }
-

@@ -3,9 +3,9 @@ import {response, buildResponse} from '../db';
 /**
  * query: get doorlist by params.eventinstanceid
  *
- * @type {Promise<response>}
+ * @param {any} params
+ * @return {Promise<response>}
  */
-
 export const getDoorlist = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
@@ -42,8 +42,8 @@ export const getDoorlist = async (params: any): Promise<response> => {
             events e ON ei.eventid_fk = e.eventid
         WHERE 
             ei.eventinstanceid = $1
-            AND 
-            et.tickettypeid_fk =$2
+        AND 
+            et.tickettypeid_fk = $2
         AND 
             ei.deletedat is null
         AND
@@ -62,7 +62,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
             ei.eventtime
         ORDER BY 
             c.firstname, c.lastname;`,
-    values: [params.eventinstanceid],
+    values: [params.eventinstanceid, 1],
   };
 
   return buildResponse(myQuery, 'GET');
