@@ -9,7 +9,7 @@ interface FormInputProps {
   label: string,
   labelClassName: string,
   inputClassName: string,
-  divClassName?: string,
+  className?: string,
   placeholder: string,
 }
 
@@ -21,14 +21,14 @@ export const FormInput = (props: FormInputProps) => {
     input,
     inputClassName,
     labelClassName,
-    divClassName,
+    className,
     label,
     placeholder,
     meta,
   } = props;
 
   return (
-    <div className={divClassName}>
+    <div className={className}>
       <label
         className={labelClassName}
         htmlFor={id}
