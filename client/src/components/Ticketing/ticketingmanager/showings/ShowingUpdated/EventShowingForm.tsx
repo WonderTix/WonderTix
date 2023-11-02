@@ -2,7 +2,7 @@ import {Showing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import {Field, FieldArray, Formik} from 'formik';
 import {InputControl} from './InputControl';
-import {toDateStringFormat} from '../../Events/showingInputContainer_deprecated';
+import {toDateStringFormat} from './util/EventsUtil';
 import {TicketTypeUpdateTable} from './TicketTypeUpdateTable';
 import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
@@ -32,9 +32,9 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues
       ? getTicketTypeArray(
-        initialValues.ticketTypeId,
-        initialValues.seatsForType,
-      )
+          initialValues.ticketTypeId,
+          initialValues.seatsForType,
+        )
       : [],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
