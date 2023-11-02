@@ -1,4 +1,4 @@
-import {Showing} from '../../../../../interfaces/showing.interface';
+import {Showing, UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React, {useState} from 'react';
 import {EventShowingForm} from './EventShowingForm';
 import {EventShowingView} from './EventShowingView';
@@ -6,7 +6,7 @@ import {useEvent} from './EventProvider';
 import {createDeleteFunction, createSubmitFunction} from './ShowingUtils';
 
 interface EventShowingContainerProps {
-  showing: Showing;
+  showing: UpdatedShowing;
 }
 
 export const EventShowingContainer = (props: EventShowingContainerProps) => {
