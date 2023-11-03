@@ -142,21 +142,21 @@ steps:
       - 'REGION'
       - 'SERVICE_ACCOUNT'
 
-  # Use Playwright to load test client
+  # Use Playwright to wake up client
   - name: 'mcr.microsoft.com/playwright:latest'
-    id: 'load-client'
+    id: 'wake-client'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        playwright eval --browser-type=chromium $$CLIENT_REVISION \
-        -- 'await page.goto(process.argv[2]);'
+        npm install playwright
+        node wake-client.js $$CLIENT_REVISION
     secretEnv:
       - 'CLIENT_REVISION'
 
   # Poll the /status endpoint for 5 minutes and check for readiness
   - name: 'curlimages/curl'
-    id: 'wait-for-client'
+    id: 'poll-client'
     entrypoint: 'sh'
     args:
       - '-c'
@@ -184,7 +184,7 @@ steps:
   # Use client image to run E2E tests on test revision
   # TODO: pull official Playwright image, run tests using that instead
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'run-e2e-tests'
+    id: 'run-tests'
     entrypoint: 'bash'
     args:
       - '-c'
