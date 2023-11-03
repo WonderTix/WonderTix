@@ -3,11 +3,11 @@ import React, {ReactElement} from 'react';
 import {useNavigate} from 'react-router-dom';
 
 interface DashboardLinkProps {
-  gradientClasses: string,
-  icon: ReactElement,
-  route?: string,
-  size?: 'sm' | 'md' | 'lg',
-  title: string,
+  gradientClasses: string;
+  icon: ReactElement;
+  route?: string;
+  size?: 'sm' | 'md' | 'lg';
+  title: string;
 }
 
 /**
@@ -37,7 +37,7 @@ const DashboardLink = ({
       className={`flex text-left flex-col p-8 ${sizeClass[size]} md:w- rounded-3xl shadow-xl hover:scale-105 transition duration-300 ease-in-out ${gradientClasses}`}
     >
       {icon}
-      <h5 className="ml-1 text-2xl font-bold tracking-tight text-white">
+      <h5 className='ml-1 text-2xl font-bold tracking-tight text-white'>
         {title}
       </h5>
     </button>
