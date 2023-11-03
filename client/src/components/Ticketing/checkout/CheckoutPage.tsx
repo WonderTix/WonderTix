@@ -44,6 +44,7 @@ export default function CheckoutPage(): ReactElement {
     title: '',
     message: '',
     success: true,
+    handleClose: () => setPopUp((popUp) => ({...popUp, show: false})),
     handleProceed: () => setPopUp((popUp) => ({...popUp, show: false})),
     showSecondary: false,
   });
@@ -100,6 +101,7 @@ export default function CheckoutPage(): ReactElement {
             title={popUp.title}
             message={popUp.message}
             handleProceed={popUp.handleProceed}
+            handleClose={popUp.handleClose}
             showSecondary={popUp.showSecondary}
             success={popUp.success}
           />
