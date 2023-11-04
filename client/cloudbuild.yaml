@@ -144,4 +144,3 @@ availableSecrets:
     env: 'SERVICE_ACCOUNT'
   - versionName: projects/$PROJECT_ID/secrets/SQL_INSTANCE/versions/$_ENV
     env: 'SQL_INSTANCE'
-

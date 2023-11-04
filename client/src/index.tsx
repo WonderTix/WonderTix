@@ -8,10 +8,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import store from './components/Ticketing/app/store';
+<<<<<<< HEAD
 import readinessCheck from './readinessCheck';
 
 // Cloud Run needs this to avoid downtime when deploying new revisions
 readinessCheck();
+=======
+>>>>>>> 901bf6e4 (DEP-64: eliminate downtime when deploying client (#433))
 
 ReactDOM.render(
   <Provider store={store}>
