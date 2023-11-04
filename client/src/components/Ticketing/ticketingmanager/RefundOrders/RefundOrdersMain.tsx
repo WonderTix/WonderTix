@@ -1,19 +1,19 @@
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import Refund from './RefundOrderTicket';
+import RefundOrders from './RefundOrders';
 
 /**
  * Hosts refund page
  *
  * @returns {Navbar, RefundPage, Footer}
  */
-const RefundMain = () => {
+const RefundOrdersMain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav/>
-      <Refund/>
+      <Udash_nav />
+      <RefundOrders />
     </div>
   );
 };
 
-export default RefundMain;
+export default RefundOrdersMain;
