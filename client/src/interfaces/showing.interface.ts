@@ -9,6 +9,12 @@
  * during initial add totall seats equal to available seats
  */
 
+
+export interface eventInstanceTicketType {
+  typeID: number;
+  typeQuantity: number;
+}
+
 export interface WtixEvent {
   eventid: number;
   seasonid?: number;
@@ -30,6 +36,19 @@ export interface Showing {
   salestatus: boolean;
   ticketTypeId: (string | number) [];
   seatsForType: number[];
+  totalseats: number;
+  availableseats: number;
+  ispreview: boolean;
+}
+export interface UpdatedShowing {
+  id?: number;
+  index: number;
+  eventinstanceid: number,
+  eventid_fk: number;
+  eventtime: string;
+  eventdate: string;
+  salestatus: boolean;
+  ticketrestrictions: eventInstanceTicketType[]
   totalseats: number;
   availableseats: number;
   ispreview: boolean;

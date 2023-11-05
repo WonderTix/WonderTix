@@ -26,7 +26,7 @@
     "no-unused-vars": "off",
     "valid-jsdoc": "off",
     "operator-linebreak": "off",
-    "indent": ["warn", 2],
+    "indent": "off",
 
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/ban-ts-comment": "off",

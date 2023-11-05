@@ -11,7 +11,6 @@
 import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {
   addTicketToCart,
-  selectCartTicketCount,
   Ticket,
 } from '../ticketingmanager/ticketing/ticketingSlice';
 import {openSnackbar} from '../ticketingmanager/snackbarSlice';
@@ -20,7 +19,7 @@ import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import React, {useEffect, useState, useReducer} from 'react';
+import React, {useEffect, useState, useReducer, ReactElement} from 'react';
 
 /**
  * @module
@@ -181,7 +180,7 @@ interface TicketPickerProps {
  * @param {TicketPickerProps} props
  * @returns {ReactElement} and the correct ticket when picking
  */
-const TicketPicker = (props: TicketPickerProps) => {
+const TicketPicker = (props: TicketPickerProps): ReactElement => {
   const [ticketTypesState, setTicketTypesState] =
     useState<TicketPickerState>(initialState);
 
@@ -211,7 +210,6 @@ const TicketPicker = (props: TicketPickerProps) => {
         if (!res.ok) {
           throw new Error('Failed to retrieve ticket types');
         }
-        console.log('Response containing ticket types received successfully');
         return res.json();
       })
       .then((resData) => {
@@ -237,7 +235,6 @@ const TicketPicker = (props: TicketPickerProps) => {
   }, []);
 
   const appDispatch = useAppDispatch();
-  const cartTicketCount = useAppSelector(selectCartTicketCount);
   const tickets = props.tickets;
 
   const handleClick = (d: Date, t: Ticket[]) => {
@@ -395,12 +392,11 @@ const TicketPicker = (props: TicketPickerProps) => {
               className='text-zinc-300'
               value=''
               disabled
-              selected={prompt === 'selectDate'}
             >
               select date
             </option>
-            {tickets.map((t) => (
-              <option key={t.eventid} value={t.date.toString()}>
+            {tickets.map((t, index) => (
+              <option key={`${t.event_instance_id} ${index}`} value={t.date.toString()}>
                 {format(new Date(t.date), 'eee, MMM dd yyyy')}
               </option>
             ))}
@@ -427,7 +423,6 @@ const TicketPicker = (props: TicketPickerProps) => {
         <select
           id='ticket-type-select'
           value={selectedTicketType.name}
-          defaultValue=''
           disabled={selectedTicket === undefined}
           onChange={(e) =>
             dispatch(
@@ -468,7 +463,6 @@ const TicketPicker = (props: TicketPickerProps) => {
         <select
           id='qty-select'
           value={qty}
-          defaultValue={0}
           disabled={selectedTicket === undefined || numAvail < 1}
           onChange={(e) => dispatch(changeQty(parseInt(e.target.value)))}
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'

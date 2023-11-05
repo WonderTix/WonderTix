@@ -1,17 +1,16 @@
-import {Showing} from '../../../../../interfaces/showing.interface';
+import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React from 'react';
 import {Field, FieldArray, Formik} from 'formik';
 import {InputControl} from './InputControl';
-import {toDateStringFormat} from '../../Events/showingInputContainer_deprecated';
+import {toDateStringFormat} from './util/EventsUtil';
 import {TicketTypeUpdateTable} from './TicketTypeUpdateTable';
 import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
-import {getTicketTypeArray} from './ShowingUtils';
 
 interface EventShowingFormProps {
-  initialValues?: Showing;
+  initialValues?: UpdatedShowing;
   onSubmit: (event, action) => void;
   onDelete?: (event?) => void;
   onLeaveEdit?: () => void;
@@ -26,16 +25,13 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
     eventid_fk: initialValues ? initialValues.eventid_fk : eventID,
     eventinstanceid: initialValues ? initialValues.eventinstanceid : 0,
-    eventtime: initialValues ? initialValues.eventtime.slice(0, 8) : '',
+    eventtime: initialValues
+      ? initialValues.eventtime.split('T')[1].slice(0, 8)
+      : '',
     ispreview: false,
     defaulttickettype: 1,
     purchaseuri: 'http://null.com',
-    instanceTicketTypes: initialValues
-      ? getTicketTypeArray(
-        initialValues.ticketTypeId,
-        initialValues.seatsForType,
-      )
-      : [],
+    instanceTicketTypes: initialValues ? initialValues.ticketrestrictions : [],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
   };

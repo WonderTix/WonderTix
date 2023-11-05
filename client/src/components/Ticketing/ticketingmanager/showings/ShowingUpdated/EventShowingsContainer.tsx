@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {EventShowingContainer} from './EventShowingContainer';
 import {useEvent} from './EventProvider';
 import {createSubmitFunction} from './ShowingUtils';
-import {toDateStringFormat} from '../../Events/showingInputContainer_deprecated';
+import {toDateStringFormat} from './util/EventsUtil';
 
 export const EventShowingsContainer = () => {
   const {
@@ -22,11 +22,21 @@ export const EventShowingsContainer = () => {
     try {
       const resp = await newShowing.json();
       setEditing((edit) => !edit);
-      setPopUpProps('Success', 'Showing Successfully Created', true, `create-modal-showing-id-${resp.eventinstanceid}`);
+      setPopUpProps(
+        'Success',
+        'Showing Successfully Created',
+        true,
+        `create-modal-showing-id-${resp.eventinstanceid}`,
+      );
       setReloadShowing((reload) => !reload);
       setAdd((add) => !add);
     } catch (error) {
-      setPopUpProps('Failure', 'Showing creation failed', false, 'failure-create-modal');
+      setPopUpProps(
+        'Failure',
+        'Showing creation failed',
+        false,
+        'failure-create-modal',
+      );
     }
   };
   const onError = async (event: any) => {
@@ -34,31 +44,36 @@ export const EventShowingsContainer = () => {
       const res = await event.json();
       setPopUpProps('Failure', res.error, false, 'failure-modal');
     } catch (error) {
-      setPopUpProps('Failure', 'Showing creation failed', false, `failure-create-modal`);
+      setPopUpProps(
+        'Failure',
+        'Showing creation failed',
+        false,
+        `failure-create-modal`,
+      );
     }
   };
 
   const getSortingFunction = () => {
     switch (sortBy) {
-    case 1:
-      return (a, b) => a.eventinstanceid - b.eventinstanceid;
-    case 2:
-      return (a, b) => a.totalseats - b.totalseats;
-    case 3:
-      return (a, b) => a.availableseats - b.availableseats;
-    case 4:
-      return (a, b) =>
-        new Date(toDateStringFormat(b.eventdate)).getTime() -
+      case 1:
+        return (a, b) => a.eventinstanceid - b.eventinstanceid;
+      case 2:
+        return (a, b) => a.totalseats - b.totalseats;
+      case 3:
+        return (a, b) => a.availableseats - b.availableseats;
+      case 4:
+        return (a, b) =>
+          new Date(toDateStringFormat(b.eventdate)).getTime() -
           new Date(toDateStringFormat(a.eventdate)).getTime();
-    case 5:
-      return (a, b) => b.eventinstanceid - a.eventinstanceid;
-    case 6:
-      return (a, b) => b.totalseats - a.totalseats;
-    case 7:
-      return (a, b) => b.availableseats - a.availableseats;
-    default:
-      return (a, b) =>
-        new Date(toDateStringFormat(a.eventdate)).getTime() -
+      case 5:
+        return (a, b) => b.eventinstanceid - a.eventinstanceid;
+      case 6:
+        return (a, b) => b.totalseats - a.totalseats;
+      case 7:
+        return (a, b) => b.availableseats - a.availableseats;
+      default:
+        return (a, b) =>
+          new Date(toDateStringFormat(a.eventdate)).getTime() -
           new Date(toDateStringFormat(b.eventdate)).getTime();
     }
   };
@@ -110,20 +125,24 @@ export const EventShowingsContainer = () => {
             Showing
           </button>
         </div>
-        <div className={'col-span-12 min-[768px]:col-span-5 my-auto flex flex-row flex-wrap justify-center min-[1230px]:justify-end'}>
+        <div
+          className={
+            'col-span-12 min-[768px]:col-span-5 my-auto flex flex-row flex-wrap justify-center min-[1230px]:justify-end'
+          }
+        >
           <label
             htmlFor={'sortMethod'}
-            className={
-              'text-zinc-800 my-auto pr-2 text-center w-fit'
-            }
+            className={'text-zinc-800 my-auto pr-2 text-center w-fit'}
           >
-              Sort By:
+            Sort By:
           </label>
           <select
             disabled={editing}
             value={sortBy}
             onChange={(event) => setSortBy(Number(event.target.value))}
-            className={`h-fit w-fit border border-zinc-500 rounded-lg ${showPopUp ? 'hidden' : ''} p-1`}
+            className={`h-fit w-fit border border-zinc-500 rounded-lg ${
+              showPopUp ? 'hidden' : ''
+            } p-1`}
           >
             <option value={0}>Date - Ascending</option>
             <option value={1}>Showing ID - Ascending</option>

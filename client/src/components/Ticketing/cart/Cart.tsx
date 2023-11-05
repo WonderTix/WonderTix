@@ -175,10 +175,10 @@ const Cart = (): ReactElement => {
       <div className='flex flex-col md:flex-row gap-10 md:gap-5 mt-14 md:mt-20 items-center w-full'>
         <div className='flex flex-col w-full p-5 tab:p-9 gap-5 rounded-xl bg-zinc-300'>
           {items.length > 0 ? (
-            items.map((data) => (
+            items.map((cartItem) => (
               <CartRow
-                key={data.product_id}
-                item={data}
+                key={`${cartItem.product_id}-${cartItem.typeID}`}
+                item={cartItem}
                 removeHandler={displayModal}
               />
             ))

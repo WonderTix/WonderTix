@@ -1,7 +1,7 @@
 import {InvalidInputError} from './eventInstanceController.service';
-import {PrismaClient} from '@prisma/client';
 import CartItem from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
+import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
 
@@ -60,7 +60,7 @@ export const createStripeCoupon = async (discount: any) => {
 
 export const getOrderItems = async (
     cartItems: CartItem[],
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
 ): Promise<{
   orderItems: any[];
   cartRows: LineItem[];
@@ -177,7 +177,7 @@ export const getOrderItems = async (
 };
 
 const getTickets = (
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
     availableTickets: Map<number, number[]>,
     typeID: number,
     quantity: number,
@@ -230,7 +230,7 @@ interface checkOutForm {
 
 export const updateContact = async (
     formData: checkOutForm,
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
 ) => {
   const existingContact = await prisma.contacts.findFirst({
     where: {
@@ -284,7 +284,7 @@ const validateContact = (formData: checkOutForm) => {
     phone: validateWithRegex(
         formData.phone,
         `Phone Number: ${formData.phone} is invalid`,
-        new RegExp('.*'),
+        new RegExp('^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
     ),
     seatingaccom: formData.seatingAcc,
     newsletter: formData.optIn,
