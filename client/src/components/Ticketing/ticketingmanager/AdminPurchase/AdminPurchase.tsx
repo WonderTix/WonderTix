@@ -214,7 +214,6 @@ const AdminPurchase = () => {
       renderCell: (params) => (
         <button
           className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
-          type='submit'
           onClick={() => removeRow(params.row.id)}
         >
           Remove
@@ -231,7 +230,6 @@ const AdminPurchase = () => {
         );
         const jsonRes = await response.json();
         const jsonData = jsonRes.data as any[];
-        console.log('API Response for Events:', jsonData);
 
         // Deduplicate the events based on eventid
         const deduplicatedEvents = Array.from(
@@ -365,7 +363,7 @@ const AdminPurchase = () => {
     if (row.eventinstanceid) {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_1_URL}/tickets/restrictions/`,
+          `${process.env.REACT_APP_API_1_URL}/tickets/restrictions`,
         );
         const ticketRestrictionData = await response.json();
 
@@ -460,6 +458,11 @@ const AdminPurchase = () => {
   };
 
   const handlePurchase = () => {
+    if (eventData.length === 0) {
+      setDialog(true);
+      setErrMsg('Cart is empty.');
+      return;
+    }
     for (const row of eventData) {
       if (
         !row.eventid ||
@@ -472,7 +475,6 @@ const AdminPurchase = () => {
         return;
       }
     }
-    console.log('eventData', eventData);
 
     const aggregatedCartItems = {};
 
@@ -546,7 +548,6 @@ const AdminPurchase = () => {
             <div className='mt-4'>
               <button
                 className='bg-blue-500 px-2 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2'
-                type='submit'
                 onClick={addNewRow}
               >
                 Add Ticket
@@ -555,7 +556,6 @@ const AdminPurchase = () => {
             <div className='mt-4 text-center'>
               <button
                 className='bg-green-600 px-8 py-1 text-white rounded-xl hover:bg-green-700 disabled:opacity-40 m-2'
-                type='submit'
                 onClick={handlePurchase}
               >
                 Proceed to Checkout
