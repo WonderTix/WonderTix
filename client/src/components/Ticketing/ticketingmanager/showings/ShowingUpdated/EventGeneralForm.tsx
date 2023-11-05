@@ -28,7 +28,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     eventdescription: eventData ? eventData.eventdescription : '',
     imageurl: eventData ? eventData.imageurl : '',
     active: eventData ? eventData.active : true,
-    seasonid_fk: eventData ? eventData.seasonid_fk : 7,
+    seasonid_fk: eventData ? eventData.seasonid_fk: undefined,
   };
 
   return (
@@ -168,6 +168,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   name={'seasonid_fk'}
                   id={'seasonSelect'}
                 >
+                  <option value={undefined}>None</option>
                   {
                     seasons?.length > 0 &&
                     seasons.map((season, index) => (
