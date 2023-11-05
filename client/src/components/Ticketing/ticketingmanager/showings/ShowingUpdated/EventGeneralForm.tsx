@@ -111,6 +111,33 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   controlClass: 'flex flex-col mb-2 text-zinc-800',
                 }}
               />
+              <div className={'flex flex-col mb-2 text-zinc-800'}>
+                <label
+                  className={'text-sm font-semibold'}
+                  htmlFor={'seasonSelect'}
+                >
+                  Season:
+                </label>
+                <Field
+                  component={'select'}
+                  name={'seasonid_fk'}
+                  id={'seasonSelect'}
+                  className={'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200'}
+                >
+                  <option value={undefined}>None</option>
+                  {
+                    seasons?.length > 0 &&
+                    seasons.map((season, index) => (
+                      <option
+                        value={Number(season.seasonid)}
+                        key={`${season.seasonid} ${index}`}
+                      >
+                        {season.name}
+                      </option>
+                    ))
+                  }
+                </Field>
+              </div>
               <div className={'grid grid-cols-12 mb-2'}>
                 <div className={'flex flex-col justify-evenly col-span-6'}>
                   <label
@@ -156,31 +183,6 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     }}
                   />
                 </div>
-              </div>
-              <div>
-                <label
-                  htmlFor={'seasonSelect'}
-                >
-                  Season:
-                </label>
-                <Field
-                  component={'select'}
-                  name={'seasonid_fk'}
-                  id={'seasonSelect'}
-                >
-                  <option value={undefined}>None</option>
-                  {
-                    seasons?.length > 0 &&
-                    seasons.map((season, index) => (
-                      <option
-                        value={Number(season.seasonid)}
-                        key={`${season.seasonid} ${index}`}
-                      >
-                        {season.name}
-                      </option>
-                    ))
-                  }
-                </Field>
               </div>
             </div>
             <div
