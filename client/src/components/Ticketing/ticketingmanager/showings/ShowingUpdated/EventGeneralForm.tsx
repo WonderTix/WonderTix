@@ -6,6 +6,7 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
+import {useFetchSeasons} from './ShowingUtils';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
@@ -15,7 +16,8 @@ interface EventGeneralFormProps {
 
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onDelete, onLeaveEdit} = props;
-  const {eventData, showPopUp} = useEvent();
+  const {eventData, showPopUp, token} = useEvent();
+  const {seasons} = useFetchSeasons(token);
   const [disabledURL, setDisabledURL] = useState(
     eventData?.imageurl === 'Default Event Image',
   );
@@ -154,6 +156,30 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     }}
                   />
                 </div>
+              </div>
+              <div>
+                <label
+                  htmlFor={'seasonSelect'}
+                >
+                  Season:
+                </label>
+                <Field
+                  component={'select'}
+                  name={'seasonid_fk'}
+                  id={'seasonSelect'}
+                >
+                  {
+                    seasons?.length > 0 &&
+                    seasons.map((season, index) => (
+                      <option
+                        value={Number(season.seasonid)}
+                        key={`${season.seasonid} ${index}`}
+                      >
+                        {season.name}
+                      </option>
+                    ))
+                  }
+                </Field>
               </div>
             </div>
             <div

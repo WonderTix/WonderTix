@@ -608,6 +608,9 @@ eventController.get('/:id', async (req: Request, res: Response) => {
       where: {
         eventid: Number(id),
       },
+      include: {
+        seasons: true,
+      }
     });
     if (!eventExists) {
       res.status(400).json({error: `Event ${id} not found`});
@@ -686,6 +689,9 @@ eventController.post('/', async (req: Request, res: Response) => {
         seasonticketeligible: req.body.seasonticketeligible,
         imageurl: req.body.imageurl,
       },
+      include: {
+        seasons: true,
+      },
     });
     res.status(201).json(event);
     return;
@@ -750,6 +756,9 @@ eventController.put('/', async (req: Request, res: Response) => {
         seasonticketeligible: req.body.seasonticketeligible,
         imageurl: req.body.imageurl,
       },
+      include:{
+        seasons: true,
+      }
     });
     if (!event) {
       return res.status(400).json({error: `Event ${req.body.eventid} not found`});

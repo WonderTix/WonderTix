@@ -48,6 +48,12 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
             information={eventData.eventdescription}
             event
           />
+          <LineItem
+            description
+            label={'Event Season'}
+            information={eventData.seasons?.name}
+            event
+          />
         </div>
         <div className={'col-span-12 min-[450px]:col-span-6'}>
           <EventImage
