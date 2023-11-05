@@ -18,7 +18,7 @@ import {
   EventImage,
   getImageDefault,
 } from '../../../../utils/imageURLValidation';
-import GroupToggle from '../../GroupeToggle';
+import GroupToggle from '../../GroupToggle';
 
 /**
  * Uses dispatch, navigate, allEvents, and getData

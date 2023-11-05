@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../../utils/arrays';
 import {getSeasonImage, formatSeasonDate, SeasonImage} from './seasonUtils';
-import GroupToggle from '../../GroupeToggle';
+import GroupToggle from '../../GroupToggle';
 
 export interface Seasons {
   seasonid: number;
