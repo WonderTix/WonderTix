@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../../utils/arrays';
 import {getSeasonImage, formatSeasonDate, SeasonImage} from './seasonUtils';
-import GroupToggle from '../../GroupToggle';
+import ShowingActivenessToggle from '../../GroupToggle';
 
 export interface Seasons {
   seasonid: number;
@@ -99,9 +99,7 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
             Add Season
           </button>
         </section>
-        <div className='mb-6'>
-          <GroupToggle/>
-        </div>
+        <ShowingActivenessToggle defaultValue='active' />
         <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
           {seasons.map((season) => (
             <li key={season.seasonid}>

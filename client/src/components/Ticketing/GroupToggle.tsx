@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React, {useState, MouseEvent} from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
-const GroupToggle = () => {
-  const [filterAs, setFilter] = React.useState('Active');
+const ShowingActivenessToggle =(defaultValue) => {
+  const [filter, setFilter] = useState(defaultValue);
 
   const handleFilterChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -13,33 +13,36 @@ const GroupToggle = () => {
   };
 
   return (
-    <ToggleButtonGroup
-      color='standard'
-      value={filterAs}
-      exclusive
-      onChange={handleFilterChange}
-      aria-label='filterSetting'
-    >
-      <ToggleButton
-        value='active'
-        sx={{backgroundColor: 'white'}}
+    <div className='mb-6'>
+      <ToggleButtonGroup
+        color='standard'
+        value={filter}
+        exclusive
+        onChange={handleFilterChange}
+        aria-label='Activeness Toggle Filter'
       >
-        Active
-      </ToggleButton>
-      <ToggleButton
-        value='inactive'
-        sx={{backgroundColor: 'white'}}
-      >
-        Inactive
-      </ToggleButton>
-      <ToggleButton
-        value='all'
-        sx={{backgroundColor: 'white'}}
-      >
-        All
-      </ToggleButton>
-    </ToggleButtonGroup>
+        <ToggleButton
+          value='active'
+          sx={{backgroundColor: 'white', fontWeight: 'bold'}}
+        >
+          Active
+        </ToggleButton>
+        <ToggleButton
+          value='inactive'
+          sx={{backgroundColor: 'white', fontWeight: 'bold'}}
+        >
+          Inactive
+        </ToggleButton>
+        <ToggleButton
+          value='all'
+          sx={{backgroundColor: 'white', fontWeight: 'bold'}}
+        >
+          All
+        </ToggleButton>
+      </ToggleButtonGroup>
+    </div>
   );
 };
 
-export default GroupToggle;
+export default ShowingActivenessToggle;
+

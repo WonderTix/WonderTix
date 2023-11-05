@@ -18,7 +18,7 @@ import {
   EventImage,
   getImageDefault,
 } from '../../../../utils/imageURLValidation';
-import GroupToggle from '../../GroupToggle';
+import ShowingActivenessToggle from '../../GroupToggle';
 
 /**
  * Uses dispatch, navigate, allEvents, and getData
@@ -79,9 +79,7 @@ const InstancesPage = (): ReactElement => {
             Add Event
           </button>
         </div>
-        <div className='mb-6'>
-          <GroupToggle/>
-        </div>
+        <ShowingActivenessToggle defaultValue='active' />
         <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
           {allEvents.map((event) => (
             <li key={event.id}>
