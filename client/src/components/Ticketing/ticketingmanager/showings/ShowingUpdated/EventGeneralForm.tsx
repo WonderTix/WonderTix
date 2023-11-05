@@ -28,7 +28,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     eventdescription: eventData ? eventData.eventdescription : '',
     imageurl: eventData ? eventData.imageurl : '',
     active: eventData ? eventData.active : true,
-    seasonid_fk: eventData ? eventData.seasonid_fk: undefined,
+    seasonid_fk: eventData?.seasonid_fk? eventData.seasonid_fk: undefined,
   };
 
   return (
