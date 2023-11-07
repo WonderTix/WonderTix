@@ -69,25 +69,25 @@ steps:
 # Use dev, stg, or prd versions depending on $_ENV value from trigger
 availableSecrets:
   secretManager:
-  - versionName: projects/$PROJECT_ID/secrets/ARTIFACTS/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/ARTIFACTS/versions/${_ENV}
     env: 'ARTIFACTS'
-  - versionName: projects/$PROJECT_ID/secrets/AUTH0_AUDIENCE/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/AUTH0_AUDIENCE/versions/${_ENV}
     env: 'AUTH0_AUDIENCE'
-  - versionName: projects/$PROJECT_ID/secrets/AUTH0_URL/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/AUTH0_URL/versions/${_ENV}
     env: 'AUTH0_URL'
-  - versionName: projects/$PROJECT_ID/secrets/ENV/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/ENV/versions/${_ENV}
     env: 'ENV'
-  - versionName: projects/$PROJECT_ID/secrets/FRONTEND_URL/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/FRONTEND_URL/versions/${_ENV}
     env: 'FRONTEND_URL'
-  - versionName: projects/$PROJECT_ID/secrets/REGION/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/REGION/versions/${_ENV}
     env: 'REGION'
-  - versionName: projects/$PROJECT_ID/secrets/ROOT_URL/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/ROOT_URL/versions/${_ENV}
     env: 'ROOT_URL'
-  - versionName: projects/$PROJECT_ID/secrets/SERVER_CPU/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/SERVER_CPU/versions/${_ENV}
     env: 'SERVER_CPU'
-  - versionName: projects/$PROJECT_ID/secrets/SERVER_MEMORY/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/SERVER_MEMORY/versions/${_ENV}
     env: 'SERVER_MEMORY'
-  - versionName: projects/$PROJECT_ID/secrets/SERVICE_ACCOUNT/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/SERVICE_ACCOUNT/versions/${_ENV}
     env: 'SERVICE_ACCOUNT'
-  - versionName: projects/$PROJECT_ID/secrets/SQL_INSTANCE/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/SQL_INSTANCE/versions/${_ENV}
     env: 'SQL_INSTANCE'

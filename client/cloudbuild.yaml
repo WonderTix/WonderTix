@@ -30,8 +30,8 @@ steps:
   # Push image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     id: 'push-client'
-    entrypoint: 'bash'
-    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
+    entrypoint: 'docker'
+    args: ['push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
@@ -71,12 +71,17 @@ steps:
       - 'SERVICE_ACCOUNT'
 
   # Request page from new revision and wait for container to start
-  - name: 'gcr.io/${PROJECT_ID}/client-img-${_ENV}:${SHORT_SHA}'
+  - name: 'mcr.microsoft.com/playwright:latest'
     id: 'wake-client'
-    entrypoint: 'node'
-    dir: 'client'
-    args: ['wake-client.js', '$${NEW_REVISION}']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        npm install playwright
+        export NODE_PATH=$$(pwd)/node_modules
+        node client/wake-client.js $${NEW_REVISION}
     secretEnv:
+      - 'ENV'
       - 'NEW_REVISION'
 
   # Gradually send traffic to new revision, then remove `new` tag
@@ -86,21 +91,18 @@ steps:
     args:
       - '-c'
       - |
-        echo "Sending 5% of traffic to new revision..."
-        gcloud run services update-traffic wtix-client-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=5
+        function update_traffic() {
+          local PERCENTAGE=$${1}
+          echo "Sending $${PERCENTAGE}% of traffic to new revision..."
+          gcloud run services update-traffic wtix-client-$${ENV} \
+          --region $${REGION} \
+          --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=$${PERCENTAGE}
+        }
 
-        echo "Waiting 10 seconds before sending more traffic..."
-        sleep 10
-        
-        echo "Sending 100% of traffic to new revision..."
-        gcloud run services update-traffic wtix-client-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100 \
-
-        echo "Waiting 10 seconds before removing tag..."
-        sleep 10
+        update_traffic 5 && sleep 30
+        update_traffic 25 && sleep 30
+        update_traffic 50 && sleep 30
+        update_traffic 100 && sleep 30
 
         gcloud run services update-traffic wtix-client-$${ENV} \
         --region $${REGION} \
@@ -112,31 +114,31 @@ steps:
 # Use dev, stg, or prd versions depending on $_ENV value from trigger
 availableSecrets:
   secretManager:
-  - versionName: projects/$PROJECT_ID/secrets/ARTIFACTS/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/ARTIFACTS/versions/${_ENV}
     env: 'ARTIFACTS'
-  - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_ID/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/AUTH0_CLIENT_ID/versions/${_ENV}
     env: 'AUTH0_CLIENT_ID'
-  - versionName: projects/$PROJECT_ID/secrets/AUTH0_CLIENT_SECRET/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/AUTH0_CLIENT_SECRET/versions/${_ENV}
     env: 'AUTH0_CLIENT_SECRET'
-  - versionName: projects/$PROJECT_ID/secrets/AUTH0_URL/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/AUTH0_URL/versions/${_ENV}
     env: 'AUTH0_URL'
-  - versionName: projects/$PROJECT_ID/secrets/CLIENT_CPU/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/CLIENT_CPU/versions/${_ENV}
     env: 'CLIENT_CPU'
-  - versionName: projects/$PROJECT_ID/secrets/CLIENT_MEMORY/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/CLIENT_MEMORY/versions/${_ENV}
     env: 'CLIENT_MEMORY'
-  - versionName: projects/$PROJECT_ID/secrets/ENV/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/ENV/versions/${_ENV}
     env: 'ENV'
-  - versionName: projects/$PROJECT_ID/secrets/NEW_REVISION/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/NEW_REVISION/versions/${_ENV}
     env: 'NEW_REVISION'
-  - versionName: projects/$PROJECT_ID/secrets/PUBLIC_STRIPE_KEY/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/PUBLIC_STRIPE_KEY/versions/${_ENV}
     env: 'PUBLIC_STRIPE_KEY'
-  - versionName: projects/$PROJECT_ID/secrets/REACT_APP_API_1_URL/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/REACT_APP_API_1_URL/versions/${_ENV}
     env: 'REACT_APP_API_1_URL'
-  - versionName: projects/$PROJECT_ID/secrets/REACT_APP_API_2_URL/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/REACT_APP_API_2_URL/versions/${_ENV}
     env: 'REACT_APP_API_2_URL'
-  - versionName: projects/$PROJECT_ID/secrets/REGION/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/REGION/versions/${_ENV}
     env: 'REGION'
-  - versionName: projects/$PROJECT_ID/secrets/ROOT_URL/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/ROOT_URL/versions/${_ENV}
     env: 'ROOT_URL'
-  - versionName: projects/$PROJECT_ID/secrets/SERVICE_ACCOUNT/versions/$_ENV
+  - versionName: projects/${PROJECT_ID}/secrets/SERVICE_ACCOUNT/versions/${_ENV}
     env: 'SERVICE_ACCOUNT'

@@ -9,10 +9,12 @@ const playwright = require('playwright');
 (async () => {
   let browser;
   let context;
+  let page;
+
   try {
     browser = await playwright.chromium.launch({headless: true});
     context = await browser.newContext();
-    const page = await browser.newPage();
+    page = await browser.newPage();
 
     const loadPage = async () => {
       try {
@@ -30,7 +32,11 @@ const playwright = require('playwright');
 
   } catch (e) {
     console.error('An unexpected error occurred:', e.message);
+
   } finally {
+    if (page) {
+      await page.close();
+    }
     if (context) {
       await context.close();
     }
@@ -39,4 +45,3 @@ const playwright = require('playwright');
     }
   }
 })();
-
