@@ -10,7 +10,6 @@ import {fetchTicketingData, fetchTicketRestrictionData} from '../ticketingmanage
  */
 const Hero = (): ReactElement => {
   const allEvents = useAppSelector((state) => {
-    console.log('State:', state.ticketing);
     return state.ticketing.events;
   });
   const dispatch = useAppDispatch();

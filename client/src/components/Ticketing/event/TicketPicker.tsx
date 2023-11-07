@@ -392,12 +392,11 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
               className='text-zinc-300'
               value=''
               disabled
-              selected={prompt === 'selectDate'}
             >
               select date
             </option>
-            {tickets.map((t) => (
-              <option key={t.event_instance_id} value={t.date.toString()}>
+            {tickets.map((t, index) => (
+              <option key={`${t.event_instance_id} ${index}`} value={t.date.toString()}>
                 {format(new Date(t.date), 'eee, MMM dd yyyy')}
               </option>
             ))}
@@ -424,7 +423,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         <select
           id='ticket-type-select'
           value={selectedTicketType.name}
-          defaultValue=''
           disabled={selectedTicket === undefined}
           onChange={(e) =>
             dispatch(
@@ -465,7 +463,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         <select
           id='qty-select'
           value={qty}
-          defaultValue={0}
           disabled={selectedTicket === undefined || numAvail < 1}
           onChange={(e) => dispatch(changeQty(parseInt(e.target.value)))}
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
