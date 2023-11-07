@@ -11,7 +11,7 @@ import React, {ReactElement} from 'react';
 import {useAppSelector} from '../app/hooks';
 import {
   selectCartItem,
-  selectCartIds,
+  selectCartContents,
   selectCartSubtotal,
   selectCartTotal,
   selectDiscount,
@@ -38,15 +38,16 @@ interface YourOrderProps {
  */
 const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
   const navigate = useNavigate();
-  const cartIds = useAppSelector(selectCartIds);
+  const cartItems = useAppSelector(selectCartContents);
   const donation = useAppSelector(selectDonation);
   const subtotal = useAppSelector(selectCartSubtotal);
   const total = useAppSelector(selectCartTotal);
   const discount = useAppSelector(selectDiscount);
-  const lineItems = cartIds.map((id) => (
+  const lineItems = cartItems.map((item) => (
     <LineItem
-      key={id}
-      id={id}
+      key={`${item.product_id}-${item.typeID}`}
+      eventInstanceId={item.product_id}
+      ticketTypeId={item.typeID}
       className='bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'
     />
   ));
@@ -98,17 +99,17 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
   );
 };
 
-const LineItem = (props: {className: string; id: number}) => {
-  const data = useAppSelector((state) => selectCartItem(state, props.id));
-  return data ? (
+const LineItem = (props: {className: string; eventInstanceId: number, ticketTypeId: number}) => {
+  const cartItem = useAppSelector((state) => selectCartItem(state, props.eventInstanceId, props.ticketTypeId));
+  return cartItem ? (
     <div className={props.className}>
       <div>
-        {data.qty} <b>x</b> {data.name}
+        {cartItem.qty} <b>x</b> {cartItem.name}
       </div>
       <div>
-        {data.payWhatCan
-          ? toDollar(data.payWhatPrice)
-          : toDollar(data.qty * data.price)}
+        {cartItem.payWhatCan
+          ? toDollar(cartItem.payWhatPrice)
+          : toDollar(cartItem.qty * cartItem.price)}
       </div>
     </div>
   ) : (

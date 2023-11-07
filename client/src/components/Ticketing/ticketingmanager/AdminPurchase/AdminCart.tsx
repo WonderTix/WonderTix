@@ -7,7 +7,7 @@ import {EventRow} from './AdminPurchase';
  *
  * @param x
  */
-const toDollar = (x: number) => `$${(Math.floor(x * 100) / 100).toFixed(2)}`;
+const toDollar = (x: number) => `$${x.toFixed(2)}`;
 
 interface AdminCartProps {
   backButtonRoute: string;
@@ -28,15 +28,15 @@ const AdminCart = ({
   const navigate = useNavigate();
   const cartItems = location.state?.cartItems || [];
   const itemsInCart = cartItems.map((item, index) => (
-    <div
+    <p
       key={index}
       className='flex flex-row gap-8 bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'
     >
-      <div className='flex-auto text-left'>
+      <span className='flex-auto text-left'>
         {item.qty} x {item.name}
-      </div>
-      <div className='flex-auto text-right'>{toDollar(item.price)}</div>
-    </div>
+      </span>
+      <span className='flex-auto text-right'>{toDollar(item.price)}</span>
+    </p>
   ));
   const total = cartItems.reduce((total, item) => {
     const ticketPrice = item.qty * item.price;
@@ -45,8 +45,8 @@ const AdminCart = ({
 
   return (
     <div className='flex flex-col justify-between h-full w-full'>
-      <div className='flex flex-col items-center w-full mb-5'>
-        <div className='text-zinc-100 text-2xl font-bold'>Your order</div>
+      <section className='flex flex-col items-center w-full mb-5'>
+        <h2 className='text-zinc-100 text-2xl font-bold'>Your order</h2>
         <div className='text-zinc-100 mt-10 w-full'>
           {itemsInCart.length > 0 ? itemsInCart : <p>Your cart is Empty</p>}
         </div>
@@ -58,13 +58,15 @@ const AdminCart = ({
         >
           Add more items
         </button>
-      </div>
-      <div className='flex flex-col items-center gap-2 bg-zinc-800 rounded-xl px-5 py-3'>
+      </section>
+      <aside className='flex flex-col items-center gap-2 bg-zinc-800 rounded-xl px-5 py-3'>
         <div className='flex flex-row items-center gap-2 justify-between w-full'>
-          <div className='text-zinc-100 text-sm '>Total</div>
-          <div className='text-white text-lg font-bold'>{toDollar(total)}</div>
+          <span className='text-zinc-100 text-sm '>Total</span>
+          <strong className='text-white text-lg font-bold'>
+            {toDollar(total)}
+          </strong>
         </div>
-      </div>
+      </aside>
     </div>
   );
 };

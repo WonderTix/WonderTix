@@ -21,7 +21,6 @@ import DonationPage from '../donation/DonationPage';
 import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
-import CheckoutSuccess from './CheckoutSuccess';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -48,7 +47,7 @@ export default function CheckoutPage(): ReactElement {
       const stripe = await stripePromise;
       if (!stripe) return;
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + `/events/checkout`,
+        process.env.REACT_APP_API_2_URL + `/events/checkout`,
         {
           credentials: 'include',
           method: 'POST',
@@ -64,7 +63,6 @@ export default function CheckoutPage(): ReactElement {
       const session = await response.json();
       if (session.id === 'comp') {
         dispatch(removeAllTicketsFromCart());
-        // <CheckoutSuccess completeOrderButton='/' />;
         navigate(`/success`);
       }
       const result = await stripe.redirectToCheckout({sessionId: session.id});

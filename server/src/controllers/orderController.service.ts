@@ -1,7 +1,7 @@
-import {PrismaClient} from '@prisma/client';
+import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 export const ticketingWebhook = async (
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
     eventType: string,
     paymentIntent: string,
     sessionID: string,
@@ -26,12 +26,12 @@ export const ticketingWebhook = async (
       break;
     }
     case 'checkout.session.expired':
-      await orderCancel(prisma, order.orderid, 'full');
+      await orderCancel(prisma, order.orderid);
       break;
   }
 };
 export const orderFulfillment = async (
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
     orderItems: any[],
     contactid: number,
     ordertotal: number,
@@ -57,7 +57,7 @@ export const orderFulfillment = async (
   return result[0].orderid;
 };
 
-const updateAvailableSeats = async (prisma: PrismaClient) => {
+const updateAvailableSeats = async (prisma: ExtendedPrismaClient) => {
   const queriesToBatch: any[] = [];
   const eventInstances = await prisma.eventinstances.findMany({
     include: {
@@ -111,7 +111,7 @@ const updateAvailableSeats = async (prisma: PrismaClient) => {
 };
 
 export const orderCancel = async (
-    prisma: PrismaClient,
+    prisma: ExtendedPrismaClient,
     orderID: number,
     refundIntent?: string,
 ) => {
@@ -163,7 +163,6 @@ export const orderCancel = async (
     );
   }
   await updateAvailableSeats(prisma);
-
   return;
 };
 const getOrderDateAndTime = () => {

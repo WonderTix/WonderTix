@@ -46,8 +46,6 @@ type CompleteOrderFormProps = {
   onSubmit: (formData: CheckoutFormInfo) => any;
   backButtonRoute: string;
   eventDataFromPurchase: EventRow[];
-  disabled: boolean;
-  donationForm?: boolean;
 };
 /**
  * Displays the complete order form
@@ -61,8 +59,6 @@ export default function AdminCompleteOrderForm({
   onSubmit,
   backButtonRoute,
   eventDataFromPurchase,
-  disabled,
-  donationForm,
 }: CompleteOrderFormProps): ReactElement {
   const navigate = useNavigate();
   const [firstName, setfirstName] = useState('');
@@ -76,7 +72,7 @@ export default function AdminCompleteOrderForm({
   const [seatingAcc, setseatingAcc] = useState('');
   const [comments, setComments] = useState('');
   const [optIn, setOptIn] = useState(false);
-  const [donation, setDonations] = useState<number>(0); // TODO: may need to add donation to formData if going this route
+  const [donation, setDonations] = useState<number>(0);
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
       firstName,

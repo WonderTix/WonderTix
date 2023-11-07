@@ -77,8 +77,8 @@ function validateEmail(email: string) {
 export default function CompleteOrderForm({
   onSubmit,
   onBack,
-  disabled,
-  donationForm,
+  disabled, // TODO: This prop is being used but has no functionality
+  donationForm, // TODO: This prop is being used but has no functionality
 }: CompleteOrderFormProps): ReactElement {
   const [firstName, setfirstName] = useState('');
   const [lastName, setlastName] = useState('');
