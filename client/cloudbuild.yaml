@@ -7,15 +7,15 @@ steps:
     args: 
       - '-c'
       - |
-        docker build -f client/Dockerfile.dev -t $$ARTIFACTS/client-img-$$ENV:$SHORT_SHA client \
-        --build-arg AUTH0_CLIENT_SECRET=$$AUTH0_CLIENT_SECRET \
-        --build-arg REACT_APP_API_1_URL=$$REACT_APP_API_1_URL \
-        --build-arg REACT_APP_API_2_URL=$$REACT_APP_API_2_URL \
-        --build-arg REACT_APP_AUTH0_AUDIENCE=$$ROOT_URL \
-        --build-arg REACT_APP_AUTH0_CLIENT_ID=$$AUTH0_CLIENT_ID \
-        --build-arg REACT_APP_AUTH0_URL=$$AUTH0_URL \
-        --build-arg REACT_APP_PUBLIC_STRIPE_KEY=$$PUBLIC_STRIPE_KEY \
-        --build-arg REACT_APP_ROOT_URL=$$ROOT_URL \
+        docker build -f client/Dockerfile.dev -t $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA} client \
+        --build-arg AUTH0_CLIENT_SECRET=$${AUTH0_CLIENT_SECRET} \
+        --build-arg REACT_APP_API_1_URL=$${REACT_APP_API_1_URL} \
+        --build-arg REACT_APP_API_2_URL=$${REACT_APP_API_2_URL} \
+        --build-arg REACT_APP_AUTH0_AUDIENCE=$${ROOT_URL} \
+        --build-arg REACT_APP_AUTH0_CLIENT_ID=$${AUTH0_CLIENT_ID} \
+        --build-arg REACT_APP_AUTH0_URL=$${AUTH0_URL} \
+        --build-arg REACT_APP_PUBLIC_STRIPE_KEY=$${PUBLIC_STRIPE_KEY} \
+        --build-arg REACT_APP_ROOT_URL=$${ROOT_URL} \
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_CLIENT_ID'
@@ -31,37 +31,37 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: 'push-client'
     entrypoint: 'bash'
-    args: ['-c', 'docker push $$ARTIFACTS/client-img-$$ENV:$SHORT_SHA']
+    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
 
-  # Deploy client image to Cloud Run without traffic
+  # Tag client as new revision and deploy to Cloud Run without traffic
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-client'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        gcloud run deploy wtix-client-$$ENV \
-        --image $$ARTIFACTS/client-img-$$ENV:$SHORT_SHA \
-        --revision-suffix=$SHORT_SHA \
-        --region $$REGION \
+        gcloud run deploy wtix-client-$${ENV} \
+        --image $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA} \
+        --revision-suffix=${SHORT_SHA} \
+        --region $${REGION} \
         --platform managed \
-        --memory $$CLIENT_MEMORY \
-        --cpu $$CLIENT_CPU \
+        --memory $${CLIENT_MEMORY} \
+        --cpu $${CLIENT_CPU} \
         --cpu-boost \
         --allow-unauthenticated \
         --min-instances 1 \
         --max-instances 10 \
         --no-traffic \
         --tag new \
-        --service-account $$SERVICE_ACCOUNT \
+        --service-account $${SERVICE_ACCOUNT} \
         --set-env-vars=\
-        ENV=$$ENV, \
+        ENV=$${ENV}, \
         --set-secrets=\
-        REACT_APP_AUTH0_CLIENT_ID=AUTH0_CLIENT_ID:$$ENV,\
-        REACT_APP_PUBLIC_STRIPE_KEY=PUBLIC_STRIPE_KEY:$$ENV
+        REACT_APP_AUTH0_CLIENT_ID=AUTH0_CLIENT_ID:$${ENV},\
+        REACT_APP_PUBLIC_STRIPE_KEY=PUBLIC_STRIPE_KEY:$${ENV}
     secretEnv:
       - 'ARTIFACTS'
       - 'CLIENT_CPU'
@@ -70,20 +70,16 @@ steps:
       - 'REGION'
       - 'SERVICE_ACCOUNT'
 
-  # Wake up client before sending it traffic
-  - name: 'mcr.microsoft.com/playwright:latest'
+  # Request page from new revision and wait for container to start
+  - name: 'gcr.io/${PROJECT_ID}/client-img-${_ENV}:${SHORT_SHA}'
     id: 'wake-client'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        npm install playwright
-        node wake-client.js $$NEW_REVISION
+    entrypoint: 'node'
+    dir: 'client'
+    args: ['wake-client.js', '$${NEW_REVISION}']
     secretEnv:
-      - 'ENV'
       - 'NEW_REVISION'
 
-  # Gradually send traffic to new revision, then remove tag
+  # Gradually send traffic to new revision, then remove `new` tag
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'send-traffic'
     entrypoint: 'bash'
@@ -91,23 +87,23 @@ steps:
       - '-c'
       - |
         echo "Sending 5% of traffic to new revision..."
-        gcloud run services update-traffic wtix-client-$$ENV \
-        --region $$REGION \
-        --to-revisions=wtix-client-$$ENV-$SHORT_SHA=5
+        gcloud run services update-traffic wtix-client-$${ENV} \
+        --region $${REGION} \
+        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=5
 
         echo "Waiting 10 seconds before sending more traffic..."
         sleep 10
         
         echo "Sending 100% of traffic to new revision..."
-        gcloud run services update-traffic wtix-client-$$ENV \
-        --region $$REGION \
-        --to-revisions=wtix-client-$$ENV-$SHORT_SHA=100 \
+        gcloud run services update-traffic wtix-client-$${ENV} \
+        --region $${REGION} \
+        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100 \
 
         echo "Waiting 10 seconds before removing tag..."
         sleep 10
 
-        gcloud run services update-traffic wtix-client-$$ENV \
-        --region $$REGION \
+        gcloud run services update-traffic wtix-client-$${ENV} \
+        --region $${REGION} \
         --remove-tags new
     secretEnv:
       - 'ENV'
@@ -144,4 +140,3 @@ availableSecrets:
     env: 'ROOT_URL'
   - versionName: projects/$PROJECT_ID/secrets/SERVICE_ACCOUNT/versions/$_ENV
     env: 'SERVICE_ACCOUNT'
-
