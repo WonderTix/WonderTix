@@ -30,8 +30,8 @@ steps:
   # Push image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     id: 'push-client'
-    entrypoint: 'docker'
-    args: ['push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
+    entrypoint: 'bash'
+    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
