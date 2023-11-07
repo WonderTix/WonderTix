@@ -22,7 +22,7 @@ test('view show', async ({page}) => {
 // Go through all the steps to add a ticket
 // Captures returns needed to construct the confirmation message
 // Verifies the 'Success!' message pops up with the correct event info
-// Updated version of add ticket test
+// Adds and removes its own event for test purposes
 test('add ticket', async ({page}) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
