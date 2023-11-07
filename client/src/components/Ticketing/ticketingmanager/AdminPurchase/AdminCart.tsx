@@ -26,7 +26,9 @@ const AdminCart = ({
 }: AdminCartProps): ReactElement => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const cartItems = location.state?.cartItems || [];
+
   const itemsInCart = cartItems.map((item, index) => (
     <p
       key={index}
@@ -38,6 +40,7 @@ const AdminCart = ({
       <span className='flex-auto text-right'>{toDollar(item.price)}</span>
     </p>
   ));
+
   const total = cartItems.reduce((total, item) => {
     const ticketPrice = item.qty * item.price;
     return total + ticketPrice;
