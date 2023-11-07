@@ -46,7 +46,7 @@ const EventInstanceSelect = (props: EventInstanceSelectProps) => {
       className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl'
       id='time-select'
     >
-      <option className='text-zinc-300' disabled selected={props.check === 'selectTime'}>
+      <option className='text-zinc-300' disabled value={0}>
         select time
       </option>
       {props.eventInstances.map((s) => (

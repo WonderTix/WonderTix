@@ -1,20 +1,40 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import PopUp from '../../PopUp';
 
 
 const Refund = () => {
   const {token} = useFetchToken();
+  const [submitting, setSubmitting] = useState(false);
+  const [orders, setOrders] = useState([]);
   const [show, setShow] = useState({
     showPopUp: false,
     message: '',
     title: '',
     success: true,
-    handle: () => {
-      setShow((p) => ({...p, showPopUp: false}));
-    },
+    showSecondary: false,
+    handleProceed: () => setShow({...show, showPopUp: false}),
+    handleClose: () => setShow({...show, showPopUp: false}),
   });
-  const onSubmit = async (orderID) => {
+  const setPopUp = (title:string, message:string, success:boolean, showPopUp: boolean, handle, secondary) => {
+    setShow({
+      ...show,
+      title,
+      message,
+      success,
+      showPopUp,
+      handleProceed: handle,
+      showSecondary: secondary,
+    });
+  };
+  const formatUSD = new Intl.NumberFormat(
+    'en-us',
+    {
+      currency: 'USD',
+      style: 'currency',
+    });
+
+  const onRefund = async (orderID) => {
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_2_URL}/order/refund/${orderID}`,
@@ -27,45 +47,73 @@ const Refund = () => {
           },
         },
       );
-
       if (!response.ok) {
         throw response;
       }
-
-      setShow({
-        ...show,
-        showPopUp: true,
-        message: `Order ${orderID} successfully refunded`,
-        title: `Order Refund Successful`,
-        success: true,
-      });
+      setOrders((orders) => orders.filter((order) => order.orderid !== orderID));
+      setPopUp(
+        'Refund Successful',
+        `Order ${orderID} successfully refunded`,
+        true,
+        true,
+        show.handleClose,
+        false,
+      );
+      setSubmitting(false);
     } catch (error) {
       const errorMessage = await error.json();
-      setShow({
-        ...show,
-        showPopUp: true,
-        message: `Order ${orderID} refund unsuccessful ${errorMessage.error}`,
-        title: `Order Refund Failed`,
-        success: false,
-      });
+      setPopUp(
+        `Refund Failed`,
+        `Order ${orderID} refund unsuccessful ${errorMessage.error}`,
+        false,
+        true,
+        show.handleClose,
+        false,
+      );
+      setSubmitting(false);
     }
   };
-  const mappedInstances = [
-    {
-      name: 'John Doe',
-      date: '2023-10-24',
-      showings: ['Gone With The Wind', 'Sound Of Music'],
-      orderID: '12345',
-      price: 19.99,
-    },
-    {
-      name: 'John Doe',
-      date: '2023-10-25',
-      showings: 'Gone With The Wind',
-      orderID: '12345',
-      price: 14.99,
-    },
-  ];
+  const onFetchOrders = async (event) => {
+    event.preventDefault();
+    const email = event.target[0].value;
+    if (!email) {
+      setPopUp(
+        `Invalid Search`,
+        `Email required`,
+        false,
+        true,
+        show.handleClose,
+        false,
+      );
+      return;
+    }
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_2_URL}/order/refund?email=${email}`,
+        {
+          credentials: 'include',
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+      if (!response.ok) {
+        throw response;
+      }
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error(error);
+      setPopUp(
+        'Error',
+        'Error fetching orders',
+        false,
+        true,
+        show.handleClose,
+        false,
+      );
+    }
+  };
 
   return (
     <>
@@ -73,82 +121,113 @@ const Refund = () => {
       <PopUp
         title={show.title}
         message={show.message}
-        handleClose={show.handle}
-        handleProceed={show.handle}
+        handleClose={show.handleClose}
+        handleProceed={show.handleProceed}
         success={show.success}
+        showSecondary={show.showSecondary}
       />
       }
       <div className='w-full h-screen overflow-x-hidden absolute '>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>
-            Refund Ticket
+              Refund Ticket
           </h1>
-          <div className='mb-4'>
-            <div id='email-value' className='grid'>
-              <div className='flex'>
-                <svg xmlns='http://www.w3.org/2000/svg' className='pointer-events-none h-5 w-5 absolute ml-6 mt-3' viewBox='0 0 20 20' fill='gray'>
-                  <path d='M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z' />
-                  <path d='M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z' />
-                </svg>
-                <input // search button
-                  type='email'
-                  className='text-black border-2 border-gray rounded-l-full pl-12 w-80 py-2'
-                  id='email-search-input'
-                  placeholder='John_Smith@email.com'
-                />
-                <button id='email-search-button' type='button' className='px-0'>
-                  <div className='hover:bg-sky-500 w-20 rounded-r-full bg-indigo-500 hover:drop-shadow-md active:bg-sky-600'>
-                    <svg xmlns='http://www.w3.org/2000/svg' className='h-11 w-11 pl-6' viewBox='0 0 20 20' fill='white'>
-                      <path fill-rule='evenodd' d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z' clip-rule='evenodd' />
-                    </svg>
-                  </div>
-                </button>
-              </div>
+          <form className='mb-4' onSubmit={onFetchOrders}>
+            <div className='flex'>
+              <svg xmlns="http://www.w3.org/2000/svg" className="pointer-events-none h-5 w-5 absolute ml-6 mt-3" viewBox="0 0 20 20" fill="gray">
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              </svg>
+              <label className = 'hidden'>
+                Email
+              </label>
+              <input // search button
+                type='email'
+                className='text-black border-2 border-gray rounded-l-full pl-12 w-80 py-2'
+                id='email'
+                placeholder='John_Smith@email.com'
+              />
+              <button id='email-search-input' type='submit' className='px-0'>
+                <div className='hover:bg-sky-500 w-20 rounded-r-full bg-indigo-500 hover:drop-shadow-md active:bg-sky-600'>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-11 w-11 pl-6" viewBox="0 0 20 20" fill="white">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
             </div>
-          </div>
-          <table className='w-full min-w-min'>
+          </form>
+          <table className={'w-full min-w-min'}>
             <thead>
               <tr className='grid grid-cols-5 gap-2 bg-gray-200 h-18 rounded-lg shadow-md px-2 mb-2 font-bold'>
                 <td className='row-start-1 justify-self-start py-2 col-span-1'>Name</td>
-                <td className='row-start-1 justify-self-start py-2 col-span-1'>Date</td>
-                <td className='row-start-1 justify-self-start py-2 col-span-1'>Showing(s)</td>
-                <td className='row-start-1 justify-self-start py-2 col-span-1'>Total</td>
+                <td className='row-start-1 justify-self-start py-2 col-span-1'>Order Date & Time</td>
+                <td className='row-start-1 justify-self-start py-2 col-span-1'>Event(s)</td>
+                <td className='row-start-1 justify-self-start py-2 col-span-1'>Order Total</td>
                 <td className='row-start-1 justify-self-center py-2 col-span-1'></td>
               </tr>
             </thead>
             <tbody>
-              {mappedInstances.length === 0 ? (
-                <tr className='text-center text-gray-600'>
-                  <td className='col-span-5'><p>No current results</p></td>
+              {orders.length === 0 ? (
+                <tr className="text-center text-gray-600">
+                  <td className={'col-span-5'}>
+                    <p>
+                    No Refundable Orders
+                    </p>
+                  </td>
                 </tr>
               ) : (
-                mappedInstances.map((instance, index) => (
+                orders.map((instance, index) => (
                   <tr key={index} className='grid grid-cols-5 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {instance.name}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {instance.date}
+                      {new Date(`${instance.orderdate} ${instance.ordertime.split('T')[1].slice(0, 6)}`)
+                        .toLocaleString('en-us', {
+                          month: '2-digit',
+                          day: '2-digit',
+                          year: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {Array.isArray(instance.showings) ? (
                         instance.showings.map((showing, showingIndex) => (
-                          <div key={showingIndex}>{showing}</div>
+                          <p key={showingIndex}>{showing}</p>
                         ))
                       ) : (
                         <div>{instance.showings}</div>
                       )}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {instance.price}
+                      {formatUSD.format(instance.price)}
                     </td>
                     <td className='row-start-1 justify-self-start py-2 col-span-1'>
                       <button
-                        onClick={() => onSubmit(instance.orderID)}
-                        type={'submit'}
-                        className='bg-red-700 hover:bg-red-800 text-white py-2 px-4 rounded active:bg-red-900'
+                        disabled={submitting}
+                        onClick={ () =>
+                          setPopUp(
+                            'Confirm Refund',
+                            'Click continue to refund',
+                            false,
+                            true,
+                            async () => {
+                              setSubmitting(true);
+                              show.handleClose();
+                              await onRefund(instance.orderid);
+                              return;
+                            },
+                            true,
+                          )}
+                        type='button'
+                        className='bg-red-600 hover:bg-red-700 focus:ring-red-500 dark:focus:ring-red-800
+                        w-full inline-flex justify-center rounded-md border border-transparent
+                        shadow-sm px-4 py-2 text-base font-medium text-white
+                        focus:outline-none focus:ring-2 focus:ring-offset-2
+                       tab:ml-3 tab:w-auto tab:text-sm disabled:bg-gray-500'
                       >
-                        Refund
+                      Refund
                       </button>
                     </td>
                   </tr>
