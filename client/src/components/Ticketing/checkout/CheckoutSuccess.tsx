@@ -46,7 +46,6 @@ export default function CheckoutSuccess(): ReactElement {
             onClick={() => navigate('/')}
             className='bg-blue-500 px-5 py-3 text-white text-lg font-normal rounded-xl hover:bg-blue-600'
           >
-            {' '}
             Back to Home
           </button>
         </div>
