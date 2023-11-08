@@ -25,6 +25,10 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
 
   useEffect(() => setCost(item.qty * item.price), [item.qty]);
 
+  useEffect(() => {
+    console.log(item);
+  }, []);
+
   const handleDecrement = () => {
     if (item.qty > 1) {
       dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty - 1}));

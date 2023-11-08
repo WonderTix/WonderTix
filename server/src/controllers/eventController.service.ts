@@ -112,19 +112,22 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-    if (item.price < 0) {
+    if (item.price < 0 && (item.payWhatPrice && item.payWhatPrice < 0)) {
       throw new InvalidInputError(
           422,
           `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
       );
     }
+
+    const itemPrice = item.payWhatCan && item.payWhatPrice ? item.payWhatPrice / item.qty : item.price;
+
     orderItems = orderItems.concat(
         getTickets(
             prisma,
             eventInstance.ticketTypeMap,
             item.typeID,
             item.qty,
-            item.price,
+            itemPrice,
         ),
     );
     cartRows.push({
@@ -134,12 +137,12 @@ export const getOrderItems = async (
           name: eventInstance.events.eventname,
           description: item.desc,
         },
-        unit_amount: item.price * 100,
+        unit_amount: itemPrice * 100,
       },
       quantity: item.qty,
     });
 
-    orderTotal += item.price * item.qty;
+    orderTotal += item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : itemPrice * item.qty;
   }
   for (const [, instance] of eventInstanceMap) {
     eventInstanceQueries.push(
@@ -297,6 +300,7 @@ const validateName = (name: string, type: string): string => {
   }
   return name;
 };
+
 const validateWithRegex = (
     toValidate: string,
     errorMessage: string,
@@ -306,4 +310,8 @@ const validateWithRegex = (
     throw new InvalidInputError(422, errorMessage);
   }
   return toValidate;
+};
+
+const isPayWhatCan = (cartItem: CartItem): boolean => {
+  return cartItem.payWhatCan && !!cartItem.payWhatPrice;
 };
