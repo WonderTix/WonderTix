@@ -71,3 +71,35 @@ export const ShowingInfo4: ShowingInfo = {
   showingQuantity: "100",
   showingWholeDate: "Wed, Sep 15 2021"
 };
+
+export interface CreditCard {
+  cardNumber: string;
+  CVC: string;
+  date: string;
+};
+
+export const ValidVisaCredit: CreditCard = {
+  cardNumber: '4242424242424242',
+  CVC: '999',
+  date: '12/12/2099',
+};
+
+export interface Customer {
+  firstName: string;
+  lastName: string;
+  streetAddress: string;
+  postCode: string;
+  country: string;
+  phoneNumber: string;
+  email: string;
+}
+
+export const JohnDoe: Customer = {
+  firstName: 'John',
+  lastName: 'Doe',
+  streetAddress: '8 Strawberry Ln, Yarmouth Port, MA',
+  postCode: '02675',
+  country: 'USA',
+  phoneNumber: '(508) 362-3909',
+  email: 'test@wondertix.com',
+};
