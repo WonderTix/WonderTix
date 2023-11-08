@@ -11,6 +11,9 @@ const ShowingActivenessToggle =(props) => {
     newFilterSetting: string,
   ) => {
     setFilter(newFilterSetting);
+    if (props.handleFilterChange) {
+      props.handleFilterChange(newFilterSetting);
+    }
   };
 
   return (
@@ -47,6 +50,7 @@ const ShowingActivenessToggle =(props) => {
 
 ShowingActivenessToggle.propTypes = {
   defaultValue: PropTypes.string.isRequired,
+  handleFilterChange: PropTypes.func,
 };
 
 export default ShowingActivenessToggle;
