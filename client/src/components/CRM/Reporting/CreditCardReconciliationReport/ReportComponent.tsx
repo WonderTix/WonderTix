@@ -9,7 +9,7 @@ import EventTotalsByCCComponent from './EventTotalsByCCComponent';
 import {Divider, Button} from '@mui/material';
 
 const ReportComponent = ({filterData}) => {
-    const header = {'org': 'Portland Playhouse', 'range': 'Temp', 'grouped': 'Event'};
+    const header = {'org': 'Portland Playhouse', 'range': 'Temp'};
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
 
@@ -25,7 +25,6 @@ const ReportComponent = ({filterData}) => {
     useEffect(() => {
         setStart(formatDateToMMDDYYYY(filterData.startDate));
         setEnd(formatDateToMMDDYYYY(filterData.endDate));
-        console.log(filterData.groupBy);
     });
 
     return (
@@ -61,7 +60,6 @@ ReportComponent.propTypes = {
     filterData: PropTypes.shape({
         startDate: PropTypes.instanceOf(Date).isRequired,
         endDate: PropTypes.instanceOf(Date).isRequired,
-        groupBy: PropTypes.string.isRequired,
     }),
 };
 
