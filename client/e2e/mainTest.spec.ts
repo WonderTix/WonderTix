@@ -24,6 +24,7 @@ test('view show', async ({page}) => {
 // Verifies the 'Success!' message pops up with the correct event info
 // Updated version of add ticket test
 test('add ticket', async ({page}) => {
+  test.setTimeout(90000);
   const events = new EventsPage(page);
   const main = new MainPage(page);
   await events.goto();
@@ -32,11 +33,12 @@ test('add ticket', async ({page}) => {
   try {
     await main.goto();
     const showing = await main.goSelectShowing(EventsInfo2);
-    expect(EventsInfo2.eventName).toEqual(showing);
+    // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
+    expect(showing).toEqual(EventsInfo2.eventName);
     const date = await main.selectRandomDate();
-    expect(ShowingInfo2.showingWholeDate).toEqual(date);
-    await main.selectRandomTime();
-    await main.selectRandomTicketType();
+    expect(date).toEqual(ShowingInfo2.showingWholeDate);
+    const time = await main.selectRandomTime();
+    const ticketType = await main.selectRandomTicketType();
     const quantity = await main.selectRandomQuantity();
     const dateParts = date.split(' ');
     let confirmMessage: string;
@@ -47,6 +49,10 @@ test('add ticket', async ({page}) => {
     confirmMessage += ' to ' + showing + ' on ' + dateParts[1] + ' ' + dateParts[2] + ' to the cart.';
     await main.clickGetTickets();
     expect(await main.checkAddTicketSucess(confirmMessage)).toBeTruthy();
+    await main.clickTakeMeThere();
+    // 'General Admission - Adult - Fri, Sep 17 - 11:00 AM'
+    const cartInfo = ticketType + ' - ' + dateParts[1] + ' - ' + time;
+    await main.checkCart(EventsInfo2.eventName, cartInfo, quantity);
   } finally {
     await main.goto();
     await events.goToEventFromManage(EventsInfo2.eventFullName);

@@ -19,6 +19,7 @@ export class MainPage {
   readonly getTickets: Locator;
   readonly titleEvent: Locator;
   readonly successHeader: Locator;
+  readonly cartFromSuccess: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -33,6 +34,7 @@ export class MainPage {
     this.getTickets = page.getByTestId('get-tickets');
     this.titleEvent = page.getByTestId('event-title');
     this.successHeader = page.getByRole('heading', {name: 'Success!'});
+    this.cartFromSuccess = page.getByRole('button', {name: 'Take me there!'});
   }
 
   // Initial page navigation - sends browser session to the root address
@@ -119,5 +121,15 @@ export class MainPage {
     } else {
       return false;
     }
+  }
+
+  async clickTakeMeThere() {
+    await this.cartFromSuccess.click();
+  }
+
+  async checkCart(name: string, info:string, quantity: string) {
+    await this.page.getByText(name).isVisible();
+    await this.page.getByText(info).isVisible();
+    await this.page.getByText(quantity, {exact: true}).isVisible();
   }
 }
