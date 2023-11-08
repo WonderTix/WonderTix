@@ -24,22 +24,23 @@ const ShowingActivenessToggle =(props) => {
         exclusive
         onChange={handleFilterChange}
         aria-label='Activeness Toggle Filter'
+        sx={{backgroundColor: 'white'}}
       >
         <ToggleButton
           value='active'
-          sx={{backgroundColor: 'white', fontWeight: 'bold'}}
+          sx={{fontWeight: 'bold'}}
         >
           Active
         </ToggleButton>
         <ToggleButton
           value='inactive'
-          sx={{backgroundColor: 'white', fontWeight: 'bold'}}
+          sx={{fontWeight: 'bold'}}
         >
           Inactive
         </ToggleButton>
         <ToggleButton
           value='all'
-          sx={{backgroundColor: 'white', fontWeight: 'bold'}}
+          sx={{fontWeight: 'bold'}}
         >
           All
         </ToggleButton>

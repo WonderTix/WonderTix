@@ -43,9 +43,8 @@ const InstancesPage = (): ReactElement => {
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
-        // Sorting Decending
-        const sortedData = data.sort((a, b) => b.eventid - a.eventid);
-        setEventsData(sortedData);
+        // Sorting Descending
+        setEventsData([...data.toSorted()].reverse());
       })
       .catch((error) => {
         console.error('Error Fetching Data:', error);
@@ -89,7 +88,7 @@ const InstancesPage = (): ReactElement => {
         </div>
         <ShowingActivenessToggle
           defaultValue={filterSetting}
-          handleFilterChange={handleFilterChange}
+          handleFilterChange={setFilterSetting}
         />
         <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
           {eventsData.map((event) => (
