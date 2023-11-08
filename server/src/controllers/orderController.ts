@@ -154,7 +154,6 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       where: {
         payment_intent: {not: null},
         refund_intent: null,
-        ordertotal: {not: 0},
         contacts: {
           email: {contains: email},
         },
