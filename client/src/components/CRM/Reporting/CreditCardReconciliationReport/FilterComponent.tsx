@@ -9,7 +9,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
-const FilterComponent = ({filterData, onFilterChange, onFilterSubmit, onFilterReset}) => {
+const FilterComponent = ({filterData, onFilterChange, onFilterSubmit, onFilterReset, isDisabled}) => {
     const {startDate, endDate} = filterData;
 
     const [formData, setFormData] = useState({
@@ -49,6 +49,7 @@ const FilterComponent = ({filterData, onFilterChange, onFilterSubmit, onFilterRe
                         end={endDate}
                         onStartDateChange={handleStartDateChange}
                         onEndDateChange={handleEndDateChange}
+                        isDisabled={isDisabled}
                     />
                 </div>
                 <Divider
@@ -73,6 +74,7 @@ FilterComponent.propTypes = {
     onFilterChange: PropTypes.func.isRequired,
     onFilterSubmit: PropTypes.func.isRequired,
     onFilterReset: PropTypes.func.isRequired,
+    isDisabled: PropTypes.bool.isRequired,
 };
 
 export default FilterComponent;

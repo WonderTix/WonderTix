@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import DatePicker from 'react-datepicker';
 
-const DateRangePicker = ({start, end, onStartDateChange, onEndDateChange}) => {
+const DateRangePicker = ({start, end, onStartDateChange, onEndDateChange, isDisabled}) => {
     const handleStartDateChange = (event) => {
         const selectedDate = new Date(event.target.value);
         onStartDateChange(selectedDate);
@@ -51,6 +51,7 @@ const DateRangePicker = ({start, end, onStartDateChange, onEndDateChange}) => {
                         value={formatDateToYYYYMMDD(start)}
                         onChange={handleStartDateChange}
                         className='p-1.5 border rounded text-sm bg-slate-50'
+                        disabled={isDisabled}
                     />
                 </div>
             </div>
@@ -70,6 +71,7 @@ const DateRangePicker = ({start, end, onStartDateChange, onEndDateChange}) => {
                         value={formatDateToYYYYMMDD(end)}
                         onChange={handleEndDateChange}
                         className='p-1.5 border rounded text-sm bg-slate-50'
+                        disabled={isDisabled}
                     />
                 </div>
             </div>
@@ -82,6 +84,7 @@ DateRangePicker.propTypes = {
     end: PropTypes.instanceOf(Date).isRequired,
     onStartDateChange: PropTypes.func.isRequired,
     onEndDateChange: PropTypes.func.isRequired,
+    isDisabled: PropTypes.bool.isRequired,
 };
 
 export default DateRangePicker;

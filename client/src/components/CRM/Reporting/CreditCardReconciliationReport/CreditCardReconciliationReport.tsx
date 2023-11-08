@@ -34,10 +34,6 @@ const CreditCardReconciliationReport=() =>{
     const handleFilterReset = () => {
         setDisplayReport(false);
         setSubmitted(false);
-        setFilterData({
-            startDate: new Date(),
-            endDate: new Date(),
-        });
     };
 
     return (
@@ -85,6 +81,7 @@ const CreditCardReconciliationReport=() =>{
                                 onFilterChange={handleFilterChange}
                                 onFilterSubmit={handleFilterSubmit}
                                 onFilterReset={handleFilterReset}
+                                isDisabled={submitted}
                             />
                             </Box>
                         </Grid>
