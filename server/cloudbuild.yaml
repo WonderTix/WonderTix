@@ -70,8 +70,6 @@ availableSecrets:
   secretManager:
   - versionName: projects/${PROJECT_ID}/secrets/ARTIFACTS/versions/${_ENV}
     env: 'ARTIFACTS'
-  - versionName: projects/${PROJECT_ID}/secrets/AUTH0_AUDIENCE/versions/${_ENV}
-    env: 'AUTH0_AUDIENCE'
   - versionName: projects/${PROJECT_ID}/secrets/AUTH0_URL/versions/${_ENV}
     env: 'AUTH0_URL'
   - versionName: projects/${PROJECT_ID}/secrets/ENV/versions/${_ENV}

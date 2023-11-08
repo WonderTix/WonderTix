@@ -51,7 +51,6 @@ import {seasonController} from './controllers/seasonController';
 import {seasonTicketController} from './controllers/seasonTicketController';
 import {seasonTicketTypeController} from './controllers/seasonTicketTypeController';
 import {singleTicketController} from './controllers/singleTicketController';
-import {statusController} from './controllers/statusController';
 import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
 
@@ -593,7 +592,6 @@ const createServer = async () => {
   app.use('/api/2/season-ticket', seasonTicketController);
   app.use('/api/2/season-ticket-type', seasonTicketTypeController);
   app.use('/api/2/single-ticket', singleTicketController);
-  app.use('/api/2/status', statusController);
   app.use('/api/2/task', taskController);
   app.use('/api/2/task-note', taskNoteController);
   app.use('/api/2/ticket-restriction', ticketRestrictionController);
