@@ -741,3 +741,4 @@ test-results
 */playwright/.cache/
 */playwright/.auth/
 client/playwright/index.html
+client/playwright/*

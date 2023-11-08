@@ -18,6 +18,7 @@ import {
   EventImage,
   getImageDefault,
 } from '../../../../utils/imageURLValidation';
+import ShowingActivenessToggle from '../../GroupToggle';
 
 /**
  * Uses dispatch, navigate, allEvents, and getData
@@ -78,29 +79,7 @@ const InstancesPage = (): ReactElement => {
             Add Event
           </button>
         </div>
-        <div className='mb-6'>
-          <label
-            htmlFor='event-select'
-            className='text-sm text-zinc-500 ml-1 mb-2 block'
-          >
-            Filter (Currently Unavailable)
-          </label>
-          <select
-            id='event-select'
-            className='select w-full tab:max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600'
-            onChange={handleEventChange}
-          >
-            <option value='active' className='px-6 py-3'>
-              Active
-            </option>
-            <option value='inactive' className='px-6 py-3'>
-              Inactive
-            </option>
-            <option value='all' className='px-6 py-3'>
-              All
-            </option>
-          </select>
-        </div>
+        <ShowingActivenessToggle defaultValue='active' />
         <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
           {allEvents.map((event) => (
             <li key={event.id}>

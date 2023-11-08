@@ -1,6 +1,7 @@
 /* eslint-disable require-jsdoc */
 
 import {type Locator, type Page, expect} from '@playwright/test';
+import {EventsInfo, ShowingInfo} from '../testData/ConstsPackage';
 
 export class MainPage {
   readonly page: Page;
@@ -40,10 +41,23 @@ export class MainPage {
     await this.page.goto('/', {timeout: 90000});
   }
 
+  async getShowingLocator(showingName: string) {
+    return this.page.getByText(showingName).first();
+  }
+
   // Click the 'See Showings' button of the first event on the main page
   // Return the name of that showing
   async goFirstShowing() {
     await this.firstShowing.click();
+    const title = await this.titleEvent.textContent();
+    return title;
+  }
+
+  // Find and go to the showing associated with the EventsInfo parameter
+  // Return the name of that showing
+  async goSelectShowing(eventInfo: EventsInfo) {
+    const eventCard = await this.getShowingLocator(eventInfo.eventName + eventInfo.eventDescription + 'See Showings');
+    await eventCard.getByRole('button', {name: 'See Showings'}).click();
     const title = await this.titleEvent.textContent();
     return title;
   }
