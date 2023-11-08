@@ -9,13 +9,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
-const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
-    const {startDate, endDate, groupBy} = filterData;
+const FilterComponent = ({filterData, onFilterChange, onFilterSubmit, onFilterReset}) => {
+    const {startDate, endDate} = filterData;
 
     const [formData, setFormData] = useState({
-        startDate: '',
-        endDate: '',
-        groupBy: 'Event',
+        startDate: startDate,
+        endDate: endDate,
     });
 
     const handleStartDateChange = (date) => {
@@ -26,17 +25,13 @@ const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
         onFilterChange('endDate', date);
     };
 
-    const handleGroupChange = (event) => {
-        onFilterChange('groupBy', event.target.value);
-        setFormData({
-            ...formData,
-            groupBy: event.target.value,
-        });
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         onFilterSubmit();
+    };
+
+    const handleReset = (e) => {
+        onFilterReset();
     };
 
     return (
@@ -46,35 +41,24 @@ const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="px-1 py-1">
-                    <h3 className="font-bold">Batch Date Range:</h3>
+                    <div className='flex justify-center'>
+                        <h3 className="font-bold">Batch Date Range:</h3>
+                    </div>
                     <DateRangePicker
                         start={startDate}
                         end={endDate}
                         onStartDateChange={handleStartDateChange}
                         onEndDateChange={handleEndDateChange}
                     />
-                    <FormControl>
-                        <h3 className="font-bold">Group By:</h3>
-                        <div className="flex justify-between">
-                            <RadioGroup
-                                row
-                                name="row-radio-buttons-group"
-                                value={formData.groupBy}
-                                onChange={handleGroupChange}
-                            >
-                                <FormControlLabel value="Event" control={<Radio />} label="Event" />
-                                <FormControlLabel value="QL Code" control={<Radio />} label="QL Code" />
-                            </RadioGroup>
-                        </div>
-                    </FormControl>
                 </div>
                 <Divider
                     sx={{
                         'backgroundColor': 'slate-100',
                         }}
                 />
-                <div className="flex justify-center pt-1.5 px-1 py-1">
-                    <Button className='font-bold bg-gradient-to-t from slate-400/50 to-slate-100 hover:bg-gradient-to-b hover:shadow-inner shadow shadow-slate-600 active:opacity-75' type="submit" variant="contained">Generate</Button>
+                <div className="flex justify-evenly pt-1.5 px-1 py-1">
+                    <Button className='w-2/5 font-bold bg-gradient-to-t to-slate-100 hover:bg-gradient-to-b hover:shadow-inner shadow shadow-slate-600 active:opacity-75' type="submit" variant="contained" title='Submit filter'>Generate</Button>
+                    <Button className='w-2/5 rounded uppercase font-bold text-center text-slate-900 text-sm bg-gradient-to-t from-slate-400/100 to-slate-100 hover:shadow-inner shadow shadow-slate-600 active:opacity-75' type='reset' title='Reset filter' onClick={handleReset}>Reset</Button>
                 </div>
             </form>
         </div>
@@ -85,10 +69,10 @@ FilterComponent.propTypes = {
     filterData: PropTypes.shape({
       startDate: PropTypes.instanceOf(Date).isRequired,
       endDate: PropTypes.instanceOf(Date).isRequired,
-      groupBy: PropTypes.string.isRequired,
     }).isRequired,
     onFilterChange: PropTypes.func.isRequired,
     onFilterSubmit: PropTypes.func.isRequired,
+    onFilterReset: PropTypes.func.isRequired,
 };
 
 export default FilterComponent;

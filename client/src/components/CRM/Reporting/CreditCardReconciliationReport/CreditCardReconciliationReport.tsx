@@ -9,25 +9,35 @@ import {Box, Grid} from '@mui/material';
 
 const CreditCardReconciliationReport=() =>{
     const [displayReport, setDisplayReport] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     const [filterData, setFilterData] = useState({
         startDate: new Date(),
         endDate: new Date(),
-        groupBy: 'Event', // Default value
       });
 
       // the 2 functions below need reworking
     const handleFilterChange = (name, value) => {
-        setFilterData({
-            ...filterData,
-            [name]: value,
-        });
-        console.log(filterData.groupBy);
+        if (!submitted) {
+            setFilterData({
+                ...filterData,
+                [name]: value,
+            });
+        }
     };
 
     const handleFilterSubmit = () => {
-        console.log('Filter Data:', filterData);
+        setSubmitted(true);
         setDisplayReport(true);
+    };
+
+    const handleFilterReset = () => {
+        setDisplayReport(false);
+        setSubmitted(false);
+        setFilterData({
+            startDate: new Date(),
+            endDate: new Date(),
+        });
     };
 
     return (
@@ -74,6 +84,7 @@ const CreditCardReconciliationReport=() =>{
                                 filterData={filterData}
                                 onFilterChange={handleFilterChange}
                                 onFilterSubmit={handleFilterSubmit}
+                                onFilterReset={handleFilterReset}
                             />
                             </Box>
                         </Grid>
