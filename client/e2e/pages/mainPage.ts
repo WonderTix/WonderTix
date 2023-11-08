@@ -55,6 +55,8 @@ export class MainPage {
     return title;
   }
 
+  // Find and go to the showing associated with the EventsInfo parameter
+  // Return the name of that showing
   async goSelectShowing(eventInfo: EventsInfo) {
     const eventCard = await this.getShowingLocator(eventInfo.eventName + eventInfo.eventDescription + 'See Showings');
     await eventCard.getByRole('button', {name: 'See Showings'}).click();
