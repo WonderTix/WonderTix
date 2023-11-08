@@ -1,9 +1,10 @@
 import React, {useState, MouseEvent} from 'react';
+import PropTypes from 'prop-types';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
-const ShowingActivenessToggle =(defaultValue) => {
-  const [filter, setFilter] = useState(defaultValue);
+const ShowingActivenessToggle =(props) => {
+  const [filter, setFilter] = useState(props.defaultValue);
 
   const handleFilterChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -42,6 +43,10 @@ const ShowingActivenessToggle =(defaultValue) => {
       </ToggleButtonGroup>
     </div>
   );
+};
+
+ShowingActivenessToggle.propTypes = {
+  defaultValue: PropTypes.string.isRequired,
 };
 
 export default ShowingActivenessToggle;
