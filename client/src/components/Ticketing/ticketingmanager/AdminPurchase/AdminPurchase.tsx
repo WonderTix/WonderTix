@@ -8,46 +8,80 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import {DataGrid} from '@mui/x-data-grid';
-import {Checkbox, Button, FormControlLabel} from '@mui/material';
+import {
+  Checkbox,
+  FormControlLabel,
+} from '@mui/material';
 import React, {useEffect, useState} from 'react';
-// import RequireLogin from './RequireLogin';
 import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
-import {useAuth0} from '@auth0/auth0-react';
-import {Link} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
+import PopUp from '../../PopUp';
 
-type EventRow = {
+export type EventRow = {
   id?: number;
+  desc: string;
   eventid?: number;
+  eventinstanceid?: number;
   eventname?: string;
+  eventdate?: string;
   eventtime?: string;
   ticketTypes?: string;
   price?: number;
-  complementary?: boolean;
+  complimentary?: boolean;
   availableSeats?: number;
+  seatsForType?: number;
+  imageurl?: string;
+  qty?: number;
+  typeID?: number;
 };
 
 const AdminPurchase = () => {
-  const [numberOfRows, setNumberOfRows] = useState(1);
-  const emptyRows: EventRow[] = Array.from({length: numberOfRows}, (_, id) => ({
-    id,
-  }));
-  const [eventData, setEventData] = useState<EventRow[]>(emptyRows);
-  const [events, setEvents] = useState([]);
-  const [selectedTime, setSelectedTime] = useState(null);
-  const {getAccessTokenSilently} = useAuth0();
+  const emptyRows: EventRow[] = [{id: 0, desc: ''}];
+  const location = useLocation();
+  const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
+  const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
   const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
-  const [eventListActive, setEventListActive] = useState([]);
-  const [ticketsSold, setTicketsSold] = useState(true);
   const [priceByRowId, setPriceByRowId] = useState({});
   const [ticketTypes, setTicketTypes] = useState([]);
+  const [isEventsLoading, setIsEventsLoading] = useState(true);
+  const [isTicketTypesLoading, setIsTicketTypesLoading] = useState(true);
+  const [openDialog, setDialog] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const navigate = useNavigate();
 
   const addNewRow = () => {
-    // Find the maximum id in the current rows to make sure the new id is unique
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
-    setEventData([...eventData, {id: maxId}]);
+    setEventData([...eventData, {id: maxId, desc: ''}]);
+
+    setPriceByRowId((prevState) => ({...prevState, [maxId]: '0.00'}));
   };
+
+  const handleCloseDialog = () => {
+    setDialog(false);
+  };
+
+  useEffect(() => {
+    if (location.state?.eventDataFromPurchase) {
+      setEventData(location.state.eventDataFromPurchase);
+      const initialAvailableTimes = {};
+      location.state.eventDataFromPurchase.forEach((row) => {
+        if (row.eventid) {
+          initialAvailableTimes[row.id] = eventListFull.filter(
+            (e) => e.eventid === row.eventid,
+          );
+        }
+      });
+      setAvailableTimesByRowId(initialAvailableTimes);
+
+      const initialPrices = {};
+      location.state.eventDataFromPurchase.forEach((row) => {
+        initialPrices[row.id] = (row.price || 0).toFixed(2);
+      });
+      setPriceByRowId(initialPrices);
+    }
+  }, [location.state?.eventDataFromPurchase, eventListFull]);
 
   const removeRow = (rowId) => {
     setEventData(eventData.filter((row) => row.id !== rowId));
@@ -56,10 +90,13 @@ const AdminPurchase = () => {
   const columns = [
     {
       field: 'eventname',
-      headerName: 'Event Name',
-      width: 250,
+      headerName: 'Event Name - ID',
+      width: 200,
       renderCell: (params) => (
-        <select onChange={(e) => handleEventChange(e, params.row)}>
+        <select
+          value={`${params.row.eventid}-${params.row.eventname}`}
+          onChange={(e) => handleEventChange(e, params.row)}
+        >
           <option>Select Event</option>
           {eventList.map((event) => (
             <option
@@ -74,10 +111,13 @@ const AdminPurchase = () => {
     },
     {
       field: 'eventtime',
-      headerName: 'Time',
+      headerName: 'Date - Time',
       width: 200,
       renderCell: (params) => (
         <select
+          value={
+            params.row.eventtime ? params.row.eventinstanceid : 'Select Time'
+          }
           onChange={(e) => handleTimeChange(e, params.row)}
           disabled={!params.row.eventid}
         >
@@ -103,17 +143,12 @@ const AdminPurchase = () => {
       ),
     },
     {
-      field: 'seatsAvailable',
-      headerName: 'Seats Available',
-      width: 150,
-      renderCell: (params) => <span>{params.row.availableSeats ?? ''}</span>,
-    },
-    {
       field: 'ticketTypes',
       headerName: 'Ticket Type',
       width: 200,
       renderCell: (params) => (
         <select
+          value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
           onChange={(e) => handleTicketTypeChange(e, params.row)}
           disabled={!params.row.eventtime}
         >
@@ -127,33 +162,45 @@ const AdminPurchase = () => {
       ),
     },
     {
+      field: 'seatsAvailable',
+      headerName: 'Seats',
+      width: 80,
+      renderCell: (params) => (
+        <span>
+          {params.row.typeID === 1
+            ? params.row.availableSeats
+            : params.row.seatsForType}
+        </span>
+      ),
+    },
+    {
       field: 'price',
       headerName: 'Price',
       width: 100,
       renderCell: (params) => (
-        <div className="flex items-center">
+        <div className='flex items-center'>
           $
           <input
             type='text'
             value={priceByRowId[params.row.id] || ''}
             onChange={(e) => handlePriceChange(e, params.row)}
             onBlur={(e) => handlePriceBlur(e, params.row)}
-            disabled={params.row.complementary || !params.row.ticketTypes}
-            className="w-16"
+            disabled={params.row.complimentary || !params.row.ticketTypes}
+            className='w-16'
           />
         </div>
       ),
     },
     {
-      field: 'complementary',
-      headerName: 'Complementary',
-      width: 150,
+      field: 'complimentary',
+      headerName: 'Comp',
+      width: 60,
       renderCell: (params) => (
         <FormControlLabel
           control={
             <Checkbox
-              checked={params.row.complementary || false}
-              onChange={(e) => handleComplementaryChange(e, params.row)}
+              checked={params.row.complimentary || false}
+              onChange={(e) => handleComplimentaryChange(e, params.row)}
             />
           }
           label=''
@@ -165,13 +212,12 @@ const AdminPurchase = () => {
       headerName: '',
       width: 150,
       renderCell: (params) => (
-        <Button
-          variant='contained'
-          color='secondary'
+        <button
+          className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
           onClick={() => removeRow(params.row.id)}
         >
           Remove
-        </Button>
+        </button>
       ),
     },
   ];
@@ -186,21 +232,25 @@ const AdminPurchase = () => {
         const jsonData = jsonRes.data as any[];
 
         // Deduplicate the events based on eventid
-        const uniqueEventIds = Array.from(
-          new Set(jsonData.map((event) => event.eventid)),
-        );
-        let deduplicatedEvents = uniqueEventIds.map((id) =>
-          jsonData.find((event) => event.eventid === id),
-        );
-
-        // Sort the events in alphabetical order by eventname
-        deduplicatedEvents = deduplicatedEvents.sort((a, b) =>
-          a.eventname.localeCompare(b.eventname),
-        );
+        const deduplicatedEvents = Array.from(
+          new Set(jsonData.map((e) => e.eventid)),
+        )
+          .map((eventid) => jsonData.find((event) => event.eventid === eventid))
+          .sort((a, b) => a.eventname.localeCompare(b.eventname));
 
         setEventList(deduplicatedEvents);
         setEventListFull(jsonData);
-        setEventListActive(deduplicatedEvents.filter((event) => event.active));
+        setIsEventsLoading(false);
+
+        const initialAvailableTimes = {};
+        initialEventData.forEach((row) => {
+          if (row.eventid) {
+            initialAvailableTimes[row.id] = jsonData.filter(
+              (e) => e.eventid === row.eventid,
+            );
+          }
+        });
+        setAvailableTimesByRowId(initialAvailableTimes);
       } catch (error) {
         console.error(error.message);
       }
@@ -221,6 +271,7 @@ const AdminPurchase = () => {
         );
         const jsonRes = await response.json();
         setTicketTypes(jsonRes.data);
+        setIsTicketTypesLoading(false);
       } catch (error) {
         console.error(error.message);
       }
@@ -263,10 +314,14 @@ const AdminPurchase = () => {
     const matchingEvent = eventListFull.find((e) => e.eventid === eventId);
     updateAvailableTimes(eventId, row.id);
 
-    // Create a new array with the updated row data
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        return {...row, ...matchingEvent};
+        return {
+          ...row,
+          ...matchingEvent,
+          eventtime: null,
+          eventinstanceid: null,
+        };
       }
       return r;
     });
@@ -286,174 +341,240 @@ const AdminPurchase = () => {
         return {
           ...row,
           eventtime: selectedEvent?.eventtime,
-          availableSeats: selectedEvent?.availableseats,
+          availableSeats:
+            selectedEvent?.availableSeats || selectedEvent?.availableseats,
+          eventinstanceid: eventInstanceID,
         };
       }
       return r;
     });
     setEventData(updatedRows);
-    setSelectedTime(eventInstanceID);
   };
 
-  const handleTicketTypeChange = (event, row) => {
+  const handleTicketTypeChange = async (event, row) => {
     const ticketTypeId = parseInt(event.target.value);
     const selectedType = ticketTypes.find((type) => type.id === ticketTypeId);
 
     // Extract the numerical value of the price
     const price = parseFloat(selectedType?.price.replace(/[^\d.-]/g, '')) || 0;
 
-    // Update the eventData
+    let seatsForType;
+
+    if (row.eventinstanceid) {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_API_1_URL}/tickets/restrictions`,
+        );
+        const ticketRestrictionData = await response.json();
+
+        // Find the matching restriction
+        const restriction = ticketRestrictionData.data.find(
+          (tr) =>
+            tr.eventinstanceid === row.eventinstanceid &&
+            tr.tickettypeid === ticketTypeId,
+        );
+
+        // Calculate seatsForType value
+        seatsForType = restriction
+          ? restriction.ticketlimit - restriction.ticketssold
+          : 0;
+      } catch (error) {
+        console.error('Error fetching ticket restrictions:', error);
+      }
+    }
+
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        return {...row, ticketTypes: selectedType.description, price: price};
+        return {
+          ...r,
+          ticketTypes: selectedType.description,
+          price: row.complimentary ? 0 : price,
+          typeID: ticketTypeId,
+          seatsForType: seatsForType,
+        };
       }
       return r;
     });
     setEventData(updatedRows);
 
-    // Update the priceByRowId
-    setPriceByRowId((prevState) => ({
-      ...prevState,
-      [row.id]: price.toFixed(2),
-    }));
+    if (!row.complimentary) {
+      setPriceByRowId((prevState) => ({
+        ...prevState,
+        [row.id]: price.toFixed(2),
+      }));
+    }
   };
 
   const handlePriceChange = (event, row) => {
-    if (row.complementary) return; // If complementary, no changes allowed
-    const newPrice = event.target.value;
+    if (row.complimentary) return; // If complimentary, no changes allowed
+    const newPriceString = event.target.value;
+
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: newPrice,
+      [row.id]: newPriceString,
     }));
   };
 
   const handlePriceBlur = (event, row) => {
-    let newPrice = parseFloat(event.target.value).toFixed(2);
-    if (isNaN(parseFloat(newPrice))) {
-      newPrice = '0.00';
-    }
+    const newPrice = parseFloat(event.target.value);
+
+    // Format the value once the user moves out of the input
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: newPrice,
+      [row.id]: isNaN(newPrice) ? '0.00' : newPrice.toFixed(2),
     }));
+
+    const updatedEventData = eventData.map((r) => {
+      if (r.id === row.id) {
+        return {
+          ...r,
+          price: isNaN(newPrice) ? 0 : newPrice,
+        };
+      }
+      return r;
+    });
+    setEventData(updatedEventData);
   };
 
-  const handleComplementaryChange = (event, row) => {
+  const handleComplimentaryChange = (event, row) => {
     const isChecked = event.target.checked;
-    // Update row with complementary flag
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {
           ...row,
-          complementary: isChecked,
+          complimentary: isChecked,
           price: isChecked ? 0 : row.price,
         };
       }
       return r;
     });
     setEventData(updatedRows);
-    // Also update the priceByRowId to reflect the change in the price
-    if (isChecked) {
-      setPriceByRowId((prevState) => ({
-        ...prevState,
-        [row.id]: '0.00', // Set to $0 if complementary
-      }));
-    }
+
+    // Update the priceByRowId to reflect the change in the price
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: isChecked ? '0.00' : (row.price || 0).toFixed(2), // Set to $0 if complimentary
+    }));
   };
 
   const handlePurchase = () => {
-    // Redirect to checkout page
-  };
-
-  const getEventData = async (event) => {
-    try {
-      const token = await getAccessTokenSilently({
-        audience: process.env.REACT_APP_ROOT_URL,
-        scope: 'admin',
-      });
-      const response = await fetch(
-        process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${event}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        },
-      );
-      const jsonRes = await response.json();
-      const jsonData = jsonRes.data;
-      const eventData = jsonData
-        .map((item, index) => {
-          const row = item.row.slice(1, -1).split(',');
-          if (!row || !row[0]) {
-            // Check if the value in column 0 is present
-            setTicketsSold(false);
-            return null; // Exit early if no tickets sold
-          }
-          setTicketsSold(true);
-          return {
-            id: index,
-            firstname: row[1],
-            lastname: row[2],
-            num_tickets: row[12],
-            arrived: false,
-            vip: row[3] === 't',
-            donorbadge: row[4] === 't',
-            accommodations: row[5],
-          };
-        })
-        .filter(Boolean);
-
-      setEventData(eventData);
-    } catch (error) {
-      console.error(error.message);
+    if (eventData.length === 0) {
+      setDialog(true);
+      setErrMsg('Cart is empty.');
+      return;
     }
+    for (const row of eventData) {
+      if (
+        !row.eventid ||
+        !row.eventtime ||
+        !row.ticketTypes ||
+        typeof row.price === 'undefined'
+      ) {
+        setDialog(true);
+        setErrMsg('Missing selection.');
+        return;
+      }
+    }
+
+    const aggregatedCartItems = {};
+
+    eventData.forEach((row) => {
+      const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
+      if (aggregatedCartItems[key]) {
+        // If this item already exists in the cart, qty++
+        aggregatedCartItems[key].qty += 1;
+      } else {
+        // If this item doesn't exist in the cart, add it
+        aggregatedCartItems[key] = {
+          product_id: row.eventinstanceid,
+          price: row.price,
+          desc: row.ticketTypes,
+          typeID: row.typeID,
+          date: new Date(row.eventdate),
+          name: row.eventname,
+          product_img_url: row.imageurl,
+          qty: 1, // default 1
+          payWhatCan: false,
+        };
+      }
+    });
+
+    for (const key in aggregatedCartItems) {
+      if (Object.prototype.hasOwnProperty.call(aggregatedCartItems, key)) {
+        const item = aggregatedCartItems[key];
+        const correspondingRow = eventData.find(
+          (row) =>
+            row.eventinstanceid === item.product_id &&
+            row.typeID === item.typeID,
+        );
+        const available =
+          correspondingRow.typeID === 1
+            ? correspondingRow.availableSeats
+            : correspondingRow.seatsForType;
+
+        if (item.qty > available) {
+          setDialog(true);
+          setErrMsg('Quantity selected exceeds available seats.');
+          return;
+        }
+      }
+    }
+
+    const cartItems = Object.values(aggregatedCartItems);
+    navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
   };
 
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute '>
-      <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-        <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
-          Purchase Tickets
-        </h1>
-        <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
-          {ticketsSold ? (
-            <DataGrid
-              className='bg-white'
-              autoHeight
-              disableSelectionOnClick
-              rows={eventData}
-              columns={columns}
-              pageSize={100}
-              hideFooter
-            />
-          ) : (
-            <p className='text-xl font-bold text-red-600'>
-            No tickets sold for this show
-            </p>
-          )}
-          <div className='mt-4'>
-            <Button variant='contained' color='primary' onClick={addNewRow}>
-              Add Ticket
-            </Button>
-          </div>
-          <div className='mt-4 text-center'>
-            <Link to='/ticketing/admincheckout'>
-              <Button
-                variant='contained'
-                style={{
-                  backgroundColor: 'green',
-                  color: 'white',
-                  fontSize: 'larger',
-                  textTransform: 'none',
-                }}
+    <div className="w-full h-screen absolute">
+      <div className='w-full h-screen overflow-x-hidden absolute '>
+        <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
+            Purchase Tickets
+          </h1>
+          <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
+            {isEventsLoading || isTicketTypesLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <DataGrid
+                className='bg-white'
+                autoHeight
+                disableSelectionOnClick
+                rows={eventData}
+                columns={columns}
+                pageSize={100}
+                hideFooter
+              />
+            )}
+            <div className='mt-4'>
+              <button
+                className='bg-blue-500 px-2 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2'
+                onClick={addNewRow}
               >
-                Proceed To Checkout
-              </Button>
-            </Link>
+                Add Ticket
+              </button>
+            </div>
+            <div className='mt-4 text-center'>
+              <button
+                className='bg-green-600 px-8 py-1 text-white rounded-xl hover:bg-green-700 disabled:opacity-40 m-2'
+                onClick={handlePurchase}
+              >
+                Proceed to Checkout
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      {
+        openDialog && (
+          <PopUp
+            title="Error"
+            message={errMsg}
+            handleProceed={handleCloseDialog}
+            handleClose={handleCloseDialog}
+            success={false}
+          />
+        )
+      }
     </div>
   );
 };

@@ -1,5 +1,7 @@
 import {Form} from 'react-final-form';
 import React, {ReactElement, useState} from 'react';
+import {useNavigate} from 'react-router';
+import {EventRow} from './AdminPurchase';
 
 /**
  * Info for checkout form
@@ -16,6 +18,7 @@ import React, {ReactElement, useState} from 'react';
  * @param {string} visitSource
  * @param {string} seatingAcc
  * @param {string} comments
+ * @param {number} donation
  */
 export interface CheckoutFormInfo {
   optIn: boolean;
@@ -29,35 +32,35 @@ export interface CheckoutFormInfo {
   visitSource?: string;
   seatingAcc: string;
   comments?: string;
+  donation?: number;
 }
 
 /**
  * Used to complete order
  *
  * @param {Function} onSubmit
- * @param {Function} onBack
  * @param {boolean} disabled
  * @param {boolean} donationForm
  */
 type CompleteOrderFormProps = {
   onSubmit: (formData: CheckoutFormInfo) => any;
-  onBack: () => any;
-  disabled: boolean;
-  donationForm?: boolean;
+  backButtonRoute: string;
+  eventDataFromPurchase: EventRow[];
 };
 /**
  * Displays the complete order form
  *
  * @param {Function} onSubmit onSubmit callback function
- * @param {Function} onBack onBack callback function
+ * @param CompleteOrderFormProps.backButtonRoute
+ * @param CompleteOrderFormProps.eventDataFromPurchase
  * @returns {ReactElement}
  */
-export default function CompleteOrderForm({
+export default function AdminCompleteOrderForm({
   onSubmit,
-  onBack,
-  disabled,
-  donationForm,
+  backButtonRoute,
+  eventDataFromPurchase,
 }: CompleteOrderFormProps): ReactElement {
+  const navigate = useNavigate();
   const [firstName, setfirstName] = useState('');
   const [lastName, setlastName] = useState('');
   const [streetAddress, setstreetAddress] = useState('');
@@ -69,7 +72,7 @@ export default function CompleteOrderForm({
   const [seatingAcc, setseatingAcc] = useState('');
   const [comments, setComments] = useState('');
   const [optIn, setOptIn] = useState(false);
-  const [donation, setDonations] = useState(''); // TODO: may need to add donation to formData if going this route
+  const [donation, setDonations] = useState<number>(0);
   const handleSubmit = () => {
     const formData: CheckoutFormInfo = {
       firstName,
@@ -82,6 +85,7 @@ export default function CompleteOrderForm({
       visitSource,
       seatingAcc,
       comments,
+      donation,
       optIn,
     };
     onSubmit(formData);
@@ -325,7 +329,12 @@ export default function CompleteOrderForm({
                       id='donation'
                       onChange={(
                         ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setDonations(ev.target.value)}
+                      ): void => {
+                        const donationValue: number = parseFloat(
+                          ev.target.value,
+                        );
+                        setDonations(donationValue);
+                      }}
                       placeholder='Enter donation amount'
                     />
                   </div>
@@ -334,7 +343,9 @@ export default function CompleteOrderForm({
               <div className='w-full flex flex-wrap justify-center md:flex-row sm:justify-between mt-4'>
                 <button
                   className='bg-red-500 px-8 py-1 text-white rounded-xl hover:bg-red-600 m-2'
-                  onClick={onBack}
+                  onClick={() =>
+                    navigate(backButtonRoute, {state: {eventDataFromPurchase}})
+                  }
                 >
                   Back
                 </button>
