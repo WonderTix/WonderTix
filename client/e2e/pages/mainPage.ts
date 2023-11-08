@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 
 import {type Locator, type Page, expect} from '@playwright/test';
-import {EventsInfo, ShowingInfo} from '../testData/ConstsPackage';
+import {EventsInfo, ShowingInfo, CreditCard, Customer} from '../testData/ConstsPackage';
 
 export class MainPage {
   readonly page: Page;
@@ -20,6 +20,26 @@ export class MainPage {
   readonly titleEvent: Locator;
   readonly successHeader: Locator;
   readonly cartFromSuccess: Locator;
+  readonly checkoutFromCart: Locator;
+
+  // Below elements are on the checkout workflow
+  readonly cartContinue: Locator;
+  readonly cartFirstName: Locator;
+  readonly cartLastName: Locator;
+  readonly cartStreetAddress: Locator;
+  readonly cartPostCode: Locator;
+  readonly cartCountry: Locator;
+  readonly cartPhone: Locator;
+  readonly cartEmail: Locator;
+  readonly cartNext: Locator;
+  readonly stripeEmail: Locator;
+  readonly stripeCardNumber: Locator;
+  readonly stripeDate: Locator;
+  readonly stripeCVC: Locator;
+  readonly stripeFullName: Locator;
+  readonly stripeZIP: Locator;
+  readonly stripeCheckout: Locator;
+  readonly stripeOrderConfirmation: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -35,6 +55,25 @@ export class MainPage {
     this.titleEvent = page.getByTestId('event-title');
     this.successHeader = page.getByRole('heading', {name: 'Success!'});
     this.cartFromSuccess = page.getByRole('button', {name: 'Take me there!'});
+    this.checkoutFromCart = page.getByRole('button', {name: 'Proceed To Checkout'});
+
+    this.cartContinue = page.getByRole('button', {name: 'Continue'});
+    this.cartFirstName = page.locator('#first-name');
+    this.cartLastName = page.locator('#last-name');
+    this.cartStreetAddress = page.locator('#address');
+    this.cartPostCode = page.locator('#zipcode');
+    this.cartCountry = page.locator('#country');
+    this.cartPhone = page.locator('#phone-number');
+    this.cartEmail = page.locator('#contact-email');
+    this.cartNext = page.getByRole('button', {name: 'Next'});
+    this.stripeEmail = page.locator('#email');
+    this.stripeCardNumber = page.locator('#cardNumber');
+    this.stripeDate = page.locator('#cardExpiry');
+    this.stripeCVC = page.locator('#cardCvc');
+    this.stripeFullName = page.locator('#billingName');
+    this.stripeZIP = page.locator('#billingPostalCode');
+    this.stripeCheckout = page.getByTestId('hosted-payment-submit-button');
+    this.stripeOrderConfirmation = page.getByText('Thank you for your purchase!');
   }
 
   // Initial page navigation - sends browser session to the root address
@@ -133,5 +172,37 @@ export class MainPage {
     await this.page.getByText(name).isVisible();
     await this.page.getByText(info).isVisible();
     await this.page.getByText(quantity, {exact: true}).isVisible();
+  }
+
+  async clickCartCheckout() {
+    await this.checkoutFromCart.click();
+    await this.cartContinue.click();
+  }
+
+  async fillCustomerInfo(customer: Customer) {
+    await this.cartFirstName.fill(customer.firstName);
+    await this.cartLastName.fill(customer.lastName);
+    await this.cartStreetAddress.fill(customer.streetAddress);
+    await this.cartPostCode.fill(customer.postCode);
+    await this.cartCountry.fill(customer.country);
+    await this.cartPhone.fill(customer.phoneNumber);
+    await this.cartEmail.fill(customer.email);
+  }
+
+  async clickCartNext() {
+    await this.cartNext.click();
+  }
+
+  async fillStripeInfo(customer: Customer, ccInfo: CreditCard) {
+    await this.stripeEmail.fill(customer.email);
+    await this.stripeCardNumber.fill(ccInfo.cardNumber);
+    await this.stripeDate.fill(ccInfo.date);
+    await this.stripeCVC.fill(ccInfo.CVC);
+    await this.stripeFullName.fill(customer.fullName);
+    await this.stripeZIP.fill(customer.postCode);
+  }
+
+  async clickStripeCheckout() {
+    await this.stripeCheckout.click();
   }
 }

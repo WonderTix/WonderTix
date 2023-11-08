@@ -1,8 +1,7 @@
 import {test, expect} from '@playwright/test';
 import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
-import {EventsInfo2} from './testData/ConstsPackage';
-import {ShowingInfo2} from './testData/ConstsPackage';
+import {EventsInfo2, ShowingInfo2, JohnDoe, ValidVisaCredit} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {
@@ -50,9 +49,14 @@ test('add ticket', async ({page}) => {
     await main.clickGetTickets();
     expect(await main.checkAddTicketSucess(confirmMessage)).toBeTruthy();
     await main.clickTakeMeThere();
-    // 'General Admission - Adult - Fri, Sep 17 - 11:00 AM'
     const cartInfo = ticketType + ' - ' + dateParts[1] + ' - ' + time;
     await main.checkCart(EventsInfo2.eventName, cartInfo, quantity);
+    await main.clickCartCheckout();
+    await main.fillCustomerInfo(JohnDoe);
+    await main.clickCartNext();
+    await main.fillStripeInfo(JohnDoe, ValidVisaCredit);
+    await main.clickStripeCheckout();
+    await expect(main.stripeOrderConfirmation).toBeVisible();
   } finally {
     await main.goto();
     await events.goToEventFromManage(EventsInfo2.eventFullName);

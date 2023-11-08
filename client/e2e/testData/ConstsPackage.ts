@@ -79,14 +79,15 @@ export interface CreditCard {
 };
 
 export const ValidVisaCredit: CreditCard = {
-  cardNumber: '4242424242424242',
+  cardNumber: '4242 4242 4242 4242',
   CVC: '999',
-  date: '12/12/2099',
+  date: '12 / 30',
 };
 
 export interface Customer {
   firstName: string;
   lastName: string;
+  fullName: string;
   streetAddress: string;
   postCode: string;
   country: string;
@@ -97,6 +98,7 @@ export interface Customer {
 export const JohnDoe: Customer = {
   firstName: 'John',
   lastName: 'Doe',
+  fullName: 'John Doe',
   streetAddress: '8 Strawberry Ln, Yarmouth Port, MA',
   postCode: '02675',
   country: 'USA',
