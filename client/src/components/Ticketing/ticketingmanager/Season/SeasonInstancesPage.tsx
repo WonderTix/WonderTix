@@ -26,45 +26,35 @@ interface SeasonInstancesProp {
 const SeasonInstancesPage = (props: SeasonInstancesProp) => {
   const navigate = useNavigate();
   const {token} = props;
-  const [seasons, setAllSeasons] = useState<Seasons[]>([]);
+  const [filterSetting, setFilterSetting] = useState('active');
+  const [seasonData, setSeasonData] = useState([]);
 
-  const getAllSeasons = async () => {
-    try {
-      const getAllSeasonsRes = await fetch(
-        process.env.REACT_APP_API_2_URL + '/season',
-        {
-          credentials: 'include',
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (!getAllSeasonsRes.ok) {
-        throw new Error('Failed to fetch all seasons');
-      }
-
-      const seasonsData = await getAllSeasonsRes.json();
-      setAllSeasons(seasonsData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
-    getAllSeasons();
-  }, []);
+    let apiURL;
 
-  /**
-   * Based on active/inactive/all
-   *
-   * @param event
-   */
-  const handleEventChange = (event) => {
-    // TODO: handle the season type change when active/inactive is properly implemented
-  };
+    if (filterSetting === 'active') {
+      apiURL = process.env.REACT_APP_API_2_URL + '/season/active';
+    } else if (filterSetting === 'inactive') {
+      apiURL = process.env.REACT_APP_API_2_URL + '/season/inactive';
+    } else {
+      apiURL = process.env.REACT_APP_API_2_URL + '/season';
+    }
+
+    fetch(apiURL, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Received Season Data:', data);
+      setSeasonData([...data.toSorted()].reverse());
+    })
+    .catch((error) => {
+      console.error('Error Fetching Season Data:', error);
+    });
+  }, [filterSetting]);
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
@@ -99,9 +89,12 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
             Add Season
           </button>
         </section>
-        <ShowingActivenessToggle defaultValue='active' />
+        <ShowingActivenessToggle
+          defaultValue={filterSetting}
+          handleFilterChange={setFilterSetting}
+        />
         <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
-          {seasons.map((season) => (
+          {seasonData.map((season) => (
             <li key={season.seasonid}>
               <button
                 onClick={() =>
