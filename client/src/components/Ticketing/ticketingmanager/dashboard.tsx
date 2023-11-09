@@ -196,7 +196,7 @@ const Dashboard = (): ReactElement => {
                 />
               </svg>
             }
-            title='Refund Ticket'
+            title='Refund Orders'
             route='/ticketing/refund'
           />
         </div>
