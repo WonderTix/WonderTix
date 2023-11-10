@@ -69,7 +69,7 @@ const ContactResults = ({
           <div className='font-semibold'>
           Customer name:
           </div>
-          <div>
+          <div data-testid = 'customer-name'>
             {firstname +' '+lastname}
           </div>
         </div>
@@ -77,7 +77,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             ID:
           </div>
-          <div>
+          <div data-testid = 'customer-id'>
             {contactid}
           </div>
         </div>
@@ -85,7 +85,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             Email:
           </div>
-          <div>
+          <div data-testid = 'customer-email'>
             {email}
           </div>
         </div>
@@ -93,7 +93,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             Phone:
           </div>
-          <div>
+          <div data-testid = 'customer-phone'>
             {phone}
           </div>
         </div>
@@ -101,7 +101,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             Customer Address:
           </div>
-          <div>
+          <div data-testid = 'customer-address'>
             {address}
           </div>
         </div>
@@ -109,7 +109,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             Newsletter:
           </div>
-          <div>
+          <div data-testid = 'customer-newsletter'>
             {'' + newsletter}
           </div>
         </div>
@@ -117,7 +117,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             Donorbadge:
           </div>
-          <div>
+          <div data-testid = 'customer-donorbadge'>
             {donorbadge}
           </div>
         </div>
@@ -125,7 +125,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             Seating Accommodation:
           </div>
-          <div>
+          <div data-testid = 'customer-accommodation'>
             { '' + seatingaccom }
           </div>
         </div>
@@ -133,7 +133,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             VIP:
           </div>
-          <div>
+          <div data-testid = 'customer-vip'>
             { '' + vip }
           </div>
         </div>
@@ -141,7 +141,7 @@ const ContactResults = ({
           <div className='font-semibold'>
             Volunteer List:
           </div>
-          <div>
+          <div data-testid = 'customer-volunteer'>
             {'' + volunteerlist}
           </div>
         </div>
