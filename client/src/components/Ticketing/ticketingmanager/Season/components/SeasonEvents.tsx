@@ -43,7 +43,6 @@ const SeasonEvents = (props: SeasonEventsProps) => {
       ...eventToUpdate,
       seasonid_fk: null,
     };
-    delete eventToUpdate['deletedat'];
 
     const updateEventCall = await updateEventSeason(eventToUpdate, token);
     if (updateEventCall) {
@@ -68,38 +67,21 @@ const SeasonEvents = (props: SeasonEventsProps) => {
 
   const handleAddEventToSeason = async (eventIdToAdd: number) => {
     let eventToAdd = eventsNotInSeason.find(
-      (event) => Number(event.id) === eventIdToAdd,
+      (event) => Number(event.eventid) === eventIdToAdd,
     );
-    const eventToAddCopy = {...eventToAdd};
     const updatedEventsNotInSeason = eventsNotInSeason.filter((event) => {
-      return Number(event.id) !== eventIdToAdd;
+      return Number(event.eventid) !== eventIdToAdd;
     });
 
-    // Temporary solution until Events API is updated (Line 94 - 113)
-    // Fetch all event API returns data with different property names than what update event API requires as payload
-    const {
-      id: eventId,
-      description: eventDescription,
-      title: eventName,
-    } = eventToAdd;
     eventToAdd = {
       ...eventToAdd,
-      eventid: eventId,
-      eventname: eventName,
-      eventdescription: eventDescription,
       seasonid_fk: seasonId,
     };
-    delete eventToAdd['id'];
-    delete eventToAdd['seasonid'];
-    delete eventToAdd['seasonticketeligible'];
-    delete eventToAdd['numshows'];
-    delete eventToAdd['description'];
-    delete eventToAdd['title'];
 
     const updateEventCall = await updateEventSeason(eventToAdd, token);
     setShowPopUp(true);
     if (updateEventCall) {
-      setAllEventInfo([...allEventInfo, eventToAddCopy]);
+      setAllEventInfo([...allEventInfo, eventToAdd]);
       setEventsNotInSeason(updatedEventsNotInSeason);
       setPopUpMessage({
         title: 'Success',
