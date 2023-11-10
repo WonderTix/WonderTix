@@ -12,8 +12,8 @@ interface SeasonEventsProps {
 
 const SeasonEvents = (props: SeasonEventsProps) => {
   const {seasonId, token, isFormEditing, setShowPopUp, setPopUpMessage} = props;
-  const [allEventInfo, setAllEventInfo] = useState<any>([]);
-  const [eventsNotInASeason, setEventsNotInASeason] = useState<any>([]);
+  const [eventsInSeason, setEventsInSeason] = useState<any>([]);
+  const [eventsNotInAnySeason, setEventsNotInAnySeason] = useState<any>([]);
   const [isAddEventActive, setIsAddEventActive] = useState<boolean>(false);
 
   const handleGetAllEvents = async () => {
@@ -26,16 +26,16 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         (event) => event.seasonid_fk === null,
       );
 
-      setAllEventInfo(eventsInSeason);
-      setEventsNotInASeason(unassignedEvents);
+      setEventsInSeason(eventsInSeason);
+      setEventsNotInAnySeason(unassignedEvents);
     }
   };
 
   const handleRemoveEvent = async (eventIdToRemove: number) => {
-    const updatedEvents = allEventInfo.filter(
+    const updatedEvents = eventsInSeason.filter(
       (event) => Number(event.eventid) !== eventIdToRemove,
     );
-    let eventToUpdate = allEventInfo.find(
+    let eventToUpdate = eventsInSeason.find(
       (event) => Number(event.eventid) === eventIdToRemove,
     );
 
@@ -46,8 +46,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
 
     const updateEventCall = await updateEventSeason(eventToUpdate, token);
     if (updateEventCall) {
-      setAllEventInfo(updatedEvents);
-      setEventsNotInASeason([...eventsNotInASeason, eventToUpdate]);
+      setEventsInSeason(updatedEvents);
+      setEventsNotInAnySeason([...eventsNotInAnySeason, eventToUpdate]);
     }
   };
 
@@ -66,10 +66,10 @@ const SeasonEvents = (props: SeasonEventsProps) => {
   };
 
   const handleAddEventToSeason = async (eventIdToAdd: number) => {
-    let eventToAdd = eventsNotInASeason.find(
+    let eventToAdd = eventsNotInAnySeason.find(
       (event) => Number(event.eventid) === eventIdToAdd,
     );
-    const updatedEventsNotInASeason = eventsNotInASeason.filter((event) => {
+    const updatedEventsNotInASeason = eventsNotInAnySeason.filter((event) => {
       return Number(event.eventid) !== eventIdToAdd;
     });
 
@@ -81,8 +81,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
     const updateEventCall = await updateEventSeason(eventToAdd, token);
     setShowPopUp(true);
     if (updateEventCall) {
-      setAllEventInfo([...allEventInfo, eventToAdd]);
-      setEventsNotInASeason(updatedEventsNotInASeason);
+      setEventsInSeason([...eventsInSeason, eventToAdd]);
+      setEventsNotInAnySeason(updatedEventsNotInASeason);
       setPopUpMessage({
         title: 'Success',
         message: 'The event has been added to the season!',
@@ -107,10 +107,10 @@ const SeasonEvents = (props: SeasonEventsProps) => {
   }, []);
 
   useEffect(() => {
-    if (eventsNotInASeason.length > 0) {
-      eventsNotInASeason.sort((a, b) => b.eventid - a.eventid);
+    if (eventsNotInAnySeason.length > 0) {
+      eventsNotInAnySeason.sort((a, b) => b.eventid - a.eventid);
     }
-  }, [eventsNotInASeason]);
+  }, [eventsNotInAnySeason]);
 
   return (
     <div className='rounded-xl p-7 bg-white text-lg mt-5 shadow-xl'>
@@ -163,8 +163,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
               <p>Close</p>
             </button>
           </div>
-          {eventsNotInASeason.length !== 0 ? (
-            eventsNotInASeason.map((event) => {
+          {eventsNotInAnySeason.length !== 0 ? (
+            eventsNotInAnySeason.map((event) => {
               return (
                 <EventCard
                   key={event.eventid}
@@ -183,7 +183,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
           )}
         </div>
       )}
-      {allEventInfo.map((event) => {
+      {eventsInSeason.map((event) => {
         return (
           <EventCard
             key={event.eventid}
