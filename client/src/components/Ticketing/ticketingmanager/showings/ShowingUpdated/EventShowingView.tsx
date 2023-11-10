@@ -14,22 +14,13 @@ interface EventInstanceViewProps {
 
 export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
-
   const {ticketTypes, editing, showPopUp} = useEvent();
-  const [editPrices, setEditedPrices] = useState({});
 
   const showingDate = new Date(
     `${toDateStringFormat(showing.eventdate)} ${showing.eventtime
       .split('T')[1]
       .slice(0, 8)}`,
   );
-
-  const handlePriceChange = (typeID, price) => {
-    setEditedPrices((prevState) => ({
-      ...prevState,
-      [typeID]: price,
-    }));
-  };
 
   return (
     <div className={'bg-gray-300 rounded-xl p-2'}>
@@ -100,10 +91,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
                       )}
                     </td>
                     <td className={'px-2'}>
-                      <input
-                      type='string'
-                      value={editPrices[type.typeID] || getTicketTypePrice(type.typeID, 'price', ticketTypes)}
-                      onChange={(e) => handlePriceChange(type.typeID, parseFloat(e.target.value))} />
+                      {getTicketTypePrice(type.typeID, 'price', ticketTypes)}
                     </td>
                     <td className={'px-2'}>
                       {getTicketTypePrice(

@@ -83,6 +83,14 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 className={inputControlClassName}
               />
               <Field
+                name='tickeprice'
+                component={InputControl}
+                label='Change Ticket Price'
+                type='number'
+                id={values.eventinstanceid}
+                className={inputControlClassName}
+              />
+              <Field
                 name='totalseats'
                 component={InputControl}
                 label='Ticket Quantity'
