@@ -10,7 +10,6 @@ import {
 } from './utils/apiRequest';
 import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
-import {FormControlLabel, Checkbox} from '@mui/material';
 
 const SeasonInfo = (props: SeasonProps) => {
   const {
@@ -214,12 +213,13 @@ const SeasonInfo = (props: SeasonProps) => {
             />
           </label>
           <div id='form-checkboxes' className='flex gap-7'>
-            <div className='checkboxes'>
-              <FormControlLabel
-                control={<Checkbox />}
-                label='Use Default Image'
+            <div className='checkbox-2'>
+              <input
+                type='checkbox'
+                id='defaultImage'
+                name='defaultImage'
+                className='mr-2'
                 checked={imageCheckbox}
-                sx={{marginRight: '6rem'}}
                 onChange={() => {
                   setImageCheckbox((checked) => !checked);
                   setSeasonValues((seasonValues) => ({
@@ -228,10 +228,21 @@ const SeasonInfo = (props: SeasonProps) => {
                   }));
                 }}
               />
-
-              <FormControlLabel control={<Checkbox />} label='Active' />
+              <label className='text-base' htmlFor='defaultImage'>
+                Use Default Image
+              </label>
             </div>
-            <div className='checkbox-2'></div>
+            <div className='checkbox-2'>
+              <input
+                className='mr-2'
+                type='checkbox'
+                id='activeSeason'
+                name='activeSeason'
+              />
+              <label className='text-base' htmlFor='activeSeason'>
+                Active
+              </label>
+            </div>
           </div>
         </div>
         <article className='col-span-12 tab:col-span-6'>
