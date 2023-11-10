@@ -41,7 +41,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
 
     eventToUpdate = {
       ...eventToUpdate,
-      seasonid_fk: null,
+      seasonid_fk: undefined,
     };
 
     const updateEventCall = await updateEventSeason(eventToUpdate, token);

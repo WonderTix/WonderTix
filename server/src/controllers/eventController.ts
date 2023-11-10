@@ -743,7 +743,7 @@ eventController.put('/', async (req: Request, res: Response) => {
         eventid: Number(req.body.eventid),
       },
       data: {
-        seasonid_fk: req.body.seasonid_fk,
+        seasonid_fk: Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
         active: req.body.active,
