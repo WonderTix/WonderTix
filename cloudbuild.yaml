@@ -5,7 +5,13 @@ steps:
     id: 'build-test-server'
     waitFor: ['-']
     entrypoint: 'bash'
-    args: ['-c', 'docker build -f server/Dockerfile.dev -t $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} server']
+    args:
+      - '-c'
+      - |
+        docker build \
+        -f server/Dockerfile.dev \
+        -t $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
+        server
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
@@ -20,44 +26,15 @@ steps:
       - 'ARTIFACTS'
       - 'ENV'
 
-  # Deploy server as a test revision (no traffic)
+  # Deploy server as test revision (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-test-server'
     waitFor: ['push-test-server']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run deploy wtix-server-$${ENV} \
-        --image $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
-        --revision-suffix ${SHORT_SHA}-test \
-        --region $${REGION} \
-        --platform managed \
-        --memory $${SERVER_MEMORY} \
-        --cpu $${SERVER_CPU} \
-        --cpu-boost \
-        --allow-unauthenticated \
-        --min-instances 1 \
-        --max-instances 10 \
-        --no-traffic \
-        --tag test \
-        --set-cloudsql-instances $${SQL_INSTANCE} \
-        --service-account $${SERVICE_ACCOUNT} \
-        --set-env-vars=\
-        AUTH0_AUDIENCE=$${SERVER_REVISION},\
-        AUTH0_URL=$${AUTH0_URL},\
-        ENV=$${ENV},\
-        FRONTEND_URL=$${CLIENT_REVISION},\
-        ROOT_URL=$${SERVER_REVISION}, \
-        --set-secrets=\
-        AUTH0_CLIENT_SECRET=AUTH0_CLIENT_SECRET:$${ENV},\
-        DATABASE_URL=DATABASE_URL:$${ENV},\
-        DB_DATABASE=DB_DATABASE:$${ENV},\
-        DB_HOST=DB_HOST:$${ENV},\
-        DB_PASSWORD=DB_PASSWORD:$${ENV},\
-        DB_PORT=DB_PORT:$${ENV},\
-        DB_USER=DB_USER:$${ENV},\
-        PRIVATE_STRIPE_KEY=PRIVATE_STRIPE_KEY:$${ENV},\
+    args: ['scripts/deploy/server.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
+      - 'TAG=test'
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_URL'
@@ -70,23 +47,14 @@ steps:
       - 'SERVICE_ACCOUNT'
       - 'SQL_INSTANCE'
 
-  # Build client image and pass in test build args
+  # Build client image with build args for test revision
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-test-client'
     waitFor: ['-']
     entrypoint: 'bash'
-    args: 
-      - '-c'
-      - |
-        docker build -f client/Dockerfile.dev -t $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA} client \
-        --build-arg AUTH0_CLIENT_SECRET=$${AUTH0_CLIENT_SECRET} \
-        --build-arg REACT_APP_API_1_URL=$${SERVER_REVISION}/api/1 \
-        --build-arg REACT_APP_API_2_URL=$${SERVER_REVISION}/api/2 \
-        --build-arg REACT_APP_AUTH0_AUDIENCE=$${SERVER_REVISION} \
-        --build-arg REACT_APP_AUTH0_CLIENT_ID=$${AUTH0_CLIENT_ID} \
-        --build-arg REACT_APP_AUTH0_URL=$${AUTH0_URL} \
-        --build-arg REACT_APP_PUBLIC_STRIPE_KEY=$${PUBLIC_STRIPE_KEY} \
-        --build-arg REACT_APP_ROOT_URL=$${SERVER_REVISION}
+    args: ['scripts/build/client.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_CLIENT_ID'
@@ -111,28 +79,10 @@ steps:
     id: 'deploy-test-client'
     waitFor: ['push-test-client']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run deploy wtix-client-$${ENV} \
-        --image $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA} \
-        --revision-suffix ${SHORT_SHA}-test \
-        --region $${REGION} \
-        --platform managed \
-        --memory $${CLIENT_MEMORY} \
-        --cpu $${CLIENT_CPU} \
-        --cpu-boost \
-        --allow-unauthenticated \
-        --min-instances 1 \
-        --max-instances 10 \
-        --no-traffic \
-        --tag test \
-        --service-account $${SERVICE_ACCOUNT} \
-        --set-env-vars=\
-        ENV=$${ENV}, \
-        --set-secrets=\
-        REACT_APP_AUTH0_CLIENT_ID=AUTH0_CLIENT_ID:$${ENV},\
-        REACT_APP_PUBLIC_STRIPE_KEY=PUBLIC_STRIPE_KEY:$${ENV}
+    args: ['scripts/deploy/client.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
+      - 'TAG=test'
     secretEnv:
       - 'ARTIFACTS'
       - 'CLIENT_CPU'
@@ -144,79 +94,37 @@ steps:
   # Wake up client before running tests
   - name: 'mcr.microsoft.com/playwright:latest'
     id: 'wake-test-client'
+    waitFor: ['deploy-test-client']
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         npm install playwright
         export NODE_PATH=$$(pwd)/node_modules
-        node client/wake-client.js $${CLIENT_REVISION}
+        node scripts/wake/client.js $${CLIENT_REVISION}
     secretEnv:
       - 'CLIENT_REVISION'
 
   # Run E2E tests on test client
   - name: 'mcr.microsoft.com/playwright:latest'
     id: 'run-tests'
+    waitFor: ['wake-test-client']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        export DEPLOYED='true' # for minimal reporting
-        export FRONTEND_URL=$${CLIENT_REVISION}
-        export ROOT_URL=$${SERVER_REVISION}
-
-        cd client/e2e
-        npm install
-
-        if ! npm run test:playwright; then
-          echo "Tests failed."
-          #exit 1
-          echo "Ignore failed tests for now."
-        fi
-
-        echo "All tests passed."
+    args: ['scripts/test/client.sh']
     secretEnv:
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
       - 'TEST_EMAIL'
       - 'TEST_PASSWORD'
 
-  # Deploy server to Cloud Run with traffic
+  # Deploy server to Cloud Run (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-server'
     waitFor: ['run-tests']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run deploy wtix-server-$${ENV} \
-        --image $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
-        --revision-suffix ${SHORT_SHA} \
-        --region $${REGION} \
-        --platform managed \
-        --memory $${SERVER_MEMORY} \
-        --cpu $${SERVER_CPU} \
-        --cpu-boost \
-        --allow-unauthenticated \
-        --min-instances 1 \
-        --max-instances 10 \
-        --set-cloudsql-instances $${SQL_INSTANCE} \
-        --service-account $${SERVICE_ACCOUNT} \
-        --set-env-vars=\
-        AUTH0_AUDIENCE=$${ROOT_URL},\
-        AUTH0_URL=$${AUTH0_URL},\
-        ENV=$${ENV},\
-        FRONTEND_URL=$${FRONTEND_URL},\
-        ROOT_URL=$${ROOT_URL}, \
-        --set-secrets=\
-        AUTH0_CLIENT_SECRET=AUTH0_CLIENT_SECRET:$${ENV},\
-        DATABASE_URL=DATABASE_URL:$${ENV},\
-        DB_DATABASE=DB_DATABASE:$${ENV},\
-        DB_HOST=DB_HOST:$${ENV},\
-        DB_PASSWORD=DB_PASSWORD:$${ENV},\
-        DB_PORT=DB_PORT:$${ENV},\
-        DB_USER=DB_USER:$${ENV},\
-        PRIVATE_STRIPE_KEY=PRIVATE_STRIPE_KEY:$${ENV},\
+    args: ['scripts/deploy/server.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_URL'
@@ -228,8 +136,8 @@ steps:
       - 'SERVER_MEMORY'
       - 'SERVICE_ACCOUNT'
       - 'SQL_INSTANCE'
-  
-  # Send traffic to new server revision and delete the test revision
+
+ # Send traffic to server revision
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'send-server-traffic'
     waitFor: ['deploy-server']
@@ -240,31 +148,33 @@ steps:
         gcloud run services update-traffic wtix-server-$${ENV} \
         --region $${REGION} \
         --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100
+    secretEnv:
+      - 'ENV'
+      - 'REGION'
 
+  # Delete server test revision
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'delete-test-server'
+    waitFor: ['send-server-traffic']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
         gcloud run revisions delete wtix-server-$${ENV}-${SHORT_SHA}-test \
         --region $${REGION} \
         --quiet
     secretEnv:
       - 'ENV'
       - 'REGION'
-  
-  # Rebuild client image using normal build args
+ 
+  # Build client image using normal args
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-client'
     waitFor: ['run-tests']
     entrypoint: 'bash'
-    args: 
-      - '-c'
-      - |
-        docker build -f client/Dockerfile.dev -t $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA} client \
-        --build-arg AUTH0_CLIENT_SECRET=$${AUTH0_CLIENT_SECRET} \
-        --build-arg REACT_APP_API_1_URL=$${ROOT_URL}/api/1 \
-        --build-arg REACT_APP_API_2_URL=$${ROOT_URL}/api/2 \
-        --build-arg REACT_APP_AUTH0_AUDIENCE=$${ROOT_URL} \
-        --build-arg REACT_APP_AUTH0_CLIENT_ID=$${AUTH0_CLIENT_ID} \
-        --build-arg REACT_APP_AUTH0_URL=$${AUTH0_URL} \
-        --build-arg REACT_APP_PUBLIC_STRIPE_KEY=$${PUBLIC_STRIPE_KEY} \
-        --build-arg REACT_APP_ROOT_URL=$${ROOT_URL}
+    args: ['scripts/build/client.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_CLIENT_ID'
@@ -287,30 +197,12 @@ steps:
   # Deploy client as new revision (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-client'
-    waitFor: ['push-client']
+    waitFor: ['push-client', 'send-server-traffic']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run deploy wtix-client-$${ENV} \
-        --image $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA} \
-        --revision-suffix ${SHORT_SHA} \
-        --region $${REGION} \
-        --platform managed \
-        --memory $${CLIENT_MEMORY} \
-        --cpu $${CLIENT_CPU} \
-        --cpu-boost \
-        --allow-unauthenticated \
-        --min-instances 1 \
-        --max-instances 10 \
-        --no-traffic \
-        --tag new \
-        --service-account $${SERVICE_ACCOUNT} \
-        --set-env-vars=\
-        ENV=$${ENV}, \
-        --set-secrets=\
-        REACT_APP_AUTH0_CLIENT_ID=AUTH0_CLIENT_ID:$${ENV},\
-        REACT_APP_PUBLIC_STRIPE_KEY=PUBLIC_STRIPE_KEY:$${ENV}
+    args: ['scripts/deploy/client.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
+      - 'TAG=new'
     secretEnv:
       - 'ARTIFACTS'
       - 'CLIENT_CPU'
@@ -322,48 +214,42 @@ steps:
   # Request page from tagged client and wait for container to start
   - name: 'mcr.microsoft.com/playwright:latest'
     id: 'wake-client'
+    waitFor: ['deploy-client']
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         npm install playwright
         export NODE_PATH=$$(pwd)/node_modules
-        node client/wake-client.js $${NEW_REVISION}
+        node scripts/wake/client.js $${NEW_REVISION}
     secretEnv:
       - 'ENV'
       - 'NEW_REVISION'
 
-  # Gradually send traffic to new client and remove tag
+  # Delete client test revision
   - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'send-client-traffic'
+    id: 'delete-test-client'
+    waitFor: ['deploy-client']
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        function update_traffic() {
-          local PERCENTAGE=$${1}
-          echo "Sending $${PERCENTAGE}% of traffic to new revision..."
-          gcloud run services update-traffic wtix-client-$${ENV} \
-          --region $${REGION} \
-          --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=$${PERCENTAGE}
-        }
-
-        update_traffic 5 && sleep 30
-
-        # Removing tag before traffic update can trigger cold start
-        gcloud run services update-traffic wtix-client-$${ENV} \
-        --region $${REGION} \
-        --remove-tags new
-
-        sleep 30
-
-        update_traffic 25 && sleep 30
-        update_traffic 50 && sleep 30
-        update_traffic 100 && sleep 30
-
         gcloud run revisions delete wtix-client-$${ENV}-${SHORT_SHA}-test \
         --region $${REGION} \
         --quiet
+    secretEnv:
+      - 'ENV'
+      - 'REGION'
+
+  # Remove tag and gradually send traffic to new client
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'send-client-traffic'
+    waitFor: ['wake-client']
+    entrypoint: 'bash'
+    args: ['scripts/traffic/client.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
+      - 'TAG=new'
     secretEnv:
       - 'ENV'
       - 'REGION'
