@@ -108,7 +108,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
 
   useEffect(() => {
     if (eventsNotInSeason.length > 0) {
-      eventsNotInSeason.sort((a, b) => b.id - a.id);
+      eventsNotInSeason.sort((a, b) => b.eventid - a.eventid);
     }
   }, [eventsNotInSeason]);
 
