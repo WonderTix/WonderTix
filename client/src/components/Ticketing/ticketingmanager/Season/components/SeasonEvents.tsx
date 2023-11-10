@@ -19,14 +19,14 @@ const SeasonEvents = (props: SeasonEventsProps) => {
   const handleGetAllEvents = async () => {
     const allEvents = await getAllEvents(token);
     if (allEvents) {
-      const eventsInSeason = allEvents.filter(
+      const eventsInCurrentSeason = allEvents.filter(
         (event) => event.seasonid_fk === seasonId,
       );
       const unassignedEvents = allEvents.filter(
         (event) => event.seasonid_fk === null,
       );
 
-      setEventsInSeason(eventsInSeason);
+      setEventsInSeason(eventsInCurrentSeason);
       setEventsNotInAnySeason(unassignedEvents);
     }
   };
