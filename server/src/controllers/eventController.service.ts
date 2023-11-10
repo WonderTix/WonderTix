@@ -119,7 +119,7 @@ export const getOrderItems = async (
       );
     }
 
-    const itemPrice = item.payWhatCan && item.payWhatPrice ? item.payWhatPrice / item.qty : item.price;
+    const itemPrice = item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price;
 
     orderItems = orderItems.concat(
         getTickets(
@@ -127,7 +127,7 @@ export const getOrderItems = async (
             eventInstance.ticketTypeMap,
             item.typeID,
             item.qty,
-            itemPrice,
+            item.payWhatCan && item.payWhatPrice ? item.payWhatPrice / item.qty : item.price,
         ),
     );
     cartRows.push({
@@ -135,14 +135,14 @@ export const getOrderItems = async (
         currency: 'usd',
         product_data: {
           name: eventInstance.events.eventname,
-          description: item.desc,
+          description: item.payWhatCan && item.payWhatPrice ? `${item.desc}, Qty ${item.qty}` : item.desc,
         },
         unit_amount: itemPrice * 100,
       },
-      quantity: item.qty,
+      quantity: item.payWhatCan && item.payWhatPrice ? 1 : item.qty,
     });
 
-    orderTotal += item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : itemPrice * item.qty;
+    orderTotal += item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price * item.qty;
   }
   for (const [, instance] of eventInstanceMap) {
     eventInstanceQueries.push(
