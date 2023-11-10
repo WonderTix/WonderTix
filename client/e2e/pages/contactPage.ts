@@ -6,6 +6,11 @@ import {CreditCard, Customer} from '../testData/ConstsPackage';
 export class ContactPage {
     readonly page: Page;
 
+    readonly searchContact: Locator;
+    readonly searchContactButton: Locator;
+
+    readonly customerCard: Locator;
+
     readonly customerName: Locator;
     readonly customerID: Locator;
     readonly customerEmail: Locator;
@@ -19,6 +24,11 @@ export class ContactPage {
 
     constructor(page: Page) {
         this.page = page;
+
+        this.searchContact = page.getByTestId('contact-search');
+        this.searchContactButton = page.getByTestId('contact-search-button');
+
+        this.customerCard = page.getByTestId('customer-card');
 
         this.customerName = page.getByTestId('customer-name');
         this.customerID = page.getByTestId('customer-id');
@@ -34,5 +44,16 @@ export class ContactPage {
 
     async goto() {
         await this.page.goto('/admin/contacts');
+    }
+
+    async searchCustomer(customer: Customer) {
+        await this.searchContact.fill(customer.fullName);
+        await this.searchContactButton.click();
+    }
+
+    async deleteCustomer(customer: Customer) {
+        await this.searchContact.fill(customer.fullName);
+        await this.searchContactButton.click();
+        await this.customerCard.filter({hasText: customer.fullName}).getByRole('button', {name: 'Remove Customer'}).click();
     }
 }
