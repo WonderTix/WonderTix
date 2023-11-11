@@ -1,5 +1,5 @@
 import {Field, useField} from 'formik';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
@@ -14,6 +14,7 @@ interface TicketTypeTableProps {
 export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
   const {ticketTypes, showPopUp} = useEvent();
+  const [ticketPrices, setTicketPrices] = useState('');
   const [InstanceTicketTypesField] = useField('instanceTicketTypes');
   const [totalTickets] = useField('totalseats');
   const [availableTypes, setAvailableTypes] = useState(
@@ -24,6 +25,22 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
       )
       .map((value) => Number(value.id)),
   );
+
+  useEffect(() => {
+    if (InstanceTicketTypesField.value.length > 0) {
+      setTicketPrices(
+        getTicketTypePrice(
+          InstanceTicketTypesField.value[0].typeID,
+          'price',
+          ticketTypes,
+        ),
+      );
+    }
+  }, [InstanceTicketTypesField.value, ticketTypes]);
+
+  const handleInputChange = (e) => {
+    setTicketPrices(e.target.value);
+  };
 
   return (
     <div
@@ -126,11 +143,11 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   key={eventInstanceID + index + 'ticket type price'}
                   className={'px-2'}
                 >
-                  {getTicketTypePrice(
-                    InstanceTicketTypesField.value[index].typeID,
-                    'price',
-                    ticketTypes,
-                  )}
+                  <input
+                  type='text'
+                  value={ticketPrices}
+                  onChange={handleInputChange}
+                  />
                 </td>
                 <td
                   key={eventInstanceID + index + 'ticket concession price'}
