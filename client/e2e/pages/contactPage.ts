@@ -52,8 +52,7 @@ export class ContactPage {
     }
 
     async deleteCustomer(customer: Customer) {
-        await this.searchContact.fill(customer.fullName);
-        await this.searchContactButton.click();
+        await this.searchCustomer(customer);
         await this.customerCard.filter({hasText: customer.fullName}).getByRole('button', {name: 'Remove Customer'}).click();
     }
 }

@@ -15,7 +15,7 @@ test('view show', async ({page}) => {
   const main = new MainPage(page);
   await main.goto();
   const showing = await main.goFirstShowing();
-  expect(showing).not.toBeNull();
+  expect(showing, 'Showing is empty').not.toBeNull();
 });
 
 // Go through all the steps to add a ticket
