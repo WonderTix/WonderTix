@@ -191,7 +191,7 @@ const fetchData = async (url: string) => {
 };
 
 /**
- * Fetches all the events, ticketRestriction and tickets data
+ * Fetches all the events, ticket restrictions and tickets data
  *
  * @module
  * @returns {Array} events, ticketRestrictions, tickets, byID, allIds
@@ -282,7 +282,7 @@ export const fetchDiscountData = createAsyncThunk(
 );
 
 /**
- * Uses appendCartField to append to the cartfield
+ * Creates a CartItem based on incomplete data
  *
  * @module
  * @param data.ticket
@@ -290,8 +290,8 @@ export const fetchDiscountData = createAsyncThunk(
  * @param data.event
  * @param data.qty
  * @param data.payWhatPrice
- * @param {CartItem} data - ticket, event, qty, CartItem
- * @returns appended cart item
+ * @param {CartItem} data ticket, tickettype, event, qty, payWhatPrice?
+ * @returns full CartItem
  */
 export const createCartItem = (data: {
   ticket: Ticket;
@@ -394,6 +394,7 @@ const applyConcession = (c_price: number, item: CartItem) =>
  * @param tickettypeId
  * @param qty
  * @param concessions
+ * @param payWhatPrice
  */
 interface ItemData {
   id: number;
@@ -430,17 +431,6 @@ const updateCartItem = (
       return item;
     }
   });
-
-/**
- * @param cart
- * @param num
- * @param qty
- */
-const payWhatFunc = (cart: CartItem, num: number, qty: number) => {
-  cart.payWhatCan = true;
-  cart.payWhatPrice = num * qty;
-  cart.price = num;
-};
 
 /**
  * Checks if the ticketTypeId is General Admission - Adult (at the moment, ID=1)
