@@ -314,7 +314,7 @@ const validateContact = (formData: checkOutForm) => {
     email: validateWithRegex(
         formData.email,
         `Email: ${formData.email} is invalid`,
-        new RegExp('.+\\@.+\\..+'),
+        new RegExp('.+@.+\\..+'),
     ),
     address: validateWithRegex(
         formData.streetAddress,
@@ -324,7 +324,7 @@ const validateContact = (formData: checkOutForm) => {
     phone: validateWithRegex(
         formData.phone,
         `Phone Number: ${formData.phone} is invalid`,
-        new RegExp('^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
+        new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
     ),
     seatingaccom: formData.seatingAcc,
     newsletter: formData.optIn,

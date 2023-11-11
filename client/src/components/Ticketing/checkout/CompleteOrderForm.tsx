@@ -87,7 +87,7 @@ export default function CompleteOrderForm({
     if (values.seatingAcc === 'Other' && (!values.comments || values.comments === '')) {
       errors['comments'] = 'Please Input Accommodation';
     }
-    if (!values.email?.match(new RegExp('.+\\@.+\\..+'))) {
+    if (!values.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
     }
     if (!values.phone?.match(new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
