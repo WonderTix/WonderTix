@@ -28,32 +28,57 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
   const {token} = props;
   const [filterSetting, setFilterSetting] = useState('active');
   const [seasonData, setSeasonData] = useState([]);
-
+  const [allSeasonData, setAllSeasonData] = useState([]);
+  const [inactiveData, setInactiveData] = useState([]);
+  const [activeData, setActiveData] = useState([]);
 
   useEffect(() => {
-    let apiURL;
-
-    if (filterSetting === 'active') {
-      apiURL = process.env.REACT_APP_API_2_URL + '/season/active';
-    } else if (filterSetting === 'inactive') {
-      apiURL = process.env.REACT_APP_API_2_URL + '/season/inactive';
-    } else {
-      apiURL = process.env.REACT_APP_API_2_URL + '/season';
-    }
-
-    fetch(apiURL, {
+    fetch(process.env.REACT_APP_API_2_URL + '/season/list', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('Received Season Data:', data);
-      setSeasonData([...data.toSorted()].reverse());
+      const inactiveSeasons = [];
+      const activeSeasons = [];
+      const allSeasons = [];
+
+      data.forEach((season) => {
+        const allEventsActive = season.events.every((event) => (event.active));
+
+        if (allEventsActive) {
+          activeSeasons.push(season);
+          allSeasons.push(season);
+        } else {
+          inactiveSeasons.push(season);
+          allSeasons.push(season);
+        }
+      });
+      // Set active/inactive/all data arrays
+      setInactiveData(inactiveSeasons);
+      setActiveData(activeSeasons);
+      setAllSeasonData(allSeasons);
+      // Set Default "Active"
+      setSeasonData(activeSeasons);
     })
     .catch((error) => {
       console.error('Error Fetching Season Data:', error);
     });
+  }, []);
+
+  // Group Toggle Display Changes
+  useEffect(() => {
+    if (filterSetting === 'active') {
+      // Active Data Only
+      setSeasonData([...activeData].sort((a, b) => b.seasonId - a.seasonId));
+    } else if (filterSetting === 'inactive') {
+      // Inactive Data Only
+      setSeasonData([...inactiveData].sort((a, b) => b.seasonId - a.seasonId));
+    } else {
+      // All Seasons
+      setSeasonData([...allSeasonData].sort((a, b) => b.seasonId - a.seasonId));
+    }
   }, [filterSetting]);
 
   return (

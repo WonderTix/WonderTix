@@ -146,6 +146,96 @@ seasonController.get('/', async (req: Request, res: Response) => {
 });
 
 /**
+ * Retrieves a list of seasons with their associated events.
+ *
+ * @swagger
+ * /2/season/list:
+ *   get:
+ *     summary: Get all seasons with events
+ *     tags:
+ *     - Season
+ *     responses:
+ *       200:
+ *         description: Successful response with an array of seasons and their events.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   seasonId:
+ *                     type: number
+ *                     description: The unique identifier of the season.
+ *                   seasonName:
+ *                     type: string
+ *                     description: The name of the season.
+ *                   events:
+ *                     type: array
+ *                     description: An array of events associated with the season.
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         eventId:
+ *                           type: number
+ *                           description: The unique identifier of the event.
+ *                         eventName:
+ *                           type: string
+ *                           description: The name of the event.
+ *       400:
+ *         description: Bad request. Invalid input parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} - JSON response with an array of seasons and their events.
+ */
+seasonController.get('/list', async (req: Request, res: Response) => {
+  try {
+    const events = await prisma.seasons.findMany({
+      where: {},
+      include: {
+        events: true,
+      },
+    });
+
+    const seasonEvents = events.map((season) => {
+      return {
+        seasonId: season.seasonid,
+        seasonName: season.name,
+
+        events: season.events.map((event) => {
+          return {
+            eventId: event.eventid,
+            eventName: event.eventname,
+          };
+        }),
+      };
+    });
+
+    return res.json(seasonEvents);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+/**
  * @swagger
  * /2/season/{id}:
  *   get:
