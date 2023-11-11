@@ -300,7 +300,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     if (isNaN(tempPay)) {
       dispatch(changePayWhat(null));
     } else {
-      dispatch(changePayWhat(tempPay));
+      dispatch(changePayWhat(parseFloat(tempPay.toFixed(2))));
     }
   };
 

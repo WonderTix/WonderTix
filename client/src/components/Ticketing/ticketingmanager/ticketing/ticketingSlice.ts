@@ -316,7 +316,7 @@ export const createCartItem = (data: {
       qty: qty,
       product_img_url: event.imageurl,
       payWhatPrice: payWhatPrice,
-      payWhatCan: !!payWhatPrice,
+      payWhatCan: tickettype.name === 'Pay What You Can',
     };
 
     if (cartItem.payWhatCan) {
@@ -545,6 +545,23 @@ const editQtyReducer: CaseReducer<
 };
 
 /**
+ * removeTicketFromCartReducer removes a cart item from cart based on product_id and tickettypeId
+ *
+ * @param state
+ * @param action
+ */
+const removeTicketFromCartReducer: CaseReducer<
+  ticketingState,
+  PayloadAction<{id: number; tickettypeId: number;}>
+> = (state, action) => {
+  const {id, tickettypeId} = action.payload;
+  return {
+  ...state,
+    cart: state.cart.filter((item) => item.product_id !== id || item.typeID !== tickettypeId),
+  };
+};
+
+/**
  * Makes an initial state for ticketing
  *
  * @module
@@ -577,10 +594,7 @@ const ticketingSlice = createSlice({
       ...state,
       discount: INITIAL_STATE.discount,
     }),
-    removeTicketFromCart: (state, action: PayloadAction<number>) => ({
-      ...state,
-      cart: state.cart.filter((item) => item.product_id !== action.payload),
-    }),
+    removeTicketFromCart: removeTicketFromCartReducer,
     removeAllTicketsFromCart: (state) => ({
       ...state,
       cart: [],
