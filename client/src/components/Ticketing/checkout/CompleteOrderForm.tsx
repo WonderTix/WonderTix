@@ -90,7 +90,7 @@ export default function CompleteOrderForm({
     if (!values.email?.match(new RegExp('.+\\@.+\\..+'))) {
       errors['email'] = 'Invalid';
     }
-    if (!values.phone?.match(new RegExp('^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
+    if (!values.phone?.match(new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
       errors['phone'] = 'Invalid';
     }
     return errors;
