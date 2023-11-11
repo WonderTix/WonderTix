@@ -51,8 +51,8 @@
   },
   "scripts": {
     "postinstall": "npx playwright install",
-    "start:dev": "react-scripts start",
-    "start": "cross-env HTTPS=true SSL_CRT_FILE=/usr/app/localhost.pem SSL_KEY_FILE=/usr/app/localhost-key.pem react-scripts start",
+    "start": "react-scripts start",
+    "start:local": "cross-env HTTPS=true SSL_CRT_FILE=/usr/app/localhost.pem SSL_KEY_FILE=/usr/app/localhost-key.pem react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:playwright": "npx playwright test",

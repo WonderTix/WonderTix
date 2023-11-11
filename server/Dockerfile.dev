@@ -35,5 +35,5 @@ EXPOSE 8080
 
 # Start the server application
 # CMD /bin/bash /usr/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- npm run dev
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]
 

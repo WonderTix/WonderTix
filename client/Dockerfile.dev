@@ -40,5 +40,5 @@ ENV REACT_APP_ROOT_URL=$REACT_APP_ROOT_URL
 EXPOSE 8080
 
 # Start the client application
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start"]
 

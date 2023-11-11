@@ -40,7 +40,7 @@ services:
     volumes:
       - ./client:/usr/app
       - /usr/app/node_modules
-    command: npm run start
+    command: npm run start:local
   database:
     image: postgres
     ports:
