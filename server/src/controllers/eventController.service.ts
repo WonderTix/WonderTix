@@ -112,38 +112,74 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-    if (item.price < 0 && (item.payWhatPrice && item.payWhatPrice < 0)) {
-      throw new InvalidInputError(
-          422,
-          `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+
+    // Pay What You Can tickets are a single price for the entire cart row so the order
+    // of ticket must show up as a single price for 1 item in Stripe
+    if (item.payWhatCan && item.payWhatPrice) {
+      if (item.payWhatPrice < 0) {
+        throw new InvalidInputError(
+            422,
+            `Ticket Price ${item.payWhatPrice} for showing ${item.product_id} of ${item.name} is invalid`,
+        );
+      }
+
+      orderItems = orderItems.concat(
+          getTickets(
+              prisma,
+              eventInstance.ticketTypeMap,
+              item.typeID,
+              item.qty,
+              item.payWhatPrice / item.qty,
+          ),
       );
-    }
 
-    const itemPrice = item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price;
-
-    orderItems = orderItems.concat(
-        getTickets(
-            prisma,
-            eventInstance.ticketTypeMap,
-            item.typeID,
-            item.qty,
-            item.payWhatCan && item.payWhatPrice ? item.payWhatPrice / item.qty : item.price,
-        ),
-    );
-    cartRows.push({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: eventInstance.events.eventname,
-          description: item.payWhatCan && item.payWhatPrice ? `${item.desc}, Qty ${item.qty}` : item.desc,
+      cartRows.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: eventInstance.events.eventname,
+            description: `${item.desc}, Qty ${item.qty}`,
+          },
+          unit_amount: item.payWhatPrice * 100,
         },
-        unit_amount: itemPrice * 100,
-      },
-      quantity: item.payWhatCan && item.payWhatPrice ? 1 : item.qty,
-    });
+        quantity: 1,
+      });
 
-    orderTotal += item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price * item.qty;
+      orderTotal += item.payWhatPrice;
+    } else {
+      if (item.price < 0) {
+        throw new InvalidInputError(
+            422,
+            `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+        );
+      }
+
+      orderItems = orderItems.concat(
+          getTickets(
+              prisma,
+              eventInstance.ticketTypeMap,
+              item.typeID,
+              item.qty,
+              item.price,
+          ),
+      );
+
+      cartRows.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: eventInstance.events.eventname,
+            description: item.desc,
+          },
+          unit_amount: item.price * 100,
+        },
+        quantity: item.qty,
+      });
+
+      orderTotal += item.price * item.qty;
+    }
   }
+
   for (const [, instance] of eventInstanceMap) {
     eventInstanceQueries.push(
         prisma.eventinstances.update({
@@ -171,6 +207,7 @@ export const getOrderItems = async (
         }),
     );
   }
+
   return {
     cartRows,
     orderItems,
@@ -310,8 +347,4 @@ const validateWithRegex = (
     throw new InvalidInputError(422, errorMessage);
   }
   return toValidate;
-};
-
-const isPayWhatCan = (cartItem: CartItem): boolean => {
-  return cartItem.payWhatCan && !!cartItem.payWhatPrice;
 };
