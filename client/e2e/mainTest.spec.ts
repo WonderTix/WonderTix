@@ -1,6 +1,7 @@
 import {test, expect} from '@playwright/test';
 import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
+import {ContactPage} from './pages/contactPage';
 import {EventsInfo2, ShowingInfo2, JohnDoe, ValidVisaCredit} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
@@ -23,9 +24,10 @@ test('view show', async ({page}) => {
 // Verifies the 'Success!' message pops up with the correct event info
 // Adds and removes its own event for test purposes
 test('add ticket', async ({page}) => {
-  test.setTimeout(90000);
+  test.setTimeout(120000);
   const events = new EventsPage(page);
   const main = new MainPage(page);
+  const contacts = new ContactPage(page);
   await events.goto();
   await events.addnewevent(EventsInfo2);
   await events.addNewShowing(ShowingInfo2);
@@ -56,7 +58,10 @@ test('add ticket', async ({page}) => {
     await main.clickCartNext();
     await main.fillStripeInfo(JohnDoe, ValidVisaCredit);
     await main.clickStripeCheckout();
-    await expect(main.stripeOrderConfirmation).toBeVisible();
+    await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000});
+    await contacts.goto();
+    await contacts.searchCustomer(JohnDoe);
+    await contacts.checkCustomer(JohnDoe);
   } finally {
     await main.goto();
     await events.goToEventFromManage(EventsInfo2.eventFullName);

@@ -51,6 +51,16 @@ export class ContactPage {
         await this.searchContactButton.click();
     }
 
+    async checkCustomer(customer: Customer) {
+        const currentCard = await this.customerCard.filter({hasText: customer.fullName});
+        const name = await currentCard.getByTestId('customer-name').textContent();
+        expect(await currentCard.getByTestId('customer-name').textContent()).toBe(customer.fullName);
+        expect(await currentCard.getByTestId('customer-email').textContent()).toBe(customer.email);
+        expect(await currentCard.getByTestId('customer-address').textContent()).toBe(customer.streetAddress);
+        expect(await currentCard.getByTestId('customer-phone').textContent()).toBe(customer.phoneNumber);
+    }
+
+    // Incomplete, page functionality not implemented
     async deleteCustomer(customer: Customer) {
         await this.searchCustomer(customer);
         await this.customerCard.filter({hasText: customer.fullName}).getByRole('button', {name: 'Remove Customer'}).click();
