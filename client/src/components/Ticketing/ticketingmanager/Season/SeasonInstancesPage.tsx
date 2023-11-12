@@ -79,7 +79,7 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
     if (filterSetting === 'active') {
       setSeasonData(activeData);
     } else if (filterSetting === 'inactive') {
-      setSeasonData(activeData);
+      setSeasonData(inactiveData);
     } else {
       setSeasonData(allSeasonData);
     }
