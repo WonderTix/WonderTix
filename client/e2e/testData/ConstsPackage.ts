@@ -93,6 +93,12 @@ export interface Customer {
   country: string;
   phoneNumber: string;
   email: string;
+  newsletterSignup: boolean;
+  getConcession: boolean;
+  donationAmount: string;
+  getNewsletter: boolean;
+  heardAboutFrom: string;
+  comments: string;
 }
 
 export const JohnDoe: Customer = {
@@ -104,4 +110,10 @@ export const JohnDoe: Customer = {
   country: 'USA',
   phoneNumber: '(508) 362-3909',
   email: 'test@wondertix.com',
+  newsletterSignup: false,
+  getConcession: false,
+  donationAmount: '0',
+  getNewsletter: false,
+  heardAboutFrom: '',
+  comments: '',
 };
