@@ -159,11 +159,6 @@ export class MainPage {
   async checkAddTicketSuccess(message: string) {
     expect(await this.successHeader).toBeVisible();
     expect(await this.page.getByText(message)).toBeVisible();
-    // if (await this.successHeader.isVisible() && await this.page.getByText(message).isVisible()) {
-    //   return true;
-    // } else {
-    //   return false;
-    // }
   }
 
   async clickTakeMeThere() {
