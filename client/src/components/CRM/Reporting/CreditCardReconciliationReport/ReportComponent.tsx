@@ -9,10 +9,9 @@ import EventTotalsByCCComponent from './EventTotalsByCCComponent';
 import {Divider, Button} from '@mui/material';
 
 const ReportComponent = ({filterData}) => {
-    const header = {'org': 'Portland Playhouse', 'range': 'Temp', 'grouped': 'Event'};
+    const header = {'org': 'Portland Playhouse', 'range': 'Temp'};
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
-    const [groupBy, setGroupBy] = useState('');
 
     // dates are still not populating the report correctly
     const formatDateToMMDDYYYY = (date: Date) => {
@@ -26,8 +25,6 @@ const ReportComponent = ({filterData}) => {
     useEffect(() => {
         setStart(formatDateToMMDDYYYY(filterData.startDate));
         setEnd(formatDateToMMDDYYYY(filterData.endDate));
-        setGroupBy(filterData.groupBy);
-        console.log(filterData.groupBy);
     });
 
     return (
@@ -39,7 +36,6 @@ const ReportComponent = ({filterData}) => {
             <div className="flex justify-evenly border-b px-4 py-1 bg-slate-100">
                 <h3><strong>Organization: </strong> {header.org}</h3>
                 <h3><strong>Batch Date Range: </strong>{start} - {end}</h3>
-                <h3><strong>Grouped By: </strong>{groupBy}</h3>
             </div>
             <div className="px-4">
                 <h1 className="font-bold text-2xl py-2">Credit Card Transaction Totals</h1>
@@ -64,7 +60,6 @@ ReportComponent.propTypes = {
     filterData: PropTypes.shape({
         startDate: PropTypes.instanceOf(Date).isRequired,
         endDate: PropTypes.instanceOf(Date).isRequired,
-        groupBy: PropTypes.string.isRequired,
     }),
 };
 
