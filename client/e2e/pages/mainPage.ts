@@ -156,12 +156,14 @@ export class MainPage {
   // Verify specified elements are on the popup after clicking the Get Tickets button
   // Verifies the 'Success!' header is visible and the event details text is correct
   // Event details message must be composed in the calling test and passed into this function
-  async checkAddTicketSucess(message: string) {
-    if (await this.successHeader.isVisible() && await this.page.getByText(message).isVisible()) {
-      return true;
-    } else {
-      return false;
-    }
+  async checkAddTicketSuccess(message: string) {
+    expect(await this.successHeader).toBeVisible();
+    expect(await this.page.getByText(message)).toBeVisible();
+    // if (await this.successHeader.isVisible() && await this.page.getByText(message).isVisible()) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
   }
 
   async clickTakeMeThere() {
