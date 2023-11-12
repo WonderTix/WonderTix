@@ -1,92 +1,121 @@
 import React from 'react';
-import {
-  ChevronDoubleLeftIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronDoubleRightIcon,
-} from '../SVGIcons';
 
 interface Props {
   totalItems: number;
   itemsPerPage: number;
   currentPage: number;
-  gotoPage: (page: number) => void;
-  onItemsPerPageChange: (size: number) => void;
+  onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<Props> = (
-  {totalItems, itemsPerPage, currentPage, gotoPage, onItemsPerPageChange},
-) => {
+const PaginationButton: React.FC<{
+  page: number;
+  title: string;
+  label: string;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+}> = ({page, title, label, currentPage, onPageChange}) => (
+  <button
+    key={page}
+    role='button'
+    title={title}
+    aria-label={label}
+    onClick={() => onPageChange(page)}
+    className={`px-4 py-2 rounded hover:bg-indigo-50 text-sm 
+      ${currentPage === page ? 'border border-gray-300 hover:bg-white' : ''}
+    `}
+  >
+    {page}
+  </button>
+);
+
+/**
+ * Generate Pagination Buttons
+ *
+ * @param totalPages
+ * @param currentPage
+ * @returns
+ */
+function generatePaginationButtons(totalPages: number, currentPage: number) {
+  const buttons = [];
+
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push({type: 'PAGE', page: i});
+    }
+  } else if (currentPage <= 4) {
+    for (let i = 1; i <= 5; i++) {
+      buttons.push({type: 'PAGE', page: i});
+    }
+    buttons.push({type: 'ELLIPSIS', page: 6});
+    buttons.push({type: 'PAGE', page: totalPages});
+  } else if (currentPage > totalPages - 4) {
+    buttons.push({type: 'PAGE', page: 1});
+    buttons.push({type: 'ELLIPSIS', page: 2});
+    for (let i = totalPages - 4; i <= totalPages; i++) {
+      buttons.push({type: 'PAGE', page: i});
+    }
+  } else {
+    buttons.push({type: 'PAGE', page: 1});
+    buttons.push({type: 'ELLIPSIS', page: 2});
+    for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+      buttons.push({type: 'PAGE', page: i});
+    }
+    buttons.push({type: 'ELLIPSIS', page: currentPage + 3});
+    buttons.push({type: 'PAGE', page: totalPages});
+  }
+
+  return buttons;
+}
+
+const Pagination: React.FC<Props> = ({
+  totalItems,
+  itemsPerPage,
+  currentPage,
+  onPageChange,
+}) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const paginationButtons = generatePaginationButtons(totalPages, currentPage);
 
   return (
-    <div className="flex items-center justify-between w-full">
-      <div className="text-sm text-gray-700">
-        <span className="mr-3">
-          Page <span>{currentPage}</span> of <span>{totalPages}</span>
-        </span>
-        <select className='rounded border border-gray-300 p-2'
-          value={itemsPerPage}
-          onChange={(e) => {
-            const newSize = Number(e.target.value);
-            onItemsPerPageChange(newSize);
-            const newTotalPages = Math.ceil(totalItems / newSize);
-            gotoPage(Math.min(currentPage, newTotalPages));
-          }}
-        >
-          {[10, 15, 25, 50].map((size) => (
-            <option key={size} value={size}> Show {size} </option>
-          ))}
-        </select>
+    <div className='flex justify-between w-full'>
+      <button
+        title='Previous page'
+        aria-label='Previous Page'
+        disabled={currentPage === 1}
+        onClick={() => onPageChange(currentPage - 1)}
+        className='border border-gray-300 px-4 py-2 rounded hover:bg-indigo-50 w-24 text-sm'
+      >
+        Previous
+      </button>
+
+      <div>
+        {paginationButtons.map(({type, page}) => {
+          if (type === 'ELLIPSIS') {
+            return <span key={`ellipsis-${page}`}>...</span>;
+          }
+
+          return (
+            <PaginationButton
+              key={page}
+              page={page}
+              title={`page ${page}`}
+              label={`page ${page}`}
+              currentPage={currentPage}
+              onPageChange={onPageChange}
+            />
+          );
+        })}
       </div>
 
-      <nav
-        className="flex justify-end border border-gray-300 rounded" aria-label="Pagination">
-        <button
-          title='First page'
-          aria-label='First page'
-          onClick={() => gotoPage(1)}
-          className={`shadow-inner rounded-l px-3 py-2 border-r border-gray-300
-          ${currentPage === 1 ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-slate-100'}`}
-          disabled={currentPage === 1}
-        >
-          <span className="sr-only">First</span>
-          <ChevronDoubleLeftIcon size={5} />
-        </button>
-        <button
-          title='Previous page'
-          aria-label='Previous page'
-          onClick={() => gotoPage(currentPage - 1)}
-          className={`shadow-inner px-3 py-2 border-r border-gray-300
-          ${currentPage === 1 ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-slate-100'}`}
-          disabled={currentPage === 1}
-        >
-          <span className="sr-only">Previous</span>
-          <ChevronLeftIcon size={5} />
-        </button>
-        <button
-          title='Next page'
-          aria-label='Next page'
-          onClick={() => gotoPage(currentPage + 1)}
-          className={`shadow-inner px-3 py-2 border-r border-gray-300
-          ${currentPage === totalPages ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-slate-100'}`}
-          disabled={currentPage === totalPages}
-        >
-          <span className="sr-only">Next</span>
-          <ChevronRightIcon size={5} />
-        </button>
-        <button
-          title='Last page'
-          aria-label='Last page'
-          onClick={() => gotoPage(totalPages)}
-          className={`shadow-inner rounded-r px-3 py-2
-          ${currentPage === totalPages ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-slate-100'}`}
-          disabled={currentPage === totalPages}
-        >
-          <span className="sr-only">Last</span>
-          <ChevronDoubleRightIcon size={5} />
-        </button>
-      </nav>
+      <button
+        title='Next page'
+        aria-label='Next page'
+        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage + 1)}
+        className='border border-gray-300 px-4 py-2 rounded hover:bg-indigo-50 w-24 text-sm'
+      >
+        Next
+      </button>
     </div>
   );
 };
