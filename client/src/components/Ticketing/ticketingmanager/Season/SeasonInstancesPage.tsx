@@ -45,20 +45,27 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
       const allSeasons = [];
 
       data.forEach((season) => {
-        const allEventsActive = season.events.every((event) => (event.active));
+        const allEventsActive = season.events.every((event) => event.active);
 
         if (allEventsActive) {
           activeSeasons.push(season);
-          allSeasons.push(season);
         } else {
           inactiveSeasons.push(season);
-          allSeasons.push(season);
         }
+
+        // Common operation
+        allSeasons.push(season);
       });
+      // Sorting
+      inactiveSeasons.sort((a, b) => b.seasonId - a.seasonId);
+      activeSeasons.sort((a, b) => b.seasonId - a.seasonId);
+      allSeasons.sort((a, b) => b.seasonId - a.seasonId);
+
       // Set active/inactive/all data arrays
       setInactiveData(inactiveSeasons);
       setActiveData(activeSeasons);
       setAllSeasonData(allSeasons);
+
       // Set Default "Active"
       setSeasonData(activeSeasons);
     })
@@ -70,14 +77,11 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
   // Group Toggle Display Changes
   useEffect(() => {
     if (filterSetting === 'active') {
-      // Active Data Only
-      setSeasonData([...activeData].sort((a, b) => b.seasonId - a.seasonId));
+      setSeasonData(activeData);
     } else if (filterSetting === 'inactive') {
-      // Inactive Data Only
-      setSeasonData([...inactiveData].sort((a, b) => b.seasonId - a.seasonId));
+      setSeasonData(activeData);
     } else {
-      // All Seasons
-      setSeasonData([...allSeasonData].sort((a, b) => b.seasonId - a.seasonId));
+      setSeasonData(allSeasonData);
     }
   }, [filterSetting]);
 

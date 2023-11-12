@@ -153,7 +153,7 @@ seasonController.get('/', async (req: Request, res: Response) => {
  *   get:
  *     summary: Get all seasons with events
  *     tags:
- *     - Season
+ *     - New season
  *     responses:
  *       200:
  *         description: Successful response with an array of seasons and their events.
@@ -202,37 +202,19 @@ seasonController.get('/', async (req: Request, res: Response) => {
 seasonController.get('/list', async (req: Request, res: Response) => {
   try {
     const events = await prisma.seasons.findMany({
-      where: {},
       include: {
         events: true,
       },
     });
 
-    const seasonEvents = events.map((season) => {
-      return {
-        seasonId: season.seasonid,
-        seasonName: season.name,
-
-        events: season.events.map((event) => {
-          return {
-            eventId: event.eventid,
-            eventName: event.eventname,
-          };
-        }),
-      };
-    });
-
-    return res.json(seasonEvents);
+    return res.json(events);
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError ||
+      error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-      return;
+    } else {
+      return res.status(500).json({error: 'Internal Server Error'});
     }
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
-    }
-    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 /**
