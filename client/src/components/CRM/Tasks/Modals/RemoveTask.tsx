@@ -40,7 +40,8 @@ const RemoveTask: React.FC<RemoveTaskProps> = ({
               bg-gradient-to-t from-gray-500/50 to-gray-300
               font-bold text-center text-sm text-gray-900
               shadow shadow-gray-500 active:opacity-75
-              hover:bg-gradient-to-b hover:shadow-inner'
+              hover:bg-gradient-to-b hover:shadow-inner
+              active:ring-2 active:ring-gray-500'
             >
               CANCEL
             </button>
@@ -50,7 +51,8 @@ const RemoveTask: React.FC<RemoveTaskProps> = ({
               bg-gradient-to-t from-red-700 to-rose-600
               font-bold text-center text-sm tracking-tight
               shadow shadow-gray-500 active:opacity-75
-              hover:bg-gradient-to-b hover:shadow-inner'
+              hover:bg-gradient-to-b hover:shadow-inner
+              active:ring-2 active:ring-rose-700'
             >
               DELETE
             </button>

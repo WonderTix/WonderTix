@@ -29,10 +29,11 @@ const TableActions: React.FC<TableActionsProps> = ({reloadTable, openModal}) => 
         <button
           title='Reload'
           onClick={reloadTable}
-          className='flex justify-center items-center rounded
+          className='w-40 px-4 py-2 gap-2
+            flex justify-center items-center rounded
             border border-gray-400 shadow shadow-gray-500/50
             hover:shadow-inner bg-gradient-to-t hover:bg-gradient-to-b
-            from-gray-200 to-white gap-2 w-40 px-4 py-2'
+            from-gray-200 to-white active:ring-1 active:ring-gray-500'
         >
           <ReloadIcon size={4} />
           Reload Table
@@ -40,10 +41,11 @@ const TableActions: React.FC<TableActionsProps> = ({reloadTable, openModal}) => 
         <button
           title='Create Task'
           onClick={() => openModal('create')}
-          className='flex justify-center items-center text-white bg-black
+          className='w-40 px-4 py-2 gap-2
+          flex justify-center items-center text-white bg-black
             rounded shadow shadow-gray-500/50 hover:shadow-inner border
             border-black bg-gradient-to-t from-black to-gray-500/50
-            hover:bg-gradient-to-b active:opacity-75 gap-2 px-4 py-2 w-40'
+            hover:bg-gradient-to-b active:opacity-75 active:ring-1 active:ring-black'
         >
           <SquarePlusIcon size={4} />
           Create Task

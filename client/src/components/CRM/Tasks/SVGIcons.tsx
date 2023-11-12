@@ -8,7 +8,7 @@ import React from 'react';
  */
 export function ChevronDoubleLeftIcon(props: any): React.ReactElement {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-${props.size} h-${props.size} text-gray-700`}> <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" /> </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-${props.size} h-${props.size} text-gray-600`}> <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" /> </svg>
   );
 }
 
@@ -20,7 +20,7 @@ export function ChevronDoubleLeftIcon(props: any): React.ReactElement {
  */
 export function ChevronDoubleRightIcon(props: any): React.ReactElement {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-${props.size} h-${props.size} text-gray-700`}> <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" /> </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-${props.size} h-${props.size} text-gray-600`}> <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" /> </svg>
   );
 }
 
@@ -44,7 +44,7 @@ export function ChevronDownIcon(props: any): React.ReactElement {
  */
 export function ChevronLeftIcon(props: any): React.ReactElement {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-${props.size} h-${props.size} text-gray-700`}> <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /> </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-${props.size} h-${props.size} text-gray-600`}> <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /> </svg>
   );
 }
 
@@ -56,7 +56,7 @@ export function ChevronLeftIcon(props: any): React.ReactElement {
  */
 export function ChevronRightIcon(props: any): React.ReactElement {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-${props.size} h-${props.size} text-gray-700`}> <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /> </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-${props.size} h-${props.size} text-gray-600`}> <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /> </svg>
   );
 }
 

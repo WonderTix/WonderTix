@@ -33,7 +33,7 @@ const TableRows: React.FC<TableRowsProps> = (
   } = task;
 
   return (
-    <div className='table-row hover:bg-blue-50/80'>
+    <div className='table-row hover:bg-slate-100'>
       <div className='table-cell text-center border-x border-gray-200 p-2.5'>{id}</div>
       <div className='table-cell p-2.5'>{assignedTo}</div>
       <div className='table-cell p-2.5'>

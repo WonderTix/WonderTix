@@ -47,7 +47,7 @@ const Pagination: React.FC<Props> = (
           aria-label='First page'
           onClick={() => gotoPage(1)}
           className={`shadow-inner rounded-l px-3 py-2 border-r border-gray-300
-          ${currentPage === 1 ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-gray-100'}`}
+          ${currentPage === 1 ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-slate-100'}`}
           disabled={currentPage === 1}
         >
           <span className="sr-only">First</span>
@@ -58,7 +58,7 @@ const Pagination: React.FC<Props> = (
           aria-label='Previous page'
           onClick={() => gotoPage(currentPage - 1)}
           className={`shadow-inner px-3 py-2 border-r border-gray-300
-          ${currentPage === 1 ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-gray-100'}`}
+          ${currentPage === 1 ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-slate-100'}`}
           disabled={currentPage === 1}
         >
           <span className="sr-only">Previous</span>
@@ -69,7 +69,7 @@ const Pagination: React.FC<Props> = (
           aria-label='Next page'
           onClick={() => gotoPage(currentPage + 1)}
           className={`shadow-inner px-3 py-2 border-r border-gray-300
-          ${currentPage === totalPages ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-gray-100'}`}
+          ${currentPage === totalPages ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-slate-100'}`}
           disabled={currentPage === totalPages}
         >
           <span className="sr-only">Next</span>
@@ -80,7 +80,7 @@ const Pagination: React.FC<Props> = (
           aria-label='Last page'
           onClick={() => gotoPage(totalPages)}
           className={`shadow-inner rounded-r px-3 py-2
-          ${currentPage === totalPages ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-gray-100'}`}
+          ${currentPage === totalPages ? 'cursor-not-allowed opacity-50 bg-white' : 'hover:bg-slate-100'}`}
           disabled={currentPage === totalPages}
         >
           <span className="sr-only">Last</span>

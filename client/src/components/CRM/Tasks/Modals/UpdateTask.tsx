@@ -138,7 +138,7 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
             className='mt-2 hidden text-sm text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
-            Please provide the assignees fullname (at least 3 characters).
+            * Please provide the assignee&#39;s fullname (at least 3 characters).
           </span>
         </div>
         <div className='mb-4'>
@@ -163,7 +163,7 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
             className='mt-2 hidden text-sm text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
-            Please provide a valid email address
+            * Please provide a valid email address.
           </span>
         </div>
         <div className='mb-4'>
@@ -186,7 +186,7 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
             className='mt-2 hidden text-sm text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
-            Please provide a task subject (at least 3 characters).
+            * Please provide a task subject (at least 3 characters).
           </span>
         </div>
         <div className='mb-4'>
@@ -209,7 +209,7 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
             className='mt-2 hidden text-sm text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
-            Please provide a task relation (at least 3 characters).
+            * Please provide a task relation (at least 3 characters).
           </span>
         </div>
         <div className='mb-4'>
@@ -232,7 +232,7 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
             className='mt-2 hidden text-sm text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
-            Please provide the contacts fullname (at least 3 characters).
+            * Please provide the contact&#39;s fullname (at least 3 characters).
           </span>
         </div>
         <div className='mb-4'>
@@ -307,7 +307,8 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
               flex justify-center items-center rounded
               font-bold text-sm text-center text-gray-900 uppercase
               shadow shadow-gray-500 hover:shadow-inner active:opacity-75
-              bg-gradient-to-t from-gray-500/50 to-gray-300 hover:bg-gradient-to-b'
+              bg-gradient-to-t from-gray-500/50 to-gray-300 hover:bg-gradient-to-b
+              active:ring-2 active:ring-gray-500'
           >
             Reset
           </button>
@@ -319,7 +320,8 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
               bg-black font-bold text-sm text-center text-white
               group-invalid:pointer-events-none group-invalid:opacity-50
               shadow shadow-gray-500 hover:shadow-inner active:opacity-75
-              bg-gradient-to-t from-black to-gray-800 hover:bg-gradient-to-b'
+              bg-gradient-to-t from-black to-gray-800 hover:bg-gradient-to-b
+              active:ring-2 active:ring-black'
           >
             {isLoading ? <SpinAnimation /> : 'Submit'}
           </button>
