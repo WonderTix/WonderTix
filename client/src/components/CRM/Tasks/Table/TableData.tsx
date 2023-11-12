@@ -3,12 +3,12 @@ const endDate = new Date(2023, 11, 31);
 
 const getRandomDate = (start: Date, end: Date) => {
   return new Date(
-    start.getTime() + Math.random() * (
-      end.getTime() - start.getTime()));
+    start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+  );
 };
 
 export type TableDataType = {
-  id: number
+  id: number;
   assignedTo: string;
   email: string;
   subject: string;
@@ -47,7 +47,7 @@ const TABLE_DATA: TableDataType[] = [
   },
   {
     id: 3,
-    assignedTo: 'Alejandro O\'Shaugh',
+    assignedTo: "Alejandro O'Shaugh",
     email: 'OShaugh@wonder-tix.com',
     subject: 'Dr. Sherrie K. James Donation - 5/12/2023',
     contact: 'Dr. Sherrie K. James',
@@ -180,7 +180,7 @@ const TABLE_DATA: TableDataType[] = [
   },
   {
     id: 14,
-    assignedTo: 'Alejandro O\'Shaugh',
+    assignedTo: "Alejandro O'Shaugh",
     email: 'OShaugh@wonder-tix.com',
     subject: 'Dr. Sherrie K. James Donation - 5/12/2023',
     contact: 'Dr. Sherrie K. James',
@@ -288,7 +288,7 @@ const TABLE_DATA: TableDataType[] = [
   },
   {
     id: 23,
-    assignedTo: 'Alejandro O\'Shaugh',
+    assignedTo: "Alejandro O'Shaugh",
     email: 'OShaugh@wonder-tix.com',
     subject: 'Dr. Sherrie K. James Donation - 5/12/2023',
     contact: 'Dr. Sherrie K. James',
@@ -408,7 +408,7 @@ const TABLE_DATA: TableDataType[] = [
   },
   {
     id: 33,
-    assignedTo: 'Alejandro O\'Shaugh',
+    assignedTo: "Alejandro O'Shaugh",
     email: 'OShaugh@wonder-tix.com',
     subject: 'Dr. Sherrie K. James Donation - 5/12/2023',
     contact: 'Dr. Sherrie K. James',
@@ -528,7 +528,7 @@ const TABLE_DATA: TableDataType[] = [
   },
   {
     id: 43,
-    assignedTo: 'Alejandro O\'Shaugh',
+    assignedTo: "Alejandro O'Shaugh",
     email: 'OShaugh@wonder-tix.com',
     subject: 'Dr. Sherrie K. James Donation - 5/12/2023',
     contact: 'Dr. Sherrie K. James',

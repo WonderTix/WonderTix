@@ -1,18 +1,95 @@
-import React from 'react';
-import TableHeader from './Table/TableHeader';
-import TableData from './Table/TableData';
+import React, {useState} from 'react';
 
-const DonationSummaryReport=() =>{
-    return (
-      <div className='w-full h-screen overflow-x-hidden absolute'>
-        <div className='md:ml-[16rem] md:mt-32 md:mr-16 sm:mt-[4rem] sm:mx-[0rem]'>
-            <div className='bg-white shadow-md rounded-md w-100 md:mx-auto h-fit antialiased lg:subpixel-antialiased xl:antialiased border-t-4 border-black'>
-                <TableHeader/>
-                <TableData/>
-            </div>
-        </div>
-      </div>
-    );
+import FilterComponent from './FilterComponent';
+import ReportComponent from './ReportComponent';
+import Navigation from '../../Navigation';
+
+import {Box, Grid} from '@mui/material';
+
+const DonationSummaryReport = () => {
+  const [displayReport, setDisplayReport] = useState(false);
+
+  const [filterData, setFilterData] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    primGrouping: 'None', // Default value
+    groupByRecordType: 'No',
+    excDonationRecordTypes: 'None',
+  });
+
+  // the 2 functions below need reworking
+  const handleFilterChange = (name, value) => {
+    setFilterData({
+      ...filterData,
+      [name]: value,
+    });
+    console.log(filterData.primGrouping);
   };
+
+  const handleFilterSubmit = () => {
+    console.log('Filter Data:', filterData);
+    setDisplayReport(true);
+  };
+
+  return (
+    <div>
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          position: 'absolute',
+          overflowX: 'hidden',
+        }}
+      >
+        <Box
+          sx={{
+            width: '100%',
+            height: '100%',
+            marginLeft: '16.7rem',
+            marginRight: '4rem',
+          }}
+        >
+          <Box
+            sx={{
+              marginTop: '6rem',
+              marginBottom: '1.5rem',
+            }}
+          >
+            <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-cyan-500'>
+              Donation Summary Report
+            </h1>
+          </Box>
+          <Grid container direction='row' justifyContent='flex-start'>
+            <Grid item xs={1.9}>
+              <Box
+                sx={{
+                  width: '90%',
+                  height: '15rem',
+                }}
+              >
+                <FilterComponent
+                  filterData={filterData}
+                  onFilterChange={handleFilterChange}
+                  onFilterSubmit={handleFilterSubmit}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={8}>
+              <Box
+                sx={{
+                  width: '95%',
+                  height: '100%',
+                }}
+              >
+                {displayReport && <ReportComponent filterData={filterData} />}
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+      <Navigation />
+    </div>
+  );
+};
 
 export default DonationSummaryReport;

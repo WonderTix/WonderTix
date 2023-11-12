@@ -1,5 +1,6 @@
 {
   "singleQuote": true,
+  "doubleQuote": true,
   "jsxSingleQuote": true,
   "bracketSpacing": false,
   "quoteProps": "consistent",
