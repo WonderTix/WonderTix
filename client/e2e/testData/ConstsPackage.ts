@@ -1,3 +1,14 @@
+// Enums for the standard dropdowns
+enum Accomodations {
+  None = 'Not at this time',
+  Wheelchair = 'Wheelchair seat(s)',
+  Aisle = 'Aisle seat(s)',
+  Ground = 'Seat(s) on the ground or the first level',
+  ASL = 'Seat(s) in the ASL interpreters section',
+  Wide = 'Wide seat(s)',
+  Other = 'Other (describe in comment section)'
+}
+
 // This is the passin data template for the test:addNewEvents in EventsPage.spect.ts.
 export interface EventsInfo {
   eventName: string;
@@ -98,6 +109,7 @@ export interface Customer {
   donationAmount: string;
   getNewsletter: boolean;
   heardAboutFrom: string;
+  accomodations: Accomodations;
   comments: string;
 }
 
@@ -115,5 +127,6 @@ export const JohnDoe: Customer = {
   donationAmount: '0',
   getNewsletter: false,
   heardAboutFrom: '',
+  accomodations: Accomodations.None,
   comments: '',
 };
