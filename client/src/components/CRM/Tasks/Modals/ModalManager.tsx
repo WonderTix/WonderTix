@@ -2,11 +2,12 @@ import React from 'react';
 import CreateTask from './CreateTask';
 import UpdateTask from './UpdateTask';
 import RemoveTask from './RemoveTask';
+import DetailTask from './DetailTask';
 import {TableDataType} from '../Table/TableData';
 
 type ModalManagerProps = {
   isModalOpen: boolean;
-  modalType: 'create' | 'update' | 'delete' | null;
+  modalType: 'detail' | 'create' | 'update' | 'delete' | null;
   selectedTask: TableDataType | null;
   onClose: () => void;
   onCreate: (task: TableDataType) => void;
@@ -25,35 +26,40 @@ const ModalManager: React.FC<ModalManagerProps> = ({
 }) => {
   if (!isModalOpen) return null;
 
+  let ModalComponent;
+
   switch (modalType) {
+  case 'detail':
+    ModalComponent = DetailTask;
+    break;
   case 'create':
-    return (
-      <CreateTask
-        onCancel={onClose}
-        isVisible={isModalOpen}
-        onSubmit={onCreate}
-      />
-    );
+    ModalComponent = CreateTask;
+    break;
   case 'update':
-    return (
-      <UpdateTask
-        task={selectedTask}
-        onCancel={onClose}
-        isVisible={isModalOpen}
-        onSubmit={onUpdate}
-      />
-    );
+    ModalComponent = UpdateTask;
+    break;
   case 'delete':
-    return (
-      <RemoveTask
-        onCancel={onClose}
-        isVisible={isModalOpen}
-        onSubmit={onDelete}
-      />
-    );
+    ModalComponent = RemoveTask;
+    break;
   default:
     return null;
   }
+
+  return (
+    <div className='bg-black bg-opacity-50 flex justify-center items-center
+      fixed top-0 right-0 bottom-0 left-0 z-20 antialiased'>
+      <ModalComponent
+        task={selectedTask}
+        onCancel={onClose}
+        isVisible={isModalOpen}
+        onSubmit={
+          modalType === 'create' ?
+            onCreate : modalType === 'update' ?
+              onUpdate : onDelete
+        }
+      />
+    </div>
+  );
 };
 
 export default ModalManager;

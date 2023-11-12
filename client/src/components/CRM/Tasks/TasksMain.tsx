@@ -1,16 +1,12 @@
-/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
 import Navigation from '../Navigation';
 import TaskManager from './TaskManager';
 
-/**
- * @returns {object} TasksMain - has Navigation
- *  and Tasks to reroute to other components
- */
-const TasksMain=() =>{
+const TasksMain: React.FC = (): React.ReactElement => {
   return (
-    <div className='flex flex-row  '>
-      <TaskManager/>
-      <Navigation/>
+    <div className='flex flex-row'>
+      <TaskManager />
+      <Navigation />
     </div>
   );
 };
