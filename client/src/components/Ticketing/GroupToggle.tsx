@@ -3,16 +3,20 @@ import PropTypes from 'prop-types';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
-const ShowingActivenessToggle =(props) => {
-  const [filter, setFilter] = useState(props.defaultValue);
+const ShowingActivenessToggle = ({
+  defaultValue,
+  handleFilterChange,
+  showInactiveToggle = true,
+}) => {
+  const [filter, setFilter] = useState(defaultValue);
 
-  const handleFilterChange = (
-    event: React.MouseEvent<HTMLElement>,
+  const handleChange = (
+    event: MouseEvent<HTMLElement>,
     newFilterSetting: string,
   ) => {
     setFilter(newFilterSetting);
-    if (props.handleFilterChange) {
-      props.handleFilterChange(newFilterSetting);
+    if (handleFilterChange) {
+      handleFilterChange(newFilterSetting);
     }
   };
 
@@ -22,7 +26,7 @@ const ShowingActivenessToggle =(props) => {
         color='standard'
         value={filter}
         exclusive
-        onChange={handleFilterChange}
+        onChange={handleChange}
         aria-label='Activeness Toggle Filter'
         sx={{backgroundColor: 'white'}}
       >
@@ -32,12 +36,14 @@ const ShowingActivenessToggle =(props) => {
         >
           Active
         </ToggleButton>
-        <ToggleButton
-          value='inactive'
-          sx={{fontWeight: 'bold'}}
-        >
-          Inactive
-        </ToggleButton>
+        {showInactiveToggle && (
+          <ToggleButton
+            value='inactive'
+            sx={{fontWeight: 'bold'}}
+          >
+            Inactive
+          </ToggleButton>
+        )}
         <ToggleButton
           value='all'
           sx={{fontWeight: 'bold'}}
@@ -52,7 +58,7 @@ const ShowingActivenessToggle =(props) => {
 ShowingActivenessToggle.propTypes = {
   defaultValue: PropTypes.string.isRequired,
   handleFilterChange: PropTypes.func,
+  showInactiveToggle: PropTypes.bool,
 };
 
 export default ShowingActivenessToggle;
-
