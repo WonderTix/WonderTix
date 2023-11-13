@@ -3,7 +3,7 @@ import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
-import {getTicketTypePrice} from './ShowingUtils';
+import {cloneShowing, createSubmitFunction, getTicketTypePrice} from './ShowingUtils';
 
 import {LineItem} from './LineItem';
 
@@ -14,13 +14,50 @@ interface EventInstanceViewProps {
 
 export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
-  const {ticketTypes, editing, showPopUp} = useEvent();
+  const {
+    ticketTypes,
+    editing,
+    showPopUp,
+    setReloadShowing,
+    setPopUpProps,
+    setEditing,
+    token,
+  } = useEvent();
   const showingDate = new Date(
     `${toDateStringFormat(showing.eventdate)} ${showing.eventtime
       .split('T')[1]
       .slice(0, 8)}`,
   );
 
+  const onCloneSuccess = async (res) => {
+    const data = await res.json();
+    setReloadShowing((reload) => !reload);
+    setPopUpProps(
+      'Success',
+      'Showing successfully cloned',
+      true,
+      `update-modal-showing-id-${data.eventinstanceid}`,
+    );
+    setEditing((editing) => !editing);
+  };
+  const onCloneError = async (res) => {
+    const data = await res.json();
+    setReloadShowing((reload) => !reload);
+    setPopUpProps(
+      'Failure',
+      'Showing clone failed',
+      false,
+      `update-modal-showing-id-${data.eventinstanceid}`,
+    );
+    setEditing((editing) => !editing);
+  };
+  const submitClone = createSubmitFunction(
+    'POST',
+    `${process.env.REACT_APP_API_2_URL}/event-instance`,
+    token,
+    onCloneSuccess,
+    onCloneError,
+  );
   return (
     <div className={'bg-gray-300 rounded-xl p-2'}>
       <div
@@ -107,7 +144,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
         </div>
         <div
           className={
-            'grid content-center mx-auto col-span-12 min-[1350px]:col-span-1'
+            'flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
           }
         >
           <button
@@ -119,6 +156,19 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             }
           >
             Edit
+          </button>
+          <button
+            disabled={editing || showPopUp}
+            type={'button'}
+            onClick={() => {
+              setEditing((editing) => !editing);
+              return submitClone(cloneShowing(showing));
+            }}
+            className={
+              ' bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold p-2 px-4 rounded-xl'
+            }
+          >
+            Clone
           </button>
         </div>
       </div>

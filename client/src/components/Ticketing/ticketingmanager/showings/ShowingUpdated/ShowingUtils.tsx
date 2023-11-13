@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
+import {toDateStringFormat} from './util/EventsUtil';
 
 export const createSubmitFunction = (
   method: string,
@@ -9,8 +10,8 @@ export const createSubmitFunction = (
   onSuccess?,
   onError?,
 ) => {
-  return async (event, actions) => {
-    actions.setStatus('Submitting...');
+  return async (event, actions?) => {
+    actions?.setStatus('Submitting...');
     try {
       const submitRes = await fetch(url, {
         credentials: 'include',
@@ -21,7 +22,7 @@ export const createSubmitFunction = (
         },
         body: JSON.stringify(event),
       });
-      actions.setSubmitting(false);
+      actions?.setSubmitting(false);
       if (!submitRes.ok) {
         throw submitRes;
       }
@@ -29,7 +30,7 @@ export const createSubmitFunction = (
         await onSuccess(submitRes);
       }
     } catch (error) {
-      actions.setSubmitting(false);
+      actions?.setSubmitting(false);
       if (onError) {
         await onError(error);
       }
@@ -186,4 +187,16 @@ export const getTicketTypePrice = (
   const foundType = ticketTypes?.find((type) => Number(type.id) === id);
   if (!foundType) return 0;
   return foundType[priceType];
+};
+
+export const cloneShowing = (showing) => {
+  const toReturn = {};
+  Object.keys(showing).forEach((key) => {
+    toReturn[key] = showing[key];
+  });
+  toReturn['instanceTicketTypes'] = showing.ticketrestrictions;
+  toReturn['eventdate'] = toDateStringFormat(showing.eventdate);
+  toReturn['eventtime'] = showing.eventtime.split('T')[1].slice(0, 8);
+  toReturn['availableseats'] = toReturn['totalseats'];
+  return toReturn;
 };
