@@ -1,13 +1,13 @@
-/*
-This component takes a component in as a prop,
-and only returns it if one is logged in and an admin.
-*/
 import {useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
 import React from 'react';
 import {LoadingScreen} from '../Ticketing/mainpage/LoadingScreen';
 /**
- * takes a component in as a prop,
- and only retrns it if one is logged in
+ This component takes a component in as a prop,
+ and only renders it if one is logged in and has admin permissions.
+ If the user has not logged in they will be redirected to the
+ login page. If the user has logged in but is not an admin they
+ will be redirected to the main page. If the user has both
+ logged in and is an admin they will be routed to the component.
  *
  * @param root0
  * @param root0.component
