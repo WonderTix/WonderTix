@@ -57,9 +57,9 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
         allSeasons.push(season);
       });
       // Sorting
-      inactiveSeasons.sort((a, b) => b.seasonId - a.seasonId);
-      activeSeasons.sort((a, b) => b.seasonId - a.seasonId);
-      allSeasons.sort((a, b) => b.seasonId - a.seasonId);
+      inactiveSeasons.sort((a, b) => b.seasonid - a.seasonid);
+      activeSeasons.sort((a, b) => b.seasonid - a.seasonid);
+      allSeasons.sort((a, b) => b.seasonid - a.seasonid);
 
       // Set active/inactive/all data arrays
       setInactiveData(inactiveSeasons);

@@ -149,7 +149,7 @@ seasonController.get('/', async (req: Request, res: Response) => {
  * Retrieves a list of seasons with their associated events.
  *
  * @swagger
- * /2/season/list:
+* /2/season/list:
  *   get:
  *     summary: Get all seasons with events
  *     tags:
@@ -162,26 +162,7 @@ seasonController.get('/', async (req: Request, res: Response) => {
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   seasonId:
- *                     type: number
- *                     description: The unique identifier of the season.
- *                   seasonName:
- *                     type: string
- *                     description: The name of the season.
- *                   events:
- *                     type: array
- *                     description: An array of events associated with the season.
- *                     items:
- *                       type: object
- *                       properties:
- *                         eventId:
- *                           type: number
- *                           description: The unique identifier of the event.
- *                         eventName:
- *                           type: string
- *                           description: The name of the event.
+ *                 $ref: '#/components/schemas/events'
  *       400:
  *         description: Bad request. Invalid input parameters.
  *         content:
