@@ -2,8 +2,9 @@
 This component takes a component in as a prop,
 and only retrns it if one is logged in.
 */
-import {withAuthenticationRequired} from '@auth0/auth0-react';
+import {useAuth0, withAuthenticationRequired} from '@auth0/auth0-react';
 import React from 'react';
+import {LoadingScreen} from '../Ticketing/mainpage/LoadingScreen';
 /**
  * takes a component in as a prop,
 and only retrns it if one is logged in
@@ -13,9 +14,13 @@ and only retrns it if one is logged in
  * @returns {React.ReactElement}
  */
 const ProtectedRoute = ({component}: {component: any}): React.ReactElement => {
+  const {isLoading} = useAuth0();
   const Component = withAuthenticationRequired(
-    withAuthenticationRequired(component, {claimCheck, returnTo: '/'}),
+      withAuthenticationRequired(component, {claimCheck, returnTo: '/'}),
   );
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
   return <Component />;
 };
 
