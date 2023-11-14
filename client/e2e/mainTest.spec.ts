@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
 import {ContactPage} from './pages/contactPage';
-import {EventsInfo2, ShowingInfo2, JohnDoe, ValidVisaCredit} from './testData/ConstsPackage';
+import {EventsInfo2, ShowingInfo2, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {
@@ -25,6 +25,7 @@ test('view show', async ({page}) => {
 // Adds and removes its own event for test purposes
 test('add ticket', async ({page}) => {
   test.setTimeout(120000);
+  const currentPatron = JaneDoe;
   const events = new EventsPage(page);
   const main = new MainPage(page);
   const contacts = new ContactPage(page);
@@ -54,14 +55,14 @@ test('add ticket', async ({page}) => {
     const cartInfo = ticketType + ' - ' + dateParts[1] + ' - ' + time;
     await main.checkCart(EventsInfo2.eventName, cartInfo, quantity);
     await main.clickCartCheckout();
-    await main.fillCustomerInfo(JohnDoe);
+    await main.fillCustomerInfo(currentPatron);
     await main.clickCartNext();
-    await main.fillStripeInfo(JohnDoe, ValidVisaCredit);
+    await main.fillStripeInfo(currentPatron, ValidVisaCredit);
     await main.clickStripeCheckout();
     await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000});
     await contacts.goto();
-    await contacts.searchCustomer(JohnDoe);
-    await contacts.checkCustomer(JohnDoe);
+    await contacts.searchCustomer(currentPatron);
+    await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
     await events.goToEventFromManage(EventsInfo2.eventFullName);

@@ -31,6 +31,8 @@ export class MainPage {
   readonly cartCountry: Locator;
   readonly cartPhone: Locator;
   readonly cartEmail: Locator;
+  readonly cartSource: Locator;
+  readonly cartAccommodations: Locator;
   readonly cartNext: Locator;
   readonly stripeEmail: Locator;
   readonly stripeCardNumber: Locator;
@@ -65,6 +67,8 @@ export class MainPage {
     this.cartCountry = page.locator('#country');
     this.cartPhone = page.locator('#phone-number');
     this.cartEmail = page.locator('#contact-email');
+    this.cartSource = page.locator('#visit-source');
+    this.cartAccommodations = page.locator('#seating-acc');
     this.cartNext = page.getByRole('button', {name: 'Next'});
     this.stripeEmail = page.locator('#email');
     this.stripeCardNumber = page.locator('#cardNumber');
@@ -184,6 +188,7 @@ export class MainPage {
     await this.cartCountry.fill(customer.country);
     await this.cartPhone.fill(customer.phoneNumber);
     await this.cartEmail.fill(customer.email);
+    await this.cartAccommodations.selectOption({value: customer.accommodations});
   }
 
   async clickCartNext() {

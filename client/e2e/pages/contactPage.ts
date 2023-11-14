@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 
 import {type Locator, type Page, expect} from '@playwright/test';
-import {CreditCard, Customer} from '../testData/ConstsPackage';
+import {CreditCard, Customer, Accommodations} from '../testData/ConstsPackage';
 
 export class ContactPage {
     readonly page: Page;
@@ -57,6 +57,7 @@ export class ContactPage {
         expect(await currentCard.getByTestId('customer-email').textContent()).toBe(customer.email);
         expect(await currentCard.getByTestId('customer-address').textContent()).toBe(customer.streetAddress);
         expect(await currentCard.getByTestId('customer-phone').textContent()).toBe(customer.phoneNumber);
+        expect(await currentCard.getByTestId('customer-accommodation').textContent()).toBe(customer.accommodations);
     }
 
     // Incomplete, page functionality not implemented

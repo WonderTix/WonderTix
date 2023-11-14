@@ -1,12 +1,12 @@
 // Enums for the standard dropdowns
-enum Accomodations {
-  None = 'Not at this time',
-  Wheelchair = 'Wheelchair seat(s)',
-  Aisle = 'Aisle seat(s)',
-  Ground = 'Seat(s) on the ground or the first level',
-  ASL = 'Seat(s) in the ASL interpreters section',
-  Wide = 'Wide seat(s)',
-  Other = 'Other (describe in comment section)'
+export enum Accommodations {
+  None = 'None',
+  Wheelchair = 'Wheel Chair',
+  Aisle = 'Aisle Seat',
+  Ground = 'First/Ground floor',
+  ASL = 'ASL Interpreter',
+  Wide = 'Wide Seats',
+  Other = 'Other'
 }
 
 // This is the passin data template for the test:addNewEvents in EventsPage.spect.ts.
@@ -109,7 +109,7 @@ export interface Customer {
   donationAmount: string;
   getNewsletter: boolean;
   heardAboutFrom: string;
-  accomodations: Accomodations;
+  accommodations: Accommodations;
   comments: string;
 }
 
@@ -127,6 +127,24 @@ export const JohnDoe: Customer = {
   donationAmount: '0',
   getNewsletter: false,
   heardAboutFrom: '',
-  accomodations: Accomodations.None,
+  accommodations: Accommodations.None,
+  comments: '',
+};
+
+export const JaneDoe: Customer = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  fullName: 'Jane Doe',
+  streetAddress: '618 William Street, Key West, FL',
+  postCode: '33040',
+  country: 'USA',
+  phoneNumber: '(207)283-8797',
+  email: 'test@wondertix.com',
+  newsletterSignup: false,
+  getConcession: false,
+  donationAmount: '0',
+  getNewsletter: false,
+  heardAboutFrom: '',
+  accommodations: Accommodations.ASL,
   comments: '',
 };
