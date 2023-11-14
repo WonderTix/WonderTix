@@ -8,6 +8,7 @@ import {
   RequestBody,
   deleteSeasonInfo,
   getAllEvents,
+  updateEventSeason,
 } from './utils/apiRequest';
 import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
@@ -26,9 +27,11 @@ const SeasonInfo = (props: SeasonProps) => {
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [defaultSeasonImageCheckbox, setDefaultSeasonImageCheckbox] =
     useState(false);
-  const [activeSeasonCheckbox, setActiveSeasonCheckbox] = useState(false);
-  const [currentSeasonEvents, setCurrentSeasonEvents] = useState({});
   const [tempImageUrl, setTempImageUrl] = useState('');
+  const [activeSeasonCheckbox, setActiveSeasonCheckbox] = useState(false);
+  const [prevActiveSeasonCheckbox, setPrevActiveSeasonCheckbox] =
+    useState(false);
+  const [currentSeasonEvents, setCurrentSeasonEvents] = useState([]);
 
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
@@ -67,11 +70,21 @@ const SeasonInfo = (props: SeasonProps) => {
     }
   };
 
+  const handleUpdateSeasonEvents = async (isSeasonActive: boolean) => {
+    for (const event of currentSeasonEvents) {
+      const eventReqBody = {...event, active: isSeasonActive};
+      delete eventReqBody['deletedat'];
+      const updateSingleEvent = await updateEventSeason(eventReqBody, token);
+      if (!updateSingleEvent) return;
+    }
+  };
+
   const handleGetSeasonEvents = async () => {
     const seasonEvents = await getAllEvents(token, seasonId);
     if (seasonEvents) {
       const isSeasonActive = seasonEvents.every((event) => event.active);
       setActiveSeasonCheckbox(isSeasonActive);
+      setPrevActiveSeasonCheckbox(isSeasonActive);
       setCurrentSeasonEvents(seasonEvents);
     }
   };
@@ -115,6 +128,8 @@ const SeasonInfo = (props: SeasonProps) => {
       void handleCreateNewSeason(reqObject);
     } else {
       void handleUpdateSeason(reqObject);
+      void handleUpdateSeasonEvents(activeSeasonCheckbox);
+      setPrevActiveSeasonCheckbox(activeSeasonCheckbox);
     }
   };
 
@@ -132,6 +147,7 @@ const SeasonInfo = (props: SeasonProps) => {
     } else {
       setIsFormEditing(false);
       setSeasonValues({...seasonValues, imageurl: tempImageUrl});
+      setActiveSeasonCheckbox(prevActiveSeasonCheckbox);
       tempImageUrl !== ''
         ? setDefaultSeasonImageCheckbox(false)
         : setDefaultSeasonImageCheckbox(true);
