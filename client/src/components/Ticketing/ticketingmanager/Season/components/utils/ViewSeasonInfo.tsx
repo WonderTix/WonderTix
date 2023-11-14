@@ -24,7 +24,7 @@ interface ViewSeasonInfoProps extends SeasonInfo {
 const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
   const {name, startdate, enddate, imageurl, setIsFormEditing} = props;
 
-  const getlongDateFormat = (date: string) => {
+  const getLongDateFormat = (date: string) => {
     const year: string = date.slice(0, 4);
     const month = Number(date.slice(5, 7));
     const day = date.slice(8);
@@ -50,10 +50,10 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           <p className='mb-3 text-base'>{name}</p>
 
           <h3 className='font-semibold'>Start Date </h3>
-          <p className='mb-3 text-base'>{getlongDateFormat(startdate)}</p>
+          <p className='mb-3 text-base'>{getLongDateFormat(startdate)}</p>
 
           <h3 className='font-semibold'>End Date </h3>
-          <p className='text-base'>{getlongDateFormat(enddate)}</p>
+          <p className='text-base'>{getLongDateFormat(enddate)}</p>
         </article>
         <article className='col-span-12 tab:col-span-6'>
           <SeasonImage
