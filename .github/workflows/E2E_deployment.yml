@@ -1,8 +1,11 @@
 name: E2E tests after merge to main deployment
-on:
-  push:
-    branches:
-      - main
+#
+# Disabled: deployment E2E testing is now done using Cloud Build
+#
+# on:
+#   push:
+#     branches:
+#       - main
 
 jobs:
   test-client:
