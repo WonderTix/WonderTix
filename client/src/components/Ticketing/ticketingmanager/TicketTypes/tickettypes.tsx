@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import PopUp from '../../PopUp';
 import {
   DataGrid,
   GridColumns,
@@ -7,8 +8,6 @@ import {
 } from '@mui/x-data-grid';
 import Chip from '@mui/material/Chip';
 import {useAuth0} from '@auth0/auth0-react';
-import {Navigate, NavigationType, useNavigationType} from 'react-router';
-import {useNavigate} from 'react-router-dom';
 
 // Web page that manages ticket types
 const TicketTypes = () => {
@@ -18,9 +17,7 @@ const TicketTypes = () => {
   const [newTicketType, setTicketType] = useState('');
   const [newTicketPrice, setTicketPrice] = useState(0);
   const [newConcessionsPrice, setConcessionsPrice] = useState(0);
-  const [confirmDeletePrompt, setConfirmDeletePrompt] = useState(false);
-  const [cellData, setCellData] = useState<any>([]);
-  const navigate = useNavigate();
+  const [confirmDeleteData, setConfirmDeleteData] = useState(null);
 
   // Defines the columns of the grid
   const columns: GridColumns = [
@@ -37,19 +34,37 @@ const TicketTypes = () => {
       editable: true,
     },
     {
+      field: 'concessions',
+      headerName: 'Concessions',
+      width: 150,
+      editable: true,
+    },
+    {
       field: 'delete',
       headerName: 'Delete',
       sortable: false,
       width: 100,
       renderCell: (cell) => {
-        return (
-          <Chip label='Delete' color='error' onClick={
-            () => {
-              setConfirmDeletePrompt(true);
-              setCellData(cell);
-            }
-          } />
-        );
+        // Check if the id of the row is 1
+        if (cell.row.id === 1) {
+          // Return a "Default" tag for id 1
+          return <Chip label="Default" color="primary" />;
+        } else {
+          // Return the delete button for other ids
+          return (
+            <Chip
+              label='Delete'
+              color='error'
+              onClick={() => {
+                setConfirmDeleteData({
+                  title: 'Delete Ticket Type',
+                  message: 'Are you sure you want to delete this ticket type?',
+                  cellData: cell,
+                });
+              }}
+            />
+          );
+        }
       },
     },
   ];
@@ -57,9 +72,6 @@ const TicketTypes = () => {
   // handles editing a ticket type
   const handleEditTicket = React.useCallback(
     async (newRow: GridRowModel, prevRow: GridRowModel) => {
-      console.log('New row: ' + newRow.id + ' ' + newRow.description +
-        ' ' + newRow.price + ' ' + newRow.concessions);
-
       const token = await getAccessTokenSilently({
         audience: process.env.REACT_APP_ROOT_URL,
         scope: 'admin',
@@ -67,8 +79,6 @@ const TicketTypes = () => {
 
       if (newRow.description !== prevRow.description ||
         newRow.price !== prevRow.price) {
-        console.log('Ticket type has changed');
-
         const response = await fetch(
           process.env.REACT_APP_API_1_URL+'/tickets/updateType', {
             method: 'PUT',
@@ -79,7 +89,6 @@ const TicketTypes = () => {
             body: JSON.stringify(newRow),
           },
         );
-        console.log(response);
       }
       return newRow;
     }, [ticketTypes],
@@ -107,75 +116,12 @@ const TicketTypes = () => {
       );
 
       const responseData = await response.json();
-      console.log(responseData);
     } catch (error) {
       console.log(error);
     }
-    setConfirmDeletePrompt(false);
+    setConfirmDeleteData(null);
     // refreshes the page ie re-renders the table
     getTicketTypes();
-  };
-
-
-  // asks the user to confirm the deletion of a ticket type
-  const showConfirmDeletePrompt = (cell: GridRenderCellParams) => {
-    return (
-      <div className='relative w-full h-screen overflow-x-hidden z-10'
-        aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end sm:items-center justify-center
-            min-h-full p-4 text-center sm:p-0">
-            <div className="relative bg-white rounded-lg text-left
-              overflow-hidden shadow-xl transform transition-all sm:my-8
-              sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex-shrink-0 flex items-center
-                    justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0
-                    sm:h-10 sm:w-10">
-                    <svg className="h-6 w-6 text-red-600"
-                      xmlns="http://www.w3.org/2000/svg" fill="none"
-                      viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor"
-                      aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667
-                        1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34
-                        16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                  </div>
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4
-                    sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900"
-                      id="modal-title">Delete </h3>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        Are you sure you want to delete this?
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex
-              sm:flex-row-reverse">
-                <button onClick={() => handleDeleteClick(cell)} type="button"
-                  className="w-full inline-flex justify-center rounded-md
-                  border border-transparent shadow-sm px-4 py-2 bg-red-600
-                  text-base font-medium text-white hover:bg-red-700
-                  focus:outline-none focus:ring-2 focus:ring-offset-2
-                  focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">Yes</button>
-                <button onClick={() => setConfirmDeletePrompt(false)}
-                  type="button" className="mt-3 w-full inline-flex
-                  justify-center rounded-md border border-gray-300 shadow-sm
-                  px-4 py-2 bg-white text-base font-medium text-gray-700
-                  hover:bg-gray-50 focus:outline-none focus:ring-2
-                  focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3
-                  sm:w-auto sm:text-sm">Cancel</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
   };
 
   // stores the name of the ticket type
@@ -195,8 +141,6 @@ const TicketTypes = () => {
 
   // handles the submit click when adding new ticket type
   const handleSubmit = async () => {
-    console.log('Submit clicked');
-
     const token = await getAccessTokenSilently({
       audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
@@ -221,7 +165,6 @@ const TicketTypes = () => {
         },
       );
       if (response.ok) {
-        console.log('Ticket type added successfully');
         // closes the form:
         setAddTicketClicked(!addTicketClicked);
         // refreshes the page ie re-renders the table:
@@ -311,8 +254,6 @@ const TicketTypes = () => {
           },
         },
       );
-
-      console.log('Access token --> ' + process.env.REACT_APP_API_1_URL);
       const jsonRes = await response.json();
 
       setTicketTypes(jsonRes.data);
@@ -325,12 +266,10 @@ const TicketTypes = () => {
   }, []);
 
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div
-        className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'
-      >
-        <h1 className='font-bold text-5xl mb-10 pb-4 bg-clip-text text-transparent
-        bg-gradient-to-r from-green-400 to-teal-700'>
+    <div className="w-full h-screen absolute">
+      <div className='w-full h-screen overflow-x-hidden absolute '>
+        <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
           Manage Ticket Types
         </h1>
         <button
@@ -352,9 +291,18 @@ const TicketTypes = () => {
           processRowUpdate={handleEditTicket}
           onProcessRowUpdateError={(err) => console.log(err)}
         />
-        {confirmDeletePrompt && showConfirmDeletePrompt(cellData)}
       </div>
     </div>
+    {confirmDeleteData && (
+          <PopUp
+            title={confirmDeleteData.title}
+            message={confirmDeleteData.message}
+            handleClose={() => setConfirmDeleteData(null)}
+            handleProceed={() => handleDeleteClick(confirmDeleteData.cellData)}
+            success={false}
+          />
+        )}
+  </div>
   );
 };
 
