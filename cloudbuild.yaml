@@ -137,7 +137,7 @@ steps:
       - 'SERVICE_ACCOUNT'
       - 'SQL_INSTANCE'
 
- # Send traffic to server revision
+  # Send traffic to server revision
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'send-server-traffic'
     waitFor: ['deploy-server']
