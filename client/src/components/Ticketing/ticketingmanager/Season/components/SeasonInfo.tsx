@@ -28,9 +28,9 @@ const SeasonInfo = (props: SeasonProps) => {
   const [defaultSeasonImageCheckbox, setDefaultSeasonImageCheckbox] =
     useState(false);
   const [tempImageUrl, setTempImageUrl] = useState('');
-  const [activeSeasonCheckbox, setActiveSeasonCheckbox] = useState(false);
+  const [activeSeasonCheckbox, setActiveSeasonCheckbox] = useState<boolean>();
   const [prevActiveSeasonCheckbox, setPrevActiveSeasonCheckbox] =
-    useState(false);
+    useState<boolean>();
   const [currentSeasonEvents, setCurrentSeasonEvents] = useState([]);
 
   const {name, startdate, enddate, imageurl} = seasonValues;
@@ -266,7 +266,7 @@ const SeasonInfo = (props: SeasonProps) => {
                 <Checkbox
                   checked={activeSeasonCheckbox}
                   onChange={() =>
-                    setActiveSeasonCheckbox((checked) => !checked)
+                    setActiveSeasonCheckbox((checked) => !!checked)
                   }
                 />
               }

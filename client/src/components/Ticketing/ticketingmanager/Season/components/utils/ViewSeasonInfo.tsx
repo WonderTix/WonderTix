@@ -41,10 +41,18 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           <h1 className='text-4xl font-semibold'>Season Information</h1>
           <span
             className={`${
-              isSeasonActive ? 'bg-green-100' : 'bg-red-100'
+              isSeasonActive === undefined
+                ? 'hidden'
+                : isSeasonActive
+                ? 'bg-green-100'
+                : 'bg-red-100'
             } py-2 px-8 rounded-lg font-medium`}
           >
-            {isSeasonActive ? 'Active' : 'Inactive'}
+            {isSeasonActive === undefined
+              ? 'hidden'
+              : isSeasonActive
+              ? 'Active'
+              : 'Inactive'}
           </span>
         </div>
         <button
