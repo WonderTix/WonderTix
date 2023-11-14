@@ -55,7 +55,7 @@ test('Purchase ticket for customer as admin', async ({page}) => {
     await page.getByRole('button', { name: 'Next' }).click();
     await page.getByLabel('Email').click();
     await page.getByLabel('Email').fill('test@wondertix.com');
-    if (!page.getByText('Thank you for your purchase!')) {
+    if (!page.getByText('Thank you for your purchase!')) { // Placeholder, in case test is necessary for stripe phone number verification pop-up
       
     } else {
       await page.getByPlaceholder('1234 1234 1234 1234').click();
