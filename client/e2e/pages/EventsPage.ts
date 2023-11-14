@@ -1,4 +1,3 @@
-/* eslint-disable require-jsdoc */
 import { type Locator, type Page ,expect} from '@playwright/test';
 import { EventsInfo, ShowingInfo } from '../testData/ConstsPackage';
 /*
@@ -42,10 +41,6 @@ export class EventsPage {
   readonly backToEvents: Locator;
   readonly concessionTicket: Locator;
   readonly editShowingButton: Locator;
-
-  readonly firstEvent:Locator;
-  readonly secondEvent: Locator;
-
   readonly emailButton: Locator;
   readonly manageTicketingButton: Locator;
   readonly homePageRightSlide: Locator;
@@ -55,12 +50,12 @@ export class EventsPage {
   readonly deleteButton: Locator;
   constructor(page: Page) {
     this.page = page;
+    
 
+    
 
     this.homePage=page.getByRole('button', { name: '/' });
     this.homePageRightSlide=page.locator('button:nth-child(4)');
-    this.firstEvent=page.getByRole('button', { name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
-    this.secondEvent=page.getByRole('button', { name: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
 
     this.pageHeader=page.getByRole('heading', { name: 'Select Event' });
     this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
@@ -109,12 +104,21 @@ export class EventsPage {
   }
 
   /*
+  asiync checkAndDeletePreviousEvents(eventName:string,showing1:string,showing2:string) {
+    wihile (await this.page.getByText(eventName).isVisible()) {
+      await this.page.getByRole('button', { name: eventName }).click();
+      await this.searchDeleteShowing(showing1);
+      await this.searchDeleteShowing(showing2);
+      await this.deleteTheEvent(eventName);
+     }
+}*/
+
+  /*
   To simulate only clicking the edit button and do almost nothing.
   This test is more geared toward testing the buttons.
   */
   async editEvents()
   {
-    await this.firstEvent.click();
     await this.editEventInfo.click();
     await this.editEventName.click();
     await this.editEventDes.click();
@@ -182,7 +186,7 @@ export class EventsPage {
   }
 
   //**The weird thing is that Im not sure wheres the 'Playbill' comes from.
-  async checkNewEventOnHomePage()
+  async checkNewEventOnHomePage(event_name:string, suffix:string)
   {
     await this.homePage.click();
     await this.homePageRightSlide.click();
@@ -191,7 +195,7 @@ export class EventsPage {
     await this.homePageRightSlide.click();
     await this.homePageRightSlide.click();
     await this.seeEventShowings.click();
-    await expect(this.page.getByRole('img', { name: 'Test_event Playbill' })).toBeVisible;
+    await expect(this.page.getByRole('img', { name: event_name+' '+suffix })).toBeVisible;
   }
 
 /**
@@ -215,6 +219,7 @@ export class EventsPage {
     await this.editEventInfo.click();
     await this.deleteButton.click();
     await this.eventContinue.click();
+    //await this.eventContinue.click();
     await this.leftBarEvent.click();
     await expect(this.page.getByRole('button', { name: eventFullName }).first()).not.toBeVisible();
   }
@@ -228,11 +233,6 @@ async editTheEventInfo(anEvent:EventsInfo)
     await this.imageURL.fill(anEvent.eventURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
-}
-
-async clickSecondEvent()
-{
-  await this.secondEvent.click();
 }
 
 async searchForEventByName(anEvent:EventsInfo)
@@ -250,18 +250,13 @@ async searchForEventByDes(anEvent:EventsInfo)
 */
 async editShowingInfo(aShowing:ShowingInfo)
 {
-  await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
-  await this.page.getByText('372').click();
+  //await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
+  await this.editShowingButton.click();
   await this.editEventDate.fill(aShowing.showingDate);
   await this.ticketQuantityOption.click();
   await this.ticketQuantityOption.fill(aShowing.showingQuantity);
   await this.page.getByLabel('Save').click();
   await this.eventContinue.click();
-}
-
-async clickFirstEvent()
-{
-  await this.firstEvent.click();
 }
 
 async clickSpecificShowing(showingWholeDate: string)
