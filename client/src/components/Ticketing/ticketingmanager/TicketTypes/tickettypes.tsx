@@ -48,7 +48,7 @@ const TicketTypes = () => {
         // Check if the id of the row is 1
         if (cell.row.id === 1) {
           // Return a "Default" tag for id 1
-          return <Chip label="Default" color="primary" />;
+          return <Chip label="Default" color="default" size="small" />;
         } else {
           // Return the delete button for other ids
           return (
@@ -269,7 +269,7 @@ const TicketTypes = () => {
     <div className="w-full h-screen absolute">
       <div className='w-full h-screen overflow-x-hidden absolute '>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
+          <h1 className='font-bold text-5xl leading-normal bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
           Manage Ticket Types
         </h1>
         <button
