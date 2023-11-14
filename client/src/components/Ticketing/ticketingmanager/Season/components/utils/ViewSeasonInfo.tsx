@@ -18,11 +18,13 @@ const MONTHS = [
 ];
 
 interface ViewSeasonInfoProps extends SeasonInfo {
+  isSeasonActive: boolean;
   setIsFormEditing: (value) => void;
 }
 
 const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
-  const {name, startdate, enddate, imageurl, setIsFormEditing} = props;
+  const {name, startdate, enddate, imageurl, isSeasonActive, setIsFormEditing} =
+    props;
 
   const getLongDateFormat = (date: string) => {
     const year: string = date.slice(0, 4);
@@ -34,8 +36,17 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
 
   return (
     <header className='rounded-xl bg-white p-7 text-lg shadow-xl'>
-      <section className='flex flex-col text-center mb-5 justify-between tab:flex-row tab:flex-wrap'>
-        <h1 className='text-4xl mb-3 font-semibold'>Season Information</h1>
+      <section className='flex flex-col gap-3 text-center mb-5 justify-between tab:flex-row tab:flex-wrap'>
+        <div className='flex flex-col gap-4 tab:flex-row tab:flex-wrap'>
+          <h1 className='text-4xl font-semibold'>Season Information</h1>
+          <span
+            className={`${
+              isSeasonActive ? 'bg-green-100' : 'bg-red-100'
+            } py-2 px-8 rounded-lg font-medium`}
+          >
+            {isSeasonActive ? 'Active' : 'Inactive'}
+          </span>
+        </div>
         <button
           className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-10 rounded-xl'
           onClick={() => setIsFormEditing(true)}

@@ -284,7 +284,11 @@ const SeasonInfo = (props: SeasonProps) => {
       </div>
     </form>
   ) : (
-    <ViewSeasonInfo {...seasonValues} setIsFormEditing={setIsFormEditing} />
+    <ViewSeasonInfo
+      {...seasonValues}
+      setIsFormEditing={setIsFormEditing}
+      isSeasonActive={activeSeasonCheckbox}
+    />
   );
 };
 
