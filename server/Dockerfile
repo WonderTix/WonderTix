@@ -1,21 +1,39 @@
+# Use the Node.js 18 Alpine image as the base image
 FROM node:18-alpine
 
-RUN apk upgrade --update-cache --available && \
-    apk add openssl && \
-    rm -rf /var/cache/apk/*
+# Upgrade packages and install OpenSSL and bash
+# RUN apk upgrade --update-cache --available && \
+#     apk add openssl bash && \
+#     rm -rf /var/cache/apk/*
 
-WORKDIR /usr
-RUN apk add --no-cache bash
-COPY /bin/wait-for-it.sh ./wait-for-it.sh
-RUN chmod +x /usr/wait-for-it.sh
+# # Copy the wait-for-it.sh script and make it executable
+# COPY /bin/wait-for-it.sh /usr/wait-for-it.sh
+# RUN chmod +x /usr/wait-for-it.sh
 
 RUN apk add --no-cache tzdata
 ENV TZ=America/Los_Angeles
 
+# Set the working directory inside the container
 WORKDIR /usr/app
-COPY ./package*.json ./   
+
+# Copy the package.json and package-lock.json files into the container
+COPY ./package*.json ./
+
+# Install the npm dependencies
 RUN npm install
 
-CMD /bin/bash /usr/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- npm run start
+# Copy the rest of the application code into the container
+COPY . .
 
-# comment
+# Build the server application if needed
+# RUN npm run build
+
+ENV PORT 8080
+
+# Expose the port the application will run on
+EXPOSE 8080
+
+# Start the server application
+# CMD /bin/bash /usr/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- npm run dev
+CMD ["npm", "run", "start"]
+

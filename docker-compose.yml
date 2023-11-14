@@ -4,6 +4,7 @@ services:
   server:
     build:
       context: ./server
+      dockerfile: Dockerfile.local
     ports:
       - "8000:8000"
     environment:
@@ -26,6 +27,7 @@ services:
   client:
     build:
       context: ./client
+      dockerfile: Dockerfile.local
     ports:
       - "3000:3000"
     environment:
