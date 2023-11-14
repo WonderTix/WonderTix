@@ -1,18 +1,11 @@
-# Use the Node.js 18 Alpine image as the base image
 FROM node:18-alpine
-
-# Set the working directory inside the container
 WORKDIR /usr/app
-
-# Copy the package.json and package-lock.json files into the container
 COPY ./package*.json ./
 
 # Install the npm dependencies
-# Using --force might not be recommended for all scenarios as it can produce unstable builds. 
-# Consider removing it unless you have a specific need.
+# TODO: remove --force and sort out underlying issues
 RUN npm install --force
 
-# Copy the rest of the application code into the container
 COPY . .
 
 # Accept environment variables passed during the Docker build process
@@ -41,4 +34,3 @@ EXPOSE 8080
 
 # Start the client application
 CMD ["npm", "run", "start"]
-

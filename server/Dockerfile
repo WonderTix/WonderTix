@@ -6,34 +6,21 @@ FROM node:18-alpine
 #     apk add openssl bash && \
 #     rm -rf /var/cache/apk/*
 
-# # Copy the wait-for-it.sh script and make it executable
-# COPY /bin/wait-for-it.sh /usr/wait-for-it.sh
-# RUN chmod +x /usr/wait-for-it.sh
-
+# TODO: remove tzdata again...?
 RUN apk add --no-cache tzdata
 ENV TZ=America/Los_Angeles
-
-# Set the working directory inside the container
 WORKDIR /usr/app
-
-# Copy the package.json and package-lock.json files into the container
 COPY ./package*.json ./
-
-# Install the npm dependencies
 RUN npm install
-
-# Copy the rest of the application code into the container
 COPY . .
 
 # Build the server application if needed
-# RUN npm run build
-
+# RUN npm run build ... ?
+# TODO: is this needed?
 ENV PORT 8080
 
 # Expose the port the application will run on
 EXPOSE 8080
 
 # Start the server application
-# CMD /bin/bash /usr/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- npm run dev
 CMD ["npm", "run", "start"]
-
