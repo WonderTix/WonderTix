@@ -78,7 +78,8 @@ const TicketTypes = () => {
       });
 
       if (newRow.description !== prevRow.description ||
-        newRow.price !== prevRow.price) {
+        newRow.price !== prevRow.price ||
+        newRow.concessions !== prevRow.concessions) {
         const response = await fetch(
           process.env.REACT_APP_API_1_URL+'/tickets/updateType', {
             method: 'PUT',
