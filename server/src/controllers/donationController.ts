@@ -1,10 +1,11 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {PrismaClient, Prisma} from '@prisma/client';
+import {Prisma} from '@prisma/client';
+import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 const stripe = require('stripe')(process.env.PRIVATE_STRIPE_KEY);
 const endpointSecret = process.env.PRIVATE_STRIPE_WEBHOOK;
-const prisma = new PrismaClient();
+const prisma = extendPrismaClient();
 
 export const donationController = Router();
 

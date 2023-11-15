@@ -138,7 +138,7 @@ export const deleteSeasonInfo = async (seasonId: number, token: string) => {
 export const getAllEvents = async (token: string) => {
   try {
     const getAllEventsRes = await fetch(
-      process.env.REACT_APP_API_1_URL + '/events',
+      process.env.REACT_APP_API_2_URL + '/events',
       {
         credentials: 'include',
         method: 'GET',
@@ -167,7 +167,7 @@ export const updateEventSeason = async (
 ) => {
   try {
     const updateEventSeasonRes = await fetch(
-      process.env.REACT_APP_API_1_URL + '/events',
+      process.env.REACT_APP_API_2_URL + '/events',
       {
         credentials: 'include',
         method: 'PUT',

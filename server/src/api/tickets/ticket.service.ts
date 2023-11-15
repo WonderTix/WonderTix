@@ -40,7 +40,9 @@ export const getAvailableTickets = async (): Promise<response> => {
         WHERE 
           ei.availableseats > 0
         AND 
-          ei.salestatus = true;`;
+          ei.salestatus = true
+        AND
+         ei.deletedat is null;`;
     const queryRes = await pool.query(myQuery);
 
     resp = {

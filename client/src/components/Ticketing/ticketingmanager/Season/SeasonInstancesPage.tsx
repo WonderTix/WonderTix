@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../../utils/arrays';
 import {getSeasonImage, formatSeasonDate, SeasonImage} from './seasonUtils';
+import ShowingActivenessToggle from '../../GroupToggle';
 
 export interface Seasons {
   seasonid: number;
@@ -25,45 +26,64 @@ interface SeasonInstancesProp {
 const SeasonInstancesPage = (props: SeasonInstancesProp) => {
   const navigate = useNavigate();
   const {token} = props;
-  const [seasons, setAllSeasons] = useState<Seasons[]>([]);
-
-  const getAllSeasons = async () => {
-    try {
-      const getAllSeasonsRes = await fetch(
-        process.env.REACT_APP_API_2_URL + '/season',
-        {
-          credentials: 'include',
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (!getAllSeasonsRes.ok) {
-        throw new Error('Failed to fetch all seasons');
-      }
-
-      const seasonsData = await getAllSeasonsRes.json();
-      setAllSeasons(seasonsData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [filterSetting, setFilterSetting] = useState('active');
+  const [seasonData, setSeasonData] = useState([]);
+  const [allSeasonData, setAllSeasonData] = useState([]);
+  const [inactiveData, setInactiveData] = useState([]);
+  const [activeData, setActiveData] = useState([]);
 
   useEffect(() => {
-    getAllSeasons();
+    fetch(process.env.REACT_APP_API_2_URL + '/season/list', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      const inactiveSeasons = [];
+      const activeSeasons = [];
+      const allSeasons = [];
+
+      data.forEach((season) => {
+        const allEventsActive = season.events.every((event) => event.active);
+
+        if (allEventsActive) {
+          activeSeasons.push(season);
+        } else {
+          inactiveSeasons.push(season);
+        }
+
+        // Common operation
+        allSeasons.push(season);
+      });
+      // Sorting
+      inactiveSeasons.sort((a, b) => b.seasonid - a.seasonid);
+      activeSeasons.sort((a, b) => b.seasonid - a.seasonid);
+      allSeasons.sort((a, b) => b.seasonid - a.seasonid);
+
+      // Set active/inactive/all data arrays
+      setInactiveData(inactiveSeasons);
+      setActiveData(activeSeasons);
+      setAllSeasonData(allSeasons);
+
+      // Set Default "Active"
+      setSeasonData(activeSeasons);
+    })
+    .catch((error) => {
+      console.error('Error Fetching Season Data:', error);
+    });
   }, []);
 
-  /**
-   * Based on active/inactive/all
-   *
-   * @param event
-   */
-  const handleEventChange = (event) => {
-    // TODO: handle the season type change when active/inactive is properly implemented
-  };
+  // Group Toggle Display Changes
+  useEffect(() => {
+    if (filterSetting === 'active') {
+      setSeasonData(activeData);
+    } else if (filterSetting === 'inactive') {
+      setSeasonData(inactiveData);
+    } else {
+      setSeasonData(allSeasonData);
+    }
+  }, [filterSetting]);
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
@@ -98,31 +118,12 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
             Add Season
           </button>
         </section>
-        <div className='mb-6'>
-          <label
-            htmlFor='event-select'
-            className='text-sm text-zinc-500 ml-1 mb-2 block'
-          >
-            Filter (Currently Unavailable)
-          </label>
-          <select
-            id='event-select'
-            className='select w-full tab:max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600'
-            onChange={handleEventChange}
-          >
-            <option value='active' className='px-6 py-3'>
-              Active
-            </option>
-            <option value='inactive' className='px-6 py-3'>
-              Inactive
-            </option>
-            <option value='all' className='px-6 py-3'>
-              All
-            </option>
-          </select>
-        </div>
+        <ShowingActivenessToggle
+          defaultValue={filterSetting}
+          handleFilterChange={setFilterSetting}
+        />
         <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
-          {seasons.map((season) => (
+          {seasonData.map((season) => (
             <li key={season.seasonid}>
               <button
                 onClick={() =>
@@ -134,8 +135,7 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
                 }}
               >
                 <article
-                  className=' backdrop-blur-sm md:flex-row sm:flex-col
-         sm:items-center w-full rounded-xl bg-zinc-900/70 h-full '
+                  className=' backdrop-blur-sm md:flex-row sm:flex-col sm:items-center w-full rounded-xl bg-zinc-900/70 h-full '
                 >
                   <div className='w-full h-48'>
                     <SeasonImage
