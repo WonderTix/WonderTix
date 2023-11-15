@@ -6,6 +6,7 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
+import {useFetchSeasons} from './ShowingUtils';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
@@ -15,7 +16,8 @@ interface EventGeneralFormProps {
 
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onDelete, onLeaveEdit} = props;
-  const {eventData, showPopUp} = useEvent();
+  const {eventData, showPopUp, token} = useEvent();
+  const {seasons} = useFetchSeasons(token);
   const [disabledURL, setDisabledURL] = useState(
     eventData?.imageurl === 'Default Event Image',
   );
@@ -26,7 +28,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     eventdescription: eventData ? eventData.eventdescription : '',
     imageurl: eventData ? eventData.imageurl : '',
     active: eventData ? eventData.active : true,
-    seasonid_fk: eventData ? eventData.seasonid_fk : 7,
+    seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
   };
 
   return (
@@ -36,12 +38,23 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
       validationSchema={eventGeneralSchema}
     >
       {({handleSubmit, values, setFieldValue}) => (
-        <form className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'} onSubmit={handleSubmit}>
+        <form
+          className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'}
+          onSubmit={handleSubmit}
+        >
           <div className={'grid grid-cols-12 mb-5 gap-2'}>
-            <h2 className={'col-span-12 min-[650px]:col-span-6 text-center min-[650px]:text-start text-3xl font-semibold text-zinc-800'}>
-              {eventData? 'Edit Event': 'Add Event'}
+            <h2
+              className={
+                'col-span-12 min-[650px]:col-span-6 text-center min-[650px]:text-start text-3xl font-semibold text-zinc-800'
+              }
+            >
+              {eventData ? 'Edit Event' : 'Add Event'}
             </h2>
-            <div className={'col-span-12 min-[650px]:col-span-6 flex flex-row gap-4 flex-wrap justify-center min-[650px]:justify-end'}>
+            <div
+              className={
+                'col-span-12 min-[650px]:col-span-6 flex flex-row gap-4 flex-wrap justify-center min-[650px]:justify-end'
+              }
+            >
               <FormSubmitButton />
               {eventData && (
                 <FormDeleteButton
@@ -73,9 +86,9 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 id={0}
                 className={{
                   labelClass:
-                  'text-sm font-semibold col-span-5 min-[450px]:col-span-12',
+                    'text-sm font-semibold col-span-5 min-[450px]:col-span-12',
                   inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
+                    'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
                   inputGroupClass: 'col-span-7 min-[450px]:col-span-12',
                   controlClass: 'grid grid-cols-12 text-zinc-800 gap-1 mb-2',
                 }}
@@ -89,7 +102,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 className={{
                   labelClass: 'text-sm font-semibold',
                   inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
+                    'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
                   inputGroupClass: 'flex flex-col',
                   controlClass: 'flex flex-col mb-2 text-zinc-800',
                 }}
@@ -104,11 +117,38 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 className={{
                   labelClass: 'text-sm font-semibold',
                   inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200',
+                    'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200',
                   inputGroupClass: 'flex flex-col',
                   controlClass: 'flex flex-col mb-2 text-zinc-800',
                 }}
               />
+              <div className={'flex flex-col mb-2 text-zinc-800'}>
+                <label
+                  className={'text-sm font-semibold'}
+                  htmlFor={'seasonSelect'}
+                >
+                  Season:
+                </label>
+                <Field
+                  component={'select'}
+                  name={'seasonid_fk'}
+                  id={'seasonSelect'}
+                  className={
+                    'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200'
+                  }
+                >
+                  <option value={undefined}>None</option>
+                  {seasons?.length > 0 &&
+                    seasons.map((season, index) => (
+                      <option
+                        value={Number(season.seasonid)}
+                        key={`${season.seasonid} ${index}`}
+                      >
+                        {season.name}
+                      </option>
+                    ))}
+                </Field>
+              </div>
               <div className={'grid grid-cols-12 mb-2'}>
                 <div className={'flex flex-col justify-evenly col-span-6'}>
                   <label
@@ -156,9 +196,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 </div>
               </div>
             </div>
-            <div
-              className={'col-span-12 min-[450px]:col-span-6'}
-            >
+            <div className={'col-span-12 min-[450px]:col-span-6'}>
               <EventImage
                 className={'mx-auto w-[50%] h-auto max-w-[150px]'}
                 src={values.imageurl}
