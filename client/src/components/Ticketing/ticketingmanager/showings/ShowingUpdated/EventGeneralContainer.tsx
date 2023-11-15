@@ -96,6 +96,7 @@ export const EventGeneralContainer = () => {
           />:
           <EventGeneralView
             setEdit={setEdit}
+            onDelete={onConfirmDelete}
           />
       }
     </>
