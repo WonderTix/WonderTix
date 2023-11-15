@@ -3,10 +3,10 @@
 import {
   removeAllTicketsFromCart,
   selectDiscount,
-} from '../../ticketingmanager/ticketing/ticketingSlice';
+} from '../ticketing/ticketingSlice';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
-import {ReactElement, useState} from 'react';
+import {ReactElement} from 'react';
 import AdminCompleteOrderForm, {
   CheckoutFormInfo,
 } from './AdminCompleteOrderForm';
@@ -29,10 +29,6 @@ export default function AdminCheckout(): ReactElement {
   const eventDataFromPurchase = location.state?.eventData || [];
   const cartItems = location.state?.cartItems || [];
   const discount = useAppSelector(selectDiscount);
-
-  const handleBackButton = () => {
-    navigate('/ticketing/purchaseticket');
-  };
 
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
