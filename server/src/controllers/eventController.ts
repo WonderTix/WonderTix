@@ -608,7 +608,9 @@ eventController.get('/:id', async (req: Request, res: Response) => {
       where: {
         eventid: Number(id),
       },
-      include: {season:true},
+      include: {
+        seasons: true,
+      },
     });
     if (!eventExists) {
       res.status(400).json({error: `Event ${id} not found`});
