@@ -15,12 +15,10 @@ interface TicketTypeTableProps {
 export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
   const {ticketTypes, showPopUp} = useEvent();
-  const [ticketPrices, setTicketPrices] = useState(getTicketTypePrice(1, 'price', ticketTypes));
-  const [ticketPrices_2, setTicketPrices_2] = useState({});
-  const [concessionPrices, setConcessionPrices] = useState(getTicketTypePrice(1, 'concessions', ticketTypes));
-  const [concessionPrices_2, setConcessionPrices_2] = useState({});
   const [InstanceTicketTypesField] = useField('instanceTicketTypes');
   const [totalTickets] = useField('totalseats');
+  const [ticketPrice, setTicketPrices] = useState(getTicketTypePrice(1, 'price', ticketTypes));
+  const [concessionPrices, setConcessionPrices] = useState(getTicketTypePrice(1, 'concessions', ticketTypes));
   const [availableTypes, setAvailableTypes] = useState(
     ticketTypes
       .filter(
@@ -30,23 +28,14 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
       .map((value) => Number(value.id)),
   );
 
-  // handle General Admission Adult Ticket Pricing
-   const handleDefaultPriceChange = (newValue) => {
-     console.log('New Price: ', newValue);
-   };
+  // Temporary methods to change prices for Adult General Admission and Concession
+  const handlePriceChange = (newPrice) => {
+    setTicketPrices(newPrice);
+  };
 
-  // // handle price changes for Child, VIP, and Pay What you can
-   const handlePriceChanges = (id, index, newValue, eventInstanceID) => {
-    console.log(newValue);
- };
-
-   const changeConcessionPrice = (newValue) => {
-     console.log(newValue);
-   };
-
-   const handleAllConcessionPriceChanges = (id, index, newValue, eventInstanceID) => {
-    console.log(newValue);
-   };
+  const handleConcessionPrices = (newValue) => {
+    setConcessionPrices(newValue);
+  };
 
   return (
     <div
@@ -79,12 +68,14 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   size={'small'}
                   aria-label={'add ticket type'}
                   onClick={async () => {
+                    console.log('Before insert, ', availableTypes);
                     arrayHelpers.insert(0, {
                       typeID: availableTypes[0],
-                      typePrice: getTicketTypePrice(InstanceTicketTypesField[0].typeID, 'price', ticketTypes),
-                      typeConcessionPrice: 0,
+                      typePrice: getTicketTypePrice(availableTypes[0], 'price', ticketTypes),
+                      typeConcessionPrice: getTicketTypePrice(availableTypes[0], 'concessions', ticketTypes),
                       typeQuantity: 0,
                     });
+                    console.log('After insert, ', availableTypes);
                     setAvailableTypes(
                       availableTypes.slice(1, availableTypes.length),
                     );
@@ -120,13 +111,17 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               {getTicketTypePrice(1, 'description', ticketTypes)}
             </td>
             <td className={'px-2 border border-white'}>
-              {getTicketTypePrice(1, 'price', ticketTypes)}
+              <input
+                type='text'
+                value={ticketPrice}
+                onChange={(e) => handlePriceChange(e.target.value)}
+                />
             </td>
             <td className={'px-2 border border-white'}>
               <input
                 type='text'
                 value={concessionPrices}
-                onChange={(e) => changeConcessionPrice(e.target.value)}
+                onChange={(e) => handleConcessionPrices(e.target.value)}
                 />
             </td>
             <td className={'px-2 border border-white'}>
@@ -156,8 +151,8 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   className={'px-2'}
                 >
                   <Field
-                    name={`${InstanceTicketTypesField.value}[${index}].typePrice`}
-                    type={'number'}
+                    name={`${InstanceTicketTypesField.name}[${index}].typePrice`}
+                    type={'text'}
                     component={InputControl}
                     hidden={true}
                     label={'Ticket Price'}
@@ -174,8 +169,8 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   className={'px-2'}
                 >
                   <Field
-                    name={`${InstanceTicketTypesField.value}[${index}].typeConcessionPrice`}
-                    type={'number'}
+                    name={`${InstanceTicketTypesField.name}[${index}].typeConcessionPrice`}
+                    type={'text'}
                     component={InputControl}
                     hidden={true}
                     label={'Concession Price'}
