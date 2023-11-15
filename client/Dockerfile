@@ -1,12 +1,12 @@
 # Install stage
-FROM node:18-alpine as install
+FROM node:18-alpine AS install
 WORKDIR /usr/app
 ENV PATH ./node_modules/.bin:${PATH}
 COPY ./package*.json ./
 RUN npm install --omit=dev
 
 # Build stage
-FROM node:18-alpine as build
+FROM node:18-alpine AS build
 WORKDIR /usr/app
 COPY --from=install /usr/app/node_modules/ ./node_modules
 COPY --from=install /usr/app/package*.json ./
@@ -33,7 +33,7 @@ ENV REACT_APP_ROOT_URL=${REACT_APP_ROOT_URL}
 
 RUN npm run build
 
-# Production stage
+# Run stage
 FROM nginx:alpine
 COPY --from=build /usr/app/build /usr/share/nginx/html
 COPY default.conf /etc/nginx/conf.d/default.conf

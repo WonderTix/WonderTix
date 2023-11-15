@@ -1,26 +1,30 @@
-# Use the Node.js 18 Alpine image as the base image
-FROM node:18-alpine
+# Install stage
+FROM node:18-alpine AS install
+WORKDIR /usr/app
 
-# Upgrade packages and install OpenSSL and bash
-# RUN apk upgrade --update-cache --available && \
-#     apk add openssl bash && \
-#     rm -rf /var/cache/apk/*
-
-# TODO: remove tzdata again...?
 RUN apk add --no-cache tzdata
 ENV TZ=America/Los_Angeles
-WORKDIR /usr/app
+ENV PATH ./node_modules/.bin:${PATH}
+
 COPY ./package*.json ./
 RUN npm install
+
+# Build stage
+FROM node:18-alpine AS build
+WORKDIR /usr/app
+
+COPY --from=install /usr/app/node_modules/ ./node_modules
+COPY --from=install /usr/app/package*.json ./
 COPY . .
 
-# Build the server application if needed
-# RUN npm run build ... ?
-# TODO: is this needed?
-ENV PORT 8080
+RUN npm run build
 
-# Expose the port the application will run on
-EXPOSE 8080
+# Run stage
+FROM node:18-alpine
+WORKDIR /usr/app
 
-# Start the server application
+COPY ./package*.json ./
+COPY ./prisma/schema.prisma ./prisma/schema.prisma
+COPY --from=build /usr/app/bin ./bin
+
 CMD ["npm", "run", "start"]

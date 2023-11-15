@@ -25,7 +25,7 @@ steps:
       - 'ARTIFACTS'
       - 'ENV'
 
-  # Tag client as new revision and deploy to Cloud Run (no traffic)
+  # Deploy new client to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-client'
     waitFor: ['push-client']
@@ -40,6 +40,20 @@ steps:
       - 'ENV'
       - 'REGION'
       - 'SERVICE_ACCOUNT'
+
+  # Send traffic to new client
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'send-traffic'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud run services update-traffic wtix-client-$${ENV} \
+        --region $${REGION} \
+        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100
+    secretEnv:
+      - 'ENV'
+      - 'REGION'
 
 # Use dev, stg, or prd versions depending on $_ENV value from trigger
 availableSecrets:
