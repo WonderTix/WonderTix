@@ -266,7 +266,7 @@ const SeasonInfo = (props: SeasonProps) => {
                 <Checkbox
                   checked={activeSeasonCheckbox}
                   onChange={() =>
-                    setActiveSeasonCheckbox((checked) => !!checked)
+                    setActiveSeasonCheckbox((checked) => !checked)
                   }
                 />
               }
