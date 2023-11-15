@@ -9,7 +9,7 @@ datasource db {
 
 // Account information pulled from PPH
 model accounts {
-  id                                    Int         @id @default(autoincrement())
+  id                                    Int         @id                @default(autoincrement())
   isdeleted                             Int                            @default(0)
   name                                  String?     @db.VarChar(255)
   type                                  patronType
@@ -67,13 +67,17 @@ model accounts {
   amount_Donated_FY24                   Decimal   @db.Decimal(10, 2)  @default(0.0)
   notes                                 notes[]
   contacts                              contacts[]
+  ticketorders                          ticketorders[]
+  ticketorderitems                      ticketorderitem[]
+  opportunity                           opportunity[]
 }
 
 /// customer information
 model contacts {
   id                        Int         @id @default(autoincrement())
   is_deleted                Int                                         @default(0)
-  account_id                Int         @relation(fields: [account_id], references: [id])
+  account_id                Int         
+  account                   accounts    @relation(fields: [account_id], references: [id])
   salutation                String?     @db.VarChar(255)
   firstname                 String?     @db.VarChar(255)
   lastname                  String?     @db.VarChar(255)
@@ -133,7 +137,12 @@ model contacts {
   chocolate_and_card        Decimal?   @db.Decimal(10, 2)  @default(0.0)
   legacy_membership_circle  Decimal?   @db.Decimal(10, 2)  @default(0.0) 
   email_list_notes          String?    @db.VarChar(255)
-  account                   accounts   @relation(fields: [account_id], references: [id])
+  donations                 donations[]  
+  orders                    orders[] 
+  notes                     notes[]
+  ticketorders              ticketorders[] 
+  ticketorderitems          ticketorderitem[]
+  opportunity               opportunity[]
 }
 
 /// date is used to store information about specific dates to simplify queries
@@ -209,7 +218,7 @@ model donations {
   refund_intent  String?   @db.VarChar(255)
   donationdate   Int?
   date           date?     @relation(fields: [donationdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
-  contacts       contacts? @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "donations_donoid_fkey")
+  contacts       contacts? @relation(fields: [contactid_fk], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "donations_donoid_fkey")
 }
 
 /// an event instance is a specific showing of an event
@@ -228,24 +237,31 @@ model eventinstances {
   defaulttickettype  Int?
   tickettype         tickettype?          @relation(fields: [defaulttickettype], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
   date               date                 @relation(fields: [eventdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
-  events             events               @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction, map: "eventinstances_eventid_fkey")
+  events             events               @relation(fields: [eventid_fk], references: [event_id], onDelete: NoAction, onUpdate: NoAction, map: "eventinstances_eventid_fkey")
   eventtickets       eventtickets[]
   ticketrestrictions ticketrestrictions[]
 }
 
-/// an event is a performance, a class, a workshop, etc.
-/// the showings of an event are eventinstances
+/// Owner_id in the original PPH schema pointed to the PPH employee/user 
+/// who was associated with maintaining the account. 
 model events {
-  eventid              Int              @id @default(autoincrement())
-  seasonid_fk          Int?
-  eventname            String           @db.VarChar(255)
-  eventdescription     String?          @db.VarChar(255)
-  active               Boolean?
-  seasonticketeligible Boolean?
-  imageurl             String?          @db.VarChar(255)
-  eventinstances       eventinstances[]
-  seasons              seasons?          @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
-  seasontickets        seasontickets[]
+  event_id                        Int   @id    @default(autoincrement())
+  owner_id                        Int
+  name                            String
+  create_date                     DateTime     @default(now()) 
+  last_modified_date              DateTime
+  active_flag                     Int          @default(0) 
+  description                     String?
+  detail                          String?
+  event_category                  String?
+  season                          String?
+  performance_date                DateTime
+  pre_post_show_email_flag        Float?
+  pre_show_email_cutoff_minutes   Float?
+  pre_show_email_minutes          Float?
+  run_time                        String
+  seasontickets                   seasontickets[]
+  eventinstances                  eventinstances[]
 }
 
 /// event tickets is a ticket that can be purchased for an event instance
@@ -270,12 +286,13 @@ model notes {
   id                Int       @id @default(autoincrement())
   isdeleted         Int       @default(0)
   contactid         Int?
-  accountid         Int       @relation(fields: [accountid], references: [id])
+  contact           contacts? @relation(fields: [contactid], references: [id])
+  accountid         Int
+  account           accounts  @relation(fields: [accountid], references: [id])
   title             String    @db.VarChar(255)
   body              String    @db.VarChar(255)
   createddate       DateTime  @default(now())
-  lastmodifieddate  DateTimiiie?i
-  account           accounts  @relation(fields: [accountid], references: [id])
+  lastmodifieddate  DateTime?
 }
 
 
@@ -303,7 +320,7 @@ model orders {
   refund_intent     String?      @db.VarChar(255)
   ordertotal        Decimal?     @db.Money
   orderitems        orderitems[]
-  contacts          contacts     @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "orders_contactid_fkey")
+  contacts          contacts     @relation(fields: [contactid_fk], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "orders_contactid_fkey")
   discounts         discounts?   @relation(fields: [discountid_fk], references: [discountid], onDelete: NoAction, onUpdate: NoAction, map: "orders_discountid_fkey")
   date              date         @relation(fields: [orderdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -322,7 +339,7 @@ model seasons {
   startdate                    Int
   enddate                      Int
   imageurl                     String?  @db.VarChar(255)
-  events                       events[]
+  /// events                       events[]
   date_seasons_enddateTodate   date     @relation("seasons_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   date_seasons_startdateTodate date     @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -339,7 +356,7 @@ model seasontickets {
   eventid_fk            Int
   seasontickettypeid_fk Int
   ticketwasswapped      Boolean?         @default(false)
-  events                events           @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction)
+  events                events           @relation(fields: [eventid_fk], references: [event_id], onDelete: NoAction, onUpdate: NoAction)
   eventtickets          eventtickets?    @relation(fields: [eventticketid_fk], references: [eventticketid], onDelete: NoAction, onUpdate: NoAction)
   orderitems            orderitems       @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: NoAction, onUpdate: NoAction)
   seasontickettype      seasontickettype @relation(fields: [seasontickettypeid_fk], references: [seasontickettypeid], onDelete: NoAction, onUpdate: NoAction)
@@ -469,35 +486,26 @@ model Error {
   createdAt Int
 }
 
+
 enum patronType {
   Business
-  Corporate Foundation
+  Corporate_Foundation
   Corporation
-  Federal Agency
+  Federal_Agency
   Foundation
   Household
   Individual
-  Local Agency
-  Nonprofit: Arts
-  Nonprofit: Community Development
-  Nonprofit: Education
-  Nonprofit: Environment
-  Nonprofit: Health Services
-  Nonprofit: Human Services
-  Nonprofit: Public Policy
-  Private Foundation
+  Local_Agency
+  Nonprofit_Arts
+  Nonprofit_Community_Development
+  Nonprofit_Education
+  Nonprofit_Environment
+  Nonprofit_Health_Services
+  Nonprofit_Human_Services
+  Nonprofit_Public_Policy
+  Private_Foundation
   School
-  State Agency
-  Business
-  FederalAgency
-  Foundation
-  Household
-  Individual
-  LocalAgency
-  NonProfit
-  School
-  StateAgency
-  Corporation
+  State_Agency
   Partnership
   SoleProprietorship
   Trust
@@ -528,12 +536,378 @@ enum patronType {
   ThinkTank
   CulturalInstitution
   SportsOrganization
+  UNKNOWN
+}
+
+enum emailStatus {
+  Opt_Out
+  Bounced
+  Collected
+  Confirmed_Opt_In
+  UNKNOWN
 }
 
 
-enum emailStatus {
-  Opt-Out
-  Bounced
-  Collected
-  Confirmed Opt-In
+
+
+model transactions {
+  transaction_id                        Int                 @id @default(autoincrement())
+  patron_transaction_id                 Int
+  ticket_order_id                       Int?
+  ticketorders                          ticketorders?        @relation(fields: [ticket_order_id], references: [ticket_order_id])
+  item_id                               String?
+  ticket_order_item_id                  Int?
+  ticketorderitem                       ticketorderitem?     @relation(fields: [ticket_order_item_id], references: [ticket_order_item_id])
+  item_type                             transaction_item_type         @default(UNKNOWN)
+  item_name                             String
+  payment_method                        transaction_payment_method    @default(UNKNOWN)
+  status                                transaction_status            @default(UNKNOWN)
+  payment_processor                     String?
+  exchange_type                         String?
+  order_origin                          String?
+  entry_method                          String?
+  credit_card_entry_method              String?
+  credit_card_last_four                 String?
+  name_on_card                          String?
+  first_name                            String
+  last_name                             String
+  transaction_date                      DateTime
+  create_date                           DateTime                      @default(now())
+  quantity                              Decimal   @db.Decimal(10, 2)  @default(0.0)
+  buyer_unit_price                      Decimal   @db.Decimal(10, 2)  @default(0.0)
+  gross_unit_price                      Decimal   @db.Decimal(10, 2)  @default(0.0)
+  buyer_unit_fee                        Decimal   @db.Decimal(10, 2)  @default(0.0)
+  patron_tech_unit_fee                  Decimal   @db.Decimal(10, 2)  @default(0.0)
+  unit_fee                              Decimal   @db.Decimal(10, 2)  @default(0.0)
+  total_item_quantity                   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  buyer_fee_line_item_sub_total         Decimal   @db.Decimal(10, 2)  @default(0.0)
+  patron_tech_fee_line_item_sub_total   Decimal   @db.Decimal(10, 2)  @default(0.0)
+  shipping_fee                          Decimal?  @db.Decimal(10, 2)  @default(0.0)
+  exchange_fee                          Decimal?  @db.Decimal(10, 2)  @default(0.0)
+  discount_amount                       Decimal?  @db.Decimal(10, 2)  @default(0.0)
+  donation_amount                       Decimal?  @db.Decimal(10, 2)  @default(0.0)
+  full_buyer_cost                       Decimal   @db.Decimal(10, 2)  @default(0.0)
+  full_gross_amount                     Decimal   @db.Decimal(10, 2)  @default(0.0)
+  transaction_total                     Decimal   @db.Decimal(10, 2)  @default(0.0)
+  amount_tendered                       Decimal?  @db.Decimal(10, 2)  @default(0.0)
+}
+
+enum transaction_item_type {
+  Subscription
+  Subscription_Distribution
+  Fulfullment_Item
+  Tickets
+  Refund
+  Exchange_Item
+  Fulfillment_Item_Return
+  Donation
+  UNKNOWN
+}
+
+enum transaction_payment_method {
+  Cash
+  Credit_Card
+  Comp
+  Exchange
+  Third_Party
+  Donation
+  Check
+  In_Kind
+  Other
+  Stock
+  Soft_Credit
+  Direct_Deposit
+  Group_Sale_Payment
+  Gift_Certificate_Credit
+  UNKNOWN
+}
+
+enum transaction_status {
+  Payment_Complete
+  Refund
+  Exchange
+  Refund_Donation
+  Partial_Payment
+  UNKNOWN
+}
+
+
+
+model ticketorders {
+  ticket_order_id           Int                               @id @default(autoincrement())
+  account_id                Int
+  account                   accounts                          @relation(fields: [account_id], references: [id])
+  contact_id                Int
+  contact                   contacts                          @relation(fields: [contact_id], references: [id])
+  ticket_order_name         Int
+  type                      ticketorder_type                  @default(UNKNOWN)
+  order_status              ticketorder_order_status          @default(UNKNOWN)
+  subscription_status       ticketorder_subscription_status   @default(UNKNOWN)
+  email                     String    
+  phone                     String?  
+  other_phone               String?   
+  street_address            String?   
+  city                      String?  
+  state                     String?  
+  postal_code               String?   
+  country                   String?   
+  shipping_first_name       String?   
+  shipping_last_name        String?   
+  shipping_stress_address   String?   
+  shipping_city             String?   
+  shipping_state            String?  
+  shipping_postal_code      String?  
+  shipping_country          String?  
+  order_origin              ticketorder_order_origin         @default(UNKNOWN)
+  order_source              String?
+  payment_method            ticketorder_payment_method       @default(UNKNOWN)
+  amount_paid               Decimal?   @db.Decimal(10, 2)    @default(0.00)
+  fees                      Decimal?   @db.Decimal(10, 2)    @default(0.00)
+  exchange_fee              Decimal?   @db.Decimal(10, 2)    @default(0.00)
+  donation_id               Int?
+  donation_amount           Decimal?   @db.Decimal(10, 2)    @default(0.00)
+  delivery_method           String?
+  salutation                String?   
+  shipping_salutation       String?   
+  email_opt_in              Int                              @default(0) 
+  anonymous_purchase_flag   Int?
+  update_contact_record         Float?  
+  send_confirmation_email_flag  Float? 
+  request_accommodation     String?
+  external_id               String?   
+  comments                  String?   
+  notes                     String?   
+  create_date               DateTime                         @default(now()) 
+  last_modified_date        DateTime                         @default(now()) 
+  ticketorderitem           ticketorderitem[]
+  transactions              transactions[]
+}
+
+enum ticketorder_type {
+  Tickets
+  Tickets_Subscription
+  Subscription
+  UNKNOWN
+}
+
+enum ticketorder_order_status {
+  Complete
+  Fully_Refunded
+  Partially_Paid
+  Deleted
+  To_Be_Qualified
+  Reservation
+  Payment_Exception
+  Draft
+  UNKNOWN
+}
+
+enum ticketorder_subscription_status {
+  Not_Applicable
+  Filled
+  Awaiting_Fulfillment
+  UNKNOWN
+}
+
+enum ticketorder_order_origin {
+  Import
+  Online
+  Walk_up
+  Phone
+  Imported
+  UNKNOWN
+}
+
+enum ticketorder_payment_method {
+  Third_Party
+  Cash
+  Credit_Card
+  Comp
+  Check
+  Group_Sale_Payment
+  Gift_Certificate_Credit
+  UNKNOWN
+}
+
+
+
+
+model ticketorderitem {
+  ticket_order_item_id       Int        @id @default(autoincrement())
+  ticket_order_id            Int
+  ticketorder                ticketorders @relation(fields: [ticket_order_id], references: [ticket_order_id])
+  account_id                 Int
+  account                    accounts    @relation(fields: [account_id], references: [id])
+  contact_id                 Int
+  contact                    contacts    @relation(fields: [contact_id], references: [id])
+  status                     ticketorderitem_status       @default(UNKNOWN)
+  season                     String? 
+  event_id                   Int?  
+  subscription_order_item_id String?  
+  price_level_id             Int? 
+  quantity                   Float      @default(1.0)    
+  ticket_price               Decimal?   @db.Decimal(10, 2)  @default(0.00)  
+  unit_price                 Decimal?   @db.Decimal(10, 2)  @default(0.00)
+  amount_paid                Decimal?   @db.Decimal(10, 2)  @default(0.00)
+  sales_tax                  Decimal?   @db.Decimal(10, 2)  @default(0.00)  
+  discount_code_id           String?   
+  discount_amount            Decimal?   @db.Decimal(10, 2)  @default(0.00)
+  discount_type              String?  
+  unit_fee                   Decimal?   @db.Decimal(10, 2)  @default(0.00)  
+  ticket_notes               String? 
+  barcode                    String?  
+  create_date                DateTime   @default(now()) 
+  last_modified_date         DateTime
+  entry_date                 DateTime? 
+  transactions               transactions[]
+}
+
+enum ticketorderitem_status {
+  Active
+  Deleted
+  UNKNOWN
+}
+
+
+model recordtype {
+  id                  Int      @id   @default(autoincrement())
+  name                recordtype_name   @default(UNKNOWN)
+  description         String?
+  sobject_type        recordtype_sobjecttype   @default(UNKNOWN)
+  is_active           Int
+  created_date        DateTime   @default(now()) 
+  last_modified_date  DateTime
+  system_modstamp     DateTime
+  is_deleted          Int        @default(0)
+  opportunity         opportunity[]
+}
+
+enum recordtype_sobjecttype {
+  Campaign
+  Account
+  Opportunity
+  Contact
+  Question
+  Reply
+  Idea
+  UNKNOWN
+}
+
+enum recordtype_name {
+  MailChimp
+  Salesforce
+  Deceased
+  SoftCredit
+  Pledge
+  PledgePayment
+  Organization
+  InKind
+  FundraiserTickets
+  RiseShineRegistration
+  MatchingDonation
+  Household
+  Government
+  Nonprofit
+  Individual
+  Foundation
+  Business
+  PatronContact
+  OtherContact
+  Donation
+  CorporateDonation
+  MajorGift
+  Grant
+  Membership
+  PatronTicketDonation
+  ToBeQualified
+  GroupSalePayment
+  GroupSale
+  GrantPayment
+  InternalIdeasQuestionRecordType
+  InternalIdeasReplyRecordType
+  InternalIdeasIdeaRecordType
+  UNKNOWN
+}
+
+
+
+/// Once again, owner_id is associated with whoever the employee is who
+/// created the account in the accounts table
+/// donor_id is also a reference to contacts based on shallow searching of mine 
+model opportunity {
+  id                        Int       @id  @default(autoincrement())
+  is_deleted                Int       @default(0) 
+  accountid                 Int
+  account                   accounts  @relation(fields: [accountid], references: [id])
+  record_type_id            Int
+  recordtype                recordtype @relation(fields: [record_type_id], references:[id])
+  is_private                Int       @default(0) 
+  name                      String
+  description               String?
+  amount                    Decimal   @db.Decimal(10, 2)  @default(0.00)
+  close_date                DateTime
+  type                      opportunity_type   @default(UNKNOWN)
+  campaign_id               String
+  owner_id                  String
+  created_date              DateTime  @default(now()) 
+  last_modified_date        DateTime
+  fiscal_year               Int
+  fiscal_quarter            Int
+  contactid                 Int
+  contacts                  contacts  @relation(fields:[contactid], references:[id])
+  is_anonymous              Int
+  amount_paid               Decimal   @db.Decimal(10, 2)  @default(0.00)
+  dedication_honoree_name   String?
+  dedication_type           String?
+  donor_id                  String
+  fund_type                 opportunity_fundtype   @default(UNKNOWN)
+  grant_amount              Decimal   @db.Decimal(10, 2)  @default(0.00)
+  payment_type              opportunity_paymenttype   @default(UNKNOWN)
+  sub_type                  String?
+  fiscal_year_season        String?
+  grant_ask_amount          Decimal?   @db.Decimal(10, 2)  @default(0.00)
+  appeal                    String?
+  tax_deductible_amount     Decimal   @db.Decimal(10, 2)  @default(0.00)
+  acknowledged_by_letter    Float
+}
+
+enum opportunity_type {
+  InKind
+  Individual
+  Corporate
+  SpecialEvent
+  FoundationGrant
+  SoftCredit
+  Board
+  MajorEvent
+  SpecialProject
+  GovernmentLocal
+  GovernmentFederal
+  GovernmentState
+  OtherEvent4720
+  Individual4450
+  UNKNOWN
+}
+
+enum opportunity_paymenttype {
+  InKind
+  Other
+  CreditCardHistorical
+  Cash
+  Check
+  GiftCert
+  CreditCard
+  Stock
+  SoftCredit
+  TicketOrderRefund
+  DirectDeposit
+  UNKNOWN
+}
+
+enum opportunity_fundtype {
+  GeneralFund
+  CapitalCampaign
+  EducationFund
+  CapitalCampaignBuyTheBuilding
+  UNKNOWN
 }

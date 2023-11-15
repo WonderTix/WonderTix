@@ -18,13 +18,21 @@ async function seedEvents(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      eventid: item.eventid,
-      seasonid_fk: item.seasonid_fk,
-      eventname: item.eventname,
-      eventdescription: item.eventdescription,
-      active: item.active,
-      seasonticketeligible: item.seasonticketeligible,
-      imageurl: item.imageurl,
+      event_id: item.event_id,
+      owner_id: item.owner_id,
+      name: item.name,
+      create_date: item.create_date ? new Date(item.create_date) : new Date(),
+      last_modified_date: item.last_modified_date ? new Date(item.last_modified_date) : new Date(),
+      active_flag: item.active_flag || 0,
+      description: item.description,
+      detail: item.detail,
+      event_category: item.event_category,
+      season: item.season,
+      performance_date: item.performance_date ? new Date(item.performance_date) : new Date(),
+      pre_post_show_email_flag: item.pre_post_show_email_flag || null,
+      pre_show_email_cutoff_minutes: item.pre_show_email_cutoff_minutes || null,
+      pre_show_email_minutes: item.pre_show_email_minutes || null,
+      run_time: item.run_time,
     }));
 
     await prisma.events.createMany({
@@ -33,7 +41,7 @@ async function seedEvents(prisma: PrismaClient) {
 
     console.log('Events seeding completed.');
   } catch (error) {
-    console.error(error);
+    console.error('Failed to seed events:', error);
   }
 }
 
