@@ -34,8 +34,7 @@ ENV REACT_APP_ROOT_URL=${REACT_APP_ROOT_URL}
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine
-WORKDIR /usr/app
-COPY --from=build /usr/app/build ./build
-RUN npm install -g serve
-CMD ["serve", "-s", "build", "-l", "8080"]
+FROM nginx:alpine
+COPY --from=build /usr/app/build /usr/share/nginx/html
+COPY default.conf /etc/nginx/conf.d/default.conf
+CMD ["nginx", "-g", "daemon off;"]
