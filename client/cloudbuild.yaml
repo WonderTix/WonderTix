@@ -33,7 +33,6 @@ steps:
     args: ['scripts/deploy/client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
-      - 'TAG=new'
     secretEnv:
       - 'ARTIFACTS'
       - 'CLIENT_CPU'
@@ -41,32 +40,6 @@ steps:
       - 'ENV'
       - 'REGION'
       - 'SERVICE_ACCOUNT'
-
-  # Request page from new revision and wait for container to start
-  - name: 'mcr.microsoft.com/playwright:latest'
-    id: 'wake-client'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        npm install playwright
-        export NODE_PATH=$$(pwd)/node_modules
-        node scripts/wake/client.js $${NEW_REVISION}
-    secretEnv:
-      - 'ENV'
-      - 'NEW_REVISION'
-
-  # Remove tag and gradually send traffic to new client
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'send-traffic'
-    entrypoint: 'bash'
-    args: ['scripts/traffic/client.sh']
-    env:
-      - 'SHORT_SHA=${SHORT_SHA}'
-      - 'TAG=new'
-    secretEnv:
-      - 'ENV'
-      - 'REGION'
 
 # Use dev, stg, or prd versions depending on $_ENV value from trigger
 availableSecrets:
@@ -85,8 +58,6 @@ availableSecrets:
     env: 'CLIENT_MEMORY'
   - versionName: projects/${PROJECT_ID}/secrets/ENV/versions/${_ENV}
     env: 'ENV'
-  - versionName: projects/${PROJECT_ID}/secrets/NEW_REVISION/versions/${_ENV}
-    env: 'NEW_REVISION'
   - versionName: projects/${PROJECT_ID}/secrets/PUBLIC_STRIPE_KEY/versions/${_ENV}
     env: 'PUBLIC_STRIPE_KEY'
   - versionName: projects/${PROJECT_ID}/secrets/REGION/versions/${_ENV}
