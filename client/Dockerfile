@@ -1,14 +1,17 @@
-FROM node:18-alpine
+# Install stage
+FROM node:18-alpine as install
 WORKDIR /usr/app
+ENV PATH ./node_modules/.bin:${PATH}
 COPY ./package*.json ./
+RUN npm install --omit=dev
 
-# Install the npm dependencies
-# TODO: remove --force and sort out underlying issues
-RUN npm install --force
-
+# Build stage
+FROM node:18-alpine as build
+WORKDIR /usr/app
+COPY --from=install /usr/app/node_modules/ ./node_modules
+COPY --from=install /usr/app/package*.json ./
 COPY . .
 
-# Accept environment variables passed during the Docker build process
 ARG AUTH0_CLIENT_SECRET
 ARG ENV
 ARG REACT_APP_API_1_URL
@@ -19,18 +22,20 @@ ARG REACT_APP_AUTH0_URL
 ARG REACT_APP_PUBLIC_STRIPE_KEY
 ARG REACT_APP_ROOT_URL
 
-# Set the environment variables inside the container
-ENV AUTH0_CLIENT_SECRET=$AUTH0_CLIENT_SECRET
-ENV REACT_APP_API_1_URL=$REACT_APP_API_1_URL
-ENV REACT_APP_API_2_URL=$REACT_APP_API_2_URL
-ENV REACT_APP_AUTH0_AUDIENCE=$REACT_APP_AUTH0_AUDIENCE
-ENV REACT_APP_AUTH0_CLIENT_ID=$REACT_APP_AUTH0_CLIENT_ID
-ENV REACT_APP_AUTH0_URL=$REACT_APP_AUTH0_URL
-ENV REACT_APP_PUBLIC_STRIPE_KEY=$REACT_APP_PUBLIC_STRIPE_KEY
-ENV REACT_APP_ROOT_URL=$REACT_APP_ROOT_URL
+ENV AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET}
+ENV REACT_APP_API_1_URL=${REACT_APP_API_1_URL}
+ENV REACT_APP_API_2_URL=${REACT_APP_API_2_URL}
+ENV REACT_APP_AUTH0_AUDIENCE=${REACT_APP_AUTH0_AUDIENCE}
+ENV REACT_APP_AUTH0_CLIENT_ID=${REACT_APP_AUTH0_CLIENT_ID}
+ENV REACT_APP_AUTH0_URL=${REACT_APP_AUTH0_URL}
+ENV REACT_APP_PUBLIC_STRIPE_KEY=${REACT_APP_PUBLIC_STRIPE_KEY}
+ENV REACT_APP_ROOT_URL=${REACT_APP_ROOT_URL}
 
-# Expose the port the application will run on
-EXPOSE 8080
+RUN npm run build
 
-# Start the client application
-CMD ["npm", "run", "start"]
+# Production stage
+FROM node:18-alpine
+WORKDIR /usr/app
+COPY --from=build /usr/app/build ./build
+RUN npm install -g serve
+CMD ["serve", "-s", "build", "-l", "8080"]
