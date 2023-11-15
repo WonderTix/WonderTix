@@ -146,6 +146,59 @@ seasonController.get('/', async (req: Request, res: Response) => {
 });
 
 /**
+ * Retrieves a list of seasons with their associated events.
+ *
+ * @swagger
+* /2/season/list:
+ *   get:
+ *     summary: Get all seasons with events
+ *     tags:
+ *     - New season
+ *     responses:
+ *       200:
+ *         description: Successful response with an array of seasons and their events.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/events'
+ *       400:
+ *         description: Bad request. Invalid input parameters.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} - JSON response with an array of seasons and their events.
+ */
+seasonController.get('/list', async (req: Request, res: Response) => {
+  try {
+    const events = await prisma.seasons.findMany({
+      include: {
+        events: true,
+      },
+    });
+
+    return res.json(events);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError ||
+      error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+    } else {
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+  }
+});
+/**
  * @swagger
  * /2/season/{id}:
  *   get:
