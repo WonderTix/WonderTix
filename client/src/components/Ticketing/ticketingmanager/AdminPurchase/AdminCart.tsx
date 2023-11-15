@@ -29,7 +29,6 @@ const AdminCart = ({
   const navigate = useNavigate();
 
   const cartItems = location.state?.cartItems || [];
-  console.log('cartItems', cartItems);
 
   const itemsInCart = cartItems.map((item, index) => (
     <p
@@ -42,7 +41,7 @@ const AdminCart = ({
       <span className='flex-1 text-right font-bold'>
         {toDollar(item.price)}
       </span>
-      <span className='w-full text-left text-xs '>
+      <span className='w-full text-left text-xs'>
         {item.desc}
       </span>
     </p>
