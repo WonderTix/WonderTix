@@ -5,6 +5,7 @@ import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
 import {getTicketTypePrice} from './ShowingUtils';
+import {getNumTickets} from '../../ticketing/ticketingSlice';
 
 interface TicketTypeTableProps {
   arrayHelpers;
@@ -14,7 +15,10 @@ interface TicketTypeTableProps {
 export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
   const {ticketTypes, showPopUp} = useEvent();
-  const [ticketPrices, setTicketPrices] = useState('');
+  const [ticketPrices, setTicketPrices] = useState(getTicketTypePrice(1, 'price', ticketTypes));
+  const [ticketPrices_2, setTicketPrices_2] = useState({});
+  const [concessionPrices, setConcessionPrices] = useState(getTicketTypePrice(1, 'concessions', ticketTypes));
+  const [concessionPrices_2, setConcessionPrices_2] = useState({});
   const [InstanceTicketTypesField] = useField('instanceTicketTypes');
   const [totalTickets] = useField('totalseats');
   const [availableTypes, setAvailableTypes] = useState(
@@ -26,20 +30,29 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
       .map((value) => Number(value.id)),
   );
 
-  useEffect(() => {
-    if (InstanceTicketTypesField.value.length > 0) {
-      setTicketPrices(
-        getTicketTypePrice(
-          InstanceTicketTypesField.value[0].typeID,
-          'price',
-          ticketTypes,
-        ),
-      );
-    }
-  }, [InstanceTicketTypesField.value, ticketTypes]);
+  // handle General Admission Adult Ticket Pricing
+  const handleDefaultPriceChange = (newValue) => {
+    console.log('New Price: ', newValue);
+    setTicketPrices(newValue);
+  };
 
-  const handleInputChange = (e) => {
-    setTicketPrices(e.target.value);
+  // handle price changes for Child, VIP, and Pay What you can
+  const handlePriceChanges = (id, index, newValue, eventInstanceID) => {
+    const newTicketPrices = {
+      ...ticketPrices_2, [`${eventInstanceID}_${id}_${index}`]: newValue,
+    };
+    setTicketPrices_2(newTicketPrices);
+};
+
+  const changeConcessionPrice = (newValue) => {
+    setConcessionPrices(newValue);
+  };
+
+  const handleAllConcessionPriceChanges = (id, index, newValue, eventInstanceID) => {
+    const newTicketPrices = {
+      ...concessionPrices_2, [`${eventInstanceID}_${id}_${index}`]: newValue,
+    };
+    setConcessionPrices_2(newTicketPrices);
   };
 
   return (
@@ -112,10 +125,18 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               {getTicketTypePrice(1, 'description', ticketTypes)}
             </td>
             <td className={'px-2 border border-white'}>
-              {getTicketTypePrice(1, 'price', ticketTypes)}
+              <input
+                type='text'
+                value={ticketPrices}
+                onChange={(e) => handleDefaultPriceChange(e.target.value)}
+                />
             </td>
             <td className={'px-2 border border-white'}>
-              {getTicketTypePrice(1, 'concessions', ticketTypes)}
+              <input
+                type='text'
+                value={concessionPrices}
+                onChange={(e) => changeConcessionPrice(e.target.value)}
+                />
             </td>
             <td className={'px-2 border border-white'}>
               {totalTickets.value}
@@ -145,19 +166,19 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                 >
                   <input
                   type='text'
-                  value={ticketPrices}
-                  onChange={handleInputChange}
+                  value={ticketPrices_2[`${eventInstanceID}_${id}_${index}`] || getTicketTypePrice(InstanceTicketTypesField.value[index].typeID, 'price', ticketTypes)}
+                  onChange={(e) => handlePriceChanges(id, index, e.target.value, eventInstanceID)}
                   />
                 </td>
                 <td
                   key={eventInstanceID + index + 'ticket concession price'}
                   className={'px-2'}
                 >
-                  {getTicketTypePrice(
-                    InstanceTicketTypesField.value[index].typeID,
-                    'concessions',
-                    ticketTypes,
-                  )}
+                  <input
+                  type='text'
+                  value={concessionPrices_2[`${eventInstanceID}_${id}_${index}`] || getTicketTypePrice(InstanceTicketTypesField.value[index].typeID, 'concessions', ticketTypes)}
+                  onChange={(e) => handleAllConcessionPriceChanges(id, index, e.target.value, eventInstanceID)}
+                  />
                 </td>
                 <td
                   key={eventInstanceID + index + 'ticket type quantity'}
