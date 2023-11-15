@@ -74,8 +74,8 @@ export default function AdminCompleteOrderForm({
     visitSource: '',
     seatingAcc: 'None',
     comments: '',
-    donation: null,
-    optIn: false,
+    donation: undefined,
+    optIn: undefined,
   };
 
   const validate = (values) => {

@@ -35,10 +35,11 @@ export default function AdminCheckout(): ReactElement {
       if (formData.seatingAcc === 'Other') {
         formData.seatingAcc = formData.comments;
       }
-      const donation = formData.donation;
-      const stripe = await stripePromise;
+      const donation = +formData.donation;
 
+      const stripe = await stripePromise;
       if (!stripe) return;
+
       const response = await fetch(
         process.env.REACT_APP_API_2_URL + `/events/checkout`,
         {
