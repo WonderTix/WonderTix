@@ -51,7 +51,6 @@ const App = () => {
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />
         <Route path='/donate' element={<Donationmain />} />
-        <Route path='/' element={<Mainpage />} />
         <Route
           path='/admin'
           element={<ProtectedRoute component={Dashmain} />}
