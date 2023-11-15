@@ -1,6 +1,7 @@
 import React, {ReactElement, useState, useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router';
 import {EventRow} from './AdminPurchase';
+import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 
 /**
  * Math to dollar - `$${(Math.round(x * 100) / 100).toFixed(2)}`
@@ -28,16 +29,22 @@ const AdminCart = ({
   const navigate = useNavigate();
 
   const cartItems = location.state?.cartItems || [];
+  console.log('cartItems', cartItems);
 
   const itemsInCart = cartItems.map((item, index) => (
     <p
       key={index}
-      className='flex flex-row gap-8 bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'
+      className='flex flex-row flex-wrap bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'
     >
-      <span className='flex-auto text-left'>
+      <span className='flex-1 text-left font-bold'>
         {item.qty} x {item.name}
       </span>
-      <span className='flex-auto text-right'>{toDollar(item.price)}</span>
+      <span className='flex-1 text-right font-bold'>
+        {toDollar(item.price)}
+      </span>
+      <span className='w-full text-left text-xs '>
+        {item.desc}
+      </span>
     </p>
   ));
 
