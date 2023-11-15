@@ -59,7 +59,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   let toSend = {id: 'comp'};
   try {
     if (!cartItems.length && donation === 0) {
-      return res.status(400).json(`Cart is empty`);
+      return res.status(400).json('Cart is empty');
     }
     const {contactid} = await updateContact(formData, prisma);
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =

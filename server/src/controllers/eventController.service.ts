@@ -254,7 +254,7 @@ const getTickets = (
   }));
 };
 
-interface checkOutForm {
+interface checkoutForm {
   firstName: string;
   lastName: string;
   streetAddress: string;
@@ -269,7 +269,7 @@ interface checkOutForm {
 }
 
 export const updateContact = async (
-    formData: checkOutForm,
+    formData: checkoutForm,
     prisma: ExtendedPrismaClient,
 ) => {
   const existingContact = await prisma.contacts.findFirst({
@@ -307,7 +307,7 @@ export const updateContact = async (
   return updatedContact;
 };
 
-const validateContact = (formData: checkOutForm) => {
+const validateContact = (formData: checkoutForm) => {
   return {
     firstname: validateName(formData.firstName, 'First Name'),
     lastname: validateName(formData.lastName, 'Last Name'),
@@ -316,18 +316,17 @@ const validateContact = (formData: checkOutForm) => {
         `Email: ${formData.email} is invalid`,
         new RegExp('.+@.+\\..+'),
     ),
-    address: validateWithRegex(
-        formData.streetAddress,
-        `Street Address: ${formData.streetAddress} is invalid`,
-        new RegExp('.*'),
-    ),
-    phone: validateWithRegex(
-        formData.phone,
-        `Phone Number: ${formData.phone} is invalid`,
-        new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
-    ),
-    seatingaccom: formData.seatingAcc,
-    newsletter: formData.optIn,
+    // Only include or validate the following if provided
+    ...(formData.streetAddress && {address: formData.streetAddress}),
+    ...(formData.phone && {
+      phone: validateWithRegex(
+          formData.phone,
+          `Phone Number: ${formData.phone} is invalid`,
+          new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
+      ),
+    }),
+    ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
+    ...(formData.optIn && {newsletter: formData.optIn}),
   };
 };
 
