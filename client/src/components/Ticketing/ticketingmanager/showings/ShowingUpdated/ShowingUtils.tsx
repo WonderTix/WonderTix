@@ -2,6 +2,30 @@ import {useEffect, useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 
+const makeApiCall = async (method, url, token, event, onSuccess, onError) => {
+  try {
+    const submitRes = await fetch(url, {
+      credentials: 'include',
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(event),
+    });
+    if (!submitRes.ok) {
+      throw submitRes;
+    }
+    if (onSuccess) {
+      await onSuccess(submitRes);
+    }
+  } catch (error) {
+    if (onError) {
+      await onError(error);
+    }
+  }
+};
+
 export const createSubmitFunction = (
   method: string,
   url: string,
@@ -9,30 +33,16 @@ export const createSubmitFunction = (
   onSuccess?,
   onError?,
 ) => {
-  return async (event, actions) => {
-    actions.setStatus('Submitting...');
-    try {
-      const submitRes = await fetch(url, {
-        credentials: 'include',
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(event),
-      });
+  return async (event, actions?) => {
+    if (actions) {
+      actions.setStatus('Submitting...');
+      actions.setSubmitting(true);
+    }
+
+    await makeApiCall(method, url, token, event, onSuccess, onError);
+
+    if (actions) {
       actions.setSubmitting(false);
-      if (!submitRes.ok) {
-        throw submitRes;
-      }
-      if (onSuccess) {
-        await onSuccess(submitRes);
-      }
-    } catch (error) {
-      actions.setSubmitting(false);
-      if (onError) {
-        await onError(error);
-      }
     }
   };
 };
@@ -188,37 +198,31 @@ export const getTicketTypePrice = (
   return foundType[priceType];
 };
 
-export const useFetchSeasons = (token:string) => {
+export const useFetchSeasons = (token: string) => {
   const [seasons, setSeasons] = useState([]);
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-      fetchSeasons(token, signal)
-        .then((res) => setSeasons(res))
-        .catch(() => console.error('Failed to fetch seasons'));
-      return () => controller.abort();
+    fetchSeasons(token, signal)
+      .then((res) => setSeasons(res))
+      .catch(() => console.error('Failed to fetch seasons'));
+    return () => controller.abort();
   }, []);
   return {seasons};
 };
 
-const fetchSeasons = async (token:string, signal) => {
-const response =
-await fetch(`${process.env.REACT_APP_API_2_URL}/season`, {
-credentials: 'include',
-method: 'GET',
-headers: {
-  'Content-Type': 'application/json',
-  'Authorization': `Bearer ${token}`,
-},
-signal,
-});
-if (!response.ok) {
+const fetchSeasons = async (token: string, signal) => {
+  const response = await fetch(`${process.env.REACT_APP_API_2_URL}/season`, {
+    credentials: 'include',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    signal,
+  });
+  if (!response.ok) {
     throw response;
   }
   return await response.json();
 };
-
-
-
-
-
