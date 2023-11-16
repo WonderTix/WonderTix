@@ -478,8 +478,6 @@ const openApiSpec = swaggerJsdoc({
           items: {
             type: 'object',
             properties: {
-              id: {type: 'number'},
-              seasonid_fk: {type: 'number'},
               tickettypeid_fk: {type: 'number'},
               price: {type: 'number'},
             },

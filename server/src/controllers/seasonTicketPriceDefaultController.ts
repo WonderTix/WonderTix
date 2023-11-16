@@ -101,9 +101,7 @@ seasonTicketPriceDefaultController.get('/:id', async (req: Request, res: Respons
 seasonTicketPriceDefaultController.put('/:id', async (req: Request, res: Response) => {
   try {
     const {id} = req.params;
-    console.log(id);
     const toUpdate: Map<number, seasonticketpricedefault> = new Map(req.body?.map((item: seasonticketpricedefault) => [+item.tickettypeid_fk, item]));
-    console.log(toUpdate);
     const current = await prisma.seasonticketpricedefault.findMany({
       where: {
         seasonid_fk: +id,
@@ -143,14 +141,14 @@ seasonTicketPriceDefaultController.put('/:id', async (req: Request, res: Respons
           prisma.seasonticketpricedefault.create({
             data: {
               // eslint-disable-next-line camelcase
-              seasonid_fk,
+              seasonid_fk: +id,
               // eslint-disable-next-line camelcase
               tickettypeid_fk,
               price,
             },
           }),
     )));
-    return res.json(update);
+    return res.json(await prisma.seasonticketpricedefault.findMany({where: {seasonid_fk: +id}}));
   } catch (error) {
     if (error instanceof InvalidInputError) {
       return res.status(error.code).send({error: error.message});
