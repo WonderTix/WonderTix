@@ -175,16 +175,10 @@ const SeasonInfo = (props: SeasonProps) => {
   return seasonId === 0 || isFormEditing ? (
     <form onSubmit={onSubmit} className='rounded-xl p-7 bg-white text-lg'>
       <section className='flex flex-col text-center tab:flex-row tab:text-start tab:justify-between tab:flex-wrap tab:mb-5'>
-        <h1 className='text-4xl mb-3 font-semibold'>Edit Season</h1>
+        <h1 className='text-4xl font-semibold'>Edit Season</h1>
         <article className='flex flex-wrap justify-center gap-2'>
           <button className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'>
             Save
-          </button>
-          <button
-            className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'
-            onClick={deleteConfirmationHandler}
-          >
-            Delete
           </button>
           <button
             className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'
@@ -288,6 +282,7 @@ const SeasonInfo = (props: SeasonProps) => {
       {...seasonValues}
       setIsFormEditing={setIsFormEditing}
       isSeasonActive={activeSeasonCheckbox}
+      deleteConfirmationHandler={deleteConfirmationHandler}
     />
   );
 };

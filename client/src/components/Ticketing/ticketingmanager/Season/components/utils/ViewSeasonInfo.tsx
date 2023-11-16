@@ -20,11 +20,19 @@ const MONTHS = [
 interface ViewSeasonInfoProps extends SeasonInfo {
   isSeasonActive: boolean;
   setIsFormEditing: (value) => void;
+  deleteConfirmationHandler: (event) => void;
 }
 
 const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
-  const {name, startdate, enddate, imageurl, isSeasonActive, setIsFormEditing} =
-    props;
+  const {
+    name,
+    startdate,
+    enddate,
+    imageurl,
+    isSeasonActive,
+    setIsFormEditing,
+    deleteConfirmationHandler,
+  } = props;
 
   const getLongDateFormat = (date: string) => {
     const year: string = date.slice(0, 4);
@@ -37,8 +45,8 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
   return (
     <header className='rounded-xl bg-white p-7 text-lg shadow-xl'>
       <section className='flex flex-col gap-3 text-center mb-5 justify-between tab:flex-row tab:flex-wrap'>
-        <div className='flex flex-col gap-4 tab:flex-row tab:flex-wrap'>
-          <h1 className='text-4xl font-semibold'>Season Information</h1>
+        <h1 className='text-4xl font-semibold'>Season Information</h1>
+        <div className='flex flex-col gap-2 tab:flex-row tab:flex-wrap'>
           <span
             className={`${
               isSeasonActive === undefined
@@ -54,15 +62,47 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
               ? 'Active'
               : 'Inactive'}
           </span>
-        </div>
-        <button
-          className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-10 rounded-xl'
-          onClick={() => setIsFormEditing(true)}
-        >
-          Edit
-        </button>
-      </section>
+          <button
+            className='bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-3 rounded-xl'
+            onClick={() => setIsFormEditing(true)}
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-6 w-6'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+              />
+            </svg>
+          </button>
 
+          <button
+            className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-3 rounded-xl'
+            onClick={deleteConfirmationHandler}
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              className='h-6 w-6'
+              fill='none'
+              viewBox='0 0 24 24'
+              stroke='currentColor'
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+              />
+            </svg>
+          </button>
+        </div>
+      </section>
       <div className='grid grid-cols-12'>
         <article className='col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
           <h3 className='font-semibold'>Season Name </h3>
