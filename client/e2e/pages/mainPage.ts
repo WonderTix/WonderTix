@@ -207,4 +207,20 @@ export class MainPage {
   async clickStripeCheckout() {
     await this.stripeCheckout.click();
   }
+
+  async purchaseTicket(customer: Customer, creditCard: CreditCard, showing: EventsInfo) {
+    await this.goSelectShowing(showing);
+    // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
+    await this.selectRandomDate();
+    await this.selectRandomTime();
+    await this.selectRandomTicketType();
+    await this.selectRandomQuantity();
+    await this.clickGetTickets();
+    await this.clickTakeMeThere();
+    await this.clickCartCheckout();
+    await this.fillCustomerInfo(customer);
+    await this.clickCartNext();
+    await this.fillStripeInfo(customer, creditCard);
+    await this.clickStripeCheckout();
+  }
 }
