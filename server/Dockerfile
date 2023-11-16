@@ -13,7 +13,7 @@ RUN npm install
 FROM node:18-alpine AS build
 WORKDIR /usr/app
 
-COPY --from=install /usr/app/node_modules/ ./node_modules
+COPY --from=install /usr/app/node_modules ./node_modules
 COPY --from=install /usr/app/package*.json ./
 COPY . .
 
@@ -23,8 +23,8 @@ RUN npm run build
 FROM node:18-alpine
 WORKDIR /usr/app
 
-COPY ./package*.json ./
-COPY ./prisma/schema.prisma ./prisma/schema.prisma
+COPY --from=build /usr/app/package*.json ./
 COPY --from=build /usr/app/bin ./bin
+COPY --from=build /usr/app/prisma ./prisma
 
 CMD ["npm", "run", "start"]

@@ -76,7 +76,7 @@ steps:
   # Deploy client as test revision (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-test-client'
-    waitFor: ['push-test-client']
+    waitFor: ['push-test-client', 'deploy-test-server']
     entrypoint: 'bash'
     args: ['scripts/deploy/client.sh']
     env:

@@ -14,7 +14,7 @@
     "test:jest": "npx jest --config ./jest.config.js"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "node ./bin/prisma/seed.js"
   },
   "author": "",
   "license": "MIT",
