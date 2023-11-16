@@ -112,6 +112,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
             </td>
             <td className={'px-2 border border-white'}>
               <input
+                className='w-[75px] bg-gray-100'
                 type='text'
                 value={ticketPrice}
                 onChange={(e) => handlePriceChange(e.target.value)}
@@ -119,6 +120,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
             </td>
             <td className={'px-2 border border-white'}>
               <input
+                className='w-[75px] bg-gray-100'
                 type='text'
                 value={concessionPrices}
                 onChange={(e) => handleConcessionPrices(e.target.value)}
@@ -159,7 +161,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                     id={eventInstanceID}
                     className={{
                       controlClass: '',
-                      inputClass: 'w-[150px]',
+                      inputClass: 'w-[75px]',
                       labelClass: '',
                     }}
                   />
@@ -177,7 +179,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                     id={eventInstanceID}
                     className={{
                       controlClass: '',
-                      inputClass: 'w-[150px]',
+                      inputClass: 'w-[75px]',
                       labelClass: '',
                     }}
                   />
