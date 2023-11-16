@@ -357,7 +357,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
 
     if (
       eventToCreate.instanceTicketTypes.find(
-          (type) => type.typeQuantity > eventToCreate.totalseats,
+          (type) => type.ticketlimit > eventToCreate.totalseats,
       )
     ) {
       return res
@@ -389,43 +389,33 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
         purchaseuri: eventToCreate.purchaseuri,
         ispreview: eventToCreate.ispreview,
         defaulttickettype: eventToCreate.defaulttickettype,
-        eventtickets: {
-          create: [
-            ...eventToCreate.instanceTicketTypes
-                .map((type) =>
-                  Array(type.typeQuantity).fill({
-                    tickettypeid_fk: Number(type.typeID),
-                    redeemed: false,
-                    donated: false,
-                  }),
-                )
-                .flat(),
-            ...Array(eventToCreate.totalseats).fill({
-              tickettypeid_fk: 1,
-              redeemed: false,
-              donated: false,
-            }),
-          ],
-        },
-        ticketrestrictions: {
-          create: eventToCreate.instanceTicketTypes.map((type) => {
-            return {
-              tickettypeid_fk: Number(type.typeID),
-              ticketlimit: Number(type.typeQuantity),
-              ticketssold: 0,
-            };
-          }),
-        },
-      },
-      include: {
-        eventtickets: true,
-        ticketrestrictions: true,
       },
     });
 
-    res.status(201).send(eventInstance);
+    const ticketRestrictions = await prisma.ticketrestrictions.createMany({
+      data: eventToCreate.instanceTicketTypes.map((type) => ({
+        eventinstanceid_fk: eventInstance.eventinstanceid,
+        tickettypeid_fk: +type.tickettypeid_fk,
+        ticketlimit: +type.ticketlimit,
+        ticketssold: 0,
+        price: +type.price,
+        concessionprice: +type.concessionprice,
+        eventtickets: {
+          create: Array(type.ticketlimit).fill({
+            eventinstanceid_fk: eventInstance.eventinstanceid,
+          }),
+        },
+      })),
+    });
 
-    return;
+    return res.status(201).send(await prisma.eventinstances.findUnique({
+      where: {
+        eventinstanceid: eventInstance.eventinstanceid,
+      },
+      include: {
+        ticketrestrictions: true,
+      },
+    }));
   } catch (error) {
     console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -478,18 +468,21 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-// Need to determine how eventtickets should be updated with eventinstance update
 eventInstanceController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const requestEventInstance: eventInstanceRequest = req.body;
     const eventInstanceToUpdate = await prisma.eventinstances.findUnique({
       where: {
-        eventinstanceid: Number(id),
+        eventinstanceid: +id,
       },
       include: {
-        eventtickets: true,
-        ticketrestrictions: true,
+        ticketrestrictions: {
+          include: {
+            eventtickets: true,
+
+          },
+        },
       },
     });
 
@@ -497,113 +490,29 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
       return res.status(400).send(`Showing ${id} does not exist`);
     }
 
-    const {updatedEventInstance, GAEventTicketsUpdate} =
-      validateShowingOnUpdate(eventInstanceToUpdate, requestEventInstance);
+    const updatedEventInstance= validateShowingOnUpdate(eventInstanceToUpdate, requestEventInstance);
 
-    const {restrictionsToAdd, restrictionsToRemove, restrictionsToUpdate} =
-      validateTicketRestrictionsOnUpdate(
-          eventInstanceToUpdate.ticketrestrictions,
-          requestEventInstance.instanceTicketTypes,
-          updatedEventInstance.availableseats,
-          eventInstanceToUpdate.eventtickets.filter(
-              (ticket) => !ticket.singleticket_fk,
-          ),
-      );
-    //  update showing
-    await prisma.eventinstances.update({
+    const queryBatch = validateTicketRestrictionsOnUpdate(prisma,
+        {...eventInstanceToUpdate, totalseats: updatedEventInstance.totalseats},
+        new Map(requestEventInstance.instanceTicketTypes.map((type) => [type.tickettypeid_fk, type])),
+    );
+    await prisma.$transaction([prisma.eventinstances.update({
       where: {
         eventinstanceid: Number(id),
       },
       data: {
         ...updatedEventInstance,
       },
-    });
-    //  update ticket restrictions and eventtickets
-    await prisma.$transaction([
-      GAEventTicketsUpdate.difference > 0 ?
-        prisma.eventtickets.createMany({
-          data: Array(GAEventTicketsUpdate.difference).fill({
-            eventinstanceid_fk: eventInstanceToUpdate.eventinstanceid,
-            tickettypeid_fk: 1,
-          }),
-        }) :
-        prisma.eventtickets.deleteMany({
-          where: {
-            eventticketid: {in: GAEventTicketsUpdate.ticketsToRemove ?? []},
-          },
-        }),
-      ...restrictionsToRemove
-          .map((restriction) => [
-            prisma.ticketrestrictions.delete({
-              where: {
-                ticketrestrictionsid: Number(restriction.ticketrestrictionsid),
-              },
-            }),
-            prisma.eventtickets.deleteMany({
-              where: {
-                eventinstanceid_fk: Number(eventInstanceToUpdate.eventinstanceid),
-                tickettypeid_fk: restriction.tickettypeid_fk,
-              },
-            }),
-          ])
-          .flat(),
-      ...restrictionsToUpdate
-          .map(([restriction, update]) => [
-            prisma.ticketrestrictions.update({
-              where: {
-                ticketrestrictionsid: restriction.ticketrestrictionsid,
-              },
-              data: {
-                ticketlimit: Number(restriction.ticketlimit),
-              },
-            }),
-          update.difference > 0 ?
-            prisma.eventtickets.createMany({
-              data: Array(update.difference).fill({
-                eventinstanceid_fk: eventInstanceToUpdate.eventinstanceid,
-                tickettypeid_fk: restriction.tickettypeid_fk,
-              }),
-            }) :
-            prisma.eventtickets.deleteMany({
-              where: {
-                eventticketid: {in: update.ticketsToRemove ?? []},
-              },
-            }),
-          ])
-          .flat(),
-      ...restrictionsToAdd
-          .map((restriction) => [
-            prisma.ticketrestrictions.create({
-              data: {
-                eventinstanceid_fk: Number(requestEventInstance.eventinstanceid),
-                tickettypeid_fk: Number(restriction.typeID),
-                ticketlimit: Number(restriction.typeQuantity),
-                ticketssold: 0,
-              },
-            }),
-            prisma.eventtickets.createMany({
-              data: Array(restriction.typeQuantity).fill({
-                eventinstanceid_fk: eventInstanceToUpdate.eventinstanceid,
-                tickettypeid_fk: Number(restriction.typeID),
-              }),
-            }),
-          ])
-          .flat(),
-    ]);
-
-    res.status(204).send('Showing successfully updated');
-    return;
+    })].concat(queryBatch));
+    return res.status(204).send('Showing successfully updated');
   } catch (error) {
     console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).send({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).send({error: error.message});
-
       return;
     }
     if (error instanceof InvalidInputError) {

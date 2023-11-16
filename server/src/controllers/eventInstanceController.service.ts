@@ -4,7 +4,8 @@ import {
   instanceTicketType,
   ticketRestriction,
 } from '../interfaces/Event';
-import {eventtickets} from '@prisma/client';
+import {eventinstances, eventtickets, ticketrestrictions} from '@prisma/client';
+import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 export class InvalidInputError extends Error {
   code: number;
   name: string;
@@ -15,104 +16,110 @@ export class InvalidInputError extends Error {
   }
 }
 
+interface LoadedTicketRestriction extends ticketrestrictions{
+    eventtickets: eventtickets[],
+}
+
+interface LoadedEventInstance extends eventinstances {
+  ticketrestrictions: LoadedTicketRestriction[],
+}
+
 export const validateTicketRestrictionsOnUpdate = (
-    oldRestrictions: ticketRestriction[],
-    newRestrictions: instanceTicketType[],
-    availableseats: number,
-    availableTickets: eventtickets[],
-) => {
-  const restrictionsToUpdate: [
-    ticketRestriction,
-    { difference: number; ticketsToRemove?: number[] },
-  ][] = [];
-  const restrictionsToRemove: ticketRestriction[] = [];
-
-  oldRestrictions.forEach((restriction: any) => {
-    const type = newRestrictions.find(
-        (type) => type.typeID === restriction.tickettypeid_fk,
+    prisma: ExtendedPrismaClient,
+    eventInstance: LoadedEventInstance,
+    newRestrictions: Map<number, instanceTicketType>,
+) : any[] => {
+  const queryBatch = eventInstance.ticketrestrictions.map((oldRestriction: LoadedTicketRestriction) => {
+    const newRestriction = newRestrictions.get(oldRestriction.tickettypeid_fk);
+    newRestrictions.delete(oldRestriction.tickettypeid_fk);
+    return getTicketRestrictionUpdate(
+        prisma,
+        newRestriction,
+        oldRestriction,
+        eventInstance.totalseats ?? 0,
+        eventInstance.defaulttickettype ?? 1,
     );
-    const tickets = availableTickets.filter(
-        (ticket) => ticket.tickettypeid_fk == restriction.tickettypeid_fk,
-    );
+  }).flat();
 
-    if ((!type || !type.typeQuantity) && !restriction.ticketssold) {
-      restrictionsToRemove.push(restriction);
-      return;
-    } else if (!type || !type.typeQuantity) {
-      throw new InvalidInputError(
-          422,
-          `Can not remove ticket type for which tickets have already been sold`,
-      );
-    }
-
-    if ((restriction.ticketssold ?? 0) > type.typeQuantity) {
-      throw new InvalidInputError(
-          422,
-          `Can not reduce individual ticket type quantity below quantity sold to date`,
-      );
-    }
-
-    const difference = Math.min(
-        availableseats - tickets.length,
-        type.typeQuantity - restriction.ticketlimit,
-    );
-    if (restriction.ticketlimit !== type.typeQuantity) {
-      restrictionsToUpdate.push([
-        {
-          ...restriction,
-          ticketlimit: restriction.ticketlimit + difference,
-        },
-        {
-          difference,
-          ...(difference < 0 && {
-            ticketsToRemove: tickets
-                .splice(0, Math.abs(difference))
-                .map((ticket) => ticket.eventticketid),
+  return queryBatch.concat([...newRestrictions.values()].map((newRestriction) => {
+    return prisma.ticketrestrictions.create({
+      data: {
+        ...newRestriction,
+        ticketlimit: Math.min(eventInstance.totalseats ?? 0, newRestriction.ticketlimit),
+        eventinstanceid_fk: eventInstance.eventinstanceid,
+        eventtickets: {
+          create: Array(newRestriction.ticketlimit).fill({
+            data: {
+              eventinstanceid_fk: eventInstance.eventinstanceid,
+            },
           }),
         },
-      ]);
-    }
-    newRestrictions.splice(newRestrictions.indexOf(type), 1);
-  });
-  if (newRestrictions.find((type) => type.typeQuantity > availableseats)) {
-    throw new InvalidInputError(
-        422,
-        `New ticket type quantity can not exceed available seat quantity`,
-    );
-  }
-  return {
-    restrictionsToUpdate,
-    restrictionsToRemove,
-    restrictionsToAdd: newRestrictions,
-  };
+      },
+    });
+  }));
 };
 
-const validateTicketQuantity = (
+const getTicketRestrictionUpdate = (
+    prisma: ExtendedPrismaClient,
+    newRestriction: instanceTicketType | undefined,
+    oldRestriction: LoadedTicketRestriction,
     totalseats: number,
-    tickets: eventtickets[],
-) => {
-  const unsoldTickets = tickets.filter((ticket) => !ticket.singleticket_fk);
-  const soldTicketCount = tickets.length - unsoldTickets.length;
-  if (totalseats < soldTicketCount) {
+    defaultTicketType: number,
+)=> {
+  const availableTickets:eventtickets[] = [];
+  const soldTickets: eventtickets[] = [];
+  oldRestriction.eventtickets.forEach((ticket) =>
+      ticket.singleticket_fk? soldTickets.push(ticket): availableTickets.push(ticket),
+  );
+  if ((!newRestriction || !newRestriction.ticketlimit) && !availableTickets.length && oldRestriction.tickettypeid_fk !== defaultTicketType) {
+    return [prisma.ticketrestrictions.delete({
+      where: {
+        ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
+      },
+    })];
+  } else if ((!newRestriction || !newRestriction.ticketlimit) && !availableTickets.length) {
     throw new InvalidInputError(
         422,
-        `Can not reduce total ticket quantity 
-        below ${soldTicketCount} tickets sold to date`,
+        `Can not remove default ticket type`,
+    );
+  } else if (!newRestriction || !newRestriction.ticketlimit) {
+    throw new InvalidInputError(
+        422,
+        `Can not remove ticket type for which tickets have already been sold`,
+    );
+  } else if (soldTickets.length > newRestriction.ticketlimit) {
+    throw new InvalidInputError(
+        422,
+        `Can not reduce individual ticket type quantity below quantity sold to date`,
+    );
+  } else if (oldRestriction.tickettypeid_fk === defaultTicketType && totalseats !== newRestriction.ticketlimit) {
+    throw new InvalidInputError(
+        422,
+        `Default ticket type quantity must be equal to total seats`,
     );
   }
-  const difference = totalseats - tickets.length;
-  return {
-    totalseats,
-    availableseats: totalseats - soldTicketCount,
-    update: {
-      difference,
-      ...(difference < 0 && {
-        ticketsToRemove: unsoldTickets
-            .slice(0, Math.abs(difference))
-            .map((ticket) => ticket.eventticketid),
-      }),
+  const newQuantity= Math.min(totalseats, newRestriction.ticketlimit);
+  const difference = newQuantity- oldRestriction.eventtickets.length;
+  return [prisma.ticketrestrictions.update({
+    where: {
+      ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
     },
-  };
+    data: {
+      ...newRestriction,
+      ...(difference > 0 && {
+        create: Array(difference).fill({
+          eventinstanceid_fk: oldRestriction.eventinstanceid_fk,
+        }),
+      }),
+    }}),
+  (difference < 0 &&
+        prisma.eventtickets.deleteMany({
+          where: {
+            eventticketid: {in: availableTickets
+                .splice(0, Math.abs(difference))
+                .map((ticket) => ticket.eventticketid),
+            }}})
+  )];
 };
 
 export const validateDateAndTime = (date: string, time: string) => {
@@ -139,22 +146,20 @@ export const validateDateAndTime = (date: string, time: string) => {
 };
 
 export const validateShowingOnUpdate = (
-    oldEvent: any,
+    oldEvent: LoadedEventInstance,
     newEvent: eventInstanceRequest,
 ) => {
-  const {availableseats, totalseats, update} = validateTicketQuantity(
-      newEvent.totalseats,
-      oldEvent.eventtickets.filter((ticket: any) => ticket.tickettypeid_fk === 1),
-  );
+  const soldTickets= oldEvent.ticketrestrictions
+      .find((restriction) => restriction.tickettypeid_fk === oldEvent.defaulttickettype)
+      ?.eventtickets.filter((ticket) => ticket.singleticket_fk).length ?? 0;
+
+  const newTotalSeats =soldTickets > newEvent.totalseats? soldTickets: newEvent.totalseats;
   return {
-    updatedEventInstance: {
-      ispreview: newEvent.ispreview,
-      purchaseuri: newEvent.purchaseuri,
-      salestatus: newEvent.salestatus,
-      availableseats,
-      totalseats,
-      ...validateDateAndTime(newEvent.eventdate, newEvent.eventtime),
-    },
-    GAEventTicketsUpdate: update,
+    ispreview: newEvent.ispreview,
+    purchaseuri: newEvent.purchaseuri,
+    salestatus: newEvent.salestatus,
+    totalseats: newTotalSeats,
+    availableseats: newTotalSeats - soldTickets,
+    ...validateDateAndTime(newEvent.eventdate, newEvent.eventtime),
   };
 };

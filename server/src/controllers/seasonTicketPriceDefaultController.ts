@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma, seasonticketpricedefault} from '@prisma/client';
@@ -11,6 +12,11 @@ export const seasonTicketPriceDefaultController = Router();
 seasonTicketPriceDefaultController.use(checkJwt);
 seasonTicketPriceDefaultController.use(checkScopes);
 
+interface SeasonTicketPriceDefaultRequestItem {
+  tickettypeid_fk: number;
+  price: number;
+  concessionprice: number;
+}
 /**
  * @swagger
  * /2/season-ticket-price-default/{id}:
@@ -31,7 +37,8 @@ seasonTicketPriceDefaultController.use(checkScopes);
  *              $ref: '#/components/schemas/SeasonTicketTypePriceDefault'
  *       400:
  *         description: bad request
- *         content:
+ *         c
+ *         ontent:
  *           application/json:
  *             schema:
  *              $ref: '#/components/schemas/Error'
@@ -101,7 +108,7 @@ seasonTicketPriceDefaultController.get('/:id', async (req: Request, res: Respons
 seasonTicketPriceDefaultController.put('/:id', async (req: Request, res: Response) => {
   try {
     const {id} = req.params;
-    const toUpdate: Map<number, seasonticketpricedefault> = new Map(req.body?.map((item: seasonticketpricedefault) => [+item.tickettypeid_fk, item]));
+    const toUpdate: Map<number, SeasonTicketPriceDefaultRequestItem> = new Map(req.body?.map((item: SeasonTicketPriceDefaultRequestItem) => [+item.tickettypeid_fk, item]));
     const current = await prisma.seasonticketpricedefault.findMany({
       where: {
         seasonid_fk: +id,
@@ -127,24 +134,33 @@ seasonTicketPriceDefaultController.put('/:id', async (req: Request, res: Respons
           id: item.id,
         },
         data: {
-          price: +update.price,
+          price: update.price,
+          concessionprice: update.concessionprice,
+          ticketrestrictions: {
+            updateMany: {
+              where: {
+                seasonticketpriceid_fk: item.id,
+              },
+              data: {
+                ...(+item.price !== update.price && {price: update.price}),
+                ...(+item.concessionprice !== update.concessionprice && {price: update.concessionprice}),
+              },
+            },
+          },
         },
       });
     }).concat([...toUpdate.values()].map(
         ({
-          // eslint-disable-next-line camelcase
-          seasonid_fk,
-          // eslint-disable-next-line camelcase
           tickettypeid_fk,
           price,
+          concessionprice,
         }) =>
           prisma.seasonticketpricedefault.create({
             data: {
-              // eslint-disable-next-line camelcase
               seasonid_fk: +id,
-              // eslint-disable-next-line camelcase
               tickettypeid_fk,
               price,
+              concessionprice,
             },
           }),
     )));

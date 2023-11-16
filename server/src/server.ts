@@ -53,7 +53,7 @@ import {seasonTicketTypeController} from './controllers/seasonTicketTypeControll
 import {singleTicketController} from './controllers/singleTicketController';
 import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
-import {seasonTicketPriceDefaultController} from "./controllers/seasonTicketPriceDefaultController";
+import {seasonTicketPriceDefaultController} from './controllers/seasonTicketPriceDefaultController';
 
 const openApiSpec = swaggerJsdoc({
   definition: {
@@ -253,6 +253,7 @@ const openApiSpec = swaggerJsdoc({
               seasonid_fk: {type: 'number'},
               tickettypeid_fk: {type: 'number'},
               price: {type: 'number'},
+              concessionprice: {type: 'number'},
             },
           },
         },
@@ -480,6 +481,7 @@ const openApiSpec = swaggerJsdoc({
             properties: {
               tickettypeid_fk: {type: 'number'},
               price: {type: 'number'},
+              concessionprice: {type: 'number'},
             },
           },
         },
