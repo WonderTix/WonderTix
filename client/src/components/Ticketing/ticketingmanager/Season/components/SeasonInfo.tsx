@@ -7,7 +7,6 @@ import {
   updateSeasonInfo,
   RequestBody,
   deleteSeasonInfo,
-  getAllEvents,
   updateEventSeason,
 } from './utils/apiRequest';
 import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
@@ -18,6 +17,7 @@ const SeasonInfo = (props: SeasonProps) => {
   const {
     seasonId,
     isFormEditing,
+    currentSeasonEvents,
     setSeasonId,
     setShowPopUp,
     setPopUpMessage,
@@ -29,7 +29,6 @@ const SeasonInfo = (props: SeasonProps) => {
   const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<boolean>();
   const [prevActiveSeasonSwitch, setPrevActiveSeasonSwitch] =
     useState<boolean>();
-  const [currentSeasonEvents, setCurrentSeasonEvents] = useState([]);
 
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
@@ -73,16 +72,6 @@ const SeasonInfo = (props: SeasonProps) => {
       delete eventReqBody['deletedat'];
       const updateSingleEvent = await updateEventSeason(eventReqBody, token);
       if (!updateSingleEvent) return;
-    }
-  };
-
-  const handleGetSeasonEvents = async () => {
-    const seasonEvents = await getAllEvents(token, seasonId);
-    if (seasonEvents) {
-      const isSeasonActive = seasonEvents.every((event) => event.active);
-      setActiveSeasonSwitch(isSeasonActive);
-      setPrevActiveSeasonSwitch(isSeasonActive);
-      setCurrentSeasonEvents(seasonEvents);
     }
   };
 
@@ -163,8 +152,13 @@ const SeasonInfo = (props: SeasonProps) => {
 
   useEffect(() => {
     void handleGetSeasonInfo();
-    void handleGetSeasonEvents();
   }, [seasonId]);
+
+  useEffect(() => {
+    const isSeasonActive = currentSeasonEvents.every((event) => event.active);
+    setActiveSeasonSwitch(isSeasonActive);
+    setPrevActiveSeasonSwitch(isSeasonActive);
+  }, []);
 
   return seasonId === 0 || isFormEditing ? (
     <form onSubmit={onSubmit} className='rounded-xl p-7 bg-white text-lg'>
