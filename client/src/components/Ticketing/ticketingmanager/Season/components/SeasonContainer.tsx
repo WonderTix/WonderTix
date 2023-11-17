@@ -32,6 +32,16 @@ const SeasonContainer = () => {
   });
   const {token} = useFetchToken();
 
+  const commonSeasonPageProps = {
+    seasonId: seasonId,
+    token: token,
+    isFormEditing: isFormEditing,
+    eventsInSeason: eventsInSeason,
+    setEventsInSeason: setEventsInSeason,
+    setShowPopUp: setShowPopUp,
+    setPopUpMessage: setPopUpMessage,
+  };
+
   const handleGetAllEvents = async () => {
     const allEvents = await getAllEvents(token);
     if (allEvents) {
@@ -59,26 +69,14 @@ const SeasonContainer = () => {
         {showPopUp && <PopUp {...popUpMessage} />}
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
           <SeasonInfo
-            seasonId={seasonId}
-            isFormEditing={isFormEditing}
-            setIsFormEditing={setIsFormEditing}
+            {...commonSeasonPageProps}
             setSeasonId={setSeasonId}
-            setPopUpMessage={setPopUpMessage}
-            setShowPopUp={setShowPopUp}
-            eventsInSeason={eventsInSeason}
-            setEventsInSeason={setEventsInSeason}
-            token={token}
+            setIsFormEditing={setIsFormEditing}
           />
           <SeasonEvents
-            token={token}
-            seasonId={seasonId}
-            eventsInSeason={eventsInSeason}
+            {...commonSeasonPageProps}
             eventsNotInAnySeason={eventsNotInAnySeason}
-            setEventsInSeason={setEventsInSeason}
             setEventsNotInAnySeason={setEventsNotInAnySeason}
-            setShowPopUp={setShowPopUp}
-            setPopUpMessage={setPopUpMessage}
-            isFormEditing={isFormEditing}
           />
         </div>
       </div>
