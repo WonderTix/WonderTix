@@ -46,9 +46,9 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
         <div className='flex items-center gap-2'>
           <div
             className={`py-2 px-4 ${
-              eventData.active ? 'bg-green-100' : 'bg-red-100'
-            } text-gray-700 border border-gray-300 flex items-center justify-center`}
-            style={{cursor: 'default', borderRadius: '0'}}
+              eventData.active ? 'bg-green-100' : 'bg-gray-300'
+            } text-gray-700 border border-gray-300 flex items-center justify-center rounded-lg`}
+            style={{cursor: 'default'}}
           >
             <span className={'font-semibold'}>
               {eventData.active ? 'ACTIVE' : 'INACTIVE'}
@@ -64,11 +64,11 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
             }}
             className={`cursor-pointer ${
               editing || showPopUp ? 'opacity-50' : ''
-            }`}
+            } bg-gray-400 hover:bg-gray-500 text-white rounded-lg`}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
-              className='h-6 w-6'
+              className='h-10 w-10'
               fill='none'
               viewBox='0 0 24 24'
               stroke='currentColor'
@@ -90,18 +90,20 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
             }}
             className={`cursor-pointer ${
               editing || showPopUp ? 'opacity-50' : ''
-            }`}
+            } bg-red-500 hover:bg-red-600 rounded-lg`}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
-              className='h-5 w-5'
-              viewBox='0 0 20 20'
-              fill='red'
+              className='h-10 w-10'
+              fill='#EF4444'
+              viewBox='0 0 24 24'
+              stroke='white'
+              strokeWidth={2}
             >
               <path
-                fillRule='evenodd'
-                d='M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z'
-                clipRule='evenodd'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
               />
             </svg>
           </div>

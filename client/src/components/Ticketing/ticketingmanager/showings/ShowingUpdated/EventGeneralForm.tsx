@@ -116,10 +116,8 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   controlClass: 'flex flex-col mb-2 text-zinc-800',
                 }}
               />
-              <div
-                className={'grid grid-cols-5 mb-2 items-center text-zinc-800'}
-              >
-                <div className='col-span-3 pr-2'>
+              <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
+                <div className='col-span-4 pr-2'>
                   <Field
                     name={'imageurl'}
                     component={InputControl}
@@ -130,23 +128,22 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     className={{
                       labelClass: 'text-sm font-semibold',
                       inputClass:
-                        'text-sm min-w-[345px] w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200',
+                        'text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200',
                       controlClass: 'flex flex-col text-zinc-800',
                     }}
                   />
                 </div>
-                <div className='col-span-1'></div>
                 <button
                   id={'defaultImageUrl'}
                   className={
-                    'bg-blue-500 hover:bg-blue-700 text-white rounded-lg p-1 font-bold text-sm h-fit ml-2 self-end'
+                    'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 font-bold text-sm h-fit self-end whitespace-nowrap'
                   }
                   onClick={() => {
                     setFieldValue('imageurl', 'Default Event Image');
                   }}
                   type='button'
                 >
-                  Default
+                  Use Default
                 </button>
               </div>
 
