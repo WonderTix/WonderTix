@@ -1,7 +1,6 @@
 # Install stage
 FROM node:18-alpine AS install
 WORKDIR /usr/app
-ENV PATH ./node_modules/.bin:${PATH}
 COPY ./package*.json ./
 RUN npm install --omit=dev
 
