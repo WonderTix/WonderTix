@@ -59,8 +59,8 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
             {isSeasonActive === undefined
               ? 'hidden'
               : isSeasonActive
-              ? 'Active'
-              : 'Inactive'}
+              ? 'ACTIVE'
+              : 'INACTIVE'}
           </span>
           <button
             className='bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-3 rounded-xl'

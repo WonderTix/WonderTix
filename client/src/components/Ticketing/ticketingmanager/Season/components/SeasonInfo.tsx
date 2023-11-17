@@ -12,7 +12,7 @@ import {
 } from './utils/apiRequest';
 import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
-import {FormControlLabel, Checkbox} from '@mui/material';
+import {FormControlLabel, Switch} from '@mui/material';
 
 const SeasonInfo = (props: SeasonProps) => {
   const {
@@ -25,11 +25,9 @@ const SeasonInfo = (props: SeasonProps) => {
     token,
   } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
-  const [defaultSeasonImageCheckbox, setDefaultSeasonImageCheckbox] =
-    useState(false);
   const [tempImageUrl, setTempImageUrl] = useState('');
-  const [activeSeasonCheckbox, setActiveSeasonCheckbox] = useState<boolean>();
-  const [prevActiveSeasonCheckbox, setPrevActiveSeasonCheckbox] =
+  const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<boolean>();
+  const [prevActiveSeasonSwitch, setPrevActiveSeasonSwitch] =
     useState<boolean>();
   const [currentSeasonEvents, setCurrentSeasonEvents] = useState([]);
 
@@ -42,7 +40,6 @@ const SeasonInfo = (props: SeasonProps) => {
 
     if (fetchedSeasonInfo) {
       if (fetchedImage === 'Default Season Image') {
-        setDefaultSeasonImageCheckbox(true);
         setSeasonValues({
           ...fetchedSeasonInfo,
           imageurl: '',
@@ -83,8 +80,8 @@ const SeasonInfo = (props: SeasonProps) => {
     const seasonEvents = await getAllEvents(token, seasonId);
     if (seasonEvents) {
       const isSeasonActive = seasonEvents.every((event) => event.active);
-      setActiveSeasonCheckbox(isSeasonActive);
-      setPrevActiveSeasonCheckbox(isSeasonActive);
+      setActiveSeasonSwitch(isSeasonActive);
+      setPrevActiveSeasonSwitch(isSeasonActive);
       setCurrentSeasonEvents(seasonEvents);
     }
   };
@@ -128,8 +125,8 @@ const SeasonInfo = (props: SeasonProps) => {
       void handleCreateNewSeason(reqObject);
     } else {
       void handleUpdateSeason(reqObject);
-      void handleUpdateSeasonEvents(activeSeasonCheckbox);
-      setPrevActiveSeasonCheckbox(activeSeasonCheckbox);
+      void handleUpdateSeasonEvents(activeSeasonSwitch);
+      setPrevActiveSeasonSwitch(activeSeasonSwitch);
     }
   };
 
@@ -147,10 +144,7 @@ const SeasonInfo = (props: SeasonProps) => {
     } else {
       setIsFormEditing(false);
       setSeasonValues({...seasonValues, imageurl: tempImageUrl});
-      setActiveSeasonCheckbox(prevActiveSeasonCheckbox);
-      tempImageUrl !== ''
-        ? setDefaultSeasonImageCheckbox(false)
-        : setDefaultSeasonImageCheckbox(true);
+      setActiveSeasonSwitch(prevActiveSeasonSwitch);
     }
   };
 
@@ -228,43 +222,37 @@ const SeasonInfo = (props: SeasonProps) => {
           </label>
           <label htmlFor='imageUrl'>
             Image URL:
-            <input
-              type='text'
-              id='imageUrl'
-              name='imageurl'
-              disabled={defaultSeasonImageCheckbox}
-              value={imageurl}
-              onChange={onChangeHandler}
-              className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-gray-200'
-              required
-            />
+            <div className='flex gap-2'>
+              <input
+                type='text'
+                id='imageUrl'
+                name='imageurl'
+                value={imageurl}
+                onChange={onChangeHandler}
+                className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-gray-200'
+              />
+              <button
+                className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold px-4 py-1 rounded-xl'
+                onClick={(event) => {
+                  event.preventDefault();
+                  setSeasonValues((seasonValues) => ({
+                    ...seasonValues,
+                    imageurl: '',
+                  }));
+                }}
+              >
+                Default
+              </button>
+            </div>
           </label>
-          <div id='form-checkboxes' className='flex gap-7'>
+
+          <div id='form-checkboxes'>
             <FormControlLabel
-              control={
-                <Checkbox
-                  checked={defaultSeasonImageCheckbox}
-                  onChange={() => {
-                    setDefaultSeasonImageCheckbox((checked) => !checked);
-                    setSeasonValues((seasonValues) => ({
-                      ...seasonValues,
-                      imageurl: '',
-                    }));
-                  }}
-                />
-              }
-              label='Use Default Image'
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={activeSeasonCheckbox}
-                  onChange={() =>
-                    setActiveSeasonCheckbox((checked) => !checked)
-                  }
-                />
-              }
+              control={<Switch checked={activeSeasonSwitch} />}
+              onChange={() => setActiveSeasonSwitch((checked) => !checked)}
+              sx={{margin: 0, gap: '5px'}}
               label='Active'
+              labelPlacement='start'
             />
           </div>
         </div>
@@ -281,7 +269,7 @@ const SeasonInfo = (props: SeasonProps) => {
     <ViewSeasonInfo
       {...seasonValues}
       setIsFormEditing={setIsFormEditing}
-      isSeasonActive={activeSeasonCheckbox}
+      isSeasonActive={activeSeasonSwitch}
       deleteConfirmationHandler={deleteConfirmationHandler}
     />
   );
