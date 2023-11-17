@@ -42,7 +42,6 @@ const SeasonContainer = () => {
         (event) => event.seasonid_fk === null,
       );
 
-      console.log('the events have been fetched!!');
       setEventsInSeason(eventsInCurrentSeason);
       setEventsNotInAnySeason(unassignedEvents);
     }
@@ -66,12 +65,17 @@ const SeasonContainer = () => {
             setSeasonId={setSeasonId}
             setPopUpMessage={setPopUpMessage}
             setShowPopUp={setShowPopUp}
-            currentSeasonEvents={eventsInSeason}
+            eventsInSeason={eventsInSeason}
+            setEventsInSeason={setEventsInSeason}
             token={token}
           />
           <SeasonEvents
             token={token}
             seasonId={seasonId}
+            eventsInSeason={eventsInSeason}
+            eventsNotInAnySeason={eventsNotInAnySeason}
+            setEventsInSeason={setEventsInSeason}
+            setEventsNotInAnySeason={setEventsNotInAnySeason}
             setShowPopUp={setShowPopUp}
             setPopUpMessage={setPopUpMessage}
             isFormEditing={isFormEditing}

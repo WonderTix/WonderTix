@@ -17,7 +17,8 @@ const SeasonInfo = (props: SeasonProps) => {
   const {
     seasonId,
     isFormEditing,
-    currentSeasonEvents,
+    eventsInSeason,
+    setEventsInSeason,
     setSeasonId,
     setShowPopUp,
     setPopUpMessage,
@@ -67,7 +68,7 @@ const SeasonInfo = (props: SeasonProps) => {
   };
 
   const handleUpdateSeasonEvents = async (isSeasonActive: boolean) => {
-    for (const event of currentSeasonEvents) {
+    for (const event of eventsInSeason) {
       const eventReqBody = {...event, active: isSeasonActive};
       delete eventReqBody['deletedat'];
       const updateSingleEvent = await updateEventSeason(eventReqBody, token);
@@ -155,7 +156,7 @@ const SeasonInfo = (props: SeasonProps) => {
   }, [seasonId]);
 
   useEffect(() => {
-    const isSeasonActive = currentSeasonEvents.every((event) => event.active);
+    const isSeasonActive = eventsInSeason.every((event) => event.active);
     setActiveSeasonSwitch(isSeasonActive);
     setPrevActiveSeasonSwitch(isSeasonActive);
   }, []);

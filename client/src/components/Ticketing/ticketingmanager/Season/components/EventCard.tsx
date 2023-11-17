@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router';
 interface EventCardProps {
   name: string;
   imageurl: string;
-  eventId: string;
+  eventId: number;
   addEventCard?: boolean;
   isFormEditing?: boolean;
   isAddEventActive?: boolean;
