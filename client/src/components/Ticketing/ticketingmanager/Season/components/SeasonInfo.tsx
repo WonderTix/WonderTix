@@ -159,7 +159,7 @@ const SeasonInfo = (props: SeasonProps) => {
     const isSeasonActive = eventsInSeason.every((event) => event.active);
     setActiveSeasonSwitch(isSeasonActive);
     setPrevActiveSeasonSwitch(isSeasonActive);
-  }, []);
+  }, [eventsInSeason]);
 
   return seasonId === 0 || isFormEditing ? (
     <form onSubmit={onSubmit} className='rounded-xl p-7 bg-white text-lg'>
