@@ -10,10 +10,11 @@ export interface RequestBody {
 
 export interface EventRequestBody {
   eventid: number;
-  seasonid: number;
+  seasonid_fk: number;
   eventname: string;
   eventdescription: string;
   active: boolean;
+  seasonticketeligible: boolean;
   imageurl: string;
 }
 
