@@ -18,7 +18,7 @@ async function seedRecordTypes(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      id: item.id,
+      record_type_id: item.record_type_id,
       name: item.name,
       description: item.description,
       sobject_type: item.sobject_type,

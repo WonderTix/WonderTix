@@ -9,7 +9,8 @@
     "test:jest": "npx jest --config ./jest.config.js",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed"
+    "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed",
+    "prisma:init-deploy": "prisma generate && prisma migrate deploy && node --max-old-space-size=4096 ./node_modules/.bin/ts-node prisma/seed.ts"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

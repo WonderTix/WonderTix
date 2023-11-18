@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 const fs = require('fs');
 const yaml = require('js-yaml');
 
@@ -15,22 +15,37 @@ async function seedNotes(prisma: PrismaClient) {
     }
 
     const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/notes.yaml', 'utf8');
-    const data: any[] = yaml.load(yamlData);
+    const data = yaml.load(yamlData);
 
-    const preparedData = data.map((item) => ({
-      id: item.id,
-      isdeleted: item.isdeleted || 0,
-      contactid: item.contactid, // Contact FK
-      accountid: item.accountid, // Account FK
-      title: item.title,
-      body: item.body,
-      createddate: item.createddate ? new Date(item.createddate) : new Date(),
-      lastmodifieddate: item.lastmodifieddate ? new Date(item.lastmodifieddate) : null,
-    }));
+    for (const item of data) {
+      let canInsert = true;
 
-    await prisma.notes.createMany({
-      data: preparedData,
-    });
+      if (item.contact_id) {
+        const contactExists = await prisma.contacts.findUnique({
+          where: {contact_id: item.contact_id},
+        });
+
+        if (!contactExists) {
+          canInsert = false;
+          console.log(`Skipping note with ID ${item.note_id} due to non-existing contact with ID ${item.contact_id}`);
+        }
+      }
+
+      if (canInsert) {
+        await prisma.notes.create({
+          data: {
+            note_id: item.note_id,
+            is_deleted: item.isdeleted || 0,
+            contact_id: item.contact_id || null, // Contact FK
+            account_id: item.account_id || null, // Account FK
+            title: item.title,
+            body: item.body,
+            created_date: item.created_date ? new Date(item.created_date) : new Date(),
+            last_modified_date: item.last_modified_date ? new Date(item.last_modified_date) : null,
+          },
+        });
+      }
+    }
 
     console.log('Notes seeding completed.');
   } catch (error) {

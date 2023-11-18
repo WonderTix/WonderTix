@@ -29,9 +29,9 @@ async function seedEvents(prisma: PrismaClient) {
       event_category: item.event_category,
       season: item.season,
       performance_date: item.performance_date ? new Date(item.performance_date) : new Date(),
-      pre_post_show_email_flag: item.pre_post_show_email_flag || null,
-      pre_show_email_cutoff_minutes: item.pre_show_email_cutoff_minutes || null,
-      pre_show_email_minutes: item.pre_show_email_minutes || null,
+      pre_post_show_email_flag: isNaN(item.pre_post_show_email_flag) ? null : item.pre_post_show_email_flag,
+      pre_show_email_cutoff_minutes: isNaN(item.pre_show_email_cutoff_minutes) ? null : item.pre_show_email_cutoff_minutes || 0,
+      pre_show_email_minutes: isNaN(item.pre_show_email_minutes) ? null : item.pre_show_email_minutes || 0,
       run_time: item.run_time,
     }));
 
