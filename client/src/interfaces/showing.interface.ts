@@ -12,6 +12,8 @@
 
 export interface eventInstanceTicketType {
   typeID: number;
+  typePrice: number;
+  typeConcessionPrice: number;
   typeQuantity: number;
 }
 
