@@ -80,8 +80,35 @@ test('check successful purchase', async ({page}) => {
 });
 
 test('check contact is added after order', async ({page}) => {
-  test.setTimeout(60000);
+  test.setTimeout(80000);
   const currentPatron = JohnDoe;
+  const currentCard = ValidVisaCredit;
+  const currentEvent = EventsInfo2;
+  const currentShowing = ShowingInfo2;
+  const events = new EventsPage(page);
+  const main = new MainPage(page);
+  const contacts = new ContactPage(page);
+  await events.goto();
+  await events.addnewevent(currentEvent);
+  await events.addNewShowing(currentShowing);
+  try {
+    await main.goto();
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
+    await contacts.goto();
+    await contacts.searchCustomer(currentPatron);
+    await contacts.checkCustomer(currentPatron);
+  } finally {
+    await main.goto();
+    await events.goToEventFromManage(EventsInfo2.eventFullName);
+    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
+    await events.deleteTheEvent(EventsInfo2.eventFullName);
+  }
+});
+
+
+test('check order accommodations', async ({page}) => {
+  test.setTimeout(80000);
+  const currentPatron = JaneDoe;
   const currentCard = ValidVisaCredit;
   const currentEvent = EventsInfo2;
   const currentShowing = ShowingInfo2;
