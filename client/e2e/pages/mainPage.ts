@@ -78,6 +78,9 @@ export class MainPage {
     this.stripeZIP = page.locator('#billingPostalCode');
     this.stripeCheckout = page.getByTestId('hosted-payment-submit-button');
     this.stripeOrderConfirmation = page.getByText('Thank you for your purchase!');
+
+    // Use your saved information
+    // Cancel
   }
 
   // Initial page navigation - sends browser session to the root address
@@ -197,6 +200,10 @@ export class MainPage {
 
   async fillStripeInfo(customer: Customer, ccInfo: CreditCard) {
     await this.stripeEmail.fill(customer.email);
+    await this.page.waitForTimeout(6000);
+    if (await this.page.getByText('Use your saved information').isVisible()) {
+      this.page.getByRole('button', {name: 'Cancel'}).click();
+    }
     await this.stripeCardNumber.fill(ccInfo.cardNumber);
     await this.stripeDate.fill(ccInfo.date);
     await this.stripeCVC.fill(ccInfo.CVC);
@@ -208,8 +215,8 @@ export class MainPage {
     await this.stripeCheckout.click();
   }
 
-  async purchaseTicket(customer: Customer, creditCard: CreditCard, showing: EventsInfo) {
-    await this.goSelectShowing(showing);
+  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo) {
+    await this.goSelectShowing(event);
     // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
     await this.selectRandomDate();
     await this.selectRandomTime();

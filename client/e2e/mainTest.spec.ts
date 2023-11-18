@@ -19,16 +19,10 @@ test('view show', async ({page}) => {
   expect(showing, 'Showing is empty').not.toBeNull();
 });
 
-// Go through all the steps to add a ticket
-// Captures returns needed to construct the confirmation message
-// Verifies the 'Success!' message pops up with the correct event info
-// Adds and removes its own event for test purposes
-test('add ticket', async ({page}) => {
-  test.setTimeout(120000);
-  const currentPatron = JaneDoe;
+test('check cart after ticket add', async ({page}) => {
+  test.setTimeout(60000);
   const events = new EventsPage(page);
   const main = new MainPage(page);
-  const contacts = new ContactPage(page);
   await events.goto();
   await events.addnewevent(EventsInfo2);
   await events.addNewShowing(ShowingInfo2);
@@ -54,12 +48,52 @@ test('add ticket', async ({page}) => {
     await main.clickTakeMeThere();
     const cartInfo = ticketType + ' - ' + dateParts[1] + ' - ' + time;
     await main.checkCart(EventsInfo2.eventName, cartInfo, quantity);
-    await main.clickCartCheckout();
-    await main.fillCustomerInfo(currentPatron);
-    await main.clickCartNext();
-    await main.fillStripeInfo(currentPatron, ValidVisaCredit);
-    await main.clickStripeCheckout();
+  } finally {
+    await main.goto();
+    await events.goToEventFromManage(EventsInfo2.eventFullName);
+    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
+    await events.deleteTheEvent(EventsInfo2.eventFullName);
+  }
+});
+
+test('check successful purchase', async ({page}) => {
+  test.setTimeout(80000);
+  const currentPatron = JohnDoe;
+  const currentCard = ValidVisaCredit;
+  const currentEvent = EventsInfo2;
+  const currentShowing = ShowingInfo2;
+  const events = new EventsPage(page);
+  const main = new MainPage(page);
+  await events.goto();
+  await events.addnewevent(currentEvent);
+  await events.addNewShowing(currentShowing);
+  try {
+    await main.goto();
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
     await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000});
+  } finally {
+    await main.goto();
+    await events.goToEventFromManage(EventsInfo2.eventFullName);
+    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
+    await events.deleteTheEvent(EventsInfo2.eventFullName);
+  }
+});
+
+test('check contact is added after order', async ({page}) => {
+  test.setTimeout(60000);
+  const currentPatron = JohnDoe;
+  const currentCard = ValidVisaCredit;
+  const currentEvent = EventsInfo2;
+  const currentShowing = ShowingInfo2;
+  const events = new EventsPage(page);
+  const main = new MainPage(page);
+  const contacts = new ContactPage(page);
+  await events.goto();
+  await events.addnewevent(currentEvent);
+  await events.addNewShowing(currentShowing);
+  try {
+    await main.goto();
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
     await contacts.goto();
     await contacts.searchCustomer(currentPatron);
     await contacts.checkCustomer(currentPatron);
