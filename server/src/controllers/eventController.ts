@@ -173,6 +173,64 @@ eventController.get('/showings', async (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /2/events/slice:
+ *   get:
+ *     summary: get all active events in form needed by slice
+ *     tags:
+ *     - New Event API
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: event fetch successful
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventController.get('/slice', async (req: Request, res: Response) => {
+  try {
+    const events = await prisma.events.findMany({
+      where: {
+        active: true,
+      },
+      include: {
+        eventinstances: {
+          where: {
+            salestatus: true,
+          },
+        },
+      },
+    });
+    return res.json(events.map((event) => ({
+      id: String(event.eventid),
+      seasonid: event.seasonid_fk,
+      title: event.eventname,
+      description: event.eventdescription,
+      active: event.active,
+      seasonticketeligible: event.seasonticketeligible,
+      imageurl: event.imageurl,
+      numShows: String(event.eventinstances.length),
+    })));
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
  * /2/events:
  *   get:
  *     summary: get all events not including showings

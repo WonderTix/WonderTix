@@ -6,19 +6,21 @@ export const eventInstanceSchema = yup.object().shape({
   totalseats: yup.number().integer().positive().required('Required'),
   instanceTicketTypes: yup.array().of(
     yup.object().shape({
-      typeID: yup.number().integer().required('Required'),
-      typeQuantity: yup
+      tickettypeid_fk: yup.number().integer().required('Required'),
+      ticketlimit: yup
         .number()
-        .integer()
-        .min(1, 'Must Be Greater Than 0')
+        .integer('Must be an integer')
+        .min(1, 'Must be greater than 0')
         .test(
           'ticket count check',
-          'Cannot Exceed Total Seats',
+          'Cannot exceed total seats',
           function test(value) {
             // eslint-disable-next-line no-invalid-this
             return value <= this.options.context.totalseats;
           },
         ),
+        concessionprice: yup.number().min(0, 'Must be positive').required('Required'),
+        price: yup.number().min(0, 'Must be positive').required('Required'),
     }),
   ),
 });

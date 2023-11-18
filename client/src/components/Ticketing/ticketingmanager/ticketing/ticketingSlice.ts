@@ -200,11 +200,11 @@ export const fetchTicketingData = createAsyncThunk(
   'ticketing/fetch',
   async () => {
     const eventData = await fetchData(
-      process.env.REACT_APP_API_1_URL + '/events',
+      process.env.REACT_APP_API_2_URL + '/events/slice',
     );
-    const events: Event[] = eventData.data;
+    const events: Event[] = eventData;
     const ticketRes: TicketsState = await fetchData(
-      process.env.REACT_APP_API_1_URL + '/tickets',
+      process.env.REACT_APP_API_2_URL + '/ticket-restriction/tickets',
     );
     const tickets = Object.entries(ticketRes.data.byId).reduce(
       (res, [key, val]) => ({
@@ -229,10 +229,9 @@ export const fetchTicketingData = createAsyncThunk(
 export const fetchTicketRestrictionData = createAsyncThunk(
   'ticketing/fetchTicketRestriction',
   async () => {
-    const restrictionData = await fetchData(
-      process.env.REACT_APP_API_1_URL + '/tickets/restrictions',
+    const ticketRestrictions: TicketRestriction[] = await fetchData(
+      process.env.REACT_APP_API_2_URL + '/ticket-restriction',
     );
-    const ticketRestrictions: TicketRestriction[] = restrictionData.data;
     return {ticketRestrictions};
   },
 );
@@ -305,18 +304,18 @@ export const toPartialCartItem = <T extends TicketType>(
   type: T,
   tickets: Ticket,
 ) => ({
-    product_id: tickets.event_instance_id,
-    price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
-    desc: `${type.name} - ${format(
-      new Date(tickets.date),
-      'eee, MMM dd - h:mm a',
-    )}`,
-    typeID: type.id,
-  });
+  product_id: tickets.event_instance_id,
+  price: parseFloat(type.price.replace(/[^0-9.-]+/g, '')),
+  desc: `${type.name} - ${format(
+    new Date(tickets.date),
+    'eee, MMM dd - h:mm a',
+  )}`,
+  typeID: type.id,
+});
 
 const appendCartField =
   <T extends CartItem>(key: keyof T, val: T[typeof key]) =>
-    (obj: any) => ({...obj, [key]: val});
+  (obj: any) => ({...obj, [key]: val});
 /**
  * Uses appendCartField to append to the cartfield
  *
@@ -388,14 +387,14 @@ const isTicketRestriction = (obj: any): obj is TicketRestriction =>
  */
 const byId =
   (id: number | EventId, tickettypeId?: number) =>
-    (obj: Ticket | Event | CartItem | TicketRestriction) =>
-      isTicket(obj)
-        ? obj.event_instance_id === id
-        : isCartItem(obj)
-          ? obj.product_id === id && obj.typeID === tickettypeId
-          : isTicketRestriction(obj)
-            ? obj.eventinstanceid === id && obj.tickettypeid === tickettypeId
-            : obj.id === id;
+  (obj: Ticket | Event | CartItem | TicketRestriction) =>
+    isTicket(obj)
+      ? obj.event_instance_id === id
+      : isCartItem(obj)
+      ? obj.product_id === id && obj.typeID === tickettypeId
+      : isTicketRestriction(obj)
+      ? obj.eventinstanceid === id && obj.tickettypeid === tickettypeId
+      : obj.id === id;
 
 /**
  * hasConcessions checks if CartItem includes Concessions
@@ -411,12 +410,14 @@ const hasConcessions = (item: CartItem) => item.name.includes('Concessions');
  * @param item
  */
 const applyConcession = (c_price: number, item: CartItem) =>
-  hasConcessions(item) ? item : {
-    ...item,
-    name: item.name + ' + Concessions',
-    price: c_price + item.price,
-    desc: `${item.desc} with concessions ticket`,
-  };
+  hasConcessions(item)
+    ? item
+    : {
+        ...item,
+        name: item.name + ' + Concessions',
+        price: c_price + item.price,
+        desc: `${item.desc} with concessions ticket`,
+      };
 
 /**
  * @param id
@@ -483,15 +484,26 @@ const isGeneralAdmissionAdult = (ticketTypeId: number): boolean => {
  * @param ticketTypeId
  * @param ticket
  */
-const getTicketQuantityRange = (state: ticketingState, eventInstanceId: number, ticketTypeId: number, ticket: Ticket) => {
+const getTicketQuantityRange = (
+  state: ticketingState,
+  eventInstanceId: number,
+  ticketTypeId: number,
+  ticket: Ticket,
+) => {
   const eventInstanceAvailableSeats = ticket.availableseats;
 
   if (isGeneralAdmissionAdult(ticketTypeId)) {
     return bound(0, eventInstanceAvailableSeats);
   } else {
-    const ticketRestriction = state.ticketrestrictions.find(byId(eventInstanceId, ticketTypeId));
-    const ticketRestrictionAvailableSeats = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
-    return bound(0, Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats));
+    const ticketRestriction = state.ticketrestrictions.find(
+      byId(eventInstanceId, ticketTypeId),
+    );
+    const ticketRestrictionAvailableSeats =
+      ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
+    return bound(
+      0,
+      Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats),
+    );
   }
 };
 
@@ -540,14 +552,17 @@ const addTicketReducer: CaseReducer<
       payWhatFunc(newCartItem, payWhatPrice, qty);
     }
 
-    return newCartItem ? {
-      ...state,
-      cart: concessions
-        ? [
-          ...state.cart,
-          applyConcession(ticket.concession_price, newCartItem),
-        ] : [...state.cart, newCartItem],
-    } : state;
+    return newCartItem
+      ? {
+          ...state,
+          cart: concessions
+            ? [
+                ...state.cart,
+                applyConcession(ticket.concession_price, newCartItem),
+              ]
+            : [...state.cart, newCartItem],
+        }
+      : state;
   }
 };
 
@@ -652,7 +667,9 @@ const ticketingSlice = createSlice({
       })
       .addCase(fetchTicketRestrictionData.fulfilled, (state, action) => {
         state.status = 'success';
-        state.ticketrestrictions = action.payload.ticketRestrictions ? action.payload.ticketRestrictions : [];
+        state.ticketrestrictions = action.payload.ticketRestrictions
+          ? action.payload.ticketRestrictions
+          : [];
       })
       .addCase(fetchTicketRestrictionData.rejected, (state) => {
         state.status = 'failed';
@@ -684,7 +701,10 @@ export const selectCartItem = (
   event_instance_id: number,
   tickettypeId: number,
 ): CartItem | undefined =>
-  state.ticketing.cart.find((item) => item.product_id === event_instance_id && item.typeID === tickettypeId);
+  state.ticketing.cart.find(
+    (item) =>
+      item.product_id === event_instance_id && item.typeID === tickettypeId,
+  );
 export const selectCartTicketCount = (
   state: RootState,
 ): {[key: number]: number} =>
@@ -720,11 +740,11 @@ export const selectDiscount = (state: RootState): DiscountItem =>
  */
 const filterTicketsReducer =
   (ticketsById: {[key: number]: Ticket}, eventid: EventId) =>
-    (filtered: Ticket[], id: number) => {
-      return ticketsById[id].eventid === eventid
-        ? [...filtered, ticketsById[id]]
-        : filtered;
-    };
+  (filtered: Ticket[], id: number) => {
+    return ticketsById[id].eventid === eventid
+      ? [...filtered, ticketsById[id]]
+      : filtered;
+  };
 
 /**
  * Interface for EventPageData

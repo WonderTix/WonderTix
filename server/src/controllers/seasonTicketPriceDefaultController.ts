@@ -17,6 +17,7 @@ interface SeasonTicketPriceDefaultRequestItem {
   price: number;
   concessionprice: number;
 }
+
 /**
  * @swagger
  * /2/season-ticket-price-default/{id}:
@@ -37,8 +38,7 @@ interface SeasonTicketPriceDefaultRequestItem {
  *              $ref: '#/components/schemas/SeasonTicketTypePriceDefault'
  *       400:
  *         description: bad request
- *         c
- *         ontent:
+ *         content:
  *           application/json:
  *             schema:
  *              $ref: '#/components/schemas/Error'

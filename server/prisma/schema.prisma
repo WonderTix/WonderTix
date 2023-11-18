@@ -153,7 +153,6 @@ model eventtickets {
   eventinstances         eventinstances      @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction, map: "tickets_eventinstanceid_fkey")
   singleticket           singletickets?      @relation(fields: [singleticket_fk], references: [singleticketid], onDelete: SetNull, onUpdate: NoAction)
   seasontickets          seasontickets[]
-  tickettypeTickettypeid Int?
 }
 
 /// a line item in a customers order
@@ -304,7 +303,7 @@ model ticketrestrictions {
   price                    Decimal                   @default(0) @db.Money
   concessionprice          Decimal                   @default(0) @db.Money
   seasonticketpriceid_fk   Int?
-  eventinstances           eventinstances            @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction)
+  eventinstances           eventinstances            @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: Cascade, onUpdate: Cascade)
   tickettype               tickettype                @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
   seasonticketpricedefault seasonticketpricedefault? @relation(fields: [seasonticketpriceid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
   eventtickets             eventtickets[]

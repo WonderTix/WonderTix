@@ -247,14 +247,7 @@ eventInstanceController.get(
             ticketrestrictions: true,
           },
         });
-        const toReturn = eventInstances.map((instance) => ({
-          ...instance,
-          ticketrestrictions: instance.ticketrestrictions.map((restiction) => ({
-            typeID: restiction.tickettypeid_fk,
-            typeQuantity: restiction.ticketlimit,
-          })),
-        }));
-        res.status(200).send(toReturn);
+        res.status(200).send(eventInstances);
         return;
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -384,29 +377,30 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
             eventToCreate.eventtime,
         ),
         salestatus: eventToCreate.salestatus,
-        totalseats: eventToCreate.totalseats,
-        availableseats: eventToCreate.totalseats,
+        totalseats: +eventToCreate.totalseats,
+        availableseats: +eventToCreate.totalseats,
         purchaseuri: eventToCreate.purchaseuri,
         ispreview: eventToCreate.ispreview,
         defaulttickettype: eventToCreate.defaulttickettype,
       },
     });
 
-    const ticketRestrictions = await prisma.ticketrestrictions.createMany({
-      data: eventToCreate.instanceTicketTypes.map((type) => ({
-        eventinstanceid_fk: eventInstance.eventinstanceid,
-        tickettypeid_fk: +type.tickettypeid_fk,
-        ticketlimit: +type.ticketlimit,
-        ticketssold: 0,
-        price: +type.price,
-        concessionprice: +type.concessionprice,
-        eventtickets: {
-          create: Array(type.ticketlimit).fill({
-            eventinstanceid_fk: eventInstance.eventinstanceid,
-          }),
-        },
-      })),
-    });
+    await prisma.$transaction(eventToCreate.instanceTicketTypes.map((type) =>
+      prisma.ticketrestrictions.create({
+        data: {
+          eventinstanceid_fk: eventInstance.eventinstanceid,
+          tickettypeid_fk: +type.tickettypeid_fk,
+          ...(type.seasonticketpricedefaultid_fk && {seasonticketpricedefaultid_fk: type.seasonticketpricedefaultid_fk}),
+          ticketlimit: +type.ticketlimit,
+          ticketssold: 0,
+          price: +type.price,
+          concessionprice: +type.concessionprice,
+          eventtickets: {
+            create: Array(+type.ticketlimit).fill({
+              eventinstanceid_fk: eventInstance.eventinstanceid,
+            }),
+          },
+        }})));
 
     return res.status(201).send(await prisma.eventinstances.findUnique({
       where: {
@@ -420,13 +414,10 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
     console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).send({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).send({error: error.message});
-
       return;
     }
     if (error instanceof InvalidInputError) {
@@ -491,19 +482,24 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
     }
 
     const updatedEventInstance= validateShowingOnUpdate(eventInstanceToUpdate, requestEventInstance);
+    const queryBatch =
+        validateTicketRestrictionsOnUpdate(
+            prisma,
+            {...eventInstanceToUpdate, totalseats: updatedEventInstance.totalseats},
+            new Map(requestEventInstance.instanceTicketTypes.map((type) => [type.tickettypeid_fk, type])),
+        );
 
-    const queryBatch = validateTicketRestrictionsOnUpdate(prisma,
-        {...eventInstanceToUpdate, totalseats: updatedEventInstance.totalseats},
-        new Map(requestEventInstance.instanceTicketTypes.map((type) => [type.tickettypeid_fk, type])),
-    );
-    await prisma.$transaction([prisma.eventinstances.update({
-      where: {
-        eventinstanceid: Number(id),
-      },
-      data: {
-        ...updatedEventInstance,
-      },
-    })].concat(queryBatch));
+    await prisma.$transaction([
+      prisma.eventinstances.update({
+        where: {
+          eventinstanceid: +id,
+        },
+        data: {
+          ...updatedEventInstance,
+        },
+      }),
+      ...queryBatch,
+    ]);
     return res.status(204).send('Showing successfully updated');
   } catch (error) {
     console.error(error);

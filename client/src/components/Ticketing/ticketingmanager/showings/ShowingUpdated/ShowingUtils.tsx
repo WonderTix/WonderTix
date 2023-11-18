@@ -185,5 +185,7 @@ export const getTicketTypePrice = (
 ) => {
   const foundType = ticketTypes?.find((type) => Number(type.id) === id);
   if (!foundType) return 0;
-  return foundType[priceType];
+  return typeof foundType[priceType] === 'string'
+    ? foundType[priceType].replace('$', '')
+    : foundType[priceType];
 };

@@ -1,4 +1,4 @@
-import {InvalidInputError} from './eventInstanceController.service';
+import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceController.service';
 import CartItem from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -75,29 +75,31 @@ export const getOrderItems = async (
       eventinstanceid: {in: cartItems.map((item) => Number(item.product_id))},
     },
     include: {
-      eventtickets: {
-        where: {
-          singleticket_fk: null,
+      ticketrestrictions: {
+        include: {
+          eventtickets: {
+            where: {
+              singleticket_fk: null,
+            },
+          },
         },
       },
-      ticketrestrictions: true,
       events: true,
     },
   });
   const eventInstanceMap = new Map(
       eventInstances.map((instance) => {
-        const ticketTypeMap = new Map<number, number[]>();
-        instance.eventtickets.forEach((ticket) => {
-          ticketTypeMap.set(ticket.tickettypeid_fk ?? 1, [
-            ticket.eventticketid,
-            ...(ticketTypeMap.get(ticket.tickettypeid_fk ?? 1) ?? []),
-          ]);
-        });
+        const ticketRestrictionMap = new Map<number, LoadedTicketRestriction>();
+        instance
+            .ticketrestrictions
+            .forEach((restriction) => {
+              ticketRestrictionMap.set(restriction.tickettypeid_fk, restriction);
+            });
         return [
           instance.eventinstanceid,
           {
             ...instance,
-            ticketTypeMap,
+            ticketRestrictionMap,
           },
         ];
       }),
@@ -120,9 +122,8 @@ export const getOrderItems = async (
     }
     orderItems = orderItems.concat(
         getTickets(
-            prisma,
-            eventInstance.ticketTypeMap,
-            item.typeID,
+            eventInstance.ticketRestrictionMap.get(item.typeID),
+            eventInstance.ticketRestrictionMap.get(eventInstance.defaulttickettype ?? 1),
             item.qty,
             item.price,
         ),
@@ -148,25 +149,10 @@ export const getOrderItems = async (
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats: (instance.ticketTypeMap.get(1) ?? []).length,
-            ticketrestrictions: {
-              update: instance.ticketrestrictions.map((restriction) => ({
-                where: {
-                  ticketrestrictionsid: restriction.ticketrestrictionsid,
-                },
-                data: {
-                  ticketssold:
-                  restriction.ticketlimit -
-                  (
-                    instance.ticketTypeMap.get(restriction.tickettypeid_fk) ??
-                    []
-                  ).length,
-                },
-              })),
-            },
+            availableseats: (instance.ticketRestrictionMap.get(instance.defaulttickettype??1)?.eventtickets ?? []).length,
           },
-        }),
-    );
+        },
+        ));
   }
   return {
     cartRows,
@@ -177,24 +163,28 @@ export const getOrderItems = async (
 };
 
 const getTickets = (
-    prisma: ExtendedPrismaClient,
-    availableTickets: Map<number, number[]>,
-    typeID: number,
+    ticketRestriction: LoadedTicketRestriction | undefined,
+    defaultTicketRestriction: LoadedTicketRestriction | undefined,
     quantity: number,
     price: number,
 ) => {
-  const ticketsForType = availableTickets.get(typeID) ?? [];
-  const ticketsForGA = availableTickets.get(1) ?? [];
-  if (
-    ticketsForType.length < quantity ||
-    (typeID !== 1 && ticketsForGA.length < quantity)
-  ) {
-    throw new InvalidInputError(422, `Requested Tickets no longer available`);
+  if (!ticketRestriction || !defaultTicketRestriction) {
+    throw new InvalidInputError(422, `Requested tickets no longer available`);
   }
 
-  const ticketsToSellForType = ticketsForType.splice(0, quantity);
-  const ticketsToSellForGA =
-    typeID != 1 ? ticketsForGA.splice(0, quantity) : [];
+  if (
+    ticketRestriction.eventtickets.length < quantity ||
+    (defaultTicketRestriction !== ticketRestriction && defaultTicketRestriction.eventtickets.length < quantity)
+  ) {
+    throw new InvalidInputError(422, `Requested tickets no longer available`);
+  }
+
+  const ticketsToSellForType = ticketRestriction.eventtickets.splice(0, quantity).map((ticket) => ticket.eventticketid);
+  const ticketsToSellForGA = ticketRestriction !== defaultTicketRestriction?
+      defaultTicketRestriction.eventtickets
+          .splice(0, quantity)
+          .map((ticket) => ticket.eventticketid):
+      [];
 
   return ticketsToSellForType.map((ticketID, index) => ({
     price,
@@ -205,9 +195,8 @@ const getTickets = (
             {
               eventticketid: ticketID,
             },
-          ].concat(
-            typeID != 1 ? [{eventticketid: ticketsToSellForGA[index]}] : [],
-          ),
+            ...(ticketRestriction !== defaultTicketRestriction? [{eventticketid: ticketsToSellForGA[index]}]:[]),
+          ],
         },
       },
     },

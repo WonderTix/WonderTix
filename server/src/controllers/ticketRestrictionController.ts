@@ -2,77 +2,118 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {PrismaClient, Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {LoadedTicketRestriction} from './eventInstanceController.service';
+import {parseIntToDate} from '../api/db';
 
 const prisma = extendPrismaClient();
 
 export const ticketRestrictionController = Router();
 
+const getDate = (time: string, date: number) => {
+  const [hour, min] = time.split('T')[1].split(':');
+  const newDate = parseIntToDate(date);
+  newDate.setHours(+hour, +min);
+  return newDate.toJSON();
+};
+
 /**
  * @swagger
- * /2/ticket-restriction:
- *   post:
- *     summary: Create a ticket restriction
- *     tags:
- *     - New Ticket Restriction
- *     requestBody:
- *       description: Updated ticket restriction information
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/requestBodies/TicketRestriction'
- *     responses:
- *       201:
- *         description: Ticket restriction updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/TicketRestriction'
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Error message from the server.
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
+ *  /2/tickets:
+ *    get:
+ *      summary: get available tickets
+ *      tags:
+ *        - Tickets
+ *      security:
+ *        - bearerAuth: []
+ *      responses:
+ *        200:
+ *          description: OK
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  data:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        byId:
+ *                          type: object
+ *                          properties:
+ *                            ticketid:
+ *                              type: object
+ *                              properties:
+ *                                event_instance_id: {type: integer}
+ *                                eventid: {type: integer}
+ *                                totalseats: {type: integer}
+ *                                availableseats: {type: integer}
+ *                                admission_type: {type: string}
+ *                                ticket_price: {type: integer}
+ *                                concession_price: {type: integer}
+ *                                date: {type: string}
+ *                        allIds: {type: array, items: {type: integer}}
+ *                  status:
+ *                    type: object
+ *                    properties:
+ *                      success: {type: boolean}
+ *                      message: {type: string}
+ *        401:
+ *          description: Unauthorized
+ *        404:
+ *          description: Not Found
  */
-ticketRestrictionController.post('/', async (req: Request, res: Response) => {
+
+ticketRestrictionController.get('/tickets', async (req: Request, res: Response) => {
   try {
-    const ticketRestriction = prisma.ticketrestrictions.create({
-      data: {
-        eventinstanceid_fk: req.body.event_instance,
-        tickettypeid_fk: req.body.ticket_type,
-        ticketlimit: req.body.ticket_limit,
-        ticketssold: req.body.tickets_sold,
+    const ticketRestrictions = await prisma.ticketrestrictions.findMany({
+      where: {
+        eventtickets: {
+          some: {
+            singleticket_fk: null,
+          },
+        },
+        eventinstances: {
+          deletedat: null,
+          salestatus: true,
+          availableseats: {gt: 0},
+        },
+      },
+      include: {
+        eventinstances: true,
+        tickettype: true,
       },
     });
-    res.status(201).json(ticketRestriction);
 
-    return;
+    const allIds:number[] = [];
+    let byId = {};
+    const toReturn = ticketRestrictions.forEach((restriction) => {
+      if (allIds.includes(restriction.eventinstances.eventinstanceid)) return;
+      allIds.push(restriction.eventinstances.eventinstanceid);
+      byId = {...byId, [restriction.eventinstances.eventinstanceid]: {
+        event_instance_id: restriction.eventinstances.eventinstanceid,
+        eventid: String(restriction.eventinstances.eventid_fk),
+        date: getDate(restriction.eventinstances.eventtime.toISOString(), restriction.eventinstances.eventdate),
+        totalseats: restriction.eventinstances.totalseats,
+        availableseats: restriction.eventinstances.availableseats,
+        admission_type: restriction.tickettype.description,
+        ticket_price: restriction.price,
+        concession_price: restriction.concessionprice,
+      }};
+    });
+    res.send({data: {allIds, byId}});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
+      res.status(400).send({error: error.message});
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-
+      res.status(400).send({error: error.message});
       return;
     }
-
-    res.status(500).json({error: 'Internal Server Error'});
+    res.status(500).send({error: 'Internal Server Error'});
   }
 });
-
-ticketRestrictionController.use(checkJwt);
-ticketRestrictionController.use(checkScopes);
-
 /**
  * @swagger
  * /2/ticket-restriction:
@@ -103,235 +144,135 @@ ticketRestrictionController.use(checkScopes);
  */
 ticketRestrictionController.get('/', async (req: Request, res: Response) => {
   try {
-    const filters: any = {};
-    if (req.params.event_instance) {
-      filters.eventinstanceid_fk = {
-        equals: req.params.event_instance,
-      };
-    }
-    if (req.params.ticket_type) {
-      filters.tickettypeid_fk = {
-        equals: req.params.ticket_type,
-      };
-    }
-
-    if (Object.keys(filters).length > 0) {
-      const ticketRestrictions = await prisma.ticketrestrictions.findMany({
-        where: filters,
-      });
-      res.status(200).json(ticketRestrictions);
-
-      return;
-    }
-
-    const ticketRestrictions = await prisma.ticketrestrictions.findMany();
-    res.status(200).json(ticketRestrictions);
-
-    return;
+    const ticketRestrictions = await prisma.ticketrestrictions.findMany({
+      where: {
+        eventinstances: {
+          deletedat: null,
+          events: {
+            active: true,
+          },
+        },
+        eventtickets: {
+          some: {
+            singleticket_fk: null,
+          },
+        },
+      },
+      include: {
+        eventtickets: {
+          where: {
+            singleticket_fk: {not: null},
+          },
+        },
+      },
+    });
+    return res.status(200).json(
+        ticketRestrictions
+            .map((restriction) => ({
+              id: restriction.ticketrestrictionsid,
+              eventinstanceid: restriction.eventinstanceid_fk,
+              tickettypeid: restriction.tickettypeid_fk,
+              ticketssold: restriction.eventtickets.length,
+              concessionprice: +restriction.concessionprice,
+              price: +restriction.price,
+              ticketlimit: restriction.ticketlimit,
+            })));
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
-/**
- * @swagger
- * /2/ticket-restriction/{id}:
- *   get:
- *     summary: get a Ticket Restriction
- *     tags:
- *     - New Ticket Restriction
- *     parameters:
- *     - $ref: '#/components/parameters/id'
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: ticket restriction updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/TicketRestriction'
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
 ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const ticketRestrictionExists = await prisma.ticketrestrictions.findUnique({
+    const {id}= req.params;
+
+    const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
-        ticketrestrictionsid: Number(id),
+        eventinstanceid_fk: +id,
+        eventtickets: {
+          some: {singleticket_fk: null},
+        },
+      },
+      include: {
+        eventtickets: {
+          where: {
+            singleticket_fk: {not: null},
+          },
+        },
       },
     });
-    if (!ticketRestrictionExists) {
-      res.status(404).json({error: 'Ticket Restriction not found'});
-
-      return;
-    }
-    const ticketRestriction = await prisma.ticketrestrictions.findUnique({
-      where: {
-        ticketrestrictionsid: Number(id),
-      },
-    });
-    res.status(200).json(ticketRestriction);
-
-    return;
+    return res.status(200).json(
+        ticketRestrictions.map((restriction) => {
+          const {eventtickets, ...restrictionData} = restriction;
+          return {
+            ...restrictionData,
+            ticketssold: eventtickets.length,
+          };
+        }));
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
-/**
- * @swagger
- * /2/ticket-restriction/{id}:
- *   put:
- *     summary: update a ticket restriction
- *     tags:
- *     - New Ticket Restriction
- *     parameters:
- *     - $ref: '#/components/parameters/id'
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       description: Updated ticket restriction information
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/requestBodies/TicketRestriction'
- *     responses:
- *       204:
- *         description: Ticket restriction updated successfully.
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-ticketRestrictionController.put('/:id', async (req: Request, res: Response) => {
+ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const ticketRestriction = prisma.ticketrestrictions.update({
+    const {id, tickettypeid} = req.params;
+
+    const ticketRestriction: LoadedTicketRestriction | null = await prisma.ticketrestrictions.findFirst({
       where: {
-        ticketrestrictionsid: Number(id),
+        eventinstanceid_fk: +id,
+        tickettypeid_fk: +tickettypeid,
+        eventtickets: {
+          some: {singleticket_fk: null},
+        },
       },
-      data: {
-        eventinstanceid_fk: req.body.event_instance,
-        tickettypeid_fk: req.body.ticket_type,
-        ticketlimit: req.body.ticket_limit,
-        ticketssold: req.body.tickets_sold,
+      include: {
+        eventtickets: {
+          where: {
+            singleticket_fk: {not: null},
+          },
+        },
       },
     });
-    res.status(204).json();
-
-    return;
+    if (!ticketRestriction) {
+      return res.status(400).json({error: `Ticket type ${tickettypeid} not available for showing ${id}`});
+    }
+    const {eventtickets, ...restrictionData} = ticketRestriction;
+    return res.status(200).json({
+      ...restrictionData,
+      ticketssold: eventtickets.length,
+    });
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
-/**
- * @swagger
- * /2/ticket-restriction/{id}:
- *   delete:
- *     summary: delete a Ticket Restriction
- *     tags:
- *     - New Ticket Restriction
- *     parameters:
- *     - $ref: '#/components/parameters/id'
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       204:
- *         description: Ticket Restriction updated successfully.
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       404:
- *         description: Ticket Restriction not found
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-ticketRestrictionController.delete('/:id', async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const TicketRestrictionExists = await prisma.ticketrestrictions.findUnique({
-      where: {
-        ticketrestrictionsid: Number(id),
-      },
-    });
-    if (!TicketRestrictionExists) {
-      res.status(404).json({error: 'Ticket Restriction not found'});
-
-      return;
-    }
-    const ticketRestriction = prisma.ticketrestrictions.delete({
-      where: {
-        ticketrestrictionsid: Number(id),
-      },
-    });
-    res.status(204).json();
-
-    return;
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
+ticketRestrictionController.use(checkJwt);
+ticketRestrictionController.use(checkScopes);

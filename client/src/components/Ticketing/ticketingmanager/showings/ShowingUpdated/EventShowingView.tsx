@@ -15,7 +15,10 @@ interface EventInstanceViewProps {
 export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
   const {ticketTypes, editing, showPopUp} = useEvent();
-
+  const formatUSD = new Intl.NumberFormat('en-us', {
+    currency: 'USD',
+    style: 'currency',
+  });
   const showingDate = new Date(
     `${toDateStringFormat(showing.eventdate)} ${showing.eventtime
       .split('T')[1]
@@ -76,31 +79,22 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             <tbody className={'whitespace-nowrap'}>
               {showing.ticketrestrictions.length !== 0 &&
                 ticketTypes &&
-                [
-                  {typeID: 1, typeQuantity: showing.totalseats},
-                  ...showing.ticketrestrictions,
-                ].map((type, index) => (
+                showing.ticketrestrictions.map((type, index) => (
                   <tr
-                    key={`${showing.eventinstanceid} ${type.typeID} ${index}`}
+                    key={`${showing.eventinstanceid} ${type.tickettypeid_fk} ${index}`}
                   >
                     <td className={'px-2'}>
                       {getTicketTypePrice(
-                        type.typeID,
+                        type.tickettypeid_fk,
                         'description',
                         ticketTypes,
                       )}
                     </td>
+                    <td className={'px-2'}>{formatUSD.format(type.price)}</td>
                     <td className={'px-2'}>
-                      {getTicketTypePrice(type.typeID, 'price', ticketTypes)}
+                      {formatUSD.format(type.concessionprice)}
                     </td>
-                    <td className={'px-2'}>
-                      {getTicketTypePrice(
-                        type.typeID,
-                        'concessions',
-                        ticketTypes,
-                      )}
-                    </td>
-                    <td className={'px-2'}>{type.typeQuantity}</td>
+                    <td className={'px-2'}>{type.ticketlimit}</td>
                   </tr>
                 ))}
             </tbody>
