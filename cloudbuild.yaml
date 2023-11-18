@@ -1,19 +1,49 @@
 steps:
 
+  # Server npm install with cache
+  - name: 'gcr.io/cloud-builders/npm'
+    id: 'install-server'
+    waitFor: ['-']
+    args: ['install']
+    dir: 'server'
+    volumes:
+    - name: 'server_cache'
+      path: '/workspace/server/node_modules'
+
+  # Client npm install with cache
+  - name: 'gcr.io/cloud-builders/npm'
+    id: 'install-client'
+    waitFor: ['-']
+    args: ['install']
+    dir: 'client'
+    volumes:
+    - name: 'client_cache'
+      path: '/workspace/client/node_modules'
+
+  # Pull Playwright image and cache for testing steps
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'pull-playwright'
+    waitFor: ['-']
+    args: ['pull', 'mcr.microsoft.com/playwright:v1.36.2-jammy']
+ 
   # Build server image
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-test-server'
-    waitFor: ['-']
+    waitFor: ['install-server']
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        docker build -f server/Dockerfile \
+        docker build \
+        -f server/Dockerfile \
         -t $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
         server
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
+    volumes:
+    - name: 'server_cache'
+      path: '/workspace/server/node_modules'
 
   # Push server image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -49,7 +79,7 @@ steps:
   # Build client image with build args for test revision
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-test-client'
-    waitFor: ['-']
+    waitFor: ['install-client']
     entrypoint: 'bash'
     args: ['scripts/build/client.sh']
     env:
@@ -62,6 +92,9 @@ steps:
       - 'ENV'
       - 'PUBLIC_STRIPE_KEY'
       - 'SERVER_REVISION'
+    volumes:
+    - name: 'client_cache'
+      path: '/workspace/client/node_modules'
 
   # Push client image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -90,22 +123,61 @@ steps:
       - 'REGION'
       - 'SERVICE_ACCOUNT'
 
-  # Run E2E tests on test client
-  - name: 'mcr.microsoft.com/playwright:latest'
-    id: 'run-tests'
+  # Run Firefox E2E tests on test client
+  - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
+    id: 'firefox-tests'
     waitFor: ['deploy-test-client']
     entrypoint: 'bash'
     args: ['scripts/test/client.sh']
+    env:
+      - 'BROWSER=firefox'
     secretEnv:
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
       - 'TEST_EMAIL'
       - 'TEST_PASSWORD'
+    volumes:
+    - name: 'client_cache'
+      path: '/workspace/client/node_modules'
+
+  # Run Chromium E2E tests on test client
+  - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
+    id: 'chromium-tests'
+    waitFor: ['deploy-test-client']
+    entrypoint: 'bash'
+    args: ['scripts/test/client.sh']
+    env:
+      - 'BROWSER=chromium'
+    secretEnv:
+      - 'CLIENT_REVISION'
+      - 'SERVER_REVISION'
+      - 'TEST_EMAIL'
+      - 'TEST_PASSWORD'
+    volumes:
+    - name: 'client_cache'
+      path: '/workspace/client/node_modules'
+
+  # Run WebKit E2E tests on test client
+  - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
+    id: 'webkit-tests'
+    waitFor: ['deploy-test-client']
+    entrypoint: 'bash'
+    args: ['scripts/test/client.sh']
+    env:
+      - 'BROWSER=webkit'
+    secretEnv:
+      - 'CLIENT_REVISION'
+      - 'SERVER_REVISION'
+      - 'TEST_EMAIL'
+      - 'TEST_PASSWORD'
+    volumes:
+    - name: 'client_cache'
+      path: '/workspace/client/node_modules'
 
   # Deploy server to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-server'
-    waitFor: ['run-tests']
+    waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     entrypoint: 'bash'
     args: ['scripts/deploy/server.sh']
     env:
@@ -131,8 +203,8 @@ steps:
       - '-c'
       - |
         gcloud run services update-traffic wtix-server-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100
+        --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100 \
+        --region $${REGION}
     secretEnv:
       - 'ENV'
       - 'REGION'
@@ -155,7 +227,7 @@ steps:
   # Build client image using normal args
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-client'
-    waitFor: ['run-tests']
+    waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     entrypoint: 'bash'
     args: ['scripts/build/client.sh']
     env:
@@ -168,6 +240,9 @@ steps:
       - 'ENV'
       - 'PUBLIC_STRIPE_KEY'
       - 'ROOT_URL'
+    volumes:
+    - name: 'client_cache'
+      path: '/workspace/client/node_modules'
 
   # Push client image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -204,8 +279,8 @@ steps:
       - '-c'
       - |
         gcloud run services update-traffic wtix-client-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100
+        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100 \
+        --region $${REGION}
     secretEnv:
       - 'ENV'
       - 'REGION'
@@ -224,6 +299,16 @@ steps:
     secretEnv:
       - 'ENV'
       - 'REGION'
+
+options:
+  machineType: 'E2_MEDIUM'
+
+artifacts:
+  objects:
+    location: 'gs://wtix-cloudbuild-cache/'
+    paths:
+    - '/workspace/server/node_modules'
+    - '/workspace/client/node_modules'
 
 # Use dev, stg, or prd versions depending on $_ENV value from trigger
 availableSecrets:

@@ -7,7 +7,8 @@ steps:
     args:
       - '-c'
       - |
-        docker build -f server/Dockerfile \
+        docker build \
+        -f server/Dockerfile \
         -t $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
         server
     secretEnv:
@@ -50,8 +51,8 @@ steps:
       - '-c'
       - |
         gcloud run services update-traffic wtix-server-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100
+        --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100 \
+        --region $${REGION}
     secretEnv:
       - 'ENV'
       - 'REGION'

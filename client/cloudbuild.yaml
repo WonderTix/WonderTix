@@ -49,8 +49,8 @@ steps:
       - '-c'
       - |
         gcloud run services update-traffic wtix-client-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100
+        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100 \
+        --region $${REGION}
     secretEnv:
       - 'ENV'
       - 'REGION'
