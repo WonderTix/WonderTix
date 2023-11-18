@@ -1,6 +1,5 @@
 import React from 'react';
 import {ErrorMessage} from 'formik';
-import {boolean} from 'yup';
 
 interface InputControlProps {
   field: {onChange; onBlur; name; value};

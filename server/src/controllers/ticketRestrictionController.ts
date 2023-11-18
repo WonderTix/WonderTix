@@ -1,6 +1,6 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {PrismaClient, Prisma} from '@prisma/client';
+import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {LoadedTicketRestriction} from './eventInstanceController.service';
 import {parseIntToDate} from '../api/db';
@@ -87,7 +87,7 @@ ticketRestrictionController.get('/tickets', async (req: Request, res: Response) 
 
     const allIds:number[] = [];
     let byId = {};
-    const toReturn = ticketRestrictions.forEach((restriction) => {
+    ticketRestrictions.forEach((restriction) => {
       if (allIds.includes(restriction.eventinstances.eventinstanceid)) return;
       allIds.push(restriction.eventinstances.eventinstanceid);
       byId = {...byId, [restriction.eventinstances.eventinstanceid]: {

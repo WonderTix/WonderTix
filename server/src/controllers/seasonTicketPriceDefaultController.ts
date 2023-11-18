@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma, seasonticketpricedefault} from '@prisma/client';
+import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {InvalidInputError} from './eventInstanceController.service';
 
@@ -117,7 +117,7 @@ seasonTicketPriceDefaultController.put('/:id', async (req: Request, res: Respons
         ticketrestrictions: true,
       },
     });
-    const update = await prisma.$transaction(current.map((item) => {
+    await prisma.$transaction(current.map((item) => {
       const update = toUpdate.get(item.tickettypeid_fk);
       toUpdate.delete(item.tickettypeid_fk);
       if (!update && !item.ticketrestrictions.length) {

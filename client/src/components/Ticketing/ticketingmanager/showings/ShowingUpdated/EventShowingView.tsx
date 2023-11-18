@@ -1,5 +1,5 @@
 import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
-import React, {useState} from 'react';
+import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';

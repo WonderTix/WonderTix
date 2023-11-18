@@ -1,11 +1,10 @@
-import {Field, useField, useFormikContext} from 'formik';
-import React, {useState, useEffect} from 'react';
+import {Field, useField} from 'formik';
+import React, {useState} from 'react';
 import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
 import {getTicketTypePrice} from './ShowingUtils';
-import {getNumTickets} from '../../ticketing/ticketingSlice';
 
 interface TicketTypeTableProps {
   arrayHelpers;

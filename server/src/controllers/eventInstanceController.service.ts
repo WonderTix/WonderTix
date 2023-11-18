@@ -1,10 +1,8 @@
 /* eslint-disable require-jsdoc */
-import {
-  eventInstanceRequest,
-  instanceTicketType,
-} from '../interfaces/Event';
+import {eventInstanceRequest, instanceTicketType,} from '../interfaces/Event';
 import {eventinstances, eventtickets, ticketrestrictions} from '@prisma/client';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+
 export class InvalidInputError extends Error {
   code: number;
   name: string;
@@ -40,7 +38,7 @@ export const validateTicketRestrictionsOnUpdate = (
     );
   }).flat(Infinity);
 
-  const toReturn = queryBatch.concat([...newRestrictions.values()].map((newRestriction) => {
+  return queryBatch.concat([...newRestrictions.values()].map((newRestriction) => {
     const tickets: number = Math.min(eventInstance.totalseats ?? 0, newRestriction.ticketlimit);
     return prisma.ticketrestrictions.create({
       data: {
@@ -58,7 +56,6 @@ export const validateTicketRestrictionsOnUpdate = (
       },
     });
   }));
-  return toReturn;
 };
 
 const getTicketRestrictionUpdate = (
