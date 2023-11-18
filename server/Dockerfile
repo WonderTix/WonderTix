@@ -1,21 +1,13 @@
 FROM node:18-alpine
-
-RUN apk upgrade --update-cache --available && \
-    apk add openssl && \
-    rm -rf /var/cache/apk/*
-
-WORKDIR /usr
-RUN apk add --no-cache bash
-COPY /bin/wait-for-it.sh ./wait-for-it.sh
-RUN chmod +x /usr/wait-for-it.sh
+WORKDIR /usr/app
+COPY ./package*.json ./
 
 RUN apk add --no-cache tzdata
-ENV TZ=America/Los_Angeles
-
-WORKDIR /usr/app
-COPY ./package*.json ./   
 RUN npm install
 
-CMD /bin/bash /usr/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- npm run dev
+COPY . .
 
-# comment
+ENV TZ=America/Los_Angeles
+ENV PORT 8080
+
+CMD ["npm", "run", "start"]
