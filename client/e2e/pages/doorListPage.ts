@@ -1,5 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page} from '@playwright/test';
+import {EventsInfo, ShowingInfo} from '../testData/ConstsPackage';
 
 export class DoorListPage {
   readonly page: Page;
@@ -48,5 +49,11 @@ export class DoorListPage {
     const randTime = times[Math.floor(Math.random() * (await times).length)];
     await this.setTimeByLabel(randTime);
     return await randTime;
+  }
+
+  async searchShowing(event: EventsInfo, showing: ShowingInfo) {
+    const eventOption = await this.chooseEvent.getByRole('option').filter({hasText: event.eventName}).textContent();
+    await this.chooseEvent.selectOption(eventOption);
+    await this.chooseTime.selectOption(showing.showingDateTime);
   }
 }
