@@ -2,6 +2,7 @@ import {test, expect} from '@playwright/test';
 import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
 import {ContactPage} from './pages/contactPage';
+import {DoorListPage} from './pages/doorListPage';
 import {EventsInfo2, ShowingInfo2, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
@@ -19,6 +20,7 @@ test('view show', async ({page}) => {
   expect(showing, 'Showing is empty').not.toBeNull();
 });
 
+// Go through order process and check both the success message and cart contents
 test('check cart after ticket add', async ({page}) => {
   test.setTimeout(60000);
   const events = new EventsPage(page);
@@ -58,7 +60,8 @@ test('check cart after ticket add', async ({page}) => {
   }
 });
 
-test('check successful purchase', async ({page}) => {
+// Order a ticket through Stripe using a valid customer and card and verify success message appears
+test('check stripe purchase', async ({page}) => {
   test.setTimeout(80000);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
@@ -81,6 +84,8 @@ test('check successful purchase', async ({page}) => {
   }
 });
 
+// Order a ticket through Stripe and ensure the contact appears on the Contact page.
+// The delete contact function is not working, so contacts cannot be cleared after order.
 test('check contact is added after order', async ({page}) => {
   test.setTimeout(80000);
   const currentPatron = JohnDoe;
@@ -107,7 +112,7 @@ test('check contact is added after order', async ({page}) => {
   }
 });
 
-
+// Select an accommodation during order and make sure it appears on the contact page with the associated person
 test('check order accommodations', async ({page}) => {
   test.setTimeout(80000);
   const currentPatron = JaneDoe;
@@ -134,6 +139,7 @@ test('check order accommodations', async ({page}) => {
   }
 });
 
+// Place a ticket in the cart and ensure both the increment and decrement buttons work
 test('check ticket inc/dec in cart', async ({page}) => {
   test.setTimeout(60000);
   const events = new EventsPage(page);
@@ -163,5 +169,33 @@ test('check ticket inc/dec in cart', async ({page}) => {
     await events.goToEventFromManage(currentEvent.eventFullName);
     await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
+  }
+});
+
+// Order a ticket through stripe and ensure the ticket appears on the door list
+test('check order on door list', async ({page}) => {
+  test.setTimeout(80000);
+  const currentPatron = JaneDoe;
+  const currentCard = ValidVisaCredit;
+  const currentEvent = EventsInfo2;
+  const currentShowing = ShowingInfo2;
+  const quantity = 2;
+  const events = new EventsPage(page);
+  const main = new MainPage(page);
+  const doorList = new DoorListPage(page);
+  await events.goto();
+  await events.addnewevent(currentEvent);
+  await events.addNewShowing(currentShowing);
+  try {
+    await main.goto();
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, quantity);
+    await doorList.goto();
+    await doorList.searchShowing(currentEvent, currentShowing);
+    await doorList.checkOrder(currentPatron, quantity);
+  } finally {
+    await main.goto();
+    await events.goToEventFromManage(EventsInfo2.eventFullName);
+    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
+    await events.deleteTheEvent(EventsInfo2.eventFullName);
   }
 });

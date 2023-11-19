@@ -61,7 +61,7 @@ export const ShowingInfo1: ShowingInfo = {
   showingTime: '00:10',
   showingQuantity: '10',
   showingWholeDate: 'Wed, Oct 11 2023',
-  showingDateTime: 'Wed, Oct 11 2023 12:10 AM',
+  showingDateTime: 'Wed, Oct 11 12:10 AM',
 };
 
 export const ShowingInfo2: ShowingInfo = {
@@ -69,7 +69,7 @@ export const ShowingInfo2: ShowingInfo = {
   showingTime: '10:20',
   showingQuantity: '010',
   showingWholeDate: 'Tue, Oct 17 2023',
-  showingDateTime: 'Tue, Oct 17 2023 10:20 AM',
+  showingDateTime: 'Tue, Oct 17 10:20 AM',
 };
 
 export const ShowingInfo3: ShowingInfo = {
@@ -85,9 +85,10 @@ export const ShowingInfo4: ShowingInfo = {
   showingTime: '',
   showingQuantity: '100',
   showingWholeDate: 'Wed, Sep 15 2021',
-  showingDateTime: 'Wed, Sep 15 2021',
+  showingDateTime: 'Wed, Sep 15',
 };
 
+// Credit card info, to be used in conjunction with the Stripe test card numbers
 export interface CreditCard {
   cardNumber: string;
   CVC: string;
@@ -100,6 +101,7 @@ export const ValidVisaCredit: CreditCard = {
   date: '12 / 30',
 };
 
+// Customer const to be used for testing.  Includes all information related to a specific customer that might be used during an order process.
 export interface Customer {
   firstName: string;
   lastName: string;

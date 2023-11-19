@@ -176,21 +176,25 @@ export class MainPage {
     expect(await this.page.getByText(message)).toBeVisible();
   }
 
+  // Clicks to go to cart on success popup for ticket add
   async clickTakeMeThere() {
     await this.cartFromSuccess.click();
   }
 
+  // Checks cart info against the chosen event, date/time/ticket type, and quantity
   async checkCart(event: EventsInfo, info:string, quantity: string) {
     await this.page.getByText(event.eventName).isVisible();
     await this.page.getByText(info).isVisible();
     await this.page.getByText(quantity, {exact: true}).isVisible();
   }
 
+  // Click checkout button from cart and clear the continue button
   async clickCartCheckout() {
     await this.checkoutFromCart.click();
     await this.cartContinue.click();
   }
 
+  // Fills out the customer info from the customer parameter
   async fillCustomerInfo(customer: Customer) {
     await this.cartFirstName.fill(customer.firstName);
     await this.cartLastName.fill(customer.lastName);
@@ -202,10 +206,14 @@ export class MainPage {
     await this.cartAccommodations.selectOption({value: customer.accommodations});
   }
 
+  // Goes next from the customer info
   async clickCartNext() {
     await this.cartNext.click();
   }
 
+  // Fill out data on Stripe page.  Currently uses both a Customer and CreditCard.
+  // Stripe is slow and sometimes has an account popup after email entry.
+  // This function waits to see if it will pop up and handle it appropriately.
   async fillStripeInfo(customer: Customer, ccInfo: CreditCard) {
     await this.stripeEmail.fill(customer.email);
     await this.page.waitForTimeout(6000);
@@ -219,10 +227,15 @@ export class MainPage {
     await this.stripeZIP.fill(customer.postCode);
   }
 
+  // Click to purchase ticket at stripe
   async clickStripeCheckout() {
     await this.stripeCheckout.click();
   }
 
+  // Function to complete an order from the main page through Stripe purchase.
+  // Takes in a customer, credit card, event, and an optional quantity of tickets to purchase.
+  // Date, time, and ticket type will be selected randomly.
+  // Qty will be used to determine quantity if passed, otherwise will use a random quantity as well.
   async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo, qty?: number) {
     await this.goSelectShowing(event);
     // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
@@ -244,17 +257,22 @@ export class MainPage {
     await this.clickStripeCheckout();
   }
 
+  // Increase number of tickets for an event by one
+  // Uses the event parameter to find the event to increment.
   async incrementEventTicket(event: EventsInfo) {
     const cartCard = await this.cartTicketCard.filter({hasText: event.eventName});
     await cartCard.getByTestId('increment-ticket').click();
   }
 
+  // Decrease number of tickets for an event by one.
+  // Uses the event parameter to find the event to decrement.
   async decrementEventTicket(event: EventsInfo) {
     const cartCard = await this.cartTicketCard.filter({hasText: event.eventName});
     await cartCard.getByTestId('decrement-ticket').click();
   }
 
-  //  Currently assumes ticket cost is $20
+  // Checks the quantity and total of the chosen ticket is correct.
+  // Currently assumes ticket cost is $20, and does not check the overall subtotal.
   async checkEventTicket(event: EventsInfo, qty: number) {
     const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
     expect(await cartCard.getByTestId('ticket-quantity').textContent()).toBe(qty.toString());
