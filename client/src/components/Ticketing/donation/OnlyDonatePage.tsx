@@ -71,7 +71,7 @@ export default function OnlyDonationPage(): ReactElement {
   };
 
   return (
-    <div className='w-full py-[5rem] px-[1rem] tab:px-[5rem] flex flex-col items-center'>
+    <div className='w-full max-w-6xl mx-auto py-[5rem] px-[1rem] tab:px-[5rem] flex flex-col items-center'>
       {/* Back button*/}
       <div className='w-full flex flex-row mb-8'>
         <button
