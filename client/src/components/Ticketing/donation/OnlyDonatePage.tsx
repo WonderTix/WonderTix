@@ -76,7 +76,7 @@ export default function OnlyDonationPage(): ReactElement {
       <div className='w-full flex flex-row mb-8'>
         <button
           onClick={() => history('/')}
-          className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-zinc-100'
+          className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex flex-row items-center text-white'
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -99,10 +99,10 @@ export default function OnlyDonationPage(): ReactElement {
       </div>
       {/* Header text */}
       <div className='text-center text-2xl'>
-        <p>
+        <h1>
           Double your impact! <br />
           Donate before June 30th and your gift will be matched 100%
-        </p>
+        </h1>
       </div>
       <DonationIntro />
       <hr className='w-full border border-t border-zinc-300 my-4'></hr>
@@ -200,14 +200,15 @@ export default function OnlyDonationPage(): ReactElement {
       </div>
       {/* Anonymous donation checkbox*/}
       <div className='flex flex-col w-full items-start gap-3 mt-2 mb-10'>
-        <div className='flex flex-row items-center gap-4 text-md text-zinc-700 '>
+        <label htmlFor='anonymous-checkbox' className='flex flex-row items-center gap-4 text-md text-zinc-700 '>
           <input
             type='checkbox'
             onChange={(): void => setAnonymous(!anonymous)}
+            id='anonymous-checkbox'
             name='anonymous'
           />
           <div>I would like to make my donation anonymous</div>
-        </div>
+        </label>
       </div>
       <CompleteOrderForm
         onSubmit={doCheckout}
