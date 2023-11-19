@@ -62,7 +62,7 @@ export default function OnlyDonationPage(): ReactElement {
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDonationPeriod(event.target.value);
-    setAmount(null);
+    setAmount(0);
     console.log(amount);
   };
 
@@ -189,23 +189,13 @@ export default function OnlyDonationPage(): ReactElement {
           <div className='pt-3 pr-3'>
             <p>$</p>
           </div>
-          {/* Disable donation amount input box if monthly or quarterly radio box is checked*/}
-          {donationPeriod == 'onetime' ? (
             <input
-              placeholder={amount ? '' : 'Other Amount'}
+              placeholder={amount === 0 ? 'Other Amount': ''}
               onChange={(e) => setAmount(+e.target.value)}
               type='number'
               className='appearance-none block bg-white border border-2 border-gray-300 text-gray-700 rounded-md pl-3 py-2 leading-5 focus:outline-none focus:ring focus:border-indigo-600 sm:text-lg'
-              value={amount || null}
+              value={amount || ''}
             />
-          ) : (
-            <input
-              placeholder={amount ? '' : 'Other Amount'}
-              className='appearance-none block bg-white border border-2 border-gray-300 text-gray-400 rounded-md pl-3 py-2 leading-5 focus:outline-none focus:ring focus:border-indigo-600 sm:text-lg'
-              value={amount === null ? '' : amount}
-              disabled
-            />
-          )}
         </div>
       </div>
       {/* Anonymous donation checkbox*/}
