@@ -37,7 +37,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
       : [
           {
             tickettypeid_fk: 1,
-            seasonticketpricedefaultid_fk: null,
+            seasontickettypepricedefaultid_fk: null,
             ticketlimit: 0,
             price: getTicketTypePrice(1, 'price', ticketTypes),
             concessionprice: getTicketTypePrice(1, 'concessions', ticketTypes),

@@ -20,7 +20,7 @@ export default interface Event {
 
 export interface instanceTicketType {
   tickettypeid_fk: number;
-  seasonticketpricedefaultid_fk?: number;
+  seasontickettypepricedefaultid_fk?: number;
   price: number;
   concessionprice: number;
   ticketlimit: number;

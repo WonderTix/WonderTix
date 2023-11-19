@@ -198,6 +198,9 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       where: {
         active: true,
       },
+      orderBy: {
+        eventid: 'desc',
+      },
       include: {
         eventinstances: {
           where: {
@@ -207,14 +210,14 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       },
     });
     return res.json(events.map((event) => ({
-      id: String(event.eventid),
+      id: event.eventid.toString(),
       seasonid: event.seasonid_fk,
       title: event.eventname,
       description: event.eventdescription,
       active: event.active,
       seasonticketeligible: event.seasonticketeligible,
       imageurl: event.imageurl,
-      numShows: String(event.eventinstances.length),
+      numShows: event.eventinstances.length.toString(),
     })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

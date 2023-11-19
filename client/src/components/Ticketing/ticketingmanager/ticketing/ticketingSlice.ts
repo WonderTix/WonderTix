@@ -1,4 +1,4 @@
-import {CaseReducer, createAsyncThunk, createSlice, PayloadAction,} from '@reduxjs/toolkit';
+import {CaseReducer, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../../app/store';
 import format from 'date-fns/format';
 import {bound, titleCase} from '../../../../utils/arrays';
@@ -198,7 +198,7 @@ export const fetchTicketingData = createAsyncThunk(
         process.env.REACT_APP_API_2_URL + '/events/slice',
     );
     const ticketRes: TicketsState = await fetchData(
-      process.env.REACT_APP_API_2_URL + '/ticket-restriction/tickets',
+      process.env.REACT_APP_API_2_URL + '/event-instance/tickets',
     );
     const tickets = Object.entries(ticketRes.data.byId).reduce(
       (res, [key, val]) => ({

@@ -11,7 +11,7 @@
 
 export interface eventInstanceTicketType {
   tickettypeid_fk: number;
-  seasonticketpricedefaultid_fk: number;
+  seasontickettypepricedefaultid_fk: number;
   price: number;
   concessionprice: number;
   ticketlimit: number;

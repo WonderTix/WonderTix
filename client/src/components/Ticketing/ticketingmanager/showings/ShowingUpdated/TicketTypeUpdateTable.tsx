@@ -119,7 +119,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   id={eventInstanceID}
                   className={{
                     controlClass: '',
-                    inputClass: 'w-[75px]',
+                    inputClass: 'w-[75px] bg-gray-200',
                     labelClass: '',
                   }}
                 />
@@ -135,7 +135,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   id={eventInstanceID}
                   className={{
                     controlClass: '',
-                    inputClass: 'w-[75px]',
+                    inputClass: 'w-[75px] bg-gray-200',
                     labelClass: '',
                   }}
                 />

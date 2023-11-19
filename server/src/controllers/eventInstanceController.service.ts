@@ -47,7 +47,7 @@ export const validateTicketRestrictionsOnUpdate = (
         concessionprice: +newRestriction.concessionprice,
         ticketlimit: tickets,
         eventinstanceid_fk: +eventInstance.eventinstanceid,
-        ...(newRestriction.seasonticketpricedefaultid_fk && {seasonticketpricedefault_fk: +newRestriction.seasonticketpricedefaultid_fk}),
+        ...(newRestriction.seasontickettypepricedefaultid_fk && {seasontickettypepricedefault_fk: +newRestriction.seasontickettypepricedefaultid_fk}),
         eventtickets: {
           create: Array(tickets).fill({
             eventinstanceid_fk: +eventInstance.eventinstanceid,
@@ -108,7 +108,7 @@ const getTicketRestrictionUpdate = (
       ticketlimit: +newRestriction.ticketlimit,
       price: +newRestriction.price,
       concessionprice: +newRestriction.concessionprice,
-      ...(newRestriction.seasonticketpricedefaultid_fk && {seasonticketpricedefault_fk: +newRestriction.seasonticketpricedefaultid_fk}),
+      ...(newRestriction.seasontickettypepricedefaultid_fk && {seasontickettypepricedefault_fk: +newRestriction.seasontickettypepricedefaultid_fk}),
       ...(difference > 0 && {
         eventtickets: {
           create: Array(difference).fill({

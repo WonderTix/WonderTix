@@ -31,11 +31,9 @@ async function main() {
   await importEvents(prisma);
   await importEventInstances(prisma);
   await importTicketRestrictions(prisma);
-  await importEventTickets(prisma);
   await importOrders(prisma);
   await importOrderItems(prisma);
   await importSeasonTicketTypes(prisma);
-  await importSeasonTickets(prisma);
 }
 
 main()

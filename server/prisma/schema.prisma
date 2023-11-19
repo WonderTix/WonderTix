@@ -194,15 +194,15 @@ model savedreports {
 
 /// a season is a collection of events over a period of time (e.g. a summer season)
 model seasons {
-  seasonid                     Int                        @id @default(autoincrement())
-  name                         String                     @db.VarChar(100)
-  startdate                    Int
-  enddate                      Int
-  imageurl                     String?                    @db.VarChar(255)
-  events                       events[]
-  date_seasons_enddateTodate   date                       @relation("seasons_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
-  date_seasons_startdateTodate date                       @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
-  seasonticketpricedefault     seasonticketpricedefault[]
+  seasonid                      Int                            @id @default(autoincrement())
+  name                          String                         @db.VarChar(100)
+  startdate                     Int
+  enddate                       Int
+  imageurl                      String?                        @db.VarChar(255)
+  events                        events[]
+  date_seasons_enddateTodate    date                           @relation("seasons_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  date_seasons_startdateTodate  date                           @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  seasontickettypepricedefaults seasontickettypepricedefault[]
 }
 
 /// a season ticket is a ticket that is not part of a bulk package of tickets during a season
@@ -232,7 +232,7 @@ model seasontickettype {
 }
 
 /// price of ticket type for all events in a given season
-model seasonticketpricedefault {
+model seasontickettypepricedefault {
   id                 Int                  @id @default(autoincrement())
   seasonid_fk        Int
   tickettypeid_fk    Int
@@ -295,31 +295,31 @@ model tasknotes {
 
 /// ticket restrictions for an event are used to limit the number of tickets that can be sold for a ticket type for an event instance
 model ticketrestrictions {
-  ticketrestrictionsid     Int                       @id @default(autoincrement())
-  eventinstanceid_fk       Int
-  tickettypeid_fk          Int
-  ticketlimit              Int
-  ticketssold              Int?                      @default(0)
-  price                    Decimal                   @default(0) @db.Money
-  concessionprice          Decimal                   @default(0) @db.Money
-  seasonticketpriceid_fk   Int?
-  eventinstances           eventinstances            @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: Cascade, onUpdate: Cascade)
-  tickettype               tickettype                @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
-  seasonticketpricedefault seasonticketpricedefault? @relation(fields: [seasonticketpriceid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  eventtickets             eventtickets[]
+  ticketrestrictionsid              Int                           @id @default(autoincrement())
+  eventinstanceid_fk                Int
+  tickettypeid_fk                   Int
+  ticketlimit                       Int
+  ticketssold                       Int?                          @default(0)
+  price                             Decimal                       @default(0) @db.Money
+  concessionprice                   Decimal                       @default(0) @db.Money
+  seasontickettypepricedefaultid_fk Int?
+  eventinstances                    eventinstances                @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: Cascade, onUpdate: Cascade)
+  tickettype                        tickettype                    @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  seasontickettypepricedefault      seasontickettypepricedefault? @relation(fields: [seasontickettypepricedefaultid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  eventtickets                      eventtickets[]
 }
 
 /// types of tickets that can be assigned to an event
 model tickettype {
-  tickettypeid             Int                        @id @default(autoincrement())
-  description              String                     @db.VarChar(100)
-  price                    Decimal                    @db.Money
-  concessions              Decimal                    @db.Money
-  deprecated               Boolean?                   @default(false)
-  discounts                discounts[]
-  eventinstances           eventinstances[]
-  ticketrestrictions       ticketrestrictions[]
-  seasonticketpricedefault seasonticketpricedefault[]
+  tickettypeid                  Int                            @id @default(autoincrement())
+  description                   String                         @db.VarChar(100)
+  price                         Decimal                        @db.Money
+  concessions                   Decimal                        @db.Money
+  deprecated                    Boolean?                       @default(false)
+  discounts                     discounts[]
+  eventinstances                eventinstances[]
+  ticketrestrictions            ticketrestrictions[]
+  seasontickettypepricedefaults seasontickettypepricedefault[]
 }
 
 /// users have access to the admin area to manage events, tickets, etc

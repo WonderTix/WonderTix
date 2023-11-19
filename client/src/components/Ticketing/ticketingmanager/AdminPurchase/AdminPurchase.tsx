@@ -363,12 +363,15 @@ const AdminPurchase = () => {
     if (row.eventinstanceid) {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_1_URL}/tickets/restrictions`,
+          `${process.env.REACT_APP_API_2_URL}/ticket-restriction`,
         );
+        if (!response.ok) {
+          throw response;
+        }
         const ticketRestrictionData = await response.json();
 
         // Find the matching restriction
-        const restriction = ticketRestrictionData.data.find(
+        const restriction = ticketRestrictionData.find(
           (tr) =>
             tr.eventinstanceid === row.eventinstanceid &&
             tr.tickettypeid === ticketTypeId,
