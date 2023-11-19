@@ -46,7 +46,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
         )}),url(${getImageDefault()})`,
       }}
     >
-      <div className='flex flex-col md:flex-row justify-center md:justify-between items-center gap-5 p-5 h-full rounded-xl text-white bg-zinc-900/90'>
+      <div data-testid='cart-ticket-card' className='flex flex-col md:flex-row justify-center md:justify-between items-center gap-5 p-5 h-full rounded-xl text-white bg-zinc-900/90'>
         <div>
           <p className='font-semibold'>{item.name}</p>
           <p className='text-zinc-200'>{item.desc}</p>
@@ -54,6 +54,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
         <div className='flex items-center gap-7'>
           <div className='flex items-center gap-2'>
             <button
+              data-testid='decrement-ticket'
               aria-label={`Remove one ${item.name} from cart`}
               onClick={handleDecrement}
             >
@@ -70,8 +71,9 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
                 />
               </svg>
             </button>
-            <p>{item.qty}</p>
+            <p data-testid='ticket-quantity'>{item.qty}</p>
             <button
+              data-testid='increment-ticket'
               aria-label={`Add one ${item.name} to cart`}
               onClick={handleIncrement}
             >
@@ -89,12 +91,13 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
               </svg>
             </button>
           </div>
-          <p className='font-semibold'>
+          <p data-testid='card-ticket-subtotal' className='font-semibold'>
             {item.payWhatCan
               ? toDollarAmount(item.payWhatPrice)
               : toDollarAmount(cost)}
           </p>
           <button
+            data-testid='remove-ticket'
             aria-label={`Remove ${item.name} from cart`}
             onClick={() => removeHandler(item.product_id)}
           >

@@ -23,6 +23,8 @@ export class MainPage {
   readonly checkoutFromCart: Locator;
 
   // Below elements are on the checkout workflow
+  readonly cartTicketCard: Locator;
+  readonly cartSubtotal: Locator;
   readonly cartContinue: Locator;
   readonly cartFirstName: Locator;
   readonly cartLastName: Locator;
@@ -59,6 +61,8 @@ export class MainPage {
     this.cartFromSuccess = page.getByRole('button', {name: 'Take me there!'});
     this.checkoutFromCart = page.getByRole('button', {name: 'Proceed To Checkout'});
 
+    this.cartTicketCard = page.getByTestId('cart-ticket-card');
+    this.cartSubtotal = page.getByTestId('subtotal-display');
     this.cartContinue = page.getByRole('button', {name: 'Continue'});
     this.cartFirstName = page.locator('#first-name');
     this.cartLastName = page.locator('#last-name');
@@ -155,6 +159,10 @@ export class MainPage {
     return randomQuantity;
   }
 
+  async selectTicketQuantity(qty: number) {
+    await this.selectQuantity.selectOption(qty.toString());
+  }
+
   // Click the Get Tickets button on the event page
   async clickGetTickets() {
     await this.getTickets.click();
@@ -172,8 +180,8 @@ export class MainPage {
     await this.cartFromSuccess.click();
   }
 
-  async checkCart(name: string, info:string, quantity: string) {
-    await this.page.getByText(name).isVisible();
+  async checkCart(event: EventsInfo, info:string, quantity: string) {
+    await this.page.getByText(event.eventName).isVisible();
     await this.page.getByText(info).isVisible();
     await this.page.getByText(quantity, {exact: true}).isVisible();
   }
@@ -215,13 +223,18 @@ export class MainPage {
     await this.stripeCheckout.click();
   }
 
-  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo) {
+  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo, qty?: number) {
     await this.goSelectShowing(event);
     // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
     await this.selectRandomDate();
     await this.selectRandomTime();
     await this.selectRandomTicketType();
-    await this.selectRandomQuantity();
+    if (typeof(qty) !== undefined) {
+      //  Can cast here as we've done our type check already
+      await this.selectTicketQuantity(<number>qty);
+    } else {
+      await this.selectRandomQuantity();
+    }
     await this.clickGetTickets();
     await this.clickTakeMeThere();
     await this.clickCartCheckout();
@@ -229,5 +242,23 @@ export class MainPage {
     await this.clickCartNext();
     await this.fillStripeInfo(customer, creditCard);
     await this.clickStripeCheckout();
+  }
+
+  async incrementEventTicket(event: EventsInfo) {
+    const cartCard = await this.cartTicketCard.filter({hasText: event.eventName});
+    await cartCard.getByTestId('increment-ticket').click();
+  }
+
+  async decrementEventTicket(event: EventsInfo) {
+    const cartCard = await this.cartTicketCard.filter({hasText: event.eventName});
+    await cartCard.getByTestId('decrement-ticket').click();
+  }
+
+  //  Currently assumes ticket cost is $20
+  async checkEventTicket(event: EventsInfo, qty: number) {
+    const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
+    expect(await cartCard.getByTestId('ticket-quantity').textContent()).toBe(qty.toString());
+    const price = '$' + (qty * 20).toString() + '.00';
+    expect(await cartCard.getByTestId('card-ticket-subtotal').textContent()).toBe(price);
   }
 }

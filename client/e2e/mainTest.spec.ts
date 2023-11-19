@@ -23,16 +23,18 @@ test('check cart after ticket add', async ({page}) => {
   test.setTimeout(60000);
   const events = new EventsPage(page);
   const main = new MainPage(page);
+  const currentEvent = EventsInfo2;
+  const currentShowing = ShowingInfo2;
   await events.goto();
-  await events.addnewevent(EventsInfo2);
-  await events.addNewShowing(ShowingInfo2);
+  await events.addnewevent(currentEvent);
+  await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    const showing = await main.goSelectShowing(EventsInfo2);
+    const showing = await main.goSelectShowing(currentEvent);
     // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
-    expect(showing).toEqual(EventsInfo2.eventName);
+    expect(showing).toEqual(currentEvent.eventName);
     const date = await main.selectRandomDate();
-    expect(date).toEqual(ShowingInfo2.showingWholeDate);
+    expect(date).toEqual(currentShowing.showingWholeDate);
     const time = await main.selectRandomTime();
     const ticketType = await main.selectRandomTicketType();
     const quantity = await main.selectRandomQuantity();
@@ -47,12 +49,12 @@ test('check cart after ticket add', async ({page}) => {
     await main.checkAddTicketSuccess(confirmMessage);
     await main.clickTakeMeThere();
     const cartInfo = ticketType + ' - ' + dateParts[1] + ' - ' + time;
-    await main.checkCart(EventsInfo2.eventName, cartInfo, quantity);
+    await main.checkCart(currentEvent, cartInfo, quantity);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo2.eventFullName);
-    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo2.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.searchDeleteShowing(currentShowing.showingWholeDate);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
@@ -129,5 +131,37 @@ test('check order accommodations', async ({page}) => {
     await events.goToEventFromManage(EventsInfo2.eventFullName);
     await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
     await events.deleteTheEvent(EventsInfo2.eventFullName);
+  }
+});
+
+test('check ticket inc/dec in cart', async ({page}) => {
+  test.setTimeout(60000);
+  const events = new EventsPage(page);
+  const main = new MainPage(page);
+  const quantity = 2;
+  const currentEvent = EventsInfo2;
+  const currentShowing = ShowingInfo2;
+  await events.goto();
+  await events.addnewevent(currentEvent);
+  await events.addNewShowing(currentShowing);
+  try {
+    await main.goto();
+    await main.goSelectShowing(currentEvent);
+    await main.selectRandomDate();
+    await main.selectRandomTime();
+    await main.selectRandomTicketType();
+    await main.selectTicketQuantity(quantity);
+    await main.clickGetTickets();
+    await main.clickTakeMeThere();
+    await main.checkEventTicket(currentEvent, quantity);
+    await main.incrementEventTicket(currentEvent);
+    await main.checkEventTicket(currentEvent, quantity + 1);
+    await main.decrementEventTicket(currentEvent);
+    await main.checkEventTicket(currentEvent, quantity);
+  } finally {
+    await main.goto();
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.searchDeleteShowing(currentShowing.showingWholeDate);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
