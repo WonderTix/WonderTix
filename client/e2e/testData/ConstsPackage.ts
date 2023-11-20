@@ -53,6 +53,13 @@ export const EventsInfo5: EventsInfo = {
   eventFullName: 'The Martyr Playbill The Martyr Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
+export const EventsInfo6: EventsInfo = {
+  eventName: 'Purple',
+  eventDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventURL: 'https://upload.wikimedia.org/wikipedia/en/6/62/Barney%27s-Great-Adventure-Poster.jpeg',
+  eventFullName: 'Purple Playbill Purple Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+};
+
 //  This is the passin data template for adding/editing a new showing
 export interface ShowingInfo {
   showingDate: string;
@@ -93,6 +100,14 @@ export const ShowingInfo4: ShowingInfo = {
   showingQuantity: '100',
   showingWholeDate: 'Wed, Sep 15 2021',
   showingDateTime: 'Wed, Sep 15',
+};
+
+export const ShowingInfo5: ShowingInfo = {
+  showingDate: '2021-09-17',
+  showingTime: '09:15',
+  showingQuantity: '10',
+  showingWholeDate: 'Fri, Sep 17 2021',
+  showingDateTime: 'Fri, Sep 17 9:15 AM',
 };
 
 // Credit card info, to be used in conjunction with the Stripe test card numbers

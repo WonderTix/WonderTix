@@ -3,7 +3,7 @@ import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
 import {ContactPage} from './pages/contactPage';
 import {DoorListPage} from './pages/doorListPage';
-import {EventsInfo5, ShowingInfo2, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
+import {EventsInfo5, EventsInfo6, ShowingInfo2, ShowingInfo5, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {
@@ -175,10 +175,10 @@ test('check ticket inc/dec in cart', async ({page}) => {
 // Order a ticket through stripe and ensure the ticket appears on the door list
 test('check order on door list', async ({page}) => {
   test.setTimeout(100000);
-  const currentPatron = JaneDoe;
+  const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo5;
-  const currentShowing = ShowingInfo2;
+  const currentEvent = EventsInfo6;
+  const currentShowing = ShowingInfo5;
   const quantity = 2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
