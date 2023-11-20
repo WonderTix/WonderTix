@@ -1,16 +1,21 @@
 /* eslint-disable react/react-in-jsx-scope */
-import Reporting from './Reporting';
+import ReportingList from './ReportingList';
 import Navigation from '../Navigation';
+import {DSRmarqueeData, DsrMarqueeData} from './DailySalesReport/DsrMarqData';
+import {
+  DONmarqueeData,
+  DonMarqueeData,
+} from './DonationSummaryReport/DonMarqData';
 
 /**
  * @returns {object} ReportingMain - has Navigation
  *  and Reporting to reroute to other components
  */
-const ReportingMain=() =>{
+const ReportingMain = () => {
   return (
-    <div className='flex flex-row  '>
-      <Reporting/>
-      <Navigation/>
+    <div>
+      <ReportingList data={DSRmarqueeData} DONdata={DONmarqueeData} />
+      <Navigation />
     </div>
   );
 };
