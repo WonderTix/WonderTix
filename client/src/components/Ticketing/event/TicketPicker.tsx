@@ -84,7 +84,7 @@ const initialState: TicketPickerState = {
   showCalendar: true,
   showTimes: false,
   showClearBtn: false,
-  payWhatPrice: 0,
+  payWhatPrice: null,
   prompt: 'selectDate',
 };
 
@@ -101,7 +101,6 @@ const changeTicketType = (t: TicketType) => ({
   type: 'change_ticket_type',
   payload: {selectedTicketType: t},
 });
-let tempPay = 0;
 
 /**
  * TicketPickerReducer is meant to be used to lower ticket numbers
@@ -297,8 +296,12 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
 
   const payWhatFunc = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    tempPay = parseInt(event.currentTarget.value);
-    dispatch(changePayWhat(tempPay));
+    const tempPay = parseFloat(event.currentTarget.value);
+    if (isNaN(tempPay)) {
+      dispatch(changePayWhat(null));
+    } else {
+      dispatch(changePayWhat(parseFloat(tempPay.toFixed(2))));
+    }
   };
 
   const [filteredTicketTypes, setFilteredTicketTypes] = useState([]);
@@ -512,7 +515,10 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       <button
         data-testid='get-tickets'
         disabled={
-          !qty || !selectedTicket || qty > selectedTicket.availableseats
+          !qty ||
+          !selectedTicket ||
+          qty > selectedTicket.availableseats ||
+          (selectedTicketType.name === 'Pay What You Can' && (payWhatPrice == null || payWhatPrice < 0))
         }
         className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 bg-blue-500 text-white hover:bg-blue-600 rounded-xl'
         onClick={handleSubmit}

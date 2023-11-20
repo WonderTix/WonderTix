@@ -114,18 +114,19 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-    if (item.price < 0) {
-      throw new InvalidInputError(
-          422,
-          `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
-      );
+    if ((item.payWhatCan && item.payWhatPrice && item.payWhatPrice < 0)||item.price < 0) {
+        throw new InvalidInputError(
+            422,
+            `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+        );
     }
+    const price = item.payWhatCan? item.payWhatPrice ?? 0: item.price;
     orderItems = orderItems.concat(
         getTickets(
             eventInstance.ticketRestrictionMap.get(item.typeID),
             eventInstance.ticketRestrictionMap.get(eventInstance.defaulttickettype ?? 1),
             item.qty,
-            item.price,
+            item.payWhatCan? price/item.qty : price,
         ),
     );
     cartRows.push({
@@ -135,13 +136,14 @@ export const getOrderItems = async (
           name: eventInstance.events.eventname,
           description: item.desc,
         },
-        unit_amount: item.price * 100,
+        unit_amount: price * 100,
       },
-      quantity: item.qty,
+      quantity: item.payWhatCan? 1: item.qty,
     });
 
-    orderTotal += item.price * item.qty;
+    orderTotal += item.payWhatCan? price: price * item.qty;
   }
+
   for (const [, instance] of eventInstanceMap) {
     eventInstanceQueries.push(
         prisma.eventinstances.update({
@@ -154,6 +156,7 @@ export const getOrderItems = async (
         },
         ));
   }
+
   return {
     cartRows,
     orderItems,
