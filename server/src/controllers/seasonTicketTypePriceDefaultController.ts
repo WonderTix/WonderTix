@@ -156,16 +156,19 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
           tickettypeid_fk,
           price,
           concessionprice,
-        }) =>
-          prisma.seasontickettypepricedefault.create({
+        }) => {
+          if (price < 0 || concessionprice < 0 ) {
+            throw new InvalidInputError(422, `Price can not be negative`);
+          }
+          return prisma.seasontickettypepricedefault.create({
             data: {
               seasonid_fk: +id,
               tickettypeid_fk,
               price: tickettypeid_fk === 0? 0: +price,
               concessionprice,
             },
-          }),
-    )));
+          });
+        })));
     return res.json(await prisma.seasontickettypepricedefault.findMany({where: {seasonid_fk: +id}}));
   } catch (error) {
     if (error instanceof InvalidInputError) {

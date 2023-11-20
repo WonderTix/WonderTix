@@ -1,4 +1,4 @@
-import {eventinstances, PrismaClient} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 const fs = require('fs');
 const yaml = require('js-yaml');
 
