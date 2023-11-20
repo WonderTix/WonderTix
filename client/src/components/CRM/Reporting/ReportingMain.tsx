@@ -1,6 +1,11 @@
 /* eslint-disable react/react-in-jsx-scope */
 import ReportingList from './ReportingList';
 import Navigation from '../Navigation';
+import {DSRmarqueeData, DsrMarqueeData} from './DailySalesReport/DsrMarqData';
+import {
+  DONmarqueeData,
+  DonMarqueeData,
+} from './DonationSummaryReport/DonMarqData';
 
 /**
  * @returns {object} ReportingMain - has Navigation
@@ -9,8 +14,8 @@ import Navigation from '../Navigation';
 const ReportingMain = () => {
   return (
     <div>
-      <ReportingList/>
-      <Navigation/>
+      <ReportingList data={DSRmarqueeData} DONdata={DONmarqueeData} />
+      <Navigation />
     </div>
   );
 };

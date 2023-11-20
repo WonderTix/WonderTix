@@ -8,64 +8,76 @@ export interface CreateTaskProps {
   onSubmit: (createTask: TableDataType) => void;
 }
 
-const showToast = (message: string) => {
-  alert(message);
-};
-
 const CreateTask: React.FC<CreateTaskProps> = ({
   onCancel,
   onSubmit,
   isVisible,
 }: CreateTaskProps): React.ReactElement | null => {
-  const [taskId, setTaskId] = useState(
-    Math.max(...TABLE_DATA.map((task) => task.id), 0) + 1,
-  );
+  const [taskId, setTaskId] = useState(0);
   const [assignedTo, setAssignedTo] = useState('');
   const [emailTo, setemailTo] = useState('');
   const [relatedTo, setRelatedTo] = useState('');
   const [subject, setSubject] = useState('');
   const [contact, setContact] = useState('');
   const [dueDate, setDueDate] = useState(new Date().toISOString());
-  const [priority, setPriority] = useState('Normal');
   const [status, setStatus] = useState('Pending');
+  const [priority, setPriority] = useState('Normal');
   const [comments, setComments] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState('');
 
   if (!isVisible) {
     return null;
   }
 
+  const validateForm = (): boolean => {
+    const fields = [
+      {value: relatedTo, label: 'Related To'},
+      {value: assignedTo, label: 'Assigned To'},
+      {value: emailTo, label: 'Assignee Email'},
+      {value: subject, label: 'Task Subject'},
+      {value: contact, label: 'Contact'},
+      {value: dueDate, label: 'Due Date'},
+      {value: status, label: 'Task Status'},
+      {value: priority, label: 'Task Priority'},
+    ];
+
+    const errorFields = fields
+      .filter((field) => !field.value)
+      .map((field) => field.label);
+
+    if (errorFields.length) {
+      setErrors(`Missing fields: *${errorFields.join(', *')}`);
+      return false;
+    }
+    setErrors('');
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     setIsLoading(true);
 
+    const uniqueId = Math.max(...TABLE_DATA.map((task) => task.id), 0) + 1;
+
     const createTask: TableDataType = {
-      id: taskId,
+      id: uniqueId,
       assignedTo: assignedTo,
       email: emailTo,
       relatedTo: relatedTo,
       subject: subject,
       contact: contact,
       dueDate: new Date(dueDate),
-      priority: priority as TableDataType['priority'],
       status: status as TableDataType['status'],
-      comments: comments as TableDataType['comments'],
-      contactEmail: 'contact@tix.com',
-      contactPhone: '(957) 123-9876',
-      contactMobile: '(975) 987-4321',
+      priority: priority === 'Important' ? 'Important' : undefined,
+      comments: comments,
     };
-
-    setTimeout(() => {
-      setIsLoading(false);
-      showToast('Task created successfully!');
-
-      if (onSubmit) onSubmit(createTask);
-      TABLE_DATA.push(createTask);
-    }, 1000);
+    if (onSubmit) onSubmit(createTask);
   };
 
-  const handleReset = (e: React.FormEvent): void => {
-    e.preventDefault();
+  const handleReset = (): void => {
     setTaskId(TABLE_DATA.length);
     setAssignedTo('');
     setemailTo('');
@@ -73,31 +85,31 @@ const CreateTask: React.FC<CreateTaskProps> = ({
     setSubject('');
     setContact('');
     setDueDate(new Date().toISOString());
-    setPriority('Normal');
     setStatus('Pending');
+    setPriority('Normal');
     setComments('');
+    setErrors('');
   };
 
   return (
-    <div className='bg-white rounded-md shadow-lg p-5 ml-48'>
-      <div className='flex flex-row justify-end'>
+    <div className='bg-black bg-opacity-50 flex justify-center items-center
+      fixed top-0 right-0 bottom-0 left-0 z-20 antialiased'
+    >
+      <div className='bg-white rounded-md shadow-lg p-5'>
         <button
           type='button'
           title='Close'
           aria-label='Close'
           onClick={onCancel}
-          className='rounded p-1
-            hover:outline hover:outline-gray-300 active:bg-slate-100'
+          className='rounded hover:outline hover:outline-gray-300 p-1'
         >
           <ClosingX size='4' />
         </button>
-      </div>
-      <h1 className='mb-8
-        text-center text-6xl bg-clip-text text-transparent tracking-tight
-        bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500'
-      >
-        Create Task
-      </h1>
+        <h1 className='text-center text-6xl bg-clip-text text-transparent
+          bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 pb-8'
+        >
+          Create Task
+        </h1>
 
       <form onSubmit={handleSubmit} className='bg-white text-[15px] tracking-tight group'>
         <div className='mb-4'>
@@ -229,51 +241,53 @@ const CreateTask: React.FC<CreateTaskProps> = ({
             onChange={(e) => setDueDate(e.target.value)}
             className='mt-1 p-1.5 w-full border rounded-md text-sm
               bg-slate-50 placeholder-gray-400 placeholder:italic'
-            aria-required='true' required
-          />
-        </div>
-        <div className='mb-4'>
-          <label htmlFor='priority' className='block font-semibold'>
-            Task Priority
-          </label>
-          <select
-            id='priority'
-            name='priority'
-            value={priority}
-            onChange={(e) => setPriority(e.target.value as TableDataType['priority'])}
-            className='mt-1 p-1.5 border rounded-md w-full text-sm'
-          >
-            <option value='Normal'>Normal</option>
-            <option value='Important'>Important</option>
-          </select>
-        </div>
-        <div className='mb-4'>
-          <label htmlFor='status' className='block font-semibold'>
-            Task Status
-          </label>
-          <select
-            id='status'
-            name='status'
-            value={status}
-            onChange={(e) => setStatus(e.target.value as TableDataType['status'])}
-            className='mt-1 p-1.5 w-full border rounded-md text-sm'
-          >
-            <option value='Pending'>Pending</option>
-            <option value='Started'>Started</option>
-            <option value='Completed'>Completed</option>
-          </select>
-        </div>
-        <div className='mb-4'>
-          <label htmlFor='comments' className='block font-semibold'>
-            Comments
-          </label>
-          <textarea
-            id='comments'
-            name='comments'
-            value={comments}
-            placeholder='Add your comments here...'
-            onChange={(e) => setComments(e.target.value)}
-            className='mt-1 p-1.5 w-full border rounded-md text-sm
+              aria-required='true'
+            />
+          </div>
+          <div className='mb-4'>
+            <label htmlFor='status' className='block font-semibold'>
+              Task Status
+            </label>
+            <select
+              id='status'
+              name='status'
+              value={status}
+              onChange={(e) => setStatus(
+                e.target.value as TableDataType['status'])}
+              className='mt-1 p-1.5 border rounded-md w-full text-sm'
+            >
+              <option value='Pending'>Pending</option>
+              <option value='Started'>Started</option>
+              <option value='Done'>Done</option>
+            </select>
+          </div>
+          <div className='mb-4'>
+            <label htmlFor='priority' className='block font-semibold'>
+              Task Priority
+            </label>
+            <select
+              id='priority'
+              name='priority'
+              value={priority}
+              onChange={(e) => setPriority(
+                e.target.value as TableDataType['priority'])}
+              className='mt-1 p-1.5 border rounded-md w-full text-sm'
+            >
+              <option value='Normal'>Normal</option>
+              <option value='Important'>Important</option>
+            </select>
+          </div>
+          <div className='mb-4'>
+            <label htmlFor='comments' className='block font-semibold'>
+              Comments
+            </label>
+            <textarea
+              id='comments'
+              name='comments'
+              value={comments}
+              placeholder='Add your comments here...'
+              onChange={(e) => setComments(e.target.value)}
+              className='mt-1 p-1.5 border rounded-md w-full text-sm
               bg-slate-50 placeholder-gray-400 placeholder:italic'
           ></textarea>
         </div>

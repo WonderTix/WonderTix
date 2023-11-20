@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 
-import FilterComponent from './FilterComponent';
-import ReportComponent from './ReportComponent';
+import FilterComponent from './FilterComponent'
+import ReportComponent from './ReportComponent'
 import Navigation from '../../Navigation';
 
 import {Box, Grid} from '@mui/material';
 
-const CreditCardReconciliationReport=() =>{
+const TransactionSummaryReport=() =>{
     const [displayReport, setDisplayReport] = useState(false);
 
     const [filterData, setFilterData] = useState({
@@ -93,6 +93,6 @@ const CreditCardReconciliationReport=() =>{
             <Navigation/>
         </div>
     );
-  };
+};
 
-export default CreditCardReconciliationReport;
+export default TransactionSummaryReport;

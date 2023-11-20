@@ -1,17 +1,122 @@
 /* eslint-disable react/react-in-jsx-scope */
+import Marquee from 'react-fast-marquee';
 import React, {ReactElement} from 'react';
 import ListLink from '../Reporting/ListLink';
+import {DSRmarqueeData, DsrMarqueeData} from './DailySalesReport/DsrMarqData';
+import {
+  DONmarqueeData,
+  DonMarqueeData,
+} from './DonationSummaryReport/DonMarqData';
+
+type ReportsProps = {
+  data: DsrMarqueeData;
+  DONdata: DonMarqueeData;
+};
 
 /**
  * @returns {ReactElement} ReportingMain - has Navigation
  *  and Reporting to reroute to other components
  */
-const ReportingList = () => {
+
+const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
   return (
     <div>
       <div className='w-full h-screen   overflow-x-hidden absolute'>
-        <div className='md:ml-[22rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-          <h1 className='font-bold text-5xl mb-14 md:pb-8'>Reports List</h1>
+        <div className='md:ml-[22rem] md:mt-15 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
+          <h1 className='font-bold text-5xl mb-3 md:pb-8'>Reports List</h1>
+          <div className='marquee-container mb-1'>
+            <div className='flex space-x-2'>
+              <h6 className='font-bold w-40 ml-2'> Daily Sales: </h6>
+              <Marquee
+                className='marquee bg-slate-300'
+                pauseOnClick={true}
+                autoFill={true}
+                gradient={true}
+                gradientColor='#f3f4f6'
+              >
+                <div className='marquee-item mr-14'>
+                  <h6 className='font-bold'>Total Sales: {data.TotalSales}</h6>
+                </div>
+                <div className='marquee-item mr-14'>
+                  <h6 className='font-bold'>
+                    Top Selling Event:{' '}
+                    <span className='font-normal'>
+                      {' '}
+                      {data.TopSellingEvent}{' '}
+                    </span>
+                  </h6>
+                </div>
+                <div className='marquee-item mr-14'>
+                  <h6 className='font-bold'>
+                    Total Customers:{' '}
+                    <span className='font-normal'>{data.TotalCustomers}</span>
+                  </h6>
+                </div>
+                <div className='marquee-item mr-14'>
+                  <h6 className='font-bold'>
+                    Discounts Applied:{' '}
+                    <span className='font-normal'>{data.DiscountsApplied}</span>
+                  </h6>
+                </div>
+                <div className='marquee-item mr-14'>
+                  <h6 className='font-bold'>
+                    Last Sale:{' '}
+                    <span className='font-normal'>{data.LastSale}</span>
+                  </h6>
+                </div>
+              </Marquee>
+            </div>
+          </div>
+          <div className='marquee-container mb-5'>
+            <div className='flex space-x-2'>
+              <h6 className='font-bold w-40 ml-2'> Donation Info: </h6>
+              <Marquee
+                className='marquee bg-slate-300 mt-1'
+                pauseOnClick={true}
+                autoFill={true}
+                gradient={true}
+                gradientColor='#f3f4f6'
+              >
+                <div className='marquee-item mr-7'>
+                  <h6 className='font-bold'>
+                    Total Donations:{' '}
+                    <span className='font-normal'>
+                      {DONdata.TotalDonations}
+                    </span>
+                  </h6>
+                </div>
+                <div className='marquee-item mr-7'>
+                  <h6 className='font-bold'>
+                    Largest Donation:{' '}
+                    <span className='font-normal'>
+                      {DONdata.LargestDonation}
+                    </span>
+                  </h6>
+                </div>
+                <div className='marquee-item mr-7'>
+                  <h6 className='font-bold'>
+                    Average Donation:{' '}
+                    <span className='font-normal'>
+                      {DONdata.AverageDonation}
+                    </span>
+                  </h6>
+                </div>
+                <div className='marquee-item mr-7'>
+                  <h6 className='font-bold'>
+                    Top Donor:{' '}
+                    <span className='font-normal'>{DONdata.TopDonor}</span>
+                  </h6>
+                </div>
+                <div className='marquee-item mr-7'>
+                  <h6 className='font-bold'>
+                    Recent Donor:{' '}
+                    <span className='font-normal'>{DONdata.RecentDonor}</span>
+                  </h6>
+                </div>
+              </Marquee>
+            </div>
+          </div>
+
           <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-5 '>
             <ListLink
               gradientClasses='bg-gradient-to-r from-sky-500 to-indigo-500'
@@ -32,7 +137,7 @@ const ReportingList = () => {
                 </svg>
               }
               size='md'
-              title='Credit Card Reconciliation report'
+              title='Credit Card Reconciliation Report'
               route='/admin/reporting/credit-card-reconciliation'
               description='Use this report to reconcile with your credit card processor. Summarizes all credit card transactions during a particular date range, grouped by event, as well as any other transactions that involve Fees.'
             />
@@ -79,7 +184,7 @@ const ReportingList = () => {
               }
               size='md'
               title='Daily Sales Report'
-              route='/admin/reporting/Daily-Sales-Report'
+              route='/donor/reports'
               description='Use this to report on all box office transactions durin a particular date range (or choose "Yesterday"). The report is grouped by Payment Method and event, and includes donations and all fees.'
             />
             <ListLink
