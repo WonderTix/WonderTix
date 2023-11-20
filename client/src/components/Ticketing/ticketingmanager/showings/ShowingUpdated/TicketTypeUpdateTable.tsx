@@ -174,6 +174,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       type={'number'}
                       component={InputControl}
                       hidden={true}
+                      disabled={InstanceTicketTypesField.value[index].tickettypeid_fk == 0}
                       label={'Ticket Price'}
                       id={eventInstanceID}
                       currency={true}

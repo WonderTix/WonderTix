@@ -491,8 +491,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
           tickettypeid_fk: +type.tickettypeid_fk,
           ...(type.seasontickettypepricedefaultid_fk && {seasontickettypepricedefaultid_fk: type.seasontickettypepricedefaultid_fk}),
           ticketlimit: tickets,
-          ticketssold: 0,
-          price: +type.price,
+          price: type.tickettypeid_fk === 0? 0: +type.price,
           concessionprice: +type.concessionprice,
           eventtickets: {
             create: Array(tickets).fill({

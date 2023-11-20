@@ -32,7 +32,6 @@ async function seedTicketRestrictions(prisma: PrismaClient) {
           eventinstanceid_fk: instance.eventinstanceid,
           tickettypeid_fk: type.tickettypeid,
           ticketlimit: instance.totalseats ?? 100,
-          ticketssold: 0,
           price: type.price,
           concessionprice: type.concessions,
           eventtickets: {
@@ -52,7 +51,6 @@ async function seedTicketRestrictions(prisma: PrismaClient) {
           eventinstanceid_fk: +item.eventinstanceid_fk,
           tickettypeid_fk: item.tickettypeid_fk,
           ticketlimit: Math.min(item.ticketlimit, instance.totalseats),
-          ticketssold: 0,
           price: type.price,
           concessionprice: type.concessions,
           eventtickets: {

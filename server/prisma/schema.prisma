@@ -299,7 +299,6 @@ model ticketrestrictions {
   eventinstanceid_fk                Int
   tickettypeid_fk                   Int
   ticketlimit                       Int
-  ticketssold                       Int?                          @default(0)
   price                             Decimal                       @default(0) @db.Money
   concessionprice                   Decimal                       @default(0) @db.Money
   seasontickettypepricedefaultid_fk Int?

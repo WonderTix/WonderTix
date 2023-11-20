@@ -159,7 +159,7 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
             data: {
               seasonid_fk: +id,
               tickettypeid_fk,
-              price,
+              price: tickettypeid_fk === 0? 0: price,
               concessionprice,
             },
           }),

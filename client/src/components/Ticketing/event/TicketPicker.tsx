@@ -345,6 +345,9 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
               process.env.REACT_APP_API_2_URL +
               `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketType.id}`,
           );
+          if (!response.ok) {
+            throw response;
+          }
           const data = await response.json();
           setnumAvail(data.ticketlimit - data.ticketssold);
         } catch (error) {

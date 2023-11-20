@@ -43,7 +43,7 @@ export const validateTicketRestrictionsOnUpdate = (
     return prisma.ticketrestrictions.create({
       data: {
         ...newRestriction,
-        price: +newRestriction.price,
+        price: newRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
         concessionprice: +newRestriction.concessionprice,
         ticketlimit: tickets,
         eventinstanceid_fk: +eventInstance.eventinstanceid,
@@ -106,7 +106,7 @@ const getTicketRestrictionUpdate = (
     },
     data: {
       ticketlimit: +newRestriction.ticketlimit,
-      price: +newRestriction.price,
+      price: oldRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
       concessionprice: +newRestriction.concessionprice,
       ...(newRestriction.seasontickettypepricedefaultid_fk && {seasontickettypepricedefault_fk: +newRestriction.seasontickettypepricedefaultid_fk}),
       ...(difference > 0 && {
