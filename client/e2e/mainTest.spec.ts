@@ -3,7 +3,7 @@ import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
 import {ContactPage} from './pages/contactPage';
 import {DoorListPage} from './pages/doorListPage';
-import {EventsInfo2, ShowingInfo2, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
+import {EventsInfo5, ShowingInfo2, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {
@@ -25,7 +25,7 @@ test('check cart after ticket add', async ({page}) => {
   test.setTimeout(60000);
   const events = new EventsPage(page);
   const main = new MainPage(page);
-  const currentEvent = EventsInfo2;
+  const currentEvent = EventsInfo5;
   const currentShowing = ShowingInfo2;
   await events.goto();
   await events.addnewevent(currentEvent);
@@ -65,7 +65,7 @@ test('check stripe purchase', async ({page}) => {
   test.setTimeout(80000);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo2;
+  const currentEvent = EventsInfo5;
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -78,9 +78,9 @@ test('check stripe purchase', async ({page}) => {
     await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000});
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo2.eventFullName);
+    await events.goToEventFromManage(EventsInfo5.eventFullName);
     await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo2.eventFullName);
+    await events.deleteTheEvent(EventsInfo5.eventFullName);
   }
 });
 
@@ -90,7 +90,7 @@ test('check contact is added after order', async ({page}) => {
   test.setTimeout(80000);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo2;
+  const currentEvent = EventsInfo5;
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -106,9 +106,9 @@ test('check contact is added after order', async ({page}) => {
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo2.eventFullName);
+    await events.goToEventFromManage(EventsInfo5.eventFullName);
     await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo2.eventFullName);
+    await events.deleteTheEvent(EventsInfo5.eventFullName);
   }
 });
 
@@ -117,7 +117,7 @@ test('check order accommodations', async ({page}) => {
   test.setTimeout(80000);
   const currentPatron = JaneDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo2;
+  const currentEvent = EventsInfo5;
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -133,9 +133,9 @@ test('check order accommodations', async ({page}) => {
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo2.eventFullName);
+    await events.goToEventFromManage(EventsInfo5.eventFullName);
     await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo2.eventFullName);
+    await events.deleteTheEvent(EventsInfo5.eventFullName);
   }
 });
 
@@ -145,7 +145,7 @@ test('check ticket inc/dec in cart', async ({page}) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
   const quantity = 2;
-  const currentEvent = EventsInfo2;
+  const currentEvent = EventsInfo5;
   const currentShowing = ShowingInfo2;
   await events.goto();
   await events.addnewevent(currentEvent);
@@ -177,7 +177,7 @@ test('check order on door list', async ({page}) => {
   test.setTimeout(100000);
   const currentPatron = JaneDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo2;
+  const currentEvent = EventsInfo5;
   const currentShowing = ShowingInfo2;
   const quantity = 2;
   const events = new EventsPage(page);

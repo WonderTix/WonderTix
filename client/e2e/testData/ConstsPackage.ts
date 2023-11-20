@@ -46,6 +46,13 @@ export const EventsInfo4: EventsInfo = {
   eventFullName: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
+export const EventsInfo5: EventsInfo = {
+  eventName: 'The Martyr',
+  eventDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventURL: 'https://upload.wikimedia.org/wikipedia/commons/9/9e/Martirio_de_San_Esteban_%28Correa_de_Vivar%29.jpg',
+  eventFullName: 'The Martyr Playbill The Martyr Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+};
+
 //  This is the passin data template for adding/editing a new showing
 export interface ShowingInfo {
   showingDate: string;
