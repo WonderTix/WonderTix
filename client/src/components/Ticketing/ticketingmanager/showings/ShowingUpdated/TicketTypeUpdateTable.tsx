@@ -5,7 +5,6 @@ import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
 import {getTicketTypePrice} from './ShowingUtils';
-import {getNumTickets} from '../../ticketing/ticketingSlice';
 
 interface TicketTypeTableProps {
   arrayHelpers;
