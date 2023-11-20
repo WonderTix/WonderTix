@@ -242,7 +242,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
  *   put:
  *     summary: refund an order based on order id
  *     tags:
- *     - Refund Order
+ *     - New Order
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     responses:

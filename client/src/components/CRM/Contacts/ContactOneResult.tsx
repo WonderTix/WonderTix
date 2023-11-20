@@ -229,7 +229,7 @@ export const ContactDisplayTicket = ({
     orderid,
     ordertime,
     ordertotal,
-    refunded,
+    refund_intent,
   } = data;
   if (orderid != null) {
     return (
@@ -254,14 +254,14 @@ export const ContactDisplayTicket = ({
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>Refunded:</div>
-            <div>{refunded}</div>
+            <div>{refund_intent ? 'True' : 'False'}</div>
           </div>
           <button
             className='px-2 py-1 bg-blue-500 disabled:opacity-30
               mt-6 mb-4 text-white rounded-lg text-sm'
             onClick={() => handleRefund(orderid, ordertotal)}
           >
-            Refund
+            Refund (this does not work)
           </button>
         </div>
       </div>
