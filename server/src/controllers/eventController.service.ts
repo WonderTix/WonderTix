@@ -112,35 +112,74 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-    if (item.price < 0) {
-      throw new InvalidInputError(
-          422,
-          `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
-      );
-    }
-    orderItems = orderItems.concat(
-        getTickets(
-            prisma,
-            eventInstance.ticketTypeMap,
-            item.typeID,
-            item.qty,
-            item.price,
-        ),
-    );
-    cartRows.push({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: eventInstance.events.eventname,
-          description: item.desc,
-        },
-        unit_amount: item.price * 100,
-      },
-      quantity: item.qty,
-    });
 
-    orderTotal += item.price * item.qty;
+    // Pay What You Can tickets are a single price for the entire cart row so the order
+    // of ticket must show up as a single price for 1 item in Stripe
+    if (item.payWhatCan && item.payWhatPrice) {
+      if (item.payWhatPrice < 0) {
+        throw new InvalidInputError(
+            422,
+            `Ticket Price ${item.payWhatPrice} for showing ${item.product_id} of ${item.name} is invalid`,
+        );
+      }
+
+      orderItems = orderItems.concat(
+          getTickets(
+              prisma,
+              eventInstance.ticketTypeMap,
+              item.typeID,
+              item.qty,
+              item.payWhatPrice / item.qty,
+          ),
+      );
+
+      cartRows.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: eventInstance.events.eventname,
+            description: `${item.desc}, Qty ${item.qty}`,
+          },
+          unit_amount: item.payWhatPrice * 100,
+        },
+        quantity: 1,
+      });
+
+      orderTotal += item.payWhatPrice;
+    } else {
+      if (item.price < 0) {
+        throw new InvalidInputError(
+            422,
+            `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+        );
+      }
+
+      orderItems = orderItems.concat(
+          getTickets(
+              prisma,
+              eventInstance.ticketTypeMap,
+              item.typeID,
+              item.qty,
+              item.price,
+          ),
+      );
+
+      cartRows.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: eventInstance.events.eventname,
+            description: item.desc,
+          },
+          unit_amount: item.price * 100,
+        },
+        quantity: item.qty,
+      });
+
+      orderTotal += item.price * item.qty;
+    }
   }
+
   for (const [, instance] of eventInstanceMap) {
     eventInstanceQueries.push(
         prisma.eventinstances.update({
@@ -168,6 +207,7 @@ export const getOrderItems = async (
         }),
     );
   }
+
   return {
     cartRows,
     orderItems,
@@ -214,7 +254,7 @@ const getTickets = (
   }));
 };
 
-interface checkOutForm {
+interface checkoutForm {
   firstName: string;
   lastName: string;
   streetAddress: string;
@@ -229,7 +269,7 @@ interface checkOutForm {
 }
 
 export const updateContact = async (
-    formData: checkOutForm,
+    formData: checkoutForm,
     prisma: ExtendedPrismaClient,
 ) => {
   const existingContact = await prisma.contacts.findFirst({
@@ -267,27 +307,26 @@ export const updateContact = async (
   return updatedContact;
 };
 
-const validateContact = (formData: checkOutForm) => {
+const validateContact = (formData: checkoutForm) => {
   return {
     firstname: validateName(formData.firstName, 'First Name'),
     lastname: validateName(formData.lastName, 'Last Name'),
     email: validateWithRegex(
         formData.email,
         `Email: ${formData.email} is invalid`,
-        new RegExp('.+\\@.+\\..+'),
+        new RegExp('.+@.+\\..+'),
     ),
-    address: validateWithRegex(
-        formData.streetAddress,
-        `Street Address: ${formData.streetAddress} is invalid`,
-        new RegExp('.*'),
-    ),
-    phone: validateWithRegex(
-        formData.phone,
-        `Phone Number: ${formData.phone} is invalid`,
-        new RegExp('^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
-    ),
-    seatingaccom: formData.seatingAcc,
-    newsletter: formData.optIn,
+    // Only include or validate the following if provided
+    ...(formData.streetAddress && {address: formData.streetAddress}),
+    ...(formData.phone && {
+      phone: validateWithRegex(
+          formData.phone,
+          `Phone Number: ${formData.phone} is invalid`,
+          new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
+      ),
+    }),
+    ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
+    ...(formData.optIn && {newsletter: formData.optIn}),
   };
 };
 
@@ -297,6 +336,7 @@ const validateName = (name: string, type: string): string => {
   }
   return name;
 };
+
 const validateWithRegex = (
     toValidate: string,
     errorMessage: string,
