@@ -239,7 +239,7 @@ model seasontickettypepricedefault {
   price              Decimal              @default(0) @db.Money
   concessionprice    Decimal              @default(0) @db.Money
   season             seasons              @relation(fields: [seasonid_fk], references: [seasonid], onDelete: Cascade, onUpdate: Cascade)
-  tickettype         tickettype           @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: Restrict, onUpdate: Cascade)
+  tickettype         tickettype           @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: Cascade, onUpdate: Cascade)
   ticketrestrictions ticketrestrictions[]
 
   @@unique([seasonid_fk, tickettypeid_fk])

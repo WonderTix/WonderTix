@@ -8,7 +8,7 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
-import {getTicketTypePrice} from './ShowingUtils';
+import {getTicketTypeKeyValue} from './ShowingUtils';
 
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
@@ -39,8 +39,8 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
             tickettypeid_fk: 1,
             seasontickettypepricedefaultid_fk: null,
             ticketlimit: 0,
-            price: getTicketTypePrice(1, 'price', ticketTypes),
-            concessionprice: getTicketTypePrice(1, 'concessions', ticketTypes),
+            price: getTicketTypeKeyValue(1, 'price', ticketTypes),
+            concessionprice: getTicketTypeKeyValue(1, 'concessions', ticketTypes),
           },
         ],
     salestatus: true,
@@ -102,7 +102,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 className={inputControlClassName}
                 onChange={async (event) => {
                   const defaultType = values.instanceTicketTypes.findIndex(
-                    (type) => type.tickettypeid_fk === 1,
+                    (type) => type.tickettypeid_fk === +values.defaulttickettype,
                   );
                   await setFieldValue('totalseats', event.target.value);
                   await setFieldValue(

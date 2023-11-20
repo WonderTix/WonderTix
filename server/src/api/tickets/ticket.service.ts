@@ -6,7 +6,7 @@ import {pool} from '../db';
 // remove $ and parse to float
 // this should be done better
 // check if $ in string, or maybe consider other forms of currency?
-export const parseMoneyString = (s: string) => Number.parseFloat(s.replace('$', ''));
+const parseMoneyString = (s: string) => Number.parseFloat(s.replace('$', ''));
 
 
 //

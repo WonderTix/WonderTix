@@ -80,6 +80,14 @@ const openApiSpec = swaggerJsdoc({
             type: 'integer',
           },
         },
+        tickettypeid: {
+          name: 'tickettypeid',
+          in: 'path',
+          description: 'ticket type id',
+          schema: {
+            type: 'integer',
+          },
+        },
         updatedStatus: {
           name: 'updatedStatus',
           in: 'path',
@@ -618,7 +626,7 @@ const createServer = async () => {
   app.use('/api/2/ticket-restriction', ticketRestrictionController);
   app.use('/api/2/ticket-type', ticketTypeController);
   app.use('/api/2/user', userController);
-  app.use('/api/2/season-ticket-price-default', seasonTicketTypePriceDefaultController);
+  app.use('/api/2/season-ticket-type-price-default', seasonTicketTypePriceDefaultController);
 
   // other
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));

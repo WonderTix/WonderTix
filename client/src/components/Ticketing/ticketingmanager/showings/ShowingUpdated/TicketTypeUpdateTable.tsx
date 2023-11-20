@@ -4,7 +4,7 @@ import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
-import {getTicketTypePrice} from './ShowingUtils';
+import {getTicketTypeKeyValue} from './ShowingUtils';
 
 interface TicketTypeTableProps {
   arrayHelpers;
@@ -15,8 +15,9 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
   const {ticketTypes, showPopUp} = useEvent();
   const [InstanceTicketTypesField] = useField('instanceTicketTypes');
+  const [defaulttickettype] = useField('defaulttickettype');
   const defaultType = InstanceTicketTypesField.value.findIndex(
-    (item) => item.tickettypeid_fk === 1,
+    (item) => item.tickettypeid_fk === +defaulttickettype.value,
   );
   const [availableTypes, setAvailableTypes] = useState(
     ticketTypes
@@ -24,7 +25,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
         (type) =>
           !InstanceTicketTypesField.value.find(
             (value) => value.tickettypeid_fk === Number(type.id),
-          ) && Number(type.id) !== 1,
+          ) && Number(type.id) !== defaulttickettype.value,
       )
       .map((value) => Number(value.id)),
   );
@@ -61,12 +62,12 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   onClick={async () => {
                     arrayHelpers.insert(0, {
                       tickettypeid_fk: availableTypes[0],
-                      price: getTicketTypePrice(
+                      price: getTicketTypeKeyValue(
                         availableTypes[0],
                         'price',
                         ticketTypes,
                       ),
-                      concessionprice: getTicketTypePrice(
+                      concessionprice: getTicketTypeKeyValue(
                         availableTypes[0],
                         'concessions',
                         ticketTypes,
@@ -106,7 +107,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
           {defaultType >= 0 && (
             <tr className={'bg-gray-200'}>
               <td className={'px-2 border border-white'}>
-                {getTicketTypePrice(1, 'description', ticketTypes)}
+                {getTicketTypeKeyValue(1, 'description', ticketTypes)}
               </td>
               <td className={'px-2 border border-white'}>
                 <Field

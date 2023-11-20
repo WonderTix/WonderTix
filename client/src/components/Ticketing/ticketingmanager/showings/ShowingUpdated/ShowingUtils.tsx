@@ -178,7 +178,7 @@ export const getShowingData = async (eventID, setShowingData, signal) => {
   }
 };
 
-export const getTicketTypePrice = (
+export const getTicketTypeKeyValue = (
   id: number,
   priceType: string,
   ticketTypes,

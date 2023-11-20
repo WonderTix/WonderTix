@@ -11,7 +11,7 @@ export const ticketRestrictionController = Router();
  * @swagger
  * /2/ticket-restriction:
  *   get:
- *     summary: get all Ticket Restrictions
+ *     summary: get all Ticket Restrictions for which there are tickets available
  *     tags:
  *     - New Ticket Restrictions
  *     responses:
@@ -41,13 +41,9 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
       where: {
         eventinstances: {
           deletedat: null,
+          availableseats: {gt: 0},
           events: {
             active: true,
-          },
-        },
-        eventtickets: {
-          some: {
-            singleticket_fk: null,
           },
         },
       },
@@ -71,7 +67,6 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
               ticketlimit: restriction.ticketlimit,
             })));
   } catch (error) {
-    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
       return;
@@ -84,15 +79,43 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /2/ticket-restriction/{id}:
+ *   get:
+ *     summary: get all Ticket Restrictions associated with a specific event instance for which there are tickets available
+ *     tags:
+ *     - New Ticket Restrictions
+ *     responses:
+ *       200:
+ *         description: fetch successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               $ref: '#/components/schemas/TicketRestriction'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
 ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
   try {
     const {id}= req.params;
 
     const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
-        eventinstanceid_fk: +id,
-        eventtickets: {
-          some: {singleticket_fk: null},
+        eventinstances: {
+          eventinstanceid: +id,
+          availableseats: {gt: 0},
         },
       },
       include: {
@@ -112,7 +135,6 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
           };
         }));
   } catch (error) {
-    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
       return;
@@ -125,16 +147,47 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /2/ticket-restriction/{id}/{tickettypeid}:
+ *   get:
+ *     summary: get all Ticket Restrictions associated with a specific event instance/ticket type for which there are tickets available
+ *     tags:
+ *     - New Ticket Restrictions
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     - $ref: '#/components/parameters/tickettypeid'
+ *     responses:
+ *       200:
+ *         description: fetch successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               $ref: '#/components/schemas/TicketRestriction'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
 ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: Response) => {
   try {
     const {id, tickettypeid} = req.params;
 
     const ticketRestriction: LoadedTicketRestriction | null = await prisma.ticketrestrictions.findFirst({
       where: {
-        eventinstanceid_fk: +id,
         tickettypeid_fk: +tickettypeid,
-        eventtickets: {
-          some: {singleticket_fk: null},
+        eventinstances: {
+          eventinstanceid: +id,
+          availableseats: {gt: 0},
         },
       },
       include: {
@@ -154,7 +207,6 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
       ticketssold: eventtickets.length,
     });
   } catch (error) {
-    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
       return;

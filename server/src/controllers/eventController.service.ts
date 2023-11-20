@@ -115,12 +115,13 @@ export const getOrderItems = async (
       );
     }
     if ((item.payWhatCan && item.payWhatPrice && item.payWhatPrice < 0)||item.price < 0) {
-        throw new InvalidInputError(
-            422,
-            `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
-        );
+      throw new InvalidInputError(
+          422,
+          `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+      );
     }
     const price = item.payWhatCan? item.payWhatPrice ?? 0: item.price;
+    const quantity = item.payWhatCan? 1: item.qty;
     orderItems = orderItems.concat(
         getTickets(
             eventInstance.ticketRestrictionMap.get(item.typeID),
@@ -138,7 +139,7 @@ export const getOrderItems = async (
         },
         unit_amount: price * 100,
       },
-      quantity: item.payWhatCan? 1: item.qty,
+      quantity: quantity,
     });
 
     orderTotal += item.payWhatCan? price: price * item.qty;
@@ -176,14 +177,12 @@ const getTickets = (
   }
 
   if (
-    ticketRestriction.eventtickets.length < quantity ||
-    (defaultTicketRestriction !== ticketRestriction && defaultTicketRestriction.eventtickets.length < quantity)
-  ) {
+    ticketRestriction.eventtickets.length < quantity || defaultTicketRestriction.eventtickets.length < quantity) {
     throw new InvalidInputError(422, `Requested tickets no longer available`);
   }
 
   const ticketsToSellForType = ticketRestriction.eventtickets.splice(0, quantity).map((ticket) => ticket.eventticketid);
-  const ticketsToSellForGA = ticketRestriction !== defaultTicketRestriction?
+  const ticketsToSellForDefault = ticketRestriction !== defaultTicketRestriction?
       defaultTicketRestriction.eventtickets
           .splice(0, quantity)
           .map((ticket) => ticket.eventticketid):
@@ -198,7 +197,7 @@ const getTickets = (
             {
               eventticketid: ticketID,
             },
-            ...(ticketRestriction !== defaultTicketRestriction? [{eventticketid: ticketsToSellForGA[index]}]:[]),
+            ...(ticketRestriction !== defaultTicketRestriction? [{eventticketid: ticketsToSellForDefault[index]}]:[]),
           ],
         },
       },

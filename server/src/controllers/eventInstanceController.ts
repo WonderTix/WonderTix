@@ -28,7 +28,7 @@ const getDate = (time: string, date: number) => {
  *    get:
  *      summary: get list of instances with available seats
  *      tags:
- *        - New Ticket Restrictions
+ *        - New Event Instances
  *      security:
  *        - bearerAuth: []
  *      responses:
@@ -59,13 +59,14 @@ const getDate = (time: string, date: number) => {
  *                                concession_price: {type: integer}
  *                                date: {type: string}
  *                        allIds: {type: array, items: {type: integer}}
- *                  status:
- *                    type: object
- *                    properties:
- *                      success: {type: boolean}
- *                      message: {type: string}
- *        400:
- *          description: Bad request
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
   try {
@@ -73,6 +74,9 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
       where: {
         salestatus: true,
         availableseats: {gt: 0},
+        events: {
+          active: true,
+        },
       },
       include: {
         ticketrestrictions: {
@@ -98,7 +102,6 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
         concession_price: defaultRestriction?.concessionprice,
       }};
     });
-
     res.send({data: {allIds, byId}});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -571,7 +574,6 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
         ticketrestrictions: {
           include: {
             eventtickets: true,
-
           },
         },
       },

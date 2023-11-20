@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import {eventInstanceRequest, instanceTicketType,} from '../interfaces/Event';
+import {eventInstanceRequest, instanceTicketType} from '../interfaces/Event';
 import {eventinstances, eventtickets, ticketrestrictions} from '@prisma/client';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
@@ -76,7 +76,7 @@ const getTicketRestrictionUpdate = (
         ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
       },
     })];
-  } else if ((!newRestriction || !newRestriction.ticketlimit) && !availableTickets.length) {
+  } else if ((!newRestriction || !newRestriction.ticketlimit) && !soldTickets.length) {
     throw new InvalidInputError(
         422,
         `Can not remove default ticket type`,
@@ -121,7 +121,7 @@ const getTicketRestrictionUpdate = (
         [prisma.eventtickets.deleteMany({
           where: {
             eventticketid: {in: availableTickets
-                .splice(0, Math.abs(difference))
+                .slice(0, Math.abs(difference))
                 .map((ticket) => ticket.eventticketid),
             }}})]: []
   )];

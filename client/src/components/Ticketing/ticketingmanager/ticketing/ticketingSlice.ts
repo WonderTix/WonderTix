@@ -184,8 +184,15 @@ export interface ticketingState {
 const fetchData = async (url: string) => {
   try {
     const res = await fetch(url);
+      if (!res.ok) {
+          throw res;
+      }
     return await res.json();
   } catch (err) {
+      if (err instanceof Response) {
+          console.error(await err.json());
+          return;
+      }
     console.error(err.message);
   }
 };

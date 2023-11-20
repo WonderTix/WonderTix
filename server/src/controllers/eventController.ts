@@ -197,6 +197,12 @@ eventController.get('/slice', async (req: Request, res: Response) => {
     const events = await prisma.events.findMany({
       where: {
         active: true,
+        eventinstances: {
+          some: {
+            availableseats: {gt: 0},
+            salestatus: true,
+          },
+        },
       },
       orderBy: {
         eventid: 'desc',
@@ -204,6 +210,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           where: {
+            availableseats: {gt: 0},
             salestatus: true,
           },
         },

@@ -3,7 +3,7 @@ import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
-import {getTicketTypePrice} from './ShowingUtils';
+import {getTicketTypeKeyValue} from './ShowingUtils';
 
 import {LineItem} from './LineItem';
 
@@ -84,7 +84,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
                     key={`${showing.eventinstanceid} ${type.tickettypeid_fk} ${index}`}
                   >
                     <td className={'px-2'}>
-                      {getTicketTypePrice(
+                      {getTicketTypeKeyValue(
                         type.tickettypeid_fk,
                         'description',
                         ticketTypes,

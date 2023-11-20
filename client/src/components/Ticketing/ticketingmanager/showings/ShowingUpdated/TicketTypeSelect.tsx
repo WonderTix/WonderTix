@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEvent} from './EventProvider';
 import {useFormikContext} from 'formik';
-import {getTicketTypePrice} from './ShowingUtils';
+import {getTicketTypeKeyValue} from './ShowingUtils';
 
 export const TicketTypeSelect = (props: {
   field;
@@ -34,7 +34,7 @@ export const TicketTypeSelect = (props: {
         className={'w-full'}
       >
         <option value={Number.parseInt(field.value)}>
-          {getTicketTypePrice(Number(field.value), 'description', ticketTypes)}
+          {getTicketTypeKeyValue(Number(field.value), 'description', ticketTypes)}
         </option>
         {availableTypes &&
           availableTypes.map((ticketTypeID: any) => (
@@ -42,7 +42,7 @@ export const TicketTypeSelect = (props: {
               key={id + index + ticketTypeID + 'ticket type description'}
               value={Number.parseInt(ticketTypeID)}
             >
-              {getTicketTypePrice(
+              {getTicketTypeKeyValue(
                 Number(ticketTypeID),
                 'description',
                 ticketTypes,
