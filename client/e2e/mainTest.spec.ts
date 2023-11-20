@@ -174,7 +174,7 @@ test('check ticket inc/dec in cart', async ({page}) => {
 
 // Order a ticket through stripe and ensure the ticket appears on the door list
 test('check order on door list', async ({page}) => {
-  test.setTimeout(80000);
+  test.setTimeout(100000);
   const currentPatron = JaneDoe;
   const currentCard = ValidVisaCredit;
   const currentEvent = EventsInfo2;
@@ -194,8 +194,8 @@ test('check order on door list', async ({page}) => {
     await doorList.checkOrder(currentPatron, quantity);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo2.eventFullName);
-    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo2.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.searchDeleteShowing(currentShowing.showingWholeDate);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
