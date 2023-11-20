@@ -216,7 +216,7 @@ export class MainPage {
   // This function waits to see if it will pop up and handle it appropriately.
   async fillStripeInfo(customer: Customer, ccInfo: CreditCard) {
     await this.stripeEmail.fill(customer.email);
-    await this.page.waitForTimeout(6000);
+    await this.page.waitForTimeout(10000);
     if (await this.page.getByText('Use your saved information').isVisible()) {
       this.page.getByRole('button', {name: 'Cancel'}).click();
     }
@@ -236,18 +236,13 @@ export class MainPage {
   // Takes in a customer, credit card, event, and an optional quantity of tickets to purchase.
   // Date, time, and ticket type will be selected randomly.
   // Qty will be used to determine quantity if passed, otherwise will use a random quantity as well.
-  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo, qty?: number) {
+  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo, qty=2) {
     await this.goSelectShowing(event);
     // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
     await this.selectRandomDate();
     await this.selectRandomTime();
     await this.selectRandomTicketType();
-    if (typeof(qty) !== undefined) {
-      //  Can cast here as we've done our type check already
-      await this.selectTicketQuantity(<number>qty);
-    } else {
-      await this.selectRandomQuantity();
-    }
+    await this.selectTicketQuantity(qty);
     await this.clickGetTickets();
     await this.clickTakeMeThere();
     await this.clickCartCheckout();
