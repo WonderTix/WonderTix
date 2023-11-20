@@ -1,6 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 import Navigation from '../Navigation';
-import Tasks from './Tasks';
+import TaskManager from './TaskManager';
 
 /**
  * @returns {object} TasksMain - has Navigation
@@ -9,7 +9,7 @@ import Tasks from './Tasks';
 const TasksMain=() =>{
   return (
     <div className='flex flex-row  '>
-      <Tasks/>
+      <TaskManager/>
       <Navigation/>
     </div>
   );
