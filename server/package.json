@@ -7,6 +7,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed",
+    "prisma:init-deploy": "prisma generate && prisma migrate deploy && node --max-old-space-size=4096 ./node_modules/.bin/ts-node prisma/seed.ts",
     "start": "npm run prisma:init && nodemon --exec npx ts-node ./src/server.ts",
     "test": "echo -e 'Tests are disabled temporarily'",
     "test:jest": "npx jest --config ./jest.config.js"
@@ -21,7 +22,7 @@
     "npm": ">=8.0.0"
   },
   "dependencies": {
-    "@prisma/client": "^5.5.2",
+    "@prisma/client": "^5.5.0",
     "@types/supertest": "^2.0.12",
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
@@ -60,7 +61,7 @@
     "eslint": "^8.46.0",
     "eslint-config-google": "^0.14.0",
     "nodemon": "^3.0.1",
-    "prisma": "^5.5.2",
+    "prisma": "^5.5.0",
     "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"

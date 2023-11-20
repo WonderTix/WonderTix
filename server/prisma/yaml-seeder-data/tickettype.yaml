@@ -1,0 +1,23 @@
+- tickettypeid: 0
+  description: Pay What You Can
+  price: $0.00
+  concessions: $0.00
+  deprecated: false
+
+- tickettypeid: 1
+  description: General Admission - Adult
+  price: $20.00
+  concessions: $0.00
+  deprecated: false
+
+- tickettypeid: 2
+  description: General Admission - Child
+  price: $10.00
+  concessions: $0.00
+  deprecated: false
+
+- tickettypeid: 3
+  description: VIP
+  price: $30.00
+  concessions: $0.00
+  deprecated: false
