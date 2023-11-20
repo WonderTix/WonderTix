@@ -9,20 +9,11 @@ test('Homepage->Ticketing Dashboard',async({page}) => {
   await expect(dashboard.page).toHaveURL('/ticketing');
 });
 
-<<<<<<< HEAD
-test('Ticketing Dashboard->Door List',async({page}) => {
-  const dashboard = new DashboardPage(page);
-
-  await dashboard.DoorList();
-  await dashboard.backtoDashboard();
-  
-=======
 test('Ticketing Dashboard->DoorList', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
   await dashboard.DoorList();
   await dashboard.backToDashboard();
->>>>>>> origin/main
 });
 
 test('Ticketing Dashboard->Events',async({page}) => {
@@ -39,9 +30,6 @@ test('Ticketing Dashboard->PurchaseTickets',async({page}) => {
   await dashboard.ticketingURL();
 });
 
-<<<<<<< HEAD
-test('Ticketing Dashboard->CreateNewsletter',async({page}) => {
-=======
 test('Ticketing Dashboard->Seasons', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
@@ -50,7 +38,6 @@ test('Ticketing Dashboard->Seasons', async ({page}) => {
 });
 
 test('Ticketing Dashboard->CreateNewsletter', async ({page}) => {
->>>>>>> origin/main
   const dashboard = new DashboardPage(page);
 
   await dashboard.CreateNewsletter();
@@ -74,10 +61,6 @@ test('Ticketing Dashboard->TicketExchanges',async({page}) => {
   const dashboard = new DashboardPage(page);
 
   await dashboard.TicketExchanges();
-<<<<<<< HEAD
-  await dashboard.backtoDashboard();
-});
-=======
   await dashboard.backToDashboard();
 });
 
@@ -87,4 +70,4 @@ test('Ticketing Dashboard->RefundOrders', async ({page}) => {
   await dashboard.RefundOrders();
   await dashboard.backToDashboard();
 });
->>>>>>> origin/main
+
