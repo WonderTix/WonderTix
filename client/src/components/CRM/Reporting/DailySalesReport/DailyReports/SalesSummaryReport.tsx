@@ -146,6 +146,18 @@ const netRows = [
 ];
 
 const SalesSummaryReport: React.FC = (): React.ReactElement => {
+  const rowHeight = 36;
+  const headerHeight = 41;
+  const [grossTableRows, refundTableRows, netTableRows] = [
+    grossRows.length, refundRows.length, netRows.length,
+  ];
+
+  const [grossTableHeight, refundTableHeight, netTableHeight] = [
+    ((grossTableRows * rowHeight) + headerHeight),
+    ((refundTableRows * rowHeight) + headerHeight),
+    ((netTableRows * rowHeight) + headerHeight),
+  ];
+
   return (
     <div className='h-fit w-auto p-2 mb-4'>
       <h1 className='text-2xl font-bold p-2 my-2'>Sales Summary Report</h1>
@@ -157,7 +169,8 @@ const SalesSummaryReport: React.FC = (): React.ReactElement => {
           rows={grossRows}
           columns={grossColumns}
           disableSelectionOnClick
-          style={{height: 370, borderRadius: 0}}
+          density="compact"
+          style={{height: `${grossTableHeight}px`, borderRadius: 0}}
         />
       </div>
 
@@ -168,7 +181,8 @@ const SalesSummaryReport: React.FC = (): React.ReactElement => {
           rows={refundRows}
           columns={refundColumns}
           disableSelectionOnClick
-          style={{height: 370, borderRadius: 0}}
+          density="compact"
+          style={{height: `${refundTableHeight}px`, borderRadius: 0}}
         />
       </div>
 
@@ -179,7 +193,8 @@ const SalesSummaryReport: React.FC = (): React.ReactElement => {
           rows={netRows}
           columns={netColumns}
           disableSelectionOnClick
-          style={{height: 682, borderRadius: 0}}
+          density="compact"
+          style={{height: `${netTableHeight}px`, borderRadius: 0}}
         />
       </div>
     </div>

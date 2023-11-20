@@ -18,7 +18,7 @@ const TableActions: React.FC<TableActionsProps> = ({reloadTable, openModal}) => 
   return (
     <div className='mb-3 flex justify-between items-center gap-8 px-6'>
       <div className='flex flex-col w-80'>
-        <h1 className='text-4xl font-medium text-gray-800'>
+        <h1 className='text-4xl font-medium text-black'>
           Task Manager
         </h1>
         <p className='text-sm text-gray-500'>

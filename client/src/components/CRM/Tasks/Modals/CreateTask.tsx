@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {ClosingX, SpinAnimation} from '../SVGIcons';
 import {TableDataType, TABLE_DATA} from '../Table/TableData';
 
-interface CreateTaskProps {
+export interface CreateTaskProps {
   isVisible: boolean;
   onCancel: () => void;
   onSubmit: (createTask: TableDataType) => void;
@@ -117,7 +117,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({
             aria-describedby='assignee-name' aria-required='true' required
           />
           <span id='assignee-name'
-            className='mt-2 hidden text-sm text-red-500
+            className='mt-2 hidden text-xs font-semibold text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
             * Please provide the assignee&#39;s fullname (at least 3 characters).
@@ -142,7 +142,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({
           />
           <span
             id='assignee-email'
-            className='mt-2 hidden text-sm text-red-500
+            className='mt-2 hidden text-xs font-semibold text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
             * Please provide a valid email address.
@@ -165,7 +165,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({
             aria-describedby='subject-description' aria-required='true' required
           />
           <span id='subject-description'
-            className='mt-2 hidden text-sm text-red-500
+            className='mt-2 hidden text-xs font-semibold text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
             * Please provide a task subject (at least 3 characters).
@@ -188,7 +188,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({
             aria-describedby='task-relation' aria-required='true' required
           />
           <span id='task-relation'
-            className='mt-2 hidden text-sm text-red-500
+            className='mt-2 hidden text-xs font-semibold text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
             * Please provide a task relation (at least 3 characters).
@@ -211,7 +211,7 @@ const CreateTask: React.FC<CreateTaskProps> = ({
             aria-describedby='contact-name' aria-required='true' required
           />
           <span id='contact-name'
-            className='mt-2 hidden text-sm text-red-500
+            className='mt-2 hidden text-xs font-semibold text-red-500
             peer-[&:not(:placeholder-shown):not(:focus):invalid]:block'
           >
             * Please provide the contact&#39;s fullname (at least 3 characters).
@@ -297,10 +297,10 @@ const CreateTask: React.FC<CreateTaskProps> = ({
             className='py-2.5 px-6 w-48
               flex justify-center items-center rounded uppercase
               bg-black font-bold text-sm text-center text-white
-              group-invalid:pointer-events-none group-invalid:opacity-50
+              group-invalid:cursor-not-allowed group-invalid:opacity-50
               shadow shadow-gray-500 hover:shadow-inner active:opacity-75
               bg-gradient-to-t from-black to-gray-800 hover:bg-gradient-to-b
-              active:ring-2 active:ring-black'
+              active:ring-2 active:ring-black group-invalid:ring-0'
           >
             {isLoading ? <SpinAnimation /> : 'Submit'}
           </button>

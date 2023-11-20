@@ -1,7 +1,7 @@
 import React from 'react';
 import {WarningTriangleIcon} from '../SVGIcons';
 
-interface RemoveTaskProps {
+export interface RemoveTaskProps {
   isVisible: boolean;
   onCancel?: () => void;
   onSubmit?: () => void;

@@ -8,13 +8,13 @@ import {
   ClosingX,
 } from '../SVGIcons';
 
-type DetailsTaskProps = {
+export interface DetailTaskProps {
   isVisible: boolean;
   task: TableDataType | null;
   onCancel: () => void;
-};
+}
 
-const DetailTask: React.FC<DetailsTaskProps> = ({isVisible, task, onCancel}) => {
+const DetailTask: React.FC<DetailTaskProps> = ({isVisible, task, onCancel}) => {
   const {user} = useAuth0();
   const {picture} = user;
   const [sectionsVisibility, setSectionsVisibility] = useState({

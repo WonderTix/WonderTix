@@ -68,12 +68,16 @@ const paymentRows = [
 ];
 
 const PaymentSummaryReport: React.FC = (): React.ReactElement => {
+  const rowHeight = 36;
+  const paymentTableRows = paymentRows.length;
+  const paymentTableHeight = ((paymentTableRows * rowHeight) + rowHeight + 5);
+
   return (
     <div className='h-fit w-auto p-2 mt-4'>
       <h1 className='text-2xl font-bold p-2 my-2'>
         Payment Summary Report
         <span className='text-xl font-medium'>
-          {' (reflects "on hand" totals)'}
+          {' (Reflects "On Hand" Totals)'}
         </span>
       </h1>
 
@@ -84,7 +88,8 @@ const PaymentSummaryReport: React.FC = (): React.ReactElement => {
           rows={paymentRows}
           columns={paymentColumns}
           disableSelectionOnClick
-          style={{height: 474, borderRadius: 0}}
+          density="compact"
+          style={{height: `${paymentTableHeight}px`, borderRadius: 0}}
         />
       </div>
     </div>

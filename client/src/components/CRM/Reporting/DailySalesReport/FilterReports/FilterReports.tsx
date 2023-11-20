@@ -10,9 +10,12 @@ const SpinAnimation = (): React.ReactElement => {
   );
 };
 
-const FilterReports: React.FC<{
-  onGenerateClick: (beginDate: string, endDate: string) => void
-}> = ({onGenerateClick}): React.ReactElement => {
+type FilterReportsProps = {
+  onGenerateClick: (beginDate: string, endDate: string, showPriceLevel: boolean) => void;
+
+};
+
+const FilterReports: React.FC<FilterReportsProps> = ({onGenerateClick}): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false);
   const [viewOption, setViewOption] = useState('Today');
   const [beginDate, setBeginDate] = useState('');
@@ -26,7 +29,7 @@ const FilterReports: React.FC<{
 
     setTimeout(() => {
       setIsLoading(false);
-      onGenerateClick(beginDate, endDate);
+      onGenerateClick(beginDate, endDate, showPriceLevelDetail);
     }, 1000);
   };
 
