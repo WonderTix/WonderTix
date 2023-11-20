@@ -46,6 +46,11 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
             active: true,
           },
         },
+        eventtickets: {
+          some: {
+            singleticket_fk: null,
+          },
+        },
       },
       include: {
         eventtickets: {
@@ -116,6 +121,11 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
         eventinstances: {
           eventinstanceid: +id,
           availableseats: {gt: 0},
+        },
+        eventtickets: {
+          some: {
+            singleticket_fk: null,
+          },
         },
       },
       include: {
@@ -188,6 +198,11 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
         eventinstances: {
           eventinstanceid: +id,
           availableseats: {gt: 0},
+        },
+        eventtickets: {
+          some: {
+            singleticket_fk: null,
+          },
         },
       },
       include: {
