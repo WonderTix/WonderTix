@@ -1,7 +1,7 @@
 import React, {ReactElement, useEffect, useRef} from 'react';
 import {ListComponent} from './eventcard';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
-import {fetchTicketingData, fetchTicketRestrictionData} from '../ticketingmanager/ticketing/ticketingSlice';
+import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 
 /**
  * Events page
@@ -17,7 +17,6 @@ const Hero = (): ReactElement => {
 
   useEffect(()=>{
     void dispatch(fetchTicketingData());
-    void dispatch(fetchTicketRestrictionData());
   }, []);
 
   const handlePrevious = () => {

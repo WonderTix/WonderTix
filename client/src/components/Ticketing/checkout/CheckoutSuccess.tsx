@@ -16,6 +16,7 @@ interface CheckoutSuccessProp {
 
 /**
  * Displays the CheckoutSuccess page
+ *
  * @param CheckoutSuccessProp
  * @param CheckoutSuccessProp.completeOrderButton
  * @returns {ReactElement}
