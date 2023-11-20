@@ -10,7 +10,7 @@ type ModalComponentProps =
 
 type ModalManagerProps = {
   isModalOpen: boolean;
-  modalType: 'create' | 'update' | 'delete' | null;
+  modalType: 'detail' | 'create' | 'update' | 'delete' | null;
   selectedTask: TableDataType | null;
   onClose: () => void;
   onCreate: (task: TableDataType) => void;
@@ -64,10 +64,8 @@ const ModalManager: React.FC<ModalManagerProps> = ({
                 undefined
         }
       />
-    );
-  default:
-    return null;
-  }
+    </div>
+  );
 };
 
 export default ModalManager;

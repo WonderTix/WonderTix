@@ -39,11 +39,16 @@ const TABLE_HEADINGS = [
   'Actions',
 ];
 
-const ROWS_PER_PAGE = 15;
+// Task Priority
+export const taskPriority = (priority: 'Important' | 'Normal'): JSX.Element => {
+  if (priority === 'Important') {
+    return <ExclamationTriangleIcon size='4' />;
+  }
+};
 
 const TaskManager: React.FC = (): React.ReactElement => {
   const [tableRow, setTableRow] = useState<TableDataType[]>(TABLE_DATA);
-  const [modalType, setModalType] = useState<'create' | 'update' | 'delete' | null>(null);
+  const [modalType, setModalType] = useState<'detail' |'create' | 'update' | 'delete' | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [currentTab, setCurrentTab] = useState<string>('date');
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -52,11 +57,14 @@ const TaskManager: React.FC = (): React.ReactElement => {
   const [selectedTask, setSelectedTask] = useState<TableDataType | null>(null);
   const [filteredRows, setFilteredRows] = useState<TableDataType[]>(TABLE_DATA);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
+  const rowHeight = 48;
   const currentDate = new Date();
+  const tableHeight = (rowsPerPage * rowHeight) + rowHeight+1;
   const totalItems = filteredRows.length;
-  const indexOfLastRow = Math.min(currentPage * ROWS_PER_PAGE, totalItems);
-  const indexOfFirstRow = Math.max(0, indexOfLastRow - ROWS_PER_PAGE);
+  const indexOfLastRow = Math.min(currentPage * rowsPerPage, totalItems);
+  const indexOfFirstRow = Math.max(0, indexOfLastRow - rowsPerPage);
   const currentRows = filteredRows.slice(indexOfFirstRow, indexOfLastRow);
 
   // Reload Table
@@ -69,7 +77,7 @@ const TaskManager: React.FC = (): React.ReactElement => {
 
   // Open Modal
   const openModal = (
-    modal: 'create' | 'update' | 'delete',
+    modal: 'detail' | 'create' | 'update' | 'delete',
     task?: TableDataType,
   ): void => {
     setModalType(modal);
@@ -120,18 +128,11 @@ const TaskManager: React.FC = (): React.ReactElement => {
   };
 
   // Status Color
-  const taskStatus = (status: 'Pending' | 'Started' | 'Complete'): string => {
+  const taskStatus = (status: 'Pending' | 'Started' | 'Completed'): string => {
     switch (status) {
     case 'Pending': return 'rounded bg-gray-200 text-gray-900';
     case 'Started': return 'rounded bg-yellow-200 text-yellow-900';
     default: return 'rounded bg-green-200 text-green-900';
-    }
-  };
-
-  // Task Priority
-  const taskPriority = (priority: 'Important' | 'Normal'): JSX.Element => {
-    if (priority === 'Important') {
-      return <ExclamationTriangleIcon size='4' />;
     }
   };
 
@@ -170,7 +171,7 @@ const TaskManager: React.FC = (): React.ReactElement => {
           task.relatedTo.toLowerCase() === term ||
           task.contact.toLowerCase() === term ||
           (task.status.toLowerCase() === term &&
-          (term === 'complete' || term === 'started' || term === 'pending'))
+          (term === 'completed' || term === 'started' || term === 'pending'))
         );
       });
       setFilteredRows(updatedFilteredRows);
@@ -181,7 +182,7 @@ const TaskManager: React.FC = (): React.ReactElement => {
     let sortedRows: TableDataType[] = [...tableRow];
     switch (currentTab) {
     case 'date':
-      sortedRows = sortedRows.filter((row) => row.status !== 'Complete');
+      sortedRows = sortedRows.filter((row) => row.status !== 'Completed');
       sortedRows.sort((a, b) =>
         Math.abs(currentDate.getTime() - a.dueDate.getTime()) -
         Math.abs(currentDate.getTime() - b.dueDate.getTime()));
@@ -207,7 +208,7 @@ const TaskManager: React.FC = (): React.ReactElement => {
     const numberComparator = (key: string) =>
       (a: TableDataType, b: TableDataType) => a[key] - b[key];
     const statusComparator = (a: TableDataType, b: TableDataType) => {
-      const statusOrder = {'Pending': 1, 'Started': 2, 'Complete': 3};
+      const statusOrder = {'Completed': 1, 'Pending': 2, 'Started': 3};
       return statusOrder[a.status] - statusOrder[b.status];
     };
 
@@ -234,7 +235,7 @@ const TaskManager: React.FC = (): React.ReactElement => {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='md:ml-[16rem] md:mt-32 md:mr-16 sm:mt-[4rem] sm:mx-[0rem]'>
         <div className='bg-white shadow-md rounded-md w-100 md:mx-auto pt-5 h-fit
-          antialiased lg:subpixel-antialiased xl:antialiased'
+          antialiased lg:subpixel-antialiased xl:antialiased max-w-screen-lg mb-8'
         >
           <TableActions
             openModal={openModal}
@@ -249,13 +250,15 @@ const TaskManager: React.FC = (): React.ReactElement => {
           />
           <div
             className='relative overflow-y-auto mx-0'
-            style={{height: '769px', overflowY: 'auto'}}
+            style={{height: `${tableHeight}px`, overflowY: 'auto'}}
           >
             <table className='divide-y divide-gray-200 table-auto table w-full'>
-              <TableHead
-                headings={TABLE_HEADINGS}
-                onSort={handleColumnSort}
-              />
+              <thead className='table-header-group'>
+                <TableHead
+                  headings={TABLE_HEADINGS}
+                  onSort={handleColumnSort}
+                />
+              </thead>
               <tbody className='table-row-group divide-y divide-gray-200 items-center
                 text-sm tracking-tight md:tracking-normal font-normal'
               > {currentRows.length > 0 ? (
@@ -283,12 +286,16 @@ const TaskManager: React.FC = (): React.ReactElement => {
               onDelete={handleDeleteTask}
             />
           </div>
-          <div className='flex justify-between p-5 border-t'>
+          <div className='flex justify-between py-5 px-6 border-t'>
             <Pagination
               totalItems={totalItems}
               currentPage={currentPage}
-              itemsPerPage={ROWS_PER_PAGE}
-              onPageChange={(page: number) => setCurrentPage(page)}
+              itemsPerPage={rowsPerPage}
+              gotoPage={(page: number) => {
+                const newTotalPages = Math.ceil(totalItems / rowsPerPage);
+                setCurrentPage(Math.min(page, newTotalPages));
+              }}
+              onItemsPerPageChange={(newSize: number) => setRowsPerPage(newSize)}
             />
           </div>
         </div>

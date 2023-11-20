@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {TableDataType} from '../Table/TableData';
+import React, {useEffect, useState} from 'react';
+import {TABLE_DATA, TableDataType} from '../Table/TableData';
 import {ClosingX, SpinAnimation} from '../SVGIcons';
 
 export interface UpdateTaskProps {
@@ -8,6 +8,10 @@ export interface UpdateTaskProps {
   onCancel: () => void;
   onSubmit: (updatedTask: TableDataType) => void;
 }
+
+const showToast = (message: string) => {
+  alert(message);
+};
 
 const UpdateTask: React.FC<UpdateTaskProps> = ({
   task,
@@ -20,45 +24,31 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
   const [relatedTo, setRelatedTo] = useState(task.relatedTo);
   const [subject, setSubject] = useState(task.subject);
   const [contact, setContact] = useState(task.contact);
-  const [dueDate, setDueDate] = useState(task.dueDate.toISOString());
-  const [status, setStatus] = useState(task.status);
-  const [priority, setPriority] = useState(task.priority || 'Normal');
-  const [comments, setComments] = useState('');
+  const [dueDate, setDueDate] = useState(task.dueDate);
+  const [priority, setPriority] = useState(() => task.priority);
+  const [status, setStatus] = useState(() => task.status);
+  const [comments, setComments] = useState(task.comments);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState('');
 
   if (!isVisible || !task) {
     return null;
   }
 
-  const validateForm = (): boolean => {
-    const fields = [
-      {value: relatedTo, label: 'Related To'},
-      {value: assignedTo, label: 'Assigned To'},
-      {value: emailTo, label: 'Assignee Email'},
-      {value: subject, label: 'Task Subject'},
-      {value: contact, label: 'Contact'},
-      {value: dueDate, label: 'Due Date'},
-      {value: status, label: 'Task Status'},
-      {value: priority, label: 'Task Priority'},
-    ];
+  useEffect(() => {
+    setAssignedTo(task.assignedTo);
+    setemailTo(task.email);
+    setRelatedTo(task.relatedTo);
+    setSubject(task.subject);
+    setContact(task.contact);
+    setDueDate(task.dueDate);
+    setPriority(task.priority);
+    setStatus(task.status);
+    setComments(task.comments);
+  }, [task]);
 
-    const errorFields = fields
-      .filter((field) => !field.value)
-      .map((field) => field.label);
-
-    if (errorFields.length) {
-      setErrors(`Missing fields: *${errorFields.join(', *')}`);
-      return false;
-    }
-    setErrors('');
-    return true;
-  };
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
-    if (!validateForm()) return;
-
     setIsLoading(true);
 
     const updatedTask: TableDataType = {
@@ -69,44 +59,60 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
       subject: subject,
       contact: contact,
       dueDate: new Date(dueDate),
+      priority: priority as TableDataType['priority'],
       status: status as TableDataType['status'],
-      priority: priority === 'Important' ? 'Important' : undefined,
+      comments: comments as TableDataType['comments'],
     };
-    if (onSubmit) onSubmit(updatedTask);
+
+    setTimeout(() => {
+      setIsLoading(false);
+      showToast('Task updated successfully!');
+
+      if (onSubmit) onSubmit(updatedTask);
+      TABLE_DATA.push(updatedTask);
+    }, 1000);
   };
 
-  const handleReset = (): void => {
+  const handleReset = (e: React.FormEvent): void => {
+    e.preventDefault();
     setAssignedTo(task.assignedTo);
     setemailTo(task.email);
     setRelatedTo(task.relatedTo);
     setSubject(task.subject);
     setContact(task.contact);
-    setDueDate(task.dueDate.toISOString());
-    setStatus(task.status);
+    setDueDate(task.dueDate);
     setPriority(task.priority);
-    setComments('');
-    setErrors('');
+    setStatus(task.status);
+    setComments(task.comments);
+  };
+
+  const formatDate = (date: Date): string => {
+    const yyyy = date.getFullYear().toString();
+    const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+    const dd = date.getDate().toString().padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
   };
 
   return (
-    <div className='bg-black bg-opacity-50 flex justify-center items-center
-      fixed top-0 right-0 bottom-0 left-0 z-20 antialiased'
-    >
-      <div className='bg-white rounded-md shadow-lg p-5'>
+    <div className='bg-white rounded-md shadow-lg p-5 ml-48'>
+      <div className='flex flex-row justify-end'>
         <button
           type='button'
           title='Close'
           aria-label='Close'
           onClick={onCancel}
-          className='rounded hover:outline hover:outline-gray-300 p-1'
+          className='rounded p-1
+            hover:outline hover:outline-gray-300 active:bg-slate-100'
         >
           <ClosingX size='4' />
         </button>
-        <h1 className='text-center text-6xl bg-clip-text text-transparent
-          bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 pb-8'
-        >
-          Edit Task
-        </h1>
+      </div>
+      <h1 className='mb-8
+        text-center text-6xl bg-clip-text text-transparent tracking-tight
+        bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500'
+      >
+        Update Task
+      </h1>
 
       <form
         onReset={handleReset}
@@ -245,53 +251,51 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
             }}
             className='mt-1 p-1.5 w-full border rounded-md text-sm
               bg-slate-50 placeholder-gray-400 placeholder:italic'
-              aria-required='true'
-            />
-          </div>
-          <div className='mb-4'>
-            <label htmlFor='status' className='block font-semibold'>
-              Task Status
-            </label>
-            <select
-              id='status'
-              name='status'
-              value={status}
-              onChange={(e) => setStatus(
-                e.target.value as TableDataType['status'])}
-              className='mt-1 p-1.5 border rounded-md w-full text-sm'
-            >
-              <option value='Pending'>Pending</option>
-              <option value='Started'>Started</option>
-              <option value='Done'>Done</option>
-            </select>
-          </div>
-          <div className='mb-4'>
-            <label htmlFor='priority' className='block font-semibold'>
-              Task Priority
-            </label>
-            <select
-              id='priority'
-              name='priority'
-              value={priority}
-              onChange={(e) => setPriority(
-                e.target.value as TableDataType['priority'])}
-              className='mt-1 p-1.5 border rounded-md w-full text-sm'
-            >
-              <option value='Normal'>Normal</option>
-              <option value='Important'>Important</option>
-            </select>
-          </div>
-          <div className='mb-4'>
-            <label htmlFor='comments' className='block font-semibold'>
-              Comments
-            </label>
-            <textarea
-              id='comments'
-              name='comments'
-              value={comments}
-              placeholder='Add your comments here...'
-              onChange={(e) => setComments(e.target.value)}
-              className='mt-1 p-1.5 border rounded-md w-full text-sm
+            aria-required='true' required
+          />
+        </div>
+        <div className='mb-4'>
+          <label htmlFor='priority' className='block font-semibold'>
+            Task Priority
+          </label>
+          <select
+            id='priority'
+            name='priority'
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as TableDataType['priority'])}
+            className='mt-1 p-1.5 w-full border rounded-md text-sm'
+          >
+            <option value='Normal'>Normal</option>
+            <option value='Important'>Important</option>
+          </select>
+        </div>
+        <div className='mb-4'>
+          <label htmlFor='status' className='block font-semibold'>
+            Task Status
+          </label>
+          <select
+            id='status'
+            name='status'
+            value={status}
+            onChange={(e) => setStatus(e.target.value as TableDataType['status'])}
+            className='mt-1 p-1.5 w-full border rounded-md text-sm'
+          >
+            <option value='Pending'>Pending</option>
+            <option value='Started'>Started</option>
+            <option value='Completed'>Completed</option>
+          </select>
+        </div>
+        <div className='mb-4'>
+          <label htmlFor='comments' className='block font-semibold'>
+            Comments
+          </label>
+          <textarea
+            id='comments'
+            name='comments'
+            value={comments}
+            placeholder='Add your comments here...'
+            onChange={(e) => setComments(e.target.value as TableDataType['comments'])}
+            className='mt-1 p-1.5 w-full border rounded-md text-sm
               bg-slate-50 placeholder-gray-400 placeholder:italic'
           ></textarea>
         </div>
@@ -300,11 +304,11 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
             type='reset'
             title='Reset Form'
             className='py-2.5 px-6 w-48
-              flex justify-center items-center rounded
-              font-bold text-sm text-center text-gray-900 uppercase
-              shadow shadow-gray-500 hover:shadow-inner active:opacity-75
-              bg-gradient-to-t from-gray-500/50 to-gray-300 hover:bg-gradient-to-b
-              active:ring-2 active:ring-gray-500'
+            flex justify-center items-center rounded
+            font-bold text-sm text-center text-gray-900 uppercase
+            shadow shadow-gray-500 hover:shadow-inner active:opacity-75
+            bg-gradient-to-t from-gray-500/50 to-gray-300 hover:bg-gradient-to-b
+            active:ring-2 active:ring-gray-500'
           >
             Reset
           </button>
@@ -312,12 +316,12 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
             type='submit'
             title='Submit Task'
             className='py-2.5 px-6 w-48
-              flex justify-center items-center rounded uppercase
-              bg-black font-bold text-sm text-center text-white
-              group-invalid:cursor-not-allowed  group-invalid:opacity-50
-              shadow shadow-gray-500 hover:shadow-inner active:opacity-75
-              bg-gradient-to-t from-black to-gray-800 hover:bg-gradient-to-b
-              active:ring-2 active:ring-black group-invalid:ring-0'
+            flex justify-center items-center rounded uppercase
+            bg-black font-bold text-sm text-center text-white
+            group-invalid:cursor-not-allowed  group-invalid:opacity-50
+            shadow shadow-gray-500 hover:shadow-inner active:opacity-75
+            bg-gradient-to-t from-black to-gray-800 hover:bg-gradient-to-b
+            active:ring-2 active:ring-black group-invalid:ring-0'
           >
             {isLoading ? <SpinAnimation /> : 'Submit'}
           </button>
