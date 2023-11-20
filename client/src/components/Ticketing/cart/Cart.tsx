@@ -25,6 +25,17 @@ type Item = {
   payWhatCan: boolean;
   payWhatPrice?: number;
 };
+
+/**
+ * TargetItem is the type that can uniquely identify a cartItem
+ *
+ * @param {number} eventInstanceId is the id of the showing
+ * @param {number} ticketTypeId is the id of the ticket's ticket type
+ */
+type TargetItem = {
+  eventInstanceId: number;
+  ticketTypeId: number;
+}
 const itemCost = (item: Item) => item.price * item.qty;
 const subtotalReducer = (acc: number, item: Item) => {
   if (!item.payWhatCan) {
@@ -58,7 +69,7 @@ const Cart = (): ReactElement => {
   const items = useAppSelector(selectCartContents);
   const subtotal = items.reduce(subtotalReducer, 0);
   const [, setModalOpen] = useState(false);
-  const [targetItem, setTargetItem] = useState<number | null>(null);
+  const [targetItem, setTargetItem] = useState<TargetItem | null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
   const [removeContextMessage, setRemoveContextMessage] = useState('');
   const [discountText, setDiscountText] = useState<string | null>(null);
@@ -82,7 +93,10 @@ const Cart = (): ReactElement => {
   const handleRemove = () => {
     if (removeContext === RemoveContext.single) {
       if (targetItem) {
-        dispatch(removeTicketFromCart(targetItem));
+        dispatch(removeTicketFromCart({
+          id: targetItem.eventInstanceId,
+          tickettypeId: targetItem.ticketTypeId,
+        }));
         resetModal();
       }
     } else if (removeContext === RemoveContext.all) {
@@ -122,10 +136,10 @@ const Cart = (): ReactElement => {
     dispatch(removeDiscountFromCart());
   };
 
-  const displayModal = (id: number) => {
+  const displayModal = (eventInstanceId: number, ticketTypeId: number) => {
     setRemoveContext(RemoveContext.single);
     setRemoveContextMessage('this');
-    setTargetItem(id);
+    setTargetItem({eventInstanceId: eventInstanceId, ticketTypeId: ticketTypeId});
     handleClick2();
   };
 

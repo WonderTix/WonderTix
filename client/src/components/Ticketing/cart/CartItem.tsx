@@ -9,7 +9,7 @@ import {getImageDefault} from '../../../utils/imageURLValidation';
 
 interface CartRowProps {
   item: CartItem;
-  removeHandler: (id: number) => void;
+  removeHandler: (eventInstanceId: number, ticketTypeId: number) => void;
 }
 
 /**
@@ -29,7 +29,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
     if (item.qty > 1) {
       dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty - 1}));
     } else {
-      removeHandler(item.product_id);
+      removeHandler(item.product_id, item.typeID);
     }
   };
 
@@ -99,7 +99,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
           <button
             data-testid='remove-ticket'
             aria-label={`Remove ${item.name} from cart`}
-            onClick={() => removeHandler(item.product_id)}
+            onClick={() => removeHandler(item.product_id, item.typeID)}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'

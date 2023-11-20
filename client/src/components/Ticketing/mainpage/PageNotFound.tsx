@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from './Navbar';
 import {useNavigate} from 'react-router';
-import eImage from '../../../assets/error-404-image.png';
+import eImage from '../../../assets/error_404.png';
 
 const PageNotFound = () => {
   const navigate = useNavigate();
