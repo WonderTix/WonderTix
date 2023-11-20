@@ -9,15 +9,14 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import {useEffect, ReactElement} from 'react';
+import {useEffect, useState, ReactElement} from 'react';
 import {titleCase} from '../../../../utils/arrays';
-import {fetchTicketingData} from '../ticketing/ticketingSlice';
-import {useAppSelector, useAppDispatch} from '../../app/hooks';
 import {useNavigate} from 'react-router-dom';
 import {
   EventImage,
   getImageDefault,
 } from '../../../../utils/imageURLValidation';
+import ShowingActivenessToggle from '../../GroupToggle';
 
 /**
  * Uses dispatch, navigate, allEvents, and getData
@@ -26,26 +25,31 @@ import {
  * @returns {ReactElement} and dispatch(fetchTicketingData())
  */
 const InstancesPage = (): ReactElement => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  const allEvents = useAppSelector((state) => state.ticketing.events);
-  const getData = async () => {
-    return dispatch(fetchTicketingData());
-  };
+  const [filterSetting, setFilterSetting] = useState('active');
+  const [eventsData, setEventsData]= useState([]);
 
   useEffect(() => {
-    getData();
-  }, []);
+    let apiUrl;
 
-  /**
-   * Based on active/inactive/all
-   *
-   * @param event
-   */
-  const handleEventChange = (event) => {
-    // TODO: handle the event type change when active/inactive is properly implemented
-  };
+    if (filterSetting === 'active') {
+      apiUrl = process.env.REACT_APP_API_2_URL + '/events/active';
+    } else if (filterSetting === 'inactive') {
+      apiUrl = process.env.REACT_APP_API_2_URL + '/events/inactive';
+    } else {
+      apiUrl = process.env.REACT_APP_API_2_URL + '/events';
+    }
+
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        // Sorting Descending
+        setEventsData([...data.toSorted()].reverse());
+      })
+      .catch((error) => {
+        console.error('Error Fetching Data:', error);
+      });
+  }, [filterSetting]);
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
@@ -78,34 +82,15 @@ const InstancesPage = (): ReactElement => {
             Add Event
           </button>
         </div>
-        <div className='mb-6'>
-          <label
-            htmlFor='event-select'
-            className='text-sm text-zinc-500 ml-1 mb-2 block'
-          >
-            Filter (Currently Unavailable)
-          </label>
-          <select
-            id='event-select'
-            className='select w-full tab:max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600'
-            onChange={handleEventChange}
-          >
-            <option value='active' className='px-6 py-3'>
-              Active
-            </option>
-            <option value='inactive' className='px-6 py-3'>
-              Inactive
-            </option>
-            <option value='all' className='px-6 py-3'>
-              All
-            </option>
-          </select>
-        </div>
+        <ShowingActivenessToggle
+          defaultValue={filterSetting}
+          handleFilterChange={setFilterSetting}
+        />
         <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
-          {allEvents.map((event) => (
-            <li key={event.id}>
+          {eventsData.map((event) => (
+            <li key={event.eventid}>
               <button
-                onClick={() => navigate(`/ticketing/showings/${event.id}`)}
+                onClick={() => navigate(`/ticketing/showings/${event.eventid}`)}
                 className='shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full'
                 style={{
                   backgroundImage: `url(${getImageDefault(
@@ -121,16 +106,16 @@ const InstancesPage = (): ReactElement => {
                       <EventImage
                         className='object-cover h-full w-full rounded-t-xl'
                         src={event.imageurl}
-                        title={event.title}
+                        title={event.eventname}
                       />
                     </div>
                     <div className='text-white p-9 flex flex-col items-start'>
                       <div className='text-xl font-bold'>
-                        {titleCase(event.title)}
+                        {titleCase(event.eventname)}
                       </div>
                       <div className='text-md font-semibold'>Description</div>
                       <div className='text-sm text-start'>
-                        {event.description}
+                        {event.eventdescription}
                       </div>
                     </div>
                   </div>

@@ -1,5 +1,9 @@
 import React from 'react';
+<<<<<<< HEAD
 import defaultSeasonImage from '../../../../assets/DefaultEventImage.png'; // TODO, change to default season image once completed
+=======
+import defaultSeasonImage from '../../../../assets/default_season_image.png';
+>>>>>>> origin/main
 
 export const formatSeasonDate = (date: number) => {
   const dateStr = date.toString();
@@ -7,6 +11,10 @@ export const formatSeasonDate = (date: number) => {
   const month: string = dateStr.slice(4, 6);
   const day: string = dateStr.slice(6);
 
+<<<<<<< HEAD
+=======
+  if (fromApiResponse) return `${year}-${month}-${day}`;
+>>>>>>> origin/main
   return `${month}/${day}/${year}`;
 };
 

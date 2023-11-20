@@ -740,3 +740,8 @@ test-results
 */playwright-report/
 */playwright/.cache/
 */playwright/.auth/
+<<<<<<< HEAD
+=======
+client/playwright/index.html
+client/playwright/*
+>>>>>>> origin/main

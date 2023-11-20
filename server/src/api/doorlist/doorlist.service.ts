@@ -3,9 +3,9 @@ import {response, buildResponse} from '../db';
 /**
  * query: get doorlist by params.eventinstanceid
  *
- * @type {Promise<response>}
+ * @param {any} params
+ * @return {Promise<response>}
  */
-
 export const getDoorlist = async (params: any): Promise<response> => {
   const myQuery = {
     text: `
@@ -30,8 +30,10 @@ export const getDoorlist = async (params: any): Promise<response> => {
             eventinstances ei
         LEFT JOIN 
             eventtickets et ON ei.eventinstanceid = et.eventinstanceid_fk
+        LEFT JOIN
+            singletickets st ON et.singleticket_fk = st.singleticketid
         LEFT JOIN 
-            orderitems oi ON et.eventticketid = oi.orderitemid
+            orderitems oi ON st.orderitemid_fk = oi.orderitemid
         LEFT JOIN 
             orders o ON oi.orderid_fk = o.orderid
         LEFT JOIN 
@@ -40,6 +42,12 @@ export const getDoorlist = async (params: any): Promise<response> => {
             events e ON ei.eventid_fk = e.eventid
         WHERE 
             ei.eventinstanceid = $1
+        AND 
+            et.tickettypeid_fk = $2
+        AND 
+            ei.deletedat is null
+        AND
+            e.deletedat is null
         GROUP BY 
             c.contactid,
             c.firstname,
@@ -54,7 +62,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
             ei.eventtime
         ORDER BY 
             c.firstname, c.lastname;`,
-    values: [params.eventinstanceid],
+    values: [params.eventinstanceid, 1],
   };
 
   return buildResponse(myQuery, 'GET');

@@ -1,17 +1,7 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-// import DataGrid from 'react-data-grid';
+import React, {useEffect, useState} from 'react';
 import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
-import React, {useEffect, useState} from 'react';
-// import RequireLogin from './RequireLogin';
+import ShowingActivenessToggle from '../../GroupToggle';
 import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
 
@@ -29,7 +19,7 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
       audience: process.env.REACT_APP_ROOT_URL,
       scope: 'admin',
     });
-    const res = await fetch(process.env.REACT_APP_API_1_URL + `/events/checkin`, {
+    const res = await fetch(process.env.REACT_APP_API_2_URL + `/events/checkin`, {
       credentials: 'include',
       method: 'PUT',
       headers: {
@@ -93,8 +83,12 @@ const DoorList = () => {
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
   const [eventListActive, setEventListActive] = useState([]);
+<<<<<<< HEAD
   const [ticketsSold, setTicketsSold] = useState(true);
   const [showInactiveEvents, setShowInactiveEvents] = useState(false);
+=======
+  const [filterSetting, setFilterSetting] = useState('active');
+>>>>>>> origin/main
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -216,36 +210,36 @@ const DoorList = () => {
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-        <div className='flex flex-row'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>Door List</h1>
-        </div>
-        <div className='flex flex-row items-center mb-3'>
-          <Checkbox
-            id="enable-inactive-events"
-            color='primary'
-            checked={showInactiveEvents}
-            onChange={(e) => setShowInactiveEvents(e.target.checked)}
-          />
-          <label className='text-sm text-zinc-500 mr-2' htmlFor="enable-inactive-events">Enable inactive events</label>
-        </div>
-        <div className="mb-3">
+        <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>
+          Door List
+        </h1>
+        <ShowingActivenessToggle
+          defaultValue='active'
+          handleFilterChange={setFilterSetting}
+          showInactiveToggle={false}
+        />
+        <div className="mb-7">
           <label htmlFor="event-select" className='text-sm text-zinc-500 ml-1 mb-2 block'>Choose Event</label>
           <select
             id="event-select"
-            className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7"
+            className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600"
             onChange={handleEventChange}
           >
             <option className="px-6 py-3">Select Event</option>
-            {(showInactiveEvents ? eventList : eventListActive).map((event) => (
+            {(filterSetting === 'active' ? eventListActive : eventList).map((event) => (
               <option key={event.eventinstanceid} value={event.eventid} className="px-6 py-3">
                 {event.eventname} - {event.eventid}
               </option>
             ))}
           </select>
         </div>
-        <div className="mb-3">
+        <div className="mb-7">
           <label htmlFor="time-select" className='text-sm text-zinc-500 ml-1 mb-2 block'>Choose Time</label>
+<<<<<<< HEAD
           <select id="time-select" className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600 mb-7" onChange={handleTimeChange} disabled={!selectedEventId}>
+=======
+          <select className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600" onChange={handleTimeChange} disabled={!selectedEventId}>
+>>>>>>> origin/main
             <option className="px-6 py-3">Select Time</option>
             {availableTimesEvents.map((event) => {
               const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
@@ -257,11 +251,12 @@ const DoorList = () => {
             })}
           </select>
         </div>
-        <h2 className='text-4xl font-bold '>{`Showing: ${titleCase(eventName)}`}</h2>
+        <h2 className='text-4xl font-bold'>Showing: {titleCase(eventName)}</h2>
         <h3 className='text-2xl font-bold text-zinc-700'>
           {date && time ? `${date}, ${time}` : `${date}${time}`}
         </h3>
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
+<<<<<<< HEAD
           {ticketsSold ? (
             <DataGrid
               className='bg-white'
@@ -276,6 +271,19 @@ const DoorList = () => {
           ) : (
             <p className="text-xl font-bold text-red-600">No tickets sold for this show</p>
           )}
+=======
+          <DataGrid
+            className='bg-white'
+            autoHeight
+            disableSelectionOnClick
+            rows={doorList}
+            columns={columns}
+            pageSize={10}
+            components={{
+              Toolbar: CustomToolbar,
+            }}
+          />
+>>>>>>> origin/main
         </div>
       </div>
     </div>

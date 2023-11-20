@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {ReactElement, useEffect, useRef} from 'react';
 import {ListComponent} from './eventcard';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
@@ -8,17 +8,15 @@ import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
  *
  * @returns {ReactElement} state.event.ticketing also returned
  */
-const Hero = () => {
+const Hero = (): ReactElement => {
   const allEvents = useAppSelector((state) => {
-    console.log('State:', state.ticketing);
     return state.ticketing.events;
   });
   const dispatch = useAppDispatch();
-
   const ref = useRef(null);
 
   useEffect(()=>{
-    dispatch(fetchTicketingData());
+    void dispatch(fetchTicketingData());
   }, []);
 
   const handlePrevious = () => {

@@ -1,4 +1,4 @@
-import {Showing} from '../../../../../interfaces/showing.interface';
+import {Showing, UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React, {useState} from 'react';
 import {EventShowingForm} from './EventShowingForm';
 import {EventShowingView} from './EventShowingView';
@@ -6,7 +6,7 @@ import {useEvent} from './EventProvider';
 import {createDeleteFunction, createSubmitFunction} from './ShowingUtils';
 
 interface EventShowingContainerProps {
-  showing: Showing;
+  showing: UpdatedShowing;
 }
 
 export const EventShowingContainer = (props: EventShowingContainerProps) => {
@@ -17,13 +17,31 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
   const onSubmitSuccess = () => {
     setReloadShowing((reload) => !reload);
     setEdit((edit) => !edit);
+<<<<<<< HEAD
     setPopUpProps('Success', 'Showing successfully updated', true);
+=======
+    setPopUpProps(
+      'Success',
+      'Showing successfully updated',
+      true,
+      `update-modal-showing-id-${showing.eventinstanceid}`,
+    );
+>>>>>>> origin/main
     setEditing((editing) => !editing);
   };
   const onDeleteSuccess = () => {
     setReloadShowing((reload) => !reload);
     setEdit((edit) => !edit);
+<<<<<<< HEAD
     setPopUpProps('Success', 'Showing successfully deleted', true);
+=======
+    setPopUpProps(
+      'Success',
+      'Showing successfully deleted',
+      true,
+      `delete-modal-showing-id-${showing.eventinstanceid}`,
+    );
+>>>>>>> origin/main
     setEditing((editing) => !editing);
   };
   const onError = async (event) => {
@@ -31,7 +49,16 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
       const res = await event.json();
       setPopUpProps('Failure', res.error, false);
     } catch (error) {
+<<<<<<< HEAD
       setPopUpProps('Failure', 'Showing update failed', false);
+=======
+      setPopUpProps(
+        'Failure',
+        'Showing update failed',
+        false,
+        `failure-delete-modal-showing-id-${showing.eventinstanceid}`,
+      );
+>>>>>>> origin/main
     }
   };
 

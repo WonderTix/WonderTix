@@ -20,7 +20,11 @@ export const getActiveEvents = async (): Promise<response> => {
           FROM
             events e
             JOIN eventinstances ei
-              ON e.eventid = ei.eventid_fk WHERE ei.salestatus = true
+              ON e.eventid = ei.eventid_fk 
+          WHERE 
+              ei.salestatus = true
+          AND
+              ei.deletedat is null
           GROUP BY
             e.eventid,
             e.seasonid_fk,
@@ -31,6 +35,8 @@ export const getActiveEvents = async (): Promise<response> => {
             e.imageurl
           HAVING
             e.active = true
+          AND
+            e.deletedat is null
           ORDER BY
             e.eventid;`,
   };
@@ -49,6 +55,8 @@ export const getInstanceById = async (params: any): Promise<response> => {
             eventid_fk = $1
           AND
             salestatus = true
+          AND
+            deletedat is null
           ORDER BY
             eventinstanceid;`,
     values: [params.id],
@@ -71,7 +79,9 @@ export const getEventById = async (params: any): Promise<response> => {
           FROM
             events
           WHERE
-            eventid = $1;`,
+            eventid = $1
+          AND
+            deletedat is null;`,
     values: [params.id],
   };
   return await buildResponse(query, 'GET');
@@ -152,7 +162,9 @@ export const getEventByName = async (params: any): Promise<response> => {
           FROM
             events
           WHERE
-            eventname = $1;`,
+            eventname = $1
+          AND
+            deletedat is null;`,
     values: [params.eventName],
   };
   return buildResponse(myQuery, 'GET');
@@ -381,6 +393,10 @@ export const getActiveEventsAndInstances = async (): Promise<response> => {
           WHERE
             e.active = true
           AND
+            e.deletedat is null
+          AND
+            ei.deletedat is null
+          AND
             ei.salestatus = true
           ORDER BY
             ei.eventinstanceid;`,
@@ -406,6 +422,10 @@ export const getEventsAndInstances = async (): Promise<response> => {
               eventinstances ei
           JOIN
               events e ON ei.eventid_fk = e.eventid
+          WHERE
+              ei.deletedat is null
+          AND
+              e.deletedat is null
           ORDER BY
               ei.eventinstanceid;`,
   };
@@ -563,7 +583,11 @@ export const getShowingsById = async (id: string): Promise<Showing[]> => {
                 FROM
                   eventinstances
                 WHERE
-                  eventid_fk = $1 AND salestatus = true
+                  eventid_fk = $1
+                AND 
+                    salestatus = true
+                AND
+                    deletedat is null
                 ORDER BY
                   eventinstanceid;`;
   const queryResult = await pool.query(query, [id]);

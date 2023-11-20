@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../../utils/arrays';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import {getSeasonImage, formatSeasonDate, SeasonImage} from './seasonUtils';
+import ShowingActivenessToggle from '../../GroupToggle';
 
 export interface Seasons {
   seasonid: number;
@@ -20,6 +21,7 @@ export interface Seasons {
  */
 const SeasonInstancesPage = () => {
   const navigate = useNavigate();
+<<<<<<< HEAD
   const [seasons, setAllSeasons] = useState<Seasons[]>([]);
   const {token} = useFetchToken();
 
@@ -51,15 +53,67 @@ const SeasonInstancesPage = () => {
   useEffect(() => {
     getAllSeasons();
   }, [token]);
+=======
+  const {token} = props;
+  const [filterSetting, setFilterSetting] = useState('active');
+  const [seasonData, setSeasonData] = useState([]);
+  const [allSeasonData, setAllSeasonData] = useState([]);
+  const [inactiveData, setInactiveData] = useState([]);
+  const [activeData, setActiveData] = useState([]);
 
-  /**
-   * Based on active/inactive/all
-   *
-   * @param event
-   */
-  const handleEventChange = (event) => {
-    // TODO: handle the season type change when active/inactive is properly implemented
-  };
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_2_URL + '/season/list', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      const inactiveSeasons = [];
+      const activeSeasons = [];
+      const allSeasons = [];
+
+      data.forEach((season) => {
+        const allEventsActive = season.events.every((event) => event.active);
+
+        if (allEventsActive) {
+          activeSeasons.push(season);
+        } else {
+          inactiveSeasons.push(season);
+        }
+
+        // Common operation
+        allSeasons.push(season);
+      });
+      // Sorting
+      inactiveSeasons.sort((a, b) => b.seasonid - a.seasonid);
+      activeSeasons.sort((a, b) => b.seasonid - a.seasonid);
+      allSeasons.sort((a, b) => b.seasonid - a.seasonid);
+
+      // Set active/inactive/all data arrays
+      setInactiveData(inactiveSeasons);
+      setActiveData(activeSeasons);
+      setAllSeasonData(allSeasons);
+
+      // Set Default "Active"
+      setSeasonData(activeSeasons);
+    })
+    .catch((error) => {
+      console.error('Error Fetching Season Data:', error);
+    });
+  }, []);
+>>>>>>> origin/main
+
+  // Group Toggle Display Changes
+  useEffect(() => {
+    if (filterSetting === 'active') {
+      setSeasonData(activeData);
+    } else if (filterSetting === 'inactive') {
+      setSeasonData(inactiveData);
+    } else {
+      setSeasonData(allSeasonData);
+    }
+  }, [filterSetting]);
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
@@ -94,31 +148,12 @@ const SeasonInstancesPage = () => {
             Add Season
           </button>
         </section>
-        <div className='mb-6'>
-          <label
-            htmlFor='event-select'
-            className='text-sm text-zinc-500 ml-1 mb-2 block'
-          >
-            Filter (Currently Unavailable)
-          </label>
-          <select
-            id='event-select'
-            className='select w-full tab:max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600'
-            onChange={handleEventChange}
-          >
-            <option value='active' className='px-6 py-3'>
-              Active
-            </option>
-            <option value='inactive' className='px-6 py-3'>
-              Inactive
-            </option>
-            <option value='all' className='px-6 py-3'>
-              All
-            </option>
-          </select>
-        </div>
+        <ShowingActivenessToggle
+          defaultValue={filterSetting}
+          handleFilterChange={setFilterSetting}
+        />
         <ul className='md:grid md:grid-cols-2 md:gap-8 grid grid-cols-1 gap-4 mt-9'>
-          {seasons.map((season) => (
+          {seasonData.map((season) => (
             <li key={season.seasonid}>
               <button
                 onClick={() => navigate(``)} // TODO, seasons edit page
@@ -128,8 +163,7 @@ const SeasonInstancesPage = () => {
                 }}
               >
                 <article
-                  className=' backdrop-blur-sm md:flex-row sm:flex-col
-         sm:items-center w-full rounded-xl bg-zinc-900/70 h-full '
+                  className=' backdrop-blur-sm md:flex-row sm:flex-col sm:items-center w-full rounded-xl bg-zinc-900/70 h-full '
                 >
                   <div className='w-full h-48'>
                     <SeasonImage

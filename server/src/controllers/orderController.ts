@@ -1,8 +1,18 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
+<<<<<<< HEAD
 import {PrismaClient, Prisma} from '@prisma/client';
 
 const prisma = new PrismaClient();
+=======
+import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {Prisma} from '@prisma/client';
+import {orderCancel, ticketingWebhook} from './orderController.service';
+const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
+const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
+const stripe = require('stripe')(stripeKey);
+const prisma = extendPrismaClient();
+>>>>>>> origin/main
 
 export const orderController = Router();
 
@@ -77,19 +87,20 @@ orderController.use(checkScopes);
 
 /**
  * @swagger
- * /2/order:
+ * /2/order/refund:
  *   get:
- *     summary: get all orders
+ *     summary: get all orders with email
  *     tags:
  *     - New Order
+ *     parameters:
+ *     - in: query
+ *       name: email
+ *       description: Email associated with order
+ *       schema:
+ *         type: string
  *     responses:
  *       200:
- *         description: order updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               $ref: '#/components/schemas/Order'
+ *         description: orders fetched successfully
  *       400:
  *         description: bad request
  *         content:
@@ -103,50 +114,161 @@ orderController.use(checkScopes);
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-orderController.get('/', async (req: Request, res: Response) => {
+orderController.get('/refund', async (req: Request, res: Response) => {
   try {
-    const filters: any = {};
-    if (req.params.ordername) {
-      filters.ordername = {
-        contains: req.params.ordername,
+    const {email} = req.query;
+    if (!email || typeof email !== 'string') {
+      return res.status(400).send('Email Required');
+    }
+    const orders = await prisma.orders.findMany({
+      where: {
+        payment_intent: {not: null},
+        refund_intent: null,
+        contacts: {
+          email: {contains: email},
+        },
+      },
+      select: {
+        orderid: true,
+        ordertotal: true,
+        contacts: {
+          select: {
+            firstname: true,
+            lastname: true,
+            email: true,
+          },
+        },
+        orderdate: true,
+        ordertime: true,
+        orderitems: {
+          select: {
+            singletickets: {
+              select: {
+                ticketwasswapped: true,
+                eventtickets: {
+                  select: {
+                    eventinstances: {
+                      select: {
+                        events: {
+                          select: {
+                            eventname: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    const toReturn = orders.map((order) => {
+      const {
+        contacts,
+        orderitems,
+        ordertotal,
+        orderdate,
+        ...remainderOfOrder
+      } = order;
+      const names = orderitems.map((item) =>
+        item.singletickets
+            .filter((ticket) => !ticket.ticketwasswapped)
+            .map((ticket) => {
+              if (!ticket.eventtickets.length) return null;
+              return ticket.eventtickets[0].eventinstances.events.eventname;
+            }),
+      ).flat()
+          .filter((name, index, array) => name && array.indexOf(name)=== index);
+
+      return {
+        price: ordertotal,
+        email: contacts.email,
+        name: `${contacts.firstname} ${contacts.lastname}`,
+        orderdate: `${orderdate.toString().slice(4, 6)}/${orderdate.toString().slice(6, 8)}/${orderdate.toString().slice(0, 4)}`,
+        ...remainderOfOrder,
+        showings: names,
       };
-    }
-    if (req.params.auth0_id) {
-      filters.auth0_id = {
-        contains: req.params.auth0_id,
-      };
-    }
+    });
 
-    if (Object.keys(filters).length > 0) {
-      const orders = await prisma.orders.findMany({
-        where: filters,
-      });
-      res.status(200).json(orders);
-
-      return;
-    }
-
-    const orders = await prisma.orders.findMany();
-    res.status(200).json(orders);
-
-    return;
+    return res.json(toReturn);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
+<<<<<<< HEAD
+=======
+/**
+ * @swagger
+ * /2/order/refund/{id}:
+ *   put:
+ *     summary: refund an order based on order id
+ *     tags:
+ *     - New Order
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: orders refunded successfully
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+orderController.put('/refund/:id', async (req, res) => {
+  try {
+    const orderID = req.params.id;
+    const order = await prisma.orders.findUnique({
+      where: {
+        orderid: Number(orderID),
+      },
+    });
+    if (!order) {
+      return res.status(400).json({error: `Order ${orderID} does not exist`});
+    }
+    if (!order.payment_intent) {
+      return res.status(400).json({error: `Order ${orderID} is still processing`});
+    }
+    if (order.refund_intent) {
+      return res.status(400).json({error: `Order ${orderID} has already been refunded`});
+    }
+
+    let refundIntent;
+    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
+    else {
+      const refund = await stripe.refunds.create({
+        payment_intent: order.payment_intent,
+      });
+      if (refund.status !== 'succeeded') {
+        throw new Error(`Refund failed`);
+      }
+      refundIntent = refund.id;
+    }
+    await orderCancel(prisma, order.orderid, refundIntent);
+    return res.send(refundIntent);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+});
+>>>>>>> origin/main
 /**
  * @swagger
  * /2/order/{id}:
@@ -157,7 +279,7 @@ orderController.get('/', async (req: Request, res: Response) => {
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     security:
- *       - bearerAuth: []
+ *     - bearerAuth: []
  *     responses:
  *       200:
  *         description: order updated successfully.

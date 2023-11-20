@@ -14,11 +14,15 @@ export const EventGeneralContainer = () => {
   const onUpdateSuccess = async (newEvent) => {
     try {
       const res = await newEvent.json();
-      setEventData(res.data[0]);
-      setEventID(res.data[0].eventid);
+      setEventData(res);
+      setEventID(res.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
+<<<<<<< HEAD
       setPopUpProps(`Success`, 'Event update successful', true);
+=======
+      setPopUpProps(`Success`, 'Event update successful', true, `update-modal-event-id-${res.eventid}`);
+>>>>>>> origin/main
     } catch (error) {
       console.error('error updating event');
     }
@@ -27,13 +31,18 @@ export const EventGeneralContainer = () => {
   const onCreateSuccess = async (newEvent) => {
     try {
       const res = await newEvent.json();
-      navigate(`/ticketing/showings/${res.data[0].eventid}`);
-      setEventData(res.data[0]);
-      setEventID(res.data[0].eventid);
+      navigate(`/ticketing/showings/${res.eventid}`);
+      setEventData(res);
+      setEventID(res.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
+<<<<<<< HEAD
       setPopUpProps(`Success`, 'Event creation successful', true);
+=======
+      setPopUpProps(`Success`, 'Event creation successful', true, `create-modal-event-id-${res.eventid}`);
+>>>>>>> origin/main
     } catch (error) {
+      console.log(error);
       console.error('error updating event after creation');
     }
   };
@@ -60,7 +69,7 @@ export const EventGeneralContainer = () => {
 
   const onSubmit = createSubmitFunction(
     eventID === 0 ? 'POST' : 'PUT',
-    `${process.env.REACT_APP_API_1_URL}/events`,
+    `${process.env.REACT_APP_API_2_URL}/events`,
     token,
     eventID ? onUpdateSuccess : onCreateSuccess,
     onSubmitError,
@@ -68,7 +77,7 @@ export const EventGeneralContainer = () => {
 
   const onDelete = createDeleteFunction(
     'DELETE',
-    `${process.env.REACT_APP_API_2_URL}/event/${eventID}`,
+    `${process.env.REACT_APP_API_2_URL}/events/${eventID}`,
     token,
     onDeleteSuccess,
     onDeleteError,

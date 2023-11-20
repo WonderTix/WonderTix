@@ -11,7 +11,7 @@ import React from 'react';
 import {useAppSelector} from '../app/hooks';
 import {
   selectCartItem,
-  selectCartIds,
+  selectCartContents,
   selectCartSubtotal,
   selectCartTotal,
   selectDiscount,
@@ -31,14 +31,31 @@ const toDollar = (x: number) => `$${(Math.round(x * 100) / 100).toFixed(2)}`;
  *
  * @returns {ReactElement}
  */
+<<<<<<< HEAD
 const YourOrder = () => {
   const history = useNavigate();
   const cartIds = useAppSelector(selectCartIds);
+=======
+const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
+  const navigate = useNavigate();
+  const cartItems = useAppSelector(selectCartContents);
+>>>>>>> origin/main
   const donation = useAppSelector(selectDonation);
   const subtotal = useAppSelector(selectCartSubtotal);
   const total = useAppSelector(selectCartTotal);
   const discount = useAppSelector(selectDiscount);
+<<<<<<< HEAD
   const lineItems = cartIds.map((id) => <LineItem key={id} id={id} className='bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'/>);
+=======
+  const lineItems = cartItems.map((item) => (
+    <LineItem
+      key={`${item.product_id}-${item.typeID}`}
+      eventInstanceId={item.product_id}
+      ticketTypeId={item.typeID}
+      className='bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'
+    />
+  ));
+>>>>>>> origin/main
 
   return (
     <div className='flex flex-col justify-between h-full w-full'>
@@ -80,6 +97,7 @@ const YourOrder = () => {
   );
 };
 
+<<<<<<< HEAD
 const LineItem = (props: {className: string, id: number}) => {
   const data = useAppSelector((state) => selectCartItem(state, props.id));
   return data ?
@@ -92,6 +110,24 @@ const LineItem = (props: {className: string, id: number}) => {
       }</div>
     </div> :
     <div></div>;
+=======
+const LineItem = (props: {className: string; eventInstanceId: number, ticketTypeId: number}) => {
+  const cartItem = useAppSelector((state) => selectCartItem(state, props.eventInstanceId, props.ticketTypeId));
+  return cartItem ? (
+    <div className={props.className}>
+      <div>
+        {cartItem.qty} <b>x</b> {cartItem.name}
+      </div>
+      <div>
+        {cartItem.payWhatCan
+          ? toDollar(cartItem.payWhatPrice)
+          : toDollar(cartItem.qty * cartItem.price)}
+      </div>
+    </div>
+  ) : (
+    <div></div>
+  );
+>>>>>>> origin/main
 };
 
 export default YourOrder;

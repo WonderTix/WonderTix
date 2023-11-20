@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {useParams} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
-import {selectEventData} from '../ticketingmanager/ticketing/ticketingSlice';
-import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
+import {selectEventData, fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 import TicketPicker from './TicketPicker';
 import {useNavigate} from 'react-router-dom';
 import {EventImage, getImageDefault} from '../../../utils/imageURLValidation';
@@ -22,12 +21,12 @@ const Eventshowings = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const getData = async () => {
-    return dispatch(fetchTicketingData());
-  };
-
   useEffect(()=>{
+<<<<<<< HEAD
     getData();
+=======
+    void dispatch(fetchTicketingData());
+>>>>>>> origin/main
   }, []);
 
   const [show, setShow] = useState(false);

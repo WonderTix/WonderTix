@@ -37,7 +37,7 @@ import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
-import RefundMain from './components/Ticketing/ticketingmanager/Refund/RefundOrderTicketMain';
+import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
 
 const App = () => {
   return (
@@ -49,7 +49,6 @@ const App = () => {
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />
         <Route path='/donate' element={<Donationmain />} />
-        <Route path='/' element={<Mainpage />} />
         <Route
           path='/admin'
           element={<ProtectedRoute component={Dashmain} />}
@@ -152,7 +151,7 @@ const App = () => {
         />
         <Route
           path='/ticketing/Refund'
-          element={<ProtectedRoute component={RefundMain} />}
+          element={<ProtectedRoute component={RefundOrdersMain} />}
         />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
