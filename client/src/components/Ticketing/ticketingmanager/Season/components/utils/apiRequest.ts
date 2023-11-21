@@ -10,10 +10,11 @@ export interface RequestBody {
 
 export interface EventRequestBody {
   eventid: number;
-  seasonid: number;
+  seasonid_fk: number;
   eventname: string;
   eventdescription: string;
   active: boolean;
+  seasonticketeligible: boolean;
   imageurl: string;
 }
 
@@ -135,10 +136,14 @@ export const deleteSeasonInfo = async (seasonId: number, token: string) => {
   }
 };
 
-export const getAllEvents = async (token: string) => {
+// Retrieve all events, or retrieve all events for a particular season (if seasonId specified)
+export const getAllEvents = async (token: string, seasonId?: number) => {
+  const apiUrlSuffix =
+    seasonId === undefined ? '/events' : `/events/season/${seasonId}`;
+
   try {
     const getAllEventsRes = await fetch(
-      process.env.REACT_APP_API_2_URL + '/events',
+      process.env.REACT_APP_API_2_URL + apiUrlSuffix,
       {
         credentials: 'include',
         method: 'GET',
