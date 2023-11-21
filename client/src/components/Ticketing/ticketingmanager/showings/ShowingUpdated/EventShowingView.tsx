@@ -1,5 +1,5 @@
 import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
-import React from 'react';
+import React, {useState} from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
@@ -15,6 +15,7 @@ interface EventInstanceViewProps {
 export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
   const {ticketTypes, editing, showPopUp} = useEvent();
+
   const showingDate = new Date(
     `${toDateStringFormat(showing.eventdate)} ${showing.eventtime
       .split('T')[1]

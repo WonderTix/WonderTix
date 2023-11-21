@@ -2,8 +2,7 @@ import React, {ReactElement, useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {useParams} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
-import {fetchTicketRestrictionData, selectEventData} from '../ticketingmanager/ticketing/ticketingSlice';
-import {fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
+import {selectEventData, fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
 import TicketPicker from './TicketPicker';
 import {useNavigate} from 'react-router-dom';
 import {EventImage, getImageDefault} from '../../../utils/imageURLValidation';
@@ -24,7 +23,6 @@ const Eventshowings = (): ReactElement => {
 
   useEffect(()=>{
     void dispatch(fetchTicketingData());
-    void dispatch(fetchTicketRestrictionData());
   }, []);
 
   const [show, setShow] = useState(false);

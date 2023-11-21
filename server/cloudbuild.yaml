@@ -7,8 +7,7 @@ steps:
     args:
       - '-c'
       - |
-        docker build \
-        -f server/Dockerfile.dev \
+        docker build -f server/Dockerfile \
         -t $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
         server
     secretEnv:
