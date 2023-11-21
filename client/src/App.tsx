@@ -30,7 +30,7 @@ import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
 import CheckoutSuccess from './components/Ticketing/checkout/CheckoutSuccess';
 import Donationmain from './components/Ticketing/donation/Donationmain';
 /* Ticketing Manager */
-import Doorlistmain from './components/Ticketing/ticketingmanager/Doorlistpage/doorlistmain';
+import DoorListmain from './components/Ticketing/ticketingmanager/DoorList/DoorListmain';
 import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
 import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsletter/NewsletterCreatemain';
 import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showingsmain';
@@ -134,7 +134,7 @@ const App = () => {
         />
         <Route
           path='/ticketing/doorlist'
-          element={<ProtectedRoute component={Doorlistmain} />}
+          element={<ProtectedRoute component={DoorListmain} />}
         />
         <Route
           path='/ticketing/addnewsletter'

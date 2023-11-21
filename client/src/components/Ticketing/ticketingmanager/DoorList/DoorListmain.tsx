@@ -1,6 +1,6 @@
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import DoorList from './doorlist';
+import DoorList from './DoorList';
 
 /**
  * Main page to host door list
@@ -8,13 +8,13 @@ import DoorList from './doorlist';
  * @module
  * @returns {Udash_nav, DoorList}
  */
-const Doorlistmain = () => {
+const DoorListmain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav/>
-      <DoorList/>
+      <Udash_nav />
+      <DoorList />
     </div>
   );
 };
 
-export default Doorlistmain;
+export default DoorListmain;

@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
 import ShowingActivenessToggle from '../../GroupToggle';
-import {titleCase, dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
+import {titleCase} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
+import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
+import format from 'date-fns/format';
 
 /**
  * Used to check the guests in
@@ -82,12 +84,11 @@ const columns = [
  *
  * @returns {ReactElement} DoorList also has a datagrid
  */
-const DoorList = () => {
+const DoorList = (): ReactElement => {
   const {getAccessTokenSilently} = useAuth0();
   const [doorList, setDoorList] = useState([]);
   const [eventName, setEventName] = useState('');
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [date, setDate] = useState<Date>(null);
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [availableTimesEvents, setAvailableTimesEvents] = useState([]);
   const [eventList, setEventList] = useState([]);
@@ -119,7 +120,7 @@ const DoorList = () => {
         console.error(error.message);
       }
     };
-    fetchEvents();
+    void fetchEvents();
   }, []);
 
   const handleEventChange = (event) => {
@@ -196,19 +197,19 @@ const DoorList = () => {
         if (b.lastname === 'OPEN SEATS') return 1;
         return 0;
       });
-
       setDoorList(doorListData);
+
       const rowString = eventInstanceData[0].row.slice(1, -1);
       const rowParts = rowString.split(',');
       const eventNameFromData = rowParts[7].replace(/"/g, '');
-      const eventDate = rowParts[9];
-      const eventDateObject = new Date(eventDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
-      eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
-      const formattedEventDate = eventDateObject.toISOString().split('T')[0]; // Convert to "yyyy-mm-dd"
-      const eventTime = rowParts[10];
       setEventName(eventNameFromData);
-      setDate(dayMonthDate(formattedEventDate));
-      setTime(militaryToCivilian(eventTime));
+
+      const showingDateString = rowParts[9];
+      const showingTimeString = rowParts[10];
+      const showingDate = new Date(
+        `${toDateStringFormat(showingDateString)} ${showingTimeString.slice(0, 8)}`,
+      );
+      setDate(showingDate);
     } catch (error) {
       console.error(error.message);
     }
@@ -242,22 +243,28 @@ const DoorList = () => {
         </div>
         <div className="mb-7">
           <label htmlFor="time-select" className='text-sm text-zinc-500 ml-1 mb-2 block'>Choose Time</label>
-          <select className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600" onChange={handleTimeChange} disabled={!selectedEventId}>
+          <select data-testid='time-select-test' className="select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600" onChange={handleTimeChange} disabled={!selectedEventId}>
             <option className="px-6 py-3">Select Time</option>
             {availableTimesEvents.map((event) => {
-              const eventDateObject = new Date(event.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
-              eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
-              const formattedDate = dayMonthDate(eventDateObject.toISOString().split('T')[0]);
+              const showingDate = new Date(
+                `${toDateStringFormat(event.eventdate)} ${event.eventtime.slice(0, 8)}`,
+              );
+              const formattedDate = format(showingDate, 'eee, MMM dd yyyy');
+              const formattedTime = format(showingDate, 'hh:mm a');
               return (
-                <option key={event.eventinstanceid} value={event.eventinstanceid} className="px-6 py-3">{formattedDate} {militaryToCivilian(event.eventtime)}</option>
+                <option key={event.eventinstanceid} value={event.eventinstanceid} className="px-6 py-3">
+                  {formattedDate} {formattedTime}
+                </option>
               );
             })}
           </select>
         </div>
         <h2 className='text-4xl font-bold'>Showing: {titleCase(eventName)}</h2>
-        <h3 className='text-2xl font-bold text-zinc-700'>
-          {date && time ? `${date}, ${time}` : `${date}${time}`}
-        </h3>
+        {date && (
+          <h3 className='text-2xl font-bold text-zinc-700'>
+            {format(date, 'eee, MMM dd yyyy')}, {format(date, 'hh:mm a')}
+          </h3>
+        )}
         <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
           <DataGrid
             className='bg-white'

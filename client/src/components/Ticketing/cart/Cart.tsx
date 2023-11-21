@@ -203,7 +203,7 @@ const Cart = (): ReactElement => {
         <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-900'>
           <div className='mb-3'>
             <h2 className='text-zinc-100 text-xl font-semibold'>Subtotal</h2>
-            <p className='text-amber-300 italic'>
+            <p data-testid='subtotal-display' className='text-amber-300 italic'>
               {printDiscountText(discount)}
             </p>
             <p className='text-white'>{toDollarAmount(total)}</p>
