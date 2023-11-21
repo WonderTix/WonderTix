@@ -14,6 +14,7 @@ const ReportComponent = ({filterData}) => {
   const [end, setEnd] = useState('');
   const [groupBy, setGroupBy] = useState('');
 
+
   // dates are still not populating the report correctly
   const formatDateToMMDDYYYY = (date: Date) => {
     const month = (date.getMonth() + 1).toString();
