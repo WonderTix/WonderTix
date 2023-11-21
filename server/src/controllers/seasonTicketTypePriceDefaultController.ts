@@ -142,8 +142,8 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
                 seasontickettypepricedefaultid_fk: item.id,
               },
               data: {
-                ...(item.tickettypeid_fk && +item.price !== update.price && {price: update.price}),
-                ...(+item.concessionprice !== update.concessionprice && {concessionprice: update.concessionprice}),
+                ...(item.tickettypeid_fk && +item.price !== +update.price && {price: +update.price}),
+                ...(+item.concessionprice !== +update.concessionprice && {concessionprice: +update.concessionprice}),
               },
             },
           },
@@ -161,9 +161,9 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
           return prisma.seasontickettypepricedefault.create({
             data: {
               seasonid_fk: +id,
-              tickettypeid_fk,
+              tickettypeid_fk: +tickettypeid_fk,
               price: +tickettypeid_fk === 0? 0: +price,
-              concessionprice,
+              concessionprice: +concessionprice,
             },
           });
         })));
