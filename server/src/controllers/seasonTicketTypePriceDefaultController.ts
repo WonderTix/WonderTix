@@ -120,14 +120,12 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
     await prisma.$transaction(current.map((item) => {
       const update = toUpdate.get(item.tickettypeid_fk);
       toUpdate.delete(item.tickettypeid_fk);
-      if (!update && !item.ticketrestrictions.length) {
+      if (!update) {
         return prisma.seasontickettypepricedefault.delete({
           where: {
             id: item.id,
           },
         });
-      } else if (!update) {
-        throw new InvalidInputError(422, `Can not delete season ticket with active restriction(s)`);
       } else if (update.price < 0 || update.concessionprice < 0 ) {
         throw new InvalidInputError(422, `Price can not be negative`);
       }
@@ -136,8 +134,8 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
           id: item.id,
         },
         data: {
-          price: item.tickettypeid_fk === 0? 0: update.price,
-          concessionprice: update.concessionprice,
+          price: item.tickettypeid_fk? 0: +update.price,
+          concessionprice: +update.concessionprice,
           ticketrestrictions: {
             updateMany: {
               where: {
@@ -145,7 +143,7 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
               },
               data: {
                 ...(item.tickettypeid_fk && +item.price !== update.price && {price: update.price}),
-                ...(+item.concessionprice !== update.concessionprice && {price: update.concessionprice}),
+                ...(+item.concessionprice !== update.concessionprice && {concessionprice: update.concessionprice}),
               },
             },
           },

@@ -53,7 +53,7 @@ import {seasonTicketTypeController} from './controllers/seasonTicketTypeControll
 import {singleTicketController} from './controllers/singleTicketController';
 import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
-import {seasonTicketTypePriceDefaultController} from './controllers/SeasonTicketTypePriceDefaultController';
+import {seasonTicketTypePriceDefaultController} from './controllers/seasonTicketTypePriceDefaultController';
 
 const openApiSpec = swaggerJsdoc({
   definition: {
