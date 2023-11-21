@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import {Divider, Button, Radio, RadioGroup} from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 
 const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
     const {startDate, endDate, groupBy} = filterData;
