@@ -124,61 +124,61 @@ export const ContactDisplayForm = ({
             <div className='font-semibold'>
              Customer name:
             </div>
-            <div>{firstname +' '+lastname}</div>
+            <div data-testid = 'customer-name'>{firstname +' '+lastname}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                ID:
             </div>
-            <div>{contactid}</div>
+            <div data-testid = 'customer-id'>{contactid}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Email:
             </div>
-            <div>{email}</div>
+            <div data-testid = 'customer-email'>{email}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Phone:
             </div>
-            <div>{phone}</div>
+            <div data-testid = 'customer-phone'>{phone}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Customer Address:
             </div>
-            <div>{custaddress}</div>
+            <div data-testid = 'customer-address'>{custaddress}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Newsletter:
             </div>
-            <div>{'' + newsletter}</div>
+            <div data-testid = 'customer-newsletter'>{'' + newsletter}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Donorbadge:
             </div>
-            <div>{donorbadge}</div>
+            <div data-testid = 'customer-donorbadge'>{donorbadge}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Seating Accommodation:
             </div>
-            <div>{ '' + seatingaccom }</div>
+            <div data-testid = 'customer-accommodation'>{ '' + seatingaccom }</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                VIP:
             </div>
-            <div>{ '' + vip }</div>
+            <div data-testid = 'customer-vip'>{ '' + vip }</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Volunteer List:
             </div>
-            <div>{'' + volunteerlist}</div>
+            <div data-testid = 'customer-volunteer'>{'' + volunteerlist}</div>
           </div>
 
         </div>
