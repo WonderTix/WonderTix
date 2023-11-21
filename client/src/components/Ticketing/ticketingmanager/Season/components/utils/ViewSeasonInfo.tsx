@@ -60,13 +60,9 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           >
             {activeSeasonSwitch ? 'ACTIVE' : 'INACTIVE'}
           </span>
-          <Tooltip
-            title={<p style={{fontSize: '1.2rem'}}>Edit</p>}
-            placement='top'
-            arrow
-          >
+          <Tooltip title={<p>Edit</p>} placement='top' arrow>
             <button
-              className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-3 py-2 rounded-xl'
+              className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
               onClick={() => setIsFormEditing(true)}
             >
               <svg
@@ -85,13 +81,9 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
               </svg>
             </button>
           </Tooltip>
-          <Tooltip
-            title={<p style={{fontSize: '1.2rem'}}>Delete</p>}
-            placement='top'
-            arrow
-          >
+          <Tooltip title={<p>Delete</p>} placement='top' arrow>
             <button
-              className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-3 py-2 rounded-xl'
+              className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
               onClick={deleteConfirmationHandler}
             >
               <svg
