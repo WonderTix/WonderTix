@@ -1,35 +1,33 @@
 import React, {useEffect, useState} from 'react';
 import {getAllEvents, updateEventSeason} from './utils/apiRequest';
 import EventCard from './EventCard';
+import {seasonEventInfo} from './utils/seasonCommon';
 
 interface SeasonEventsProps {
   token: string;
   seasonId: number;
   isFormEditing: boolean;
+  eventsInSeason: seasonEventInfo[];
+  eventsNotInAnySeason: seasonEventInfo[];
+  setEventsInSeason: (value) => void;
+  setEventsNotInAnySeason: (value) => void;
   setShowPopUp: (value) => void;
   setPopUpMessage: (value) => void;
 }
 
 const SeasonEvents = (props: SeasonEventsProps) => {
-  const {seasonId, token, isFormEditing, setShowPopUp, setPopUpMessage} = props;
-  const [eventsInSeason, setEventsInSeason] = useState<any>([]);
-  const [eventsNotInAnySeason, setEventsNotInAnySeason] = useState<any>([]);
+  const {
+    seasonId,
+    token,
+    isFormEditing,
+    eventsInSeason,
+    setEventsInSeason,
+    eventsNotInAnySeason,
+    setEventsNotInAnySeason,
+    setShowPopUp,
+    setPopUpMessage,
+  } = props;
   const [isAddEventActive, setIsAddEventActive] = useState<boolean>(false);
-
-  const handleGetAllEvents = async () => {
-    const allEvents = await getAllEvents(token);
-    if (allEvents) {
-      const eventsInCurrentSeason = allEvents.filter(
-        (event) => event.seasonid_fk === seasonId,
-      );
-      const unassignedEvents = allEvents.filter(
-        (event) => event.seasonid_fk === null,
-      );
-
-      setEventsInSeason(eventsInCurrentSeason);
-      setEventsNotInAnySeason(unassignedEvents);
-    }
-  };
 
   const handleRemoveEvent = async (eventIdToRemove: number) => {
     const updatedEvents = eventsInSeason.filter(
@@ -103,11 +101,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
   };
 
   useEffect(() => {
-    void handleGetAllEvents();
-  }, []);
-
-  useEffect(() => {
-    if (eventsNotInAnySeason.length > 0) {
+    if (eventsNotInAnySeason && eventsNotInAnySeason.length > 0) {
       eventsNotInAnySeason.sort((a, b) => b.eventid - a.eventid);
     }
   }, [eventsNotInAnySeason]);
