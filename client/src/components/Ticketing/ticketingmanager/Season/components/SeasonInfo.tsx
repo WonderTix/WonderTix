@@ -11,6 +11,7 @@ import {
 } from './utils/apiRequest';
 import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
+import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 
 const SeasonInfo = (props: SeasonProps) => {
   const {
@@ -26,7 +27,9 @@ const SeasonInfo = (props: SeasonProps) => {
   } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [tempImageUrl, setTempImageUrl] = useState('');
-  const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<boolean>(false);
+  const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<
+    boolean | undefined
+  >();
 
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
@@ -158,6 +161,8 @@ const SeasonInfo = (props: SeasonProps) => {
     const isSeasonActive = eventsInSeason.every((event) => event.active);
     setActiveSeasonSwitch(isSeasonActive);
   }, [eventsInSeason]);
+
+  if (activeSeasonSwitch === undefined) return <LoadingScreen />;
 
   return seasonId === 0 || isFormEditing ? (
     <form onSubmit={onSubmit} className='rounded-xl p-7 bg-white text-lg'>
