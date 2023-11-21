@@ -4,12 +4,12 @@
   "description": "WonderTix Server (Backend)",
   "main": "server.js",
   "scripts": {
-    "test": "echo -e 'Tests are disabled temporarily'",
-    "dev": "npm run prisma:init && nodemon --exec npx ts-node ./src/server.ts",
-    "test:jest": "npx jest --config ./jest.config.js",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed"
+    "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed",
+    "start": "npm run prisma:init && nodemon --exec npx ts-node ./src/server.ts",
+    "test": "echo -e 'Tests are disabled temporarily'",
+    "test:jest": "npx jest --config ./jest.config.js"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

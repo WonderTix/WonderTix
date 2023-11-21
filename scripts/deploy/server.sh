@@ -83,7 +83,8 @@ gcloud run deploy "wtix-server-${ENV}" \
   DB_PASSWORD=DB_PASSWORD:${ENV},\
   DB_PORT=DB_PORT:${ENV},\
   DB_USER=DB_USER:${ENV},\
-  PRIVATE_STRIPE_KEY=PRIVATE_STRIPE_KEY:${ENV}" \
+  PRIVATE_STRIPE_KEY=PRIVATE_STRIPE_KEY:${ENV},\
+  PRIVATE_STRIPE_WEBHOOK=PRIVATE_STRIPE_WEBHOOK:${ENV}" \
   "${TAG_ARGS[@]}"
 
 echo "Deployment of wtix-server-${ENV} completed successfully."
