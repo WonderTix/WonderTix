@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {Box} from '@mui/system';
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
 const CCTTotalsComponent = () => {

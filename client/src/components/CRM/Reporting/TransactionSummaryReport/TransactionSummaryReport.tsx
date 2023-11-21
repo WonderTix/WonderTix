@@ -55,7 +55,7 @@ const TransactionSummaryReport=() =>{
                         }}
                     >
                         <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500'>
-                        Credit Card Reconciliation Report
+                        Transaction Summary Report
                         </h1>
                     </Box>
                     <Grid
