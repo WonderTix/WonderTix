@@ -80,6 +80,14 @@ const openApiSpec = swaggerJsdoc({
             type: 'integer',
           },
         },
+        seasonid: {
+          name: 'seasonid',
+          in: 'path',
+          description: 'Season ID',
+          schema: {
+            type: 'integer',
+          },
+        },
         tickettypeid: {
           name: 'tickettypeid',
           in: 'path',
