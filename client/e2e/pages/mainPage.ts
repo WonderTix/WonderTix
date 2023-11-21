@@ -255,14 +255,14 @@ export class MainPage {
   // Increase number of tickets for an event by one
   // Uses the event parameter to find the event to increment.
   async incrementEventTicket(event: EventsInfo) {
-    const cartCard = await this.cartTicketCard.filter({hasText: event.eventName});
+    const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
     await cartCard.getByTestId('increment-ticket').click();
   }
 
   // Decrease number of tickets for an event by one.
   // Uses the event parameter to find the event to decrement.
   async decrementEventTicket(event: EventsInfo) {
-    const cartCard = await this.cartTicketCard.filter({hasText: event.eventName});
+    const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
     await cartCard.getByTestId('decrement-ticket').click();
   }
 

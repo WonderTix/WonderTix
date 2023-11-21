@@ -55,7 +55,7 @@ test('check cart after ticket add', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.searchDeleteShowing(currentShowing.showingWholeDate);
+    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
@@ -79,7 +79,7 @@ test('check stripe purchase', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(EventsInfo5.eventFullName);
-    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
+    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
     await events.deleteTheEvent(EventsInfo5.eventFullName);
   }
 });
@@ -107,7 +107,7 @@ test('check contact is added after order', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(EventsInfo5.eventFullName);
-    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
+    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
     await events.deleteTheEvent(EventsInfo5.eventFullName);
   }
 });
@@ -134,7 +134,7 @@ test('check order accommodations', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(EventsInfo5.eventFullName);
-    await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
+    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
     await events.deleteTheEvent(EventsInfo5.eventFullName);
   }
 });
@@ -167,7 +167,7 @@ test('check ticket inc/dec in cart', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.searchDeleteShowing(currentShowing.showingWholeDate);
+    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
@@ -195,7 +195,7 @@ test('check order on door list', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.searchDeleteShowing(currentShowing.showingWholeDate);
+    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });

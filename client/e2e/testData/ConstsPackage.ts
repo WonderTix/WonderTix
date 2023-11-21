@@ -75,7 +75,7 @@ export const ShowingInfo1: ShowingInfo = {
   showingTime: '00:10',
   showingQuantity: '10',
   showingWholeDate: 'Wed, Oct 11 2023',
-  showingDateTime: 'Wed, Oct 11 12:10 AM',
+  showingDateTime: 'Wed, Oct 11 2023 12:10 AM',
 };
 
 export const ShowingInfo2: ShowingInfo = {
@@ -83,7 +83,7 @@ export const ShowingInfo2: ShowingInfo = {
   showingTime: '10:20',
   showingQuantity: '010',
   showingWholeDate: 'Tue, Oct 17 2023',
-  showingDateTime: 'Tue, Oct 17 10:20 AM',
+  showingDateTime: 'Tue, Oct 17 2023 10:20 AM',
 };
 
 export const ShowingInfo3: ShowingInfo = {
@@ -99,7 +99,7 @@ export const ShowingInfo4: ShowingInfo = {
   showingTime: '',
   showingQuantity: '100',
   showingWholeDate: 'Wed, Sep 15 2021',
-  showingDateTime: 'Wed, Sep 15',
+  showingDateTime: 'Wed, Sep 15 2021',
 };
 
 export const ShowingInfo5: ShowingInfo = {
@@ -107,7 +107,7 @@ export const ShowingInfo5: ShowingInfo = {
   showingTime: '09:15',
   showingQuantity: '10',
   showingWholeDate: 'Fri, Sep 17 2021',
-  showingDateTime: 'Fri, Sep 17 9:15 AM',
+  showingDateTime: 'Fri, Sep 17 2021 09:15 AM',
 };
 
 // Credit card info, to be used in conjunction with the Stripe test card numbers

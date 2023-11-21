@@ -15,7 +15,7 @@ export class DoorListPage {
 
     this.pageHeader = page.getByRole('heading', {name: 'Door List'});
     this.chooseEvent = page.locator('#event-select');
-    this.chooseTime = page.getByTestId('time-select');
+    this.chooseTime = page.getByTestId('time-select-test');
     this.customerRow = page.locator('.MuiDataGrid-row');
   }
 
