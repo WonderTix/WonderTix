@@ -134,7 +134,7 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
           id: item.id,
         },
         data: {
-          price: item.tickettypeid_fk? 0: +update.price,
+          price: !item.tickettypeid_fk? 0: +update.price,
           concessionprice: +update.concessionprice,
           ticketrestrictions: {
             updateMany: {
@@ -162,7 +162,7 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
             data: {
               seasonid_fk: +id,
               tickettypeid_fk,
-              price: tickettypeid_fk === 0? 0: +price,
+              price: +tickettypeid_fk === 0? 0: +price,
               concessionprice,
             },
           });
