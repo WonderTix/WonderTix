@@ -7,6 +7,9 @@ const yaml = require('js-yaml');
  * @param {PrismaClient} prisma
  */
 async function seedPPHContacts(prisma: PrismaClient) {
+  let totalContactsCount = 0;
+  let missingAccountsCount = 0;
+
   try {
     const contactsCount = await prisma.pphContacts.count();
     if (contactsCount > 0) {
@@ -18,6 +21,7 @@ async function seedPPHContacts(prisma: PrismaClient) {
     const data = yaml.load(yamlData);
 
     for (const item of data) {
+      totalContactsCount++;
       let canInsert = true;
 
       if (item.account_id) {
@@ -26,8 +30,12 @@ async function seedPPHContacts(prisma: PrismaClient) {
         });
 
         if (!accountExists) {
+          missingAccountsCount++; // Increment missing accounts counter
           canInsert = false;
-          console.log(`Skipping contact with ID ${item.contact_id} due to non-existing account with ID ${item.account_id}`);
+
+          if (process.env.ENV === 'local') {
+            console.log(`Skipping contact with ID ${item.contact_id} due to non-existing account with ID ${item.account_id}`);
+          }
         }
       }
 
@@ -48,8 +56,8 @@ async function seedPPHContacts(prisma: PrismaClient) {
             email: item.email,
             other_email: item.other_email,
             phone: String(item.phone),
-            mobile_phone: item.mobile_phone,
-            home_phone: item.home_phone,
+            mobile_phone: String(item.mobile_phone),
+            home_phone: String(item.home_phone),
             other_phone: String(item.other_phone),
             fax: item.fax,
             mailing_street: item.mailing_street,
@@ -99,7 +107,7 @@ async function seedPPHContacts(prisma: PrismaClient) {
       }
     }
 
-    console.log('PPH_Contacts seeding completed.');
+    console.log(`PPH_Contacts seeding completed. Total contacts processed: ${totalContactsCount}. Contacts skipped due to missing accounts: ${missingAccountsCount}`);
   } catch (error) {
     console.error('Failed to seed PPH_contacts:', error);
   }

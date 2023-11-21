@@ -7,6 +7,9 @@ const yaml = require('js-yaml');
  * @param {PrismaClient} prisma
  */
 async function seedPPHOpportunity(prisma: PrismaClient) {
+  let totalOpportunityCount = 0;
+  let missingRecordTypeCount = 0;
+
   try {
     const OpportunityCount = await prisma.pphOpportunity.count();
     if (OpportunityCount > 0) {
@@ -18,6 +21,7 @@ async function seedPPHOpportunity(prisma: PrismaClient) {
     const data = yaml.load(yamlData);
 
     for (const item of data) {
+      totalOpportunityCount++;
       let canInsert = true;
 
       if (item.record_type_id) {
@@ -26,8 +30,12 @@ async function seedPPHOpportunity(prisma: PrismaClient) {
         });
 
         if (!recordTypeExists) {
+          missingRecordTypeCount++;
           canInsert = false;
-          console.log(`Skipping opportunity with ID ${item.opportunity_id} due to non-existing record type with ID ${item.record_type_id}`);
+
+          if (process.env.ENV === 'local') {
+            console.log(`Skipping Opportunity with ID ${item.opportunity_id} due to non-existing Record Type with ID ${item.record_type_id}`);
+          }
         }
       }
 
@@ -70,7 +78,7 @@ async function seedPPHOpportunity(prisma: PrismaClient) {
       }
     }
 
-    console.log('PPH_Opportunity seeding completed.');
+    console.log(`PPH_Opportunity seeding completed. Total opportunities processed: ${totalOpportunityCount}. Opportunities skipped due to missing Record Types: ${missingRecordTypeCount}`);
   } catch (error) {
     console.error('Failed to seed PPH_Opportunity:', error);
   }

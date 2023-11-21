@@ -7,6 +7,9 @@ const yaml = require('js-yaml');
  * @param {PrismaClient} prisma
  */
 async function seedPPHNotes(prisma: PrismaClient) {
+  let totalNotesCount = 0;
+  let missingContactsCount = 0;
+
   try {
     const notesCount = await prisma.pphNotes.count();
     if (notesCount > 0) {
@@ -18,6 +21,7 @@ async function seedPPHNotes(prisma: PrismaClient) {
     const data = yaml.load(yamlData);
 
     for (const item of data) {
+      totalNotesCount++;
       let canInsert = true;
 
       if (item.contact_id) {
@@ -26,8 +30,12 @@ async function seedPPHNotes(prisma: PrismaClient) {
         });
 
         if (!contactExists) {
+          missingContactsCount++;
           canInsert = false;
-          console.log(`Skipping note with ID ${item.note_id} due to non-existing contact with ID ${item.contact_id}`);
+
+          if (process.env.ENV === 'local') {
+            console.log(`Skipping note with ID ${item.note_id} due to non-existing contact with ID ${item.contact_id}`);
+          }
         }
       }
 
@@ -47,7 +55,7 @@ async function seedPPHNotes(prisma: PrismaClient) {
       }
     }
 
-    console.log('PPH_Notes seeding completed.');
+    console.log(`PPH_Notes seeding completed. Total Notes processed: ${totalNotesCount}. Notes skipped due to missing Contacts: ${missingContactsCount}`);
   } catch (error) {
     console.error('Failed to seed PPH_notes:', error);
   }

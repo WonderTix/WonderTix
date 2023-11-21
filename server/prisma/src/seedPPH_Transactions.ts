@@ -7,6 +7,10 @@ const yaml = require('js-yaml');
  * @param {PrismaClient} prisma
  */
 async function seedPPHTransactions(prisma: PrismaClient) {
+  let totalTransactionsCount = 0;
+  let missingTicketOrderCount = 0;
+  let missingTicketOrderItemCount = 0;
+
   try {
     const transactionsCount = await prisma.pphTransactions.count();
     if (transactionsCount > 0) {
@@ -18,6 +22,7 @@ async function seedPPHTransactions(prisma: PrismaClient) {
     const data = yaml.load(yamlData);
 
     for (const item of data) {
+      totalTransactionsCount++;
       let canInsert = true;
 
       // Check if the ticket order exists
@@ -27,8 +32,12 @@ async function seedPPHTransactions(prisma: PrismaClient) {
         });
 
         if (!ticketOrderExists) {
+          missingTicketOrderCount++;
           canInsert = false;
-          console.log(`Skipping transaction with ID ${item.transaction_id} due to non-existing ticket order with ID ${item.ticket_order_id}`);
+
+          if (process.env.ENV === 'local') {
+            console.log(`Skipping transaction with ID ${item.transaction_id} due to non-existing ticket order with ID ${item.ticket_order_id}`);
+          }
         }
       }
 
@@ -39,8 +48,12 @@ async function seedPPHTransactions(prisma: PrismaClient) {
         });
 
         if (!ticketOrderItemExists) {
+          missingTicketOrderItemCount++;
           canInsert = false;
-          console.log(`Skipping transaction with ID ${item.transaction_id} due to non-existing ticket order item with ID ${item.ticket_order_item_id}`);
+
+          if (process.env.ENV === 'local') {
+            console.log(`Skipping transaction with ID ${item.transaction_id} due to non-existing ticket order item with ID ${item.ticket_order_item_id}`);
+          }
         }
       }
 
@@ -91,7 +104,7 @@ async function seedPPHTransactions(prisma: PrismaClient) {
       }
     }
 
-    console.log('PPH_Transactions seeding completed.');
+    console.log(`PPH_Transactions seeding completed. Total Transactions processed: ${totalTransactionsCount}. Transactions skipped due to missing Ticket Orders: ${missingTicketOrderCount}. Transactions skipped due to missing Ticket Order Items: ${missingTicketOrderItemCount}.`);
   } catch (error) {
     console.error('Failed to seed PPH_transactions:', error);
   }

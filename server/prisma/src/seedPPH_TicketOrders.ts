@@ -7,6 +7,11 @@ const yaml = require('js-yaml');
  * @param {PrismaClient} prisma
  */
 async function seedPPHTicketOrders(prisma: PrismaClient) {
+  let totalTicketOrderCount = 0;
+  let missingAccountCount = 0;
+  let missingContactCount = 0;
+  let duplicateTicketOrderCount = 0;
+
   try {
     const ticketOrdersCount = await prisma.pphTicketorders.count();
     if (ticketOrdersCount > 0) {
@@ -18,6 +23,9 @@ async function seedPPHTicketOrders(prisma: PrismaClient) {
     const data = yaml.load(yamlData);
 
     for (const item of data) {
+      totalTicketOrderCount++;
+      let canInsert = true;
+
       // Check to see if the ticket order already exists in the table
       const existingTicketOrder = await prisma.pphTicketorders.findUnique({
         where: {ticket_order_id: item.ticket_order_id},
@@ -25,19 +33,24 @@ async function seedPPHTicketOrders(prisma: PrismaClient) {
 
       // Skip the ticket order if it already exists
       if (existingTicketOrder) {
-        console.log(`Skipping existing ticket order with ID ${item.ticket_order_id}. It already exists in the table`);
+        duplicateTicketOrderCount++;
+        if (process.env.ENV === 'local') {
+          console.log(`Skipping existing ticket order with ID ${item.ticket_order_id}. It already exists in the table`);
+        }
         continue;
       }
-
-      let canInsert = true;
 
       if (item.account_id) {
         const accountExists = await prisma.pphAccounts.findUnique({
           where: {account_id: item.account_id},
         });
         if (!accountExists) {
+          missingAccountCount++;
           canInsert = false;
-          console.log(`Skipping ticket order with ID ${item.ticket_order_id} due to non-existing account with ID ${item.account_id}`);
+
+          if (process.env.ENV === 'local') {
+            console.log(`Skipping ticket order with ID ${item.ticket_order_id} due to non-existing account with ID ${item.account_id}`);
+          }
         }
       }
 
@@ -46,8 +59,12 @@ async function seedPPHTicketOrders(prisma: PrismaClient) {
           where: {contact_id: item.contact_id},
         });
         if (!contactExists) {
+          missingContactCount++;
           canInsert = false;
-          console.log(`Skipping ticket order with ID ${item.ticket_order_id} due to non-existing contact with ID ${item.contact_id}`);
+
+          if (process.env.ENV === 'local') {
+            console.log(`Skipping ticket order with ID ${item.ticket_order_id} due to non-existing contact with ID ${item.contact_id}`);
+          }
         }
       }
 
@@ -68,7 +85,7 @@ async function seedPPHTicketOrders(prisma: PrismaClient) {
             city: item.city,
             state: item.state,
             postal_code: String(item.postal_code),
-            country: item.country,
+            country: String(item.country),
             shipping_first_name: item.shipping_first_name,
             shipping_last_name: item.shipping_last_name,
             shipping_stress_address: item.shipping_stress_address,
@@ -101,6 +118,7 @@ async function seedPPHTicketOrders(prisma: PrismaClient) {
         });
       }
     }
+    console.log(`PPH_Ticket_Order seeding completed. Total Ticket Order Items processed: ${totalTicketOrderCount}. Ticket Orders skipped due to missing accounts: ${missingAccountCount}. Ticket Orders skipped due to missing contacts: ${missingContactCount}. Ticket Orders skipped due to duplicate Ticket Order ID's: ${duplicateTicketOrderCount}.`);
   } catch (error) {
     console.error('Failed to seed PPH_ticketorders:', error);
   }
