@@ -13,9 +13,9 @@ seasonTicketTypePriceDefaultController.use(checkJwt);
 seasonTicketTypePriceDefaultController.use(checkScopes);
 
 interface SeasonTicketTypePriceDefaultRequestItem {
-  tickettypeid_fk: number;
-  price: number;
-  concessionprice: number;
+    tickettypeid_fk: number;
+    price: number;
+    concessionprice: number;
 }
 
 /**
@@ -68,7 +68,7 @@ seasonTicketTypePriceDefaultController.get('/:id', async (req: Request, res: Res
 
 /**
  * @swagger
- * /2/season-ticket-price-default/{id}:
+ * /2/season-ticket-type-price-default/{id}:
  *   put:
  *     summary: update season ticket type prices for a given season
  *     tags:
@@ -120,14 +120,12 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
     await prisma.$transaction(current.map((item) => {
       const update = toUpdate.get(item.tickettypeid_fk);
       toUpdate.delete(item.tickettypeid_fk);
-      if (!update && !item.ticketrestrictions.length) {
+      if (!update) {
         return prisma.seasontickettypepricedefault.delete({
           where: {
             id: item.id,
           },
         });
-      } else if (!update) {
-        throw new InvalidInputError(422, `Can not delete season ticket with active restriction(s)`);
       } else if (update.price < 0 || update.concessionprice < 0 ) {
         throw new InvalidInputError(422, `Price can not be negative`);
       }
@@ -136,16 +134,16 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
           id: item.id,
         },
         data: {
-          price: item.tickettypeid_fk === 0? 0: update.price,
-          concessionprice: update.concessionprice,
+          price: !item.tickettypeid_fk? 0: +update.price,
+          concessionprice: +update.concessionprice,
           ticketrestrictions: {
             updateMany: {
               where: {
                 seasontickettypepricedefaultid_fk: item.id,
               },
               data: {
-                ...(item.tickettypeid_fk && +item.price !== update.price && {price: update.price}),
-                ...(+item.concessionprice !== update.concessionprice && {price: update.concessionprice}),
+                ...(item.tickettypeid_fk && +item.price !== +update.price && {price: +update.price}),
+                ...(+item.concessionprice !== +update.concessionprice && {concessionprice: +update.concessionprice}),
               },
             },
           },
@@ -163,9 +161,9 @@ seasonTicketTypePriceDefaultController.put('/:id', async (req: Request, res: Res
           return prisma.seasontickettypepricedefault.create({
             data: {
               seasonid_fk: +id,
-              tickettypeid_fk,
-              price: tickettypeid_fk === 0? 0: +price,
-              concessionprice,
+              tickettypeid_fk: +tickettypeid_fk,
+              price: +tickettypeid_fk === 0? 0: +price,
+              concessionprice: +concessionprice,
             },
           });
         })));
