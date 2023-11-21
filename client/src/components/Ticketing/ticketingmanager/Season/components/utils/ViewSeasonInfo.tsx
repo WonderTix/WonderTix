@@ -60,7 +60,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
             {activeSeasonSwitch ? 'ACTIVE' : 'INACTIVE'}
           </span>
           <button
-            className='bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-3 rounded-xl'
+            className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-3 py-2 rounded-xl'
             onClick={() => setIsFormEditing(true)}
           >
             <svg
@@ -80,7 +80,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           </button>
 
           <button
-            className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-3 rounded-xl'
+            className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-3 py-2 rounded-xl'
             onClick={deleteConfirmationHandler}
           >
             <svg

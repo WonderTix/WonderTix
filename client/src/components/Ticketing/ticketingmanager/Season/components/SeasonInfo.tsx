@@ -166,9 +166,9 @@ const SeasonInfo = (props: SeasonProps) => {
 
   return seasonId === 0 || isFormEditing ? (
     <form onSubmit={onSubmit} className='rounded-xl p-7 bg-white text-lg'>
-      <section className='flex flex-col text-center tab:flex-row tab:text-start tab:justify-between tab:flex-wrap tab:mb-5'>
+      <section className='flex flex-col gap-3 text-center tab:flex-row tab:text-start tab:justify-between tab:flex-wrap tab:mb-5'>
         <h1 className='text-4xl font-semibold'>Edit Season</h1>
-        <article className='flex flex-wrap justify-center gap-2'>
+        <article className='flex flex-wrap justify-center gap-2 mb-3 tab:mb-0'>
           <button className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'>
             Save
           </button>
@@ -181,7 +181,7 @@ const SeasonInfo = (props: SeasonProps) => {
         </article>
       </section>
       <div className='grid grid-cols-12'>
-        <div className='flex flex-col gap-2 col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
+        <div className='flex flex-col gap-3 col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
           <label htmlFor='seasonName'>
             Season Name:
             <input
