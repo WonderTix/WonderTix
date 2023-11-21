@@ -1,24 +1,18 @@
 steps:
 
-  # Server npm install with cache
-  - name: 'gcr.io/cloud-builders/npm'
-    id: 'install-server'
-    waitFor: ['-']
-    args: ['install']
-    dir: 'server'
-    volumes:
-    - name: 'server_cache'
-      path: '/workspace/server/node_modules'
-
   # Client npm install with cache
   - name: 'gcr.io/cloud-builders/npm'
-    id: 'install-client'
+    id: 'npm-install-client'
     waitFor: ['-']
-    args: ['install']
     dir: 'client'
-    volumes:
-    - name: 'client_cache'
-      path: '/workspace/client/node_modules'
+    args: ['install']
+
+    # Additional step to ensure caching is working (Debugging)
+  - name: 'ubuntu'
+    id: 'check-node-modules'
+    waitFor: ['npm-install-client']
+    entrypoint: 'bash'
+    args: ['-c', 'ls -ahl /workspace/client/node_modules || echo "node_modules not found"']
 
   # Pull Playwright image and cache for testing steps
   - name: 'gcr.io/cloud-builders/docker'
@@ -29,7 +23,7 @@ steps:
   # Build server image
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-test-server'
-    waitFor: ['install-server']
+    waitFor: ['-']
     entrypoint: 'bash'
     args:
       - '-c'
@@ -41,9 +35,6 @@ steps:
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
-    volumes:
-    - name: 'server_cache'
-      path: '/workspace/server/node_modules'
 
   # Push server image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -79,7 +70,7 @@ steps:
   # Build client image with build args for test revision
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-test-client'
-    waitFor: ['install-client']
+    waitFor: ['-']
     entrypoint: 'bash'
     args: ['scripts/build/client.sh']
     env:
@@ -92,9 +83,6 @@ steps:
       - 'ENV'
       - 'PUBLIC_STRIPE_KEY'
       - 'SERVER_REVISION'
-    volumes:
-    - name: 'client_cache'
-      path: '/workspace/client/node_modules'
 
   # Push client image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -126,9 +114,10 @@ steps:
   # Run Firefox E2E tests on test client
   - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
     id: 'firefox-tests'
-    waitFor: ['deploy-test-client']
+    waitFor: ['npm-install-client', 'deploy-test-client']
+    dir: 'client/e2e'
     entrypoint: 'bash'
-    args: ['scripts/test/client.sh']
+    args: ['/workspace/scripts/test/client.sh']
     env:
       - 'BROWSER=firefox'
     secretEnv:
@@ -136,16 +125,14 @@ steps:
       - 'SERVER_REVISION'
       - 'TEST_EMAIL'
       - 'TEST_PASSWORD'
-    volumes:
-    - name: 'client_cache'
-      path: '/workspace/client/node_modules'
 
   # Run Chromium E2E tests on test client
   - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
     id: 'chromium-tests'
-    waitFor: ['deploy-test-client']
+    waitFor: ['npm-install-client', 'deploy-test-client']
+    dir: 'client/e2e'
     entrypoint: 'bash'
-    args: ['scripts/test/client.sh']
+    args: ['/workspace/scripts/test/client.sh']
     env:
       - 'BROWSER=chromium'
     secretEnv:
@@ -153,16 +140,14 @@ steps:
       - 'SERVER_REVISION'
       - 'TEST_EMAIL'
       - 'TEST_PASSWORD'
-    volumes:
-    - name: 'client_cache'
-      path: '/workspace/client/node_modules'
 
   # Run WebKit E2E tests on test client
   - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
     id: 'webkit-tests'
-    waitFor: ['deploy-test-client']
+    waitFor: ['npm-install-client', 'deploy-test-client']
+    dir: 'client/e2e'
     entrypoint: 'bash'
-    args: ['scripts/test/client.sh']
+    args: ['/workspace/scripts/test/client.sh']
     env:
       - 'BROWSER=webkit'
     secretEnv:
@@ -170,9 +155,6 @@ steps:
       - 'SERVER_REVISION'
       - 'TEST_EMAIL'
       - 'TEST_PASSWORD'
-    volumes:
-    - name: 'client_cache'
-      path: '/workspace/client/node_modules'
 
   # Deploy server to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -240,9 +222,6 @@ steps:
       - 'ENV'
       - 'PUBLIC_STRIPE_KEY'
       - 'ROOT_URL'
-    volumes:
-    - name: 'client_cache'
-      path: '/workspace/client/node_modules'
 
   # Push client image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -301,14 +280,7 @@ steps:
       - 'REGION'
 
 options:
-  machineType: 'E2_MEDIUM'
-
-artifacts:
-  objects:
-    location: 'gs://wtix-cloudbuild-cache/'
-    paths:
-    - '/workspace/server/node_modules'
-    - '/workspace/client/node_modules'
+  machineType: 'E2_HIGHCPU_8'
 
 # Use dev, stg, or prd versions depending on $_ENV value from trigger
 availableSecrets:

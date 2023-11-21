@@ -32,9 +32,6 @@ export ROOT_URL="${SERVER_REVISION}"
 
 CONFIG="../playwright.config.ts"
 
-cd client && npm ci || { echo "Directory client not found."; exit 1; }
-cd e2e || { echo "Directory e2e not found."; exit 1; }
-
 # Run Playwright tests
 if ! npx playwright test --project="${BROWSER}" --config="${CONFIG}"; then
   echo "Tests failed."
