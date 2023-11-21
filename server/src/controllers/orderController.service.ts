@@ -168,17 +168,11 @@ export const orderCancel = async (
 const getOrderDateAndTime = () => {
   const date = new Date();
 
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  const year = date.getFullYear();
+  const formatDatePart = (part: number) => part.toString().padStart(2, '0');
 
-  const orderdate = parseInt(`${year}${month}${day}`, 10);
-  const localOffset = date.getTimezoneOffset() * 60000; // offset in milliseconds
-  const adjustedDate = new Date(date.getTime() - localOffset);
-  const ordertime = adjustedDate.toISOString();
+  const orderdate = parseInt(`${date.getFullYear()}${formatDatePart(date.getMonth() + 1)}${formatDatePart(date.getDate())}`, 10);
 
-  return {
-    orderdate,
-    ordertime,
-  };
+  const ordertime = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString();
+
+  return {orderdate, ordertime};
 };
