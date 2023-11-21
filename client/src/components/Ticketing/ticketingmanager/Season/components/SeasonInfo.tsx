@@ -11,7 +11,6 @@ import {
 } from './utils/apiRequest';
 import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
-import {FormControlLabel, Switch} from '@mui/material';
 
 const SeasonInfo = (props: SeasonProps) => {
   const {
@@ -27,9 +26,7 @@ const SeasonInfo = (props: SeasonProps) => {
   } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [tempImageUrl, setTempImageUrl] = useState('');
-  const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<boolean>();
-  const [prevActiveSeasonSwitch, setPrevActiveSeasonSwitch] =
-    useState<boolean>();
+  const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<boolean>(false);
 
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
@@ -74,6 +71,11 @@ const SeasonInfo = (props: SeasonProps) => {
       const updateSingleEvent = await updateEventSeason(eventReqBody, token);
       if (!updateSingleEvent) return;
     }
+    setEventsInSeason((allEventsInSeason) => {
+      return allEventsInSeason.map((singleEvent) => {
+        return {...singleEvent, active: isSeasonActive};
+      });
+    });
   };
 
   const handleUpdateSeason = async (reqObject: RequestBody) => {
@@ -115,8 +117,6 @@ const SeasonInfo = (props: SeasonProps) => {
       void handleCreateNewSeason(reqObject);
     } else {
       void handleUpdateSeason(reqObject);
-      void handleUpdateSeasonEvents(activeSeasonSwitch);
-      setPrevActiveSeasonSwitch(activeSeasonSwitch);
     }
   };
 
@@ -134,7 +134,6 @@ const SeasonInfo = (props: SeasonProps) => {
     } else {
       setIsFormEditing(false);
       setSeasonValues({...seasonValues, imageurl: tempImageUrl});
-      setActiveSeasonSwitch(prevActiveSeasonSwitch);
     }
   };
 
@@ -158,7 +157,6 @@ const SeasonInfo = (props: SeasonProps) => {
   useEffect(() => {
     const isSeasonActive = eventsInSeason.every((event) => event.active);
     setActiveSeasonSwitch(isSeasonActive);
-    setPrevActiveSeasonSwitch(isSeasonActive);
   }, [eventsInSeason]);
 
   return seasonId === 0 || isFormEditing ? (
@@ -240,16 +238,6 @@ const SeasonInfo = (props: SeasonProps) => {
               </button>
             </div>
           </label>
-
-          <div id='form-checkboxes'>
-            <FormControlLabel
-              control={<Switch checked={activeSeasonSwitch} />}
-              onChange={() => setActiveSeasonSwitch((checked) => !checked)}
-              sx={{margin: 0, gap: '5px'}}
-              label='Active'
-              labelPlacement='start'
-            />
-          </div>
         </div>
         <article className='col-span-12 tab:col-span-6'>
           <SeasonImage
@@ -263,8 +251,10 @@ const SeasonInfo = (props: SeasonProps) => {
   ) : (
     <ViewSeasonInfo
       {...seasonValues}
+      activeSeasonSwitch={activeSeasonSwitch}
       setIsFormEditing={setIsFormEditing}
-      isSeasonActive={activeSeasonSwitch}
+      setActiveSeasonSwitch={setActiveSeasonSwitch}
+      handleUpdateSeasonEvents={handleUpdateSeasonEvents}
       deleteConfirmationHandler={deleteConfirmationHandler}
     />
   );

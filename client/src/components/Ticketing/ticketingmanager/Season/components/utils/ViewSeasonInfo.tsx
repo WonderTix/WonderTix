@@ -1,6 +1,7 @@
 import React from 'react';
 import {SeasonInfo} from './seasonCommon';
 import {SeasonImage} from '../../seasonUtils';
+import {FormControlLabel, Switch} from '@mui/material';
 
 const MONTHS = [
   'January',
@@ -18,8 +19,10 @@ const MONTHS = [
 ];
 
 interface ViewSeasonInfoProps extends SeasonInfo {
-  isSeasonActive: boolean;
+  activeSeasonSwitch: boolean;
   setIsFormEditing: (value) => void;
+  handleUpdateSeasonEvents: (value) => void;
+  setActiveSeasonSwitch: (value) => void;
   deleteConfirmationHandler: (event) => void;
 }
 
@@ -29,8 +32,10 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
     startdate,
     enddate,
     imageurl,
-    isSeasonActive,
+    activeSeasonSwitch,
     setIsFormEditing,
+    handleUpdateSeasonEvents,
+    setActiveSeasonSwitch,
     deleteConfirmationHandler,
   } = props;
 
@@ -49,18 +54,10 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
         <div className='flex flex-col gap-2 tab:flex-row tab:flex-wrap'>
           <span
             className={`${
-              isSeasonActive === undefined
-                ? 'hidden'
-                : isSeasonActive
-                ? 'bg-green-100'
-                : 'bg-red-100'
+              activeSeasonSwitch ? 'bg-green-100' : 'bg-red-100'
             } py-2 px-8 rounded-lg font-medium`}
           >
-            {isSeasonActive === undefined
-              ? 'hidden'
-              : isSeasonActive
-              ? 'ACTIVE'
-              : 'INACTIVE'}
+            {activeSeasonSwitch ? 'ACTIVE' : 'INACTIVE'}
           </span>
           <button
             className='bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-3 rounded-xl'
@@ -112,7 +109,20 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           <p className='mb-3 text-base'>{getLongDateFormat(startdate)}</p>
 
           <h3 className='font-semibold'>End Date </h3>
-          <p className='text-base'>{getLongDateFormat(enddate)}</p>
+          <p className='mb-3 text-base'>{getLongDateFormat(enddate)}</p>
+
+          <div>
+            <FormControlLabel
+              control={<Switch checked={activeSeasonSwitch} />}
+              onChange={() => {
+                setActiveSeasonSwitch((checked) => !checked);
+                void handleUpdateSeasonEvents(!activeSeasonSwitch);
+              }}
+              sx={{margin: 0, gap: '5px'}}
+              label='Active'
+              labelPlacement='start'
+            />
+          </div>
         </article>
         <article className='col-span-12 tab:col-span-6'>
           <SeasonImage
