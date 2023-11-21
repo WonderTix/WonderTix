@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {getImageDefault} from '../../../../../utils/imageURLValidation';
 import {useNavigate} from 'react-router';
+import {SeasonImage} from '../seasonUtils';
 
 interface EventCardProps {
   name: string;
@@ -30,7 +31,7 @@ const EventCard = (props: EventCardProps) => {
     <div className='flex flex-col items-center bg-gray-200 rounded-xl border-8 border-solid border-zinc-300 mb-3 p-3 min-[768px]:flex-row min-[768px]:justify-between'>
       <article className='flex flex-col gap-3 items-center justify-center min-[768px]:flex-row'>
         <div id='event-image-container' className='w-36'>
-          <img
+          <SeasonImage
             className='h-auto'
             src={
               imageurl === 'Default Event Image' ? getImageDefault() : imageurl
