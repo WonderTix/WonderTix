@@ -24,49 +24,49 @@ const getDate = (time: string, date: number) => {
 
 /**
  * @swagger
- *  /2/tickets:
+ * /2/tickets:
  *    get:
- *      summary: get list of instances with available seats
- *      tags:
- *        - New Event Instances
- *      security:
- *        - bearerAuth: []
- *      responses:
- *        200:
- *          description: OK
- *          content:
- *            application/json:
- *              schema:
- *                type: object
- *                properties:
- *                  data:
- *                    type: array
- *                    items:
- *                      type: object
- *                      properties:
- *                        byId:
- *                          type: object
- *                          properties:
- *                            ticketid:
- *                              type: object
- *                              properties:
- *                                event_instance_id: {type: integer}
- *                                eventid: {type: integer}
- *                                totalseats: {type: integer}
- *                                availableseats: {type: integer}
- *                                admission_type: {type: string}
- *                                ticket_price: {type: integer}
- *                                concession_price: {type: integer}
- *                                date: {type: string}
- *                        allIds: {type: array, items: {type: integer}}
- *       400:
- *         description: bad request
+ *     summary: get list of instances with available seats
+ *     tags:
+ *     -New Event Instances
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Error'
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       byId:
+ *                         type: object
+ *                         properties:
+ *                           ticketid:
+ *                             type: object
+ *                             properties:
+ *                               event_instance_id: {type: integer}
+ *                               eventid: {type: integer}
+ *                               totalseats: {type: integer}
+ *                               availableseats: {type: integer}
+ *                               admission_type: {type: string}
+ *                               ticket_price: {type: integer}
+ *                               concession_price: {type: integer}
+ *                               date: {type: string}
+ *                       allIds: {type: array, items: {type: integer}}
+ *       400:
+ *        description: bad request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Error'
  *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
+ *        description: Internal Server Error. An error occurred while processing the request.
  */
 eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
   try {
@@ -115,6 +115,7 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
     res.status(500).send({error: 'Internal Server Error'});
   }
 });
+
 /**
  * @swagger
  * /2/event-instance/list/active:
@@ -253,6 +254,7 @@ eventInstanceController.get(
       }
     },
 );
+
 /**
  * @swagger
  * /2/event-instance/{id}:
