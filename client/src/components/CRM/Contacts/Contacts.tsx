@@ -67,6 +67,7 @@ const Contacts = (): React.ReactElement => {
         rounded-lg shadow-md justify-between'
         >
           <input
+            data-testid='contact-search'
             type="input  "
             className='w-full p-2 rounded-lg'
             placeholder='Search by contact...'
@@ -76,6 +77,7 @@ const Contacts = (): React.ReactElement => {
             }}
           />
           <button
+            data-testid='contact-search-button'
             type="submit"
             className='p-2 text-zinc-400 justify-end'
             aria-label="search"
