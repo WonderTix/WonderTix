@@ -198,20 +198,7 @@ export const getTicketTypePrice = (
   return foundType[priceType];
 };
 
-export const useFetchSeasons = (token: string) => {
-  const [seasons, setSeasons] = useState([]);
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    fetchSeasons(token, signal)
-      .then((res) => setSeasons(res))
-      .catch(() => console.error('Failed to fetch seasons'));
-    return () => controller.abort();
-  }, []);
-  return {seasons};
-};
-
-const fetchSeasons = async (token: string, signal) => {
+export const fetchSeasons = async (token: string, signal) => {
   const response = await fetch(`${process.env.REACT_APP_API_2_URL}/season`, {
     credentials: 'include',
     method: 'GET',

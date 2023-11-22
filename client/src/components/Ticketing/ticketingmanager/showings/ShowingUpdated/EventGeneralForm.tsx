@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Field, Formik} from 'formik';
 import {InputControl} from './InputControl';
 import {eventGeneralSchema} from './event.schemas';
@@ -6,7 +6,7 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {useFetchSeasons} from './ShowingUtils';
+import {fetchSeasons} from './ShowingUtils';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
@@ -15,25 +15,28 @@ interface EventGeneralFormProps {
 }
 
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
-  const {onSubmit, onDelete, onLeaveEdit} = props;
+  const {onSubmit, onLeaveEdit} = props;
   const {eventData, showPopUp, token} = useEvent();
-  const {seasons} = useFetchSeasons(token);
-  const [disabledURL, setDisabledURL] = useState(
-    eventData?.imageurl === 'Default Event Image',
-  );
+  const [seasons, setSeasons] = useState([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetchSeasons(token, signal)
+      .then((res) => setSeasons(res))
+      .catch((error) => console.error('Failed to fetch seasons', error));
+
+    return () => controller.abort();
+  }, [token]);
 
   const baseValues = {
     eventname: eventData ? eventData.eventname : '',
     eventid: eventData ? eventData.eventid : 0,
     eventdescription: eventData ? eventData.eventdescription : '',
     imageurl: eventData ? eventData.imageurl : '',
-    active: eventData ? eventData.active : true,
+    active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
-  };
-
-  const handleImageUrlChange = (event) => {
-    const imageUrlValue = event.target.value;
-    setDisabledURL(imageUrlValue === '');
   };
 
   return (
@@ -124,7 +127,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     label={'Image URL'}
                     type={'text'}
                     id={0}
-                    disabled={disabledURL}
+                    disabled={false}
                     className={{
                       labelClass: 'text-sm font-semibold',
                       inputClass:
@@ -164,14 +167,16 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 >
                   <option value={undefined}>None</option>
                   {seasons?.length > 0 &&
-                    seasons.map((season, index) => (
-                      <option
-                        value={Number(season.seasonid)}
-                        key={`${season.seasonid} ${index}`}
-                      >
-                        {season.name}
-                      </option>
-                    ))}
+                    seasons
+                      .sort((a, b) => a.seasonid - b.seasonid)
+                      .map((season, index) => (
+                        <option
+                          value={Number(season.seasonid)}
+                          key={`${season.seasonid} ${index}`}
+                        >
+                          {season.name}
+                        </option>
+                      ))}
                 </Field>
               </div>
               <div className={'grid grid-cols-12 mb-2'}>
