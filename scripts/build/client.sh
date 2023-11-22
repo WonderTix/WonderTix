@@ -38,7 +38,7 @@ check_args
 URL=${ROOT_URL:-$SERVER_REVISION}
 
 # Pass build arguments to Docker command
-docker build -f client/Dockerfile.dev -t ${ARTIFACTS}/client-img-${ENV}:${SHORT_SHA} client \
+docker build -f client/Dockerfile -t ${ARTIFACTS}/client-img-${ENV}:${SHORT_SHA} client \
   --build-arg AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET} \
   --build-arg REACT_APP_API_1_URL=${URL}/api/1 \
   --build-arg REACT_APP_API_2_URL=${URL}/api/2 \

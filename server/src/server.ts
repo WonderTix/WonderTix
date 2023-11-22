@@ -53,6 +53,7 @@ import {seasonTicketTypeController} from './controllers/seasonTicketTypeControll
 import {singleTicketController} from './controllers/singleTicketController';
 import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
+import {seasonTicketTypePriceDefaultController} from './controllers/seasonTicketTypePriceDefaultController';
 
 const openApiSpec = swaggerJsdoc({
   definition: {
@@ -77,6 +78,22 @@ const openApiSpec = swaggerJsdoc({
           name: 'id',
           in: 'path',
           description: 'ID',
+          schema: {
+            type: 'integer',
+          },
+        },
+        seasonid: {
+          name: 'seasonid',
+          in: 'path',
+          description: 'Season ID',
+          schema: {
+            type: 'integer',
+          },
+        },
+        tickettypeid: {
+          name: 'tickettypeid',
+          in: 'path',
+          description: 'ticket type id',
           schema: {
             type: 'integer',
           },
@@ -241,6 +258,19 @@ const openApiSpec = swaggerJsdoc({
             seasontickettypeid: {type: 'integer'},
             description: {type: 'string'},
             price: {type: 'number'},
+          },
+        },
+        SeasonTicketTypePriceDefault: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {type: 'number'},
+              seasonid_fk: {type: 'number'},
+              tickettypeid_fk: {type: 'number'},
+              price: {type: 'number'},
+              concessionprice: {type: 'number'},
+            },
           },
         },
         SingleTicket: {
@@ -460,6 +490,17 @@ const openApiSpec = swaggerJsdoc({
             price: {type: 'number'},
           },
         },
+        SeasonTicketTypePriceDefault: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              tickettypeid_fk: {type: 'number'},
+              price: {type: 'number'},
+              concessionprice: {type: 'number'},
+            },
+          },
+        },
         SingleTicket: {
           type: 'object',
           properties: {
@@ -597,6 +638,7 @@ const createServer = async () => {
   app.use('/api/2/ticket-restriction', ticketRestrictionController);
   app.use('/api/2/ticket-type', ticketTypeController);
   app.use('/api/2/user', userController);
+  app.use('/api/2/season-ticket-type-price-default', seasonTicketTypePriceDefaultController);
 
   // other
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
