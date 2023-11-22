@@ -40,11 +40,11 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
 
   return (
     <div className={'bg-white flex flex-col p-6 rounded-xl shadow-xl'}>
-      <div className={'flex justify-between items-center mb-5'}>
+      <div className={'flex flex-col gap-3 text-center mb-5 justify-between tab:flex-row tab:flex-wrap'}>
         <h2 className={'text-3xl font-semibold text-zinc-800'}>
           Event Information
         </h2>
-        <div className='flex items-center gap-2'>
+        <div className='flex flex-col gap-2 tab:flex-row tab:flex-wrap'>
           <span
             className={`${
               eventData.active ? 'bg-green-100' : 'bg-red-100'
@@ -139,6 +139,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
               checked={isActive}
               onChange={handleActiveChange}
               inputProps={{'aria-label': 'controlled'}}
+              id='active'
             />
           </div>
         </div>

@@ -1,9 +1,8 @@
 /* eslint-disable require-jsdoc */
-import {test , expect} from '@playwright/test';
+import {test, expect} from '@playwright/test';
 import {EventsPage} from './pages/EventsPage';
 import { EventsInfo1, EventsInfo2, EventsInfo3, EventsInfo4 } from './testData/ConstsPackage';
-import { ShowingInfo1, ShowingInfo2, ShowingInfo3,ShowingInfo4 } from './testData/ConstsPackage';
-
+import { ShowingInfo1, ShowingInfo2, ShowingInfo3, ShowingInfo4 } from './testData/ConstsPackage';
 
 
 test('Homepage->Events',async({page}) => {
@@ -24,6 +23,7 @@ test('addDeleteEvents',async({page})=>{
   //The ANE_Package2 is locate in ConstsPackage.ts file
   //First we create a new event
   await eventsPage.addnewevent(EventsInfo2);
+  await eventsPage.activateEvent();
   //Then we add a new showing for it
   await eventsPage.addNewShowing(ShowingInfo1);
   //Go back to homepage to see if it exists on the homepage

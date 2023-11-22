@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {Field, Formik} from 'formik';
 import {InputControl} from './InputControl';
 import {eventGeneralSchema} from './event.schemas';
-import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
@@ -130,8 +129,8 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   <Field name='imageurl'>
                     {({field, form}) => (
                       <div className='flex flex-col text-zinc-800'>
-                        <label className='text-sm font-semibold'>
-                          Image URL
+                        <label className='text-sm font-semibold' htmlFor='imageurl'>
+                          Image URL:
                         </label>
                         <input
                           type='text'
@@ -141,6 +140,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                             field.onChange(event);
                             handleInputChange(event);
                           }}
+                          id='imageurl'
                         />
                       </div>
                     )}
@@ -158,7 +158,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     }}
                     type='button'
                   >
-                    Use Default
+                    Default
                   </button>
                 )}
               </div>
