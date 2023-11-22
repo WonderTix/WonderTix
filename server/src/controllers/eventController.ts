@@ -199,6 +199,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         active: true,
         eventinstances: {
           some: {
+            deletedat: null,
             availableseats: {gt: 0},
             salestatus: true,
           },

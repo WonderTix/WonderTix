@@ -16,16 +16,16 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {ticketTypes, showPopUp} = useEvent();
   const [InstanceTicketTypesField] = useField('instanceTicketTypes');
   const [defaulttickettype] = useField('defaulttickettype');
-  const defaultType = InstanceTicketTypesField.value.findIndex(
-    (item) => item.tickettypeid_fk === +defaulttickettype.value,
+  const defaultTypeIndex = InstanceTicketTypesField.value.findIndex(
+    (item) => item.tickettypeid_fk === defaulttickettype.value,
   );
   const [availableTypes, setAvailableTypes] = useState(
     ticketTypes
       .filter(
         (type) =>
-          !InstanceTicketTypesField.value.find(
+          !InstanceTicketTypesField.value.some(
             (value) => value.tickettypeid_fk === Number(type.id),
-          ) && Number(type.id) !== defaulttickettype.value,
+          ),
       )
       .map((value) => Number(value.id)),
   );
@@ -104,14 +104,14 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
           </tr>
         </thead>
         <tbody className={'text-sm whitespace-nowrap text-zinc-800'}>
-          {defaultType >= 0 && (
+          {defaultTypeIndex > -1 && (
             <tr className={'bg-gray-200'}>
               <td className={'px-2 border border-white'}>
                 {getTicketTypeKeyValue(1, 'description', ticketTypes)}
               </td>
               <td className={'px-2 border border-white'}>
                 <Field
-                  name={`${InstanceTicketTypesField.name}[${defaultType}].price`}
+                  name={`${InstanceTicketTypesField.name}[${defaultTypeIndex}].price`}
                   type={'number'}
                   component={InputControl}
                   hidden={true}
@@ -127,7 +127,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               </td>
               <td className={'px-2 border border-white'}>
                 <Field
-                  name={`${InstanceTicketTypesField.name}[${defaultType}].concessionprice`}
+                  name={`${InstanceTicketTypesField.name}[${defaultTypeIndex}].concessionprice`}
                   type={'number'}
                   component={InputControl}
                   hidden={true}
@@ -142,14 +142,14 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                 />
               </td>
               <td className={'px-2 border border-white'}>
-                {InstanceTicketTypesField.value[defaultType].ticketlimit}
+                {InstanceTicketTypesField.value[defaultTypeIndex].ticketlimit}
               </td>
               <td className={'border border-white'}></td>
             </tr>
           )}
           {InstanceTicketTypesField.value?.length > 0 &&
-            InstanceTicketTypesField.value.map((id, index) => {
-              if (index === defaultType) return undefined;
+            InstanceTicketTypesField.value.map((type, index) => {
+              if (index === defaultTypeIndex) return undefined;
               return (
                 <tr key={eventInstanceID + index + 'ticketTypeRow'}>
                   <td

@@ -114,7 +114,7 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-    if ((item.payWhatCan && item.payWhatPrice && item.payWhatPrice < 0)||item.price < 0) {
+    if ((item.payWhatCan && item.payWhatPrice && item.payWhatPrice < 0) || item.price < 0) {
       throw new InvalidInputError(
           422,
           `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
@@ -154,8 +154,7 @@ export const getOrderItems = async (
           data: {
             availableseats: (instance.ticketRestrictionMap.get(instance.defaulttickettype??1)?.eventtickets ?? []).length,
           },
-        },
-        ));
+        }));
   }
 
   return {

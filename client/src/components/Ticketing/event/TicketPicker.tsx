@@ -202,7 +202,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   ] = useReducer(TicketPickerReducer, initialState);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(
+     await fetch(
       process.env.REACT_APP_API_1_URL + '/tickets/AllTypes',
     )
       .then((res) => {
@@ -325,9 +325,12 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
               process.env.REACT_APP_API_2_URL +
               `/ticket-restriction/${selectedTicket.event_instance_id}`,
           );
+          if (!response.ok) {
+            throw response;
+          }
           const data = await response.json();
           const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter(
-            (t) => data.find((type) => type.tickettypeid_fk === t.id),
+            (t) => data.some((type) => type.tickettypeid_fk === t.id),
           );
           setFilteredTicketTypes(finalFilteredTicketTypes);
         } catch (error) {

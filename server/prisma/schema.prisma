@@ -295,13 +295,17 @@ model tasknotes {
 
 /// ticket restrictions for an event are used to limit the number of tickets that can be sold for a ticket type for an event instance
 model ticketrestrictions {
-  ticketrestrictionsid Int            @id @default(autoincrement())
-  eventinstanceid_fk   Int
-  tickettypeid_fk      Int
-  ticketlimit          Int
-  ticketssold          Int?           @default(0)
-  eventinstances       eventinstances @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction)
-  tickettype           tickettype     @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  ticketrestrictionsid              Int                           @id @default(autoincrement())
+  eventinstanceid_fk                Int
+  tickettypeid_fk                   Int
+  ticketlimit                       Int
+  price                             Decimal                       @default(0) @db.Money
+  concessionprice                   Decimal                       @default(0) @db.Money
+  seasontickettypepricedefaultid_fk Int?
+  eventinstances                    eventinstances                @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction)
+  tickettype                        tickettype                    @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  seasontickettypepricedefault      seasontickettypepricedefault? @relation(fields: [seasontickettypepricedefaultid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  eventtickets                      eventtickets[]
 }
 
 /// types of tickets that can be assigned to an event
