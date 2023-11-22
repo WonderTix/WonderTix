@@ -13,25 +13,6 @@ export enum Accommodations {
 }
 
 // This is the passin data template for the test:addNewEvents in EventsPage.spect.ts.
-
-export class EventsInfo {
-  eventName: string;
-  eventDescription: string;
-  eventURL: string;
-  eventFullName: string;
-
-  constructor(event: EventsInfoTemplate, UID=true) {
-    if (UID) {
-      this.eventName = event.eventName + v4();
-    } else {
-      this.eventName = event.eventName;
-    }
-    this.eventDescription = event.eventDescription;
-    this.eventURL = event.eventURL;
-    this.eventFullName = this.eventName + ' Playbill ' + this.eventName + ' Description ' + this.eventDescription;
-  }
-}
-
 export interface EventsInfoTemplate {
   eventName: string;
   eventDescription: string;
@@ -81,6 +62,31 @@ export const EventsInfoTemplate6: EventsInfoTemplate = {
   eventURL: 'https://upload.wikimedia.org/wikipedia/en/6/62/Barney%27s-Great-Adventure-Poster.jpeg',
   eventFullName: 'Purple Playbill Purple Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
+
+export class EventsInfo {
+  eventName: string;
+  eventDescription: string;
+  eventURL: string;
+  eventFullName: string;
+
+  constructor(event: EventsInfoTemplate, UID=true) {
+    if (UID) {
+      this.eventName = event.eventName + v4();
+    } else {
+      this.eventName = event.eventName;
+    }
+    this.eventDescription = event.eventDescription;
+    this.eventURL = event.eventURL;
+    this.eventFullName = this.eventName + ' Playbill ' + this.eventName + ' Description ' + this.eventDescription;
+  }
+}
+
+export const EventsInfo1 = new EventsInfo(EventsInfoTemplate1);
+export const EventsInfo2 = new EventsInfo(EventsInfoTemplate2);
+export const EventsInfo3 = new EventsInfo(EventsInfoTemplate3);
+export const EventsInfo4 = new EventsInfo(EventsInfoTemplate4);
+export const EventsInfo5 = new EventsInfo(EventsInfoTemplate5);
+export const EventsInfo6 = new EventsInfo(EventsInfoTemplate6);
 
 //  This is the passin data template for adding/editing a new showing
 export interface ShowingInfo {
