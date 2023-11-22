@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import {Divider} from '@mui/material';
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
 const EventTotalsByPaymentComponent = () => {
@@ -31,8 +32,14 @@ const EventTotalsByPaymentComponent = () => {
 
     return (
         <>
-            <div className='bg-slate-50 mb-2'>
-                <DataGrid className='my-1'
+            <div className='bg-slate-50 mb-2 border'>
+                <h2 className='p-2 font-bold'>Credit Card</h2>
+                <Divider
+                    sx={{
+                        'backgroundColor': 'slate-100',
+                        }}
+                />
+                <DataGrid className=''
                     rows={cc_rows}
                     columns={columns}
                     disableSelectionOnClick={true}
@@ -41,13 +48,21 @@ const EventTotalsByPaymentComponent = () => {
                     autoHeight={true}
                     pageSize={6}
                     sx={{
+                        'border': 'none',
                         '& .MuiDataGrid-cell': {
                             fontSize: '14px',
+                            margin: '0px',
                         },
                     }}
                 />
             </div>
-            <div className='bg-slate-50'>
+            <div className='bg-slate-50 mb-2 border'>
+                <h2 className='p-2 font-bold'>Gift Certificate Credit</h2>
+                <Divider
+                    sx={{
+                        'backgroundColor': 'slate-100',
+                        }}
+                />
                 <DataGrid className='my-1'
                     rows={gift_cert_rows}
                     columns={columns}
@@ -57,8 +72,10 @@ const EventTotalsByPaymentComponent = () => {
                     autoHeight={true}
                     pageSize={3}
                     sx={{
+                        'border': 'none',
                         '& .MuiDataGrid-cell': {
                             fontSize: '14px',
+                            margin: '0px',
                         },
                     }}
                 />
