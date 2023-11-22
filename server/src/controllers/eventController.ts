@@ -59,7 +59,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   let toSend = {id: 'comp'};
   try {
     if (!cartItems.length && donation === 0) {
-      return res.status(400).json(`Cart is empty`);
+      return res.status(400).json('Cart is empty');
     }
     const {contactid} = await updateContact(formData, prisma);
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
@@ -679,7 +679,7 @@ eventController.post('/', async (req: Request, res: Response) => {
   try {
     const event = await prisma.events.create({
       data: {
-        seasonid_fk: req.body.seasonid_fk,
+        seasonid_fk: req.body.seasonid_fk === null ? null : Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
         active: req.body.active,
@@ -743,7 +743,7 @@ eventController.put('/', async (req: Request, res: Response) => {
         eventid: Number(req.body.eventid),
       },
       data: {
-        seasonid_fk: Number(req.body.seasonid_fk),
+        seasonid_fk: req.body.seasonid_fk === null ? null : Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
         active: req.body.active,
