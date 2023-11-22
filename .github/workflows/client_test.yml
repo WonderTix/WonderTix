@@ -38,33 +38,7 @@ jobs:
       - name: npm install
         run: npm install --force
         working-directory: ./client
-      
-      - name: Install mkcert
-        run: |
-          sudo apt-get update
-          sudo apt-get install libnss3-tools
-          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
-          chmod +x mkcert-v*-linux-amd64
-          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-      
-      - name: Install client CA
-        run: |
-          mkcert -install
-          mkcert localhost
-        working-directory: ./client
-
-      - name: Install server CA
-        run: |
-          mkcert -install
-          mkcert localhost
-        working-directory: ./server
-        
-      - name: docker setup
-        run: docker-compose up -d
-
-      - name: 90 second wait for client and server start
-        run: sleep 90s
-        
+          
       - name: Check client unit Tests
         run: npm run  test
         working-directory: ./client
