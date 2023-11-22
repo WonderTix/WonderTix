@@ -214,9 +214,9 @@ export class MainPage {
   // Fill out data on Stripe page.  Currently uses both a Customer and CreditCard.
   // Stripe is slow and sometimes has an account popup after email entry.
   // This function waits to see if it will pop up and handle it appropriately.
-  async fillStripeInfo(customer: Customer, ccInfo: CreditCard) {
+  async fillStripeInfo(customer: Customer, ccInfo: CreditCard, timeoutAdd=0) {
     await this.stripeEmail.fill(customer.email);
-    await this.page.waitForTimeout(10000);
+    await this.page.waitForTimeout(10000 + timeoutAdd);
     if (await this.page.getByText('Use your saved information').isVisible()) {
       this.page.getByRole('button', {name: 'Cancel'}).click();
     }
@@ -236,19 +236,22 @@ export class MainPage {
   // Takes in a customer, credit card, event, and an optional quantity of tickets to purchase.
   // Date, time, and ticket type will be selected randomly.
   // Qty will be used to determine quantity if passed, otherwise will use a random quantity as well.
-  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo, qty=2) {
+  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo, options?: {qty?: number, timeoutAdd?: number}) {
+    if (options == undefined) options = {qty: 2, timeoutAdd: 0};
+    if (options.qty == undefined) options.qty = 2;
+    if (options.timeoutAdd == undefined) options.timeoutAdd = 0;
     await this.goSelectShowing(event);
     // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
     await this.selectRandomDate();
     await this.selectRandomTime();
     await this.selectRandomTicketType();
-    await this.selectTicketQuantity(qty);
+    await this.selectTicketQuantity(options.qty);
     await this.clickGetTickets();
     await this.clickTakeMeThere();
     await this.clickCartCheckout();
     await this.fillCustomerInfo(customer);
     await this.clickCartNext();
-    await this.fillStripeInfo(customer, creditCard);
+    await this.fillStripeInfo(customer, creditCard, options.timeoutAdd);
     await this.clickStripeCheckout();
   }
 
