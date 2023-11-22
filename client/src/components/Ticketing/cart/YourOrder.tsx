@@ -103,8 +103,8 @@ const LineItem = (props: { className: string; eventInstanceId: number, ticketTyp
   const cartItem = useAppSelector((state) => selectCartItem(state, props.eventInstanceId, props.ticketTypeId));
 
   return cartItem ? (
-    <div className={`${props.className} flex flex-col`}>
-      <div className="flex justify-between">
+    <p className={`${props.className} flex flex-col`}>
+      <span className="flex justify-between">
         <span className='text-left font-bold'>
           {cartItem.qty} x {cartItem.name}
         </span>
@@ -113,11 +113,11 @@ const LineItem = (props: { className: string; eventInstanceId: number, ticketTyp
             ? toDollar(cartItem.payWhatPrice)
             : toDollar(cartItem.qty * cartItem.price)}
         </span>
-      </div>
+      </span>
       <span className='text-left text-xs'>
         {cartItem.desc}
       </span>
-    </div>
+    </p>
   ) : (
     <div></div>
   );
