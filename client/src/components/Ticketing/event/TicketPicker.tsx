@@ -395,6 +395,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
               className='text-zinc-300'
               value=''
               disabled
+              selected={prompt === 'selectDate'}
             >
               select date
             </option>
