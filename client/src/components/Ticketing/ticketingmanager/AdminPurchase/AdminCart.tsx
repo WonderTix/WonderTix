@@ -29,22 +29,31 @@ const AdminCart = ({
 
   const cartItems = location.state?.cartItems || [];
 
-  const itemsInCart = cartItems.map((item, index) => (
-    <p
-      key={index}
-      className='flex flex-row flex-wrap bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'
-    >
-      <span className='flex-1 text-left font-bold'>
-        {item.qty} x {item.name}
-      </span>
-      <span className='flex-1 text-right font-bold'>
-        {toDollar(item.price)}
-      </span>
-      <span className='w-full text-left text-xs'>
-        {item.desc}
-      </span>
-    </p>
-  ));
+  const itemsInCart = cartItems.map((item, index) => {
+    const date = new Date(item.date);
+    const formattedDate = date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: '2-digit',
+    });
+
+    return (
+      <p
+        key={index}
+        className='flex flex-row flex-wrap bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'
+      >
+        <span className='flex-1 text-left font-bold'>
+          {item.qty} x {item.name}
+        </span>
+        <span className='flex-1 text-right font-bold'>
+          {toDollar(item.price)}
+        </span>
+        <span className='w-full text-left text-xs'>
+          {`${item.desc} - ${formattedDate}`}
+        </span>
+      </p>
+    );
+  });
 
   const total = cartItems.reduce((total, item) => {
     const ticketPrice = item.qty * item.price;

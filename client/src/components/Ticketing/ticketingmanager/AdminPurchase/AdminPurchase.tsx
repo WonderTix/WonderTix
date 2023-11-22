@@ -479,6 +479,9 @@ const AdminPurchase = () => {
     const aggregatedCartItems = {};
 
     eventData.forEach((row) => {
+      const eventDate = new Date(
+        row.eventdate.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'),
+      );
       const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
@@ -490,7 +493,7 @@ const AdminPurchase = () => {
           price: row.price,
           desc: row.ticketTypes,
           typeID: row.typeID,
-          date: new Date(row.eventdate),
+          date: eventDate,
           name: row.eventname,
           product_img_url: row.imageurl,
           qty: 1, // default 1
