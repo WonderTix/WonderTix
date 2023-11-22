@@ -33,7 +33,7 @@ const EventTotalsComponent = () => {
                 style={{borderRadius: 0}}
                 sx={{
                     '& .MuiDataGrid-cell': {
-                        fontSize: '16px',
+                        fontSize: '14px',
                     },
                 }}
             />

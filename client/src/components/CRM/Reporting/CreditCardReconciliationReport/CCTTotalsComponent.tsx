@@ -25,7 +25,7 @@ const CCTTotalsComponent = () => {
 
     return (
         <div className='bg-slate-50 border'>
-            <DataGrid className='text-lg my-1'
+            <DataGrid className='my-1'
                 rows={rows}
                 columns={columns}
                 disableSelectionOnClick={true}
@@ -36,7 +36,7 @@ const CCTTotalsComponent = () => {
                 sx={{
                     'border': 'none',
                     '& .MuiDataGrid-cell': {
-                        fontSize: '16px',
+                        fontSize: '14px',
                         margin: '0px',
                     },
                 }}

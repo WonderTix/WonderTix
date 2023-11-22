@@ -42,7 +42,7 @@ const EventTotalsByPaymentComponent = () => {
                     pageSize={6}
                     sx={{
                         '& .MuiDataGrid-cell': {
-                            fontSize: '16px',
+                            fontSize: '14px',
                         },
                     }}
                 />
@@ -58,7 +58,7 @@ const EventTotalsByPaymentComponent = () => {
                     pageSize={3}
                     sx={{
                         '& .MuiDataGrid-cell': {
-                            fontSize: '16px',
+                            fontSize: '14px',
                         },
                     }}
                 />
