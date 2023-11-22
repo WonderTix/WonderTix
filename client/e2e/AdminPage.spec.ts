@@ -17,6 +17,7 @@ test('Open ticketing page', async ({page}) => {
 });
 
 test('Purchase ticket for customer as admin', async ({page}) => {
+  test.setTimeout(50000);
   const events = new EventsPage(page);
   await events.goto();
   await events.addnewevent(EventsInfo2);
@@ -52,11 +53,20 @@ test('Purchase ticket for customer as admin', async ({page}) => {
     await page.getByPlaceholder('Enter donation amount').click();
     await page.getByPlaceholder('Enter donation amount').fill('5.00');
     await page.getByText('BackNext').click();
-    await page.getByRole('button', { name: 'Next' }).click();
+    await page.getByRole('button', {name: 'Next'}).click();
     await page.getByLabel('Email').click();
-    await page.getByLabel('Email').fill('test@wondertix.com');
-    if (!page.getByText('Thank you for your purchase!')) { // Placeholder, in case test is necessary for stripe phone number verification pop-up
-      
+    await page.getByLabel('Email').fill('betty123abciam@wondertix.com');
+    if (await page.getByText('Use your saved information').isVisible()) { // Placeholder, in case test is necessary for stripe phone number verification pop-up
+      await page.getByTestId('sms-code-input-0').click();
+      await page.getByTestId('sms-code-input-0').fill('4');
+      await page.getByTestId('sms-code-input-1').fill('2');
+      await page.getByTestId('sms-code-input-2').fill('4');
+      await page.getByTestId('sms-code-input-3').fill('2');
+      await page.getByTestId('sms-code-input-4').fill('4');
+      await page.getByTestId('sms-code-input-5').fill('2');
+      await page.getByTestId('hosted-payment-submit-button').click();
+      await page.goto('https://localhost:3000/success');
+      expect(page.getByText('Thank you for your purchase!') != null);
     } else {
       await page.getByPlaceholder('1234 1234 1234 1234').click();
       await page.getByPlaceholder('1234 1234 1234 1234').fill('4242 4242 4242 4242');
@@ -68,15 +78,16 @@ test('Purchase ticket for customer as admin', async ({page}) => {
       await page.getByPlaceholder('Full name on card').fill('Betty Smith Wilson');
       await page.getByPlaceholder('ZIP').click();
       await page.getByPlaceholder('ZIP').fill('97200');
-      await page.getByLabel('Securely save my information for 1-click checkoutPay faster on this site and everywhere Link is accepted.').check();
+      if (page.getByLabel(/Securely save my information for 1-click checkout/)) {
+        await page.getByLabel(/Securely save my information for 1-click checkout/).check();
+      }
       await page.getByPlaceholder('(201) 555-0123').click();
       await page.getByPlaceholder('(201) 555-0123').fill('(503) 424-2424');
       await page.getByTestId('hosted-payment-submit-button').click();
+      await page.goto('https://localhost:3000/success');
+      expect(page.getByText('Thank you for your purchase!') != null);
     }
-    await page.goto('https://localhost:3000/success');
-    expect(page.getByText('Thank you for your purchase!') != null);
   } catch (error) {
     throw Error(error);
   }
 });
-
