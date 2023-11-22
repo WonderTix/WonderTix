@@ -54,9 +54,11 @@ test('Purchase ticket for customer as admin', async ({page}) => {
     await page.getByPlaceholder('Enter donation amount').fill('5.00');
     await page.getByText('BackNext').click();
     await page.getByRole('button', {name: 'Next'}).click();
+    await delay(2000);
     await page.getByLabel('Email').click();
-    await page.getByLabel('Email').fill('betty123abciam@wondertix.com');
-    if (await page.getByText('Use your saved information').isVisible()) { // Placeholder, in case test is necessary for stripe phone number verification pop-up
+    await page.getByLabel('Email').fill('test@wondertix.com');
+    await delay(5000);
+    if (await page.getByText('Use your saved information').isVisible()) { // Scenario for verification pop-up
       await page.getByTestId('sms-code-input-0').click();
       await page.getByTestId('sms-code-input-0').fill('4');
       await page.getByTestId('sms-code-input-1').fill('2');
@@ -67,7 +69,7 @@ test('Purchase ticket for customer as admin', async ({page}) => {
       await page.getByTestId('hosted-payment-submit-button').click();
       await page.goto('https://localhost:3000/success');
       expect(page.getByText('Thank you for your purchase!') != null);
-    } else {
+    } else { // Scenario for new/unregistered e-mail
       await page.getByPlaceholder('1234 1234 1234 1234').click();
       await page.getByPlaceholder('1234 1234 1234 1234').fill('4242 4242 4242 4242');
       await page.getByPlaceholder('MM / YY').click();
@@ -78,9 +80,7 @@ test('Purchase ticket for customer as admin', async ({page}) => {
       await page.getByPlaceholder('Full name on card').fill('Betty Smith Wilson');
       await page.getByPlaceholder('ZIP').click();
       await page.getByPlaceholder('ZIP').fill('97200');
-      if (page.getByLabel(/Securely save my information for 1-click checkout/)) {
-        await page.getByLabel(/Securely save my information for 1-click checkout/).check();
-      }
+      await page.getByLabel(/Securely save my information for 1-click checkout/).check();
       await page.getByPlaceholder('(201) 555-0123').click();
       await page.getByPlaceholder('(201) 555-0123').fill('(503) 424-2424');
       await page.getByTestId('hosted-payment-submit-button').click();
@@ -91,3 +91,7 @@ test('Purchase ticket for customer as admin', async ({page}) => {
     throw Error(error);
   }
 });
+
+function delay(ms: number) {
+  return new Promise( (resolve) => setTimeout(resolve, ms) );
+}
