@@ -34,7 +34,7 @@ const DonationsByPaymentComponent = () => {
 
     return (
         <>
-            <div className='bg-slate-50 border'>
+            <div className='bg-slate-50 my-2 border'>
                 <h2 className='p-2 font-bold'>Check</h2>
                 <Divider
                     sx={{
@@ -58,8 +58,7 @@ const DonationsByPaymentComponent = () => {
                     }}
                 />
             </div>
-            <br></br>
-            <div className='bg-slate-50 border'>
+            <div className='bg-slate-50 my-2 border'>
                 <h2 className='p-2 font-bold'>Credit Card</h2>
                 <Divider
                     sx={{
@@ -83,8 +82,7 @@ const DonationsByPaymentComponent = () => {
                     }}
                 />
             </div>
-            <br></br>
-            <div className='bg-slate-50 border'>
+            <div className='bg-slate-50 my-2 border'>
                 <h2 className='p-2 font-bold'>Direct Deposit</h2>
                 <Divider
                     sx={{
@@ -108,8 +106,7 @@ const DonationsByPaymentComponent = () => {
                     }}
                 />
             </div>
-            <br></br>
-            <div className='bg-slate-50 border'>
+            <div className='bg-slate-50 my-2 border'>
                 <h2 className='p-2 font-bold'>Donation</h2>
                 <Divider
                     sx={{
@@ -133,8 +130,7 @@ const DonationsByPaymentComponent = () => {
                     }}
                 />
             </div>
-            <br></br>
-            <div className='bg-slate-50 border'>
+            <div className='bg-slate-50 my-2 border'>
                 <h2 className='p-2 font-bold'>Other</h2>
                 <Divider
                     sx={{
