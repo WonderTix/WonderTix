@@ -2,7 +2,7 @@
 import {test, expect} from '@playwright/test';
 import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
-import {AdminPage} from './pages/adminPage';
+import {AdminPage} from './pages/AdminPage';
 import {EventsInfo2} from './testData/ConstsPackage';
 import {ShowingInfo2} from './testData/ConstsPackage';
 
