@@ -18,8 +18,8 @@ const EventTotalsByPaymentComponent = () => {
         {id: 1, title: 'Credit Card', qty: '', buyer_price: '', fee: '', single_ticket_fee: '', pm_fee: ''},
         {id: 2, title: 'A Christmas Carol (Season 16)', qty: 380, buyer_price: 15676.04, fee: 780.00, single_ticket_fee: 0.00, pm_fee: -376.00},
         {id: 3, title: 'Notes from the Field', qty: 2, buyer_price: 113.90, fee: 6.00, single_ticket_fee: 0.00, pm_fee: -2.00},
-        {id: 4, title: "Roald Dahl's Matilda the Musical", qty: -4, buyer_price: -123.90, fee: -6.00, single_ticket_fee: 0.00, pm_fee: 4.00},
-        {id: 5, title: "Roald Dahl's Matilda the Musical 2.0", qty: 71, buyer_price: 1530.10, fee: 69.00, single_ticket_fee: 0.00, pm_fee: -71.00},
+        {id: 4, title: 'Roald Dahl\'s Matilda the Musical', qty: -4, buyer_price: -123.90, fee: -6.00, single_ticket_fee: 0.00, pm_fee: 4.00},
+        {id: 5, title: 'Roald Dahl\'s Matilda the Musical 2.0', qty: 71, buyer_price: 1530.10, fee: 69.00, single_ticket_fee: 0.00, pm_fee: -71.00},
         {id: 6, title: '', qty: 449, buyer_price: 17845.64, fee: 849.00, single_ticket_fee: 0.00, pm_fee: -445.00},
     ];
 
@@ -29,7 +29,7 @@ const EventTotalsByPaymentComponent = () => {
         {id: 3, title: '', qty: 10, buyer_price: 649.50, fee: 0.00, single_ticket_fee: 0.00, pm_fee: 0.00},
     ];
 
-    return(
+    return (
         <>
             <div className='bg-slate-50 mb-2'>
                 <DataGrid className='my-1'

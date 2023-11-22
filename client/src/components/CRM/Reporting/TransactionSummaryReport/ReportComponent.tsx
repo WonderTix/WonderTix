@@ -12,10 +12,9 @@ import DonationsByRecordAndPaymentComponent from './DonationsByRecordAndPaymentC
 import {Divider, Button} from '@mui/material';
 
 const ReportComponent = ({filterData}) => {
-  const header = {org: 'Portland Playhouse', range: 'Temp', grouped: 'Event'};
+  const header = {org: 'Portland Playhouse', range: ''};
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
-  const [groupBy, setGroupBy] = useState('');
 
   const formatDateToMMDDYYYY = (date: Date) => {
     const month = (date.getMonth() + 1).toString();
@@ -28,7 +27,6 @@ const ReportComponent = ({filterData}) => {
   useEffect(() => {
     setStart(formatDateToMMDDYYYY(filterData.startDate));
     setEnd(formatDateToMMDDYYYY(filterData.endDate));
-    setGroupBy(filterData.groupBy);
   });
 
   return (
@@ -37,7 +35,7 @@ const ReportComponent = ({filterData}) => {
         <h1 className='text-3xl font-bold'>
           Transaction Summary Report
         </h1>
-        <Button>Export to Excel</Button>
+        <Button disabled={true}>Export to Excel</Button>
       </div>
       <div className='flex justify-evenly border-b px-4 py-1 bg-slate-100'>
         <h3>
@@ -46,10 +44,6 @@ const ReportComponent = ({filterData}) => {
         <h3>
           <strong>Batch Date Range: </strong>
           {start} - {end}
-        </h3>
-        <h3>
-          <strong>Grouped By: </strong>
-          {groupBy}
         </h3>
       </div>
       <div className='px-4'>
@@ -99,7 +93,6 @@ ReportComponent.propTypes = {
   filterData: PropTypes.shape({
     startDate: PropTypes.instanceOf(Date).isRequired,
     endDate: PropTypes.instanceOf(Date).isRequired,
-    groupBy: PropTypes.string.isRequired,
   }),
 };
 

@@ -25,8 +25,8 @@ const TransactionTotalsComponent = () => {
         {id: 12, title: 'Patron Tech Fee', cost: '-445.00'},
         {id: 13, title: 'Net Total', cost: '120,729.64'},
     ];
-    
-    return(
+
+    return (
         <div className='bg-slate-50 border'>
             <DataGrid className='text-lg my-1'
                 rows={rows}

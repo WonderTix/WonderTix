@@ -6,7 +6,7 @@ import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 const DonationsByPaymentComponent = () => {
     // sample data for UI purposes
     const columns: GridColDef[] = [
-        {field: 'title', headerName: '', flex: 1},
+        {field: 'title', headerName: '', flex: 3},
         {field: 'cost', headerName: 'Amount', flex: 1},
     ];
 
@@ -19,7 +19,7 @@ const DonationsByPaymentComponent = () => {
         {id: 6, title: 'TOTAL', cost: '111,539.34'},
     ];
 
-    return(
+    return (
         <div className='bg-slate-50 border'>
             <DataGrid className='text-lg my-1'
                 rows={rows}

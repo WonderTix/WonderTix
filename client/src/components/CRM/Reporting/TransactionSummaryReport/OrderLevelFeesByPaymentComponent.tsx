@@ -20,7 +20,7 @@ const OrderLevelFeesByPaymentComponent = () => {
         {id: 6, title: 'TOTAL', d_fee: '0.00', e_fee: '30.00'},
     ];
 
-    return(
+    return (
         <div className='bg-slate-50 border'>
             <DataGrid className='text-lg my-1'
                 rows={rows}

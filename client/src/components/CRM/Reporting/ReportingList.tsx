@@ -231,8 +231,8 @@ const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
               }
               size='md'
               title='Transaction Summary Report'
-              route='/admin/reporting'
-              disabled={true}
+              route='/admin/reporting/transaction-summary-report'
+              disabled={false}
               description='Temporarily Unavailable'
             />
           </div>
