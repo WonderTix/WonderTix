@@ -2,7 +2,7 @@ import {test , expect} from '@playwright/test';
 import {EventsPage} from './pages/EventsPage';
 import { EventsInfo1, EventsInfo2, EventsInfo3, EventsInfo4 } from './testData/ConstsPackage';
 import { ShowingInfo1, ShowingInfo2, ShowingInfo3,ShowingInfo4 } from './testData/ConstsPackage';
-
+import {Season1} from './testData/ConstsPackage';
 
 
 test('Homepage->Events',async({page}) => {
@@ -98,4 +98,27 @@ test('editShowing',async({page})=>{
   //await eventsPage.clickSpecificShowing(ShowingInfo4.showingWholeDate);
 });
 
+
+test('checkActive',async({page})=>{
+  const eventsPage = new EventsPage(page);
+  await eventsPage.goto();
+  await eventsPage.addNewInactiveEvent(EventsInfo2);
+  //go to inactive event lists to check if it exists 
+  // and if it is, delete it
+  await eventsPage.deleteInactiveEvent(EventsInfo2.eventFullName);
+});
+
+test('checkDefaultImage',async({page})=>{
+  const eventsPage = new EventsPage(page);
+  await eventsPage.goto();
+  await eventsPage.addDefaultIMGevent(EventsInfo4);
+  await eventsPage.deleteTheEvent(EventsInfo4.eventFullName)  
+});
+
+test('createNewSeason',async({page})=>{
+ const eventsPage = new EventsPage(page);
+ await eventsPage.goToSeason();
+ await eventsPage.addNewSeason(Season1); 
+ await eventsPage.deleteASeason(Season1);
+});
 

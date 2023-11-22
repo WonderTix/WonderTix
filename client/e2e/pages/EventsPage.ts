@@ -1,5 +1,5 @@
 import { type Locator, type Page ,expect} from '@playwright/test';
-import { EventsInfo, ShowingInfo } from '../testData/ConstsPackage';
+import { EventsInfo, SeasonInfo, ShowingInfo } from '../testData/ConstsPackage';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
@@ -13,6 +13,9 @@ export class EventsPage {
   readonly eventDesBlank: Locator;
   readonly imageURL: Locator;
   readonly pageHeader: Locator;
+  readonly dashBoard: Locator;
+  readonly editButton: Locator;
+  readonly saveButton: Locator;
 
   readonly newEventSave: Locator;
   readonly leftBarEvent: Locator;
@@ -48,15 +51,26 @@ export class EventsPage {
   readonly ticketQuantityOption: Locator;
   readonly showingCard: Locator;
   readonly deleteButton: Locator;
+  readonly activateEvent: Locator;
+  readonly inactiveEventchecker: Locator;
+  readonly seasonButton: Locator;
+  readonly addSeasonButton: Locator;
+  readonly editSeasonName: Locator;
+  readonly editSeasonStartDate: Locator;
+  readonly editSeasonEndDate: Locator;
+  readonly editSeasonURL: Locator;
+  readonly activeButton: Locator;
+
   constructor(page: Page) {
     this.page = page;
     
-
-    
-
     this.homePage=page.getByRole('button', { name: '/' });
     this.homePageRightSlide=page.locator('button:nth-child(4)');
-
+    
+    this.dashBoard = page.locator('a').filter({ hasText: 'Dashboard' }).first();
+    this.editButton = page.getByRole('button', { name: 'Edit' });
+    this.saveButton = page.getByRole('button', { name: 'Save' });
+    
     this.pageHeader=page.getByRole('heading', { name: 'Select Event' });
     this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
     this.emailButton= page.getByText('test@wondertix.com');
@@ -96,6 +110,16 @@ export class EventsPage {
     this.ticketQuantityOption=page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
     this.deleteButton = page.getByRole('button', { name: 'Delete' });
+    this.activateEvent = page.getByLabel('Active');
+    this.inactiveEventchecker = page.getByRole('button', { name: 'Inactive' });
+    
+    this.seasonButton = page.getByRole('button', { name: 'Seasons' });
+    this.addSeasonButton = page.getByRole('button', { name: 'Add Season' });
+    this.editSeasonName = page.getByLabel('Season Name:');
+    this.editSeasonStartDate = page.getByLabel('Start Date:');
+    this.editSeasonEndDate = page.getByLabel('End Date:');
+    this.editSeasonURL = page.getByLabel('Image URL:');
+    this.activeButton = page.getByLabel('Active');
   }
 
   async clickLeftBar()
@@ -152,7 +176,35 @@ export class EventsPage {
      await this.newEventSave.click();
      await this.eventContinue.click();
   }
+  
 
+  async addNewInactiveEvent(anEvent: EventsInfo)
+ {
+     await this.addButton.click();
+     await this.eventNameBlank.click();
+     await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
+     await this.eventDesBlank.click();
+     await this.page.getByLabel('Event Description:').fill(anEvent.eventDescription);
+     await this.imageURL.click();
+     await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
+     await this.activateEvent.uncheck()
+     await this.newEventSave.click();
+     await this.eventContinue.click();
+ }
+
+async addDefaultIMGevent(anEvent: EventsInfo)
+  {
+    await this.addButton.click();
+     await this.eventNameBlank.click();
+     await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
+     await this.eventDesBlank.click();
+     await this.page.getByLabel('Event Description:').fill(anEvent.eventDescription);
+     await this.eventOption1.check();
+     await this.newEventSave.click();
+     await this.eventContinue.click();
+     await expect(this.page.getByRole('img', { name: 'Event Image Playbill' })).toBeVisible();
+  }
+ 
 /**
   We need to pass in things like:
   "2023-10-17",
@@ -169,6 +221,33 @@ export class EventsPage {
     await this.editTicketQuatity.fill(aShowing.showingQuantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
+  }
+
+  /** 
+  We need to pass in things like:
+  "Test_Season",
+  "2023-11-01",
+  "2023-11-09",
+  "https://"
+*/
+  async addNewSeason(aSeason:SeasonInfo)
+  {
+    await this.addSeasonButton.click();
+    await this.editSeasonName.fill(aSeason.SeasonName);
+    await this.editSeasonStartDate.fill(aSeason.StartDate);
+    await this.editSeasonEndDate.fill(aSeason.EndDate);
+    await this.editSeasonURL.fill(aSeason.ImageURL);
+    await this.activeButton.check();
+    await this.saveButton.click();
+    await this.eventContinue.click();
+  }
+
+  async deleteASeason(aSeason:SeasonInfo)
+  {
+    await this.editButton.click();
+    await this.deleteButton.click();
+    await this.eventContinue.click();
+    await expect(this.page.getByRole('img', { name: aSeason.SeasonName+' '+aSeason.suffix })).not.toBeVisible();
   }
 
 /**
@@ -224,6 +303,14 @@ export class EventsPage {
     await expect(this.page.getByRole('button', { name: eventFullName }).first()).not.toBeVisible();
   }
 
+  async deleteInactiveEvent(eventFullName: string)
+  {
+    await this.leftBarEvent.click();
+    await this.inactiveEventchecker.click();
+    await this.page.getByRole('button', { name: eventFullName }).first().click();
+    await this.deleteTheEvent(eventFullName);
+  }
+
 async editTheEventInfo(anEvent:EventsInfo)
 {
     await this.editEventInfo.click();
@@ -265,6 +352,7 @@ async clickSpecificShowing(showingWholeDate: string)
     await this.page.locator('div:nth-child(4) > p:nth-child(2)').first().click();
   }
 
+  
 async goto(){
     await this.page.goto('/', { timeout: 90000 });
     await this.emailButton.click();
@@ -272,6 +360,13 @@ async goto(){
     await this.leftBarEvent.click();
     await expect(this.pageHeader).toBeVisible();
   }
+
+  async goToSeason(){
+    await this.page.goto('/', { timeout: 90000 });
+    await this.emailButton.click();
+    await this.manageTicketingButton.click();
+    await this.seasonButton.click();
+}
 
 async ticketingURL(){
     await this.page.goto('/ticketing', { timeout: 90000 });
@@ -281,3 +376,4 @@ async backtoEvents(){
     await this.leftBarEvent.click();
   }
 }
+

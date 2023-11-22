@@ -76,3 +76,19 @@ export const ShowingInfo4: ShowingInfo = {
   showingQuantity: "100",
   showingWholeDate: "Wed, Sep 15 2021"
 };
+
+export interface SeasonInfo {
+  SeasonName: string;
+  StartDate: string;
+  EndDate: string;
+  ImageURL: string;
+  suffix: string;
+}
+
+export const Season1: SeasonInfo = {
+  SeasonName: "Test_Season",
+  StartDate: "2023-11-01",
+  EndDate:"2023-11-09",
+  ImageURL:"https://upload.wikimedia.org/wikipedia/en/f/fc/Walking_Dead_S2_Poster.jpg",
+  suffix: "Playbill"
+}
