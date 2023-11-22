@@ -173,6 +173,17 @@ interface TicketPickerProps {
   tickets: Ticket[];
 }
 
+const getUniqueDates = (tickets) => {
+  const uniqueDates = [];
+  tickets.forEach((ticket) => {
+    const dateStr = format(new Date(ticket.date), 'eee, MMM dd yyyy');
+    if (!uniqueDates.includes(dateStr)) {
+      uniqueDates.push(dateStr);
+    }
+  });
+  return uniqueDates;
+};
+
 /**
  * Used to choose the tickets
  *
@@ -180,6 +191,7 @@ interface TicketPickerProps {
  * @returns {ReactElement} and the correct ticket when picking
  */
 const TicketPicker = (props: TicketPickerProps): ReactElement => {
+  const uniqueDates = getUniqueDates(props.tickets);
   const [ticketTypesState, setTicketTypesState] =
     useState<TicketPickerState>(initialState);
 
@@ -377,26 +389,25 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       {promptMarkup[prompt]}
       <Collapse in={showCalendar}>
         <div className='text-white w-full px-20'>
-          <select
-            id='date-select'
-            defaultValue=''
-            className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
-            onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}
+        <select
+          id='date-select'
+          defaultValue=''
+          className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
+          onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}
+        >
+          <option
+            className='text-zinc-300'
+            value=''
+            disabled
           >
-            <option
-              className='text-zinc-300'
-              value=''
-              disabled
-              selected={prompt === 'selectDate'}
-            >
-              select date
+            select date
+          </option>
+          {uniqueDates.map((dateStr, index) => (
+            <option key={index} value={dateStr}>
+              {dateStr}
             </option>
-            {tickets.map((t, index) => (
-              <option key={`${t.event_instance_id} ${index}`} value={t.date.toString()}>
-                {format(new Date(t.date), 'eee, MMM dd yyyy')}
-              </option>
-            ))}
-          </select>
+          ))}
+        </select>
         </div>
       </Collapse>
       <Collapse in={showTimes}>
