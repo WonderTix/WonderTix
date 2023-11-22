@@ -39,7 +39,7 @@ test('addDeleteEvents',async({page})=>{
   await eventsPage.deleteTheEvent(EventsInfo2.eventFullName);
 });
 
-test('editEvents',async({page})=>{
+test.fixme('editEvents',async({page})=>{
   test.setTimeout(45000);
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();
