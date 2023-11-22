@@ -45,7 +45,7 @@ const Hero = (): ReactElement => {
             <div className='flex flex-col justify-center md:items-center w-full px-2 py8 md:mr-40 md:mt-auto mt-40 mb-10'>
               <h1 className='text-5xl md:text-7xl font-bold'>Events</h1>
               <div className='flex flex-col my-2'>
-                <label className='text-zinc-200/60 px-10 my-1'>Pick an Event</label>
+                <p className='text-zinc-200/60 px-10 my-1'>Pick an Event</p>
               </div>
             </div>
           </div>
@@ -55,12 +55,10 @@ const Hero = (): ReactElement => {
             </svg>
           </button>
           <div className='m-auto rounded-xl overflow-x-auto overflow-y-auto scroll-smooth' ref={ref}>
-            <div className='flex flex-col md:flex-row'>
-              <div className='flex flex-col md:flex-row gap-7 py-6'>
-                {
-                  allEvents.map((event) => <ListComponent key={event.id} {...event} />)
-                }
-              </div>
+            <div className='flex flex-col md:flex-row gap-7 py-6'>
+              {
+                allEvents.map((event) => <ListComponent key={event.id} {...event} />)
+              }
             </div>
           </div>
           <button onClick={handleNext} className='mx-4 hidden md:inline-block text-white hover:text-slate-50/50 hover:scale-125 transition-all'>
