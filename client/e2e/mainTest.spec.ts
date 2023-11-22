@@ -62,8 +62,9 @@ test('check cart after ticket add', async ({page}) => {
 });
 
 // Order a ticket through Stripe using a valid customer and card and verify success message appears
-test('check stripe purchase', async ({page}) => {
-  test.setTimeout(80000);
+test('check stripe purchase', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
+  test.setTimeout(80000 + (timeoutAdd * 2)); // There are two places with extended timeouts
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
   const currentEvent = EventsInfo5;
@@ -76,8 +77,8 @@ test('check stripe purchase', async ({page}) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
-    await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000});
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {timeoutAdd: timeoutAdd});
+    await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
     await main.goto();
     await events.goToEventFromManage(EventsInfo5.eventFullName);
@@ -88,7 +89,8 @@ test('check stripe purchase', async ({page}) => {
 
 // Order a ticket through Stripe and ensure the contact appears on the Contact page.
 // The delete contact function is not working, so contacts cannot be cleared after order.
-test('check contact is added after order', async ({page}) => {
+test('check contact is added after order', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
@@ -103,7 +105,7 @@ test('check contact is added after order', async ({page}) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {timeoutAdd: timeoutAdd});
     await contacts.goto();
     await contacts.searchCustomer(currentPatron);
     await contacts.checkCustomer(currentPatron);
@@ -116,8 +118,9 @@ test('check contact is added after order', async ({page}) => {
 });
 
 // Select an accommodation during order and make sure it appears on the contact page with the associated person
-test('check order accommodations', async ({page}) => {
-  test.setTimeout(80000);
+test('check order accommodations', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
+  test.setTimeout(80000 + timeoutAdd);
   const currentPatron = JaneDoe;
   const currentCard = ValidVisaCredit;
   const currentEvent = EventsInfo5;
@@ -131,7 +134,7 @@ test('check order accommodations', async ({page}) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {timeoutAdd: timeoutAdd});
     await contacts.goto();
     await contacts.searchCustomer(currentPatron);
     await contacts.checkCustomer(currentPatron);
@@ -178,8 +181,9 @@ test('check ticket inc/dec in cart', async ({page}) => {
 });
 
 // Order a ticket through stripe and ensure the ticket appears on the door list
-test('check order on door list', async ({page}) => {
-  test.setTimeout(100000);
+test('check order on door list', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
+  test.setTimeout(100000 + timeoutAdd);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
   const currentEvent = EventsInfo6;
@@ -194,7 +198,7 @@ test('check order on door list', async ({page}) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent, quantity);
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {qty: quantity, timeoutAdd: timeoutAdd});
     await doorList.goto();
     await doorList.searchShowing(currentEvent, currentShowing);
     await doorList.checkOrder(currentPatron, quantity);
