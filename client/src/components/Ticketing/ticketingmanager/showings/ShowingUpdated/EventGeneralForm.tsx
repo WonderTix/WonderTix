@@ -19,6 +19,12 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {eventData, showPopUp, token} = useEvent();
   const [seasons, setSeasons] = useState([]);
 
+  const [showButton, setShowButton] = useState(true);
+
+  const handleInputChange = (event) => {
+    setShowButton(event.target.value !== 'Default Event Image');
+  };
+
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -121,33 +127,40 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
               />
               <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
                 <div className='col-span-4 pr-2'>
-                  <Field
-                    name={'imageurl'}
-                    component={InputControl}
-                    label={'Image URL'}
-                    type={'text'}
-                    id={0}
-                    disabled={false}
-                    className={{
-                      labelClass: 'text-sm font-semibold',
-                      inputClass:
-                        'text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200',
-                      controlClass: 'flex flex-col text-zinc-800',
-                    }}
-                  />
+                  <Field name='imageurl'>
+                    {({field, form}) => (
+                      <div className='flex flex-col text-zinc-800'>
+                        <label className='text-sm font-semibold'>
+                          Image URL
+                        </label>
+                        <input
+                          type='text'
+                          className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200'
+                          {...field}
+                          onChange={(event) => {
+                            field.onChange(event);
+                            handleInputChange(event);
+                          }}
+                        />
+                      </div>
+                    )}
+                  </Field>
                 </div>
-                <button
-                  id={'defaultImageUrl'}
-                  className={
-                    'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 font-bold text-sm h-fit self-end whitespace-nowrap'
-                  }
-                  onClick={() => {
-                    setFieldValue('imageurl', 'Default Event Image');
-                  }}
-                  type='button'
-                >
-                  Use Default
-                </button>
+                {showButton && (
+                  <button
+                    id={'defaultImageUrl'}
+                    className={
+                      'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 font-bold text-sm h-fit self-end whitespace-nowrap'
+                    }
+                    onClick={() => {
+                      setFieldValue('imageurl', 'Default Event Image');
+                      setShowButton(false);
+                    }}
+                    type='button'
+                  >
+                    Use Default
+                  </button>
+                )}
               </div>
 
               <div className={'flex flex-col mb-2 text-zinc-800'}>
@@ -168,7 +181,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   <option value={undefined}>None</option>
                   {seasons?.length > 0 &&
                     seasons
-                      .sort((a, b) => a.seasonid - b.seasonid)
+                      .sort((a, b) => b.seasonid - a.seasonid)
                       .map((season, index) => (
                         <option
                           value={Number(season.seasonid)}
