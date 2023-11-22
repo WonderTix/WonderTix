@@ -1,5 +1,5 @@
 import React from 'react';
-import defaultSeasonImage from '../../../../assets/DefaultSeasonImage.png';
+import defaultSeasonImage from '../../../../assets/default_season_image.png';
 
 export const formatSeasonDate = (date: number, fromApiResponse = false) => {
   const dateStr = date.toString();
@@ -8,7 +8,7 @@ export const formatSeasonDate = (date: number, fromApiResponse = false) => {
   const day: string = dateStr.slice(6);
 
   if (fromApiResponse) return `${year}-${month}-${day}`;
-  else return `${month}/${day}/${year}`;
+  return `${month}/${day}/${year}`;
 };
 
 export const getSeasonImage = (url?: string) => {

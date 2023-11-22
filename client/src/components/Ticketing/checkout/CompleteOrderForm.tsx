@@ -87,10 +87,10 @@ export default function CompleteOrderForm({
     if (values.seatingAcc === 'Other' && (!values.comments || values.comments === '')) {
       errors['comments'] = 'Please Input Accommodation';
     }
-    if (!values.email?.match(new RegExp('.+\\@.+\\..+'))) {
+    if (!values.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
     }
-    if (!values.phone?.match(new RegExp('^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
+    if (!values.phone?.match(new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
       errors['phone'] = 'Invalid';
     }
     return errors;
@@ -172,7 +172,7 @@ export default function CompleteOrderForm({
                     type='text'
                     id='phone-number'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
                     component={FormInput}
@@ -182,7 +182,7 @@ export default function CompleteOrderForm({
                     type='email'
                     id='contact-email'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
                     component={FormInput}
@@ -246,11 +246,10 @@ export default function CompleteOrderForm({
                     component='input'
                     type='checkbox'
                     name='optIn'
-                    id={'opt-in'}
+                    id='opt-in'
                   />
-                  <label htmlFor={'opt-in'}>
-                    I would like to receive email info from Portland
-                    Playhouse
+                  <label htmlFor='opt-in'>
+                    I would like to receive email info from Portland Playhouse
                   </label>
                 </div>
               </div>
@@ -260,14 +259,14 @@ export default function CompleteOrderForm({
                   onClick={onBack}
                   disabled={submitting}
                 >
-                    Back
+                  Back
                 </button>
                 <button
                   className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2'
                   type='submit'
                   disabled={submitting}
                 >
-                    Next
+                  Next
                 </button>
               </div>
             </form>

@@ -14,9 +14,12 @@ const ShowingActivenessToggle = ({
     event: MouseEvent<HTMLElement>,
     newFilterSetting: string,
   ) => {
-    setFilter(newFilterSetting);
-    if (handleFilterChange) {
-      handleFilterChange(newFilterSetting);
+    if (newFilterSetting !== null) {
+      setFilter(newFilterSetting);
+
+      if (handleFilterChange) {
+        handleFilterChange(newFilterSetting);
+      }
     }
   };
 

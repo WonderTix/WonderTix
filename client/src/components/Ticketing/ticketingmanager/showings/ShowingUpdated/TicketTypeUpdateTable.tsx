@@ -1,5 +1,5 @@
 import {Field, useField} from 'formik';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
@@ -16,6 +16,8 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {ticketTypes, showPopUp} = useEvent();
   const [InstanceTicketTypesField] = useField('instanceTicketTypes');
   const [totalTickets] = useField('totalseats');
+  const [ticketPrice, setTicketPrices] = useState(getTicketTypePrice(1, 'price', ticketTypes));
+  const [concessionPrices, setConcessionPrices] = useState(getTicketTypePrice(1, 'concessions', ticketTypes));
   const [availableTypes, setAvailableTypes] = useState(
     ticketTypes
       .filter(
@@ -24,6 +26,15 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
       )
       .map((value) => Number(value.id)),
   );
+
+  // Temporary methods to change prices for Adult General Admission and Concession
+  const handlePriceChange = (newPrice) => {
+    setTicketPrices(newPrice);
+  };
+
+  const handleConcessionPrices = (newValue) => {
+    setConcessionPrices(newValue);
+  };
 
   return (
     <div
@@ -56,10 +67,14 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   size={'small'}
                   aria-label={'add ticket type'}
                   onClick={async () => {
+                    console.log('Before insert, ', availableTypes);
                     arrayHelpers.insert(0, {
                       typeID: availableTypes[0],
+                      typePrice: getTicketTypePrice(availableTypes[0], 'price', ticketTypes),
+                      typeConcessionPrice: getTicketTypePrice(availableTypes[0], 'concessions', ticketTypes),
                       typeQuantity: 0,
                     });
+                    console.log('After insert, ', availableTypes);
                     setAvailableTypes(
                       availableTypes.slice(1, availableTypes.length),
                     );
@@ -95,10 +110,20 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
               {getTicketTypePrice(1, 'description', ticketTypes)}
             </td>
             <td className={'px-2 border border-white'}>
-              {getTicketTypePrice(1, 'price', ticketTypes)}
+              <input
+                className='w-[75px] bg-gray-100'
+                type='text'
+                value={ticketPrice}
+                onChange={(e) => handlePriceChange(e.target.value)}
+                />
             </td>
             <td className={'px-2 border border-white'}>
-              {getTicketTypePrice(1, 'concessions', ticketTypes)}
+              <input
+                className='w-[75px] bg-gray-100'
+                type='text'
+                value={concessionPrices}
+                onChange={(e) => handleConcessionPrices(e.target.value)}
+                />
             </td>
             <td className={'px-2 border border-white'}>
               {totalTickets.value}
@@ -126,21 +151,37 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   key={eventInstanceID + index + 'ticket type price'}
                   className={'px-2'}
                 >
-                  {getTicketTypePrice(
-                    InstanceTicketTypesField.value[index].typeID,
-                    'price',
-                    ticketTypes,
-                  )}
+                  <Field
+                    name={`${InstanceTicketTypesField.name}[${index}].typePrice`}
+                    type={'text'}
+                    component={InputControl}
+                    hidden={true}
+                    label={'Ticket Price'}
+                    id={eventInstanceID}
+                    className={{
+                      controlClass: '',
+                      inputClass: 'w-[75px]',
+                      labelClass: '',
+                    }}
+                  />
                 </td>
                 <td
                   key={eventInstanceID + index + 'ticket concession price'}
                   className={'px-2'}
                 >
-                  {getTicketTypePrice(
-                    InstanceTicketTypesField.value[index].typeID,
-                    'concessions',
-                    ticketTypes,
-                  )}
+                  <Field
+                    name={`${InstanceTicketTypesField.name}[${index}].typeConcessionPrice`}
+                    type={'text'}
+                    component={InputControl}
+                    hidden={true}
+                    label={'Concession Price'}
+                    id={eventInstanceID}
+                    className={{
+                      controlClass: '',
+                      inputClass: 'w-[75px]',
+                      labelClass: '',
+                    }}
+                  />
                 </td>
                 <td
                   key={eventInstanceID + index + 'ticket type quantity'}

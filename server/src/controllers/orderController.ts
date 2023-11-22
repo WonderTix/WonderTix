@@ -236,7 +236,31 @@ orderController.get('/refund', async (req: Request, res: Response) => {
   }
 });
 
-
+/**
+ * @swagger
+ * /2/order/refund/{id}:
+ *   put:
+ *     summary: refund an order based on order id
+ *     tags:
+ *     - New Order
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: orders refunded successfully
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
 orderController.put('/refund/:id', async (req, res) => {
   try {
     const orderID = req.params.id;
@@ -282,7 +306,7 @@ orderController.put('/refund/:id', async (req, res) => {
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     security:
- *       - bearerAuth: []
+ *     - bearerAuth: []
  *     responses:
  *       200:
  *         description: order updated successfully.

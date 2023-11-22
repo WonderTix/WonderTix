@@ -71,6 +71,7 @@ export class EventsPage {
     this.editButton = page.getByRole('button', { name: 'Edit' });
     this.saveButton = page.getByRole('button', { name: 'Save' });
     
+
     this.pageHeader=page.getByRole('heading', { name: 'Select Event' });
     this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
     this.emailButton= page.getByText('test@wondertix.com');

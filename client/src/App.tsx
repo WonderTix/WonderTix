@@ -15,6 +15,9 @@ import TasksMain from './components/CRM/Tasks/TasksMain';
 import CreateTask from './components/CRM/Tasks/CreateTask';
 import ManageAccountsmain from './components/CRM/Accounts/ManageUsers/ManageAccountsmain';
 import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchmain';
+import DailySalesReportMain from './components/CRM/Reporting/DailySalesReport/DailySalesReportMain';
+import DonationSummaryReportMain from './components/CRM/Reporting/DonationSummaryReport/DonationSummaryReportMain';
+import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconciliationReport';
 /* Donor Management */
 import DmDashmain from './components/DonorManagement/DmDashmain';
 import DonorReporting from './components/DonorManagement/Reporting/DonorReporting';
@@ -51,7 +54,6 @@ const App = () => {
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />
         <Route path='/donate' element={<Donationmain />} />
-        <Route path='/' element={<Mainpage />} />
         <Route
           path='/admin'
           element={<ProtectedRoute component={Dashmain} />}
@@ -113,6 +115,18 @@ const App = () => {
         <Route
           path='/admin/donor/reporting'
           element={<ProtectedRoute component={DonorReporting} />}
+        />
+        <Route
+          path='/admin/reporting/credit-card-reconciliation'
+          element={<ProtectedRoute component={CreditCardConciliationReport} />}
+        />
+        <Route
+          path='/admin/reporting/donation-summary'
+          element={<ProtectedRoute component={DonationSummaryReportMain} />}
+        />
+        <Route
+          path='/admin/reporting/daily-sales-report'
+          element={<ProtectedRoute component={DailySalesReportMain} />}
         />
         <Route
           path='/ticketing'
