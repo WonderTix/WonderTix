@@ -1,69 +1,51 @@
 import React, {useEffect, useState} from 'react';
 import {getAllEvents, updateEventSeason} from './utils/apiRequest';
 import EventCard from './EventCard';
+import {seasonEventInfo} from './utils/seasonCommon';
 
 interface SeasonEventsProps {
   token: string;
   seasonId: number;
   isFormEditing: boolean;
+  eventsInSeason: seasonEventInfo[];
+  eventsNotInAnySeason: seasonEventInfo[];
+  setEventsInSeason: (value) => void;
+  setEventsNotInAnySeason: (value) => void;
   setShowPopUp: (value) => void;
   setPopUpMessage: (value) => void;
 }
 
 const SeasonEvents = (props: SeasonEventsProps) => {
-  const {seasonId, token, isFormEditing, setShowPopUp, setPopUpMessage} = props;
-  const [allEventInfo, setAllEventInfo] = useState<any>([]);
-  const [eventsNotInSeason, setEventsNotInSeason] = useState<any>([]);
+  const {
+    seasonId,
+    token,
+    isFormEditing,
+    eventsInSeason,
+    setEventsInSeason,
+    eventsNotInAnySeason,
+    setEventsNotInAnySeason,
+    setShowPopUp,
+    setPopUpMessage,
+  } = props;
   const [isAddEventActive, setIsAddEventActive] = useState<boolean>(false);
 
-  const handleGetAllEvents = async () => {
-    const allEvents = await getAllEvents(token);
-    if (allEvents) {
-      const {data} = allEvents;
-      const eventsInSeason = data.filter(
-        (event) => event.seasonid === seasonId,
-      );
-      const eventsNotInSeason = data.filter((event) => event.seasonid === null);
-
-      setAllEventInfo(eventsInSeason);
-      setEventsNotInSeason(eventsNotInSeason);
-    }
-  };
-
   const handleRemoveEvent = async (eventIdToRemove: number) => {
-    const updatedEvents = allEventInfo.filter(
-      (event) => Number(event.id) !== eventIdToRemove,
+    const updatedEvents = eventsInSeason.filter(
+      (event) => Number(event.eventid) !== eventIdToRemove,
     );
-    let eventToUpdate = allEventInfo.find(
-      (event) => Number(event.id) === eventIdToRemove,
+    let eventToUpdate = eventsInSeason.find(
+      (event) => Number(event.eventid) === eventIdToRemove,
     );
-    const eventToUpdateCopy = {...eventToUpdate};
 
-    // Temporary solution until Events API is updated (Line 43 - 62)
-    // Fetch all event API returns data with different property names than what update event API requires as payload
-    const {
-      id: eventId,
-      description: eventDescription,
-      title: eventName,
-    } = eventToUpdate;
     eventToUpdate = {
       ...eventToUpdate,
-      eventid: eventId,
-      eventname: eventName,
-      eventdescription: eventDescription,
       seasonid_fk: null,
     };
-    delete eventToUpdate['id'];
-    delete eventToUpdate['seasonid'];
-    delete eventToUpdate['seasonticketeligible'];
-    delete eventToUpdate['numshows'];
-    delete eventToUpdate['description'];
-    delete eventToUpdate['title'];
 
     const updateEventCall = await updateEventSeason(eventToUpdate, token);
     if (updateEventCall) {
-      setAllEventInfo(updatedEvents);
-      setEventsNotInSeason([...eventsNotInSeason, eventToUpdateCopy]);
+      setEventsInSeason(updatedEvents);
+      setEventsNotInAnySeason([...eventsNotInAnySeason, eventToUpdate]);
     }
   };
 
@@ -82,40 +64,23 @@ const SeasonEvents = (props: SeasonEventsProps) => {
   };
 
   const handleAddEventToSeason = async (eventIdToAdd: number) => {
-    let eventToAdd = eventsNotInSeason.find(
-      (event) => Number(event.id) === eventIdToAdd,
+    let eventToAdd = eventsNotInAnySeason.find(
+      (event) => Number(event.eventid) === eventIdToAdd,
     );
-    const eventToAddCopy = {...eventToAdd};
-    const updatedEventsNotInSeason = eventsNotInSeason.filter((event) => {
-      return Number(event.id) !== eventIdToAdd;
+    const updatedEventsNotInASeason = eventsNotInAnySeason.filter((event) => {
+      return Number(event.eventid) !== eventIdToAdd;
     });
 
-    // Temporary solution until Events API is updated (Line 94 - 113)
-    // Fetch all event API returns data with different property names than what update event API requires as payload
-    const {
-      id: eventId,
-      description: eventDescription,
-      title: eventName,
-    } = eventToAdd;
     eventToAdd = {
       ...eventToAdd,
-      eventid: eventId,
-      eventname: eventName,
-      eventdescription: eventDescription,
       seasonid_fk: seasonId,
     };
-    delete eventToAdd['id'];
-    delete eventToAdd['seasonid'];
-    delete eventToAdd['seasonticketeligible'];
-    delete eventToAdd['numshows'];
-    delete eventToAdd['description'];
-    delete eventToAdd['title'];
 
     const updateEventCall = await updateEventSeason(eventToAdd, token);
     setShowPopUp(true);
     if (updateEventCall) {
-      setAllEventInfo([...allEventInfo, eventToAddCopy]);
-      setEventsNotInSeason(updatedEventsNotInSeason);
+      setEventsInSeason([...eventsInSeason, eventToAdd]);
+      setEventsNotInAnySeason(updatedEventsNotInASeason);
       setPopUpMessage({
         title: 'Success',
         message: 'The event has been added to the season!',
@@ -136,14 +101,10 @@ const SeasonEvents = (props: SeasonEventsProps) => {
   };
 
   useEffect(() => {
-    void handleGetAllEvents();
-  }, []);
-
-  useEffect(() => {
-    if (eventsNotInSeason.length > 0) {
-      eventsNotInSeason.sort((a, b) => b.id - a.id);
+    if (eventsNotInAnySeason && eventsNotInAnySeason.length > 0) {
+      eventsNotInAnySeason.sort((a, b) => b.eventid - a.eventid);
     }
-  }, [eventsNotInSeason]);
+  }, [eventsNotInAnySeason]);
 
   return (
     <div className='rounded-xl p-7 bg-white text-lg mt-5 shadow-xl'>
@@ -188,21 +149,21 @@ const SeasonEvents = (props: SeasonEventsProps) => {
                 fill='currentColor'
               >
                 <path
-                  fill-rule='evenodd'
+                  fillRule='evenodd'
                   d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
-                  clip-rule='evenodd'
+                  clipRule='evenodd'
                 />
               </svg>
               <p>Close</p>
             </button>
           </div>
-          {eventsNotInSeason.length !== 0 ? (
-            eventsNotInSeason.map((event) => {
+          {eventsNotInAnySeason.length !== 0 ? (
+            eventsNotInAnySeason.map((event) => {
               return (
                 <EventCard
-                  key={event.id}
-                  eventId={event.id}
-                  name={event.title}
+                  key={event.eventid}
+                  eventId={event.eventid}
+                  name={event.eventname}
                   imageurl={event.imageurl}
                   addEventCard={true}
                   addEventToSeason={handleAddEventToSeason}
@@ -216,13 +177,13 @@ const SeasonEvents = (props: SeasonEventsProps) => {
           )}
         </div>
       )}
-      {allEventInfo.map((event) => {
+      {eventsInSeason.map((event) => {
         return (
           <EventCard
-            key={event.id}
-            name={event.title}
+            key={event.eventid}
+            name={event.eventname}
             imageurl={event.imageurl}
-            eventId={event.id}
+            eventId={event.eventid}
             isFormEditing={isFormEditing}
             isAddEventActive={isAddEventActive}
             deleteEventConfirmationHandler={deleteEventConfirmationHandler}

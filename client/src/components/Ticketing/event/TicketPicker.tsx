@@ -8,7 +8,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {useAppDispatch, useAppSelector} from '../app/hooks';
+import {useAppDispatch} from '../app/hooks';
 import {
   addTicketToCart,
   Ticket,
@@ -84,7 +84,7 @@ const initialState: TicketPickerState = {
   showCalendar: true,
   showTimes: false,
   showClearBtn: false,
-  payWhatPrice: 0,
+  payWhatPrice: null,
   prompt: 'selectDate',
 };
 
@@ -101,7 +101,6 @@ const changeTicketType = (t: TicketType) => ({
   type: 'change_ticket_type',
   payload: {selectedTicketType: t},
 });
-let tempPay = 0;
 
 /**
  * TicketPickerReducer is meant to be used to lower ticket numbers
@@ -174,6 +173,17 @@ interface TicketPickerProps {
   tickets: Ticket[];
 }
 
+const getUniqueDates = (tickets) => {
+  const uniqueDates = [];
+  tickets.forEach((ticket) => {
+    const dateStr = format(new Date(ticket.date), 'eee, MMM dd yyyy');
+    if (!uniqueDates.includes(dateStr)) {
+      uniqueDates.push(dateStr);
+    }
+  });
+  return uniqueDates;
+};
+
 /**
  * Used to choose the tickets
  *
@@ -181,6 +191,7 @@ interface TicketPickerProps {
  * @returns {ReactElement} and the correct ticket when picking
  */
 const TicketPicker = (props: TicketPickerProps): ReactElement => {
+  const uniqueDates = getUniqueDates(props.tickets);
   const [ticketTypesState, setTicketTypesState] =
     useState<TicketPickerState>(initialState);
 
@@ -297,8 +308,12 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
 
   const payWhatFunc = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    tempPay = parseInt(event.currentTarget.value);
-    dispatch(changePayWhat(tempPay));
+    const tempPay = parseFloat(event.currentTarget.value);
+    if (isNaN(tempPay)) {
+      dispatch(changePayWhat(null));
+    } else {
+      dispatch(changePayWhat(parseFloat(tempPay.toFixed(2))));
+    }
   };
 
   const [filteredTicketTypes, setFilteredTicketTypes] = useState([]);
@@ -382,25 +397,25 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       {promptMarkup[prompt]}
       <Collapse in={showCalendar}>
         <div className='text-white w-full px-20'>
-          <select
-            id='date-select'
-            defaultValue=''
-            className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
-            onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}
+        <select
+          id='date-select'
+          defaultValue=''
+          className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
+          onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}
+        >
+          <option
+            className='text-zinc-300'
+            value=''
+            disabled
           >
-            <option
-              className='text-zinc-300'
-              value=''
-              disabled
-            >
-              select date
+            select date
+          </option>
+          {uniqueDates.map((dateStr, index) => (
+            <option key={index} value={dateStr}>
+              {dateStr}
             </option>
-            {tickets.map((t, index) => (
-              <option key={`${t.event_instance_id} ${index}`} value={t.date.toString()}>
-                {format(new Date(t.date), 'eee, MMM dd yyyy')}
-              </option>
-            ))}
-          </select>
+          ))}
+        </select>
         </div>
       </Collapse>
       <Collapse in={showTimes}>
@@ -523,7 +538,10 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       <button
         data-testid='get-tickets'
         disabled={
-          !qty || !selectedTicket || qty > selectedTicket.availableseats
+          !qty ||
+          !selectedTicket ||
+          qty > selectedTicket.availableseats ||
+          (selectedTicketType.name === 'Pay What You Can' && (payWhatPrice == null || payWhatPrice < 0))
         }
         className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 bg-blue-500 text-white hover:bg-blue-600 rounded-xl'
         onClick={handleSubmit}
