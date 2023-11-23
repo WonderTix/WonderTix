@@ -18,7 +18,24 @@ export const EventGeneralContainer = () => {
       setEventID(res.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
-      setPopUpProps(`Success`, 'Event update successful', true, `update-modal-event-id-${res.eventid}`);
+      setPopUpProps(
+        `Success`,
+        'Event update successful',
+        true,
+        `update-modal-event-id-${res.eventid}`,
+      );
+    } catch (error) {
+      console.error('error updating event');
+    }
+  };
+
+  const onUpdateSuccessActiveOnly = async (newEvent) => {
+    try {
+      const res = await newEvent.json();
+      setEventData(res);
+      setEventID(res.eventid);
+      setEdit(false);
+      setEditing(false);
     } catch (error) {
       console.error('error updating event');
     }
@@ -32,7 +49,12 @@ export const EventGeneralContainer = () => {
       setEventID(res.eventid);
       setEdit((edit) => !edit);
       setEditing((edit) => !edit);
-      setPopUpProps(`Success`, 'Event creation successful', true, `create-modal-event-id-${res.eventid}`);
+      setPopUpProps(
+        `Success`,
+        'Event creation successful',
+        true,
+        `create-modal-event-id-${res.eventid}`,
+      );
     } catch (error) {
       console.log(error);
       console.error('error updating event after creation');
@@ -43,7 +65,12 @@ export const EventGeneralContainer = () => {
       const res = await event.json();
       setPopUpProps(`Failure`, res.error, false, `failure-modal`);
     } catch (error) {
-      setPopUpProps(`Failure`, 'Event update failed', false, `failure-update-modal-event-id-${eventID}`);
+      setPopUpProps(
+        `Failure`,
+        'Event update failed',
+        false,
+        `failure-update-modal-event-id-${eventID}`,
+      );
     }
   };
   const onDeleteSuccess = () => {
@@ -55,17 +82,32 @@ export const EventGeneralContainer = () => {
       const res = await event.json();
       setPopUpProps(`Failure`, res.error, false, `failure-modal`);
     } catch (error) {
-      setPopUpProps(`Failure`, 'Event cannot be deleted', false, `failure-delete-modal-event-id-${eventID}`);
+      setPopUpProps(
+        `Failure`,
+        'Event cannot be deleted',
+        false,
+        `failure-delete-modal-event-id-${eventID}`,
+      );
     }
   };
 
-  const onSubmit = createSubmitFunction(
-    eventID === 0 ? 'POST' : 'PUT',
-    `${process.env.REACT_APP_API_2_URL}/events`,
-    token,
-    eventID ? onUpdateSuccess : onCreateSuccess,
-    onSubmitError,
-  );
+  const onSubmitActiveOnly = (event) =>
+    createSubmitFunction(
+      eventID === 0 ? 'POST' : 'PUT',
+      `${process.env.REACT_APP_API_2_URL}/events`,
+      token,
+      onUpdateSuccessActiveOnly,
+      {},
+    )(event);
+
+  const onSubmit = (event) =>
+    createSubmitFunction(
+      eventID === 0 ? 'POST' : 'PUT',
+      `${process.env.REACT_APP_API_2_URL}/events`,
+      token,
+      eventID ? onUpdateSuccess : onCreateSuccess,
+      onSubmitError,
+    )(event);
 
   const onDelete = createDeleteFunction(
     'DELETE',
@@ -75,7 +117,8 @@ export const EventGeneralContainer = () => {
     onDeleteError,
   );
   const onConfirmDelete = () => {
-    setPopUpProps('Confirm deletion',
+    setPopUpProps(
+      'Confirm deletion',
       'Click continue to delete this event',
       false,
       `delete-modal-event-id-${eventID}`,
@@ -84,20 +127,22 @@ export const EventGeneralContainer = () => {
   };
   return (
     <>
-      {
-        edit ?
-          <EventGeneralForm
-            onSubmit={onSubmit}
-            onDelete={onConfirmDelete}
-            onLeaveEdit={() => {
-              setEdit((edit) => !edit);
-              setEditing((edit) => !edit);
-            }}
-          />:
-          <EventGeneralView
-            setEdit={setEdit}
-          />
-      }
+      {edit ? (
+        <EventGeneralForm
+          onSubmit={onSubmit}
+          onDelete={onConfirmDelete}
+          onLeaveEdit={() => {
+            setEdit((edit) => !edit);
+            setEditing((edit) => !edit);
+          }}
+        />
+      ) : (
+        <EventGeneralView
+          onSubmitActiveOnly={onSubmitActiveOnly}
+          setEdit={setEdit}
+          onDelete={onConfirmDelete}
+        />
+      )}
     </>
   );
 };

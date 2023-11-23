@@ -1,15 +1,38 @@
 import {useEvent} from './EventProvider';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-
+import {FormDeleteButton} from './FormDeleteButton';
 import {LineItem} from './LineItem';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import Tooltip from '@mui/material/Tooltip';
 
 interface EventGeneralViewProps {
   setEdit: (value) => void;
+  onDelete: (event) => void;
+  onSubmitActiveOnly: (eventData) => void;
 }
+
 export const EventGeneralView = (props: EventGeneralViewProps) => {
   const {eventData, editing, setEditing, showPopUp} = useEvent();
-  const {setEdit} = props;
+  const {setEdit, onDelete, onSubmitActiveOnly} = props;
+  const [isActive, setIsActive] = useState(
+    eventData ? eventData.active : false,
+  );
+
+  useEffect(() => {
+    setIsActive(eventData ? eventData.active : false);
+  }, [eventData]);
+
+  const handleActiveChange = async () => {
+    const updatedEventData = {
+      ...eventData,
+      active: !isActive,
+    };
+    setIsActive(!isActive);
+    onSubmitActiveOnly(updatedEventData);
+  };
 
   if (!eventData) {
     return null;
@@ -17,23 +40,72 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
 
   return (
     <div className={'bg-white flex flex-col p-6 rounded-xl shadow-xl'}>
-      <div className={'grid grid-cols-12 mb-5 gap-2 justify-items-center min-[650px]:justify-items-end'}>
-        <h2 className={'col-span-12 min-[650px]:col-span-6 text-center min-[650px]:text-start text-3xl font-semibold text-zinc-800 w-full'}>
+      <div className={'flex flex-col gap-3 text-center mb-5 justify-between tab:flex-row tab:flex-wrap'}>
+        <h2 className={'text-3xl font-semibold text-zinc-800'}>
           Event Information
         </h2>
-        <button
-          type={'button'}
-          disabled={editing || showPopUp}
-          onClick={() => {
-            setEdit((edit) => !edit);
-            setEditing((edit) => !edit);
-          }}
-          className={
-            ' bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold py-2 px-4 rounded-xl h-fit w-fit col-span-12 min-[650px]:col-span-6'
-          }
-        >
-          Edit
-        </button>
+        <div className='flex flex-col gap-2 tab:flex-row tab:flex-wrap'>
+          <span
+            className={`${
+              eventData.active ? 'bg-green-100' : 'bg-red-100'
+            } py-2 px-8 rounded-lg font-medium`}
+          >
+            {eventData.active ? 'ACTIVE' : 'INACTIVE'}
+          </span>
+
+          <Tooltip title={<p>Edit</p>} placement='top' arrow>
+            <button
+              className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+              onClick={() => {
+                if (!editing && !showPopUp) {
+                  setEdit((edit) => !edit);
+                  setEditing((edit) => !edit);
+                }
+              }}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-6 w-6'
+                fill='none'
+                viewBox='0 0 24 24'
+                stroke='currentColor'
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+                />
+              </svg>
+            </button>
+          </Tooltip>
+
+          <Tooltip title={<p>Delete</p>} placement='top' arrow>
+            <button
+              className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+              onClick={() => {
+                if (!editing && !showPopUp) {
+                  onDelete(eventData);
+                }
+              }}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-6 w-6'
+                fill='#EF4444'
+                viewBox='0 0 24 24'
+                stroke='white'
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                />
+              </svg>
+            </button>
+          </Tooltip>
+        </div>
       </div>
       <div className={'grid grid-cols-12'}>
         <div className={'flex flex-col col-span-12 min-[450px]:col-span-6'}>
@@ -48,6 +120,28 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
             information={eventData.eventdescription}
             event
           />
+          {eventData.seasonid_fk && (
+            <LineItem
+              description
+              label={'Event Season'}
+              information={eventData.seasons?.name}
+              event
+            />
+          )}
+          <div className={'flex flex-row items-center col-span-6'}>
+            <label
+              htmlFor={'active'}
+              className={'text-sm text-zinc-800 font-semibold pr-2'}
+            >
+              Active:
+            </label>
+            <Switch
+              checked={isActive}
+              onChange={handleActiveChange}
+              inputProps={{'aria-label': 'controlled'}}
+              id='active'
+            />
+          </div>
         </div>
         <div className={'col-span-12 min-[450px]:col-span-6'}>
           <EventImage
