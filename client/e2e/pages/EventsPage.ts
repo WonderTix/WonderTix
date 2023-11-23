@@ -58,55 +58,56 @@ export class EventsPage {
     this.page = page;
 
 
-    this.homePage=page.getByRole('button', { name: '/' });
+    this.homePage=page.getByRole('button', {name: '/'});
     this.homePageRightSlide=page.locator('button:nth-child(4)');
-    this.firstEvent=page.getByRole('button', { name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
-    this.secondEvent=page.getByRole('button', { name: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
+    this.firstEvent=page.getByRole('button', {name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'});
+    this.secondEvent=page.getByRole('button', {name: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'});
 
-    this.pageHeader=page.getByRole('heading', { name: 'Select Event' });
-    this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
-    this.emailButton= page.getByText('test@wondertix.com');
+    this.pageHeader=page.getByRole('heading', {name: 'Select Event'});
+    this.leftBarEvent=page.getByRole('list').locator('a').filter({hasText: 'Events'});
+    // Let's regex this bad boy up and look for anything that matches 0 or more digits in "test(number)@wondertix.com"
+    this.emailButton= page.locator('p[class*=\'text-sm\']', {hasText: /test\d*@wondertix.com/});
+
     this.manageTicketingButton=page.getByText('Manage Ticketing').first();
 
-    this.addButton = page.getByRole('button', { name: 'Add Event' });
+    this.addButton = page.getByRole('button', {name: 'Add Event'});
     this.eventNameBlank= page.getByLabel('Event Name:');
     this.eventDesBlank= page.getByLabel('Event Description:');
     this.imageURL=page.getByLabel('Image URL:');
     this.newEventSave=page.getByLabel('Save');
     this.deleteEventButton=page.locator('.flex[data-mui-internal-clone-element=true]').last();
 
-    this.eventContinue=page.getByRole('button', { name: 'Continue' });
-    this.eventClose=page.getByRole('button', { name: 'Close', exact: true });
+    this.eventContinue=page.getByRole('button', {name: 'Continue'});
+    this.eventClose=page.getByRole('button', {name: 'Close', exact: true});
 
-    this.eventOption1=page.getByRole('button', { name: 'Default' });
-    this.eventOption2=page.getByText('Active:', { exact: true });
+    this.eventOption1=page.getByRole('button', {name: 'Default'});
+    this.eventOption2=page.getByText('Active:', {exact: true});
 
     this.editEventInfo=page.locator('.flex[data-mui-internal-clone-element=true]').first();
-    this.editEventsInfo=page.getByRole('button', { name: 'Edit' });
+    this.editEventsInfo=page.getByRole('button', {name: 'Edit'});
     this.editEventName=page.getByLabel('Event Name:');
     this.editEventDes=page.getByLabel('Event Description:');
-    this.editOption1=page.getByText('Active:', { exact: true });
-    this.editCancel=page.getByRole('button', { name: 'Cancel' });
+    this.editOption1=page.getByText('Active:', {exact: true});
+    this.editCancel=page.getByRole('button', {name: 'Cancel'});
     this.editAddShowing=page.getByLabel('Add Showing');
-    this.editCancelShowing=page.getByRole('button', { name: 'Cancel' });
+    this.editCancelShowing=page.getByRole('button', {name: 'Cancel'});
     this.editShowingId=page.locator('div:nth-child(3) > .bg-blue-500').first();
-    this.cancelShowingId=page.getByRole('button', { name: 'Cancel' });
+    this.cancelShowingId=page.getByRole('button', {name: 'Cancel'});
     this.editEventDate=page.getByLabel('Event Date:');
     this.editEventTime=page.getByLabel('Event Time:');
     this.editTicketQuantity=page.getByLabel('Ticket Quantity:');
     this.seeEventShowings=page.locator('div:nth-child(6) > div > .p-6 > .flex > .py-2');
-    this.getTickets=page.getByRole('button', { name: 'Get Tickets' });
-    this.takeMeThere=page.getByRole('button', { name: 'Take me there!' });
-    this.backToEvents=page.getByRole('button', { name: 'back to Events' });
+    this.getTickets=page.getByRole('button', {name: 'Get Tickets'});
+    this.takeMeThere=page.getByRole('button', {name: 'Take me there!'});
+    this.backToEvents=page.getByRole('button', {name: 'back to Events'});
     this.concessionTicket=page.getByRole('checkbox');
-    this.editShowingButton=page.locator('div').filter({ hasText: /^Edit$/ }).getByRole('button');
+    this.editShowingButton=page.locator('div').filter({hasText: /^Edit$/}).getByRole('button');
     this.ticketQuantityOption=page.getByLabel('Ticket Quantity:');
     this.showingCard=page.getByTestId('showing-card');
-    this.deleteShowingButton=page.getByRole('button', { name: 'Delete' });
+    this.deleteShowingButton=page.getByRole('button', {name: 'Delete'});
   }
 
-  async clickLeftBar()
-  {
+  async clickLeftBar() {
     await this.leftBarEvent.click();
   }
 
@@ -114,8 +115,7 @@ export class EventsPage {
   To simulate only clicking the edit button and do almost nothing.
   This test is more geared toward testing the buttons.
   */
-  async editEvents()
-  {
+  async editEvents() {
     await this.firstEvent.click();
     await this.editEventInfo.click();
     await this.editEventName.click();
@@ -136,9 +136,10 @@ export class EventsPage {
    "S",
   "123",
   "http://"
-  */
-  async addnewevent(anEvent:EventsInfo)
-  {
+   *
+   * @param anEvent
+   */
+  async addnewevent(anEvent:EventsInfo) {
      await this.addButton.click();
      await this.eventNameBlank.click();
      await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
@@ -162,9 +163,10 @@ export class EventsPage {
   "2023-10-17",
   "10:20",
   "010"
-*/
-  async addNewShowing(aShowing:ShowingInfo)
-  {
+ *
+ * @param aShowing
+ */
+  async addNewShowing(aShowing:ShowingInfo) {
     await this.editAddShowing.click();
     await this.editEventDate.fill(aShowing.showingDate);
     await this.editEventTime.click();
@@ -176,22 +178,22 @@ export class EventsPage {
   }
 
 /**
-  * We need to pass in things to the filter like:
-  * "Wed, Oct 11 2023"
-*/
-  async searchDeleteShowing(Time: string)
-  {
+ * We need to pass in things to the filter like:
+ * "Wed, Oct 11 2023"
+ *
+ * @param Time
+ */
+  async searchDeleteShowing(Time: string) {
     await this.showingCard
-      .filter({ hasText: Time})
-      .getByRole('button', { name: 'Edit' })
+      .filter({hasText: Time})
+      .getByRole('button', {name: 'Edit'})
       .click();
     await this.deleteShowingButton.click();
     await this.eventContinue.click();
   }
 
-  //**The weird thing is that Im not sure wheres the 'Playbill' comes from.
-  async checkNewEventOnHomePage()
-  {
+  //* *The weird thing is that Im not sure wheres the 'Playbill' comes from.
+  async checkNewEventOnHomePage() {
     await this.homePage.click();
     await this.homePageRightSlide.click();
     await this.homePageRightSlide.click();
@@ -199,35 +201,36 @@ export class EventsPage {
     await this.homePageRightSlide.click();
     await this.homePageRightSlide.click();
     await this.seeEventShowings.click();
-    await expect(this.page.getByRole('img', { name: 'Test_event Playbill' })).toBeVisible;
+    await expect(this.page.getByRole('img', {name: 'Test_event Playbill'})).toBeVisible;
   }
 
 /**
  * We need to pass in a event's full name like:
  * "Test_event Playbill Test_event Description An event for testing"
-*/
-  async goToEventFromManage(eventFullName: string)
-  {
+ *
+ * @param eventFullName
+ */
+  async goToEventFromManage(eventFullName: string) {
     await this.emailButton.click();
     await this.manageTicketingButton.click();
     await this.leftBarEvent.click();
-    await this.page.getByRole('button', { name: eventFullName }).first().click();
+    await this.page.getByRole('button', {name: eventFullName}).first().click();
   }
 
 /**
  * We need to pass in a event's full name like:
  * "Test_event Playbill Test_event Description An event for testing"
-*/
-  async deleteTheEvent(eventFullName: string)
-  {
+ *
+ * @param eventFullName
+ */
+  async deleteTheEvent(eventFullName: string) {
     await this.deleteEventButton.click();
     await this.eventContinue.click();
     await this.leftBarEvent.click();
-    await expect(this.page.getByRole('button', { name: eventFullName }).first()).not.toBeVisible();
+    await expect(this.page.getByRole('button', {name: eventFullName}).first()).not.toBeVisible();
   }
 
-  async editTheEventInfo(anEvent:EventsInfo)
-  {
+  async editTheEventInfo(anEvent:EventsInfo) {
       await this.editEventInfo.click();
       await this.editEventName.click();
       await this.editEventName.fill(anEvent.eventName);
@@ -237,26 +240,24 @@ export class EventsPage {
       await this.eventContinue.click();
   }
 
-  async clickSecondEvent()
-  {
+  async clickSecondEvent() {
     await this.secondEvent.click();
   }
 
-  async searchForEventByName(anEvent:EventsInfo)
-  {
-    await this.page.getByText(anEvent.eventName, { exact: true }).click();
+  async searchForEventByName(anEvent:EventsInfo) {
+    await this.page.getByText(anEvent.eventName, {exact: true}).click();
   }
 
-  async searchForEventByDes(anEvent:EventsInfo)
-  {
+  async searchForEventByDes(anEvent:EventsInfo) {
     await this.page.getByText(anEvent.eventDescription).click();
   }
 
   /**
    * Only for change the first showing of an event
+   *
+   * @param aShowing
    */
-  async editShowingInfo(aShowing:ShowingInfo)
-  {
+  async editShowingInfo(aShowing:ShowingInfo) {
     await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
     await this.page.getByText('372').click();
     await this.editEventDate.fill(aShowing.showingDate);
@@ -266,33 +267,28 @@ export class EventsPage {
     await this.eventContinue.click();
   }
 
-  async clickFirstEvent()
-  {
+  async clickFirstEvent() {
     await this.firstEvent.click();
   }
 
-  async clickSpecificShowing(showingWholeDate: string)
-  {
+  async clickSpecificShowing(showingWholeDate: string) {
     await this.page.getByText(showingWholeDate).click();
     await this.page.locator('div:nth-child(4) > p:nth-child(2)').first().click();
   }
 
-  async goto()
-  {
-    await this.page.goto('/', { timeout: 90000 });
+  async goto() {
+    await this.page.goto('/', {timeout: 90000});
     await this.emailButton.click();
     await this.manageTicketingButton.click();
     await this.leftBarEvent.click();
     await expect(this.pageHeader).toBeVisible();
   }
 
-  async ticketingURL()
-  {
-    await this.page.goto('/ticketing', { timeout: 90000 });
+  async ticketingURL() {
+    await this.page.goto('/ticketing', {timeout: 90000});
   }
 
-  async backtoEvents()
-  {
+  async backtoEvents() {
     await this.leftBarEvent.click();
   }
 }

@@ -1,10 +1,13 @@
 import {defineConfig, devices} from '@playwright/test';
+import path from 'path';
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
 require('dotenv').config();
+
+export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
 
 const isDeployed = process.env.DEPLOYED === 'true';
 /**
@@ -21,12 +24,12 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: (isDeployed) ? [['list']] : [['html', {outputFolder: 'playwright'}]],
-  outputDir: 'test-results',
+  reporter: (isDeployed) ? [['list']] : [['html', {outputFolder: './playwright'}]],
+  outputDir: './test-results',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.FRONTEND_URL,
+    baseURL: process.env.FRONTEND_URL ?? `https://localhost:${process.env.PORT ?? 3000}`,
     ignoreHTTPSErrors: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: (isDeployed) ? 'off' : {
@@ -41,37 +44,40 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     // Setup project
-    {name: 'setup', testMatch: /.*\.setup\.ts/},
+    {
+      name: 'setup',
+      testMatch: /global\.setup\.ts/,
+    },
     {
       name: 'chromium',
+      testMatch: /.*\.spec\.ts/,
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices['chromium'],
         // Use prepared auth state.
         storageState: 'playwright/.auth/user.json',
       },
       dependencies: ['setup'],
     },
-
     {
       name: 'firefox',
+      testMatch: /.*\.spec\.ts/,
       use: {
-        ...devices['Desktop Firefox'],
+        ...devices['firefox'],
         // Use prepared auth state.
         storageState: 'playwright/.auth/user.json',
       },
       dependencies: ['setup'],
     },
-
     {
       name: 'webkit',
+      testMatch: /.*\.spec\.ts/,
       use: {
-        ...devices['Desktop Safari'],
+        ...devices['webkit'],
         // Use prepared auth state.
         storageState: 'playwright/.auth/user.json',
       },
       dependencies: ['setup'],
     },
-
     /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',
