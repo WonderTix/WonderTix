@@ -53,9 +53,9 @@ export class SeasonsPage {
     this.seasonOption1=page.getByLabel('Use Default Image');
     this.seasonOption2=page.getByLabel('Active');
 
-    this.seasonEdit=page.locator(".flex[data-mui-internal-clone-element=true]").first();
+    this.seasonEdit=page.getByTestId('season-edit');
     this.seasonSave=page.getByRole('button', {name: 'Save'});
-    this.seasonDelete=page.locator(".flex[data-mui-internal-clone-element=true]").last();
+    this.seasonDelete=page.getByTestId('season-delete');
 
     this.seasonContinue=page.getByRole('button', { name: 'Continue' });
 
@@ -78,41 +78,45 @@ export class SeasonsPage {
 
   async addEventToSeason(event: EventsInfo) 
   {
+    const seasonLocator = this.page.getByTestId('season-event-section').filter({hasText: event.eventName});
     await this.addEvent.click();
-    await this.page.getByRole('button', { name: 'Add to Season'}).first().click();
-    await this.page.getByRole('button', { name: 'Continue'}).click();
+    seasonLocator.getByTestId('event-add-to-season').click();
+    await this.page.getByRole('button', { name: 'Continue' }).click();
 
     await expect(this.page.locator(':text("' + event.eventName + '")')).toBeVisible();
   }
 
   async editSeason(old_season: SeasonsInfo, new_season: SeasonsInfo)
   {
-    await this.page.locator(':text("' + old_season.seasonName + '")').first().click();
+    await this.page.locator(':text("' + old_season.seasonName + '")').click();
     await this.seasonEdit.click();
     await this.seasonNameBlank.fill(new_season.seasonName);
     await this.seasonStartDate.fill(new_season.seasonStart);
     await this.seasonEndDate.fill(new_season.seasonEnd);
     await this.imageURL.fill(new_season.seasonImgURL);
     await this.seasonSave.click();
-    await this.seasonContinue.click();
+    await this.page.getByRole('button', { name: 'Continue' }).click();
 
     await expect(this.page.locator(':text("' + new_season.seasonName + '")')).toBeVisible();
   }
 
-  async removeEventFromSeason()
+  async removeEventFromSeason(season: SeasonsInfo, event: EventsInfo)
   {
-    await this.page.locator(':text("NewName")').first().click();
-    await this.page.getByRole('button', { name: 'Remove Event'}).first().click();
-    await this.page.getByRole('button', { name: 'Continue'}).click();
+    await this.page.locator(':text("' + season.seasonName + '")').click();
 
-    await expect(this.page.locator(':text("Test_event")')).not.toBeVisible();
+    const seasonLocator = this.page.getByTestId('season-event-section').filter({hasText: event.eventName});
+    seasonLocator.getByTestId('event-remove').click();
+
+    await this.page.getByRole('button', { name: 'Continue' }).click();
+
+    await expect(this.page.locator(':text("'+ event.eventName +'")')).not.toBeVisible();
   }
 
   async removeSeason(season: SeasonsInfo)
   {
-    await this.page.locator(':text("' + season.seasonName + '")').first().click();
+    await this.page.locator(':text("' + season.seasonName + '")').click();
     await this.seasonDelete.click();
-    await this.page.getByRole('button', { name: 'Continue'}).click();
+    await this.page.getByRole('button', { name: 'Continue' }).click();
 
     await expect(this.page.locator(':text("' + season.seasonName + '")')).not.toBeVisible();
   }
