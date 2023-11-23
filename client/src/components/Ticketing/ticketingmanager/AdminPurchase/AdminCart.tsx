@@ -34,9 +34,13 @@ const AdminCart = ({
     const formattedDate = date.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
-      day: '2-digit',
+      day: 'numeric',
     });
-
+    const formattedTime = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
     return (
       <p
         key={index}
@@ -49,7 +53,7 @@ const AdminCart = ({
           {toDollar(item.price)}
         </span>
         <span className='w-full text-left text-xs'>
-          {`${item.desc} - ${formattedDate}`}
+          {`${item.desc} - ${formattedDate} - ${formattedTime}`}
         </span>
       </p>
     );
