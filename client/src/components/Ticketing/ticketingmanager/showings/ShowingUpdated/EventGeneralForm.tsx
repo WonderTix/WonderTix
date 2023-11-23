@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Field, Formik} from 'formik';
 import {InputControl} from './InputControl';
 import {eventGeneralSchema} from './event.schemas';
-import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
+import {fetchSeasons} from './ShowingUtils';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
@@ -14,41 +14,71 @@ interface EventGeneralFormProps {
 }
 
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
-  const {onSubmit, onDelete, onLeaveEdit} = props;
-  const {eventData, showPopUp} = useEvent();
-  const [disabledURL, setDisabledURL] = useState(
-    eventData?.imageurl === 'Default Event Image',
-  );
+  const {onSubmit, onLeaveEdit} = props;
+  const {eventData, showPopUp, token} = useEvent();
+  const [seasons, setSeasons] = useState([]);
+
+  const [showButton, setShowButton] = useState(true);
+
+  const handleInputChange = (event) => {
+    setShowButton(event.target.value !== 'Default Event Image');
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetchSeasons(token, signal)
+      .then((res) => setSeasons(res))
+      .catch((error) => console.error('Failed to fetch seasons', error));
+
+    return () => controller.abort();
+  }, [token]);
 
   const baseValues = {
     eventname: eventData ? eventData.eventname : '',
     eventid: eventData ? eventData.eventid : 0,
     eventdescription: eventData ? eventData.eventdescription : '',
     imageurl: eventData ? eventData.imageurl : '',
-    active: eventData ? eventData.active : true,
-    seasonid_fk: eventData ? eventData.seasonid_fk : 7,
+    active: eventData ? eventData.active : false,
+    seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
   };
 
   return (
     <Formik
-      initialValues={baseValues}
+      initialValues={{
+        eventname: baseValues.eventname,
+        eventid: baseValues.eventid,
+        eventdescription: baseValues.eventdescription,
+        imageurl:
+          baseValues.imageurl === 'Default Event Image'
+            ? ''
+            : baseValues.imageurl,
+        active: baseValues.active,
+        seasonid_fk: baseValues.seasonid_fk,
+      }}
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
     >
       {({handleSubmit, values, setFieldValue}) => (
-        <form className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'} onSubmit={handleSubmit}>
+        <form
+          className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'}
+          onSubmit={handleSubmit}
+        >
           <div className={'grid grid-cols-12 mb-5 gap-2'}>
-            <h2 className={'col-span-12 min-[650px]:col-span-6 text-center min-[650px]:text-start text-3xl font-semibold text-zinc-800'}>
-              {eventData? 'Edit Event': 'Add Event'}
+            <h2
+              className={
+                'col-span-12 min-[650px]:col-span-6 text-center min-[650px]:text-start text-3xl font-semibold text-zinc-800'
+              }
+            >
+              {eventData ? 'Edit Event' : 'Add Event'}
             </h2>
-            <div className={'col-span-12 min-[650px]:col-span-6 flex flex-row gap-4 flex-wrap justify-center min-[650px]:justify-end'}>
+            <div
+              className={
+                'col-span-12 min-[650px]:col-span-6 flex flex-row gap-4 flex-wrap justify-center min-[650px]:justify-end'
+              }
+            >
               <FormSubmitButton />
-              {eventData && (
-                <FormDeleteButton
-                  onDelete={onDelete}
-                  label={`Delete event ${values.eventid}`}
-                />
-              )}
               {onLeaveEdit && eventData && (
                 <button
                   className={
@@ -73,9 +103,9 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 id={0}
                 className={{
                   labelClass:
-                  'text-sm font-semibold col-span-5 min-[450px]:col-span-12',
+                    'text-sm font-semibold col-span-5 min-[450px]:col-span-12',
                   inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
+                    'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
                   inputGroupClass: 'col-span-7 min-[450px]:col-span-12',
                   controlClass: 'grid grid-cols-12 text-zinc-800 gap-1 mb-2',
                 }}
@@ -89,77 +119,86 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 className={{
                   labelClass: 'text-sm font-semibold',
                   inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
+                    'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400',
                   inputGroupClass: 'flex flex-col',
                   controlClass: 'flex flex-col mb-2 text-zinc-800',
                 }}
               />
-              <Field
-                name={'imageurl'}
-                component={InputControl}
-                label={'Image URL'}
-                type={'text'}
-                id={0}
-                disabled={values.imageurl === 'Default Event Image'}
-                className={{
-                  labelClass: 'text-sm font-semibold',
-                  inputClass:
-                  'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200',
-                  inputGroupClass: 'flex flex-col',
-                  controlClass: 'flex flex-col mb-2 text-zinc-800',
-                }}
-              />
-              <div className={'grid grid-cols-12 mb-2'}>
-                <div className={'flex flex-col justify-evenly col-span-6'}>
-                  <label
-                    htmlFor={'defaultImageUrl'}
-                    className={
-                      'text-sm text-zinc-800 font-semibold text-center pb-1'
-                    }
-                  >
-                    Use Default Image
-                  </label>
-                  <input
-                    name={'defaultImageUrl'}
+              <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
+                <div className='col-span-4 pr-2'>
+                  <Field name='imageurl'>
+                    {({field, form}) => (
+                      <div className='flex flex-col text-zinc-800'>
+                        <label className='text-sm font-semibold' htmlFor='imageurl'>
+                          Image URL:
+                        </label>
+                        <input
+                          type='text'
+                          className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200'
+                          {...field}
+                          onChange={(event) => {
+                            field.onChange(event);
+                            handleInputChange(event);
+                          }}
+                          id='imageurl'
+                        />
+                      </div>
+                    )}
+                  </Field>
+                </div>
+                {showButton && (
+                  <button
                     id={'defaultImageUrl'}
-                    type='checkbox'
-                    value={'default'}
-                    checked={disabledURL}
-                    onChange={async () => {
-                      await setFieldValue(
-                        'imageurl',
-                        !disabledURL ? 'Default Event Image' : '',
-                      );
-                      setDisabledURL(!disabledURL);
-                    }}
-                  />
-                </div>
-                <div className={'flex flex-col justify-evenly col-span-6'}>
-                  <label
-                    htmlFor={'active'}
-                    data-testid='event-active-toggle'
                     className={
-                      'text-sm text-zinc-800 font-semibold text-center pb-1'
+                      'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 font-bold text-sm h-fit self-end whitespace-nowrap'
                     }
-                  >
-                    Active
-                  </label>
-                  <input
-                    name={'active'}
-                    id={'active'}
-                    type='checkbox'
-                    value={values.active}
-                    checked={values.active}
-                    onChange={async () => {
-                      await setFieldValue('active', !values.active);
+                    onClick={() => {
+                      setFieldValue('imageurl', 'Default Event Image');
+                      setShowButton(false);
                     }}
-                  />
-                </div>
+                    type='button'
+                  >
+                    Default
+                  </button>
+                )}
+              </div>
+
+              <div className={'flex flex-col mb-2 text-zinc-800'}>
+                <label
+                  className={'text-sm font-semibold'}
+                  htmlFor={'seasonSelect'}
+                >
+                  Season:
+                </label>
+                <Field
+                  component={'select'}
+                  name={'seasonid_fk'}
+                  id={'seasonSelect'}
+                  className={
+                    'text-sm min-[450px]:text-md w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200'
+                  }
+                >
+                  <option value={undefined}>None</option>
+                  {seasons?.length > 0 &&
+                    seasons
+                      .sort((a, b) => b.seasonid - a.seasonid)
+                      .map((season, index) => (
+                        <option
+                          value={Number(season.seasonid)}
+                          key={`${season.seasonid} ${index}`}
+                        >
+                          {season.name}
+                        </option>
+                      ))}
+                </Field>
+              </div>
+              <div className={'grid grid-cols-12 mb-2'}>
+                <div
+                  className={'flex flex-col justify-evenly col-span-6'}
+                ></div>
               </div>
             </div>
-            <div
-              className={'col-span-12 min-[450px]:col-span-6'}
-            >
+            <div className={'col-span-12 min-[450px]:col-span-6'}>
               <EventImage
                 className={'mx-auto w-[50%] h-auto max-w-[150px]'}
                 src={values.imageurl}

@@ -28,8 +28,6 @@ export const eventGeneralSchema = yup.object().shape({
   eventdescription: yup.string().min(1).required('Required'),
   imageurl: yup
     .string()
-    .min(1)
-    .required('Required')
     .max(255, 'Image url can not be longer than 255 characters'),
   active: yup.boolean().required('Required'),
 });
