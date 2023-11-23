@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma} from '@prisma/client';
+import {Prisma, ticketrestrictions} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {InvalidInputError} from './eventInstanceController.service';
+import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceController.service';
 
 const prisma = extendPrismaClient();
 export const seasonTicketTypePriceDefaultController = Router();
@@ -175,6 +175,24 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
   try {
     const {seasonid} = req.params;
     const toUpdate: Map<number, SeasonTicketTypePriceDefaultRequestItem> = new Map(req.body?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk, item]));
+    const ticketRestrictions = await prisma.ticketrestrictions.findMany({
+      where: {
+        eventinstances: {
+          events: {
+            seasonid_fk: +seasonid,
+          },
+        },
+      },
+    });
+    const ticketResMap = new Map<number, number[]>();
+    ticketRestrictions.forEach((res) => {
+      const current = ticketResMap.get(res.tickettypeid_fk);
+      if (!current) {
+        ticketResMap.set(res.tickettypeid_fk, [res.ticketrestrictionsid]);
+        return;
+      }
+      current.push(res.ticketrestrictionsid);
+    });
     const current = await prisma.seasontickettypepricedefault.findMany({
       where: {
         seasonid_fk: +seasonid,
@@ -220,19 +238,36 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           tickettypeid_fk,
           price,
           concessionprice,
-        }) => {
-          if (price < 0 || concessionprice < 0 ) {
+        }) : any[] => {
+          if (price < 0 || concessionprice < 0) {
             throw new InvalidInputError(422, `Price can not be negative`);
           }
-          return prisma.seasontickettypepricedefault.create({
-            data: {
-              seasonid_fk: +seasonid,
-              tickettypeid_fk: +tickettypeid_fk,
-              price: +tickettypeid_fk === 0? 0: +price,
-              concessionprice: +concessionprice,
-            },
-          });
-        })));
+          return [
+            prisma.seasontickettypepricedefault.create({
+              data: {
+                seasonid_fk: +seasonid,
+                tickettypeid_fk: +tickettypeid_fk,
+                price: +tickettypeid_fk === 0 ? 0 : +price,
+                concessionprice: +concessionprice,
+                ticketrestrictions: {
+                  connect: ticketResMap.get(+tickettypeid_fk)?.map((id) => ({
+                    ticketrestrictionsid: id,
+                  })),
+                },
+              },
+            }),
+            ...(ticketResMap.get(+tickettypeid_fk)?
+                [prisma.ticketrestrictions.updateMany({
+                  where: {
+                    ticketrestrictionsid: {in: ticketResMap.get(+tickettypeid_fk)},
+                  },
+                  data: {
+                    price: +price,
+                    concessionprice: +concessionprice,
+                  },
+                })]:
+                [])];
+        }).flat(Infinity)));
     return res.json(await prisma.seasontickettypepricedefault.findMany({where: {seasonid_fk: +seasonid}}));
   } catch (error) {
     if (error instanceof InvalidInputError) {

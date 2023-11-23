@@ -44,7 +44,6 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     controlClass: 'grid grid-cols-2 pb-1 text-zinc-800',
   };
 
-  console.log(ticketTypes);
   return (
     <Formik
       initialValues={baseValues}

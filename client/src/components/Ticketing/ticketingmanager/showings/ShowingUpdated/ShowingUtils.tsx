@@ -75,7 +75,6 @@ export const createDeleteFunction = (
 
 export const fetchTicketTypes = async (seasonid, setTicketTypes, signal) => {
   try {
-    console.log(seasonid);
     const ticketTypeRes = await fetch(
       `${process.env.REACT_APP_API_2_URL}/season-ticket-type-price-default/events/${seasonid}`,
     );
