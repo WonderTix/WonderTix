@@ -1,5 +1,6 @@
 import {test as setup, expect} from '@playwright/test';
 import {LoginPage} from './pages/loginPage';
+import {STORAGE_STATE} from '../playwright.config';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -28,7 +29,7 @@ setup('authenticate', async ({page}) => {
   // Edge case for "Default App is trying to access your wtix-xxx account"
   try {
     // Wait for the Accept button to appear on the page.
-    await loginPage.postLoginAuthAcceptButton.waitFor({ timeout: 5000 });
+    await loginPage.postLoginAuthAcceptButton.waitFor({timeout: 5000});
     // If the Post-first-login Auth0 Accept button is found, click it.
     await loginPage.postLoginAuthAcceptButton.click();
   } catch (error) {
@@ -37,9 +38,9 @@ setup('authenticate', async ({page}) => {
 
   // Ensuring visibility and correctness of page elements post-login.
   await expect(loginPage.loginButton).not.toBeVisible(); // Sign-in button should be gone
-  await expect(loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:30000 }); // User email in its place
+  await expect(loginPage.getLoggedInEmailDisplay(email)).toBeVisible({timeout: 30000}); // User email in its place
   await expect(page.getByRole('heading', {name: 'Events'})).toBeVisible();
 
   // Store the authentication state for future use.
-  await page.context().storageState({path: authFile});
+  await page.context().storageState({path: STORAGE_STATE});
 });
