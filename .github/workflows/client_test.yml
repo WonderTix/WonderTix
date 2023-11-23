@@ -25,9 +25,3 @@ jobs:
         run: npm run  test
         working-directory: ./client
       
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: test-results
-          path: ./client/test-results
-          retention-days: 30
