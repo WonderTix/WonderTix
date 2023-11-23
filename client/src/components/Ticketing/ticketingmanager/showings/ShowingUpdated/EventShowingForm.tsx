@@ -8,7 +8,7 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
-import {getTicketTypeKeyValue} from './ShowingUtils';
+import {getInstanceTicketType} from './ShowingUtils';
 
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
@@ -19,12 +19,11 @@ interface EventShowingFormProps {
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
   const {initialValues, onSubmit, onDelete, onLeaveEdit} = props;
-  const {eventID, showPopUp, ticketTypes} = useEvent();
-
+  const {eventData, showPopUp, ticketTypes, token} = useEvent();
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,
     eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
-    eventid_fk: initialValues ? initialValues.eventid_fk : eventID,
+    eventid_fk: initialValues ? initialValues.eventid_fk : eventData.eventid,
     eventinstanceid: initialValues ? initialValues.eventinstanceid : 0,
     eventtime: initialValues
       ? initialValues.eventtime.split('T')[1].slice(0, 8)
@@ -34,15 +33,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues
       ? initialValues.ticketrestrictions
-      : [
-          {
-            tickettypeid_fk: 1,
-            seasontickettypepricedefaultid_fk: null,
-            ticketlimit: 0,
-            price: getTicketTypeKeyValue(1, 'price', ticketTypes),
-            concessionprice: getTicketTypeKeyValue(1, 'concessions', ticketTypes),
-          },
-        ],
+      : [getInstanceTicketType(1, ticketTypes)],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
   };
@@ -53,6 +44,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     controlClass: 'grid grid-cols-2 pb-1 text-zinc-800',
   };
 
+  console.log(ticketTypes);
   return (
     <Formik
       initialValues={baseValues}
@@ -102,7 +94,8 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 className={inputControlClassName}
                 onChange={async (event) => {
                   const defaultType = values.instanceTicketTypes.findIndex(
-                    (type) => type.tickettypeid_fk === +values.defaulttickettype,
+                    (type) =>
+                      type.tickettypeid_fk === +values.defaulttickettype,
                   );
                   await setFieldValue('totalseats', event.target.value);
                   await setFieldValue(

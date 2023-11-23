@@ -73,16 +73,16 @@ export const createDeleteFunction = (
   };
 };
 
-export const fetchTicketTypes = async (setTicketTypes, signal) => {
+export const fetchTicketTypes = async (seasonid, setTicketTypes, signal) => {
   try {
+    console.log(seasonid);
     const ticketTypeRes = await fetch(
-      process.env.REACT_APP_API_1_URL + '/tickets/allTypes',
-      {signal},
+      `${process.env.REACT_APP_API_2_URL}/season-ticket-type-price-default/events/${seasonid}`,
     );
     if (!ticketTypeRes.ok) {
       throw new Error('Unable to fetch ticket types');
     }
-    setTicketTypes((await ticketTypeRes.json()).data);
+    setTicketTypes(await ticketTypeRes.json());
   } catch (error) {
     console.error(error);
   }
@@ -104,14 +104,13 @@ export const getEventData = async (eventID, setEventData, signal) => {
 
 export const useFetchEventData = (eventID: number) => {
   const [eventData, setEventData] = useState(undefined);
-  const [loading, setLoading] = useState(true);
   const [ticketTypes, setTicketTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    void fetchTicketTypes(setTicketTypes, signal);
     if (eventID) {
       getEventData(eventID, setEventData, signal).catch(() =>
         navigate(`/ticketing/showings/${eventID}/notFound`),
@@ -121,6 +120,16 @@ export const useFetchEventData = (eventID: number) => {
     return () => controller.abort();
   }, [eventID]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    void fetchTicketTypes(
+      eventData?.seasonid_fk ?? -1,
+      setTicketTypes,
+      signal,
+    );
+    return () => controller.abort();
+  }, [eventData]);
   return {eventData, setEventData, loading, ticketTypes};
 };
 
@@ -154,25 +163,36 @@ export const useFetchShowingData = (eventID: number) => {
     const controller = new AbortController();
     const signal = controller.signal;
     if (eventID) {
-      void getShowingData(eventID, setShowingData, signal);
+      void getData(
+        `${process.env.REACT_APP_API_2_URL}/event-instance/event/${eventID}`,
+        setShowingData,
+        signal,
+      );
     }
     return () => controller.abort();
   }, [eventID, reload]);
   return {showingData, setReloadShowing, reload};
 };
 
-export const getShowingData = async (eventID, setShowingData, signal) => {
+export const getData = async (url: string, set, signal, token?) => {
   try {
-    const showingRes = await fetch(
-      `${process.env.REACT_APP_API_2_URL}/event-instance/event/${eventID}`,
-      {signal},
-    );
+    const res = await fetch(url, {
+      method: 'GET',
+      signal,
+      ...(token && {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      }),
+    });
 
-    if (!showingRes.ok) {
+    if (!res.ok) {
       throw new Error('Unable to fetch showings');
     }
-    const data = await showingRes.json();
-    setShowingData(data);
+    const data = await res.json();
+    set(data);
   } catch (error) {
     console.error(error);
   }
@@ -183,9 +203,22 @@ export const getTicketTypeKeyValue = (
   priceType: string,
   ticketTypes,
 ) => {
-  const foundType = ticketTypes?.find((type) => Number(type.id) === id);
+  const foundType = ticketTypes?.find(
+    (type) => Number(type.tickettypeid_fk) === id,
+  );
   if (!foundType) return 0;
   return typeof foundType[priceType] === 'string'
     ? foundType[priceType].replace('$', '')
     : foundType[priceType];
+};
+
+export const getInstanceTicketType = (id: number, ticketTypes) => {
+  if (!ticketTypes) return {};
+  const {description, ...type} = ticketTypes.find(
+    (type) => Number(type.tickettypeid_fk) === id,
+  );
+  return {
+    ...type,
+    ticketlimit: 0,
+  };
 };

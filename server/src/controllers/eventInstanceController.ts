@@ -350,8 +350,16 @@ eventInstanceController.get(
             ticketrestrictions: true,
           },
         });
-        res.status(200).send(eventInstances);
-        return;
+        return res.status(200).send(eventInstances.map((instance) => ({
+          ...instance,
+          ticketrestrictions: instance.ticketrestrictions.map((restriction) => ({
+            tickettypeid_fk: restriction.tickettypeid_fk,
+            seasontickettypepricedefaultid_fk: restriction.seasontickettypepricedefaultid_fk ?? -1,
+            price: restriction.price,
+            concessionprice: restriction.concessionprice,
+            ticketlimit: restriction.ticketlimit,
+          })),
+        })));
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
           res.status(400).send({error: error.message});
@@ -494,10 +502,10 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
         data: {
           eventinstanceid_fk: eventInstance.eventinstanceid,
           tickettypeid_fk: +type.tickettypeid_fk,
-          ...(type.seasontickettypepricedefaultid_fk && {seasontickettypepricedefaultid_fk: type.seasontickettypepricedefaultid_fk}),
           ticketlimit: tickets,
           price: type.tickettypeid_fk === 0? 0: +type.price,
           concessionprice: +type.concessionprice,
+          seasontickettypepricedefaultid_fk: type.seasontickettypepricedefaultid_fk > -1? +type.seasontickettypepricedefaultid_fk: null,
           eventtickets: {
             create: Array(tickets).fill({
               eventinstanceid_fk: eventInstance.eventinstanceid,

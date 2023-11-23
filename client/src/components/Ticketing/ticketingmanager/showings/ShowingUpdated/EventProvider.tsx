@@ -1,9 +1,9 @@
 import {Showing, UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React, {useContext, useState} from 'react';
 import {
-  useFetchEventData,
-  useFetchShowingData,
-  useFetchToken,
+    useFetchEventData,
+    useFetchShowingData,
+    useFetchToken,
 } from './ShowingUtils';
 import {useParams} from 'react-router-dom';
 import {EventPageV2} from './EventPageV2';

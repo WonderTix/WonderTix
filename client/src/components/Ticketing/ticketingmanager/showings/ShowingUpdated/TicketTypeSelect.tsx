@@ -10,21 +10,24 @@ export const TicketTypeSelect = (props: {
   availableTypes;
   setAvailableTypes;
 }) => {
-  const {field, id, index, availableTypes, setAvailableTypes} = props;
+  const {field, index, availableTypes, setAvailableTypes} = props;
   const {ticketTypes} = useEvent();
   const {setFieldValue} = useFormikContext();
 
   const handleChange = async (event) => {
-    const value = Number(event.target.value);
+    const value = event.target.value;
     setAvailableTypes([
-      ...availableTypes.filter((type) => type !== value),
-      Number(field.value),
+      ...availableTypes.filter((type) => type !== +value),
+      field.value,
     ]);
-    await setFieldValue(field.name, value);
+    await setFieldValue(field.name, +value);
+    await setFieldValue(`instanceTicketTypes[${index}].seasontickettypepricedefaultid_fk`, getTicketTypeKeyValue(+value, 'seasontickettypepricedefaultid_fk', ticketTypes));
+    await setFieldValue(`instanceTicketTypes[${index}].price`, getTicketTypeKeyValue(+value, 'price', ticketTypes));
+    await setFieldValue(`instanceTicketTypes[${index}].concessionprice`, getTicketTypeKeyValue(+value, 'concessionprice', ticketTypes));
   };
   return (
     <>
-      <label hidden htmlFor={`${field.name} ${id} ${index} select`}>
+      <label hidden htmlFor={`${field.name} ${index} select`}>
         Ticket Type Select number {index}
       </label>
       <select
@@ -37,16 +40,12 @@ export const TicketTypeSelect = (props: {
           {getTicketTypeKeyValue(Number(field.value), 'description', ticketTypes)}
         </option>
         {availableTypes &&
-          availableTypes.map((ticketTypeID: any) => (
+          availableTypes.map((ticketType) => (
             <option
-              key={id + index + ticketTypeID + 'ticket type description'}
-              value={Number.parseInt(ticketTypeID)}
+              key={ticketType+ 'ticket type description'}
+              value={Number.parseInt(ticketType)}
             >
-              {getTicketTypeKeyValue(
-                Number(ticketTypeID),
-                'description',
-                ticketTypes,
-              )}
+              {getTicketTypeKeyValue(ticketType, 'description', ticketTypes)}
             </option>
           ))}
       </select>

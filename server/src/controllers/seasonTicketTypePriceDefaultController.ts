@@ -8,9 +8,6 @@ import {InvalidInputError} from './eventInstanceController.service';
 const prisma = extendPrismaClient();
 export const seasonTicketTypePriceDefaultController = Router();
 
-// All further routes require appropriate authentication
-seasonTicketTypePriceDefaultController.use(checkJwt);
-seasonTicketTypePriceDefaultController.use(checkScopes);
 
 interface SeasonTicketTypePriceDefaultRequestItem {
     tickettypeid_fk: number;
@@ -65,6 +62,56 @@ seasonTicketTypePriceDefaultController.get('/:seasonid', async (req: Request, re
   }
 });
 
+seasonTicketTypePriceDefaultController.get('/events/:seasonid', async (req: Request, res: Response) => {
+  try {
+    const {seasonid} = req.params;
+    let seasonResult:any[]= [];
+    const ticketResult = await prisma.tickettype.findMany({
+      where: {
+        seasontickettypepricedefaults: {
+          every: {
+            seasonid_fk: {not: +seasonid},
+          },
+        },
+      },
+    });
+    if (+seasonid>0) {
+      seasonResult = await prisma.seasontickettypepricedefault.findMany({
+        where: {
+          seasonid_fk: +seasonid,
+        },
+        include: {
+          tickettype: true,
+        },
+      });
+    }
+    const toSend = ticketResult.map((type) => ({
+      concessionprice: type.concessions,
+      price: type.price,
+      tickettypeid_fk: type.tickettypeid,
+      seasontickettypepricedefaultid_fk: -1,
+      description: type.description,
+    })).concat(seasonResult.map((type) => {
+      return {
+        concessionprice: type.concessionprice,
+        price: type.price,
+        tickettypeid_fk: type.tickettypeid_fk,
+        seasontickettypepricedefaultid_fk: type.id,
+        description: type.tickettype.description,
+      };
+    }));
+    console.log(toSend);
+    return res.json(toSend);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).send({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).send({error: error.message});
+    }
+    return res.status(500).send({error: 'Internal Server Error'});
+  }
+});
 
 /**
  * @swagger

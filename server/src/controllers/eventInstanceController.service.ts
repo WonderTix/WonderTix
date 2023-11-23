@@ -37,9 +37,10 @@ export const validateTicketRestrictionsOnUpdate = (
         eventInstance.defaulttickettype ?? 1,
     );
   }).flat(Infinity);
-
   return queryBatch.concat([...newRestrictions.values()].map((newRestriction) => {
     const tickets: number = Math.min(eventInstance.totalseats ?? 0, newRestriction.ticketlimit);
+    console.log(
+        newRestriction.seasontickettypepricedefaultid_fk > -1? +newRestriction.seasontickettypepricedefaultid_fk: null);
     return prisma.ticketrestrictions.create({
       data: {
         ...newRestriction,
@@ -47,7 +48,7 @@ export const validateTicketRestrictionsOnUpdate = (
         concessionprice: +newRestriction.concessionprice,
         ticketlimit: tickets,
         eventinstanceid_fk: +eventInstance.eventinstanceid,
-        ...(newRestriction.seasontickettypepricedefaultid_fk && {seasontickettypepricedefault_fk: +newRestriction.seasontickettypepricedefaultid_fk}),
+        seasontickettypepricedefaultid_fk: newRestriction.seasontickettypepricedefaultid_fk > -1? +newRestriction.seasontickettypepricedefaultid_fk: null,
         eventtickets: {
           create: Array(tickets).fill({
             eventinstanceid_fk: +eventInstance.eventinstanceid,
@@ -100,6 +101,8 @@ const getTicketRestrictionUpdate = (
 
   const newQuantity= Math.min(totalseats, newRestriction.ticketlimit);
   const difference = newQuantity- oldRestriction.eventtickets.length;
+  console.log(
+      newRestriction.seasontickettypepricedefaultid_fk);
   return [prisma.ticketrestrictions.update({
     where: {
       ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
@@ -108,7 +111,7 @@ const getTicketRestrictionUpdate = (
       ticketlimit: +newRestriction.ticketlimit,
       price: oldRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
       concessionprice: +newRestriction.concessionprice,
-      ...(newRestriction.seasontickettypepricedefaultid_fk && {seasontickettypepricedefault_fk: +newRestriction.seasontickettypepricedefaultid_fk}),
+      seasontickettypepricedefaultid_fk: newRestriction.seasontickettypepricedefaultid_fk > -1? +newRestriction.seasontickettypepricedefaultid_fk: null,
       ...(difference > 0 && {
         eventtickets: {
           create: Array(difference).fill({

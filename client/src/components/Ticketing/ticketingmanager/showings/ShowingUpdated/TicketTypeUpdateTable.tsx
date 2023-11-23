@@ -4,13 +4,12 @@ import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
-import {getTicketTypeKeyValue} from './ShowingUtils';
+import {getInstanceTicketType, getTicketTypeKeyValue} from './ShowingUtils';
 
 interface TicketTypeTableProps {
   arrayHelpers;
   eventInstanceID: number;
 }
-
 export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
   const {ticketTypes, showPopUp} = useEvent();
@@ -24,10 +23,10 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
       .filter(
         (type) =>
           !InstanceTicketTypesField.value.some(
-            (value) => value.tickettypeid_fk === Number(type.id),
+            (value) => value.tickettypeid_fk === Number(type.tickettypeid_fk),
           ),
       )
-      .map((value) => Number(value.id)),
+      .map((type) => type.tickettypeid_fk),
   );
   return (
     <div
@@ -60,20 +59,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   size={'small'}
                   aria-label={'add ticket type'}
                   onClick={async () => {
-                    arrayHelpers.insert(0, {
-                      tickettypeid_fk: availableTypes[0],
-                      price: getTicketTypeKeyValue(
-                        availableTypes[0],
-                        'price',
-                        ticketTypes,
-                      ),
-                      concessionprice: getTicketTypeKeyValue(
-                        availableTypes[0],
-                        'concessions',
-                        ticketTypes,
-                      ),
-                      ticketlimit: 0,
-                    });
+                    arrayHelpers.insert(0, getInstanceTicketType(availableTypes[0], ticketTypes));
                     setAvailableTypes(
                       availableTypes.slice(1, availableTypes.length),
                     );
@@ -175,7 +161,10 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       type={'number'}
                       component={InputControl}
                       hidden={true}
-                      disabled={InstanceTicketTypesField.value[index].tickettypeid_fk == 0}
+                      disabled={
+                        InstanceTicketTypesField.value[index].tickettypeid_fk ==
+                        0
+                      }
                       label={'Ticket Price'}
                       id={eventInstanceID}
                       currency={true}
@@ -230,10 +219,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       onClick={() => {
                         setAvailableTypes([
                           ...availableTypes,
-                          Number(
-                            InstanceTicketTypesField.value[index]
-                              .tickettypeid_fk,
-                          ),
+                            Number(InstanceTicketTypesField.value[index].tickettypeid_fk),
                         ]);
                         arrayHelpers.remove(index);
                       }}
