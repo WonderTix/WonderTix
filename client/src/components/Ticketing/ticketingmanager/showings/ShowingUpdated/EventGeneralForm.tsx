@@ -9,7 +9,6 @@ import {fetchSeasons} from './ShowingUtils';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
-  onDelete: (event) => void;
   onLeaveEdit?: () => void;
 }
 
@@ -47,15 +46,11 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   return (
     <Formik
       initialValues={{
-        eventname: baseValues.eventname,
-        eventid: baseValues.eventid,
-        eventdescription: baseValues.eventdescription,
-        imageurl:
-          baseValues.imageurl === 'Default Event Image'
-            ? ''
-            : baseValues.imageurl,
-        active: baseValues.active,
-        seasonid_fk: baseValues.seasonid_fk,
+          ...baseValues,
+          imageurl:
+              baseValues.imageurl === 'Default Event Image'
+                  ? ''
+                  : baseValues.imageurl,
       }}
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
@@ -127,7 +122,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
               <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
                 <div className='col-span-4 pr-2'>
                   <Field name='imageurl'>
-                    {({field, form}) => (
+                    {({field}) => (
                       <div className='flex flex-col text-zinc-800'>
                         <label className='text-sm font-semibold' htmlFor='imageurl'>
                           Image URL:
@@ -152,8 +147,8 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     className={
                       'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 font-bold text-sm h-fit self-end whitespace-nowrap'
                     }
-                    onClick={() => {
-                      setFieldValue('imageurl', 'Default Event Image');
+                    onClick={async () => {
+                      await setFieldValue('imageurl', 'Default Event Image');
                       setShowButton(false);
                     }}
                     type='button'
