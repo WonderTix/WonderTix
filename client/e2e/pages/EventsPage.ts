@@ -64,7 +64,7 @@ export class EventsPage {
 
     this.pageHeader=page.getByRole('heading', { name: 'Select Event' });
     this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
-    this.emailButton= page.getByText('test@wondertix.com');
+    this.emailButton= page.getByText(process.env.TEST_EMAIL as string);
     this.manageTicketingButton=page.getByText('Manage Ticketing').first();
 
     this.addButton = page.getByRole('button', { name: 'Add Event' });
@@ -77,7 +77,7 @@ export class EventsPage {
     this.eventClose=page.getByRole('button', { name: 'Close', exact: true });
 
     this.eventOption1=page.getByLabel('Use Default Image');
-    this.eventOption2=page.getByLabel('Active');
+    this.eventOption2=page.getByTestId('event-active-toggle');
 
     this.editEventInfo=page.locator('div').filter({ hasText: /^Event InformationEdit$/ }).getByRole('button');
     this.editEventsInfo=page.getByRole('button', { name: 'Edit' });
@@ -147,6 +147,7 @@ export class EventsPage {
      await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
      await this.newEventSave.click();
      await this.eventContinue.click();
+     await this.eventOption2.click();
   }
 
 /**

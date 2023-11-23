@@ -47,6 +47,7 @@ const EventCard = (props: EventCardProps) => {
             onClick={() => {
               addEventToSeason(Number(eventId));
             }}
+            data-testid='event-add-to-season'
             className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-3 px-5 rounded-xl mt-2 tab:m-0'
           >
             Add to Season
@@ -56,12 +57,14 @@ const EventCard = (props: EventCardProps) => {
         <article className='flex flex-col w-48 my-2'>
           <button
             onClick={() => navigate(`/ticketing/showings/${Number(eventId)}`)}
+            data-testid='event-page'
             className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl mb-2'
             disabled={isFormEditing || isAddEventActive}
           >
             Go to Event Page
           </button>
           <button
+            data-testid='event-remove'
             className='bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white py-2 px-3 rounded-xl'
             disabled={isFormEditing || isAddEventActive}
             onClick={() => deleteEventConfirmationHandler(Number(eventId))}

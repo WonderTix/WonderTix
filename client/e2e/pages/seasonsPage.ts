@@ -1,6 +1,6 @@
 import {type Locator, type Page, expect} from '@playwright/test';
-import {EventsPage} from '../pages/EventsPage';
-import { EventsInfo2 } from '../testData/ConstsPackage';
+import { SeasonsInfo } from '../testData/ConstsPackage';
+import { EventsInfo } from '../testData/ConstsPackage';
 
 export class SeasonsPage {
   readonly page: Page;
@@ -63,68 +63,40 @@ export class SeasonsPage {
 
   }
 
-  async addNewSeason()
+  async addNewSeason(season: SeasonsInfo)
   {
     await this.addSeasonButton.click();
-    await this.seasonNameBlank.fill('TestName');
-    await this.seasonStartDate.fill('2020-02-02');
-    await this.seasonEndDate.fill('2020-03-02');
-    await this.imageURL.fill('https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg');
+    await this.seasonNameBlank.fill(season.seasonName);
+    await this.seasonStartDate.fill(season.seasonStart);
+    await this.seasonEndDate.fill(season.seasonEnd);
+    await this.imageURL.fill(season.seasonImgURL);
     await this.seasonSave.click();
     await this.seasonContinue.click();
 
-    await expect(this.page.locator(':text("TestName")')).toBeVisible();
+    await expect(this.page.locator(':text("' + season.seasonName + '")')).toBeVisible();
   }
 
-  async addEventToSeason() 
+  async addEventToSeason(event: EventsInfo) 
   {
-    // notes:
-    // some goto methods are using loopholes to get to the page instead of the navigators
-
-    // create new event
-    const eventsPage = new EventsPage(this.page);
-    await eventsPage.goto();
-    await eventsPage.addnewevent(EventsInfo2);
-
-    // go back to seasons
-    const seasonsPage1 = new SeasonsPage(this.page);
-    await seasonsPage1.goto();
-
-    // remove from default season
-
-    // click the first season that was created previously -- assuming its there
-    await this.page.locator(':has-text("Start Date")').last().click();
-
-    await this.page.getByRole('button', { name: 'Remove Event'}).last().click();
-
-    await this.page.getByRole('button', { name: 'Continue'}).click();
-
-    // go back to seasons
-    const seasonsPage2 = new SeasonsPage(this.page);
-    await seasonsPage2.goto();
-
-    await this.page.locator(':text("TestName")').first().click();
-
     await this.addEvent.click();
-    //await this.page.getByRole('button', { name: 'Add Event'}).click();
     await this.page.getByRole('button', { name: 'Add to Season'}).first().click();
     await this.page.getByRole('button', { name: 'Continue'}).click();
 
-    await expect(this.page.locator(':text("TestName")')).toBeVisible();
+    await expect(this.page.locator(':text("' + event.eventName + '")')).toBeVisible();
   }
 
-  async editSeason()
+  async editSeason(old_season: SeasonsInfo, new_season: SeasonsInfo)
   {
-    await this.page.locator(':text("TestName")').first().click();
+    await this.page.locator(':text("' + old_season.seasonName + '")').first().click();
     await this.seasonEdit.click();
-    await this.seasonNameBlank.fill('NewName');
-    await this.seasonStartDate.fill('2021-02-02');
-    await this.seasonEndDate.fill('2021-03-02');
-    await this.imageURL.fill('https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg');
+    await this.seasonNameBlank.fill(new_season.seasonName);
+    await this.seasonStartDate.fill(new_season.seasonStart);
+    await this.seasonEndDate.fill(new_season.seasonEnd);
+    await this.imageURL.fill(new_season.seasonImgURL);
     await this.seasonSave.click();
     await this.seasonContinue.click();
 
-    await expect(this.page.locator(':text("NewName")')).toBeVisible();
+    await expect(this.page.locator(':text("' + new_season.seasonName + '")')).toBeVisible();
   }
 
   async removeEventFromSeason()
@@ -135,23 +107,14 @@ export class SeasonsPage {
 
     await expect(this.page.locator(':text("Test_event")')).not.toBeVisible();
   }
-  
-  async cleanupTestEvent()
-  {
-    const eventsPage = new EventsPage(this.page);
-    await eventsPage.goto();
-    await this.page.locator(':text("Test_event")').first().click();
-    // clean up the event we added
-    await eventsPage.deleteTheEvent("Test_event Playbill Test_event Description An event for testing");
-  }
 
-  async removeSeason()
+  async removeSeason(season: SeasonsInfo)
   {
-    await this.page.locator(':text("NewName")').first().click();
+    await this.page.locator(':text("' + season.seasonName + '")').first().click();
     await this.seasonDelete.click();
     await this.page.getByRole('button', { name: 'Continue'}).click();
 
-    await expect(this.page.locator(':text("NewName")')).not.toBeVisible();
+    await expect(this.page.locator(':text("' + season.seasonName + '")')).not.toBeVisible();
   }
 
   async goto(){

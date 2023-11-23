@@ -137,6 +137,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 <div className={'flex flex-col justify-evenly col-span-6'}>
                   <label
                     htmlFor={'active'}
+                    data-testid='event-active-toggle'
                     className={
                       'text-sm text-zinc-800 font-semibold text-center pb-1'
                     }
