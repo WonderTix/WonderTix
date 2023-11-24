@@ -25,7 +25,7 @@ export class DashboardPage {
     this.page = page;
 
     // HOMEPAGE
-    this.EmailButton = page.getByText('test@wondertix.com');
+    this.EmailButton = page.locator('svg[class*=\'icon-tabler-chevron-down\']');
     this.ManageTicketing = page.getByText('Manage Ticketing').first();
 
     // ..//ticketing

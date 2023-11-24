@@ -497,6 +497,7 @@ const Navigation = () => {
               </h2>
               <button
                 className="relative flex items-center text-left cursor-pointer mx-6"
+                // data-testid="home-page-email-button"
                 onClick={() => setProfile(!profile)}
               >
                 <div>

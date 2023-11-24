@@ -12,6 +12,7 @@ export class AdminPage {
 
   readonly purchaseTicketButton: Locator;
   readonly eventDropDown: Locator;
+  readonly eventTime: Locator;
   readonly admissionType: Locator;
   readonly checkoutButton: Locator;
   readonly firstName: Locator;
@@ -47,6 +48,7 @@ export class AdminPage {
 
     this.purchaseTicketButton = page.getByRole('button', { name: 'Purchase Tickets' }); // for "EventInfo2" / "ShowingInfo2"
     this.eventDropDown = page.getByRole('combobox');
+    this.eventTime = page.locator('div').filter({ hasText: /^Select TimeTue, Oct 17 - 10:20 AM$/ }).getByRole('combobox');
     this.admissionType = page.locator('div').filter({ hasText: /^Select TypeGeneral Admission - AdultGeneral Admission - ChildVIP$/ });
     this.checkoutButton = page.getByRole('button', { name: 'Proceed to Checkout' });
     this.firstName = page.getByPlaceholder('First Name');
@@ -90,11 +92,15 @@ export class AdminPage {
     await this.page.goto('/ticketing', {timeout: 30000});
   }
 
-  async purchaseTicket(eventName: string, option: string) {
+  async gotoHome() {
+    await this.page.goto('/', {timeout: 30000});
+  }
+
+  async purchaseTicket(eventName: string, eventTime: string) {
     await this.gotoTicketing(); // ticketing url
     await this.purchaseTicketButton.click();
     await this.eventDropDown.first().selectOption(eventName);
-    await this.eventDropDown.nth(1).selectOption(option);
+    await this.eventTime.selectOption(eventTime);
     await this.admissionType.getByRole('combobox').selectOption('1');
     await this.checkoutButton.click();
     await this.firstName.click();

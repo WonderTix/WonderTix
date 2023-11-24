@@ -64,7 +64,8 @@ export class EventsPage {
 
     this.pageHeader=page.getByRole('heading', { name: 'Select Event' });
     this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
-    this.emailButton= page.getByText('test@wondertix.com');
+    // this.emailButton= page.getByTestId('home-page-email-button');
+    this.emailButton = page.locator('svg[class*=\'icon-tabler-chevron-down\']');
     this.manageTicketingButton=page.getByText('Manage Ticketing').first();
 
     this.addButton = page.getByRole('button', { name: 'Add Event' });
