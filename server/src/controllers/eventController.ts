@@ -863,6 +863,9 @@ eventController.put('/', async (req: Request, res: Response) => {
       prisma.ticketrestrictions.updateMany({
         where: {
           tickettypeid_fk: defaultP.tickettypeid_fk,
+          eventinstances: {
+            eventid_fk: +req.body.eventid,
+          },
         },
         data: {
           seasontickettypepricedefaultid_fk: defaultP.id,
@@ -871,6 +874,9 @@ eventController.put('/', async (req: Request, res: Response) => {
     ) ?? []).concat([prisma.ticketrestrictions.updateMany({
       where: {
         tickettypeid_fk: {notIn: event.seasons?.seasontickettypepricedefaults.map((res) => res.tickettypeid_fk)},
+        eventinstances: {
+          eventid_fk: +req.body.eventid,
+        },
       },
       data: {
         seasontickettypepricedefaultid_fk: null,
