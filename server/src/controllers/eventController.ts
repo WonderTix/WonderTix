@@ -637,7 +637,7 @@ eventController.get('/season/:id', async (req: Request, res: Response) => {
 eventController.get('/search', async (req: Request, res: Response) => {
   try {
     const name = req.query.event_name;
-    if (!name || !(typeof name === 'string')) {
+    if (!name || typeof name !== 'string') {
       return res.status(400).send('No Event name provided.');
     }
 
