@@ -264,7 +264,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
               },
             },
             data: {
-              price: +price,
+              price: +tickettypeid_fk === 0 ? 0 : +price,
               concessionprice: +concessionprice,
             },
           })];
