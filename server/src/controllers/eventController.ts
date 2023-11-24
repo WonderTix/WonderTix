@@ -154,6 +154,7 @@ eventController.get('/showings', async (req: Request, res: Response) => {
             ticketrestrictions: true,
           },
         },
+        seasons: true,
       },
     });
 
@@ -263,7 +264,11 @@ eventController.get('/slice', async (req: Request, res: Response) => {
  */
 eventController.get('/', async (req: Request, res: Response) => {
   try {
-    const events = await prisma.events.findMany({});
+    const events = await prisma.events.findMany({
+      include: {
+        seasons: true,
+      },
+    });
     return res.json(events);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -319,6 +324,7 @@ eventController.get('/showings/:id', async (req: Request, res: Response) => {
             ticketrestrictions: true,
           },
         },
+        seasons: true,
       },
     });
 
@@ -375,6 +381,9 @@ eventController.get('/active', async (req: Request, res: Response) => {
       where: {
         active: true,
       },
+      include: {
+        seasons: true,
+      },
     });
     res.json(activeEvents);
   } catch (error) {
@@ -427,6 +436,7 @@ eventController.get('/active/showings', async (req: Request, res: Response) => {
             ticketrestrictions: true,
           },
         },
+        seasons: true,
       },
     });
 
@@ -474,6 +484,9 @@ eventController.get('/inactive', async (req: Request, res: Response) => {
     const inactiveEvents = await prisma.events.findMany({
       where: {
         active: false,
+      },
+      include: {
+        seasons: true,
       },
     });
     return res.json(inactiveEvents);
@@ -529,6 +542,7 @@ eventController.get(
                 ticketrestrictions: true,
               },
             },
+            seasons: true,
           },
         });
         return res.json(inactiveEvents);
@@ -580,6 +594,9 @@ eventController.get('/season/:id', async (req: Request, res: Response) => {
       where: {
         seasonid_fk: id,
       },
+      include: {
+        seasons: true,
+      },
     });
     return res.json(events);
   } catch (error) {
@@ -627,6 +644,9 @@ eventController.get('/search', async (req: Request, res: Response) => {
     const events = await prisma.events.findMany({
       where: {
         eventname: name,
+      },
+      include: {
+        seasons: true,
       },
     });
     return res.json(events);
@@ -676,6 +696,9 @@ eventController.get('/:id', async (req: Request, res: Response) => {
     const eventExists = await prisma.events.findUnique({
       where: {
         eventid: Number(id),
+      },
+      include: {
+        seasons: true,
       },
     });
     if (!eventExists) {
@@ -755,6 +778,9 @@ eventController.post('/', async (req: Request, res: Response) => {
         seasonticketeligible: req.body.seasonticketeligible,
         imageurl: req.body.imageurl,
       },
+      include: {
+        seasons: true,
+      },
     });
     res.status(201).json(event);
     return;
@@ -818,6 +844,9 @@ eventController.put('/', async (req: Request, res: Response) => {
         active: req.body.active,
         seasonticketeligible: req.body.seasonticketeligible,
         imageurl: req.body.imageurl,
+      },
+      include: {
+        seasons: true,
       },
     });
     if (!event) {
@@ -932,6 +961,9 @@ eventController.put(
           },
           data: {
             active: updatedStatus === 'true',
+          },
+          include: {
+            seasons: true,
           },
         });
         if (!updatedEvent) {

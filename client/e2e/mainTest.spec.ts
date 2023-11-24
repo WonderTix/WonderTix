@@ -29,6 +29,7 @@ test('check cart after ticket add', async ({page}) => {
   const currentShowing = ShowingInfo2;
   await events.goto();
   await events.addnewevent(currentEvent);
+  await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
@@ -71,6 +72,7 @@ test('check stripe purchase', async ({page}) => {
   const main = new MainPage(page);
   await events.goto();
   await events.addnewevent(currentEvent);
+  await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
@@ -97,6 +99,7 @@ test('check contact is added after order', async ({page}) => {
   const contacts = new ContactPage(page);
   await events.goto();
   await events.addnewevent(currentEvent);
+  await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
@@ -124,6 +127,7 @@ test('check order accommodations', async ({page}) => {
   const contacts = new ContactPage(page);
   await events.goto();
   await events.addnewevent(currentEvent);
+  await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
@@ -149,6 +153,7 @@ test('check ticket inc/dec in cart', async ({page}) => {
   const currentShowing = ShowingInfo2;
   await events.goto();
   await events.addnewevent(currentEvent);
+  await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
@@ -185,6 +190,7 @@ test('check order on door list', async ({page}) => {
   const doorList = new DoorListPage(page);
   await events.goto();
   await events.addnewevent(currentEvent);
+  await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();

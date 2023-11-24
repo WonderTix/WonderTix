@@ -1,0 +1,27 @@
+name: Run client unit test
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+
+jobs:
+  test-client:
+    name: Run client unit test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: ./client/package-lock.json
+      
+      - name: npm install
+        run: npm install --force
+        working-directory: ./client
+          
+      - name: Check client unit Tests
+        run: npm run  test
+        working-directory: ./client
+      
