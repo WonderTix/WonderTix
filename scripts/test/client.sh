@@ -30,8 +30,6 @@ export DEPLOYED="true" # use minimal reporting
 export FRONTEND_URL="${CLIENT_REVISION}"
 export ROOT_URL="${SERVER_REVISION}"
 
-CONFIG="../playwright.config.ts"
-
 # Run Playwright tests
 if ! npx playwright test --project="${BROWSER}" --config="${CONFIG}"; then
   echo "Tests failed."

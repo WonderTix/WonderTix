@@ -1,18 +1,33 @@
 steps:
 
-  # Client npm install with cache
+  # Download node_modules from GCS bucket
+  - name: 'gcr.io/cloud-builders/gsutil'
+    id: 'pull-npm-cache'
+    waitFor: ['-']
+    args:
+      - '-m'
+      - 'cp'
+      - 'gs://wtix-npm-cache/client/node_modules.tar.gz'
+      - 'gs://wtix-npm-cache/client/cache-package.json'
+      - '/workspace/client/'
+
+  # Decompress and unarchive node_modules tarball
+  - name: 'ubuntu'
+    id: 'expand-npm-cache'
+    waitFor: ['pull-npm-cache']
+    dir: 'client'
+    args: ['tar', 'xzf', 'node_modules.tar.gz']
+
+  # Run npm install if cache is not up-to-date
   - name: 'gcr.io/cloud-builders/npm'
     id: 'npm-install-client'
-    waitFor: ['-']
+    waitFor: ['expand-npm-cache']
     dir: 'client'
-    args: ['install']
-
-    # Additional step to ensure caching is working (Debugging)
-  - name: 'ubuntu'
-    id: 'check-node-modules'
-    waitFor: ['npm-install-client']
     entrypoint: 'bash'
-    args: ['-c', 'ls -ahl /workspace/client/node_modules || echo "node_modules not found"']
+    args: ['/workspace/scripts/install/client.sh']
+    env:
+      - 'CACHE=cache-package.json'
+      - 'CURRENT=package.json'
 
   # Pull Playwright image and cache for testing steps
   - name: 'gcr.io/cloud-builders/docker'
@@ -120,6 +135,7 @@ steps:
     args: ['/workspace/scripts/test/client.sh']
     env:
       - 'BROWSER=firefox'
+      - 'CONFIG=../playwright.config.ts'
     secretEnv:
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
@@ -135,6 +151,7 @@ steps:
     args: ['/workspace/scripts/test/client.sh']
     env:
       - 'BROWSER=chromium'
+      - 'CONFIG=../playwright.config.ts'
     secretEnv:
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
@@ -150,6 +167,7 @@ steps:
     args: ['/workspace/scripts/test/client.sh']
     env:
       - 'BROWSER=webkit'
+      - 'CONFIG=../playwright.config.ts'
     secretEnv:
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
@@ -278,6 +296,17 @@ steps:
     secretEnv:
       - 'ENV'
       - 'REGION'
+
+  # Update cache in GCS if node_modules have changed
+  - name: 'gcr.io/cloud-builders/gsutil'
+    id: 'update-npm-cache'
+    waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
+    dir: 'client'
+    entrypoint: 'bash'
+    args: ['/workspace/scripts/cache/client.sh']
+    env:
+      - 'CACHE=cache-package.json'
+      - 'CURRENT=package.json'
 
 options:
   machineType: 'E2_HIGHCPU_8'
