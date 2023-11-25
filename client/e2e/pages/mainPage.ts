@@ -221,7 +221,11 @@ export class MainPage {
       this.page.getByRole('button', {name: 'Cancel'}).click();
     }
     await this.stripeCardNumber.fill(ccInfo.cardNumber);
+    
+    await this.stripeDate.click();
+    await this.page.waitForTimeout(500); // Small delay to ensure the field retains focus
     await this.stripeDate.fill(ccInfo.date);
+
     await this.stripeCVC.fill(ccInfo.CVC);
     await this.stripeFullName.fill(customer.fullName);
     await this.stripeZIP.fill(customer.postCode);
