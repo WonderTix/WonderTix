@@ -3,7 +3,8 @@ import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
 import {ContactPage} from './pages/contactPage';
 import {DoorListPage} from './pages/doorListPage';
-import {EventsInfo5, EventsInfo6, ShowingInfo2, ShowingInfo5, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
+import {EventsInfoTemplate5, EventsInfoTemplate6, ShowingInfo2, ShowingInfo5} from './testData/ConstsPackage';
+import {EventsInfo, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {
@@ -25,7 +26,7 @@ test('check cart after ticket add', async ({page}) => {
   test.setTimeout(60000);
   const events = new EventsPage(page);
   const main = new MainPage(page);
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   await events.goto();
   await events.addnewevent(currentEvent);
@@ -56,7 +57,6 @@ test('check cart after ticket add', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
@@ -67,7 +67,7 @@ test('check stripe purchase', async ({page}, testInfo) => {
   test.setTimeout(80000 + (timeoutAdd * 2)); // There are two places with extended timeouts
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -81,9 +81,8 @@ test('check stripe purchase', async ({page}, testInfo) => {
     await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo5.eventFullName);
-    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo5.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
@@ -94,7 +93,7 @@ test('check contact is added after order', async ({page}, testInfo) => {
   test.setTimeout(80000);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -111,9 +110,8 @@ test('check contact is added after order', async ({page}, testInfo) => {
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo5.eventFullName);
-    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo5.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
@@ -123,7 +121,7 @@ test('check order accommodations', async ({page}, testInfo) => {
   test.setTimeout(80000 + timeoutAdd);
   const currentPatron = JaneDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -140,9 +138,8 @@ test('check order accommodations', async ({page}, testInfo) => {
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo5.eventFullName);
-    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo5.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
@@ -152,7 +149,7 @@ test('check ticket inc/dec in cart', async ({page}) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
   const quantity = 2;
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   await events.goto();
   await events.addnewevent(currentEvent);
@@ -175,7 +172,6 @@ test('check ticket inc/dec in cart', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
@@ -186,7 +182,7 @@ test('check order on door list', async ({page}, testInfo) => {
   test.setTimeout(100000 + timeoutAdd);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo6;
+  const currentEvent = new EventsInfo(EventsInfoTemplate6);
   const currentShowing = ShowingInfo5;
   const quantity = 2;
   const events = new EventsPage(page);
@@ -205,7 +201,6 @@ test('check order on door list', async ({page}, testInfo) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
