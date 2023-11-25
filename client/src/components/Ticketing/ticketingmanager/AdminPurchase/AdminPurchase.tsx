@@ -124,14 +124,12 @@ const AdminPurchase = () => {
         >
           <option>Select Time</option>
           {availableTimesByRowId[params.row.id]?.map((event) => {
-            const dateTimeString = `${event.eventdate}T${event.eventtime}`;
-            const adjustedDateTimeString = dateTimeString.replace('+00', '');
-            const dateTime = parse(adjustedDateTimeString, 'yyyyMMdd\'T\'HH:mm:ss.SSS', new Date());
-            const formattedDate = format(dateTime, 'eee, MMM dd yyyy');
-            const formattedTime = format(dateTime, 'hh:mm a');
+            const dateTimeString = `${event.eventdate}T${event.eventtime.slice(0, 8)}`;
+            const dateTime = parse(dateTimeString, 'yyyyMMdd\'T\'HH:mm:ss', new Date());
+            const formattedDateTime = format(dateTime, 'eee, MMM dd yyyy - hh:mm a');
             return (
               <option key={event.eventinstanceid} value={event.eventinstanceid}>
-                {`${formattedDate} - ${formattedTime}`}
+                {formattedDateTime}
               </option>
             );
           })}
@@ -222,7 +220,7 @@ const AdminPurchase = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/events/list/active',
+          process.env.REACT_APP_API_1_URL + '/events/list/allevents',
         );
         const jsonRes = await response.json();
         const jsonData = jsonRes.data as any[];
@@ -232,7 +230,7 @@ const AdminPurchase = () => {
           new Set(jsonData.map((e) => e.eventid)),
         )
           .map((eventid) => jsonData.find((event) => event.eventid === eventid))
-          .sort((a, b) => a.eventname.localeCompare(b.eventname));
+          .sort((a, b) => (b.eventid - a.eventid));
 
         setEventList(deduplicatedEvents);
         setEventListFull(jsonData);
