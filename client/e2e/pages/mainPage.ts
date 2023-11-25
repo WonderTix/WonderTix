@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 
 import {type Locator, type Page, expect} from '@playwright/test';
-import {EventsInfo, ShowingInfo, CreditCard, Customer} from '../testData/ConstsPackage';
+import {EventsInfo, CreditCard, Customer} from '../testData/ConstsPackage';
 
 export class MainPage {
   readonly page: Page;

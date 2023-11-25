@@ -1,3 +1,6 @@
+/* eslint-disable require-jsdoc */
+import {v4} from 'uuid';
+
 // Enums for the standard dropdowns
 export enum Accommodations {
   None = 'None',
@@ -10,7 +13,7 @@ export enum Accommodations {
 }
 
 // This is the passin data template for the test:addNewEvents in EventsPage.spect.ts.
-export interface EventsInfo {
+export interface EventsInfoTemplate {
   eventName: string;
   eventDescription: string;
   eventURL: string;
@@ -18,47 +21,72 @@ export interface EventsInfo {
  }
 
 // This is an instance of the object
-export const EventsInfo1: EventsInfo = {
+export const EventsInfoTemplate1: EventsInfoTemplate = {
   eventName: 'S',
   eventDescription: '123',
   eventURL: 'http://',
   eventFullName: 'S Playbill S Description 123',
 };
 
-export const EventsInfo2: EventsInfo = {
+export const EventsInfoTemplate2: EventsInfoTemplate = {
   eventName: 'Test_event',
   eventDescription: 'An event for testing',
   eventURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
   eventFullName: 'Test_event Playbill Test_event Description An event for testing',
 };
 
-export const EventsInfo3: EventsInfo = {
+export const EventsInfoTemplate3: EventsInfoTemplate = {
   eventName: 'The Crucible1',
   eventDescription: '111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   eventURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
   eventFullName: 'The Crucible1 Playbill The Crucible1 Description 111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
-export const EventsInfo4: EventsInfo = {
+export const EventsInfoTemplate4: EventsInfoTemplate = {
   eventName: 'The Crucible',
   eventDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   eventURL: 'https://upload.wikimedia.org/wikipedia/en/7/75/Cruciblecover.jpg',
   eventFullName: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
-export const EventsInfo5: EventsInfo = {
+export const EventsInfoTemplate5: EventsInfoTemplate = {
   eventName: 'The Martyr',
   eventDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   eventURL: 'https://upload.wikimedia.org/wikipedia/commons/9/9e/Martirio_de_San_Esteban_%28Correa_de_Vivar%29.jpg',
   eventFullName: 'The Martyr Playbill The Martyr Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
-export const EventsInfo6: EventsInfo = {
+export const EventsInfoTemplate6: EventsInfoTemplate = {
   eventName: 'Purple',
   eventDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   eventURL: 'https://upload.wikimedia.org/wikipedia/en/6/62/Barney%27s-Great-Adventure-Poster.jpeg',
   eventFullName: 'Purple Playbill Purple Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
+
+export class EventsInfo {
+  eventName: string;
+  eventDescription: string;
+  eventURL: string;
+  eventFullName: string;
+
+  constructor(event: EventsInfoTemplate, UID=true) {
+    if (UID) {
+      this.eventName = event.eventName + v4();
+    } else {
+      this.eventName = event.eventName;
+    }
+    this.eventDescription = event.eventDescription;
+    this.eventURL = event.eventURL;
+    this.eventFullName = this.eventName + ' Playbill ' + this.eventName + ' Description ' + this.eventDescription;
+  }
+}
+
+export const EventsInfo1 = new EventsInfo(EventsInfoTemplate1);
+export const EventsInfo2 = new EventsInfo(EventsInfoTemplate2);
+export const EventsInfo3 = new EventsInfo(EventsInfoTemplate3);
+export const EventsInfo4 = new EventsInfo(EventsInfoTemplate4);
+export const EventsInfo5 = new EventsInfo(EventsInfoTemplate5);
+export const EventsInfo6 = new EventsInfo(EventsInfoTemplate6);
 
 //  This is the passin data template for adding/editing a new showing
 export interface ShowingInfo {
