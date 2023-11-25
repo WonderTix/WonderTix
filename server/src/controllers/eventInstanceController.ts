@@ -458,22 +458,10 @@ eventInstanceController.use(checkScopes);
 eventInstanceController.post('/', async (req: Request, res: Response) => {
   try {
     const eventToCreate: eventInstanceRequest = req.body;
-
-    if (
-      eventToCreate.instanceTicketTypes.find(
-          (type) => type.ticketlimit > eventToCreate.totalseats,
-      )
-    ) {
-      return res
-          .status(422)
-          .json({
-            error: `No individual ticket type quantity can exceed total ticket quantity`,
-          });
-    }
-
     const event = await prisma.events.findUnique({
       where: {eventid: req.body.eventid_fk},
     });
+
     if (!event) {
       return res
           .status(422)
@@ -515,7 +503,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
       });
     }));
 
-    return res.status(201).send(await prisma.eventinstances.findUnique({
+    return res.send(await prisma.eventinstances.findUnique({
       where: {
         eventinstanceid: eventInstance.eventinstanceid,
       },
@@ -524,7 +512,6 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
       },
     }));
   } catch (error) {
-    console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).send({error: error.message});
       return;

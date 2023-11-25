@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma, ticketrestrictions} from '@prisma/client';
+import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceController.service';
+import {InvalidInputError} from './eventInstanceController.service';
 
 const prisma = extendPrismaClient();
 export const seasonTicketTypePriceDefaultController = Router();
@@ -100,7 +100,6 @@ seasonTicketTypePriceDefaultController.get('/events/:seasonid', async (req: Requ
         description: type.tickettype.description,
       };
     }));
-    console.log(toSend);
     return res.json(toSend);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -285,3 +284,6 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
     return res.status(500).send({error: 'Internal Server Error'});
   }
 });
+
+seasonTicketTypePriceDefaultController.use(checkJwt);
+seasonTicketTypePriceDefaultController.use(checkScopes);

@@ -5,7 +5,6 @@ import {getTicketTypeKeyValue} from './ShowingUtils';
 
 export const TicketTypeSelect = (props: {
   field;
-  id;
   index;
   availableTypes;
   setAvailableTypes;
@@ -18,12 +17,25 @@ export const TicketTypeSelect = (props: {
     const value = event.target.value;
     setAvailableTypes([
       ...availableTypes.filter((type) => type !== +value),
-      field.value,
+      +field.value,
     ]);
     await setFieldValue(field.name, +value);
-    await setFieldValue(`instanceTicketTypes[${index}].seasontickettypepricedefaultid_fk`, getTicketTypeKeyValue(+value, 'seasontickettypepricedefaultid_fk', ticketTypes));
-    await setFieldValue(`instanceTicketTypes[${index}].price`, getTicketTypeKeyValue(+value, 'price', ticketTypes));
-    await setFieldValue(`instanceTicketTypes[${index}].concessionprice`, getTicketTypeKeyValue(+value, 'concessionprice', ticketTypes));
+    await setFieldValue(
+      `instanceTicketTypes[${index}].seasontickettypepricedefaultid_fk`,
+      getTicketTypeKeyValue(
+        +value,
+        'seasontickettypepricedefaultid_fk',
+        ticketTypes,
+      ),
+    );
+    await setFieldValue(
+      `instanceTicketTypes[${index}].price`,
+      getTicketTypeKeyValue(+value, 'price', ticketTypes),
+    );
+    await setFieldValue(
+      `instanceTicketTypes[${index}].concessionprice`,
+      getTicketTypeKeyValue(+value, 'concessionprice', ticketTypes),
+    );
   };
   return (
     <>
@@ -37,12 +49,16 @@ export const TicketTypeSelect = (props: {
         className={'w-full'}
       >
         <option value={Number.parseInt(field.value)}>
-          {getTicketTypeKeyValue(Number(field.value), 'description', ticketTypes)}
+          {getTicketTypeKeyValue(
+            Number(field.value),
+            'description',
+            ticketTypes,
+          )}
         </option>
         {availableTypes &&
           availableTypes.map((ticketType) => (
             <option
-              key={ticketType+ 'ticket type description'}
+              key={ticketType + 'ticket type description'}
               value={Number.parseInt(ticketType)}
             >
               {getTicketTypeKeyValue(ticketType, 'description', ticketTypes)}

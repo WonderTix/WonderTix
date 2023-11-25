@@ -39,8 +39,6 @@ export const validateTicketRestrictionsOnUpdate = (
   }).flat(Infinity);
   return queryBatch.concat([...newRestrictions.values()].map((newRestriction) => {
     const tickets: number = Math.min(eventInstance.totalseats ?? 0, newRestriction.ticketlimit);
-    console.log(
-        newRestriction.seasontickettypepricedefaultid_fk > -1? +newRestriction.seasontickettypepricedefaultid_fk: null);
     return prisma.ticketrestrictions.create({
       data: {
         ...newRestriction,

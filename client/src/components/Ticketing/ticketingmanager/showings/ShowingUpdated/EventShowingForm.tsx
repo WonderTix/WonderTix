@@ -12,18 +12,18 @@ import {getInstanceTicketType} from './ShowingUtils';
 
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
-  onSubmit: (event, action) => void;
+  onSubmit: (event, action) => Promise<void>;
   onDelete?: (event?) => void;
   onLeaveEdit?: () => void;
 }
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
   const {initialValues, onSubmit, onDelete, onLeaveEdit} = props;
-  const {eventData, showPopUp, ticketTypes, token} = useEvent();
+  const {eventID, showPopUp, ticketTypes} = useEvent();
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,
     eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
-    eventid_fk: initialValues ? initialValues.eventid_fk : eventData.eventid,
+    eventid_fk: initialValues ? initialValues.eventid_fk : eventID,
     eventinstanceid: initialValues ? initialValues.eventinstanceid : 0,
     eventtime: initialValues
       ? initialValues.eventtime.split('T')[1].slice(0, 8)

@@ -5,7 +5,7 @@ import {eventGeneralSchema} from './event.schemas';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {fetchSeasons} from './ShowingUtils';
+import {getData} from './ShowingUtils';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
@@ -16,7 +16,6 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onLeaveEdit} = props;
   const {eventData, showPopUp, token} = useEvent();
   const [seasons, setSeasons] = useState([]);
-
   const [showButton, setShowButton] = useState(true);
 
   const handleInputChange = (event) => {
@@ -27,12 +26,15 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    fetchSeasons(token, signal)
-      .then((res) => setSeasons(res))
-      .catch((error) => console.error('Failed to fetch seasons', error));
+    getData(
+      `${process.env.REACT_APP_API_2_URL}/season`,
+      setSeasons,
+      signal,
+      token,
+    ).catch((error) => console.error('Failed to fetch seasons'));
 
     return () => controller.abort();
-  }, [token]);
+  }, []);
 
   const baseValues = {
     eventname: eventData ? eventData.eventname : '',
@@ -46,11 +48,11 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   return (
     <Formik
       initialValues={{
-          ...baseValues,
-          imageurl:
-              baseValues.imageurl === 'Default Event Image'
-                  ? ''
-                  : baseValues.imageurl,
+        ...baseValues,
+        imageurl:
+          baseValues.imageurl === 'Default Event Image'
+            ? ''
+            : baseValues.imageurl,
       }}
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
@@ -95,7 +97,6 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 component={InputControl}
                 type='text'
                 label='Event Name'
-                id={0}
                 className={{
                   labelClass:
                     'text-sm font-semibold col-span-5 min-[450px]:col-span-12',
@@ -110,7 +111,6 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 component={InputControl}
                 type='textarea'
                 label='Event Description'
-                id={0}
                 className={{
                   labelClass: 'text-sm font-semibold',
                   inputClass:
@@ -124,7 +124,10 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   <Field name='imageurl'>
                     {({field}) => (
                       <div className='flex flex-col text-zinc-800'>
-                        <label className='text-sm font-semibold' htmlFor='imageurl'>
+                        <label
+                          className='text-sm font-semibold'
+                          htmlFor='imageurl'
+                        >
                           Image URL:
                         </label>
                         <input

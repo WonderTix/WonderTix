@@ -4,7 +4,11 @@ import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
-import {getInstanceTicketType, getTicketTypeKeyValue} from './ShowingUtils';
+import {
+  getInstanceTicketType,
+  getTicketTypeKeyValue,
+  GetTrashCanIcon,
+} from './ShowingUtils';
 
 interface TicketTypeTableProps {
   arrayHelpers;
@@ -23,7 +27,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
       .filter(
         (type) =>
           !InstanceTicketTypesField.value.some(
-            (value) => value.tickettypeid_fk === Number(type.tickettypeid_fk),
+            (res) => res.tickettypeid_fk === +type.tickettypeid_fk,
           ),
       )
       .map((type) => type.tickettypeid_fk),
@@ -59,7 +63,10 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   size={'small'}
                   aria-label={'add ticket type'}
                   onClick={async () => {
-                    arrayHelpers.insert(0, getInstanceTicketType(availableTypes[0], ticketTypes));
+                    arrayHelpers.insert(
+                      0,
+                      getInstanceTicketType(availableTypes[0], ticketTypes),
+                    );
                     setAvailableTypes(
                       availableTypes.slice(1, availableTypes.length),
                     );
@@ -103,7 +110,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   hidden={true}
                   label={'Ticket Price'}
                   currency={true}
-                  id={eventInstanceID}
                   className={{
                     controlClass: '',
                     inputClass: 'w-[75px] bg-gray-200',
@@ -119,7 +125,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   hidden={true}
                   label={'Concession Price'}
                   currency={true}
-                  id={eventInstanceID}
                   className={{
                     controlClass: '',
                     inputClass: 'w-[75px] bg-gray-200',
@@ -148,7 +153,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       component={TicketTypeSelect}
                       availableTypes={availableTypes}
                       setAvailableTypes={setAvailableTypes}
-                      id={eventInstanceID}
                       index={index}
                     />
                   </td>
@@ -166,7 +170,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                         0
                       }
                       label={'Ticket Price'}
-                      id={eventInstanceID}
                       currency={true}
                       className={{
                         controlClass: '',
@@ -185,7 +188,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       component={InputControl}
                       hidden={true}
                       label={'Concession Price'}
-                      id={eventInstanceID}
                       currency={true}
                       className={{
                         controlClass: '',
@@ -204,7 +206,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       component={InputControl}
                       hidden={true}
                       label={'Ticket Quantity'}
-                      id={eventInstanceID}
                       className={{
                         controlClass: '',
                         inputClass: 'w-[50px]',
@@ -219,25 +220,15 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       onClick={() => {
                         setAvailableTypes([
                           ...availableTypes,
-                            Number(InstanceTicketTypesField.value[index].tickettypeid_fk),
+                          Number(
+                            InstanceTicketTypesField.value[index]
+                              .tickettypeid_fk,
+                          ),
                         ]);
                         arrayHelpers.remove(index);
                       }}
                     >
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth={1.5}
-                        stroke='currentColor'
-                        className='w-4 h-4 text-red-700'
-                      >
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
-                        />
-                      </svg>
+                      <GetTrashCanIcon />
                     </IconButton>
                   </td>
                 </tr>

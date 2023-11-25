@@ -859,6 +859,10 @@ eventController.put('/', async (req: Request, res: Response) => {
       },
     });
 
+    if (!event) {
+      return res.status(400).json({error: `Event ${req.body.eventid} not found`});
+    }
+
     await prisma.$transaction((event.seasons?.seasontickettypepricedefaults.map((defaultP) =>
       prisma.ticketrestrictions.updateMany({
         where: {
@@ -883,9 +887,6 @@ eventController.put('/', async (req: Request, res: Response) => {
       },
     })]));
 
-    if (!event) {
-      return res.status(400).json({error: `Event ${req.body.eventid} not found`});
-    }
     return res.status(200).json(event);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

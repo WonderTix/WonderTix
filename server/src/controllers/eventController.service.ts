@@ -88,22 +88,13 @@ export const getOrderItems = async (
     },
   });
   const eventInstanceMap = new Map(
-      eventInstances.map((instance) => {
-        const ticketRestrictionMap = new Map<number, LoadedTicketRestriction>();
-        instance
-            .ticketrestrictions
-            .forEach((restriction) => {
-              ticketRestrictionMap.set(restriction.tickettypeid_fk, restriction);
-            });
-        return [
-          instance.eventinstanceid,
-          {
-            ...instance,
-            ticketRestrictionMap,
-          },
-        ];
-      }),
-  );
+      eventInstances.map((instance) => [
+        instance.eventinstanceid,
+        {
+          ...instance,
+          ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => [res.tickettypeid_fk, res])),
+        },
+      ]));
   let orderTotal = 0;
 
   for (const item of cartItems) {
@@ -120,14 +111,12 @@ export const getOrderItems = async (
           `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
       );
     }
-    const price = item.payWhatCan? item.payWhatPrice ?? 0: item.price;
-    const quantity = item.payWhatCan? 1: item.qty;
     orderItems = orderItems.concat(
         getTickets(
             eventInstance.ticketRestrictionMap.get(item.typeID),
             eventInstance.ticketRestrictionMap.get(eventInstance.defaulttickettype ?? 1),
             item.qty,
-            item.payWhatCan? price/item.qty : price,
+            item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
         ),
     );
     cartRows.push({
@@ -137,12 +126,12 @@ export const getOrderItems = async (
           name: eventInstance.events.eventname,
           description: item.desc,
         },
-        unit_amount: price * 100,
+        unit_amount: (item.payWhatPrice? item.payWhatPrice: item.price) * 100,
       },
-      quantity: quantity,
+      quantity: item.payWhatPrice? 1: item.qty,
     });
 
-    orderTotal += item.payWhatCan? price: price * item.qty;
+    orderTotal += item.payWhatCan? item.payWhatPrice ?? 0: item.price * item.qty;
   }
 
   for (const [, instance] of eventInstanceMap) {

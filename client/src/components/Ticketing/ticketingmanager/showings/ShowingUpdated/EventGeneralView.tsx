@@ -22,7 +22,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
     setIsActive(eventData ? eventData.active : false);
   }, [eventData]);
 
-  const handleActiveChange = async () => {
+  const handleActiveChange = () => {
     const updatedEventData = {
       ...eventData,
       active: !isActive,
@@ -94,7 +94,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   className='h-6 w-6'
-                  fill={editing || showPopUp?'':`#EF4444`}
+                  fill={editing || showPopUp ? '' : `#EF4444`}
                   viewBox='0 0 24 24'
                   stroke='white'
                   strokeWidth={2}
