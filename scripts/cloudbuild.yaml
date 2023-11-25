@@ -1,0 +1,14 @@
+steps:
+
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker build \
+        -f scripts/Dockerfile \
+        -t us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest \
+        scripts
+  
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest']
