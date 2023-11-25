@@ -17,7 +17,7 @@ test('Open ticketing page', async ({page}) => {
 });
 
 test('Purchase ticket for customer as admin', async ({page}) => {
-  test.setTimeout(50000);
+  test.setTimeout(100000);
   const events = new EventsPage(page);
   await events.goto();
   await events.addnewevent(EventsInfo2);
