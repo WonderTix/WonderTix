@@ -13,9 +13,10 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import React, {useEffect, useState} from 'react';
-import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
+import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
+import {format, parse} from 'date-fns';
 
 export type EventRow = {
   id?: number;
@@ -123,16 +124,11 @@ const AdminPurchase = () => {
         >
           <option>Select Time</option>
           {availableTimesByRowId[params.row.id]?.map((event) => {
-            const eventDateObject = new Date(
-              event.eventdate
-                .toString()
-                .replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'),
-            );
-            eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
-            const formattedDate = dayMonthDate(
-              eventDateObject.toISOString().split('T')[0],
-            );
-            const formattedTime = militaryToCivilian(event.eventtime);
+            const dateTimeString = `${event.eventdate}T${event.eventtime}`;
+            const adjustedDateTimeString = dateTimeString.replace('+00', '');
+            const dateTime = parse(adjustedDateTimeString, 'yyyyMMdd\'T\'HH:mm:ss.SSS', new Date());
+            const formattedDate = format(dateTime, 'eee, MMM dd yyyy');
+            const formattedTime = format(dateTime, 'hh:mm a');
             return (
               <option key={event.eventinstanceid} value={event.eventinstanceid}>
                 {`${formattedDate} - ${formattedTime}`}
@@ -480,6 +476,9 @@ const AdminPurchase = () => {
 
     eventData.forEach((row) => {
       const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
+      const showingDate = new Date(
+        `${toDateStringFormat(row.eventdate)} ${row.eventtime.slice(0, 8)}`,
+      );
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
         aggregatedCartItems[key].qty += 1;
@@ -490,7 +489,7 @@ const AdminPurchase = () => {
           price: row.price,
           desc: row.ticketTypes,
           typeID: row.typeID,
-          date: new Date(row.eventdate),
+          date: showingDate,
           name: row.eventname,
           product_img_url: row.imageurl,
           qty: 1, // default 1
