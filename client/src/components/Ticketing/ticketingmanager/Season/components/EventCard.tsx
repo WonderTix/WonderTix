@@ -28,7 +28,7 @@ const EventCard = (props: EventCardProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className='flex flex-col items-center bg-gray-200 rounded-xl border-8 border-solid border-zinc-300 mb-3 p-3 min-[768px]:flex-row min-[768px]:justify-between'>
+    <div data-testid='season-event-card' className='flex flex-col items-center bg-gray-200 rounded-xl border-8 border-solid border-zinc-300 mb-3 p-3 min-[768px]:flex-row min-[768px]:justify-between'>
       <article className='flex flex-col gap-3 items-center justify-center min-[768px]:flex-row'>
         <div id='event-image-container' className='w-36'>
           <SeasonImage

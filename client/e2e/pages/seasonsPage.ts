@@ -78,7 +78,7 @@ export class SeasonsPage {
 
   async addEventToSeason(event: EventsInfo) 
   {
-    const seasonLocator = this.page.getByTestId('season-event-section').filter({hasText: event.eventName});
+    const seasonLocator = this.page.getByTestId('season-event-card').filter({hasText: event.eventName});
     await this.addEvent.click();
     seasonLocator.getByTestId('event-add-to-season').click();
     await this.page.getByRole('button', { name: 'Continue' }).click();
@@ -104,7 +104,7 @@ export class SeasonsPage {
   {
     await this.page.locator(':text("' + season.seasonName + '")').click();
 
-    const seasonLocator = this.page.getByTestId('season-event-section').filter({hasText: event.eventName});
+    const seasonLocator = this.page.getByTestId('season-event-card').filter({hasText: event.eventName});
     seasonLocator.getByTestId('event-remove').click();
 
     await this.page.getByRole('button', { name: 'Continue' }).click();

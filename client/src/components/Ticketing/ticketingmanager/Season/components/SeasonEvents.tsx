@@ -107,7 +107,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
   }, [eventsNotInAnySeason]);
 
   return (
-    <div data-testid='season-event-section' className='rounded-xl p-7 bg-white text-lg mt-5 shadow-xl'>
+    <div className='rounded-xl p-7 bg-white text-lg mt-5 shadow-xl'>
       <section className='flex flex-col gap-4 items-center mb-4 tab:flex-row tab:justify-center tab:flex-wrap min-[1076px]:justify-between'>
         <article className='flex flex-wrap gap-2'>
           <h1 className='text-3xl'>Season Events </h1>

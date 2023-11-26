@@ -156,14 +156,7 @@ export class EventsPage {
   async activateEvent() {
     await this.eventOption2.click();
   }
-
-  /**
-   * Switches the status of the event's activeness.
-   */
-  async activateEvent() {
-    await this.eventOption2.click();
-  }
-
+  
 /**
   We need to pass in things like:
   "2023-10-17",
