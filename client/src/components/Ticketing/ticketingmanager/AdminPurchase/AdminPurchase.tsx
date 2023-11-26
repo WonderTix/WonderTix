@@ -94,16 +94,11 @@ const AdminPurchase = () => {
       headerName: 'Event Name - ID',
       width: 200,
       renderCell: (params) => (
-        <div style={{
-          maxWidth: '100%',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}>
+        <div className="truncate w-full">
           <select
+            className="w-full"
             value={`${params.row.eventid}-${params.row.eventname}`}
             onChange={(e) => handleEventChange(e, params.row)}
-            style={{width: '100%'}}
           >
             <option>Select Event</option>
             {eventList.map((event) => (
@@ -123,19 +118,12 @@ const AdminPurchase = () => {
       headerName: 'Date - Time',
       width: 200,
       renderCell: (params) => (
-        <div style={{
-          maxWidth: '100%',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}>
+        <div className="truncate w-full">
           <select
-            value={
-              params.row.eventtime ? params.row.eventinstanceid : 'Select Time'
-            }
+            className="w-full"
+            value={params.row.eventtime ? params.row.eventinstanceid : 'Select Time'}
             onChange={(e) => handleTimeChange(e, params.row)}
             disabled={!params.row.eventid}
-            style={{width: '100%'}}
           >
             <option>Select Time</option>
             {availableTimesByRowId[params.row.id]?.map((event) => {
@@ -157,17 +145,12 @@ const AdminPurchase = () => {
       headerName: 'Ticket Type',
       width: 200,
       renderCell: (params) => (
-        <div style={{
-          maxWidth: '100%',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}>
+        <div className="truncate w-full">
           <select
+            className="w-full"
             value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
             onChange={(e) => handleTicketTypeChange(e, params.row)}
             disabled={!params.row.eventtime}
-            style={{width: '100%'}}
           >
             <option>Select Type</option>
             {ticketTypes.map((type) => (
