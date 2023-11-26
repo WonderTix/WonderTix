@@ -63,6 +63,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
                   setEditing((edit) => !edit);
                 }}
                 disabled={editing || showPopUp}
+                data-testid={'event_edit_button'}
               >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -90,6 +91,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
                   onDelete(eventData);
                 }}
                 disabled={editing || showPopUp}
+                data-testid={'event_delete_button'}
               >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'

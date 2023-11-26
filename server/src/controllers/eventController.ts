@@ -207,7 +207,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         },
       },
       orderBy: {
-        eventid: 'desc',
+        eventid: 'asc',
       },
       include: {
         eventinstances: {
