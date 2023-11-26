@@ -13,22 +13,24 @@ test('Check Home', async ({page}) => {
 test('Select a Showing', async ({page}) => {
   const event = new EventsInfo(EventsInfoTemplate2);
   try {
-    //add event and showing to check for in the door list
+    //set up pages
     const eventsPage = new EventsPage(page);
+    const doorList = new DoorListPage(page);
+
+    //add event and showing to check for in the door list
     await eventsPage.goto();
     await eventsPage.addnewevent(event);
     await eventsPage.activateEvent();
     await eventsPage.addNewShowing(ShowingInfo1);
 
     //check door list
-    const doorList = new DoorListPage(page);
     await doorList.goto();
     await doorList.searchShowing(event,ShowingInfo1);
   } finally {
     //remove the added event
-    const eventsPage2 = new EventsPage(page);
-    await eventsPage2.goto();
+    const eventsPage = new EventsPage(page);
+    await eventsPage.goto();
     await page.locator(':text("' + event.eventName + '")').click();
-    await eventsPage2.deleteTheEvent(event.eventFullName);
+    await eventsPage.deleteTheEvent(event.eventFullName);
   }
 });
