@@ -350,7 +350,7 @@ eventInstanceController.get(
             ticketrestrictions: true,
           },
         });
-        return res.status(200).send(eventInstances.map((instance) => ({
+        return res.send(eventInstances.map((instance) => ({
           ...instance,
           ticketrestrictions: instance.ticketrestrictions.map((restriction) => ({
             tickettypeid_fk: restriction.tickettypeid_fk,
