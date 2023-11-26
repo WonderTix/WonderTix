@@ -18,7 +18,7 @@ const ReportOptions: React.FC<ReportOptionsProps> = ({
       <legend className='block font-bold bg-slate-100 text-lg indent-2 py-1 border-y w-full'>
         Report
       </legend>
-      <div className='mt-4 px-5'>
+      <div className='mt-4 px-6 w-[495]'>
         <label
           htmlFor='reportName'
           className='text-sm font-bold'
@@ -29,7 +29,7 @@ const ReportOptions: React.FC<ReportOptionsProps> = ({
             id='reportName'
             name='reportName'
             placeholder='Daily Sales Report' pattern='.{3,}$'
-            className='ml-4 p-1 w-[385px]
+            className='ml-4 p-1 w-[393px]
             border rounded text-sm font-normal
             bg-slate-50 placeholder-gray-400 placeholder:italic peer
             invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500'
@@ -44,30 +44,31 @@ const ReportOptions: React.FC<ReportOptionsProps> = ({
         </label>
       </div>
 
-      <div className='mt-4 pl-5 pr-5'>
-        <label className='text-sm font-bold flex items-center justify-between'>
-          Report Range:
-          {['Daily', 'Weekly', 'Monthly', 'Quarterly'].map((value) => (
-            <React.Fragment key={value}>
-              <div className='flex items-center'>
-                <input
-                  type='radio'
-                  id={`${value.toLowerCase()}Report`}
-                  name='reportRange'
-                  value={value}
-                  checked={rangeRadio === value}
-                  onChange={handleRadioChange}
-                  className='h-3.5 w-3.5 border-gray-300'
-                />
-                <label
-                  htmlFor={`${value.toLowerCase()}Report`}
-                  className='font-medium indent-1'
-                >
-                  {value}
-                </label>
-              </div>
-            </React.Fragment>
-          ))}
+      <div className='mt-4 px-6'>
+        <label className='text-sm font-bold w-[500px] flex'>Report Range:
+          <div className='flex items-center justify-between ml-3 gap-10'>
+            {['Daily', 'Weekly', 'Monthly', 'Quarterly'].map((value) => (
+              <React.Fragment key={value}>
+                <div className='flex items-center'>
+                  <input
+                    type='radio'
+                    id={`${value.toLowerCase()}Report`}
+                    name='reportRange'
+                    value={value}
+                    checked={rangeRadio === value}
+                    onChange={handleRadioChange}
+                    className='h-3.5 w-3.5 border-gray-300'
+                  />
+                  <label
+                    htmlFor={`${value.toLowerCase()}Report`}
+                    className='font-medium indent-1'
+                  >
+                    {value}
+                  </label>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
         </label>
       </div>
     </fieldset>

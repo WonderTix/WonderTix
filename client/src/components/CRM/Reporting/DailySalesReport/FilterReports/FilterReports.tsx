@@ -89,7 +89,7 @@ const FilterReports: React.FC<FilterReportsProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={handleReset} className='group'>
+    <form onSubmit={handleSubmit} onReset={handleReset} className='group mr-2'>
       <div className='flex-grow-1 shadow-xl text-lg rounded-md bg-white border-t-4 border-black w-80'>
         <h1 className='font-bold p-3 border-b text-2xl text-center bg-slate-100'>
           Filter Settings

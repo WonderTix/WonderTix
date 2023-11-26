@@ -109,8 +109,7 @@ const DailySalesReport = (): React.ReactElement => {
 
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
-      <div className='sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem]
-        md:ml-[18rem] md:mt-40'>
+      <div className='sm:my-32 sm:mx-4 md:my-32 md:ml-60 md:mr-14 lg:ml-64'>
         <div className='flex flex-row'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent
             bg-gradient-to-r from-violet-500 to-fuchsia-500 mb-14'>
@@ -119,7 +118,7 @@ const DailySalesReport = (): React.ReactElement => {
         </div>
         <div className='flex md:flex-row md:items-start sm:flex-col sm:items-center justify-start'>
           {showFilter && <FilterReports onGenerateClick={handleGenerateClick} />}
-          <div className='h-full w-full md:ml-2 flex-grow-1 bg-white rounded-md shadow-xl'>
+          <div className='h-full w-full flex-grow-1 bg-white rounded-md shadow-xl'>
             {showTools && tools()}
           </div>
         </div>

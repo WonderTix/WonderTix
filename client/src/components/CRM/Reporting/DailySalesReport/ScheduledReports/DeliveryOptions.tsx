@@ -6,7 +6,7 @@ const DeliveryOptions = (): React.ReactElement => {
       <legend className='block font-bold bg-slate-100 text-lg indent-2 py-1 border-y w-full'>
         Delivery
       </legend>
-      <div className='mt-5 px-5'>
+      <div className='mt-5 px-6'>
         <label htmlFor='emailTo' className='text-sm font-bold mr-0.5'>
           Email To:
         </label>
@@ -15,8 +15,7 @@ const DeliveryOptions = (): React.ReactElement => {
           id='emailTo'
           name='email To'
           placeholder='Assignee@WonderTix.com'
-          pattern='[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-          className='ml-6 p-1 w-[408px]
+          className='ml-6 p-1 w-[416px]
           border rounded text-sm font-normal
           bg-slate-50 placeholder-gray-400 placeholder:italic peer
           invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500'
@@ -31,7 +30,7 @@ const DeliveryOptions = (): React.ReactElement => {
         </span>
       </div>
 
-      <div className='mt-5 px-5'>
+      <div className='mt-5 px-6'>
         <label htmlFor='emailCc' className='text-sm font-bold '>
           Email Cc:
         </label>
@@ -40,8 +39,7 @@ const DeliveryOptions = (): React.ReactElement => {
           id='emailCc'
           name='email Cc'
           placeholder='Assignee@WonderTix.com'
-          pattern='[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-          className='ml-6 p-1 w-[408px]
+          className='ml-6 p-1 w-[416px]
           border rounded text-sm font-normal
           bg-slate-50 placeholder-gray-400 placeholder:italic peer
           invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500'
@@ -56,7 +54,7 @@ const DeliveryOptions = (): React.ReactElement => {
         </span>
       </div>
 
-      <div className='mt-5 px-5'>
+      <div className='mt-5 px-6'>
         <label htmlFor='emailFrom' className='text-sm font-bold mr-px'>
           Email From:
         </label>
@@ -65,8 +63,7 @@ const DeliveryOptions = (): React.ReactElement => {
           id='emailFrom'
           name='email from'
           placeholder='Assignee@WonderTix.com'
-          pattern='[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-          className='ml-1.5 p-1 w-[408px]
+          className='ml-1.5 p-1 w-[416px]
           border rounded text-sm font-normal
           bg-slate-50 placeholder-gray-400 placeholder:italic peer
           invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500'

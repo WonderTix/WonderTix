@@ -40,9 +40,10 @@ const ScheduleReportsForm: React.FC<ScheduledReportsProps> = ({
 
   return (
     isVisible && (
-      <div className='bg-black bg-opacity-50 flex justify-center items-center
-      fixed top-0 right-0 bottom-0 left-0 z-20 antialiased'>
-        <div className='bg-white rounded-md p-5 w-[576px]'>
+      <div className='bg-black bg-opacity-50 antialiased
+        flex justify-center items-center fixed top-0 right-0 bottom-0 left-0 z-20'
+      >
+        <div className='bg-white rounded-md p-5 w-[592px] md:ml-[19%] lg:ml-[13.5%] ml-0'>
           <h1 className='text-6xl bg-clip-text text-transparent mb-8
             bg-gradient-to-r from-purple-400 to-yellow-400 mt-4
             tracking-tight text-center font-normal mx-auto'
