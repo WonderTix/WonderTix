@@ -1,7 +1,7 @@
 steps:
 
   # Build Docker image for client
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest'
     id: 'build-client'
     entrypoint: 'bash'
     args: ['scripts/build/client.sh']
@@ -13,22 +13,14 @@ steps:
       - 'AUTH0_CLIENT_SECRET'
       - 'AUTH0_URL'
       - 'ENV'
+      - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'ROOT_URL'
-
-  # Push image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'push-client'
-    entrypoint: 'bash'
-    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
-    secretEnv:
-      - 'ARTIFACTS'
-      - 'ENV'
 
   # Deploy new client to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-client'
-    waitFor: ['push-client']
+    waitFor: ['build-client']
     entrypoint: 'bash'
     args: ['scripts/deploy/client.sh']
     env:
@@ -72,6 +64,8 @@ availableSecrets:
     env: 'CLIENT_MEMORY'
   - versionName: projects/${PROJECT_ID}/secrets/ENV/versions/${_ENV}
     env: 'ENV'
+  - versionName: projects/${PROJECT_ID}/secrets/KANIKO_CACHE/versions/${_ENV}
+    env: 'KANIKO_CACHE'
   - versionName: projects/${PROJECT_ID}/secrets/PUBLIC_STRIPE_KEY/versions/${_ENV}
     env: 'PUBLIC_STRIPE_KEY'
   - versionName: projects/${PROJECT_ID}/secrets/REGION/versions/${_ENV}
