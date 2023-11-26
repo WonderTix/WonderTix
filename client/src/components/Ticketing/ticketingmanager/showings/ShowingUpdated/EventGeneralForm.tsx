@@ -16,7 +16,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onLeaveEdit} = props;
   const {eventData, showPopUp, token} = useEvent();
   const [seasons, setSeasons] = useState([]);
-  const [showButton, setShowButton] = useState(true);
+  const [showButton, setShowButton] = useState(eventData && eventData.imageurl !== 'Default Event Image');
 
   const handleInputChange = (event) => {
     setShowButton(event.target.value !== 'Default Event Image');
@@ -40,7 +40,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     eventname: eventData ? eventData.eventname : '',
     eventid: eventData ? eventData.eventid : 0,
     eventdescription: eventData ? eventData.eventdescription : '',
-    imageurl: eventData && eventData.imageurl !== 'Default Event Image' ? eventData.imageurl : '',
+    imageurl: eventData && eventData.imageurl !== '' ? eventData.imageurl : 'Default Event Image',
     active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
   };
@@ -114,7 +114,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 }}
               />
               <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
-                <div className='col-span-4 pr-2'>
+                <div className={`${showButton? 'col-span-4':'col-span-5'} pr-2`}>
                   <Field name='imageurl'>
                     {({field}) => (
                       <div className='flex flex-col text-zinc-800'>

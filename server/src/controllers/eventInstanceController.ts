@@ -24,7 +24,7 @@ const getDate = (time: string, date: number) => {
 
 /**
  * @swagger
- * /2/tickets:
+ * /2/event-instance/tickets:
  *    get:
  *     summary: get list of instances with available seats
  *     tags:
