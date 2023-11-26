@@ -25,7 +25,7 @@ function check_args() {
 
 check_args
 
-/kaniko/executor --context=dir://workspace/server \
+/kaniko/executor --context=dir://server \
   --dockerfile=server/Dockerfile \
   --destination=${ARTIFACTS}/server-img-${ENV}:${SHORT_SHA} \
   --cache=true \

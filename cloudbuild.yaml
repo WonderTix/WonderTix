@@ -36,37 +36,17 @@ steps:
     args: ['pull', 'mcr.microsoft.com/playwright:v1.36.2-jammy']
  
   # Build server image
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest'
     id: 'build-test-server'
     waitFor: ['-']
     entrypoint: 'bash'
     args: ['/workspace/scripts/build/server.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
-#    args:
-#      - '--dockerfile=server/Dockerfile'
-#      - '--destination=$${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA}'
-#      - '--cache=true'
-#      - '--cache-repo=$${KANIKO_CACHE}'
-#      - '--context=dir://workspace/server'
-#        docker build \
-#        -f server/Dockerfile \
-#        -t $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
-#        server
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
       - 'KANIKO_CACHE'
-
-  # Push server image to Artifact Registry
-#  - name: 'gcr.io/cloud-builders/docker'
-#    id: 'push-test-server'
-#    waitFor: ['build-test-server']
-#    entrypoint: 'bash'
-#    args: ['-c', 'docker push $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA}']
-#    secretEnv:
-#      - 'ARTIFACTS'
-#      - 'ENV'
 
   # Deploy server as test revision (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -90,7 +70,7 @@ steps:
       - 'SQL_INSTANCE'
 
   # Build client image with build args for test revision
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest'
     id: 'build-test-client'
     waitFor: ['-']
     entrypoint: 'bash'
@@ -106,16 +86,6 @@ steps:
       - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'SERVER_REVISION'
-
-  # Push client image to Artifact Registry
-#  - name: 'gcr.io/cloud-builders/docker'
-#    id: 'push-test-client'
-#    waitFor: ['build-test-client']
-#    entrypoint: 'bash'
-#    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
-#    secretEnv: 
-#      - 'ARTIFACTS'
-#      - 'ENV'
 
   # Deploy client as test revision (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -233,7 +203,7 @@ steps:
       - 'REGION'
  
   # Build client image using normal args
-  - name: 'gcr.io/kaniko-project/executor:latest'
+  - name: 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest'
     id: 'build-client'
     waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     entrypoint: 'bash'
@@ -249,16 +219,6 @@ steps:
       - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'ROOT_URL'
-
-  # Push client image to Artifact Registry
-#  - name: 'gcr.io/cloud-builders/docker'
-#    id: 'push-client'
-#    waitFor: ['build-client']
-#    entrypoint: 'bash'
-#    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
-#    secretEnv: 
-#      - 'ARTIFACTS'
-#      - 'ENV'
 
   # Deploy client to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
