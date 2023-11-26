@@ -125,7 +125,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
                 void handleUpdateSeasonEvents(!activeSeasonSwitch);
               }}
               sx={{margin: 0}}
-              label={<p className='text-sm text-zinc-800 font-medium pr-2'>Active:</p>}
+              label={<p className='text-zinc-800 font-semibold pr-2'>Active:</p>}
               labelPlacement='start'
             />
           </div>
