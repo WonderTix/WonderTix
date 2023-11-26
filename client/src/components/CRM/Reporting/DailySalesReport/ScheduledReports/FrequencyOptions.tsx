@@ -5,63 +5,44 @@ interface FrequencyOptionsProps {
   setFrequencyRadio: (value: string) => void;
 }
 
-const FrequencyOptions: React.FC<FrequencyOptionsProps> = ({frequencyRadio, setFrequencyRadio}) => {
+const FrequencyOptions: React.FC<FrequencyOptionsProps> = ({
+  frequencyRadio,
+  setFrequencyRadio,
+}): React.ReactElement => {
+  const renderRadioButtons = () => {
+    return ['Daily', 'Weekly', 'Monthly', 'Quarterly'].map((frequency) => (
+      <label key={frequency} htmlFor={`frequency${frequency}`} className='ml-6 flex items-center'>
+        <input
+          type='radio'
+          id={`frequency${frequency}`}
+          name='frequency'
+          value={frequency}
+          checked={frequencyRadio === frequency}
+          onChange={(e) => setFrequencyRadio(e.target.value)}
+          className='h-3.5 w-3.5 border-gray-300'
+        />
+        <span className='ml-2 font-medium'>{frequency}</span>
+      </label>
+    ));
+  };
+
   return (
-    <div>
+    <>
       <fieldset className='mb-4 mt-6'>
         <legend className='block font-bold bg-slate-100 text-lg indent-2 py-1 border-y w-full'>
           Frequency
         </legend>
-        <div className='mt-4 px-6'>
-          <legend className='text-sm font-bold leading-6 mt-5 pr-8 flex items-center justify-between'>
+        <div className='mt-4 px-5'>
+          <legend className='text-sm font-bold mt-4 flex items-center justify-between'>
             Frequency:
-            <input
-              type='radio'
-              id='frequencyDaily'
-              name='frequency'
-              value='Daily'
-              checked={frequencyRadio === 'Daily'}
-              onChange={(e) => setFrequencyRadio(e.target.value)}
-              className='ml-6 h-3.5 w-3.5 border-gray-300'
-            />
-            <label htmlFor='frequencyDaily' className='font-medium indent-1'>Daily</label>
-            <input
-              type='radio'
-              id='frequencyWeekly'
-              name='frequency'
-              value='Weekly'
-              checked={frequencyRadio === 'Weekly'}
-              onChange={(e) => setFrequencyRadio(e.target.value)}
-              className='ml-6 h-3.5 w-3.5 border-gray-300'
-            />
-            <label htmlFor='frequencyWeekly' className='font-medium indent-1'>Weekly</label>
-            <input
-              type='radio'
-              id='frequencyMonthly'
-              name='frequency'
-              value='Monthly'
-              checked={frequencyRadio === 'Monthly'}
-              onChange={(e) => setFrequencyRadio(e.target.value)}
-              className='ml-6 h-3.5 w-3.5 border-gray-300'
-            />
-            <label htmlFor='frequencyMonthly' className='font-medium indent-1'>Monthly</label>
-            <input
-              type='radio'
-              id='frequencyQuarterly'
-              name='frequency'
-              value='Quarterly'
-              checked={frequencyRadio === 'Quarterly'}
-              onChange={(e) => setFrequencyRadio(e.target.value)}
-              className='ml-6 h-3.5 w-3.5 border-gray-300'
-            />
-            <label htmlFor='frequencyQuarterly' className='font-medium indent-1'>Quarterly</label>
+            {renderRadioButtons()}
           </legend>
         </div>
       </fieldset>
 
-      <fieldset className='px-6 my-4 text-sm mr-7'>
+      <fieldset className='px-5 mt-4 text-sm'>
         {['Daily', 'Weekly', 'Monthly', 'Quarterly'].includes(frequencyRadio) && (
-          <div className='mt-3'>
+          <div className=''>
             {frequencyRadio === 'Daily' && (
               <div className='flex justify-between items-center'>
                 <label className='font-bold'>
@@ -164,7 +145,7 @@ const FrequencyOptions: React.FC<FrequencyOptionsProps> = ({frequencyRadio, setF
           </div>
         )}
       </fieldset>
-    </div>
+    </>
   );
 };
 

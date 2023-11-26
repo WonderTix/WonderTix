@@ -1,9 +1,14 @@
 import React from 'react';
 
-const FilterOptions: React.FC<{
+interface FilterOptionsProps {
   selectedView: string;
   onViewChange: (view: string) => void;
-}> = ({selectedView, onViewChange}): React.ReactElement => {
+}
+
+const FilterOptions: React.FC<FilterOptionsProps> = ({
+  selectedView,
+  onViewChange,
+}): React.ReactElement => {
   return (
     <fieldset className='p-4 mt-2'>
       <legend className='text-sm font-bold leading-6'>

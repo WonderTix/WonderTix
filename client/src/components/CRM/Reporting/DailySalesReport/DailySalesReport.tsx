@@ -8,7 +8,7 @@ import NetSalesPriceLevelReport from './DailyReports/NetSalesPriceLevelReport';
 import GrossSalesPriceLevelReport from './DailyReports/GrossSalesPriceLevelReport';
 import ExchangeSalesPriceLevelReport from './DailyReports/ExchangeSalesPriceLevelReport';
 
-const DailySalesReport: React.FC = (): React.ReactElement => {
+const DailySalesReport = (): React.ReactElement => {
   const [showTools, setShowTools] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
   const [selectedEndDate, setSelectedEndDate] = useState('');
@@ -31,16 +31,16 @@ const DailySalesReport: React.FC = (): React.ReactElement => {
   const tools = (): React.ReactElement => {
     return (
       <>
-        <div className='container flex flex-col bg-slate-100 p-4 border-t-4 border-black rounded-b-none rounded-md'>
-          <div className="flex justify-between items-center">
+        <div className='flex flex-col bg-slate-100 border-t-4 border-black rounded-b-none rounded'>
+          <div className="flex justify-between items-center p-4 border-b">
             <h1 className='text-3xl font-bold bg-slate-100'>
               Portland Playhouse Sales Reports
             </h1>
-            <div className="flex space-x-2">
+            <div className="flex flex-wrap justify-end items-center">
               <button
                 onClick={() => setShowFilter(!showFilter)}
                 className='p-2 w-36 gap-1
-                flex flex-row items-center rounded
+                flex items-center rounded
                 font-semibold text-sm text-slate-900
                 shadow shadow-gray-500 hover:shadow-inner
                 active:ring-1 active:ring-gray-500 active:opacity-75
@@ -50,8 +50,8 @@ const DailySalesReport: React.FC = (): React.ReactElement => {
                 {showFilter ? 'Hide Settings' : 'Open Settings'}
               </button>
               <button
-                className='p-2 w-36 gap-2
-                flex flex-row items-center rounded
+                className='p-2 w-36 gap-2 my-2 ml-3
+                flex items-center rounded
                 font-semibold text-sm text-slate-900
                 shadow shadow-gray-500 hover:shadow-inner
                 active:ring-1 active:ring-gray-500 active:opacity-75
@@ -63,8 +63,8 @@ const DailySalesReport: React.FC = (): React.ReactElement => {
               <button
                 title='Schedule Run'
                 onClick={toggleScheduledReports}
-                className='p-2 w-36 gap-1.5
-                flex flex-row items-center rounded
+                className='p-2 w-36 gap-1.5 ml-3
+                flex items-center rounded
                 font-semibold text-sm text-slate-900
                 shadow shadow-gray-500 hover:shadow-inner
                 active:ring-1 active:ring-gray-500 active:opacity-75
@@ -83,7 +83,7 @@ const DailySalesReport: React.FC = (): React.ReactElement => {
               </div>
             </div>
           </div>
-          <div className='flex justify-start mt-6 gap-8 text-sm'>
+          <div className='flex justify-start px-4 py-3 gap-10 text-sm'>
             <p> <strong>Date Range:</strong> {selectedBeginDate} ~ {selectedEndDate}</p>
             <p> <strong>Group by:</strong>
               {showPriceLevelDetail ? (' Event, Price Level') : (' Event, Instance')}
@@ -117,9 +117,9 @@ const DailySalesReport: React.FC = (): React.ReactElement => {
             Daily Sales Reports
           </h1>
         </div>
-        <div className='flex md:flex-row md:items-start sm:flex-col sm:items-center container'>
+        <div className='flex md:flex-row md:items-start sm:flex-col sm:items-center justify-start'>
           {showFilter && <FilterReports onGenerateClick={handleGenerateClick} />}
-          <div className='h-full w-full mx-2 flex-grow-1 bg-white rounded-md shadow-xl'>
+          <div className='h-full w-full md:ml-2 flex-grow-1 bg-white rounded-md shadow-xl'>
             {showTools && tools()}
           </div>
         </div>

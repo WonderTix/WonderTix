@@ -1,9 +1,14 @@
 import React from 'react';
 
-const FilterEventCode: React.FC<{
+interface FilterEventCodeProps {
   showGLCode: boolean;
   onShowGLCodeChange: (show: boolean) => void;
-}> = ({showGLCode, onShowGLCodeChange}): React.ReactElement => {
+}
+
+const FilterEventCode: React.FC<FilterEventCodeProps> = ({
+  showGLCode,
+  onShowGLCodeChange,
+}): React.ReactElement => {
   return (
     <fieldset className='p-4 mt-2'>
       <legend className='text-sm font-bold leading-6'>
