@@ -482,8 +482,20 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
         ispreview: eventToCreate.ispreview,
         defaulttickettype: eventToCreate.defaulttickettype,
       },
+      include: {
+        events: {
+          include: {
+            seasons: {
+              include: {
+                seasontickettypepricedefaults: true,
+              },
+            },
+          },
+        },
+      },
     });
 
+    const seasonTicketTypePriceDefaults = new Map(eventInstance.events.seasons?.seasontickettypepricedefaults.map((def) => [def.tickettypeid_fk, def.id]));
     await prisma.$transaction(eventToCreate.instanceTicketTypes.map((type) => {
       const tickets = Math.min(eventInstance.totalseats ?? 0, type.ticketlimit);
       return prisma.ticketrestrictions.create({
@@ -493,7 +505,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
           ticketlimit: tickets,
           price: type.tickettypeid_fk === 0? 0: +type.price,
           concessionprice: +type.concessionprice,
-          seasontickettypepricedefaultid_fk: type.seasontickettypepricedefaultid_fk > -1? +type.seasontickettypepricedefaultid_fk: null,
+          seasontickettypepricedefaultid_fk: seasonTicketTypePriceDefaults.get(+type.tickettypeid_fk),
           eventtickets: {
             create: Array(tickets).fill({
               eventinstanceid_fk: eventInstance.eventinstanceid,
@@ -571,6 +583,15 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
         ticketrestrictions: {
           include: {
             eventtickets: true,
+          },
+        },
+        events: {
+          include: {
+            seasons: {
+              include: {
+                seasontickettypepricedefaults: true,
+              },
+            },
           },
         },
       },

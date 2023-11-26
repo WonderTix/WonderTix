@@ -1,6 +1,13 @@
 /* eslint-disable require-jsdoc */
 import {eventInstanceRequest, instanceTicketType} from '../interfaces/Event';
-import {eventinstances, eventtickets, ticketrestrictions} from '@prisma/client';
+import {
+  eventinstances,
+  events,
+  eventtickets,
+  seasons,
+  seasontickettypepricedefault,
+  ticketrestrictions,
+} from '@prisma/client';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 export class InvalidInputError extends Error {
@@ -19,6 +26,14 @@ export interface LoadedTicketRestriction extends ticketrestrictions{
 
 export interface LoadedEventInstance extends eventinstances {
   ticketrestrictions: LoadedTicketRestriction[],
+  events: LoadedEvent,
+}
+
+export interface LoadedEvent extends events {
+  seasons: LoadedSeason | null,
+}
+export interface LoadedSeason extends seasons {
+  seasontickettypepricedefaults: seasontickettypepricedefault[],
 }
 
 export const validateTicketRestrictionsOnUpdate = (
@@ -26,6 +41,7 @@ export const validateTicketRestrictionsOnUpdate = (
     eventInstance: LoadedEventInstance,
     newRestrictions: Map<number, instanceTicketType>,
 ) : any[] => {
+  const seasonTicketTypePriceDefaults = new Map(eventInstance.events.seasons?.seasontickettypepricedefaults.map((def) => [def.tickettypeid_fk, def.id]));
   const queryBatch = eventInstance.ticketrestrictions.map((oldRestriction: LoadedTicketRestriction) => {
     const newRestriction = newRestrictions.get(oldRestriction.tickettypeid_fk);
     newRestrictions.delete(oldRestriction.tickettypeid_fk);
@@ -33,6 +49,7 @@ export const validateTicketRestrictionsOnUpdate = (
         prisma,
         newRestriction,
         oldRestriction,
+        seasonTicketTypePriceDefaults,
         eventInstance.totalseats ?? 0,
         eventInstance.defaulttickettype ?? 1,
     );
@@ -46,7 +63,7 @@ export const validateTicketRestrictionsOnUpdate = (
         concessionprice: +newRestriction.concessionprice,
         ticketlimit: tickets,
         eventinstanceid_fk: +eventInstance.eventinstanceid,
-        seasontickettypepricedefaultid_fk: newRestriction.seasontickettypepricedefaultid_fk > -1? +newRestriction.seasontickettypepricedefaultid_fk: null,
+        seasontickettypepricedefaultid_fk: seasonTicketTypePriceDefaults.get(+newRestriction.tickettypeid_fk),
         eventtickets: {
           create: Array(tickets).fill({
             eventinstanceid_fk: +eventInstance.eventinstanceid,
@@ -61,6 +78,7 @@ const getTicketRestrictionUpdate = (
     prisma: ExtendedPrismaClient,
     newRestriction: instanceTicketType | undefined,
     oldRestriction: LoadedTicketRestriction,
+    seasonTicketTypePriceDefaults: Map<number, number>,
     totalseats: number,
     defaultTicketType: number,
 ) => {
@@ -99,8 +117,7 @@ const getTicketRestrictionUpdate = (
 
   const newQuantity= Math.min(totalseats, newRestriction.ticketlimit);
   const difference = newQuantity- oldRestriction.eventtickets.length;
-  console.log(
-      newRestriction.seasontickettypepricedefaultid_fk);
+
   return [prisma.ticketrestrictions.update({
     where: {
       ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
@@ -109,7 +126,7 @@ const getTicketRestrictionUpdate = (
       ticketlimit: +newRestriction.ticketlimit,
       price: oldRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
       concessionprice: +newRestriction.concessionprice,
-      seasontickettypepricedefaultid_fk: newRestriction.seasontickettypepricedefaultid_fk > -1? +newRestriction.seasontickettypepricedefaultid_fk: null,
+      seasontickettypepricedefaultid_fk: seasonTicketTypePriceDefaults.get(oldRestriction.tickettypeid_fk),
       ...(difference > 0 && {
         eventtickets: {
           create: Array(difference).fill({

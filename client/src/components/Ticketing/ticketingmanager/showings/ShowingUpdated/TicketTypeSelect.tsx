@@ -21,14 +21,6 @@ export const TicketTypeSelect = (props: {
     ]);
     await setFieldValue(field.name, +value);
     await setFieldValue(
-      `instanceTicketTypes[${index}].seasontickettypepricedefaultid_fk`,
-      getTicketTypeKeyValue(
-        +value,
-        'seasontickettypepricedefaultid_fk',
-        ticketTypes,
-      ),
-    );
-    await setFieldValue(
       `instanceTicketTypes[${index}].price`,
       getTicketTypeKeyValue(+value, 'price', ticketTypes),
     );

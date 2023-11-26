@@ -116,14 +116,12 @@ seasonTicketTypePriceDefaultController.get('/events/:seasonid', async (req: Requ
       concessionprice: type.concessions,
       price: type.price,
       tickettypeid_fk: type.tickettypeid,
-      seasontickettypepricedefaultid_fk: -1,
       description: type.description,
     })).concat(seasonResult.map((type) => {
       return {
         concessionprice: type.concessionprice,
         price: type.price,
         tickettypeid_fk: type.tickettypeid_fk,
-        seasontickettypepricedefaultid_fk: type.id,
         description: type.tickettype.description,
       };
     }));
