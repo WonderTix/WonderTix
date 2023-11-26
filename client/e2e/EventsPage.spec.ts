@@ -18,7 +18,7 @@ test('addNewEvents',async({page})=>{
 });
 
 test('addDeleteEvents',async({page})=>{
-  test.setTimeout(30);
+  test.setTimeout(3000);
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();
   //The ANE_Package2 is locate in ConstsPackage.ts file
