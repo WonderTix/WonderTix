@@ -34,17 +34,33 @@ export const createSubmitFunction = (
   onError?,
 ) => {
   return async (event, actions?) => {
-    if (actions) {
-      actions.setStatus('Submitting...');
-      actions.setSubmitting(true);
-    }
+      actions?.setStatus('Submitting...');
+      try {
+        const submitRes = await fetch(url, {
+          credentials: 'include',
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(event),
+        });
 
-    await makeApiCall(method, url, token, event, onSuccess, onError);
+        actions?.setSubmitting(false);
 
-    if (actions) {
-      actions.setSubmitting(false);
-    }
-  };
+        if (!submitRes.ok) {
+          throw submitRes;
+        }
+        if (onSuccess) {
+          await onSuccess(submitRes);
+        }
+      } catch (error) {
+        actions?.setSubmitting(false);
+        if (onError) {
+          await onError(error);
+        }
+      }
+    };
 };
 
 export const createDeleteFunction = (
@@ -72,7 +88,6 @@ export const createDeleteFunction = (
         await onSuccess();
       }
     } catch (error) {
-      console.error(error);
       if (setIsDeleting) {
         setIsDeleting(false);
       }
