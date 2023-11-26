@@ -31,7 +31,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
       setSeasons,
       signal,
       token,
-    ).catch((error) => console.error('Failed to fetch seasons'));
+    ).catch(() => console.error('Failed to fetch seasons'));
 
     return () => controller.abort();
   }, []);
@@ -40,20 +40,14 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     eventname: eventData ? eventData.eventname : '',
     eventid: eventData ? eventData.eventid : 0,
     eventdescription: eventData ? eventData.eventdescription : '',
-    imageurl: eventData ? eventData.imageurl : '',
+    imageurl: eventData && eventData.imageurl !== 'Default Event Image' ? eventData.imageurl : '',
     active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
   };
 
   return (
     <Formik
-      initialValues={{
-        ...baseValues,
-        imageurl:
-          baseValues.imageurl === 'Default Event Image'
-            ? ''
-            : baseValues.imageurl,
-      }}
+      initialValues={baseValues}
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
     >

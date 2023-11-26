@@ -182,8 +182,7 @@ export const getData = async (
   if (!res.ok) {
     throw new Error();
   }
-  const data = await res.json();
-  set(data);
+  set(await res.json());
 };
 
 export const getTicketTypeKeyValue = (
@@ -209,7 +208,8 @@ export const getInstanceTicketType = (id: number, ticketTypes: any[]) => {
   };
 };
 
-export const GetTrashCanIcon = () => {
+export const TrashCanIcon = (props: {className?: string}) => {
+  const {className} = props;
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -217,7 +217,7 @@ export const GetTrashCanIcon = () => {
       viewBox='0 0 24 24'
       strokeWidth={1.5}
       stroke='currentColor'
-      className='w-4 h-4 text-red-700'
+      className={className}
     >
       <path
         strokeLinecap='round'

@@ -7,7 +7,7 @@ import {useEvent} from './EventProvider';
 import {
   getInstanceTicketType,
   getTicketTypeKeyValue,
-  GetTrashCanIcon,
+  TrashCanIcon,
 } from './ShowingUtils';
 
 interface TicketTypeTableProps {
@@ -228,7 +228,9 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                         arrayHelpers.remove(index);
                       }}
                     >
-                      <GetTrashCanIcon />
+                      <TrashCanIcon
+                          className='w-4 h-4 text-red-700'
+                      />
                     </IconButton>
                   </td>
                 </tr>

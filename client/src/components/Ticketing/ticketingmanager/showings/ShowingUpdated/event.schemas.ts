@@ -19,8 +19,8 @@ export const eventInstanceSchema = yup.object().shape({
             return value <= this.options.context.totalseats;
           },
         ),
-        concessionprice: yup.number().min(0, 'Must be positive').required('Required'),
-        price: yup.number().min(0, 'Must be positive').required('Required'),
+        concessionprice: yup.number().min(0, 'Must be greater than 0').required('Required'),
+        price: yup.number().min(0, 'Must be greater than 0').required('Required'),
     }),
   ),
 });

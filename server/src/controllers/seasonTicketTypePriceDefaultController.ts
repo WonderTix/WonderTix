@@ -62,6 +62,33 @@ seasonTicketTypePriceDefaultController.get('/:seasonid', async (req: Request, re
   }
 });
 
+/**
+ * @swagger
+ * /2/season-ticket-type-price-default/events/{seasonid}:
+ *   get:
+ *     summary: get season ticket types in the format needed by the events page
+ *     tags:
+ *     - Season Ticket Type Price Default API
+ *     parameters:
+ *     - $ref: '#/components/parameters/seasonid'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: array of  season ticket types
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/SeasonTicketTypePriceDefault'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
 seasonTicketTypePriceDefaultController.get('/events/:seasonid', async (req: Request, res: Response) => {
   try {
     const {seasonid} = req.params;
@@ -111,6 +138,9 @@ seasonTicketTypePriceDefaultController.get('/events/:seasonid', async (req: Requ
     return res.status(500).send({error: 'Internal Server Error'});
   }
 });
+
+seasonTicketTypePriceDefaultController.use(checkJwt);
+seasonTicketTypePriceDefaultController.use(checkScopes);
 
 /**
  * @swagger
@@ -285,5 +315,3 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
   }
 });
 
-seasonTicketTypePriceDefaultController.use(checkJwt);
-seasonTicketTypePriceDefaultController.use(checkScopes);
