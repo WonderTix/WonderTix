@@ -13,9 +13,10 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import React, {useEffect, useState} from 'react';
-import {dayMonthDate, militaryToCivilian} from '../../../../utils/arrays';
 import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
+import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
+import {format, parse} from 'date-fns';
 
 export type EventRow = {
   id?: number;
@@ -93,20 +94,23 @@ const AdminPurchase = () => {
       headerName: 'Event Name - ID',
       width: 200,
       renderCell: (params) => (
-        <select
-          value={`${params.row.eventid}-${params.row.eventname}`}
-          onChange={(e) => handleEventChange(e, params.row)}
-        >
-          <option>Select Event</option>
-          {eventList.map((event) => (
-            <option
-              key={event.eventinstanceid}
-              value={`${event.eventid}-${event.eventname}`}
-            >
-              {`${event.eventname} - ${event.eventid}`}
-            </option>
-          ))}
-        </select>
+        <div className="truncate w-full">
+          <select
+            className="w-full"
+            value={`${params.row.eventid}-${params.row.eventname}`}
+            onChange={(e) => handleEventChange(e, params.row)}
+          >
+            <option>Select Event</option>
+            {eventList.map((event) => (
+              <option
+                key={event.eventinstanceid}
+                value={`${event.eventid}-${event.eventname}`}
+              >
+                {`${event.eventname} - ${event.eventid}`}
+              </option>
+            ))}
+          </select>
+        </div>
       ),
     },
     {
@@ -114,32 +118,26 @@ const AdminPurchase = () => {
       headerName: 'Date - Time',
       width: 200,
       renderCell: (params) => (
-        <select
-          value={
-            params.row.eventtime ? params.row.eventinstanceid : 'Select Time'
-          }
-          onChange={(e) => handleTimeChange(e, params.row)}
-          disabled={!params.row.eventid}
-        >
-          <option>Select Time</option>
-          {availableTimesByRowId[params.row.id]?.map((event) => {
-            const eventDateObject = new Date(
-              event.eventdate
-                .toString()
-                .replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'),
-            );
-            eventDateObject.setDate(eventDateObject.getDate() + 1); // fixes off by one error
-            const formattedDate = dayMonthDate(
-              eventDateObject.toISOString().split('T')[0],
-            );
-            const formattedTime = militaryToCivilian(event.eventtime);
-            return (
-              <option key={event.eventinstanceid} value={event.eventinstanceid}>
-                {`${formattedDate} - ${formattedTime}`}
-              </option>
-            );
-          })}
-        </select>
+        <div className="truncate w-full">
+          <select
+            className="w-full"
+            value={params.row.eventtime ? params.row.eventinstanceid : 'Select Time'}
+            onChange={(e) => handleTimeChange(e, params.row)}
+            disabled={!params.row.eventid}
+          >
+            <option>Select Time</option>
+            {availableTimesByRowId[params.row.id]?.map((event) => {
+              const dateTimeString = `${event.eventdate}T${event.eventtime.slice(0, 8)}`;
+              const dateTime = parse(dateTimeString, 'yyyyMMdd\'T\'HH:mm:ss', new Date());
+              const formattedDateTime = format(dateTime, 'eee, MMM dd yyyy - hh:mm a');
+              return (
+                <option key={event.eventinstanceid} value={event.eventinstanceid}>
+                  {formattedDateTime}
+                </option>
+              );
+            })}
+          </select>
+        </div>
       ),
     },
     {
@@ -147,18 +145,21 @@ const AdminPurchase = () => {
       headerName: 'Ticket Type',
       width: 200,
       renderCell: (params) => (
-        <select
-          value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
-          onChange={(e) => handleTicketTypeChange(e, params.row)}
-          disabled={!params.row.eventtime}
-        >
-          <option>Select Type</option>
-          {ticketTypes.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.description}
-            </option>
-          ))}
-        </select>
+        <div className="truncate w-full">
+          <select
+            className="w-full"
+            value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
+            onChange={(e) => handleTicketTypeChange(e, params.row)}
+            disabled={!params.row.eventtime}
+          >
+            <option>Select Type</option>
+            {ticketTypes.map((type) => (
+              <option key={type.id} value={type.id}>
+                {type.description}
+              </option>
+            ))}
+          </select>
+        </div>
       ),
     },
     {
@@ -226,7 +227,7 @@ const AdminPurchase = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/events/list/active',
+          process.env.REACT_APP_API_1_URL + '/events/list/allevents',
         );
         const jsonRes = await response.json();
         const jsonData = jsonRes.data as any[];
@@ -236,7 +237,7 @@ const AdminPurchase = () => {
           new Set(jsonData.map((e) => e.eventid)),
         )
           .map((eventid) => jsonData.find((event) => event.eventid === eventid))
-          .sort((a, b) => a.eventname.localeCompare(b.eventname));
+          .sort((a, b) => (b.eventid - a.eventid));
 
         setEventList(deduplicatedEvents);
         setEventListFull(jsonData);
@@ -480,6 +481,9 @@ const AdminPurchase = () => {
 
     eventData.forEach((row) => {
       const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
+      const showingDate = new Date(
+        `${toDateStringFormat(row.eventdate)} ${row.eventtime.slice(0, 8)}`,
+      );
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
         aggregatedCartItems[key].qty += 1;
@@ -490,7 +494,7 @@ const AdminPurchase = () => {
           price: row.price,
           desc: row.ticketTypes,
           typeID: row.typeID,
-          date: new Date(row.eventdate),
+          date: showingDate,
           name: row.eventname,
           product_img_url: row.imageurl,
           qty: 1, // default 1
