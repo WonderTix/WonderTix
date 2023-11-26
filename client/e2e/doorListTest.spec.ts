@@ -10,27 +10,47 @@ test('Check Home', async ({page}) => {
   expect(doorList.getHeader, 'Door List');
 });
 
-test('Select a Showing', async ({page}) => {
-  const event = new EventsInfo(EventsInfoTemplate2);
+test('Select Active Showing', async ({page}) => {
+  const currentEvent = new EventsInfo(EventsInfoTemplate2);
+  const eventsPage = new EventsPage(page);
+  const doorList = new DoorListPage(page);
   try {
-    //set up pages
-    const eventsPage = new EventsPage(page);
-    const doorList = new DoorListPage(page);
-
-    //add event and showing to check for in the door list
+    // Add event and showing to check for in the door list
     await eventsPage.goto();
-    await eventsPage.addnewevent(event);
+    await eventsPage.addnewevent(currentEvent);
     await eventsPage.activateEvent();
     await eventsPage.addNewShowing(ShowingInfo1);
 
-    //check door list
+    // Check door list
     await doorList.goto();
-    await doorList.searchShowing(event,ShowingInfo1);
+    await doorList.searchShowing(currentEvent,ShowingInfo1);
   } finally {
-    //remove the added event
-    const eventsPage = new EventsPage(page);
+    // Remove the added event
     await eventsPage.goto();
-    await page.locator(':text("' + event.eventName + '")').click();
-    await eventsPage.deleteTheEvent(event.eventFullName);
+    await page.locator(':text("' + currentEvent.eventName + '")').click();
+    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+  }
+});
+
+test('Select Inactive Showing', async ({page}) => {
+  const currentEvent = new EventsInfo(EventsInfoTemplate2);
+  const eventsPage = new EventsPage(page);
+  const doorList = new DoorListPage(page);
+  try {
+    // Add event and showing to check for in the door list
+    await eventsPage.goto();
+    await eventsPage.addnewevent(currentEvent);
+    await eventsPage.addNewShowing(ShowingInfo1);
+
+    // Check door list
+    await doorList.goto();
+    await doorList.setAllView()
+    await doorList.searchShowing(currentEvent,ShowingInfo1);
+  } finally {
+    // Remove the added event
+    await eventsPage.goto();
+    await eventsPage.setInactiveView();
+    await page.locator(':text("' + currentEvent.eventName + '")').click();
+    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
   }
 });

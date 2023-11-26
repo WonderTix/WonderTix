@@ -9,6 +9,8 @@ export class DoorListPage {
   readonly chooseEvent: Locator;
   readonly chooseTime: Locator;
   readonly customerRow: Locator;
+  readonly activeViewOption: Locator;
+  readonly allViewOption: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +19,8 @@ export class DoorListPage {
     this.chooseEvent = page.locator('#event-select');
     this.chooseTime = page.getByTestId('time-select-test');
     this.customerRow = page.locator('.MuiDataGrid-row');
+    this.activeViewOption = page.getByTestId('active-button');
+    this.allViewOption = page.getByTestId('all-button');
   }
 
   // Go to the door list
@@ -70,5 +74,15 @@ export class DoorListPage {
   // Verify a specific order exists by customer name and quantity.
   async checkOrder(customer: Customer, qty: number) {
     await this.customerRow.filter({hasText: customer.firstName}).filter({hasText: customer.lastName}).filter({hasText: qty.toString()}).isVisible();
+  }
+
+  // Sets viewable list of events to active events.
+  async setActiveView() {
+    await this.activeViewOption.click();
+  }
+
+  // Sets viewable list of events to all events.
+  async setAllView() {
+    await this.allViewOption.click();
   }
 }
