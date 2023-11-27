@@ -54,6 +54,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
         <div className='flex items-center gap-7'>
           <div className='flex items-center gap-2'>
             <button
+              className='enabled:hover:text-gray-300'
               data-testid='decrement-ticket'
               aria-label={`Remove one ${item.name} from cart`}
               onClick={handleDecrement}
@@ -73,6 +74,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
             </button>
             <p data-testid='ticket-quantity'>{item.qty}</p>
             <button
+              className='enabled:hover:text-gray-300'
               data-testid='increment-ticket'
               aria-label={`Add one ${item.name} to cart`}
               onClick={handleIncrement}
@@ -97,6 +99,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
               : toDollarAmount(cost)}
           </p>
           <button
+            className='enabled:hover:text-gray-300'
             data-testid='remove-ticket'
             aria-label={`Remove ${item.name} from cart`}
             onClick={() => removeHandler(item.product_id, item.typeID)}

@@ -233,6 +233,7 @@ const Cart = (): ReactElement => {
                 />
                 {!validDiscount ? (
                   <button
+                    className='text-white enabled:hover:text-gray-200'
                     onClick={applyDiscount}
                     aria-label='Apply discount code'
                   >
@@ -241,7 +242,7 @@ const Cart = (): ReactElement => {
                       className='h-6 w-6'
                       fill='none'
                       viewBox='0 0 24 24'
-                      stroke='white'
+                      stroke='currentColor'
                       strokeWidth='3'
                       aria-hidden='true'
                     >
@@ -254,6 +255,7 @@ const Cart = (): ReactElement => {
                   </button>
                 ) : (
                   <button
+                    className='text-white enabled:hover:text-gray-200'
                     onClick={removeDiscount}
                   >
                     <svg
@@ -261,7 +263,7 @@ const Cart = (): ReactElement => {
                       className='h-6 w-6'
                       fill='none'
                       viewBox='0 0 24 24'
-                      stroke='white'
+                      stroke='currentColor'
                       strokeWidth='3'
                       aria-hidden='true'
                     >
@@ -276,7 +278,7 @@ const Cart = (): ReactElement => {
               </div>
             </div>
             <button
-              className='bg-red-600 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
+              className='bg-red-600 enabled:hover:bg-red-700 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
               disabled={items.length === 0}
               onClick={removeAllCartItems}
             >
@@ -298,7 +300,7 @@ const Cart = (): ReactElement => {
               Empty Cart
             </button>
             <button
-              className='bg-yellow-600 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
+              className='bg-yellow-600 enabled:hover:bg-yellow-700 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
               disabled={items.length === 0}
               onClick={navigateToCompleteOrder}
             >
