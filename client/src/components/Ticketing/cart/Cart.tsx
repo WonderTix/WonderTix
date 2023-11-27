@@ -278,7 +278,7 @@ const Cart = (): ReactElement => {
               </div>
             </div>
             <button
-              className='bg-red-600 enabled:hover:bg-red-700 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
+              className='bg-red-600 enabled:hover:bg-red-700 shadow-sm shadow-red-800 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
               disabled={items.length === 0}
               onClick={removeAllCartItems}
             >
@@ -300,7 +300,7 @@ const Cart = (): ReactElement => {
               Empty Cart
             </button>
             <button
-              className='bg-yellow-600 enabled:hover:bg-yellow-700 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
+              className='bg-yellow-600 enabled:hover:bg-yellow-700 shadow-sm shadow-yellow-800 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'
               disabled={items.length === 0}
               onClick={navigateToCompleteOrder}
             >
