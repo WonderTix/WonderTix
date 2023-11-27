@@ -1,6 +1,7 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import CartRow from './CartItem';
+import PopUp from '../PopUp';
 import {toDollarAmount} from '../../../utils/arrays';
 import {
   removeTicketFromCart,
@@ -63,12 +64,10 @@ const Cart = (): ReactElement => {
     all,
   }
 
-  const [show, setShow] = useState(false);
-  const handleClick2 = () => setShow(!show);
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartContents);
   const subtotal = items.reduce(subtotalReducer, 0);
-  const [, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<TargetItem | null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
   const [removeContextMessage, setRemoveContextMessage] = useState('');
@@ -85,9 +84,15 @@ const Cart = (): ReactElement => {
     } else setValidDiscount(false);
   });
 
+  const openModal = () => {
+    document.body.style.overflow = 'hidden';
+    setModalOpen(true);
+  };
+
   const resetModal = () => {
     setTargetItem(null);
-    handleClick2();
+    setModalOpen(false);
+    document.body.style.overflow = '';
   };
 
   const handleRemove = () => {
@@ -108,7 +113,7 @@ const Cart = (): ReactElement => {
   const removeAllCartItems = () => {
     setRemoveContext(RemoveContext.all);
     setRemoveContextMessage('all items');
-    handleClick2();
+    openModal();
   };
 
   const printDiscountText = (disc: DiscountItem) => {
@@ -140,7 +145,7 @@ const Cart = (): ReactElement => {
     setRemoveContext(RemoveContext.single);
     setRemoveContextMessage('this');
     setTargetItem({eventInstanceId: eventInstanceId, ticketTypeId: ticketTypeId});
-    handleClick2();
+    openModal();
   };
 
   const navigateToCompleteOrder = () => {
@@ -314,75 +319,18 @@ const Cart = (): ReactElement => {
               Proceed To Checkout
             </button>
           </div>
-          <div
-            className={!show ? 'hidden' : 'relative z-10'}
-            aria-labelledby='modal-title'
-            role='dialog'
-            aria-modal='true'
-          >
-            <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity' />
-            <div className='fixed z-10 inset-0 overflow-y-auto'>
-              <div className='flex items-end tab:items-center justify-center min-h-full p-4 text-center tab:p-0'>
-                <div className='relative w-full bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all tab:my-8 tab:max-w-lg'>
-                  <div className='bg-white px-4 pt-5 pb-4 tab:p-6 tab:pb-4'>
-                    <div className='tab:flex tab:items-start'>
-                      <div className='mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 tab:mx-0 tab:h-10 tab:w-10'>
-                        <svg
-                          className='h-6 w-6 text-red-600'
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth='2'
-                          stroke='currentColor'
-                          aria-hidden='true'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'
-                          />
-                        </svg>
-                      </div>
-                      <div className='mt-3 text-center tab:mt-0 tab:ml-4 tab:text-left'>
-                        <h3
-                          className='text-lg leading-6 font-medium text-gray-900'
-                          id='modal-title'
-                        >
-                          Confirm removal
-                        </h3>
-                        <p className='text-sm text-gray-500 mt-2'>
-                          Do you want to remove {removeContextMessage} from your
-                          cart?
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='bg-gray-50 px-4 py-3 tab:px-6 tab:flex tab:flex-row-reverse'>
-                    <button
-                      onClick={handleRemove}
-                      type='button'
-                      className='w-full inline-flex justify-center rounded-md border border-transparent
-                        shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700
-                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500
-                        tab:ml-3 tab:w-auto tab:text-sm'
-                    >
-                      Yes
-                    </button>
-                    <button
-                      onClick={resetModal}
-                      type='button'
-                      className='mt-3 w-full inline-flex
-                        justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
-                        font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
-                        focus:ring-offset-2 focus:ring-indigo-500 tab:mt-0 tab:ml-3 tab:w-auto tab:text-sm'
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {modalOpen && (
+            <PopUp
+              title='Confirm removal'
+              message={`Do you want to remove ${removeContextMessage} from your cart?`}
+              primaryLabel='Yes'
+              secondaryLabel='Cancel'
+              handleProceed={handleRemove}
+              handleClose={resetModal}
+              showClose={false}
+              success={false}
+            />
+          )}
         </section>
       </div>
     </main>
