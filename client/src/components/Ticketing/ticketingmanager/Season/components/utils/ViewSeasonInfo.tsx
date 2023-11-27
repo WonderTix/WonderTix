@@ -3,6 +3,8 @@ import {SeasonInfo} from './seasonCommon';
 import {SeasonImage} from '../../seasonUtils';
 import {FormControlLabel, Switch} from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
+import {SeasonTicketTypeUpdateTable} from './SeasonTicketTypeUpdateTable';
+import {FieldArray} from 'formik';
 
 const MONTHS = [
   'January',
@@ -39,6 +41,8 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
     setActiveSeasonSwitch,
     deleteConfirmationHandler,
   } = props;
+
+  const values: {eventinstanceid: number} = {eventinstanceid: parseInt('1234', 10)};
 
   const getLongDateFormat = (date: string) => {
     const year: string = date.slice(0, 4);
@@ -105,36 +109,42 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
         </div>
       </section>
       <div className='grid grid-cols-12'>
-        <article className='col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
-          <h3 className='font-semibold'>Season Name </h3>
-          <p className='mb-3 text-base'>{name}</p>
+        <div className='flex flex-col col-span-6 lg:col-span-2 sm:flex-row mb-5 text-center sm:text-start'>
+          <article className=''>
+            <h3 className='font-semibold'>Season Name </h3>
+            <p className='mb-3 text-base'>{name}</p>
 
-          <h3 className='font-semibold'>Start Date </h3>
-          <p className='mb-3 text-base'>{getLongDateFormat(startdate)}</p>
+            <h3 className='font-semibold'>Start Date </h3>
+            <p className='mb-3 text-base'>{getLongDateFormat(startdate)}</p>
 
-          <h3 className='font-semibold'>End Date </h3>
-          <p className='mb-3 text-base'>{getLongDateFormat(enddate)}</p>
-
-          <div>
-            <FormControlLabel
-              control={<Switch checked={activeSeasonSwitch} />}
-              onChange={() => {
-                setActiveSeasonSwitch((checked) => !checked);
-                void handleUpdateSeasonEvents(!activeSeasonSwitch);
-              }}
-              sx={{margin: 0, gap: '5px'}}
-              label='Active'
-              labelPlacement='start'
-            />
-          </div>
-        </article>
-        <article className='col-span-12 tab:col-span-6'>
+            <h3 className='font-semibold'>End Date </h3>
+            <p className='mb-3 text-base'>{getLongDateFormat(enddate)}</p>
+            <div>
+              <FormControlLabel
+                control={<Switch checked={activeSeasonSwitch} />}
+                onChange={() => {
+                  setActiveSeasonSwitch((checked) => !checked);
+                  void handleUpdateSeasonEvents(!activeSeasonSwitch);
+                }}
+                sx={{margin: 0, gap: '5px'}}
+                label='Active'
+                labelPlacement='start'
+              />
+            </div>
+          </article>
+        </div>
+        <div className='col-span-6 lg:col-span-2'>
           <SeasonImage
-            className='h-auto max-w-[150px] mx-auto mt-3'
+            className='h-auto max-w-[150px] object-cover mx-1 mt-3'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
-        </article>
+        </div>
+        <div className='pl-2 col-span-12 lg:col-span-8'>
+          <div className='flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-8 rounded-lg p-3 w-[100%] h-[100%] shadow-xl'>
+            <SeasonTicketTypeUpdateTable />
+          </div>
+        </div>
       </div>
     </header>
   );
