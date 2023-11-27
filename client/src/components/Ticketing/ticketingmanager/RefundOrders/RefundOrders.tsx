@@ -2,6 +2,15 @@ import React, {useState} from 'react';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import PopUp from '../../PopUp';
 
+export const formatUSD = (number) => {
+  const formatter = new Intl.NumberFormat('en-us', {
+    currency: 'USD',
+    style: 'currency',
+  });
+
+  return formatter.format(number);
+};
+
 const RefundOrders = () => {
   const {token} = useFetchToken();
   const [submitting, setSubmitting] = useState(false);
@@ -34,11 +43,6 @@ const RefundOrders = () => {
       showSecondary: secondary,
     });
   };
-
-  const formatUSD = new Intl.NumberFormat('en-us', {
-    currency: 'USD',
-    style: 'currency',
-  });
 
   const onRefund = async (orderID) => {
     try {
@@ -236,7 +240,7 @@ const RefundOrders = () => {
                       )}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {formatUSD.format(instance.price)}
+                      {formatUSD(instance.price)}
                     </td>
                     <td className='row-start-1 justify-self-start py-2 col-span-1'>
                       <button

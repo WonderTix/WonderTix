@@ -58,6 +58,11 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
             singleticket_fk: {not: null},
           },
         },
+        tickettype: {
+          select: {
+            description: true,
+          },
+        },
       },
     });
     return res.json(
@@ -66,6 +71,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
               id: restriction.ticketrestrictionsid,
               eventinstanceid: restriction.eventinstanceid_fk,
               tickettypeid: restriction.tickettypeid_fk,
+              description: restriction.tickettype.description,
               concessionprice: +restriction.concessionprice,
               price: +restriction.price,
               ticketlimit: restriction.ticketlimit,
@@ -134,13 +140,19 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
             singleticket_fk: {not: null},
           },
         },
+        tickettype: {
+          select: {
+            description: true,
+          },
+        },
       },
     });
     return res.json(
         ticketRestrictions.map((restriction) => {
-          const {eventtickets, ...restrictionData} = restriction;
+          const {eventtickets, tickettype, ...restrictionData} = restriction;
           return {
             ...restrictionData,
+            description: tickettype.description,
             ticketssold: eventtickets.length,
           };
         }));
