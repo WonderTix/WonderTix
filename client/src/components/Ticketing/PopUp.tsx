@@ -102,8 +102,7 @@ const PopUp = ({
       <div
         id='popup-modal'
         className='relative z-10 bg-white rounded-lg overflow-hidden
-          mx-2 tab:mx-auto my-2 tab:max-w-lg w-full shadow-xl transform transition-all
-          dark:bg-white-700'
+          mx-2 tab:mx-auto my-2 tab:max-w-lg w-full shadow-xl transform transition-all'
       >
         {showClose && (
           <button
@@ -112,8 +111,7 @@ const PopUp = ({
             className='absolute top-3
               right-2.5 text-gray-400 bg-transparent hover:bg-gray-200
               hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto
-              inline-flex items-center dark:hover:bg-gray-800
-              dark:hover:text-white'
+              inline-flex items-center'
             data-modal-toggle='popup-modal'
             aria-label='Close modal'
           >
@@ -185,8 +183,8 @@ const PopUp = ({
             onClick={handleProceed}
             className={`${
               success
-                ? 'bg-green-600 hover:bg-green-800 focus:ring-green-300 dark:focus:ring-green-800'
-                : 'bg-red-600 hover:bg-red-700 focus:ring-red-500 dark:focus:ring-red-800'
+                ? 'bg-green-600 hover:bg-green-800 focus:ring-green-300'
+                : 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
             }
               w-full inline-flex justify-center rounded-md border border-transparent
               shadow-sm px-4 py-2 text-base font-medium text-white 
