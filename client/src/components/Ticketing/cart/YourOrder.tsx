@@ -48,7 +48,7 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
       key={`${item.product_id}-${item.typeID}`}
       eventInstanceId={item.product_id}
       ticketTypeId={item.typeID}
-      className='bg-gradient-to-b from-zinc-700 px-5 py-3 rounded-xl mb-5'
+      className='bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'
     />
   ));
 
@@ -99,19 +99,25 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
   );
 };
 
-const LineItem = (props: {className: string; eventInstanceId: number, ticketTypeId: number}) => {
+const LineItem = (props: { className: string; eventInstanceId: number, ticketTypeId: number }) => {
   const cartItem = useAppSelector((state) => selectCartItem(state, props.eventInstanceId, props.ticketTypeId));
+
   return cartItem ? (
-    <div className={props.className}>
-      <div>
-        {cartItem.qty} <b>x</b> {cartItem.name}
-      </div>
-      <div>
-        {cartItem.payWhatCan
-          ? toDollar(cartItem.payWhatPrice)
-          : toDollar(cartItem.qty * cartItem.price)}
-      </div>
-    </div>
+    <p className={`${props.className} flex flex-col`}>
+      <span className="flex justify-between">
+        <span className='text-left font-bold'>
+          {cartItem.qty} x {cartItem.name}
+        </span>
+        <span className='text-right font-bold'>
+          {cartItem.payWhatCan
+            ? toDollar(cartItem.payWhatPrice)
+            : toDollar(cartItem.qty * cartItem.price)}
+        </span>
+      </span>
+      <span className='text-left text-xs'>
+        {cartItem.desc}
+      </span>
+    </p>
   ) : (
     <div></div>
   );

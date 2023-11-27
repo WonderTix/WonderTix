@@ -5,6 +5,7 @@ import * as ReactDOM from 'react-dom';
 import Seasonaltickets from './Seasonalt';
 
 let container : HTMLDivElement;
+
 beforeEach(() => {
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -27,7 +28,7 @@ it('Seasonal Tickets Section renders with all text', () => {
   'Redeem your Sometimes Tickets for any Weds, Thurs, & Saturday Matinee' +
   ' performances.3-4 Sometimes TicketsSubscribe');
   expect(check[6].textContent).toBe('Preview SubscriptionsStarting at$69' +
-  'These tickets can only be redeemed  for preview performances (prior ' +
+  'These tickets can only be redeemed for preview performances (prior ' +
   'to Opening Night).3-4 Preview TicketsSubscribe');
   expect(check[8].textContent).toBe('More Details');
 });
