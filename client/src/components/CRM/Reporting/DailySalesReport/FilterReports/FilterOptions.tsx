@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 interface FilterOptionsProps {
   selectedView: string;
@@ -47,6 +47,7 @@ const FilterOptions: React.FC<FilterOptionsProps> = ({
             name='View'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            checked={selectedView === 'CustomDate'}
             onChange={() => onViewChange('CustomDate')}
           />
           <label htmlFor='CustomDate' className='text-sm font-medium leading-6'>

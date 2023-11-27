@@ -23,6 +23,7 @@ const FilterEventCode: React.FC<FilterEventCodeProps> = ({
             className='h-4 w-4 border-gray-300'
             checked={showGLCode}
             onChange={() => onShowGLCodeChange(true)}
+            disabled
           />
           <label htmlFor='GL-Yes' className='block text-sm font-medium leading-6'>
             Yes
@@ -36,6 +37,7 @@ const FilterEventCode: React.FC<FilterEventCodeProps> = ({
             className='h-4 w-4 border-gray-300'
             checked={!showGLCode}
             onChange={() => onShowGLCodeChange(false)}
+            disabled
           />
           <label htmlFor='GL-No' className='block text-sm font-medium leading-6'>
             No

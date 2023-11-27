@@ -15,6 +15,7 @@ const DailySalesReport = (): React.ReactElement => {
   const [selectedBeginDate, setSelectedBeginDate] = useState('');
   const [showPriceLevelDetail, setShowPriceLevelDetail] = useState(false);
   const [showScheduledReports, setShowScheduledReports] = useState(false);
+  const [viewOption, setViewOption] = useState<'Today' | 'Yesterday' | 'CustomDate'>('Today');
 
   const handleGenerateClick = (beginDate: string, endDate: string, showPriceLevel: boolean): void => {
     setSelectedBeginDate(beginDate);
@@ -117,7 +118,15 @@ const DailySalesReport = (): React.ReactElement => {
           </h1>
         </div>
         <div className='flex md:flex-row md:items-start sm:flex-col sm:items-center justify-start'>
-          {showFilter && <FilterReports onGenerateClick={handleGenerateClick} />}
+          {showFilter && (
+            <FilterReports
+              onGenerateClick={handleGenerateClick}
+              viewOption={viewOption}
+              setViewOption={setViewOption}
+              showPriceLevelDetail={showPriceLevelDetail}
+              setShowPriceLevelDetail={setShowPriceLevelDetail}
+            />
+          )}
           <div className='h-full w-full flex-grow-1 bg-white rounded-md shadow-xl'>
             {showTools && tools()}
           </div>
