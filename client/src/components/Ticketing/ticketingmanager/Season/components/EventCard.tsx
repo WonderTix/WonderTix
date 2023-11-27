@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {getImageDefault} from '../../../../../utils/imageURLValidation';
 import {useNavigate} from 'react-router';
-import {SeasonImage} from '../seasonUtils';
+import {EventImage} from '../../../../../utils/imageURLValidation';
 
 interface EventCardProps {
   name: string;
@@ -28,15 +28,18 @@ const EventCard = (props: EventCardProps) => {
   const navigate = useNavigate();
 
   return (
-    <div data-testid='season-event-card' className='flex flex-col items-center bg-gray-200 rounded-xl border-8 border-solid border-zinc-300 mb-3 p-3 min-[768px]:flex-row min-[768px]:justify-between'>
+    <div
+      data-testid='season-event-card'
+      className='flex flex-col items-center bg-gray-200 rounded-xl border-8 border-solid border-zinc-300 mb-3 p-3 min-[768px]:flex-row min-[768px]:justify-between'
+    >
       <article className='flex flex-col gap-3 items-center justify-center min-[768px]:flex-row'>
         <div id='event-image-container' className='w-36'>
-          <SeasonImage
+          <EventImage
             className='h-auto'
             src={
               imageurl === 'Default Event Image' ? getImageDefault() : imageurl
             }
-            alt={`Cover photo for ${name} event`}
+            title={`${name}`}
           />
         </div>
         <h3 className='text-3xl font-bold'>{name}</h3>
