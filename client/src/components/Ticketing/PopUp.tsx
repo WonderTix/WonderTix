@@ -75,7 +75,7 @@ const PopUp = ({
       if (event.key === 'Escape') {
         if (handleClose && (showClose || showSecondary)) {
           handleClose(event);
-        } else {
+        } else if (handleProceed) {
           handleProceed(event);
         }
       }
