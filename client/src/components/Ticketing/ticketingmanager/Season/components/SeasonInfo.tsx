@@ -12,6 +12,7 @@ import {
 import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
+import {SeasonTicketTypeUpdateTable} from './utils/SeasonTicketTypeUpdateTable';
 
 const SeasonInfo = (props: SeasonProps) => {
   const {
@@ -181,7 +182,7 @@ const SeasonInfo = (props: SeasonProps) => {
         </article>
       </section>
       <div className='grid grid-cols-12'>
-        <div className='flex flex-col gap-3 col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
+        <div className='flex flex-col gap-3 col-span-12 mb-5 text-center tab:text-start lg:col-span-2'>
           <label htmlFor='seasonName'>
             Season Name:
             <input
@@ -244,13 +245,18 @@ const SeasonInfo = (props: SeasonProps) => {
             </div>
           </label>
         </div>
-        <article className='col-span-12 tab:col-span-6'>
+        <article className='col-span-12 lg:col-span-2 pl-2'>
           <SeasonImage
             className='h-auto max-w-[175px] mx-auto mt-5'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
         </article>
+        <div className='pl-2 col-span-12 lg:col-span-8 h-[100%]'>
+          <div className='flex flex-col justify-center m-auto col-span-12 lg:col-span-8 rounded-lg p-3 w-[100%] h-[100%]'>
+            <SeasonTicketTypeUpdateTable/>
+          </div>
+        </div>
       </div>
     </form>
   ) : (
