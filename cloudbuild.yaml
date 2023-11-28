@@ -281,6 +281,9 @@ steps:
     env:
       - 'CACHE=cache-package.json'
       - 'CURRENT=package.json'
+    secretEnv:
+      - 'ENV'
+      - 'NPM_CACHE'
 
 options:
   machineType: 'E2_HIGHCPU_8'
