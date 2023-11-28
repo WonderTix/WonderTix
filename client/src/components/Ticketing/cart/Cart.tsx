@@ -153,7 +153,7 @@ const Cart = (): ReactElement => {
   };
 
   return (
-    <main className='flex flex-col items-center h-full py-[5rem] px-[1rem] tab:px-[5rem] bg-zinc-200'>
+    <main className='flex flex-col items-center min-h-[calc(100vh-233px)] md:min-h-[calc(100vh-142px)] h-full py-[5rem] px-[1rem] tab:px-[5rem] bg-zinc-200'>
       <button
         onClick={() => navigate('/')}
         className='bg-blue-500 mt-10 mb-7 hover:bg-blue-600 px-3 py-2 rounded-xl flex items-center gap-1 self-start text-white'

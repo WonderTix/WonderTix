@@ -69,7 +69,7 @@ const EventShowings = (): ReactElement => {
           )}),url(${getImageDefault()})`,
         }}
       >
-        <div className='flex flex-col gap-9 items-center backdrop-blur-sm bg-zinc-900/80 px-[1rem] py-[5rem] tab:px-[5rem] md:px-[8rem]'>
+        <div className='flex flex-col gap-9 min-h-[calc(100vh-233px)] md:min-h-[calc(100vh-142px)] items-center backdrop-blur-sm bg-zinc-900/80 px-[1rem] py-[5rem] tab:px-[5rem] md:px-[8rem]'>
           <button
             onClick={() => navigate('/')}
             className='bg-blue-500 mt-10 hover:bg-blue-600 px-3 py-2 rounded-xl flex items-center gap-1 self-start text-white'
