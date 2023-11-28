@@ -81,13 +81,6 @@ export class EventsInfo {
   }
 }
 
-export const EventsInfo1 = new EventsInfo(EventsInfoTemplate1);
-export const EventsInfo2 = new EventsInfo(EventsInfoTemplate2);
-export const EventsInfo3 = new EventsInfo(EventsInfoTemplate3);
-export const EventsInfo4 = new EventsInfo(EventsInfoTemplate4);
-export const EventsInfo5 = new EventsInfo(EventsInfoTemplate5);
-export const EventsInfo6 = new EventsInfo(EventsInfoTemplate6);
-
 //  This is the passin data template for adding/editing a new showing
 export interface ShowingInfo {
   showingDate: string;
@@ -149,14 +142,14 @@ export interface SeasonsInfo {
   seasonName: 'TestName',
   seasonStart: '2020-02-02',
   seasonEnd: '2020-03-02',
-  seasonImgURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg'
+  seasonImgURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
  };
 
  export const SeasonInfo2: SeasonsInfo = {
   seasonName: 'NewName',
   seasonStart: '2021-02-02',
   seasonEnd: '2021-03-02',
-  seasonImgURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg'
+  seasonImgURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
  };
 
 // Credit card info, to be used in conjunction with the Stripe test card numbers
