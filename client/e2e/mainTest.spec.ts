@@ -3,7 +3,8 @@ import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
 import {ContactPage} from './pages/contactPage';
 import {DoorListPage} from './pages/doorListPage';
-import {EventsInfo5, EventsInfo6, ShowingInfo2, ShowingInfo5, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
+import {EventsInfoTemplate5, EventsInfoTemplate6, ShowingInfo2, ShowingInfo5} from './testData/ConstsPackage';
+import {EventsInfo, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {
@@ -25,7 +26,7 @@ test('check cart after ticket add', async ({page}) => {
   test.setTimeout(60000);
   const events = new EventsPage(page);
   const main = new MainPage(page);
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   await events.goto();
   await events.addnewevent(currentEvent);
@@ -56,17 +57,17 @@ test('check cart after ticket add', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
 // Order a ticket through Stripe using a valid customer and card and verify success message appears
-test('check stripe purchase', async ({page}) => {
-  test.setTimeout(80000);
+test('check stripe purchase', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
+  test.setTimeout(80000 + (timeoutAdd * 2)); // There are two places with extended timeouts
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -76,23 +77,23 @@ test('check stripe purchase', async ({page}) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
-    await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000});
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {timeoutAdd: timeoutAdd});
+    await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo5.eventFullName);
-    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo5.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
 // Order a ticket through Stripe and ensure the contact appears on the Contact page.
 // The delete contact function is not working, so contacts cannot be cleared after order.
-test('check contact is added after order', async ({page}) => {
+test('check contact is added after order', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -103,24 +104,24 @@ test('check contact is added after order', async ({page}) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {timeoutAdd: timeoutAdd});
     await contacts.goto();
     await contacts.searchCustomer(currentPatron);
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo5.eventFullName);
-    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo5.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
 // Select an accommodation during order and make sure it appears on the contact page with the associated person
-test('check order accommodations', async ({page}) => {
-  test.setTimeout(80000);
+test('check order accommodations', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
+  test.setTimeout(80000 + timeoutAdd);
   const currentPatron = JaneDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   const events = new EventsPage(page);
   const main = new MainPage(page);
@@ -131,15 +132,14 @@ test('check order accommodations', async ({page}) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent);
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {timeoutAdd: timeoutAdd});
     await contacts.goto();
     await contacts.searchCustomer(currentPatron);
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(EventsInfo5.eventFullName);
-    // await events.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-    await events.deleteTheEvent(EventsInfo5.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventFullName);
+    await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
@@ -149,7 +149,7 @@ test('check ticket inc/dec in cart', async ({page}) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
   const quantity = 2;
-  const currentEvent = EventsInfo5;
+  const currentEvent = new EventsInfo(EventsInfoTemplate5);
   const currentShowing = ShowingInfo2;
   await events.goto();
   await events.addnewevent(currentEvent);
@@ -172,17 +172,17 @@ test('check ticket inc/dec in cart', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });
 
 // Order a ticket through stripe and ensure the ticket appears on the door list
-test('check order on door list', async ({page}) => {
-  test.setTimeout(100000);
+test('check order on door list', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
+  test.setTimeout(100000 + timeoutAdd);
   const currentPatron = JohnDoe;
   const currentCard = ValidVisaCredit;
-  const currentEvent = EventsInfo6;
+  const currentEvent = new EventsInfo(EventsInfoTemplate6);
   const currentShowing = ShowingInfo5;
   const quantity = 2;
   const events = new EventsPage(page);
@@ -194,14 +194,13 @@ test('check order on door list', async ({page}) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent, quantity);
+    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {qty: quantity, timeoutAdd: timeoutAdd});
     await doorList.goto();
     await doorList.searchShowing(currentEvent, currentShowing);
     await doorList.checkOrder(currentPatron, quantity);
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent.eventFullName);
-    // await events.searchDeleteShowing(currentShowing.showingWholeDate);
     await events.deleteTheEvent(currentEvent.eventFullName);
   }
 });

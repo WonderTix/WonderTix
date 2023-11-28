@@ -2,6 +2,7 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {JsonObject} from "swagger-ui-express";
 
 const stripe = require('stripe')(process.env.PRIVATE_STRIPE_KEY);
 const endpointSecret = process.env.PRIVATE_STRIPE_WEBHOOK;
@@ -10,143 +11,86 @@ const prisma = extendPrismaClient();
 export const donationController = Router();
 
 /**
- * @swagger
- * /2/donation/webhook:
- *   post:
- *     summary: Stripe webhook endpoint
- *     tags:
- *     - Donation
- *     requestBody:
- *       description: Stripe webhook event
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/StripeWebhook'
- *     responses:
- *       200:
- *         description: donation updated successfully.
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
+ * Donation checkout through Stripe
  */
-donationController.post('/webhook', async (req: Request, res: Response) => {
-  try {
-    let event = req.body;
-    if (endpointSecret) {
-      const signature = req.headers['stripe-signature'];
-      try {
-        event = stripe.webhooks.constructEvent(
-            req.body,
-            signature,
-            endpointSecret,
-        );
-      } catch (err: any) {
-        console.log(`⚠️  Webhook signature verification failed.`, err.message);
-        return res.sendStatus(400);
-      }
-    }
-    switch (event.type) {
-      case 'payment_intent.created':
-        const paymentIntent = event.data.object;
-        console.log('PaymentIntent was successful!');
-        console.log(paymentIntent);
-        break;
-      case 'payment_intent.succeeded':
-        const paymentIntentSucceeded = event.data.object;
-        console.log('PaymentIntent was successful!');
-        console.log(paymentIntentSucceeded);
-        break;
-      case 'charge.succeeded':
-        const charge = event.data.object;
-        console.log('Charge was successful!');
-        console.log(charge);
-        break;
-      case 'payment_method.attached':
-        const paymentMethod = event.data.object;
-        console.log('PaymentMethod was attached to a Customer!');
-        console.log(paymentMethod);
-        break;
-      default:
-        console.log(`Unhandled event type ${event.type}.`);
-    }
-    res.json({received: true});
-  } catch (err: any) {
-    console.log(err);
-    res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-});
+donationController.post('/checkout', async (req: Request, res: Response) => {
+    const {cartItems, formData, donation} = req.body;
+    const {firstName, lastName, streetAddress, postalCode, country, phone, email, visitSource, seatingAcc, comments, optIn} = formData;
+    const {donationAmount} = donation;
 
-/**
- * @swagger
- * /2/donation:
- *   post:
- *     summary: Create a donation
- *     tags:
- *     - Donation
- *     requestBody:
- *       description: Updated donation information
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/requestBodies/Donation'
- *     responses:
- *       201:
- *         description: donation updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Donation'
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Error message from the server.
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-donationController.post('/', async (req: Request, res: Response) => {
-  try {
-    const donation = prisma.donations.create({
-      data: {
-        contactid_fk: req.body.contact,
-        isanonymous: req.body.isanonymous,
-        amount: req.body.amount,
-        donorname: req.body.donorname,
-        frequency: req.body.frequency,
-        comments: req.body.comments,
-        payment_intent: req.body.payment_intent,
-        refund_intent: req.body.refund_intent,
-        donationdate: req.body.donationdate,
-      },
+    const customer = await prisma.contacts.findFirst({
+        where: {
+            email,
+        },
     });
-    res.status(201).json(donation);
 
-    return;
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
-      return;
+    let customerID: number;
+if (!customer) {
+        const newCustomer = await prisma.contacts.create({
+            data: {
+                firstname: firstName,
+                lastname: lastName,
+                email: email,
+                address: streetAddress,
+                phone: phone,
+                seatingaccom: seatingAcc,
+                newsletter: optIn,
+                donations: {
+                    create: {
+                        amount: donationAmount,
+                        comments: comments,
+                        donationdate: new Date() as unknown as number,
+                    },
+                }
+            },
+            select: {
+                contactid: true,
+            },
+        });
+        customerID = newCustomer.contactid;
+    } else {
+        const updatedCustomer = await prisma.contacts.update({
+            where: {
+                contactid: customer.contactid,
+            },
+            data: {
+                firstname: firstName,
+                lastname: lastName,
+                email: email,
+                address: streetAddress,
+                phone: phone,
+                seatingaccom: seatingAcc,
+                newsletter: optIn,
+                donations: {
+                    create: {
+                        amount: donationAmount,
+                        comments: comments,
+                        donationdate: new Date() as unknown as number,
+                    },
+                }
+            },
+            select: {
+                contactid: true,
+            },
+        });
+        customerID = updatedCustomer.contactid;
     }
 
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    res.status(500).json({error: 'Internal Server Error'});
-  }
+    const expire = Math.round((new Date().getTime() + 1799990) / 1000);
+    const checkoutObject: JsonObject = {
+        payment_method_types: ['card'],
+        expires_at: expire,
+        mode: 'payment',
+        success_url: `${process.env.FRONTEND_URL}/success`,
+        cancel_url: `${process.env.FRONTEND_URL}`,
+        metadata: {
+            sessionType: '__donation',
+            customerID,
+            donation,
+        },
+    };
+    const session = await stripe.checkout.sessions.create(checkoutObject);
+    res.status(200).json({id: session.id});
 });
 
 donationController.use(checkJwt);

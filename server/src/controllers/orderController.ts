@@ -34,7 +34,16 @@ orderController.post(
           );
         // handle donation amount in metadata (will be a donation team task?)
         } else if (metaData.sessionType === '__donation') {
-        // donation is handled
+          // Save donation information to the database
+          await prisma.donations.create({
+            data: {
+              contactid_fk: metaData.customerID,
+              amount: metaData.donation,
+              donorname: metaData.donorname,
+              donationdate: new Date() as unknown as number,
+              payment_intent: object.payment_intent,
+            },
+          });
         }
         res.status(200).send();
         return;
@@ -216,7 +225,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         price: ordertotal,
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
-        orderdate: `${orderdate.toString().slice(4, 6)}/${orderdate.toString().slice(6, 8)}/${orderdate.toString().slice(0, 4)}`,
+        orderdate: `${orderdate.toString().slice(0, 4)}-${orderdate.toString().slice(4, 6)}-${orderdate.toString().slice(6, 8)}`,
         ...remainderOfOrder,
         showings: names,
       };

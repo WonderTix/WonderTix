@@ -1,7 +1,6 @@
 import Ticket from '../../interfaces/Ticket';
-import {buildResponse, response, parseIntToDate} from '../db';
+import {buildResponse, response, parseIntToDate, pool} from '../db';
 import TicketsState from '../../interfaces/TicketsState';
-import {pool} from '../db';
 
 // remove $ and parse to float
 // this should be done better
