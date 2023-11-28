@@ -6,8 +6,8 @@ import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 const DonationsByPaymentComponent = () => {
     // sample data for UI purposes
     const columns: GridColDef[] = [
-        {field: 'title', headerName: '', flex: 3},
-        {field: 'cost', headerName: 'Amount', flex: 1},
+        {field: 'title', headerName: '', flex: 3, headerClassName: 'bold-header'},
+        {field: 'cost', headerName: 'Amount', flex: 1, headerClassName: 'bold-header'},
     ];
 
     const rows = [
@@ -32,8 +32,11 @@ const DonationsByPaymentComponent = () => {
                 sx={{
                     'border': 'none',
                     '& .MuiDataGrid-cell': {
-                        fontSize: '16px',
+                        fontSize: '14px',
                         margin: '0px',
+                    },
+                    '& .bold-header': {
+                        fontWeight: 'bold',
                     },
                 }}
             />

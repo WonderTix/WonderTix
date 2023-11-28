@@ -14,9 +14,9 @@ const TransactionSummaryReport=() =>{
     const [filterData, setFilterData] = useState({
         startDate: new Date(),
         endDate: new Date(),
-      });
+        excDonationRecordTypes: 'None',
+    });
 
-      // the 2 functions below need reworking
     const handleFilterChange = (name, value) => {
         if (!submitted) {
             setFilterData({
