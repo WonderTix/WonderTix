@@ -44,13 +44,16 @@ export default function OnlyDonationPage(): ReactElement {
   const doCheckout = async (formData: CheckoutFormInfo) => {
     const stripe = await stripePromise;
     if (!stripe) return;
-    const response = await fetch(process.env.REACT_APP_API_2_URL + '/events/checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      process.env.REACT_APP_API_2_URL + '/events/checkout',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({cartItems: [], formData, donation: amount}),
       },
-      body: JSON.stringify({cartItems: [], formData, donation: amount}),
-    });
+    );
     const session = await response.json();
     const result = await stripe.redirectToCheckout({
       sessionId: session.id,
@@ -189,18 +192,21 @@ export default function OnlyDonationPage(): ReactElement {
           <div className='pt-3 pr-3'>
             <p>$</p>
           </div>
-            <input
-              placeholder={amount === 0 ? 'Other Amount': ''}
-              onChange={(e) => setAmount(+e.target.value)}
-              type='number'
-              className='appearance-none block bg-white border border-2 border-gray-300 text-gray-700 rounded-md pl-3 py-2 leading-5 focus:outline-none focus:ring focus:border-indigo-600 sm:text-lg'
-              value={amount || ''}
-            />
+          <input
+            placeholder={amount === 0 ? 'Other Amount' : ''}
+            onChange={(e) => setAmount(+e.target.value)}
+            type='number'
+            className='appearance-none block bg-white border border-2 border-gray-300 text-gray-700 rounded-md pl-3 py-2 leading-5 focus:outline-none focus:ring focus:border-indigo-600 sm:text-lg'
+            value={amount || ''}
+          />
         </div>
       </div>
       {/* Anonymous donation checkbox*/}
       <div className='flex flex-col w-full items-start gap-3 mt-2 mb-10'>
-        <label htmlFor='anonymous-checkbox' className='flex flex-row items-center gap-4 text-md text-zinc-700 '>
+        <label
+          htmlFor='anonymous-checkbox'
+          className='flex flex-row items-center gap-4 text-md text-zinc-700 '
+        >
           <input
             type='checkbox'
             onChange={(): void => setAnonymous(!anonymous)}
@@ -229,9 +235,11 @@ export default function OnlyDonationPage(): ReactElement {
       {/* Other ways to donate */}
       <div className='flex flex-col md:flex-row items-center min-w-full'>
         <div className='flex-1 p-4 text-xl'>
-          <div className='text-indigo-600 text-2xl md:px-10'>
-            <b>Other ways to donate</b>
-          </div>
+          <a href='/donate/donorbenefits'>
+            <div className='text-center text-indigo-600 text-4xl md:px-10 hover:text-indigo-800'>
+              <b>Donor Benefits</b>
+            </div>
+          </a>
         </div>
         <div className='flex'>
           <div className='py-4 px-10 text-sm'>
