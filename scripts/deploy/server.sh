@@ -42,18 +42,23 @@ function check_args() {
 
 check_args
 
-ROOT_URL=${ROOT_URL:-$SERVER_REVISION}          # use SERVER_REVISION if no ROOT_URL
-FRONTEND_URL=${FRONTEND_URL:-$CLIENT_REVISION}  # use CLIENT_REVISION if no FRONTEND_URL
+# Use second value if first is not set
+ROOT_URL=${ROOT_URL:-$SERVER_REVISION}
+FRONTEND_URL=${FRONTEND_URL:-$CLIENT_REVISION}
 
 # Handle optional args
 TAG_ARGS=()
 SUFFIX="${SHORT_SHA}"
+STRIPE_WEBHOOK="PRIVATE_STRIPE_WEBHOOK"
 if [ -n "${TAG}" ]; then
   TAG_ARGS+=(--no-traffic --tag "${TAG}")
   if [ "${TAG}" == "test" ]; then
     SUFFIX="${SUFFIX}-test"
+    STRIPE_WEBHOOK="TEST_STRIPE_WEBHOOK"
   fi
 fi
+
+echo "STRIPE_WEBHOOK value: ${STRIPE_WEBHOOK}"
 
 # Deploy the server
 gcloud run deploy "wtix-server-${ENV}" \
@@ -84,7 +89,7 @@ gcloud run deploy "wtix-server-${ENV}" \
   DB_PORT=DB_PORT:${ENV},\
   DB_USER=DB_USER:${ENV},\
   PRIVATE_STRIPE_KEY=PRIVATE_STRIPE_KEY:${ENV},\
-  PRIVATE_STRIPE_WEBHOOK=PRIVATE_STRIPE_WEBHOOK:${ENV}" \
+  PRIVATE_STRIPE_WEBHOOK=${STRIPE_WEBHOOK}:${ENV}" \
   "${TAG_ARGS[@]}"
 
 echo "Deployment of wtix-server-${ENV} completed successfully."
