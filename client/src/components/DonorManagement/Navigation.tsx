@@ -118,7 +118,7 @@ const Navigation = () => {
                     </svg>
                   </div>
                 </button>
-                {profile && <AdminNavDropdown marginClass='left-0 mt-3' />}
+                {profile && <AdminNavDropdown marginClass='mt-3' />}
               </div>
             </div>
             <div className="text-gray-600 mr-8 visible md:hidden relative" onClick={() => setShowMobileMenu(!showMobileMenu)}>
