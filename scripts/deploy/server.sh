@@ -46,10 +46,11 @@ check_args
 ROOT_URL=${ROOT_URL:-$SERVER_REVISION}
 FRONTEND_URL=${FRONTEND_URL:-$CLIENT_REVISION}
 
-# Handle optional args
+# Handle optional args for test revisions
 TAG_ARGS=()
 SUFFIX="${SHORT_SHA}"
 STRIPE_WEBHOOK="PRIVATE_STRIPE_WEBHOOK"
+
 if [ -n "${TAG}" ]; then
   TAG_ARGS+=(--no-traffic --tag "${TAG}")
   if [ "${TAG}" == "test" ]; then
@@ -57,8 +58,6 @@ if [ -n "${TAG}" ]; then
     STRIPE_WEBHOOK="TEST_STRIPE_WEBHOOK"
   fi
 fi
-
-echo "STRIPE_WEBHOOK value: ${STRIPE_WEBHOOK}"
 
 # Deploy the server
 gcloud run deploy "wtix-server-${ENV}" \
