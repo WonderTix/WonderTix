@@ -1,7 +1,7 @@
 steps:
 
   # Build Docker image for server
-  - name: 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest'
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-server'
     entrypoint: 'bash'
     args: ['scripts/build/server.sh']

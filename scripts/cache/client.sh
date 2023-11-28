@@ -6,6 +6,8 @@ function check_args() {
   local required=(
     "CACHE"
     "CURRENT"
+    "ENV"
+    "NPM_CACHE"
   )
 
   for arg in "${required[@]}"; do
@@ -29,7 +31,7 @@ else
   echo "Dependencies have changed. Repackaging node_modules..."
   if tar czf node_modules.tar.gz node_modules; then
     echo "Sending new tarball to GCS..."
-    gsutil cp node_modules.tar.gz gs://wtix-npm-cache/client/node_modules.tar.gz
+    gsutil cp node_modules.tar.gz ${NPM_CACHE}/client/${ENV}/node_modules.tar.gz
   else
     echo "Failed to create tarball."
   fi

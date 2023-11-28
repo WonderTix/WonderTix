@@ -4,12 +4,17 @@ steps:
   - name: 'gcr.io/cloud-builders/gsutil'
     id: 'pull-npm-cache'
     waitFor: ['-']
+    entrypoint: 'bash'
     args:
-      - '-m'
-      - 'cp'
-      - 'gs://wtix-npm-cache/client/node_modules.tar.gz'
-      - 'gs://wtix-npm-cache/client/cache-package.json'
-      - '/workspace/client/'
+      - '-c'
+      - |
+        gsutil -m cp \
+        $${NPM_CACHE}/client/$${ENV}/node_modules.tar.gz \
+        $${NPM_CACHE}/client/$${ENV}/cache-package.json \
+        client
+    secretEnv:
+      - 'ENV'
+      - 'NPM_CACHE'
 
   # Decompress and unarchive node_modules tarball
   - name: 'ubuntu'
@@ -36,7 +41,7 @@ steps:
     args: ['pull', 'mcr.microsoft.com/playwright:v1.36.2-jammy']
  
   # Build server image
-  - name: 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest'
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-test-server'
     waitFor: ['-']
     entrypoint: 'bash'
@@ -70,7 +75,7 @@ steps:
       - 'SQL_INSTANCE'
 
   # Build client image with build args for test revision
-  - name: 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest'
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-test-client'
     waitFor: ['-']
     entrypoint: 'bash'
@@ -203,7 +208,7 @@ steps:
       - 'REGION'
  
   # Build client image using normal args
-  - name: 'us-west2-docker.pkg.dev/wondertix-app/kaniko-bash/kaniko-bash:latest'
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-client'
     waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     entrypoint: 'bash'
@@ -303,6 +308,8 @@ availableSecrets:
     env: 'FRONTEND_URL'
   - versionName: projects/${PROJECT_ID}/secrets/KANIKO_CACHE/versions/${_ENV}
     env: 'KANIKO_CACHE'
+  - versionName: projects/${PROJECT_ID}/secrets/NPM_CACHE/versions/${_ENV}
+    env: 'NPM_CACHE'
   - versionName: projects/${PROJECT_ID}/secrets/PUBLIC_STRIPE_KEY/versions/${_ENV}
     env: 'PUBLIC_STRIPE_KEY'
   - versionName: projects/${PROJECT_ID}/secrets/REGION/versions/${_ENV}
