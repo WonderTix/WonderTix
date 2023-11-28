@@ -3,8 +3,8 @@ import {SeasonInfo} from './seasonCommon';
 import {SeasonImage} from '../../seasonUtils';
 import {FormControlLabel, Switch} from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
-import {SeasonTicketTypeUpdateTable} from './SeasonTicketTypeUpdateTable';
 import {FieldArray} from 'formik';
+import {SeasonTicketViewTable} from '../SeasonTicketViewTable';
 
 const MONTHS = [
   'January',
@@ -140,9 +140,9 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
             alt={`Cover photo for ${name} season`}
           />
         </div>
-        <div className='pl-2 col-span-12 lg:col-span-8'>
-          <div className='flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-8 rounded-lg p-3 w-[100%] h-[100%] shadow-xl'>
-            <SeasonTicketTypeUpdateTable />
+        <div className='pl-2 col-span-12 lg:col-span-8 h-[100%]'>
+          <div className='flex flex-col justify-center m-auto col-span-12 lg:col-span-8 rounded-lg p-3 w-[100%] h-[100%]'>
+            <SeasonTicketViewTable />
           </div>
         </div>
       </div>
