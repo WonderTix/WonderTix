@@ -8,10 +8,6 @@ import {InvalidInputError} from './eventInstanceController.service';
 const prisma = extendPrismaClient();
 export const seasonTicketTypePriceDefaultController = Router();
 
-// All further routes require appropriate authentication
-seasonTicketTypePriceDefaultController.use(checkJwt);
-seasonTicketTypePriceDefaultController.use(checkScopes);
-
 interface SeasonTicketTypePriceDefaultRequestItem {
     tickettypeid_fk: number;
     price: number;
@@ -65,6 +61,9 @@ seasonTicketTypePriceDefaultController.get('/:seasonid', async (req: Request, re
   }
 });
 
+// All further routes require appropriate authentication
+seasonTicketTypePriceDefaultController.use(checkJwt);
+seasonTicketTypePriceDefaultController.use(checkScopes);
 
 /**
  * @swagger

@@ -59,22 +59,29 @@ const SeasonContainer = () => {
   };
 
   const handleSeasonTicketType = async () => {
-    fetch(process.env.REACT_APP_API_2_URL + `season-ticket-type-price-default/${seasonId}`, {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+    try {
+      const seasonTicketTypePriceRes = await fetch(
+        process.env.REACT_APP_API_2_URL +
+          `/season-ticket-type-price-default/${seasonId}`,
+        {
+          credentials: 'include',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
         },
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      setSeasonTicketData(data);
-      console.log('Season Ticket Data', data);
-    })
-    .catch((error) => {
-      console.error('Error Fetching Season Ticket Data:', error);
-    });
+      );
+
+      if (!seasonTicketTypePriceRes.ok) {
+        throw new Error('Failed to get all event information');
+      }
+
+      const seasonTicketTypeData = await seasonTicketTypePriceRes.json();
+      console.log(seasonTicketTypeData);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
