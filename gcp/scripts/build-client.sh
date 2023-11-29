@@ -1,38 +1,21 @@
 #!/bin/bash
 # build-client.sh: Use Kaniko to build the client with necessary args.
 
-function check_args() {
-  local missing=0
-  local required=(
-    "ARTIFACTS"
-    "ENV"
-    "SHORT_SHA"
-    "AUTH0_CLIENT_SECRET"
-    "AUTH0_CLIENT_ID"
-    "AUTH0_URL"
-    "PUBLIC_STRIPE_KEY"
-  )
+required=(
+  "ARTIFACTS"
+  "ENV"
+  "SHORT_SHA"
+  "AUTH0_CLIENT_SECRET"
+  "AUTH0_CLIENT_ID"
+  "AUTH0_URL"
+  "PUBLIC_STRIPE_KEY"
+)
+source ${CHECK_ARGS} "${required[@]}"
 
-  for arg in "${required[@]}"; do
-    if [ -z "${!arg}" ]; then
-      echo "Error: Missing required environment variable '$arg'"
-      ((missing++))
-    fi
-  done
-
-  # Use revision URL if deploying with a tag
-  if [ -z "${ROOT_URL}" ] && [ -z "${SERVER_REVISION}" ]; then
-    echo "Error: At least one of 'ROOT_URL' or 'SERVER_REVISION' must be set."
-    ((missing++))
-  fi
-
-  if [ $missing -ne 0 ]; then
-    echo "Error: One or more required environment variables are missing."
-    exit 1
-  fi
-}
-
-check_args
+if [ -z "${ROOT_URL}" ] && [ -z "${SERVER_REVISION}" ]; then
+  echo "Error: At least one of 'ROOT_URL' or 'SERVER_REVISION' must be set."
+  exit 1
+fi
 
 # Use SERVER_REVISION if no ROOT_URL
 URL=${ROOT_URL:-$SERVER_REVISION}

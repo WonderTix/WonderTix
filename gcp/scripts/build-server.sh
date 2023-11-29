@@ -1,14 +1,13 @@
 #!/bin/bash
 # build-server.sh: Use Kaniko to build the server.
 
-function check_args() {
-  local missing=0
-  local required=(
-    "ARTIFACTS"
-    "ENV"
-    "KANIKO_CACHE"
-    "SHORT_SHA"
-  )
+required=(
+  "ARTIFACTS"
+  "ENV"
+  "KANIKO_CACHE"
+  "SHORT_SHA"
+)
+source ${CHECK_ARGS} "${required[@]}"
 
   for arg in "${required[@]}"; do
     if [ -z "${!arg}" ]; then

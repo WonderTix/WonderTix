@@ -1,29 +1,13 @@
 #!/bin/bash
 # push-npm-cache: Conditionally repackage `node_modules` and send to GCS.
 
-function check_args() {
-  local missing=0
-  local required=(
-    "CACHE"
-    "CURRENT"
-    "ENV"
-    "NPM_CACHE"
-  )
-
-  for arg in "${required[@]}"; do
-    if [ -z "${!arg}" ]; then
-      echo "Error: Missing required environment variable '$arg'"
-      ((missing++))
-    fi
-  done
-
-  if [ $missing -ne 0 ]; then
-    echo "Error: One or more required environment variables are missing."
-    exit 1
-  fi
-}
-
-check_args
+required=(
+  "CACHE"
+  "CURRENT"
+  "ENV"
+  "NPM_CACHE"
+)
+source ${CHECK_ARGS} "${required[@]}"
 
 # Compare cached package.json to current
 if ! cmp --silent ${CACHE} ${CURRENT}; then

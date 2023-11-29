@@ -9,6 +9,7 @@ steps:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'KANIKO_CACHE'
 
@@ -22,6 +23,7 @@ steps:
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_URL'
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'FRONTEND_URL'
       - 'REGION'
@@ -41,6 +43,7 @@ steps:
       - 'PERCENTAGE=100'
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'REGION'
 
@@ -51,6 +54,8 @@ availableSecrets:
     env: 'ARTIFACTS'
   - versionName: projects/${PROJECT_ID}/secrets/AUTH0_URL/versions/${_ENV}
     env: 'AUTH0_URL'
+  - versionName: projects/${PROJECT_ID}/secrets/CHECK_ARGS/versions/${_ENV}
+    env: 'CHECK_ARGS'
   - versionName: projects/${PROJECT_ID}/secrets/ENV/versions/${_ENV}
     env: 'ENV'
   - versionName: projects/${PROJECT_ID}/secrets/FRONTEND_URL/versions/${_ENV}

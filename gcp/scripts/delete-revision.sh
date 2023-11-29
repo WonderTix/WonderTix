@@ -1,29 +1,13 @@
 #!/bin/bash
 # delete-revision.sh: Use `gcloud` to delete a Cloud Run revision.
 
-function check_args() {
-  local missing=0
-  local required=(
-    "ENV"
-    "IMAGE"
-    "REGION"
-    "SHORT_SHA"
-  )
-
-  for arg in "${required[@]}"; do
-    if [ -z "${!arg}" ]; then
-      echo "Error: Missing required environment variable '$arg'"
-      ((missing++))
-    fi
-  done
-
-  if [ $missing -ne 0 ]; then
-    echo "Error: One or more required environment variables are missing."
-    exit 1
-  fi
-}
-
-check_args
+required=(
+  "ENV"
+  "IMAGE"
+  "REGION"
+  "SHORT_SHA"
+)
+source ${CHECK_ARGS} "${required[@]}"
 
 # Handle optional argument (ie. for test revisions)
 if [ -n "${SUFFIX}" ]; then
