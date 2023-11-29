@@ -29,7 +29,7 @@ steps:
     waitFor: ['expand-npm-cache']
     dir: 'client'
     entrypoint: 'bash'
-    args: ['/workspace/scripts/install/client.sh']
+    args: ['/workspace/scripts/install-client.sh']
     env:
       - 'CACHE=cache-package.json'
       - 'CURRENT=package.json'
@@ -45,7 +45,7 @@ steps:
     id: 'build-test-server'
     waitFor: ['-']
     entrypoint: 'bash'
-    args: ['/workspace/scripts/build/server.sh']
+    args: ['scripts/build-server.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -58,7 +58,7 @@ steps:
     id: 'deploy-test-server'
     waitFor: ['build-test-server']
     entrypoint: 'bash'
-    args: ['scripts/deploy/server.sh']
+    args: ['scripts/deploy-server.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
       - 'TAG=test'
@@ -79,7 +79,7 @@ steps:
     id: 'build-test-client'
     waitFor: ['-']
     entrypoint: 'bash'
-    args: ['scripts/build/client.sh']
+    args: ['scripts/build-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -97,7 +97,7 @@ steps:
     id: 'deploy-test-client'
     waitFor: ['build-test-server', 'build-test-client']
     entrypoint: 'bash'
-    args: ['scripts/deploy/client.sh']
+    args: ['scripts/deploy-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
       - 'TAG=test'
@@ -115,7 +115,7 @@ steps:
     waitFor: ['npm-install-client', 'deploy-test-client']
     dir: 'client/e2e'
     entrypoint: 'bash'
-    args: ['/workspace/scripts/test/client.sh']
+    args: ['/workspace/scripts/test-client.sh']
     env:
       - 'BROWSER=firefox'
       - 'CONFIG=../playwright.config.ts'
@@ -131,7 +131,7 @@ steps:
     waitFor: ['npm-install-client', 'deploy-test-client']
     dir: 'client/e2e'
     entrypoint: 'bash'
-    args: ['/workspace/scripts/test/client.sh']
+    args: ['/workspace/scripts/test-client.sh']
     env:
       - 'BROWSER=chromium'
       - 'CONFIG=../playwright.config.ts'
@@ -147,7 +147,7 @@ steps:
     waitFor: ['npm-install-client', 'deploy-test-client']
     dir: 'client/e2e'
     entrypoint: 'bash'
-    args: ['/workspace/scripts/test/client.sh']
+    args: ['/workspace/scripts/test-client.sh']
     env:
       - 'BROWSER=webkit'
       - 'CONFIG=../playwright.config.ts'
@@ -162,7 +162,7 @@ steps:
     id: 'deploy-server'
     waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     entrypoint: 'bash'
-    args: ['scripts/deploy/server.sh']
+    args: ['scripts/deploy-server.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -182,12 +182,11 @@ steps:
     id: 'send-server-traffic'
     waitFor: ['deploy-server']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run services update-traffic wtix-server-$${ENV} \
-        --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100 \
-        --region $${REGION}
+    args: ['scripts/send-traffic.sh']
+    env:
+      - 'IMAGE=server'
+      - 'PERCENTAGE=100'
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ENV'
       - 'REGION'
@@ -212,7 +211,7 @@ steps:
     id: 'build-client'
     waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     entrypoint: 'bash'
-    args: ['scripts/build/client.sh']
+    args: ['scripts/build-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -230,7 +229,7 @@ steps:
     id: 'deploy-client'
     waitFor: ['build-client', 'send-server-traffic']
     entrypoint: 'bash'
-    args: ['scripts/deploy/client.sh']
+    args: ['scripts/deploy-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -246,12 +245,11 @@ steps:
     id: 'send-client-traffic'
     waitFor: ['deploy-client']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run services update-traffic wtix-client-$${ENV} \
-        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100 \
-        --region $${REGION}
+    args: ['scripts/send-traffic.sh']
+    env:
+      - 'IMAGE=client'
+      - 'PERCENTAGE=100'
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ENV'
       - 'REGION'
@@ -277,7 +275,7 @@ steps:
     waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     dir: 'client'
     entrypoint: 'bash'
-    args: ['/workspace/scripts/cache/client.sh']
+    args: ['/workspace/scripts/push-npm-cache.sh']
     env:
       - 'CACHE=cache-package.json'
       - 'CURRENT=package.json'
