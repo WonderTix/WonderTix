@@ -1,10 +1,9 @@
 /* eslint-disable require-jsdoc */
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 function generateShortUUID(length = 6) {
   return uuidv4().replace(/-/g, '').substring(0, length);
 }
-
 
 // Enums for the standard dropdowns
 export enum Accommodations {
@@ -14,7 +13,7 @@ export enum Accommodations {
   Ground = 'First/Ground floor',
   ASL = 'ASL Interpreter',
   Wide = 'Wide Seats',
-  Other = 'Other'
+  Other = 'Other',
 }
 
 // This is the passin data template for the test:addNewEvents in EventsPage.spect.ts.
@@ -23,7 +22,7 @@ export interface EventInfoTemplate {
   eventDescription: string;
   eventURL: string;
   eventFullName: string;
- }
+}
 
 // This is an instance of the object
 export const EventInfoTemplate1: EventInfoTemplate = {
@@ -36,36 +35,49 @@ export const EventInfoTemplate1: EventInfoTemplate = {
 export const EventInfoTemplate2: EventInfoTemplate = {
   eventName: 'Test_event',
   eventDescription: 'An event for testing',
-  eventURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
-  eventFullName: 'Test_event Playbill Test_event Description An event for testing',
+  eventURL:
+    'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
+  eventFullName:
+    'Test_event Playbill Test_event Description An event for testing',
 };
 
 export const EventInfoTemplate3: EventInfoTemplate = {
   eventName: 'The Crucible1',
-  eventDescription: '111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-  eventURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
-  eventFullName: 'The Crucible1 Playbill The Crucible1 Description 111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventDescription:
+    '111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventURL:
+    'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
+  eventFullName:
+    'The Crucible1 Playbill The Crucible1 Description 111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
 export const EventInfoTemplate4: EventInfoTemplate = {
   eventName: 'The Crucible',
-  eventDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventDescription:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   eventURL: 'https://upload.wikimedia.org/wikipedia/en/7/75/Cruciblecover.jpg',
-  eventFullName: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventFullName:
+    'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
 export const EventInfoTemplate5: EventInfoTemplate = {
   eventName: 'The Martyr',
-  eventDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-  eventURL: 'https://upload.wikimedia.org/wikipedia/commons/9/9e/Martirio_de_San_Esteban_%28Correa_de_Vivar%29.jpg',
-  eventFullName: 'The Martyr Playbill The Martyr Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventDescription:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventURL:
+    'https://upload.wikimedia.org/wikipedia/commons/9/9e/Martirio_de_San_Esteban_%28Correa_de_Vivar%29.jpg',
+  eventFullName:
+    'The Martyr Playbill The Martyr Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
 export const EventInfoTemplate6: EventInfoTemplate = {
   eventName: 'Purple',
-  eventDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-  eventURL: 'https://upload.wikimedia.org/wikipedia/en/6/62/Barney%27s-Great-Adventure-Poster.jpeg',
-  eventFullName: 'Purple Playbill Purple Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventDescription:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  eventURL:
+    'https://upload.wikimedia.org/wikipedia/en/6/62/Barney%27s-Great-Adventure-Poster.jpeg',
+  eventFullName:
+    'Purple Playbill Purple Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
 export class EventInfo {
@@ -76,11 +88,20 @@ export class EventInfo {
 
   constructor(event: EventInfoTemplate, useShortID: boolean = true) {
     // Append either a short or long UUID to the event name
-    this.eventName = event.eventName + ' [' + (useShortID ? generateShortUUID() : uuidv4()) + ']';
+    this.eventName =
+      event.eventName +
+      ' [' +
+      (useShortID ? generateShortUUID() : uuidv4()) +
+      ']';
     this.eventDescription = event.eventDescription;
     this.eventDescription = event.eventDescription;
     this.eventURL = event.eventURL;
-    this.eventFullName = this.eventName + ' Playbill ' + this.eventName + ' Description ' + this.eventDescription;
+    this.eventFullName =
+      this.eventName +
+      ' Playbill ' +
+      this.eventName +
+      ' Description ' +
+      this.eventDescription;
   }
 }
 
@@ -141,36 +162,41 @@ export const ShowingInfo5: ShowingInfo = {
   showingDateTime: 'Fri, Sep 17 2021 09:15 AM',
 };
 
- export interface SeasonInfoTemplate {
+export interface SeasonInfoTemplate {
   seasonName: string;
   seasonStart: string;
   seasonEnd: string;
   seasonImgURL: string;
 }
 
- export const SeasonInfoTemplate1: SeasonInfoTemplate = {
+export const SeasonInfoTemplate1: SeasonInfoTemplate = {
   seasonName: 'Test_Season1',
   seasonStart: '2020-02-02',
   seasonEnd: '2020-03-02',
-  seasonImgURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg'
- }
+  seasonImgURL:
+    'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
+};
 
- export const SeasonInfoTemplate2: SeasonInfoTemplate = {
+export const SeasonInfoTemplate2: SeasonInfoTemplate = {
   seasonName: 'Test_Season2',
   seasonStart: '2021-02-02',
   seasonEnd: '2021-03-02',
-  seasonImgURL: 'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg'
- }
+  seasonImgURL:
+    'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
+};
 export class SeasonInfo {
   seasonName: string;
   seasonStart: string;
   seasonEnd: string;
   seasonImgURL: string;
 
-
   constructor(season: SeasonInfoTemplate, useShortID: boolean = true) {
     // Append either a short or long UUID to the season name
-    this.seasonName = season.seasonName + ' [' + (useShortID ? generateShortUUID() : uuidv4()) + ']';
+    this.seasonName =
+      season.seasonName +
+      ' [' +
+      (useShortID ? generateShortUUID() : uuidv4()) +
+      ']';
     this.seasonName = season.seasonName;
     this.seasonStart = season.seasonStart;
     this.seasonEnd = season.seasonEnd;
