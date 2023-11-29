@@ -112,7 +112,7 @@ steps:
     args: ['/workspace/scripts/test-client.sh']
     env:
       - 'BROWSER=firefox'
-      - 'CONFIG=../playwright.config.ts'
+      - 'CONFIG=/workspace/client/playwright.config.ts'
     secretEnv:
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
@@ -128,7 +128,7 @@ steps:
     args: ['/workspace/scripts/test-client.sh']
     env:
       - 'BROWSER=chromium'
-      - 'CONFIG=../playwright.config.ts'
+      - 'CONFIG=/workspace/client/playwright.config.ts'
     secretEnv:
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
@@ -144,7 +144,7 @@ steps:
     args: ['/workspace/scripts/test-client.sh']
     env:
       - 'BROWSER=webkit'
-      - 'CONFIG=../playwright.config.ts'
+      - 'CONFIG=/workspace/client/playwright.config.ts'
     secretEnv:
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
@@ -190,12 +190,11 @@ steps:
     id: 'delete-test-server'
     waitFor: ['send-server-traffic']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run revisions delete wtix-server-$${ENV}-${SHORT_SHA}-test \
-        --region $${REGION} \
-        --quiet
+    args: ['scripts/delete-revision.sh']
+    env:
+      - 'IMAGE=server'
+      - 'SHORT_SHA=${SHORT_SHA}'
+      - 'SUFFIX=test'
     secretEnv:
       - 'ENV'
       - 'REGION'
@@ -253,12 +252,11 @@ steps:
     id: 'delete-test-client'
     waitFor: ['send-client-traffic']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run revisions delete wtix-client-$${ENV}-${SHORT_SHA}-test \
-        --region $${REGION} \
-        --quiet
+    args: ['scripts/delete-revision.sh']
+    env:
+      - 'IMAGE=client'
+      - 'SHORT_SHA=${SHORT_SHA}'
+      - 'SUFFIX=test'
     secretEnv:
       - 'ENV'
       - 'REGION'
