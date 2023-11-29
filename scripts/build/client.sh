@@ -1,5 +1,5 @@
 #!/bin/bash
-# client.sh: Use `docker` to build the client with necessary args.
+# client.sh: Use Kaniko to build the client with necessary args.
 
 function check_args() {
   local missing=0
@@ -37,8 +37,11 @@ check_args
 # Use SERVER_REVISION if no ROOT_URL
 URL=${ROOT_URL:-$SERVER_REVISION}
 
-# Pass build arguments to Docker command
-docker build -f client/Dockerfile -t ${ARTIFACTS}/client-img-${ENV}:${SHORT_SHA} client \
+/kaniko/executor --context=dir://client \
+  --dockerfile=client/Dockerfile \
+  --destination=${ARTIFACTS}/client-img-${ENV}:${SHORT_SHA} \
+  --cache=true \
+  --cache-repo=${KANIKO_CACHE} \
   --build-arg AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET} \
   --build-arg REACT_APP_API_1_URL=${URL}/api/1 \
   --build-arg REACT_APP_API_2_URL=${URL}/api/2 \

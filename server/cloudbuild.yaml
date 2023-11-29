@@ -1,27 +1,16 @@
 steps:
 
   # Build Docker image for server
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-server'
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        docker build -f server/Dockerfile \
-        -t $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
-        server
+    args: ['scripts/build/server.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
       - 'ENV'
-
-  # Push image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'push-server'
-    entrypoint: 'bash'
-    args: ['-c', 'docker push $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA}']
-    secretEnv: 
-      - 'ARTIFACTS'
-      - 'ENV'
+      - 'KANIKO_CACHE'
 
   # Deploy server to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -50,8 +39,8 @@ steps:
       - '-c'
       - |
         gcloud run services update-traffic wtix-server-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100
+        --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100 \
+        --region $${REGION}
     secretEnv:
       - 'ENV'
       - 'REGION'
@@ -67,6 +56,8 @@ availableSecrets:
     env: 'ENV'
   - versionName: projects/${PROJECT_ID}/secrets/FRONTEND_URL/versions/${_ENV}
     env: 'FRONTEND_URL'
+  - versionName: projects/${PROJECT_ID}/secrets/KANIKO_CACHE/versions/${_ENV}
+    env: 'KANIKO_CACHE'
   - versionName: projects/${PROJECT_ID}/secrets/REGION/versions/${_ENV}
     env: 'REGION'
   - versionName: projects/${PROJECT_ID}/secrets/ROOT_URL/versions/${_ENV}

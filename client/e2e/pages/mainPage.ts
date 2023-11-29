@@ -122,7 +122,7 @@ export class MainPage {
   // String shift removes the first item in the array
   // Select a random option from the array, set that option, and return the text
   private async selectRandomOption(optionBox: Locator) {
-    const allOptions = (await optionBox.evaluate((sel) => {
+    const allOptions = (await optionBox.evaluate((sel: HTMLSelectElement) => {
       var list;
       var i;
       for (i=0; i< sel.options.length; i++) {
