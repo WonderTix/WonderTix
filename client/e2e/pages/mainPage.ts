@@ -111,7 +111,7 @@ export class MainPage {
     return title;
   }
 
-  // Find and go to the showing associated with the EventsInfo parameter
+  // Find and go to the showing associated with the EventInfo parameter
   // Return the name of that showing
   async goSelectShowing(eventInfo: EventInfo) {
     const eventCard = await this.getShowingLocator(

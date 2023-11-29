@@ -190,7 +190,6 @@ export class SeasonInfo {
       ' [' +
       (useShortID ? generateShortUUID() : uuidv4()) +
       ']';
-    this.seasonName = season.seasonName;
     this.seasonStart = season.seasonStart;
     this.seasonEnd = season.seasonEnd;
     this.seasonImgURL = season.seasonImgURL;

@@ -35,7 +35,7 @@ test('check cart after ticket add', async ({page}) => {
   try {
     await main.goto();
     const showing = await main.goSelectShowing(currentEvent);
-    // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
+    // Rebuild randoms to use a fixed selection using the EventInfo and ShowingInfo
     expect(showing).toEqual(currentEvent.eventName);
     const date = await main.selectRandomDate();
     expect(date).toEqual(currentShowing.showingWholeDate);

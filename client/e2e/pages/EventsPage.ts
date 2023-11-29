@@ -50,7 +50,6 @@ export class EventsPage {
   readonly emailButton: Locator;
   readonly manageTicketingButton: Locator;
   readonly homePageRightSlide: Locator;
-  readonly editEventsInfo: Locator;
   readonly ticketQuantityOption: Locator;
   readonly showingCard: Locator;
   readonly deleteShowingButton: Locator;

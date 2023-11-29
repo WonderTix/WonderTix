@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import {SeasonsInfo} from '../testData/ConstsPackage';
+import {SeasonInfo} from '../testData/ConstsPackage';
 import {EventInfo} from '../testData/ConstsPackage';
 
 export class SeasonsPage {
@@ -63,7 +63,7 @@ export class SeasonsPage {
     this.addEvent = page.getByRole('button', {name: 'Add event'});
   }
 
-  async addNewSeason(season: SeasonsInfo) {
+  async addNewSeason(season: SeasonInfo) {
     await this.addSeasonButton.click();
     await this.seasonNameBlank.fill(season.seasonName);
     await this.seasonStartDate.fill(season.seasonStart);
@@ -90,7 +90,7 @@ export class SeasonsPage {
     ).toBeVisible();
   }
 
-  async editSeason(old_season: SeasonsInfo, new_season: SeasonsInfo) {
+  async editSeason(old_season: SeasonInfo, new_season: SeasonInfo) {
     await this.page.locator(':text("' + old_season.seasonName + '")').click();
     await this.seasonEdit.click();
     await this.seasonNameBlank.fill(new_season.seasonName);
@@ -105,7 +105,7 @@ export class SeasonsPage {
     ).toBeVisible();
   }
 
-  async removeEventFromSeason(season: SeasonsInfo, event: EventInfo) {
+  async removeEventFromSeason(season: SeasonInfo, event: EventInfo) {
     await this.page.locator(':text("' + season.seasonName + '")').click();
 
     const seasonLocator = this.page
@@ -120,7 +120,7 @@ export class SeasonsPage {
     ).not.toBeVisible();
   }
 
-  async removeSeason(season: SeasonsInfo) {
+  async removeSeason(season: SeasonInfo) {
     await this.page.locator(':text("' + season.seasonName + '")').click();
     await this.seasonDelete.click();
     await this.page.getByRole('button', {name: 'Continue'}).click();

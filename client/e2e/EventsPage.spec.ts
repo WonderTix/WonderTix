@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 import {test, expect} from '@playwright/test';
 import {EventsPage} from './pages/EventsPage';
-import {EventsInfo} from './testData/ConstsPackage';
+import {EventInfo} from './testData/ConstsPackage';
 import {EventInfoTemplate1, EventInfoTemplate2, EventInfoTemplate3, EventInfoTemplate4} from './testData/ConstsPackage';
 import {ShowingInfo1, ShowingInfo2, ShowingInfo3, ShowingInfo4} from './testData/ConstsPackage';
 
@@ -12,7 +12,7 @@ test('Homepage->Events', async ({page}) => {
 
 test('addNewEvents', async ({page})=>{
   const eventsPage = new EventsPage(page);
-  const currentEvent = new EventsInfo(EventsInfoTemplate1);
+  const currentEvent = new EventInfo(EventInfoTemplate1);
   await eventsPage.goto();
   await eventsPage.addnewevent(currentEvent);
 });
@@ -20,7 +20,7 @@ test('addNewEvents', async ({page})=>{
 test('addDeleteEvents', async ({page})=>{
   // test.setTimeout(300000);
   const eventsPage = new EventsPage(page);
-  const currentEvent = new EventsInfo(EventsInfoTemplate2);
+  const currentEvent = new EventInfo(EventInfoTemplate2);
   await eventsPage.goto();
   // The ANE_Package2 is locate in ConstsPackage.ts file
   // First we create a new event
@@ -45,8 +45,8 @@ test('addDeleteEvents', async ({page})=>{
 // Need to refactor so that it's adding and looking at its own event, not a seeded event.
 test.fixme('editEvents', async ({page})=>{
   test.setTimeout(45000);
-  const currentEvent3 = new EventsInfo(EventsInfoTemplate3);
-  const currentEvent4 = new EventsInfo(EventsInfoTemplate4);
+  const currentEvent3 = new EventInfo(EventInfoTemplate3);
+  const currentEvent4 = new EventInfo(EventInfoTemplate4);
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();
   // This test we just use the second event "The Crucible" as an example

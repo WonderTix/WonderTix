@@ -13,9 +13,11 @@ test('Homepage->Seasons', async ({page}) => {
 });
 
 test('addNewSeasonWithEvent', async ({page}) => {
-  // Unique instances for the test
+  const seasonsPage = new SeasonsPage(page);
+  const eventsPage = new EventsPage(page);
   const uniqueEvent = new EventInfo(EventInfoTemplate2);
   const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
+  
   try {
     await eventsPage.goto();
     await eventsPage.addnewevent(uniqueEvent);
@@ -47,8 +49,10 @@ test('addNewSeasonWithEvent', async ({page}) => {
 });
 
 test('editSeason', async ({page}) => {
+  const seasonsPage = new SeasonsPage(page);
   const uniqueSeason1 = new SeasonInfo(SeasonInfoTemplate1);
   const uniqueSeason2 = new SeasonInfo(SeasonInfoTemplate1);
+
   try {
     // setup
     await seasonsPage.goto();
@@ -73,6 +77,8 @@ test('editSeason', async ({page}) => {
 });
 
 test('removeEventFromSeason', async ({page}) => {
+  const seasonsPage = new SeasonsPage(page);
+  const eventsPage = new EventsPage(page);
   const uniqueEvent = new EventInfo(EventInfoTemplate2);
   const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
 
@@ -114,7 +120,9 @@ test('removeEventFromSeason', async ({page}) => {
 });
 
 test('removeSeason', async ({page}) => {
+  const seasonsPage = new SeasonsPage(page);
   const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
+  
   try {
     // setup
     await seasonsPage.goto();

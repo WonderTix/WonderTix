@@ -57,7 +57,7 @@ export class DoorListPage {
     return randTime;
   }
 
-  // Find a specific showing using the EventsInfo object for the name, and the ShowingInfo object
+  // Find a specific showing using the EventInfo object for the name, and the ShowingInfo object
   // for the correct show date/time
   // Door list searches automatically once the options are set, requiring no further interation
   async searchShowing(event: EventInfo, showing: ShowingInfo) {
