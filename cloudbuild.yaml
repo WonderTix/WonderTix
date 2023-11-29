@@ -5,13 +5,7 @@ steps:
     id: 'pull-npm-cache'
     waitFor: ['-']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gsutil -m cp \
-        $${NPM_CACHE}/client/$${ENV}/node_modules.tar.gz \
-        $${NPM_CACHE}/client/$${ENV}/cache-package.json \
-        client
+    args: ['scripts/pull-npm-cache.sh']
     secretEnv:
       - 'ENV'
       - 'NPM_CACHE'
