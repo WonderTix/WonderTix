@@ -54,8 +54,8 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
             {eventData.active ? 'ACTIVE' : 'INACTIVE'}
           </span>
 
-          <Tooltip title={<p>Edit</p>} placement='top' arrow>
-            <span>
+          <Tooltip title='Edit' placement='top' arrow>
+            <span className='flex flex-col'>
               <button
                 className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
                 onClick={() => {
@@ -83,8 +83,8 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
             </span>
           </Tooltip>
 
-          <Tooltip title={<p>Delete</p>} placement='top' arrow>
-            <span>
+          <Tooltip title='Delete' placement='top' arrow>
+            <span className='flex flex-col'>
               <button
                 className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
                 onClick={() => {
