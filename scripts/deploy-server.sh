@@ -1,5 +1,5 @@
 #!/bin/bash
-# server.sh: Use `gcloud` to deploy the server to Cloud Run.
+# deploy-server.sh: Use `gcloud` to deploy the server to Cloud Run.
 
 function check_args() {
   local missing=0

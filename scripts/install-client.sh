@@ -1,5 +1,5 @@
 #!/bin/bash
-# client.sh: Conditionally run `npm install` if package.json has changed.
+# install-client.sh: Conditionally run `npm install` if package.json has changed.
 
 function check_args() {
   local missing=0
@@ -23,6 +23,7 @@ function check_args() {
 
 check_args
 
+# Compare cached package.json to current
 if ! cmp --silent ${CACHE} ${CURRENT}; then
   echo "Dependencies are up to date."
 else

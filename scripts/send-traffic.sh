@@ -1,5 +1,5 @@
 #!/bin/bash
-# update-traffic.sh: Use `gcloud` to send traffic to a new revision.
+# send-traffic.sh: Use `gcloud` to send traffic to a new revision.
 
 function check_args() {
   local missing=0

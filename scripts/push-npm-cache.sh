@@ -1,5 +1,5 @@
 #!/bin/bash
-# client.sh: Conditionally repackage `node_modules` and cache in GCS.
+# push-npm-cache: Conditionally repackage `node_modules` and send to GCS.
 
 function check_args() {
   local missing=0
@@ -25,6 +25,7 @@ function check_args() {
 
 check_args
 
+# Compare cached package.json to current
 if ! cmp --silent ${CACHE} ${CURRENT}; then
   echo "Dependencies are up to date."
 else

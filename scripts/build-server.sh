@@ -1,5 +1,5 @@
 #!/bin/bash
-# server.sh: Use Kaniko to build the server.
+# build-server.sh: Use Kaniko to build the server.
 
 function check_args() {
   local missing=0

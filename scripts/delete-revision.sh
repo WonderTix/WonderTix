@@ -1,5 +1,5 @@
 #!/bin/bash
-# delete-revision.sh: Use `gcloud` to send traffic to a new revision.
+# delete-revision.sh: Use `gcloud` to delete a Cloud Run revision.
 
 function check_args() {
   local missing=0

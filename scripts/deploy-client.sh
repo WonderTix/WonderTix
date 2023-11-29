@@ -1,5 +1,5 @@
 #!/bin/bash
-# client.sh: Use `gcloud` to deploy the client to Cloud Run.
+# deploy-client.sh: Use `gcloud` to deploy the client to Cloud Run.
 
 function check_args() {
   local missing=0

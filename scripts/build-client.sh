@@ -1,5 +1,5 @@
 #!/bin/bash
-# client.sh: Use Kaniko to build the client with necessary args.
+# build-client.sh: Use Kaniko to build the client with necessary args.
 
 function check_args() {
   local missing=0

@@ -1,5 +1,5 @@
 #!/bin/bash
-# client.sh: Run E2E tests on deployed client using Playwright.
+# test-client.sh: Run E2E tests on deployed client using Playwright.
 
 function check_args() {
   local missing=0
