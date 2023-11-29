@@ -1,0 +1,7 @@
+steps:
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'gcp/kaniko/Dockerfile', '-t', '${_KANIKO_IMAGE}', 'gcp/kaniko']
+ 
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_KANIKO_IMAGE}']

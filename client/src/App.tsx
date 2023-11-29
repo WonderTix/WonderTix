@@ -26,7 +26,7 @@ import DonorReporting from './components/DonorManagement/Reporting/DonorReportin
 
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
-import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
+import EventShowingsmain from './components/Ticketing/event/EventShowingsmain';
 import Cartmain from './components/Ticketing/cart/Cartmain';
 import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
 import CheckoutSuccess from './components/Ticketing/checkout/CheckoutSuccess';
@@ -51,7 +51,7 @@ const App = () => {
     <>
       <Routes>
         <Route path='/' element={<Mainpage />} />
-        <Route path='/events/:eventid' element={<Eventshowingmain />} />
+        <Route path='/events/:eventid' element={<EventShowingsmain />} />
         <Route path='/cart' element={<Cartmain />} />
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />

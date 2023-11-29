@@ -61,50 +61,30 @@ const updateAvailableSeats = async (prisma: ExtendedPrismaClient) => {
   const queriesToBatch: any[] = [];
   const eventInstances = await prisma.eventinstances.findMany({
     include: {
-      eventtickets: true,
+      ticketrestrictions: {
+        include: {
+          eventtickets: {
+            where: {
+              singleticket_fk: null,
+            },
+          },
+        },
+      },
     },
   });
-
   eventInstances.forEach((instance) => {
-    const ticketsSold = new Map<number, number>();
-
-    instance.eventtickets.forEach((ticket) => {
-      const count = ticketsSold.get(ticket.tickettypeid_fk ?? 1) ?? 0;
-      ticketsSold.set(
-          ticket.tickettypeid_fk ?? 1,
-        ticket.singleticket_fk ? count + 1 : count,
-      );
-    });
-    const updatedAvailable =
-      (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0);
-
-    if (updatedAvailable === instance.availableseats) return;
-
+    const defaultRestriction = instance.ticketrestrictions.find((res) => res.tickettypeid_fk === instance.defaulttickettype);
+    if (defaultRestriction?.eventtickets.length === instance.availableseats) return;
     queriesToBatch.push(
         prisma.eventinstances.update({
           where: {
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats:
-            (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0),
+            availableseats: defaultRestriction?.eventtickets.length ?? 0,
           },
         }),
     );
-    for (const entry of ticketsSold) {
-      if (entry[0] === 1) continue;
-      queriesToBatch.push(
-          prisma.ticketrestrictions.updateMany({
-            where: {
-              tickettypeid_fk: entry[0],
-              eventinstanceid_fk: instance.eventinstanceid,
-            },
-            data: {
-              ticketssold: entry[1],
-            },
-          }),
-      );
-    }
   });
   await prisma.$transaction(queriesToBatch);
   return;

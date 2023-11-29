@@ -491,40 +491,40 @@ const Navigation = () => {
         {/* Navigation starts */}
         <div className="w-full">
           <header className="h-16 flex items-center md:items-stretch justify-end md:justify-between bg-white shadow relative z-10">
-            <div className="hidden md:flex md:justify-between w-full">
+            <div className="hidden md:flex md:justify-between md:items-center w-full pr-2">
               <h2 className="flex items-center text-lg text-zinc-500 font-bold ml-12 mr-6">
                 Welcome to WonderTix CRM
               </h2>
-              <button
-                className="relative flex items-center text-left cursor-pointer mx-6"
-                onClick={() => setProfile(!profile)}
-              >
-                <div>
-                  {profile && <AdminNavDropdown />}
+              <div className='relative'>
+                <button
+                  className="flex items-center text-left cursor-pointer px-4"
+                  onClick={() => setProfile(!profile)}
+                >
                   <img
                     alt="Profile picture"
                     src={picture}
                     className="rounded-3xl w-12 h-12"
                   />
-                </div>
-                <p className="text-gray-800 text-sm mx-3">{name}</p>
-                <svg
-                  aria-haspopup="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon icon-tabler icon-tabler-chevron-down text-gray-600"
-                  width={20}
-                  height={20}
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" />
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </button>
+                  <p className="text-gray-800 text-sm mx-3">{name}</p>
+                  <svg
+                    aria-haspopup="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-chevron-down text-gray-600"
+                    width={20}
+                    height={20}
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+                {profile && <AdminNavDropdown marginClass='mt-3' />}
+              </div>
             </div>
             <button
               className="text-gray-600 mr-8 visible md:hidden relative"

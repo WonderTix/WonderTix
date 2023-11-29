@@ -252,7 +252,7 @@ const RefundOrders = () => {
                           )
                         }
                         type='button'
-                        className='bg-red-600 hover:bg-red-700 focus:ring-red-500 dark:focus:ring-red-800
+                        className='bg-red-600 hover:bg-red-700 focus:ring-red-500
                           w-full inline-flex justify-center rounded-md border border-transparent
                           shadow-sm px-4 py-2 text-base font-medium text-white
                           focus:outline-none focus:ring-2 focus:ring-offset-2

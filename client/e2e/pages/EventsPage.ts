@@ -73,7 +73,7 @@ export class EventsPage {
     this.eventDesBlank= page.getByLabel('Event Description:');
     this.imageURL=page.getByLabel('Image URL:');
     this.newEventSave=page.getByLabel('Save');
-    this.deleteEventButton=page.locator('.flex[data-mui-internal-clone-element=true]').last();
+    this.deleteEventButton=page.getByTestId('event_delete_button');
 
     this.eventContinue=page.getByRole('button', { name: 'Continue' });
     this.eventClose=page.getByRole('button', { name: 'Close', exact: true });
@@ -81,7 +81,7 @@ export class EventsPage {
     this.eventOption1=page.getByRole('button', { name: 'Default' });
     this.eventOption2=page.getByText('Active:', { exact: true });
 
-    this.editEventInfo=page.locator('.flex[data-mui-internal-clone-element=true]').first();
+    this.editEventInfo=page.getByTestId('event_edit_button');
     this.editEventsInfo=page.getByRole('button', { name: 'Edit' });
     this.editEventName=page.getByLabel('Event Name:');
     this.editEventDes=page.getByLabel('Event Description:');

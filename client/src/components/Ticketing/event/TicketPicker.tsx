@@ -214,7 +214,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   ] = useReducer(TicketPickerReducer, initialState);
 
   const fetchTicketTypes = async () => {
-    const res = await fetch(
+     await fetch(
       process.env.REACT_APP_API_1_URL + '/tickets/AllTypes',
     )
       .then((res) => {
@@ -334,17 +334,15 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       const fetchData = async () => {
         try {
           const response = await fetch(
-            process.env.REACT_APP_API_1_URL +
-              `/tickets/restrictions/${selectedTicket.event_instance_id}`,
+              process.env.REACT_APP_API_2_URL +
+              `/ticket-restriction/${selectedTicket.event_instance_id}`,
           );
+          if (!response.ok) {
+            throw response;
+          }
           const data = await response.json();
           const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter(
-            (t) =>
-              data.data.some(
-                (row) =>
-                  row.tickettypeid_fk === t.id &&
-                  row.ticketssold < row.ticketlimit,
-              ),
+            (t) => data.some((type) => type.tickettypeid_fk === t.id),
           );
           setFilteredTicketTypes(finalFilteredTicketTypes);
         } catch (error) {
@@ -361,21 +359,15 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     if (selectedTicket) {
       const fetchData = async () => {
         try {
-          const response = await fetch(
-            process.env.REACT_APP_API_1_URL +
-              `/tickets/restrictions/${selectedTicket.event_instance_id}`,
+          const response= await fetch(
+              process.env.REACT_APP_API_2_URL +
+              `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketType.id}`,
           );
-          const data = await response.json();
-          const matchingRow = data.data.find(
-            (row) => row.tickettypeid_fk === selectedTicketType.id,
-          );
-          if (matchingRow) {
-            const numAvail = matchingRow.ticketlimit - matchingRow.ticketssold;
-            setnumAvail(numAvail);
-          } else {
-            const numAvail = selectedTicket.availableseats;
-            setnumAvail(numAvail);
+          if (!response.ok) {
+            throw response;
           }
+          const data = await response.json();
+          setnumAvail(data.ticketlimit - data.ticketssold);
         } catch (error) {
           console.error(error);
         }
