@@ -1,6 +1,6 @@
 import {type Locator, type Page, expect} from '@playwright/test';
 import { SeasonsInfo } from '../testData/ConstsPackage';
-import { EventsInfo } from '../testData/ConstsPackage';
+import { EventInfo } from '../testData/ConstsPackage';
 
 export class SeasonsPage {
   readonly page: Page;
@@ -76,7 +76,7 @@ export class SeasonsPage {
     await expect(this.page.locator(':text("' + season.seasonName + '")')).toBeVisible();
   }
 
-  async addEventToSeason(event: EventsInfo) 
+  async addEventToSeason(event: EventInfo) 
   {
     const seasonLocator = this.page.getByTestId('season-event-card').filter({hasText: event.eventName});
     await this.addEvent.click();
@@ -100,7 +100,7 @@ export class SeasonsPage {
     await expect(this.page.locator(':text("' + new_season.seasonName + '")')).toBeVisible();
   }
 
-  async removeEventFromSeason(season: SeasonsInfo, event: EventsInfo)
+  async removeEventFromSeason(season: SeasonsInfo, event: EventInfo)
   {
     await this.page.locator(':text("' + season.seasonName + '")').click();
 

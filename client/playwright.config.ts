@@ -36,6 +36,8 @@ export default defineConfig({
       sources: true,
       attachments: true,
     },
+    actionTimeout: 10000,
+    navigationTimeout: 10000,
   },
 
   /* Configure projects for major browsers */

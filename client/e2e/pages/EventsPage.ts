@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import {EventsInfo, ShowingInfo} from '../testData/ConstsPackage';
+import {EventInfo, ShowingInfo} from '../testData/ConstsPackage';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
@@ -60,6 +60,8 @@ export class EventsPage {
 
     this.homePage=page.getByRole('button', { name: '/' });
     this.homePageRightSlide=page.locator('button:nth-child(4)');
+
+    // TODO: DEPRECATE THIS. NOT ROBUST
     this.firstEvent=page.getByRole('button', { name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
     this.secondEvent=page.getByRole('button', { name: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' });
 
@@ -73,7 +75,8 @@ export class EventsPage {
     this.eventDesBlank= page.getByLabel('Event Description:');
     this.imageURL=page.getByLabel('Image URL:');
     this.newEventSave=page.getByLabel('Save');
-    this.deleteEventButton=page.locator('.flex[data-mui-internal-clone-element=true]').last();
+
+    this.deleteEventButton=page.getByTestId('event-delete');
 
     this.eventContinue=page.getByRole('button', { name: 'Continue' });
     this.eventClose=page.getByRole('button', { name: 'Close', exact: true });
@@ -81,8 +84,9 @@ export class EventsPage {
     this.eventOption1=page.getByRole('button', { name: 'Default' });
     this.eventOption2=page.getByText('Active:', { exact: true });
 
-    this.editEventInfo=page.locator('.flex[data-mui-internal-clone-element=true]').first();
-    this.editEventsInfo=page.getByRole('button', { name: 'Edit' });
+    // this.editEventInfo=page.locator('.flex[data-mui-internal-clone-element=true]').first();
+    this.editEventInfo=page.getByTestId('event-edit');
+    // this.editEventsInfo=page.getByRole('button', { name: 'Edit' });
     this.editEventName=page.getByLabel('Event Name:');
     this.editEventDes=page.getByLabel('Event Description:');
     this.editOption1=page.getByText('Active:', { exact: true });
@@ -137,7 +141,7 @@ export class EventsPage {
   "123",
   "http://"
   */
-  async addnewevent(anEvent:EventsInfo)
+  async addnewevent(anEvent:EventInfo)
   {
      await this.addButton.click();
      await this.eventNameBlank.click();
@@ -226,7 +230,7 @@ export class EventsPage {
     await expect(this.page.getByRole('button', { name: eventFullName }).first()).not.toBeVisible();
   }
 
-  async editTheEventInfo(anEvent:EventsInfo)
+  async editTheEventInfo(anEvent:EventInfo)
   {
       await this.editEventInfo.click();
       await this.editEventName.click();
@@ -242,12 +246,12 @@ export class EventsPage {
     await this.secondEvent.click();
   }
 
-  async searchForEventByName(anEvent:EventsInfo)
+  async searchForEventByName(anEvent:EventInfo)
   {
     await this.page.getByText(anEvent.eventName, { exact: true }).click();
   }
 
-  async searchForEventByDes(anEvent:EventsInfo)
+  async searchForEventByDes(anEvent:EventInfo)
   {
     await this.page.getByText(anEvent.eventDescription).click();
   }

@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page} from '@playwright/test';
-import {EventsInfo, ShowingInfo, Customer} from '../testData/ConstsPackage';
+import {EventInfo, ShowingInfo, Customer} from '../testData/ConstsPackage';
 
 export class DoorListPage {
   readonly page: Page;
@@ -60,7 +60,7 @@ export class DoorListPage {
   // Find a specific showing using the EventsInfo object for the name, and the ShowingInfo object
   // for the correct show date/time
   // Door list searches automatically once the options are set, requiring no further interation
-  async searchShowing(event: EventsInfo, showing: ShowingInfo) {
+  async searchShowing(event: EventInfo, showing: ShowingInfo) {
     const eventOption = await this.chooseEvent.getByRole('option').filter({hasText: event.eventName}).textContent();
     await this.chooseEvent.selectOption(eventOption);
     const eventTime = await this.chooseTime.getByRole('option').filter({hasText: showing.showingDateTime}).textContent();

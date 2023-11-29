@@ -1,8 +1,9 @@
-import {test , expect} from '@playwright/test';
-import {SeasonsPage} from './pages/seasonsPage';
-import {EventsPage} from './pages/EventsPage';
-import { EventsInfo2, SeasonInfo2 } from './testData/ConstsPackage';
-import { SeasonInfo1 } from './testData/ConstsPackage';
+import { test, expect } from '@playwright/test';
+import { SeasonsPage } from './pages/seasonsPage';
+import { EventsPage } from './pages/EventsPage';
+import { EventInfo, SeasonInfo } from './testData/ConstsPackage';
+import { EventInfoTemplate2, SeasonInfoTemplate1 } from './testData/ConstsPackage';
+
 
 test('Homepage->Seasons',async({page}) => {
     const seasonsPage = new SeasonsPage(page);
@@ -10,17 +11,19 @@ test('Homepage->Seasons',async({page}) => {
   });
 
 test('addNewSeasonWithEvent',async({page})=>{
-  // setup
+  // Unique instances for the test
+  const uniqueEvent = new EventInfo(EventInfoTemplate2);
+  const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
   try {
     const eventsPage = new EventsPage(page);
     await eventsPage.goto();
-    await eventsPage.addnewevent(EventsInfo2);
+    await eventsPage.addnewevent(uniqueEvent);
     await eventsPage.activateEvent()
 
     const seasonsPage = new SeasonsPage(page);
     await seasonsPage.goto();
-    await seasonsPage.addNewSeason(SeasonInfo1);
-    await seasonsPage.addEventToSeason(EventsInfo2);
+    await seasonsPage.addNewSeason(uniqueSeason);
+    await seasonsPage.addEventToSeason(uniqueEvent);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("addNewSeasonWithEvent error:", error.message);
@@ -31,26 +34,27 @@ test('addNewSeasonWithEvent',async({page})=>{
     //cleanup
     const seasonsPage2 = new SeasonsPage(page);
     await seasonsPage2.goto();
-    await seasonsPage2.removeSeason(SeasonInfo1);
+    await seasonsPage2.removeSeason(uniqueSeason);
 
     // cleanup
     const eventsPage2 = new EventsPage(page);
     await eventsPage2.goto();
-    await page.locator(':text("' + EventsInfo2.eventName + '")').click();
-    await eventsPage2.deleteTheEvent(EventsInfo2.eventFullName);
+    await page.locator(':text("' + uniqueEvent.eventName + '")').click();
+    await eventsPage2.deleteTheEvent(uniqueEvent.eventFullName);
   }
 });
 
 test('editSeason',async({page})=>{
-
+  const uniqueSeason1 = new SeasonInfo(SeasonInfoTemplate1);
+  const uniqueSeason2 = new SeasonInfo(SeasonInfoTemplate1);
   try {
     // setup
     const seasonsPage = new SeasonsPage(page);
     await seasonsPage.goto();
-    await seasonsPage.addNewSeason(SeasonInfo1);
+    await seasonsPage.addNewSeason(uniqueSeason1);
 
     // test
-    await seasonsPage.editSeason(SeasonInfo1, SeasonInfo2);
+    await seasonsPage.editSeason(uniqueSeason1, uniqueSeason2);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("editSeason error:", error.message);
@@ -61,28 +65,31 @@ test('editSeason',async({page})=>{
     //cleanup
     const seasonsPage2 = new SeasonsPage(page);
     await seasonsPage2.goto();
-    await seasonsPage2.removeSeason(SeasonInfo2);
+    await seasonsPage2.removeSeason(uniqueSeason2);
   }
 });
 
 test('removeEventFromSeason',async({page})=>{
+  const uniqueEvent = new EventInfo(EventInfoTemplate2);
+  const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
+
   try {
     // setup
     const eventsPage = new EventsPage(page);
     await eventsPage.goto();
-    await eventsPage.addnewevent(EventsInfo2);
+    await eventsPage.addnewevent(uniqueEvent);
     await eventsPage.activateEvent()
   
     // setup
     const seasonsPage = new SeasonsPage(page);
     await seasonsPage.goto();
-    await seasonsPage.addNewSeason(SeasonInfo1);
-    await seasonsPage.addEventToSeason(EventsInfo2);
+    await seasonsPage.addNewSeason(uniqueSeason);
+    await seasonsPage.addEventToSeason(uniqueEvent);
 
     // test
     const seasonsPage2 = new SeasonsPage(page);
     await seasonsPage2.goto();
-    await seasonsPage2.removeEventFromSeason(SeasonInfo1, EventsInfo2);
+    await seasonsPage2.removeEventFromSeason(uniqueSeason, uniqueEvent);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("removeEventFromSeason error:", error.message);
@@ -94,27 +101,28 @@ test('removeEventFromSeason',async({page})=>{
     //cleanup
     const seasonsPage3 = new SeasonsPage(page);
     await seasonsPage3.goto();
-    await seasonsPage3.removeSeason(SeasonInfo1);
+    await seasonsPage3.removeSeason(uniqueSeason);
 
     // cleanup
     const eventsPage2 = new EventsPage(page);
     await eventsPage2.goto();
-    await page.locator(':text("' + EventsInfo2.eventName + '")').click();
-    await eventsPage2.deleteTheEvent(EventsInfo2.eventFullName);
+    await page.locator(':text("' + uniqueEvent.eventName + '")').click();
+    await eventsPage2.deleteTheEvent(uniqueEvent.eventFullName);
   }
 });
 
 test('removeSeason',async({page})=>{
+  const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
   try {
     // setup
     const seasonsPage = new SeasonsPage(page);
     await seasonsPage.goto();
-    await seasonsPage.addNewSeason(SeasonInfo1);
+    await seasonsPage.addNewSeason(uniqueSeason);
 
     // test
     const seasonsPage2 = new SeasonsPage(page);
     await seasonsPage2.goto();
-    await seasonsPage2.removeSeason(SeasonInfo1);
+    await seasonsPage2.removeSeason(uniqueSeason);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("removeSeason error:", error.message);

@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 
 import {type Locator, type Page, expect} from '@playwright/test';
-import {EventsInfo, CreditCard, Customer} from '../testData/ConstsPackage';
+import {EventInfo, CreditCard, Customer} from '../testData/ConstsPackage';
 
 export class MainPage {
   readonly page: Page;
@@ -107,7 +107,7 @@ export class MainPage {
 
   // Find and go to the showing associated with the EventsInfo parameter
   // Return the name of that showing
-  async goSelectShowing(eventInfo: EventsInfo) {
+  async goSelectShowing(eventInfo: EventInfo) {
     const eventCard = await this.getShowingLocator(eventInfo.eventName + eventInfo.eventDescription + 'See Showings');
     await eventCard.getByRole('button', {name: 'See Showings'}).click();
     const title = await this.titleEvent.textContent();
@@ -182,7 +182,7 @@ export class MainPage {
   }
 
   // Checks cart info against the chosen event, date/time/ticket type, and quantity
-  async checkCart(event: EventsInfo, info:string, quantity: string) {
+  async checkCart(event: EventInfo, info:string, quantity: string) {
     await this.page.getByText(event.eventName).isVisible();
     await this.page.getByText(info).isVisible();
     await this.page.getByText(quantity, {exact: true}).isVisible();
@@ -241,7 +241,7 @@ export class MainPage {
   // Takes in a customer, credit card, event, and an optional quantity of tickets to purchase.
   // Date, time, and ticket type will be selected randomly.
   // Qty will be used to determine quantity if passed, otherwise will use a random quantity as well.
-  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventsInfo, options?: {qty?: number, timeoutAdd?: number}) {
+  async purchaseTicket(customer: Customer, creditCard: CreditCard, event: EventInfo, options?: {qty?: number, timeoutAdd?: number}) {
     if (options == undefined) options = {qty: 2, timeoutAdd: 0};
     if (options.qty == undefined) options.qty = 2;
     if (options.timeoutAdd == undefined) options.timeoutAdd = 0;
@@ -262,21 +262,21 @@ export class MainPage {
 
   // Increase number of tickets for an event by one
   // Uses the event parameter to find the event to increment.
-  async incrementEventTicket(event: EventsInfo) {
+  async incrementEventTicket(event: EventInfo) {
     const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
     await cartCard.getByTestId('increment-ticket').click();
   }
 
   // Decrease number of tickets for an event by one.
   // Uses the event parameter to find the event to decrement.
-  async decrementEventTicket(event: EventsInfo) {
+  async decrementEventTicket(event: EventInfo) {
     const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
     await cartCard.getByTestId('decrement-ticket').click();
   }
 
   // Checks the quantity and total of the chosen ticket is correct.
   // Currently assumes ticket cost is $20, and does not check the overall subtotal.
-  async checkEventTicket(event: EventsInfo, qty: number) {
+  async checkEventTicket(event: EventInfo, qty: number) {
     const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
     expect(await cartCard.getByTestId('ticket-quantity').textContent()).toBe(qty.toString());
     const price = '$' + (qty * 20).toString() + '.00';
