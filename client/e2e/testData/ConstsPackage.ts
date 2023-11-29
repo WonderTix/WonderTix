@@ -105,13 +105,6 @@ export class EventInfo {
   }
 }
 
-export const EventInfo1 = new EventInfo(EventInfoTemplate1);
-export const EventInfo2 = new EventInfo(EventInfoTemplate2);
-export const EventInfo3 = new EventInfo(EventInfoTemplate3);
-export const EventInfo4 = new EventInfo(EventInfoTemplate4);
-export const EventInfo5 = new EventInfo(EventInfoTemplate5);
-export const EventInfo6 = new EventInfo(EventInfoTemplate6);
-
 //  This is the passin data template for adding/editing a new showing
 export interface ShowingInfo {
   showingDate: string;

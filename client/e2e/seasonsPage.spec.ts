@@ -17,19 +17,19 @@ test('addNewSeasonWithEvent', async ({page}) => {
   const uniqueEvent = new EventInfo(EventInfoTemplate2);
   const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
   try {
-    const eventsPage = new EventsPage(page);
     await eventsPage.goto();
     await eventsPage.addnewevent(uniqueEvent);
     await eventsPage.activateEvent();
 
-    const seasonsPage = new SeasonsPage(page);
     await seasonsPage.goto();
     await seasonsPage.addNewSeason(uniqueSeason);
     await seasonsPage.addEventToSeason(uniqueEvent);
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('addNewSeasonWithEvent error:', error.message);
+      console.error('addNewSeasonWithEvent error:', error.message);
     } else {
+      console.error('addNewSeasonWithEvent unknown error:', error);
       console.error('addNewSeasonWithEvent unknown error:', error);
     }
   } finally {
@@ -51,7 +51,6 @@ test('editSeason', async ({page}) => {
   const uniqueSeason2 = new SeasonInfo(SeasonInfoTemplate1);
   try {
     // setup
-    const seasonsPage = new SeasonsPage(page);
     await seasonsPage.goto();
     await seasonsPage.addNewSeason(uniqueSeason1);
 
@@ -60,7 +59,9 @@ test('editSeason', async ({page}) => {
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('editSeason error:', error.message);
+      console.error('editSeason error:', error.message);
     } else {
+      console.error('editSeason unknown error:', error);
       console.error('editSeason unknown error:', error);
     }
   } finally {
@@ -77,13 +78,11 @@ test('removeEventFromSeason', async ({page}) => {
 
   try {
     // setup
-    const eventsPage = new EventsPage(page);
     await eventsPage.goto();
     await eventsPage.addnewevent(uniqueEvent);
     await eventsPage.activateEvent();
 
     // setup
-    const seasonsPage = new SeasonsPage(page);
     await seasonsPage.goto();
     await seasonsPage.addNewSeason(uniqueSeason);
     await seasonsPage.addEventToSeason(uniqueEvent);
@@ -95,7 +94,9 @@ test('removeEventFromSeason', async ({page}) => {
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('removeEventFromSeason error:', error.message);
+      console.error('removeEventFromSeason error:', error.message);
     } else {
+      console.error('removeEventFromSeason unknown error:', error);
       console.error('removeEventFromSeason unknown error:', error);
     }
   } finally {
@@ -116,7 +117,6 @@ test('removeSeason', async ({page}) => {
   const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
   try {
     // setup
-    const seasonsPage = new SeasonsPage(page);
     await seasonsPage.goto();
     await seasonsPage.addNewSeason(uniqueSeason);
 
@@ -127,7 +127,9 @@ test('removeSeason', async ({page}) => {
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error('removeSeason error:', error.message);
+      console.error('removeSeason error:', error.message);
     } else {
+      console.error('removeSeason unknown error:', error);
       console.error('removeSeason unknown error:', error);
     }
   }

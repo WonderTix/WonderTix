@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
 import {SeasonsInfo} from '../testData/ConstsPackage';
 import {EventInfo} from '../testData/ConstsPackage';
