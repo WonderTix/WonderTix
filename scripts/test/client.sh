@@ -4,6 +4,7 @@
 function check_args() {
   local missing=0
   local required=(
+    "BROWSER"
     "CLIENT_REVISION"
     "SERVER_REVISION"
     "TEST_EMAIL"
@@ -29,12 +30,8 @@ export DEPLOYED="true" # use minimal reporting
 export FRONTEND_URL="${CLIENT_REVISION}"
 export ROOT_URL="${SERVER_REVISION}"
 
-# Go to E2E test directory and install dependencies
-cd client/e2e || { echo "Directory client/e2e not found."; exit 1; }
-npm install
-
 # Run Playwright tests
-if ! npm run test:playwright; then
+if ! npx playwright test --project="${BROWSER}" --config="${CONFIG}"; then
   echo "Tests failed."
   # Uncomment the line below to fail the script when tests fail
   # exit 1

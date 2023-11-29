@@ -28,7 +28,7 @@ const getDate = (time: string, date: number) => {
  *    get:
  *     summary: get list of instances with available seats
  *     tags:
- *     -New Event Instances
+ *     - New event instance
  *     security:
  *       - bearerAuth: []
  *     responses:

@@ -14,6 +14,17 @@ const importTicketRestrictions = require('./src/seedTicketRestrictions');
 const importTicketTypes = require('./src/seedTicketTypes');
 const importUsers = require('./src/seedUsers');
 const importOrderItems = require('./src/seedOrderItems');
+// PPH IMPORT HERE
+const importPPHAccounts = require('./src/seedPPH_Accounts');
+const importPPHContacts = require('./src/seedPPH_Contacts');
+const importPPHEvents = require('./src/seedPPH_Events');
+const importPPHNotes = require('./src/seedPPH_Notes');
+const importPPHOpportunity = require('./src/seedPPH_Opportunity');
+const importPPHRecordTypes = require('./src/seedPPH_RecordTypes');
+const importPPHTicketOrders = require('./src/seedPPH_TicketOrders');
+const importPPHTicketOrderItems = require('./src/seedPPH_TicketOrderItems');
+const importPPHTransactions = require('./src/seedPPH_Transactions');
+
 
 const prisma = new PrismaClient();
 
@@ -34,6 +45,17 @@ async function main() {
   await importOrders(prisma);
   await importOrderItems(prisma);
   await importSeasonTicketTypes(prisma);
+
+  // PPH SEEDING HERE
+  await importPPHAccounts(prisma);
+  await importPPHContacts(prisma);
+  await importPPHEvents(prisma);
+  await importPPHNotes(prisma);
+  await importPPHRecordTypes(prisma);
+  await importPPHOpportunity(prisma);
+  await importPPHTicketOrders(prisma);
+  await importPPHTicketOrderItems(prisma);
+  await importPPHTransactions(prisma);
 }
 
 main()
