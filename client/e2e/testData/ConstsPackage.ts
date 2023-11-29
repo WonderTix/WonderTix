@@ -76,7 +76,7 @@ export class EventInfo {
 
   constructor(event: EventInfoTemplate, useShortID: boolean = true) {
     // Append either a short or long UUID to the event name
-    this.eventName = event.eventName + ' ' + (useShortID ? generateShortUUID() : uuidv4());
+    this.eventName = event.eventName + ' [' + (useShortID ? generateShortUUID() : uuidv4()) + ']';
     this.eventDescription = event.eventDescription;
     this.eventDescription = event.eventDescription;
     this.eventURL = event.eventURL;
@@ -170,7 +170,7 @@ export class SeasonInfo {
 
   constructor(season: SeasonInfoTemplate, useShortID: boolean = true) {
     // Append either a short or long UUID to the season name
-    this.seasonName = season.seasonName + ' ' + (useShortID ? generateShortUUID() : uuidv4());
+    this.seasonName = season.seasonName + ' [' + (useShortID ? generateShortUUID() : uuidv4()) + ']';
     this.seasonName = season.seasonName;
     this.seasonStart = season.seasonStart;
     this.seasonEnd = season.seasonEnd;
