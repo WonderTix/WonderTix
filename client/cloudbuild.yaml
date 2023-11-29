@@ -4,7 +4,7 @@ steps:
   - name: '${_KANIKO_IMAGE}'
     id: 'build-client'
     entrypoint: 'bash'
-    args: ['scripts/build/client.sh']
+    args: ['gcp/scripts/build-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -22,7 +22,7 @@ steps:
     id: 'deploy-client'
     waitFor: ['build-client']
     entrypoint: 'bash'
-    args: ['scripts/deploy/client.sh']
+    args: ['gcp/scripts/deploy-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -37,7 +37,7 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'send-traffic'
     entrypoint: 'bash'
-    args: ['scripts/send-traffic.sh']
+    args: ['gcp/scripts/send-traffic.sh']
     env:
       - 'IMAGE=client'
       - 'PERCENTAGE=100'
