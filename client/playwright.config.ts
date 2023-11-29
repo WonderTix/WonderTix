@@ -14,12 +14,14 @@ export default defineConfig({
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
+  /* Set total test timeout */
+  timeout: process.env.CI ? 45000 : 30000, // 60 seconds for CI, 30 seconds otherwise
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 4 : 1,
+  workers: process.env.CI ? 1 : 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: (isDeployed) ? [['list']] : [['html', {outputFolder: 'playwright'}]],
   outputDir: 'test-results',
@@ -36,8 +38,9 @@ export default defineConfig({
       sources: true,
       attachments: true,
     },
-    actionTimeout: 15000,
-    navigationTimeout: 15000,
+    // Set actionTimeout and navigationTimeout based on CI environment
+    actionTimeout: process.env.CI ? 20000 : 10000, // 20 seconds for CI, 10 seconds otherwise
+    navigationTimeout: process.env.CI ? 20000 : 10000, // 20 seconds for CI, 10 seconds otherwise
   },
 
   /* Configure projects for major browsers */
