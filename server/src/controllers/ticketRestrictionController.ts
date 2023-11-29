@@ -172,7 +172,7 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /2/ticket-restriction/{id}/{tickettypeid}:
  *   get:
- *     summary: get the Ticket Restrictions associated with a specific event instance/ticket type for which there are tickets available
+ *     summary: get the Ticket Restriction associated with a specific event instance/ticket type for which there are tickets available
  *     tags:
  *     - New Ticket Restrictions
  *     parameters:
