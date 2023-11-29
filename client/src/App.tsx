@@ -18,6 +18,8 @@ import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchma
 import DailySalesReportMain from './components/CRM/Reporting/DailySalesReport/DailySalesReportMain';
 import DonationSummaryReportMain from './components/CRM/Reporting/DonationSummaryReport/DonationSummaryReportMain';
 import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconciliationReport';
+import TransactionSummaryReport from './components/CRM/Reporting/TransactionSummaryReport/TransactionSummaryReport';
+
 /* Donor Management */
 import DmDashmain from './components/DonorManagement/DmDashmain';
 import DonorReporting from './components/DonorManagement/Reporting/DonorReporting';
@@ -127,6 +129,10 @@ const App = () => {
         <Route
           path='/admin/reporting/daily-sales-report'
           element={<ProtectedRoute component={DailySalesReportMain} />}
+        />
+        <Route
+          path='/admin/reporting/transaction-summary-report'
+          element={<ProtectedRoute component={TransactionSummaryReport} />}
         />
         <Route
           path='/ticketing'
