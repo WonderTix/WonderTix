@@ -30,6 +30,7 @@ const SeasonContainer = () => {
     handleClose: () => setShowPopUp(false),
     handleProceed: () => setShowPopUp(false),
   });
+  const [seasonTicketData, setSeasonTicketData] = useState([]);
   const {token} = useFetchToken();
 
   const commonSeasonPageProps = {
@@ -57,8 +58,28 @@ const SeasonContainer = () => {
     }
   };
 
+  const handleSeasonTicketType = async () => {
+    fetch(process.env.REACT_APP_API_2_URL + `season-ticket-type-price-default/${seasonId}`, {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      setSeasonTicketData(data);
+      console.log('Season Ticket Data', data);
+    })
+    .catch((error) => {
+      console.error('Error Fetching Season Ticket Data:', error);
+    });
+  };
+
   useEffect(() => {
     void handleGetAllEvents();
+    void handleSeasonTicketType();
   }, []);
 
   if (token === '' || seasonId === undefined || eventsInSeason === undefined) {

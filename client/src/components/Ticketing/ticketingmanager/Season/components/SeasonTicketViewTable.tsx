@@ -1,9 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {getTicketTypePrice} from '../../showings/ShowingUpdated/ShowingUtils';
 
-interface EventInstanceViewProps {
-  setEdit: () => void;
-}
 
 export const SeasonTicketViewTable = () => {
   return (
@@ -15,13 +12,10 @@ export const SeasonTicketViewTable = () => {
               <th className={'px-2 py-1 border border-white'}>Admission Type</th>
               <th className={'px-2 py-1 border border-white'}>Ticket Price</th>
               <th className={'px-2 py-1 border border-white'}>Concession Price</th>
-              <th className={'px-2 py-1 border border-white'}>Quantity</th>
             </tr>
           </thead>
           <tbody className={'whitespace-nowrap'}>
             <tr>
-              <td className={'px-2'}>
-              </td>
               <td className={'px-2'}>
               </td>
               <td className={'px-2'}>

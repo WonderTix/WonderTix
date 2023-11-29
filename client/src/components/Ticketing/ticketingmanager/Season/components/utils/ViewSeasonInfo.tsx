@@ -142,7 +142,8 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
         </div>
         <div className='pl-2 col-span-12 lg:col-span-8 h-[100%]'>
           <div className='flex flex-col justify-center m-auto col-span-12 lg:col-span-8 rounded-lg p-3 w-[100%] h-[100%]'>
-            <SeasonTicketViewTable />
+            <SeasonTicketViewTable
+            />
           </div>
         </div>
       </div>
