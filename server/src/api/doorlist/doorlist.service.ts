@@ -38,12 +38,14 @@ export const getDoorlist = async (params: any): Promise<response> => {
             orders o ON oi.orderid_fk = o.orderid
         LEFT JOIN 
             contacts c ON o.contactid_fk = c.contactid
-        LEFT JOIN 
+        LEFT JOIN  
             events e ON ei.eventid_fk = e.eventid
+        LEFT JOIN
+            ticketrestrictions tr ON tr.ticketrestrictionsid = et.ticketrestrictionid_fk
         WHERE 
             ei.eventinstanceid = $1
         AND 
-            et.tickettypeid_fk = $2
+            tr.tickettypeid_fk = $2
         AND 
             ei.deletedat is null
         AND
