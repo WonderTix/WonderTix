@@ -91,7 +91,7 @@ const EventShowings = (): ReactElement => {
           <div className='flex flex-col md:gap-12 md:flex-row bg-zinc-700/30 p-9 rounded-xl'>
             <EventImage
               src={imageUrl}
-              className='w-[75%] self-center h-auto rounded-xl'
+              className='w-[65%] md:w-[35%] lg:w-[25%] self-center h-auto rounded-xl'
               title={title}
             />
             <div className='mt-6'>
