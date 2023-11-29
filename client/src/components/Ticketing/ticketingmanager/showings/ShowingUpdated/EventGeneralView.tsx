@@ -55,11 +55,11 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
           </span>
 
           <Tooltip title={<p>Edit</p>} placement='top' arrow>
-            <button
-              data-testid='event-edit-button'
-              className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
-              onClick={() => {
-                if (!editing && !showPopUp) {
+            <span>
+              <button
+                data-testid='event-edit-button'
+                className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+                onClick={() => {
                   setEdit((edit) => !edit);
                   setEditing((edit) => !edit);
                 }}
@@ -84,11 +84,11 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
           </Tooltip>
 
           <Tooltip title={<p>Delete</p>} placement='top' arrow>
-            <button
-              data-testid='event-delete-button'
-              className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
-              onClick={() => {
-                if (!editing && !showPopUp) {
+            <span>
+              <button
+                data-testid='event-delete-button'
+                className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+                onClick={() => {
                   onDelete(eventData);
                 }}
                 disabled={editing || showPopUp}
