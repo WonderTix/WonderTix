@@ -5,11 +5,10 @@ import {eventGeneralSchema} from './event.schemas';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {fetchSeasons} from './ShowingUtils';
+import {getData} from './ShowingUtils';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
-  onDelete: (event) => void;
   onLeaveEdit?: () => void;
 }
 
@@ -17,8 +16,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onLeaveEdit} = props;
   const {eventData, showPopUp, token} = useEvent();
   const [seasons, setSeasons] = useState([]);
-
-  const [showButton, setShowButton] = useState(true);
+  const [showButton, setShowButton] = useState(eventData && eventData.imageurl !== 'Default Event Image');
 
   const handleInputChange = (event) => {
     setShowButton(event.target.value !== 'Default Event Image');
@@ -28,35 +26,28 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    fetchSeasons(token, signal)
-      .then((res) => setSeasons(res))
-      .catch((error) => console.error('Failed to fetch seasons', error));
+    getData(
+      `${process.env.REACT_APP_API_2_URL}/season`,
+      setSeasons,
+      signal,
+      token,
+    ).catch(() => console.error('Failed to fetch seasons'));
 
     return () => controller.abort();
-  }, [token]);
+  }, []);
 
   const baseValues = {
     eventname: eventData ? eventData.eventname : '',
     eventid: eventData ? eventData.eventid : 0,
     eventdescription: eventData ? eventData.eventdescription : '',
-    imageurl: eventData ? eventData.imageurl : '',
+    imageurl: eventData && eventData.imageurl !== '' ? eventData.imageurl : 'Default Event Image',
     active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
   };
 
   return (
     <Formik
-      initialValues={{
-        eventname: baseValues.eventname,
-        eventid: baseValues.eventid,
-        eventdescription: baseValues.eventdescription,
-        imageurl:
-          baseValues.imageurl === 'Default Event Image'
-            ? ''
-            : baseValues.imageurl,
-        active: baseValues.active,
-        seasonid_fk: baseValues.seasonid_fk,
-      }}
+      initialValues={baseValues}
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
     >
@@ -100,7 +91,6 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 component={InputControl}
                 type='text'
                 label='Event Name'
-                id={0}
                 className={{
                   labelClass:
                     'text-sm font-semibold col-span-5 min-[450px]:col-span-12',
@@ -115,7 +105,6 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 component={InputControl}
                 type='textarea'
                 label='Event Description'
-                id={0}
                 className={{
                   labelClass: 'text-sm font-semibold',
                   inputClass:
@@ -125,11 +114,14 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 }}
               />
               <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
-                <div className='col-span-4 pr-2'>
+                <div className={`${showButton? 'col-span-4':'col-span-5'} pr-2`}>
                   <Field name='imageurl'>
-                    {({field, form}) => (
+                    {({field}) => (
                       <div className='flex flex-col text-zinc-800'>
-                        <label className='text-sm font-semibold' htmlFor='imageurl'>
+                        <label
+                          className='text-sm font-semibold'
+                          htmlFor='imageurl'
+                        >
                           Image URL:
                         </label>
                         <input
@@ -152,8 +144,8 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     className={
                       'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 font-bold text-sm h-fit self-end whitespace-nowrap'
                     }
-                    onClick={() => {
-                      setFieldValue('imageurl', 'Default Event Image');
+                    onClick={async () => {
+                      await setFieldValue('imageurl', 'Default Event Image');
                       setShowButton(false);
                     }}
                     type='button'

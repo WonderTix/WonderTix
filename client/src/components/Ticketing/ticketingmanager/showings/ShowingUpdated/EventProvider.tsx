@@ -1,4 +1,4 @@
-import {Showing, UpdatedShowing} from '../../../../../interfaces/showing.interface';
+import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React, {useContext, useState} from 'react';
 import {
   useFetchEventData,
@@ -26,7 +26,13 @@ interface EventContextType {
   title: string;
   success: boolean;
   dataTestId: string;
-  setPopUpProps: (title: string, message: string, success: boolean, dataTestId: string, handleProceed?) => void;
+  setPopUpProps: (
+    title: string,
+    message: string,
+    success: boolean,
+    dataTestId: string,
+    handleProceed?,
+  ) => void;
   handleProceed: () => void;
 }
 
@@ -73,12 +79,20 @@ export const EventProvider = () => {
     useFetchEventData(eventID);
   const {setReloadShowing, showingData} = useFetchShowingData(eventID);
   const {token} = useFetchToken();
-  const setPopUpProps = (title, message, success, dataTestId, handleProceedFunction?) => {
+  const setPopUpProps = (
+    title,
+    message,
+    success,
+    dataTestId,
+    handleProceedFunction?,
+  ) => {
     setTitle(title);
     setMessage(message);
     setSuccess(success);
     setDataTestId(dataTestId);
-    setHandleProceed(handleProceedFunction? () => handleProceedFunction: undefined);
+    setHandleProceed(
+      handleProceedFunction ? () => handleProceedFunction : undefined,
+    );
     setShowPopUp(true);
     return;
   };

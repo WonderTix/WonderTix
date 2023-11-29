@@ -14,17 +14,29 @@ interface InputControlProps {
     inputClass: string;
     inputGroupClass: string;
   };
+  onChange?;
+  currency?: boolean;
 }
 
 export const InputControl = (props: InputControlProps) => {
-  const {id, field, className, type, hidden, label, disabled} = props;
+  const {
+    id,
+    field,
+    className,
+    type,
+    hidden,
+    label,
+    disabled,
+    onChange,
+    currency,
+  } = props;
 
   const inputProps = {
     id: id + field.name,
     type: type,
     name: field.name,
     value: field.value,
-    onChange: field.onChange,
+    onChange: onChange ?? field.onChange,
     onBlur: field.onBlur,
     disabled: disabled,
     className: className?.inputClass,
@@ -40,6 +52,7 @@ export const InputControl = (props: InputControlProps) => {
         {`${label}: `}
       </label>
       <div className={className?.inputGroupClass}>
+        {currency && <span>$</span>}
         {type === 'textarea' ? (
           <textarea {...inputProps} />
         ) : (

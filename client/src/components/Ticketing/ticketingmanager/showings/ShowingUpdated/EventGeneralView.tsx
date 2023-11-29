@@ -1,17 +1,14 @@
 import {useEvent} from './EventProvider';
 import React, {useEffect, useState} from 'react';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {FormDeleteButton} from './FormDeleteButton';
 import {LineItem} from './LineItem';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Tooltip from '@mui/material/Tooltip';
 
 interface EventGeneralViewProps {
   setEdit: (value) => void;
   onDelete: (event) => void;
-  onSubmitActiveOnly: (eventData) => void;
+  onSubmitActiveOnly: (eventData) => Promise<void>;
 }
 
 export const EventGeneralView = (props: EventGeneralViewProps) => {
@@ -25,13 +22,13 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
     setIsActive(eventData ? eventData.active : false);
   }, [eventData]);
 
-  const handleActiveChange = async () => {
+  const handleActiveChange = () => {
     const updatedEventData = {
       ...eventData,
       active: !isActive,
     };
     setIsActive(!isActive);
-    onSubmitActiveOnly(updatedEventData);
+    return onSubmitActiveOnly(updatedEventData);
   };
 
   if (!eventData) {
@@ -40,7 +37,11 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
 
   return (
     <div className={'bg-white flex flex-col p-6 rounded-xl shadow-xl'}>
-      <div className={'flex flex-col gap-3 text-center mb-5 justify-between tab:flex-row tab:flex-wrap'}>
+      <div
+        className={
+          'flex flex-col gap-3 text-center mb-5 justify-between tab:flex-row tab:flex-wrap'
+        }
+      >
         <h2 className={'text-3xl font-semibold text-zinc-800'}>
           Event Information
         </h2>
@@ -54,56 +55,60 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
           </span>
 
           <Tooltip title={<p>Edit</p>} placement='top' arrow>
-            <button
-              className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
-              onClick={() => {
-                if (!editing && !showPopUp) {
+            <span>
+              <button
+                className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+                onClick={() => {
                   setEdit((edit) => !edit);
                   setEditing((edit) => !edit);
-                }
-              }}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-6 w-6'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                strokeWidth={2}
+                }}
+                disabled={editing || showPopUp}
+                data-testid={'event_edit_button'}
               >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
-                />
-              </svg>
-            </button>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-6 w-6'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+                  />
+                </svg>
+              </button>
+            </span>
           </Tooltip>
 
           <Tooltip title={<p>Delete</p>} placement='top' arrow>
-            <button
-              className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
-              onClick={() => {
-                if (!editing && !showPopUp) {
+            <span>
+              <button
+                className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+                onClick={() => {
                   onDelete(eventData);
-                }
-              }}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-6 w-6'
-                fill='#EF4444'
-                viewBox='0 0 24 24'
-                stroke='white'
-                strokeWidth={2}
+                }}
+                disabled={editing || showPopUp}
+                data-testid={'event_delete_button'}
               >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                />
-              </svg>
-            </button>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-6 w-6'
+                  fill={editing || showPopUp ? '' : `#EF4444`}
+                  viewBox='0 0 24 24'
+                  stroke='white'
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                  />
+                </svg>
+              </button>
+            </span>
           </Tooltip>
         </div>
       </div>
