@@ -308,7 +308,7 @@ const compRows = [
   },
 ];
 
-const ExchangeSalesPriceLevelReport: React.FC = (): React.ReactElement => {
+const ExchangeSalesPriceLevelReport = (): React.ReactElement => {
   const rowHeight = 36;
   const compTableRows = compRows.length;
   const tableHeight = ((compTableRows * rowHeight) + rowHeight + 5);

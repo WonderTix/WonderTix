@@ -1,27 +1,72 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import FilterOptions from './FilterOptions';
 import FilterRange from './FilterRange';
 import FilterEventCode from './FilterEventCode';
 import FilterPriceLevel from './FilterPriceLevel';
+import {SpinAnimation} from '../../../Tasks/SVGIcons';
 
-const SpinAnimation = (): React.ReactElement => {
-  return (
-    <svg className='animate-spin -ml-1 h-5 w-5 text-white' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'> <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'></circle> <path className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.93813-2.647z'></path> </svg>
-  );
-};
-
-type FilterReportsProps = {
+interface FilterReportsProps {
   onGenerateClick: (beginDate: string, endDate: string, showPriceLevel: boolean) => void;
+  viewOption: 'Today' | 'Yesterday' | 'CustomDate';
+  setViewOption: (viewOption: 'Today' | 'Yesterday' | 'CustomDate') => void;
+  showPriceLevelDetail: boolean;
+  setShowPriceLevelDetail: (showPriceLevelDetail: boolean) => void;
+}
 
-};
-
-const FilterReports: React.FC<FilterReportsProps> = ({onGenerateClick}): React.ReactElement => {
+const FilterReports: React.FC<FilterReportsProps> = ({
+  onGenerateClick,
+  viewOption,
+  setViewOption,
+  showPriceLevelDetail,
+  setShowPriceLevelDetail,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [viewOption, setViewOption] = useState('Today');
   const [beginDate, setBeginDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [showGLCode, setShowGLCode] = useState(false);
-  const [showPriceLevelDetail, setShowPriceLevelDetail] = useState(false);
+  const [localShowPriceLevelDetail, setLocalShowPriceLevelDetail] = useState(showPriceLevelDetail);
+
+  useEffect(() => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return `${month < 10 ? `0${month}` : month}/${day < 10 ? `0${day}` : day}/${year}`;
+    };
+
+    switch (viewOption) {
+      case 'Today':
+        setBeginDate(formatDate(today));
+        setEndDate(formatDate(today));
+        break;
+      case 'Yesterday':
+        setBeginDate(formatDate(yesterday));
+        setEndDate(formatDate(yesterday));
+        break;
+      default:
+        setBeginDate('');
+        setEndDate('');
+    }
+  }, [viewOption]);
+
+  const handleDateChange = (dateString: string, isStartDate: boolean) => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    const formattedDate = `${month < 10 ? `0${month}` : month}/${day < 10 ? `0${day}` : day}/${year}`;
+    if (isStartDate) {
+      setBeginDate(formattedDate);
+    } else {
+      setEndDate(formattedDate);
+    }
+    setViewOption('CustomDate');
+  };
+
+  const handlePriceLevelDetailChange = (show: boolean) => {
+    setLocalShowPriceLevelDetail(show);
+  };
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
@@ -29,67 +74,22 @@ const FilterReports: React.FC<FilterReportsProps> = ({onGenerateClick}): React.R
 
     setTimeout(() => {
       setIsLoading(false);
-      onGenerateClick(beginDate, endDate, showPriceLevelDetail);
+      onGenerateClick(beginDate, endDate, localShowPriceLevelDetail);
+      setViewOption(viewOption);
     }, 1000);
   };
 
   const handleReset = (e: React.FormEvent): void => {
     e.preventDefault();
-    handleViewChange('Today');
+    setViewOption('Today');
     setBeginDate('');
     setEndDate('');
     setShowGLCode(false);
     setShowPriceLevelDetail(false);
   };
 
-  const formatDate = (date: Date): string => {
-    const offset = date.getTimezoneOffset();
-    const adjustedDate = new Date(date.getTime() - offset * 60 * 1000);
-    return adjustedDate.toISOString().split('T')[0];
-  };
-
-  const getTodayDate = (): string => {
-    const today = new Date();
-    return formatDate(today);
-  };
-
-  const getYesterdayDate = (): string => {
-    const date = new Date();
-    date.setDate(date.getDate());
-    return formatDate(date);
-  };
-
-  const updateDateForToday = (): void => {
-    const todayDate = getTodayDate();
-    setBeginDate(todayDate);
-    setEndDate(todayDate);
-  };
-
-  const updateDateForYesterday = (): void => {
-    const yesterdayDate = getYesterdayDate();
-    const todayDate = getTodayDate();
-    setBeginDate(yesterdayDate);
-    setEndDate(todayDate);
-  };
-
-  React.useEffect(() => {
-    updateDateForToday();
-  }, []);
-
-  const handleViewChange = (view: string): void => {
-    setViewOption(view);
-    if (view === 'Today') {
-      updateDateForToday();
-    } else if (view === 'Yesterday') {
-      updateDateForYesterday();
-    } else {
-      setBeginDate('');
-      setEndDate('');
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit} onReset={handleReset} className='group'>
+    <form onSubmit={handleSubmit} onReset={handleReset} className='group mr-2'>
       <div className='flex-grow-1 shadow-xl text-lg rounded-md bg-white border-t-4 border-black w-80'>
         <h1 className='font-bold p-3 border-b text-2xl text-center bg-slate-100'>
           Filter Settings
@@ -100,8 +100,8 @@ const FilterReports: React.FC<FilterReportsProps> = ({onGenerateClick}): React.R
         />
         {viewOption === 'CustomDate' && (
           <FilterRange
-            onBeginDateChange={setBeginDate}
-            onEndDateChange={setEndDate}
+          onBeginDateChange={(date) => handleDateChange(date, true)}
+          onEndDateChange={(date) => handleDateChange(date, false)}
           />
         )}
         <FilterEventCode
@@ -109,8 +109,8 @@ const FilterReports: React.FC<FilterReportsProps> = ({onGenerateClick}): React.R
           onShowGLCodeChange={setShowGLCode}
         />
         <FilterPriceLevel
-          showPriceLevelDetail={showPriceLevelDetail}
-          onShowPriceLevelDetailChange={setShowPriceLevelDetail}
+          showPriceLevelDetail={localShowPriceLevelDetail}
+          onShowPriceLevelDetailChange={handlePriceLevelDetailChange}
         />
         <div className='flex justify-evenly mx-auto border-t my-3 py-4'>
           <button
