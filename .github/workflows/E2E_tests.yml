@@ -105,6 +105,23 @@ jobs:
           name: test-results
           path: ./client/test-results
           retention-days: 30
+          # Capture and upload server logs
+
+      - name: Capture Server Logs
+        run: docker-compose logs server > server-logs.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Server Logs
+          path: server-logs.txt
+
+      # Capture and upload client logs
+      - name: Capture Client Logs
+        run: docker-compose logs client > client-logs.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Client Logs
+          path: client-logs.txt
+
 
   # test-server:
   #   name: Run Tests on server
