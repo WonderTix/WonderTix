@@ -232,6 +232,7 @@ export class EventsPage {
     await this.deleteEventButton.click();
     await this.eventContinue.click();
     await this.leftBarEvent.click();
+    await this.page.reload();
     await expect(
       this.page.getByRole('button', {name: eventFullName}).first(),
     ).not.toBeVisible();

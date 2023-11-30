@@ -9,6 +9,8 @@ export class MainPage {
   readonly firstShowing: Locator;
   readonly headingEvent: Locator;
 
+  readonly loadingScreen: Locator;
+
   // Below elements are actually on the event template
   // Should event template be its own page object?
   readonly selectDate: Locator;
@@ -48,6 +50,7 @@ export class MainPage {
   constructor(page: Page) {
     this.page = page;
 
+    this.loadingScreen = page.getByTestId('loading-screen')
     this.firstShowing = page
       .getByRole('button', {name: 'See Showings'})
       .first();
@@ -96,7 +99,9 @@ export class MainPage {
   // Initial page navigation - sends browser session to the root address
   // Sets long timeout to account for various delays while testing in dev
   async goto() {
-    await this.page.goto('/', {timeout: 90000});
+    await this.page.goto('/', {timeout: 60000});
+    // Wait for the loading screen to be hidden
+    await this.loadingScreen.waitFor({ state: 'hidden', timeout: 30000 });
   }
 
   async getShowingLocator(showingName: string) {

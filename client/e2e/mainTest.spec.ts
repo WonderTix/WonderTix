@@ -4,7 +4,8 @@ import {EventsPage} from './pages/EventsPage';
 import {ContactPage} from './pages/contactPage';
 import {DoorListPage} from './pages/doorListPage';
 import {EventInfoTemplate5, EventInfoTemplate6, ShowingInfo2, ShowingInfo5} from './testData/ConstsPackage';
-import {EventInfo, JohnDoe, ValidVisaCredit, JaneDoe} from './testData/ConstsPackage';
+import {EventInfo, ValidVisaCredit} from './testData/ConstsPackage';
+import {createUniqueCustomer, baseJohnDoe, baseJaneDoe} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {
@@ -65,7 +66,7 @@ test('check cart after ticket add', async ({page}) => {
 test('check stripe purchase', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + (timeoutAdd * 2)); // There are two places with extended timeouts
-  const currentPatron = JohnDoe;
+  const currentPatron = createUniqueCustomer(baseJohnDoe);
   const currentCard = ValidVisaCredit;
   const currentEvent = new EventInfo(EventInfoTemplate5);
   const currentShowing = ShowingInfo2;
@@ -91,7 +92,8 @@ test('check stripe purchase', async ({page}, testInfo) => {
 test('check contact is added after order', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000);
-  const currentPatron = JohnDoe;
+  const currentPatron = createUniqueCustomer(baseJohnDoe);
+
   const currentCard = ValidVisaCredit;
   const currentEvent = new EventInfo(EventInfoTemplate5);
   const currentShowing = ShowingInfo2;
@@ -119,7 +121,8 @@ test('check contact is added after order', async ({page}, testInfo) => {
 test('check order accommodations', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + timeoutAdd);
-  const currentPatron = JaneDoe;
+  const currentPatron = createUniqueCustomer(baseJaneDoe);
+
   const currentCard = ValidVisaCredit;
   const currentEvent = new EventInfo(EventInfoTemplate5);
   const currentShowing = ShowingInfo2;
@@ -180,7 +183,8 @@ test('check ticket inc/dec in cart', async ({page}) => {
 test('check order on door list', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(100000 + timeoutAdd);
-  const currentPatron = JohnDoe;
+  const currentPatron = createUniqueCustomer(baseJohnDoe);
+
   const currentCard = ValidVisaCredit;
   const currentEvent = new EventInfo(EventInfoTemplate6);
   const currentShowing = ShowingInfo5;

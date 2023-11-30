@@ -10,12 +10,6 @@ test('Homepage->Events', async ({page}) => {
   await eventsPage.goto();
 });
 
-test('addNewEvents', async ({page})=>{
-  const eventsPage = new EventsPage(page);
-  const currentEvent = new EventInfo(EventInfoTemplate1);
-  await eventsPage.goto();
-  await eventsPage.addnewevent(currentEvent);
-});
 
 test('addDeleteEvents', async ({page})=>{
   // test.setTimeout(300000);

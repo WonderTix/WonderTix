@@ -228,15 +228,33 @@ export interface Customer {
   comments: string;
 }
 
-export const JohnDoe: Customer = {
+export const baseJaneDoe: Customer = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  fullName: 'Jane Doe',
+  streetAddress: '618 William Street, Key West, FL',
+  postCode: '33040',
+  country: 'USA',
+  phoneNumber: '(207)283-8797',
+  email: 'jane.doe@wondertix.com',
+  newsletterSignup: false,
+  getConcession: false,
+  donationAmount: '0',
+  getNewsletter: false,
+  heardAboutFrom: '',
+  accommodations: Accommodations.ASL,
+  comments: '',
+};
+// Base customer objects
+export const baseJohnDoe: Customer = {
   firstName: 'John',
   lastName: 'Doe',
-  fullName: 'John Doe',
+  fullName: '',
   streetAddress: '8 Strawberry Ln, Yarmouth Port, MA',
   postCode: '02675',
   country: 'USA',
-  phoneNumber: '(508) 362-3909',
-  email: 'test@wondertix.com',
+  phoneNumber: '',
+  email: '',
   newsletterSignup: false,
   getConcession: false,
   donationAmount: '0',
@@ -246,20 +264,20 @@ export const JohnDoe: Customer = {
   comments: '',
 };
 
-export const JaneDoe: Customer = {
-  firstName: 'Jane',
-  lastName: 'Doe',
-  fullName: 'Jane Doe',
-  streetAddress: '618 William Street, Key West, FL',
-  postCode: '33040',
-  country: 'USA',
-  phoneNumber: '(207)283-8797',
-  email: 'test@wondertix.com',
-  newsletterSignup: false,
-  getConcession: false,
-  donationAmount: '0',
-  getNewsletter: false,
-  heardAboutFrom: '',
-  accommodations: Accommodations.ASL,
-  comments: '',
-};
+function generatePhoneNumber() {
+  // Generates a random 10-digit phone number
+  const randomDigits = () => Math.floor(Math.random() * 9000000000) + 1000000000;
+  return `(${randomDigits().toString().substring(0, 3)}) ${randomDigits().toString().substring(3, 6)}-${randomDigits().toString().substring(6, 10)}`;
+}
+
+export function createUniqueCustomer(baseCustomer: Customer): Customer {
+  const uniqueId = generateShortUUID(6);
+  return {
+    ...baseCustomer,
+    firstName: `${baseCustomer.firstName}${uniqueId}`,
+    lastName: baseCustomer.lastName,
+    fullName: `${baseCustomer.firstName}${uniqueId} ${baseCustomer.lastName}`,
+    email: `${baseCustomer.firstName.toLowerCase()}.${baseCustomer.lastName.toLowerCase()}.${uniqueId}@wondertix.com`,
+    phoneNumber: generatePhoneNumber()
+  };
+}
