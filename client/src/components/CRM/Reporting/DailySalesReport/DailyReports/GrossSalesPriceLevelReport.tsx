@@ -237,7 +237,7 @@ const grossSalesRows = [
   },
 ];
 
-const GrossSalesPriceLevelReport: React.FC = (): React.ReactElement => {
+const GrossSalesPriceLevelReport = (): React.ReactElement => {
   const rowHeight = 36;
   const compTableRows = grossSalesRows.length;
   const tableHeight = ((compTableRows * rowHeight) + rowHeight + 5);

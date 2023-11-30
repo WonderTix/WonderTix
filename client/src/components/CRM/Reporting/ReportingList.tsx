@@ -185,7 +185,7 @@ const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
               size='md'
               title='Daily Sales Report'
               route='/admin/reporting/daily-sales-report'
-              description='Use this to report on all box office transactions durin a particular date range (or choose "Yesterday"). The report is grouped by Payment Method and event, and includes donations and all fees.'
+              description='Use this to report on all box office transactions during a particular date range (or choose "Yesterday"). The report is grouped by Payment Method and event, and includes donations and all fees.'
             />
             <ListLink
               gradientClasses='bg-gray-500'
@@ -212,7 +212,7 @@ const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
               description='Temporarily Unavailable'
             />
             <ListLink
-              gradientClasses='bg-gray-500'
+              gradientClasses='bg-gradient-to-r from-green-500 to-blue-300'
               icon={
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -231,9 +231,9 @@ const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
               }
               size='md'
               title='Transaction Summary Report'
-              route='/admin/reporting'
-              disabled={true}
-              description='Temporarily Unavailable'
+              route='/admin/reporting/transaction-summary-report'
+              disabled={false}
+              description='Use this report to track and compare transactions over a particular date range either including or excluding various types of Donation records.'
             />
           </div>
         </div>
