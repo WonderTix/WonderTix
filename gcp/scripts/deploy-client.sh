@@ -1,32 +1,16 @@
 #!/bin/bash
-# client.sh: Use `gcloud` to deploy the client to Cloud Run.
+# deploy-client.sh: Use `gcloud` to deploy the client to Cloud Run.
 
-function check_args() {
-  local missing=0
-  local required=(
-    "ARTIFACTS"
-    "CLIENT_CPU"
-    "CLIENT_MEMORY"
-    "ENV"
-    "REGION"
-    "SERVICE_ACCOUNT"
-    "SHORT_SHA"
-  )
-
-  for arg in "${required[@]}"; do
-    if [ -z "${!arg}" ]; then
-      echo "Error: Missing required environment variable '$arg'"
-      ((missing++))
-    fi
-  done
-
-  if [ $missing -ne 0 ]; then
-    echo "Error: One or more required environment variables are missing."
-    exit 1
-  fi
-}
-
-check_args
+required=(
+  "ARTIFACTS"
+  "CLIENT_CPU"
+  "CLIENT_MEMORY"
+  "ENV"
+  "REGION"
+  "SERVICE_ACCOUNT"
+  "SHORT_SHA"
+)
+source ${CHECK_ARGS} "${required[@]}"
 
 # Handle optional args
 TAG_ARGS=()

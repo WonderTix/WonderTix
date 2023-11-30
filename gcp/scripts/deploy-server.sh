@@ -1,46 +1,30 @@
 #!/bin/bash
-# server.sh: Use `gcloud` to deploy the server to Cloud Run.
+# deploy-server.sh: Use `gcloud` to deploy the server to Cloud Run.
 
-function check_args() {
-  local missing=0
-  local required=(
-    "ARTIFACTS"
-    "AUTH0_URL"
-    "ENV"
-    "REGION"
-    "SERVER_CPU"
-    "SERVER_MEMORY"
-    "SERVICE_ACCOUNT"
-    "SHORT_SHA"
-    "SQL_INSTANCE"
-  )
+required=(
+  "ARTIFACTS"
+  "AUTH0_URL"
+  "ENV"
+  "REGION"
+  "SERVER_CPU"
+  "SERVER_MEMORY"
+  "SERVICE_ACCOUNT"
+  "SHORT_SHA"
+  "SQL_INSTANCE"
+)
+source ${CHECK_ARGS} "${required[@]}"
 
-  for arg in "${required[@]}"; do
-    if [ -z "${!arg}" ]; then
-      echo "Error: Missing required environment variable '$arg'"
-      ((missing++))
-    fi
-  done
+# Use revision URL if deploying with a tag
+if [ -z "${ROOT_URL}" ] && [ -z "${SERVER_REVISION}" ]; then
+  echo "Error: At least one of 'ROOT_URL' or 'SERVER_REVISION' must be set."
+  exit 1
+fi
 
-  # Use revision URL if deploying with a tag
-  if [ -z "${ROOT_URL}" ] && [ -z "${SERVER_REVISION}" ]; then
-    echo "Error: At least one of 'ROOT_URL' or 'SERVER_REVISION' must be set."
-    ((missing++))
-  fi
-
-  # Use revision URL if deploying with a tag
-  if [ -z "${FRONTEND_URL}" ] && [ -z "${CLIENT_REVISION}" ]; then
-    echo "Error: At least one of 'FRONTEND_URL' or 'CLIENT_REVISION' must be set."
-    ((missing++))
-  fi
-
-  if [ $missing -ne 0 ]; then
-    echo "Error: One or more required environment variables are missing."
-    exit 1
-  fi
-}
-
-check_args
+# Use revision URL if deploying with a tag
+if [ -z "${FRONTEND_URL}" ] && [ -z "${CLIENT_REVISION}" ]; then
+  echo "Error: At least one of 'FRONTEND_URL' or 'CLIENT_REVISION' must be set."
+  exit 1
+fi
 
 # Use second value if first is not set
 ROOT_URL=${ROOT_URL:-$SERVER_REVISION}
