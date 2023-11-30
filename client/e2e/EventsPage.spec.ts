@@ -57,11 +57,6 @@ test.skip('editEvents', async ({page})=>{
   await eventsPage.editTheEventInfo(currentEvent4);
 });
 
-test('editEvents1', async ({page})=>{
-  const eventsPage = new EventsPage(page);
-  await eventsPage.goto();
-  await eventsPage.editEvents();
-});
 
 // Also relies on a seeded event
 test.skip('editShowing', async ({page})=>{
