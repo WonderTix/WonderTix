@@ -54,6 +54,7 @@ export class EventsPage {
   readonly ticketQuantityOption: Locator;
   readonly showingCard: Locator;
   readonly deleteShowingButton: Locator;
+  readonly activeButton: Locator;
   constructor(page: Page) {
     this.page = page;
 
@@ -103,6 +104,7 @@ export class EventsPage {
     this.ticketQuantityOption=page.getByLabel('Ticket Quantity:');
     this.showingCard=page.getByTestId('showing-card');
     this.deleteShowingButton=page.getByRole('button', { name: 'Delete' });
+    this.activeButton = page.getByLabel('controlled');
   }
 
   async clickLeftBar()
@@ -148,6 +150,7 @@ export class EventsPage {
      await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
      await this.newEventSave.click();
      await this.eventContinue.click();
+     await this.activeButton.check();
   }
 
   /**

@@ -48,7 +48,8 @@ export class AdminPage {
 
     this.purchaseTicketButton = page.getByRole('button', {name: 'Purchase Tickets'}); // for "EventInfo2" / "ShowingInfo2"
     this.eventDropDown = page.getByRole('combobox');
-    this.eventTime = page.locator('div').filter({hasText: /^Select TimeTue, Oct 17 - 10:20 AM$/}).getByRole('combobox');
+    // this.eventTime = page.locator('div').filter({hasText: /^Select TimeTue, Oct 17 - 10:20 AM$/}).getByRole('combobox');
+    this.eventTime = page.getByRole('combobox').nth(1);
     this.admissionType = page.locator('div').filter({hasText: /^Select TypeGeneral Admission - AdultGeneral Admission - ChildVIP$/});
     this.checkoutButton = page.getByRole('button', {name: 'Proceed to Checkout'});
     this.firstName = page.getByPlaceholder('First Name');
@@ -138,6 +139,48 @@ export class AdminPage {
     }
   }
   // END FUNCTION
+  // ADD THIS FUNCTION TO YOUR CODE
+  async dynamicDropDownSelectorTime(eventName: string) {
+    // Replace 'your-combobox-selector' with the selector for combobox elements
+    const comboboxSelector = 'select';
+
+    // Find all combobox elements on the page
+    const comboboxes = await this.page.$$(comboboxSelector);
+
+    if (comboboxes.length > 0) {
+      const secondCombobox = comboboxes[1];
+
+      // Get options within the first combobox
+      const options = await secondCombobox.$$('option');
+
+      // Define your regex pattern
+      const regexPattern = /Tue/i; // Replace 'YourRegexPatternHere' with your regex pattern
+
+      // Function to find and select the option that matches the regex pattern
+      /**
+       *
+       * @param dropdown
+       * @param regex
+       */
+      async function selectOptionByTextRegexTime(dropdown, regex) {
+        for (const option of options) {
+          const optionText = await option.innerText();
+          if (regex.test(optionText)) {
+            await dropdown.selectOption(optionText);
+            console.log(`Selected option: ${optionText}`);
+            return;
+          }
+        }
+        console.log('No matching option found.');
+      }
+
+      // Call the function with your regex pattern and the first combobox element
+      await selectOptionByTextRegexTime(secondCombobox, regexPattern);
+    } else {
+      console.log('No combobox elements found.');
+    }
+  }
+  // END FUNCTION
 
   async purchaseTicket(eventName: string, eventTime: string) {
     await this.gotoTicketing(); // ticketing url
@@ -150,8 +193,9 @@ export class AdminPage {
     // END TODO
 
     // await this.eventTime.selectOption({index: 1});
-    await this.eventTime.selectOption(eventTime);
-    
+    // await this.eventTime.selectOption(eventTime);
+    // await page.getByRole('combobox').nth(1).selectOption('453');
+    await this.dynamicDropDownSelectorTime(eventTime);
     await this.admissionType.getByRole('combobox').selectOption('1');
     await this.checkoutButton.click();
     await this.firstName.click();
