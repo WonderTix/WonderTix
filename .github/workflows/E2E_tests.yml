@@ -85,8 +85,8 @@ jobs:
       - name: docker setup
         run: docker-compose up -d
 
-      - name: 180 second wait for client and server start
-        run: sleep 180s
+      - name: 60 second wait for client and server start
+        run: sleep 60s
         
       - name: Check client E2E(UI) Tests
         run: npm run test:playwright
