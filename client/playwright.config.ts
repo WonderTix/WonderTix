@@ -15,7 +15,7 @@ export default defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Set total test timeout */
-  timeout: process.env.CI ? 45000 : 30000, // 60 seconds for CI, 30 seconds otherwise
+  timeout: process.env.CI ? 60000 : 30000, // 60 seconds for CI, 30 seconds otherwise
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -39,8 +39,8 @@ export default defineConfig({
       attachments: true,
     },
     // Set actionTimeout and navigationTimeout based on CI environment
-    actionTimeout: process.env.CI ? 20000 : 10000, // 20 seconds for CI, 10 seconds otherwise
-    navigationTimeout: process.env.CI ? 20000 : 10000, // 20 seconds for CI, 10 seconds otherwise
+    actionTimeout: process.env.CI ? 30000 : 10000, // 30 seconds for CI, 10 seconds otherwise
+    navigationTimeout: process.env.CI ? 30000 : 10000, // 30 seconds for CI, 10 seconds otherwise
   },
 
   /* Configure projects for major browsers */
