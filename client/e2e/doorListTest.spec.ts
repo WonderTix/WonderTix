@@ -54,3 +54,28 @@ test('Select Inactive Showing', async ({page}) => {
     await eventsPage.deleteTheEvent(currentEvent.eventFullName);
   }
 });
+
+test('Confirm Open Seats', async ({page}) => {
+  const currentEvent = new EventsInfo(EventsInfoTemplate2);
+  const currentShowing = ShowingInfo1;
+  const eventsPage = new EventsPage(page);
+  const doorList = new DoorListPage(page);
+  try {
+    // Add event and showing to check for in the door list
+    await eventsPage.goto();
+    await eventsPage.addnewevent(currentEvent);
+    await eventsPage.activateEvent();
+    await eventsPage.addNewShowing(currentShowing);
+
+    // Check door list
+    await doorList.goto();
+    await doorList.searchShowing(currentEvent,currentShowing);
+    await doorList.customerRow.filter({hasText: "OPEN SEATS"})
+      .filter({hasText: currentShowing.showingQuantity.toString()});
+  } finally {
+    // Remove the added event
+    await eventsPage.goto();
+    await page.locator(':text("' + currentEvent.eventName + '")').click();
+    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+  }
+});
