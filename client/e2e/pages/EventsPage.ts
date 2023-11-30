@@ -65,8 +65,7 @@ export class EventsPage {
 
     this.pageHeader=page.getByRole('heading', { name: 'Select Event' });
     this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
-    // this.emailButton= page.getByTestId('home-page-email-button');
-    this.emailButton = page.locator('svg[class*=\'icon-tabler-chevron-down\']');
+    this.emailButton= page.getByText(process.env.TEST_EMAIL as string);
     this.manageTicketingButton=page.getByText('Manage Ticketing').first();
 
     this.addButton = page.getByRole('button', { name: 'Add Event' });
@@ -74,7 +73,7 @@ export class EventsPage {
     this.eventDesBlank= page.getByLabel('Event Description:');
     this.imageURL=page.getByLabel('Image URL:');
     this.newEventSave=page.getByLabel('Save');
-    this.deleteEventButton=page.locator('.flex[data-mui-internal-clone-element=true]').last();
+    this.deleteEventButton=page.getByTestId('event_delete_button');
 
     this.eventContinue=page.getByRole('button', { name: 'Continue' });
     this.eventClose=page.getByRole('button', { name: 'Close', exact: true });
@@ -82,7 +81,7 @@ export class EventsPage {
     this.eventOption1=page.getByRole('button', { name: 'Default' });
     this.eventOption2=page.getByText('Active:', { exact: true });
 
-    this.editEventInfo=page.locator('.flex[data-mui-internal-clone-element=true]').first();
+    this.editEventInfo=page.getByTestId('event_edit_button');
     this.editEventsInfo=page.getByRole('button', { name: 'Edit' });
     this.editEventName=page.getByLabel('Event Name:');
     this.editEventDes=page.getByLabel('Event Description:');
@@ -157,7 +156,7 @@ export class EventsPage {
   async activateEvent() {
     await this.eventOption2.click();
   }
-
+  
 /**
   We need to pass in things like:
   "2023-10-17",

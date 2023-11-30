@@ -50,7 +50,7 @@ const EventTotalsByCCComponent = () => {
                     pageSize={11}
                     sx={{
                         '& .MuiDataGrid-cell': {
-                            fontSize: '16px',
+                            fontSize: '14px',
                         },
                     }}
                 />
@@ -66,7 +66,7 @@ const EventTotalsByCCComponent = () => {
                     pageSize={11}
                     sx={{
                         '& .MuiDataGrid-cell': {
-                            fontSize: '16px',
+                            fontSize: '14px',
                         },
                     }}
                 />

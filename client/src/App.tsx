@@ -18,13 +18,15 @@ import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchma
 import DailySalesReportMain from './components/CRM/Reporting/DailySalesReport/DailySalesReportMain';
 import DonationSummaryReportMain from './components/CRM/Reporting/DonationSummaryReport/DonationSummaryReportMain';
 import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconciliationReport';
+import TransactionSummaryReport from './components/CRM/Reporting/TransactionSummaryReport/TransactionSummaryReport';
+
 /* Donor Management */
 import DmDashmain from './components/DonorManagement/DmDashmain';
 import DonorReporting from './components/DonorManagement/Reporting/DonorReporting';
 
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
-import Eventshowingmain from './components/Ticketing/event/eventshowingmain';
+import EventShowingsmain from './components/Ticketing/event/EventShowingsmain';
 import Cartmain from './components/Ticketing/cart/Cartmain';
 import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
 import CheckoutSuccess from './components/Ticketing/checkout/CheckoutSuccess';
@@ -49,7 +51,7 @@ const App = () => {
     <>
       <Routes>
         <Route path='/' element={<Mainpage />} />
-        <Route path='/events/:eventid' element={<Eventshowingmain />} />
+        <Route path='/events/:eventid' element={<EventShowingsmain />} />
         <Route path='/cart' element={<Cartmain />} />
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />
@@ -127,6 +129,10 @@ const App = () => {
         <Route
           path='/admin/reporting/daily-sales-report'
           element={<ProtectedRoute component={DailySalesReportMain} />}
+        />
+        <Route
+          path='/admin/reporting/transaction-summary-report'
+          element={<ProtectedRoute component={TransactionSummaryReport} />}
         />
         <Route
           path='/ticketing'

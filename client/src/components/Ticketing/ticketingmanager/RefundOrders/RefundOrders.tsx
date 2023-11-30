@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import PopUp from '../../PopUp';
+import format from 'date-fns/format';
 
 const RefundOrders = () => {
   const {token} = useFetchToken();
@@ -214,17 +215,11 @@ const RefundOrders = () => {
                       {instance.name}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {new Date(
+                      {format(new Date(
                         `${instance.orderdate} ${instance.ordertime
                           .split('T')[1]
-                          .slice(0, 6)}`,
-                      ).toLocaleString('en-us', {
-                        month: '2-digit',
-                        day: '2-digit',
-                        year: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
+                          .slice(0, 8)}`,
+                      ), 'MM/dd/yyyy, hh:mm a')}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {Array.isArray(instance.showings) ? (
@@ -257,7 +252,7 @@ const RefundOrders = () => {
                           )
                         }
                         type='button'
-                        className='bg-red-600 hover:bg-red-700 focus:ring-red-500 dark:focus:ring-red-800
+                        className='bg-red-600 hover:bg-red-700 focus:ring-red-500
                           w-full inline-flex justify-center rounded-md border border-transparent
                           shadow-sm px-4 py-2 text-base font-medium text-white
                           focus:outline-none focus:ring-2 focus:ring-offset-2

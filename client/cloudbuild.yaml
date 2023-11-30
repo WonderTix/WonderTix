@@ -1,10 +1,10 @@
 steps:
 
   # Build Docker image for client
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-client'
     entrypoint: 'bash'
-    args: ['scripts/build/client.sh']
+    args: ['gcp/scripts/build-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -12,29 +12,23 @@ steps:
       - 'AUTH0_CLIENT_ID'
       - 'AUTH0_CLIENT_SECRET'
       - 'AUTH0_URL'
+      - 'CHECK_ARGS'
       - 'ENV'
+      - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'ROOT_URL'
-
-  # Push image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'push-client'
-    entrypoint: 'bash'
-    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
-    secretEnv:
-      - 'ARTIFACTS'
-      - 'ENV'
 
   # Deploy new client to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-client'
-    waitFor: ['push-client']
+    waitFor: ['build-client']
     entrypoint: 'bash'
-    args: ['scripts/deploy/client.sh']
+    args: ['gcp/scripts/deploy-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
+      - 'CHECK_ARGS'
       - 'CLIENT_CPU'
       - 'CLIENT_MEMORY'
       - 'ENV'
@@ -45,17 +39,17 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'send-traffic'
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run services update-traffic wtix-client-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100
+    args: ['gcp/scripts/send-traffic.sh']
+    env:
+      - 'IMAGE=client'
+      - 'PERCENTAGE=100'
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'REGION'
 
-# Use dev, stg, or prd versions depending on $_ENV value from trigger
+# Use dev, stg, or prd versions depending on ${_ENV} value from trigger
 availableSecrets:
   secretManager:
   - versionName: projects/${PROJECT_ID}/secrets/ARTIFACTS/versions/${_ENV}
@@ -66,12 +60,16 @@ availableSecrets:
     env: 'AUTH0_CLIENT_SECRET'
   - versionName: projects/${PROJECT_ID}/secrets/AUTH0_URL/versions/${_ENV}
     env: 'AUTH0_URL'
+  - versionName: projects/${PROJECT_ID}/secrets/CHECK_ARGS/versions/${_ENV}
+    env: 'CHECK_ARGS'
   - versionName: projects/${PROJECT_ID}/secrets/CLIENT_CPU/versions/${_ENV}
     env: 'CLIENT_CPU'
   - versionName: projects/${PROJECT_ID}/secrets/CLIENT_MEMORY/versions/${_ENV}
     env: 'CLIENT_MEMORY'
   - versionName: projects/${PROJECT_ID}/secrets/ENV/versions/${_ENV}
     env: 'ENV'
+  - versionName: projects/${PROJECT_ID}/secrets/KANIKO_CACHE/versions/${_ENV}
+    env: 'KANIKO_CACHE'
   - versionName: projects/${PROJECT_ID}/secrets/PUBLIC_STRIPE_KEY/versions/${_ENV}
     env: 'PUBLIC_STRIPE_KEY'
   - versionName: projects/${PROJECT_ID}/secrets/REGION/versions/${_ENV}
