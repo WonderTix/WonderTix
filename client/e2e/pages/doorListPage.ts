@@ -71,9 +71,9 @@ export class DoorListPage {
     await this.chooseTime.selectOption(eventTime);
   }
 
-  // Verify a specific order exists by customer name and quantity.
+  // Verify a specific order exists by customer name, quantity, and accomodation.
   async checkOrder(customer: Customer, qty: number) {
-    await this.customerRow.filter({hasText: customer.firstName}).filter({hasText: customer.lastName}).filter({hasText: qty.toString()}).isVisible();
+    await this.customerRow.filter({hasText: customer.firstName}).filter({hasText: customer.lastName}).filter({hasText: qty.toString()}).filter({hasText: customer.accommodations}).isVisible();
   }
 
   // Sets viewable list of events to active events.
