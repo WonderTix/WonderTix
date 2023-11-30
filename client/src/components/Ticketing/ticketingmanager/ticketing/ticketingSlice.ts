@@ -184,8 +184,15 @@ export interface ticketingState {
 const fetchData = async (url: string) => {
   try {
     const res = await fetch(url);
+      if (!res.ok) {
+          throw res;
+      }
     return await res.json();
   } catch (err) {
+      if (err instanceof Response) {
+          console.error(await err.json());
+          return;
+      }
     console.error(err.message);
   }
 };
@@ -199,13 +206,10 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
   'ticketing/fetch',
   async () => {
-    const eventData = await fetchData(process.env.REACT_APP_API_1_URL + '/events');
-    const events: Event[] = eventData.data;
+    const events: Event[] = await fetchData(process.env.REACT_APP_API_2_URL + '/events/slice');
+    const ticketRestrictions: TicketRestriction[] = await fetchData(process.env.REACT_APP_API_2_URL + '/ticket-restriction');
 
-    const restrictionData = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets/restrictions');
-    const ticketRestrictions: TicketRestriction[] = restrictionData.data;
-
-    const ticketState: TicketsState = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets');
+    const ticketState: TicketsState = await fetchData(process.env.REACT_APP_API_2_URL + '/event-instance/tickets');
     const tickets = Object.entries(ticketState.data.byId).reduce(
       (res, [key, val]) => ({
         ...res,

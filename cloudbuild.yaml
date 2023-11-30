@@ -1,42 +1,69 @@
 steps:
 
-  # Build server image
+  # Download node_modules from GCS bucket
+  - name: 'gcr.io/cloud-builders/gsutil'
+    id: 'pull-npm-cache'
+    waitFor: ['-']
+    entrypoint: 'bash'
+    args: ['gcp/scripts/pull-npm-cache.sh']
+    secretEnv:
+      - 'CHECK_ARGS'
+      - 'ENV'
+      - 'NPM_CACHE'
+
+  # Decompress and unarchive node_modules tarball
+  - name: 'ubuntu'
+    id: 'expand-npm-cache'
+    waitFor: ['pull-npm-cache']
+    dir: 'client'
+    args: ['tar', 'xzf', 'node_modules.tar.gz']
+
+  # Run npm install if cache is not up-to-date
+  - name: 'gcr.io/cloud-builders/npm'
+    id: 'npm-install-client'
+    waitFor: ['expand-npm-cache']
+    dir: 'client'
+    entrypoint: 'bash'
+    args: ['/workspace/gcp/scripts/install-client.sh']
+    env:
+      - 'CACHE=cache-package.json'
+      - 'CURRENT=package.json'
+    secretEnv:
+      - 'CHECK_ARGS'
+
+  # Pull Playwright image and cache for testing steps
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'pull-playwright'
+    waitFor: ['-']
+    args: ['pull', 'mcr.microsoft.com/playwright:v1.36.2-jammy']
+ 
+  # Build server image
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-test-server'
     waitFor: ['-']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        docker build -f server/Dockerfile \
-        -t $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA} \
-        server
+    args: ['gcp/scripts/build-server.sh']
+    env:
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
+      - 'CHECK_ARGS'
       - 'ENV'
-
-  # Push server image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'push-test-server'
-    waitFor: ['build-test-server']
-    entrypoint: 'bash'
-    args: ['-c', 'docker push $${ARTIFACTS}/server-img-$${ENV}:${SHORT_SHA}']
-    secretEnv:
-      - 'ARTIFACTS'
-      - 'ENV'
+      - 'KANIKO_CACHE'
 
   # Deploy server as test revision (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-test-server'
-    waitFor: ['push-test-server']
+    waitFor: ['build-test-server']
     entrypoint: 'bash'
-    args: ['scripts/deploy/server.sh']
+    args: ['gcp/scripts/deploy-server.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
       - 'TAG=test'
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_URL'
+      - 'CHECK_ARGS'
       - 'CLIENT_REVISION'
       - 'ENV'
       - 'REGION'
@@ -46,12 +73,12 @@ steps:
       - 'SERVICE_ACCOUNT'
       - 'SQL_INSTANCE'
 
-  # Build client image with build args for test revision
-  - name: 'gcr.io/cloud-builders/docker'
+  # Build client image with args for test revision
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-test-client'
     waitFor: ['-']
     entrypoint: 'bash'
-    args: ['scripts/build/client.sh']
+    args: ['gcp/scripts/build-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -59,44 +86,76 @@ steps:
       - 'AUTH0_CLIENT_ID'
       - 'AUTH0_CLIENT_SECRET'
       - 'AUTH0_URL'
+      - 'CHECK_ARGS'
       - 'ENV'
+      - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'SERVER_REVISION'
-
-  # Push client image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'push-test-client'
-    waitFor: ['build-test-client']
-    entrypoint: 'bash'
-    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
-    secretEnv: 
-      - 'ARTIFACTS'
-      - 'ENV'
 
   # Deploy client as test revision (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-test-client'
-    waitFor: ['push-test-client', 'deploy-test-server']
+    waitFor: ['build-test-server', 'build-test-client']
     entrypoint: 'bash'
-    args: ['scripts/deploy/client.sh']
+    args: ['gcp/scripts/deploy-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
       - 'TAG=test'
     secretEnv:
       - 'ARTIFACTS'
+      - 'CHECK_ARGS'
       - 'CLIENT_CPU'
       - 'CLIENT_MEMORY'
       - 'ENV'
       - 'REGION'
       - 'SERVICE_ACCOUNT'
 
-  # Run E2E tests on test client
-  - name: 'mcr.microsoft.com/playwright:latest'
-    id: 'run-tests'
-    waitFor: ['deploy-test-client']
+  # Run Firefox E2E tests on test client
+  - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
+    id: 'firefox-tests'
+    waitFor: ['npm-install-client', 'deploy-test-client']
+    dir: 'client/e2e'
     entrypoint: 'bash'
-    args: ['scripts/test/client.sh']
+    args: ['/workspace/gcp/scripts/test-client.sh']
+    env:
+      - 'BROWSER=firefox'
+      - 'CONFIG=/workspace/client/playwright.config.ts'
     secretEnv:
+      - 'CHECK_ARGS'
+      - 'CLIENT_REVISION'
+      - 'SERVER_REVISION'
+      - 'TEST_EMAIL'
+      - 'TEST_PASSWORD'
+
+  # Run Chromium E2E tests on test client
+  - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
+    id: 'chromium-tests'
+    waitFor: ['npm-install-client', 'deploy-test-client']
+    dir: 'client/e2e'
+    entrypoint: 'bash'
+    args: ['/workspace/gcp/scripts/test-client.sh']
+    env:
+      - 'BROWSER=chromium'
+      - 'CONFIG=/workspace/client/playwright.config.ts'
+    secretEnv:
+      - 'CHECK_ARGS'
+      - 'CLIENT_REVISION'
+      - 'SERVER_REVISION'
+      - 'TEST_EMAIL'
+      - 'TEST_PASSWORD'
+
+  # Run WebKit E2E tests on test client
+  - name: 'mcr.microsoft.com/playwright:v1.36.2-jammy'
+    id: 'webkit-tests'
+    waitFor: ['npm-install-client', 'deploy-test-client']
+    dir: 'client/e2e'
+    entrypoint: 'bash'
+    args: ['/workspace/gcp/scripts/test-client.sh']
+    env:
+      - 'BROWSER=webkit'
+      - 'CONFIG=/workspace/client/playwright.config.ts'
+    secretEnv:
+      - 'CHECK_ARGS'
       - 'CLIENT_REVISION'
       - 'SERVER_REVISION'
       - 'TEST_EMAIL'
@@ -105,14 +164,15 @@ steps:
   # Deploy server to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-server'
-    waitFor: ['run-tests']
+    waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     entrypoint: 'bash'
-    args: ['scripts/deploy/server.sh']
+    args: ['gcp/scripts/deploy-server.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
       - 'AUTH0_URL'
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'FRONTEND_URL'
       - 'REGION'
@@ -127,13 +187,13 @@ steps:
     id: 'send-server-traffic'
     waitFor: ['deploy-server']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run services update-traffic wtix-server-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-server-$${ENV}-${SHORT_SHA}=100
+    args: ['gcp/scripts/send-traffic.sh']
+    env:
+      - 'IMAGE=server'
+      - 'PERCENTAGE=100'
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'REGION'
 
@@ -142,22 +202,22 @@ steps:
     id: 'delete-test-server'
     waitFor: ['send-server-traffic']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run revisions delete wtix-server-$${ENV}-${SHORT_SHA}-test \
-        --region $${REGION} \
-        --quiet
+    args: ['gcp/scripts/delete-revision.sh']
+    env:
+      - 'IMAGE=server'
+      - 'SHORT_SHA=${SHORT_SHA}'
+      - 'SUFFIX=test'
     secretEnv:
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'REGION'
  
   # Build client image using normal args
-  - name: 'gcr.io/cloud-builders/docker'
+  - name: '${_KANIKO_IMAGE}'
     id: 'build-client'
-    waitFor: ['run-tests']
+    waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
     entrypoint: 'bash'
-    args: ['scripts/build/client.sh']
+    args: ['gcp/scripts/build-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
@@ -165,30 +225,23 @@ steps:
       - 'AUTH0_CLIENT_ID'
       - 'AUTH0_CLIENT_SECRET'
       - 'AUTH0_URL'
+      - 'CHECK_ARGS'
       - 'ENV'
+      - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'ROOT_URL'
-
-  # Push client image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'push-client'
-    waitFor: ['build-client']
-    entrypoint: 'bash'
-    args: ['-c', 'docker push $${ARTIFACTS}/client-img-$${ENV}:${SHORT_SHA}']
-    secretEnv: 
-      - 'ARTIFACTS'
-      - 'ENV'
 
   # Deploy client to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-client'
-    waitFor: ['push-client', 'send-server-traffic']
+    waitFor: ['build-client', 'send-server-traffic']
     entrypoint: 'bash'
-    args: ['scripts/deploy/client.sh']
+    args: ['gcp/scripts/deploy-client.sh']
     env:
       - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
       - 'ARTIFACTS'
+      - 'CHECK_ARGS'
       - 'CLIENT_CPU'
       - 'CLIENT_MEMORY'
       - 'ENV'
@@ -200,13 +253,13 @@ steps:
     id: 'send-client-traffic'
     waitFor: ['deploy-client']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run services update-traffic wtix-client-$${ENV} \
-        --region $${REGION} \
-        --to-revisions=wtix-client-$${ENV}-${SHORT_SHA}=100
+    args: ['gcp/scripts/send-traffic.sh']
+    env:
+      - 'IMAGE=client'
+      - 'PERCENTAGE=100'
+      - 'SHORT_SHA=${SHORT_SHA}'
     secretEnv:
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'REGION'
 
@@ -215,17 +268,35 @@ steps:
     id: 'delete-test-client'
     waitFor: ['send-client-traffic']
     entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud run revisions delete wtix-client-$${ENV}-${SHORT_SHA}-test \
-        --region $${REGION} \
-        --quiet
+    args: ['gcp/scripts/delete-revision.sh']
+    env:
+      - 'IMAGE=client'
+      - 'SHORT_SHA=${SHORT_SHA}'
+      - 'SUFFIX=test'
     secretEnv:
+      - 'CHECK_ARGS'
       - 'ENV'
       - 'REGION'
 
-# Use dev, stg, or prd versions depending on $_ENV value from trigger
+  # Update cache in GCS if node_modules have changed
+  - name: 'gcr.io/cloud-builders/gsutil'
+    id: 'update-npm-cache'
+    waitFor: ['firefox-tests', 'chromium-tests', 'webkit-tests']
+    dir: 'client'
+    entrypoint: 'bash'
+    args: ['/workspace/gcp/scripts/push-npm-cache.sh']
+    env:
+      - 'CACHE=cache-package.json'
+      - 'CURRENT=package.json'
+    secretEnv:
+      - 'CHECK_ARGS'
+      - 'ENV'
+      - 'NPM_CACHE'
+
+options:
+  machineType: 'E2_HIGHCPU_8'
+
+# Use dev, stg, or prd versions depending on ${_ENV} value from trigger
 availableSecrets:
   secretManager:
   - versionName: projects/${PROJECT_ID}/secrets/ARTIFACTS/versions/${_ENV}
@@ -236,6 +307,8 @@ availableSecrets:
     env: 'AUTH0_CLIENT_SECRET'
   - versionName: projects/${PROJECT_ID}/secrets/AUTH0_URL/versions/${_ENV}
     env: 'AUTH0_URL'
+  - versionName: projects/${PROJECT_ID}/secrets/CHECK_ARGS/versions/${_ENV}
+    env: 'CHECK_ARGS'
   - versionName: projects/${PROJECT_ID}/secrets/CLIENT_CPU/versions/${_ENV}
     env: 'CLIENT_CPU'
   - versionName: projects/${PROJECT_ID}/secrets/CLIENT_MEMORY/versions/${_ENV}
@@ -246,6 +319,10 @@ availableSecrets:
     env: 'ENV'
   - versionName: projects/${PROJECT_ID}/secrets/FRONTEND_URL/versions/${_ENV}
     env: 'FRONTEND_URL'
+  - versionName: projects/${PROJECT_ID}/secrets/KANIKO_CACHE/versions/${_ENV}
+    env: 'KANIKO_CACHE'
+  - versionName: projects/${PROJECT_ID}/secrets/NPM_CACHE/versions/${_ENV}
+    env: 'NPM_CACHE'
   - versionName: projects/${PROJECT_ID}/secrets/PUBLIC_STRIPE_KEY/versions/${_ENV}
     env: 'PUBLIC_STRIPE_KEY'
   - versionName: projects/${PROJECT_ID}/secrets/REGION/versions/${_ENV}
