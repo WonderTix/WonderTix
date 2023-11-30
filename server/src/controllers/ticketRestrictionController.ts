@@ -96,6 +96,8 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
  *     summary: get all Ticket Restrictions associated with a specific event instance for which there are tickets available
  *     tags:
  *     - New Ticket Restrictions
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
  *     responses:
  *       200:
  *         description: fetch successful
