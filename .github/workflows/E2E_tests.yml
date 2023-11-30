@@ -26,8 +26,19 @@ jobs:
       TEST_EMAIL: ${{ secrets.TEST_EMAIL }} 
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }} 
       ENV: local
+
     steps:
       - uses: actions/checkout@v3
+
+      # Caching npm dependencies
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -38,6 +49,15 @@ jobs:
       - name: npm install
         run: npm install --force
         working-directory: ./client
+
+      # Caching Playwright browsers
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
