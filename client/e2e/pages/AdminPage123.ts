@@ -189,12 +189,14 @@ export class AdminPage {
     // TODO COMMENT THIS LINE
     // await this.eventDropdown.first().selectOption(eventName);
     // TODO ADD THIS LINE
+    await delay(1000);
     await this.dynamicDropDownSelector(eventName);
     // END TODO
 
     // await this.eventTime.selectOption({index: 1});
     // await this.eventTime.selectOption(eventTime);
     // await page.getByRole('combobox').nth(1).selectOption('453');
+    await delay(1000);
     await this.dynamicDropDownSelectorTime(eventTime);
     await this.admissionType.getByRole('combobox').selectOption('1');
     await this.checkoutButton.click();
