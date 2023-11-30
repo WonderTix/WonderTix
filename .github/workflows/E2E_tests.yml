@@ -85,28 +85,19 @@ jobs:
       - name: docker setup
         run: docker-compose up -d
 
-      - name: 60 second wait for client and server start
-        run: sleep 60s
+      - name: 90 second wait for client and server start
+        run: sleep 90s
         
       - name: Check client E2E(UI) Tests
         run: npx playwright test
         # run: DEBUG=pw:api npx playwright test
         working-directory: ./client
       
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: ./client/playwright
-          retention-days: 30
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: test-results
-          path: ./client/test-results
-          retention-days: 30
-          # Capture and upload server logs
 
+      - name: Diagnose Services
+        run: docker-compose ps && docker-compose logs server && docker-compose logs client    
+
+      # Capture and upload server logs
       - name: Capture Server Logs
         run: docker-compose logs server > server-logs.txt
       - uses: actions/upload-artifact@v3
@@ -122,6 +113,18 @@ jobs:
           name: Client Logs
           path: client-logs.txt
 
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: ./client/playwright
+          retention-days: 30
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: ./client/test-results
+          retention-days: 30
 
   # test-server:
   #   name: Run Tests on server
