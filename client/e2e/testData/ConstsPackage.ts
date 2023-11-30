@@ -22,6 +22,7 @@ export interface EventInfoTemplate {
   eventDescription: string;
   eventURL: string;
   eventFullName: string;
+  suffix: string;
 }
 
 // This is an instance of the object
@@ -30,6 +31,7 @@ export const EventInfoTemplate1: EventInfoTemplate = {
   eventDescription: '123',
   eventURL: 'http://',
   eventFullName: 'S Playbill S Description 123',
+  suffix:"Playbill"
 };
 
 export const EventInfoTemplate2: EventInfoTemplate = {
@@ -39,6 +41,7 @@ export const EventInfoTemplate2: EventInfoTemplate = {
     'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
   eventFullName:
     'Test_event Playbill Test_event Description An event for testing',
+  suffix:"Playbill"
 };
 
 export const EventInfoTemplate3: EventInfoTemplate = {
@@ -49,15 +52,17 @@ export const EventInfoTemplate3: EventInfoTemplate = {
     'https://www.hindustantimes.com/ht-img/img/2023/08/25/550x309/international_dog_day_1692974397743_1692974414085.jpg',
   eventFullName:
     'The Crucible1 Playbill The Crucible1 Description 111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  suffix:"Playbill"
 };
 
 export const EventInfoTemplate4: EventInfoTemplate = {
-  eventName: 'The Crucible',
+  eventName: '1The Crucible',
   eventDescription:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
   eventURL: 'https://upload.wikimedia.org/wikipedia/en/7/75/Cruciblecover.jpg',
   eventFullName:
-    'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    '1The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  suffix:"Playbill"
 };
 
 export const EventInfoTemplate5: EventInfoTemplate = {
@@ -68,6 +73,7 @@ export const EventInfoTemplate5: EventInfoTemplate = {
     'https://upload.wikimedia.org/wikipedia/commons/9/9e/Martirio_de_San_Esteban_%28Correa_de_Vivar%29.jpg',
   eventFullName:
     'The Martyr Playbill The Martyr Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+   suffix:"Playbill"  
 };
 
 export const EventInfoTemplate6: EventInfoTemplate = {
@@ -78,6 +84,7 @@ export const EventInfoTemplate6: EventInfoTemplate = {
     'https://upload.wikimedia.org/wikipedia/en/6/62/Barney%27s-Great-Adventure-Poster.jpeg',
   eventFullName:
     'Purple Playbill Purple Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+   suffix:"Playbill"
 };
 
 export class EventInfo {
@@ -85,6 +92,7 @@ export class EventInfo {
   eventDescription: string;
   eventURL: string;
   eventFullName: string;
+  suffix: string;
 
   constructor(event: EventInfoTemplate, useShortID: boolean = true) {
     // Append either a short or long UUID to the event name
@@ -133,17 +141,17 @@ export const ShowingInfo2: ShowingInfo = {
 
 export const ShowingInfo3: ShowingInfo = {
   showingDate: '2021-09-16',
-  showingTime: '',
+  showingTime: '12:31',
   showingQuantity: '101',
-  showingWholeDate: '',
-  showingDateTime: '',
+  showingWholeDate: 'Thu, Sep 16 2021Time: 12:31',
+  showingDateTime: 'Thu, Sep 16 2021',
 };
 
 export const ShowingInfo4: ShowingInfo = {
   showingDate: '2021-09-15',
-  showingTime: '',
+  showingTime: '12:30',
   showingQuantity: '100',
-  showingWholeDate: 'Wed, Sep 15 2021',
+  showingWholeDate: 'Wed, Sep 15 2021Time: 12:30',
   showingDateTime: 'Wed, Sep 15 2021',
 };
 

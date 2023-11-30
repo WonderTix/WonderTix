@@ -14,6 +14,9 @@ export class EventsPage {
   readonly eventDesBlank: Locator;
   readonly imageURL: Locator;
   readonly pageHeader: Locator;
+  readonly dashBoard: Locator;
+  readonly editButton: Locator;
+  readonly saveButton: Locator;
 
   readonly newEventSave: Locator;
   readonly deleteEventButton: Locator;
@@ -22,7 +25,7 @@ export class EventsPage {
   readonly eventClose: Locator;
   readonly eventOption1: Locator;
   readonly eventOption2: Locator;
-
+   readonly deleteButton: Locator;
   readonly editEventInfo: Locator;
 
   readonly editEventName: Locator;
@@ -43,29 +46,24 @@ export class EventsPage {
   readonly backToEvents: Locator;
   readonly concessionTicket: Locator;
   readonly editShowingButton: Locator;
-
-  readonly firstEvent: Locator;
-  readonly secondEvent: Locator;
-
   readonly emailButton: Locator;
   readonly manageTicketingButton: Locator;
   readonly homePageRightSlide: Locator;
   readonly ticketQuantityOption: Locator;
   readonly showingCard: Locator;
   readonly deleteShowingButton: Locator;
+  readonly activateEvent: Locator;
+  readonly inactiveEventchecker: Locator;
+
   constructor(page: Page) {
     this.page = page;
 
     this.homePage = page.getByRole('button', {name: '/'});
     this.homePageRightSlide = page.locator('button:nth-child(4)');
-
-    // TODO: DEPRECATE THIS. NOT ROBUST
-    this.firstEvent = page.getByRole('button', {
-      name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    });
-    this.secondEvent = page.getByRole('button', {
-      name: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    });
+    this.dashBoard = page.locator('a').filter({ hasText: 'Dashboard' }).first();
+    this.editButton = page.getByRole('button', { name: 'Edit' });
+    this.saveButton = page.getByRole('button', { name: 'Save' });
+ 
 
     this.pageHeader = page.getByRole('heading', {name: 'Select Event'});
     this.leftBarEvent = page
@@ -74,7 +72,7 @@ export class EventsPage {
       .filter({hasText: 'Events'});
     this.emailButton = page.getByText(process.env.TEST_EMAIL as string);
     this.manageTicketingButton = page.getByText('Manage Ticketing').first();
-
+    this.deleteButton = page.getByTestId('event-delete-button');
     this.addButton = page.getByRole('button', {name: 'Add Event'});
     this.eventNameBlank = page.getByLabel('Event Name:');
     this.eventDesBlank = page.getByLabel('Event Description:');
@@ -117,29 +115,14 @@ export class EventsPage {
     this.ticketQuantityOption = page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});
+    this.activateEvent = page.getByLabel('controlled');
+    this.inactiveEventchecker = page.getByRole('button', { name: 'Inactive' });
   }
 
   async clickLeftBar() {
     await this.leftBarEvent.click();
   }
 
-  /*
-  To simulate only clicking the edit button and do almost nothing.
-  This test is more geared toward testing the buttons.
-  */
-  async editEvents() {
-    await this.firstEvent.click();
-    await this.editEventInfo.click();
-    await this.editEventName.click();
-    await this.editEventDes.click();
-    await this.eventOption1.click();
-    await this.imageURL.click();
-    await this.editCancel.click();
-    await this.editAddShowing.click();
-    await this.editCancelShowing.click();
-    await this.editShowingId.click();
-    await this.cancelShowingId.click();
-  }
 
   /**
   This test is basically testing the functionality of creating a new event without add any showing.
@@ -161,13 +144,39 @@ export class EventsPage {
     await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
+    await this.activateEvent.check();
   }
 
-  /**
+  /**----------------------------------------------
    * Switches the status of the event's activeness.
    */
+  /*
   async activateEvent() {
     await this.eventOption2.click();
+  }-------------------------------------------------*/
+  async addNewInactiveEvent(anEvent: EventInfo)
+ {
+     await this.addButton.click();
+     await this.eventNameBlank.click();
+     await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
+     await this.eventDesBlank.click();
+     await this.page.getByLabel('Event Description:').fill(anEvent.eventDescription);
+     await this.imageURL.click();
+     await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
+     await this.newEventSave.click();
+     await this.eventContinue.click();
+ }
+
+ async addDefaultIMGevent(anEvent: EventInfo)
+  {
+    await this.addButton.click();
+     await this.eventNameBlank.click();
+     await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
+     await this.eventDesBlank.click();
+     await this.page.getByLabel('Event Description:').fill(anEvent.eventDescription);
+     await this.newEventSave.click();
+     await this.eventContinue.click();
+     await expect(this.page.getByRole('img', { name: 'Event Image Playbill' })).toBeVisible();
   }
 
   /**
@@ -185,6 +194,7 @@ export class EventsPage {
     await this.editTicketQuantity.fill(aShowing.showingQuantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
+    await this.page.reload();
   }
 
   /**
@@ -201,7 +211,7 @@ export class EventsPage {
   }
 
   //**The weird thing is that Im not sure wheres the 'Playbill' comes from.
-  async checkNewEventOnHomePage() {
+  async checkNewEventOnHomePage(event_name:string, suffix:string) {
     await this.homePage.click();
     await this.homePageRightSlide.click();
     await this.homePageRightSlide.click();
@@ -209,8 +219,7 @@ export class EventsPage {
     await this.homePageRightSlide.click();
     await this.homePageRightSlide.click();
     await this.seeEventShowings.click();
-    await expect(this.page.getByRole('img', {name: 'Test_event Playbill'}))
-      .toBeVisible;
+    await expect(this.page.getByRole('img', { name: event_name+' '+suffix })).toBeVisible;
   }
 
   /**
@@ -229,15 +238,28 @@ export class EventsPage {
    * "Test_event Playbill Test_event Description An event for testing"
    */
   async deleteTheEvent(eventFullName: string) {
-    await this.deleteEventButton.click();
+    await this.deleteButton.click();
     await this.eventContinue.click();
     await this.leftBarEvent.click();
-    await expect(
-      this.page.getByRole('button', {name: eventFullName}).first(),
-    ).not.toBeVisible();
+    await this.page.reload();
+    await expect(this.page.getByRole('button', { name: eventFullName })).not.toBeVisible();
   }
 
+  async deleteInactiveEvent(eventFullName: string)
+  {
+    await this.leftBarEvent.click();
+    await this.inactiveEventchecker.click();
+    await this.page.getByRole('button', { name: eventFullName }).first().click();
+    await this.deleteTheEvent(eventFullName);
+  }
+
+
   async editTheEventInfo(anEvent: EventInfo) {
+    const disabled = await this.editEventInfo.isDisabled();
+    if (disabled)
+    {
+      await this.page.reload();
+    }
     await this.editEventInfo.click();
     await this.editEventName.click();
     await this.editEventName.fill(anEvent.eventName);
@@ -245,11 +267,16 @@ export class EventsPage {
     await this.imageURL.fill(anEvent.eventURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
+     if (disabled)
+    {
+      await this.page.reload();
+    }
   }
 
+  /*------------------------------------------------
   async clickSecondEvent() {
     await this.secondEvent.click();
-  }
+  }-------------------------------------------------*/
 
   async searchForEventByName(anEvent: EventInfo) {
     await this.page.getByText(anEvent.eventName, {exact: true}).click();
@@ -263,18 +290,18 @@ export class EventsPage {
    * Only for change the first showing of an event
    */
   async editShowingInfo(aShowing: ShowingInfo) {
-    await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
-    await this.page.getByText('372').click();
-    await this.editEventDate.fill(aShowing.showingDate);
-    await this.ticketQuantityOption.click();
-    await this.ticketQuantityOption.fill(aShowing.showingQuantity);
-    await this.page.getByLabel('Save').click();
-    await this.eventContinue.click();
+     await this.editShowingButton.click();
+     await this.editEventDate.fill(aShowing.showingDate);
+     await this.ticketQuantityOption.click();
+     await this.ticketQuantityOption.fill(aShowing.showingQuantity);
+     await this.page.getByLabel('Save').click();
+     await this.eventContinue.click();
   }
 
+  /*------------------------------------------
   async clickFirstEvent() {
     await this.firstEvent.click();
-  }
+  }-----------------------------------------*/
 
   async clickSpecificShowing(showingWholeDate: string) {
     await this.page.getByText(showingWholeDate).click();
