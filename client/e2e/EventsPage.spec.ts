@@ -42,7 +42,7 @@ test('addDeleteEvents', async ({page})=>{
   await eventsPage.deleteTheEvent(EventInfoTemplate2.eventFullName);
 });
 
-test('editEvents',async({page})=>{
+test('editEvents1',async({page})=>{
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();
   //This test we just use the second event "The Crucible" as an example
@@ -67,7 +67,6 @@ test('editEvents',async({page})=>{
 
 // Test is looking for a seeded event.  It is then being reset via a template from ConstsPackage
 // Need to refactor so that it's adding and looking at its own event, not a seeded event.
-/*
   test.fixme('editEvents', async ({page})=>{
   test.setTimeout(45000);
   const currentEvent3 = new EventInfo(EventInfoTemplate3);
@@ -87,7 +86,6 @@ test('editEvents',async({page})=>{
   // Now let's change everything back
   await eventsPage.editTheEventInfo(currentEvent4);
 });
-*/
 
 
 // Also relies on a seeded event

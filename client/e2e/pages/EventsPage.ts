@@ -52,8 +52,10 @@ export class EventsPage {
   readonly ticketQuantityOption: Locator;
   readonly showingCard: Locator;
   readonly deleteShowingButton: Locator;
-  readonly activateEvent: Locator;
+  readonly activateEventchecker: Locator;
   readonly inactiveEventchecker: Locator;
+  readonly firstEvent: Locator;
+  readonly secondEvent: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -63,7 +65,12 @@ export class EventsPage {
     this.dashBoard = page.locator('a').filter({ hasText: 'Dashboard' }).first();
     this.editButton = page.getByRole('button', { name: 'Edit' });
     this.saveButton = page.getByRole('button', { name: 'Save' });
- 
+    this.firstEvent = page.getByRole('button', {
+      name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    });
+    this.secondEvent = page.getByRole('button', {
+      name: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    });
 
     this.pageHeader = page.getByRole('heading', {name: 'Select Event'});
     this.leftBarEvent = page
@@ -115,12 +122,19 @@ export class EventsPage {
     this.ticketQuantityOption = page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});
-    this.activateEvent = page.getByLabel('controlled');
+    this.activateEventchecker = page.getByLabel('controlled');
     this.inactiveEventchecker = page.getByRole('button', { name: 'Inactive' });
   }
 
   async clickLeftBar() {
     await this.leftBarEvent.click();
+  }
+
+  /**
+   * Switches the status of the event's activeness.
+   */
+  async activateEvent() {
+    await this.eventOption2.click();
   }
 
 
@@ -144,7 +158,7 @@ export class EventsPage {
     await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    await this.activateEvent.check();
+    await this.activateEventchecker.check();
   }
 
   /**----------------------------------------------
@@ -194,7 +208,7 @@ export class EventsPage {
     await this.editTicketQuantity.fill(aShowing.showingQuantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    await this.page.reload();
+   // await this.page.reload();
   }
 
   /**
@@ -202,10 +216,17 @@ export class EventsPage {
    * "Wed, Oct 11 2023"
    */
   async searchDeleteShowing(Time: string) {
-    await this.showingCard
+   const showingCardLocator =  this.showingCard
       .filter({hasText: Time})
-      .getByRole('button', {name: 'Edit'})
-      .click();
+      .getByRole('button', {name: 'Edit'}); 
+   const disabled = await showingCardLocator.isDisabled();
+    //console out the value of the disabled//
+    console.log("disabled is: " + disabled); 
+    if (disabled)
+    {
+      await this.page.reload();
+    }
+    await showingCardLocator.click();
     await this.deleteShowingButton.click();
     await this.eventContinue.click();
   }
@@ -233,6 +254,7 @@ export class EventsPage {
     await this.page.getByRole('button', {name: eventFullName}).first().click();
   }
 
+  
   /**
    * We need to pass in a event's full name like:
    * "Test_event Playbill Test_event Description An event for testing"
@@ -244,6 +266,9 @@ export class EventsPage {
     await this.page.reload();
     await expect(this.page.getByRole('button', { name: eventFullName })).not.toBeVisible();
   }
+    
+  
+
 
   async deleteInactiveEvent(eventFullName: string)
   {
@@ -256,6 +281,8 @@ export class EventsPage {
 
   async editTheEventInfo(anEvent: EventInfo) {
     const disabled = await this.editEventInfo.isDisabled();
+    //console out the value of the disabled//
+    console.log("disabled is: " + disabled); 
     if (disabled)
     {
       await this.page.reload();
@@ -273,10 +300,12 @@ export class EventsPage {
     }
   }
 
-  /*------------------------------------------------
+  async clickFirstEvent() {
+    await this.firstEvent.click();
+  }
   async clickSecondEvent() {
     await this.secondEvent.click();
-  }-------------------------------------------------*/
+  }
 
   async searchForEventByName(anEvent: EventInfo) {
     await this.page.getByText(anEvent.eventName, {exact: true}).click();
@@ -290,6 +319,13 @@ export class EventsPage {
    * Only for change the first showing of an event
    */
   async editShowingInfo(aShowing: ShowingInfo) {
+    const disabled = await this.editShowingButton.isDisabled();
+    //console out the value of the disabled//
+    console.log("disabled is: " + disabled); 
+    if (disabled)
+    {
+      await this.page.reload();
+    }
      await this.editShowingButton.click();
      await this.editEventDate.fill(aShowing.showingDate);
      await this.ticketQuantityOption.click();
