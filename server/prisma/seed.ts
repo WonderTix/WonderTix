@@ -31,7 +31,10 @@ const prisma = new PrismaClient();
  * Seed database
  */
 async function main() {
-  if (process.env.CI === "true") {
+  const isCI = process.env.CI === 'true';
+  const isMinimalSeed = process.env.MINIMAL_SEED === 'true';
+
+  if (isCI || isMinimalSeed) {
     // In CI environment, seed only necessary data
     await importDates(prisma);
     await importDiscounts(prisma);
