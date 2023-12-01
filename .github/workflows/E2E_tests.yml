@@ -26,19 +26,8 @@ jobs:
       TEST_EMAIL: ${{ secrets.TEST_EMAIL }} 
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }} 
       ENV: local
-
     steps:
       - uses: actions/checkout@v3
-
-      # Caching npm dependencies
-      - name: Cache npm modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
-
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -49,15 +38,6 @@ jobs:
       - name: npm install
         run: npm install --force
         working-directory: ./client
-
-      # Caching Playwright browsers
-      - name: Cache Playwright Browsers
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
@@ -105,52 +85,6 @@ jobs:
           name: test-results
           path: ./client/test-results
           retention-days: 30
-
-      - name: Diagnose Services
-        run: docker-compose ps && docker-compose logs server && docker-compose logs client
-
-      - name: Capture Logs
-        run: |
-          docker-compose logs server > server.log
-          docker-compose logs client > client.log
-
-      - name: Upload Logs
-        uses: actions/upload-artifact@v3
-        with:
-          name: logs
-          path: |
-            server.log
-            client.log
-
-      - name: docker teardown
-        run: docker-compose down
-
-
-  # test-server:
-  #   name: Run Tests on server
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
-  #     AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-  #     AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-  #     AUTH0_URL: ${{ secrets.AUTH0_URL }}
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Setup node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '18.x'
-  #         cache: 'npm'
-  #         cache-dependency-path: ./client/package-lock.json
-  #     - name: npm install
-  #       run: npm install
-  #       working-directory: ./server
-
-  #     - name: Check Unit Tests
-  #       run: npm test
-  #       working-directory: ./server
-
-
 
   # test-server:
   #   name: Run Tests on server
