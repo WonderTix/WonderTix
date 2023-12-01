@@ -25,6 +25,7 @@ const SeasonInfo = (props: SeasonProps) => {
     setPopUpMessage,
     setIsFormEditing,
     token,
+    seasonTicketTypeData,
   } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [tempImageUrl, setTempImageUrl] = useState('');
@@ -264,6 +265,7 @@ const SeasonInfo = (props: SeasonProps) => {
       {...seasonValues}
       activeSeasonSwitch={activeSeasonSwitch}
       setIsFormEditing={setIsFormEditing}
+      seasonTicketTypeData={seasonTicketTypeData}
       setActiveSeasonSwitch={setActiveSeasonSwitch}
       handleUpdateSeasonEvents={handleUpdateSeasonEvents}
       deleteConfirmationHandler={deleteConfirmationHandler}

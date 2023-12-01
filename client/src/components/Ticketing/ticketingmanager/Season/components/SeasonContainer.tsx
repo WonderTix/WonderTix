@@ -7,7 +7,7 @@ import {useFetchToken} from '../../showings/ShowingUpdated/ShowingUtils';
 import PopUp from '../../../PopUp';
 import {useParams} from 'react-router';
 import {getAllEvents} from './utils/apiRequest';
-import {seasonEventInfo, initialSeasonEventInfo} from './utils/seasonCommon';
+import {seasonEventInfo, initialSeasonEventInfo, SeasonTicketValues} from './utils/seasonCommon';
 
 const defaultPopUpValues = {
   title: '',
@@ -30,7 +30,7 @@ const SeasonContainer = () => {
     handleClose: () => setShowPopUp(false),
     handleProceed: () => setShowPopUp(false),
   });
-  const [seasonTicketData, setSeasonTicketData] = useState([]);
+  const [seasonTicketTypeData, setSeasonTicketTypeData] = useState<SeasonTicketValues[]>();
   const {token} = useFetchToken();
 
   const commonSeasonPageProps = {
@@ -78,7 +78,8 @@ const SeasonContainer = () => {
       }
 
       const seasonTicketTypeData = await seasonTicketTypePriceRes.json();
-      console.log(seasonTicketTypeData);
+      setSeasonTicketTypeData(seasonTicketTypeData);
+      console.log('Data', seasonTicketTypeData);
     } catch (error) {
       console.error(error);
     }
@@ -100,6 +101,7 @@ const SeasonContainer = () => {
             {...commonSeasonPageProps}
             setSeasonId={setSeasonId}
             setIsFormEditing={setIsFormEditing}
+            seasonTicketTypeData={seasonTicketTypeData}
           />
           <SeasonEvents
             {...commonSeasonPageProps}

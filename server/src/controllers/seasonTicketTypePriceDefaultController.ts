@@ -48,8 +48,25 @@ seasonTicketTypePriceDefaultController.get('/:seasonid', async (req: Request, re
       where: {
         seasonid_fk: +seasonid,
       },
+      include: {
+        tickettype: {
+          select: {
+            description: true,
+          },
+        },
+      },
     });
-    return res.json(toSend);
+    return res.json(
+        toSend
+            .map((defaultTicketType) => ({
+              id: defaultTicketType.id,
+              seasonid_fk: defaultTicketType.seasonid_fk,
+              tickettypeid_fk: defaultTicketType.tickettypeid_fk,
+              price: defaultTicketType.price,
+              concessionprice: defaultTicketType.concessionprice,
+              description: defaultTicketType.tickettype.description,
+            })),
+    );
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return res.status(400).send({error: error.message});

@@ -496,6 +496,7 @@ const openApiSpec = swaggerJsdoc({
             type: 'object',
             properties: {
               tickettypeid_fk: {type: 'number'},
+              description: {type: 'string'},
               price: {type: 'number'},
               concessionprice: {type: 'number'},
             },
