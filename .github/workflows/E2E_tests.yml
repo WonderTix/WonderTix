@@ -88,10 +88,10 @@ jobs:
       - name: 20 seconds wait for client and server start, database seed
         run: sleep 20s
 
-      # - name: Check client E2E(UI) Tests
-      #   run: npx playwright test
-      #   # run: DEBUG=pw:api npx playwright test
-      #   working-directory: ./client
+      - name: Check client E2E(UI) Tests
+        run: npx playwright test
+        # run: DEBUG=pw:api npx playwright test
+        working-directory: ./client
 
       - name: Diagnose Services
         run: docker-compose ps && docker-compose logs server && docker-compose logs client
