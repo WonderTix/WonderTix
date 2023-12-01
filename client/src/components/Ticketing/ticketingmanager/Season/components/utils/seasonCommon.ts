@@ -55,9 +55,10 @@ export interface SeasonTicketValues {
   price: number,
   concessionprice: number,
 }
-/*
-export const seasonTicketDefaultValues: seasonTicketValues = {
-  id: number,
-  price: number,
-  concessionprice: number,
-}*/
+
+export const seasonTicketDefaultValues: SeasonTicketValues = {
+  id: 0,
+  description: '',
+  price: 0,
+  concessionprice: 0,
+};
