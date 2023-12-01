@@ -16,6 +16,5 @@ WORKDIR /usr/app
 COPY ./package*.json ./   
 RUN npm install
 
-# seed only if local (not CI), skip seed in CI. 
-CMD if [ "$CI" = "true" ]; then /bin/bash /usr/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- npm run start; else /bin/bash /usr/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- npm run start:seed-max; fi
+CMD /bin/bash /usr/wait-for-it.sh ${DB_HOST}:${DB_PORT} -- npm run start
 

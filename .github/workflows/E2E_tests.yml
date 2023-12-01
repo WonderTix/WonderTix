@@ -89,8 +89,8 @@ jobs:
         run: sleep 20s
 
       - name: Check client E2E(UI) Tests
-        run: npx playwright test
-        # run: DEBUG=pw:api npx playwright test
+        # run: npx playwright test
+        run: DEBUG=pw:api npx playwright test
         working-directory: ./client
 
       - name: Diagnose Services
