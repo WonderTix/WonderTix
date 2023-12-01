@@ -1,7 +1,8 @@
 import {test, expect} from '@playwright/test';
 import {DoorListPage} from './pages/doorListPage';
 import {EventsPage} from './pages/EventsPage';
-import {EventsInfo, EventsInfoTemplate2, JaneDoe, ShowingInfo1, ValidVisaCredit} from './testData/ConstsPackage';
+import {EventInfo, EventInfoTemplate2, ShowingInfo1, ValidVisaCredit} from './testData/ConstsPackage';
+import { baseJaneDoe, createUniqueCustomer } from './testData/ConstsPackage';
 import { MainPage } from './pages/mainPage';
 
 
@@ -12,7 +13,7 @@ test('Check Home', async ({page}) => {
 });
 
 test('Select Active Showing in Doorlist', async ({page}) => {
-  const currentEvent = new EventsInfo(EventsInfoTemplate2);
+  const currentEvent = new EventInfo(EventInfoTemplate2);
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
   try {
@@ -34,7 +35,7 @@ test('Select Active Showing in Doorlist', async ({page}) => {
 });
 
 test('Select Inactive Showing in Doorlist', async ({page}) => {
-  const currentEvent = new EventsInfo(EventsInfoTemplate2);
+  const currentEvent = new EventInfo(EventInfoTemplate2);
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
   try {
@@ -57,7 +58,7 @@ test('Select Inactive Showing in Doorlist', async ({page}) => {
 });
 
 test('Open Seats in Doorlist', async ({page}) => {
-  const currentEvent = new EventsInfo(EventsInfoTemplate2);
+  const currentEvent = new EventInfo(EventInfoTemplate2);
   const currentShowing = ShowingInfo1;
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
@@ -84,9 +85,9 @@ test('Open Seats in Doorlist', async ({page}) => {
 test('Purchased Seats in Doorlist', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + timeoutAdd);
-  const currentEvent = new EventsInfo(EventsInfoTemplate2);
+  const currentEvent = new EventInfo(EventInfoTemplate2);
   const currentShowing = ShowingInfo1;
-  const currentPatron = JaneDoe;
+  const currentPatron = createUniqueCustomer(baseJaneDoe);
   const currentCard = ValidVisaCredit;
   const ticketQuantity = 3;
   const eventsPage = new EventsPage(page);
