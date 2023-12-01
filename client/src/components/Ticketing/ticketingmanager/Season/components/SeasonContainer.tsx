@@ -79,7 +79,6 @@ const SeasonContainer = () => {
 
       const seasonTicketTypeData = await seasonTicketTypePriceRes.json();
       setSeasonTicketTypeData(seasonTicketTypeData);
-      console.log('Data', seasonTicketTypeData);
     } catch (error) {
       console.error(error);
     }
