@@ -15,6 +15,10 @@ export class EventsPage {
   readonly imageURL: Locator;
   readonly pageHeader: Locator;
 
+  readonly activeViewOption : Locator;
+  readonly inactiveViewOption : Locator;
+  readonly allViewOption : Locator;
+
   readonly newEventSave: Locator;
   readonly deleteEventButton: Locator;
   readonly leftBarEvent: Locator;
@@ -67,6 +71,10 @@ export class EventsPage {
     this.leftBarEvent=page.getByRole('list').locator('a').filter({ hasText: 'Events' });
     this.emailButton= page.getByText(process.env.TEST_EMAIL as string);
     this.manageTicketingButton=page.getByText('Manage Ticketing').first();
+
+    this.activeViewOption = page.getByTestId('active-button');
+    this.inactiveViewOption = page.getByTestId('inactive-button');
+    this.allViewOption = page.getByTestId('all-button');
 
     this.addButton = page.getByRole('button', { name: 'Add Event' });
     this.eventNameBlank= page.getByLabel('Event Name:');
@@ -294,5 +302,22 @@ export class EventsPage {
   async backtoEvents()
   {
     await this.leftBarEvent.click();
+  }
+
+  /*
+   * These next three functions all press the buttons that alter the
+   * events available to view.
+   */
+  
+  async setActiveView() {
+    await this.activeViewOption.click();
+  }
+
+  async setInactiveView() {
+    await this.inactiveViewOption.click();
+  }
+
+  async setAllView() {
+    await this.allViewOption.click();
   }
 }
