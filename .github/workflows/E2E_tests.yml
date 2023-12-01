@@ -31,13 +31,13 @@ jobs:
       - uses: actions/checkout@v3
 
       # Caching npm dependencies
-      # - name: Cache npm modules
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-npm-
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -125,7 +125,7 @@ jobs:
           name: test-results
           path: ./client/test-results
           retention-days: 30
-
+          
   # test-server:
   #   name: Run Tests on server
   #   runs-on: ubuntu-latest
