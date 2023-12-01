@@ -36,6 +36,7 @@ const ShowingActivenessToggle = ({
         <ToggleButton
           value='active'
           sx={{fontWeight: 'bold'}}
+          data-testid='active-button'
         >
           Active
         </ToggleButton>
@@ -43,6 +44,7 @@ const ShowingActivenessToggle = ({
           <ToggleButton
             value='inactive'
             sx={{fontWeight: 'bold'}}
+            data-testid='inactive-button'
           >
             Inactive
           </ToggleButton>
@@ -50,6 +52,7 @@ const ShowingActivenessToggle = ({
         <ToggleButton
           value='all'
           sx={{fontWeight: 'bold'}}
+          data-testid='all-button'
         >
           All
         </ToggleButton>
