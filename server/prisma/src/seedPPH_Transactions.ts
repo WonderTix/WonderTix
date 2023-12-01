@@ -35,7 +35,7 @@ async function seedPPHTransactions(prisma: PrismaClient) {
           missingTicketOrderCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping transaction with ID ${item.transaction_id} due to non-existing ticket order with ID ${item.ticket_order_id}`);
           }
         }
@@ -51,7 +51,7 @@ async function seedPPHTransactions(prisma: PrismaClient) {
           missingTicketOrderItemCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping transaction with ID ${item.transaction_id} due to non-existing ticket order item with ID ${item.ticket_order_item_id}`);
           }
         }
