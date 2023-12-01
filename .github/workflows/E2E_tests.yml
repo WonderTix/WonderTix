@@ -4,7 +4,6 @@ on:
     types: [opened, reopened, ready_for_review, synchronize]
 
 jobs:
-
   test-client:
     name: Run E2E Tests on client
     runs-on: ubuntu-latest
@@ -24,8 +23,8 @@ jobs:
       AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
       AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
       AUTH0_URL: ${{ secrets.AUTH0_URL }}
-      TEST_EMAIL: ${{ secrets.TEST_EMAIL }} 
-      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }} 
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
       ENV: local
 
     steps:
@@ -43,10 +42,10 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
-          cache: 'npm'
+          node-version: "18.x"
+          cache: "npm"
           cache-dependency-path: ./client/package-lock.json
-      
+
       - name: npm install
         run: npm install --force
         working-directory: ./client
@@ -62,7 +61,7 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      
+
       - name: Install mkcert
         run: |
           sudo apt-get update
@@ -70,7 +69,7 @@ jobs:
           curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
           chmod +x mkcert-v*-linux-amd64
           sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-      
+
       - name: Install client CA
         run: |
           mkcert -install
@@ -82,51 +81,36 @@ jobs:
           mkcert -install
           mkcert localhost
         working-directory: ./server
-        
+
       - name: docker setup
         run: docker-compose up -d
 
-      - name: 90 second wait for client and server start
-        run: sleep 90s
-        
+      - name: 900 second (15 min) wait for client and server start, database seed
+        run: sleep 900s
+
       - name: Check client E2E(UI) Tests
         run: npx playwright test
         # run: DEBUG=pw:api npx playwright test
         working-directory: ./client
-      
 
       - name: Diagnose Services
-        run: docker-compose ps && docker-compose logs server && docker-compose logs client    
+        run: docker-compose ps && docker-compose logs server && docker-compose logs client
 
-      # Capture and upload server logs
-      - name: Capture Server Logs
-        run: docker-compose logs server > server-logs.txt
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Server Logs
-          path: server-logs.txt
+      - name: Capture Logs
+        run: |
+          docker-compose logs server > server.log
+          docker-compose logs client > client.log
 
-      # Capture and upload client logs
-      - name: Capture Client Logs
-        run: docker-compose logs client > client-logs.txt
-      - uses: actions/upload-artifact@v3
+      - name: Upload Logs
+        uses: actions/upload-artifact@v3
         with:
-          name: Client Logs
-          path: client-logs.txt
+          name: logs
+          path: |
+            server.log
+            client.log
 
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: ./client/playwright
-          retention-days: 30
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: test-results
-          path: ./client/test-results
-          retention-days: 30
-
+      - name: docker teardown
+        run: docker-compose down
   # test-server:
   #   name: Run Tests on server
   #   runs-on: ubuntu-latest

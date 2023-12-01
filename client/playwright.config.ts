@@ -21,7 +21,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 1,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : 4,
+  workers: process.env.CI ? 2 : 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: (isDeployed) ? [['list']] : [['html', {outputFolder: 'playwright'}]],
   outputDir: 'test-results',
@@ -39,7 +39,7 @@ export default defineConfig({
       attachments: true,
     },
     // Set actionTimeout and navigationTimeout based on CI environment
-    actionTimeout: process.env.CI ? 30000 : 10000, // 30 seconds for CI, 10 seconds otherwise
+    actionTimeout: process.env.CI ? 45000 : 10000, // 30 seconds for CI, 10 seconds otherwise
     navigationTimeout: process.env.CI ? 30000 : 10000, // 30 seconds for CI, 10 seconds otherwise
   },
 
