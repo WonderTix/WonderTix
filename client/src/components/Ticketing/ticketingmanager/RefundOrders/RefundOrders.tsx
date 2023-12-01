@@ -145,7 +145,7 @@ const RefundOrders = () => {
       )}
       <div className='w-full h-screen overflow-x-hidden absolute'>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-700 to-yellow-200 mb-14'>
             Refund Order
           </h1>
           <form className='mb-4' onSubmit={onFetchOrders}>
