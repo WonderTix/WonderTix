@@ -8,7 +8,7 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed",
     "prisma:init-deploy": "prisma generate && prisma migrate deploy && node --max-old-space-size=4096 ./node_modules/.bin/ts-node prisma/seed.ts",
-    "start": "if [ \"$CI\" = \"false\" ]; then npm run prisma:init-deploy; else npm run prisma:init; fi && nodemon --exec npx ts-node ./src/server.ts",
+    "start": "if [ \"$CI\" = \"false\" ]; then npm run prisma:init-deploy; else npx prisma generate; fi && nodemon --exec npx ts-node ./src/server.ts",
     "test": "echo -e 'Tests are disabled temporarily'",
     "test:jest": "npx jest --config ./jest.config.js"
 

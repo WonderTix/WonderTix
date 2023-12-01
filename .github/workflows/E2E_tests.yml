@@ -31,13 +31,13 @@ jobs:
       - uses: actions/checkout@v3
 
       # Caching npm dependencies
-      - name: Cache npm modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+      # - name: Cache npm modules
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.npm
+      #     key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-npm-
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -85,8 +85,8 @@ jobs:
       - name: docker setup
         run: docker-compose up -d
 
-      - name: 900 second (15 min) wait for client and server start, database seed
-        run: sleep 900s
+      - name: 60 seconds wait for client and server start, database seed
+        run: sleep 60s
 
       - name: Check client E2E(UI) Tests
         run: npx playwright test
