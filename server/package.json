@@ -7,7 +7,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "prisma:init-seed": "prisma generate && prisma migrate deploy && prisma db seed",
-    "prisma:init": "prisma generate && migrate deploy",
+    "prisma:init": "prisma generate && prisma migrate deploy",
     "prisma:init-seed-max": "prisma generate && prisma migrate deploy && node --max-old-space-size=4096 ./node_modules/.bin/ts-node prisma/seed.ts",
     "start:seed-max": "npm run prisma:init-seed-max && nodemon --exec npx ts-node ./src/server.ts",
     "start": "npm run prisma:init && nodemon --exec npx ts-node ./src/server.ts",
