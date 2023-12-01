@@ -51,16 +51,16 @@ jobs:
         working-directory: ./client
 
       # Caching Playwright browsers
-      # - name: Cache Playwright Browsers
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.cache/ms-playwright
-      #     key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-playwright-
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
-      # - name: Install Playwright Browsers
-      #   run: npx playwright install --with-deps
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
       
       - name: Install mkcert
         run: |
