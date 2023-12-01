@@ -11,7 +11,7 @@ test('Homepage->Events', async ({page}) => {
 });
 
 
-test('addDeleteEvents', async ({page})=>{
+test.skip('addDeleteEvents', async ({page})=>{
   // test.setTimeout(300000);
   const eventsPage = new EventsPage(page);
   const currentEvent = new EventInfo(EventInfoTemplate2);

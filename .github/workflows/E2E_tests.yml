@@ -30,15 +30,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Caching npm dependencies
-      # - name: Cache npm modules
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-npm-
-
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -49,15 +40,6 @@ jobs:
       - name: npm install
         run: npm install --force
         working-directory: ./client
-
-      # Caching Playwright browsers
-      # - name: Cache Playwright Browsers
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.cache/ms-playwright
-      #     key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-playwright-
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
@@ -89,19 +71,18 @@ jobs:
         run: sleep 20s
 
       - name: Check client E2E(UI) Tests
-        # run: npx playwright test
-        run: DEBUG=pw:api npx playwright test
+        run: npx playwright test
+        # run: DEBUG=pw:api npx playwright test
         working-directory: ./client
 
-      - name: Diagnose Services
-        run: docker-compose ps && docker-compose logs server && docker-compose logs client
-
       - name: Capture Logs
+        if: always()
         run: |
           docker-compose logs server > server.log
           docker-compose logs client > client.log
 
       - name: Upload Logs
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: logs

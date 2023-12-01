@@ -8,7 +8,7 @@ import {EventInfo, ValidVisaCredit} from './testData/ConstsPackage';
 import {createUniqueCustomer, baseJohnDoe, baseJaneDoe} from './testData/ConstsPackage';
 
 // Verify we can get to the main page and the event header is visible
-test.skip('Check Home', async ({page}) => {
+test('Check Home', async ({page}) => {
   const main = new MainPage(page);
   await main.goto();
   await expect(main.headingEvent).toBeVisible();
@@ -63,7 +63,7 @@ test('check cart after ticket add', async ({page}) => {
 });
 
 // Order a ticket through Stripe using a valid customer and card and verify success message appears
-test.skip('check stripe purchase', async ({page}, testInfo) => {
+test('check stripe purchase', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + (timeoutAdd * 2)); // There are two places with extended timeouts
   const currentPatron = createUniqueCustomer(baseJohnDoe);
@@ -118,7 +118,7 @@ test('check contact is added after order', async ({page}, testInfo) => {
 });
 
 // Select an accommodation during order and make sure it appears on the contact page with the associated person
-test.skip('check order accommodations', async ({page}, testInfo) => {
+test('check order accommodations', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + timeoutAdd);
   const currentPatron = createUniqueCustomer(baseJaneDoe);
@@ -147,7 +147,7 @@ test.skip('check order accommodations', async ({page}, testInfo) => {
 });
 
 // Place a ticket in the cart and ensure both the increment and decrement buttons work
-test.skip('check ticket inc/dec in cart', async ({page}) => {
+test('check ticket inc/dec in cart', async ({page}) => {
   test.setTimeout(60000);
   const events = new EventsPage(page);
   const main = new MainPage(page);
