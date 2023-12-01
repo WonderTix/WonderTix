@@ -158,7 +158,10 @@ export class EventsPage {
     await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    await this.activateEventchecker.check();
+  }
+  async activeEvent()
+  {
+     await this.activateEventchecker.check();
   }
 
   /**----------------------------------------------
@@ -183,7 +186,7 @@ export class EventsPage {
 
  async addDefaultIMGevent(anEvent: EventInfo)
   {
-    await this.addButton.click();
+     await this.addButton.click();
      await this.eventNameBlank.click();
      await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
      await this.eventDesBlank.click();
@@ -266,9 +269,7 @@ export class EventsPage {
     await this.page.reload();
     await expect(this.page.getByRole('button', { name: eventFullName })).not.toBeVisible();
   }
-    
   
-
 
   async deleteInactiveEvent(eventFullName: string)
   {
@@ -282,7 +283,7 @@ export class EventsPage {
   async editTheEventInfo(anEvent: EventInfo) {
     const disabled = await this.editEventInfo.isDisabled();
     //console out the value of the disabled//
-    console.log("disabled is: " + disabled); 
+    //console.log("disabled is: " + disabled); 
     if (disabled)
     {
       await this.page.reload();
@@ -321,7 +322,7 @@ export class EventsPage {
   async editShowingInfo(aShowing: ShowingInfo) {
     const disabled = await this.editShowingButton.isDisabled();
     //console out the value of the disabled//
-    console.log("disabled is: " + disabled); 
+    //console.log("disabled is: " + disabled); 
     if (disabled)
     {
       await this.page.reload();
@@ -332,19 +333,6 @@ export class EventsPage {
      await this.ticketQuantityOption.fill(aShowing.showingQuantity);
      await this.page.getByLabel('Save').click();
      await this.eventContinue.click();
-  }
-
-  /*------------------------------------------
-  async clickFirstEvent() {
-    await this.firstEvent.click();
-  }-----------------------------------------*/
-
-  async clickSpecificShowing(showingWholeDate: string) {
-    await this.page.getByText(showingWholeDate).click();
-    await this.page
-      .locator('div:nth-child(4) > p:nth-child(2)')
-      .first()
-      .click();
   }
 
   async goto() {
