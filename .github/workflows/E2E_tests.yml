@@ -125,7 +125,7 @@ jobs:
           name: test-results
           path: ./client/test-results
           retention-days: 30
-          
+
   # test-server:
   #   name: Run Tests on server
   #   runs-on: ubuntu-latest
