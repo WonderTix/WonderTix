@@ -32,8 +32,11 @@ const prisma = new PrismaClient();
  */
 async function main() {
   if (process.env.CI === "true") {
-    // In CI environment, seed only dates
+    // In CI environment, seed only necessary data
     await importDates(prisma);
+    await importDiscounts(prisma);
+    await importTicketTypes(prisma);
+    await importSeasonTicketTypes(prisma);
   } else {
     // Full seeding process
     await importDates(prisma);
