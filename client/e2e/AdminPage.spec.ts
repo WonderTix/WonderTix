@@ -2,7 +2,7 @@
 import {test, expect} from '@playwright/test';
 import {MainPage} from './pages/mainPage';
 import {EventsPage} from './pages/EventsPage';
-import {AdminPage} from './pages/AdminPage123';
+import {AdminPage} from './pages/AdminPage';
 import {EventsInfoTemplate2} from './testData/ConstsPackage';
 import {ShowingInfo2} from './testData/ConstsPackage';
 
@@ -21,6 +21,7 @@ test('Purchase ticket for customer as admin', async ({page}) => {
   const events = new EventsPage(page);
   await events.goto();
   await events.addnewevent(EventsInfoTemplate2);
+  await events.activateEvent();
   // await delay(1000);
   await events.addNewShowing(ShowingInfo2);
   try {
