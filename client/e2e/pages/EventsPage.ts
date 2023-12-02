@@ -57,6 +57,9 @@ export class EventsPage {
   readonly inactiveEventchecker: Locator;
   readonly firstEvent: Locator;
   readonly secondEvent: Locator;
+  readonly dashBoard: Locator;
+  readonly editButton: Locator;
+  readonly saveButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -135,7 +138,6 @@ export class EventsPage {
     this.inactiveEventchecker = page.getByRole('button', { name: 'Inactive' });
   }
 
-  async clickLeftBar() {
   async clickLeftBar() {
     await this.leftBarEvent.click();
   }
@@ -256,11 +258,7 @@ export class EventsPage {
     await expect(this.page.getByRole('img', { name: event_name+' '+suffix })).toBeVisible;
   }
 
-  /**
-   * We need to pass in a event's full name like:
-   * "Test_event Playbill Test_event Description An event for testing"
-   */
-  async goToEventFromManage(eventFullName: string) {
+
   /**
    * We need to pass in a event's full name like:
    * "Test_event Playbill Test_event Description An event for testing"
@@ -327,7 +325,7 @@ export class EventsPage {
     await this.page.getByText(anEvent.eventName, {exact: true}).click();
   }
 
-  async searchForEventByDes(anEvent: EventInfo) {
+
   async searchForEventByDes(anEvent: EventInfo) {
     await this.page.getByText(anEvent.eventDescription).click();
   }

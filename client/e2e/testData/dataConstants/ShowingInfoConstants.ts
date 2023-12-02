@@ -18,17 +18,17 @@ export const SHOWING_INFO_2: ShowingInfo = {
 
 export const SHOWING_INFO_3: ShowingInfo = {
   showingDate: '2021-09-16',
-  showingTime: '',
+  showingTime: '12:31',
   showingQuantity: '101',
-  showingWholeDate: '',
-  showingDateTime: '',
+  showingWholeDate: 'Thu, Sep 16 2021Time: 12:31',
+  showingDateTime: 'Thu, Sep 16 2021',
 };
 
 export const SHOWING_INFO_4: ShowingInfo = {
   showingDate: '2021-09-15',
-  showingTime: '',
+  showingTime: '12:30',
   showingQuantity: '100',
-  showingWholeDate: 'Wed, Sep 15 2021',
+  showingWholeDate: 'Wed, Sep 15 2021Time: 12:30',
   showingDateTime: 'Wed, Sep 15 2021',
 };
 
