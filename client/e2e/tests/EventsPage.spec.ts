@@ -1,9 +1,9 @@
 /* eslint-disable require-jsdoc */
-import {test, expect} from '@playwright/test';
-import {EventsPage} from './pages/EventsPage';
-import {EventInfo} from './testData/ConstsPackage';
-import {EventInfoTemplate1, EventInfoTemplate2, EventInfoTemplate3, EventInfoTemplate4} from './testData/ConstsPackage';
-import {ShowingInfo1, ShowingInfo2, ShowingInfo3, ShowingInfo4} from './testData/ConstsPackage';
+import { test } from '@playwright/test';
+import { EventsPage } from '../pages/EventsPage';
+import { createUniqueEvent } from '../test-data/factoryFunctions';
+import { EVENT_INFO_2, EVENT_INFO_3, EVENT_INFO_4 } from '../test-data/dataConstants/EventInfoConstants';
+import { SHOWING_INFO_1, SHOWING_INFO_2, SHOWING_INFO_3, SHOWING_INFO_4 } from '../test-data/dataConstants/ShowingInfoConstants';
 
 test('Homepage->Events', async ({page}) => {
   const eventsPage = new EventsPage(page);
@@ -14,23 +14,23 @@ test('Homepage->Events', async ({page}) => {
 test.skip('addDeleteEvents', async ({page})=>{
   // test.setTimeout(300000);
   const eventsPage = new EventsPage(page);
-  const currentEvent = new EventInfo(EventInfoTemplate2);
+  const currentEvent = createUniqueEvent(EVENT_INFO_2);
   await eventsPage.goto();
   // The ANE_Package2 is locate in ConstsPackage.ts file
   // First we create a new event
   await eventsPage.addnewevent(currentEvent);
   await eventsPage.activateEvent();
   // Then we add a new showing for it
-  await eventsPage.addNewShowing(ShowingInfo1);
+  await eventsPage.addNewShowing(SHOWING_INFO_1);
   // Go back to homepage to see if it exists on the homepage
   await eventsPage.checkNewEventOnHomePage();
   // Go to the newly created event from the manage ticketing page
   await eventsPage.goToEventFromManage(currentEvent.eventFullName);
   // Add one more showing for it
-  await eventsPage.addNewShowing(ShowingInfo2);
+  await eventsPage.addNewShowing(SHOWING_INFO_2);
   // Search for two corresponding showing by their date and delete them
-  await eventsPage.searchDeleteShowing(ShowingInfo2.showingWholeDate);
-  await eventsPage.searchDeleteShowing(ShowingInfo1.showingWholeDate);
+  await eventsPage.searchDeleteShowing(SHOWING_INFO_2.showingWholeDate);
+  await eventsPage.searchDeleteShowing(SHOWING_INFO_1.showingWholeDate);
   // Delete the newly created event
   await eventsPage.deleteTheEvent(currentEvent.eventFullName);
 });
@@ -39,8 +39,8 @@ test.skip('addDeleteEvents', async ({page})=>{
 // Need to refactor so that it's adding and looking at its own event, not a seeded event.
 test.skip('editEvents', async ({page})=>{
   test.setTimeout(45000);
-  const currentEvent3 = new EventInfo(EventInfoTemplate3);
-  const currentEvent4 = new EventInfo(EventInfoTemplate4);
+  const currentEvent3 = createUniqueEvent(EVENT_INFO_3);
+  const currentEvent4 = createUniqueEvent(EVENT_INFO_4);
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();
   // This test we just use the second event "The Crucible" as an example
@@ -66,11 +66,11 @@ test.skip('editShowing', async ({page})=>{
   // Go to the event page first
   await eventsPage.clickFirstEvent();
   // Now we change some showing's information a little bit
-  await eventsPage.editShowingInfo(ShowingInfo3);
+  await eventsPage.editShowingInfo(SHOWING_INFO_3);
   // Then we change that back
-  await eventsPage.editShowingInfo(ShowingInfo4);
+  await eventsPage.editShowingInfo(SHOWING_INFO_4);
   // Let search for the showing by its whole infomation string
-  await eventsPage.clickSpecificShowing(ShowingInfo4.showingWholeDate);
+  await eventsPage.clickSpecificShowing(SHOWING_INFO_4.showingWholeDate);
 });
 
 

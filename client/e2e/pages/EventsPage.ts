@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import {EventInfo, ShowingInfo} from '../testData/ConstsPackage';
+import { EventInfo, ShowingInfo } from '../test-data/interfaces';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
@@ -157,16 +157,16 @@ export class EventsPage {
   "123",
   "http://"
   */
-  async addnewevent(anEvent: EventInfo) {
+  async addnewevent(event: EventInfo) {
     await this.addButton.click();
     await this.eventNameBlank.click();
-    await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
+    await this.page.getByLabel('Event Name:').fill(event.eventName);
     await this.eventDesBlank.click();
     await this.page
       .getByLabel('Event Description:')
-      .fill(anEvent.eventDescription);
+      .fill(event.eventDescription);
     await this.imageURL.click();
-    await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
+    await this.page.getByLabel('Image URL:').fill(event.eventURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
   }
@@ -184,13 +184,13 @@ export class EventsPage {
   "10:20",
   "010"
 */
-  async addNewShowing(aShowing: ShowingInfo) {
+  async addNewShowing(showing: ShowingInfo) {
     await this.editAddShowing.click();
-    await this.editEventDate.fill(aShowing.showingDate);
+    await this.editEventDate.fill(showing.showingDate);
     await this.editEventTime.click();
-    await this.editEventTime.fill(aShowing.showingTime);
+    await this.editEventTime.fill(showing.showingTime);
     await this.editTicketQuantity.click();
-    await this.editTicketQuantity.fill(aShowing.showingQuantity);
+    await this.editTicketQuantity.fill(showing.showingQuantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
   }
@@ -199,9 +199,9 @@ export class EventsPage {
    * We need to pass in things to the filter like:
    * "Wed, Oct 11 2023"
    */
-  async searchDeleteShowing(Time: string) {
+  async searchDeleteShowing(time: string) {
     await this.showingCard
-      .filter({hasText: Time})
+      .filter({hasText: time})
       .getByRole('button', {name: 'Edit'})
       .click();
     await this.deleteShowingButton.click();
@@ -246,12 +246,12 @@ export class EventsPage {
     ).not.toBeVisible();
   }
 
-  async editTheEventInfo(anEvent: EventInfo) {
+  async editTheEventInfo(event: EventInfo) {
     await this.editEventInfo.click();
     await this.editEventName.click();
-    await this.editEventName.fill(anEvent.eventName);
-    await this.eventDesBlank.fill(anEvent.eventDescription);
-    await this.imageURL.fill(anEvent.eventURL);
+    await this.editEventName.fill(event.eventName);
+    await this.eventDesBlank.fill(event.eventDescription);
+    await this.imageURL.fill(event.eventURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
   }
@@ -260,8 +260,8 @@ export class EventsPage {
     await this.secondEvent.click();
   }
 
-  async searchForEventByName(anEvent: EventInfo) {
-    await this.page.getByText(anEvent.eventName, {exact: true}).click();
+  async searchForEventByName(event: EventInfo) {
+    await this.page.getByText(event.eventName, {exact: true}).click();
   }
 
   async searchForEventByDes(anEvent: EventInfo) {
@@ -271,12 +271,12 @@ export class EventsPage {
   /**
    * Only for change the first showing of an event
    */
-  async editShowingInfo(aShowing: ShowingInfo) {
+  async editShowingInfo(showing: ShowingInfo) {
     await this.page.locator('div:nth-child(3) > .bg-blue-500').first().click();
     await this.page.getByText('372').click();
-    await this.editEventDate.fill(aShowing.showingDate);
+    await this.editEventDate.fill(showing.showingDate);
     await this.ticketQuantityOption.click();
-    await this.ticketQuantityOption.fill(aShowing.showingQuantity);
+    await this.ticketQuantityOption.fill(showing.showingQuantity);
     await this.page.getByLabel('Save').click();
     await this.eventContinue.click();
   }

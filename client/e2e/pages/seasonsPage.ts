@@ -1,7 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import {SeasonInfo} from '../testData/ConstsPackage';
-import {EventInfo} from '../testData/ConstsPackage';
+import { EventInfo, SeasonInfo } from '../test-data/interfaces';
 
 export class SeasonsPage {
   readonly page: Page;

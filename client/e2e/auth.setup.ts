@@ -1,5 +1,5 @@
-import {test as setup, expect} from '@playwright/test';
-import {LoginPage} from './pages/loginPage';
+import { test as setup, expect } from '@playwright/test';
+import { LoginPage } from './pages/loginPage';
 import dotenv from 'dotenv';
 import path from 'path';
 
