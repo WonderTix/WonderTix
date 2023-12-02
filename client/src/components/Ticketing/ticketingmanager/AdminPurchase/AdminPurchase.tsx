@@ -19,6 +19,7 @@ import {
   getTicketRestriction,
 } from './utils/adminApiRequests';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
+import {current} from '@reduxjs/toolkit';
 
 interface ticketTypeRestriction {
   concessionprice: string;
@@ -74,7 +75,7 @@ const AdminPurchase = () => {
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
   const [priceByRowId, setPriceByRowId] = useState({});
-  const [ticketTypes, setTicketTypes] = useState([]);
+  const [ticketTypes, setTicketTypes] = useState([]); // holds default ticket types values, slowly remove this from this component
   const [isEventsLoading, setIsEventsLoading] = useState(true);
   const [allTicketTypes, setAllTicketTypes] = useState([]);
   const [openDialog, setDialog] = useState(false);
@@ -349,44 +350,20 @@ const AdminPurchase = () => {
 
   const handleTicketTypeChange = async (event, row) => {
     const ticketTypeId = parseInt(event.target.value);
-    const selectedType = ticketTypes.find((type) => type.id === ticketTypeId);
+    const currentTicketRestriction = row.ticketRestrictionInfo.find(
+      (restriction) => ticketTypeId === restriction.tickettypeid_fk,
+    );
+    const price = parseFloat(currentTicketRestriction.price);
 
-    // Extract the numerical value of the price
-    const price = parseFloat(selectedType?.price.replace(/[^\d.-]/g, '')) || 0;
-
-    let seatsForType;
-
-    if (row.eventinstanceid) {
-      try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_2_URL}/ticket-restriction`,
-        );
-        if (!response.ok) {
-          throw response;
-        }
-        const ticketRestrictionData = await response.json();
-
-        // Find the matching restriction
-        const restriction = ticketRestrictionData.find(
-          (tr) =>
-            tr.eventinstanceid === row.eventinstanceid &&
-            tr.tickettypeid === ticketTypeId,
-        );
-
-        // Calculate seatsForType value
-        seatsForType = restriction
-          ? restriction.ticketlimit - restriction.ticketssold
-          : 0;
-      } catch (error) {
-        console.error('Error fetching ticket restrictions:', error);
-      }
-    }
+    // determine how many seats for current event instance
+    const {ticketlimit, ticketssold} = currentTicketRestriction;
+    const seatsForType = ticketlimit - ticketssold;
 
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {
           ...r,
-          ticketTypes: selectedType.description,
+          ticketTypes: currentTicketRestriction.tickettypedescription,
           price: row.complimentary ? 0 : price,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
