@@ -37,7 +37,7 @@ async function seedPPHTicketOrderItems(prisma: PrismaClient) {
           missingTicketOrderCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping ticket order item with ID ${item.ticket_order_item_id} due to non-existing ticket order with ID ${item.ticket_order_id}`);
           }
         }
@@ -53,7 +53,7 @@ async function seedPPHTicketOrderItems(prisma: PrismaClient) {
           missingAccountCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping ticket order item with ID ${item.ticket_order_item_id} due to non-existing account with ID ${item.account_id}`);
           }
         }
@@ -69,7 +69,7 @@ async function seedPPHTicketOrderItems(prisma: PrismaClient) {
           missingContactCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping ticket order item with ID ${item.ticket_order_item_id} due to non-existing contact with ID ${item.contact_id}`);
           }
         }
