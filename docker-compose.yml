@@ -1,6 +1,6 @@
 version: '3'
-
 services:
+
   server:
     build:
       context: ./server
@@ -21,10 +21,10 @@ services:
       DATABASE_URL: postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:${PG_PORT}/${PG_DB}?schema=public
       ROOT_URL: ${ROOT_URL}
       ENV: local
-      CI: ${CI}
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules
+
   client:
     build:
       context: ./client
@@ -44,6 +44,7 @@ services:
       - ./client:/usr/app
       - /usr/app/node_modules
     command: npm run start:local
+
   database:
     image: postgres
     ports:
@@ -53,3 +54,22 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_USER: ${PG_USER}
       POSTGRES_PASSWORD: ${PG_PASS}
+
+  prisma:
+    build:
+      context: ./prisma
+      dockerfile: Dockerfile
+    environment:
+      DB_DATABASE: ${PG_DB}
+      DB_HOST: ${PG_HOST}
+      DB_PASSWORD: ${PG_PASS}
+      DB_USER: ${PG_USER}
+      DB_PORT: ${PG_PORT}
+      DATABASE_URL: postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:${PG_PORT}/${PG_DB}?schema=public
+      CI: ${CI}
+      ENV: local
+    volumes:
+      - ./prisma:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - database
