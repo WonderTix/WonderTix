@@ -14,7 +14,10 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
 import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
 import {format, parse} from 'date-fns';
-import {getAllTicketTypes} from './utils/adminApiRequests';
+import {
+  getAllTicketTypes,
+  getTicketRestriction,
+} from './utils/adminApiRequests';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 
 export type EventRow = {
@@ -264,13 +267,29 @@ const AdminPurchase = () => {
     setEventData(updatedRows);
   };
 
-  const handleTimeChange = (
+  const handleTimeChange = async (
     event: React.ChangeEvent<HTMLSelectElement>,
     row: EventRow,
   ) => {
     const eventInstanceID = parseInt(event.target.value);
     const selectedEvent = availableTimesByRowId[row.id]?.find(
       (e) => e.eventinstanceid === eventInstanceID,
+    );
+
+    // get ticket restrictions for event instance
+    const eventInstanceTicketRestrictions =
+      await getTicketRestriction(eventInstanceID);
+
+    const ticketRestictionWithDescription = eventInstanceTicketRestrictions.map(
+      (restriction) => {
+        const matchingTicketType = allTicketTypes.find(
+          (type) => type.tickettypeid === restriction.tickettypeid_fk,
+        );
+
+        const {description} = matchingTicketType;
+
+        return {...restriction, tickettypedescription: description};
+      },
     );
 
     const updatedRows = eventData.map((r) => {
@@ -280,6 +299,7 @@ const AdminPurchase = () => {
           eventtime: selectedEvent?.eventtime,
           availableSeats: selectedEvent?.availableseats,
           eventinstanceid: eventInstanceID,
+          ticketRestrictionInfo: ticketRestictionWithDescription,
         };
       }
       return r;
