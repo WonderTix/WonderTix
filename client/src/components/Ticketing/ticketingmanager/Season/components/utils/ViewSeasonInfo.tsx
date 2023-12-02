@@ -54,16 +54,16 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
 
   return (
     <header className='rounded-xl bg-white p-7 text-lg shadow-xl'>
-      <section className='flex flex-col gap-3 text-center mb-5 justify-between tab:flex-row tab:flex-wrap'>
+      <section className='flex flex-col gap-3 text-center mb-5 justify-between min-[750px]:flex-row min-[750px]:flex-wrap'>
         <h1 className='text-4xl font-semibold'>Season Information</h1>
-        <div className='flex flex-col gap-2 tab:flex-row tab:flex-wrap'>
-          <span
+        <div className='flex flex-col gap-2 min-[750px]:flex-row'>
+          <p
             className={`${
               activeSeasonSwitch ? 'bg-green-100' : 'bg-red-100'
-            } py-2 px-8 rounded-lg font-medium`}
+            } py-2 px-2 md:px-7 rounded-lg font-medium`}
           >
             {activeSeasonSwitch ? 'ACTIVE' : 'INACTIVE'}
-          </span>
+          </p>
           <Tooltip title='Edit' placement='top' arrow>
             <button
               data-testid='season-edit'

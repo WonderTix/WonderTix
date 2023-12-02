@@ -69,6 +69,9 @@ export interface Ticket {
  * @param {number} id
  * @param {number} eventinstanceid
  * @param {number} tickettypeid
+ * @param {string} description
+ * @param {string} concessionprice
+ * @param {string} price
  * @param {number} ticketlimit
  * @param {number?} ticketssold
  */
@@ -76,6 +79,9 @@ export interface TicketRestriction {
   id: number;
   eventinstanceid: number;
   tickettypeid: number;
+  description: string;
+  concessionprice: string;
+  price: string;
   ticketlimit: number;
   ticketssold?: number;
 }
@@ -581,7 +587,7 @@ export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {data: {byId: {}, allIds: []}},
   ticketrestrictions: [],
-  tickettype: {id: 0, name: '', price: '', concessions: ''},
+  tickettype: {id: -1, name: '', price: '', concessions: ''},
   events: [],
   status: 'idle',
   discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},
