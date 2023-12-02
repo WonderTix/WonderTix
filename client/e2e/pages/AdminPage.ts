@@ -190,6 +190,7 @@ export class AdminPage {
     await delay(1000);
     await this.dynamicDropDownSelectorTime(eventTime);
     await this.admissionType.getByRole('combobox').selectOption('1');
+    await delay(500);
     await this.checkoutButton.click();
     await this.firstName.click();
     await this.firstName.fill('Betty');
