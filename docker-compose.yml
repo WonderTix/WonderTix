@@ -21,6 +21,7 @@ services:
       DATABASE_URL: postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:${PG_PORT}/${PG_DB}?schema=public
       ROOT_URL: ${ROOT_URL}
       ENV: local
+      CI: ${CI}
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules

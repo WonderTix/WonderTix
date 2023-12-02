@@ -5,8 +5,7 @@ const TicketExchanges = () => {
     <div className='w-full h-screen overflow-x-hidden absolute '>
       <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem] h-full'>
         <h1 className='font-bold text-5xl bg-clip-text
-           text-transparent bg-gradient-to-r from-sky-500
-            to-indigo-500 mb-10 pb-4 h-fit'>Ticket Exchanges</h1>
+           text-transparent bg-gradient-to-r from-red-500 to-blue-600 mb-10 pb-4 h-fit'>Ticket Exchanges</h1>
 
         <div className="flex flex-wrap justify-center h-fit gap-x-24">
           <div className="w-80 bg-blue-400 drop-shadow-xl

@@ -310,11 +310,15 @@ const openApiSpec = swaggerJsdoc({
         TicketRestriction: {
           type: 'object',
           properties: {
-            ticketrestrictionsid: {type: 'integer'},
+            concessionprice: {type: 'string'},
+            description: {type: 'string'},
             eventinstanceid_fk: {type: 'integer'},
-            tickettypeid_fk: {type: 'integer'},
+            price: {type: 'string'},
+            seasontickettypepricedefaultid_fk: {type: 'integer'},
             ticketlimit: {type: 'integer'},
+            ticketrestrictionsid: {type: 'integer'},
             ticketssold: {type: 'integer'},
+            tickettypeid_fk: {type: 'integer'},
           },
         },
         TicketType: {

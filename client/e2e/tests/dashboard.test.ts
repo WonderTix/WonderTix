@@ -1,5 +1,5 @@
-import {test, expect} from '@playwright/test';
-import {DashboardPage} from './pages/dashboardPage';
+import { test, expect } from '@playwright/test';
+import { DashboardPage } from '../pages/dashboardPage';
 
 test('Homepage->Ticketing Dashboard', async ({page}) => {
   const dashboard = new DashboardPage(page);

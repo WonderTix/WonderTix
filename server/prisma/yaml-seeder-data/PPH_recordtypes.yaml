@@ -27,7 +27,8 @@
   is_deleted: 0
 - record_type_id: 1556332051
   name: Soft Credit
-  description: Use this record type for soft credits. Must be created after the Donation
+  description:
+    Use this record type for soft credits. Must be created after the Donation
     that is being soft credited.
   sobject_type: Opportunity
   is_active: 1
@@ -163,7 +164,8 @@
   is_deleted: 0
 - record_type_id: 3702266707
   name: Patron Contact
-  description: Use this record type for Contacts associated with Household or Individual
+  description:
+    Use this record type for Contacts associated with Household or Individual
     Accounts
   sobject_type: Contact
   is_active: 1
@@ -173,7 +175,8 @@
   is_deleted: 0
 - record_type_id: 429065715
   name: Other Contact
-  description: Use this record type for Contacts associated with Organization or Foundation
+  description:
+    Use this record type for Contacts associated with Organization or Foundation
     Accounts--for people who have relevant job titles, for example
   sobject_type: Contact
   is_active: 1
