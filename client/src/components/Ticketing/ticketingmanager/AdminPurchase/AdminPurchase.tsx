@@ -75,7 +75,6 @@ const AdminPurchase = () => {
   const [eventList, setEventList] = useState([]);
   const [eventListFull, setEventListFull] = useState([]);
   const [priceByRowId, setPriceByRowId] = useState({});
-  const [ticketTypes, setTicketTypes] = useState([]); // holds default ticket types values, slowly remove this from this component
   const [isEventsLoading, setIsEventsLoading] = useState(true);
   const [allTicketTypes, setAllTicketTypes] = useState([]);
   const [openDialog, setDialog] = useState(false);
@@ -104,161 +103,6 @@ const AdminPurchase = () => {
   const removeRow = (rowId) => {
     setEventData(eventData.filter((row) => row.id !== rowId));
   };
-
-  const columns = [
-    {
-      field: 'eventname',
-      headerName: 'Event Name - ID',
-      width: 200,
-      renderCell: (params) => (
-        <div className='truncate w-full'>
-          <select
-            className='w-full'
-            value={`${params.row.eventid}-${params.row.eventname}`}
-            onChange={(e) => handleEventChange(e, params.row)}
-          >
-            <option>Select Event</option>
-            {eventList.map((event) => (
-              <option
-                key={event.eventinstanceid}
-                value={`${event.eventid}-${event.eventname}`}
-              >
-                {`${event.eventname} - ${event.eventid}`}
-              </option>
-            ))}
-          </select>
-        </div>
-      ),
-    },
-    {
-      field: 'eventtime',
-      headerName: 'Date - Time',
-      width: 200,
-      renderCell: (params) => (
-        <div className='truncate w-full'>
-          <select
-            className='w-full'
-            value={
-              params.row.eventtime ? params.row.eventinstanceid : 'Select Time'
-            }
-            onChange={(e) => handleTimeChange(e, params.row)}
-            disabled={!params.row.eventid}
-          >
-            <option>Select Time</option>
-            {availableTimesByRowId[params.row.id]?.map((event) => {
-              const dateTimeString = `${
-                event.eventdate
-              }T${event.eventtime.slice(0, 8)}`;
-              const dateTime = parse(
-                dateTimeString,
-                `yyyyMMdd'T'HH:mm:ss`,
-                new Date(),
-              );
-              const formattedDateTime = format(
-                dateTime,
-                'eee, MMM dd yyyy - hh:mm a',
-              );
-              return (
-                <option
-                  key={event.eventinstanceid}
-                  value={event.eventinstanceid}
-                >
-                  {formattedDateTime}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-      ),
-    },
-    {
-      field: 'ticketTypes',
-      headerName: 'Ticket Type',
-      width: 200,
-      renderCell: (params) => (
-        <div className='truncate w-full'>
-          <select
-            className='w-full'
-            value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
-            onChange={(e) => {
-              console.log('param.row is', params.row);
-              handleTicketTypeChange(e, params.row);
-            }}
-            disabled={!params.row.eventtime}
-          >
-            <option>Select Type</option>
-            {params.row.ticketRestrictionInfo.map((restriction) => (
-              <option
-                key={restriction.tickettypeid_fk}
-                value={restriction.tickettypeid_fk}
-              >
-                {restriction.tickettypedescription}
-              </option>
-            ))}
-          </select>
-        </div>
-      ),
-    },
-    {
-      field: 'seatsAvailable',
-      headerName: 'Seats',
-      width: 80,
-      renderCell: (params) => (
-        <span>
-          {params.row.typeID === 1
-            ? params.row.availableSeats
-            : params.row.seatsForType}
-        </span>
-      ),
-    },
-    {
-      field: 'price',
-      headerName: 'Price',
-      width: 100,
-      renderCell: (params) => (
-        <div className='flex items-center'>
-          $
-          <input
-            type='text'
-            value={priceByRowId[params.row.id] || ''}
-            onChange={(e) => handlePriceChange(e, params.row)}
-            onBlur={(e) => handlePriceBlur(e, params.row)}
-            disabled={params.row.complimentary || !params.row.ticketTypes}
-            className='w-16'
-          />
-        </div>
-      ),
-    },
-    {
-      field: 'complimentary',
-      headerName: 'Comp',
-      width: 60,
-      renderCell: (params) => (
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={params.row.complimentary || false}
-              onChange={(e) => handleComplimentaryChange(e, params.row)}
-            />
-          }
-          label=''
-        />
-      ),
-    },
-    {
-      field: 'action',
-      headerName: '',
-      width: 150,
-      renderCell: (params) => (
-        <button
-          className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
-          onClick={() => removeRow(params.row.id)}
-        >
-          Remove
-        </button>
-      ),
-    },
-  ];
 
   const updateAvailableTimes = (eventId, rowId) => {
     const matchingEvents = eventListFull.filter((e) => e.eventid === eventId);
@@ -503,6 +347,158 @@ const AdminPurchase = () => {
     navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
   };
 
+  const columns = [
+    {
+      field: 'eventname',
+      headerName: 'Event Name - ID',
+      width: 200,
+      renderCell: (params) => (
+        <div className='truncate w-full'>
+          <select
+            className='w-full'
+            value={`${params.row.eventid}-${params.row.eventname}`}
+            onChange={(e) => handleEventChange(e, params.row)}
+          >
+            <option>Select Event</option>
+            {eventList.map((event) => (
+              <option
+                key={event.eventinstanceid}
+                value={`${event.eventid}-${event.eventname}`}
+              >
+                {`${event.eventname} - ${event.eventid}`}
+              </option>
+            ))}
+          </select>
+        </div>
+      ),
+    },
+    {
+      field: 'eventtime',
+      headerName: 'Date - Time',
+      width: 200,
+      renderCell: (params) => (
+        <div className='truncate w-full'>
+          <select
+            className='w-full'
+            value={
+              params.row.eventtime ? params.row.eventinstanceid : 'Select Time'
+            }
+            onChange={(e) => handleTimeChange(e, params.row)}
+            disabled={!params.row.eventid}
+          >
+            <option>Select Time</option>
+            {availableTimesByRowId[params.row.id]?.map((event) => {
+              const dateTimeString = `${
+                event.eventdate
+              }T${event.eventtime.slice(0, 8)}`;
+              const dateTime = parse(
+                dateTimeString,
+                `yyyyMMdd'T'HH:mm:ss`,
+                new Date(),
+              );
+              const formattedDateTime = format(
+                dateTime,
+                'eee, MMM dd yyyy - hh:mm a',
+              );
+              return (
+                <option
+                  key={event.eventinstanceid}
+                  value={event.eventinstanceid}
+                >
+                  {formattedDateTime}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      ),
+    },
+    {
+      field: 'ticketTypes',
+      headerName: 'Ticket Type',
+      width: 200,
+      renderCell: (params) => (
+        <div className='truncate w-full'>
+          <select
+            className='w-full'
+            value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
+            onChange={(e) => handleTicketTypeChange(e, params.row)}
+            disabled={!params.row.eventtime}
+          >
+            <option>Select Type</option>
+            {params.row.ticketRestrictionInfo.map((restriction) => (
+              <option
+                key={restriction.tickettypeid_fk}
+                value={restriction.tickettypeid_fk}
+              >
+                {restriction.tickettypedescription}
+              </option>
+            ))}
+          </select>
+        </div>
+      ),
+    },
+    {
+      field: 'seatsAvailable',
+      headerName: 'Seats',
+      width: 80,
+      renderCell: (params) => (
+        <span>
+          {params.row.typeID === 1
+            ? params.row.availableSeats
+            : params.row.seatsForType}
+        </span>
+      ),
+    },
+    {
+      field: 'price',
+      headerName: 'Price',
+      width: 100,
+      renderCell: (params) => (
+        <div className='flex items-center'>
+          $
+          <input
+            type='text'
+            value={priceByRowId[params.row.id] || ''}
+            onChange={(e) => handlePriceChange(e, params.row)}
+            onBlur={(e) => handlePriceBlur(e, params.row)}
+            disabled={params.row.complimentary || !params.row.ticketTypes}
+            className='w-16'
+          />
+        </div>
+      ),
+    },
+    {
+      field: 'complimentary',
+      headerName: 'Comp',
+      width: 60,
+      renderCell: (params) => (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={params.row.complimentary || false}
+              onChange={(e) => handleComplimentaryChange(e, params.row)}
+            />
+          }
+          label=''
+        />
+      ),
+    },
+    {
+      field: 'action',
+      headerName: '',
+      width: 150,
+      renderCell: (params) => (
+        <button
+          className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
+          onClick={() => removeRow(params.row.id)}
+        >
+          Remove
+        </button>
+      ),
+    },
+  ];
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -559,27 +555,6 @@ const AdminPurchase = () => {
       setPriceByRowId(initialPrices);
     }
   }, [location.state?.eventDataFromPurchase, eventListFull]);
-
-  useEffect(() => {
-    const fetchTicketTypes = async () => {
-      try {
-        const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
-          {
-            headers: {
-              accept: 'application/json',
-            },
-          },
-        );
-        const jsonRes = await response.json();
-        setTicketTypes(jsonRes.data);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-
-    fetchTicketTypes();
-  }, []);
 
   useEffect(() => {
     const fetchAllTicketTypes = async () => {
