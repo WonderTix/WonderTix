@@ -548,7 +548,6 @@ const openApiSpec = swaggerJsdoc({
             description: {type: 'string'},
             price: {type: 'number'},
             concessions: {type: 'number'},
-            deprecated: {type: 'boolean'},
           },
         },
         User: {
