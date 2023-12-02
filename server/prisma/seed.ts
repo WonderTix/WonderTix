@@ -39,7 +39,6 @@ async function main() {
     await importDates(prisma);
     await importDiscounts(prisma);
     await importTicketTypes(prisma);
-    await importSeasonTicketTypes(prisma);
   } else {
     // Full seeding process
     await importDates(prisma);
