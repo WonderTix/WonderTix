@@ -66,10 +66,8 @@ services:
       DB_USER: ${PG_USER}
       DB_PORT: ${PG_PORT}
       DATABASE_URL: postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:${PG_PORT}/${PG_DB}?schema=public
+      MINIMAL_SEED: ${MINIMAL_SEED}
       CI: ${CI}
       ENV: local
-    volumes:
-      - ./prisma:/usr/app
-      - /usr/app/node_modules
     depends_on:
       - database

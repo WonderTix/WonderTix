@@ -14,7 +14,7 @@ async function seedTicketTypes(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/tickettype.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./yaml-seeder-data/tickettype.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({

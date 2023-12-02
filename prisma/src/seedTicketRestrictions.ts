@@ -20,7 +20,7 @@ async function seedTicketRestrictions(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/ticketrestrictions.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./yaml-seeder-data/ticketrestrictions.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
     const queryBatch: any[] = [];
     eventInstances.forEach((instance) => {

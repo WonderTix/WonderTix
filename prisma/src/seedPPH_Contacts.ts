@@ -17,7 +17,7 @@ async function seedPPHContacts(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/PPH_contacts.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./yaml-seeder-data/PPH_contacts.yaml', 'utf8');
     const data = yaml.load(yamlData);
 
     for (const item of data) {
