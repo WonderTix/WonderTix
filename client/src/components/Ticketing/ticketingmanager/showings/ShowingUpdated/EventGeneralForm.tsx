@@ -114,7 +114,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 }}
               />
               <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
-                <div className={`${showButton? 'col-span-4':'col-span-5'} pr-2`}>
+                <div className={showButton ? 'col-span-4' : 'col-span-5'}>
                   <Field name='imageurl'>
                     {({field}) => (
                       <div className='flex flex-col text-zinc-800'>
@@ -142,7 +142,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   <button
                     id={'defaultImageUrl'}
                     className={
-                      'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 font-bold text-sm h-fit self-end whitespace-nowrap'
+                      'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 ml-2 font-bold text-sm h-fit self-end whitespace-nowrap'
                     }
                     onClick={async () => {
                       await setFieldValue('imageurl', 'Default Event Image');

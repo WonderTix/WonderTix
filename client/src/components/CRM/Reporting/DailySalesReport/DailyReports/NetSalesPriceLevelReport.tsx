@@ -610,7 +610,7 @@ const netSalesRows = [
   },
 ];
 
-const NetSalesPriceLevelReport: React.FC = (): React.ReactElement => {
+const NetSalesPriceLevelReport = (): React.ReactElement => {
   const rowHeight = 36;
   const netSalesTableRows = netSalesRows.length;
   const tableHeight = ((netSalesTableRows * rowHeight) + rowHeight + 5);

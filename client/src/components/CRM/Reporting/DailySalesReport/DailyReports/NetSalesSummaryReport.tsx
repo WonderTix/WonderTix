@@ -417,7 +417,7 @@ const eventTotalRows = [
   },
 ];
 
-const NetSalesSummaryReport: React.FC = (): React.ReactElement => {
+const NetSalesSummaryReport = (): React.ReactElement => {
   const rowHeight = 98;
   const headerHeight = 41;
   const [eventSalesTableRows, subtotalTableRow, totalTableRow] = [

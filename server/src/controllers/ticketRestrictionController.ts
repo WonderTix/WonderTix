@@ -2,7 +2,6 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {LoadedTicketRestriction} from './eventInstanceController.service';
 
 const prisma = extendPrismaClient();
 
@@ -58,6 +57,11 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
             singleticket_fk: {not: null},
           },
         },
+        tickettype: {
+          select: {
+            description: true,
+          },
+        },
       },
     });
     return res.json(
@@ -66,6 +70,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
               id: restriction.ticketrestrictionsid,
               eventinstanceid: restriction.eventinstanceid_fk,
               tickettypeid: restriction.tickettypeid_fk,
+              description: restriction.tickettype.description,
               concessionprice: +restriction.concessionprice,
               price: +restriction.price,
               ticketlimit: restriction.ticketlimit,
@@ -91,6 +96,8 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
  *     summary: get all Ticket Restrictions associated with a specific event instance for which there are tickets available
  *     tags:
  *     - New Ticket Restrictions
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
  *     responses:
  *       200:
  *         description: fetch successful
@@ -134,13 +141,19 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
             singleticket_fk: {not: null},
           },
         },
+        tickettype: {
+          select: {
+            description: true,
+          },
+        },
       },
     });
     return res.json(
         ticketRestrictions.map((restriction) => {
-          const {eventtickets, ...restrictionData} = restriction;
+          const {eventtickets, tickettype, ...restrictionData} = restriction;
           return {
             ...restrictionData,
+            description: tickettype.description,
             ticketssold: eventtickets.length,
           };
         }));
@@ -161,7 +174,7 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /2/ticket-restriction/{id}/{tickettypeid}:
  *   get:
- *     summary: get all Ticket Restrictions associated with a specific event instance/ticket type for which there are tickets available
+ *     summary: get the Ticket Restriction associated with a specific event instance/ticket type for which there are tickets available
  *     tags:
  *     - New Ticket Restrictions
  *     parameters:
@@ -173,7 +186,6 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
  *         content:
  *           application/json:
  *             schema:
- *               type: array
  *               $ref: '#/components/schemas/TicketRestriction'
  *       400:
  *         description: bad request
@@ -192,7 +204,7 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
   try {
     const {id, tickettypeid} = req.params;
 
-    const ticketRestriction: LoadedTicketRestriction | null = await prisma.ticketrestrictions.findFirst({
+    const ticketRestriction = await prisma.ticketrestrictions.findFirst({
       where: {
         tickettypeid_fk: +tickettypeid,
         eventinstances: {
@@ -211,14 +223,20 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
             singleticket_fk: {not: null},
           },
         },
+        tickettype: {
+          select: {
+            description: true,
+          },
+        },
       },
     });
     if (!ticketRestriction) {
       return res.status(400).json({error: `Ticket type ${tickettypeid} not available for showing ${id}`});
     }
-    const {eventtickets, ...restrictionData} = ticketRestriction;
+    const {eventtickets, tickettype, ...restrictionData} = ticketRestriction;
     return res.status(200).json({
       ...restrictionData,
+      description: tickettype.description,
       ticketssold: eventtickets.length,
     });
   } catch (error) {

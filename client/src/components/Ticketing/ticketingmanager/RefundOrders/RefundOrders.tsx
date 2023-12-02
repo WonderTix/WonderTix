@@ -3,6 +3,15 @@ import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import PopUp from '../../PopUp';
 import format from 'date-fns/format';
 
+export const formatUSD = (number) => {
+  const formatter = new Intl.NumberFormat('en-us', {
+    currency: 'USD',
+    style: 'currency',
+  });
+
+  return formatter.format(number);
+};
+
 const RefundOrders = () => {
   const {token} = useFetchToken();
   const [submitting, setSubmitting] = useState(false);
@@ -35,11 +44,6 @@ const RefundOrders = () => {
       showSecondary: secondary,
     });
   };
-
-  const formatUSD = new Intl.NumberFormat('en-us', {
-    currency: 'USD',
-    style: 'currency',
-  });
 
   const onRefund = async (orderID) => {
     try {
@@ -141,7 +145,7 @@ const RefundOrders = () => {
       )}
       <div className='w-full h-screen overflow-x-hidden absolute'>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-700 to-yellow-200 mb-14'>
             Refund Order
           </h1>
           <form className='mb-4' onSubmit={onFetchOrders}>
@@ -231,7 +235,7 @@ const RefundOrders = () => {
                       )}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {formatUSD.format(instance.price)}
+                      {formatUSD(instance.price)}
                     </td>
                     <td className='row-start-1 justify-self-start py-2 col-span-1'>
                       <button
