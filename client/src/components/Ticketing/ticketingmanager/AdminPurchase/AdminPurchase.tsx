@@ -20,6 +20,30 @@ import {
 } from './utils/adminApiRequests';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 
+interface ticketTypeRestriction {
+  concessionprice: string;
+  eventinstanceid_fk: number;
+  price: string;
+  seasontickettypepricedefaultid_fk: number | null;
+  ticketlimit: number;
+  ticketrestrictionsid: number;
+  ticketssold: number;
+  tickettypedescription?: string;
+  tickettypeid_fk: number;
+}
+
+const initialTicketTypeRestriction: ticketTypeRestriction = {
+  concessionprice: '',
+  eventinstanceid_fk: 0,
+  price: '',
+  seasontickettypepricedefaultid_fk: 0,
+  ticketlimit: 0,
+  ticketrestrictionsid: 0,
+  ticketssold: 0,
+  tickettypedescription: '',
+  tickettypeid_fk: 0,
+};
+
 export type EventRow = {
   id?: number;
   desc: string;
@@ -29,6 +53,7 @@ export type EventRow = {
   eventdate?: string;
   eventtime?: string;
   ticketTypes?: string;
+  ticketRestrictionInfo?: ticketTypeRestriction[];
   price?: number;
   complimentary?: boolean;
   availableSeats?: number;
@@ -39,7 +64,9 @@ export type EventRow = {
 };
 
 const AdminPurchase = () => {
-  const emptyRows: EventRow[] = [{id: 0, desc: ''}];
+  const emptyRows: EventRow[] = [
+    {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
+  ];
   const location = useLocation();
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
@@ -57,7 +84,14 @@ const AdminPurchase = () => {
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
-    setEventData([...eventData, {id: maxId, desc: ''}]);
+    setEventData([
+      ...eventData,
+      {
+        id: maxId,
+        desc: '',
+        ticketRestrictionInfo: [initialTicketTypeRestriction],
+      },
+    ]);
 
     setPriceByRowId((prevState) => ({...prevState, [maxId]: '0.00'}));
   };
@@ -145,13 +179,19 @@ const AdminPurchase = () => {
           <select
             className='w-full'
             value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
-            onChange={(e) => handleTicketTypeChange(e, params.row)}
+            onChange={(e) => {
+              console.log('param.row is', params.row);
+              handleTicketTypeChange(e, params.row);
+            }}
             disabled={!params.row.eventtime}
           >
             <option>Select Type</option>
-            {ticketTypes.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.description}
+            {params.row.ticketRestrictionInfo.map((restriction) => (
+              <option
+                key={restriction.tickettypeid_fk}
+                value={restriction.tickettypeid_fk}
+              >
+                {restriction.tickettypedescription}
               </option>
             ))}
           </select>
