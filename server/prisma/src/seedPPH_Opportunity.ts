@@ -33,7 +33,7 @@ async function seedPPHOpportunity(prisma: PrismaClient) {
           missingRecordTypeCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping Opportunity with ID ${item.opportunity_id} due to non-existing Record Type with ID ${item.record_type_id}`);
           }
         }

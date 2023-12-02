@@ -124,7 +124,7 @@ export const getOrderItems = async (
         currency: 'usd',
         product_data: {
           name: eventInstance.events.eventname,
-          description: item.desc,
+          description: (item.payWhatCan && item.qty != 1 ? `${item.desc}, Qty ${item.qty}`: item.desc),
         },
         unit_amount: (item.payWhatPrice? item.payWhatPrice: item.price) * 100,
       },

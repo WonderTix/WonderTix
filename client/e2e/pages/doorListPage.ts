@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
-import {type Locator, type Page} from '@playwright/test';
-import {EventsInfo, ShowingInfo, Customer} from '../testData/ConstsPackage';
+import {type Locator, type Page } from '@playwright/test';
+import { EventInfo, ShowingInfo, CustomerInfo } from '../testData/interfaces';
 
 export class DoorListPage {
   readonly page: Page;
@@ -61,10 +61,10 @@ export class DoorListPage {
     return randTime;
   }
 
-  // Find a specific showing using the EventsInfo object for the name, and the ShowingInfo object
+  // Find a specific showing using the EventInfo object for the name, and the ShowingInfo object
   // for the correct show date/time
   // Door list searches automatically once the options are set, requiring no further interation
-  async searchShowing(event: EventsInfo, showing: ShowingInfo) {
+  async searchShowing(event: EventInfo, showing: ShowingInfo) {
     const eventOption = await this.chooseEvent.getByRole('option').filter({hasText: event.eventName}).textContent();
     await this.chooseEvent.selectOption(eventOption);
     const eventTime = await this.chooseTime.getByRole('option').filter({hasText: showing.showingDateTime}).textContent();
@@ -72,7 +72,7 @@ export class DoorListPage {
   }
 
   // Verify a specific order exists by customer name, quantity, and accomodation.
-  async checkOrder(customer: Customer, qty: number) {
+  async checkOrder(customer: CustomerInfo, qty: number) {
     await this.customerRow.filter({hasText: customer.firstName}).filter({hasText: customer.lastName}).filter({hasText: qty.toString()}).filter({hasText: customer.accommodations}).isVisible();
   }
 

@@ -1,25 +1,16 @@
-/**
- * Copyright Â© 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
+import React, {useEffect, useState, useReducer, ReactElement} from 'react';
 import {useAppDispatch} from '../app/hooks';
+import {Collapse} from '@mui/material';
+import format from 'date-fns/format';
+import isSameDay from 'date-fns/isSameDay';
 import {
   addTicketToCart,
   Ticket,
 } from '../ticketingmanager/ticketing/ticketingSlice';
-import {openSnackbar} from '../ticketingmanager/snackbarSlice';
-import {Collapse} from '@mui/material';
 import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
-import format from 'date-fns/format';
-import isSameDay from 'date-fns/isSameDay';
-import React, {useEffect, useState, useReducer, ReactElement} from 'react';
+import {formatUSD} from '../ticketingmanager/RefundOrders/RefundOrders';
+
 
 /**
  * @module
@@ -27,13 +18,12 @@ import React, {useEffect, useState, useReducer, ReactElement} from 'react';
  * @param {Ticket[]} displayedShowings
  * @param {Ticket} selectedTicket
  * @param {number} qty
+ * @param {payWhatPrice?} payWhatPrice
  * @param {boolean} concessions
- * @param {TicketType[]} ticketTypes
  * @param {TicketType} selectedTicketType
  * @param {boolean} showCalendar
  * @param {boolean} showTimes
  * @param {boolean} showClearBtn
- * @param {TicketType} ticketType
  * @param prompt - 'selectDate' | 'selectTime' | 'showSelection'
  */
 interface TicketPickerState {
@@ -43,7 +33,6 @@ interface TicketPickerState {
   qty: number;
   payWhatPrice?: number;
   concessions: boolean;
-  ticketTypes: TicketType[];
   selectedTicketType?: TicketType;
   showCalendar: boolean;
   showTimes: boolean;
@@ -60,23 +49,16 @@ export interface TicketType {
 
 /**
  * Initial state
- * displayedShowings: [],
- * qty: 0,
- * concessions: false,
- * ticketTypes: [],
- * selectedTicketType: null,
- * showCalendar: true,
- * showTimes: false,
- * showClearBtn: false,
- * prompt: 'selectDate',
  */
 const initialState: TicketPickerState = {
+  selectedDate: undefined,
   displayedShowings: [],
+  selectedTicket: undefined,
   qty: 0,
+  payWhatPrice: null,
   concessions: false,
-  ticketTypes: [],
   selectedTicketType: {
-    id: 0,
+    id: -1,
     name: '',
     price: '',
     concessions: '',
@@ -84,7 +66,6 @@ const initialState: TicketPickerState = {
   showCalendar: true,
   showTimes: false,
   showClearBtn: false,
-  payWhatPrice: null,
   prompt: 'selectDate',
 };
 
@@ -125,9 +106,9 @@ const TicketPickerReducer = (
   switch (action.type) {
   case 'date_selected': {
     const {tickets, date} = action.payload;
-    const sameDayShows = tickets.filter((t: Ticket) =>
-      isSameDay(new Date(date), new Date(t.date)),
-    );
+    const sameDayShows = tickets
+      .filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)))
+      .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime()));
 
     return {
       ...state,
@@ -168,21 +149,22 @@ const TicketPickerReducer = (
   }
 };
 
+const getUniqueDates = (tickets: Ticket[]) => {
+  const dates = tickets.map((ticket) => new Date(ticket.date));
+  const sortedDates = dates.sort((a, b) => a.getTime() - b.getTime());
+
+  const uniqueDates = new Set<string>();
+  sortedDates.forEach((date) => {
+    const dateStr = format(date, 'eee, MMM dd yyyy').valueOf();
+    uniqueDates.add(dateStr);
+  });
+  return Array.from(uniqueDates);
+};
+
 interface TicketPickerProps {
   onSubmit: (ticketInfo: any) => void;
   tickets: Ticket[];
 }
-
-const getUniqueDates = (tickets) => {
-  const uniqueDates = [];
-  tickets.forEach((ticket) => {
-    const dateStr = format(new Date(ticket.date), 'eee, MMM dd yyyy');
-    if (!uniqueDates.includes(dateStr)) {
-      uniqueDates.push(dateStr);
-    }
-  });
-  return uniqueDates;
-};
 
 /**
  * Used to choose the tickets
@@ -192,8 +174,6 @@ const getUniqueDates = (tickets) => {
  */
 const TicketPicker = (props: TicketPickerProps): ReactElement => {
   const uniqueDates = getUniqueDates(props.tickets);
-  const [ticketTypesState, setTicketTypesState] =
-    useState<TicketPickerState>(initialState);
 
   const [
     {
@@ -205,7 +185,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       displayedShowings,
       selectedTicket,
       selectedTicketType,
-      ticketTypes,
       showCalendar,
       showTimes,
       showClearBtn,
@@ -213,43 +192,62 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     dispatch,
   ] = useReducer(TicketPickerReducer, initialState);
 
-  const fetchTicketTypes = async () => {
-     await fetch(
-      process.env.REACT_APP_API_1_URL + '/tickets/AllTypes',
-    )
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('Failed to retrieve ticket types');
-        }
-        return res.json();
-      })
-      .then((resData) => {
-        const data: TicketType[] = resData.data.map((t) => ({
-          id: t.id,
-          name: t.description,
-          price: t.price,
-          concessions: t.concessions,
-        }));
-
-        setTicketTypesState((prevState) => ({
-          ...prevState,
-          ticketTypes: data,
-        }));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  const appDispatch = useAppDispatch();
+  const [showingTicketTypes, setShowingTicketTypes] = useState<TicketType[]>([]);
+  const [numAvail, setNumAvail] = useState(Number);
 
   useEffect(() => {
-    void fetchTicketTypes();
-  }, []);
+    if (selectedTicket) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            process.env.REACT_APP_API_2_URL +
+            `/ticket-restriction/${selectedTicket.event_instance_id}`,
+          );
+          if (!response.ok) {
+            throw response;
+          }
+          const data = await response.json();
+          const showingTypes: TicketType[] = data.map((type: any) => ({
+            id: type.tickettypeid_fk,
+            name: type.description,
+            price: formatUSD(type.price),
+            concessions: formatUSD(type.concessionprice),
+          }));
 
-  const appDispatch = useAppDispatch();
-  const tickets = props.tickets;
+          setShowingTicketTypes(showingTypes);
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-  const handleClick = (d: Date, t: Ticket[]) => {
-    dispatch(dateSelected(d, t));
+      void fetchData();
+    }
+  }, [selectedTicket]);
+
+  useEffect(() => {
+    if (selectedTicket && selectedTicketType) {
+      const fetchData = async () => {
+        try {
+          const response= await fetch(
+            process.env.REACT_APP_API_2_URL +
+            `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketType.id}`,
+          );
+          if (!response.ok) {
+            throw response;
+          }
+          const data = await response.json();
+          setNumAvail(data.ticketlimit - data.ticketssold);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      void fetchData();
+    }
+  }, [selectedTicketType]);
+
+  const handleClick = (date: Date, tickets: Ticket[]) => {
+    dispatch(dateSelected(date, tickets));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -272,9 +270,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           payWhatPrice,
         }),
       );
-      appDispatch(
-        openSnackbar(`Added ${qty} ticket${qty === 1 ? '' : 's'} to cart!`),
-      );
       dispatch(resetWidget());
     }
   };
@@ -285,7 +280,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         className='text-white font-semibold text-xl'
         htmlFor='date-select'
       >
-        Select date below ({tickets.length} showings)
+        Select date below ({props.tickets.length} showings)
       </label>
     ),
     selectTime: (
@@ -316,66 +311,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     }
   };
 
-  const [filteredTicketTypes, setFilteredTicketTypes] = useState([]);
-
-  const getDefaultType = ticketTypesState.ticketTypes.filter((t) => {
-    if (!selectedTicket) {
-      return;
-    }
-
-    return (
-      t.name === ticketTypesState.ticketTypes[1].name &&
-      selectedTicket.availableseats > 0
-    );
-  });
-
-  useEffect(() => {
-    if (selectedTicket) {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-              process.env.REACT_APP_API_2_URL +
-              `/ticket-restriction/${selectedTicket.event_instance_id}`,
-          );
-          if (!response.ok) {
-            throw response;
-          }
-          const data = await response.json();
-          const finalFilteredTicketTypes = ticketTypesState.ticketTypes.filter(
-            (t) => data.some((type) => type.tickettypeid_fk === t.id),
-          );
-          setFilteredTicketTypes(finalFilteredTicketTypes);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-
-      void fetchData();
-    }
-  }, [selectedTicket]);
-
-  const [numAvail, setnumAvail] = useState(Number);
-  useEffect(() => {
-    if (selectedTicket) {
-      const fetchData = async () => {
-        try {
-          const response= await fetch(
-              process.env.REACT_APP_API_2_URL +
-              `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketType.id}`,
-          );
-          if (!response.ok) {
-            throw response;
-          }
-          const data = await response.json();
-          setnumAvail(data.ticketlimit - data.ticketssold);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedTicketType]);
-
   return (
     <>
       <Collapse in={showClearBtn}>
@@ -389,25 +324,23 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       {promptMarkup[prompt]}
       <Collapse in={showCalendar}>
         <div className='text-white w-full px-20'>
-        <select
-          id='date-select'
-          defaultValue=''
-          className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
-          onChange={(ev) => handleClick(new Date(ev.target.value), tickets)}
-        >
-          <option
-            className='text-zinc-300'
-            value=''
-            disabled
+          <select
+            id='date-select'
+            value={selectedDate ? format(selectedDate, 'eee, MMM dd yyyy') : ''}
+            className='bg-zinc-800/50 text-white p-5 mt-5 rounded-xl'
+            onChange={(ev) =>
+              handleClick(new Date(ev.target.value), props.tickets)
+            }
           >
-            select date
-          </option>
-          {uniqueDates.map((dateStr, index) => (
-            <option key={index} value={dateStr}>
-              {dateStr}
+            <option className='text-zinc-300' value='' disabled>
+              select date
             </option>
-          ))}
-        </select>
+            {uniqueDates.map((dateStr, index) => (
+              <option key={index} value={dateStr}>
+                {dateStr}
+              </option>
+            ))}
+          </select>
         </div>
       </Collapse>
       <Collapse in={showTimes}>
@@ -418,9 +351,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         />
       </Collapse>
       <div className='flex flex-col gap-2 mt-7'>
-        {ticketTypes.map((t) => (
-          <p key={t.id}>hello {t.name}</p>
-        ))}
         <label
           htmlFor='ticket-type-select'
           className='text-center text-zinc-200'
@@ -429,33 +359,27 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         </label>
         <select
           id='ticket-type-select'
-          value={selectedTicketType.name}
+          value={selectedTicketType.id}
           disabled={selectedTicket === undefined}
           onChange={(e) =>
             dispatch(
               changeTicketType(
-                ticketTypesState.ticketTypes.find(
-                  (t) => t.name === e.target.value,
+                showingTicketTypes.find(
+                  (type) => type.id === Number(e.target.value),
                 ),
               ),
             )
           }
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
         >
-          <option className='text-zinc-300' value='' disabled>
+          <option className='text-zinc-300' value={-1} disabled>
             select ticket type
           </option>
-          {filteredTicketTypes.length > 0
-            ? filteredTicketTypes.map((t) => (
-              <option className='text-white' key={t.id} value={t.name}>
-                {t.name}: {t.price}
-              </option>
-            ))
-            : getDefaultType.map((t) => (
-              <option className='text-white' key={t.id} value={t.name}>
-                {t.name}: {t.price}
-              </option>
-            ))}
+          {showingTicketTypes.map((t) => (
+            <option className='text-white' key={t.id} value={t.id}>
+              {t.name}: {t.price}
+            </option>
+          ))}
         </select>
       </div>
       <div className='flex flex-col gap-2 mt-3'>
@@ -505,9 +429,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       </div>
       <div
         className={
-          selectedTicketType &&
-          selectedTicketType &&
-          selectedTicketType.name === 'Pay What You Can'
+          selectedTicketType && selectedTicketType.name === 'Pay What You Can'
             ? 'flex flex-col gap-2 mt-3 mb-7 justify-center'
             : 'hidden'
         }
@@ -535,7 +457,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           qty > selectedTicket.availableseats ||
           (selectedTicketType.name === 'Pay What You Can' && (payWhatPrice == null || payWhatPrice < 0))
         }
-        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 bg-blue-500 text-white hover:bg-blue-600 rounded-xl'
+        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 bg-blue-500 text-white enabled:hover:bg-blue-600 rounded-xl'
         onClick={handleSubmit}
       >
         Get Tickets

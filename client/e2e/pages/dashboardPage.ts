@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
 
 export class DashboardPage {
@@ -86,6 +87,7 @@ export class DashboardPage {
     await expect(this.page).toHaveURL('/ticketing/doorlist');
     await this.backToDashboard();
   }
+
   async Events() {
     await this.goto();
     await this.EventsButton.click();
@@ -95,6 +97,7 @@ export class DashboardPage {
     await expect(this.page).toHaveURL('/ticketing/showings');
     await this.backToDashboard();
   }
+
   async PurchaseTickets() {
     await this.goto();
     await this.PurchaseTicketsButton.click();
@@ -104,6 +107,7 @@ export class DashboardPage {
     await expect(this.page).toHaveURL('/ticketing/purchaseticket');
     await this.backToDashboard();
   }
+
   async Seasons() {
     await this.goto();
     await this.SeasonsButton.click();
@@ -122,6 +126,7 @@ export class DashboardPage {
     await expect(this.page).toHaveURL('/ticketing/addnewsletter');
     await this.backToDashboard();
   }
+
   async ManageSeasonalTickets() {
     await this.goto();
     await this.ManageSeasonalTicketsButton.click();
@@ -131,6 +136,7 @@ export class DashboardPage {
     await expect(this.page).toHaveURL('/ticketing/seasonaltickets');
     await this.page.goto('/ticketing', {timeout: 90000});
   }
+
   async ManageTicketTypes() {
     await this.goto();
     await this.ManageTicketTypesButton.click();
@@ -149,6 +155,7 @@ export class DashboardPage {
     await expect(this.page).toHaveURL('/ticketing/ticketexchanges');
     await this.backToDashboard();
   }
+
   async RefundOrders() {
     await this.goto();
     await this.RefundOrdersButton.click();
