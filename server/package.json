@@ -6,10 +6,9 @@
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "start": "nodemon --exec npx ts-node ./src/server.ts",
+    "start": "npx prisma generate --schema=/prisma/schema.prisma && nodemon --exec npx ts-node ./src/server.ts",
     "test": "echo -e 'Tests are disabled temporarily'",
     "test:jest": "npx jest --config ./jest.config.js"
-
   },
   "author": "",
   "license": "MIT",

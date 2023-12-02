@@ -23,7 +23,10 @@ services:
       ENV: local
     volumes:
       - ./server:/usr/app
+      - prisma-schema:/prisma
       - /usr/app/node_modules
+    depends_on:
+      - prisma
 
   client:
     build:
@@ -69,5 +72,16 @@ services:
       MINIMAL_SEED: ${MINIMAL_SEED}
       CI: ${CI}
       ENV: local
+    volumes:
+      - ./prisma:/usr/app
+      - /usr/app/node_modules
     depends_on:
       - database
+
+volumes:
+  prisma-schema:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/prisma
+      o: bind
