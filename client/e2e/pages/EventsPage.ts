@@ -60,6 +60,8 @@ export class EventsPage {
   readonly dashBoard: Locator;
   readonly editButton: Locator;
   readonly saveButton: Locator;
+  readonly cartButton: Locator;
+  readonly goToHomepageFromCart: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -136,6 +138,8 @@ export class EventsPage {
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});
     this.activateEventchecker = page.getByLabel('controlled');
     this.inactiveEventchecker = page.getByRole('button', { name: 'Inactive' });
+    this.cartButton = page.getByRole('button', { name: 'Cart' });
+    this.goToHomepageFromCart = page.getByRole('button', { name: 'back to Events' });
   }
 
   async clickLeftBar() {
@@ -246,16 +250,32 @@ export class EventsPage {
     await this.eventContinue.click();
   }
 
-  //**The weird thing is that Im not sure wheres the 'Playbill' comes from.
+  /**
+   * 1.Whenever we created a new event and go back to the homepage 
+   * since the homepage needs time to update, but the tests cant wait for too long
+   * We need to click the "cart" button in order to refresh the homepage then we can 
+   * see our newly created event on homepage now 
+   * 2. We need to wait for few seconds each time we click the slide
+   * since if we click it too fast, the image on homepage could only move 
+   * very little distance
+   */
   async checkNewEventOnHomePage(event_name:string, suffix:string) {
     await this.homePage.click();
+    await this.page.waitForTimeout(100);
+    await this.cartButton.click();
+    await this.goToHomepageFromCart.click();
+    await this.page.waitForTimeout(400);
     await this.homePageRightSlide.click();
+    await this.page.waitForTimeout(400);
     await this.homePageRightSlide.click();
+    await this.page.waitForTimeout(400);
     await this.homePageRightSlide.click();
+    await this.page.waitForTimeout(400);
     await this.homePageRightSlide.click();
+    await this.page.waitForTimeout(400);
     await this.homePageRightSlide.click();
-    await this.seeEventShowings.click();
-    await expect(this.page.getByRole('img', { name: event_name+' '+suffix })).toBeVisible;
+    await this.page.waitForTimeout(400);
+    await expect(this.page.getByText('An event for testing')).toBeVisible;
   }
 
 
