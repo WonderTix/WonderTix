@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { DoorListPage } from '../pages/doorListPage';
 import { EventsPage } from '../pages/EventsPage';
-import { createUniqueCustomer, createUniqueEvent } from '../test-data/factoryFunctions';
-import { EVENT_INFO_2 } from '../test-data/dataConstants/EventInfoConstants';
+import { createUniqueCustomer, createUniqueEvent } from '../testData/factoryFunctions';
+import { EVENT_INFO_2 } from '../testData/dataConstants/EventInfoConstants';
 import { MainPage } from '../pages/mainPage';
-import { SHOWING_INFO_1 } from '../test-data/dataConstants/ShowingInfoConstants';
-import { JANE_DOE } from '../test-data/dataConstants/CustomerInfoConstants';
-import { VALID_VISA_CREDIT } from '../test-data/dataConstants/CreditCardConstants';
+import { SHOWING_INFO_1 } from '../testData/dataConstants/ShowingInfoConstants';
+import { JANE_DOE } from '../testData/dataConstants/CustomerInfoConstants';
+import { VALID_VISA_CREDIT } from '../testData/dataConstants/CreditCardConstants';
 
 
 test('Check Home', async ({page}) => {

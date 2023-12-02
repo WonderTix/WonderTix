@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import { EventInfo, ShowingInfo } from '../test-data/interfaces';
+import { EventInfo, ShowingInfo } from '../testData/interfaces';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
