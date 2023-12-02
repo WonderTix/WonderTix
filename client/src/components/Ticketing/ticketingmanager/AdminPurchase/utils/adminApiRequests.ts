@@ -23,19 +23,18 @@ export const getAllTicketTypes = async (token: string) => {
   }
 };
 
-export const getTicketRestriction = async (eventInstanceId: number) => {
+export const getAllTicketRestrictions = async () => {
   try {
-    const ticketRestrictionRes = await fetch(
-      process.env.REACT_APP_API_2_URL +
-        `/ticket-restriction/${eventInstanceId}`,
+    const allTicketRestrictionRes = await fetch(
+      process.env.REACT_APP_API_2_URL + '/ticket-restriction',
     );
 
-    if (!ticketRestrictionRes.ok) {
-      throw new Error('Failed to fetch ticket restrictions for event instance');
+    if (!allTicketRestrictionRes.ok) {
+      throw new Error('Failed to fetch ticket all restrictions');
     }
 
-    const ticketRestrictions = await ticketRestrictionRes.json();
-    return ticketRestrictions;
+    const allTicketRestrictions = await allTicketRestrictionRes.json();
+    return allTicketRestrictions;
   } catch (error) {
     console.log(error);
     return false;

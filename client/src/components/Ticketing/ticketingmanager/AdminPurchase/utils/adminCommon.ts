@@ -18,25 +18,23 @@ export type EventRow = {
 };
 
 export interface ticketTypeRestriction {
-  concessionprice: string;
-  eventinstanceid_fk: number;
+  id: number;
+  eventinstanceid: number;
+  tickettypeid: number;
+  concessionprice: number;
   price: string;
-  seasontickettypepricedefaultid_fk: number | null;
   ticketlimit: number;
-  ticketrestrictionsid: number;
   ticketssold: number;
   tickettypedescription?: string;
-  tickettypeid_fk: number;
 }
 
 export const initialTicketTypeRestriction: ticketTypeRestriction = {
-  concessionprice: '',
-  eventinstanceid_fk: 0,
+  id: 0,
+  eventinstanceid: 0,
+  tickettypeid: 0,
+  concessionprice: 0,
   price: '',
-  seasontickettypepricedefaultid_fk: 0,
   ticketlimit: 0,
-  ticketrestrictionsid: 0,
   ticketssold: 0,
   tickettypedescription: '',
-  tickettypeid_fk: 0,
 };

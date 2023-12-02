@@ -16,7 +16,7 @@ import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
 import {format, parse} from 'date-fns';
 import {
   getAllTicketTypes,
-  getTicketRestriction,
+  getAllTicketRestrictions,
 } from './utils/adminApiRequests';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
@@ -34,6 +34,7 @@ const AdminPurchase = () => {
   const [priceByRowId, setPriceByRowId] = useState({});
   const [isEventsLoading, setIsEventsLoading] = useState(true);
   const [allTicketTypes, setAllTicketTypes] = useState([]);
+  const [allTicketRestrictions, setAllTicketRestrictions] = useState([]);
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
@@ -114,18 +115,21 @@ const AdminPurchase = () => {
     row: EventRow,
   ) => {
     const eventInstanceID = parseInt(event.target.value);
-    const selectedEvent = availableTimesByRowId[row.id]?.find(
+    const selectedEventInstance = availableTimesByRowId[row.id]?.find(
       (e) => e.eventinstanceid === eventInstanceID,
     );
 
     // get ticket restrictions for event instance
-    const eventInstanceTicketRestrictions =
-      await getTicketRestriction(eventInstanceID);
+    const eventInstanceTicketRestrictions = allTicketRestrictions.filter(
+      (restriction) => {
+        return restriction.eventinstanceid === eventInstanceID;
+      },
+    );
 
     const ticketRestictionWithDescription = eventInstanceTicketRestrictions.map(
       (restriction) => {
         const matchingTicketType = allTicketTypes.find(
-          (type) => type.tickettypeid === restriction.tickettypeid_fk,
+          (type) => type.tickettypeid === restriction.tickettypeid,
         );
 
         const {description} = matchingTicketType;
@@ -138,8 +142,8 @@ const AdminPurchase = () => {
       if (r.id === row.id) {
         return {
           ...row,
-          eventtime: selectedEvent?.eventtime,
-          availableSeats: selectedEvent?.availableseats,
+          eventtime: selectedEventInstance?.eventtime,
+          availableSeats: selectedEventInstance?.availableseats,
           eventinstanceid: eventInstanceID,
           ticketRestrictionInfo: ticketRestictionWithDescription,
         };
@@ -152,7 +156,7 @@ const AdminPurchase = () => {
   const handleTicketTypeChange = async (event, row) => {
     const ticketTypeId = parseInt(event.target.value);
     const currentTicketRestriction = row.ticketRestrictionInfo.find(
-      (restriction) => ticketTypeId === restriction.tickettypeid_fk,
+      (restriction) => ticketTypeId === restriction.tickettypeid,
     );
     const price = parseFloat(currentTicketRestriction.price);
 
@@ -304,6 +308,7 @@ const AdminPurchase = () => {
     navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
   };
 
+  // TABLE COLUMN DEFINITION
   const columns = [
     {
       field: 'eventname',
@@ -385,8 +390,8 @@ const AdminPurchase = () => {
             <option>Select Type</option>
             {params.row.ticketRestrictionInfo.map((restriction) => (
               <option
-                key={restriction.tickettypeid_fk}
-                value={restriction.tickettypeid_fk}
+                key={restriction.tickettypeid}
+                value={restriction.tickettypeid}
               >
                 {restriction.tickettypedescription}
               </option>
@@ -520,9 +525,16 @@ const AdminPurchase = () => {
         setAllTicketTypes(allTicketTypes);
       }
     };
+    const fetchAllTicketRestrictions = async () => {
+      const allTicketRestrictions = await getAllTicketRestrictions();
+      if (allTicketRestrictions) {
+        setAllTicketRestrictions(allTicketRestrictions);
+      }
+    };
 
     if (token) {
       void fetchAllTicketTypes();
+      void fetchAllTicketRestrictions();
     }
   }, [token]);
 
