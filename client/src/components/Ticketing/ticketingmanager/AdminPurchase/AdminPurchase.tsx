@@ -51,7 +51,7 @@ const AdminPurchase = () => {
       },
     ]);
 
-    setPriceByRowId((prevState) => ({...prevState, [maxId]: '0.00'}));
+    setPriceByRowId((prevState) => ({...prevState, [maxId]: ''}));
   };
 
   const handleCloseDialog = () => {
@@ -98,15 +98,22 @@ const AdminPurchase = () => {
 
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
+        delete r.ticketTypes;
+        delete r.seatsForType;
         return {
           ...row,
           ...matchingEvent,
           eventtime: null,
           eventinstanceid: null,
+          ticketRestrictionInfo: [initialTicketTypeRestriction],
         };
       }
       return r;
     });
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: 0,
+    }));
     setEventData(updatedRows);
   };
 
@@ -143,7 +150,6 @@ const AdminPurchase = () => {
         return {
           ...row,
           eventtime: selectedEventInstance?.eventtime,
-          availableSeats: selectedEventInstance?.availableseats,
           eventinstanceid: eventInstanceID,
           ticketRestrictionInfo: ticketRestictionWithDescription,
         };
@@ -293,7 +299,7 @@ const AdminPurchase = () => {
         );
         const available =
           correspondingRow.typeID === 1
-            ? correspondingRow.availableSeats
+            ? correspondingRow.availableseats
             : correspondingRow.seatsForType;
 
         if (item.qty > available) {
@@ -407,7 +413,7 @@ const AdminPurchase = () => {
       renderCell: (params) => (
         <span>
           {params.row.typeID === 1
-            ? params.row.availableSeats
+            ? params.row.availableseats
             : params.row.seatsForType}
         </span>
       ),
@@ -537,6 +543,11 @@ const AdminPurchase = () => {
       void fetchAllTicketRestrictions();
     }
   }, [token]);
+
+  useEffect(() => {
+    console.log('event data is', eventData);
+    console.log('price by row id', priceByRowId);
+  }, [eventData]);
 
   return (
     <div className='w-full h-screen absolute'>
