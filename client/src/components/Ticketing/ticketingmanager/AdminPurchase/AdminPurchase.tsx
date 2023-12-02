@@ -100,6 +100,7 @@ const AdminPurchase = () => {
       if (r.id === row.id) {
         delete r.ticketTypes;
         delete r.seatsForType;
+        delete r.typeID;
         return {
           ...row,
           ...matchingEvent,
@@ -147,6 +148,9 @@ const AdminPurchase = () => {
 
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
+        delete r.ticketTypes;
+        delete r.seatsForType;
+        delete r.typeID;
         return {
           ...row,
           eventtime: selectedEventInstance?.eventtime,
@@ -156,6 +160,10 @@ const AdminPurchase = () => {
       }
       return r;
     });
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: 0,
+    }));
     setEventData(updatedRows);
   };
 
@@ -412,7 +420,7 @@ const AdminPurchase = () => {
       width: 80,
       renderCell: (params) => (
         <span>
-          {params.row.typeID === 1
+          {params.row?.typeID === 1
             ? params.row.availableseats
             : params.row.seatsForType}
         </span>
@@ -544,6 +552,7 @@ const AdminPurchase = () => {
     }
   }, [token]);
 
+  // DELETE LATER
   useEffect(() => {
     console.log('event data is', eventData);
     console.log('price by row id', priceByRowId);
