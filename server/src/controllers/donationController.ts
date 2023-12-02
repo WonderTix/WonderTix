@@ -14,34 +14,22 @@ export const donationController = Router();
  * Donation checkout through Stripe
  */
 donationController.post('/checkout', async (req: Request, res: Response) => {
-    const {cartItems, formData, donation} = req.body;
-    const {firstName, lastName, streetAddress, postalCode, country, phone, email, visitSource, seatingAcc, comments, optIn} = formData;
-    const {donationAmount} = donation;
-
     const customer = await prisma.contacts.findFirst({
         where: {
-            email,
+            email: req.body.formData.email,
         },
     });
-
     let customerID: number;
-if (!customer) {
+    if (!customer) {
         const newCustomer = await prisma.contacts.create({
             data: {
-                firstname: firstName,
-                lastname: lastName,
-                email: email,
-                address: streetAddress,
-                phone: phone,
-                seatingaccom: seatingAcc,
-                newsletter: optIn,
-                donations: {
-                    create: {
-                        amount: donationAmount,
-                        comments: comments,
-                        donationdate: new Date() as unknown as number,
-                    },
-                }
+                firstname: req.body.formData.firstName,
+                lastname: req.body.formData.lastName,
+                email: req.body.formData.email,
+                address: req.body.formData.streetAddress + ' ' + req.body.formData.postalCode,
+                phone: req.body.formData.phone,
+                seatingaccom: req.body.formData.seatingAcc,
+                newsletter: req.body.formData.newsletter,
             },
             select: {
                 contactid: true,
@@ -54,20 +42,13 @@ if (!customer) {
                 contactid: customer.contactid,
             },
             data: {
-                firstname: firstName,
-                lastname: lastName,
-                email: email,
-                address: streetAddress,
-                phone: phone,
-                seatingaccom: seatingAcc,
-                newsletter: optIn,
-                donations: {
-                    create: {
-                        amount: donationAmount,
-                        comments: comments,
-                        donationdate: new Date() as unknown as number,
-                    },
-                }
+                firstname: req.body.formData.firstName,
+                lastname: req.body.formData.lastName,
+                email: req.body.formData.email,
+                address: req.body.formData.streetAddress + ' ' + req.body.formData.postalCode,
+                phone: req.body.formData.phone,
+                seatingaccom: req.body.formData.seatingAcc,
+                newsletter: req.body.formData.newsletter,
             },
             select: {
                 contactid: true,
@@ -75,21 +56,36 @@ if (!customer) {
         });
         customerID = updatedCustomer.contactid;
     }
-
+    const lineItems = [
+        {
+            price_data: {
+                unit_amount: req.body.donation * 100,
+                currency: 'usd',
+                product_data: {
+                    name: 'Donation',
+                },
+            },
+            quantity: 1,
+        },
+    ]
     const expire = Math.round((new Date().getTime() + 1799990) / 1000);
-    const checkoutObject: JsonObject = {
+    const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         expires_at: expire,
+        line_items: lineItems,
         mode: 'payment',
         success_url: `${process.env.FRONTEND_URL}/success`,
         cancel_url: `${process.env.FRONTEND_URL}`,
         metadata: {
             sessionType: '__donation',
-            customerID,
-            donation,
+            contactID: Number(customerID),
+            donation: req.body.donation,
+            anonymous: req.body.formData.anonymous,
+            comments: req.body.formData.comments,
+            firstName: req.body.formData.firstName,
+            lastName: req.body.formData.lastName,
         },
-    };
-    const session = await stripe.checkout.sessions.create(checkoutObject);
+    });
     res.status(200).json({id: session.id});
 });
 

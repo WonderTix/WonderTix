@@ -34,7 +34,7 @@ async function seedPPHTicketOrders(prisma: PrismaClient) {
       // Skip the ticket order if it already exists
       if (existingTicketOrder) {
         duplicateTicketOrderCount++;
-        if (process.env.ENV === 'local') {
+        if (process.env.ENV === 'prd') {
           console.log(`Skipping existing ticket order with ID ${item.ticket_order_id}. It already exists in the table`);
         }
         continue;
@@ -48,7 +48,7 @@ async function seedPPHTicketOrders(prisma: PrismaClient) {
           missingAccountCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping ticket order with ID ${item.ticket_order_id} due to non-existing account with ID ${item.account_id}`);
           }
         }
@@ -62,7 +62,7 @@ async function seedPPHTicketOrders(prisma: PrismaClient) {
           missingContactCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping ticket order with ID ${item.ticket_order_id} due to non-existing contact with ID ${item.contact_id}`);
           }
         }

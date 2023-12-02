@@ -14,9 +14,10 @@ export interface ScheduledReportsProps {
   onCancel: () => void;
 }
 
-const ScheduleReportsForm: React.FC<ScheduledReportsProps> = (
-  {isVisible, onCancel},
-): React.ReactElement => {
+const ScheduleReportsForm: React.FC<ScheduledReportsProps> = ({
+  isVisible,
+  onCancel,
+}): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false);
   const [rangeRadio, setRangeRadio] = useState('Daily');
   const [frequencyRadio, setFrequencyRadio] = useState('Weekly');
@@ -39,9 +40,10 @@ const ScheduleReportsForm: React.FC<ScheduledReportsProps> = (
 
   return (
     isVisible && (
-      <div className='bg-black bg-opacity-50 flex justify-center items-center
-      fixed top-0 right-0 bottom-0 left-0 z-20 antialiased'>
-        <div className='bg-white rounded-md p-5 w-[576px] md:ml:48 lg:ml-48'>
+      <div className='bg-black bg-opacity-50 antialiased
+        flex justify-center items-center fixed top-0 right-0 bottom-0 left-0 z-20'
+      >
+        <div className='bg-white rounded-md p-5 w-[592px] md:ml-[19%] lg:ml-0'>
           <h1 className='text-6xl bg-clip-text text-transparent mb-8
             bg-gradient-to-r from-purple-400 to-yellow-400 mt-4
             tracking-tight text-center font-normal mx-auto'

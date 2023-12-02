@@ -63,8 +63,14 @@ export const EventShowingsContainer = () => {
         return (a, b) => a.availableseats - b.availableseats;
       case 4:
         return (a, b) =>
-          new Date(toDateStringFormat(b.eventdate)).getTime() -
-          new Date(toDateStringFormat(a.eventdate)).getTime();
+          new Date(
+            `${toDateStringFormat(b.eventdate)}T${b.eventtime.split('T')[1]}`,
+          ).getTime() -
+          new Date(
+            toDateStringFormat(
+              `${toDateStringFormat(a.eventdate)}T${a.eventtime.split('T')[1]}`,
+            ),
+          ).getTime();
       case 5:
         return (a, b) => b.eventinstanceid - a.eventinstanceid;
       case 6:
@@ -73,8 +79,14 @@ export const EventShowingsContainer = () => {
         return (a, b) => b.availableseats - a.availableseats;
       default:
         return (a, b) =>
-          new Date(toDateStringFormat(a.eventdate)).getTime() -
-          new Date(toDateStringFormat(b.eventdate)).getTime();
+          new Date(
+            `${toDateStringFormat(a.eventdate)}T${a.eventtime.split('T')[1]}`,
+          ).getTime() -
+          new Date(
+            toDateStringFormat(
+              `${toDateStringFormat(b.eventdate)}T${b.eventtime.split('T')[1]}`,
+            ),
+          ).getTime();
     }
   };
 

@@ -32,16 +32,19 @@ orderController.post(
               object.payment_intent,
               object.id,
           );
-        // handle donation amount in metadata (will be a donation team task?)
         } else if (metaData.sessionType === '__donation') {
-          // Save donation information to the database
+          // Create a date model for the date field in the donations table
           await prisma.donations.create({
             data: {
-              contactid_fk: metaData.customerID,
+              contactid_fk: Number(metaData.contactID),
+              isanonymous: metaData.anonymous,
               amount: metaData.donation,
-              donorname: metaData.donorname,
-              donationdate: new Date() as unknown as number,
+              donorname: metaData.firstName + ' ' + metaData.lastName,
+              frequency: 'one_time',
+              comments: metaData.comments,
               payment_intent: object.payment_intent,
+              refund_intent: object.refund_intent,
+              donationdate: Number(new Date().toISOString().slice(0, 10).replace(/-/g, '')),
             },
           });
         }

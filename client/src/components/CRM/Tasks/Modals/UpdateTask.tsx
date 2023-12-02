@@ -117,7 +117,8 @@ const UpdateTask: React.FC<UpdateTaskProps> = ({
       <form
         onReset={handleReset}
         onSubmit={handleSubmit}
-        className='bg-white text-[15px] tracking-tight group'>
+        className='bg-white text-[15px] tracking-tight group'
+      >
         <div className='mb-4'>
           <label htmlFor='AssignTo' className='block font-semibold'>
             Assignee Name

@@ -8,18 +8,18 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
+import {getInstanceTicketType} from './ShowingUtils';
 
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
-  onSubmit: (event, action) => void;
+  onSubmit: (event, action) => Promise<void>;
   onDelete?: (event?) => void;
   onLeaveEdit?: () => void;
 }
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
   const {initialValues, onSubmit, onDelete, onLeaveEdit} = props;
-  const {eventID, showPopUp} = useEvent();
-
+  const {eventID, showPopUp, ticketTypes} = useEvent();
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,
     eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
@@ -31,7 +31,9 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     ispreview: false,
     defaulttickettype: 1,
     purchaseuri: 'http://null.com',
-    instanceTicketTypes: initialValues ? initialValues.ticketrestrictions : [],
+    instanceTicketTypes: initialValues
+      ? initialValues.ticketrestrictions
+      : [getInstanceTicketType(1, ticketTypes)],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
   };
@@ -48,7 +50,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
       validationSchema={eventInstanceSchema}
       onSubmit={onSubmit}
     >
-      {({handleSubmit, values}) => (
+      {({handleSubmit, values, setFieldValue}) => (
         <form onSubmit={handleSubmit} className={'bg-gray-300 rounded-xl p-2'}>
           <div
             className={
@@ -89,6 +91,17 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 type='number'
                 id={values.eventinstanceid}
                 className={inputControlClassName}
+                onChange={async (event) => {
+                  const defaultType = values.instanceTicketTypes.findIndex(
+                    (type) =>
+                      type.tickettypeid_fk === +values.defaulttickettype,
+                  );
+                  await setFieldValue('totalseats', event.target.value);
+                  await setFieldValue(
+                    `instanceTicketTypes[${defaultType}].ticketlimit`,
+                    event.target.value,
+                  );
+                }}
               />
               <div className={'grid grid-cols-2 text-zinc-800'}>
                 <p className={'text-sm font-bold'}>Available Seats</p>

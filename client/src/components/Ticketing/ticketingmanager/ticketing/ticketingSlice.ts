@@ -69,6 +69,9 @@ export interface Ticket {
  * @param {number} id
  * @param {number} eventinstanceid
  * @param {number} tickettypeid
+ * @param {string} description
+ * @param {string} concessionprice
+ * @param {string} price
  * @param {number} ticketlimit
  * @param {number?} ticketssold
  */
@@ -76,6 +79,9 @@ export interface TicketRestriction {
   id: number;
   eventinstanceid: number;
   tickettypeid: number;
+  description: string;
+  concessionprice: string;
+  price: string;
   ticketlimit: number;
   ticketssold?: number;
 }
@@ -184,8 +190,15 @@ export interface ticketingState {
 const fetchData = async (url: string) => {
   try {
     const res = await fetch(url);
+      if (!res.ok) {
+          throw res;
+      }
     return await res.json();
   } catch (err) {
+      if (err instanceof Response) {
+          console.error(await err.json());
+          return;
+      }
     console.error(err.message);
   }
 };
@@ -199,13 +212,10 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
   'ticketing/fetch',
   async () => {
-    const eventData = await fetchData(process.env.REACT_APP_API_1_URL + '/events');
-    const events: Event[] = eventData.data;
+    const events: Event[] = await fetchData(process.env.REACT_APP_API_2_URL + '/events/slice');
+    const ticketRestrictions: TicketRestriction[] = await fetchData(process.env.REACT_APP_API_2_URL + '/ticket-restriction');
 
-    const restrictionData = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets/restrictions');
-    const ticketRestrictions: TicketRestriction[] = restrictionData.data;
-
-    const ticketState: TicketsState = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets');
+    const ticketState: TicketsState = await fetchData(process.env.REACT_APP_API_2_URL + '/event-instance/tickets');
     const tickets = Object.entries(ticketState.data.byId).reduce(
       (res, [key, val]) => ({
         ...res,
@@ -577,7 +587,7 @@ export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {data: {byId: {}, allIds: []}},
   ticketrestrictions: [],
-  tickettype: {id: 0, name: '', price: '', concessions: ''},
+  tickettype: {id: -1, name: '', price: '', concessions: ''},
   events: [],
   status: 'idle',
   discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},

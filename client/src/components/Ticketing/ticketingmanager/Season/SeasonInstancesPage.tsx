@@ -91,7 +91,7 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
         <section className='flex flex-col tab:flex-row tab:justify-between tab:items-center gap-10 tab:gap-1 w-full mb-6 tab:mb-14'>
           <h1
             className='col-span-2 min-[678px]:col-span-1 font-bold text-5xl bg-clip-text
-            text-transparent bg-gradient-to-r from-sky-500 to-indigo-500'
+            text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500'
           >
             Select Season
           </h1>

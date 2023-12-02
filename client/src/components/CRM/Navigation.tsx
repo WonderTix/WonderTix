@@ -12,9 +12,7 @@ import AdminNavDropdown from '../Ticketing/ticketingmanager/AdminNavDropdown';
  *
  * @returns {React.ReactElement}
  */
-const Navigation = () => {
-  const [showTaskMenu, setShowTaskMenu] = useState(false);
-  const handleClick = () => setShowTaskMenu(!showTaskMenu);
+const Navigation = (): React.ReactElement => {
   const [profile, setProfile] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -29,16 +27,16 @@ const Navigation = () => {
           <div className="h-12 w-full flex flex-col items-center">
             <button
               onClick={() => navigate('/')}
-              className=" bg-transparent border-transparent justify-center items-center"
+              className="bg-transparent border-transparent justify-center items-center"
             >
               <img src={logo} className="mt-[5rem] w-[6rem]" alt="/" />
             </button>
           </div>
           <ul className="space-y-7 mt-30 ml-[rem] flex flex-col items-center mb-7">
-            <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
               <a
                 onClick={() => navigate('/admin')}
-                className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out "
+                className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out"
               >
                 <div className="flex flex-col gap-2 items-center">
                   <div>
@@ -62,10 +60,10 @@ const Navigation = () => {
                 </div>
               </a>
             </li>
-            <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
               <a
                 onClick={() => navigate('/admin/accounts')}
-                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out "
+                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
               >
                 <div className="flex flex-col gap-2 items-center">
                   <svg
@@ -87,10 +85,10 @@ const Navigation = () => {
                 </div>
               </a>
             </li>
-            <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
               <a
                 onClick={() => navigate('/admin/contacts')}
-                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out "
+                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
               >
                 <div className="flex flex-col gap-2 items-center">
                   <div>
@@ -114,10 +112,10 @@ const Navigation = () => {
                 </div>
               </a>
             </li>
-            <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
               <a
                 onClick={() => navigate('/admin/reporting')}
-                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out "
+                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
               >
                 <div className="flex flex-col gap-2 items-center">
                   <div>
@@ -141,10 +139,10 @@ const Navigation = () => {
                 </div>
               </a>
             </li>
-            <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <button
-                onClick={handleClick}
-                className="bg-transparent border-none rounded-none transition duration-300 ease-in-out "
+            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+              <a
+                onClick={() => navigate('/admin/tasks')}
+                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
               >
                 <div className="flex flex-col gap-2 items-center">
                   <div>
@@ -166,45 +164,15 @@ const Navigation = () => {
 
                   <span>Task</span>
                 </div>
-              </button>
+              </a>
             </li>
           </ul>
-          <div
-            className={
-              !showTaskMenu
-                ? 'hidden'
-                : ' cursor-pointer text-zinc-200 font-semibold  text-center text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
-            }
-          >
-            <div className=" flex flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl mx-2 mb-2">
-              <div className="py-1 font-bold">
-                <a
-                  onClick={() => navigate('/admin/tasks/create')}
-                  className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600"
-                >
-                  Create
-                </a>
-                <a
-                  onClick={() => navigate('/admin/tasks/edit')}
-                  className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent "
-                >
-                  Edit
-                </a>
-                <a
-                  onClick={() => navigate('/admin/tasks/accountInformation')}
-                  className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 "
-                >
-                  Account Information
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
         <div
           className={
             showMobileMenu
               ? 'w-full h-full absolute z-40  transform  translate-x-0 '
-              : '   w-full h-full absolute z-40  transform -translate-x-full'
+              : 'w-full h-full absolute z-40  transform -translate-x-full'
           }
           id="mobile-nav"
         >
@@ -212,16 +180,15 @@ const Navigation = () => {
             className="bg-gray-800 opacity-50 absolute h-full w-full md:hidden"
             onClick={() => {
               setShowMobileMenu(!showMobileMenu);
-              setShowTaskMenu(false);
             }}
           />
           <div className="absolute z-40 sm:relative w-[14rem] md:w-96 shadow bg-zinc-900 md:hidden transition duration-150 ease-in-out h-full">
             <div className="flex flex-col justify-between h-full w-full overflow-auto">
               <div>
                 <div className="flex items-center justify-between px-6">
-                  <div className="h-12  w-full flex flex-col ml-6 items-center ">
+                  <div className="h-12  w-full flex flex-col ml-6 items-center">
                     <button className="flex flex-col  bg-transparent border-transparent justify-center items-center">
-                      <img src={logo} className="mt-[5rem] w-[6rem] " alt="/" />
+                      <img src={logo} className="mt-[5rem] w-[6rem]" alt="/" />
                     </button>
                   </div>
                   <button
@@ -229,7 +196,6 @@ const Navigation = () => {
                     className="flex items-center justify-center h-10 w-10"
                     onClick={() => {
                       setShowMobileMenu(!showMobileMenu);
-                      setShowTaskMenu(false);
                     }}
                   >
                     <svg
@@ -250,11 +216,11 @@ const Navigation = () => {
                     </svg>
                   </button>
                 </div>
-                <ul className=" space-y-7 flex flex-col items-center mb-7">
-                  <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                <ul className="space-y-7 flex flex-col items-center mb-7">
+                  <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                     <a
                       onClick={() => navigate('/admin')}
-                      className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out "
+                      className="bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out"
                     >
                       <div className="flex flex-col gap-2 items-center">
                         <div>
@@ -278,10 +244,10 @@ const Navigation = () => {
                       </div>
                     </a>
                   </li>
-                  <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                  <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                     <a
                       onClick={() => navigate('/admin/accounts')}
-                      className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out "
+                      className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
                     >
                       <div className="flex flex-col gap-2 items-center">
                         <svg
@@ -304,10 +270,10 @@ const Navigation = () => {
                     </a>
                   </li>
 
-                  <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                  <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                     <a
                       onClick={() => navigate('/admin/contacts')}
-                      className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out "
+                      className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
                     >
                       <div className="flex flex-col gap-2 items-center">
                         <div>
@@ -332,10 +298,10 @@ const Navigation = () => {
                     </a>
                   </li>
 
-                  <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                  <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                     <a
                       onClick={() => navigate('/admin/reporting')}
-                      className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out "
+                      className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
                     >
                       <div className="flex flex-col gap-2 items-center">
                         <div>
@@ -359,10 +325,10 @@ const Navigation = () => {
                       </div>
                     </a>
                   </li>
-                  <li className=" cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                    <button
-                      onClick={handleClick}
-                      className="bg-transparent border-none rounded-none  transition duration-300 ease-in-out "
+                  <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
+                    <a
+                      onClick={() => navigate('/admin/tasks')}
+                      className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
                     >
                       <div className="flex flex-col gap-2 items-center">
                         <div>
@@ -384,47 +350,15 @@ const Navigation = () => {
 
                         <span>Task</span>
                       </div>
-                    </button>
+                    </a>
                   </li>
                 </ul>
-                <div
-                  className={
-                    !showTaskMenu
-                      ? ' hidden '
-                      : ' cursor-pointer text-zinc-200 font-semibold text-center text-md leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'
-                  }
-                >
-                  <div className="flex flex-col items-center text-zinc-200 bg-zinc-800 rounded-xl mx-3 mb-2">
-                    <div className="py-1 font-bold">
-                      <a
-                        onClick={() => navigate('/admin/tasks/create')}
-                        className="text-zinc-200 block px-4 py-2 text-sm border-b border-zinc-700 hover:text-indigo-600"
-                      >
-                        Create
-                      </a>
-                      <a
-                        onClick={() => navigate('/admin/tasks/edit')}
-                        className="text-zinc-200 block px-4 py-2 text-sm hover:text-indigo-600 bg-transparent border-transparent "
-                      >
-                        Edit
-                      </a>
-                      <a
-                        onClick={() =>
-                          navigate('/admin/tasks/accountInformation')
-                        }
-                        className="text-zinc-200 block px-4 py-2 text-sm border-t border-zinc-700 hover:text-indigo-600 "
-                      >
-                        Account Information
-                      </a>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               {/* Bottom corner nav elements */}
               <div className="w-full">
                 <div className="border-t bg-zinc-800/30 border-gray-500">
-                  <div className="w-full flex flex-row items-center justify-between  ">
+                  <div className="w-full flex flex-row items-center justify-between">
                     <div className="flex flex-col items-center ml-3">
                       <div className="flex flex-row mb-3 mt-2">
                         <img
@@ -432,7 +366,7 @@ const Navigation = () => {
                           src={picture}
                           className="w-8 h-8 rounded-md"
                         />
-                        <p className="text-sm text-zinc-200 leading-4 ml-2 font-semibold ">
+                        <p className="text-sm text-zinc-200 leading-4 ml-2 font-semibold">
                           {name}
                         </p>
                       </div>
@@ -466,7 +400,7 @@ const Navigation = () => {
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className=" h-6 w-6"
+                            className="h-6 w-6"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -491,40 +425,40 @@ const Navigation = () => {
         {/* Navigation starts */}
         <div className="w-full">
           <header className="h-16 flex items-center md:items-stretch justify-end md:justify-between bg-white shadow relative z-10">
-            <div className="hidden md:flex md:justify-between w-full">
+            <div className="hidden md:flex md:justify-between md:items-center w-full pr-2">
               <h2 className="flex items-center text-lg text-zinc-500 font-bold ml-12 mr-6">
                 Welcome to WonderTix CRM
               </h2>
-              <button
-                className="relative flex items-center text-left cursor-pointer mx-6"
-                onClick={() => setProfile(!profile)}
-              >
-                <div>
-                  {profile && <AdminNavDropdown />}
+              <div className='relative'>
+                <button
+                  className="flex items-center text-left cursor-pointer px-4"
+                  onClick={() => setProfile(!profile)}
+                >
                   <img
                     alt="Profile picture"
                     src={picture}
                     className="rounded-3xl w-12 h-12"
                   />
-                </div>
-                <p className="text-gray-800 text-sm mx-3">{name}</p>
-                <svg
-                  aria-haspopup="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon icon-tabler icon-tabler-chevron-down text-gray-600"
-                  width={20}
-                  height={20}
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" />
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </button>
+                  <p className="text-gray-800 text-sm mx-3">{name}</p>
+                  <svg
+                    aria-haspopup="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-chevron-down text-gray-600"
+                    width={20}
+                    height={20}
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+                {profile && <AdminNavDropdown marginClass='mt-3' />}
+              </div>
             </div>
             <button
               className="text-gray-600 mr-8 visible md:hidden relative"

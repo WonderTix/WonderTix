@@ -17,7 +17,7 @@ async function seedPPHOpportunity(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/PPH_Opportunity.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/PPH_opportunity.yaml', 'utf8');
     const data = yaml.load(yamlData);
 
     for (const item of data) {
@@ -33,7 +33,7 @@ async function seedPPHOpportunity(prisma: PrismaClient) {
           missingRecordTypeCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping Opportunity with ID ${item.opportunity_id} due to non-existing Record Type with ID ${item.record_type_id}`);
           }
         }
