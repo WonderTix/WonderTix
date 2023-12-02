@@ -8,15 +8,14 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import {DataGrid} from '@mui/x-data-grid';
-import {
-  Checkbox,
-  FormControlLabel,
-} from '@mui/material';
+import {Checkbox, FormControlLabel} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
 import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
 import {format, parse} from 'date-fns';
+import {getAllTicketTypes} from './utils/adminApiRequests';
+import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 
 export type EventRow = {
   id?: number;
@@ -47,10 +46,11 @@ const AdminPurchase = () => {
   const [priceByRowId, setPriceByRowId] = useState({});
   const [ticketTypes, setTicketTypes] = useState([]);
   const [isEventsLoading, setIsEventsLoading] = useState(true);
-  const [isTicketTypesLoading, setIsTicketTypesLoading] = useState(true);
+  const [allTicketTypes, setAllTicketTypes] = useState([]);
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
+  const {token} = useFetchToken();
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
@@ -63,27 +63,6 @@ const AdminPurchase = () => {
     setDialog(false);
   };
 
-  useEffect(() => {
-    if (location.state?.eventDataFromPurchase) {
-      setEventData(location.state.eventDataFromPurchase);
-      const initialAvailableTimes = {};
-      location.state.eventDataFromPurchase.forEach((row) => {
-        if (row.eventid) {
-          initialAvailableTimes[row.id] = eventListFull.filter(
-            (e) => e.eventid === row.eventid,
-          );
-        }
-      });
-      setAvailableTimesByRowId(initialAvailableTimes);
-
-      const initialPrices = {};
-      location.state.eventDataFromPurchase.forEach((row) => {
-        initialPrices[row.id] = (row.price || 0).toFixed(2);
-      });
-      setPriceByRowId(initialPrices);
-    }
-  }, [location.state?.eventDataFromPurchase, eventListFull]);
-
   const removeRow = (rowId) => {
     setEventData(eventData.filter((row) => row.id !== rowId));
   };
@@ -94,9 +73,9 @@ const AdminPurchase = () => {
       headerName: 'Event Name - ID',
       width: 200,
       renderCell: (params) => (
-        <div className="truncate w-full">
+        <div className='truncate w-full'>
           <select
-            className="w-full"
+            className='w-full'
             value={`${params.row.eventid}-${params.row.eventname}`}
             onChange={(e) => handleEventChange(e, params.row)}
           >
@@ -118,20 +97,34 @@ const AdminPurchase = () => {
       headerName: 'Date - Time',
       width: 200,
       renderCell: (params) => (
-        <div className="truncate w-full">
+        <div className='truncate w-full'>
           <select
-            className="w-full"
-            value={params.row.eventtime ? params.row.eventinstanceid : 'Select Time'}
+            className='w-full'
+            value={
+              params.row.eventtime ? params.row.eventinstanceid : 'Select Time'
+            }
             onChange={(e) => handleTimeChange(e, params.row)}
             disabled={!params.row.eventid}
           >
             <option>Select Time</option>
             {availableTimesByRowId[params.row.id]?.map((event) => {
-              const dateTimeString = `${event.eventdate}T${event.eventtime.slice(0, 8)}`;
-              const dateTime = parse(dateTimeString, 'yyyyMMdd\'T\'HH:mm:ss', new Date());
-              const formattedDateTime = format(dateTime, 'eee, MMM dd yyyy - hh:mm a');
+              const dateTimeString = `${
+                event.eventdate
+              }T${event.eventtime.slice(0, 8)}`;
+              const dateTime = parse(
+                dateTimeString,
+                `yyyyMMdd'T'HH:mm:ss`,
+                new Date(),
+              );
+              const formattedDateTime = format(
+                dateTime,
+                'eee, MMM dd yyyy - hh:mm a',
+              );
               return (
-                <option key={event.eventinstanceid} value={event.eventinstanceid}>
+                <option
+                  key={event.eventinstanceid}
+                  value={event.eventinstanceid}
+                >
                   {formattedDateTime}
                 </option>
               );
@@ -145,9 +138,9 @@ const AdminPurchase = () => {
       headerName: 'Ticket Type',
       width: 200,
       renderCell: (params) => (
-        <div className="truncate w-full">
+        <div className='truncate w-full'>
           <select
-            className="w-full"
+            className='w-full'
             value={params.row.ticketTypes ? params.row.typeID : 'Select Type'}
             onChange={(e) => handleTicketTypeChange(e, params.row)}
             disabled={!params.row.eventtime}
@@ -223,64 +216,6 @@ const AdminPurchase = () => {
     },
   ];
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/events/list/allevents',
-        );
-        const jsonRes = await response.json();
-        const jsonData = jsonRes.data as any[];
-
-        // Deduplicate the events based on eventid
-        const deduplicatedEvents = Array.from(
-          new Set(jsonData.map((e) => e.eventid)),
-        )
-          .map((eventid) => jsonData.find((event) => event.eventid === eventid))
-          .sort((a, b) => (b.eventid - a.eventid));
-
-        setEventList(deduplicatedEvents);
-        setEventListFull(jsonData);
-        setIsEventsLoading(false);
-
-        const initialAvailableTimes = {};
-        initialEventData.forEach((row) => {
-          if (row.eventid) {
-            initialAvailableTimes[row.id] = jsonData.filter(
-              (e) => e.eventid === row.eventid,
-            );
-          }
-        });
-        setAvailableTimesByRowId(initialAvailableTimes);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-    fetchEvents();
-  }, []);
-
-  useEffect(() => {
-    const fetchTicketTypes = async () => {
-      try {
-        const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
-          {
-            headers: {
-              accept: 'application/json',
-            },
-          },
-        );
-        const jsonRes = await response.json();
-        setTicketTypes(jsonRes.data);
-        setIsTicketTypesLoading(false);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-
-    fetchTicketTypes();
-  }, []);
-
   const updateAvailableTimes = (eventId, rowId) => {
     const matchingEvents = eventListFull.filter((e) => e.eventid === eventId);
     setAvailableTimesByRowId((prevState) => ({
@@ -337,13 +272,13 @@ const AdminPurchase = () => {
     const selectedEvent = availableTimesByRowId[row.id]?.find(
       (e) => e.eventinstanceid === eventInstanceID,
     );
+
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {
           ...row,
           eventtime: selectedEvent?.eventtime,
-          availableSeats:
-            selectedEvent?.availableSeats || selectedEvent?.availableseats,
+          availableSeats: selectedEvent?.availableseats,
           eventinstanceid: eventInstanceID,
         };
       }
@@ -531,15 +466,111 @@ const AdminPurchase = () => {
     navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
   };
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_API_1_URL + '/events/list/allevents',
+        );
+        const jsonRes = await response.json();
+        const jsonData = jsonRes.data as any[];
+
+        // Deduplicate the events based on eventid
+        const deduplicatedEvents = Array.from(
+          new Set(jsonData.map((e) => e.eventid)),
+        )
+          .map((eventid) => jsonData.find((event) => event.eventid === eventid))
+          .sort((a, b) => b.eventid - a.eventid);
+
+        setEventList(deduplicatedEvents);
+        setEventListFull(jsonData);
+        setIsEventsLoading(false);
+
+        const initialAvailableTimes = {};
+        initialEventData.forEach((row) => {
+          if (row.eventid) {
+            initialAvailableTimes[row.id] = jsonData.filter(
+              (e) => e.eventid === row.eventid,
+            );
+          }
+        });
+        setAvailableTimesByRowId(initialAvailableTimes);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    if (location.state?.eventDataFromPurchase) {
+      setEventData(location.state.eventDataFromPurchase);
+      const initialAvailableTimes = {};
+      location.state.eventDataFromPurchase.forEach((row) => {
+        if (row.eventid) {
+          initialAvailableTimes[row.id] = eventListFull.filter(
+            (e) => e.eventid === row.eventid,
+          );
+        }
+      });
+      setAvailableTimesByRowId(initialAvailableTimes);
+
+      const initialPrices = {};
+      location.state.eventDataFromPurchase.forEach((row) => {
+        initialPrices[row.id] = (row.price || 0).toFixed(2);
+      });
+      setPriceByRowId(initialPrices);
+    }
+  }, [location.state?.eventDataFromPurchase, eventListFull]);
+
+  useEffect(() => {
+    const fetchTicketTypes = async () => {
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
+          {
+            headers: {
+              accept: 'application/json',
+            },
+          },
+        );
+        const jsonRes = await response.json();
+        setTicketTypes(jsonRes.data);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+
+    fetchTicketTypes();
+  }, []);
+
+  useEffect(() => {
+    const fetchAllTicketTypes = async () => {
+      const allTicketTypes = await getAllTicketTypes(token);
+      if (allTicketTypes) {
+        setAllTicketTypes(allTicketTypes);
+      }
+    };
+
+    if (token) {
+      void fetchAllTicketTypes();
+    }
+  }, [token]);
+
+  // DELETE LATER
+  useEffect(() => {
+    console.log(eventData);
+  }, [eventData]);
+
   return (
-    <div className="w-full h-screen absolute">
+    <div className='w-full h-screen absolute'>
       <div className='w-full h-screen overflow-x-hidden absolute '>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
             Purchase Tickets
           </h1>
           <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
-            {isEventsLoading || isTicketTypesLoading ? (
+            {isEventsLoading || token === undefined ? (
               <p>Loading...</p>
             ) : (
               <DataGrid
@@ -571,17 +602,15 @@ const AdminPurchase = () => {
           </div>
         </div>
       </div>
-      {
-        openDialog && (
-          <PopUp
-            title="Error"
-            message={errMsg}
-            handleProceed={handleCloseDialog}
-            handleClose={handleCloseDialog}
-            success={false}
-          />
-        )
-      }
+      {openDialog && (
+        <PopUp
+          title='Error'
+          message={errMsg}
+          handleProceed={handleCloseDialog}
+          handleClose={handleCloseDialog}
+          success={false}
+        />
+      )}
     </div>
   );
 };
