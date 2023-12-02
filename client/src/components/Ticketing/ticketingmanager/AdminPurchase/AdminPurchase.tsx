@@ -14,10 +14,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
 import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
 import {format, parse} from 'date-fns';
-import {
-  getAllTicketTypes,
-  getAllTicketRestrictions,
-} from './utils/adminApiRequests';
+import {getAllTicketRestrictions} from './utils/adminApiRequests';
 import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
 
@@ -33,7 +30,6 @@ const AdminPurchase = () => {
   const [eventListFull, setEventListFull] = useState([]);
   const [priceByRowId, setPriceByRowId] = useState({});
   const [isEventsLoading, setIsEventsLoading] = useState(true);
-  const [allTicketTypes, setAllTicketTypes] = useState([]);
   const [allTicketRestrictions, setAllTicketRestrictions] = useState([]);
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
@@ -134,18 +130,6 @@ const AdminPurchase = () => {
       },
     );
 
-    const ticketRestictionWithDescription = eventInstanceTicketRestrictions.map(
-      (restriction) => {
-        const matchingTicketType = allTicketTypes.find(
-          (type) => type.tickettypeid === restriction.tickettypeid,
-        );
-
-        const {description} = matchingTicketType;
-
-        return {...restriction, tickettypedescription: description};
-      },
-    );
-
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         delete r.ticketTypes;
@@ -155,7 +139,7 @@ const AdminPurchase = () => {
           ...row,
           eventtime: selectedEventInstance?.eventtime,
           eventinstanceid: eventInstanceID,
-          ticketRestrictionInfo: ticketRestictionWithDescription,
+          ticketRestrictionInfo: eventInstanceTicketRestrictions,
         };
       }
       return r;
@@ -182,7 +166,7 @@ const AdminPurchase = () => {
       if (r.id === row.id) {
         return {
           ...r,
-          ticketTypes: currentTicketRestriction.tickettypedescription,
+          ticketTypes: currentTicketRestriction.description,
           price: row.complimentary ? 0 : price,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
@@ -407,7 +391,7 @@ const AdminPurchase = () => {
                 key={restriction.tickettypeid}
                 value={restriction.tickettypeid}
               >
-                {restriction.tickettypedescription}
+                {restriction.description}
               </option>
             ))}
           </select>
@@ -533,12 +517,6 @@ const AdminPurchase = () => {
   }, [location.state?.eventDataFromPurchase, eventListFull]);
 
   useEffect(() => {
-    const fetchAllTicketTypes = async () => {
-      const allTicketTypes = await getAllTicketTypes(token);
-      if (allTicketTypes) {
-        setAllTicketTypes(allTicketTypes);
-      }
-    };
     const fetchAllTicketRestrictions = async () => {
       const allTicketRestrictions = await getAllTicketRestrictions();
       if (allTicketRestrictions) {
@@ -546,11 +524,8 @@ const AdminPurchase = () => {
       }
     };
 
-    if (token) {
-      void fetchAllTicketTypes();
-      void fetchAllTicketRestrictions();
-    }
-  }, [token]);
+    void fetchAllTicketRestrictions();
+  }, []);
 
   return (
     <div className='w-full h-screen absolute'>
@@ -560,7 +535,7 @@ const AdminPurchase = () => {
             Purchase Tickets
           </h1>
           <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
-            {isEventsLoading || token === undefined ? (
+            {isEventsLoading ? (
               <p>Loading...</p>
             ) : (
               <DataGrid

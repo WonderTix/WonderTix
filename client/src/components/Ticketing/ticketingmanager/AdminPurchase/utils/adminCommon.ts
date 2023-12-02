@@ -25,7 +25,7 @@ export interface ticketTypeRestriction {
   price: string;
   ticketlimit: number;
   ticketssold: number;
-  tickettypedescription?: string;
+  description: string;
 }
 
 export const initialTicketTypeRestriction: ticketTypeRestriction = {
@@ -36,5 +36,5 @@ export const initialTicketTypeRestriction: ticketTypeRestriction = {
   price: '',
   ticketlimit: 0,
   ticketssold: 0,
-  tickettypedescription: '',
+  description: '',
 };
