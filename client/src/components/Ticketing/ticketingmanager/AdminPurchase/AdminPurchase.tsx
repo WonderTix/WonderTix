@@ -552,12 +552,6 @@ const AdminPurchase = () => {
     }
   }, [token]);
 
-  // DELETE LATER
-  useEffect(() => {
-    console.log('event data is', eventData);
-    console.log('price by row id', priceByRowId);
-  }, [eventData]);
-
   return (
     <div className='w-full h-screen absolute'>
       <div className='w-full h-screen overflow-x-hidden absolute '>
