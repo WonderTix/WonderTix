@@ -1,13 +1,14 @@
 /* eslint-disable require-jsdoc */
-
 import {type Locator, type Page, expect} from '@playwright/test';
-import {EventInfo, CreditCard, Customer} from '../testData/ConstsPackage';
+import { CreditCardInfo, CustomerInfo, EventInfo } from '../testData/interfaces';
 
 export class MainPage {
   readonly page: Page;
 
   readonly firstShowing: Locator;
   readonly headingEvent: Locator;
+
+  readonly loadingScreen: Locator;
 
   // Below elements are actually on the event template
   // Should event template be its own page object?
@@ -48,6 +49,7 @@ export class MainPage {
   constructor(page: Page) {
     this.page = page;
 
+    this.loadingScreen = page.getByTestId('loading-screen')
     this.firstShowing = page
       .getByRole('button', {name: 'See Showings'})
       .first();
@@ -96,7 +98,9 @@ export class MainPage {
   // Initial page navigation - sends browser session to the root address
   // Sets long timeout to account for various delays while testing in dev
   async goto() {
-    await this.page.goto('/', {timeout: 90000});
+    await this.page.goto('/', {timeout: 60000});
+    // Wait for the loading screen to be hidden
+    await this.loadingScreen.waitFor({ state: 'hidden', timeout: 30000 });
   }
 
   async getShowingLocator(showingName: string) {
@@ -231,7 +235,7 @@ export class MainPage {
   }
 
   // Fills out the customer info from the customer parameter
-  async fillCustomerInfo(customer: Customer) {
+  async fillCustomerInfo(customer: CustomerInfo) {
     await this.cartFirstName.fill(customer.firstName);
     await this.cartLastName.fill(customer.lastName);
     await this.cartStreetAddress.fill(customer.streetAddress);
@@ -239,6 +243,9 @@ export class MainPage {
     await this.cartCountry.fill(customer.country);
     await this.cartPhone.fill(customer.phoneNumber);
     await this.cartEmail.fill(customer.email);
+    await this.cartAccommodations.selectOption({
+      value: customer.accommodations,
+    });
     await this.cartAccommodations.selectOption({
       value: customer.accommodations,
     });
@@ -252,7 +259,7 @@ export class MainPage {
   // Fill out data on Stripe page.  Currently uses both a Customer and CreditCard.
   // Stripe is slow and sometimes has an account popup after email entry.
   // This function waits to see if it will pop up and handle it appropriately.
-  async fillStripeInfo(customer: Customer, ccInfo: CreditCard, timeoutAdd = 0) {
+  async fillStripeInfo(customer: CustomerInfo, ccInfo: CreditCardInfo, timeoutAdd = 0) {
     await this.stripeEmail.fill(customer.email);
     await this.page.waitForTimeout(10000 + timeoutAdd);
     if (await this.page.getByText('Use your saved information').isVisible()) {
@@ -280,8 +287,8 @@ export class MainPage {
   // Date, time, and ticket type will be selected randomly.
   // Qty will be used to determine quantity if passed, otherwise will use a random quantity as well.
   async purchaseTicket(
-    customer: Customer,
-    creditCard: CreditCard,
+    customer: CustomerInfo,
+    creditCard: CreditCardInfo,
     event: EventInfo,
     options?: {qty?: number; timeoutAdd?: number},
   ) {

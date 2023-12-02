@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import {EventInfo, ShowingInfo} from '../testData/ConstsPackage';
+import { EventInfo, ShowingInfo } from '../testData/interfaces';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
@@ -95,7 +95,11 @@ export class EventsPage {
 
     this.eventContinue = page.getByRole('button', {name: 'Continue'});
     this.eventClose = page.getByRole('button', {name: 'Close', exact: true});
+    this.eventContinue = page.getByRole('button', {name: 'Continue'});
+    this.eventClose = page.getByRole('button', {name: 'Close', exact: true});
 
+    this.eventOption1 = page.getByRole('button', {name: 'Default'});
+    this.eventOption2 = page.getByText('Active:', {exact: true});
     this.eventOption1 = page.getByRole('button', {name: 'Default'});
     this.eventOption2 = page.getByText('Active:', {exact: true});
 
@@ -131,6 +135,7 @@ export class EventsPage {
     this.inactiveEventchecker = page.getByRole('button', { name: 'Inactive' });
   }
 
+  async clickLeftBar() {
   async clickLeftBar() {
     await this.leftBarEvent.click();
   }
@@ -207,13 +212,13 @@ export class EventsPage {
   "10:20",
   "010"
 */
-  async addNewShowing(aShowing: ShowingInfo) {
+  async addNewShowing(showing: ShowingInfo) {
     await this.editAddShowing.click();
-    await this.editEventDate.fill(aShowing.showingDate);
+    await this.editEventDate.fill(showing.showingDate);
     await this.editEventTime.click();
-    await this.editEventTime.fill(aShowing.showingTime);
+    await this.editEventTime.fill(showing.showingTime);
     await this.editTicketQuantity.click();
-    await this.editTicketQuantity.fill(aShowing.showingQuantity);
+    await this.editTicketQuantity.fill(showing.showingQuantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
    // await this.page.reload();
@@ -251,6 +256,11 @@ export class EventsPage {
     await expect(this.page.getByRole('img', { name: event_name+' '+suffix })).toBeVisible;
   }
 
+  /**
+   * We need to pass in a event's full name like:
+   * "Test_event Playbill Test_event Description An event for testing"
+   */
+  async goToEventFromManage(eventFullName: string) {
   /**
    * We need to pass in a event's full name like:
    * "Test_event Playbill Test_event Description An event for testing"
@@ -317,6 +327,7 @@ export class EventsPage {
     await this.page.getByText(anEvent.eventName, {exact: true}).click();
   }
 
+  async searchForEventByDes(anEvent: EventInfo) {
   async searchForEventByDes(anEvent: EventInfo) {
     await this.page.getByText(anEvent.eventDescription).click();
   }

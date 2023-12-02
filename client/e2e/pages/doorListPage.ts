@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
-import {type Locator, type Page} from '@playwright/test';
-import {EventInfo, ShowingInfo, Customer} from '../testData/ConstsPackage';
+import {type Locator, type Page } from '@playwright/test';
+import { EventInfo, ShowingInfo, CustomerInfo } from '../testData/interfaces';
 
 export class DoorListPage {
   readonly page: Page;
@@ -72,7 +72,7 @@ export class DoorListPage {
   }
 
   // Verify a specific order exists by customer name, quantity, and accomodation.
-  async checkOrder(customer: Customer, qty: number) {
+  async checkOrder(customer: CustomerInfo, qty: number) {
     await this.customerRow.filter({hasText: customer.firstName}).filter({hasText: customer.lastName}).filter({hasText: qty.toString()}).filter({hasText: customer.accommodations}).isVisible();
   }
 

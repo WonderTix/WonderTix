@@ -1,11 +1,9 @@
-import {test, expect} from '@playwright/test';
-import {SeasonsPage} from './pages/seasonsPage';
-import {EventsPage} from './pages/EventsPage';
-import {EventInfo, SeasonInfo} from './testData/ConstsPackage';
-import {
-  EventInfoTemplate2,
-  SeasonInfoTemplate1,
-} from './testData/ConstsPackage';
+import { test } from '@playwright/test';
+import { SeasonsPage } from '../pages/seasonsPage';
+import { EventsPage } from '../pages/EventsPage';
+import { createUniqueEvent, createUniqueSeason } from '../testData/factoryFunctions';
+import { EVENT_INFO_2 } from '../testData/dataConstants/EventInfoConstants';
+import { SEASON_INFO_1 } from '../testData/dataConstants/SeasonInfoConstants';
 
 test('Homepage->Seasons', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
@@ -15,8 +13,9 @@ test('Homepage->Seasons', async ({page}) => {
 test('addNewSeasonWithEvent', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
   const eventsPage = new EventsPage(page);
-  const uniqueEvent = new EventInfo(EventInfoTemplate2);
-  const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
+
+  const uniqueEvent = createUniqueEvent(EVENT_INFO_2);
+  const uniqueSeason = createUniqueSeason(SEASON_INFO_1);
   
   try {
     await eventsPage.goto();
@@ -50,8 +49,9 @@ test('addNewSeasonWithEvent', async ({page}) => {
 
 test('editSeason', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
-  const uniqueSeason1 = new SeasonInfo(SeasonInfoTemplate1);
-  const uniqueSeason2 = new SeasonInfo(SeasonInfoTemplate1);
+
+  const uniqueSeason1 = createUniqueSeason(SEASON_INFO_1);
+  const uniqueSeason2 = createUniqueSeason(SEASON_INFO_1);
 
   try {
     // setup
@@ -79,8 +79,8 @@ test('editSeason', async ({page}) => {
 test('removeEventFromSeason', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
   const eventsPage = new EventsPage(page);
-  const uniqueEvent = new EventInfo(EventInfoTemplate2);
-  const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
+  const uniqueEvent = createUniqueEvent(EVENT_INFO_2);
+  const uniqueSeason = createUniqueSeason(SEASON_INFO_1);
 
   try {
     // setup
@@ -121,7 +121,7 @@ test('removeEventFromSeason', async ({page}) => {
 
 test('removeSeason', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
-  const uniqueSeason = new SeasonInfo(SeasonInfoTemplate1);
+  const uniqueSeason = createUniqueSeason(SEASON_INFO_1);
   
   try {
     // setup

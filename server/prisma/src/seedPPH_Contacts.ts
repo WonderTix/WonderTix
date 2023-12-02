@@ -33,7 +33,7 @@ async function seedPPHContacts(prisma: PrismaClient) {
           missingAccountsCount++; // Increment missing accounts counter
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping contact with ID ${item.contact_id} due to non-existing account with ID ${item.account_id}`);
           }
         }
