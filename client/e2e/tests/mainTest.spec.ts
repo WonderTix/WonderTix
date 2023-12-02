@@ -3,11 +3,11 @@ import { MainPage } from '../pages/mainPage';
 import { EventsPage } from '../pages/EventsPage';
 import { ContactPage } from '../pages/contactPage';
 import { DoorListPage } from '../pages/doorListPage';
-import { JOHN_DOE, JANE_DOE } from '../test-data/dataConstants/CustomerInfoConstants';
-import { EVENT_INFO_5, EVENT_INFO_6 } from '../test-data/dataConstants/EventInfoConstants';
-import { SHOWING_INFO_2, SHOWING_INFO_5 } from '../test-data/dataConstants/ShowingInfoConstants';
-import { createUniqueEvent, createUniqueCustomer } from '../test-data/factoryFunctions';
-import { VALID_VISA_CREDIT } from '../test-data/dataConstants/CreditCardConstants';
+import { JOHN_DOE, JANE_DOE } from '../testData/dataConstants/CustomerInfoConstants';
+import { EVENT_INFO_5, EVENT_INFO_6 } from '../testData/dataConstants/EventInfoConstants';
+import { SHOWING_INFO_2, SHOWING_INFO_5 } from '../testData/dataConstants/ShowingInfoConstants';
+import { createUniqueEvent, createUniqueCustomer } from '../testData/factoryFunctions';
+import { VALID_VISA_CREDIT } from '../testData/dataConstants/CreditCardConstants';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {

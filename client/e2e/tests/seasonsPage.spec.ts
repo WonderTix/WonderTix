@@ -1,9 +1,9 @@
 import { test } from '@playwright/test';
 import { SeasonsPage } from '../pages/seasonsPage';
 import { EventsPage } from '../pages/EventsPage';
-import { createUniqueEvent, createUniqueSeason } from '../test-data/factoryFunctions';
-import { EVENT_INFO_2 } from '../test-data/dataConstants/EventInfoConstants';
-import { SEASON_INFO_1 } from '../test-data/dataConstants/SeasonInfoConstants';
+import { createUniqueEvent, createUniqueSeason } from '../testData/factoryFunctions';
+import { EVENT_INFO_2 } from '../testData/dataConstants/EventInfoConstants';
+import { SEASON_INFO_1 } from '../testData/dataConstants/SeasonInfoConstants';
 
 test('Homepage->Seasons', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);

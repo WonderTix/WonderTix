@@ -1,9 +1,9 @@
 /* eslint-disable require-jsdoc */
 import { test } from '@playwright/test';
 import { EventsPage } from '../pages/EventsPage';
-import { createUniqueEvent } from '../test-data/factoryFunctions';
-import { EVENT_INFO_2, EVENT_INFO_3, EVENT_INFO_4 } from '../test-data/dataConstants/EventInfoConstants';
-import { SHOWING_INFO_1, SHOWING_INFO_2, SHOWING_INFO_3, SHOWING_INFO_4 } from '../test-data/dataConstants/ShowingInfoConstants';
+import { createUniqueEvent } from '../testData/factoryFunctions';
+import { EVENT_INFO_2, EVENT_INFO_3, EVENT_INFO_4 } from '../testData/dataConstants/EventInfoConstants';
+import { SHOWING_INFO_1, SHOWING_INFO_2, SHOWING_INFO_3, SHOWING_INFO_4 } from '../testData/dataConstants/ShowingInfoConstants';
 
 test('Homepage->Events', async ({page}) => {
   const eventsPage = new EventsPage(page);
