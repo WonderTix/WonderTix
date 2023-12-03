@@ -1,20 +1,33 @@
 import {IconButton, Tooltip} from '@mui/material';
 import React, {useState, useEffect} from 'react';
-import {SeasonTicketValues} from './seasonCommon';
+import {SeasonTicketValues, seasonTicketDefaultValues} from './seasonCommon';
 
 interface SeasonTicketTypeUpdateTableProps {
   seasonTicketTypeData: SeasonTicketValues[];
 }
 export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTableProps) => {
   const {seasonTicketTypeData} = props;
-  const [seasonTicketPrice, setSeasonTicketPrice] = useState();
-  const [seasonTicketConcessionPrice, setSeasonTicketConcessionPrice] = useState();
+  const [currentSeasonTicketTypeData, setCurrentSeasonTicketTypeData] = useState<SeasonTicketValues[]>([...seasonTicketTypeData]);
+  const [seasonTicketPrice, setSeasonTicketPrice] = useState<number>(0);
+  const [seasonTicketConcessionPrice, setSeasonTicketConcessionPrice] = useState<number>(0);
 
-  const handleUpdatedPrice = (newTicketPrice) => {
+  useEffect(() => {
+    setCurrentSeasonTicketTypeData(seasonTicketTypeData);
+  }, [seasonTicketTypeData]);
+
+  const handleUpdatedPrice = (newTicketPrice, index) => {
+    const updatedData = [...currentSeasonTicketTypeData];
+    updatedData[index] ={...updatedData[index], price: newTicketPrice};
     setSeasonTicketPrice(newTicketPrice);
   };
-  const handleUpdatedConcessionPrice = (newTicketConcessionPrice) => {
+  const handleUpdatedConcessionPrice = (newTicketConcessionPrice, index) => {
+    const updatedData = [...currentSeasonTicketTypeData];
+    updatedData[index] ={...updatedData[index], concessionprice: newTicketConcessionPrice};
     setSeasonTicketConcessionPrice(newTicketConcessionPrice);
+  };
+
+  const handleAddTicketType = () => {
+    setCurrentSeasonTicketTypeData((prevData) => [...prevData, seasonTicketDefaultValues]);
   };
 
   return (
@@ -31,6 +44,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                   <IconButton
                     size={'small'}
                     aria-label={'add ticket type'}
+                    onClick={handleAddTicketType}
                   >
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
@@ -52,8 +66,8 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
             </tr>
           </thead>
           <tbody className='text-sm whitespace-nowrap text-zinc-800'>
-            {seasonTicketTypeData && seasonTicketTypeData.length > 0 ? (
-                seasonTicketTypeData.map((id, index) =>(
+            {currentSeasonTicketTypeData && currentSeasonTicketTypeData.length > 0 ? (
+                currentSeasonTicketTypeData.map((id, index) =>(
                 <tr key={index} className='bg-gray-200'>
                   <td className={'px-2'}> {id.description}</td>
                   <td className='px-2 border border-white'><span>$</span>
@@ -61,7 +75,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       className='w-[75px] bg-gray-100'
                       type='text'
                       value={`${Number(id.price).toFixed(2)}`}
-                      onChange={(e) => handleUpdatedPrice(e.target.value)}
+                      onChange={(e) => handleUpdatedPrice(Number(e.target.value), index)}
                     />
                   </td>
                   <td className='px-2 border border-white'><span>$</span>
@@ -69,7 +83,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       className='w-[75px] bg-gray-100'
                       type='text'
                       value={`${Number(id.concessionprice).toFixed(2)}`}
-                      onChange={(e) => handleUpdatedConcessionPrice(e.target.value)}
+                      onChange={(e) => handleUpdatedConcessionPrice(Number(e.target.value), index)}
                     />
                   </td>
                   <td className='px-2 border border-white'></td>

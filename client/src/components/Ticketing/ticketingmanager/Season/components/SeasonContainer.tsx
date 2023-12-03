@@ -58,7 +58,7 @@ const SeasonContainer = () => {
     }
   };
 
-  const handleSeasonTicketType = async () => {
+  const handleGetSeasonTicketType = async () => {
     try {
       const seasonTicketTypePriceRes = await fetch(
         process.env.REACT_APP_API_2_URL +
@@ -83,10 +83,54 @@ const SeasonContainer = () => {
       console.error(error);
     }
   };
+  // testing purpose below
+  const requestData = [
+    {
+      'tickettypeid_fk': 1,
+      'price': 99,
+      'concessionprice': 88,
+    },
+    {
+      'tickettypeid_fk': 2,
+      'price': 99,
+      'concessionprice': 88,
+    },
+  ];
+  // end
+  const handleUpdateSeasonTicketType = async (requestData) => {
+    try {
+      const seasonUpdateTicketTypeRes = await fetch(
+        process.env.REACT_APP_API_2_URL +
+          `/season-ticket-type-price-default/${seasonId}`,
+        {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestData),
+        },
+      );
+
+      if (!seasonUpdateTicketTypeRes.ok) {
+        throw new Error('Failed to update season ticket type');
+      }
+      const seasonUpdatedTicketTypeData = await seasonUpdateTicketTypeRes.json();
+      console.log('Updated Data:', seasonUpdatedTicketTypeData);
+      setSeasonTicketTypeData(seasonUpdatedTicketTypeData);
+    } catch (error) {
+      console.error('Error updating season ticket type', error);
+    }
+  };
 
   useEffect(() => {
-    void handleGetAllEvents();
-    void handleSeasonTicketType();
+    const handleUpdateAndRefresh = async () => {
+      await handleUpdateSeasonTicketType(requestData);
+      await handleGetAllEvents();
+    };
+    handleUpdateAndRefresh();
+    handleGetSeasonTicketType();
   }, []);
 
   if (token === '' || seasonId === undefined || eventsInSeason === undefined) {
@@ -101,6 +145,7 @@ const SeasonContainer = () => {
             setSeasonId={setSeasonId}
             setIsFormEditing={setIsFormEditing}
             seasonTicketTypeData={seasonTicketTypeData}
+
           />
           <SeasonEvents
             {...commonSeasonPageProps}
