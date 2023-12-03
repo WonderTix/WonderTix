@@ -1,6 +1,6 @@
 import React from 'react';
 import {useEvent} from './EventProvider';
-import {useFormikContext} from 'formik';
+import {useField, useFormikContext} from 'formik';
 import {getTicketTypeKeyValue} from './ShowingUtils';
 
 export const TicketTypeSelect = (props: {
@@ -10,24 +10,29 @@ export const TicketTypeSelect = (props: {
   setAvailableTypes;
 }) => {
   const {field, index, availableTypes, setAvailableTypes} = props;
-  const {ticketTypes} = useEvent();
+  const [currentValue] = useField(`instanceTicketTypes[${index}]`);
   const {setFieldValue} = useFormikContext();
 
   const handleChange = async (event) => {
-    const value = event.target.value;
-    setAvailableTypes([
-      ...availableTypes.filter((type) => type !== +value),
-      +field.value,
-    ]);
-    await setFieldValue(field.name, +value);
+    const value = +event.target.value;
+    const {ticketlimit, ...toAddToAvailableTypes} = currentValue.value;
+    await setFieldValue(field.name, value);
     await setFieldValue(
       `instanceTicketTypes[${index}].price`,
-      getTicketTypeKeyValue(+value, 'price', ticketTypes),
+      getTicketTypeKeyValue(+value, 'price', availableTypes),
     );
     await setFieldValue(
       `instanceTicketTypes[${index}].concessionprice`,
-      getTicketTypeKeyValue(+value, 'concessionprice', ticketTypes),
+      getTicketTypeKeyValue(+value, 'concessionprice', availableTypes),
     );
+    await setFieldValue(
+        `instanceTicketTypes[${index}].description`,
+        getTicketTypeKeyValue(+value, 'description', availableTypes),
+    );
+    setAvailableTypes([
+      ...availableTypes.filter((type) => type.tickettypeid_fk !== value),
+      toAddToAvailableTypes,
+    ]);
   };
   return (
     <>
@@ -41,19 +46,15 @@ export const TicketTypeSelect = (props: {
         className={'w-full'}
       >
         <option value={Number.parseInt(field.value)}>
-          {getTicketTypeKeyValue(
-            Number(field.value),
-            'description',
-            ticketTypes,
-          )}
+          {currentValue.value.description}
         </option>
         {availableTypes &&
           availableTypes.map((ticketType) => (
             <option
               key={ticketType + 'ticket type description'}
-              value={Number.parseInt(ticketType)}
+              value={Number.parseInt(ticketType.tickettypeid_fk)}
             >
-              {getTicketTypeKeyValue(ticketType, 'description', ticketTypes)}
+              {ticketType.description}
             </option>
           ))}
       </select>

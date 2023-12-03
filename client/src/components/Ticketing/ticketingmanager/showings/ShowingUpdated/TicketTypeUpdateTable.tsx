@@ -29,8 +29,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
           !InstanceTicketTypesField.value.some(
             (res) => res.tickettypeid_fk === +type.tickettypeid_fk,
           ),
-      )
-      .map((type) => type.tickettypeid_fk),
+      ),
   );
   return (
     <div
@@ -65,7 +64,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   onClick={async () => {
                     arrayHelpers.insert(
                       0,
-                      getInstanceTicketType(availableTypes[0], ticketTypes),
+                      getInstanceTicketType(availableTypes[0]),
                     );
                     setAvailableTypes(
                       availableTypes.slice(1, availableTypes.length),
@@ -100,7 +99,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
           {defaultTypeIndex > -1 && (
             <tr className={'bg-gray-200'}>
               <td className={'px-2 border border-white'}>
-                {getTicketTypeKeyValue(1, 'description', ticketTypes)}
+                {InstanceTicketTypesField.value[defaultTypeIndex].description}
               </td>
               <td className={'px-2 border border-white'}>
                 <Field
@@ -218,12 +217,10 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       size={'small'}
                       aria-label={'delete ticket type'}
                       onClick={() => {
+                        const {ticketlimit, ...current}= InstanceTicketTypesField.value[index];
                         setAvailableTypes([
                           ...availableTypes,
-                          Number(
-                            InstanceTicketTypesField.value[index]
-                              .tickettypeid_fk,
-                          ),
+                            current,
                         ]);
                         arrayHelpers.remove(index);
                       }}

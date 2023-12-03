@@ -85,13 +85,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
                     <tr
                       key={`${showing.eventinstanceid} ${type.tickettypeid_fk} ${index}`}
                     >
-                      <td className={'px-2'}>
-                        {getTicketTypeKeyValue(
-                          type.tickettypeid_fk,
-                          'description',
-                          ticketTypes,
-                        )}
-                      </td>
+                      <td className={'px-2'}>{type.description}</td>
                       <td className={'px-2'}>{formatUSD.format(type.price)}</td>
                       <td className={'px-2'}>
                         {formatUSD.format(type.concessionprice)}

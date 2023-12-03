@@ -11,9 +11,9 @@ export const ticketTypeController = Router();
 
 /**
  * @swagger
- * /2/ticket-type:
+ * /2/ticket-type/valid:
  *   get:
- *     summary: get Ticket Types
+ *     summary: get all valid Ticket Types
  *     tags:
  *     - New Ticket Type
  *     responses:
@@ -33,16 +33,99 @@ export const ticketTypeController = Router();
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-ticketTypeController.get('/', async (req: Request, res: Response) => {
+ticketTypeController.get('/valid', async (req: Request, res: Response) => {
   try {
-    const description= req.query.description? String(req.query.description): undefined;
     const ticketTypes = await prisma.tickettype.findMany({
       where: {
-        tickettypeid: {not: 0},
-        ...(description && {description: description}),
         deprecated: false,
       },
     });
+    return res.json(ticketTypes.map((type) => ({...type, id: type.tickettypeid})));
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).json({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).json({error: error.message});
+    }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/ticket-type/editable:
+ *   get:
+ *     summary: get editable Ticket Types
+ *     tags:
+ *     - New Ticket Type
+ *     responses:
+ *       200:
+ *         description: Ticket Type fetch successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               $ref: '#/components/schemas/TicketType'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+ticketTypeController.get('/editable', async (req: Request, res: Response) => {
+  try {
+    const ticketTypes = await prisma.tickettype.findMany({
+      where: {
+        tickettypeid: {not: 0},
+        deprecated: false,
+      },
+      orderBy: {
+        tickettypeid: 'asc',
+      },
+    });
+    return res.json(ticketTypes.map((type) => ({...type, id: type.tickettypeid})));
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).json({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).json({error: error.message});
+    }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/ticket-type/all:
+ *   get:
+ *     summary: get all valid and deprecated Ticket Types
+ *     tags:
+ *     - New Ticket Type
+ *     responses:
+ *       200:
+ *         description: Ticket Type fetch successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               $ref: '#/components/schemas/TicketType'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+ticketTypeController.get('/all', async (req: Request, res: Response) => {
+  try {
+    const ticketTypes = await prisma.tickettype.findMany({});
     return res.json(ticketTypes.map((type) => ({...type, id: type.tickettypeid})));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -88,10 +171,11 @@ ticketTypeController.get('/:id', async (req: Request, res: Response) => {
     const ticketTypeExists = await prisma.tickettype.findUnique({
       where: {
         tickettypeid: +id,
+        deprecated: false,
       },
     });
     if (!ticketTypeExists) {
-      return res.status(404).json({error: 'ticketType not found'});
+      return res.status(404).json({error: 'Ticket Type not found'});
     }
     return res.status(200).json(ticketTypeExists);
   } catch (error) {
@@ -112,7 +196,7 @@ ticketTypeController.use(checkScopes);
  * @swagger
  * /2/ticket-type:
  *   post:
- *     summary: Create a ticketType
+ *     summary: Create a Ticket Type
  *     tags:
  *     - New Ticket Type
  *     requestBody:
@@ -140,7 +224,7 @@ ticketTypeController.use(checkScopes);
 ticketTypeController.post('/', async (req: Request, res: Response) => {
   try {
     const {price, concessions, description} = req.body;
-    if (!price || price < 0 || !concessions || concessions < 0) {
+    if (price === undefined || +price < 0 || concessions === undefined || +concessions < 0) {
       return res.status(400).json({error: `Neither price nor concession price can be negative`});
     } else if (!description|| description === '') {
       return res.status(400).json({error: `Ticket type description is required`});
@@ -206,9 +290,9 @@ ticketTypeController.put('/:id', async (req: Request, res: Response) => {
     const id = req.params.id;
     const {description, price, concessions} = req.body;
 
-    if (!price || price < 0 || !concessions || concessions < 0) {
+    if (price === undefined || +price < 0 || concessions === undefined || +concessions < 0) {
       return res.status(400).json({error: `Neither price nor concession price can be negative`});
-    } else if (!description || description === '') {
+    } else if (!description|| description === '') {
       return res.status(400).json({error: `Ticket type description is required`});
     }
 
@@ -222,7 +306,7 @@ ticketTypeController.put('/:id', async (req: Request, res: Response) => {
       return res.status(400).json({error: `Ticket type does not exist`});
     }
 
-    await prisma.tickettype.update({
+    const updatedType = await prisma.tickettype.update({
       where: {
         tickettypeid: +id,
       },
@@ -241,9 +325,20 @@ ticketTypeController.put('/:id', async (req: Request, res: Response) => {
             },
           },
         },
+        seasontickettypepricedefaults: {
+          updateMany: {
+            where: {
+              tickettypeid_fk: +id,
+            },
+            data: {
+              ...(ticketType.tickettypeid && +ticketType.price !== +price && {price: +price}),
+              ...(+ticketType.concessions !== +concessions && {concessionprice: +concessions}),
+            },
+          },
+        },
       },
     });
-    return res.status(200).json();
+    return res.status(200).json(updatedType);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return res.status(400).json({error: error.message});

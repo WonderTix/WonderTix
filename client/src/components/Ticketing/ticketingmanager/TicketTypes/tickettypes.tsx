@@ -250,7 +250,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-        process.env.REACT_APP_API_2_URL + '/ticket-type',
+        process.env.REACT_APP_API_2_URL + '/ticket-type/editable',
         {
           credentials: 'omit',
           method: 'GET',
