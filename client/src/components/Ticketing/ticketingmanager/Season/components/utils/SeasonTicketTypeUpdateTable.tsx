@@ -1,4 +1,4 @@
-import {IconButton} from '@mui/material';
+import {IconButton, Tooltip} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import {SeasonTicketValues} from './seasonCommon';
 
@@ -27,25 +27,27 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
               <th className='px-2 py-1 border-b border-l border-r border-white'>Ticket Price</th>
               <th className='px-2 py-1 border-b border-l border-r border-white'>Concession Price</th>
               <th className='px-2 py-1 border-b border-l border-white'>
-                <IconButton
-                  size={'small'}
-                  aria-label={'add ticket type'}
-                >
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='currentColor'
-                    stroke='white'
-                    strokeWidth={1.5}
-                    className={'w-[1.5rem] h-[1.5] text-green-500'}
+                <Tooltip title="Add Ticket Type" arrow>
+                  <IconButton
+                    size={'small'}
+                    aria-label={'add ticket type'}
                   >
-                    <path
-                      fillRule='evenodd'
-                      d='M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                </IconButton>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      viewBox='0 0 24 24'
+                      fill='currentColor'
+                      stroke='white'
+                      strokeWidth={1.5}
+                      className={'w-[1.5rem] h-[1.5] text-green-500'}
+                    >
+                      <path
+                        fillRule='evenodd'
+                        d='M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                  </IconButton>
+                </Tooltip>
               </th>
             </tr>
           </thead>
