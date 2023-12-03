@@ -1,7 +1,6 @@
 /* eslint-disable require-jsdoc */
-
 import {type Locator, type Page, expect} from '@playwright/test';
-import {CreditCard, Customer, Accommodations} from '../testData/ConstsPackage';
+import { CustomerInfo } from '../testData/interfaces';
 
 export class ContactPage {
     readonly page: Page;
@@ -46,12 +45,12 @@ export class ContactPage {
         await this.page.goto('/admin/contacts');
     }
 
-    async searchCustomer(customer: Customer) {
+    async searchCustomer(customer: CustomerInfo) {
         await this.searchContact.fill(customer.fullName);
         await this.searchContactButton.click();
     }
 
-    async checkCustomer(customer: Customer) {
+    async checkCustomer(customer: CustomerInfo) {
         const currentCard = this.customerCard.filter({hasText: customer.fullName});
         expect(await currentCard.getByTestId('customer-name').textContent()).toBe(customer.fullName);
         expect(await currentCard.getByTestId('customer-email').textContent()).toBe(customer.email);
@@ -61,7 +60,7 @@ export class ContactPage {
     }
 
     // Incomplete, page functionality not implemented
-    async deleteCustomer(customer: Customer) {
+    async deleteCustomer(customer: CustomerInfo) {
         await this.searchCustomer(customer);
         await this.customerCard.filter({hasText: customer.fullName}).getByRole('button', {name: 'Remove Customer'}).click();
     }

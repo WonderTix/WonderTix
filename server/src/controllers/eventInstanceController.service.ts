@@ -20,8 +20,8 @@ export class InvalidInputError extends Error {
   }
 }
 
-export interface LoadedTicketRestriction extends ticketrestrictions{
-    eventtickets: eventtickets[],
+export interface LoadedTicketRestriction extends ticketrestrictions {
+  eventtickets: eventtickets[],
 }
 
 export interface LoadedEventInstance extends eventinstances {

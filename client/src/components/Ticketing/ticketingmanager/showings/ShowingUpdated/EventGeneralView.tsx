@@ -39,31 +39,31 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
     <div className={'bg-white flex flex-col p-6 rounded-xl shadow-xl'}>
       <div
         className={
-          'flex flex-col gap-3 text-center mb-5 justify-between tab:flex-row tab:flex-wrap'
+          'flex flex-col gap-3 text-center mb-5 justify-between min-[650px]:flex-row min-[650px]:flex-wrap'
         }
       >
         <h2 className={'text-3xl font-semibold text-zinc-800'}>
           Event Information
         </h2>
-        <div className='flex flex-col gap-2 tab:flex-row tab:flex-wrap'>
-          <span
+        <div className='flex flex-col gap-2 min-[650px]:flex-row'>
+          <p
             className={`${
               eventData.active ? 'bg-green-100' : 'bg-red-100'
-            } py-2 px-8 rounded-lg font-medium`}
+            } py-2 tab:px-2 md:px-7 rounded-lg font-medium`}
           >
             {eventData.active ? 'ACTIVE' : 'INACTIVE'}
-          </span>
+          </p>
 
-          <Tooltip title={<p>Edit</p>} placement='top' arrow>
-            <span>
+          <Tooltip title='Edit' placement='top' arrow>
+            <span className='flex flex-col'>
               <button
+                data-testid='event-edit-button'
                 className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
                 onClick={() => {
                   setEdit((edit) => !edit);
                   setEditing((edit) => !edit);
                 }}
                 disabled={editing || showPopUp}
-                data-testid={'event_edit_button'}
               >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -83,15 +83,15 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
             </span>
           </Tooltip>
 
-          <Tooltip title={<p>Delete</p>} placement='top' arrow>
-            <span>
+          <Tooltip title='Delete' placement='top' arrow>
+            <span className='flex flex-col'>
               <button
+                data-testid='event-delete-button'
                 className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
                 onClick={() => {
                   onDelete(eventData);
                 }}
                 disabled={editing || showPopUp}
-                data-testid={'event_delete_button'}
               >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'

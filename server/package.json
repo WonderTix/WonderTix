@@ -6,11 +6,12 @@
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "prisma:init": "prisma generate && prisma migrate deploy && prisma db seed",
-    "prisma:init-deploy": "prisma generate && prisma migrate deploy && node --max-old-space-size=4096 ./node_modules/.bin/ts-node prisma/seed.ts",
-    "start": "npm run prisma:init-deploy && nodemon --exec npx ts-node ./src/server.ts",
+    "prisma:init-seed": "prisma generate && prisma migrate deploy && prisma db seed",
+    "prisma:init-seed-max": "prisma generate && prisma migrate deploy && node --max-old-space-size=4096 ./node_modules/.bin/ts-node prisma/seed.ts",
+    "start": "npm run prisma:init-seed-max && nodemon --exec npx ts-node ./src/server.ts",
     "test": "echo -e 'Tests are disabled temporarily'",
     "test:jest": "npx jest --config ./jest.config.js"
+
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

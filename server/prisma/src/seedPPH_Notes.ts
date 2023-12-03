@@ -33,7 +33,7 @@ async function seedPPHNotes(prisma: PrismaClient) {
           missingContactsCount++;
           canInsert = false;
 
-          if (process.env.ENV === 'local') {
+          if (process.env.ENV === 'prd') {
             console.log(`Skipping note with ID ${item.note_id} due to non-existing contact with ID ${item.contact_id}`);
           }
         }
