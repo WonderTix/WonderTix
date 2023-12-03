@@ -261,7 +261,6 @@ const TicketTypes = () => {
         },
       );
       const jsonRes = await response.json();
-      console.log(jsonRes);
       setTicketTypes(jsonRes);
     } catch (error) {
       console.error(error.message);

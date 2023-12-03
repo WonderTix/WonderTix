@@ -399,7 +399,7 @@ ticketTypeController.delete('/:id', async (req: Request, res: Response) => {
           deprecated: true,
         },
       });
-      return res.status(400). json({error: `Can no delete Ticket Type with outstanding tickets: ${ticketTypeExists.description}`});
+      return res.status(200). json();
     }
 
     await prisma.tickettype.delete({
