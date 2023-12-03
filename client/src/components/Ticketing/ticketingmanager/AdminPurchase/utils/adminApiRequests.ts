@@ -11,7 +11,7 @@ export const getAllTicketRestrictions = async () => {
     const allTicketRestrictions = await allTicketRestrictionRes.json();
     return allTicketRestrictions;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return false;
   }
 };
