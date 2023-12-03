@@ -8,67 +8,6 @@ const prisma = extendPrismaClient();
 
 export const ticketTypeController = Router();
 
-ticketTypeController.use(checkJwt);
-ticketTypeController.use(checkScopes);
-
-/**
- * @swagger
- * /2/ticket-type:
- *   post:
- *     summary: Create a ticketType
- *     tags:
- *     - New Ticket Type
- *     requestBody:
- *       description:  New Ticket Type information
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/requestBodies/TicketType'
- *     responses:
- *       201:
- *         description: ticketType updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/TicketType'
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-ticketTypeController.post('/', async (req: Request, res: Response) => {
-  try {
-    const {price, concessions, description} = req.body;
-
-    if (!price || price < 0 || !concessions || concessions < 0) {
-      return res.status(400).json({error: `Neither price nor concession price can be negative`});
-    } else if (!description || description === '') {
-      return res.status(400).json({error: `Ticket type description is required`});
-    }
-
-    const ticketType = prisma.tickettype.create({
-      data: {
-        description,
-        price: +price,
-        concessions: +concessions,
-        deprecated: false,
-      },
-    });
-    return res.status(201).json(ticketType);
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      return res.status(400).json({error: error.message});
-    }
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      return res.status(400).json({error: error.message});
-    }
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
 
 /**
  * @swagger
@@ -99,10 +38,12 @@ ticketTypeController.get('/', async (req: Request, res: Response) => {
     const description= req.query.description? String(req.query.description): undefined;
     const ticketTypes = await prisma.tickettype.findMany({
       where: {
+        tickettypeid: {not: 0},
         ...(description && {description: description}),
+        deprecated: false,
       },
     });
-    return res.json(ticketTypes);
+    return res.json(ticketTypes.map((type) => ({...type, id: type.tickettypeid})));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return res.status(400).json({error: error.message});
@@ -154,6 +95,69 @@ ticketTypeController.get('/:id', async (req: Request, res: Response) => {
     }
     return res.status(200).json(ticketTypeExists);
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).json({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).json({error: error.message});
+    }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+ticketTypeController.use(checkJwt);
+ticketTypeController.use(checkScopes);
+
+/**
+ * @swagger
+ * /2/ticket-type:
+ *   post:
+ *     summary: Create a ticketType
+ *     tags:
+ *     - New Ticket Type
+ *     requestBody:
+ *       description:  New Ticket Type information
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/requestBodies/TicketType'
+ *     responses:
+ *       201:
+ *         description: ticketType updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TicketType'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+ticketTypeController.post('/', async (req: Request, res: Response) => {
+  try {
+    const {price, concessions, description} = req.body;
+    if (!price || price < 0 || !concessions || concessions < 0) {
+      return res.status(400).json({error: `Neither price nor concession price can be negative`});
+    } else if (!description|| description === '') {
+      return res.status(400).json({error: `Ticket type description is required`});
+    }
+
+    const ticketType = await prisma.tickettype.create({
+      data: {
+        description,
+        price: +price,
+        concessions: +concessions,
+        deprecated: false,
+      },
+    });
+
+    return res.status(201).json(ticketType);
+  } catch (error) {
+    console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return res.status(400).json({error: error.message});
     }
@@ -292,6 +296,14 @@ ticketTypeController.delete('/:id', async (req: Request, res: Response) => {
     } else if (ticketTypeExists.tickettypeid === 0 || ticketTypeExists.tickettypeid === 1) {
       return res.status(400). json({error: `Can not delete reserved Ticket Type: ${ticketTypeExists.description}`});
     } else if (ticketTypeExists.ticketrestrictions.length !== 0) {
+      await prisma.tickettype.update({
+        where: {
+          tickettypeid: Number(id),
+        },
+        data: {
+          deprecated: true,
+        },
+      });
       return res.status(400). json({error: `Can no delete Ticket Type with outstanding tickets: ${ticketTypeExists.description}`});
     }
 

@@ -81,7 +81,7 @@ const TicketTypes = () => {
         newRow.price !== prevRow.price ||
         newRow.concessions !== prevRow.concessions) {
         const response = await fetch(
-          process.env.REACT_APP_API_1_URL+'/tickets/updateType', {
+          `${process.env.REACT_APP_API_2_URL}/ticket-type/${newRow.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -107,7 +107,8 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + '/tickets/' + ticketId, {
+        process.env.REACT_APP_API_2_URL + '/ticket-type/' + ticketId, {
+          credentials: 'include',
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -115,6 +116,10 @@ const TicketTypes = () => {
           },
         },
       );
+
+      if (!response.ok) {
+        throw response;
+      }
 
       const responseData = await response.json();
     } catch (error) {
@@ -149,7 +154,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + '/tickets/newType',
+        process.env.REACT_APP_API_2_URL + '/ticket-type/',
         {
           method: 'POST',
           headers: {
@@ -158,7 +163,7 @@ const TicketTypes = () => {
           },
           body: JSON.stringify(
             {
-              name: newTicketType,
+              description: newTicketType,
               price: newTicketPrice,
               concessions: newConcessionsPrice,
             },
@@ -245,7 +250,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
+        process.env.REACT_APP_API_2_URL + '/ticket-type',
         {
           credentials: 'omit',
           method: 'GET',
@@ -256,8 +261,8 @@ const TicketTypes = () => {
         },
       );
       const jsonRes = await response.json();
-
-      setTicketTypes(jsonRes.data);
+      console.log(jsonRes);
+      setTicketTypes(jsonRes);
     } catch (error) {
       console.error(error.message);
     }
