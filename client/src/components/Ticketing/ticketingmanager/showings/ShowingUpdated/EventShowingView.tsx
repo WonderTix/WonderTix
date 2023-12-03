@@ -3,7 +3,6 @@ import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
-import {getTicketTypeKeyValue} from './ShowingUtils';
 
 import {LineItem} from './LineItem';
 
@@ -80,7 +79,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
               {showing.ticketrestrictions.length !== 0 &&
                 ticketTypes &&
                 showing.ticketrestrictions
-                  .sort((a, b) => (a.tickettypeid_fk === 1 ? -1 : 1))
+                  .sort((a) => (a.tickettypeid_fk === 1 ? -1 : 1))
                   .map((type, index) => (
                     <tr
                       key={`${showing.eventinstanceid} ${type.tickettypeid_fk} ${index}`}

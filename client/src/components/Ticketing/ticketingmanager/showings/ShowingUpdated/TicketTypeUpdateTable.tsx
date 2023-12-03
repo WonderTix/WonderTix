@@ -6,7 +6,6 @@ import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
 import {
   getInstanceTicketType,
-  getTicketTypeKeyValue,
   TrashCanIcon,
 } from './ShowingUtils';
 

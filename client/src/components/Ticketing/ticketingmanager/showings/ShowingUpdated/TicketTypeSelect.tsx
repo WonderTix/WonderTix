@@ -1,5 +1,4 @@
 import React from 'react';
-import {useEvent} from './EventProvider';
 import {useField, useFormikContext} from 'formik';
 import {getTicketTypeKeyValue} from './ShowingUtils';
 

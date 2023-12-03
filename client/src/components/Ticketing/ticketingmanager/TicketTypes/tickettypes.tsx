@@ -80,7 +80,7 @@ const TicketTypes = () => {
       if (newRow.description !== prevRow.description ||
         newRow.price !== prevRow.price ||
         newRow.concessions !== prevRow.concessions) {
-        const response = await fetch(
+        await fetch(
           `${process.env.REACT_APP_API_2_URL}/ticket-type/${newRow.id}`, {
             method: 'PUT',
             headers: {
@@ -120,8 +120,6 @@ const TicketTypes = () => {
       if (!response.ok) {
         throw response;
       }
-
-      const responseData = await response.json();
     } catch (error) {
       console.log(error);
     }
