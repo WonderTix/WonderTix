@@ -188,7 +188,7 @@ const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
               description='Use this to report on all box office transactions during a particular date range (or choose "Yesterday"). The report is grouped by Payment Method and event, and includes donations and all fees.'
             />
             <ListLink
-              gradientClasses='bg-gray-500'
+              gradientClasses='bg-gradient-to-r from-yellow-500 to-green-300'
               icon={
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -207,9 +207,9 @@ const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
               }
               size='md'
               title='Performance Report'
-              route='/admin/reporting'
-              disabled={true}
-              description='Temporarily Unavailable'
+              route='/admin/reporting/performance-report'
+              disabled={false}
+              description='A sales summary for one or more specific Event Instances. The Performance Report includes the count of full price/discounted/comp/subscription/reservation tickets for the performance(s).'
             />
             <ListLink
               gradientClasses='bg-gradient-to-r from-green-500 to-blue-300'

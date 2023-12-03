@@ -19,6 +19,7 @@ import DailySalesReportMain from './components/CRM/Reporting/DailySalesReport/Da
 import DonationSummaryReportMain from './components/CRM/Reporting/DonationSummaryReport/DonationSummaryReportMain';
 import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconciliationReport';
 import TransactionSummaryReport from './components/CRM/Reporting/TransactionSummaryReport/TransactionSummaryReport';
+import PerformanceReportMain from './components/CRM/Reporting/PerformanceReport/PerformanceReportMain';
 
 /* Donor Management */
 import DmDashmain from './components/DonorManagement/DmDashmain';
@@ -133,6 +134,10 @@ const App = () => {
         <Route
           path='/admin/reporting/transaction-summary-report'
           element={<ProtectedRoute component={TransactionSummaryReport} />}
+        />
+        <Route
+          path='/admin/reporting/performance-report'
+          element={<ProtectedRoute component={PerformanceReportMain} />}
         />
         <Route
           path='/ticketing'
