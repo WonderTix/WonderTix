@@ -100,6 +100,7 @@ const AdminPurchase = () => {
         return {
           ...row,
           ...matchingEvent,
+          availableseats: null,
           eventtime: null,
           eventinstanceid: null,
           ticketRestrictionInfo: [initialTicketTypeRestriction],
@@ -123,11 +124,14 @@ const AdminPurchase = () => {
       (e) => e.eventinstanceid === eventInstanceID,
     );
 
+    // get matching event for availableseats quantity
+    const matchingEvent = eventListFull.find(
+      (event) => event.eventid === row.eventid && event.eventinstanceid === eventInstanceID,
+    );
+
     // get ticket restrictions for event instance
     const eventInstanceTicketRestrictions = allTicketRestrictions.filter(
-      (restriction) => {
-        return restriction.eventinstanceid === eventInstanceID;
-      },
+      (restriction) => restriction.eventinstanceid === eventInstanceID,
     );
 
     const updatedRows = eventData.map((r) => {
@@ -137,6 +141,7 @@ const AdminPurchase = () => {
         delete r.typeID;
         return {
           ...row,
+          availableseats: matchingEvent.availableseats,
           eventtime: selectedEventInstance?.eventtime,
           eventinstanceid: eventInstanceID,
           ticketRestrictionInfo: eventInstanceTicketRestrictions,
@@ -238,10 +243,11 @@ const AdminPurchase = () => {
 
   const handlePurchase = () => {
     if (eventData.length === 0) {
-      setDialog(true);
       setErrMsg('Cart is empty.');
+      setDialog(true);
       return;
     }
+
     for (const row of eventData) {
       if (
         !row.eventid ||
@@ -249,14 +255,36 @@ const AdminPurchase = () => {
         !row.ticketTypes ||
         typeof row.price === 'undefined'
       ) {
-        setDialog(true);
         setErrMsg('Missing selection.');
+        setDialog(true);
         return;
       }
     }
 
-    const aggregatedCartItems = {};
+    // qty selection for showing doesn't exceed available seats for showing
+    const eventInstanceQtys = {};
+    eventData.forEach((row) => {
+      if (eventInstanceQtys[row.eventinstanceid]) {
+        eventInstanceQtys[row.eventinstanceid] += 1;
+      } else {
+        eventInstanceQtys[row.eventinstanceid] = 1;
+      }
+    });
 
+    for (const eventinstanceid in eventInstanceQtys) {
+      if (Object.prototype.hasOwnProperty.call(eventInstanceQtys, eventinstanceid)) {
+        const matchingEventInstance = eventData.find((event) =>
+          event.eventinstanceid == Number(eventinstanceid),
+        );
+        if (eventInstanceQtys[eventinstanceid] > matchingEventInstance.availableseats) {
+          setErrMsg('Quantity selected for showing exceeds available seats.');
+          setDialog(true);
+          return;
+        }
+      }
+    }
+
+    const aggregatedCartItems = {};
     eventData.forEach((row) => {
       const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
       const showingDate = new Date(
@@ -281,6 +309,7 @@ const AdminPurchase = () => {
       }
     });
 
+    // qty selection for ticket type doesn't exceed available tickets for ticket type
     for (const key in aggregatedCartItems) {
       if (Object.prototype.hasOwnProperty.call(aggregatedCartItems, key)) {
         const item = aggregatedCartItems[key];
@@ -289,14 +318,10 @@ const AdminPurchase = () => {
             row.eventinstanceid === item.product_id &&
             row.typeID === item.typeID,
         );
-        const available =
-          correspondingRow.typeID === 1
-            ? correspondingRow.availableseats
-            : correspondingRow.seatsForType;
 
-        if (item.qty > available) {
+        if (item.qty > correspondingRow.seatsForType) {
+          setErrMsg('Quantity selected for ticket type exceeds available seats.');
           setDialog(true);
-          setErrMsg('Quantity selected exceeds available seats.');
           return;
         }
       }
@@ -404,9 +429,7 @@ const AdminPurchase = () => {
       width: 80,
       renderCell: (params) => (
         <span>
-          {params.row?.typeID === 1
-            ? params.row.availableseats
-            : params.row.seatsForType}
+          {params.row.seatsForType}
         </span>
       ),
     },
