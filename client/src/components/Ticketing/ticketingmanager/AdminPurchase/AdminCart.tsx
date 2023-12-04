@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import {useLocation, useNavigate} from 'react-router';
-import {EventRow} from './AdminPurchase';
+import {EventRow} from './utils/adminCommon';
 
 /**
  * Math to dollar - `$${(Math.round(x * 100) / 100).toFixed(2)}`

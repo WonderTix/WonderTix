@@ -443,15 +443,6 @@ const updateCartItem = (
   });
 
 /**
- * Checks if the ticketTypeId is General Admission - Adult (at the moment, ID=1)
- *
- * @param ticketTypeId
- */
-const isGeneralAdmissionAdult = (ticketTypeId: number): boolean => {
-  return ticketTypeId === 1;
-};
-
-/**
  * Gets a bounded range for how many tickets are available to purchase for a ticket
  * type in a given event instance. If general admission, then total available seats.
  * If any other type, then based on the limit set in ticket restriction.
@@ -463,14 +454,9 @@ const isGeneralAdmissionAdult = (ticketTypeId: number): boolean => {
  */
 const getTicketQuantityRange = (state: ticketingState, eventInstanceId: number, ticketTypeId: number, ticket: Ticket) => {
   const eventInstanceAvailableSeats = ticket.availableseats;
-
-  if (isGeneralAdmissionAdult(ticketTypeId)) {
-    return bound(0, eventInstanceAvailableSeats);
-  } else {
-    const ticketRestriction = state.ticketrestrictions.find(byId(eventInstanceId, ticketTypeId));
-    const ticketRestrictionAvailableSeats = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
-    return bound(0, Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats));
-  }
+  const ticketRestriction = state.ticketrestrictions.find(byId(eventInstanceId, ticketTypeId));
+  const ticketRestrictionAvailableSeats = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
+  return bound(0, Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats));
 };
 
 /**
