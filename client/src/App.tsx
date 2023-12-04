@@ -1,6 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-
 /* CRM */
 import React from 'react';
 import {Routes, Route} from 'react-router-dom';
@@ -31,6 +28,7 @@ import Cartmain from './components/Ticketing/cart/Cartmain';
 import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
 import CheckoutSuccess from './components/Ticketing/checkout/CheckoutSuccess';
 import Donationmain from './components/Ticketing/donation/Donationmain';
+
 /* Ticketing Manager */
 import DoorListmain from './components/Ticketing/ticketingmanager/DoorList/DoorListmain';
 import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
@@ -147,8 +145,12 @@ const App = () => {
           element={<ProtectedRoute component={NewsletterCreatemain} />}
         />
         <Route
-          path='/ticketing/showings'
+          path='/ticketing/events'
           element={<ProtectedRoute component={Showingsmain} />}
+        />
+        <Route
+          path='/ticketing/events/:eventid'
+          element={<ProtectedRoute component={EventProvider} />}
         />
         <Route
           path='/ticketing/seasons'
@@ -167,10 +169,6 @@ const App = () => {
           element={<ProtectedRoute component={TicketExchangesmain} />}
         />
         <Route
-          path='/ticketing/showings/:eventid'
-          element={<ProtectedRoute component={EventProvider} />}
-        />
-        <Route
           path='/ticketing/purchaseticket'
           element={<ProtectedRoute component={AdminPurchasemain} />}
         />
@@ -179,7 +177,7 @@ const App = () => {
           element={<ProtectedRoute component={AdminCheckoutmain} />}
         />
         <Route
-          path='/ticketing/Refund'
+          path='/ticketing/refund'
           element={<ProtectedRoute component={RefundOrdersMain} />}
         />
         <Route path='*' element={<PageNotFound />} />

@@ -43,19 +43,17 @@ Future features include managing/creating email campaigns and ticket exchanges.
       1. Obtain access to the wtix-dev Auth0 account. 
       2. Go to Applications > Applications > Default App
       3. Use a secure note transfer service to send the Client ID and Client Secret to your team members. 
-3. Create mkcert certificate
-   1. Navigate to `<path/to/WonderTix/server>` 
-   2. Run `mkcert -install` to install the local certificate authority
+3. Create mkcert certificates
+   1. Navigate to `<path/to/WonderTix/server>` and `<path/to/WonderTix/client>`
+   2. Run `mkcert -install` to install the local certificate authority.
    3. Run `mkcert localhost` to create a certificate.   
 4. Run `docker-compose up -d`
 5. To test the checkout process with Stripe, make sure the Stripe CLI is installed.
    1. Run `stripe login` and press enter to accept access. This only needs to be done once.
    2. Run `stripe listen --forward-to https://localhost:8000/api/2/order/webhook --events checkout.session.completed,checkout.session.expired` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
-            - Please note that stripe listen must remain running in order for the checkout process to complete. 
-6. The client will be available at <https://localhost:3000>
-   1. You will need to accept the self-signed certificate. In chrome click anywhere on the page and type `thisisunsafe`. This will allow you to continue to the site.
-7. The server will be available at <https://localhost:8000>
-8. The swagger docs will be available at <https://localhost:8000/api/docs>
+     - Please note that stripe listen must remain running in order for the checkout process to complete.
+6. The server will be available at <https://localhost:8000>
+7. The swagger docs will be available at <https://localhost:8000/api/docs>
    1. To log in to swagger, login to the client and copy the value of the `access_token` from the request to `<AUTH0_URL>/oath/token`. Paste this value into the `Authorize` dialog in swagger.
 
 ## Connecting to the database
@@ -75,8 +73,8 @@ Future features include managing/creating email campaigns and ticket exchanges.
 
 Open the folder where you cloned your repository to then:
 
-1. Double click the `WonderTix.code-workspace` file to open it in VSCode
-2. You can click `File -> Open Workspace from File...` to open it if VSCode is open already
+1. Double-click the `WonderTix.code-workspace` file to open it in VSCode.
+2. You can click `File -> Open Workspace from File...` to open it if VSCode is open already.
 
 Once it is open, you will notice 4 folders in the Explorer pane on the left side of the screen.
 
@@ -87,7 +85,7 @@ Here you will see:
 3. `WonderTix Client`: The folder containing the frontend/client code
 4. `WonderTix Deploy`: The folder containing the deployment/terraform code
 
-This allows VSCode to keep your files organized, as well as getting the Jest tests running properly. Simply double click a folder for the project you want to work on and everything will run in that particular project, including opening a new terminal.
+This allows VSCode to keep your files organized, as well as getting the Jest tests running properly. Simply double-click a folder for the project you want to work on and everything will run in that particular project, including opening a new terminal.
 
 ### Using Swagger:
 1. To get the bearer token, create a user by going through the signup process in WonderTix.
@@ -95,7 +93,7 @@ This allows VSCode to keep your files organized, as well as getting the Jest tes
    - Team Leads: In the User section of Auth0, you can grant individual users an admin role.
 2. Log into the client.
 3. Once you're logged in, open the dev tools menu (Chrome), refresh the page, and find the `token` in the Network tab.
-4. Go to the Preview section for that token and then right click on the `access_token` and `Copy string contents`.
+4. Go to the Preview section for that token and then right-click on the `access_token` and `Copy string contents`.
 5. Paste that into the bearerAuth input after clicking the "Authorize" button within Swagger (https://localhost:8000/api/docs).
 
 ## Troubleshooting
@@ -112,13 +110,12 @@ If that does not work, you can try `docker-compose down`, `docker-compose build 
 
 This section covers the Playwright automated testing setup that has been configured for this project. Currently, the `./client/` directory is the only part with Playwright setup. The `./server/` folder will get it later once authentication issues have been resolved (Currently reworking the server tests to work without the need to connect to Auth0 as we will blow through the limit for API calls in no time as it currently does 2-5 Auth0 API requests per test and 2 times per login/page refresh).
 
-Before you begin running tests, make sure you have a TEST_EMAIL and TEST_PASSWORD set in your `.env`. Please refer to the `.env.dist` example. This will allow the `auth.setep.ts` test setup file to authenticate and save the authenticated browser context locally to be used for subsequent
-tests.
+Before you begin running tests, make sure you have a TEST_EMAIL and TEST_PASSWORD set in your `.env`. Please refer to the `.env.dist` example. This will allow the `auth.setep.ts` test setup file to authenticate and save the authenticated browser context locally to be used for subsequent tests.
 
 Here is how you run the playwright tests (once they have been written, currently there is an example test in `./client/tests/` and an example Page Object Modle style setup for playwright tests in `./client/tests-examples/`:
 
-- While in the `./client` folder, type `npm run test:playwright`. This will start the playwright tests using Chromium, Firefox, and Webkit (Safari)o
-    - In the future, the command will become `npm run test` once we replace the current react tests
+- While in the `./client` folder, type `npm run test:playwright`. This will start the playwright tests using Chromium, Firefox, and Webkit (Safari).
+  - In the future, the command will become `npm run test` once we replace the current react tests.
 - You can use the Code Generator to record your steps as you interact with a webpage to make a simple test. Simply run the following: `npm run codegen`. This will automatically open your browser and a recording window. The URL will be `https://localhost:3000`. From there, as you interact with the page, the recorder window will record your steps. You simply copy and paste that into a new test file in the `./client/tests/<test type folder>/testname.spec.ts`. It is important to note that all test file *must* end with `*.spec.ts` and be within the `./client/tests/` folder/subfolder.
 - You can view a trace (recording of the test) by typing `npx playwright show-trace test-results/<folder for test trace>/trace.zip` and a window will open that will let you step through all of the tests steps to see where it failed or is flaky.
 

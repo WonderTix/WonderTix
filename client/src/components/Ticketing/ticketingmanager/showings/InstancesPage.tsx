@@ -16,7 +16,7 @@ import {
   EventImage,
   getImageDefault,
 } from '../../../../utils/imageURLValidation';
-import ShowingActivenessToggle from '../../GroupToggle';
+import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 
 /**
  * Uses dispatch, navigate, allEvents, and getData
@@ -82,7 +82,7 @@ const InstancesPage = (): ReactElement => {
             Add Event
           </button>
         </div>
-        <ShowingActivenessToggle
+        <ActivenessGroupToggle
           defaultValue={filterSetting}
           handleFilterChange={setFilterSetting}
         />

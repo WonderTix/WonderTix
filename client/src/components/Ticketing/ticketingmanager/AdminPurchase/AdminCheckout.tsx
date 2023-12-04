@@ -3,7 +3,7 @@
 import {
   removeAllTicketsFromCart,
   selectDiscount,
-} from '../ticketing/ticketingSlice';
+} from '../ticketingSlice';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement} from 'react';

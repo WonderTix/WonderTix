@@ -118,7 +118,7 @@ const TicketTypes = () => {
 
       const responseData = await response.json();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setConfirmDeleteData(null);
     // refreshes the page ie re-renders the table

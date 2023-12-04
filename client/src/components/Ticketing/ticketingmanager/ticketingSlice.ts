@@ -4,9 +4,9 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import {RootState} from '../../app/store';
+import {RootState} from '../app/store';
 import format from 'date-fns/format';
-import {bound, titleCase} from '../../../../utils/arrays';
+import {bound, titleCase} from '../../../utils/arrays';
 
 /**
  * Amount of tickets in the cart
@@ -191,14 +191,14 @@ const fetchData = async (url: string) => {
   try {
     const res = await fetch(url);
       if (!res.ok) {
-          throw res;
+        throw res;
       }
     return await res.json();
   } catch (err) {
-      if (err instanceof Response) {
-          console.error(await err.json());
-          return;
-      }
+    if (err instanceof Response) {
+      console.error(await err.json());
+      return;
+    }
     console.error(err.message);
   }
 };
@@ -252,40 +252,6 @@ export const fetchDiscountData = createAsyncThunk(
       minTickets: discountArray[0].min_tickets,
       minEvents: discountArray[0].min_events,
     };
-
-    console.log('Discount returned:', discountArray[0]);
-
-    // Check date (after startDate and before EndDate)
-    const nowDate = new Date(Date.now());
-    const now = Number(
-      nowDate.getFullYear().toString() +
-        (nowDate.getMonth() + 1).toString() +
-        nowDate.getDate().toString(),
-    );
-    console.log('Current date in db format:', now);
-
-    const start = discountArray[0].startdate;
-    const end = discountArray[0].enddate;
-    console.log('Start:', start);
-    console.log('End:', end);
-
-    if (end && end < now) {
-      console.log('EndDate is before now!');
-      return;
-    }
-    if (start && start > now) {
-      console.log('StartDate is after now!');
-      return;
-    }
-
-    // Check min tickets
-    console.log('Min tickets:', discount.minTickets);
-
-    // Check min events
-    console.log('Min events:', discount.minEvents);
-
-    // Check number of uses limit (???)
-    console.log('Usage limit:', discountArray[0].usagelimit);
 
     return {discount};
   },

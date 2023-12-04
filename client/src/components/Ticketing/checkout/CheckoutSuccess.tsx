@@ -11,7 +11,7 @@ export default function CheckoutSuccess(): ReactElement {
 
   return (
     <div className='w-full h-screen flex items-center justify-center font-bold bg-zinc-200'>
-      <section className='flex flex-col items-center gap-5 bg-zinc-100 p-7 rounded-lg shadow-xl mx-3'>
+      <section className='flex flex-col items-center gap-5 bg-zinc-100 p-7 rounded-lg shadow-xl mx-4'>
         <h1 className='flex flex-col items-center text-center text-2xl text-zinc-800 tab:flex-row tab:text-left gap-x-2 gap-y-1'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -30,7 +30,7 @@ export default function CheckoutSuccess(): ReactElement {
         </h1>
         <button
           onClick={() => navigate('/')}
-          className='bg-blue-500 px-5 py-3 text-white font-medium rounded-full hover:bg-blue-600'
+          className='bg-blue-500 px-5 py-2.5 text-white font-medium rounded-full hover:bg-blue-600'
         >
           Back to Home
         </button>
