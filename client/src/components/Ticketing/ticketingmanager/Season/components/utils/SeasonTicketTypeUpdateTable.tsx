@@ -4,6 +4,7 @@ import {SeasonTicketValues, seasonTicketDefaultValues} from './seasonCommon';
 
 interface SeasonTicketTypeUpdateTableProps {
   seasonTicketTypeData: SeasonTicketValues[];
+  onUpdate: (updatedData: SeasonTicketValues[]) => void;
 }
 export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTableProps) => {
   const {seasonTicketTypeData} = props;
@@ -28,6 +29,10 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
 
   const handleAddTicketType = () => {
     setCurrentSeasonTicketTypeData((prevData) => [...prevData, seasonTicketDefaultValues]);
+  };
+
+  const handleFormSubmit = () => {
+    props.onUpdate(currentSeasonTicketTypeData);
   };
 
   return (

@@ -83,20 +83,6 @@ const SeasonContainer = () => {
       console.error(error);
     }
   };
-  // testing purpose below
-  const requestData = [
-    {
-      'tickettypeid_fk': 1,
-      'price': 99,
-      'concessionprice': 88,
-    },
-    {
-      'tickettypeid_fk': 2,
-      'price': 99,
-      'concessionprice': 88,
-    },
-  ];
-  // end
   const handleUpdateSeasonTicketType = async (requestData) => {
     try {
       const seasonUpdateTicketTypeRes = await fetch(
@@ -125,11 +111,11 @@ const SeasonContainer = () => {
   };
 
   useEffect(() => {
-    const handleUpdateAndRefresh = async () => {
+    const handleUpdateAndRefresh = async (requestData) => {
       await handleUpdateSeasonTicketType(requestData);
       await handleGetAllEvents();
     };
-    handleUpdateAndRefresh();
+    handleUpdateAndRefresh(); // this line needs to be fixed
     handleGetSeasonTicketType();
   }, []);
 
@@ -145,6 +131,7 @@ const SeasonContainer = () => {
             setSeasonId={setSeasonId}
             setIsFormEditing={setIsFormEditing}
             seasonTicketTypeData={seasonTicketTypeData}
+            onUpdateSeasonTicketType={handleUpdateSeasonTicketType}
 
           />
           <SeasonEvents

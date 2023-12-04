@@ -9,12 +9,12 @@ import {
   deleteSeasonInfo,
   updateEventSeason,
 } from './utils/apiRequest';
-import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
+import {seasonDefaultValues, SeasonProps, SeasonTicketValues} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 import {SeasonTicketTypeUpdateTable} from './utils/SeasonTicketTypeUpdateTable';
 
-const SeasonInfo = (props: SeasonProps) => {
+const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData: any) => Promise<void> }) => {
   const {
     seasonId,
     isFormEditing,
@@ -32,7 +32,7 @@ const SeasonInfo = (props: SeasonProps) => {
   const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<
     boolean | undefined
   >();
-
+  const [updatedTicketData, setUpdatedTicketData] = useState<SeasonTicketValues[]>([]);
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
 
@@ -51,6 +51,10 @@ const SeasonInfo = (props: SeasonProps) => {
       setSeasonValues(fetchedSeasonInfo);
       setTempImageUrl(getSeasonImage(fetchedImage));
     }
+  };
+
+  const handleTicketTypeUpdate = (updatedTicketTypeData: SeasonTicketValues[]) => {
+    setUpdatedTicketData(updatedTicketTypeData);
   };
 
   const handleCreateNewSeason = async (reqObject: RequestBody) => {
@@ -106,7 +110,7 @@ const SeasonInfo = (props: SeasonProps) => {
     }
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
     // formatting request body for POST and PUT request
@@ -115,6 +119,7 @@ const SeasonInfo = (props: SeasonProps) => {
       startdate: Number(startdate.replaceAll('-', '')),
       enddate: Number(enddate.replaceAll('-', '')),
       imageurl: imageurl === '' ? 'Default Season Image' : imageurl,
+      ticketData: updatedTicketData,
     };
 
     setIsFormEditing(false);
@@ -122,6 +127,23 @@ const SeasonInfo = (props: SeasonProps) => {
       void handleCreateNewSeason(reqObject);
     } else {
       void handleUpdateSeason(reqObject);
+  // testing purpose below
+  const requestData = [
+    {
+      'tickettypeid_fk': 1,
+      'price': 99,
+      'concessionprice': 88,
+    },
+    {
+      'tickettypeid_fk': 2,
+      'price': 99,
+      'concessionprice': 88,
+    },
+  ];
+  // end
+      if (props.onUpdateSeasonTicketType) {
+        await props.onUpdateSeasonTicketType(requestData);
+      }
     }
   };
 
@@ -257,6 +279,7 @@ const SeasonInfo = (props: SeasonProps) => {
           <div className='flex flex-col justify-center m-auto col-span-12 lg:col-span-8 rounded-lg p-3 w-[100%] h-[100%]'>
             <SeasonTicketTypeUpdateTable
               seasonTicketTypeData={seasonTicketTypeData}
+              onUpdate={handleTicketTypeUpdate}
             />
           </div>
         </div>
