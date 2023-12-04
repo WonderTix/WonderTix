@@ -1,15 +1,6 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-import React, {useState} from 'react';
-import {Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
+import React, {useEffect, useState} from 'react';
 import format from 'date-fns/format';
+import {Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
 
 /**
  * EventInstanceSelectProps holds tickets, showings and such
@@ -26,32 +17,38 @@ interface EventInstanceSelectProps {
  * @param {EventInstanceSelectProps} props
  * @returns the selection of date and others once clicked
  */
-const EventInstanceSelect = (props: EventInstanceSelectProps) => {
+const EventInstanceSelect = ({check, eventInstances, eventInstanceSelected}: EventInstanceSelectProps) => {
   const [selectedId, setSelectedId] = useState(-1);
+
+  useEffect(() => {
+    if (check === 'selectTime') {
+      setSelectedId(-1);
+    }
+  }, [check]);
 
   const handleClick = (id: number) => {
     setSelectedId(id);
-    const eventInstance = props.eventInstances.find((obj) => {
-      return obj.event_instance_id === id;
-    });
-    if (props.eventInstanceSelected) props.eventInstanceSelected(eventInstance);
+    const eventInstance = eventInstances.find((obj) => obj.event_instance_id === id);
+    if (eventInstanceSelected) {
+      eventInstanceSelected(eventInstance);
+    }
   };
 
   return (
     <select
-      defaultValue={0}
-      onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void =>
+      value={selectedId}
+      onChange={(ev): void =>
         handleClick(parseFloat(ev.target.value))
       }
       className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl'
       id='time-select'
     >
-      <option className='text-zinc-300' disabled value={0}>
+      <option className='text-zinc-300' disabled value={-1}>
         select time
       </option>
-      {props.eventInstances.map((s) => (
-        <option key={s.event_instance_id} value={s.event_instance_id}>
-          {format(new Date(s.date), 'hh:mm a')}
+      {eventInstances.map((ticket) => (
+        <option key={ticket.event_instance_id} value={ticket.event_instance_id}>
+          {format(new Date(ticket.date), 'hh:mm a')}
         </option>
       ))}
     </select>

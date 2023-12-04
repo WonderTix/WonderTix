@@ -69,6 +69,9 @@ export interface Ticket {
  * @param {number} id
  * @param {number} eventinstanceid
  * @param {number} tickettypeid
+ * @param {string} description
+ * @param {string} concessionprice
+ * @param {string} price
  * @param {number} ticketlimit
  * @param {number?} ticketssold
  */
@@ -76,6 +79,9 @@ export interface TicketRestriction {
   id: number;
   eventinstanceid: number;
   tickettypeid: number;
+  description: string;
+  concessionprice: string;
+  price: string;
   ticketlimit: number;
   ticketssold?: number;
 }
@@ -184,8 +190,15 @@ export interface ticketingState {
 const fetchData = async (url: string) => {
   try {
     const res = await fetch(url);
+      if (!res.ok) {
+          throw res;
+      }
     return await res.json();
   } catch (err) {
+      if (err instanceof Response) {
+          console.error(await err.json());
+          return;
+      }
     console.error(err.message);
   }
 };
@@ -199,13 +212,10 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
   'ticketing/fetch',
   async () => {
-    const eventData = await fetchData(process.env.REACT_APP_API_1_URL + '/events');
-    const events: Event[] = eventData.data;
+    const events: Event[] = await fetchData(process.env.REACT_APP_API_2_URL + '/events/slice');
+    const ticketRestrictions: TicketRestriction[] = await fetchData(process.env.REACT_APP_API_2_URL + '/ticket-restriction');
 
-    const restrictionData = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets/restrictions');
-    const ticketRestrictions: TicketRestriction[] = restrictionData.data;
-
-    const ticketState: TicketsState = await fetchData(process.env.REACT_APP_API_1_URL + '/tickets');
+    const ticketState: TicketsState = await fetchData(process.env.REACT_APP_API_2_URL + '/event-instance/tickets');
     const tickets = Object.entries(ticketState.data.byId).reduce(
       (res, [key, val]) => ({
         ...res,
@@ -433,15 +443,6 @@ const updateCartItem = (
   });
 
 /**
- * Checks if the ticketTypeId is General Admission - Adult (at the moment, ID=1)
- *
- * @param ticketTypeId
- */
-const isGeneralAdmissionAdult = (ticketTypeId: number): boolean => {
-  return ticketTypeId === 1;
-};
-
-/**
  * Gets a bounded range for how many tickets are available to purchase for a ticket
  * type in a given event instance. If general admission, then total available seats.
  * If any other type, then based on the limit set in ticket restriction.
@@ -453,14 +454,9 @@ const isGeneralAdmissionAdult = (ticketTypeId: number): boolean => {
  */
 const getTicketQuantityRange = (state: ticketingState, eventInstanceId: number, ticketTypeId: number, ticket: Ticket) => {
   const eventInstanceAvailableSeats = ticket.availableseats;
-
-  if (isGeneralAdmissionAdult(ticketTypeId)) {
-    return bound(0, eventInstanceAvailableSeats);
-  } else {
-    const ticketRestriction = state.ticketrestrictions.find(byId(eventInstanceId, ticketTypeId));
-    const ticketRestrictionAvailableSeats = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
-    return bound(0, Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats));
-  }
+  const ticketRestriction = state.ticketrestrictions.find(byId(eventInstanceId, ticketTypeId));
+  const ticketRestrictionAvailableSeats = ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
+  return bound(0, Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats));
 };
 
 /**
@@ -577,7 +573,7 @@ export const INITIAL_STATE: ticketingState = {
   cart: [],
   tickets: {data: {byId: {}, allIds: []}},
   ticketrestrictions: [],
-  tickettype: {id: 0, name: '', price: '', concessions: ''},
+  tickettype: {id: -1, name: '', price: '', concessions: ''},
   events: [],
   status: 'idle',
   discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},

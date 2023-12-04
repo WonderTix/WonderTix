@@ -1,41 +1,37 @@
 import {Field, useField} from 'formik';
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
-import {getTicketTypePrice} from './ShowingUtils';
+import {
+  getInstanceTicketType,
+  getTicketTypeKeyValue,
+  TrashCanIcon,
+} from './ShowingUtils';
 
 interface TicketTypeTableProps {
   arrayHelpers;
   eventInstanceID: number;
 }
-
 export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
   const {ticketTypes, showPopUp} = useEvent();
   const [InstanceTicketTypesField] = useField('instanceTicketTypes');
-  const [totalTickets] = useField('totalseats');
-  const [ticketPrice, setTicketPrices] = useState(getTicketTypePrice(1, 'price', ticketTypes));
-  const [concessionPrices, setConcessionPrices] = useState(getTicketTypePrice(1, 'concessions', ticketTypes));
+  const [defaulttickettype] = useField('defaulttickettype');
+  const defaultTypeIndex = InstanceTicketTypesField.value.findIndex(
+    (item) => item.tickettypeid_fk === defaulttickettype.value,
+  );
   const [availableTypes, setAvailableTypes] = useState(
     ticketTypes
       .filter(
         (type) =>
-          !InstanceTicketTypesField.value.find((value) => value.typeID === Number(type.id)) && Number(type.id) !== 1,
+          !InstanceTicketTypesField.value.some(
+            (res) => res.tickettypeid_fk === +type.tickettypeid_fk,
+          ),
       )
-      .map((value) => Number(value.id)),
+      .map((type) => type.tickettypeid_fk),
   );
-
-  // Temporary methods to change prices for Adult General Admission and Concession
-  const handlePriceChange = (newPrice) => {
-    setTicketPrices(newPrice);
-  };
-
-  const handleConcessionPrices = (newValue) => {
-    setConcessionPrices(newValue);
-  };
-
   return (
     <div
       className={
@@ -67,14 +63,10 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                   size={'small'}
                   aria-label={'add ticket type'}
                   onClick={async () => {
-                    console.log('Before insert, ', availableTypes);
-                    arrayHelpers.insert(0, {
-                      typeID: availableTypes[0],
-                      typePrice: getTicketTypePrice(availableTypes[0], 'price', ticketTypes),
-                      typeConcessionPrice: getTicketTypePrice(availableTypes[0], 'concessions', ticketTypes),
-                      typeQuantity: 0,
-                    });
-                    console.log('After insert, ', availableTypes);
+                    arrayHelpers.insert(
+                      0,
+                      getInstanceTicketType(availableTypes[0], ticketTypes),
+                    );
                     setAvailableTypes(
                       availableTypes.slice(1, availableTypes.length),
                     );
@@ -105,133 +97,145 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
           </tr>
         </thead>
         <tbody className={'text-sm whitespace-nowrap text-zinc-800'}>
-          <tr className={'bg-gray-200'}>
-            <td className={'px-2 border border-white'}>
-              {getTicketTypePrice(1, 'description', ticketTypes)}
-            </td>
-            <td className={'px-2 border border-white'}>
-              <input
-                className='w-[75px] bg-gray-100'
-                type='text'
-                value={ticketPrice}
-                onChange={(e) => handlePriceChange(e.target.value)}
+          {defaultTypeIndex > -1 && (
+            <tr className={'bg-gray-200'}>
+              <td className={'px-2 border border-white'}>
+                {getTicketTypeKeyValue(1, 'description', ticketTypes)}
+              </td>
+              <td className={'px-2 border border-white'}>
+                <Field
+                  name={`${InstanceTicketTypesField.name}[${defaultTypeIndex}].price`}
+                  type={'number'}
+                  component={InputControl}
+                  hidden={true}
+                  label={'Ticket Price'}
+                  currency={true}
+                  className={{
+                    controlClass: '',
+                    inputClass: 'w-[75px] bg-gray-200',
+                    labelClass: '',
+                  }}
                 />
-            </td>
-            <td className={'px-2 border border-white'}>
-              <input
-                className='w-[75px] bg-gray-100'
-                type='text'
-                value={concessionPrices}
-                onChange={(e) => handleConcessionPrices(e.target.value)}
+              </td>
+              <td className={'px-2 border border-white'}>
+                <Field
+                  name={`${InstanceTicketTypesField.name}[${defaultTypeIndex}].concessionprice`}
+                  type={'number'}
+                  component={InputControl}
+                  hidden={true}
+                  label={'Concession Price'}
+                  currency={true}
+                  className={{
+                    controlClass: '',
+                    inputClass: 'w-[75px] bg-gray-200',
+                    labelClass: '',
+                  }}
                 />
-            </td>
-            <td className={'px-2 border border-white'}>
-              {totalTickets.value}
-            </td>
-            <td className={'border border-white'}></td>
-          </tr>
-          {InstanceTicketTypesField.value && InstanceTicketTypesField.value.length > 0 &&(
-            InstanceTicketTypesField.value.map((id, index) => (
-              <tr key={eventInstanceID + index + 'ticketTypeRow'}>
-                <td
-                  key={eventInstanceID + index + 'ticket type select'}
-                  className={'px-2'}
-                >
-                  <Field
-                    name={`${InstanceTicketTypesField.name}[${index}].typeID`}
-                    type={'select'}
-                    component={TicketTypeSelect}
-                    availableTypes={availableTypes}
-                    setAvailableTypes={setAvailableTypes}
-                    id={eventInstanceID}
-                    index={index}
-                  />
-                </td>
-                <td
-                  key={eventInstanceID + index + 'ticket type price'}
-                  className={'px-2'}
-                >
-                  <Field
-                    name={`${InstanceTicketTypesField.name}[${index}].typePrice`}
-                    type={'text'}
-                    component={InputControl}
-                    hidden={true}
-                    label={'Ticket Price'}
-                    id={eventInstanceID}
-                    className={{
-                      controlClass: '',
-                      inputClass: 'w-[75px]',
-                      labelClass: '',
-                    }}
-                  />
-                </td>
-                <td
-                  key={eventInstanceID + index + 'ticket concession price'}
-                  className={'px-2'}
-                >
-                  <Field
-                    name={`${InstanceTicketTypesField.name}[${index}].typeConcessionPrice`}
-                    type={'text'}
-                    component={InputControl}
-                    hidden={true}
-                    label={'Concession Price'}
-                    id={eventInstanceID}
-                    className={{
-                      controlClass: '',
-                      inputClass: 'w-[75px]',
-                      labelClass: '',
-                    }}
-                  />
-                </td>
-                <td
-                  key={eventInstanceID + index + 'ticket type quantity'}
-                  className={'px-2'}
-                >
-                  <Field
-                    name={`${InstanceTicketTypesField.name}[${index}].typeQuantity`}
-                    type={'number'}
-                    component={InputControl}
-                    hidden={true}
-                    label={'Ticket Quantity'}
-                    id={eventInstanceID}
-                    className={{
-                      controlClass: '',
-                      inputClass: 'w-[50px]',
-                      labelClass: '',
-                    }}
-                  />
-                </td>
-                <td>
-                  <IconButton
-                    size={'small'}
-                    aria-label={'delete ticket type'}
-                    onClick={() => {
-                      setAvailableTypes([
-                        ...availableTypes,
-                        Number(InstanceTicketTypesField.value[index].typeID),
-                      ]);
-                      arrayHelpers.remove(index);
-                    }}
-                  >
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='w-4 h-4 text-red-700'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
-                      />
-                    </svg>
-                  </IconButton>
-                </td>
-              </tr>
-            ))
+              </td>
+              <td className={'px-2 border border-white'}>
+                {InstanceTicketTypesField.value[defaultTypeIndex].ticketlimit}
+              </td>
+              <td className={'border border-white'}></td>
+            </tr>
           )}
+          {InstanceTicketTypesField.value?.length > 0 &&
+            InstanceTicketTypesField.value.map((type, index) => {
+              if (index === defaultTypeIndex) return undefined;
+              return (
+                <tr key={eventInstanceID + index + 'ticketTypeRow'}>
+                  <td
+                    key={eventInstanceID + index + 'ticket type select'}
+                    className={'px-2'}
+                  >
+                    <Field
+                      name={`${InstanceTicketTypesField.name}[${index}].tickettypeid_fk`}
+                      type={'select'}
+                      component={TicketTypeSelect}
+                      availableTypes={availableTypes}
+                      setAvailableTypes={setAvailableTypes}
+                      index={index}
+                    />
+                  </td>
+                  <td
+                    key={eventInstanceID + index + 'ticket type price'}
+                    className={'px-2'}
+                  >
+                    <Field
+                      name={`${InstanceTicketTypesField.name}[${index}].price`}
+                      type={'number'}
+                      component={InputControl}
+                      hidden={true}
+                      disabled={
+                        InstanceTicketTypesField.value[index].tickettypeid_fk ==
+                        0
+                      }
+                      label={'Ticket Price'}
+                      currency={true}
+                      className={{
+                        controlClass: '',
+                        inputClass: 'w-[75px]',
+                        labelClass: '',
+                      }}
+                    />
+                  </td>
+                  <td
+                    key={eventInstanceID + index + 'ticket concession price'}
+                    className={'px-2'}
+                  >
+                    <Field
+                      name={`${InstanceTicketTypesField.name}[${index}].concessionprice`}
+                      type={'number'}
+                      component={InputControl}
+                      hidden={true}
+                      label={'Concession Price'}
+                      currency={true}
+                      className={{
+                        controlClass: '',
+                        inputClass: 'w-[75px]',
+                        labelClass: '',
+                      }}
+                    />
+                  </td>
+                  <td
+                    key={eventInstanceID + index + 'ticket type quantity'}
+                    className={'px-2'}
+                  >
+                    <Field
+                      name={`${InstanceTicketTypesField.name}[${index}].ticketlimit`}
+                      type={'number'}
+                      component={InputControl}
+                      hidden={true}
+                      label={'Ticket Quantity'}
+                      className={{
+                        controlClass: '',
+                        inputClass: 'w-[50px]',
+                        labelClass: '',
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <IconButton
+                      size={'small'}
+                      aria-label={'delete ticket type'}
+                      onClick={() => {
+                        setAvailableTypes([
+                          ...availableTypes,
+                          Number(
+                            InstanceTicketTypesField.value[index]
+                              .tickettypeid_fk,
+                          ),
+                        ]);
+                        arrayHelpers.remove(index);
+                      }}
+                    >
+                      <TrashCanIcon
+                          className='w-4 h-4 text-red-700'
+                      />
+                    </IconButton>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>

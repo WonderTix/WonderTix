@@ -11,14 +11,32 @@ export const EventGeneralContainer = () => {
   const navigate = useNavigate();
   const [edit, setEdit] = useState(!eventID);
 
+  const updateEvent = async (event) => {
+    const res = await event.json();
+    setEventData(res);
+    setEventID(res.eventid);
+    setEdit(false);
+    setEditing(false);
+    return res.eventid;
+  };
+
   const onUpdateSuccess = async (newEvent) => {
     try {
-      const res = await newEvent.json();
-      setEventData(res);
-      setEventID(res.eventid);
-      setEdit((edit) => !edit);
-      setEditing((edit) => !edit);
-      setPopUpProps(`Success`, 'Event update successful', true, `update-modal-event-id-${res.eventid}`);
+      const eventID = await updateEvent(newEvent);
+      setPopUpProps(
+          `Success`,
+          'Event update successful',
+          true,
+          `update-modal-event-id-${eventID}`,
+      );
+    } catch (error) {
+      console.error('error updating event');
+    }
+  };
+
+  const onUpdateSuccessActiveOnly = async (newEvent) => {
+    try {
+      await updateEvent(newEvent);
     } catch (error) {
       console.error('error updating event');
     }
@@ -26,15 +44,15 @@ export const EventGeneralContainer = () => {
 
   const onCreateSuccess = async (newEvent) => {
     try {
-      const res = await newEvent.json();
-      navigate(`/ticketing/showings/${res.eventid}`);
-      setEventData(res);
-      setEventID(res.eventid);
-      setEdit((edit) => !edit);
-      setEditing((edit) => !edit);
-      setPopUpProps(`Success`, 'Event creation successful', true, `create-modal-event-id-${res.eventid}`);
+      const eventID = await updateEvent(newEvent);
+      navigate(`/ticketing/showings/${eventID}`);
+      setPopUpProps(
+        `Success`,
+        'Event creation successful',
+        true,
+        `create-modal-event-id-${eventID}`,
+      );
     } catch (error) {
-      console.log(error);
       console.error('error updating event after creation');
     }
   };
@@ -43,9 +61,15 @@ export const EventGeneralContainer = () => {
       const res = await event.json();
       setPopUpProps(`Failure`, res.error, false, `failure-modal`);
     } catch (error) {
-      setPopUpProps(`Failure`, 'Event update failed', false, `failure-update-modal-event-id-${eventID}`);
+      setPopUpProps(
+        `Failure`,
+        'Event update failed',
+        false,
+        `failure-update-modal-event-id-${eventID}`,
+      );
     }
   };
+
   const onDeleteSuccess = () => {
     navigate(`/ticketing/showings`);
   };
@@ -55,17 +79,14 @@ export const EventGeneralContainer = () => {
       const res = await event.json();
       setPopUpProps(`Failure`, res.error, false, `failure-modal`);
     } catch (error) {
-      setPopUpProps(`Failure`, 'Event cannot be deleted', false, `failure-delete-modal-event-id-${eventID}`);
+      setPopUpProps(
+        `Failure`,
+        'Event cannot be deleted',
+        false,
+        `failure-delete-modal-event-id-${eventID}`,
+      );
     }
   };
-
-  const onSubmit = createSubmitFunction(
-    eventID === 0 ? 'POST' : 'PUT',
-    `${process.env.REACT_APP_API_2_URL}/events`,
-    token,
-    eventID ? onUpdateSuccess : onCreateSuccess,
-    onSubmitError,
-  );
 
   const onDelete = createDeleteFunction(
     'DELETE',
@@ -74,30 +95,42 @@ export const EventGeneralContainer = () => {
     onDeleteSuccess,
     onDeleteError,
   );
-  const onConfirmDelete = () => {
-    setPopUpProps('Confirm deletion',
-      'Click continue to delete this event',
-      false,
-      `delete-modal-event-id-${eventID}`,
-      async () => await onDelete(),
-    );
-  };
+
   return (
     <>
-      {
-        edit ?
-          <EventGeneralForm
-            onSubmit={onSubmit}
-            onDelete={onConfirmDelete}
-            onLeaveEdit={() => {
-              setEdit((edit) => !edit);
-              setEditing((edit) => !edit);
-            }}
-          />:
+      {edit ? (
+        <EventGeneralForm
+          onSubmit={createSubmitFunction(
+              eventID === 0 ? 'POST' : 'PUT',
+              `${process.env.REACT_APP_API_2_URL}/events`,
+              token,
+              eventID ? onUpdateSuccess : onCreateSuccess,
+              onSubmitError,
+          )}
+          onLeaveEdit={() => {
+            setEdit((edit) => !edit);
+            setEditing((edit) => !edit);
+          }}
+        />
+      ) : (
           <EventGeneralView
-            setEdit={setEdit}
+              onSubmitActiveOnly={createSubmitFunction(
+                  'PUT',
+                  `${process.env.REACT_APP_API_2_URL}/events`,
+                  token,
+                  onUpdateSuccessActiveOnly,
+              )}
+              setEdit={setEdit}
+              onDelete={() =>
+                setPopUpProps(
+                    'Confirm deletion',
+                    'Click continue to delete this event',
+                    false,
+                    `delete-modal-event-id-${eventID}`,
+                    async () => await onDelete(),
+                )}
           />
-      }
+      )}
     </>
   );
 };

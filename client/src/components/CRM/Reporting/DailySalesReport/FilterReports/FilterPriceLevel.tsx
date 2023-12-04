@@ -1,9 +1,14 @@
 import React from 'react';
 
-const FilterPriceLevel: React.FC<{
+interface FilterPriceLevelProps {
   showPriceLevelDetail: boolean;
   onShowPriceLevelDetailChange: (show: boolean) => void;
-}> = ({showPriceLevelDetail, onShowPriceLevelDetailChange}): React.ReactElement => {
+}
+
+const FilterPriceLevel: React.FC<FilterPriceLevelProps> = ({
+  showPriceLevelDetail,
+  onShowPriceLevelDetailChange,
+}): React.ReactElement => {
   return (
     <fieldset className='p-4 mt-2'>
       <legend className='text-sm font-bold leading-6'>

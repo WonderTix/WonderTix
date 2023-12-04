@@ -216,7 +216,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         price: ordertotal,
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
-        orderdate: `${orderdate.toString().slice(4, 6)}/${orderdate.toString().slice(6, 8)}/${orderdate.toString().slice(0, 4)}`,
+        orderdate: `${orderdate.toString().slice(0, 4)}-${orderdate.toString().slice(4, 6)}-${orderdate.toString().slice(6, 8)}`,
         ...remainderOfOrder,
         showings: names,
       };

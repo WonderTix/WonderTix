@@ -32,6 +32,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
   const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<
     boolean | undefined
   >();
+  const [someActiveEvents, setSomeActiveEvents] = useState(false);
   const [updatedTicketData, setUpdatedTicketData] = useState<SeasonTicketValues[]>([]);
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
@@ -182,8 +183,15 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
   }, [seasonId]);
 
   useEffect(() => {
-    const isSeasonActive = eventsInSeason.every((event) => event.active);
+    let isSeasonActive = true;
+    let isActiveEvents = false;
+    eventsInSeason.forEach((event) => {
+      isSeasonActive = isSeasonActive && event.active;
+      isActiveEvents = isActiveEvents || event.active;
+    });
+
     setActiveSeasonSwitch(isSeasonActive);
+    setSomeActiveEvents((isActiveEvents));
   }, [eventsInSeason]);
 
   if (activeSeasonSwitch === undefined) return <LoadingScreen />;
@@ -289,9 +297,11 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     <ViewSeasonInfo
       {...seasonValues}
       activeSeasonSwitch={activeSeasonSwitch}
+      someActiveEvents={someActiveEvents}
       setIsFormEditing={setIsFormEditing}
       seasonTicketTypeData={seasonTicketTypeData}
       setActiveSeasonSwitch={setActiveSeasonSwitch}
+      setSomeActiveEvents={setSomeActiveEvents}
       handleUpdateSeasonEvents={handleUpdateSeasonEvents}
       deleteConfirmationHandler={deleteConfirmationHandler}
     />

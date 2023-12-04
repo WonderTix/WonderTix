@@ -14,7 +14,7 @@ async function seedSeasonTicketTypes(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/legacy-data/seasontickettypes.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/seasontickettypes.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({

@@ -1,9 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-const FilterOptions: React.FC<{
+interface FilterOptionsProps {
   selectedView: string;
   onViewChange: (view: string) => void;
-}> = ({selectedView, onViewChange}): React.ReactElement => {
+}
+
+const FilterOptions: React.FC<FilterOptionsProps> = ({
+  selectedView,
+  onViewChange,
+}): React.ReactElement => {
   return (
     <fieldset className='p-4 mt-2'>
       <legend className='text-sm font-bold leading-6'>
@@ -42,6 +47,7 @@ const FilterOptions: React.FC<{
             name='View'
             type='radio'
             className='h-4 w-4 border-gray-300'
+            checked={selectedView === 'CustomDate'}
             onChange={() => onViewChange('CustomDate')}
           />
           <label htmlFor='CustomDate' className='text-sm font-medium leading-6'>

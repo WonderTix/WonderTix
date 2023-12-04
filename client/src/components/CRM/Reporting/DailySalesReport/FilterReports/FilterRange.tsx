@@ -1,9 +1,14 @@
 import React from 'react';
 
-const FilterRange: React.FC<{
+interface FilterRangeProps {
   onBeginDateChange: (date: string) => void;
   onEndDateChange: (date: string) => void;
-}> = ({onBeginDateChange, onEndDateChange}): React.ReactElement => {
+}
+
+const FilterRange: React.FC<FilterRangeProps> = ({
+  onBeginDateChange,
+  onEndDateChange,
+}): React.ReactElement => {
   return (
     <fieldset className='px-4 py-2'>
       <div className='flex justify-between space-x-4'>

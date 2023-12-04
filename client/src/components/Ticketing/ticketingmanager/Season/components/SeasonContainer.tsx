@@ -120,7 +120,11 @@ const SeasonContainer = () => {
   }, []);
 
   if (token === '' || seasonId === undefined || eventsInSeason === undefined) {
-    return <LoadingScreen />;
+    return (
+      <div className='absolute w-screen z-10'>
+        <LoadingScreen />
+      </div>
+    );
   } else {
     return (
       <div className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
