@@ -13,7 +13,7 @@ interface EventInstanceViewProps {
 
 export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
-  const {ticketTypes, editing, showPopUp} = useEvent();
+  const {editing, showPopUp} = useEvent();
   const formatUSD = new Intl.NumberFormat('en-us', {
     currency: 'USD',
     style: 'currency',
@@ -77,7 +77,6 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             </thead>
             <tbody className={'whitespace-nowrap'}>
               {showing.ticketrestrictions.length !== 0 &&
-                ticketTypes &&
                 showing.ticketrestrictions
                   .sort((a) => (a.tickettypeid_fk === 1 ? -1 : 1))
                   .map((type, index) => (

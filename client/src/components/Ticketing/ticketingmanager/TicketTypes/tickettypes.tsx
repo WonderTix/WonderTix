@@ -272,7 +272,7 @@ const TicketTypes = () => {
     <div className="w-full h-screen absolute">
       <div className='w-full h-screen overflow-x-hidden absolute '>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-          <h1 className='font-bold text-5xl leading-normal bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-700 mb-14'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-700 mb-10 pb-4'>
           Manage Ticket Types
         </h1>
         <button
