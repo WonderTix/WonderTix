@@ -1,21 +1,96 @@
 import {IconButton, Tooltip} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import {SeasonTicketValues, seasonTicketDefaultValues} from './seasonCommon';
+import {useFetchToken} from '../../../showings/ShowingUpdated/ShowingUtils';
 
 interface SeasonTicketTypeUpdateTableProps {
   seasonTicketTypeData: SeasonTicketValues[];
   onUpdate: (updatedData: SeasonTicketValues[]) => void;
 }
+/*
+const getTicketTypeKeyValue = (
+  id: number,
+  key: string,
+  ticketTypes: any[],
+) => {
+  const foundType = ticketTypes?.find((type) => +type.tickettypeid_fk === id);
+  if (!foundType) return 0;
+  return typeof foundType[key] === 'string'
+    ? foundType[key].replace('$', '')
+    : foundType[key];
+};
+
+const getInstanceTicketType = (id: number, ticketTypes: any[]) => {
+  if (!ticketTypes) return {};
+  const {description, ...type} = ticketTypes.find(
+    (type) => Number(type.tickettypeid_fk) === id,
+  );
+  return {
+    ...type,
+  };
+};
+*/
+
+const getPriceForDescription = (
+  description: string,
+  key: string,
+  availableTicketTypes: any[],
+) => {
+  const foundType = availableTicketTypes?.find(
+    (type) => type.description === description,
+  );
+  if (!foundType) return 0;
+  return typeof foundType[key] === 'string'
+    ? foundType[key].replace('$', '')
+    : foundType[key];
+};
+
 export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTableProps) => {
   const {seasonTicketTypeData} = props;
   const [currentSeasonTicketTypeData, setCurrentSeasonTicketTypeData] = useState<SeasonTicketValues[]>([...seasonTicketTypeData]);
+  const [availableTicketTypes, setAvailableTicketTypes] = useState([]);
+  const [selectedDescriptions, setSelectedDescriptions] = useState<string[]>([]);
+
+  const {token} = useFetchToken();
 
   useEffect(() => {
-    // Todo
+    if (token) {
+      const handleGetAllTicketTypes = async () => {
+        try {
+          const seasonTicketTypeRes = await fetch(
+            process.env.REACT_APP_API_2_URL + `/ticket-type`,
+            {
+              credentials: 'omit',
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+            },
+          );
+
+          if (seasonTicketTypeRes.ok) {
+            const seasonTicketTypes = await seasonTicketTypeRes.json();
+            console.log('Ticket Types', seasonTicketTypes);
+            setAvailableTicketTypes(seasonTicketTypes);
+          } else {
+            throw new Error('Failed to get all ticket type description info');
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      handleGetAllTicketTypes();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    // todo
   }, []);
 
   useEffect(() => {
     setCurrentSeasonTicketTypeData(seasonTicketTypeData);
+    setSelectedDescriptions(seasonTicketTypeData.map((ticket) => ticket.description || ''));
   }, [seasonTicketTypeData]);
 
   useEffect(() => {
@@ -36,6 +111,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
       ...prevData,
       seasonTicketDefaultValues,
     ]);
+    setSelectedDescriptions((prevSelected) => [...prevSelected, '']);
   };
 
   const handleDeleteTicketType = (index) => {
@@ -44,7 +120,31 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
       updatedData.splice(index, 1);
       return updatedData;
     });
+
+    setSelectedDescriptions((prevSelected) => {
+      const updatedSelected = [...prevSelected];
+      updatedSelected.splice(index, 1);
+      return updatedSelected;
+    });
   };
+
+  const handleDescriptionChange = (index, newValue) => {
+    setSelectedDescriptions((prevSelected) => {
+      const updatedSelected = [...prevSelected];
+      updatedSelected[index] = newValue;
+      return updatedSelected;
+    });
+  };
+
+  const getPriceForSelectedDescription = (description, priceType) => {
+    return getPriceForDescription(
+      description,
+      priceType,
+      availableTicketTypes,
+    );
+  };
+
+  console.log('Selected Descriptions:', selectedDescriptions);
 
   return (
     <div className={'bg-gray-300 grid grid-cols-12 rounded-xl p-1 h-[100%]'}>
@@ -85,21 +185,55 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
             {currentSeasonTicketTypeData && currentSeasonTicketTypeData.length > 0 ? (
                 currentSeasonTicketTypeData.map((id, index) =>(
                 <tr key={index} className='bg-gray-200'>
-                  <td className={'px-2'}> {id.description}</td>
+                  <td className={'px-2'}>
+                    <select
+                      value={selectedDescriptions[index]}
+                      onChange={(e) =>
+                        handleDescriptionChange(index, e.target.value)
+                      }
+                    >
+                      <option value="">Select Ticket Type</option>
+                      {availableTicketTypes
+                      .filter((ticketType) => !selectedDescriptions.includes(ticketType.description))
+                      .map((ticketType) => (
+                        <option key={ticketType.tickettypeid} value={ticketType.description}>
+                          {ticketType.description}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
                   <td className='px-2 border border-white'><span className='pr-1'>$</span>
                     <input
                       className='w-[75px] bg-gray-100'
                       type='number'
-                      value={id.price}
-                      onChange={(e) => handleUpdateTicketTypeData(Number(e.target.value), index, 'price')}
+                      value={getPriceForSelectedDescription(
+                        selectedDescriptions[index],
+                        'price',
+                      )}
+                      onChange={(e) =>
+                        handleUpdateTicketTypeData(
+                          Number(e.target.value),
+                          index,
+                          'price',
+                        )
+                      }
                     />
                   </td>
                   <td className='px-2 border border-white'><span className='pr-1'>$</span>
                     <input
                       className='w-[75px] bg-gray-100'
                       type='number'
-                      value={id.concessionprice}
-                      onChange={(e) => handleUpdateTicketTypeData(Number(e.target.value), index, 'concessionprice')}
+                      value={getPriceForSelectedDescription(
+                        selectedDescriptions[index],
+                        'concession',
+                      )}
+                      onChange={(e) =>
+                        handleUpdateTicketTypeData(
+                          Number(e.target.value),
+                          index,
+                          'concessionprice',
+                        )
+                      }
                     />
                   </td>
                   <td className='px-2 border border-white'>

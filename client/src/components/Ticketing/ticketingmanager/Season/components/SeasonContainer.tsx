@@ -60,7 +60,7 @@ const SeasonContainer = () => {
 
   const handleGetSeasonTicketType = async () => {
     try {
-      const seasonTicketTypePriceRes = await fetch(
+      const seasonTicketTypeTableRes = await fetch(
         process.env.REACT_APP_API_2_URL +
           `/season-ticket-type-price-default/${seasonId}`,
         {
@@ -73,11 +73,11 @@ const SeasonContainer = () => {
         },
       );
 
-      if (!seasonTicketTypePriceRes.ok) {
-        throw new Error('Failed to get all event information');
+      if (!seasonTicketTypeTableRes.ok) {
+        throw new Error('Failed to get ticket type information');
       }
 
-      const seasonTicketTypeData = await seasonTicketTypePriceRes.json();
+      const seasonTicketTypeData = await seasonTicketTypeTableRes.json();
       setSeasonTicketTypeData(seasonTicketTypeData);
     } catch (error) {
       console.error(error);

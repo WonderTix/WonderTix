@@ -57,8 +57,8 @@ export interface SeasonTicketValues {
 }
 
 export const seasonTicketDefaultValues: SeasonTicketValues = {
-  tickettypeid_fk: 1,
-  description: '(Test) General Admission',
+  tickettypeid_fk: -1,
+  description: '',
   price: 0,
   concessionprice: 0,
 };

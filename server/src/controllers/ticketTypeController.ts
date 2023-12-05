@@ -70,8 +70,6 @@ ticketTypeController.post('/', async (req: Request, res: Response) => {
   }
 });
 
-ticketTypeController.use(checkJwt);
-ticketTypeController.use(checkScopes);
 
 /**
  * @swagger
@@ -144,6 +142,9 @@ ticketTypeController.get('/', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
+
+ticketTypeController.use(checkJwt);
+ticketTypeController.use(checkScopes);
 
 /**
  * @swagger
