@@ -114,13 +114,29 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
   const onSubmit = async (event) => {
     event.preventDefault();
 
+    // Validate Table Data & Round Data
+    const isTableDataValid = updatedTicketData.every(
+      (ticketType) => ticketType.price >= 0 && ticketType.concessionprice >= 0,
+    );
+
+    if (!isTableDataValid) {
+      handleInvalidTicketTypeValue(event);
+      return;
+    }
+
+    // Round Table Data to 2 decimal places
+    const roundedTicketData = updatedTicketData.map((ticketType) => ({
+      ...ticketType,
+      price: Number(ticketType.price).toFixed(2),
+      concessionprice: Number(ticketType.concessionprice).toFixed(2),
+    }));
+
     // formatting request body for POST and PUT request
     const reqObject = {
       ...seasonValues,
       startdate: Number(startdate.replaceAll('-', '')),
       enddate: Number(enddate.replaceAll('-', '')),
       imageurl: imageurl === '' ? 'Default Season Image' : imageurl,
-      ticketData: updatedTicketData,
     };
 
     setIsFormEditing(false);
@@ -128,22 +144,9 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
       void handleCreateNewSeason(reqObject);
     } else {
       void handleUpdateSeason(reqObject);
-  // testing purpose below
-  const requestData = [
-    {
-      'tickettypeid_fk': 1,
-      'price': 99,
-      'concessionprice': 88,
-    },
-    {
-      'tickettypeid_fk': 2,
-      'price': 99,
-      'concessionprice': 88,
-    },
-  ];
-  // end
+
       if (props.onUpdateSeasonTicketType) {
-        await props.onUpdateSeasonTicketType(requestData);
+        await props.onUpdateSeasonTicketType(roundedTicketData);
       }
     }
   };
@@ -163,6 +166,19 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
       setIsFormEditing(false);
       setSeasonValues({...seasonValues, imageurl: tempImageUrl});
     }
+  };
+
+  const handleInvalidTicketTypeValue = (event) => {
+    event.preventDefault();
+    setPopUpMessage({
+      title: 'Invalid Ticket Type Value',
+      message: 'Please enter a valid Ticket Price & Concession Price',
+      success: false,
+      handleClose: () => setShowPopUp(false),
+      handleProceed: () => setShowPopUp(false),
+      showSecondary: false,
+    });
+    setShowPopUp(true);
   };
 
   const deleteConfirmationHandler = (event) => {

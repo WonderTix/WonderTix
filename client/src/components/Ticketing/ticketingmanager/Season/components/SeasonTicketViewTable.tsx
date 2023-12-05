@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {getTicketTypePrice} from '../../showings/ShowingUpdated/ShowingUtils';
 import {SeasonTicketValues} from './utils/seasonCommon';
 
 
@@ -26,8 +25,8 @@ export const SeasonTicketViewTable = (props: SeasonTicketViewTableProps) => {
               seasonTicketTypeData.map((id, index) =>(
               <tr key={index}>
                 <td className={'px-2'}> {id.description}</td>
-                <td className={'px-2'}> {`$${Number(id.price).toFixed(2)}`}</td>
-                <td className={'px-2'}> {`$${Number(id.concessionprice).toFixed(2)}`}</td>
+                <td className={'px-2'}> ${Number(id.price).toFixed(2)}</td>
+                <td className={'px-2'}> ${Number(id.concessionprice).toFixed(2)}</td>
               </tr>
             ))
           ) : (

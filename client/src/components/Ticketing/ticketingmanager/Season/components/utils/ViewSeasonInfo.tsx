@@ -117,7 +117,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
         </div>
       </section>
       <div className='grid grid-cols-12'>
-        <article className='col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
+        <article className='flex flex-col col-span-6 mb-5 text-center sm:text-start lg:col-span-2'>
           <h3 className='font-semibold'>Season Name</h3>
           <p className='mb-3 text-base'>{name}</p>
 
@@ -165,7 +165,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
             )}
           </div>
         </article>
-        <div className='col-span-12 lg:col-span-6'>
+        <div className='col-span-6 lg:col-span-2'>
           <SeasonImage
             className='h-auto max-w-[150px] object-cover mx-1 mt-3'
             src={imageurl}

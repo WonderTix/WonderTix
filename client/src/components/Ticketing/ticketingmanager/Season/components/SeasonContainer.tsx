@@ -64,7 +64,7 @@ const SeasonContainer = () => {
         process.env.REACT_APP_API_2_URL +
           `/season-ticket-type-price-default/${seasonId}`,
         {
-          credentials: 'include',
+          credentials: 'omit',
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -103,7 +103,9 @@ const SeasonContainer = () => {
         throw new Error('Failed to update season ticket type');
       }
       const seasonUpdatedTicketTypeData = await seasonUpdateTicketTypeRes.json();
+
       console.log('Updated Data:', seasonUpdatedTicketTypeData);
+
       setSeasonTicketTypeData(seasonUpdatedTicketTypeData);
     } catch (error) {
       console.error('Error updating season ticket type', error);
@@ -111,12 +113,8 @@ const SeasonContainer = () => {
   };
 
   useEffect(() => {
-    const handleUpdateAndRefresh = async (requestData) => {
-      await handleUpdateSeasonTicketType(requestData);
-      await handleGetAllEvents();
-    };
-    handleUpdateAndRefresh(); // this line needs to be fixed
-    handleGetSeasonTicketType();
+    void handleGetAllEvents();
+    void handleGetSeasonTicketType();
   }, []);
 
   if (token === '' || seasonId === undefined || eventsInSeason === undefined) {

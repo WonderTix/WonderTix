@@ -9,30 +9,41 @@ interface SeasonTicketTypeUpdateTableProps {
 export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTableProps) => {
   const {seasonTicketTypeData} = props;
   const [currentSeasonTicketTypeData, setCurrentSeasonTicketTypeData] = useState<SeasonTicketValues[]>([...seasonTicketTypeData]);
-  const [seasonTicketPrice, setSeasonTicketPrice] = useState<number>(0);
-  const [seasonTicketConcessionPrice, setSeasonTicketConcessionPrice] = useState<number>(0);
+
+  useEffect(() => {
+    // Todo
+  }, []);
 
   useEffect(() => {
     setCurrentSeasonTicketTypeData(seasonTicketTypeData);
   }, [seasonTicketTypeData]);
 
-  const handleUpdatedPrice = (newTicketPrice, index) => {
-    const updatedData = [...currentSeasonTicketTypeData];
-    updatedData[index] ={...updatedData[index], price: newTicketPrice};
-    setSeasonTicketPrice(newTicketPrice);
-  };
-  const handleUpdatedConcessionPrice = (newTicketConcessionPrice, index) => {
-    const updatedData = [...currentSeasonTicketTypeData];
-    updatedData[index] ={...updatedData[index], concessionprice: newTicketConcessionPrice};
-    setSeasonTicketConcessionPrice(newTicketConcessionPrice);
+  useEffect(() => {
+    // console.log('Updated Data Before Route Call:', currentSeasonTicketTypeData);
+    props.onUpdate(currentSeasonTicketTypeData);
+  }, [currentSeasonTicketTypeData]);
+
+  const handleUpdateTicketTypeData = (newValue, index, field) => {
+    setCurrentSeasonTicketTypeData((prevData) => {
+      const updatedData = [...prevData];
+      updatedData[index] = {...updatedData[index], [field]: newValue};
+      return updatedData;
+    });
   };
 
   const handleAddTicketType = () => {
-    setCurrentSeasonTicketTypeData((prevData) => [...prevData, seasonTicketDefaultValues]);
+    setCurrentSeasonTicketTypeData((prevData) => [
+      ...prevData,
+      seasonTicketDefaultValues,
+    ]);
   };
 
-  const handleFormSubmit = () => {
-    props.onUpdate(currentSeasonTicketTypeData);
+  const handleDeleteTicketType = (index) => {
+    setCurrentSeasonTicketTypeData((prevData) => {
+      const updatedData = [...prevData];
+      updatedData.splice(index, 1);
+      return updatedData;
+    });
   };
 
   return (
@@ -75,23 +86,46 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                 currentSeasonTicketTypeData.map((id, index) =>(
                 <tr key={index} className='bg-gray-200'>
                   <td className={'px-2'}> {id.description}</td>
-                  <td className='px-2 border border-white'><span>$</span>
+                  <td className='px-2 border border-white'><span className='pr-1'>$</span>
                     <input
                       className='w-[75px] bg-gray-100'
-                      type='text'
-                      value={`${Number(id.price).toFixed(2)}`}
-                      onChange={(e) => handleUpdatedPrice(Number(e.target.value), index)}
+                      type='number'
+                      value={id.price}
+                      onChange={(e) => handleUpdateTicketTypeData(Number(e.target.value), index, 'price')}
                     />
                   </td>
-                  <td className='px-2 border border-white'><span>$</span>
+                  <td className='px-2 border border-white'><span className='pr-1'>$</span>
                     <input
                       className='w-[75px] bg-gray-100'
-                      type='text'
-                      value={`${Number(id.concessionprice).toFixed(2)}`}
-                      onChange={(e) => handleUpdatedConcessionPrice(Number(e.target.value), index)}
+                      type='number'
+                      value={id.concessionprice}
+                      onChange={(e) => handleUpdateTicketTypeData(Number(e.target.value), index, 'concessionprice')}
                     />
                   </td>
-                  <td className='px-2 border border-white'></td>
+                  <td className='px-2 border border-white'>
+                    <Tooltip title='Delete Ticket Type'>
+                      <IconButton
+                        size={'small'}
+                        aria-label={'delete ticket type'}
+                        onClick={() => handleDeleteTicketType(index)}
+                      >
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          strokeWidth={1.5}
+                          stroke='currentColor'
+                          className='w-4 h-4 text-red-700'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
+                          />
+                        </svg>
+                      </IconButton>
+                    </Tooltip>
+                  </td>
                 </tr>
             ))
             ) : (
