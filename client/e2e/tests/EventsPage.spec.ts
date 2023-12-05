@@ -2,21 +2,12 @@
 import { test } from '@playwright/test';
 import { EventsPage } from '../pages/EventsPage';
 import { createUniqueEvent } from '../testData/factoryFunctions';
-import { EVENT_INFO_1, EVENT_INFO_2, EVENT_INFO_3, EVENT_INFO_4 } from '../testData/dataConstants/EventInfoConstants';
+import { EVENT_INFO_1, EVENT_INFO_2, EVENT_INFO_3 } from '../testData/dataConstants/EventInfoConstants';
 import { SHOWING_INFO_1, SHOWING_INFO_2, SHOWING_INFO_3, SHOWING_INFO_4 } from '../testData/dataConstants/ShowingInfoConstants';
 
 test('Homepage->Events', async ({page}) => {
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();
-});
-
-test('addNewEvents', async ({page})=>{
-  const eventsPage = new EventsPage(page);
-  const currentEvent =  createUniqueEvent(EVENT_INFO_1);
-  await eventsPage.goto();
-  await eventsPage.addnewevent(currentEvent);
-  await eventsPage.activeEvent();
-  await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
 });
 
 /**
@@ -29,27 +20,27 @@ test('addNewEvents', async ({page})=>{
  */
 test('addDeleteEvents', async ({page})=>{
   const eventsPage = new EventsPage(page);
-  const currentEvent = createUniqueEvent(EVENT_INFO_2);
+  const currentEvent = createUniqueEvent(EVENT_INFO_1);
   await eventsPage.goto();
   await eventsPage.addnewevent(currentEvent);
-  await eventsPage.activeEvent();
+  await eventsPage.activateEvent();
   await eventsPage.addNewShowing(SHOWING_INFO_1);
-  await eventsPage.checkNewEventOnHomePage(currentEvent.eventDescription);
-  await eventsPage.goToEventFromManage(currentEvent.eventName,currentEvent.eventDescription);
+  await eventsPage.checkNewEventOnHomePage(currentEvent);
+  await eventsPage.goToEventFromManage(currentEvent);
   await eventsPage.addNewShowing(SHOWING_INFO_2);
-  await eventsPage.searchDeleteShowing(SHOWING_INFO_1.showingWholeDate);
-  await eventsPage.searchDeleteShowing(SHOWING_INFO_2.showingWholeDate);
-  await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
+  await eventsPage.searchDeleteShowing(SHOWING_INFO_1);
+  await eventsPage.searchDeleteShowing(SHOWING_INFO_2);
+  await eventsPage.deleteTheEvent(currentEvent);
 });
 
 test('editEvents',async({page})=>{
   const eventsPage = new EventsPage(page);
-  const currentEvent = createUniqueEvent(EVENT_INFO_4);
-  const currentEvent1 = createUniqueEvent(EVENT_INFO_3);
+  const currentEvent = createUniqueEvent(EVENT_INFO_3);
+  const currentEvent1 = createUniqueEvent(EVENT_INFO_2);
   await eventsPage.goto();
   //Go to the event information page first
   await eventsPage.addnewevent(currentEvent);
-  await eventsPage.activeEvent();
+  await eventsPage.activateEvent();
   await eventsPage.addNewShowing(SHOWING_INFO_4);
   //Change the event's information a little bit
   try {
@@ -62,36 +53,38 @@ test('editEvents',async({page})=>{
   //Now let's change everything back
   await eventsPage.editTheEventInfo(currentEvent);
   } finally {
-    await eventsPage.searchDeleteShowing(SHOWING_INFO_4.showingWholeDate);
-    await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
+    await eventsPage.searchDeleteShowing(SHOWING_INFO_4);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });
 
 
 test('editShowing', async ({page})=>{
   const eventsPage = new EventsPage(page);
-  const currentEvent = createUniqueEvent(EVENT_INFO_4);
+  const currentEvent = createUniqueEvent(EVENT_INFO_3);
   await eventsPage.goto();
   try {
   //Go to the event page first
     await eventsPage.addnewevent(currentEvent);
-    await eventsPage.activeEvent();
+    await eventsPage.activateEvent();
     await eventsPage.addNewShowing(SHOWING_INFO_4);
   //Now we change some showing's information a little bit
     await eventsPage.editShowingInfo(SHOWING_INFO_3);
   //Then we change that back
     await eventsPage.editShowingInfo(SHOWING_INFO_4);
   } finally{
-    await eventsPage.searchDeleteShowing(SHOWING_INFO_4.showingWholeDate);
-    await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
+    await eventsPage.searchDeleteShowing(SHOWING_INFO_4);
+    await eventsPage.deleteTheEvent(currentEvent);
    }
 });
 
-
+/**
+ * Check if the default image works.
+ */
 test('checkDefaultImage',async({page})=>{
   const eventsPage = new EventsPage(page);
-  const currentEvent = createUniqueEvent(EVENT_INFO_4);
+  const currentEvent = createUniqueEvent(EVENT_INFO_3);
   await eventsPage.goto();
   await eventsPage.addDefaultIMGevent(currentEvent);
-  await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription); 
+  await eventsPage.deleteTheEvent(currentEvent); 
 });

@@ -20,28 +20,21 @@ export class EventsPage {
   readonly allViewOption : Locator;
 
   readonly newEventSave: Locator;
-  readonly deleteEventButton: Locator;
   readonly leftBarEvent: Locator;
   readonly eventContinue: Locator;
   readonly eventClose: Locator;
-  readonly eventOption1: Locator;
-  readonly eventOption2: Locator;
   readonly deleteButton: Locator;
   readonly editEventInfo: Locator;
 
   readonly editEventName: Locator;
   readonly editEventDes: Locator;
-  readonly editOption1: Locator;
-  readonly editCancel: Locator;
   readonly editAddShowing: Locator;
-  readonly editCancelShowing: Locator;
   readonly editShowingId: Locator;
   readonly editEventDate: Locator;
   readonly editEventTime: Locator;
   readonly editTicketQuantity: Locator;
-  readonly cancelShowingId: Locator;
+  readonly cancelButton: Locator;
   readonly homePage: Locator;
-  readonly seeEventShowings: Locator;
   readonly takeMeThere: Locator;
   readonly getTickets: Locator;
   readonly backToEvents: Locator;
@@ -55,22 +48,12 @@ export class EventsPage {
   readonly deleteShowingButton: Locator;
   readonly activateEventchecker: Locator;
   readonly inactiveEventchecker: Locator;
-  readonly firstEvent: Locator;
-  readonly secondEvent: Locator;
-  readonly cartButton: Locator;
-  readonly goToHomepageFromCart: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
     this.homePage = page.getByRole('button', {name: '/'});
     this.homePageRightSlide = page.locator('button:nth-child(4)');
-    this.firstEvent = page.getByRole('button', {
-      name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    });
-    this.secondEvent = page.getByRole('button', {
-      name: 'The Crucible Playbill The Crucible Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    });
 
     this.pageHeader = page.getByRole('heading', {name: 'Select Event'});
     this.leftBarEvent = page
@@ -92,29 +75,18 @@ export class EventsPage {
 
     this.eventContinue = page.getByRole('button', {name: 'Continue'});
     this.eventClose = page.getByRole('button', {name: 'Close', exact: true});
-    this.eventContinue = page.getByRole('button', {name: 'Continue'});
-    this.eventClose = page.getByRole('button', {name: 'Close', exact: true});
-
-    this.eventOption1 = page.getByRole('button', {name: 'Default'});
-    this.eventOption2 = page.getByText('Active:', {exact: true});
 
     this.editEventInfo = page.getByTestId('event-edit-button');
     this.editEventName = page.getByLabel('Event Name:');
     this.editEventDes = page.getByLabel('Event Description:');
-    this.editOption1 = page.getByText('Active:', {exact: true});
-    this.editCancel = page.getByRole('button', {name: 'Cancel'});
     this.editAddShowing = page.getByLabel('Add Showing');
-    this.editCancelShowing = page.getByRole('button', {name: 'Cancel'});
     this.editShowingId = page
       .locator('div:nth-child(3) > .bg-blue-500')
       .first();
-    this.cancelShowingId = page.getByRole('button', {name: 'Cancel'});
+    this.cancelButton = page.getByRole('button', {name: 'Cancel'});
     this.editEventDate = page.getByLabel('Event Date:');
     this.editEventTime = page.getByLabel('Event Time:');
     this.editTicketQuantity = page.getByLabel('Ticket Quantity:');
-    this.seeEventShowings = page.locator(
-      'div:nth-child(6) > div > .p-6 > .flex > .py-2',
-    );
     this.getTickets = page.getByRole('button', {name: 'Get Tickets'});
     this.takeMeThere = page.getByRole('button', {name: 'Take me there!'});
     this.backToEvents = page.getByRole('button', {name: 'back to Events'});
@@ -128,29 +100,22 @@ export class EventsPage {
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});
     this.activateEventchecker = page.getByLabel('controlled');
     this.inactiveEventchecker = page.getByRole('button', { name: 'Inactive' });
-    this.cartButton = page.getByRole('button', { name: 'Cart' });
-    this.goToHomepageFromCart = page.getByRole('button', { name: 'back to Events' });
   }
 
+  /**
+   * This is a function for click the "Events" on the left bar  
+   */
   async clickLeftBar() {
     await this.leftBarEvent.click();
   }
 
   /**
-   * Switches the status of the event's activeness.
-   */
-  async activateEvent() {
-    await this.eventOption2.click();
-  }
-
-
-  /**
-  This test is basically testing the functionality of creating a new event without add any showing.
-  For now, if we create an event without any showing, it won't appear on the homepage nor on the events page.
-  And we need to pass in things like:
-   "S",
-  "123",
-  "http://"
+   * This test is basically testing the functionality of creating a new event without adding any showing.
+   * For now, if we create an event without any showing, it won't appear on the homepage nor on the events page.
+   * And we need to pass in things like:
+   * "S",
+   * "123",
+   * "http://"
   */
   async addnewevent(anEvent: EventInfo) {
     await this.addButton.click();
@@ -165,12 +130,18 @@ export class EventsPage {
     await this.newEventSave.click();
     await this.eventContinue.click();
   }
-  async activeEvent()
+  
+  /**
+   * Switches the status of the event's activeness.
+   */
+  async activateEvent()
   {
      await this.activateEventchecker.check();
   }
-
-
+  
+  /**
+   * Create a new event using the default image.
+   */
  async addDefaultIMGevent(anEvent: EventInfo)
   {
      await this.addButton.click();
@@ -184,16 +155,16 @@ export class EventsPage {
   }
 
   /**
-  We need to pass in things like:
-  "2023-10-17",
-  "10:20",
-  "010"
-*/
+   * We need to pass in things like:
+   * "2023-10-17",
+   * "10:20",
+   * "010"
+   */
   async addNewShowing(showing: ShowingInfo) {
     await this.editAddShowing.click();
     await this.editEventDate.fill(showing.showingDate);
     await this.editEventTime.click();
-    await this.editEventTime.fill(showing.showingTime);
+    await this.editEventTime.fill(showing.showingTime24hour);
     await this.editTicketQuantity.click();
     await this.editTicketQuantity.fill(showing.showingQuantity);
     await this.newEventSave.click();
@@ -202,11 +173,11 @@ export class EventsPage {
 
   /**
    * We need to pass in things to the filter like:
-   * "Wed, Oct 11 2023"
+   * "Wed, Oct 11 2023Time: 12:10 AM"
    */
-  async searchDeleteShowing(Time: string) {
+  async searchDeleteShowing(aShowing:ShowingInfo) {
    const showingCardLocator =  this.showingCard
-      .filter({hasText: Time})
+      .filter({hasText: aShowing.showingWholeDate + 'Time:' + ' ' + aShowing.showingTime12hour})
       .getByRole('button', {name: 'Edit'}); 
    const disabled = await showingCardLocator.isDisabled();
     if (disabled)
@@ -219,45 +190,33 @@ export class EventsPage {
   }
 
   /**
-   * 1.Whenever we created a new event and go back to the homepage 
-   * since the homepage needs time to update, but the tests cant wait for too long
-   * We need to click the "cart" button in order to refresh the homepage then we can 
-   * see our newly created event on homepage now 
-   * 2. We need to wait for few seconds each time we click the slide
-   * since if we click it too fast, the image on homepage could only move 
-   * very little distance
+   * Go back to homepage to check if the newly-created
+   * event exists on the homepage
    */
-  async checkNewEventOnHomePage(Description:string) {
+  async checkNewEventOnHomePage(anEvent: EventInfo) {
     await this.homePage.click();
-    await expect(this.page.getByText(Description)).toBeVisible;
+    await expect(this.page.getByText(anEvent.eventDescription)).toBeVisible();
   }
 
-
-  /**
-   * We need to pass in a event's full name like:
-   * "Test_event Playbill Test_event Description An event for testing"
-   */
-  async goToEventFromManage(eventName: string, eventDescription: string) {
+  async goToEventFromManage(anEvent: EventInfo) {
     await this.emailButton.click();
     await this.manageTicketingButton.click();
     await this.leftBarEvent.click();
-    await this.page.getByRole('button', {name: eventName+' '+'Playbill'+' '+eventName+' '+'Description'+' '+eventDescription}).first().click();
+    await this.page.getByRole('button', {name: anEvent.eventName+' '+'Playbill'+' '+anEvent.eventName+' '+'Description'+' '+anEvent.eventDescription}).first().click();
   }
-
   
   /**
-   * We need to pass in a event's full name like:
+   * We need the event's full name like:
    * "Test_event Playbill Test_event Description An event for testing"
    */
-  async deleteTheEvent(eventName: string, eventDescription: string) {
+  async deleteTheEvent(anEvent: EventInfo) {
     await this.deleteButton.click();
     await this.eventContinue.click();
     await this.leftBarEvent.click();
     await this.page.reload();
-    await expect(this.page.getByRole('button', { name: eventName+' '+'Playbill'+' '+eventName+' '+'Description'+' '+eventDescription })).not.toBeVisible();
+    await expect(this.page.getByRole('button', { name: anEvent.eventName+' '+'Playbill'+' '+anEvent.eventName+' '+'Description'+' '+anEvent.eventDescription})).not.toBeVisible();
   }
   
-
   async editTheEventInfo(anEvent: EventInfo) {
     const disabled = await this.editEventInfo.isDisabled();
     if (disabled)
@@ -277,17 +236,9 @@ export class EventsPage {
     }
   }
 
-  async clickFirstEvent() {
-    await this.firstEvent.click();
-  }
-  async clickSecondEvent() {
-    await this.secondEvent.click();
-  }
-
   async searchForEventByName(anEvent: EventInfo) {
     await this.page.getByText(anEvent.eventName, {exact: true}).click();
   }
-
 
   async searchForEventByDes(anEvent: EventInfo) {
     await this.page.getByText(anEvent.eventDescription).click();
