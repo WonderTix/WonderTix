@@ -195,7 +195,7 @@ export class EventsPage {
    */
   async checkNewEventOnHomePage(anEvent: EventInfo) {
     await this.homePage.click();
-    await expect(this.page.getByText(anEvent.eventDescription)).toBeVisible();
+    await expect(this.page.getByText(anEvent.eventDescription).first()).toBeVisible();
   }
 
   async goToEventFromManage(anEvent: EventInfo) {
