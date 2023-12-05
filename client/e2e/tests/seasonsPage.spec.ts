@@ -1,9 +1,8 @@
-import { test } from '@playwright/test';
-import { SeasonsPage } from '../pages/seasonsPage';
-import { EventsPage } from '../pages/EventsPage';
-import { createUniqueEvent, createUniqueSeason } from '../testData/factoryFunctions';
-import { EVENT_INFO_2 } from '../testData/dataConstants/EventInfoConstants';
-import { SEASON_INFO_1 } from '../testData/dataConstants/SeasonInfoConstants';
+import {test} from '@playwright/test';
+import {SeasonsPage} from '../pages/seasonsPage';
+import {EventsPage} from '../pages/EventsPage';
+import {EventInfo, EVENT_INFO_2} from '../testData/EventInfo';
+import {SeasonInfo, SEASON_INFO_1} from '../testData/SeasonInfo';
 
 test('Homepage->Seasons', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
@@ -14,9 +13,9 @@ test('addNewSeasonWithEvent', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
   const eventsPage = new EventsPage(page);
 
-  const uniqueEvent = createUniqueEvent(EVENT_INFO_2);
-  const uniqueSeason = createUniqueSeason(SEASON_INFO_1);
-  
+  const uniqueEvent = new EventInfo(EVENT_INFO_2);
+  const uniqueSeason = new SeasonInfo(SEASON_INFO_1);
+
   try {
     await eventsPage.goto();
     await eventsPage.addnewevent(uniqueEvent);
@@ -34,7 +33,7 @@ test('addNewSeasonWithEvent', async ({page}) => {
       console.error('addNewSeasonWithEvent unknown error:', error);
     }
   } finally {
-    //cleanup
+    // cleanup
     const seasonsPage2 = new SeasonsPage(page);
     await seasonsPage2.goto();
     await seasonsPage2.removeSeason(uniqueSeason);
@@ -50,8 +49,8 @@ test('addNewSeasonWithEvent', async ({page}) => {
 test('editSeason', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
 
-  const uniqueSeason1 = createUniqueSeason(SEASON_INFO_1);
-  const uniqueSeason2 = createUniqueSeason(SEASON_INFO_1);
+  const uniqueSeason1 = new SeasonInfo(SEASON_INFO_1);
+  const uniqueSeason2 = new SeasonInfo(SEASON_INFO_1);
 
   try {
     // setup
@@ -69,7 +68,7 @@ test('editSeason', async ({page}) => {
       console.error('editSeason unknown error:', error);
     }
   } finally {
-    //cleanup
+    // cleanup
     const seasonsPage2 = new SeasonsPage(page);
     await seasonsPage2.goto();
     await seasonsPage2.removeSeason(uniqueSeason2);
@@ -79,8 +78,8 @@ test('editSeason', async ({page}) => {
 test('removeEventFromSeason', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
   const eventsPage = new EventsPage(page);
-  const uniqueEvent = createUniqueEvent(EVENT_INFO_2);
-  const uniqueSeason = createUniqueSeason(SEASON_INFO_1);
+  const uniqueEvent = new EventInfo(EVENT_INFO_2);
+  const uniqueSeason = new SeasonInfo(SEASON_INFO_1);
 
   try {
     // setup
@@ -106,7 +105,7 @@ test('removeEventFromSeason', async ({page}) => {
       console.error('removeEventFromSeason unknown error:', error);
     }
   } finally {
-    //cleanup
+    // cleanup
     const seasonsPage3 = new SeasonsPage(page);
     await seasonsPage3.goto();
     await seasonsPage3.removeSeason(uniqueSeason);
@@ -121,8 +120,8 @@ test('removeEventFromSeason', async ({page}) => {
 
 test('removeSeason', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
-  const uniqueSeason = createUniqueSeason(SEASON_INFO_1);
-  
+  const uniqueSeason = new SeasonInfo(SEASON_INFO_1);
+
   try {
     // setup
     await seasonsPage.goto();

@@ -1,6 +1,7 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import { EventInfo, ShowingInfo } from '../testData/interfaces';
+import {EventInfo} from '../testData/EventInfo';
+import {ShowingInfo} from '../testData/ShowingInfo';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
@@ -208,7 +209,7 @@ export class EventsPage {
     await this.eventContinue.click();
   }
 
-  //**The weird thing is that Im not sure wheres the 'Playbill' comes from.
+  // The weird thing is that Im not sure wheres the 'Playbill' comes from.
   async checkNewEventOnHomePage() {
     await this.homePage.click();
     await this.homePageRightSlide.click();
@@ -313,7 +314,7 @@ export class EventsPage {
    * These next three functions all press the buttons that alter the
    * events available to view.
    */
-  
+
   async setActiveView() {
     await this.activeViewOption.click();
   }

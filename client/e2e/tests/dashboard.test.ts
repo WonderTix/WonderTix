@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { DashboardPage } from '../pages/dashboardPage';
+import {test, expect} from '@playwright/test';
+import {DashboardPage} from '../pages/dashboardPage';
 
 test('Homepage->Ticketing Dashboard', async ({page}) => {
   const dashboard = new DashboardPage(page);
@@ -12,61 +12,61 @@ test('Homepage->Ticketing Dashboard', async ({page}) => {
 test('Ticketing Dashboard->DoorList', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.DoorList();
+  await dashboard.doorList();
   await dashboard.backToDashboard();
 });
 
 test('Ticketing Dashboard->Events', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.Events();
+  await dashboard.events();
   await dashboard.backToDashboard();
 });
 
 test('Ticketing Dashboard->PurchaseTickets', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.PurchaseTickets();
+  await dashboard.purchaseTickets();
   await dashboard.ticketingURL();
 });
 
 test('Ticketing Dashboard->Seasons', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.Seasons();
+  await dashboard.seasons();
   await dashboard.ticketingURL();
 });
 
 test('Ticketing Dashboard->CreateNewsletter', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.CreateNewsletter();
+  await dashboard.createNewsletter();
   await dashboard.backToDashboard();
 });
 
 test('Ticketing Dashboard->ManageSeasonalTickets', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.ManageSeasonalTickets();
+  await dashboard.manageSeasonalTickets();
 });
 
 test('Ticketing Dashboard->ManageTicketTypes', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.ManageTicketTypes();
+  await dashboard.manageTicketTypes();
   await dashboard.backToDashboard();
 });
 
 test('Ticketing Dashboard->TicketExchanges', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.TicketExchanges();
+  await dashboard.ticketExchanges();
   await dashboard.backToDashboard();
 });
 
 test('Ticketing Dashboard->RefundOrders', async ({page}) => {
   const dashboard = new DashboardPage(page);
 
-  await dashboard.RefundOrders();
+  await dashboard.refundOrders();
   await dashboard.backToDashboard();
 });

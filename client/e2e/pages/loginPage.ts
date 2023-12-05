@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import {type Locator, type Page } from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
 
 
 export class LoginPage {
@@ -16,13 +16,13 @@ export class LoginPage {
   constructor(page: Page) {
     this.page = page;
 
-    this.loginButton = page.getByRole('button', { name: 'Sign in' });
+    this.loginButton = page.getByRole('button', {name: 'Sign in'});
     this.loginWelcomeMessage = page.getByText('Log in to wtix-dev to continue to Default App.');
     this.emailInput = page.getByLabel('Email address');
     this.passwordInput = page.getByLabel('Password');
-    this.loginContinueButton = page.getByRole('button', { name: 'Continue', exact: true });
+    this.loginContinueButton = page.getByRole('button', {name: 'Continue', exact: true});
 
-    this.postLoginAuthAcceptButton = page.getByRole('button', { name: 'Accept' });
+    this.postLoginAuthAcceptButton = page.getByRole('button', {name: 'Accept'});
   }
 
   // Dynamic Locators
@@ -32,7 +32,7 @@ export class LoginPage {
 
   // Page Object Functions
   async goto() {
-    await this.page.goto('/', { timeout: 90000 }); // 90 seconds timeout
+    await this.page.goto('/', {timeout: 90000}); // 90 seconds timeout
   }
 
   async setEmail(email: string) {

@@ -1,4 +1,12 @@
-import { ShowingInfo } from "../interfaces";
+/* eslint-disable require-jsdoc */
+
+export interface ShowingInfo {
+  showingDate: string;
+  showingTime: string;
+  showingQuantity: string;
+  showingWholeDate: string;
+  showingDateTime: string;
+}
 
 export const SHOWING_INFO_1: ShowingInfo = {
   showingDate: '2023-10-11',

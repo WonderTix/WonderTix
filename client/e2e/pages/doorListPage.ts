@@ -1,6 +1,8 @@
 /* eslint-disable require-jsdoc */
-import {type Locator, type Page } from '@playwright/test';
-import { EventInfo, ShowingInfo, CustomerInfo } from '../testData/interfaces';
+import {type Locator, type Page} from '@playwright/test';
+import {EventInfo} from '../testData/EventInfo';
+import {ShowingInfo} from '../testData/ShowingInfo';
+import {CustomerInfo} from '../testData/CustomerInfo';
 
 export class DoorListPage {
   readonly page: Page;

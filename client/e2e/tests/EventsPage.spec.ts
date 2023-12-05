@@ -1,9 +1,8 @@
 /* eslint-disable require-jsdoc */
-import { test } from '@playwright/test';
-import { EventsPage } from '../pages/EventsPage';
-import { createUniqueEvent } from '../testData/factoryFunctions';
-import { EVENT_INFO_2, EVENT_INFO_3, EVENT_INFO_4 } from '../testData/dataConstants/EventInfoConstants';
-import { SHOWING_INFO_1, SHOWING_INFO_2, SHOWING_INFO_3, SHOWING_INFO_4 } from '../testData/dataConstants/ShowingInfoConstants';
+import {test} from '@playwright/test';
+import {EventsPage} from '../pages/EventsPage';
+import {EventInfo, EVENT_INFO_2, EVENT_INFO_3, EVENT_INFO_4} from '../testData/EventInfo';
+import {SHOWING_INFO_1, SHOWING_INFO_2, SHOWING_INFO_3, SHOWING_INFO_4} from '../testData/ShowingInfo';
 
 test('Homepage->Events', async ({page}) => {
   const eventsPage = new EventsPage(page);
@@ -14,7 +13,7 @@ test('Homepage->Events', async ({page}) => {
 test.skip('addDeleteEvents', async ({page})=>{
   // test.setTimeout(300000);
   const eventsPage = new EventsPage(page);
-  const currentEvent = createUniqueEvent(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_2);
   await eventsPage.goto();
   // The ANE_Package2 is locate in ConstsPackage.ts file
   // First we create a new event
@@ -39,8 +38,8 @@ test.skip('addDeleteEvents', async ({page})=>{
 // Need to refactor so that it's adding and looking at its own event, not a seeded event.
 test.skip('editEvents', async ({page})=>{
   test.setTimeout(45000);
-  const currentEvent3 = createUniqueEvent(EVENT_INFO_3);
-  const currentEvent4 = createUniqueEvent(EVENT_INFO_4);
+  const currentEvent3 = new EventInfo(EVENT_INFO_3);
+  const currentEvent4 = new EventInfo(EVENT_INFO_4);
   const eventsPage = new EventsPage(page);
   await eventsPage.goto();
   // This test we just use the second event "The Crucible" as an example
