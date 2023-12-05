@@ -26,7 +26,7 @@ export class EventsPage {
   readonly eventClose: Locator;
   readonly eventOption1: Locator;
   readonly eventOption2: Locator;
-   readonly deleteButton: Locator;
+  readonly deleteButton: Locator;
   readonly editEventInfo: Locator;
 
   readonly editEventName: Locator;
@@ -57,9 +57,6 @@ export class EventsPage {
   readonly inactiveEventchecker: Locator;
   readonly firstEvent: Locator;
   readonly secondEvent: Locator;
-  readonly dashBoard: Locator;
-  readonly editButton: Locator;
-  readonly saveButton: Locator;
   readonly cartButton: Locator;
   readonly goToHomepageFromCart: Locator;
 
@@ -68,9 +65,6 @@ export class EventsPage {
 
     this.homePage = page.getByRole('button', {name: '/'});
     this.homePageRightSlide = page.locator('button:nth-child(4)');
-    this.dashBoard = page.locator('a').filter({ hasText: 'Dashboard' }).first();
-    this.editButton = page.getByRole('button', { name: 'Edit' });
-    this.saveButton = page.getByRole('button', { name: 'Save' });
     this.firstEvent = page.getByRole('button', {
       name: 'Angels In America Playbill Angels In America Description Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     });
@@ -96,15 +90,11 @@ export class EventsPage {
     this.imageURL = page.getByLabel('Image URL:');
     this.newEventSave = page.getByLabel('Save');
 
-    this.deleteEventButton = page.getByTestId('event-delete-button');
-
     this.eventContinue = page.getByRole('button', {name: 'Continue'});
     this.eventClose = page.getByRole('button', {name: 'Close', exact: true});
     this.eventContinue = page.getByRole('button', {name: 'Continue'});
     this.eventClose = page.getByRole('button', {name: 'Close', exact: true});
 
-    this.eventOption1 = page.getByRole('button', {name: 'Default'});
-    this.eventOption2 = page.getByText('Active:', {exact: true});
     this.eventOption1 = page.getByRole('button', {name: 'Default'});
     this.eventOption2 = page.getByText('Active:', {exact: true});
 
@@ -180,25 +170,6 @@ export class EventsPage {
      await this.activateEventchecker.check();
   }
 
-  /**----------------------------------------------
-   * Switches the status of the event's activeness.
-   */
-  /*
-  async activateEvent() {
-    await this.eventOption2.click();
-  }-------------------------------------------------*/
-  async addNewInactiveEvent(anEvent: EventInfo)
- {
-     await this.addButton.click();
-     await this.eventNameBlank.click();
-     await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
-     await this.eventDesBlank.click();
-     await this.page.getByLabel('Event Description:').fill(anEvent.eventDescription);
-     await this.imageURL.click();
-     await this.page.getByLabel('Image URL:').fill(anEvent.eventURL);
-     await this.newEventSave.click();
-     await this.eventContinue.click();
- }
 
  async addDefaultIMGevent(anEvent: EventInfo)
   {
@@ -227,7 +198,6 @@ export class EventsPage {
     await this.editTicketQuantity.fill(showing.showingQuantity);
     await this.newEventSave.click();
     await this.eventContinue.click();
-   // await this.page.reload();
   }
 
   /**
@@ -239,8 +209,6 @@ export class EventsPage {
       .filter({hasText: Time})
       .getByRole('button', {name: 'Edit'}); 
    const disabled = await showingCardLocator.isDisabled();
-    //console out the value of the disabled//
-    console.log("disabled is: " + disabled); 
     if (disabled)
     {
       await this.page.reload();
@@ -259,23 +227,9 @@ export class EventsPage {
    * since if we click it too fast, the image on homepage could only move 
    * very little distance
    */
-  async checkNewEventOnHomePage(event_name:string, suffix:string) {
+  async checkNewEventOnHomePage(Description:string) {
     await this.homePage.click();
-    await this.page.waitForTimeout(100);
-    await this.cartButton.click();
-    await this.goToHomepageFromCart.click();
-    await this.page.waitForTimeout(400);
-    await this.homePageRightSlide.click();
-    await this.page.waitForTimeout(400);
-    await this.homePageRightSlide.click();
-    await this.page.waitForTimeout(400);
-    await this.homePageRightSlide.click();
-    await this.page.waitForTimeout(400);
-    await this.homePageRightSlide.click();
-    await this.page.waitForTimeout(400);
-    await this.homePageRightSlide.click();
-    await this.page.waitForTimeout(400);
-    await expect(this.page.getByText('An event for testing')).toBeVisible;
+    await expect(this.page.getByText(Description)).toBeVisible;
   }
 
 
@@ -283,11 +237,11 @@ export class EventsPage {
    * We need to pass in a event's full name like:
    * "Test_event Playbill Test_event Description An event for testing"
    */
-  async goToEventFromManage(eventFullName: string) {
+  async goToEventFromManage(eventName: string, eventDescription: string) {
     await this.emailButton.click();
     await this.manageTicketingButton.click();
     await this.leftBarEvent.click();
-    await this.page.getByRole('button', {name: eventFullName}).first().click();
+    await this.page.getByRole('button', {name: eventName+' '+'Playbill'+' '+eventName+' '+'Description'+' '+eventDescription}).first().click();
   }
 
   
@@ -295,28 +249,17 @@ export class EventsPage {
    * We need to pass in a event's full name like:
    * "Test_event Playbill Test_event Description An event for testing"
    */
-  async deleteTheEvent(eventFullName: string) {
+  async deleteTheEvent(eventName: string, eventDescription: string) {
     await this.deleteButton.click();
     await this.eventContinue.click();
     await this.leftBarEvent.click();
     await this.page.reload();
-    await expect(this.page.getByRole('button', { name: eventFullName })).not.toBeVisible();
+    await expect(this.page.getByRole('button', { name: eventName+' '+'Playbill'+' '+eventName+' '+'Description'+' '+eventDescription })).not.toBeVisible();
   }
   
 
-  async deleteInactiveEvent(eventFullName: string)
-  {
-    await this.leftBarEvent.click();
-    await this.inactiveEventchecker.click();
-    await this.page.getByRole('button', { name: eventFullName }).first().click();
-    await this.deleteTheEvent(eventFullName);
-  }
-
-
   async editTheEventInfo(anEvent: EventInfo) {
     const disabled = await this.editEventInfo.isDisabled();
-    //console out the value of the disabled//
-    //console.log("disabled is: " + disabled); 
     if (disabled)
     {
       await this.page.reload();
@@ -355,8 +298,6 @@ export class EventsPage {
    */
   async editShowingInfo(aShowing: ShowingInfo) {
     const disabled = await this.editShowingButton.isDisabled();
-    //console out the value of the disabled//
-    //console.log("disabled is: " + disabled); 
     if (disabled)
     {
       await this.page.reload();

@@ -70,8 +70,8 @@ test('check cart after ticket add', async ({page}) => {
     await main.checkCart(currentEvent, cartInfo, quantity);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventName,currentEvent.eventDescription);
+    await events.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
   }
 });
 
@@ -100,8 +100,8 @@ test('check stripe purchase', async ({page}, testInfo) => {
     await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+     await events.goToEventFromManage(currentEvent.eventName,currentEvent.eventDescription);
+    await events.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
   }
 });
 
@@ -133,8 +133,8 @@ test('check contact is added after order', async ({page}, testInfo) => {
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventName,currentEvent.eventDescription);
+    await events.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
   }
 });
 
@@ -165,8 +165,8 @@ test('check order accommodations', async ({page}, testInfo) => {
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventName,currentEvent.eventDescription);
+    await events.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
   }
 });
 
@@ -202,8 +202,8 @@ test('check ticket inc/dec in cart', async ({page}) => {
     await main.checkEventTicket(currentEvent, quantity);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+     await events.goToEventFromManage(currentEvent.eventName,currentEvent.eventDescription);
+    await events.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
   }
 });
 
@@ -235,7 +235,7 @@ test('check order on door list', async ({page}, testInfo) => {
     await doorList.checkOrder(currentPatron, quantity);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+    await events.goToEventFromManage(currentEvent.eventName,currentEvent.eventDescription);
+    await events.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
   }
 });

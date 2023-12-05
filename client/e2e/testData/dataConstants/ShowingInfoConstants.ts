@@ -20,16 +20,16 @@ export const SHOWING_INFO_3: ShowingInfo = {
   showingDate: '2021-09-16',
   showingTime: '12:31',
   showingQuantity: '101',
-  showingWholeDate: 'Thu, Sep 16 2021Time: 12:31',
-  showingDateTime: 'Thu, Sep 16 2021',
+  showingWholeDate: 'Thu, Sep 16 2021',
+  showingDateTime: 'Thu, Sep 16 2021Time: 12:31',
 };
 
 export const SHOWING_INFO_4: ShowingInfo = {
   showingDate: '2021-09-15',
   showingTime: '12:30',
   showingQuantity: '100',
-  showingWholeDate: 'Wed, Sep 15 2021Time: 12:30',
-  showingDateTime: 'Wed, Sep 15 2021',
+  showingWholeDate: 'Wed, Sep 15 2021',
+  showingDateTime: 'Wed, Sep 15 2021Time: 12:30',
 };
 
 export const SHOWING_INFO_5: ShowingInfo = {

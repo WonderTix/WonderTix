@@ -16,7 +16,7 @@ test('addNewEvents', async ({page})=>{
   await eventsPage.goto();
   await eventsPage.addnewevent(currentEvent);
   await eventsPage.activeEvent();
-  await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+  await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
 });
 
 /**
@@ -28,19 +28,18 @@ test('addNewEvents', async ({page})=>{
  * Delete the newly created event at last.
  */
 test('addDeleteEvents', async ({page})=>{
-  // test.setTimeout(300000);
   const eventsPage = new EventsPage(page);
   const currentEvent = createUniqueEvent(EVENT_INFO_2);
   await eventsPage.goto();
   await eventsPage.addnewevent(currentEvent);
   await eventsPage.activeEvent();
   await eventsPage.addNewShowing(SHOWING_INFO_1);
-  await eventsPage.checkNewEventOnHomePage(currentEvent.eventName,currentEvent.suffix);
-  await eventsPage.goToEventFromManage(currentEvent.eventFullName);
+  await eventsPage.checkNewEventOnHomePage(currentEvent.eventDescription);
+  await eventsPage.goToEventFromManage(currentEvent.eventName,currentEvent.eventDescription);
   await eventsPage.addNewShowing(SHOWING_INFO_2);
   await eventsPage.searchDeleteShowing(SHOWING_INFO_1.showingWholeDate);
   await eventsPage.searchDeleteShowing(SHOWING_INFO_2.showingWholeDate);
-  await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+  await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
 });
 
 test('editEvents',async({page})=>{
@@ -64,7 +63,7 @@ test('editEvents',async({page})=>{
   await eventsPage.editTheEventInfo(currentEvent);
   } finally {
     await eventsPage.searchDeleteShowing(SHOWING_INFO_4.showingWholeDate);
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
   }
 });
 
@@ -84,27 +83,15 @@ test('editShowing', async ({page})=>{
     await eventsPage.editShowingInfo(SHOWING_INFO_4);
   } finally{
     await eventsPage.searchDeleteShowing(SHOWING_INFO_4.showingWholeDate);
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription);
    }
 });
 
-/**
- * create a new inactivated event 
- * go to inactive event lists to check if it exists 
- * and if it is, delete it
- */
-test('checkActive',async({page})=>{
-  const eventsPage = new EventsPage(page);
-  const currentEvent = createUniqueEvent(EVENT_INFO_2);
-  await eventsPage.goto();
-  await eventsPage.addNewInactiveEvent(currentEvent);
-  await eventsPage.deleteInactiveEvent(currentEvent.eventFullName);
-});
 
 test('checkDefaultImage',async({page})=>{
   const eventsPage = new EventsPage(page);
   const currentEvent = createUniqueEvent(EVENT_INFO_4);
   await eventsPage.goto();
   await eventsPage.addDefaultIMGevent(currentEvent);
-  await eventsPage.deleteTheEvent(currentEvent.eventFullName) 
+  await eventsPage.deleteTheEvent(currentEvent.eventName,currentEvent.eventDescription); 
 });

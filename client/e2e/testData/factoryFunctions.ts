@@ -13,8 +13,7 @@ export function createUniqueEvent(event: EventInfo, useShortID: boolean = true):
   return {
     eventName: eventName,
     eventDescription: event.eventDescription,
-    eventURL: event.eventURL,
-    eventFullName: `${eventName} Playbill ${eventName} Description ${event.eventDescription}`,
+    eventURL: event.eventURL
   };
 }
 

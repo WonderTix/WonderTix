@@ -12,8 +12,6 @@ export interface EventInfo {
   eventName: string;
   eventDescription: string;
   eventURL: string;
-  eventFullName: string;
-  suffix:"Playbill"
 }
 
 export interface ShowingInfo {
