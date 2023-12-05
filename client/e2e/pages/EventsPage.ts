@@ -103,20 +103,19 @@ export class EventsPage {
   }
 
   /**
-   * This is a function for click the "Events" on the left bar  
+   * Clicks the "Events" on the left bar  
    */
   async clickLeftBar() {
     await this.leftBarEvent.click();
   }
 
   /**
-   * This test is basically testing the functionality of creating a new event without adding any showing.
-   * For now, if we create an event without any showing, it won't appear on the homepage nor on the events page.
-   * And we need to pass in things like:
-   * "S",
-   * "123",
-   * "http://"
-  */
+   * Asynchronously adds a new event with the provided event information.
+   * @param {EventInfo} anEvent - Object with event details to be added, including:
+   *    - `eventName`: Name of the event.
+   *    - `eventDescription`: Description of the event.
+   *    - `eventURL`: URL of the event image.
+   */
   async addnewevent(anEvent: EventInfo) {
     await this.addButton.click();
     await this.eventNameBlank.click();
@@ -140,7 +139,7 @@ export class EventsPage {
   }
   
   /**
-   * Create a new event using the default image.
+   * Creates a new event using the default image.
    */
  async addDefaultIMGevent(anEvent: EventInfo)
   {
@@ -155,10 +154,11 @@ export class EventsPage {
   }
 
   /**
-   * We need to pass in things like:
-   * "2023-10-17",
-   * "10:20",
-   * "010"
+   * Adds a new showing to the events page.
+   * @param {ShowingInfo} showing - Object with showing details, including:
+   *    - `showingDate`: Date of showing (YYYY-MM-DD format, e.g., "2023-10-17").
+   *    - `showingTime24hour`: Time of showing in 24-hour format (e.g., "10:20").
+   *    - `showingQuantity`: Number of tickets available (e.g., "010").
    */
   async addNewShowing(showing: ShowingInfo) {
     await this.editAddShowing.click();
@@ -171,10 +171,12 @@ export class EventsPage {
     await this.eventContinue.click();
   }
 
-  /**
-   * We need to pass in things to the filter like:
-   * "Wed, Oct 11 2023Time: 12:10 AM"
-   */
+ /**
+  * Searches for and deletes a specific showing based on the provided showing details.
+  * @param {ShowingInfo} aShowing - Object with showing details to be deleted, data needed:
+  *    - `showingDate`: Date of showing (YYYY-MM-DD format, e.g., "2023-10-17").
+  *    - `showingTime12hour`: Time in 12-hour format (e.g., '12:10 AM').
+  */
   async searchDeleteShowing(aShowing:ShowingInfo) {
    const showingCardLocator =  this.showingCard
       .filter({hasText: aShowing.showingWholeDate + 'Time:' + ' ' + aShowing.showingTime12hour})
@@ -205,10 +207,12 @@ export class EventsPage {
     await this.page.getByRole('button', {name: anEvent.eventName+' '+'Playbill'+' '+anEvent.eventName+' '+'Description'+' '+anEvent.eventDescription}).first().click();
   }
   
-  /**
-   * We need the event's full name like:
-   * "Test_event Playbill Test_event Description An event for testing"
-   */
+ /**
+  * Asynchronously deletes an existing event based on provided event details.
+  * @param {EventInfo} anEvent - Object with event details to be deleted, the data needed:
+  *    - `eventName`: Name of the event.
+  *    - `eventDescription`: Description of the event.
+  */
   async deleteTheEvent(anEvent: EventInfo) {
     await this.deleteButton.click();
     await this.eventContinue.click();
@@ -217,6 +221,13 @@ export class EventsPage {
     await expect(this.page.getByRole('button', { name: anEvent.eventName+' '+'Playbill'+' '+anEvent.eventName+' '+'Description'+' '+anEvent.eventDescription})).not.toBeVisible();
   }
   
+  /**
+   * Asynchronously edits the information of an existing event.
+   * @param {EventInfo} anEvent - Object with updated event details, including:
+   *    - `eventName`: New name of the event.
+   *    - `eventDescription`: New description of the event.
+   *    - `eventURL`: New URL of the event image.
+   */
   async editTheEventInfo(anEvent: EventInfo) {
     const disabled = await this.editEventInfo.isDisabled();
     if (disabled)
@@ -244,9 +255,13 @@ export class EventsPage {
     await this.page.getByText(anEvent.eventDescription).click();
   }
 
-  /**
-   * Only for change the first showing of an event
-   */
+   /**
+    * Asynchronously edits the showing information.
+    * @param {ShowingInfo} aShowing - The showing information to be edited.
+    *    - `showingDate`: Date of the showing (e.g., '2023-10-11').
+    *    - `showingTime24hour`: Time in 24-hour format (e.g., '00:10').
+    *    - `showingQuantity`: Quantity of showings (e.g., '10').
+    */
   async editShowingInfo(aShowing: ShowingInfo) {
     const disabled = await this.editShowingButton.isDisabled();
     if (disabled)
