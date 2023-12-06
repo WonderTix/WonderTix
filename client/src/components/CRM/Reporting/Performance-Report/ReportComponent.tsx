@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+{/* import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
@@ -87,4 +87,4 @@ ReportComponent.propTypes = {
   }),
 };
 
-export default ReportComponent;
+export default ReportComponent; */}

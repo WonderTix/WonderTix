@@ -207,7 +207,7 @@ const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
               }
               size='md'
               title='Performance Report'
-              route='/admin/reporting/performance-report'
+              route='/admin/reporting/event-inventory'
               disabled={false}
               description='A sales summary for one or more specific Event Instances. The Performance Report includes the count of full price/discounted/comp/subscription/reservation tickets for the performance(s).'
             />

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import {Divider, Button} from '@mui/material';
 
-import TableData from './Table/TableData';
+/*import TableData from './Table/TableData';*/
 import TableHeader from './Table/TableHeader';
 
 const ReportComponent = ({filterData}) => {
@@ -58,11 +58,11 @@ const ReportComponent = ({filterData}) => {
         </h3>
       </div>
       <div className='px-4'>
-        <TableData
+        {/* <TableData
           eevent={eevent}
           EventInstances={EventInstances}
           groupedBy={groupedBy}
-        />
+  /> */}
       </div>
       <Divider sx={{backgroundColor: 'darkgrey'}} />
     </div>
