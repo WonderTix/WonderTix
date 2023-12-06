@@ -4,7 +4,7 @@ import {EventsPage} from '../pages/EventsPage';
 import {ContactPage} from '../pages/contactPage';
 import {DoorListPage} from '../pages/doorListPage';
 import {CustomerInfo, JOHN_DOE, JANE_DOE} from '../testData/CustomerInfo';
-import {EventInfo, EVENT_INFO_5, EVENT_INFO_6} from '../testData/EventInfo';
+import {EventInfo, EVENT_INFO_4, EVENT_INFO_5} from '../testData/EventInfo';
 import {SHOWING_INFO_2, SHOWING_INFO_5} from '../testData/ShowingInfo';
 import {VALID_VISA_CREDIT} from '../testData/CreditCard';
 
@@ -32,7 +32,7 @@ test('check cart after ticket add', async ({page}) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
 
-  const currentEvent = new EventInfo(EVENT_INFO_5);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
   await events.goto();
@@ -69,8 +69,8 @@ test('check cart after ticket add', async ({page}) => {
     await main.checkCart(currentEvent, cartInfo, quantity);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+    await events.goToEventFromManage(currentEvent);
+    await events.deleteTheEvent(currentEvent);
   }
 });
 
@@ -82,7 +82,7 @@ test('check stripe purchase', async ({page}, testInfo) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
 
-  const currentEvent = new EventInfo(EVENT_INFO_5);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentPatron = new CustomerInfo(JOHN_DOE);
 
   const currentCard = VALID_VISA_CREDIT;
@@ -99,8 +99,8 @@ test('check stripe purchase', async ({page}, testInfo) => {
     await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+     await events.goToEventFromManage(currentEvent);
+    await events.deleteTheEvent(currentEvent);
   }
 });
 
@@ -114,7 +114,7 @@ test('check contact is added after order', async ({page}, testInfo) => {
   const main = new MainPage(page);
   const contacts = new ContactPage(page);
 
-  const currentEvent = new EventInfo(EVENT_INFO_5);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
   const currentPatron = new CustomerInfo(JOHN_DOE);
@@ -132,8 +132,8 @@ test('check contact is added after order', async ({page}, testInfo) => {
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+    await events.goToEventFromManage(currentEvent);
+    await events.deleteTheEvent(currentEvent);
   }
 });
 
@@ -146,7 +146,7 @@ test('check order accommodations', async ({page}, testInfo) => {
   const main = new MainPage(page);
   const contacts = new ContactPage(page);
 
-  const currentEvent = new EventInfo(EVENT_INFO_5);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
   const currentPatron = new CustomerInfo(JANE_DOE);
@@ -164,8 +164,8 @@ test('check order accommodations', async ({page}, testInfo) => {
     await contacts.checkCustomer(currentPatron);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+    await events.goToEventFromManage(currentEvent);
+    await events.deleteTheEvent(currentEvent);
   }
 });
 
@@ -176,7 +176,7 @@ test('check ticket inc/dec in cart', async ({page}) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
 
-  const currentEvent = new EventInfo(EVENT_INFO_5);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
   const quantity = 2;
@@ -201,8 +201,8 @@ test('check ticket inc/dec in cart', async ({page}) => {
     await main.checkEventTicket(currentEvent, quantity);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+     await events.goToEventFromManage(currentEvent);
+    await events.deleteTheEvent(currentEvent);
   }
 });
 
@@ -215,7 +215,7 @@ test('check order on door list', async ({page}, testInfo) => {
   const main = new MainPage(page);
   const doorList = new DoorListPage(page);
 
-  const currentEvent = new EventInfo(EVENT_INFO_6);
+  const currentEvent = new EventInfo(EVENT_INFO_5);
   const currentShowing = SHOWING_INFO_5;
 
   const currentPatron = new CustomerInfo(JOHN_DOE);
@@ -234,7 +234,7 @@ test('check order on door list', async ({page}, testInfo) => {
     await doorList.checkOrder(currentPatron, quantity);
   } finally {
     await main.goto();
-    await events.goToEventFromManage(currentEvent.eventFullName);
-    await events.deleteTheEvent(currentEvent.eventFullName);
+    await events.goToEventFromManage(currentEvent);
+    await events.deleteTheEvent(currentEvent);
   }
 });

@@ -1,7 +1,7 @@
 import {test} from '@playwright/test';
 import {SeasonsPage} from '../pages/seasonsPage';
 import {EventsPage} from '../pages/EventsPage';
-import {EventInfo, EVENT_INFO_2} from '../testData/EventInfo';
+import {EventInfo, EVENT_INFO_1} from '../testData/EventInfo';
 import {SeasonInfo, SEASON_INFO_1} from '../testData/SeasonInfo';
 
 test('Homepage->Seasons', async ({page}) => {
@@ -13,7 +13,7 @@ test('addNewSeasonWithEvent', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
   const eventsPage = new EventsPage(page);
 
-  const uniqueEvent = new EventInfo(EVENT_INFO_2);
+  const uniqueEvent = new EventInfo(EVENT_INFO_1);
   const uniqueSeason = new SeasonInfo(SEASON_INFO_1);
 
   try {
@@ -42,7 +42,7 @@ test('addNewSeasonWithEvent', async ({page}) => {
     const eventsPage2 = new EventsPage(page);
     await eventsPage2.goto();
     await page.locator(':text("' + uniqueEvent.eventName + '")').click();
-    await eventsPage2.deleteTheEvent(uniqueEvent.eventFullName);
+    await eventsPage2.deleteTheEvent(uniqueEvent);
   }
 });
 
@@ -78,7 +78,7 @@ test('editSeason', async ({page}) => {
 test('removeEventFromSeason', async ({page}) => {
   const seasonsPage = new SeasonsPage(page);
   const eventsPage = new EventsPage(page);
-  const uniqueEvent = new EventInfo(EVENT_INFO_2);
+  const uniqueEvent = new EventInfo(EVENT_INFO_1);
   const uniqueSeason = new SeasonInfo(SEASON_INFO_1);
 
   try {
@@ -114,7 +114,7 @@ test('removeEventFromSeason', async ({page}) => {
     const eventsPage2 = new EventsPage(page);
     await eventsPage2.goto();
     await page.locator(':text("' + uniqueEvent.eventName + '")').click();
-    await eventsPage2.deleteTheEvent(uniqueEvent.eventFullName);
+    await eventsPage2.deleteTheEvent(uniqueEvent);
   }
 });
 

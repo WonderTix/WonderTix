@@ -248,6 +248,9 @@ export class MainPage {
     await this.cartAccommodations.selectOption({
       value: customer.accommodations,
     });
+    await this.cartAccommodations.selectOption({
+      value: customer.accommodations,
+    });
   }
 
   // Goes next from the customer info

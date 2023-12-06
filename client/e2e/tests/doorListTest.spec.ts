@@ -2,7 +2,7 @@ import {test, expect} from '@playwright/test';
 import {DoorListPage} from '../pages/doorListPage';
 import {EventsPage} from '../pages/EventsPage';
 import {MainPage} from '../pages/mainPage';
-import {EventInfo, EVENT_INFO_2} from '../testData/EventInfo';
+import {EventInfo, EVENT_INFO_1} from '../testData/EventInfo';
 import {SHOWING_INFO_1} from '../testData/ShowingInfo';
 import {CustomerInfo, JANE_DOE} from '../testData/CustomerInfo';
 import {VALID_VISA_CREDIT} from '../testData/CreditCard';
@@ -15,7 +15,7 @@ test('Check Home', async ({page}) => {
 });
 
 test('Select Active Showing in Doorlist', async ({page}) => {
-  const currentEvent = new EventInfo(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_1);
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
 
@@ -33,12 +33,12 @@ test('Select Active Showing in Doorlist', async ({page}) => {
     // Remove the added event
     await eventsPage.goto();
     await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });
 
 test('Select Inactive Showing in Doorlist', async ({page}) => {
-  const currentEvent = new EventInfo(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_1);
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
 
@@ -57,12 +57,12 @@ test('Select Inactive Showing in Doorlist', async ({page}) => {
     await eventsPage.goto();
     await eventsPage.setInactiveView();
     await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });
 
 test('Open Seats in Doorlist', async ({page}) => {
-  const currentEvent = new EventInfo(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_1);
   const currentShowing = SHOWING_INFO_1;
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
@@ -82,14 +82,14 @@ test('Open Seats in Doorlist', async ({page}) => {
     // Remove the added event
     await eventsPage.goto();
     await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });
 
 test('Purchased Seats in Doorlist', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + timeoutAdd);
-  const currentEvent = new EventInfo(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_1);
   const currentShowing = SHOWING_INFO_1;
   const currentPatron = new CustomerInfo(JANE_DOE);
   const currentCard = VALID_VISA_CREDIT;
@@ -118,6 +118,6 @@ test('Purchased Seats in Doorlist', async ({page}, testInfo) => {
     // Remove the added event
     await eventsPage.goto();
     await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });

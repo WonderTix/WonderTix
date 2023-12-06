@@ -69,7 +69,7 @@ export class DoorListPage {
   async searchShowing(event: EventInfo, showing: ShowingInfo) {
     const eventOption = await this.chooseEvent.getByRole('option').filter({hasText: event.eventName}).textContent();
     await this.chooseEvent.selectOption(eventOption);
-    const eventTime = await this.chooseTime.getByRole('option').filter({hasText: showing.showingDateTime}).textContent();
+    const eventTime = await this.chooseTime.getByRole('option').filter({hasText: showing.showingWholeDate + ' ' + showing.showingTime12hour}).textContent();
     await this.chooseTime.selectOption(eventTime);
   }
 

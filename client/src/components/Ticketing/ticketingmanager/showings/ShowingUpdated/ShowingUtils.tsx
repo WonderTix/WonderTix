@@ -212,13 +212,10 @@ export const getTicketTypeKeyValue = (
     : foundType[key];
 };
 
-export const getInstanceTicketType = (id: number, ticketTypes: any[]) => {
-  if (!ticketTypes) return {};
-  const {description, ...type} = ticketTypes.find(
-    (type) => Number(type.tickettypeid_fk) === id,
-  );
+export const getInstanceTicketType = (ticketType) => {
+  if (!ticketType) return {};
   return {
-    ...type,
+    ...ticketType,
     ticketlimit: 0,
   };
 };
