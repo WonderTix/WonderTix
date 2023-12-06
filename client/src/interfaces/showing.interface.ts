@@ -15,6 +15,7 @@ export interface eventInstanceTicketType {
   price: number;
   concessionprice: number;
   ticketlimit: number;
+  description: string;
 }
 
 export interface Showing {

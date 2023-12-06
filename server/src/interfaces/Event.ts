@@ -24,6 +24,7 @@ export interface instanceTicketType {
   price: number;
   concessionprice: number;
   ticketlimit: number;
+  description: string;
 }
 
 export interface eventInstanceRequest {
