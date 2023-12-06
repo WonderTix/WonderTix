@@ -1,13 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { MainPage } from '../pages/mainPage';
-import { EventsPage } from '../pages/EventsPage';
-import { ContactPage } from '../pages/contactPage';
-import { DoorListPage } from '../pages/doorListPage';
-import { JOHN_DOE, JANE_DOE } from '../testData/dataConstants/CustomerInfoConstants';
-import { EVENT_INFO_4, EVENT_INFO_5 } from '../testData/dataConstants/EventInfoConstants';
-import { SHOWING_INFO_2, SHOWING_INFO_5 } from '../testData/dataConstants/ShowingInfoConstants';
-import { createUniqueEvent, createUniqueCustomer } from '../testData/factoryFunctions';
-import { VALID_VISA_CREDIT } from '../testData/dataConstants/CreditCardConstants';
+import {test, expect} from '@playwright/test';
+import {MainPage} from '../pages/mainPage';
+import {EventsPage} from '../pages/EventsPage';
+import {ContactPage} from '../pages/contactPage';
+import {DoorListPage} from '../pages/doorListPage';
+import {CustomerInfo, JOHN_DOE, JANE_DOE} from '../testData/CustomerInfo';
+import {EventInfo, EVENT_INFO_4, EVENT_INFO_5} from '../testData/EventInfo';
+import {SHOWING_INFO_2, SHOWING_INFO_5} from '../testData/ShowingInfo';
+import {VALID_VISA_CREDIT} from '../testData/CreditCard';
 
 // Verify we can get to the main page and the event header is visible
 test('Check Home', async ({page}) => {
@@ -33,14 +32,14 @@ test('check cart after ticket add', async ({page}) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
 
-  const currentEvent = createUniqueEvent(EVENT_INFO_4);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
   await events.goto();
   await events.addnewevent(currentEvent);
   await events.activateEvent();
   await events.addNewShowing(currentShowing);
-  
+
   try {
     await main.goto();
     const showing = await main.goSelectShowing(currentEvent);
@@ -83,8 +82,8 @@ test('check stripe purchase', async ({page}, testInfo) => {
   const events = new EventsPage(page);
   const main = new MainPage(page);
 
-  const currentEvent = createUniqueEvent(EVENT_INFO_4);
-  const currentPatron = createUniqueCustomer(JOHN_DOE);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
+  const currentPatron = new CustomerInfo(JOHN_DOE);
 
   const currentCard = VALID_VISA_CREDIT;
   const currentShowing = SHOWING_INFO_2;
@@ -115,10 +114,10 @@ test('check contact is added after order', async ({page}, testInfo) => {
   const main = new MainPage(page);
   const contacts = new ContactPage(page);
 
-  const currentEvent = createUniqueEvent(EVENT_INFO_4);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
-  const currentPatron = createUniqueCustomer(JOHN_DOE);
+  const currentPatron = new CustomerInfo(JOHN_DOE);
   const currentCard = VALID_VISA_CREDIT;
 
   await events.goto();
@@ -147,10 +146,10 @@ test('check order accommodations', async ({page}, testInfo) => {
   const main = new MainPage(page);
   const contacts = new ContactPage(page);
 
-  const currentEvent = createUniqueEvent(EVENT_INFO_4);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
-  const currentPatron = createUniqueCustomer(JANE_DOE);
+  const currentPatron = new CustomerInfo(JANE_DOE);
   const currentCard = VALID_VISA_CREDIT;
 
   await events.goto();
@@ -173,11 +172,11 @@ test('check order accommodations', async ({page}, testInfo) => {
 // Place a ticket in the cart and ensure both the increment and decrement buttons work
 test('check ticket inc/dec in cart', async ({page}) => {
   test.setTimeout(60000);
-  
+
   const events = new EventsPage(page);
   const main = new MainPage(page);
 
-  const currentEvent = createUniqueEvent(EVENT_INFO_4);
+  const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
   const quantity = 2;
@@ -216,10 +215,10 @@ test('check order on door list', async ({page}, testInfo) => {
   const main = new MainPage(page);
   const doorList = new DoorListPage(page);
 
-  const currentEvent = createUniqueEvent(EVENT_INFO_5);
+  const currentEvent = new EventInfo(EVENT_INFO_5);
   const currentShowing = SHOWING_INFO_5;
 
-  const currentPatron = createUniqueCustomer(JOHN_DOE);
+  const currentPatron = new CustomerInfo(JOHN_DOE);
   const currentCard = VALID_VISA_CREDIT;
   const quantity = 2;
 

@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import { CustomerInfo } from '../testData/interfaces';
+import {CustomerInfo} from '../testData/CustomerInfo';
 
 export class ContactPage {
     readonly page: Page;

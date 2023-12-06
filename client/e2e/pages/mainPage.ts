@@ -1,6 +1,8 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import { CreditCardInfo, CustomerInfo, EventInfo } from '../testData/interfaces';
+import {CreditCardInfo} from '../testData/CreditCard';
+import {CustomerInfo} from '../testData/CustomerInfo';
+import {EventInfo} from '../testData/EventInfo';
 
 export class MainPage {
   readonly page: Page;
@@ -49,7 +51,7 @@ export class MainPage {
   constructor(page: Page) {
     this.page = page;
 
-    this.loadingScreen = page.getByTestId('loading-screen')
+    this.loadingScreen = page.getByTestId('loading-screen');
     this.firstShowing = page
       .getByRole('button', {name: 'See Showings'})
       .first();
@@ -100,7 +102,7 @@ export class MainPage {
   async goto() {
     await this.page.goto('/', {timeout: 60000});
     // Wait for the loading screen to be hidden
-    await this.loadingScreen.waitFor({ state: 'hidden', timeout: 30000 });
+    await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 
   async getShowingLocator(showingName: string) {
