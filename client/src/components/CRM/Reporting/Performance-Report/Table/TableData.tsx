@@ -1,4 +1,4 @@
-import React from 'react';
+{/* import React from 'react';
 
 const TableData = () => {
   // Data Handling
@@ -46,3 +46,5 @@ const TableData = () => {
 };
 
 export default TableData;
+*/}
+export {};
