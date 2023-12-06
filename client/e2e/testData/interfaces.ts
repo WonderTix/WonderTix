@@ -12,15 +12,14 @@ export interface EventInfo {
   eventName: string;
   eventDescription: string;
   eventURL: string;
-  eventFullName: string;
 }
 
 export interface ShowingInfo {
   showingDate: string;
-  showingTime: string;
+  showingTime24hour: string;
+  showingTime12hour: string;
   showingQuantity: string;
   showingWholeDate: string;
-  showingDateTime: string;
 }
 
 export interface SeasonInfo {
