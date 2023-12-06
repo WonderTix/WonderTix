@@ -10,6 +10,7 @@ required=(
 )
 source ${CHECK_ARGS} "${required[@]}"
 
+export CI="true"
 export DEPLOYED="true" # use minimal reporting
 export FRONTEND_URL="${CLIENT_REVISION}"
 export ROOT_URL="${SERVER_REVISION}"

@@ -107,6 +107,7 @@ seasonTicketTypePriceDefaultController.get('/events/:seasonid', async (req: Requ
     let seasonResult:any[]= [];
     const ticketResult = await prisma.tickettype.findMany({
       where: {
+        deprecated: false,
         seasontickettypepricedefaults: {
           every: {
             seasonid_fk: {not: +seasonid},
