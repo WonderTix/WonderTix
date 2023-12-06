@@ -88,3 +88,4 @@ ReportComponent.propTypes = {
 };
 
 export default ReportComponent; */}
+export {};

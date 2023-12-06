@@ -47,3 +47,4 @@ const TableData = () => {
 
 export default TableData;
 */}
+export {};

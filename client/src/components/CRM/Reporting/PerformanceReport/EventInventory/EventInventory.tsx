@@ -1,32 +1,21 @@
 import React, {
-    useEffect,
-    useState,
-  } from 'react';
-  
-  import {
-    TABLE_DATA,
-    TableDataType,
-  } from '../Table/TableData';
-  
-  import TableHead from './Table/TableHead';
-  import TableRows from './Table/TableRows';
-  import Pagination from './Table/Pagination';
-  import TableFilter from './Table/TableFilter';
-  import TableActions from './Table/TableActions';
-  import {ExclamationTriangleIcon} from './SVGIcons';
-  
-  
-  type TabType = {
+  useEffect,
+  useState,
+} from 'react';
+import {
+  TABLE_DATA,
+  TableDataType,
+} from '../Table/TableData';
+import TableHead from './Table/TableHead';
+import TableRows from './Table/TableRows';
+import Pagination from './Table/Pagination';
+import TableFilter from './Table/TableFilter';
+import TableActions from './Table/TableActions';
+import {ExclamationTriangleIcon} from './SVGIcons';
+type TabType = {
     label: string;
     value: string;
   };
-  
-  const TABS: TabType[] = [
-    {label: 'Due Date', value: 'date'},
-    {label: 'Important', value: 'important'},
-    {label: 'Most Recent', value: 'most recent'},
-  ];
-  
   const TABLE_HEADINGS = [
     'Name',
     'Type',
@@ -36,8 +25,6 @@ import React, {
     'Sort Order',
     'Active',
   ];
-  
-  
   const EventInventory: React.FC = (): React.ReactElement => {
     const [tableRow, setTableRow] = useState<TableDataType[]>(TABLE_DATA);
     const [modalType, setModalType] = useState<'detail' |'create' | 'update' | 'delete' | null>(null);
@@ -50,7 +37,7 @@ import React, {
     const [filteredRows, setFilteredRows] = useState<TableDataType[]>(TABLE_DATA);
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  
+
     const rowHeight = 48;
     const currentDate = new Date();
     const tableHeight = (rowsPerPage * rowHeight) + rowHeight+1;
@@ -58,7 +45,7 @@ import React, {
     const indexOfLastRow = Math.min(currentPage * rowsPerPage, totalItems);
     const indexOfFirstRow = Math.max(0, indexOfLastRow - rowsPerPage);
     const currentRows = filteredRows.slice(indexOfFirstRow, indexOfLastRow);
-  
+
     // Reload Table
     const reloadTable = (): void => {
       setCurrentTab('date');
@@ -66,9 +53,6 @@ import React, {
       setFilteredRows(TABLE_DATA);
       setCurrentPage(1);
     };
-  
-  
-  
     const renderCurrentRows = (): React.ReactNode => {
       return (
         <tr>
@@ -80,8 +64,6 @@ import React, {
         </tr>
       );
     };
-  
-  
     // Sort Column headings
     const handleColumnSort = (column: string) => {
       if (sortColumn === column) {
@@ -92,19 +74,19 @@ import React, {
         setSortDirection('asc');
       }
     };
-  
+
     // Tab filter
     const onTabChange = (value: string) => {
       setCurrentTab(value);
     };
-  
+
     // Search filter
     const handleFilter = (
       {target: {value}}: React.ChangeEvent<HTMLInputElement>,
     ): void => {
       setSearchTerm(value);
     };
-  
+
     useEffect(() => {
       if (searchTerm.trim() === '') {
         setFilteredRows(tableRow);
@@ -119,8 +101,8 @@ import React, {
         setFilteredRows(updatedFilteredRows);
       }
     }, [searchTerm, tableRow]);
-  
-  
+
+
     useEffect(() => {
       const sortedRows: TableDataType[] = [...tableRow];
       const stringComparator = (key: string) =>
@@ -131,13 +113,13 @@ import React, {
         const sortOrder = {'1': 1, '2': 2, '3': 3};
         return sortOrder[a.sortOrder] - sortOrder[b.sortOrder];
       };
-  
+
       const sorters = {
         'ID': numberComparator('id'),
         'Name': stringComparator('name'),
         'Type': stringComparator('type'),
       };
-  
+
       if (sortColumn && sorters[sortColumn]) {
         sortedRows.sort((a, b) => {
           const compareResult = sorters[sortColumn](a, b);
@@ -146,7 +128,7 @@ import React, {
       }
       setFilteredRows(sortedRows);
     }, [sortColumn, sortDirection, tableRow]);
-  
+
     return (
       <div className='w-full h-screen overflow-x-hidden absolute'>
         <div className='md:ml-[16rem] md:mt-32 md:mr-16 sm:mt-[4rem] sm:mx-[0rem]'>
@@ -155,13 +137,6 @@ import React, {
           >
             <TableActions
               reloadTable={reloadTable}
-            />
-            <TableFilter
-              TABS={TABS}
-              currentTab={currentTab}
-              searchTerm={searchTerm}
-              onTabChange={onTabChange}
-              onSearchTermChange={handleFilter}
             />
             <div
               className='relative overflow-y-auto mx-0'
@@ -204,6 +179,5 @@ import React, {
       </div>
     );
   };
-  
-  export default EventInventory;
-  
+
+export default EventInventory;
