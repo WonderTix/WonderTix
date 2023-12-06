@@ -42,19 +42,19 @@ test.skip('editEvents', async ({page})=>{
   const currentEvent = new EventInfo(EVENT_INFO_3);
   const currentEvent1 = new EventInfo(EVENT_INFO_2);
   await eventsPage.goto();
-  //Go to the event information page first
+  // Go to the event information page first
   await eventsPage.addnewevent(currentEvent);
   await eventsPage.activateEvent();
   await eventsPage.addNewShowing(SHOWING_INFO_4);
-  //Change the event's information a little bit
+  // Change the event's information a little bit
   try {
   await eventsPage.editTheEventInfo(currentEvent1);
-  //Search for the event by its new name
+  // Search for the event by its new name
   await eventsPage.searchForEventByName(currentEvent1);
-  //Search for the event by its new description
+  // Search for the event by its new description
   await eventsPage.editTheEventInfo(currentEvent1);
   await eventsPage.searchForEventByDes(currentEvent1);
-  //Now let's change everything back
+  // Now let's change everything back
   await eventsPage.editTheEventInfo(currentEvent);
   } finally {
     await eventsPage.searchDeleteShowing(SHOWING_INFO_4);
@@ -68,13 +68,13 @@ test('editShowing', async ({page})=>{
   const currentEvent = new EventInfo(EVENT_INFO_3);
   await eventsPage.goto();
   try {
-  //Go to the event page first
+  // Go to the event page first
     await eventsPage.addnewevent(currentEvent);
     await eventsPage.activateEvent();
     await eventsPage.addNewShowing(SHOWING_INFO_4);
-  //Now we change some showing's information a little bit
+  // Now we change some showing's information a little bit
     await eventsPage.editShowingInfo(SHOWING_INFO_3);
-  //Then we change that back
+  // Then we change that back
     await eventsPage.editShowingInfo(SHOWING_INFO_4);
   } finally {
     await eventsPage.searchDeleteShowing(SHOWING_INFO_4);
@@ -85,7 +85,7 @@ test('editShowing', async ({page})=>{
 /**
  * Check if the default image works.
  */
-test('checkDefaultImage',async({page})=>{
+test('checkDefaultImage', async ({page})=>{
   const eventsPage = new EventsPage(page);
   const currentEvent = new EventInfo(EVENT_INFO_3);
   await eventsPage.goto();
