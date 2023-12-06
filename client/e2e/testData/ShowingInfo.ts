@@ -19,7 +19,7 @@ export const SHOWING_INFO_1: ShowingInfo = {
 export const SHOWING_INFO_2: ShowingInfo = {
   showingDate: '2023-10-17',
   showingTime24hour: '10:20',
-  showingTime12hour: '12:20 AM',
+  showingTime12hour: '10:20 AM',
   showingQuantity: '010',
   showingWholeDate: 'Tue, Oct 17 2023',
 };
