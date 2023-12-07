@@ -15,7 +15,7 @@ const Dashboard = (): ReactElement => {
         <h1 className='font-bold text-5xl mb-14 md:pb-8'>
           Ticketing Dashboard
         </h1>
-        <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-5'>
+        <div className='grid md:grid-cols-2 grid-cols-1 gap-5'>
           <DashboardLink
             gradientClasses='bg-gradient-to-r from-sky-500 to-indigo-500'
             icon={
