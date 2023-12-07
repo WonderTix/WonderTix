@@ -1,6 +1,9 @@
 import React from 'react';
 import {DeleteButtonIcon, EditButtonIcon} from '../SVGIcons';
 
+// ${eventID} probably needs to change
+const tableInfo = fetch(process.env.REACT_APP_API_2_URL + '/events/${eventID}');
+
 interface TableRowsProps {
   event: {
     name: string;

@@ -17,6 +17,45 @@ export const eventController = Router();
 
 /**
  * @swagger
+ * /2/events/listing:
+ *    post:
+ *      summary of stuff and 400, 200, etc numbers
+ */
+eventController.get('/listing', async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    //need to change to send data
+    const eventExists = await prisma.events.findUnique({
+      where: {
+        eventid: Number(id),
+      },
+      include: {
+        seasons: true,
+      },
+    });
+    // keep
+    if (!eventExists) {
+      res.status(400).json({error: `Event ${id} not found`});
+      return;
+    }
+    res.status(200).json(eventExists);
+    return;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
  * /2/events/checkout:
  *   post:
  *     summary: Update contact information, create order, create Stripe checkout session
