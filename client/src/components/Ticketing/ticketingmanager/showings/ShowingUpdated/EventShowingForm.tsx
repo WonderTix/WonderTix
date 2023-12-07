@@ -33,7 +33,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues
       ? initialValues.ticketrestrictions
-      : [getInstanceTicketType(1, ticketTypes)],
+      : [getInstanceTicketType(ticketTypes.find((type) => type.tickettypeid_fk === 1))],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
   };

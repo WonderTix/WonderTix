@@ -347,7 +347,11 @@ eventInstanceController.get(
             eventid_fk: Number(id),
           },
           include: {
-            ticketrestrictions: true,
+            ticketrestrictions: {
+              include: {
+                tickettype: true,
+              },
+            },
           },
         });
         return res.send(eventInstances.map((instance) => ({
@@ -358,6 +362,7 @@ eventInstanceController.get(
             price: restriction.price,
             concessionprice: restriction.concessionprice,
             ticketlimit: restriction.ticketlimit,
+            description: restriction.tickettype.description,
           })),
         })));
       } catch (error) {
