@@ -33,7 +33,7 @@ import Donationmain from './components/Ticketing/donation/Donationmain';
 import DoorListmain from './components/Ticketing/ticketingmanager/DoorList/DoorListmain';
 import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
 import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsletter/NewsletterCreatemain';
-import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showingsmain';
+import Eventmain from './components/Ticketing/ticketingmanager/Event/Eventmain';
 import SeasonsMain from './components/Ticketing/ticketingmanager/Season/SeasonMain';
 import SingleSeasonMain from './components/Ticketing/ticketingmanager/Season/components/SingleSeasonMain';
 import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
@@ -41,7 +41,7 @@ import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketE
 import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
 import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
-import {EventProvider} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
+import {EventProvider} from './components/Ticketing/ticketingmanager/Event/components/EventProvider';
 import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
 
 const App = () => {
@@ -146,7 +146,7 @@ const App = () => {
         />
         <Route
           path='/ticketing/events'
-          element={<ProtectedRoute component={Showingsmain} />}
+          element={<ProtectedRoute component={Eventmain} />}
         />
         <Route
           path='/ticketing/events/:eventid'

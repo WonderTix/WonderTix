@@ -4,7 +4,7 @@ import {Checkbox} from '@mui/material';
 import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 import {titleCase} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
-import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
+import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import format from 'date-fns/format';
 
 /**

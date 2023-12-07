@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
+import {useFetchToken} from '../Event/components/ShowingUtils';
 import PopUp from '../../PopUp';
 import format from 'date-fns/format';
 
