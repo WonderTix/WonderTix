@@ -692,62 +692,6 @@ export const selectEventData = (
   }
 };
 
-/**
- * Manages events page
- *
- * @module
- * @param {EventId} id
- * @param {string} eventname
- * @param {string} eventdescription
- * @param {number} numShows
- */
-// Used for manage events page
-interface EventSummaryData {
-  id: EventId;
-  eventname: string;
-  eventdescription: string;
-  numShows: number;
-}
-
-/**
- * Gets the data from the play when selected
- *
- * @module
- * @param {RootState} state
- * @returns {Array} id: event.id, eventname: title, eventdescription: description, numShows: filteredTickets.length
- */
-export const selectPlaysData = (state: RootState): Array<any> =>
-  state.ticketing.events.reduce((res, event) => {
-    const {id, title, description} = event;
-    const filteredTickets = state.ticketing.tickets.data.allIds.reduce(
-      filterTicketsReducer(state.ticketing.tickets.data.byId, id),
-      [] as Ticket[],
-    );
-
-    return [
-      ...res,
-      {
-        id: event.id,
-        eventname: title,
-        eventdescription: description,
-        numShows: filteredTickets.length,
-      },
-    ];
-  }, [] as EventSummaryData[]);
-
-/**
- * Gets num of tickets available
- *
- * @module
- * @param {RootState} state
- * @param {number} ticketid
- * @returns ticket.availableseats
- */
-export const selectNumAvailable = (state: RootState, ticketid: number) => {
-  const ticket = state.ticketing.tickets.data.byId[ticketid];
-  return ticket ? ticket.availableseats : 0;
-};
-
 export const {
   addTicketToCart,
   editItemQty,
