@@ -297,14 +297,14 @@ const TicketTypes = () => {
       </div>
     </div>
     {confirmDeleteData && (
-          <PopUp
-            title={confirmDeleteData.title}
-            message={confirmDeleteData.message}
-            handleClose={() => setConfirmDeleteData(null)}
-            handleProceed={() => handleDeleteClick(confirmDeleteData.cellData)}
-            success={false}
-          />
-        )}
+      <PopUp
+        title={confirmDeleteData.title}
+        message={confirmDeleteData.message}
+        handleClose={() => setConfirmDeleteData(null)}
+        handleProceed={() => handleDeleteClick(confirmDeleteData.cellData)}
+        success={false}
+      />
+    )}
   </div>
   );
 };

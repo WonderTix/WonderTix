@@ -36,7 +36,7 @@ import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsle
 import Eventmain from './components/Ticketing/ticketingmanager/Event/Eventmain';
 import SeasonsMain from './components/Ticketing/ticketingmanager/Season/SeasonMain';
 import SingleSeasonMain from './components/Ticketing/ticketingmanager/Season/components/SingleSeasonMain';
-import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
+import TicketTypesmain from './components/Ticketing/ticketingmanager/TicketTypes/TicketTypesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
 import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
@@ -162,7 +162,7 @@ const App = () => {
         />
         <Route
           path='/ticketing/tickettypes'
-          element={<ProtectedRoute component={Tickettypesmain} />}
+          element={<ProtectedRoute component={TicketTypesmain} />}
         />
         <Route
           path='/ticketing/ticketexchanges'

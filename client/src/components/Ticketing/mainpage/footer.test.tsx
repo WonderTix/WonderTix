@@ -2,7 +2,7 @@ import {unmountComponentAtNode} from 'react-dom';
 import React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import Footer from './footer';
+import Footer from './Footer';
 
 let container : HTMLDivElement;
 
