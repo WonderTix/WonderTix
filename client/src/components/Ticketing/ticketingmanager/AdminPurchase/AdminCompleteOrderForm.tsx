@@ -2,7 +2,7 @@ import React, {ReactElement} from 'react';
 import {useNavigate} from 'react-router';
 import {Field, Form} from 'react-final-form';
 import {FormInput} from '../../checkout/FormInput';
-import {EventRow} from './AdminPurchase';
+import {EventRow} from './utils/adminCommon';
 
 /**
  * Info for checkout form
@@ -81,11 +81,8 @@ export default function AdminCompleteOrderForm({
   const validate = (values) => {
     const errors = {};
     Object.keys(baseValues).forEach((key) => {
-      if ([
-          'firstName',
-          'lastName',
-          'email',
-        ].includes(key) &&
+      if (
+        ['firstName', 'lastName', 'email'].includes(key) &&
         (!values[key] || values[key] === '')
       ) {
         errors[key] = 'Required';
@@ -94,10 +91,21 @@ export default function AdminCompleteOrderForm({
     if (!values.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
     }
-    if (values.phone && values.phone !== '' && !values.phone?.match(new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
+    if (
+      values.phone &&
+      values.phone !== '' &&
+      !values.phone?.match(
+        new RegExp(
+          '^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$',
+        ),
+      )
+    ) {
       errors['phone'] = 'Invalid';
     }
-    if (values.seatingAcc === 'Other' && (!values.comments || values.comments === '')) {
+    if (
+      values.seatingAcc === 'Other' &&
+      (!values.comments || values.comments === '')
+    ) {
       errors['comments'] = 'Please Input Accommodation';
     }
     if (values.donation < 0) {

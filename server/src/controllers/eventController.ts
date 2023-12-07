@@ -174,6 +174,75 @@ eventController.get('/showings', async (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /2/events/slice:
+ *   get:
+ *     summary: get all active events in form needed by slice
+ *     tags:
+ *     - New Event API
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: event fetch successful
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventController.get('/slice', async (req: Request, res: Response) => {
+  try {
+    const events = await prisma.events.findMany({
+      where: {
+        active: true,
+        eventinstances: {
+          some: {
+            deletedat: null,
+            availableseats: {gt: 0},
+            salestatus: true,
+          },
+        },
+      },
+      orderBy: {
+        eventid: 'asc',
+      },
+      include: {
+        eventinstances: {
+          where: {
+            availableseats: {gt: 0},
+            salestatus: true,
+          },
+        },
+      },
+    });
+    return res.json(events.map((event) => ({
+      id: event.eventid.toString(),
+      seasonid: event.seasonid_fk,
+      title: event.eventname,
+      description: event.eventdescription,
+      active: event.active,
+      seasonticketeligible: event.seasonticketeligible,
+      imageurl: event.imageurl,
+      numShows: event.eventinstances.length.toString(),
+    })));
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
  * /2/events:
  *   get:
  *     summary: get all events not including showings
@@ -568,7 +637,7 @@ eventController.get('/season/:id', async (req: Request, res: Response) => {
 eventController.get('/search', async (req: Request, res: Response) => {
   try {
     const name = req.query.event_name;
-    if (!name || !(typeof name === 'string')) {
+    if (!name || typeof name !== 'string') {
       return res.status(400).send('No Event name provided.');
     }
 
@@ -769,7 +838,7 @@ eventController.put('/', async (req: Request, res: Response) => {
         eventid: Number(req.body.eventid),
       },
       data: {
-        seasonid_fk: req.body.seasonid_fk === null ? null : Number(req.body.seasonid_fk),
+        seasonid_fk: !req.body.seasonid_fk? null : Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
         active: req.body.active,
@@ -777,14 +846,48 @@ eventController.put('/', async (req: Request, res: Response) => {
         imageurl: req.body.imageurl,
       },
       include: {
-        seasons: true,
+        eventinstances: {
+          include: {
+            ticketrestrictions: true,
+          },
+        },
+        seasons: {
+          include: {
+            seasontickettypepricedefaults: true,
+          },
+        },
       },
     });
+
     if (!event) {
       return res.status(400).json({error: `Event ${req.body.eventid} not found`});
     }
-    res.status(200).json(event);
-    return;
+
+    await prisma.$transaction((event.seasons?.seasontickettypepricedefaults.map((defaultP) =>
+      prisma.ticketrestrictions.updateMany({
+        where: {
+          tickettypeid_fk: defaultP.tickettypeid_fk,
+          eventinstances: {
+            eventid_fk: +req.body.eventid,
+          },
+        },
+        data: {
+          seasontickettypepricedefaultid_fk: defaultP.id,
+        },
+      }),
+    ) ?? []).concat([prisma.ticketrestrictions.updateMany({
+      where: {
+        tickettypeid_fk: {notIn: event.seasons?.seasontickettypepricedefaults.map((res) => res.tickettypeid_fk)},
+        eventinstances: {
+          eventid_fk: +req.body.eventid,
+        },
+      },
+      data: {
+        seasontickettypepricedefaultid_fk: null,
+      },
+    })]));
+
+    return res.status(200).json(event);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});

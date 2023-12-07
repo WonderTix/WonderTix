@@ -80,8 +80,8 @@ const TicketTypes = () => {
       if (newRow.description !== prevRow.description ||
         newRow.price !== prevRow.price ||
         newRow.concessions !== prevRow.concessions) {
-        const response = await fetch(
-          process.env.REACT_APP_API_1_URL+'/tickets/updateType', {
+        await fetch(
+          `${process.env.REACT_APP_API_2_URL}/ticket-type/${newRow.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -107,7 +107,8 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + '/tickets/' + ticketId, {
+        process.env.REACT_APP_API_2_URL + '/ticket-type/' + ticketId, {
+          credentials: 'include',
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -116,7 +117,9 @@ const TicketTypes = () => {
         },
       );
 
-      const responseData = await response.json();
+      if (!response.ok) {
+        throw response;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -149,7 +152,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + '/tickets/newType',
+        process.env.REACT_APP_API_2_URL + '/ticket-type/',
         {
           method: 'POST',
           headers: {
@@ -158,7 +161,7 @@ const TicketTypes = () => {
           },
           body: JSON.stringify(
             {
-              name: newTicketType,
+              description: newTicketType,
               price: newTicketPrice,
               concessions: newConcessionsPrice,
             },
@@ -245,7 +248,7 @@ const TicketTypes = () => {
 
     try {
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + '/tickets/validTypes',
+        process.env.REACT_APP_API_2_URL + '/ticket-type/editable',
         {
           credentials: 'omit',
           method: 'GET',
@@ -256,8 +259,7 @@ const TicketTypes = () => {
         },
       );
       const jsonRes = await response.json();
-
-      setTicketTypes(jsonRes.data);
+      setTicketTypes(jsonRes);
     } catch (error) {
       console.error(error.message);
     }
@@ -270,7 +272,7 @@ const TicketTypes = () => {
     <div className="w-full h-screen absolute">
       <div className='w-full h-screen overflow-x-hidden absolute '>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-          <h1 className='font-bold text-5xl leading-normal bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-700 mb-10 pb-4'>
           Manage Ticket Types
         </h1>
         <button

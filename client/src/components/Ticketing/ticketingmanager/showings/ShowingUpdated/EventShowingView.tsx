@@ -1,9 +1,8 @@
 import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
-import React, {useState} from 'react';
+import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
-import {getTicketTypePrice} from './ShowingUtils';
 
 import {LineItem} from './LineItem';
 
@@ -14,8 +13,11 @@ interface EventInstanceViewProps {
 
 export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
-  const {ticketTypes, editing, showPopUp} = useEvent();
-
+  const {editing, showPopUp} = useEvent();
+  const formatUSD = new Intl.NumberFormat('en-us', {
+    currency: 'USD',
+    style: 'currency',
+  });
   const showingDate = new Date(
     `${toDateStringFormat(showing.eventdate)} ${showing.eventtime
       .split('T')[1]
@@ -75,34 +77,20 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             </thead>
             <tbody className={'whitespace-nowrap'}>
               {showing.ticketrestrictions.length !== 0 &&
-                ticketTypes &&
-                [
-                  {typeID: 1, typeQuantity: showing.totalseats},
-                  ...showing.ticketrestrictions,
-                ].map((type, index) => (
-                  <tr
-                    key={`${showing.eventinstanceid} ${type.typeID} ${index}`}
-                  >
-                    <td className={'px-2'}>
-                      {getTicketTypePrice(
-                        type.typeID,
-                        'description',
-                        ticketTypes,
-                      )}
-                    </td>
-                    <td className={'px-2'}>
-                      {getTicketTypePrice(type.typeID, 'price', ticketTypes)}
-                    </td>
-                    <td className={'px-2'}>
-                      {getTicketTypePrice(
-                        type.typeID,
-                        'concessions',
-                        ticketTypes,
-                      )}
-                    </td>
-                    <td className={'px-2'}>{type.typeQuantity}</td>
-                  </tr>
-                ))}
+                showing.ticketrestrictions
+                  .sort((a) => (a.tickettypeid_fk === 1 ? -1 : 1))
+                  .map((type, index) => (
+                    <tr
+                      key={`${showing.eventinstanceid} ${type.tickettypeid_fk} ${index}`}
+                    >
+                      <td className={'px-2'}>{type.description}</td>
+                      <td className={'px-2'}>{formatUSD.format(type.price)}</td>
+                      <td className={'px-2'}>
+                        {formatUSD.format(type.concessionprice)}
+                      </td>
+                      <td className={'px-2'}>{type.ticketlimit}</td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>

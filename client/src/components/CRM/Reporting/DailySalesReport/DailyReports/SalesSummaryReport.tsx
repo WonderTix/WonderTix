@@ -145,7 +145,7 @@ const netRows = [
   },
 ];
 
-const SalesSummaryReport: React.FC = (): React.ReactElement => {
+const SalesSummaryReport = (): React.ReactElement => {
   const rowHeight = 36;
   const headerHeight = 41;
   const [grossTableRows, refundTableRows, netTableRows] = [

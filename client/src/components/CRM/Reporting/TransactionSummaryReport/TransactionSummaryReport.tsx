@@ -1,33 +1,39 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 
-import FilterComponent from './FilterComponent'
-import ReportComponent from './ReportComponent'
+import FilterComponent from './FilterComponent';
+import ReportComponent from './ReportComponent';
 import Navigation from '../../Navigation';
 
 import {Box, Grid} from '@mui/material';
 
 const TransactionSummaryReport=() =>{
     const [displayReport, setDisplayReport] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     const [filterData, setFilterData] = useState({
         startDate: new Date(),
         endDate: new Date(),
-        groupBy: 'Event', // Default value
-      });
+        excDonationRecordTypes: 'None',
+    });
 
-      // the 2 functions below need reworking
     const handleFilterChange = (name, value) => {
-        setFilterData({
-            ...filterData,
-            [name]: value,
-        });
-        console.log(filterData.groupBy);
+        if (!submitted) {
+            setFilterData({
+                ...filterData,
+                [name]: value,
+            });
+        }
     };
 
     const handleFilterSubmit = () => {
-        console.log('Filter Data:', filterData);
+        setSubmitted(true);
         setDisplayReport(true);
+    };
+
+    const handleFilterReset = () => {
+        setDisplayReport(false);
+        setSubmitted(false);
     };
 
     return (
@@ -54,8 +60,8 @@ const TransactionSummaryReport=() =>{
                             'marginBottom': '1.5rem',
                         }}
                     >
-                        <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500'>
-                        Credit Card Reconciliation Report
+                        <h1 className='font-bold pb-0.5 text-5xl bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500'>
+                        Transaction Summary Report
                         </h1>
                     </Box>
                     <Grid
@@ -74,6 +80,8 @@ const TransactionSummaryReport=() =>{
                                 filterData={filterData}
                                 onFilterChange={handleFilterChange}
                                 onFilterSubmit={handleFilterSubmit}
+                                onFilterReset={handleFilterReset}
+                                isDisabled={submitted}
                             />
                             </Box>
                         </Grid>

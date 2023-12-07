@@ -28,13 +28,11 @@ import {savedReportsRouter} from './api/saved_reports/saved_reports.router';
 import {subscriptionRouter} from './api/subscriptions/subscription.router';
 import {tasksRouter} from './api/tasks/tasks.router';
 import {taskNotesRouter} from './api/task_notes/task_notes.router';
-import {ticketRouter} from './api/tickets/ticket.router';
 import {discountsRouter} from './api/discounts/discounts.router';
 import {reportingRouter} from './api/reporting/reporting.router';
 import {refundsRouter} from './api/refunds/refunds.router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import {ticketTypesRouter} from './api/ticket_types/ticket_types.router';
 import {contactController} from './controllers/contactController';
 import {userController} from './controllers/userController';
 import {ticketTypeController} from './controllers/ticketTypeController';
@@ -43,14 +41,12 @@ import {discountController} from './controllers/discountController';
 import {donationController} from './controllers/donationController';
 import {eventInstanceController} from './controllers/eventInstanceController';
 import {eventController} from './controllers/eventController';
-import {eventTicketController} from './controllers/eventTicketController';
 import {orderController} from './controllers/orderController';
 import {orderItemController} from './controllers/orderItemController';
 import {savedreportController} from './controllers/savedReportController';
 import {seasonController} from './controllers/seasonController';
 import {seasonTicketController} from './controllers/seasonTicketController';
 import {seasonTicketTypeController} from './controllers/seasonTicketTypeController';
-import {singleTicketController} from './controllers/singleTicketController';
 import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
 import {seasonTicketTypePriceDefaultController} from './controllers/seasonTicketTypePriceDefaultController';
@@ -312,11 +308,15 @@ const openApiSpec = swaggerJsdoc({
         TicketRestriction: {
           type: 'object',
           properties: {
-            ticketrestrictionsid: {type: 'integer'},
+            concessionprice: {type: 'string'},
+            description: {type: 'string'},
             eventinstanceid_fk: {type: 'integer'},
-            tickettypeid_fk: {type: 'integer'},
+            price: {type: 'string'},
+            seasontickettypepricedefaultid_fk: {type: 'integer'},
             ticketlimit: {type: 'integer'},
+            ticketrestrictionsid: {type: 'integer'},
             ticketssold: {type: 'integer'},
+            tickettypeid_fk: {type: 'integer'},
           },
         },
         TicketType: {
@@ -546,11 +546,9 @@ const openApiSpec = swaggerJsdoc({
         TicketType: {
           type: 'object',
           properties: {
-            tickettypeid: {type: 'integer'},
             description: {type: 'string'},
             price: {type: 'number'},
             concessions: {type: 'number'},
-            deprecated: {type: 'boolean'},
           },
         },
         User: {
@@ -611,8 +609,6 @@ const createServer = async () => {
   app.use('/api/1/newsletter/', newsletterRouter);
   app.use('/api/1/events', eventRouter);
   app.use('/api/1/email_subscriptions', subscriptionRouter);
-  app.use('/api/1/tickets', ticketRouter);
-  app.use('/api/1/ticket-types', ticketTypesRouter);
   app.use('/api/1/doorlist', doorlistRouter);
   app.use('/api/1/discounts', discountsRouter);
   app.use('/api/1/refunds', refundsRouter);
@@ -625,14 +621,12 @@ const createServer = async () => {
   app.use('/api/2/donation', donationController);
   app.use('/api/2/events', eventController);
   app.use('/api/2/event-instance', eventInstanceController);
-  app.use('/api/2/event-ticket', eventTicketController);
   app.use('/api/2/order', orderController);
   app.use('/api/2/order-item', orderItemController);
   app.use('/api/2/saved-report', savedreportController);
   app.use('/api/2/season', seasonController);
   app.use('/api/2/season-ticket', seasonTicketController);
   app.use('/api/2/season-ticket-type', seasonTicketTypeController);
-  app.use('/api/2/single-ticket', singleTicketController);
   app.use('/api/2/task', taskController);
   app.use('/api/2/task-note', taskNoteController);
   app.use('/api/2/ticket-restriction', ticketRestrictionController);

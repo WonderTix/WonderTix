@@ -1,9 +1,14 @@
 import React from 'react';
 
-const FilterEventCode: React.FC<{
+interface FilterEventCodeProps {
   showGLCode: boolean;
   onShowGLCodeChange: (show: boolean) => void;
-}> = ({showGLCode, onShowGLCodeChange}): React.ReactElement => {
+}
+
+const FilterEventCode: React.FC<FilterEventCodeProps> = ({
+  showGLCode,
+  onShowGLCodeChange,
+}): React.ReactElement => {
   return (
     <fieldset className='p-4 mt-2'>
       <legend className='text-sm font-bold leading-6'>
@@ -18,6 +23,7 @@ const FilterEventCode: React.FC<{
             className='h-4 w-4 border-gray-300'
             checked={showGLCode}
             onChange={() => onShowGLCodeChange(true)}
+            disabled
           />
           <label htmlFor='GL-Yes' className='block text-sm font-medium leading-6'>
             Yes
@@ -31,6 +37,7 @@ const FilterEventCode: React.FC<{
             className='h-4 w-4 border-gray-300'
             checked={!showGLCode}
             onChange={() => onShowGLCodeChange(false)}
+            disabled
           />
           <label htmlFor='GL-No' className='block text-sm font-medium leading-6'>
             No

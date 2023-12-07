@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {Box} from '@mui/system';
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
 const EventTotalsComponent = () => {
@@ -34,7 +33,7 @@ const EventTotalsComponent = () => {
                 style={{borderRadius: 0}}
                 sx={{
                     '& .MuiDataGrid-cell': {
-                        fontSize: '16px',
+                        fontSize: '14px',
                     },
                 }}
             />

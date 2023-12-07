@@ -1,6 +1,8 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page} from '@playwright/test';
-import {EventsInfo, ShowingInfo, Customer} from '../testData/ConstsPackage';
+import {EventInfo} from '../testData/EventInfo';
+import {ShowingInfo} from '../testData/ShowingInfo';
+import {CustomerInfo} from '../testData/CustomerInfo';
 
 export class DoorListPage {
   readonly page: Page;
@@ -9,6 +11,8 @@ export class DoorListPage {
   readonly chooseEvent: Locator;
   readonly chooseTime: Locator;
   readonly customerRow: Locator;
+  readonly activeViewOption: Locator;
+  readonly allViewOption: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +21,8 @@ export class DoorListPage {
     this.chooseEvent = page.locator('#event-select');
     this.chooseTime = page.getByTestId('time-select-test');
     this.customerRow = page.locator('.MuiDataGrid-row');
+    this.activeViewOption = page.getByTestId('active-button');
+    this.allViewOption = page.getByTestId('all-button');
   }
 
   // Go to the door list
@@ -57,18 +63,28 @@ export class DoorListPage {
     return randTime;
   }
 
-  // Find a specific showing using the EventsInfo object for the name, and the ShowingInfo object
+  // Find a specific showing using the EventInfo object for the name, and the ShowingInfo object
   // for the correct show date/time
   // Door list searches automatically once the options are set, requiring no further interation
-  async searchShowing(event: EventsInfo, showing: ShowingInfo) {
+  async searchShowing(event: EventInfo, showing: ShowingInfo) {
     const eventOption = await this.chooseEvent.getByRole('option').filter({hasText: event.eventName}).textContent();
     await this.chooseEvent.selectOption(eventOption);
-    const eventTime = await this.chooseTime.getByRole('option').filter({hasText: showing.showingDateTime}).textContent();
+    const eventTime = await this.chooseTime.getByRole('option').filter({hasText: showing.showingWholeDate + ' ' + showing.showingTime12hour}).textContent();
     await this.chooseTime.selectOption(eventTime);
   }
 
-  // Verify a specific order exists by customer name and quantity.
-  async checkOrder(customer: Customer, qty: number) {
-    await this.customerRow.filter({hasText: customer.firstName}).filter({hasText: customer.lastName}).filter({hasText: qty.toString()}).isVisible();
+  // Verify a specific order exists by customer name, quantity, and accomodation.
+  async checkOrder(customer: CustomerInfo, qty: number) {
+    await this.customerRow.filter({hasText: customer.firstName}).filter({hasText: customer.lastName}).filter({hasText: qty.toString()}).filter({hasText: customer.accommodations}).isVisible();
+  }
+
+  // Sets viewable list of events to active events.
+  async setActiveView() {
+    await this.activeViewOption.click();
+  }
+
+  // Sets viewable list of events to all events.
+  async setAllView() {
+    await this.allViewOption.click();
   }
 }
