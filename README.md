@@ -52,8 +52,9 @@ Future features include managing/creating email campaigns and ticket exchanges.
    1. Run `stripe login` and press enter to accept access. This only needs to be done once.
    2. Run `stripe listen --forward-to https://localhost:8000/api/2/order/webhook --events checkout.session.completed,checkout.session.expired` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
      - Please note that stripe listen must remain running in order for the checkout process to complete.
-6. The server will be available at <https://localhost:8000>
-7. The swagger docs will be available at <https://localhost:8000/api/docs>
+6. The client will be available at <https://localhost:3000>
+7. The server will be available at <https://localhost:8000>
+8. The swagger docs will be available at <https://localhost:8000/api/docs>
    1. To log in to swagger, login to the client and copy the value of the `access_token` from the request to `<AUTH0_URL>/oath/token`. Paste this value into the `Authorize` dialog in swagger.
 
 ## Connecting to the database
