@@ -57,7 +57,7 @@ const Dashboard = (): ReactElement => {
             }
             size='lg'
             title='Events'
-            route='/ticketing/showings'
+            route='/ticketing/events'
           />
           <DashboardLink
             gradientClasses='bg-gradient-to-r from-green-500 to-zinc-500'
