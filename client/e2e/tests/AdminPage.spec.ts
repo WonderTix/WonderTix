@@ -3,8 +3,8 @@ import {test, expect} from '@playwright/test';
 import {MainPage} from '../pages/mainPage';
 import {EventsPage} from '../pages/EventsPage';
 import {AdminPage} from '../pages/AdminPage';
-import {EVENT_INFO_2} from '../testData/dataConstants/EventInfoConstants';
-import {SHOWING_INFO_2} from '../testData/dataConstants/ShowingInfoConstants';
+import {EVENT_INFO_2} from '../testData/EventInfo';
+import {SHOWING_INFO_2} from '../testData/ShowingInfo';
 
 const testEmail = 'test987661234@wondertix.com';
 
@@ -28,14 +28,14 @@ test('Purchase ticket for customer as admin', async ({page}) => {
   await events.addNewShowing(SHOWING_INFO_2);
   try {
     const adminPage = new AdminPage(page);
-    await adminPage.purchaseTicket(EVENT_INFO_2.eventName, SHOWING_INFO_2.showingDateTime, testEmail);
+    await adminPage.purchaseTicket(EVENT_INFO_2.eventName, SHOWING_INFO_2.showingWholeDate, testEmail);
   } finally {
     // await page.goto('/', { timeout: 5000 });
     await delay(1000);
     await events.goto();
-    await events.goToEventFromManage(EVENT_INFO_2.eventFullName);
+    await events.goToEventFromManage(EVENT_INFO_2);
     await delay(500);
-    await events.deleteTheEvent(EVENT_INFO_2.eventFullName);
+    await events.deleteTheEvent(EVENT_INFO_2);
   }
 });
 
