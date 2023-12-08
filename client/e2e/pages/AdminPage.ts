@@ -49,7 +49,8 @@ export class AdminPage {
     this.eventDropDown = page.getByRole('combobox');
     // this.eventTime = page.locator('div').filter({hasText: /^Select TimeTue, Oct 17 - 10:20 AM$/}).getByRole('combobox');
     this.eventTime = page.getByRole('combobox').nth(1);
-    this.admissionType = page.locator('div').filter({hasText: /^Select TypeGeneral Admission - AdultGeneral Admission - ChildVIP$/});
+    // this.admissionType = page.locator('div').filter({hasText: /^Select TypeGeneral Admission - AdultGeneral Admission - ChildVIP$/});
+    this.admissionType = page.getByRole('combobox').nth(2);
     this.checkoutButton = page.getByRole('button', {name: 'Proceed to Checkout'});
     this.firstName = page.getByPlaceholder('First Name');
     this.lastName = page.getByPlaceholder('Last Name');
@@ -184,11 +185,11 @@ export class AdminPage {
   async purchaseTicket(eventName: string, eventTime: string, testEmail: string) {
     await this.gotoTicketing(); // ticketing url
     await this.purchaseTicketButton.click();
-    await delay(1000);
+    await delay(500);
     await this.dynamicDropDownSelector(eventName);
-    await delay(1000);
+    await delay(500);
     await this.dynamicDropDownSelectorTime(eventTime);
-    await this.admissionType.getByRole('combobox').selectOption('1');
+    await this.admissionType.selectOption('1');
     await delay(500);
     await this.checkoutButton.click();
     await this.firstName.click();
