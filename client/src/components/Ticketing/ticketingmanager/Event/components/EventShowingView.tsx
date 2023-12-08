@@ -14,7 +14,14 @@ interface EventInstanceViewProps {
 
 export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
-  const {editing, showPopUp} = useEvent();
+  const {
+    editing,
+    showPopUp,
+    setReloadShowing,
+    setEditing,
+    setPopUpProps,
+    token,
+  } = useEvent();
   const formatUSD = new Intl.NumberFormat('en-us', {
     currency: 'USD',
     style: 'currency',
@@ -37,15 +44,15 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
     setEditing((editing) => !editing);
   };
   const onCloneError = async (res) => {
-    const data = await res.json();
-    setReloadShowing((reload) => !reload);
-    setPopUpProps(
-      'Failure',
-      'Showing clone failed',
-      false,
-      `update-modal-showing-id-${data.eventinstanceid}`,
-    );
-    setEditing((editing) => !editing);
+      const data = await res.json();
+      setReloadShowing((reload) => !reload);
+      setPopUpProps(
+          'Failure',
+          'Showing clone failed',
+          false,
+          `update-modal-showing-id-${data.eventinstanceid}`,
+      );
+      setEditing((editing) => !editing);
   };
   const submitClone = createSubmitFunction(
     'POST',
