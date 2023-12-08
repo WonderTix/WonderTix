@@ -94,7 +94,7 @@ export class DashboardPage {
     await expect(
       this.page.getByRole('heading', {name: 'Select Event'}),
     ).toBeVisible();
-    await expect(this.page).toHaveURL('/ticketing/showings');
+    await expect(this.page).toHaveURL('/ticketing/events');
     await this.backToDashboard();
   }
 

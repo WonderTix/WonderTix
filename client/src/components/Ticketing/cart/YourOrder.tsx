@@ -15,7 +15,7 @@ import {
   selectCartSubtotal,
   selectCartTotal,
   selectDiscount,
-} from '../ticketingmanager/ticketing/ticketingSlice';
+} from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 

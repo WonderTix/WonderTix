@@ -1,4 +1,4 @@
-import {Showing, UpdatedShowing} from '../../../../../interfaces/showing.interface';
+import {UpdatedShowing} from '../../../../../interfaces/showing.interface';
 import React, {useState} from 'react';
 import {EventShowingForm} from './EventShowingForm';
 import {EventShowingView} from './EventShowingView';

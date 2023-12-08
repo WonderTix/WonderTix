@@ -95,7 +95,7 @@ const Udash_nav = () => {
 
             <li className=' cursor-pointer text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'>
               <a
-                onClick={() => navigate('/ticketing/showings')}
+                onClick={() => navigate('/ticketing/events')}
                 className='bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out '
               >
                 <div className='flex flex-col gap-2 items-center'>
@@ -226,7 +226,7 @@ const Udash_nav = () => {
 
                   <li className=' cursor-pointer text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none'>
                     <a
-                      onClick={() => navigate('/ticketing/showings')}
+                      onClick={() => navigate('/ticketing/events')}
                       className='bg-transparent border-none   rounded-none hover:scale-110 transition duration-300 ease-in-out '
                     >
                       <div className='flex flex-col gap-2 items-center mb-4'>

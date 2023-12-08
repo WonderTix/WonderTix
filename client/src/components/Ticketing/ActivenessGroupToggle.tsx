@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
-const ShowingActivenessToggle = ({
+const ActivenessGroupToggle = ({
   defaultValue,
   handleFilterChange,
   showInactiveToggle = true,
@@ -61,10 +61,10 @@ const ShowingActivenessToggle = ({
   );
 };
 
-ShowingActivenessToggle.propTypes = {
+ActivenessGroupToggle.propTypes = {
   defaultValue: PropTypes.string.isRequired,
   handleFilterChange: PropTypes.func,
   showInactiveToggle: PropTypes.bool,
 };
 
-export default ShowingActivenessToggle;
+export default ActivenessGroupToggle;

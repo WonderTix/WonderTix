@@ -121,7 +121,7 @@ const TicketTypes = () => {
         throw response;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setConfirmDeleteData(null);
     // refreshes the page ie re-renders the table
@@ -297,14 +297,14 @@ const TicketTypes = () => {
       </div>
     </div>
     {confirmDeleteData && (
-          <PopUp
-            title={confirmDeleteData.title}
-            message={confirmDeleteData.message}
-            handleClose={() => setConfirmDeleteData(null)}
-            handleProceed={() => handleDeleteClick(confirmDeleteData.cellData)}
-            success={false}
-          />
-        )}
+      <PopUp
+        title={confirmDeleteData.title}
+        message={confirmDeleteData.message}
+        handleClose={() => setConfirmDeleteData(null)}
+        handleProceed={() => handleDeleteClick(confirmDeleteData.cellData)}
+        success={false}
+      />
+    )}
   </div>
   );
 };

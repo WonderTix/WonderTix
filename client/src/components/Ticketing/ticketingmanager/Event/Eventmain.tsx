@@ -3,10 +3,10 @@ import Udash_nav from '../udash_navbar';
 import InstancesPage from './InstancesPage';
 
 /**
- * @returns {Udash_nav, InstancesPage} Showingsmain - has Udash_nav and
+ * @returns {Udash_nav, InstancesPage} Eventmain - has Udash_nav and
  * InstancesPage to reroute to other components
  */
-const Showingsmain = () => {
+const Eventmain = () => {
   return (
     <div className='flex flex-row'>
       <Udash_nav/>
@@ -15,4 +15,4 @@ const Showingsmain = () => {
   );
 };
 
-export default Showingsmain;
+export default Eventmain;

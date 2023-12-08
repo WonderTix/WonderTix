@@ -6,8 +6,8 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import configureStore from 'redux-mock-store';
 
-import Hero from './hero';
-import {ListComponent} from './eventcard';
+import Hero from './Hero';
+import {ListComponent} from './EventCard';
 import thunk from 'redux-thunk';
 
 let container : HTMLDivElement;

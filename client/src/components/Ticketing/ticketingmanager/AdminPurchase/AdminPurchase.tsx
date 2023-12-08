@@ -12,10 +12,10 @@ import {Checkbox, FormControlLabel} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
-import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
+import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import {format, parse} from 'date-fns';
 import {getAllTicketRestrictions} from './utils/adminApiRequests';
-import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
+import {useFetchToken} from '../Event/components/ShowingUtils';
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
 
 const AdminPurchase = () => {

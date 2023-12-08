@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import Footer from '../mainpage/footer';
+import Footer from '../mainpage/Footer';
 import Navbar from '../mainpage/Navbar';
 import EventShowings from './EventShowings';
 

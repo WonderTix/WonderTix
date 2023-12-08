@@ -112,7 +112,7 @@ export const useFetchEventData = (eventID: number) => {
         `${process.env.REACT_APP_API_2_URL}/events/${eventID}`,
         setEventData,
         signal,
-      ).catch(() => navigate(`/ticketing/showings/${eventID}/notFound`));
+      ).catch(() => navigate(`/ticketing/events/${eventID}/notFound`));
     }
     setLoading(false);
     return () => controller.abort();
