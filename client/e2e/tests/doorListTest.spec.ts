@@ -1,12 +1,11 @@
-import { test, expect } from '@playwright/test';
-import { DoorListPage } from '../pages/doorListPage';
-import { EventsPage } from '../pages/EventsPage';
-import { createUniqueCustomer, createUniqueEvent } from '../testData/factoryFunctions';
-import { EVENT_INFO_2 } from '../testData/dataConstants/EventInfoConstants';
-import { MainPage } from '../pages/mainPage';
-import { SHOWING_INFO_1 } from '../testData/dataConstants/ShowingInfoConstants';
-import { JANE_DOE } from '../testData/dataConstants/CustomerInfoConstants';
-import { VALID_VISA_CREDIT } from '../testData/dataConstants/CreditCardConstants';
+import {test, expect} from '@playwright/test';
+import {DoorListPage} from '../pages/doorListPage';
+import {EventsPage} from '../pages/EventsPage';
+import {MainPage} from '../pages/mainPage';
+import {EventInfo, EVENT_INFO_1} from '../testData/EventInfo';
+import {SHOWING_INFO_1} from '../testData/ShowingInfo';
+import {CustomerInfo, JANE_DOE} from '../testData/CustomerInfo';
+import {VALID_VISA_CREDIT} from '../testData/CreditCard';
 
 
 test('Check Home', async ({page}) => {
@@ -16,7 +15,7 @@ test('Check Home', async ({page}) => {
 });
 
 test('Select Active Showing in Doorlist', async ({page}) => {
-  const currentEvent = createUniqueEvent(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_1);
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
 
@@ -34,12 +33,12 @@ test('Select Active Showing in Doorlist', async ({page}) => {
     // Remove the added event
     await eventsPage.goto();
     await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });
 
 test('Select Inactive Showing in Doorlist', async ({page}) => {
-  const currentEvent = createUniqueEvent(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_1);
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
 
@@ -51,19 +50,19 @@ test('Select Inactive Showing in Doorlist', async ({page}) => {
 
     // Check door list
     await doorList.goto();
-    await doorList.setAllView()
-    await doorList.searchShowing(currentEvent,SHOWING_INFO_1);
+    await doorList.setAllView();
+    await doorList.searchShowing(currentEvent, SHOWING_INFO_1);
   } finally {
     // Remove the added event
     await eventsPage.goto();
     await eventsPage.setInactiveView();
     await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });
 
 test('Open Seats in Doorlist', async ({page}) => {
-  const currentEvent = createUniqueEvent(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_1);
   const currentShowing = SHOWING_INFO_1;
   const eventsPage = new EventsPage(page);
   const doorList = new DoorListPage(page);
@@ -76,23 +75,23 @@ test('Open Seats in Doorlist', async ({page}) => {
 
     // Check door list
     await doorList.goto();
-    await doorList.searchShowing(currentEvent,currentShowing);
-    await doorList.customerRow.filter({hasText: "OPEN SEATS"})
+    await doorList.searchShowing(currentEvent, currentShowing);
+    await doorList.customerRow.filter({hasText: 'OPEN SEATS'})
       .filter({hasText: currentShowing.showingQuantity.toString()});
   } finally {
     // Remove the added event
     await eventsPage.goto();
     await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });
 
 test('Purchased Seats in Doorlist', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + timeoutAdd);
-  const currentEvent = createUniqueEvent(EVENT_INFO_2);
+  const currentEvent = new EventInfo(EVENT_INFO_1);
   const currentShowing = SHOWING_INFO_1;
-  const currentPatron = createUniqueCustomer(JANE_DOE);
+  const currentPatron = new CustomerInfo(JANE_DOE);
   const currentCard = VALID_VISA_CREDIT;
   const ticketQuantity = 3;
   const eventsPage = new EventsPage(page);
@@ -111,14 +110,14 @@ test('Purchased Seats in Doorlist', async ({page}, testInfo) => {
 
     // Check door list
     await doorList.goto();
-    await doorList.searchShowing(currentEvent,currentShowing);
-    await doorList.customerRow.filter({hasText: "OPEN SEATS"})
+    await doorList.searchShowing(currentEvent, currentShowing);
+    await doorList.customerRow.filter({hasText: 'OPEN SEATS'})
       .filter({hasText: (parseInt(currentShowing.showingQuantity) - ticketQuantity).toString()});
     await doorList.checkOrder(currentPatron, ticketQuantity);
   } finally {
     // Remove the added event
     await eventsPage.goto();
     await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent.eventFullName);
+    await eventsPage.deleteTheEvent(currentEvent);
   }
 });

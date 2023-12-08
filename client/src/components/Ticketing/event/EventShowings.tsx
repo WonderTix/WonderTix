@@ -2,7 +2,7 @@ import React, {ReactElement, useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {useParams} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
-import {selectEventData, fetchTicketingData} from '../ticketingmanager/ticketing/ticketingSlice';
+import {selectEventData, fetchTicketingData} from '../ticketingmanager/ticketingSlice';
 import TicketPicker from './TicketPicker';
 import PopUp from '../PopUp';
 import {useNavigate} from 'react-router-dom';

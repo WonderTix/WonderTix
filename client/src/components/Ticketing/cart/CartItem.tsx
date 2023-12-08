@@ -2,7 +2,7 @@ import React, {useState, useEffect, ReactElement} from 'react';
 import {
   editItemQty,
   CartItem,
-} from '../ticketingmanager/ticketing/ticketingSlice';
+} from '../ticketingmanager/ticketingSlice';
 import {useAppDispatch} from '../app/hooks';
 import {toDollarAmount} from '../../../utils/arrays';
 import {getImageDefault} from '../../../utils/imageURLValidation';

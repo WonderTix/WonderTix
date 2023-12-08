@@ -1,7 +1,7 @@
 import React from 'react';
 import Udash_nav from '../udash_navbar';
 import SeasonInstancesPage from './SeasonInstancesPage';
-import {useFetchToken} from '../showings/ShowingUpdated/ShowingUtils';
+import {useFetchToken} from '../Event/components/ShowingUtils';
 import {LoadingScreen} from '../../mainpage/LoadingScreen';
 
 /**

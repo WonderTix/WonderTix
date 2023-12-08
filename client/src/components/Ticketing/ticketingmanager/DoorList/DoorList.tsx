@@ -1,10 +1,10 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
-import ShowingActivenessToggle from '../../GroupToggle';
+import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 import {titleCase} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
-import {toDateStringFormat} from '../showings/ShowingUpdated/util/EventsUtil';
+import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import format from 'date-fns/format';
 
 /**
@@ -35,7 +35,7 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
     }
     return res.json();
   } catch (err) {
-    console.log(err.message);
+    console.error(err.message);
   }
 };
 
@@ -221,7 +221,7 @@ const DoorList = (): ReactElement => {
         <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-14'>
           Door List
         </h1>
-        <ShowingActivenessToggle
+        <ActivenessGroupToggle
           defaultValue='active'
           handleFilterChange={setFilterSetting}
           showInactiveToggle={false}

@@ -28,13 +28,11 @@ import {savedReportsRouter} from './api/saved_reports/saved_reports.router';
 import {subscriptionRouter} from './api/subscriptions/subscription.router';
 import {tasksRouter} from './api/tasks/tasks.router';
 import {taskNotesRouter} from './api/task_notes/task_notes.router';
-import {ticketRouter} from './api/tickets/ticket.router';
 import {discountsRouter} from './api/discounts/discounts.router';
 import {reportingRouter} from './api/reporting/reporting.router';
 import {refundsRouter} from './api/refunds/refunds.router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import {ticketTypesRouter} from './api/ticket_types/ticket_types.router';
 import {contactController} from './controllers/contactController';
 import {userController} from './controllers/userController';
 import {ticketTypeController} from './controllers/ticketTypeController';
@@ -548,11 +546,9 @@ const openApiSpec = swaggerJsdoc({
         TicketType: {
           type: 'object',
           properties: {
-            tickettypeid: {type: 'integer'},
             description: {type: 'string'},
             price: {type: 'number'},
             concessions: {type: 'number'},
-            deprecated: {type: 'boolean'},
           },
         },
         User: {
@@ -613,8 +609,6 @@ const createServer = async () => {
   app.use('/api/1/newsletter/', newsletterRouter);
   app.use('/api/1/events', eventRouter);
   app.use('/api/1/email_subscriptions', subscriptionRouter);
-  app.use('/api/1/tickets', ticketRouter);
-  app.use('/api/1/ticket-types', ticketTypesRouter);
   app.use('/api/1/doorlist', doorlistRouter);
   app.use('/api/1/discounts', discountsRouter);
   app.use('/api/1/refunds', refundsRouter);
