@@ -1,10 +1,10 @@
 /* eslint-disable require-jsdoc */
 import {test, expect} from '@playwright/test';
-import {MainPage} from './pages/mainPage';
-import {EventsPage} from './pages/EventsPage';
-import {AdminPage} from './pages/AdminPage';
-import {EventsInfoTemplate2} from './testData/ConstsPackage';
-import {ShowingInfo2} from './testData/ConstsPackage';
+import {MainPage} from '../pages/mainPage';
+import {EventsPage} from '../pages/EventsPage';
+import {AdminPage} from '../pages/AdminPage';
+import {EVENT_INFO_2} from '../testData/dataConstants/EventInfoConstants';
+import {SHOWING_INFO_2} from '../testData/dataConstants/ShowingInfoConstants';
 
 test('Open admin page', async ({page}) => {
   const adminPage = new AdminPage(page);
@@ -20,18 +20,19 @@ test('Purchase ticket for customer as admin', async ({page}) => {
   test.setTimeout(100000);
   const events = new EventsPage(page);
   await events.goto();
-  await events.addnewevent(EventsInfoTemplate2);
+  await events.addnewevent(EVENT_INFO_2);
   await events.activateEvent();
   // await delay(1000);
-  await events.addNewShowing(ShowingInfo2);
+  await events.addNewShowing(SHOWING_INFO_2);
   try {
     const adminPage = new AdminPage(page);
-    await adminPage.purchaseTicket(EventsInfoTemplate2.eventName, ShowingInfo2.showingDateTime);
+    await adminPage.purchaseTicket(EVENT_INFO_2.eventName, SHOWING_INFO_2.showingDateTime);
   } finally {
     // await page.goto('/', { timeout: 5000 });
     await events.goto();
-    await events.goToEventFromManage(EventsInfoTemplate2.eventFullName);
-    await events.deleteTheEvent(EventsInfoTemplate2.eventFullName);
+    await events.goToEventFromManage(EVENT_INFO_2.eventFullName);
+    await delay(500);
+    await events.deleteTheEvent(EVENT_INFO_2.eventFullName);
   }
 });
 
