@@ -1,7 +1,8 @@
-import {Form} from 'react-final-form';
-import React, {ReactElement, useState} from 'react';
+import React, {ReactElement} from 'react';
 import {useNavigate} from 'react-router';
-import {EventRow} from './AdminPurchase';
+import {Field, Form} from 'react-final-form';
+import {FormInput} from '../../checkout/FormInput';
+import {EventRow} from './utils/adminCommon';
 
 /**
  * Info for checkout form
@@ -51,8 +52,8 @@ type CompleteOrderFormProps = {
  * Displays the complete order form
  *
  * @param {Function} onSubmit onSubmit callback function
- * @param CompleteOrderFormProps.backButtonRoute
- * @param CompleteOrderFormProps.eventDataFromPurchase
+ * @param backButtonRoute
+ * @param eventDataFromPurchase
  * @returns {ReactElement}
  */
 export default function AdminCompleteOrderForm({
@@ -61,284 +62,200 @@ export default function AdminCompleteOrderForm({
   eventDataFromPurchase,
 }: CompleteOrderFormProps): ReactElement {
   const navigate = useNavigate();
-  const [firstName, setfirstName] = useState('');
-  const [lastName, setlastName] = useState('');
-  const [streetAddress, setstreetAddress] = useState('');
-  const [postalCode, setpostalCode] = useState('');
-  const [country, setCountry] = useState('');
-  const [phone, setphoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [visitSource, setvisitSource] = useState('');
-  const [seatingAcc, setseatingAcc] = useState('');
-  const [comments, setComments] = useState('');
-  const [optIn, setOptIn] = useState(false);
-  const [donation, setDonations] = useState<number>(0);
-  const handleSubmit = () => {
-    const formData: CheckoutFormInfo = {
-      firstName,
-      lastName,
-      streetAddress,
-      postalCode,
-      country,
-      phone,
-      email,
-      visitSource,
-      seatingAcc,
-      comments,
-      donation,
-      optIn,
-    };
-    onSubmit(formData);
+
+  const baseValues = {
+    firstName: '',
+    lastName: '',
+    streetAddress: '',
+    postalCode: '',
+    country: '',
+    phone: '',
+    email: '',
+    visitSource: '',
+    seatingAcc: 'None',
+    comments: '',
+    donation: undefined,
+    optIn: undefined,
+  };
+
+  const validate = (values) => {
+    const errors = {};
+    Object.keys(baseValues).forEach((key) => {
+      if (
+        ['firstName', 'lastName', 'email'].includes(key) &&
+        (!values[key] || values[key] === '')
+      ) {
+        errors[key] = 'Required';
+      }
+    });
+    if (!values.email?.match(new RegExp('.+@.+\\..+'))) {
+      errors['email'] = 'Invalid';
+    }
+    if (
+      values.phone &&
+      values.phone !== '' &&
+      !values.phone?.match(
+        new RegExp(
+          '^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$',
+        ),
+      )
+    ) {
+      errors['phone'] = 'Invalid';
+    }
+    if (
+      values.seatingAcc === 'Other' &&
+      (!values.comments || values.comments === '')
+    ) {
+      errors['comments'] = 'Please Input Accommodation';
+    }
+    if (values.donation < 0) {
+      errors['donation'] = 'Invalid';
+    }
+    return errors;
   };
 
   return (
-    <div className='w-full h-full flex flex-col items-center '>
-      <div className='min-w-414 sm:w-full h-full'>
+    <div className='w-full h-full'>
+      <div className='min-w-414 w-full h-full'>
         <Form
-          onSubmit={handleSubmit}
-          initialValues={{'opt-in': false}}
-          render={({handleSubmit}) => (
+          onSubmit={onSubmit}
+          validate={validate}
+          initialValues={baseValues}
+          render={({handleSubmit, submitting}) => (
             <form
               onSubmit={handleSubmit}
               noValidate
-              className='w-full h-full bg-zinc-200 p-2 md:p-4 rounded-xl flex flex-col justify-between'
+              className='h-full bg-zinc-200 p-2 md:p-4 rounded-xl flex flex-col justify-between'
             >
-              <div className='flex flex-col w-auto'>
-                <div className='grid gap-5 md:max-lg:grid-cols-1 lg:grid-cols-2'>
-                  <div>
-                    <label
-                      className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                      htmlFor='first-name'
-                    >
-                      First Name
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 rounded-lg '
-                      type='text'
-                      required
-                      name='first-name'
-                      id='first-name'
-                      placeholder='First Name'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setfirstName(ev.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                      htmlFor='last-name'
-                    >
-                      Last Name
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 rounded-lg '
-                      type='text'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setlastName(ev.target.value)}
-                      required
-                      name='last-name'
-                      id='last-name'
-                      placeholder='Last Name'
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                      htmlFor='address'
-                    >
-                      Street Address
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 rounded-lg '
-                      type='text'
-                      required
-                      id='address'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setstreetAddress(ev.target.value)}
-                      name='street-address'
-                      placeholder='Street Address'
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                      htmlFor='zipcode'
-                    >
-                      Postal Code
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 rounded-lg '
-                      type='text'
-                      required
-                      id='zipcode'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setpostalCode(ev.target.value)}
-                      name='postal-code'
-                      placeholder='Postal Code'
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                      htmlFor='country'
-                    >
-                      Country
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 rounded-lg '
-                      type='text'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setCountry(ev.target.value)}
-                      required
-                      id='country'
-                      name='country'
-                      placeholder='Country'
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className='block text-sm font-medium text-slate-700 ml-1'
-                      htmlFor='phone-number'
-                    >
-                      Phone Number
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 '
-                      type='tel'
-                      name='phone'
-                      id='phone-number'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setphoneNumber(ev.target.value)}
-                      placeholder='Phone'
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                      htmlFor='contact-email'
-                    >
-                      Email
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 rounded-lg invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500 '
-                      type='email'
-                      required
-                      id='contact-email'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setEmail(ev.target.value)}
-                      name='email'
-                      placeholder='Email'
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className=' block text-sm font-medium text-slate-700 ml-1'
-                      htmlFor='visit-source'
-                    >
-                      How did you hear about us?
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 rounded-lg '
-                      type='text'
-                      name='visit-source'
-                      id='visit-source'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setvisitSource(ev.target.value)}
-                      placeholder='How did you hear about us?'
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className=' block text-sm font-medium text-slate-700 ml-1'
-                      htmlFor='seating-acc'
-                    >
-                      Seating Accommodations
-                    </label>
-                    <select
-                      className='input w-full  border
-            border-zinc-300 p-4 mt-1 rounded-lg col-label-2 '
-                      name='seatingAcc'
-                      id='seating-acc'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLSelectElement>,
-                      ): void => setseatingAcc(ev.target.value)}
-                    >
-                      <option value='None'>Not at this time</option>
-                      <option value='Wheel Chair'>Wheelchair seat(s)</option>
-                      <option value='Aisle Seat'>Aisle seat(s)</option>
-                      <option value='First/Ground floor'>
-                        Seat(s) on the ground or the first level
-                      </option>
-                      <option value='ASL Interpreter'>
-                        Seat(s) in the ASL interpreters section
-                      </option>
-                      <option value='Wide Seats'>Wide seat(s)</option>
-                      <option value='Other'>
-                        Other (describe in comment section)
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label
-                      className=' block text-sm font-medium text-slate-700 ml-1'
-                      htmlFor='comments'
-                    >
-                      Comments
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 mt-1 rounded-lg col-label-2'
-                      type='text'
-                      name='comments'
-                      id='comments'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => setComments(ev.target.value)}
-                      placeholder='Comments'
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className=' block text-sm font-medium text-slate-700 ml-1'
-                      htmlFor='donation'
-                    >
-                      Donations
-                    </label>
-                    <input
-                      className='input w-full  border
-            border-zinc-300 p-4 mt-1 rounded-lg col-label-2'
-                      type='number'
-                      name='donation'
-                      id='donation'
-                      onChange={(
-                        ev: React.ChangeEvent<HTMLInputElement>,
-                      ): void => {
-                        const donationValue: number = parseFloat(
-                          ev.target.value,
-                        );
-                        setDonations(donationValue);
-                      }}
-                      placeholder='Enter donation amount'
-                    />
-                  </div>
+              <div className='grid gap-5 grid-cols-1 lg:grid-cols-2'>
+                <Field
+                  component={FormInput}
+                  name='firstName'
+                  label='First Name'
+                  placeholder='First Name'
+                  type='text'
+                  id='first-name'
+                  labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='lastName'
+                  label='Last Name'
+                  placeholder='Last Name'
+                  type='text'
+                  id='last-name'
+                  labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='email'
+                  label='Email'
+                  placeholder='Email'
+                  type='email'
+                  id='contact-email'
+                  labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='streetAddress'
+                  label='Street Address'
+                  placeholder='Street Address'
+                  type='text'
+                  id='address'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='postalCode'
+                  label='Postal Code'
+                  placeholder='Postal Code'
+                  type='text'
+                  id='postal-code'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='country'
+                  label='Country'
+                  placeholder='Country'
+                  type='text'
+                  id='country'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='phone'
+                  label='Phone Number'
+                  placeholder='Phone'
+                  type='text'
+                  id='phone-number'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='visitSource'
+                  label='How did you hear about us?'
+                  placeholder='How did you hear about us?'
+                  type='text'
+                  id='visit-source'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <div>
+                  <label
+                    className='block text-sm font-medium text-slate-700 ml-1'
+                    htmlFor='seating-acc'
+                  >
+                    Seating Accommodations
+                  </label>
+                  <Field
+                    component='select'
+                    className='input w-full border border-zinc-300 p-4 mt-1 rounded-lg col-label-2'
+                    name='seatingAcc'
+                    id='seating-acc'
+                  >
+                    <option value='None'>Not at this time</option>
+                    <option value='Wheel Chair'>Wheelchair seat(s)</option>
+                    <option value='Aisle Seat'>Aisle seat(s)</option>
+                    <option value='First/Ground floor'>
+                      Seat(s) on the ground or the first level
+                    </option>
+                    <option value='ASL Interpreter'>
+                      Seat(s) in the ASL interpreters section
+                    </option>
+                    <option value='Wide Seats'>Wide seat(s)</option>
+                    <option value='Other'>
+                      Other (describe in comment section)
+                    </option>
+                  </Field>
                 </div>
+                <Field
+                  component={FormInput}
+                  name='comments'
+                  type='text'
+                  placeholder='What do you want us to know?'
+                  id='comments'
+                  label='Comments'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='donation'
+                  type='number'
+                  placeholder='Enter donation amount'
+                  id='donation'
+                  label='Donation'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg col-label-2'
+                />
               </div>
               <div className='w-full flex flex-wrap justify-center md:flex-row sm:justify-between mt-4'>
                 <button
@@ -346,12 +263,14 @@ export default function AdminCompleteOrderForm({
                   onClick={() =>
                     navigate(backButtonRoute, {state: {eventDataFromPurchase}})
                   }
+                  disabled={submitting}
                 >
                   Back
                 </button>
                 <button
                   className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2'
                   type='submit'
+                  disabled={submitting}
                 >
                   Next
                 </button>

@@ -42,7 +42,7 @@ export default function OnlyDonationPage(): ReactElement {
       sessionId: session.id,
     });
     if (result.error) {
-      console.log(result.error.message);
+      console.error(result.error.message);
     }
   };
 

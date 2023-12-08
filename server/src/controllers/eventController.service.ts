@@ -1,4 +1,4 @@
-import {InvalidInputError} from './eventInstanceController.service';
+import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceController.service';
 import CartItem from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -75,33 +75,26 @@ export const getOrderItems = async (
       eventinstanceid: {in: cartItems.map((item) => Number(item.product_id))},
     },
     include: {
-      eventtickets: {
-        where: {
-          singleticket_fk: null,
+      ticketrestrictions: {
+        include: {
+          eventtickets: {
+            where: {
+              singleticket_fk: null,
+            },
+          },
         },
       },
-      ticketrestrictions: true,
       events: true,
     },
   });
   const eventInstanceMap = new Map(
-      eventInstances.map((instance) => {
-        const ticketTypeMap = new Map<number, number[]>();
-        instance.eventtickets.forEach((ticket) => {
-          ticketTypeMap.set(ticket.tickettypeid_fk ?? 1, [
-            ticket.eventticketid,
-            ...(ticketTypeMap.get(ticket.tickettypeid_fk ?? 1) ?? []),
-          ]);
-        });
-        return [
-          instance.eventinstanceid,
-          {
-            ...instance,
-            ticketTypeMap,
-          },
-        ];
-      }),
-  );
+      eventInstances.map((instance) => [
+        instance.eventinstanceid,
+        {
+          ...instance,
+          ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => [res.tickettypeid_fk, res])),
+        },
+      ]));
   let orderTotal = 0;
 
   for (const item of cartItems) {
@@ -112,19 +105,18 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-    if (item.price < 0) {
+    if ((item.payWhatCan && item.payWhatPrice && item.payWhatPrice < 0) || item.price < 0) {
       throw new InvalidInputError(
           422,
-          `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+          `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
       );
     }
     orderItems = orderItems.concat(
         getTickets(
-            prisma,
-            eventInstance.ticketTypeMap,
-            item.typeID,
+            eventInstance.ticketRestrictionMap.get(item.typeID),
+            eventInstance.ticketRestrictionMap.get(eventInstance.defaulttickettype ?? 1),
             item.qty,
-            item.price,
+            item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
         ),
     );
     cartRows.push({
@@ -132,15 +124,16 @@ export const getOrderItems = async (
         currency: 'usd',
         product_data: {
           name: eventInstance.events.eventname,
-          description: item.desc,
+          description: (item.payWhatCan && item.qty != 1 ? `${item.desc}, Qty ${item.qty}`: item.desc),
         },
-        unit_amount: item.price * 100,
+        unit_amount: (item.payWhatPrice? item.payWhatPrice: item.price) * 100,
       },
-      quantity: item.qty,
+      quantity: item.payWhatPrice? 1: item.qty,
     });
 
-    orderTotal += item.price * item.qty;
+    orderTotal += item.payWhatCan? item.payWhatPrice ?? 0: item.price * item.qty;
   }
+
   for (const [, instance] of eventInstanceMap) {
     eventInstanceQueries.push(
         prisma.eventinstances.update({
@@ -148,26 +141,11 @@ export const getOrderItems = async (
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats: (instance.ticketTypeMap.get(1) ?? []).length,
-            ticketrestrictions: {
-              update: instance.ticketrestrictions.map((restriction) => ({
-                where: {
-                  ticketrestrictionsid: restriction.ticketrestrictionsid,
-                },
-                data: {
-                  ticketssold:
-                  restriction.ticketlimit -
-                  (
-                    instance.ticketTypeMap.get(restriction.tickettypeid_fk) ??
-                    []
-                  ).length,
-                },
-              })),
-            },
+            availableseats: (instance.ticketRestrictionMap.get(instance.defaulttickettype??1)?.eventtickets ?? []).length,
           },
-        }),
-    );
+        }));
   }
+
   return {
     cartRows,
     orderItems,
@@ -177,24 +155,26 @@ export const getOrderItems = async (
 };
 
 const getTickets = (
-    prisma: ExtendedPrismaClient,
-    availableTickets: Map<number, number[]>,
-    typeID: number,
+    ticketRestriction: LoadedTicketRestriction | undefined,
+    defaultTicketRestriction: LoadedTicketRestriction | undefined,
     quantity: number,
     price: number,
 ) => {
-  const ticketsForType = availableTickets.get(typeID) ?? [];
-  const ticketsForGA = availableTickets.get(1) ?? [];
-  if (
-    ticketsForType.length < quantity ||
-    (typeID !== 1 && ticketsForGA.length < quantity)
-  ) {
-    throw new InvalidInputError(422, `Requested Tickets no longer available`);
+  if (!ticketRestriction || !defaultTicketRestriction) {
+    throw new InvalidInputError(422, `Requested tickets no longer available`);
   }
 
-  const ticketsToSellForType = ticketsForType.splice(0, quantity);
-  const ticketsToSellForGA =
-    typeID != 1 ? ticketsForGA.splice(0, quantity) : [];
+  if (
+    ticketRestriction.eventtickets.length < quantity || defaultTicketRestriction.eventtickets.length < quantity) {
+    throw new InvalidInputError(422, `Requested tickets no longer available`);
+  }
+
+  const ticketsToSellForType = ticketRestriction.eventtickets.splice(0, quantity).map((ticket) => ticket.eventticketid);
+  const ticketsToSellForDefault = ticketRestriction !== defaultTicketRestriction?
+      defaultTicketRestriction.eventtickets
+          .splice(0, quantity)
+          .map((ticket) => ticket.eventticketid):
+      [];
 
   return ticketsToSellForType.map((ticketID, index) => ({
     price,
@@ -205,16 +185,15 @@ const getTickets = (
             {
               eventticketid: ticketID,
             },
-          ].concat(
-            typeID != 1 ? [{eventticketid: ticketsToSellForGA[index]}] : [],
-          ),
+            ...(ticketRestriction !== defaultTicketRestriction? [{eventticketid: ticketsToSellForDefault[index]}]:[]),
+          ],
         },
       },
     },
   }));
 };
 
-interface checkOutForm {
+interface checkoutForm {
   firstName: string;
   lastName: string;
   streetAddress: string;
@@ -229,7 +208,7 @@ interface checkOutForm {
 }
 
 export const updateContact = async (
-    formData: checkOutForm,
+    formData: checkoutForm,
     prisma: ExtendedPrismaClient,
 ) => {
   const existingContact = await prisma.contacts.findFirst({
@@ -267,27 +246,26 @@ export const updateContact = async (
   return updatedContact;
 };
 
-const validateContact = (formData: checkOutForm) => {
+const validateContact = (formData: checkoutForm) => {
   return {
     firstname: validateName(formData.firstName, 'First Name'),
     lastname: validateName(formData.lastName, 'Last Name'),
     email: validateWithRegex(
         formData.email,
         `Email: ${formData.email} is invalid`,
-        new RegExp('.+\\@.+\\..+'),
+        new RegExp('.+@.+\\..+'),
     ),
-    address: validateWithRegex(
-        formData.streetAddress,
-        `Street Address: ${formData.streetAddress} is invalid`,
-        new RegExp('.*'),
-    ),
-    phone: validateWithRegex(
-        formData.phone,
-        `Phone Number: ${formData.phone} is invalid`,
-        new RegExp('^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
-    ),
-    seatingaccom: formData.seatingAcc,
-    newsletter: formData.optIn,
+    // Only include or validate the following if provided
+    ...(formData.streetAddress && {address: formData.streetAddress}),
+    ...(formData.phone && {
+      phone: validateWithRegex(
+          formData.phone,
+          `Phone Number: ${formData.phone} is invalid`,
+          new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
+      ),
+    }),
+    ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
+    ...(formData.optIn && {newsletter: formData.optIn}),
   };
 };
 
@@ -297,6 +275,7 @@ const validateName = (name: string, type: string): string => {
   }
   return name;
 };
+
 const validateWithRegex = (
     toValidate: string,
     errorMessage: string,

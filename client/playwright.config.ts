@@ -6,6 +6,7 @@ import {defineConfig, devices} from '@playwright/test';
  */
 require('dotenv').config();
 
+const isDeployed = process.env.DEPLOYED === 'true';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -13,14 +14,16 @@ export default defineConfig({
   testDir: './e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
+  /* Set total test timeout */
+  timeout: process.env.CI ? 60000 : 30000, // 60 seconds for CI, 30 seconds otherwise
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : 1,
+  workers: process.env.CI ? 2 : 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html', {outputFolder: 'playwright'}]],
+  reporter: (isDeployed) ? [['list']] : [['html', {outputFolder: 'playwright'}]],
   outputDir: 'test-results',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -28,13 +31,16 @@ export default defineConfig({
     baseURL: process.env.FRONTEND_URL,
     ignoreHTTPSErrors: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: {
+    trace: (isDeployed) ? 'off' : {
       mode: 'on',
       snapshots: true,
       screenshots: true,
       sources: true,
       attachments: true,
     },
+    // Set actionTimeout and navigationTimeout based on CI environment
+    actionTimeout: process.env.CI ? 45000 : 10000, // 30 seconds for CI, 10 seconds otherwise
+    navigationTimeout: process.env.CI ? 30000 : 10000, // 30 seconds for CI, 10 seconds otherwise
   },
 
   /* Configure projects for major browsers */

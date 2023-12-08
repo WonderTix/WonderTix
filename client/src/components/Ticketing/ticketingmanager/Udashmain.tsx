@@ -1,5 +1,5 @@
 import React from 'react';
-import Dashboard from './dashboard';
+import Dashboard from './Dashboard';
 import Udash_nav from './udash_navbar';
 
 /**

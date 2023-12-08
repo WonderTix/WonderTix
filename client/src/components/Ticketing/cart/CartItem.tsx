@@ -2,14 +2,14 @@ import React, {useState, useEffect, ReactElement} from 'react';
 import {
   editItemQty,
   CartItem,
-} from '../ticketingmanager/ticketing/ticketingSlice';
+} from '../ticketingmanager/ticketingSlice';
 import {useAppDispatch} from '../app/hooks';
 import {toDollarAmount} from '../../../utils/arrays';
 import {getImageDefault} from '../../../utils/imageURLValidation';
 
 interface CartRowProps {
   item: CartItem;
-  removeHandler: (id: number) => void;
+  removeHandler: (eventInstanceId: number, ticketTypeId: number) => void;
 }
 
 /**
@@ -29,7 +29,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
     if (item.qty > 1) {
       dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty - 1}));
     } else {
-      removeHandler(item.product_id);
+      removeHandler(item.product_id, item.typeID);
     }
   };
 
@@ -46,7 +46,7 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
         )}),url(${getImageDefault()})`,
       }}
     >
-      <div className='flex flex-col md:flex-row justify-center md:justify-between items-center gap-5 p-5 h-full rounded-xl text-white bg-zinc-900/90'>
+      <div data-testid='cart-ticket-card' className='flex flex-col md:flex-row justify-center md:justify-between items-center gap-5 p-5 h-full rounded-xl text-white bg-zinc-900/90'>
         <div>
           <p className='font-semibold'>{item.name}</p>
           <p className='text-zinc-200'>{item.desc}</p>
@@ -54,6 +54,8 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
         <div className='flex items-center gap-7'>
           <div className='flex items-center gap-2'>
             <button
+              className='enabled:hover:text-gray-300'
+              data-testid='decrement-ticket'
               aria-label={`Remove one ${item.name} from cart`}
               onClick={handleDecrement}
             >
@@ -70,8 +72,10 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
                 />
               </svg>
             </button>
-            <p>{item.qty}</p>
+            <p data-testid='ticket-quantity'>{item.qty}</p>
             <button
+              className='enabled:hover:text-gray-300'
+              data-testid='increment-ticket'
               aria-label={`Add one ${item.name} to cart`}
               onClick={handleIncrement}
             >
@@ -89,14 +93,16 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
               </svg>
             </button>
           </div>
-          <p className='font-semibold'>
+          <p data-testid='card-ticket-subtotal' className='font-semibold'>
             {item.payWhatCan
               ? toDollarAmount(item.payWhatPrice)
               : toDollarAmount(cost)}
           </p>
           <button
+            className='enabled:hover:text-gray-300'
+            data-testid='remove-ticket'
             aria-label={`Remove ${item.name} from cart`}
-            onClick={() => removeHandler(item.product_id)}
+            onClick={() => removeHandler(item.product_id, item.typeID)}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'

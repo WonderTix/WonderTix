@@ -59,7 +59,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   let toSend = {id: 'comp'};
   try {
     if (!cartItems.length && donation === 0) {
-      return res.status(400).json(`Cart is empty`);
+      return res.status(400).json('Cart is empty');
     }
     const {contactid} = await updateContact(formData, prisma);
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
@@ -154,10 +154,80 @@ eventController.get('/showings', async (req: Request, res: Response) => {
             ticketrestrictions: true,
           },
         },
+        seasons: true,
       },
     });
 
     return res.json(events);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/events/slice:
+ *   get:
+ *     summary: get all active events in form needed by slice
+ *     tags:
+ *     - New Event API
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: event fetch successful
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventController.get('/slice', async (req: Request, res: Response) => {
+  try {
+    const events = await prisma.events.findMany({
+      where: {
+        active: true,
+        eventinstances: {
+          some: {
+            deletedat: null,
+            availableseats: {gt: 0},
+            salestatus: true,
+          },
+        },
+      },
+      orderBy: {
+        eventid: 'asc',
+      },
+      include: {
+        eventinstances: {
+          where: {
+            availableseats: {gt: 0},
+            salestatus: true,
+          },
+        },
+      },
+    });
+    return res.json(events.map((event) => ({
+      id: event.eventid.toString(),
+      seasonid: event.seasonid_fk,
+      title: event.eventname,
+      description: event.eventdescription,
+      active: event.active,
+      seasonticketeligible: event.seasonticketeligible,
+      imageurl: event.imageurl,
+      numShows: event.eventinstances.length.toString(),
+    })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -194,7 +264,11 @@ eventController.get('/showings', async (req: Request, res: Response) => {
  */
 eventController.get('/', async (req: Request, res: Response) => {
   try {
-    const events = await prisma.events.findMany({});
+    const events = await prisma.events.findMany({
+      include: {
+        seasons: true,
+      },
+    });
     return res.json(events);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -250,6 +324,7 @@ eventController.get('/showings/:id', async (req: Request, res: Response) => {
             ticketrestrictions: true,
           },
         },
+        seasons: true,
       },
     });
 
@@ -306,6 +381,9 @@ eventController.get('/active', async (req: Request, res: Response) => {
       where: {
         active: true,
       },
+      include: {
+        seasons: true,
+      },
     });
     res.json(activeEvents);
   } catch (error) {
@@ -358,6 +436,7 @@ eventController.get('/active/showings', async (req: Request, res: Response) => {
             ticketrestrictions: true,
           },
         },
+        seasons: true,
       },
     });
 
@@ -405,6 +484,9 @@ eventController.get('/inactive', async (req: Request, res: Response) => {
     const inactiveEvents = await prisma.events.findMany({
       where: {
         active: false,
+      },
+      include: {
+        seasons: true,
       },
     });
     return res.json(inactiveEvents);
@@ -460,6 +542,7 @@ eventController.get(
                 ticketrestrictions: true,
               },
             },
+            seasons: true,
           },
         });
         return res.json(inactiveEvents);
@@ -511,6 +594,9 @@ eventController.get('/season/:id', async (req: Request, res: Response) => {
       where: {
         seasonid_fk: id,
       },
+      include: {
+        seasons: true,
+      },
     });
     return res.json(events);
   } catch (error) {
@@ -551,13 +637,16 @@ eventController.get('/season/:id', async (req: Request, res: Response) => {
 eventController.get('/search', async (req: Request, res: Response) => {
   try {
     const name = req.query.event_name;
-    if (!name || !(typeof name === 'string')) {
+    if (!name || typeof name !== 'string') {
       return res.status(400).send('No Event name provided.');
     }
 
     const events = await prisma.events.findMany({
       where: {
         eventname: name,
+      },
+      include: {
+        seasons: true,
       },
     });
     return res.json(events);
@@ -607,6 +696,9 @@ eventController.get('/:id', async (req: Request, res: Response) => {
     const eventExists = await prisma.events.findUnique({
       where: {
         eventid: Number(id),
+      },
+      include: {
+        seasons: true,
       },
     });
     if (!eventExists) {
@@ -686,6 +778,9 @@ eventController.post('/', async (req: Request, res: Response) => {
         seasonticketeligible: req.body.seasonticketeligible,
         imageurl: req.body.imageurl,
       },
+      include: {
+        seasons: true,
+      },
     });
     res.status(201).json(event);
     return;
@@ -743,19 +838,56 @@ eventController.put('/', async (req: Request, res: Response) => {
         eventid: Number(req.body.eventid),
       },
       data: {
-        seasonid_fk: req.body.seasonid_fk === null ? null : Number(req.body.seasonid_fk),
+        seasonid_fk: !req.body.seasonid_fk? null : Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
         active: req.body.active,
         seasonticketeligible: req.body.seasonticketeligible,
         imageurl: req.body.imageurl,
       },
+      include: {
+        eventinstances: {
+          include: {
+            ticketrestrictions: true,
+          },
+        },
+        seasons: {
+          include: {
+            seasontickettypepricedefaults: true,
+          },
+        },
+      },
     });
+
     if (!event) {
       return res.status(400).json({error: `Event ${req.body.eventid} not found`});
     }
-    res.status(200).json(event);
-    return;
+
+    await prisma.$transaction((event.seasons?.seasontickettypepricedefaults.map((defaultP) =>
+      prisma.ticketrestrictions.updateMany({
+        where: {
+          tickettypeid_fk: defaultP.tickettypeid_fk,
+          eventinstances: {
+            eventid_fk: +req.body.eventid,
+          },
+        },
+        data: {
+          seasontickettypepricedefaultid_fk: defaultP.id,
+        },
+      }),
+    ) ?? []).concat([prisma.ticketrestrictions.updateMany({
+      where: {
+        tickettypeid_fk: {notIn: event.seasons?.seasontickettypepricedefaults.map((res) => res.tickettypeid_fk)},
+        eventinstances: {
+          eventid_fk: +req.body.eventid,
+        },
+      },
+      data: {
+        seasontickettypepricedefaultid_fk: null,
+      },
+    })]));
+
+    return res.status(200).json(event);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -863,6 +995,9 @@ eventController.put(
           },
           data: {
             active: updatedStatus === 'true',
+          },
+          include: {
+            seasons: true,
           },
         });
         if (!updatedEvent) {

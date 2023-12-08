@@ -1,5 +1,5 @@
-import {test as setup, expect} from '@playwright/test';
-import {LoginPage} from './pages/loginPage';
+import { test as setup, expect } from '@playwright/test';
+import { LoginPage } from './pages/loginPage';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -16,7 +16,7 @@ if (!process.env.CI) {
 const authFile = 'playwright/.auth/user.json';
 
 setup('authenticate', async ({page}) => {
-  setup.setTimeout(180000);
+  // setup.setTimeout(180000);
 
   const loginPage = new LoginPage(page);
 
@@ -25,14 +25,14 @@ setup('authenticate', async ({page}) => {
 
   await loginPage.login(email, password);
 
-  // Edge case for "Default App is trying to access your wtix-xxx account"
+  // Edge case for "Wondertix App is trying to access your wtix-xxx account"
   try {
     // Wait for the Accept button to appear on the page.
     await loginPage.postLoginAuthAcceptButton.waitFor({ timeout: 5000 });
     // If the Post-first-login Auth0 Accept button is found, click it.
     await loginPage.postLoginAuthAcceptButton.click();
   } catch (error) {
-    console.log('Accept button did not appear within 5 seconds.');
+    console.log('First Party User Consent Skipped. Logging in... ');
   }
 
   // Ensuring visibility and correctness of page elements post-login.

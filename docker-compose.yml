@@ -4,6 +4,7 @@ services:
   server:
     build:
       context: ./server
+      dockerfile: Dockerfile.local
     ports:
       - "8000:8000"
     environment:
@@ -20,12 +21,14 @@ services:
       DATABASE_URL: postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:${PG_PORT}/${PG_DB}?schema=public
       ROOT_URL: ${ROOT_URL}
       ENV: local
+      CI: ${CI}
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules
   client:
     build:
       context: ./client
+      dockerfile: Dockerfile.local
     ports:
       - "3000:3000"
     environment:
@@ -40,7 +43,7 @@ services:
     volumes:
       - ./client:/usr/app
       - /usr/app/node_modules
-    command: npm run start
+    command: npm run start:local
   database:
     image: postgres
     ports:
