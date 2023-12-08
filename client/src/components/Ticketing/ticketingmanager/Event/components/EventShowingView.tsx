@@ -39,18 +39,17 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
       'Success',
       'Showing successfully cloned',
       true,
-      `update-modal-showing-id-${data.eventinstanceid}`,
+      `clone-modal-showing-id-${data.eventinstanceid}`,
     );
     setEditing((editing) => !editing);
   };
-  const onCloneError = async (res) => {
-      const data = await res.json();
+  const onCloneError = async () => {
       setReloadShowing((reload) => !reload);
       setPopUpProps(
           'Failure',
           'Showing clone failed',
           false,
-          `update-modal-showing-id-${data.eventinstanceid}`,
+          `clone-modal-clone-failed`,
       );
       setEditing((editing) => !editing);
   };
