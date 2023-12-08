@@ -115,7 +115,7 @@ This section covers the Playwright automated testing setup that has been configu
 
 Before you begin running tests, make sure you have a TEST_EMAIL and TEST_PASSWORD set in your `.env` that belong to an account with admin privileges. Please refer to the `.env.dist` example. This will allow the `auth.setup.ts` test setup file to authenticate and save the authenticated browser context locally to be used for subsequent tests; and admin credentials are required for tests involving the admin-facing pages to pass.
 
-Here is how you run the playwright tests (once they have been written, currently there is an example test in `./client/tests/` and an example Page Object Modle style setup for playwright tests in `./client/tests-examples/`:
+Here is how you run the playwright tests:
 
 - While in the `./client` folder, type `npm run test:playwright`. This will start the playwright tests using Chromium, Firefox, and Webkit (Safari).
    - In the future, the command will become `npm run test` once we replace the current react tests.
