@@ -1,6 +1,5 @@
 /* eslint-disable require-jsdoc */
-import {type Locator, type Page, expect} from '@playwright/test';
-import {EventsInfo, ShowingInfo} from '../testData/ConstsPackage';
+import test, {type Locator, type Page, expect} from '@playwright/test';
 /*
 Since many locators' names are created while a specific test is being written, some names are ill-considered,
 of course we could optimize them later in the process to create as few locators as possible and to share
@@ -182,7 +181,7 @@ export class AdminPage {
   }
   // END FUNCTION
 
-  async purchaseTicket(eventName: string, eventTime: string) {
+  async purchaseTicket(eventName: string, eventTime: string, testEmail: string) {
     await this.gotoTicketing(); // ticketing url
     await this.purchaseTicketButton.click();
     await delay(1000);
@@ -217,7 +216,7 @@ export class AdminPage {
     await this.nextPageButton.click();
     await delay(2000);
     await this.email2.click();
-    await this.email2.fill('tesasdast@wonde234rtix.com');
+    await this.email2.fill(testEmail);
     await delay(3000);
     if (await this.popupWindow.isVisible()) { // Scenario for verification pop-up
       await this.sms0.click();
