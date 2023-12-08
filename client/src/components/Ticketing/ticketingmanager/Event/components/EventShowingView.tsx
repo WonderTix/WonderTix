@@ -49,7 +49,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
           'Failure',
           'Showing clone failed',
           false,
-          `clone-modal-clone-failed`,
+          `clone-modal-failure`,
       );
       setEditing((editing) => !editing);
   };
