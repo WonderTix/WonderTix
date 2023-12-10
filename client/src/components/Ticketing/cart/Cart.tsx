@@ -11,7 +11,7 @@ import {
   fetchDiscountData,
   removeDiscountFromCart,
   DiscountItem,
-} from '../ticketingmanager/ticketing/ticketingSlice';
+} from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
 
 /**

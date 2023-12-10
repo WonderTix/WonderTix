@@ -13,7 +13,7 @@ import {
   removeAllTicketsFromCart,
   selectCartContents,
   selectDiscount,
-} from '../ticketingmanager/ticketing/ticketingSlice';
+} from '../ticketingmanager/ticketingSlice';
 import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';

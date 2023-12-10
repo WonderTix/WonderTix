@@ -45,7 +45,7 @@ export const EventGeneralContainer = () => {
   const onCreateSuccess = async (newEvent) => {
     try {
       const eventID = await updateEvent(newEvent);
-      navigate(`/ticketing/showings/${eventID}`);
+      navigate(`/ticketing/events/${eventID}`);
       setPopUpProps(
         `Success`,
         'Event creation successful',
@@ -71,7 +71,7 @@ export const EventGeneralContainer = () => {
   };
 
   const onDeleteSuccess = () => {
-    navigate(`/ticketing/showings`);
+    navigate(`/ticketing/events`);
   };
 
   const onDeleteError = async (event) => {

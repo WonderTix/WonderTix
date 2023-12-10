@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
-import {Event} from '../ticketingmanager/ticketing/ticketingSlice';
+import {Event} from '../ticketingmanager/ticketingSlice';
 import {EventImage} from '../../../utils/imageURLValidation';
 
 /**

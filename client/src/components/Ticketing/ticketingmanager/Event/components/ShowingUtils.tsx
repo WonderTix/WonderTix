@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
+import {toDateStringFormat} from './util/EventsUtil';
 
 const makeApiCall = async (method, url, token, event, onSuccess, onError) => {
   try {
@@ -112,7 +113,7 @@ export const useFetchEventData = (eventID: number) => {
         `${process.env.REACT_APP_API_2_URL}/events/${eventID}`,
         setEventData,
         signal,
-      ).catch(() => navigate(`/ticketing/showings/${eventID}/notFound`));
+      ).catch(() => navigate(`/ticketing/events/${eventID}/notFound`));
     }
     setLoading(false);
     return () => controller.abort();
@@ -238,4 +239,15 @@ export const TrashCanIcon = (props: {className?: string}) => {
       />
     </svg>
   );
+};
+export const cloneShowing = (showing) => {
+  const toReturn = {};
+  Object.keys(showing).forEach((key) => {
+    toReturn[key] = showing[key];
+  });
+  toReturn['instanceTicketTypes'] = showing.ticketrestrictions;
+  toReturn['eventdate'] = toDateStringFormat(showing.eventdate);
+  toReturn['eventtime'] = showing.eventtime.split('T')[1].slice(0, 8);
+  toReturn['availableseats'] = toReturn['totalseats'];
+  return toReturn;
 };

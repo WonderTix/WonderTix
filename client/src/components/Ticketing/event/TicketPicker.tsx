@@ -6,7 +6,7 @@ import isSameDay from 'date-fns/isSameDay';
 import {
   addTicketToCart,
   Ticket,
-} from '../ticketingmanager/ticketing/ticketingSlice';
+} from '../ticketingmanager/ticketingSlice';
 import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import {formatUSD} from '../ticketingmanager/RefundOrders/RefundOrders';

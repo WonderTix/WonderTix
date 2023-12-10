@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {titleCase} from '../../../../utils/arrays';
 import {getSeasonImage, formatSeasonDate, SeasonImage} from './seasonUtils';
-import ShowingActivenessToggle from '../../GroupToggle';
+import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 
 export interface Seasons {
   seasonid: number;
@@ -118,7 +118,7 @@ const SeasonInstancesPage = (props: SeasonInstancesProp) => {
             Add Season
           </button>
         </section>
-        <ShowingActivenessToggle
+        <ActivenessGroupToggle
           defaultValue={filterSetting}
           handleFilterChange={setFilterSetting}
         />

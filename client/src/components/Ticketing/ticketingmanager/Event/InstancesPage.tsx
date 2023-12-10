@@ -16,7 +16,7 @@ import {
   EventImage,
   getImageDefault,
 } from '../../../../utils/imageURLValidation';
-import ShowingActivenessToggle from '../../GroupToggle';
+import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 
 /**
  * Uses dispatch, navigate, allEvents, and getData
@@ -62,7 +62,7 @@ const InstancesPage = (): ReactElement => {
             Select Event
           </h1>
           <button
-            onClick={() => navigate(`/ticketing/showings/0`)}
+            onClick={() => navigate(`/ticketing/events/0`)}
             className='bg-green-500 hover:bg-green-700 h-fit disabled:bg-gray-500 text-white p-2 rounded-xl flex justify-center align-center gap-1'
           >
             <svg
@@ -82,7 +82,7 @@ const InstancesPage = (): ReactElement => {
             Add Event
           </button>
         </div>
-        <ShowingActivenessToggle
+        <ActivenessGroupToggle
           defaultValue={filterSetting}
           handleFilterChange={setFilterSetting}
         />
@@ -90,7 +90,7 @@ const InstancesPage = (): ReactElement => {
           {eventsData.map((event) => (
             <li key={event.eventid}>
               <button
-                onClick={() => navigate(`/ticketing/showings/${event.eventid}`)}
+                onClick={() => navigate(`/ticketing/events/${event.eventid}`)}
                 className='shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full'
                 style={{
                   backgroundImage: `url(${getImageDefault(
