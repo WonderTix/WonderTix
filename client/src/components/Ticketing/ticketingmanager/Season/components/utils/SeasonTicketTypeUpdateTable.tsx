@@ -36,7 +36,12 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
             const seasonTicketTypes = await seasonTicketTypeRes.json();
             console.log('Ticket Types (seasonTicketTypes):', seasonTicketTypes);
             setAvailableTicketTypes(seasonTicketTypes);
+            if (seasonTicketTypeData && seasonTicketTypeData.length > 0 && seasonTicketTypes.length > 0) {
+              removeFromAvailable(seasonTicketTypeData, seasonTicketTypes);
+            }
             setTicketTypeList([...seasonTicketTypes]);
+
+            console.log('(UseEffect) After IF Avail TT Data:', availableTicketTypes);
           } else {
             throw new Error('Failed to get all ticket type description info');
           }
@@ -50,11 +55,24 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
 
   useEffect(() => {
     setCurrentSeasonTicketTypeData(seasonTicketTypeData);
+    if (availableTicketTypes.length > 0) {
+      removeFromAvailable(seasonTicketTypeData, availableTicketTypes);
+    }
   }, [seasonTicketTypeData]);
 
   useEffect(() => {
     props.onUpdate(currentSeasonTicketTypeData);
   }, [currentSeasonTicketTypeData]);
+
+  const removeFromAvailable = (ticketTypeData: SeasonTicketValues[], availableTypes) => {
+    const filteredAvailableTicketTypes = availableTypes.filter((ticketType) => {
+      return ticketTypeData.every((seasonTicketType) => seasonTicketType.tickettypeid_fk != ticketType.tickettypeid);
+    });
+    console.log('(removeFromAvailable) filteredAvail:', filteredAvailableTicketTypes);
+    console.log('TT Data:', ticketTypeData);
+    console.log('Avail T Data:', availableTypes);
+    setAvailableTicketTypes(filteredAvailableTicketTypes);
+  };
 
   const handleUpdateTicketTypeData = (newValue, tickettypeid, field) => {
     const toUpdateHelperCopy = [...currentSeasonTicketTypeData];
@@ -183,6 +201,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       className='w-[75px] bg-gray-100'
                       type='number'
                       value={type.price}
+                      disabled={type.description === 'Pay What You Can'}
                       onChange={(e) =>
                         handleUpdateTicketTypeData(
                           Number(e.target.value),

@@ -84,6 +84,7 @@ const SeasonContainer = () => {
     }
   };
   const handleUpdateSeasonTicketType = async (requestData) => {
+    console.log('Requested Data:', requestData);
     try {
       const seasonUpdateTicketTypeRes = await fetch(
         process.env.REACT_APP_API_2_URL +
