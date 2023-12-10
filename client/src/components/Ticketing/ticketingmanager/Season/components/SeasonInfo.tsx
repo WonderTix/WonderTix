@@ -114,9 +114,9 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
   const onSubmit = async (event) => {
     event.preventDefault();
 
-    // Validate Table Data & Round Data
+    // Validate Table Data & Round Data //Add validation
     const isTableDataValid = updatedTicketData.every(
-      (ticketType) => ticketType.price >= 0 && ticketType.concessionprice >= 0,
+      (ticketType) => ticketType.price >= 0 && ticketType.concessionprice >= 0 && ticketType.tickettypeid_fk >= 0,
     );
 
     if (!isTableDataValid) {
