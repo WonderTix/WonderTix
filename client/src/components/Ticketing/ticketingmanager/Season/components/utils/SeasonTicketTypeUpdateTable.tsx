@@ -1,7 +1,7 @@
 import {IconButton, Tooltip} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import {SeasonTicketValues, seasonTicketDefaultValues} from './seasonCommon';
-import {useFetchToken} from '../../../showings/ShowingUpdated/ShowingUtils';
+import {useFetchToken} from '../../../Event/components/ShowingUtils';
 
 interface SeasonTicketTypeUpdateTableProps {
   seasonTicketTypeData: SeasonTicketValues[];
@@ -34,9 +34,9 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
 
           if (seasonTicketTypeRes.ok) {
             const seasonTicketTypes = await seasonTicketTypeRes.json();
-            console.log('Ticket Types', seasonTicketTypes);
+            console.log('Ticket Types (seasonTicketTypes):', seasonTicketTypes);
             setAvailableTicketTypes(seasonTicketTypes);
-            setTicketTypeList(seasonTicketTypes);
+            setTicketTypeList([...seasonTicketTypes]);
           } else {
             throw new Error('Failed to get all ticket type description info');
           }
@@ -50,55 +50,71 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
 
   useEffect(() => {
     setCurrentSeasonTicketTypeData(seasonTicketTypeData);
-    // setSelectedTicketTypes(seasonTicketTypeData.map((ticket) => ticket.description || ''));
   }, [seasonTicketTypeData]);
 
   useEffect(() => {
-    // console.log('Updated Data Before Route Call:', currentSeasonTicketTypeData);
     props.onUpdate(currentSeasonTicketTypeData);
   }, [currentSeasonTicketTypeData]);
 
-  const handleUpdateTicketTypeData = (newValue, index, field) => {
-    setCurrentSeasonTicketTypeData((prevData) => {
-      const updatedData = [...prevData];
-      updatedData[index] = {...updatedData[index], [field]: newValue};
-      return updatedData;
-    });
+  const handleUpdateTicketTypeData = (newValue, tickettypeid, field) => {
+    const toUpdateHelperCopy = [...currentSeasonTicketTypeData];
+    const ticketIndex = toUpdateHelperCopy.findIndex((ticketType) => tickettypeid === ticketType.tickettypeid_fk);
+    toUpdateHelperCopy[ticketIndex][field] = newValue;
+    setCurrentSeasonTicketTypeData(toUpdateHelperCopy);
   };
 
   const handleAddTicketType = () => {
+    const ticketTypeToAdd = availableTicketTypes.shift();
+    const seasonTicketPageStructure: SeasonTicketValues = {
+      tickettypeid_fk: ticketTypeToAdd.tickettypeid,
+      description: ticketTypeToAdd.description,
+      price: ticketTypeToAdd.price,
+      concessionprice: ticketTypeToAdd.concessions,
+    };
     setCurrentSeasonTicketTypeData((prevData) => [
       ...prevData,
-      seasonTicketDefaultValues,
+      seasonTicketPageStructure,
     ]);
-    // pick first array item
-
-    // setAvailableTicketTypes();
   };
 
-  const handleDeleteTicketType = (index) => {
+  const handleDeleteTicketType = (tickettypeid) => {
     setCurrentSeasonTicketTypeData((prevData) => {
-      const updatedData = [...prevData];
-      updatedData.splice(index, 1);
-      return updatedData;
+      const filteredList = prevData.filter((tickettype) => tickettype.tickettypeid_fk != tickettypeid);
+      return filteredList;
     });
 
-    setSelectedTicketTypes((prevSelected) => {
-      const updatedSelected = [...prevSelected];
-      updatedSelected.splice(index, 1);
-      return updatedSelected;
-    });
+    const ticketTypeToAdd = ticketTypeList.find((tickettype) => tickettype.tickettypeid === tickettypeid);
+    setAvailableTicketTypes((prevData) => [
+      ...prevData,
+      ticketTypeToAdd,
+    ]);
   };
+/*
+*/
+  const handleTicketTypeChange = (targetTicketTypeId, prevTicketTypeId) => {
+    const filteredList = availableTicketTypes.filter((ticketType) => targetTicketTypeId !== ticketType.tickettypeid);
+    setAvailableTicketTypes(filteredList);
 
-  const handleTicketTypeChange = (newValue) => {
-    setAvailableTicketTypes((prevSelected) => {
-      const updatedSelected = [...prevSelected];
-      updatedSelected[index] = newValue;
-      return updatedSelected;
-    });
+    const ticketTypeToAdd = ticketTypeList.find((ticketType) => prevTicketTypeId === ticketType.tickettypeid);
+
+    setAvailableTicketTypes((prevData) => [
+      ...prevData,
+      ticketTypeToAdd,
+    ]);
+
+    const toUpdateHelperCopy = [...currentSeasonTicketTypeData];
+    const prevIndex = toUpdateHelperCopy.findIndex((ticketType) => prevTicketTypeId === ticketType.tickettypeid_fk);
+    const newValues = ticketTypeList.find((ticketType) => targetTicketTypeId === ticketType.tickettypeid);
+
+    toUpdateHelperCopy[prevIndex] = {
+      tickettypeid_fk: newValues.tickettypeid,
+      description: newValues.description,
+      price: newValues.price,
+      concessionprice: newValues.concessions,
+    };
+
+    setCurrentSeasonTicketTypeData(toUpdateHelperCopy);
   };
-
-  // console.log('Selected Descriptions:', availableTicketTypes);
 
   return (
     <div className={'bg-gray-300 grid grid-cols-12 rounded-xl p-1 h-[100%]'}>
@@ -110,11 +126,12 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
               <th className='px-2 py-1 border-b border-l border-r border-white'>Ticket Price</th>
               <th className='px-2 py-1 border-b border-l border-r border-white'>Concession Price</th>
               <th className='px-2 py-1 border-b border-l border-white'>
-                <Tooltip title="Add Ticket Type" arrow>
+                <Tooltip title="Add Ticket Type Price Default" arrow>
                   <IconButton
                     size={'small'}
                     aria-label={'add ticket type'}
                     onClick={handleAddTicketType}
+                    disabled={availableTicketTypes.length === 0}
                   >
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
@@ -122,7 +139,11 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       fill='currentColor'
                       stroke='white'
                       strokeWidth={1.5}
-                      className={'w-[1.5rem] h-[1.5] text-green-500'}
+                    className={`w-[1.5rem] h-[1.5rem] ${
+                      availableTicketTypes.length > 0
+                        ? 'text-green-500'
+                        : 'text-gray-600'
+                    }`}
                     >
                       <path
                         fillRule='evenodd'
@@ -137,16 +158,17 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
           </thead>
           <tbody className='text-sm whitespace-nowrap text-zinc-800'>
             {currentSeasonTicketTypeData && currentSeasonTicketTypeData.length > 0 ? (
-                currentSeasonTicketTypeData.map((type, index) =>(
-                <tr key={index} className='bg-gray-200'>
+                currentSeasonTicketTypeData.map((type) =>(
+                <tr key={type.tickettypeid_fk} className='bg-gray-200'>
                   <td className={'px-2'}>
                     <select
                       value={type.tickettypeid_fk}
                       onChange={(e) =>
-                        handleDescriptionChange(e.target.value)
+                        handleTicketTypeChange(Number(e.target.value), type.tickettypeid_fk)
                       }
+                      className='w-full'
                     >
-                      <option value="">Select Ticket Type</option>
+                      <option value='' disabled>Select Ticket Type</option>
                       <option value={type.tickettypeid_fk}>{type.description}</option>
                       {availableTicketTypes
                       .map((ticketType) => (
@@ -164,7 +186,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       onChange={(e) =>
                         handleUpdateTicketTypeData(
                           Number(e.target.value),
-                          index,
+                          type.tickettypeid_fk,
                           'price',
                         )
                       }
@@ -178,7 +200,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       onChange={(e) =>
                         handleUpdateTicketTypeData(
                           Number(e.target.value),
-                          index,
+                          type.tickettypeid_fk,
                           'concessionprice',
                         )
                       }
@@ -189,7 +211,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       <IconButton
                         size={'small'}
                         aria-label={'delete ticket type'}
-                        onClick={() => handleDeleteTicketType(index)}
+                        onClick={() => handleDeleteTicketType(type.tickettypeid_fk)}
                       >
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
@@ -212,10 +234,8 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
             ))
             ) : (
               <tr>
-                <td></td>
-                <td className={'px-2'}><span>No Current Ticket Types</span></td>
-                <td></td>
-            </tr>
+                <td colSpan={4} className={'px-2 text-center'}>No Current Ticket Types</td>
+              </tr>
             )}
           </tbody>
         </table>

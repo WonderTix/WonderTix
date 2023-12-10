@@ -31,9 +31,7 @@ export const SeasonTicketViewTable = (props: SeasonTicketViewTableProps) => {
             ))
           ) : (
             <tr>
-              <td></td>
-              <td className={'px-2'}><span>No Current Ticket Types</span></td>
-              <td></td>
+              <td colSpan={3} className={'px-2 text-center'}>No Current Ticket Types</td>
             </tr>
           )}
           </tbody>
