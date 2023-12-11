@@ -172,7 +172,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
             alt={`Cover photo for ${name} season`}
           />
         </div>
-        <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] md:p-3 rounded-lg'>
+        <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3 rounded-lg'>
           <SeasonTicketViewTable
             seasonTicketTypeData={seasonTicketTypeData}
           />
