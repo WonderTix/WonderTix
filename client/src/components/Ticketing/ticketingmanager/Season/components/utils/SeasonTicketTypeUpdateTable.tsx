@@ -1,6 +1,6 @@
 import {IconButton, Tooltip} from '@mui/material';
 import React, {useState, useEffect} from 'react';
-import {SeasonTicketValues, seasonTicketDefaultValues} from './seasonCommon';
+import {SeasonTicketValues} from './seasonCommon';
 import {useFetchToken} from '../../../Event/components/ShowingUtils';
 
 interface SeasonTicketTypeUpdateTableProps {
@@ -35,9 +35,11 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
           if (seasonTicketTypeRes.ok) {
             const seasonTicketTypes = await seasonTicketTypeRes.json();
             console.log('Ticket Types (seasonTicketTypes):', seasonTicketTypes);
-            setAvailableTicketTypes(seasonTicketTypes);
-            if (seasonTicketTypeData && seasonTicketTypeData.length > 0 && seasonTicketTypes.length > 0) {
-              removeFromAvailable(seasonTicketTypeData, seasonTicketTypes);
+            if (seasonTicketTypeData && seasonTicketTypeData.length > 0) {
+              const availableTypesWithoutSeasonTypes = removeSeasonTypesFromAvailableTypes(seasonTicketTypeData, seasonTicketTypes);
+              setAvailableTicketTypes(availableTypesWithoutSeasonTypes);
+            } else {
+              setAvailableTicketTypes(seasonTicketTypes);
             }
             setTicketTypeList([...seasonTicketTypes]);
 
@@ -56,7 +58,8 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
   useEffect(() => {
     setCurrentSeasonTicketTypeData(seasonTicketTypeData);
     if (availableTicketTypes.length > 0) {
-      removeFromAvailable(seasonTicketTypeData, availableTicketTypes);
+      const availableTypesWithoutSeasonTypes = removeSeasonTypesFromAvailableTypes(seasonTicketTypeData, availableTicketTypes);
+      setAvailableTicketTypes(availableTypesWithoutSeasonTypes);
     }
   }, [seasonTicketTypeData]);
 
@@ -64,14 +67,11 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
     props.onUpdate(currentSeasonTicketTypeData);
   }, [currentSeasonTicketTypeData]);
 
-  const removeFromAvailable = (ticketTypeData: SeasonTicketValues[], availableTypes) => {
-    const filteredAvailableTicketTypes = availableTypes.filter((ticketType) => {
-      return ticketTypeData.every((seasonTicketType) => seasonTicketType.tickettypeid_fk != ticketType.tickettypeid);
+  const removeSeasonTypesFromAvailableTypes = (seasonTicketTypes: SeasonTicketValues[], availableTypes) => {
+    const filteredAvailableTicketTypes = availableTypes.filter((availType) => {
+      return seasonTicketTypes.every((seasonTicketType) => seasonTicketType.tickettypeid_fk !== availType.tickettypeid);
     });
-    console.log('(removeFromAvailable) filteredAvail:', filteredAvailableTicketTypes);
-    console.log('TT Data:', ticketTypeData);
-    console.log('Avail T Data:', availableTypes);
-    setAvailableTicketTypes(filteredAvailableTicketTypes);
+    return filteredAvailableTicketTypes;
   };
 
   const handleUpdateTicketTypeData = (newValue, tickettypeid, field) => {
@@ -107,8 +107,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
       ticketTypeToAdd,
     ]);
   };
-/*
-*/
+
   const handleTicketTypeChange = (targetTicketTypeId, prevTicketTypeId) => {
     const filteredList = availableTicketTypes.filter((ticketType) => targetTicketTypeId !== ticketType.tickettypeid);
     setAvailableTicketTypes(filteredList);
@@ -135,8 +134,8 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
   };
 
   return (
-    <div className={'bg-gray-300 grid grid-cols-12 rounded-xl p-1 h-[100%]'}>
-      <div className={'overflow-y-auto overflow-x-auto col-span-12 shadow-xl border border-white rounded-xl bg-white w-[100%] min-h-[100px]'}>
+    <div className='bg-gray-300 grid grid-cols-12 rounded-xl p-1 h-[100%]'>
+      <div className='overflow-y-auto overflow-x-auto col-span-12 shadow-xl border border-white rounded-xl bg-white w-[100%] min-h-[100px]'>
         <table className='table table-fixed text-sm min-w-[100%]'>
           <thead className='text-left text-zinc-800 whitespace-nowrap bg-gray-300 sticky top-0'>
             <tr className='rounded-xl'>
@@ -144,10 +143,10 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
               <th className='px-2 py-1 border-b border-l border-r border-white'>Ticket Price</th>
               <th className='px-2 py-1 border-b border-l border-r border-white'>Concession Price</th>
               <th className='px-2 py-1 border-b border-l border-white'>
-                <Tooltip title="Add Ticket Type Price Default" arrow>
+                <Tooltip title='Add Ticket Type Price Default' arrow>
                   <IconButton
-                    size={'small'}
-                    aria-label={'add ticket type'}
+                    size='small'
+                    aria-label='add ticket type'
                     onClick={handleAddTicketType}
                     disabled={availableTicketTypes.length === 0}
                   >
@@ -157,11 +156,12 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       fill='currentColor'
                       stroke='white'
                       strokeWidth={1.5}
-                    className={`w-[1.5rem] h-[1.5rem] ${
-                      availableTicketTypes.length > 0
-                        ? 'text-green-500'
-                        : 'text-gray-600'
-                    }`}
+                      className={`w-[1.5rem] h-[1.5rem] ${
+                        availableTicketTypes.length > 0
+                          ? 'text-green-500'
+                          : 'text-gray-600'
+                        }`
+                      }
                     >
                       <path
                         fillRule='evenodd'
@@ -176,9 +176,9 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
           </thead>
           <tbody className='text-sm whitespace-nowrap text-zinc-800'>
             {currentSeasonTicketTypeData && currentSeasonTicketTypeData.length > 0 ? (
-                currentSeasonTicketTypeData.map((type) =>(
+              currentSeasonTicketTypeData.map((type) => (
                 <tr key={type.tickettypeid_fk} className='bg-gray-200'>
-                  <td className={'px-2'}>
+                  <td className='px-2'>
                     <select
                       value={type.tickettypeid_fk}
                       onChange={(e) =>
@@ -188,8 +188,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                     >
                       <option value='' disabled>Select Ticket Type</option>
                       <option value={type.tickettypeid_fk}>{type.description}</option>
-                      {availableTicketTypes
-                      .map((ticketType) => (
+                      {availableTicketTypes.map((ticketType) => (
                         <option key={ticketType.tickettypeid} value={ticketType.tickettypeid}>
                           {ticketType.description}
                         </option>
@@ -204,7 +203,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       disabled={type.description === 'Pay What You Can'}
                       onChange={(e) =>
                         handleUpdateTicketTypeData(
-                          Number(e.target.value),
+                          e.target.value,
                           type.tickettypeid_fk,
                           'price',
                         )
@@ -218,7 +217,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       value={type.concessionprice}
                       onChange={(e) =>
                         handleUpdateTicketTypeData(
-                          Number(e.target.value),
+                          e.target.value,
                           type.tickettypeid_fk,
                           'concessionprice',
                         )
@@ -228,8 +227,8 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                   <td className='px-2 border border-white'>
                     <Tooltip title='Delete Ticket Type'>
                       <IconButton
-                        size={'small'}
-                        aria-label={'delete ticket type'}
+                        size='small'
+                        aria-label='delete ticket type'
                         onClick={() => handleDeleteTicketType(type.tickettypeid_fk)}
                       >
                         <svg
@@ -250,10 +249,12 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                     </Tooltip>
                   </td>
                 </tr>
-            ))
+              ))
             ) : (
               <tr>
-                <td colSpan={4} className={'px-2 text-center'}>No Current Ticket Types</td>
+                <td colSpan={4} className='px-2 text-center'>
+                  No Current Ticket Types
+                </td>
               </tr>
             )}
           </tbody>
