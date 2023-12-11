@@ -78,7 +78,7 @@ const SeasonContainer = () => {
       }
 
       const seasonTicketTypeData = await seasonTicketTypeTableRes.json();
-      setSeasonTicketTypeData(seasonTicketTypeData);
+      setSeasonTicketTypeData(seasonTicketTypeData.sort((a, b) => a.tickettypeid_fk - b.tickettypeid_fk));
     } catch (error) {
       console.error(error);
     }
@@ -107,7 +107,7 @@ const SeasonContainer = () => {
 
       console.log('Updated Data:', seasonUpdatedTicketTypeData);
 
-      setSeasonTicketTypeData(seasonUpdatedTicketTypeData);
+      setSeasonTicketTypeData(seasonUpdatedTicketTypeData.sort((a, b) => a.tickettypeid_fk - b.tickettypeid_fk));
     } catch (error) {
       console.error('Error updating season ticket type', error);
     }
