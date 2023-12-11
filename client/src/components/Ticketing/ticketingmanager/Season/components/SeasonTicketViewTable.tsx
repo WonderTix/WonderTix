@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {SeasonTicketValues} from './utils/seasonCommon';
-
 
 interface SeasonTicketViewTableProps {
   seasonTicketTypeData: SeasonTicketValues[];
@@ -22,18 +21,18 @@ export const SeasonTicketViewTable = (props: SeasonTicketViewTableProps) => {
           </thead>
           <tbody className={'whitespace-nowrap'}>
             {seasonTicketTypeData && seasonTicketTypeData.length > 0 ? (
-              seasonTicketTypeData.map((id, index) =>(
-              <tr key={index}>
-                <td className={'px-2'}> {id.description}</td>
-                <td className={'px-2'}> ${Number(id.price).toFixed(2)}</td>
-                <td className={'px-2'}> ${Number(id.concessionprice).toFixed(2)}</td>
+              seasonTicketTypeData.map((id, index) => (
+                <tr key={index}>
+                  <td className={'px-2'}>{id.description}</td>
+                  <td className={'px-2'}>${Number(id.price).toFixed(2)}</td>
+                  <td className={'px-2'}>${Number(id.concessionprice).toFixed(2)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} className={'px-2 text-center'}>No Current Ticket Types</td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={3} className={'px-2 text-center'}>No Current Ticket Types</td>
-            </tr>
-          )}
+            )}
           </tbody>
         </table>
       </div>

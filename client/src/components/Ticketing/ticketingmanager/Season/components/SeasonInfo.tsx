@@ -303,13 +303,11 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
             alt={`Cover photo for ${name} season`}
           />
         </article>
-        <div className='pl-2 col-span-12 lg:col-span-8 h-[100%]'>
-          <div className='flex flex-col justify-center m-auto col-span-12 lg:col-span-8 rounded-lg p-3 w-[100%] h-[100%]'>
-            <SeasonTicketTypeUpdateTable
-              seasonTicketTypeData={seasonTicketTypeData}
-              onUpdate={handleTicketTypeUpdate}
-            />
-          </div>
+        <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] md:p-3 rounded-lg'>
+          <SeasonTicketTypeUpdateTable
+            seasonTicketTypeData={seasonTicketTypeData}
+            onUpdate={handleTicketTypeUpdate}
+          />
         </div>
       </div>
     </form>

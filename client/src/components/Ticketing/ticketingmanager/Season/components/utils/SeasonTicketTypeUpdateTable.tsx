@@ -1,7 +1,11 @@
 import {IconButton, Tooltip} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import {SeasonTicketValues} from './seasonCommon';
-import {useFetchToken} from '../../../Event/components/ShowingUtils';
+import {
+  useFetchToken,
+  TrashCanIcon,
+  CirclePlusIcon,
+} from '../../../Event/components/ShowingUtils';
 
 interface SeasonTicketTypeUpdateTableProps {
   seasonTicketTypeData: SeasonTicketValues[];
@@ -10,6 +14,7 @@ interface SeasonTicketTypeUpdateTableProps {
 
 export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTableProps) => {
   const {seasonTicketTypeData} = props;
+
   const [currentSeasonTicketTypeData, setCurrentSeasonTicketTypeData] = useState<SeasonTicketValues[]>([...seasonTicketTypeData]);
   const [availableTicketTypes, setAvailableTicketTypes] = useState([]);
   const [ticketTypeList, setTicketTypeList] = useState([]);
@@ -134,41 +139,38 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
   };
 
   return (
-    <div className='bg-gray-300 grid grid-cols-12 rounded-xl p-1 h-[100%]'>
-      <div className='overflow-y-auto overflow-x-auto col-span-12 shadow-xl border border-white rounded-xl bg-white w-[100%] min-h-[100px]'>
+    <div className='bg-gray-300 rounded-xl p-1 h-[100%]'>
+      <div className='overflow-y-auto overflow-x-auto shadow-xl border-l border-r border-t border-white rounded-xl bg-white w-[100%] h-[100%] min-h-[101px]'>
         <table className='table table-fixed text-sm min-w-[100%]'>
           <thead className='text-left text-zinc-800 whitespace-nowrap bg-gray-300 sticky top-0'>
             <tr className='rounded-xl'>
-              <th className='px-2 py-1 border-b border-r border-white'>Admission Type</th>
-              <th className='px-2 py-1 border-b border-l border-r border-white'>Ticket Price</th>
-              <th className='px-2 py-1 border-b border-l border-r border-white'>Concession Price</th>
+              <th className='px-2 py-1 border-b border-r border-white'>
+                Admission Type
+              </th>
+              <th className='px-2 py-1 border-b border-l border-r border-white'>
+                Ticket Price
+              </th>
+              <th className='px-2 py-1 border-b border-l border-r border-white'>
+                Concession Price
+              </th>
               <th className='px-2 py-1 border-b border-l border-white'>
-                <Tooltip title='Add Ticket Type Price Default' arrow>
+                <Tooltip
+                  title='Add Ticket Type Price Default'
+                  placement='top'
+                  arrow
+                >
                   <IconButton
                     size='small'
                     aria-label='add ticket type'
                     onClick={handleAddTicketType}
                     disabled={availableTicketTypes.length === 0}
                   >
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      viewBox='0 0 24 24'
-                      fill='currentColor'
-                      stroke='white'
-                      strokeWidth={1.5}
-                      className={`w-[1.5rem] h-[1.5rem] ${
-                        availableTicketTypes.length > 0
-                          ? 'text-green-500'
-                          : 'text-gray-600'
-                        }`
-                      }
-                    >
-                      <path
-                        fillRule='evenodd'
-                        d='M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z'
-                        clipRule='evenodd'
-                      />
-                    </svg>
+                    <CirclePlusIcon className = {`w-[1.5rem] h-[1.5rem] ${
+                      availableTicketTypes.length > 0
+                        ? 'text-green-500'
+                        : 'text-gray-600'
+                      }`}
+                    />
                   </IconButton>
                 </Tooltip>
               </th>
@@ -182,20 +184,31 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                     <select
                       value={type.tickettypeid_fk}
                       onChange={(e) =>
-                        handleTicketTypeChange(Number(e.target.value), type.tickettypeid_fk)
+                        handleTicketTypeChange(
+                          Number(e.target.value),
+                          type.tickettypeid_fk,
+                        )
                       }
                       className='w-full'
                     >
-                      <option value='' disabled>Select Ticket Type</option>
-                      <option value={type.tickettypeid_fk}>{type.description}</option>
+                      <option value='' disabled>
+                        Select Ticket Type
+                      </option>
+                      <option value={type.tickettypeid_fk}>
+                        {type.description}
+                      </option>
                       {availableTicketTypes.map((ticketType) => (
-                        <option key={ticketType.tickettypeid} value={ticketType.tickettypeid}>
+                        <option
+                          key={ticketType.tickettypeid}
+                          value={ticketType.tickettypeid}
+                        >
                           {ticketType.description}
                         </option>
                       ))}
                     </select>
                   </td>
-                  <td className='px-2 border border-white'><span className='pr-1'>$</span>
+                  <td className='px-2 border border-white'>
+                    <span className='pr-1'>$</span>
                     <input
                       className='w-[75px] bg-gray-100'
                       type='number'
@@ -210,7 +223,8 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                       }
                     />
                   </td>
-                  <td className='px-2 border border-white'><span className='pr-1'>$</span>
+                  <td className='px-2 border border-white'>
+                    <span className='pr-1'>$</span>
                     <input
                       className='w-[75px] bg-gray-100'
                       type='number'
@@ -225,26 +239,15 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
                     />
                   </td>
                   <td className='px-2 border border-white'>
-                    <Tooltip title='Delete Ticket Type'>
+                    <Tooltip title='Delete Ticket Type' placement='top'>
                       <IconButton
                         size='small'
                         aria-label='delete ticket type'
-                        onClick={() => handleDeleteTicketType(type.tickettypeid_fk)}
+                        onClick={() =>
+                          handleDeleteTicketType(type.tickettypeid_fk)
+                        }
                       >
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth={1.5}
-                          stroke='currentColor'
-                          className='w-4 h-4 text-red-700'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
-                          />
-                        </svg>
+                        <TrashCanIcon className='h-4 w-4 text-red-700' />
                       </IconButton>
                     </Tooltip>
                   </td>
