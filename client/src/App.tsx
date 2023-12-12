@@ -1,6 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
-
 /* CRM */
 import React from 'react';
 import {Routes, Route} from 'react-router-dom';
@@ -31,20 +28,20 @@ import Cartmain from './components/Ticketing/cart/Cartmain';
 import Checkoutmain from './components/Ticketing/checkout/Checkoutmain';
 import CheckoutSuccess from './components/Ticketing/checkout/CheckoutSuccess';
 import Donationmain from './components/Ticketing/donation/Donationmain';
-import DonorBenefitsmain from './components/Ticketing/donation/DonorBenefitsmain';
+
 /* Ticketing Manager */
 import DoorListmain from './components/Ticketing/ticketingmanager/DoorList/DoorListmain';
 import Udashmain from './components/Ticketing/ticketingmanager/Udashmain';
 import NewsletterCreatemain from './components/Ticketing/ticketingmanager/Newsletter/NewsletterCreatemain';
-import Showingsmain from './components/Ticketing/ticketingmanager/showings/Showingsmain';
+import Eventmain from './components/Ticketing/ticketingmanager/Event/Eventmain';
 import SeasonsMain from './components/Ticketing/ticketingmanager/Season/SeasonMain';
 import SingleSeasonMain from './components/Ticketing/ticketingmanager/Season/components/SingleSeasonMain';
-import Tickettypesmain from './components/Ticketing/ticketingmanager/TicketTypes/tickettypesmain';
+import TicketTypesmain from './components/Ticketing/ticketingmanager/TicketTypes/TicketTypesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
 import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
-import {EventProvider} from './components/Ticketing/ticketingmanager/showings/ShowingUpdated/EventProvider';
+import {EventProvider} from './components/Ticketing/ticketingmanager/Event/components/EventProvider';
 import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
 
 const App = () => {
@@ -57,7 +54,6 @@ const App = () => {
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />
         <Route path='/donate' element={<Donationmain />} />
-        <Route path='/donate/donorbenefits' element={<DonorBenefitsmain />} />
         <Route
           path='/admin'
           element={<ProtectedRoute component={Dashmain} />}
@@ -149,8 +145,12 @@ const App = () => {
           element={<ProtectedRoute component={NewsletterCreatemain} />}
         />
         <Route
-          path='/ticketing/showings'
-          element={<ProtectedRoute component={Showingsmain} />}
+          path='/ticketing/events'
+          element={<ProtectedRoute component={Eventmain} />}
+        />
+        <Route
+          path='/ticketing/events/:eventid'
+          element={<ProtectedRoute component={EventProvider} />}
         />
         <Route
           path='/ticketing/seasons'
@@ -162,15 +162,11 @@ const App = () => {
         />
         <Route
           path='/ticketing/tickettypes'
-          element={<ProtectedRoute component={Tickettypesmain} />}
+          element={<ProtectedRoute component={TicketTypesmain} />}
         />
         <Route
           path='/ticketing/ticketexchanges'
           element={<ProtectedRoute component={TicketExchangesmain} />}
-        />
-        <Route
-          path='/ticketing/showings/:eventid'
-          element={<ProtectedRoute component={EventProvider} />}
         />
         <Route
           path='/ticketing/purchaseticket'
@@ -181,7 +177,7 @@ const App = () => {
           element={<ProtectedRoute component={AdminCheckoutmain} />}
         />
         <Route
-          path='/ticketing/Refund'
+          path='/ticketing/refund'
           element={<ProtectedRoute component={RefundOrdersMain} />}
         />
         <Route path='*' element={<PageNotFound />} />

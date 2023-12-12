@@ -1,4 +1,21 @@
-import { SeasonInfo } from "../interfaces";
+/* eslint-disable require-jsdoc */
+import {appendShortUUID} from './supportFunctions/uuidFunctions';
+
+export interface SeasonInfo {
+  seasonName: string;
+  seasonStart: string;
+  seasonEnd: string;
+  seasonImgURL: string;
+}
+
+export class SeasonInfo {
+  constructor(season: SeasonInfo) {
+    this.seasonName = appendShortUUID(season.seasonName);
+    this.seasonStart = season.seasonStart;
+    this.seasonEnd = season.seasonEnd;
+    this.seasonImgURL = season.seasonImgURL;
+  }
+}
 
 export const SEASON_INFO_1: SeasonInfo = {
   seasonName: 'Test_Season1',

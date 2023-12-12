@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import SeasonInfo from './SeasonInfo';
 import SeasonEvents from './SeasonEvents';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
-import {useFetchToken} from '../../showings/ShowingUpdated/ShowingUtils';
+import {useFetchToken} from '../../Event/components/ShowingUtils';
 import PopUp from '../../../PopUp';
 import {useParams} from 'react-router';
 import {getAllEvents} from './utils/apiRequest';

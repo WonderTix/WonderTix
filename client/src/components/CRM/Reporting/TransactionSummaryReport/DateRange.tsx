@@ -24,12 +24,13 @@ const DateRangePicker = ({start, end, onStartDateChange, onEndDateChange, isDisa
             onEndDateChange(selectedDate);
         }
     };
+
     /**
-    * Format a Date object to the "YYYY-MM-DD" format.
-    *
-    * @param {Date} date - The Date object to be formatted.
-    * @returns {string} The formatted date string in "YYYY-MM-DD" format.
-    */
+     * Format a Date object to the "YYYY-MM-DD" format.
+     *
+     * @param {Date} date - The Date object to be formatted.
+     * @returns {string} The formatted date string in "YYYY-MM-DD" format.
+     */
     function formatDateToYYYYMMDD(date) {
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1

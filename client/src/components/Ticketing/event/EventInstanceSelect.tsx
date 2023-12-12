@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import format from 'date-fns/format';
-import {Ticket} from '../ticketingmanager/ticketing/ticketingSlice';
+import {Ticket} from '../ticketingmanager/ticketingSlice';
 
 /**
  * EventInstanceSelectProps holds tickets, showings and such

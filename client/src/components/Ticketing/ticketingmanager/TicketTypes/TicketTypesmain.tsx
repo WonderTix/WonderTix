@@ -1,6 +1,6 @@
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import TicketTypes from './tickettypes';
+import TicketTypes from './TicketTypes';
 
 /**
  * Main page to host door list
@@ -8,7 +8,7 @@ import TicketTypes from './tickettypes';
  * @module
  * @returns {Udash_nav, TicketType}
  */
-const Tickettypesmain = () => {
+const TicketTypesmain = () => {
   return (
     <div className='flex flex-row'>
       <Udash_nav/>
@@ -17,4 +17,4 @@ const Tickettypesmain = () => {
   );
 };
 
-export default Tickettypesmain;
+export default TicketTypesmain;

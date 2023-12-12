@@ -1,5 +1,4 @@
-import {RootState} from '../../app/store';
-import {INITIAL_STATE as eventsInitState} from '../Events/events_pages/eventsSlice';
+import {RootState} from '../app/store';
 import ticketReducer, {
   addTicketToCart,
   editItemQty,
@@ -99,7 +98,6 @@ const ticketingInitState: ticketingState = {
 };
 
 const ROOT_INIT_STATE: RootState = {
-  events: eventsInitState,
   snackbar: {message: '', shown: false},
   ticketing: ticketingInitState,
   donation: {amount: 0},

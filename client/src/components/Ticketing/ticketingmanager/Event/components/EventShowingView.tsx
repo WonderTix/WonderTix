@@ -3,7 +3,7 @@ import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
-import {getTicketTypeKeyValue} from './ShowingUtils';
+import {cloneShowing, createSubmitFunction} from './ShowingUtils';
 
 import {LineItem} from './LineItem';
 
@@ -14,7 +14,14 @@ interface EventInstanceViewProps {
 
 export const EventShowingView = (props: EventInstanceViewProps) => {
   const {showing, setEdit} = props;
-  const {ticketTypes, editing, showPopUp} = useEvent();
+  const {
+    editing,
+    showPopUp,
+    setReloadShowing,
+    setEditing,
+    setPopUpProps,
+    token,
+  } = useEvent();
   const formatUSD = new Intl.NumberFormat('en-us', {
     currency: 'USD',
     style: 'currency',
@@ -25,6 +32,34 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
       .slice(0, 8)}`,
   );
 
+  const onCloneSuccess = async (res) => {
+    const data = await res.json();
+    setReloadShowing((reload) => !reload);
+    setPopUpProps(
+      'Success',
+      'Showing successfully cloned',
+      true,
+      `clone-modal-showing-id-${data.eventinstanceid}`,
+    );
+    setEditing((editing) => !editing);
+  };
+  const onCloneError = async () => {
+      setReloadShowing((reload) => !reload);
+      setPopUpProps(
+          'Failure',
+          'Showing clone failed',
+          false,
+          `clone-modal-failure`,
+      );
+      setEditing((editing) => !editing);
+  };
+  const submitClone = createSubmitFunction(
+    'POST',
+    `${process.env.REACT_APP_API_2_URL}/event-instance`,
+    token,
+    onCloneSuccess,
+    onCloneError,
+  );
   return (
     <div className={'bg-gray-300 rounded-xl p-2'}>
       <div
@@ -78,20 +113,13 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             </thead>
             <tbody className={'whitespace-nowrap'}>
               {showing.ticketrestrictions.length !== 0 &&
-                ticketTypes &&
                 showing.ticketrestrictions
-                  .sort((a, b) => (a.tickettypeid_fk === 1 ? -1 : 1))
+                  .sort((a) => (a.tickettypeid_fk === 1 ? -1 : 1))
                   .map((type, index) => (
                     <tr
                       key={`${showing.eventinstanceid} ${type.tickettypeid_fk} ${index}`}
                     >
-                      <td className={'px-2'}>
-                        {getTicketTypeKeyValue(
-                          type.tickettypeid_fk,
-                          'description',
-                          ticketTypes,
-                        )}
-                      </td>
+                      <td className={'px-2'}>{type.description}</td>
                       <td className={'px-2'}>{formatUSD.format(type.price)}</td>
                       <td className={'px-2'}>
                         {formatUSD.format(type.concessionprice)}
@@ -104,7 +132,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
         </div>
         <div
           className={
-            'grid content-center mx-auto col-span-12 min-[1350px]:col-span-1'
+            'flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
           }
         >
           <button
@@ -116,6 +144,19 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             }
           >
             Edit
+          </button>
+          <button
+            disabled={editing || showPopUp}
+            type={'button'}
+            onClick={() => {
+              setEditing((editing) => !editing);
+              return submitClone(cloneShowing(showing));
+            }}
+            className={
+              ' bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold p-2 px-4 rounded-xl'
+            }
+          >
+            Clone
           </button>
         </div>
       </div>
