@@ -14,7 +14,8 @@ async function seedEvents(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./yaml-seeder-data/events.yaml', 'utf8');
+    const yamlDataPath = process.env.SEED_DATA || './yaml-seeder-data';
+    const yamlData = fs.readFileSync(`${yamlDataPath}/events.yaml`, 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({

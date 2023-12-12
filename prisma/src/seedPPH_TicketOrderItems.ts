@@ -20,7 +20,8 @@ async function seedPPHTicketOrderItems(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./yaml-seeder-data/PPH_ticketorderitems.yaml', 'utf8');
+    const yamlDataPath = process.env.SEED_DATA || './yaml-seeder-data';
+    const yamlData = fs.readFileSync(`${yamlDataPath}/PPH_ticketorderitems.yaml`, 'utf8');
     const data = yaml.load(yamlData);
 
     for (const item of data) {

@@ -15,7 +15,8 @@ async function seedDonations(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./yaml-seeder-data/donations.yaml', 'utf8');
+    const yamlDataPath = process.env.SEED_DATA || './yaml-seeder-data';
+    const yamlData = fs.readFileSync(`${yamlDataPath}/donations.yaml`, 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const frequencyMapping = {

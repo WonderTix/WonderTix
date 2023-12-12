@@ -1,0 +1,10 @@
+.dockerignore
+.git
+.gitignore
+__tests__
+Dockerfile
+Dockerfile.local
+node_modules/
+npm-debug.log
+yaml-seeder-data
+*.md

@@ -22,8 +22,8 @@ services:
       ROOT_URL: ${ROOT_URL}
       ENV: local
     volumes:
-      - ./server:/usr/app
       - prisma-schema:/prisma
+      - ./server:/usr/app
       - /usr/app/node_modules
     depends_on:
       - prisma
@@ -70,9 +70,11 @@ services:
       DB_PORT: ${PG_PORT}
       DATABASE_URL: postgresql://${PG_USER}:${PG_PASS}@${PG_HOST}:${PG_PORT}/${PG_DB}?schema=public
       MINIMAL_SEED: ${MINIMAL_SEED}
+      SEED_DATA: ${SEED_DATA}
       CI: ${CI}
       ENV: local
     volumes:
+      - prisma-data:${SEED_DATA}
       - ./prisma:/usr/app
       - /usr/app/node_modules
     depends_on:
@@ -84,4 +86,10 @@ volumes:
     driver_opts:
       type: none
       device: ${PWD}/prisma
+      o: bind
+  prisma-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/prisma/yaml-seeder-data
       o: bind
