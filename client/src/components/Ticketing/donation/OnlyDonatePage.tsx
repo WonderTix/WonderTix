@@ -111,18 +111,18 @@ export default function OnlyDonationPage(): ReactElement {
       <hr className='w-full border border-t border-zinc-300 my-4'></hr>
       <div className='text-2xl font-bold mb-5'>Choose a donation amount</div>
       {/* Donation period radios*/}
-      {/*<div className='self-start'>*/}
-      {/*  <label className='mr-10'>*/}
-      {/*    <input*/}
-      {/*      type='radio'*/}
-      {/*      value='onetime'*/}
-      {/*      name='period'*/}
-      {/*      checked={donationPeriod == 'onetime'}*/}
-      {/*      onChange={handleRadioChange}*/}
-      {/*      className='mr-2'*/}
-      {/*    />*/}
-      {/*    One Time*/}
-      {/*  </label>*/}
+      {/* <div className='self-start'> */}
+      {/*  <label className='mr-10'> */}
+      {/*    <input */}
+      {/*      type='radio' */}
+      {/*      value='onetime' */}
+      {/*      name='period' */}
+      {/*      checked={donationPeriod == 'onetime'} */}
+      {/*      onChange={handleRadioChange} */}
+      {/*      className='mr-2' */}
+      {/*    /> */}
+      {/*    One Time */}
+      {/*  </label> */}
       {/*  <label className='mr-10'>*/}
       {/*    <input*/}
       {/*      type='radio'*/}
@@ -143,7 +143,7 @@ export default function OnlyDonationPage(): ReactElement {
       {/*    />*/}
       {/*    Quarterly*/}
       {/*  </label>*/}
-      {/*</div>*/}
+      {/* </div>*/}
       {/* Donation buttons */}
       <div className='w-full py-4'>
         {donationPeriod == 'onetime' && (
@@ -158,7 +158,7 @@ export default function OnlyDonationPage(): ReactElement {
             ))}
           </div>
         )}
-        { /*{donationPeriod == 'monthly' && (*/ }
+        { /* {donationPeriod == 'monthly' && (*/ }
         { /*  <div className='grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7'>*/ }
         { /*    {monthlyAmounts.map((amount, index) => (*/ }
         { /*      <DonationButton*/ }
@@ -169,8 +169,8 @@ export default function OnlyDonationPage(): ReactElement {
         { /*      />*/ }
         { /*    ))}*/ }
         { /*  </div>*/ }
-        { /*)}*/ }
-        { /*{donationPeriod == 'quarterly' && (*/ }
+        { /* )}*/ }
+        { /* {donationPeriod == 'quarterly' && (*/ }
         { /*  <div className='grid grid-cols-2 grid-rows-3 gap-5 md:grid-cols-3 md:grid-rows-2 md:gap-7'>*/ }
         { /*    {quarterlyAmounts.map((amount, index) => (*/ }
         { /*      <DonationButton*/ }
@@ -181,7 +181,7 @@ export default function OnlyDonationPage(): ReactElement {
         { /*      />*/ }
         { /*    ))}*/ }
         { /*  </div>*/ }
-        { /*)}*/ }
+        { /* )}*/ }
       </div>
       {/* Other amount text box */}
       <div className='flex flex-col w-full items-start py-4'>
