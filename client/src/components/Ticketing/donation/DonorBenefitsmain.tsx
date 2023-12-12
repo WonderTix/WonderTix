@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from '../mainpage/Navbar';
-import Footer from '../mainpage/footer';
+import Footer from '../mainpage/Footer';
 import DonorBenefitsPage from './DonorBenefitsPage';
 
 /**
