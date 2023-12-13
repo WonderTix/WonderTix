@@ -14,48 +14,44 @@ interface SeasonTicketTypeUpdateTableProps {
 
 export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTableProps) => {
   const {seasonTicketTypeData} = props;
+  const {onUpdate} = props;
 
   const [currentSeasonTicketTypeData, setCurrentSeasonTicketTypeData] = useState<SeasonTicketValues[]>([...seasonTicketTypeData]);
   const [availableTicketTypes, setAvailableTicketTypes] = useState([]);
   const [ticketTypeList, setTicketTypeList] = useState([]);
 
-  const {token} = useFetchToken();
 
   useEffect(() => {
-    if (token) {
-      const handleGetAllTicketTypes = async () => {
-        try {
-          const seasonTicketTypeRes = await fetch(
-            process.env.REACT_APP_API_2_URL + `/ticket-type/valid`,
-            {
-              credentials: 'omit',
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-              },
+    const handleGetAllTicketTypes = async () => {
+      try {
+        const seasonTicketTypeRes = await fetch(
+          process.env.REACT_APP_API_2_URL + `/ticket-type/valid`,
+          {
+            credentials: 'omit',
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
             },
-          );
-
-          if (seasonTicketTypeRes.ok) {
-            const seasonTicketTypes = await seasonTicketTypeRes.json();
-            if (seasonTicketTypeData && seasonTicketTypeData.length > 0) {
-              const availableTypesWithoutSeasonTypes = removeSeasonTypesFromAvailableTypes(seasonTicketTypeData, seasonTicketTypes);
-              setAvailableTicketTypes(availableTypesWithoutSeasonTypes);
-            } else {
-              setAvailableTicketTypes(seasonTicketTypes);
-            }
-            setTicketTypeList([...seasonTicketTypes]);
+          },
+        );
+        if (seasonTicketTypeRes.ok) {
+          const seasonTicketTypes = await seasonTicketTypeRes.json();
+          if (seasonTicketTypeData && seasonTicketTypeData.length > 0) {
+            const availableTypesWithoutSeasonTypes = removeSeasonTypesFromAvailableTypes(seasonTicketTypeData, seasonTicketTypes);
+            setAvailableTicketTypes(availableTypesWithoutSeasonTypes);
           } else {
-            throw new Error('Failed to get all ticket type description info');
+            setAvailableTicketTypes(seasonTicketTypes);
           }
-        } catch (error) {
-          console.error(error);
+          setTicketTypeList([...seasonTicketTypes]);
+        } else {
+          throw new Error('Failed to get all ticket type description info');
         }
-      };
-      handleGetAllTicketTypes();
-    }
-  }, [token]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    handleGetAllTicketTypes();
+  }, []);
 
   useEffect(() => {
     setCurrentSeasonTicketTypeData(seasonTicketTypeData);
@@ -66,7 +62,7 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
   }, [seasonTicketTypeData]);
 
   useEffect(() => {
-    props.onUpdate(currentSeasonTicketTypeData);
+    onUpdate(currentSeasonTicketTypeData);
   }, [currentSeasonTicketTypeData]);
 
   const removeSeasonTypesFromAvailableTypes = (seasonTicketTypes: SeasonTicketValues[], availableTypes) => {

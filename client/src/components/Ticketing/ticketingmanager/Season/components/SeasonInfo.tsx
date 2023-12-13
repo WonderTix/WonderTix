@@ -34,6 +34,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
   >();
   const [someActiveEvents, setSomeActiveEvents] = useState(false);
   const [updatedTicketData, setUpdatedTicketData] = useState<SeasonTicketValues[]>([]);
+  const {onUpdateSeasonTicketType} = props;
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
 
@@ -149,8 +150,8 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     } else {
       void handleUpdateSeason(reqObject);
 
-      if (props.onUpdateSeasonTicketType) {
-        await props.onUpdateSeasonTicketType(roundedTicketData);
+      if (onUpdateSeasonTicketType) {
+        await onUpdateSeasonTicketType(roundedTicketData);
       }
     }
   };

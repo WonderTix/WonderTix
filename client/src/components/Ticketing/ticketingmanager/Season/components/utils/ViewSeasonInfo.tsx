@@ -48,8 +48,6 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
     seasonTicketTypeData,
   } = props;
 
-  const values: {eventinstanceid: number} = {eventinstanceid: parseInt('1234', 10)};
-
   const getLongDateFormat = (date: string) => {
     const year: string = date.slice(0, 4);
     const month = Number(date.slice(5, 7));

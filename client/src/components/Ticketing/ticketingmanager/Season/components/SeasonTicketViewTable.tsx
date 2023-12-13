@@ -21,11 +21,11 @@ export const SeasonTicketViewTable = (props: SeasonTicketViewTableProps) => {
           </thead>
           <tbody className={'whitespace-nowrap'}>
             {seasonTicketTypeData && seasonTicketTypeData.length > 0 ? (
-              seasonTicketTypeData.map((id, index) => (
+              seasonTicketTypeData.map((ticketType, index) => (
                 <tr key={index}>
-                  <td className={'px-2'}>{id.description}</td>
-                  <td className={'px-2'}>${Number(id.price).toFixed(2)}</td>
-                  <td className={'px-2'}>${Number(id.concessionprice).toFixed(2)}</td>
+                  <td className={'px-2'}>{ticketType.description}</td>
+                  <td className={'px-2'}>${Number(ticketType.price).toFixed(2)}</td>
+                  <td className={'px-2'}>${Number(ticketType.concessionprice).toFixed(2)}</td>
                 </tr>
               ))
             ) : (
