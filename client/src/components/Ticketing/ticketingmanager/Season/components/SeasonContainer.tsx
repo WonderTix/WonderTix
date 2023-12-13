@@ -44,7 +44,7 @@ const SeasonContainer = () => {
   };
 
   const handleGetAllEvents = async () => {
-    const allEvents = await getAllEvents(token);
+    const allEvents = await getAllEvents();
     if (allEvents) {
       const eventsInCurrentSeason = allEvents.filter(
         (event) => event.seasonid_fk === seasonId,
@@ -68,7 +68,6 @@ const SeasonContainer = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
           },
         },
       );
@@ -83,6 +82,7 @@ const SeasonContainer = () => {
       console.error(error);
     }
   };
+
   const handleUpdateSeasonTicketType = async (requestData) => {
     try {
       const seasonUpdateTicketTypeRes = await fetch(
@@ -132,7 +132,6 @@ const SeasonContainer = () => {
             setIsFormEditing={setIsFormEditing}
             seasonTicketTypeData={seasonTicketTypeData}
             onUpdateSeasonTicketType={handleUpdateSeasonTicketType}
-
           />
           <SeasonEvents
             {...commonSeasonPageProps}
