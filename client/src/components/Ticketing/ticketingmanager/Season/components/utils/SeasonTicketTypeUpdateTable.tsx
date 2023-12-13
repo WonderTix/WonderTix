@@ -2,7 +2,6 @@ import {IconButton, Tooltip} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import {SeasonTicketValues} from './seasonCommon';
 import {
-  useFetchToken,
   TrashCanIcon,
   CirclePlusIcon,
 } from '../../../Event/components/ShowingUtils';
