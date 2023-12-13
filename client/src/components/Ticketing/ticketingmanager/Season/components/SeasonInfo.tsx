@@ -112,7 +112,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     }
   };
 
-  const onSubmit = async (event) => {
+  const onSubmit = (event) => {
     event.preventDefault();
 
     // Validate Table Data
@@ -151,7 +151,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
       void handleUpdateSeason(reqObject);
 
       if (onUpdateSeasonTicketType) {
-        await onUpdateSeasonTicketType(roundedTicketData);
+        void onUpdateSeasonTicketType(roundedTicketData);
       }
     }
   };
