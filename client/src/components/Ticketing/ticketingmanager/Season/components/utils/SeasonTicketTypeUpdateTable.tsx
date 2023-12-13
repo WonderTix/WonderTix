@@ -166,19 +166,21 @@ const updateCurrentSeasonTicketTypeData = (targetId, prevId, currentData, allTic
                   placement='top'
                   arrow
                 >
-                  <IconButton
-                    size='small'
-                    aria-label='add ticket type'
-                    onClick={handleAddTicketType}
-                    disabled={availableTicketTypes.length === 0}
-                  >
-                    <CirclePlusIcon className = {`w-[1.5rem] h-[1.5rem] ${
-                      availableTicketTypes.length > 0
-                        ? 'text-green-500'
-                        : 'text-gray-600'
-                      }`}
-                    />
-                  </IconButton>
+                  <span>
+                    <IconButton
+                      size='small'
+                      aria-label='add ticket type'
+                      onClick={handleAddTicketType}
+                      disabled={availableTicketTypes.length === 0}
+                    >
+                      <CirclePlusIcon className = {`w-[1.5rem] h-[1.5rem] ${
+                        availableTicketTypes.length > 0
+                          ? 'text-green-500'
+                          : 'text-gray-600'
+                        }`}
+                      />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               </th>
             </tr>
