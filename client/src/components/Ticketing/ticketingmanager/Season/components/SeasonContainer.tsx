@@ -84,7 +84,6 @@ const SeasonContainer = () => {
     }
   };
   const handleUpdateSeasonTicketType = async (requestData) => {
-    console.log('Requested Data:', requestData);
     try {
       const seasonUpdateTicketTypeRes = await fetch(
         process.env.REACT_APP_API_2_URL +
@@ -104,8 +103,6 @@ const SeasonContainer = () => {
         throw new Error('Failed to update season ticket type');
       }
       const seasonUpdatedTicketTypeData = await seasonUpdateTicketTypeRes.json();
-
-      console.log('Updated Data:', seasonUpdatedTicketTypeData);
 
       setSeasonTicketTypeData(seasonUpdatedTicketTypeData.sort((a, b) => a.tickettypeid_fk - b.tickettypeid_fk));
     } catch (error) {

@@ -39,7 +39,6 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
 
           if (seasonTicketTypeRes.ok) {
             const seasonTicketTypes = await seasonTicketTypeRes.json();
-            console.log('Ticket Types (seasonTicketTypes):', seasonTicketTypes);
             if (seasonTicketTypeData && seasonTicketTypeData.length > 0) {
               const availableTypesWithoutSeasonTypes = removeSeasonTypesFromAvailableTypes(seasonTicketTypeData, seasonTicketTypes);
               setAvailableTicketTypes(availableTypesWithoutSeasonTypes);
@@ -47,8 +46,6 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
               setAvailableTicketTypes(seasonTicketTypes);
             }
             setTicketTypeList([...seasonTicketTypes]);
-
-            console.log('(UseEffect) After IF Avail TT Data:', availableTicketTypes);
           } else {
             throw new Error('Failed to get all ticket type description info');
           }
