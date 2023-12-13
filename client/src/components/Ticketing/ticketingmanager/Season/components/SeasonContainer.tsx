@@ -7,7 +7,7 @@ import {useFetchToken} from '../../Event/components/ShowingUtils';
 import PopUp from '../../../PopUp';
 import {useParams} from 'react-router';
 import {getAllEvents} from './utils/apiRequest';
-import {seasonEventInfo, initialSeasonEventInfo} from './utils/seasonCommon';
+import {seasonEventInfo, initialSeasonEventInfo, SeasonTicketValues} from './utils/seasonCommon';
 
 const defaultPopUpValues = {
   title: '',
@@ -30,6 +30,7 @@ const SeasonContainer = () => {
     handleClose: () => setShowPopUp(false),
     handleProceed: () => setShowPopUp(false),
   });
+  const [seasonTicketTypeData, setSeasonTicketTypeData] = useState<SeasonTicketValues[]>();
   const {token} = useFetchToken();
 
   const commonSeasonPageProps = {
@@ -43,7 +44,7 @@ const SeasonContainer = () => {
   };
 
   const handleGetAllEvents = async () => {
-    const allEvents = await getAllEvents(token);
+    const allEvents = await getAllEvents();
     if (allEvents) {
       const eventsInCurrentSeason = allEvents.filter(
         (event) => event.seasonid_fk === seasonId,
@@ -57,8 +58,61 @@ const SeasonContainer = () => {
     }
   };
 
+  const handleGetSeasonTicketType = async () => {
+    try {
+      const seasonTicketTypeTableRes = await fetch(
+        process.env.REACT_APP_API_2_URL +
+          `/season-ticket-type-price-default/${seasonId}`,
+        {
+          credentials: 'omit',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      if (!seasonTicketTypeTableRes.ok) {
+        throw new Error('Failed to get ticket type information');
+      }
+
+      const seasonTicketTypeData = await seasonTicketTypeTableRes.json();
+      setSeasonTicketTypeData(seasonTicketTypeData.sort((a, b) => a.tickettypeid_fk - b.tickettypeid_fk));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUpdateSeasonTicketType = async (requestData) => {
+    try {
+      const seasonUpdateTicketTypeRes = await fetch(
+        process.env.REACT_APP_API_2_URL +
+          `/season-ticket-type-price-default/${seasonId}`,
+        {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestData),
+        },
+      );
+
+      if (!seasonUpdateTicketTypeRes.ok) {
+        throw new Error('Failed to update season ticket type');
+      }
+      const seasonUpdatedTicketTypeData = await seasonUpdateTicketTypeRes.json();
+
+      setSeasonTicketTypeData(seasonUpdatedTicketTypeData.sort((a, b) => a.tickettypeid_fk - b.tickettypeid_fk));
+    } catch (error) {
+      console.error('Error updating season ticket type', error);
+    }
+  };
+
   useEffect(() => {
     void handleGetAllEvents();
+    void handleGetSeasonTicketType();
   }, []);
 
   if (token === '' || seasonId === undefined || eventsInSeason === undefined) {
@@ -76,6 +130,8 @@ const SeasonContainer = () => {
             {...commonSeasonPageProps}
             setSeasonId={setSeasonId}
             setIsFormEditing={setIsFormEditing}
+            seasonTicketTypeData={seasonTicketTypeData}
+            onUpdateSeasonTicketType={handleUpdateSeasonTicketType}
           />
           <SeasonEvents
             {...commonSeasonPageProps}

@@ -120,18 +120,20 @@ export const useFetchEventData = (eventID: number) => {
   }, [eventID]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    void getData(
-      `${
-        process.env.REACT_APP_API_2_URL
-      }/season-ticket-type-price-default/events/${
-        eventData?.seasonid_fk ?? -1
-      }`,
-      setTicketTypes,
-      signal,
-    ).catch(() => console.error('unable to fetch ticket types'));
-    return () => controller.abort();
+    if (eventData) {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      void getData(
+        `${
+          process.env.REACT_APP_API_2_URL
+        }/season-ticket-type-price-default/events/${
+          eventData?.seasonid_fk ?? -1
+        }`,
+        setTicketTypes,
+        signal,
+      ).catch(() => console.error('unable to fetch ticket types'));
+      return () => controller.abort();
+    }
   }, [eventData]);
   return {eventData, setEventData, loading, ticketTypes};
 };
@@ -235,11 +237,33 @@ export const TrashCanIcon = (props: {className?: string}) => {
       <path
         strokeLinecap='round'
         strokeLinejoin='round'
-        d='M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0'
+        d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
       />
     </svg>
   );
 };
+
+export const CirclePlusIcon = (props: {className?: string}) => {
+  const {className} = props;
+
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      fill='currentColor'
+      stroke='white'
+      strokeWidth={1.5}
+      className={className}
+    >
+      <path
+        fillRule='evenodd'
+        d='M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z'
+        clipRule='evenodd'
+      />
+    </svg>
+  );
+};
+
 export const cloneShowing = (showing) => {
   const toReturn = {};
   Object.keys(showing).forEach((key) => {

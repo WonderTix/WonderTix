@@ -1,8 +1,9 @@
 import React from 'react';
-import {SeasonInfo} from './seasonCommon';
+import {SeasonInfo, SeasonTicketValues} from './seasonCommon';
 import {SeasonImage} from '../../seasonUtils';
 import {FormControlLabel, Switch} from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
+import {SeasonTicketViewTable} from '../SeasonTicketViewTable';
 
 const MONTHS = [
   'January',
@@ -27,6 +28,7 @@ interface ViewSeasonInfoProps extends SeasonInfo {
   setActiveSeasonSwitch: (value) => void;
   setSomeActiveEvents: (value) => void;
   deleteConfirmationHandler: (event) => void;
+  seasonTicketTypeData: SeasonTicketValues[];
 }
 
 const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
@@ -42,6 +44,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
     setActiveSeasonSwitch,
     setSomeActiveEvents,
     deleteConfirmationHandler,
+    seasonTicketTypeData,
   } = props;
 
   const getLongDateFormat = (date: string) => {
@@ -111,7 +114,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
         </div>
       </section>
       <div className='grid grid-cols-12'>
-        <article className='col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
+        <article className='flex flex-col col-span-6 mb-5 text-center sm:text-start lg:col-span-2'>
           <h3 className='font-semibold'>Season Name</h3>
           <p className='mb-3 text-base'>{name}</p>
 
@@ -159,13 +162,18 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
             )}
           </div>
         </article>
-        <article className='col-span-12 tab:col-span-6'>
+        <div className='col-span-6 lg:col-span-2'>
           <SeasonImage
-            className='h-auto max-w-[150px] mx-auto mt-3'
+            className='h-auto max-w-[150px] object-cover mx-1 mt-3'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
-        </article>
+        </div>
+        <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3 rounded-lg'>
+          <SeasonTicketViewTable
+            seasonTicketTypeData={seasonTicketTypeData}
+          />
+        </div>
       </div>
     </header>
   );
