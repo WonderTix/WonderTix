@@ -113,29 +113,36 @@ export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTablePr
     ]);
   };
 
-  const handleTicketTypeChange = (targetTicketTypeId, prevTicketTypeId) => {
-    const filteredList = availableTicketTypes.filter((ticketType) => targetTicketTypeId !== ticketType.tickettypeid);
-    setAvailableTicketTypes(filteredList);
+const updateAvailableTicketTypes = (targetId, prevId, currentList, allTicketTypes) => {
+  const filteredList = currentList.filter((type) => targetId !== type.tickettypeid);
+  const typeToAdd = allTicketTypes.find((type) => prevId === type.tickettypeid);
 
-    const ticketTypeToAdd = ticketTypeList.find((ticketType) => prevTicketTypeId === ticketType.tickettypeid);
+  return [...filteredList, typeToAdd];
+};
 
-    setAvailableTicketTypes((prevData) => [
-      ...prevData,
-      ticketTypeToAdd,
-    ]);
+const updateCurrentSeasonTicketTypeData = (targetId, prevId, currentData, allTicketTypes) => {
+  const newData = [...currentData];
+  const index = newData.findIndex((type) => prevId === type.tickettypeid_fk);
+  const newValues = allTicketTypes.find((type) => targetId === type.tickettypeid);
 
-    const toUpdateHelperCopy = [...currentSeasonTicketTypeData];
-    const prevIndex = toUpdateHelperCopy.findIndex((ticketType) => prevTicketTypeId === ticketType.tickettypeid_fk);
-    const newValues = ticketTypeList.find((ticketType) => targetTicketTypeId === ticketType.tickettypeid);
+  newData[index] = {
+    tickettypeid_fk: newValues.tickettypeid,
+    description: newValues.description,
+    price: newValues.price,
+    concessionprice: newValues.concessions,
+  };
 
-    toUpdateHelperCopy[prevIndex] = {
-      tickettypeid_fk: newValues.tickettypeid,
-      description: newValues.description,
-      price: newValues.price,
-      concessionprice: newValues.concessions,
-    };
+  return newData;
+};
 
-    setCurrentSeasonTicketTypeData(toUpdateHelperCopy);
+  const handleTicketTypeChange = (targetId, prevId) => {
+    setAvailableTicketTypes((prevData) =>
+      updateAvailableTicketTypes(targetId, prevId, prevData, ticketTypeList),
+    );
+
+    setCurrentSeasonTicketTypeData((prevData) =>
+      updateCurrentSeasonTicketTypeData(targetId, prevId, prevData, ticketTypeList),
+    );
   };
 
   return (
