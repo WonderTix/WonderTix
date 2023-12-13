@@ -3,7 +3,6 @@ import {SeasonInfo, SeasonTicketValues} from './seasonCommon';
 import {SeasonImage} from '../../seasonUtils';
 import {FormControlLabel, Switch} from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
-import {FieldArray} from 'formik';
 import {SeasonTicketViewTable} from '../SeasonTicketViewTable';
 
 const MONTHS = [
