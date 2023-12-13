@@ -120,18 +120,20 @@ export const useFetchEventData = (eventID: number) => {
   }, [eventID]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    void getData(
-      `${
-        process.env.REACT_APP_API_2_URL
-      }/season-ticket-type-price-default/events/${
-        eventData?.seasonid_fk ?? -1
-      }`,
-      setTicketTypes,
-      signal,
-    ).catch(() => console.error('unable to fetch ticket types'));
-    return () => controller.abort();
+    if (eventData) {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      void getData(
+        `${
+          process.env.REACT_APP_API_2_URL
+        }/season-ticket-type-price-default/events/${
+          eventData?.seasonid_fk ?? -1
+        }`,
+        setTicketTypes,
+        signal,
+      ).catch(() => console.error('unable to fetch ticket types'));
+      return () => controller.abort();
+    }
   }, [eventData]);
   return {eventData, setEventData, loading, ticketTypes};
 };
