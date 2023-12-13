@@ -26,6 +26,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     setIsFormEditing,
     token,
     seasonTicketTypeData,
+    onUpdateSeasonTicketType,
   } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [tempImageUrl, setTempImageUrl] = useState('');
@@ -34,7 +35,6 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
   >();
   const [someActiveEvents, setSomeActiveEvents] = useState(false);
   const [updatedTicketData, setUpdatedTicketData] = useState<SeasonTicketValues[]>([]);
-  const {onUpdateSeasonTicketType} = props;
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
 

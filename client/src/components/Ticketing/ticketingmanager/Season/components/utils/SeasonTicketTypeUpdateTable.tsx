@@ -12,8 +12,7 @@ interface SeasonTicketTypeUpdateTableProps {
 }
 
 export const SeasonTicketTypeUpdateTable = (props: SeasonTicketTypeUpdateTableProps) => {
-  const {seasonTicketTypeData} = props;
-  const {onUpdate} = props;
+  const {seasonTicketTypeData, onUpdate} = props;
 
   const [currentSeasonTicketTypeData, setCurrentSeasonTicketTypeData] = useState<SeasonTicketValues[]>([...seasonTicketTypeData]);
   const [availableTicketTypes, setAvailableTicketTypes] = useState([]);
