@@ -9,11 +9,12 @@ import {
   deleteSeasonInfo,
   updateEventSeason,
 } from './utils/apiRequest';
-import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
+import {seasonDefaultValues, SeasonProps, SeasonTicketValues} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
+import {SeasonTicketTypeUpdateTable} from './utils/SeasonTicketTypeUpdateTable';
 
-const SeasonInfo = (props: SeasonProps) => {
+const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData: any) => Promise<void> }) => {
   const {
     seasonId,
     isFormEditing,
@@ -24,6 +25,8 @@ const SeasonInfo = (props: SeasonProps) => {
     setPopUpMessage,
     setIsFormEditing,
     token,
+    seasonTicketTypeData,
+    onUpdateSeasonTicketType,
   } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [tempImageUrl, setTempImageUrl] = useState('');
@@ -31,7 +34,7 @@ const SeasonInfo = (props: SeasonProps) => {
     boolean | undefined
   >();
   const [someActiveEvents, setSomeActiveEvents] = useState(false);
-
+  const [updatedTicketData, setUpdatedTicketData] = useState<SeasonTicketValues[]>([]);
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
 
@@ -50,6 +53,10 @@ const SeasonInfo = (props: SeasonProps) => {
       setSeasonValues(fetchedSeasonInfo);
       setTempImageUrl(getSeasonImage(fetchedImage));
     }
+  };
+
+  const handleTicketTypeUpdate = (updatedTicketTypeData: SeasonTicketValues[]) => {
+    setUpdatedTicketData(updatedTicketTypeData);
   };
 
   const handleCreateNewSeason = async (reqObject: RequestBody) => {
@@ -108,6 +115,27 @@ const SeasonInfo = (props: SeasonProps) => {
   const onSubmit = (event) => {
     event.preventDefault();
 
+    // Validate Table Data
+    const isTableDataValid = updatedTicketData.every(
+      (ticketType) =>
+        String(ticketType.price) !== '' &&
+        String(ticketType.concessionprice) !== '' &&
+        Number(ticketType.price) >= 0 &&
+        Number(ticketType.concessionprice) >= 0,
+      );
+
+    if (!isTableDataValid) {
+      handleInvalidTicketTypeValue(event);
+      return;
+    }
+
+    // Round Table Data to 2 decimal places
+    const roundedTicketData = updatedTicketData.map((ticketType) => ({
+      ...ticketType,
+      price: Number(ticketType.price).toFixed(2),
+      concessionprice: Number(ticketType.concessionprice).toFixed(2),
+    }));
+
     // formatting request body for POST and PUT request
     const reqObject = {
       ...seasonValues,
@@ -121,6 +149,10 @@ const SeasonInfo = (props: SeasonProps) => {
       void handleCreateNewSeason(reqObject);
     } else {
       void handleUpdateSeason(reqObject);
+
+      if (onUpdateSeasonTicketType) {
+        void onUpdateSeasonTicketType(roundedTicketData);
+      }
     }
   };
 
@@ -139,6 +171,19 @@ const SeasonInfo = (props: SeasonProps) => {
       setIsFormEditing(false);
       setSeasonValues({...seasonValues, imageurl: tempImageUrl});
     }
+  };
+
+  const handleInvalidTicketTypeValue = (event) => {
+    event.preventDefault();
+    setPopUpMessage({
+      title: 'Invalid Ticket Type Value',
+      message: 'Please enter a valid Ticket Price & Concession Price',
+      success: false,
+      handleClose: () => setShowPopUp(false),
+      handleProceed: () => setShowPopUp(false),
+      showSecondary: false,
+    });
+    setShowPopUp(true);
   };
 
   const deleteConfirmationHandler = (event) => {
@@ -189,7 +234,7 @@ const SeasonInfo = (props: SeasonProps) => {
         </article>
       </section>
       <div className='grid grid-cols-12'>
-        <div className='flex flex-col gap-3 col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
+        <div className='flex flex-col gap-3 col-span-12 mb-5 text-center tab:text-start lg:col-span-2'>
           <label htmlFor='seasonName'>
             Season Name:
             <input
@@ -252,13 +297,19 @@ const SeasonInfo = (props: SeasonProps) => {
             </div>
           </label>
         </div>
-        <article className='col-span-12 tab:col-span-6'>
+        <article className='col-span-12 lg:col-span-2 pl-2'>
           <SeasonImage
             className='h-auto max-w-[175px] mx-auto mt-5'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
         </article>
+        <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3 rounded-lg'>
+          <SeasonTicketTypeUpdateTable
+            seasonTicketTypeData={seasonTicketTypeData}
+            onUpdate={handleTicketTypeUpdate}
+          />
+        </div>
       </div>
     </form>
   ) : (
@@ -267,6 +318,7 @@ const SeasonInfo = (props: SeasonProps) => {
       activeSeasonSwitch={activeSeasonSwitch}
       someActiveEvents={someActiveEvents}
       setIsFormEditing={setIsFormEditing}
+      seasonTicketTypeData={seasonTicketTypeData}
       setActiveSeasonSwitch={setActiveSeasonSwitch}
       setSomeActiveEvents={setSomeActiveEvents}
       handleUpdateSeasonEvents={handleUpdateSeasonEvents}

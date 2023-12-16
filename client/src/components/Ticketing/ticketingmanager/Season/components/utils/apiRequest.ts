@@ -137,7 +137,7 @@ export const deleteSeasonInfo = async (seasonId: number, token: string) => {
 };
 
 // Retrieve all events, or retrieve all events for a particular season (if seasonId specified)
-export const getAllEvents = async (token: string, seasonId?: number) => {
+export const getAllEvents = async (seasonId?: number) => {
   const apiUrlSuffix =
     seasonId === undefined ? '/events' : `/events/season/${seasonId}`;
 
@@ -145,11 +145,10 @@ export const getAllEvents = async (token: string, seasonId?: number) => {
     const getAllEventsRes = await fetch(
       process.env.REACT_APP_API_2_URL + apiUrlSuffix,
       {
-        credentials: 'include',
+        credentials: 'omit',
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
       },
     );

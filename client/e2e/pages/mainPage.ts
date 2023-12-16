@@ -45,6 +45,7 @@ export class MainPage {
   readonly stripeCVC: Locator;
   readonly stripeFullName: Locator;
   readonly stripeZIP: Locator;
+  readonly stripeSaveInfo: Locator;
   readonly stripeCheckout: Locator;
   readonly stripeOrderConfirmation: Locator;
 
@@ -88,6 +89,7 @@ export class MainPage {
     this.stripeCVC = page.locator('#cardCvc');
     this.stripeFullName = page.locator('#billingName');
     this.stripeZIP = page.locator('#billingPostalCode');
+    this.stripeSaveInfo = page.locator('#enableStripePass');
     this.stripeCheckout = page.getByTestId('hosted-payment-submit-button');
     this.stripeOrderConfirmation = page.getByText(
       'Thank you for your purchase!',
@@ -277,6 +279,7 @@ export class MainPage {
     await this.stripeCVC.fill(ccInfo.CVC);
     await this.stripeFullName.fill(customer.fullName);
     await this.stripeZIP.fill(customer.postCode);
+    await this.stripeSaveInfo.click();
   }
 
   // Click to purchase ticket at stripe
