@@ -31,6 +31,23 @@ export const ticketingWebhook = async (
   }
 };
 
+
+export const donationCancel = async (
+    prisma: ExtendedPrismaClient,
+    paymentIntent: string,
+    refundIntent: string,
+) => {
+  const result = await prisma.donations.updateMany({
+    where: {
+      payment_intent: paymentIntent,
+    },
+    data: {
+      refund_intent: refundIntent,
+    },
+  });
+  return result.count;
+};
+
 export const createDonationRecord = async (
     prisma: ExtendedPrismaClient,
     paymentIntent: string,

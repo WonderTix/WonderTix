@@ -2,7 +2,7 @@ import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {Prisma} from '@prisma/client';
-import {createDonationRecord, orderCancel, ticketingWebhook} from './orderController.service';
+import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook} from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -245,7 +245,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
  * @swagger
  * /2/order/refund/{id}:
  *   put:
- *     summary: refund an order based on order id
+ *     summary: refund an order based on order id (adds refund intent to any associated donations)
  *     tags:
  *     - New Order
  *     parameters:
@@ -295,6 +295,7 @@ orderController.put('/refund/:id', async (req, res) => {
       }
       refundIntent = refund.id;
     }
+    await donationCancel(prisma, order.payment_intent, refundIntent);
     await orderCancel(prisma, order.orderid, refundIntent);
     return res.send(refundIntent);
   } catch (error) {
