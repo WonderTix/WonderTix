@@ -33,23 +33,25 @@ orderController.post(
               object.id,
           );
         } else if (metaData.sessionType === '__donation') {
-          // Create a date model for the date field in the donations table
-          await prisma.donations.create({
-            data: {
-              contactid_fk: Number(metaData.contactID),
-              isanonymous: metaData.anonymous,
-              amount: metaData.donation,
-              donorname: metaData.firstName + ' ' + metaData.lastName,
-              frequency: 'one_time',
-              comments: metaData.comments,
-              payment_intent: object.payment_intent,
-              refund_intent: object.refund_intent,
-              donationdate: Number(new Date().toISOString().slice(0, 10).replace(/-/g, '')),
-            },
-          });
+          if (event.type === 'checkout.session.completed') {
+            await prisma.donations.create({
+              data: {
+                contactid_fk: Number(metaData.contactID),
+                isanonymous: metaData.anonymous,
+                amount: metaData.donation,
+                donorname: metaData.firstName + ' ' + metaData.lastName,
+                frequency: 'one_time',
+                comments: metaData.comments,
+                payment_intent: object.payment_intent,
+                donationdate: Number(new Date().toISOString().slice(0, 10).replace(/-/g, '')),
+              },
+            });
+            return res.status(200).send();
+          } else if (event.type === 'checkout.session.expired') {
+            // nothing to do, the donation was never created, so no need to cancel it
+            return res.status(200).send();
+          }
         }
-        res.status(200).send();
-        return;
       } catch (error) {
         console.error(error);
         return res.status(400).send();
@@ -215,12 +217,12 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         ...remainderOfOrder
       } = order;
       const names = orderitems.map((item) =>
-        item.singletickets
-            .filter((ticket) => !ticket.ticketwasswapped)
-            .map((ticket) => {
-              if (!ticket.eventtickets.length) return null;
-              return ticket.eventtickets[0].eventinstances.events.eventname;
-            }),
+          item.singletickets
+              .filter((ticket) => !ticket.ticketwasswapped)
+              .map((ticket) => {
+                if (!ticket.eventtickets.length) return null;
+                return ticket.eventtickets[0].eventinstances.events.eventname;
+              }),
       ).flat()
           .filter((name, index, array) => name && array.indexOf(name)=== index);
 
