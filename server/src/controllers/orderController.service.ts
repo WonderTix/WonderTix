@@ -30,6 +30,27 @@ export const ticketingWebhook = async (
       break;
   }
 };
+
+export const createDonationRecord = async (
+    prisma: ExtendedPrismaClient,
+    paymentIntent: string,
+    donationAmount: number,
+    customerID: number,
+) => {
+  const contact = await prisma.contacts.findUnique({where: {contactid: +customerID}});
+  if (!contact || !donationAmount) return;
+  await prisma.donations.create({
+    data: {
+      contactid_fk: contact.contactid,
+      isanonymous: false,
+      amount: donationAmount,
+      donorname: `${contact.firstname}  ${contact.lastname}`,
+      frequency: 'one_time',
+      payment_intent: paymentIntent,
+      donationdate: getOrderDateAndTime().orderdate,
+    }});
+};
+
 export const orderFulfillment = async (
     prisma: ExtendedPrismaClient,
     orderItems: any[],
