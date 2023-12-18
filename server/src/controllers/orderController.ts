@@ -166,6 +166,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       select: {
         orderid: true,
         ordertotal: true,
+        payment_intent: true,
         contacts: {
           select: {
             firstname: true,
@@ -199,12 +200,19 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         },
       },
     });
+    const donationMap= new Map((await prisma.donations.findMany({
+      where: {
+        payment_intent: {in: orders.map((order) => order.payment_intent ?? '')},
+      },
+    })).map((donation) => [donation.payment_intent, donation.amount]));
     const toReturn = orders.map((order) => {
       const {
         contacts,
         orderitems,
         ordertotal,
         orderdate,
+        // eslint-disable-next-line camelcase
+        payment_intent,
         ...remainderOfOrder
       } = order;
       const names = orderitems.map((item) =>
@@ -224,6 +232,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         orderdate: `${orderdate.toString().slice(0, 4)}-${orderdate.toString().slice(4, 6)}-${orderdate.toString().slice(6, 8)}`,
         ...remainderOfOrder,
         showings: names,
+        donation: donationMap.get(payment_intent),
       };
     });
 

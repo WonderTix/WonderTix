@@ -186,7 +186,7 @@ const RefundOrders = () => {
           </form>
           <table className={'w-full min-w-min'}>
             <thead>
-              <tr className='grid grid-cols-5 gap-2 bg-gray-200 h-18 rounded-lg shadow-md px-2 mb-2 font-bold'>
+              <tr className='grid grid-cols-6 gap-2 bg-gray-200 h-18 rounded-lg shadow-md px-2 mb-2 font-bold'>
                 <td className='row-start-1 justify-self-start py-2 col-span-1'>
                   Name
                 </td>
@@ -195,6 +195,9 @@ const RefundOrders = () => {
                 </td>
                 <td className='row-start-1 justify-self-start py-2 col-span-1'>
                   Event(s)
+                </td>
+                <td className='row-start-1 justify-self-start py-2 col-span-1'>
+                  Donation Total
                 </td>
                 <td className='row-start-1 justify-self-start py-2 col-span-1'>
                   Order Total
@@ -213,7 +216,7 @@ const RefundOrders = () => {
                 orders.map((instance, index) => (
                   <tr
                     key={index}
-                    className='grid grid-cols-5 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'
+                    className='grid grid-cols-6 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'
                   >
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {instance.name}
@@ -231,8 +234,11 @@ const RefundOrders = () => {
                           <p key={showingIndex}>{showing}</p>
                         ))
                       ) : (
-                        <div>{instance.showings}</div>
+                        <>{instance.showings}</>
                       )}
+                    </td>
+                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                      {formatUSD(instance.donation ?? 0)}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {formatUSD(instance.price)}
