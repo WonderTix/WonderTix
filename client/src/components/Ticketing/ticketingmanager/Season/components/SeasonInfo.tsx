@@ -92,7 +92,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
 
   const handleUpdateSeason = async (reqObject: RequestBody, ticketTypes) => {
     const updateSeason = await updateSeasonInfo(reqObject, seasonId, token);
-    await onUpdateSeasonTicketType(ticketTypes, updateSeason);
+    await onUpdateSeasonTicketType(ticketTypes, seasonId);
     const {imageurl} = reqObject;
     if (updateSeason) {
       setPopUpMessage({

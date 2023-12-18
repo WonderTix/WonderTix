@@ -215,7 +215,15 @@ seasonTicketTypePriceDefaultController.use(checkScopes);
 seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, res: Response) => {
   try {
     const {seasonid} = req.params;
-    const toUpdate: Map<number, SeasonTicketTypePriceDefaultRequestItem> = new Map(req.body?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk, item]));
+    const toUpdate: Map<number, SeasonTicketTypePriceDefaultRequestItem> = new Map(
+        req.body?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk,
+          {
+            ...item,
+            price: +item.price,
+            concessionprice: +item.concessionprice,
+          }]),
+    );
+    console.log(toUpdate);
     const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
         eventinstances: {
@@ -280,6 +288,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           price,
           concessionprice,
         }) : any[] => {
+          console.log(seasonid);
           if (price < 0 || concessionprice < 0) {
             throw new InvalidInputError(422, `Price can not be negative`);
           }
@@ -336,6 +345,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
             })),
     );
   } catch (error) {
+    console.log(error);
     if (error instanceof InvalidInputError) {
       return res.status(error.code).send({error: error.message});
     }
