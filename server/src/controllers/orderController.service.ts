@@ -55,7 +55,7 @@ export const createDonationRecord = async (
     customerID: number,
 ) => {
   const contact = await prisma.contacts.findUnique({where: {contactid: +customerID}});
-  if (!contact || !donationAmount) return;
+  if (!contact || !+donationAmount) return;
   await prisma.donations.create({
     data: {
       contactid_fk: contact.contactid,
