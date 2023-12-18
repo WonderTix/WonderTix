@@ -14,7 +14,7 @@ import ViewSeasonInfo from './utils/ViewSeasonInfo';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 import {SeasonTicketTypeUpdateTable} from './utils/SeasonTicketTypeUpdateTable';
 
-const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData: any) => Promise<void> }) => {
+const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData: any, seasonId: number) => Promise<void> }) => {
   const {
     seasonId,
     isFormEditing,
@@ -59,8 +59,9 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     setUpdatedTicketData(updatedTicketTypeData);
   };
 
-  const handleCreateNewSeason = async (reqObject: RequestBody) => {
+  const handleCreateNewSeason = async (reqObject: RequestBody, ticketTypes) => {
     const createdSeasonId = await createNewSeason(reqObject, token);
+    await onUpdateSeasonTicketType(ticketTypes, createdSeasonId);
     if (createdSeasonId) {
       setPopUpMessage({
         title: 'Success',
@@ -89,8 +90,9 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     });
   };
 
-  const handleUpdateSeason = async (reqObject: RequestBody) => {
+  const handleUpdateSeason = async (reqObject: RequestBody, ticketTypes) => {
     const updateSeason = await updateSeasonInfo(reqObject, seasonId, token);
+    await onUpdateSeasonTicketType(ticketTypes, updateSeason);
     const {imageurl} = reqObject;
     if (updateSeason) {
       setPopUpMessage({
@@ -112,7 +114,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     }
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
     // Validate Table Data
@@ -146,13 +148,9 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
 
     setIsFormEditing(false);
     if (seasonId === 0) {
-      void handleCreateNewSeason(reqObject);
+      await handleCreateNewSeason(reqObject, roundedTicketData);
     } else {
-      void handleUpdateSeason(reqObject);
-
-      if (onUpdateSeasonTicketType) {
-        void onUpdateSeasonTicketType(roundedTicketData);
-      }
+      await handleUpdateSeason(reqObject, roundedTicketData);
     }
   };
 
