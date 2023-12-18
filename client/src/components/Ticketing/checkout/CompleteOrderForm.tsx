@@ -264,7 +264,7 @@ export default function CompleteOrderForm({
                 <button
                   className='bg-blue-500 px-8 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2'
                   type='submit'
-                  disabled={submitting}
+                  disabled={submitting || disabled}
                 >
                   Next
                 </button>
