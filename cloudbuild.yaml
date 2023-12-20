@@ -71,6 +71,7 @@ steps:
       - 'SERVER_MEMORY'
       - 'SERVER_REVISION'
       - 'SERVICE_ACCOUNT'
+      - 'SHOULD_SEED'
       - 'SQL_INSTANCE'
 
   # Build client image with args for test revision
