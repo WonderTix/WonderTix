@@ -128,6 +128,14 @@ Once tests have been written, they can be organized in various ways. Possibly cr
 
 Expect a much more detailed Playwright tutorial and how-to in the very near future. Currently, I recommend visiting the [Playwright](https://playwright.dev/docs/intro).
 
-## Deployment
+## CI/CD
 
-`/gcbrun` comment: When an external contributor submits a pull request, the trigger won't automatically run. A repository collaborator or owner must review the pull request. If they deem the changes safe and want to proceed with the build or whatever the trigger initiates, they will comment on the pull request with `/gcbrun`. Only after this comment is made will the trigger be invoked, and the GCP build and deployment will proceed.
+Broadly speaking, we use GitHub Actions for continuous integration and Google Cloud Platform for continuous deployment.
+
+Unit tests and sandboxed E2E tests run via GitHub Actions whenever a pull request is opened or updated. The corresponding workflows can be found in the `.github` directory.
+
+Deployed E2E tests run automatically via Cloud Build trigger when a commit (typically a pull request) is merged to the `main` branch. Note that if these tests fail, the `main` branch will be left in an erroneous state: in other words, if there's a red `X` at the top of this page, something needs to be fixed. If the tests pass, the changes will go live on the `dev` deployment on Cloud Run.
+
+The `cloudbuild.yaml` files in this repo define the workflows that run on Cloud Build. The one at the root level is the main `test-and-deploy` pipeline.
+
+More documentation on our GCP architecture is forthcoming. 
