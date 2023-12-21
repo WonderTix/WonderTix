@@ -38,7 +38,6 @@ export default function OnlyDonationPage(): ReactElement {
   // const monthlyAmounts = [5, 10, 25, 50, 100, 250];
   // const quarterlyAmounts = [50, 100, 150, 200, 250, 500];
 
-  // Replace this with your stripe public key
   const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
 
   const doCheckout = async (formData: CheckoutFormInfo) => {
