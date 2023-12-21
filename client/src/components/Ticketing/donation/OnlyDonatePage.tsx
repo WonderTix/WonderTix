@@ -107,7 +107,7 @@ export default function OnlyDonationPage(): ReactElement {
         </h1>
       </div>
       <DonationIntro />
-      <hr className='w-full border border-t border-zinc-300 my-4'></hr>
+      <hr className='w-full border border-t border-zinc-300 my-4' />
       <div className='text-2xl font-bold mb-5'>Choose a donation amount</div>
       {/* Donation period radios*/}
       {/* <div className='self-start'> */}
@@ -223,12 +223,10 @@ export default function OnlyDonationPage(): ReactElement {
       />
       {/* Outro text*/}
       <div className='text-center text-xl py-4 '>
-        <p>
-          Your tax-deductible donation will make it possible to surprise,
-          delight, and challenge our community with the wonder of theater for
-          years to come.
-          <p className='mt-2 font-semibold'>Thank you!</p>
-        </p>
+        Your tax-deductible donation will make it possible to surprise,
+        delight, and challenge our community with the wonder of theater for
+        years to come.
+        <p className='mt-2 font-semibold'>Thank you!</p>
       </div>
       <hr className='w-full border border-t border-zinc-300 my-4'></hr>
       {/* Other ways to donate */}
