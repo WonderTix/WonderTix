@@ -22,6 +22,7 @@ services:
       ROOT_URL: ${ROOT_URL}
       ENV: local
       CI: ${CI}
+      SHOULD_SEED: ${SHOULD_SEED}
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules

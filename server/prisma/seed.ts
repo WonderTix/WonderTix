@@ -33,38 +33,45 @@ const prisma = new PrismaClient();
 async function main() {
   const isCI = process.env.CI === 'true';
   const isMinimalSeed = process.env.MINIMAL_SEED === 'true';
+  const shouldSeed = process.env.SHOULD_SEED === 'true';
 
-  if (isCI || isMinimalSeed) {
-    // In CI environment, seed only necessary data
-    await importDates(prisma);
-    await importDiscounts(prisma);
-    await importTicketTypes(prisma);
+  if (shouldSeed) {
+    if (isCI || isMinimalSeed) {
+      // In CI environment, seed only necessary data
+      await importDates(prisma);
+      await importDiscounts(prisma);
+      await importTicketTypes(prisma);
+    } else {
+      // Full seeding process
+      await importDates(prisma);
+      await importUsers(prisma);
+      await importContacts(prisma);
+      await importDonations(prisma);
+      await importSeasons(prisma);
+      await importDiscounts(prisma);
+      await importTicketTypes(prisma);
+      await importEvents(prisma);
+      await importEventInstances(prisma);
+      await importTicketRestrictions(prisma);
+      await importOrders(prisma);
+      await importOrderItems(prisma);
+      await importSeasonTicketTypes(prisma);
+
+      // PPH SEEDING HERE
+      await importPPHAccounts(prisma);
+      await importPPHContacts(prisma);
+      await importPPHEvents(prisma);
+      await importPPHNotes(prisma);
+      await importPPHRecordTypes(prisma);
+      await importPPHOpportunity(prisma);
+      await importPPHTicketOrders(prisma);
+      await importPPHTicketOrderItems(prisma);
+      await importPPHTransactions(prisma);
+    }
   } else {
-    // Full seeding process
-    await importDates(prisma);
-    await importUsers(prisma);
-    await importContacts(prisma);
-    await importDonations(prisma);
-    await importSeasons(prisma);
-    await importDiscounts(prisma);
+    // There are two special ticketTypes ('pay what you can' and another default type) that have to be seeded with specific id values
     await importTicketTypes(prisma);
-    await importEvents(prisma);
-    await importEventInstances(prisma);
-    await importTicketRestrictions(prisma);
-    await importOrders(prisma);
-    await importOrderItems(prisma);
-    await importSeasonTicketTypes(prisma);
-
-    // PPH SEEDING HERE
-    await importPPHAccounts(prisma);
-    await importPPHContacts(prisma);
-    await importPPHEvents(prisma);
-    await importPPHNotes(prisma);
-    await importPPHRecordTypes(prisma);
-    await importPPHOpportunity(prisma);
-    await importPPHTicketOrders(prisma);
-    await importPPHTicketOrderItems(prisma);
-    await importPPHTransactions(prisma);
+    await importDates(prisma);
   }
 }
 
