@@ -1,6 +1,6 @@
 import {Field, Form} from 'react-final-form';
 import React, {ReactElement} from 'react';
-import {FormInput} from './FormInput';
+import {FormInput} from '../FormInput';
 import {useAuth0} from '@auth0/auth0-react';
 
 /**
@@ -99,7 +99,7 @@ export default function CompleteOrderForm({
   return (
     <div className='w-full h-full flex flex-col items-center'>
       <h2 className='text-2xl font-bold mb-5'>
-          Contact
+        Contact
       </h2>
       <div className='min-w-414 sm:w-full h-full'>
         <Form
