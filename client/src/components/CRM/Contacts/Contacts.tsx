@@ -40,26 +40,38 @@ const Contacts = (): React.ReactElement => {
   };
 
   const handleCreateContact = async (contact: Contact) => {
-    console.log('FIXME');
-
     if (contact.seatingAcc === 'Other') {
       contact.seatingAcc = contact.comments;
     }
-    console.log(contact);
 
     await fetch(process.env.REACT_APP_API_2_URL + '/contact', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(contact),
+      body: JSON.stringify({
+        firstname: contact.first,
+        lastname: contact.last,
+        email: contact.email,
+        phone: contact.phone,
+        address: contact.address,
+        donorbadge: contact.donorBadge,
+        seatingaccom: contact.seatingAcc,
+        vip: contact.vip,
+        volunteerlist: contact.volunteerList,
+        newsletter: contact.newsletter,
+      }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log('Response:', response);
+        return response.json();
+      })
       .then((data) => {
-        console.log(data);
+        navigate(`/admin/contacts/show/${data.contactid}`);
+        console.log('Data:', data);
       })
       .catch((error) => {
-        console.error('Error Fetching Season Data:', error);
+        console.error('Error Creating Contact:', error);
       });
 
     setContactPopUpIsOpen(false);

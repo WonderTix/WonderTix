@@ -58,7 +58,6 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
     const popUpElement = contactPopUpRef.current;
     popUpElement.focus();
 
-    // FIXME: Cannot tab to the submit button
     const focusableElements = popUpElement.querySelectorAll(
       'button, input, [tabindex]:not([tabindex="-1"])',
     );
