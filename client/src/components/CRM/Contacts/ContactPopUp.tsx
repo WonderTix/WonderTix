@@ -12,7 +12,7 @@ interface ContactPopUpProps {
 }
 
 /**
- * The ContactPopUp component handles added or editing a contact.
+ * The ContactPopUp component handles adding or editing a contact.
  *
  * @param {ContactPopUpProps} props
  * @param {func} props.onCancel - On cancel handler

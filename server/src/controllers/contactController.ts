@@ -275,7 +275,7 @@ contactController.get('/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const contact = prisma.contacts.update({
+    const contact = await prisma.contacts.update({
       where: {
         contactid: Number(id),
       },
