@@ -215,34 +215,27 @@ contactController.get('/', async (req: Request, res: Response) => {
 contactController.get('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const contactExists = await prisma.contacts.findUnique({
-      where: {
-        contactid: Number(id),
-      },
-    });
-    if (!contactExists) {
-      res.status(404).json({error: 'Contact not found'});
-
-      return;
-    }
     const contact = await prisma.contacts.findUnique({
       where: {
         contactid: Number(id),
       },
     });
-    res.status(200).json(contact);
 
+    if (!contact) {
+      res.status(404).json({error: 'Contact not found'});
+      return;
+    }
+
+    res.status(200).json(contact);
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
@@ -291,6 +284,7 @@ contactController.put('/:id', async (req: Request, res: Response) => {
         lastname: req.body.lastname,
         email: req.body.email,
         phone: req.body.phone,
+        address: req.body.address,
         donorbadge: req.body.donorbadge,
         seatingaccom: req.body.seatingaccom,
         vip: req.body.vip,
@@ -299,18 +293,15 @@ contactController.put('/:id', async (req: Request, res: Response) => {
       },
     });
     res.status(204).json();
-
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
@@ -367,17 +358,14 @@ contactController.delete('/:id', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
-

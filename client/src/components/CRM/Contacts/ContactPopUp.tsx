@@ -1,26 +1,8 @@
 import React, {ReactElement, useEffect, useRef} from 'react';
 import {Field, Form} from 'react-final-form';
+import {Contact} from './contactUtils';
 import {FormInput} from '../../Ticketing/FormInput';
 
-export type Contact = {
-  first: string,
-  last: string,
-  email: string,
-  phone: string,
-  address: string,
-  comments?: string,
-  seatingAcc: string,
-  newsletter: boolean,
-  vip: boolean,
-  donorBadge: boolean,
-  volunteerList: boolean,
-}
-
-/**
- * Interface for ContactPopUp Component.
- * Describes the title and the message that is sent to the component.
- * Contains call back to parent component to close the PopUp windows.
- */
 interface ContactPopUpProps {
   onCancel: (event: any) => void;
   onSubmit: (event: any) => void;
@@ -30,15 +12,15 @@ interface ContactPopUpProps {
 }
 
 /**
- * The PopUp component, the WonderTix representation of a modal.
+ * The ContactPopUp component handles added or editing a contact.
  *
  * @param {ContactPopUpProps} props
  * @param {func} props.onCancel - On cancel handler
  * @param {func} props.onSubmit - On submit handler
  * @param {string?} props.primaryLabel - Text inside primary button
  * @param {string?} props.title - Title of contact popup
- * @param {Contact} props.values -
- * @returns {ReactElement} PopUp WonderTix modal
+ * @param {Contact} props.values - The values to autofill the popup when it's rendered
+ * @returns {ReactElement} ContactPopUp WonderTix form modal
  */
 const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
   const {
@@ -52,8 +34,8 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
   const contactPopUpRef = useRef(null);
 
   useEffect(() => {
-    // Code within the useEffect traps focus within the PopUp when tabbing through
-    // button elements. See: https://medium.com/cstech/achieving-focus-trapping-in-a-react-modal-component-3f28f596f35b
+    // Code within the useEffect traps focus within the ContactPopUp when tabbing through
+    // interactible elements. See: https://medium.com/cstech/achieving-focus-trapping-in-a-react-modal-component-3f28f596f35b
     const popUpElement = contactPopUpRef.current;
     popUpElement.focus();
 
@@ -114,8 +96,8 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
     }
 
     Object.keys(values).forEach((key) => {
-      if (!['first', 'last', 'email'].includes(key)) return;
-      if (!formValues[key] || formValues[key] === '') {
+      if (['first', 'last', 'email'].includes(key) &&
+        (!formValues[key] || formValues[key] === '')) {
         errors[key] = 'Required';
       }
     });
@@ -131,15 +113,13 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
       ref={contactPopUpRef}
     >
       <div
-        className='relative z-10 bg-white rounded-lg tab:mx-auto tab:max-w-lg max-h-full overflow-y-scroll w-full shadow-xl transition-all'
+        className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-scroll shadow-xl'
       >
         <button
           type='button'
           onClick={onCancel}
-          className='absolute top-3
-            right-2.5 text-gray-400 bg-transparent hover:bg-gray-200
-            hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto
-            inline-flex items-center'
+          className='absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200
+            hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center'
           data-modal-toggle='popup-modal'
           aria-label='Close modal'
         >
@@ -159,19 +139,19 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
             />
           </svg>
         </button>
-        <h3
-          className='text-lg leading-6 font-medium text-gray-900 p-4 pt-5 tab:p-6'
-          id='contact-popup-title'
-        >
-          {title}
-        </h3>
         <Form
           onSubmit={onSubmit}
           validate={validate}
           initialValues={values}
           render={({handleSubmit, submitting, values}) => (
             <form onSubmit={handleSubmit} noValidate>
-              <div className='px-4 pb-4 tab:px-6 tab:pb-6'>
+              <h3
+                className='text-lg leading-6 font-medium text-gray-900 p-4 pt-5 tab:p-6'
+                id='contact-popup-title'
+              >
+                {title}
+              </h3>
+              <article className='flex flex-col gap-y-3 px-4 pb-4 tab:px-6 tab:pb-6'>
                 <div className='grid gap-3 tab:grid-cols-2'>
                   <Field
                     required
@@ -182,7 +162,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     type='text'
                     id='first'
                     labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                   <Field
                     required
@@ -193,7 +173,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     type='text'
                     id='last'
                     labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 </div>
                 <Field
@@ -204,8 +184,8 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   placeholder='Email'
                   type='email'
                   id='email'
-                  labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1 mt-3'
-                  inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
+                  labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                 />
                 <Field
                   component={FormInput}
@@ -214,8 +194,8 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   placeholder='Phone'
                   type='text'
                   id='phone'
-                  labelClassName='block text-sm font-medium text-slate-700 ml-1 mt-3'
-                  inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                 />
                 <Field
                   component={FormInput}
@@ -224,19 +204,19 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   placeholder='Street Address'
                   type='text'
                   id='address'
-                  labelClassName='block text-sm font-medium text-slate-700 ml-1 mt-3'
-                  inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                 />
                 <div>
                   <label
-                    className='block text-sm font-medium text-slate-700 ml-1 mt-3'
+                    className='block text-sm font-medium text-slate-700 ml-1'
                     htmlFor='seating-acc'
                   >
                     Seating Accommodations
                   </label>
                   <Field
                     component='select'
-                    className='input w-full border border-zinc-300 p-3 mt-1 rounded-lg col-label-2'
+                    className='w-full border border-zinc-300 p-3 rounded-lg col-label-2'
                     name='seatingAcc'
                     id='seating-acc'
                   >
@@ -271,12 +251,12 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     placeholder='What is their accommodation?'
                     id='comments'
                     label='Other Accommodation'
-                    labelClassName='block text-sm font-medium text-slate-700 ml-1 mt-3'
-                    inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 )}
-                <div className='grid gap-x-3 gap-y-2 tab:grid-cols-2 mt-4 ml-2'>
-                  <div className='flex flex-row gap-4 text-sm text-zinc-700'>
+                <div className='grid gap-x-3 gap-y-2 tab:grid-cols-2 ml-2 mt-1'>
+                  <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
                       component='input'
                       type='checkbox'
@@ -287,7 +267,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       Subscribe to Newsletter
                     </label>
                   </div>
-                  <div className='flex flex-row gap-4 text-sm text-zinc-700'>
+                  <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
                       component='input'
                       type='checkbox'
@@ -298,7 +278,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       Donor Badge
                     </label>
                   </div>
-                  <div className='flex flex-row gap-4 text-sm text-zinc-700'>
+                  <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
                       component='input'
                       type='checkbox'
@@ -309,7 +289,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       VIP
                     </label>
                   </div>
-                  <div className='flex flex-row gap-4 text-sm text-zinc-700'>
+                  <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
                       component='input'
                       type='checkbox'
@@ -321,17 +301,16 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     </label>
                   </div>
                 </div>
-              </div>
-              <footer className='bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end'>
+              </article>
+              <footer className='bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end gap-3'>
                 <button
                   data-modal-toggle='contact-popup-modal'
                   disabled={submitting}
                   type='button'
                   onClick={onCancel}
-                  className='mt-3 w-full inline-flex
-                    justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
+                  className='w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white
                     font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
-                    focus:ring-offset-2 focus:ring-indigo-500 tab:mt-0 tab:ml-3 tab:w-auto tab:text-sm'
+                    focus:ring-offset-2 focus:ring-indigo-500 tab:w-auto text-base tab:text-sm'
                 >
                   Cancel
                 </button>
@@ -340,11 +319,8 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   disabled={submitting}
                   type='submit'
                   className='bg-green-600 hover:bg-green-800 focus:ring-green-300 cursor-pointer
-                    w-full inline-flex justify-center rounded-md border border-transparent
-                    shadow-sm px-4 py-2 text-base font-medium text-white
-                    disabled:bg-gray-900
-                    focus:outline-none focus:ring-2 focus:ring-offset-2
-                    tab:ml-3 tab:w-auto tab:text-sm'
+                    w-full rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium
+                    text-white focus:outline-none focus:ring-2 focus:ring-offset-2 tab:w-auto tab:text-sm'
                 >
                   {primaryLabel}
                 </button>
