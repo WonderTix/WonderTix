@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
+import {Tooltip} from '@mui/material';
 import ContactResults from './ContactResults';
 import ContactPopUp, {Contact} from './ContactPopUp';
 import {useAuth0} from '@auth0/auth0-react';
@@ -152,17 +153,19 @@ const Contacts = (): React.ReactElement => {
               </svg>
             </button>
           </form>
-          <button
-            className='w-full inline-flex items-center
+          <Tooltip title='Create contact' placement='top' arrow>
+            <button
+              className='w-full inline-flex items-center
                 justify-center rounded-md border border-gray-300 shadow-md px-4 py-2 bg-white text-base
                 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
                 focus:ring-offset-2 focus:ring-indigo-500 tab:w-auto tab:text-sm'
-            onClick={() => setContactPopUpIsOpen(true)}
-          >
-            <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth={2}>
-              <path strokeLinecap='round' strokeLinejoin='round' d='M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z' />
-            </svg>
-          </button>
+              onClick={() => setContactPopUpIsOpen(true)}
+            >
+              <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth={2}>
+                <path strokeLinecap='round' strokeLinejoin='round' d='M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z' />
+              </svg>
+            </button>
+          </Tooltip>
         </div>
         <br/>
         <div>

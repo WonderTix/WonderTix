@@ -1,6 +1,5 @@
 import React, {ReactElement, useEffect, useRef} from 'react';
 import {Field, Form} from 'react-final-form';
-import {Checkbox} from '@mui/material';
 import {FormInput} from '../../Ticketing/FormInput';
 
 export type Contact = {
@@ -126,13 +125,13 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
 
   return (
     <dialog
-      className='fixed flex tab:items-center items-end bg-gray-500 bg-opacity-75 transition-opacity z-10 w-full h-full max-h-screen inset-0'
+      className='fixed flex tab:items-center items-end bg-gray-500 bg-opacity-75 transition-opacity z-10 w-full h-full inset-0'
       aria-labelledby='contact-popup-title'
       aria-modal='true'
       ref={contactPopUpRef}
     >
       <div
-        className='relative z-10 bg-white rounded-lg overflow-hidden mx-2 tab:mx-auto my-2 tab:max-w-lg w-full shadow-xl transform transition-all'
+        className='relative z-10 bg-white rounded-lg tab:mx-auto tab:max-w-lg max-h-full overflow-y-scroll w-full shadow-xl transition-all'
       >
         <button
           type='button'
@@ -161,7 +160,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
           </svg>
         </button>
         <h3
-          className='text-lg leading-6 font-medium text-gray-900 p-4 pt-5 tab:p-6 tab:pb-4'
+          className='text-lg leading-6 font-medium text-gray-900 p-4 pt-5 tab:p-6'
           id='contact-popup-title'
         >
           {title}
@@ -170,10 +169,10 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
           onSubmit={onSubmit}
           validate={validate}
           initialValues={values}
-          render={({handleSubmit, submitting}) => (
+          render={({handleSubmit, submitting, values}) => (
             <form onSubmit={handleSubmit} noValidate>
-              <div className='px-4 pb-3'>
-                <div className='grid gap-3 md:grid-cols-2'>
+              <div className='px-4 pb-4 tab:px-6 tab:pb-6'>
+                <div className='grid gap-3 tab:grid-cols-2'>
                   <Field
                     required
                     component={FormInput}
@@ -183,7 +182,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     type='text'
                     id='first'
                     labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='input w-full  border border-zinc-300 p-4 rounded-lg'
+                    inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
                   />
                   <Field
                     required
@@ -194,7 +193,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     type='text'
                     id='last'
                     labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='input w-full  border border-zinc-300 p-4 rounded-lg'
+                    inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 </div>
                 <Field
@@ -206,7 +205,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   type='email'
                   id='email'
                   labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1 mt-3'
-                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                  inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
                 />
                 <Field
                   component={FormInput}
@@ -216,7 +215,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   type='text'
                   id='phone'
                   labelClassName='block text-sm font-medium text-slate-700 ml-1 mt-3'
-                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                  inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
                 />
                 <Field
                   component={FormInput}
@@ -226,7 +225,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   type='text'
                   id='address'
                   labelClassName='block text-sm font-medium text-slate-700 ml-1 mt-3'
-                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                  inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
                 />
                 <div>
                   <label
@@ -237,7 +236,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   </label>
                   <Field
                     component='select'
-                    className='input w-full border border-zinc-300 p-4 mt-1 rounded-lg col-label-2'
+                    className='input w-full border border-zinc-300 p-3 mt-1 rounded-lg col-label-2'
                     name='seatingAcc'
                     id='seating-acc'
                   >
@@ -273,11 +272,11 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     id='comments'
                     label='Comments'
                     labelClassName='block text-sm font-medium text-slate-700 ml-1 mt-3'
-                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                    inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 )}
-                <div className='grid gap-x-3 md:grid-cols-2 mt-3'>
-                  <div className='flex flex-row gap-4 text-sm pt-2 text-zinc-700'>
+                <div className='grid gap-x-3 gap-y-2 tab:grid-cols-2 mt-4 ml-2'>
+                  <div className='flex flex-row gap-4 text-sm text-zinc-700'>
                     <Field
                       component='input'
                       type='checkbox'
@@ -285,10 +284,10 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       id='newsletter'
                     />
                     <label htmlFor='newsletter'>
-                      Newsletter Subscribed
+                      Subscribe to Newsletter
                     </label>
                   </div>
-                  <div className='flex flex-row gap-4 text-sm pt-2 text-zinc-700'>
+                  <div className='flex flex-row gap-4 text-sm text-zinc-700'>
                     <Field
                       component='input'
                       type='checkbox'
@@ -299,7 +298,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       Donor Badge
                     </label>
                   </div>
-                  <div className='flex flex-row gap-4 text-sm pt-2 text-zinc-700'>
+                  <div className='flex flex-row gap-4 text-sm text-zinc-700'>
                     <Field
                       component='input'
                       type='checkbox'
@@ -310,7 +309,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       VIP
                     </label>
                   </div>
-                  <div className='flex flex-row gap-4 text-sm pt-2 text-zinc-700'>
+                  <div className='flex flex-row gap-4 text-sm text-zinc-700'>
                     <Field
                       component='input'
                       type='checkbox'
