@@ -74,34 +74,40 @@ const Contacts = (): React.ReactElement => {
       contact.seatingAcc = contact.comments;
     }
 
-    await fetch(process.env.REACT_APP_API_2_URL + '/contact', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        firstname: contact.first,
-        lastname: contact.last,
-        email: contact.email,
-        phone: contact.phone,
-        address: contact.address,
-        donorbadge: contact.donorBadge,
-        seatingaccom: contact.seatingAcc,
-        vip: contact.vip,
-        volunteerlist: contact.volunteerList,
-        newsletter: contact.newsletter,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        navigate(`/admin/contacts/show/${data.contactid}`);
-      })
-      .catch((error) => {
-        setContactPopUpErrMsg('Failed to create contact');
-        console.error('Error Creating Contact:', error);
+    try {
+      const response = await fetch(process.env.REACT_APP_API_2_URL + '/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstname: contact.first,
+          lastname: contact.last,
+          email: contact.email,
+          phone: contact.phone,
+          address: contact.address,
+          donorbadge: contact.donorBadge,
+          seatingaccom: contact.seatingAcc,
+          vip: contact.vip,
+          volunteerlist: contact.volunteerList,
+          newsletter: contact.newsletter,
+        }),
       });
 
-    setContactPopUpIsOpen(false);
+      if (!response.ok) {
+        if (response.status === 400) {
+          throw new Error('Contact with email already exists');
+        } else {
+          throw new Error('Failed to create contact');
+        }
+      }
+
+      const data = await response.json();
+      navigate(`/admin/contacts/show/${data.contactid}`);
+    } catch (error) {
+      setContactPopUpErrMsg(error.message);
+      console.error(error);
+    }
   };
 
   return (
