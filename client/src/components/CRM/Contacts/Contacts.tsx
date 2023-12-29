@@ -22,6 +22,7 @@ const Contacts = (): React.ReactElement => {
   const [error, setError] = useState(null);
   const [datalist, setDataList] = useState([]);
   const [contactPopUpIsOpen, setContactPopUpIsOpen] = useState(false);
+  const [contactPopUpErrMsg, setContactPopUpErrMsg] = useState(null);
 
   useEffect(() => {
     void getData();
@@ -47,11 +48,10 @@ const Contacts = (): React.ReactElement => {
         .then((res) => {
           // setData(res.data);
           setDataList(res.data.data);
-          console.log(res);
         })
         .catch((err) => {
           setError(err.message);
-          console.log(error);
+          console.error(error);
         })
         .finally(() => {
           setIsLoading(false);
@@ -66,6 +66,7 @@ const Contacts = (): React.ReactElement => {
 
   const handleCloseContactPopUp = () => {
     setContactPopUpIsOpen(false);
+    setContactPopUpErrMsg(null);
   };
 
   const handleCreateContact = async (contact: Contact) => {
@@ -96,6 +97,7 @@ const Contacts = (): React.ReactElement => {
         navigate(`/admin/contacts/show/${data.contactid}`);
       })
       .catch((error) => {
+        setContactPopUpErrMsg('Failed to create contact');
         console.error('Error Creating Contact:', error);
       });
 
@@ -176,6 +178,7 @@ const Contacts = (): React.ReactElement => {
       </div>
       {contactPopUpIsOpen && (
         <ContactPopUp
+          errorMessage={contactPopUpErrMsg}
           onCancel={handleCloseContactPopUp}
           onSubmit={handleCreateContact}
           title='Create Contact'
