@@ -259,7 +259,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       Wide seat(s)
                     </option>
                     <option value='Other'>
-                      Other (describe in comment section)
+                      Other
                     </option>
                   </Field>
                 </div>
@@ -270,7 +270,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     type='text'
                     placeholder='What is their accommodation?'
                     id='comments'
-                    label='Comments'
+                    label='Other Accommodation'
                     labelClassName='block text-sm font-medium text-slate-700 ml-1 mt-3'
                     inputClassName='input w-full border border-zinc-300 p-3 rounded-lg'
                   />
