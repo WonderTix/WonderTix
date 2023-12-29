@@ -326,6 +326,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                 <button
                   data-modal-toggle='contact-popup-modal'
                   disabled={submitting}
+                  type='button'
                   onClick={onCancel}
                   className='mt-3 w-full inline-flex
                     justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base
