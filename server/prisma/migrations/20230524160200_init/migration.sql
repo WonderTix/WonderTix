@@ -9,7 +9,7 @@ CREATE TABLE "contacts" (
     "contactid" SERIAL NOT NULL,
     "firstname" VARCHAR(255),
     "lastname" VARCHAR(255),
-    "email" VARCHAR(100) UNIQUE,
+    "email" VARCHAR(100),
     "address" VARCHAR(255),
     "phone" VARCHAR(15),
     "donorbadge" BOOLEAN DEFAULT false,
