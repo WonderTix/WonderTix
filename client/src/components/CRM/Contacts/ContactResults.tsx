@@ -67,10 +67,10 @@ const ContactResults = ({
         </div>
         <div className='flex flex-row gap-3 text-lg mt-5 w-full'>
           <div className='font-semibold'>
-          Customer name:
+          Customer Name:
           </div>
           <div data-testid = 'customer-name'>
-            {firstname +' '+lastname}
+            {firstname + ' ' + lastname}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -118,7 +118,7 @@ const ContactResults = ({
             Donorbadge:
           </div>
           <div data-testid = 'customer-donorbadge'>
-            {donorbadge}
+            {'' + donorbadge}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -126,7 +126,7 @@ const ContactResults = ({
             Seating Accommodation:
           </div>
           <div data-testid = 'customer-accommodation'>
-            { '' + seatingaccom }
+            {seatingaccom}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -134,7 +134,7 @@ const ContactResults = ({
             VIP:
           </div>
           <div data-testid = 'customer-vip'>
-            { '' + vip }
+            {'' + vip}
           </div>
         </div>
         <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
