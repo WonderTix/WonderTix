@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react';
 import {useNavigate} from 'react-router';
 import {Field, Form} from 'react-final-form';
-import {FormInput} from '../../checkout/FormInput';
+import {FormInput} from '../../FormInput';
 import {EventRow} from './utils/adminCommon';
 
 /**
