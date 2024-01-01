@@ -1,16 +1,18 @@
-/* eslint-disable react/react-in-jsx-scope */
+import React, {ReactElement} from 'react';
 import Navigation from '../Navigation';
 import Contacts from './Contacts';
+
 /**
- * @returns {object} ContactMain - has Navigation
- *  and Contacts to reroute to other components
+ * @returns {ReactElement} ContactMain - has Navigation
+ * and Contacts to reroute to other components
  */
-const ContactMain = () => {
+const ContactMain = (): ReactElement => {
   return (
     <div className='flex flex-row'>
-      <Navigation/>
-      <Contacts/>
+      <Navigation />
+      <Contacts />
     </div>
   );
 };
+
 export default ContactMain;

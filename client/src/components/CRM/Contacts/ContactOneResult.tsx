@@ -97,13 +97,13 @@ export const ContactDisplayForm = ({
     contactid,
     email,
     phone,
-    custaddress,
+    address,
     newsletter,
     donorbadge,
     seatingaccom,
     vip,
     volunteerlist,
-  }=data;
+  } = data;
   return (
     <div>
       <button className='bg-blue-600 disabled:opacity-40
@@ -118,13 +118,13 @@ export const ContactDisplayForm = ({
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
             </svg>
-            <div >Customer Information</div>
+            <div>Customer Information</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-5 w-full'>
             <div className='font-semibold'>
-             Customer name:
+             Customer Name:
             </div>
-            <div data-testid = 'customer-name'>{firstname +' '+lastname}</div>
+            <div data-testid = 'customer-name'>{firstname + ' ' + lastname}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
@@ -148,7 +148,7 @@ export const ContactDisplayForm = ({
             <div className='font-semibold'>
                Customer Address:
             </div>
-            <div data-testid = 'customer-address'>{custaddress}</div>
+            <div data-testid = 'customer-address'>{address}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
@@ -160,19 +160,19 @@ export const ContactDisplayForm = ({
             <div className='font-semibold'>
                Donorbadge:
             </div>
-            <div data-testid = 'customer-donorbadge'>{donorbadge}</div>
+            <div data-testid = 'customer-donorbadge'>{'' + donorbadge}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Seating Accommodation:
             </div>
-            <div data-testid = 'customer-accommodation'>{ '' + seatingaccom }</div>
+            <div data-testid = 'customer-accommodation'>{seatingaccom}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                VIP:
             </div>
-            <div data-testid = 'customer-vip'>{ '' + vip }</div>
+            <div data-testid = 'customer-vip'>{'' + vip}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
