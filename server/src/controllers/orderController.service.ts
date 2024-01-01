@@ -59,7 +59,7 @@ export const createDonationRecord = async (
     frequency?: freq,
 ) => {
   const contact = await prisma.contacts.findUnique({where: {contactid: +customerID}});
-  if (!contact || !(+donationAmount)) {
+  if (!contact) {
     throw new Error('Contact does not exist');
   }
   await prisma.donations.create({

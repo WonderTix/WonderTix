@@ -34,7 +34,7 @@ orderController.post(
           );
         }
 
-        if (event.type === 'checkout.session.completed' && metaData.donation) {
+        if (event.type === 'checkout.session.completed' && !isNaN(metaData.donation) && +metaData.donation > 0) {
           await createDonationRecord(
               prisma,
               object.payment_intent,
