@@ -25,35 +25,27 @@ orderController.post(
         const object = event.data.object;
         const metaData = object.metadata;
 
-          if (metaData.sessionType === '__ticketing') {
-              await ticketingWebhook(
-                  prisma,
-                  event.type,
-                  object.payment_intent,
-                  object.id,
-              );
-              await createDonationRecord(
-                  prisma,
-                  object.payment_intent,
-                  metaData.donation,
-                  metaData.customerID,
-              );
-          } else if (event.type === 'checkout.session.completed' &&
-              metaData.sessionType === '__donation' ) {
-              await prisma.donations.create({
-                  data: {
-                      contactid_fk: Number(metaData.contactID),
-                      isanonymous: metaData.anonymous,
-                      amount: metaData.donation,
-                      donorname: metaData.firstName + ' ' + metaData.lastName,
-                      frequency: 'one_time',
-                      comments: metaData.comments,
-                      payment_intent: object.payment_intent,
-                      donationdate: Number(new Date().toISOString().slice(0, 10).replace(/-/g, '')),
-                  },
-              });
-          }
-          return res.send();
+        if (metaData.sessionType === '__ticketing') {
+          await ticketingWebhook(
+              prisma,
+              event.type,
+              object.payment_intent,
+              object.id,
+          );
+        }
+
+        if (event.type === 'checkout.session.completed' && metaData.donation) {
+          await createDonationRecord(
+              prisma,
+              object.payment_intent,
+              metaData.donation,
+              metaData.contactID,
+              metaData.comments,
+              metaData.anonymous,
+              metaData.frequency,
+          );
+        }
+        return res.send();
       } catch (error) {
         console.error(error);
         return res.status(400).send();

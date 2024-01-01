@@ -1,4 +1,5 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {freq} from '@prisma/client';
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -53,18 +54,24 @@ export const createDonationRecord = async (
     paymentIntent: string,
     donationAmount: number,
     customerID: number,
+    userComments?: string,
+    anonymous?: boolean,
+    frequency?: freq,
 ) => {
   const contact = await prisma.contacts.findUnique({where: {contactid: +customerID}});
-  if (!contact || !+donationAmount) return;
+  if (!contact || !(+donationAmount)) {
+    throw new Error('Contact does not exist');
+  }
   await prisma.donations.create({
     data: {
       contactid_fk: contact.contactid,
-      isanonymous: false,
+      isanonymous: anonymous ?? false,
       amount: donationAmount,
       donorname: `${contact.firstname}  ${contact.lastname}`,
-      frequency: 'one_time',
+      frequency: frequency ?? 'one_time',
       payment_intent: paymentIntent,
       donationdate: getOrderDateAndTime().orderdate,
+      ...(userComments && {comments: userComments}),
     }});
 };
 
