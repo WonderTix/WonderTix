@@ -223,7 +223,6 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
             concessionprice: +item.concessionprice,
           }]),
     );
-    console.log(toUpdate);
     const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
         eventinstances: {
@@ -267,16 +266,16 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           id: item.id,
         },
         data: {
-          price: !item.tickettypeid_fk? 0: +update.price,
-          concessionprice: +update.concessionprice,
+          price: !item.tickettypeid_fk? 0: update.price,
+          concessionprice: update.concessionprice,
           ticketrestrictions: {
             updateMany: {
               where: {
                 seasontickettypepricedefaultid_fk: item.id,
               },
               data: {
-                ...(item.tickettypeid_fk && +item.price !== +update.price && {price: +update.price}),
-                ...(+item.concessionprice !== +update.concessionprice && {concessionprice: +update.concessionprice}),
+                ...(item.tickettypeid_fk && +item.price !== update.price && {price: update.price}),
+                ...(+item.concessionprice !== update.concessionprice && {concessionprice: update.concessionprice}),
               },
             },
           },
@@ -288,7 +287,6 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           price,
           concessionprice,
         }) : any[] => {
-          console.log(seasonid);
           if (price < 0 || concessionprice < 0) {
             throw new InvalidInputError(422, `Price can not be negative`);
           }
@@ -345,7 +343,6 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
             })),
     );
   } catch (error) {
-    console.log(error);
     if (error instanceof InvalidInputError) {
       return res.status(error.code).send({error: error.message});
     }

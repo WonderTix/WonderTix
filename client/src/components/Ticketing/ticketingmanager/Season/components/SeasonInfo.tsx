@@ -9,12 +9,23 @@ import {
   deleteSeasonInfo,
   updateEventSeason,
 } from './utils/apiRequest';
-import {seasonDefaultValues, SeasonProps, SeasonTicketValues} from './utils/seasonCommon';
+import {
+  seasonDefaultValues,
+  SeasonProps,
+  SeasonTicketValues,
+} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 import {SeasonTicketTypeUpdateTable} from './utils/SeasonTicketTypeUpdateTable';
 
-const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData: any, seasonId: number) => Promise<void> }) => {
+const SeasonInfo = (
+  props: SeasonProps & {
+    onUpdateSeasonTicketType: (
+      requestData: any,
+      seasonId: number,
+    ) => Promise<void>;
+  },
+) => {
   const {
     seasonId,
     isFormEditing,
@@ -34,7 +45,11 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     boolean | undefined
   >();
   const [someActiveEvents, setSomeActiveEvents] = useState(false);
-  const [updatedTicketData, setUpdatedTicketData] = useState<SeasonTicketValues[]>([]);
+  const [updatedTicketData, setUpdatedTicketData] = useState<
+    SeasonTicketValues[]
+  >([]);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
 
@@ -55,7 +70,9 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     }
   };
 
-  const handleTicketTypeUpdate = (updatedTicketTypeData: SeasonTicketValues[]) => {
+  const handleTicketTypeUpdate = (
+    updatedTicketTypeData: SeasonTicketValues[],
+  ) => {
     setUpdatedTicketData(updatedTicketTypeData);
   };
 
@@ -124,7 +141,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
         String(ticketType.concessionprice) !== '' &&
         Number(ticketType.price) >= 0 &&
         Number(ticketType.concessionprice) >= 0,
-      );
+    );
 
     if (!isTableDataValid) {
       handleInvalidTicketTypeValue(event);
@@ -146,19 +163,64 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
       imageurl: imageurl === '' ? 'Default Season Image' : imageurl,
     };
 
-    setIsFormEditing(false);
     if (seasonId === 0) {
       await handleCreateNewSeason(reqObject, roundedTicketData);
     } else {
       await handleUpdateSeason(reqObject, roundedTicketData);
     }
+    setIsFormEditing(false);
   };
 
   const onChangeHandler = (event) => {
-    setSeasonValues((seasonValues) => ({
+    setTouched((prev) => ({
+      ...prev,
+      [event.target.name]: true,
+    }));
+    const currentValues = {
       ...seasonValues,
       [event.target.name]: event.target.value,
-    }));
+    };
+    validateSeasonInformation(currentValues, event);
+    setSeasonValues(currentValues);
+  };
+
+  const validateSeasonInformation = (currentValues, event) => {
+    const errors = {};
+    Object.keys(currentValues).forEach((key) => {
+      if (!touched[key] && event.target.name !== key) return;
+      switch (key) {
+        case 'startdate' || 'enddate': {
+          const date = new Date(currentValues[key]);
+          if (date.toString() === 'Invalid Date') {
+            errors[key] = 'Invalid Date';
+          }
+          break;
+        }
+        case 'name': {
+          if (!currentValues[key] || currentValues[key].trim() === '') {
+            errors[key] = 'Required';
+          }
+          break;
+        }
+        case 'imageurl': {
+          if (currentValues[key] && currentValues[key].length > 255) {
+            errors[key] = 'Image Url must be less than 255 characters';
+          }
+        }
+      }
+    });
+
+    if (
+      !errors['startdate'] &&
+      !errors['enddate'] &&
+      new Date(currentValues.enddate).getTime() <
+        new Date(currentValues.startdate).getTime()
+    ) {
+      errors['enddate'] =
+        'End date can not occur before start date';
+    }
+
+    setErrors(errors);
   };
 
   const handleCancelButton = (event) => {
@@ -210,7 +272,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
     });
 
     setActiveSeasonSwitch(isSeasonActive);
-    setSomeActiveEvents((isActiveEvents));
+    setSomeActiveEvents(isActiveEvents);
   }, [eventsInSeason]);
 
   if (activeSeasonSwitch === undefined) return <LoadingScreen />;
@@ -220,7 +282,11 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
       <section className='flex flex-col gap-3 text-center tab:flex-row tab:text-start tab:justify-between tab:flex-wrap tab:mb-5'>
         <h1 className='text-4xl font-semibold'>Edit Season</h1>
         <article className='flex flex-wrap justify-center gap-2 mb-3 tab:mb-0'>
-          <button className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'>
+          <button
+            disabled={Object.keys(errors).length !== 0}
+            type='submit'
+            className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'
+          >
             Save
           </button>
           <button
@@ -244,6 +310,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
+            {errors['name'] && <span className='text-xs text-red-500' >{errors['name']}</span>}
           </label>
           <label htmlFor='startDate'>
             Start Date:
@@ -256,6 +323,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
+            {errors['startdate'] && <span className='text-xs text-red-500' >{errors['startdate']}</span>}
           </label>
           <label htmlFor='endDate'>
             End Date:
@@ -268,6 +336,7 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
+            {errors['enddate'] && <span className='text-xs text-red-500'>{errors['enddate']}</span>}
           </label>
           <label htmlFor='imageUrl'>
             Image URL:
@@ -280,19 +349,29 @@ const SeasonInfo = (props: SeasonProps& { onUpdateSeasonTicketType: (requestData
                 onChange={onChangeHandler}
                 className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-gray-200'
               />
-              <button
-                className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold px-4 py-1 rounded-xl'
-                onClick={(event) => {
-                  event.preventDefault();
-                  setSeasonValues((seasonValues) => ({
-                    ...seasonValues,
-                    imageurl: '',
-                  }));
-                }}
+              {
+                  seasonValues.imageurl !== '' &&
+                  <button
+                      className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold px-4 py-1 rounded-xl'
+                      onClick={
+                        () => {
+                          setSeasonValues((seasonValues) => ({
+                            ...seasonValues,
+                            imageurl: '',
+                          }));
+                          setErrors((prev) => {
+                            // @ts-ignore
+                            const {imageurl, ...rest} = prev;
+                            return rest;
+                          });
+                        }
+                      }
               >
                 Default
               </button>
+              }
             </div>
+            {errors['imageurl'] && <span className='text-xs text-red-500' >{errors['imageurl']}</span>}
           </label>
         </div>
         <article className='col-span-12 lg:col-span-2 pl-2'>
