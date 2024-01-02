@@ -180,14 +180,13 @@ const SeasonInfo = (
       ...seasonValues,
       [event.target.name]: event.target.value,
     };
-    validateSeasonInformation(currentValues, event);
+    validateSeasonInformation(currentValues);
     setSeasonValues(currentValues);
   };
 
-  const validateSeasonInformation = (currentValues, event) => {
+  const validateSeasonInformation = (currentValues) => {
     const errors = {};
     Object.keys(currentValues).forEach((key) => {
-      if (!touched[key] && event.target.name !== key) return;
       switch (key) {
         case 'startdate' || 'enddate': {
           const date = new Date(currentValues[key]);
@@ -204,7 +203,7 @@ const SeasonInfo = (
         }
         case 'imageurl': {
           if (currentValues[key] && currentValues[key].length > 255) {
-            errors[key] = 'Image Url must be less than 255 characters';
+            errors[key] = 'Image URL must be no greater than 255 characters';
           }
         }
       }
@@ -216,8 +215,7 @@ const SeasonInfo = (
       new Date(currentValues.enddate).getTime() <
         new Date(currentValues.startdate).getTime()
     ) {
-      errors['enddate'] =
-        'End date can not occur before start date';
+      errors['enddate'] = 'End date can not occur before start date';
     }
 
     setErrors(errors);
@@ -310,7 +308,11 @@ const SeasonInfo = (
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
-            {errors['name'] && <span className='text-xs text-red-500' >{errors['name']}</span>}
+            {touched['name'] && errors['name'] && (
+              <p className='text-xs text-red-500 text-center'>
+                {errors['name']}
+              </p>
+            )}
           </label>
           <label htmlFor='startDate'>
             Start Date:
@@ -323,7 +325,11 @@ const SeasonInfo = (
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
-            {errors['startdate'] && <span className='text-xs text-red-500' >{errors['startdate']}</span>}
+            {touched['startdate'] && errors['startdate'] && (
+              <p className='text-xs text-red-500 text-center'>
+                {errors['startdate']}
+              </p>
+            )}
           </label>
           <label htmlFor='endDate'>
             End Date:
@@ -336,7 +342,11 @@ const SeasonInfo = (
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
-            {errors['enddate'] && <span className='text-xs text-red-500'>{errors['enddate']}</span>}
+            {(touched['enddate'] || touched['startdate'])&& errors['enddate'] && (
+              <p className='text-xs text-red-500 text-center'>
+                {errors['enddate']}
+              </p>
+            )}
           </label>
           <label htmlFor='imageUrl'>
             Image URL:
@@ -349,29 +359,30 @@ const SeasonInfo = (
                 onChange={onChangeHandler}
                 className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-gray-200'
               />
-              {
-                  seasonValues.imageurl !== '' &&
-                  <button
-                      className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold px-4 py-1 rounded-xl'
-                      onClick={
-                        () => {
-                          setSeasonValues((seasonValues) => ({
-                            ...seasonValues,
-                            imageurl: '',
-                          }));
-                          setErrors((prev) => {
-                            // @ts-ignore
-                            const {imageurl, ...rest} = prev;
-                            return rest;
-                          });
-                        }
-                      }
-              >
-                Default
-              </button>
-              }
+              {seasonValues.imageurl !== '' && (
+                <button
+                  className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold px-4 py-1 rounded-xl'
+                  onClick={() => {
+                    setSeasonValues((seasonValues) => ({
+                      ...seasonValues,
+                      imageurl: '',
+                    }));
+                    setErrors((prev) => {
+                      // @ts-ignore
+                      const {imageurl, ...rest} = prev;
+                      return rest;
+                    });
+                  }}
+                >
+                  Default
+                </button>
+              )}
             </div>
-            {errors['imageurl'] && <span className='text-xs text-red-500' >{errors['imageurl']}</span>}
+            {touched['imageurl'] && errors['imageurl'] && (
+              <p className='text-xs text-red-500 text-center'>
+                {errors['imageurl']}
+              </p>
+            )}
           </label>
         </div>
         <article className='col-span-12 lg:col-span-2 pl-2'>
