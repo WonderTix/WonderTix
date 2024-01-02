@@ -18,7 +18,6 @@ async function seedDiscounts(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      discountid: item.discountid,
       code: item.code,
       amount: item.amount,
       percent: item.percent,
