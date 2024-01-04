@@ -32,7 +32,8 @@ const Contacts = (): React.ReactElement => {
       setContact(params.id);
       await axios
         .get(
-          process.env.REACT_APP_API_1_URL + `/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
+          process.env.REACT_APP_API_1_URL +
+            `/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -42,21 +43,23 @@ const Contacts = (): React.ReactElement => {
         )
         .then((res) => {
           // Maps database values to Contact type
-          setContactList(res.data.data.map((contact) => {
-            return {
-              first: contact.firstname,
-              last: contact.lastname,
-              email: contact.email,
-              phone: contact.phone,
-              address: contact.address,
-              donorBadge: contact.donorbadge,
-              seatingAcc: contact.seatingaccom,
-              vip: contact.vip,
-              volunteerList: contact.volunteerlist,
-              newsletter: contact.newsletter,
-              contactId: contact.contactid,
-            };
-          }));
+          setContactList(
+            res.data.data.map((contact) => {
+              return {
+                first: contact.firstname,
+                last: contact.lastname,
+                email: contact.email,
+                phone: contact.phone,
+                address: contact.address,
+                donorBadge: contact.donorbadge,
+                seatingAcc: contact.seatingaccom,
+                vip: contact.vip,
+                volunteerList: contact.volunteerlist,
+                newsletter: contact.newsletter,
+                contactId: contact.contactid,
+              };
+            }),
+          );
         })
         .catch((err) => {
           console.error(err.message);
@@ -82,24 +85,27 @@ const Contacts = (): React.ReactElement => {
     }
 
     try {
-      const response = await fetch(process.env.REACT_APP_API_2_URL + '/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        process.env.REACT_APP_API_2_URL + '/contact',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstname: contact.first,
+            lastname: contact.last,
+            email: contact.email,
+            phone: contact.phone,
+            address: contact.address,
+            donorbadge: contact.donorBadge,
+            seatingaccom: contact.seatingAcc,
+            vip: contact.vip,
+            volunteerlist: contact.volunteerList,
+            newsletter: contact.newsletter,
+          }),
         },
-        body: JSON.stringify({
-          firstname: contact.first,
-          lastname: contact.last,
-          email: contact.email,
-          phone: contact.phone,
-          address: contact.address,
-          donorbadge: contact.donorBadge,
-          seatingaccom: contact.seatingAcc,
-          vip: contact.vip,
-          volunteerlist: contact.volunteerList,
-          newsletter: contact.newsletter,
-        }),
-      });
+      );
 
       if (!response.ok) {
         if (response.status === 400) {
@@ -141,9 +147,7 @@ const Contacts = (): React.ReactElement => {
                 className='w-full p-2 rounded-md'
                 placeholder='Search by contact name...'
                 value={contact}
-                onChange={(e) =>
-                  setContact(e.target.value)
-                }
+                onChange={(e) => setContact(e.target.value)}
               />
               <button
                 data-testid='contact-search-button'
@@ -151,7 +155,12 @@ const Contacts = (): React.ReactElement => {
                 className='p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 justify-end rounded-full'
                 aria-label='search'
               >
-                <svg xmlns='http://www.w3.org/2000/svg' className='h-6 w-6' viewBox='0 0 20 20' fill='currentColor'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-6 w-6'
+                  viewBox='0 0 20 20'
+                  fill='currentColor'
+                >
                   <path
                     fillRule='evenodd'
                     d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z'
@@ -184,20 +193,18 @@ const Contacts = (): React.ReactElement => {
               </button>
             </Tooltip>
           </div>
-          {contactList.length !== 0 ?
-            contactList.map(
-              (contact) =>
-                <ContactCard
-                  contact={contact}
-                  token={token}
-                  refreshContacts={getData}
-                  key={contact.contactId}
-                  {...contact}
-                />,
-            ) : (
-              <p className='text-center text-zinc-400 font-medium'>No results</p>
-            )
-          }
+          {contactList.length !== 0 ? (
+            contactList.map((contact) => (
+              <ContactCard
+                contact={contact}
+                token={token}
+                refreshContacts={getData}
+                key={contact.contactId}
+              />
+            ))
+          ) : (
+            <p className='text-center text-zinc-400 font-medium'>No results</p>
+          )}
         </div>
         {contactPopUpIsOpen && (
           <ContactPopUp

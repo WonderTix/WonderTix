@@ -36,26 +36,29 @@ export const editContact = async (contact: Contact, contactId: number, token: st
   }
 
   try {
-    const response = await fetch(process.env.REACT_APP_API_2_URL + `/contact/${contactId}`, {
-      credentials: 'include',
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+    const response = await fetch(
+      process.env.REACT_APP_API_2_URL + `/contact/${contactId}`,
+      {
+        credentials: 'include',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          firstname: contact.first,
+          lastname: contact.last,
+          email: contact.email,
+          phone: contact.phone,
+          address: contact.address,
+          donorbadge: contact.donorBadge,
+          seatingaccom: contact.seatingAcc,
+          vip: contact.vip,
+          volunteerlist: contact.volunteerList,
+          newsletter: contact.newsletter,
+        }),
       },
-      body: JSON.stringify({
-        firstname: contact.first,
-        lastname: contact.last,
-        email: contact.email,
-        phone: contact.phone,
-        address: contact.address,
-        donorbadge: contact.donorBadge,
-        seatingaccom: contact.seatingAcc,
-        vip: contact.vip,
-        volunteerlist: contact.volunteerList,
-        newsletter: contact.newsletter,
-      }),
-    });
+    );
 
     if (!response.ok) {
       console.error('Failed to remove customer');

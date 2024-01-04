@@ -150,81 +150,47 @@ const ContactCard = ({
           </ul>
         </header>
         <p className='flex flex-row gap-3 text-lg mt-5 w-full'>
-          <span className='font-semibold'>
-            Customer Name:
-          </span>
-          <span data-testid='customer-name'>
-            {`${first} ${last}`}
-          </span>
+          <span className='font-semibold'>Customer Name:</span>
+          <span data-testid='customer-name'>{`${first} ${last}`}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            ID:
-          </span>
-          <span data-testid='customer-id'>
-            {contactId}
-          </span>
+          <span className='font-semibold'>ID:</span>
+          <span data-testid='customer-id'>{contactId}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            Email:
-          </span>
-          <span data-testid='customer-email'>
-            {email}
-          </span>
+          <span className='font-semibold'>Email:</span>
+          <span data-testid='customer-email'>{email}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            Phone:
-          </span>
-          <span data-testid='customer-phone'>
-            {phone}
-          </span>
+          <span className='font-semibold'>Phone:</span>
+          <span data-testid='customer-phone'>{phone}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            Customer Address:
-          </span>
-          <span data-testid='customer-address'>
-            {address}
-          </span>
+          <span className='font-semibold'>Customer Address:</span>
+          <span data-testid='customer-address'>{address}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            Seating Accommodation:
-          </span>
-          <span data-testid='customer-accommodation'>
-            {seatingAcc}
-          </span>
+          <span className='font-semibold'>Seating Accommodation:</span>
+          <span data-testid='customer-accommodation'>{seatingAcc}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            Newsletter:
-          </span>
+          <span className='font-semibold'>Newsletter:</span>
           <span data-testid='customer-newsletter'>
             {newsletter ? 'Yes' : 'No'}
           </span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            Donor Badge:
-          </span>
+          <span className='font-semibold'>Donor Badge:</span>
           <span data-testid='customer-donorbadge'>
             {donorBadge ? 'Yes' : 'No'}
           </span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            VIP:
-          </span>
-          <span data-testid='customer-vip'>
-            {vip ? 'Yes' : 'No'}
-          </span>
+          <span className='font-semibold'>VIP:</span>
+          <span data-testid='customer-vip'>{vip ? 'Yes' : 'No'}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>
-            Volunteer List:
-          </span>
+          <span className='font-semibold'>Volunteer List:</span>
           <span data-testid='customer-volunteer'>
             {volunteerList ? 'Yes' : 'No'}
           </span>
