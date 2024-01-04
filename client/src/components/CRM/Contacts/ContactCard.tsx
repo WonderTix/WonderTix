@@ -1,9 +1,8 @@
-import React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Tooltip} from '@mui/material';
-import ContactPopUp from './ContactPopUp';
 import PopUp from '../../Ticketing/PopUp';
+import ContactPopUp from './ContactPopUp';
 import {Contact, editContact, deleteContact} from './contactUtils';
 
 interface ContactCardProps {
@@ -15,10 +14,10 @@ interface ContactCardProps {
 /**
  * Display the results of contacts search
  *
- * @param root0
- * @param {Contact} root0.contact
- * @param {string} root0.token
- * @param {func} root0.refreshContacts
+ * @param ContactCardProps
+ * @param {Contact} ContactCardProps.contact
+ * @param {string} ContactCardProps.token
+ * @param {func} ContactCardProps.refreshContacts
  * @returns {ReactElement}
  */
 const ContactCard = ({
