@@ -18,10 +18,9 @@ export interface LineItem {
 }
 
 export const createStripeCheckoutSession = async (
-    customerID: number,
+    contactID: number,
     donation: number,
     lineItems: LineItem[],
-    orderID: number,
     discount: any,
 ) => {
   const expire = Math.round((new Date().getTime() + 1799990) / 1000);
@@ -36,7 +35,7 @@ export const createStripeCheckoutSession = async (
     cancel_url: `${process.env.FRONTEND_URL}`,
     metadata: {
       sessionType: '__ticketing',
-      customerID,
+      contactID,
       donation,
       discountCode: null,
     },
