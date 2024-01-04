@@ -155,7 +155,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                 {title}
               </h3>
               {errorMessage && (
-                <p className='rounded-md bg-red-200 text-red-800 font-semibold flex items-center justify-center gap-1 px-2 py-1 mx-4 tab:mx-6 mb-2'>
+                <p className='rounded-md bg-red-200 text-red-800 font-semibold flex items-center justify-center gap-2 px-2 py-1 mx-4 tab:mx-6 mb-4'>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -238,7 +238,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   </label>
                   <Field
                     component='select'
-                    className='w-full border border-zinc-300 p-3 rounded-lg col-label-2'
+                    className='w-full border border-zinc-300 p-3 rounded-lg col-label-2 cursor-pointer'
                     name='seatingAcc'
                     id='seating-acc'
                   >

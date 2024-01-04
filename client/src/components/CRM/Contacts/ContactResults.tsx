@@ -1,47 +1,29 @@
-/* eslint-disable require-jsdoc */
-
 import React from 'react';
-import {useParams} from 'react-router-dom';
 import {useState} from 'react';
-import {useAuth0} from '@auth0/auth0-react';
+import {Tooltip} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
+import ContactPopUp from './ContactPopUp';
+import PopUp from '../../Ticketing/PopUp';
+import {Contact, editContact, deleteContact} from './contactUtils';
 
 /**
  * Display the results of contacts search
  *
  * @param root0
  * @param root0.data
+ * @param root0.token
+ * @param root0.refreshContacts
  * @returns {ReactElement}
  */
 const ContactResults = ({
   data,
+  token,
+  refreshContacts,
 }: {
   data: any,
+  token: any,
+  refreshContacts: () => void,
 }): React.ReactElement => {
-  if (!data) return <div>Empty</div>;
-  const {getAccessTokenSilently} = useAuth0();
-  const navigate = useNavigate();
-
-  /**
-   *
-   * @param showId
-   */
-  async function deleteEvent(showId: number) {
-    const token = await getAccessTokenSilently({
-      audience: process.env.REACT_APP_ROOT_URL,
-      scope: 'admin',
-    });
-    const response = await fetch(process.env.REACT_APP_API_1_URL + `/contacts/${showId}`,
-      {
-        credentials: 'include',
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    return response.json();
-  }
-  // What is this?
   const {
     firstname,
     lastname,
@@ -55,300 +37,250 @@ const ContactResults = ({
     vip,
     volunteerlist,
   } = data;
-  return (
-    <div data-testid='customer-card' className='flec flex-row w-full bg-white
-     shadow-lg border border-zinc-300 rounded-lg mb-5'>
-      <div className='flex flex-col mt-2 p-5 '>
-        <div className='flex flex-row gap-3 text-3xl items-center border-b pb-5 font-bold text-zinc-700'>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
-          </svg>
-          <div>Customer Information</div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-5 w-full'>
-          <div className='font-semibold'>
-          Customer Name:
-          </div>
-          <div data-testid = 'customer-name'>
-            {firstname + ' ' + lastname}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            ID:
-          </div>
-          <div data-testid = 'customer-id'>
-            {contactid}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Email:
-          </div>
-          <div data-testid = 'customer-email'>
-            {email}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Phone:
-          </div>
-          <div data-testid = 'customer-phone'>
-            {phone}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Customer Address:
-          </div>
-          <div data-testid = 'customer-address'>
-            {address}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Newsletter:
-          </div>
-          <div data-testid = 'customer-newsletter'>
-            {'' + newsletter}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Donorbadge:
-          </div>
-          <div data-testid = 'customer-donorbadge'>
-            {'' + donorbadge}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Seating Accommodation:
-          </div>
-          <div data-testid = 'customer-accommodation'>
-            {seatingaccom}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            VIP:
-          </div>
-          <div data-testid = 'customer-vip'>
-            {'' + vip}
-          </div>
-        </div>
-        <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <div className='font-semibold'>
-            Volunteer List:
-          </div>
-          <div data-testid = 'customer-volunteer'>
-            {'' + volunteerlist}
-          </div>
-        </div>
-        <button className='bg-blue-600 disabled:opacity-40
-        mt-4 text-white px-5 py-2
-        rounded-xl justify-end
-          ' onClick={() => navigate(`/admin/contacts/show/${contactid}`)}>Show All Information</button>
-        <button className='bg-red-600 hover:bg-red-700
-        mt-4 text-white px-5 py-2
-        rounded-xl justify-end
-          ' onClick={() => deleteEvent(contactid)} >Remove Customer</button>
-      </div>
-    </div>
-  );
-};
 
-export const contactForm = (data: any): React.ReactElement => {
-  const [Custname, setName] = useState(data.name);
+  const navigate = useNavigate();
+  const [showConfirmationPopUp, setShowConfirmationPopUp] = useState(false);
+  const [showEditPopUp, setShowEditPopUp] = useState(false);
+  const [showErrorPopUp, setShowErrorPopUp] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
 
-  setName(data.name);
-  const [id, setID] = useState(0);
-  setID(data.id);
-  const [Email, setEmail] = useState(data.email);
-  const [Phone, setPhone] = useState(data.phone);
-  const [Address, setaddress] = useState(data.address);
-  const [Newsletter, setNewsletter] = useState(data.newsletter);
-  const [Donorbadge, setDonorbage] = useState(data.donorbage);
-  const [Seatingaccom, setSeatingaccom] = useState(data.seatingaccom);
-  const [VIP, setVIP] = useState(data.vip);
-  const [Volunteerlist, setVolunteerlist] = useState(data.volunteerlist);
-  const params = useParams();
-  const {getAccessTokenSilently} = useAuth0();
+  const handleEditCustomer = async (contact: Contact) => {
+    const responseCode = await editContact(contact, contactid, token);
+    if (responseCode === 204) {
+      setShowEditPopUp(false);
+      setErrorMsg(null);
+      void refreshContacts();
+    } else if (responseCode === 400) {
+      setErrorMsg('Contact with email already exists');
+    } else {
+      setErrorMsg('Failed to edit contact');
+    }
+  };
 
-
-  // The changed data can be linked to the server (but it will creat a new row)
-  const HandleSubmit = async (evt: any) => {
-    evt.preventDefault();
-
-
-    // useState is an asynchronous operation, so it cannot be changed directly.
-    // I tried to use useRef to change the value of volunteer,
-    // but it has no effect.
-    /*
-      if(Volunteerlist==undefined){
-        console.log("1111");
-        setVolunteerlist(false);
-      }
-      console.log("..................");
-      console.log(Volunteerlist);
-      */
-
-    // If not work change Volunteerlist to false
-    const body = {
-      custname: Custname,
-      email: Email,
-      phone: Phone,
-      address: Address,
-      newsletter: Newsletter,
-      donorbadge: Donorbadge,
-      seatingaccom: Seatingaccom,
-      vip: VIP,
-      volunteerlist: false,
-    };
-    const token = await getAccessTokenSilently({
-      audience: process.env.REACT_APP_ROOT_URL,
-      scope: 'admin',
-    });
-
-    console.log(params);
-    console.log(params.id);
-    // This is the statement to contact with the api,
-    // and establish a link with the background data from here
-    // However, in the actual url, param.id
-    // is not the id but the user's name, which causes the update to fail
-    const url=process.env.REACT_APP_API_1_URL + `/contacts/${data.id}`;
-    // const url=process.env.REACT_APP_API_1_URL + '/contacts/'+params.id;
-    // const url = process.env.REACT_APP_API_1_URL + '/contacts?filters[custname][$eq]=${params.id}';
-    console.log(body);
-
-    // This function contains the relevant methods of the operation
-    // "put" corresponds to the backend function "export const update = (r: any)
-    fetch( url, {
-      // method: "post",
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(body),
-      // params: JSON.stringify(params),
-    }).then((res) => console.log(res));
+  const handleRemoveContact = async () => {
+    setShowConfirmationPopUp(false);
+    const responseCode = await deleteContact(contactid, token);
+    if (responseCode === 204) {
+      void refreshContacts();
+    } else if (responseCode === 400) {
+      setErrorMsg('Cannot remove a customer with orders or donations');
+      setShowErrorPopUp(true);
+    } else {
+      setErrorMsg('Failed to remove customer');
+      setShowErrorPopUp(true);
+    }
   };
 
   return (
-    <div className='flex flex-col mt-2 p-4 w-60 bg-black'>
-      <form >
-        <button onSubmit={HandleSubmit}></button>
-        <div>
-        Custname: {Custname}
-        </div>
-        <br />
-
-        <div>
-        ID: {id}
-        </div>
-        <br />
-
-        <div>
-        Email:
-          <input
-            name="Email"
-            type="text"
-            value={Email}
-            className="input w-full max-w-xs border
-            border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <br/>
-
-        <div>
-        Phone:
-          <input
-            name="Phone"
-            type="text"
-            value={Phone}
-            className="input w-full max-w-xs border
-            border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setPhone(e.target.value)} />
-        </div>
-        <br/>
-
-        <div>
-        Cust Address:
-          <input
-            name="Address"
-            type="text"
-            value={Address}
-            className="input w-full max-w-xs border
-            border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setaddress(e.target.value)} />
-        </div>
-        <br/>
-
-        <div>
-        Newsletter:
-          <input
-            name="Newsletter"
-            type="text"
-            value={Newsletter}
-            className="input w-full max-w-xs border
-            border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setNewsletter(e.target.value)} />
-        </div>
-        <br/>
-
-        <div>
-        Donorbadge:
-          <input
-            name="Donorbadge"
-            type="text"
-            value={Donorbadge}
-            className="input w-full max-w-xs border
-                      border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setDonorbage(e.target.value)} />
-        </div>
-        <br/>
-
-        <div>
-        Seating Accomdation:
-          <input
-            name="Seatingaccom"
-            type="text"
-            value={Seatingaccom}
-            className="input w-full max-w-xs border
-                      border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setSeatingaccom(e.target.value)} />
-        </div>
-        <br/>
-
-        <div>
-        VIP:
-          <input
-            className="input w-full max-w-xs border
-                      border-zinc-300 p-2 rounded-lg "
-            name="VIP"
-            type="text"
-            value={VIP}
-            onChange={(e) => setVIP(e.target.value)} />
-        </div>
-        <br/>
-
-        <div>
-        Volunteer List:
-          <input
-            name="Volunteerlist"
-            type="text"
-            value={Volunteerlist}
-            className="input w-full max-w-xs border
-                      border-zinc-300 p-2 rounded-lg "
-            onChange={(e) => setVolunteerlist(e.target.value)} />
-        </div>
-        <br/>
-
-        <button type="submit" value="SAVE" />
-      </form>
-    </div>
-
+    <>
+      <section
+        data-testid='customer-card'
+        className='relative w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-5 p-5'
+      >
+        <header className='flex justify-between border-b pb-5'>
+          <h2 className='flex gap-3 items-center text-2xl font-bold text-zinc-700'>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-10 w-10"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
+              />
+            </svg>
+            Customer Information
+          </h2>
+          <ul className='flex gap-1'>
+            <Tooltip title='Edit' placement='top' arrow>
+              <li>
+                <button
+                  className='p-2 rounded-lg text-zinc-500 hover:text-zinc-600 hover:bg-zinc-100
+                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                  onClick={() => setShowEditPopUp(true)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </button>
+              </li>
+            </Tooltip>
+            <Tooltip title='Remove customer' placement='top' arrow>
+              <li>
+                <button
+                  className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
+                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+                  onClick={() => setShowConfirmationPopUp(true)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </li>
+            </Tooltip>
+          </ul>
+        </header>
+        <p className='flex flex-row gap-3 text-lg mt-5 w-full'>
+          <span className='font-semibold'>
+            Customer Name:
+          </span>
+          <span data-testid='customer-name'>
+            {firstname + ' ' + lastname}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            ID:
+          </span>
+          <span data-testid='customer-id'>
+            {contactid}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            Email:
+          </span>
+          <span data-testid='customer-email'>
+            {email}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            Phone:
+          </span>
+          <span data-testid='customer-phone'>
+            {phone}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            Customer Address:
+          </span>
+          <span data-testid='customer-address'>
+            {address}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            Seating Accommodation:
+          </span>
+          <span data-testid='customer-accommodation'>
+            {seatingaccom}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            Newsletter:
+          </span>
+          <span data-testid='customer-newsletter'>
+            {newsletter ? 'Yes' : 'No'}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            Donor Badge:
+          </span>
+          <span data-testid='customer-donorbadge'>
+            {donorbadge ? 'Yes' : 'No'}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            VIP:
+          </span>
+          <span data-testid='customer-vip'>
+            {vip ? 'Yes' : 'No'}
+          </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>
+            Volunteer List:
+          </span>
+          <span data-testid='customer-volunteer'>
+            {volunteerlist ? 'Yes' : 'No'}
+          </span>
+        </p>
+        <button
+          className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 mt-4 shadow-md px-4 py-2 text-base
+          font-medium text-white rounded-lg justify-end w-full focus:outline-none focus:ring-2 focus:ring-offset-2
+          focus:ring-indigo-500'
+          onClick={() => navigate(`/admin/contacts/show/${contactid}`)}
+        >
+          Show More Information
+        </button>
+      </section>
+      {showEditPopUp && (
+        <ContactPopUp
+          title='Edit Contact'
+          errorMessage={errorMsg}
+          onCancel={() => {
+            setShowEditPopUp(false);
+            setErrorMsg(null);
+          }}
+          onSubmit={handleEditCustomer}
+          values={{
+            first: firstname,
+            last: lastname,
+            email: email,
+            phone: phone,
+            address: address,
+            seatingAcc: seatingaccom,
+            newsletter: newsletter,
+            vip: vip,
+            donorBadge: donorbadge,
+            volunteerList: volunteerlist,
+          }}
+        />
+      )}
+      {showConfirmationPopUp && (
+        <PopUp
+          title='Confirm removal'
+          message='Click remove to delete this customer'
+          secondaryLabel='Cancel'
+          primaryLabel='Remove'
+          handleClose={() => setShowConfirmationPopUp(false)}
+          handleProceed={handleRemoveContact}
+          success={false}
+        />
+      )}
+      {showErrorPopUp && (
+        <PopUp
+          title='Failure'
+          message={errorMsg}
+          handleClose={() => setShowErrorPopUp(false)}
+          handleProceed={() => setShowErrorPopUp(false)}
+          success={false}
+          showSecondary={false}
+          showClose={false}
+        />
+      )}
+    </>
   );
 };
 
