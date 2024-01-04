@@ -157,17 +157,17 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
               {errorMessage && (
                 <p className='rounded-md bg-red-200 text-red-800 font-semibold flex items-center justify-center gap-2 px-2 py-1 mx-4 tab:mx-6 mb-4'>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-5 w-5'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
                     strokeWidth={2.5}
                   >
                     <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
                     />
                   </svg>
                   {errorMessage}
@@ -175,7 +175,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
               )}
               <article className='flex flex-col gap-y-3 px-4 pb-4 tab:px-6 tab:pb-6'>
                 <div className='grid gap-3 tab:grid-cols-2'>
-                <Field
+                  <Field
                     required
                     component={FormInput}
                     name='first'

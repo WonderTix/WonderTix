@@ -13,6 +13,7 @@ export type Contact = {
   vip: boolean,
   donorBadge: boolean,
   volunteerList: boolean,
+  contactId?: number,
 }
 
 export const emptyContact: Contact = {

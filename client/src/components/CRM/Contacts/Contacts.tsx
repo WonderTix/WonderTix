@@ -3,11 +3,10 @@ import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import {Tooltip} from '@mui/material';
 import {Contact, emptyContact} from './contactUtils';
-import ContactResults from './ContactResults';
+import ContactCard from './ContactCard';
 import ContactPopUp from './ContactPopUp';
 import {useFetchToken} from '../../Ticketing/ticketingmanager/Event/components/ShowingUtils';
 import {LoadingScreen} from '../../Ticketing/mainpage/LoadingScreen';
-
 
 /**
  * handle searching for contact information
@@ -20,8 +19,7 @@ const Contacts = (): React.ReactElement => {
   const {token} = useFetchToken();
 
   const [contact, setContact] = useState('');
-  const [error, setError] = useState(null);
-  const [datalist, setDataList] = useState([]);
+  const [contactList, setContactList] = useState([]);
   const [contactPopUpIsOpen, setContactPopUpIsOpen] = useState(false);
   const [contactPopUpErrMsg, setContactPopUpErrMsg] = useState(null);
 
@@ -37,19 +35,34 @@ const Contacts = (): React.ReactElement => {
           process.env.REACT_APP_API_1_URL + `/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
           {
             headers: {
+              'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
           },
         )
         .then((res) => {
-          setDataList(res.data.data);
+          // Maps database values to Contact type
+          setContactList(res.data.data.map((contact) => {
+            return {
+              first: contact.firstname,
+              last: contact.lastname,
+              email: contact.email,
+              phone: contact.phone,
+              address: contact.address,
+              donorBadge: contact.donorbadge,
+              seatingAcc: contact.seatingaccom,
+              vip: contact.vip,
+              volunteerList: contact.volunteerlist,
+              newsletter: contact.newsletter,
+              contactId: contact.contactid,
+            };
+          }));
         })
         .catch((err) => {
-          setError(err.message);
-          console.error(error);
+          console.error(err.message);
         });
     } else {
-      setDataList([]);
+      setContactList([]);
     }
   };
 
@@ -171,14 +184,14 @@ const Contacts = (): React.ReactElement => {
               </button>
             </Tooltip>
           </div>
-          {datalist.length !== 0 ?
-            datalist.map(
+          {contactList.length !== 0 ?
+            contactList.map(
               (contact) =>
-                <ContactResults
-                  data={contact}
+                <ContactCard
+                  contact={contact}
                   token={token}
                   refreshContacts={getData}
-                  key={contact.contactid}
+                  key={contact.contactId}
                   {...contact}
                 />,
             ) : (
