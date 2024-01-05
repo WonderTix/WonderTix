@@ -292,6 +292,7 @@ contactController.put('/:id', async (req: Request, res: Response) => {
         newsletter: req.body.newsletter,
       },
     });
+
     res.status(204).json();
     return;
   } catch (error) {
@@ -344,10 +345,10 @@ contactController.delete('/:id', async (req: Request, res: Response) => {
     });
     if (!contactExists) {
       res.status(404).json({error: 'Contact not found'});
-
       return;
     }
-    const contact = prisma.contacts.delete({
+
+    await prisma.contacts.delete({
       where: {
         contactid: Number(id),
       },
