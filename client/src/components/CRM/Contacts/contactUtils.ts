@@ -13,6 +13,7 @@ export type Contact = {
   vip: boolean,
   donorBadge: boolean,
   volunteerList: boolean,
+  contactId?: number,
 }
 
 export const emptyContact: Contact = {
@@ -27,4 +28,65 @@ export const emptyContact: Contact = {
   vip: false,
   donorBadge: false,
   volunteerList: false,
+};
+
+export const editContact = async (contact: Contact, contactId: number, token: string) => {
+  if (contact.seatingAcc === 'Other') {
+    contact.seatingAcc = contact.comments;
+  }
+
+  try {
+    const response = await fetch(
+      process.env.REACT_APP_API_2_URL + `/contact/${contactId}`,
+      {
+        credentials: 'include',
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          firstname: contact.first,
+          lastname: contact.last,
+          email: contact.email,
+          phone: contact.phone,
+          address: contact.address,
+          donorbadge: contact.donorBadge,
+          seatingaccom: contact.seatingAcc,
+          vip: contact.vip,
+          volunteerlist: contact.volunteerList,
+          newsletter: contact.newsletter,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      console.error('Failed to remove customer');
+    }
+    return response.status;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const deleteContact = async (contactId: number, token: string) => {
+  try {
+    const response = await fetch(process.env.REACT_APP_API_2_URL + `/contact/${contactId}`, {
+      credentials: 'include',
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Failed to remove customer');
+    }
+    return response.status;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
