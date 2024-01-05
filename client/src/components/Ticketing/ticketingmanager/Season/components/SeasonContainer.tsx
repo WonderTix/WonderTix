@@ -7,7 +7,7 @@ import {useFetchToken} from '../../Event/components/ShowingUtils';
 import PopUp from '../../../PopUp';
 import {useParams} from 'react-router';
 import {getAllEvents} from './utils/apiRequest';
-import {seasonEventInfo, initialSeasonEventInfo, SeasonTicketValues} from './utils/seasonCommon';
+import {seasonEventInfo, SeasonTicketValues} from './utils/seasonCommon';
 
 const defaultPopUpValues = {
   title: '',
@@ -83,7 +83,7 @@ const SeasonContainer = () => {
     }
   };
 
-  const handleUpdateSeasonTicketType = async (requestData) => {
+  const handleUpdateSeasonTicketType = async (requestData, seasonId) => {
     try {
       const seasonUpdateTicketTypeRes = await fetch(
         process.env.REACT_APP_API_2_URL +
