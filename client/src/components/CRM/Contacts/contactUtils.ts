@@ -1,3 +1,4 @@
+
 /**
  * Type for information relating to a contact.
  */
@@ -14,6 +15,8 @@ export type Contact = {
   donorBadge: boolean,
   volunteerList: boolean,
   contactId?: number,
+  orders?: any,
+  donations?: any,
 }
 
 export const emptyContact: Contact = {
