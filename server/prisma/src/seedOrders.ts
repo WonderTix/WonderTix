@@ -20,7 +20,6 @@ async function seedOrders(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      orderid: item.orderid,
       contactid_fk: item.contactid_fk,
       orderdate: item.orderdate,
       ordertime: parseTime(item.ordertime),
