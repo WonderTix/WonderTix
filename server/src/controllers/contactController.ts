@@ -373,10 +373,19 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       };
     });
 
+    const formattedDonations = donations.map((donation) => {
+      const {donationdate, ...restOfDonation} = donation;
+      if (!donationdate) return null;
+      return {
+        donationdate: `${donationdate.toString().slice(0, 4)}-${donationdate.toString().slice(4, 6)}-${donationdate.toString().slice(6, 8)}`,
+        ...restOfDonation,
+      };
+    });
+
     const toReturn = {
       ...remainderOfContact,
       orders: flattenedOrders,
-      donations: donations,
+      donations: formattedDonations,
     };
 
     res.status(200).json(toReturn);

@@ -15,8 +15,10 @@ import {Contact} from './contactUtils';
  * FIXME:
  *  - combine like tickets within the API
  *  - get donations to work?
+ *  - donations are rounding?
  *  - ensure donations and orders are from newest to oldest
  *  - Add a group toggle to switch between if orders or donations are shown
+ *  - Make frequency text better
  */
 
 
@@ -53,6 +55,7 @@ export const ContactOneResult = (): ReactElement => {
           },
         )
         .then((res) => {
+          console.log(res.data);
           const contact: Contact = {
             first: res.data.firstname,
             last: res.data.lastname,
@@ -215,7 +218,7 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
 export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
   const {donationid, donationdate, frequency, refund_intent, amount} = donation;
 
-  const date = new Date(`${toDateStringFormat(donationdate)}`);
+  const date = new Date(`${toDateStringFormat(donationdate)}T00:00:00`);
 
   return (
     <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
