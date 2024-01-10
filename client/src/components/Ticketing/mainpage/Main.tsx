@@ -23,7 +23,8 @@ const Mainpage = () => {
     <div>
       <Navbar />
       <Hero />
-      <Seasonaltickets/>
+      {/* FIXME: This was removed per #563 in prep for the initial site launch*/}
+      {/* <Seasonaltickets/>*/}
       <Footer/>
     </div>
   );

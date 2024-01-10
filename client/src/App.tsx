@@ -53,7 +53,8 @@ const App = () => {
         <Route path='/cart' element={<Cartmain />} />
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />
-        <Route path='/donate' element={<Donationmain />} />
+        {/* FIXME: This was removed per #563 in prep for the initial site launch*/}
+        {/* <Route path='/donate' element={<Donationmain />} />*/}
         <Route
           path='/admin'
           element={<ProtectedRoute component={Dashmain} />}

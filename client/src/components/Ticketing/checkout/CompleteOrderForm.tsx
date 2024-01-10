@@ -45,7 +45,6 @@ type CompleteOrderFormProps = {
   onSubmit: (formData: CheckoutFormInfo) => any;
   onBack: () => any;
   disabled: boolean;
-  donationForm?: boolean;
 };
 
 /**
@@ -59,7 +58,6 @@ export default function CompleteOrderForm({
   onSubmit,
   onBack,
   disabled, // TODO: This prop is being used but has no functionality
-  donationForm, // TODO: This prop is being used but has no functionality
 }: CompleteOrderFormProps): ReactElement {
   const {isAuthenticated, user} = useAuth0();
   const baseValues = {
@@ -78,21 +76,21 @@ export default function CompleteOrderForm({
 
   const validate = (values) => {
     const errors = {};
-    Object.keys(baseValues).forEach((key) => {
-      if (['visitSource', 'comments', 'optIn'].includes(key)) return;
-      if (!values[key] || values[key] === '') {
-        errors[key] = 'Required';
-      }
-    });
     if (values.seatingAcc === 'Other' && (!values.comments || values.comments === '')) {
       errors['comments'] = 'Please Input Accommodation';
     }
     if (!values.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
     }
-    if (!values.phone?.match(new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
+    if (values.phone && values.phone !== ' ' && !values.phone.match(new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
       errors['phone'] = 'Invalid';
     }
+    Object.keys(baseValues).forEach((key) => {
+      if (['visitSource', 'comments', 'optIn', 'phone', 'country'].includes(key)) return;
+      if (!values[key] || values[key] === '') {
+        errors[key] = 'Required';
+      }
+    });
     return errors;
   };
 
@@ -161,7 +159,7 @@ export default function CompleteOrderForm({
                     placeholder='Country'
                     type='text'
                     id='country'
-                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
                     inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
@@ -171,7 +169,7 @@ export default function CompleteOrderForm({
                     placeholder='Phone'
                     type='text'
                     id='phone-number'
-                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
                     inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
                   <Field
@@ -199,7 +197,7 @@ export default function CompleteOrderForm({
                       className='block text-sm font-medium text-slate-700 ml-1'
                       htmlFor='seating-acc'
                     >
-                        Seating Accommodations
+                      Seating Accommodations
                     </label>
                     <Field
                       component='select'
@@ -208,25 +206,25 @@ export default function CompleteOrderForm({
                       id='seating-acc'
                     >
                       <option value='None'>
-                          Not at this time
+                        Not at this time
                       </option>
                       <option value='Wheel Chair'>
-                          Wheelchair seat(s)
+                        Wheelchair seat(s)
                       </option>
                       <option value='Aisle Seat'>
-                          Aisle seat(s)
+                        Aisle seat(s)
                       </option>
                       <option value='First/Ground floor'>
-                          Seat(s) on the ground or the first level
+                        Seat(s) on the ground or the first level
                       </option>
                       <option value='ASL Interpreter'>
-                          Seat(s) in the ASL interpreters section
+                        Seat(s) in the ASL interpreters section
                       </option>
                       <option value='Wide Seats'>
-                          Wide seat(s)
+                        Wide seat(s)
                       </option>
                       <option value='Other'>
-                          Other (describe in comment section)
+                        Other (describe in comment section)
                       </option>
                     </Field>
                   </div>
