@@ -22,7 +22,6 @@ export const ContactOneResult = (): ReactElement => {
 
   const [contact, setContact] = useState(null);
   const [tabValue, setTabValue] = useState(0);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (token !== '') {
@@ -63,8 +62,7 @@ export const ContactOneResult = (): ReactElement => {
           setContact(contact);
         })
         .catch((err) => {
-          setError(err.message);
-          console.error(error);
+          console.error(err.message);
         });
     } else {
       setContact(null);
@@ -104,25 +102,33 @@ export const ContactOneResult = (): ReactElement => {
                 token={token}
               />
             </div>
-            {contact.orders.length === 0 && contact.donations.length === 0 && (
-              <p className='text-center text-zinc-400 font-medium'>
-                No orders or donations
-              </p>
-            )}
             <Tabs value={tabValue} onChange={handleTabChange} centered>
               <Tab label='Orders' />
               <Tab label='Donations' />
             </Tabs>
-            {tabValue === 0
-              ? contact.orders.map((order) => (
+            {tabValue === 0 &&
+              (contact.orders.length === 0 ? (
+                <p className='text-center text-zinc-400 font-medium mt-4'>
+                  No orders
+                </p>
+              ) : (
+                contact.orders.map((order) => (
                   <ContactOrder order={order} key={order.orderid} />
                 ))
-              : contact.donations.map((donation) => (
+              ))}
+            {tabValue === 1 &&
+              (contact.donations.length === 0 ? (
+                <p className='text-center text-zinc-400 font-medium mt-4'>
+                  No donations
+                </p>
+              ) : (
+                contact.donations.map((donation) => (
                   <ContactDonation
                     donation={donation}
                     key={donation.donationid}
                   />
-                ))}
+                ))
+              ))}
           </div>
         </main>
       </div>
@@ -175,7 +181,7 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
         <aside>
           {orderitems.length === 0 && (
             <p className='text-center text-md mt-1 w-full text-zinc-400 font-medium'>
-              No Order Items
+              No order items
             </p>
           )}
           {orderitems.map((item, index) => {
