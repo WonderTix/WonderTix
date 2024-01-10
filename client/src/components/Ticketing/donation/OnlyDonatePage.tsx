@@ -219,7 +219,6 @@ export default function OnlyDonationPage(): ReactElement {
         onSubmit={doCheckout}
         onBack={() => history(-1)}
         disabled={amount < 1}
-        donationForm
       />
       {/* Outro text*/}
       <div className='text-center text-xl py-4 '>

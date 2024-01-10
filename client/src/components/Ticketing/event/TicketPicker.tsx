@@ -410,27 +410,28 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           )}
         </select>
       </div>
-      <div className='flex gap-2 mt-3 mb-7'>
-        <input
-          id='add-concessions-ticket'
-          type='checkbox'
-          disabled={!selectedTicket}
-          checked={concessions}
-          className='bg-zinc-800/50 disabled:opacity-30 disabled:cursor-not-allowed'
-          onChange={() => dispatch({type: 'toggle_concession'})}
-          name='concessions'
-        />
-        <label
-          htmlFor='add-concessions-ticket'
-          className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed'
-        >
-          Add concessions ticket
-        </label>
-      </div>
+      {/* FIXME: This was removed per #563 in prep for the initial site launch*/}
+      {/* <div className='flex gap-2 mt-3'>*/}
+      {/*  <input*/}
+      {/*    id='add-concessions-ticket'*/}
+      {/*    type='checkbox'*/}
+      {/*    disabled={!selectedTicket}*/}
+      {/*    checked={concessions}*/}
+      {/*    className='bg-zinc-800/50 disabled:opacity-30 disabled:cursor-not-allowed'*/}
+      {/*    onChange={() => dispatch({type: 'toggle_concession'})}*/}
+      {/*    name='concessions'*/}
+      {/*  />*/}
+      {/*  <label*/}
+      {/*    htmlFor='add-concessions-ticket'*/}
+      {/*    className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed'*/}
+      {/*  >*/}
+      {/*    Add concessions ticket*/}
+      {/*  </label>*/}
+      {/* </div>*/}
       <div
         className={
           selectedTicketType && selectedTicketType.name === 'Pay What You Can'
-            ? 'flex flex-col gap-2 mt-3 mb-7 justify-center'
+            ? 'flex flex-col gap-2 mt-3 justify-center'
             : 'hidden'
         }
       >
@@ -457,7 +458,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           qty > selectedTicket.availableseats ||
           (selectedTicketType.name === 'Pay What You Can' && (payWhatPrice == null || payWhatPrice < 0))
         }
-        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 bg-blue-500 text-white enabled:hover:bg-blue-600 rounded-xl'
+        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 mt-7 bg-blue-500 text-white enabled:hover:bg-blue-600 rounded-xl'
         onClick={handleSubmit}
       >
         Get Tickets
