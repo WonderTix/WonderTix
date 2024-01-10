@@ -2,6 +2,7 @@ import React, {ReactElement, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import {Tabs, Tab} from '@mui/material';
 import Navigation from '../Navigation';
 import {useFetchToken} from '../../Ticketing/ticketingmanager/Event/components/ShowingUtils';
 import {LoadingScreen} from '../../Ticketing/mainpage/LoadingScreen';
@@ -17,7 +18,7 @@ import {Contact} from './contactUtils';
  *  - get donations to work?
  *  - donations are rounding?
  *  - ensure donations and orders are from newest to oldest
- *  - Add a group toggle to switch between if orders or donations are shown
+ *  - Add a Tabs to switch between if orders or donations are shown
  *  - Make frequency text better
  */
 
@@ -32,6 +33,7 @@ export const ContactOneResult = (): ReactElement => {
   const navigate = useNavigate();
 
   const [contact, setContact] = useState(null);
+  const [tabValue, setTabValue] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -82,6 +84,10 @@ export const ContactOneResult = (): ReactElement => {
     }
   };
 
+  const handleTabChange = (e, newTabValue) => {
+    setTabValue(newTabValue);
+  };
+
   if (token === '' || !contact) {
     return (
       <div className='absolute w-screen z-10'>
@@ -116,10 +122,13 @@ export const ContactOneResult = (): ReactElement => {
                 No orders or donations
               </p>
             )}
-            {contact.orders.map((order) => (
+            <Tabs value={tabValue} onChange={handleTabChange} centered>
+              <Tab label='Orders' />
+              <Tab label='Donations' />
+            </Tabs>
+            {tabValue === 0 ? contact.orders.map((order) => (
               <ContactOrder order={order} key={order.orderid} />
-            ))}
-            {contact.donations.map((donation) => (
+            )) : contact.donations.map((donation) => (
               <ContactDonation donation={donation} key={donation.donationid} />
             ))}
           </div>
