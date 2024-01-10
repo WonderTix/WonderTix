@@ -2,30 +2,18 @@ import React, {ReactElement, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import format from 'date-fns/format';
 import {Tabs, Tab} from '@mui/material';
 import Navigation from '../Navigation';
 import {useFetchToken} from '../../Ticketing/ticketingmanager/Event/components/ShowingUtils';
 import {LoadingScreen} from '../../Ticketing/mainpage/LoadingScreen';
-import format from 'date-fns/format';
 import {toDateStringFormat} from '../../Ticketing/ticketingmanager/Event/components/util/EventsUtil';
 import {toDollarAmount} from '../../../utils/arrays';
 import ContactCard from './ContactCard';
-import {Contact} from './contactUtils';
+import {Contact, toReadableDonationFrequency} from './contactUtils';
 
 /**
- * FIXME:
- *  - combine like tickets within the API
- *  - get donations to work?
- *  - donations are rounding?
- *  - ensure donations and orders are from newest to oldest
- *  - Add a Tabs to switch between if orders or donations are shown
- *  - Make frequency text better
- */
-
-
-/**
- * @returns {ReactElement} ContactOneResult - has Navigation
- * and Contacts to reroute to other components
+ * @returns {ReactElement} ContactOneResult - order and donation history for a contact
  */
 export const ContactOneResult = (): ReactElement => {
   const {token} = useFetchToken();
@@ -57,7 +45,6 @@ export const ContactOneResult = (): ReactElement => {
           },
         )
         .then((res) => {
-          console.log(res.data);
           const contact: Contact = {
             first: res.data.firstname,
             last: res.data.lastname,
@@ -126,11 +113,16 @@ export const ContactOneResult = (): ReactElement => {
               <Tab label='Orders' />
               <Tab label='Donations' />
             </Tabs>
-            {tabValue === 0 ? contact.orders.map((order) => (
-              <ContactOrder order={order} key={order.orderid} />
-            )) : contact.donations.map((donation) => (
-              <ContactDonation donation={donation} key={donation.donationid} />
-            ))}
+            {tabValue === 0
+              ? contact.orders.map((order) => (
+                  <ContactOrder order={order} key={order.orderid} />
+                ))
+              : contact.donations.map((donation) => (
+                  <ContactDonation
+                    donation={donation}
+                    key={donation.donationid}
+                  />
+                ))}
           </div>
         </main>
       </div>
@@ -255,7 +247,7 @@ export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
         </p>
         <p className='flex flex-row gap-3 text-lg mt-1 w-full'>
           <span className='font-semibold'>Frequency:</span>
-          <span>{frequency}</span>
+          <span>{toReadableDonationFrequency(frequency)}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg my-1 w-full'>
           <span className='font-semibold'>Refunded:</span>

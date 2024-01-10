@@ -275,6 +275,11 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       },
       include: {
         orders: {
+          orderBy: [{
+            orderdate: 'desc',
+          }, {
+            ordertime: 'desc',
+          }],
           select: {
             orderid: true,
             orderdate: true,
@@ -318,6 +323,9 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
           },
         },
         donations: {
+          orderBy: {
+            donationdate: 'desc',
+          },
           select: {
             donationid: true,
             donationdate: true,

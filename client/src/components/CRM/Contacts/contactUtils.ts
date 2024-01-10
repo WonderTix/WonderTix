@@ -33,6 +33,21 @@ export const emptyContact: Contact = {
   volunteerList: false,
 };
 
+export const toReadableDonationFrequency = (key: string): string => {
+   switch (key) {
+     case 'one-time':
+       return 'One-time';
+     case 'weekly':
+       return 'Weekly';
+     case 'monthly':
+       return 'Monthly';
+     case 'yearly':
+       return 'Yearly';
+     default:
+       return key;
+   }
+};
+
 export const editContact = async (contact: Contact, contactId: number, token: string) => {
   if (contact.seatingAcc === 'Other') {
     contact.seatingAcc = contact.comments;
