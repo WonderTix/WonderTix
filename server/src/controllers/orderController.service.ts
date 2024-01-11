@@ -1,4 +1,5 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {freq} from '@prisma/client';
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -30,6 +31,50 @@ export const ticketingWebhook = async (
       break;
   }
 };
+
+
+export const donationCancel = async (
+    prisma: ExtendedPrismaClient,
+    paymentIntent: string,
+    refundIntent: string,
+) => {
+  const result = await prisma.donations.updateMany({
+    where: {
+      payment_intent: paymentIntent,
+    },
+    data: {
+      refund_intent: refundIntent,
+    },
+  });
+  return result.count;
+};
+
+export const createDonationRecord = async (
+    prisma: ExtendedPrismaClient,
+    paymentIntent: string,
+    donationAmount: number,
+    customerID: number,
+    userComments?: string,
+    anonymous?: boolean,
+    frequency?: freq,
+) => {
+  const contact = await prisma.contacts.findUnique({where: {contactid: +customerID}});
+  if (!contact) {
+    throw new Error('Contact does not exist');
+  }
+  await prisma.donations.create({
+    data: {
+      contactid_fk: contact.contactid,
+      isanonymous: anonymous ?? false,
+      amount: donationAmount,
+      donorname: `${contact.firstname}  ${contact.lastname}`,
+      frequency: frequency ?? 'one_time',
+      payment_intent: paymentIntent,
+      donationdate: getOrderDateAndTime().orderdate,
+      ...(userComments && {comments: userComments}),
+    }});
+};
+
 export const orderFulfillment = async (
     prisma: ExtendedPrismaClient,
     orderItems: any[],

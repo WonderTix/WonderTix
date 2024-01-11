@@ -39,10 +39,10 @@ const ListComponent = (props: Event): ReactElement => {
             <button
               onClick={() => navigate(`/events/${props.id}`)}
               className='py-2 text-white border bg-indigo-600 border-indigo-600
-                hover:bg-transparent hover:text-white rounded-2xl px-4
-                sm:w-[60%] my-3 mx-1 hover:border-white'
+                hover:bg-transparent hover:text-white rounded-2xl px-4 md:px-6
+                my-3 mx-1 hover:border-white'
             >
-              See Showings
+              Select Date & Time
             </button>
           </div>
         </div>

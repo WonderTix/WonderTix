@@ -54,12 +54,14 @@ export const eventController = Router();
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
-  const {cartItems, formData, donation, discount} = req.body;
+  const {cartItems, formData, donation = 0, discount} = req.body;
   let orderID = 0;
   let toSend = {id: 'comp'};
   try {
     if (!cartItems.length && donation === 0) {
-      return res.status(400).json('Cart is empty');
+      return res.status(400).json({error: 'Cart is empty'});
+    } else if (donation && donation < 0) {
+      return res.status(422).json({error: 'Amount of donation can not be negative'});
     }
     const {contactid} = await updateContact(formData, prisma);
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
@@ -80,7 +82,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           contactid,
           donation,
         donation ? cartRows.concat(donationItem) : cartRows,
-        orderID,
         discount,
       );
     }

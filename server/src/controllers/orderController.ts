@@ -2,7 +2,7 @@ import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {Prisma} from '@prisma/client';
-import {orderCancel, ticketingWebhook} from './orderController.service';
+import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook} from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -32,12 +32,20 @@ orderController.post(
               object.payment_intent,
               object.id,
           );
-        // handle donation amount in metadata (will be a donation team task?)
-        } else if (metaData.sessionType === '__donation') {
-        // donation is handled
         }
-        res.status(200).send();
-        return;
+
+        if (event.type === 'checkout.session.completed' && !isNaN(metaData.donation) && +metaData.donation > 0) {
+          await createDonationRecord(
+              prisma,
+              object.payment_intent,
+              metaData.donation,
+              metaData.contactID,
+              metaData.comments,
+              metaData.anonymous,
+              metaData.frequency,
+          );
+        }
+        return res.send();
       } catch (error) {
         console.error(error);
         return res.status(400).send();
@@ -161,6 +169,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       select: {
         orderid: true,
         ordertotal: true,
+        payment_intent: true,
         contacts: {
           select: {
             firstname: true,
@@ -194,12 +203,19 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         },
       },
     });
+    const donationMap= new Map((await prisma.donations.findMany({
+      where: {
+        payment_intent: {in: orders.map((order) => order.payment_intent ?? '')},
+      },
+    })).map((donation) => [donation.payment_intent, donation.amount]));
     const toReturn = orders.map((order) => {
       const {
         contacts,
         orderitems,
         ordertotal,
         orderdate,
+        // eslint-disable-next-line camelcase
+        payment_intent,
         ...remainderOfOrder
       } = order;
       const names = orderitems.map((item) =>
@@ -219,6 +235,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         orderdate: `${orderdate.toString().slice(0, 4)}-${orderdate.toString().slice(4, 6)}-${orderdate.toString().slice(6, 8)}`,
         ...remainderOfOrder,
         showings: names,
+        donation: donationMap.get(payment_intent),
       };
     });
 
@@ -240,7 +257,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
  * @swagger
  * /2/order/refund/{id}:
  *   put:
- *     summary: refund an order based on order id
+ *     summary: refund an order based on order id (adds refund intent to any associated donations)
  *     tags:
  *     - New Order
  *     parameters:
@@ -290,6 +307,7 @@ orderController.put('/refund/:id', async (req, res) => {
       }
       refundIntent = refund.id;
     }
+    await donationCancel(prisma, order.payment_intent, refundIntent);
     await orderCancel(prisma, order.orderid, refundIntent);
     return res.send(refundIntent);
   } catch (error) {

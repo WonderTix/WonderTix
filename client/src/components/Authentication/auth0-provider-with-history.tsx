@@ -6,7 +6,7 @@ import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Auth0Provider} from '@auth0/auth0-react';
 /**
- * the main logic for the athentication to work
+ * The main logic for the athentication to work
  *
  * @param root0
  * @param root0.children

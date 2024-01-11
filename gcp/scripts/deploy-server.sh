@@ -10,6 +10,7 @@ required=(
   "SERVER_MEMORY"
   "SERVICE_ACCOUNT"
   "SHORT_SHA"
+  "SHOULD_SEED"
   "SQL_INSTANCE"
 )
 source ${CHECK_ARGS} "${required[@]}"
@@ -62,7 +63,8 @@ gcloud run deploy "wtix-server-${ENV}" \
   AUTH0_URL=${AUTH0_URL},\
   ENV=${ENV},\
   FRONTEND_URL=${FRONTEND_URL},\
-  ROOT_URL=${ROOT_URL}" \
+  ROOT_URL=${ROOT_URL},\
+  SHOULD_SEED=${SHOULD_SEED}" \
   --set-secrets="\
   AUTH0_CLIENT_SECRET=AUTH0_CLIENT_SECRET:${ENV},\
   DATABASE_URL=DATABASE_URL:${ENV},\

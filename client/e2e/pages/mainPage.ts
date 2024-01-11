@@ -18,7 +18,6 @@ export class MainPage {
   readonly selectTime: Locator;
   readonly selectTicketType: Locator;
   readonly selectQuantity: Locator;
-  readonly addConcessionsTicket: Locator;
   readonly getTickets: Locator;
   readonly titleEvent: Locator;
   readonly successHeader: Locator;
@@ -45,6 +44,7 @@ export class MainPage {
   readonly stripeCVC: Locator;
   readonly stripeFullName: Locator;
   readonly stripeZIP: Locator;
+  readonly stripeSaveInfo: Locator;
   readonly stripeCheckout: Locator;
   readonly stripeOrderConfirmation: Locator;
 
@@ -53,14 +53,13 @@ export class MainPage {
 
     this.loadingScreen = page.getByTestId('loading-screen');
     this.firstShowing = page
-      .getByRole('button', {name: 'See Showings'})
+      .getByRole('button', {name: 'Select Date & Time'})
       .first();
     this.headingEvent = page.getByRole('heading', {name: 'Events'});
     this.selectDate = page.locator('#date-select');
     this.selectTime = page.locator('#time-select');
     this.selectTicketType = page.locator('#ticket-type-select');
     this.selectQuantity = page.locator('#qty-select');
-    this.addConcessionsTicket = page.locator('#add-concessions-ticket');
     this.getTickets = page.getByTestId('get-tickets');
     this.titleEvent = page.getByTestId('event-title');
     this.successHeader = page.getByRole('heading', {name: 'Success!'});
@@ -88,6 +87,7 @@ export class MainPage {
     this.stripeCVC = page.locator('#cardCvc');
     this.stripeFullName = page.locator('#billingName');
     this.stripeZIP = page.locator('#billingPostalCode');
+    this.stripeSaveInfo = page.locator('#enableStripePass');
     this.stripeCheckout = page.getByTestId('hosted-payment-submit-button');
     this.stripeOrderConfirmation = page.getByText(
       'Thank you for your purchase!',
@@ -121,9 +121,9 @@ export class MainPage {
   // Return the name of that showing
   async goSelectShowing(eventInfo: EventInfo) {
     const eventCard = await this.getShowingLocator(
-      eventInfo.eventName + eventInfo.eventDescription + 'See Showings',
+      eventInfo.eventName + eventInfo.eventDescription + 'Select Date & Time',
     );
-    await eventCard.getByRole('button', {name: 'See Showings'}).click();
+    await eventCard.getByRole('button', {name: 'Select Date & Time'}).click();
     const title = await this.titleEvent.textContent();
     return title;
   }
@@ -276,6 +276,7 @@ export class MainPage {
     await this.stripeCVC.fill(ccInfo.CVC);
     await this.stripeFullName.fill(customer.fullName);
     await this.stripeZIP.fill(customer.postCode);
+    await this.stripeSaveInfo.click();
   }
 
   // Click to purchase ticket at stripe

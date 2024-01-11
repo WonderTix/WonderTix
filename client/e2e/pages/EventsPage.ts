@@ -93,9 +93,8 @@ export class EventsPage {
     this.backToEvents = page.getByRole('button', {name: 'back to Events'});
     this.concessionTicket = page.getByRole('checkbox');
     this.editShowingButton = page
-      .locator('div')
-      .filter({hasText: /^Edit$/})
-      .getByRole('button');
+        .locator('button')
+        .filter({hasText: /^Edit$/});
     this.ticketQuantityOption = page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});

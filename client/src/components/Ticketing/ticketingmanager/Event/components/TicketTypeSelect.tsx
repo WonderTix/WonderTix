@@ -50,7 +50,7 @@ export const TicketTypeSelect = (props: {
         {availableTypes &&
           availableTypes.map((ticketType) => (
             <option
-              key={ticketType + 'ticket type description'}
+              key={`${ticketType.tickettypeid_fk}-description`}
               value={Number.parseInt(ticketType.tickettypeid_fk)}
             >
               {ticketType.description}

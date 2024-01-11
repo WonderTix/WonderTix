@@ -5,17 +5,26 @@
       "es2018",
       "esnext.asynciterable"
     ],
+		"types": [
+			"node"
+		],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "CommonJS",
-    "rootDir": "src/",
-    "outDir": "bin/",
+    "rootDir": ".",
+		"outDir": "./bin",
+		"pretty": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
   },
   "include": [
-    "src/**/*.ts"
-  ]
+    "src/**/*.ts",
+		"prisma/**/*.ts",
+  ],
+	"exclude": [
+		"node_modules",
+		"bin",
+	],
 }

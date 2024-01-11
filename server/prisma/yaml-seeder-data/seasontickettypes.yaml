@@ -1,9 +1,6 @@
-- seasontickettypeid: 1
-  description: Anytime Subscription
+- description: Anytime Subscription
   price: $149.00
-- seasontickettypeid: 2
-  description: Sometimes Subscription
+- description: Sometimes Subscription
   price: $111.00
-- seasontickettypeid: 3
-  description: Preview Subscription
+- description: Preview Subscription
   price: $69.00
