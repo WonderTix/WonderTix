@@ -383,7 +383,7 @@ const AdminPurchase = () => {
               );
               const formattedDateTime = format(
                 dateTime,
-                'eee, MMM dd yyyy - hh:mm a',
+                'eee, MMM dd yyyy - h:mm a',
               );
               return (
                 <option
