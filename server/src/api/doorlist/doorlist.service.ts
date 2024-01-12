@@ -11,7 +11,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
     text: `
       SELECT 
         FORMAT(
-          '(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
+          '(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
           c.contactid,
           c.firstname,
           c.lastname,
@@ -20,6 +20,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
           c.vip,
           c.donorbadge,
           c.seatingaccom,
+          c.address,
           e.eventid,
           e.eventname,
           ei.eventinstanceid,
@@ -61,6 +62,7 @@ export const getDoorlist = async (params: any): Promise<response> => {
         c.vip,
         c.donorbadge,
         c.seatingaccom,
+        c.address,
         e.eventid,
         e.eventname,
         ei.eventinstanceid,

@@ -45,6 +45,7 @@ export const doorlistRouter = Router();
  *                       vip: {type: boolean}
  *                       donorbadge: {type: string}
  *                       seatingaccom: {type: string}
+ *                       address: {type: string}
  *                       eventid: {type: integer}
  *                       eventname: {type: string}
  *                       eventinstanceid: {type: integer}

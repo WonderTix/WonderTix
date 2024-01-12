@@ -79,22 +79,23 @@ const columns = [
   {
     field: 'arrived',
     headerName: 'Arrived',
-    width: 70,
+    width: 65,
     renderCell: renderCheckin,
   },
   {field: 'firstname', headerName: 'First Name', width: 120},
   {field: 'lastname', headerName: 'Last Name', width: 120},
-  {field: 'num_tickets', headerName: 'Tickets', width: 70},
+  {field: 'num_tickets', headerName: 'Tickets', width: 65},
   {field: 'email', headerName: 'Email', width: 150},
   {field: 'phone', headerName: 'Phone Number', width: 130},
-  {field: 'vip', headerName: 'VIP', width: 70, renderCell: renderCheckbox},
+  {field: 'vip', headerName: 'VIP', width: 65, renderCell: renderCheckbox},
   {
     field: 'donorbadge',
     headerName: 'Donor',
-    width: 70,
+    width: 65,
     renderCell: renderCheckbox,
   },
   {field: 'accommodations', headerName: 'Accommodations', width: 200},
+  {field: 'address', headerName: 'Address', width: 170},
 ];
 
 /**
@@ -233,12 +234,13 @@ const DoorList = (): ReactElement => {
             arrived: false,
             firstname: firstName,
             lastname: lastName,
-            num_tickets: row[13],
+            num_tickets: row[14],
             email: row[4],
             phone: row[3],
             vip: row[5] === 't',
             donorbadge: row[6] === 't',
             accommodations: row[7],
+            address: row[8],
           };
           // Places open seats row at the top of the list by default
         })
@@ -252,10 +254,10 @@ const DoorList = (): ReactElement => {
 
       const rowString = eventInstanceData[0].row.slice(1, -1);
       const rowParts = rowString.split(',');
-      setEventName(rowParts[9]);
+      setEventName(rowParts[10]);
 
-      const showingDateString = rowParts[11];
-      const showingTimeString = rowParts[12];
+      const showingDateString = rowParts[12];
+      const showingTimeString = rowParts[13];
       const showingDate = new Date(
         `${toDateStringFormat(showingDateString)} ${showingTimeString.slice(0, 8)}`,
       );
