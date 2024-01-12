@@ -75,11 +75,11 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
           />
           <LineItem
             label={'Date'}
-            information={format(showingDate, 'eee, MMM dd yyyy')}
+            information={format(showingDate, 'eee, MMM dd, yyyy')}
           />
           <LineItem
             label={'Time'}
-            information={format(showingDate, 'hh:mm a')}
+            information={format(showingDate, 'h:mm a')}
           />
           <LineItem label={'Total Tickets'} information={showing.totalseats} />
           <LineItem
@@ -109,6 +109,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
                   Concession Price
                 </th>
                 <th className={'px-2 py-1 border border-white'}>Quantity</th>
+                <th className={'px-2 py-1 border border-white'}>Available</th>
               </tr>
             </thead>
             <tbody className={'whitespace-nowrap'}>
@@ -125,6 +126,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
                         {formatUSD.format(type.concessionprice)}
                       </td>
                       <td className={'px-2'}>{type.ticketlimit}</td>
+                      <td className='px-2'>{type.ticketlimit - type.ticketssold}</td>
                     </tr>
                   ))}
             </tbody>
