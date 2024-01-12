@@ -12,7 +12,7 @@ export const doorlistRouter = Router();
  *     parameters:
  *       - name: eventinstanceid
  *         in: query
- *         description: used to identify different occurences of events
+ *         description: used to identify different occurrences of events
  *         schema:
  *           type: integer
  *     tags:
@@ -40,6 +40,8 @@ export const doorlistRouter = Router();
  *                       contactid: {type: integer}
  *                       firstname: {type: string}
  *                       lastname: {type: string}
+ *                       phone: {type: string}
+ *                       email: {type: string}
  *                       vip: {type: boolean}
  *                       donorbadge: {type: string}
  *                       seatingaccom: {type: string}
@@ -65,4 +67,3 @@ doorlistRouter.get('/', checkJwt, checkScopes, async (
     res.status(500).send(err.message);
   }
 });
-
