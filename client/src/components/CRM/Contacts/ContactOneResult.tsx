@@ -98,6 +98,10 @@ export const ContactDisplayForm = ({
     email,
     phone,
     address,
+    city,
+    state,
+    country,
+    postalcode,
     newsletter,
     donorbadge,
     seatingaccom,
@@ -118,37 +122,61 @@ export const ContactDisplayForm = ({
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
             </svg>
-            <div>Customer Information</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-5 w-full'>
-            <div className='font-semibold'>
-             Customer Name:
-            </div>
-            <div data-testid = 'customer-name'>{firstname + ' ' + lastname}</div>
+            <div>Contact Information</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
-               ID:
+             Full Name:
             </div>
-            <div data-testid = 'customer-id'>{contactid}</div>
+            <div data-testid = 'first-name'>{firstname} {lastname}</div>
+          </div>
+          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+            <div className='font-semibold'>
+               Contact ID:
+            </div>
+            <div data-testid = 'id'>{contactid}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Email:
             </div>
-            <div data-testid = 'customer-email'>{email}</div>
+            <div data-testid = 'email'>{email}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
                Phone:
             </div>
-            <div data-testid = 'customer-phone'>{phone}</div>
+            <div data-testid = 'phone'>{phone}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>
-               Customer Address:
+               Address:
             </div>
-            <div data-testid = 'customer-address'>{address}</div>
+            <div data-testid = 'address'>{address}</div>
+          </div>
+          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+            <div className='font-semibold'>
+               City:
+            </div>
+            <div data-testid = 'city'>{city}</div>
+          </div>
+          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+            <div className='font-semibold'>
+               State:
+            </div>
+            <div data-testid = 'state'>{state}</div>
+          </div>
+          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+            <div className='font-semibold'>
+               Country:
+            </div>
+            <div data-testid = 'country'>{country}</div>
+          </div>
+          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
+            <div className='font-semibold'>
+               Postal Code:
+            </div>
+            <div data-testid = 'postalcode'>{postalcode}</div>
           </div>
           <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
             <div className='font-semibold'>

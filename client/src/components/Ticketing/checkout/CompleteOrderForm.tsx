@@ -25,6 +25,8 @@ export interface CheckoutFormInfo {
   lastName: string;
   streetAddress: string;
   postalCode: string;
+  city: string;
+  state: string;
   country: string;
   phone?: string;
   email: string;
@@ -61,13 +63,16 @@ export default function CompleteOrderForm({
 }: CompleteOrderFormProps): ReactElement {
   const {isAuthenticated, user} = useAuth0();
   const baseValues = {
-    firstName: isAuthenticated && user.given_name?user.given_name:'',
-    lastName: isAuthenticated && user.family_name?user.family_name:'',
+    firstName: isAuthenticated && user.given_name ? user.given_name : '',
+    lastName: isAuthenticated && user.family_name ? user.family_name : '',
     streetAddress: '',
-    postalCode: '',
+    city: '',
+    state: '',
     country: '',
+    postalCode: '',
     phone: '',
-    email: isAuthenticated?user.email: '',
+    email: isAuthenticated ? user.email : '',
+    confirmEmail: isAuthenticated ? user.email : '',
     visitSource: '',
     seatingAcc: 'None',
     comments: '',
@@ -76,21 +81,37 @@ export default function CompleteOrderForm({
 
   const validate = (values) => {
     const errors = {};
+
     if (values.seatingAcc === 'Other' && (!values.comments || values.comments === '')) {
       errors['comments'] = 'Please Input Accommodation';
     }
     if (!values.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
     }
-    if (values.phone && values.phone !== ' ' && !values.phone.match(new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'))) {
+    if (!values.confirmEmail?.match(new RegExp('.+@.+\\..+'))) {
+      errors['confirmEmail'] = 'Invalid';
+    } else if (values.email !== values.confirmEmail) {
+      errors['email'] = 'Email does not match';
+      errors['confirmEmail'] = 'Email does not match';
+    }
+    if (
+      values.phone &&
+      values.phone !== '' &&
+      !values.phone.match(
+        new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$',
+        ),
+      )
+    ) {
       errors['phone'] = 'Invalid';
     }
+
     Object.keys(baseValues).forEach((key) => {
-      if (['visitSource', 'comments', 'optIn', 'phone', 'country'].includes(key)) return;
-      if (!values[key] || values[key] === '') {
+      if (['firstName', 'lastName', 'streetAddress', 'postalCode', 'email', 'confirmEmail'].includes(key) &&
+        (!values[key] || values[key] === '')) {
         errors[key] = 'Required';
       }
     });
+
     return errors;
   };
 
@@ -154,6 +175,26 @@ export default function CompleteOrderForm({
                   />
                   <Field
                     component={FormInput}
+                    name='city'
+                    label='City'
+                    placeholder='City'
+                    type='text'
+                    id='city'
+                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                  />
+                  <Field
+                    component={FormInput}
+                    name='state'
+                    label='State'
+                    placeholder='State'
+                    type='text'
+                    id='state'
+                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                  />
+                  <Field
+                    component={FormInput}
                     name='country'
                     label='Country'
                     placeholder='Country'
@@ -179,6 +220,16 @@ export default function CompleteOrderForm({
                     placeholder='Email'
                     type='email'
                     id='contact-email'
+                    labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                  />
+                  <Field
+                    component={FormInput}
+                    name='confirmEmail'
+                    label='Confirm Email'
+                    placeholder='Confirm Email'
+                    type='confirmEmail'
+                    id='confirm-email'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
                     inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />
@@ -224,7 +275,7 @@ export default function CompleteOrderForm({
                         Wide seat(s)
                       </option>
                       <option value='Other'>
-                        Other (describe in comment section)
+                        Other (describe in Comments section)
                       </option>
                     </Field>
                   </div>

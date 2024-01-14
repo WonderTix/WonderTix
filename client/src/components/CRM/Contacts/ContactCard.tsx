@@ -32,6 +32,10 @@ const ContactCard = ({
     email,
     phone,
     address,
+    city,
+    state,
+    country,
+    postalCode,
     newsletter,
     donorBadge,
     seatingAcc,
@@ -95,7 +99,7 @@ const ContactCard = ({
                 d='M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2'
               />
             </svg>
-            Customer Information
+            Contact Information
           </h2>
           <ul className='flex gap-1'>
             <Tooltip title='Edit' placement='top' arrow>
@@ -149,11 +153,11 @@ const ContactCard = ({
           </ul>
         </header>
         <p className='flex flex-row gap-3 text-lg mt-5 w-full'>
-          <span className='font-semibold'>Customer Name:</span>
-          <span data-testid='customer-name'>{`${first} ${last}`}</span>
+          <span className='font-semibold'>Full Name:</span>
+          <span data-testid='customer-name'>{first} {last}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>ID:</span>
+          <span className='font-semibold'>Contact ID:</span>
           <span data-testid='customer-id'>{contactId}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -165,8 +169,8 @@ const ContactCard = ({
           <span data-testid='customer-phone'>{phone}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>Customer Address:</span>
-          <span data-testid='customer-address'>{address}</span>
+          <span className='font-semibold'>Full Address:</span>
+          <span data-testid='customer-address'>{address}, {city}, {state} {postalCode}, {country}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Seating Accommodation:</span>
