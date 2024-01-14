@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "contacts" 
+ADD COLUMN     "city" VARCHAR(255),
+ADD COLUMN     "state" VARCHAR(255);
+ADD COLUMN     "country" VARCHAR(255),
+ADD COLUMN     "postalcode" VARCHAR(255),
+ADD COLUMN     "createddate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

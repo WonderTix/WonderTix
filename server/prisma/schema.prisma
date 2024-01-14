@@ -20,8 +20,13 @@ model contacts {
   vip           Boolean?    @default(false)
   volunteerlist Boolean?    @default(false)
   newsletter    Boolean?    @default(false)
-  donations     donations[]
+  donations     donations[] 
   orders        orders[]
+  city          String?     @db.VarChar(255)
+  state         String?     @db.VarChar(255)
+  country       String?     @db.VarChar(255)
+  postalcode    String?     @db.VarChar(255)
+  createddate   DateTime    @default(now())
 }
 
 /// date is used to store information about specific dates to simplify queries
