@@ -26,7 +26,7 @@ model contacts {
   state         String?     @db.VarChar(255)
   country       String?     @db.VarChar(255)
   postalcode    String?     @db.VarChar(255)
-  createddate   DateTime    @default(now())
+  createddate   DateTime    @default(now()) @db.Timestamptz(3)
 }
 
 /// date is used to store information about specific dates to simplify queries
