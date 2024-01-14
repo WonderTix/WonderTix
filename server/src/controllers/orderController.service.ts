@@ -82,7 +82,7 @@ export const orderFulfillment = async (
     ordertotal: number,
     eventInstanceQueries: any[],
     sessionID: string,
-    discount?: number,
+    discountId?: number,
 ) => {
   const result = await prisma.$transaction([
     prisma.orders.create({
@@ -91,7 +91,7 @@ export const orderFulfillment = async (
         checkout_sessions: sessionID,
         contactid_fk: contactid,
         ordertotal,
-        discountid_fk: discount,
+        discountid_fk: discountId,
         orderitems: {
           create: orderItems,
         },

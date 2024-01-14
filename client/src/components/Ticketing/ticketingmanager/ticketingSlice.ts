@@ -136,10 +136,9 @@ export interface Event {
 export interface Discount {
   discountid: number;
   code: string;
+  active: boolean;
   amount: number;
   percent: number;
-  startdate: number;
-  enddate: number;
   min_tickets: number;
   min_events: number;
   usagelimit: number;
@@ -154,6 +153,7 @@ type TicketsState = {data: {byId: {[key: string]: Ticket}; allIds: number[]}};
  */
 export type LoadStatus = 'idle' | 'loading' | 'success' | 'failed';
 export type DiscountItem = {
+  discountid: number;
   code: string;
   amount: number;
   percent: number;
@@ -236,22 +236,26 @@ export const fetchTicketingData = createAsyncThunk(
  * Fetches all the data, and gets all the api routes then prints to console
  *
  * @module
- * @returns {DiscountItem} code, amount, percent
+ * @returns {DiscountItem}
  */
 export const fetchDiscountData = createAsyncThunk(
   'ticketing/fetchDiscount',
   async (code: string) => {
     const url =
-      process.env.REACT_APP_API_1_URL + '/discounts/search?code=' + code;
+      `${process.env.REACT_APP_API_2_URL}/discount?code=${code}&active=true`;
     const discountData = await fetchData(url);
-    const discountArray: Discount[] = discountData.data;
+    console.log(code, discountData);
+    const discountArray: Discount[] = discountData;
     const discount: DiscountItem = {
+      discountid: discountArray[0].discountid,
       code: discountArray[0].code,
       amount: discountArray[0].amount,
       percent: discountArray[0].percent,
       minTickets: discountArray[0].min_tickets,
       minEvents: discountArray[0].min_events,
     };
+
+    // TODO: Validate discount (min_tickets and min_events)
 
     return {discount};
   },
@@ -530,10 +534,10 @@ const removeTicketFromCartReducer: CaseReducer<
  * @param {Array} cart - []
  * @param {Array} tickets - byId: {}, allIds: []
  * @param {TicketRestriction} - []
- * @param {TicketType} tickettype - {0, '', '', ''}
+ * @param {TicketType} tickettype - {-1, '', '', ''}
  * @param {Array} events - []
  * @param {string} status - 'idle'
- * @param {DiscountItem} discount - {'', 0, 0, 0, 0}
+ * @param {DiscountItem} discount - {-1, '', 0, 0, 0, 0}
  */
 export const INITIAL_STATE: ticketingState = {
   cart: [],
@@ -542,7 +546,7 @@ export const INITIAL_STATE: ticketingState = {
   tickettype: {id: -1, name: '', price: '', concessions: ''},
   events: [],
   status: 'idle',
-  discount: {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},
+  discount: {discountid: -1, code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},
 };
 
 /** ticketSlice = createSlice, creates the ticketing slice */
@@ -571,7 +575,7 @@ const ticketingSlice = createSlice({
         state.status = 'success';
         state.discount = action.payload
           ? action.payload.discount
-          : {code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0};
+          : {discountid: -1, code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0};
       })
       .addCase(fetchDiscountData.rejected, (state) => {
         state.status = 'failed';

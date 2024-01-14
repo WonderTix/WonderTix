@@ -93,6 +93,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         orderTotal,
         eventInstanceQueries,
         toSend.id,
+        discount ? discount.discountid : null,
     );
     if (toSend.id === 'comp') {
       await prisma.orders.update({

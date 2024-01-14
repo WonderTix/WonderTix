@@ -39,7 +39,7 @@ export const createStripeCheckoutSession = async (
       donation,
       discountCode: null,
     },
-    ...(couponID && {discounts: [{couponID}]}),
+    ...(couponID && {discounts: [{coupon: couponID}]}),
   };
   const session = await stripe.checkout.sessions.create(checkoutObject);
   return {id: session.id};

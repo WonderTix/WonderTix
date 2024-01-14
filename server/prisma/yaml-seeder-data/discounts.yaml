@@ -1,30 +1,24 @@
 - code: SAVE10
+  active: true
   amount: 0
   percent: 10
-  startdate:
-  enddate:
   tickettypeid_fk:
-  createdby_fk:
   usagelimit:
   min_tickets:
   min_events:
 - code: FIVEOFF
+  active: true
   amount: 5
   percent: 0
-  startdate:
-  enddate:
   tickettypeid_fk:
-  createdby_fk:
   usagelimit:
   min_tickets:
   min_events:
 - code: TENOFF
-  amount: 5
+  active: true
+  amount: 10
   percent: 0
-  startdate:
-  enddate:
   tickettypeid_fk:
-  createdby_fk:
   usagelimit:
   min_tickets:
   min_events:

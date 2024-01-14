@@ -72,6 +72,7 @@ const ticketRestriction2: TicketRestriction = {
 };
 
 const discount1: DiscountItem = {
+  discountid: -1,
   code: '',
   amount: 0,
   percent: 0,
