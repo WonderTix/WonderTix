@@ -43,7 +43,6 @@ const Contacts = (): React.ReactElement => {
         )
         .then((res) => {
           // Maps database values to Contact type
-          console.log(res.data.data);
           setContactList(
             res.data.data.map((contact) => {
               return {

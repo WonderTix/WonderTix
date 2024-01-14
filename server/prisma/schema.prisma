@@ -20,7 +20,7 @@ model contacts {
   vip           Boolean?    @default(false)
   volunteerlist Boolean?    @default(false)
   newsletter    Boolean?    @default(false)
-  donations     donations[] 
+  donations     donations[]
   orders        orders[]
   city          String?     @db.VarChar(255)
   state         String?     @db.VarChar(255)
