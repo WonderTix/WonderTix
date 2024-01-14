@@ -27,18 +27,18 @@ export class ContactPage {
         this.searchContact = page.getByTestId('contact-search');
         this.searchContactButton = page.getByTestId('contact-search-button');
 
-        this.customerCard = page.getByTestId('customer-card');
+        this.customerCard = page.getByTestId('contact-card');
 
-        this.customerName = page.getByTestId('customer-name');
-        this.customerID = page.getByTestId('customer-id');
-        this.customerEmail = page.getByTestId('customer-email');
-        this.customerPhone = page.getByTestId('customer-phone');
-        this.customerAddress = page.getByTestId('customer-address');
-        this.customerNewsletter = page.getByTestId('customer-newsletter');
-        this.customerDonor = page.getByTestId('customer-donorbadge');
-        this.customerAccommodations = page.getByTestId('customer-accommodation');
-        this.customerVIP = page.getByTestId('customer-vip');
-        this.customerVolunteer = page.getByTestId('customer-volunteer');
+        this.customerName = page.getByTestId('name');
+        this.customerID = page.getByTestId('id');
+        this.customerEmail = page.getByTestId('email');
+        this.customerPhone = page.getByTestId('phone');
+        this.customerAddress = page.getByTestId('address');
+        this.customerNewsletter = page.getByTestId('newsletter');
+        this.customerDonor = page.getByTestId('donorbadge');
+        this.customerAccommodations = page.getByTestId('accommodation');
+        this.customerVIP = page.getByTestId('vip');
+        this.customerVolunteer = page.getByTestId('volunteer');
     }
 
     async goto() {
@@ -52,16 +52,16 @@ export class ContactPage {
 
     async checkCustomer(customer: CustomerInfo) {
         const currentCard = this.customerCard.filter({hasText: customer.fullName});
-        expect(await currentCard.getByTestId('customer-name').textContent()).toBe(customer.fullName);
-        expect(await currentCard.getByTestId('customer-email').textContent()).toBe(customer.email);
-        expect(await currentCard.getByTestId('customer-address').textContent()).toBe(customer.streetAddress);
-        expect(await currentCard.getByTestId('customer-phone').textContent()).toBe(customer.phoneNumber);
-        expect(await currentCard.getByTestId('customer-accommodation').textContent()).toBe(customer.accommodations);
+        expect(await currentCard.getByTestId('name').textContent()).toBe(customer.fullName);
+        expect(await currentCard.getByTestId('email').textContent()).toBe(customer.email);
+        expect(await currentCard.getByTestId('address').textContent()).toBe(`${customer.streetAddress}, ${customer.city}, ${customer.state} ${customer.postCode}, ${customer.country}`);
+        expect(await currentCard.getByTestId('phone').textContent()).toBe(customer.phoneNumber);
+        expect(await currentCard.getByTestId('accommodation').textContent()).toBe(customer.accommodations);
     }
 
     // Incomplete, page functionality not implemented
     async deleteCustomer(customer: CustomerInfo) {
         await this.searchCustomer(customer);
-        await this.customerCard.filter({hasText: customer.fullName}).getByRole('button', {name: 'Remove Customer'}).click();
+        await this.customerCard.filter({hasText: customer.fullName}).getByRole('button', {name: 'Remove Contact'}).click();
     }
 }

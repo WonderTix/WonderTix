@@ -69,10 +69,10 @@ const ContactCard = ({
     if (responseCode === 204) {
       void refreshContacts();
     } else if (responseCode === 400) {
-      setErrorMsg('Cannot remove a customer with orders or donations');
+      setErrorMsg('Cannot remove a contact with orders or donations');
       setShowErrorPopUp(true);
     } else {
-      setErrorMsg('Failed to remove customer');
+      setErrorMsg('Failed to remove contact');
       setShowErrorPopUp(true);
     }
   };
@@ -80,7 +80,7 @@ const ContactCard = ({
   return (
     <>
       <section
-        data-testid='customer-card'
+        data-testid='contact-card'
         className='relative w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-5 p-5'
       >
         <header className='flex justify-between border-b pb-5'>
@@ -126,7 +126,7 @@ const ContactCard = ({
                 </button>
               </li>
             </Tooltip>
-            <Tooltip title='Remove customer' placement='top' arrow>
+            <Tooltip title='Remove contact' placement='top' arrow>
               <li>
                 <button
                   className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
@@ -154,47 +154,47 @@ const ContactCard = ({
         </header>
         <p className='flex flex-row gap-3 text-lg mt-5 w-full'>
           <span className='font-semibold'>Full Name:</span>
-          <span data-testid='customer-name'>{first} {last}</span>
+          <span data-testid='name'>{first} {last}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Contact ID:</span>
-          <span data-testid='customer-id'>{contactId}</span>
+          <span data-testid='id'>{contactId}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Email:</span>
-          <span data-testid='customer-email'>{email}</span>
+          <span data-testid='email'>{email}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Phone:</span>
-          <span data-testid='customer-phone'>{phone}</span>
+          <span data-testid='phone'>{phone}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Full Address:</span>
-          <span data-testid='customer-address'>{address}, {city}, {state} {postalCode}, {country}</span>
+          <span data-testid='address'>{address}, {city}, {state} {postalCode}, {country}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Seating Accommodation:</span>
-          <span data-testid='customer-accommodation'>{seatingAcc}</span>
+          <span data-testid='accommodation'>{seatingAcc}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Newsletter:</span>
-          <span data-testid='customer-newsletter'>
+          <span data-testid='newsletter'>
             {newsletter ? 'Yes' : 'No'}
           </span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Donor Badge:</span>
-          <span data-testid='customer-donorbadge'>
+          <span data-testid='donorbadge'>
             {donorBadge ? 'Yes' : 'No'}
           </span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>VIP:</span>
-          <span data-testid='customer-vip'>{vip ? 'Yes' : 'No'}</span>
+          <span data-testid='vip'>{vip ? 'Yes' : 'No'}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Volunteer List:</span>
-          <span data-testid='customer-volunteer'>
+          <span data-testid='volunteer'>
             {volunteerList ? 'Yes' : 'No'}
           </span>
         </p>
@@ -222,7 +222,7 @@ const ContactCard = ({
       {showConfirmationPopUp && (
         <PopUp
           title='Confirm removal'
-          message='Click remove to delete this customer'
+          message='Click remove to delete this contact'
           secondaryLabel='Cancel'
           primaryLabel='Remove'
           handleClose={() => setShowConfirmationPopUp(false)}
