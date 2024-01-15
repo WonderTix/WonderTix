@@ -11,17 +11,17 @@ export const createSubmitFunction = (
   onError?,
 ) => {
   return async (event, actions?) => {
-    actions?.setStatus('Submitting...');
-    try {
-      const submitRes = await fetch(url, {
-        credentials: 'include',
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(event),
-      });
+      actions?.setStatus('Submitting...');
+      try {
+        const submitRes = await fetch(url, {
+          credentials: 'include',
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(event),
+        });
 
         actions?.setSubmitting(false);
 

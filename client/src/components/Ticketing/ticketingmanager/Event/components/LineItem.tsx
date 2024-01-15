@@ -13,9 +13,7 @@ interface itemProps {
 
 export const LineItem = (props: itemProps) => {
   const {label, information, event, description, onClickMethod} = props;
-  const [additionalClass, setAdditionalClass] = useState(
-    !event? 'truncate' : '',
-  );
+  const [additionalClass, setAdditionalClass] = useState(!event? 'truncate' : '');
 
   const divClass = !event
     ? 'flex flex-row justify-between min-[768px]:grid min-[768px]:grid-cols-12 text-zinc-800'

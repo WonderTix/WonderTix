@@ -671,6 +671,8 @@ export interface EventPageData {
  * @module
  * @param {RootState} state - different types of state of selectEventData
  * @param {EventId} eventid
+ * @param ticketData - uses state.ticketing.tickets
+ * @param event - uses state.ticketing.events.find(byId(eventid))
  * @returns playData, Tickets | undefined
  */
 export const selectEventData = (
