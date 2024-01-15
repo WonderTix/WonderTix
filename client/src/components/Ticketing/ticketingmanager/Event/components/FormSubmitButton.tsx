@@ -17,7 +17,7 @@ export const FormSubmitButton = (props: FormSubmitButton) => {
     <FormButton
       testID={testID}
       onClick={submitForm}
-      title={'Save'}
+      title='Save'
       disabled={isSubmitting || !isValid || isValidating || showPopUp}
       className={className}
       type='submit'

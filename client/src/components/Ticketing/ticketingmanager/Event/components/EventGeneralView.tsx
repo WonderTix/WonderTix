@@ -62,13 +62,13 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
             }}
             title='Edit'
             disabled={editing || showPopUp}
-            className='flex justify-center items-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+            className='flex justify-center items-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
             testID='event-edit-button'
           >
             <EditIcon className='h-6 w-6' />
           </FormButton>
           <FormDeleteButton
-            className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+            className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
             onDelete={onDelete}
             testID='event-delete-button'
           >

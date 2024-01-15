@@ -32,11 +32,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues
       ? initialValues.ticketrestrictions
-      : [
-          getInstanceTicketType(
-            ticketTypes.find((type) => type.tickettypeid_fk === 1),
-          ),
-        ],
+      : [getInstanceTicketType(ticketTypes.find((type) => type.tickettypeid_fk === 1))],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
     detail: initialValues?.detail ? initialValues.detail : '',
@@ -148,7 +144,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                   testID='showing-leave-edit'
                   disabled={showPopUp}
                   onClick={onLeaveEdit}
-                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
+                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
                 >
                   <BackIcon className='h-7 w-7' />
                 </FormButton>

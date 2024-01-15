@@ -4,9 +4,9 @@ import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
 import {
-  CloneIcon,
   cloneShowing,
   createSubmitFunction,
+  CloneIcon,
   EditIcon,
   TrashCanIcon,
 } from './ShowingUtils';
@@ -52,14 +52,14 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
     setEditing((editing) => !editing);
   };
   const onCloneError = async () => {
-    setReloadShowing((reload) => !reload);
-    setPopUpProps(
-      'Failure',
-      'Showing clone failed',
-      false,
-      `clone-modal-failure`,
-    );
-    setEditing((editing) => !editing);
+      setReloadShowing((reload) => !reload);
+      setPopUpProps(
+          'Failure',
+          'Showing clone failed',
+          false,
+          `clone-modal-failure`,
+      );
+      setEditing((editing) => !editing);
   };
   const submitClone = createSubmitFunction(
     'POST',
@@ -93,7 +93,6 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             <LineItem
               label={'Detail'}
               information={showing.detail}
-              description={true}
               onClickMethod={(
                 set: React.Dispatch<React.SetStateAction<string>>,
                 current: string,
@@ -157,7 +156,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
           <FormButton
             title='Edit'
             testID={`${showing.eventinstanceid}-showing-edit-button`}
-            className='flex items-center justify-center bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
+            className='flex items-center justify-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
             disabled={editing || showPopUp}
             onClick={setEdit}
           >
@@ -166,7 +165,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
           <FormButton
               title='Clone'
               testID={`${showing.eventinstanceid}-showing-clone-button`}
-              className='flex justify-center items-center bg-white hover:bg-gray-50 shadow-xl disabled:bg-gray-500 text-white font-bold p-2 rounded-xl'
+              className='flex justify-center items-center bg-white hover:bg-gray-50 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
               disabled={editing || showPopUp}
               onClick={() => {
                 setEditing((editing) => !editing);
@@ -178,7 +177,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
           <FormDeleteButton
             onDelete={onDelete}
             testID={`${showing.eventinstanceid}-showing-delete-button`}
-            className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
+            className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
           >
             <TrashCanIcon className='h-6 w-6' />
           </FormDeleteButton>

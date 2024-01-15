@@ -23,21 +23,21 @@ export const createSubmitFunction = (
         body: JSON.stringify(event),
       });
 
-      actions?.setSubmitting(false);
+        actions?.setSubmitting(false);
 
-      if (!submitRes.ok) {
-        throw submitRes;
+        if (!submitRes.ok) {
+          throw submitRes;
+        }
+        if (onSuccess) {
+          await onSuccess(submitRes);
+        }
+      } catch (error) {
+        actions?.setSubmitting(false);
+        if (onError) {
+          await onError(error);
+        }
       }
-      if (onSuccess) {
-        await onSuccess(submitRes);
-      }
-    } catch (error) {
-      actions?.setSubmitting(false);
-      if (onError) {
-        await onError(error);
-      }
-    }
-  };
+    };
 };
 
 export const createDeleteFunction = (

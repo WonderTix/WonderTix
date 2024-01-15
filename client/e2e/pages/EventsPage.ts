@@ -16,9 +16,9 @@ export class EventsPage {
   readonly imageURL: Locator;
   readonly pageHeader: Locator;
 
-  readonly activeViewOption: Locator;
-  readonly inactiveViewOption: Locator;
-  readonly allViewOption: Locator;
+  readonly activeViewOption : Locator;
+  readonly inactiveViewOption : Locator;
+  readonly allViewOption : Locator;
 
   readonly newEventSave: Locator;
   readonly newShowingSave: Locator;
@@ -96,7 +96,9 @@ export class EventsPage {
     this.takeMeThere = page.getByRole('button', {name: 'Take me there!'});
     this.backToEvents = page.getByRole('button', {name: 'back to Events'});
     this.concessionTicket = page.getByRole('checkbox');
-    this.editShowingButton = page.locator('button').filter({hasText: /^Edit$/});
+    this.editShowingButton = page
+        .locator('button')
+        .filter({hasText: /^Edit$/});
     this.ticketQuantityOption = page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});
@@ -137,25 +139,21 @@ export class EventsPage {
    * Switches the status of the event's activeness.
    */
   async activateEvent() {
-    await this.activateEventchecker.check();
+     await this.activateEventchecker.check();
   }
 
   /**
    * Creates a new event using the default image.
    */
-  async addDefaultIMGevent(anEvent: EventInfo) {
-    await this.addButton.click();
-    await this.eventNameBlank.click();
-    await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
-    await this.eventDesBlank.click();
-    await this.page
-      .getByLabel('Event Description:')
-      .fill(anEvent.eventDescription);
-    await this.newEventSave.click();
-    await this.eventContinue.click();
-    await expect(
-      this.page.getByRole('img', {name: 'Event Image Playbill'}),
-    ).toBeVisible();
+ async addDefaultIMGevent(anEvent: EventInfo) {
+     await this.addButton.click();
+     await this.eventNameBlank.click();
+     await this.page.getByLabel('Event Name:').fill(anEvent.eventName);
+     await this.eventDesBlank.click();
+     await this.page.getByLabel('Event Description:').fill(anEvent.eventDescription);
+     await this.newEventSave.click();
+     await this.eventContinue.click();
+     await expect(this.page.getByRole('img', {name: 'Event Image Playbill'})).toBeVisible();
   }
 
   /**
@@ -209,58 +207,29 @@ export class EventsPage {
    */
   async checkNewEventOnHomePage(anEvent: EventInfo) {
     await this.homePage.click();
-    await expect(
-      this.page.getByText(anEvent.eventDescription).first(),
-    ).toBeVisible();
+    await expect(this.page.getByText(anEvent.eventDescription).first()).toBeVisible();
   }
 
   async goToEventFromManage(anEvent: EventInfo) {
     await this.emailButton.click();
     await this.manageTicketingButton.click();
     await this.leftBarEvent.click();
-    await this.page
-      .getByRole('button', {
-        name:
-          anEvent.eventName +
-          ' ' +
-          'Playbill' +
-          ' ' +
-          anEvent.eventName +
-          ' ' +
-          'Description' +
-          ' ' +
-          anEvent.eventDescription,
-      })
-      .first()
-      .click();
+    await this.page.getByRole('button', {name: anEvent.eventName+' '+'Playbill'+' '+anEvent.eventName+' '+'Description'+' '+anEvent.eventDescription}).first().click();
   }
 
-  /**
-   * Asynchronously deletes an existing event based on provided event details.
-   *
-   * @param {EventInfo} anEvent - Object with event details to be deleted, the data needed:
-   *    - `eventName`: Name of the event.
-   *    - `eventDescription`: Description of the event.
-   */
+ /**
+  * Asynchronously deletes an existing event based on provided event details.
+  *
+  * @param {EventInfo} anEvent - Object with event details to be deleted, the data needed:
+  *    - `eventName`: Name of the event.
+  *    - `eventDescription`: Description of the event.
+  */
   async deleteTheEvent(anEvent: EventInfo) {
     await this.deleteButton.click();
     await this.eventContinue.click();
     await this.leftBarEvent.click();
     await this.page.reload();
-    await expect(
-      this.page.getByRole('button', {
-        name:
-          anEvent.eventName +
-          ' ' +
-          'Playbill' +
-          ' ' +
-          anEvent.eventName +
-          ' ' +
-          'Description' +
-          ' ' +
-          anEvent.eventDescription,
-      }),
-    ).not.toBeVisible();
+    await expect(this.page.getByRole('button', {name: anEvent.eventName+' '+'Playbill'+' '+anEvent.eventName+' '+'Description'+' '+anEvent.eventDescription})).not.toBeVisible();
   }
 
   /**
@@ -283,7 +252,7 @@ export class EventsPage {
     await this.imageURL.fill(anEvent.eventURL);
     await this.newEventSave.click();
     await this.eventContinue.click();
-    if (disabled) {
+     if (disabled) {
       await this.page.reload();
     }
   }
@@ -296,14 +265,14 @@ export class EventsPage {
     await this.page.getByText(anEvent.eventDescription).click();
   }
 
-  /**
-   * Asynchronously edits the showing information.
-   *
-   * @param {ShowingInfo} aShowing - The showing information to be edited.
-   *    - `showingDate`: Date of the showing (e.g., '2023-10-11').
-   *    - `showingTime24hour`: Time in 24-hour format (e.g., '00:10').
-   *    - `showingQuantity`: Quantity of showings (e.g., '10').
-   */
+   /**
+    * Asynchronously edits the showing information.
+    *
+    * @param {ShowingInfo} aShowing - The showing information to be edited.
+    *    - `showingDate`: Date of the showing (e.g., '2023-10-11').
+    *    - `showingTime24hour`: Time in 24-hour format (e.g., '00:10').
+    *    - `showingQuantity`: Quantity of showings (e.g., '10').
+    */
   async editShowingInfo(aShowing: ShowingInfo) {
     const editShowingButton = this.page.getByTestId(new RegExp('.*-showing-edit-button'));
     const disabled = await editShowingButton.isDisabled();

@@ -17,11 +17,7 @@ interface EventInstanceSelectProps {
  * @param {EventInstanceSelectProps} props
  * @returns the selection of date and others once clicked
  */
-const EventInstanceSelect = ({
-  check,
-  eventInstances,
-  eventInstanceSelected,
-}: EventInstanceSelectProps) => {
+const EventInstanceSelect = ({check, eventInstances, eventInstanceSelected}: EventInstanceSelectProps) => {
   const [selectedId, setSelectedId] = useState(-1);
 
   useEffect(() => {
@@ -32,9 +28,7 @@ const EventInstanceSelect = ({
 
   const handleClick = (id: number) => {
     setSelectedId(id);
-    const eventInstance = eventInstances.find(
-      (obj) => obj.event_instance_id === id,
-    );
+    const eventInstance = eventInstances.find((obj) => obj.event_instance_id === id);
     if (eventInstanceSelected) {
       eventInstanceSelected(eventInstance);
     }

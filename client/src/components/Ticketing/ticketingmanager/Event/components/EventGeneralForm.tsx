@@ -17,9 +17,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onLeaveEdit} = props;
   const {eventData, showPopUp, token} = useEvent();
   const [seasons, setSeasons] = useState([]);
-  const [showButton, setShowButton] = useState(
-    eventData && eventData.imageurl !== 'Default Event Image',
-  );
+  const [showButton, setShowButton] = useState(eventData && eventData.imageurl !== 'Default Event Image');
 
   const handleInputChange = (event) => {
     setShowButton(event.target.value !== 'Default Event Image');
@@ -43,10 +41,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     eventname: eventData ? eventData.eventname : '',
     eventid: eventData ? eventData.eventid : 0,
     eventdescription: eventData ? eventData.eventdescription : '',
-    imageurl:
-      eventData && eventData.imageurl !== ''
-        ? eventData.imageurl
-        : 'Default Event Image',
+    imageurl: eventData && eventData.imageurl !== '' ? eventData.imageurl : 'Default Event Image',
     active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
   };
@@ -57,7 +52,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
     >
-      {({handleSubmit, values, setFieldValue}) => (
+      {({handleSubmit, values, setFieldValue, isSubmitting}) => (
         <form
           className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'}
           onSubmit={handleSubmit}
@@ -76,7 +71,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
               }
             >
               <FormSubmitButton
-                className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl h-fit'
+                className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl h-fit shadow-xl'
                 testID='event-save-button'
               >
                 <SaveIcon className='h-6 w-6' />
@@ -85,9 +80,9 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 <FormButton
                   title='Back'
                   testID='event-leave-edit'
-                  disabled={showPopUp}
+                  disabled={isSubmitting || showPopUp}
                   onClick={onLeaveEdit}
-                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
+                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
                 >
                   <BackIcon className='h-6 w-6' />
                 </FormButton>
