@@ -18,7 +18,6 @@ async function seedSeasons(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      seasonid: item.seasonid,
       name: item.name,
       startdate: item.startdate,
       enddate: item.enddate,

@@ -20,7 +20,6 @@ async function seedEventInstances(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      eventinstanceid: item.eventinstanceid,
       eventid_fk: item.eventid_fk,
       eventdate: item.eventdate,
       eventtime: parseDateTime(item.eventtime),

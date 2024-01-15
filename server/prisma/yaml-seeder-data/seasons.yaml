@@ -1,35 +1,28 @@
-- seasonid: 1
-  name: Christmas Holiday
+- name: Christmas Holiday
   startdate: 20221201
   enddate: 20221230
   imageurl: https://assets.playbill.com/playbill-covers/A-Christmas-Carol-Playbill-2022-11-08_Web-1.jpg
-- seasonid: 2
-  name: The Spirit of Halloween
+- name: The Spirit of Halloween
   startdate: 20231010
   enddate: 20231031
   imageurl: https://assets.playbill.com/playbill-covers/Beetlejuice-Playbill-2022-4-8_Web.jpg
-- seasonid: 3
-  name: Thanksgiving and Gratitude
+- name: Thanksgiving and Gratitude
   startdate: 20191105
   enddate: 20191125
   imageurl: https://assets.playbill.com/playbill-covers/The-Thanksgiving-Play-Playbill-2023-04-20_Web.jpg
-- seasonid: 4
-  name: Dia De Lost Muertos
+- name: Dia De Lost Muertos
   startdate: 20201101
   enddate: 20200105
   imageurl: https://mir-s3-cdn-cf.behance.net/project_modules/disp/1e6f2f11668561.560fb89e613bd.jpg
-- seasonid: 5
-  name: New Year New Me
+- name: New Year New Me
   startdate: 20231215
   enddate: 20240115
   imageurl: https://marketplace.canva.com/EAFnjQxunCs/1/0/1131w/canva-colorful-playful-illustrative-happy-new-year-poster-6BKmbSLEYaM.jpg
-- seasonid: 6
-  name: 'Holiday Comedy'
+- name: 'Holiday Comedy'
   startdate: 20231201
   enddate: 20231230
   imageurl: 'https://assets.playbill.com/playbill-covers/f5a35f660454c9e02406091334b90ed0-a-christmas-carol-playbill-2019-11-07-web.jpg'
-- seasonid: 7
-  name: 'Easter Egg Hunt'
+- name: 'Easter Egg Hunt'
   startdate: 20210901
   enddate: 20220423
   imageurl: 'https://marketplace.canva.com/EAE8cKE7Cns/1/0/1131w/canva-blue-and-pink-cute-bunny-happy-easter-poster-R9grIHBtnUE.jpg'

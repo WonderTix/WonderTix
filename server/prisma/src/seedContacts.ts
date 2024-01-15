@@ -18,7 +18,6 @@ async function seedContacts(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      contactid: item.contactid,
       firstname: item.firstname,
       lastname: item.lastname,
       address: item.address,

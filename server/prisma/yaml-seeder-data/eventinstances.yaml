@@ -1,5 +1,4 @@
-- eventinstanceid: 1
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150115
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -8,8 +7,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 2
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150117
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -18,8 +16,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 3
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150119
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -28,8 +25,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 4
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150121
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -38,8 +34,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 5
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150123
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -48,8 +43,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 6
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150125
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -58,8 +52,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 7
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150127
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -68,8 +61,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 8
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150129
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -78,8 +70,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 9
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150131
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -88,8 +79,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 10
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150202
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -98,8 +88,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 11
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150204
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -108,8 +97,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 12
-  eventid_fk: 1
+- eventid_fk: 1
   eventdate: 20150206
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -118,8 +106,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 13
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150222
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -128,8 +115,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 14
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150224
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -138,8 +124,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 15
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150226
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -148,8 +133,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 16
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150228
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -158,8 +142,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 17
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150302
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -168,8 +151,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 18
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150304
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -178,8 +160,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 19
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150306
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -188,8 +169,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 20
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150308
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -198,8 +178,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 21
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150310
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -208,8 +187,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 22
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150312
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -218,8 +196,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 23
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150314
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -228,8 +205,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 24
-  eventid_fk: 2
+- eventid_fk: 2
   eventdate: 20150316
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -238,8 +214,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 25
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150401
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -248,8 +223,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 26
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150403
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -258,8 +232,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 27
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150405
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -268,8 +241,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 28
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150407
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -278,8 +250,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 29
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150409
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -288,8 +259,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 30
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150411
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -298,8 +268,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 31
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150413
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -308,8 +277,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 32
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150415
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -318,8 +286,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 33
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150417
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -328,8 +295,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 34
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150419
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -338,8 +304,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 35
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150421
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -348,8 +313,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 36
-  eventid_fk: 3
+- eventid_fk: 3
   eventdate: 20150423
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -358,8 +322,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 37
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150509
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -368,8 +331,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 38
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150511
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -378,8 +340,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 39
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150513
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -388,8 +349,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 40
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150515
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -398,8 +358,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 41
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150517
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -408,8 +367,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 42
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150519
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -418,8 +376,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 43
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150521
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -428,8 +385,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 44
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150523
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -438,8 +394,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 45
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150525
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -448,8 +403,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 46
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150527
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -458,8 +412,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 47
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150529
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -468,8 +421,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 48
-  eventid_fk: 4
+- eventid_fk: 4
   eventdate: 20150531
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -478,8 +430,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 49
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150616
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -488,8 +439,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 50
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150618
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -498,8 +448,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 51
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150620
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -508,8 +457,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 52
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150622
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -518,8 +466,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 53
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150624
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -528,8 +475,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 54
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150626
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -538,8 +484,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 55
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150628
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -548,8 +493,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 56
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150630
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -558,8 +502,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 57
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150702
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -568,8 +511,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 58
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150704
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -578,8 +520,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 59
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150706
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -588,8 +529,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 60
-  eventid_fk: 5
+- eventid_fk: 5
   eventdate: 20150708
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -598,8 +538,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 61
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150724
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -608,8 +547,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 62
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150726
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -618,8 +556,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 63
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150728
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -628,8 +565,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 64
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150730
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -638,8 +574,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 65
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150801
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -648,8 +583,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 66
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150803
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -658,8 +592,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 67
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150805
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -668,8 +601,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 68
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150807
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -678,8 +610,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 69
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150809
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -688,8 +619,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 70
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150811
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -698,8 +628,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 71
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150813
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -708,8 +637,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 72
-  eventid_fk: 6
+- eventid_fk: 6
   eventdate: 20150815
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -718,8 +646,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 73
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160504
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -728,8 +655,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 74
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160506
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -738,8 +664,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 75
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160508
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -748,8 +673,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 76
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160510
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -758,8 +682,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 77
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160512
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -768,8 +691,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 78
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160514
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -778,8 +700,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 79
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160516
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -788,8 +709,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 80
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160518
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -798,8 +718,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 81
-  eventid_fk: 7
+- eventid_fk: 7
   eventdate: 20160520
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -808,8 +727,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 82
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160605
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -818,8 +736,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 83
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160607
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -828,8 +745,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 84
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160609
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -838,8 +754,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 85
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160611
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -848,8 +763,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 86
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160613
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -858,8 +772,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 87
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160615
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -868,8 +781,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 88
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160617
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -878,8 +790,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 89
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160619
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -888,8 +799,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 90
-  eventid_fk: 8
+- eventid_fk: 8
   eventdate: 20160621
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -898,8 +808,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 91
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160707
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -908,8 +817,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 92
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160709
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -918,8 +826,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 93
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160711
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -928,8 +835,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 94
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160713
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -938,8 +844,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 95
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160715
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -948,8 +853,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 96
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160717
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -958,8 +862,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 97
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160719
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -968,8 +871,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 98
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160721
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -978,8 +880,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 99
-  eventid_fk: 9
+- eventid_fk: 9
   eventdate: 20160723
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -988,8 +889,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 100
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160808
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -998,8 +898,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 101
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160810
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1008,8 +907,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 102
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160812
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -1018,8 +916,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 103
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160814
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -1028,8 +925,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 104
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160816
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -1038,8 +934,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 105
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160818
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1048,8 +943,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 106
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160820
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1058,8 +952,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 107
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160822
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -1068,8 +961,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 108
-  eventid_fk: 10
+- eventid_fk: 10
   eventdate: 20160824
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -1078,8 +970,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 109
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160909
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1088,8 +979,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 110
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160911
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1098,8 +988,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 111
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160913
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1108,8 +997,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 112
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160915
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1118,8 +1006,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 113
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160917
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1128,8 +1015,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 114
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160919
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1138,8 +1024,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 115
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160921
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1148,8 +1033,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 116
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160923
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1158,8 +1042,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 117
-  eventid_fk: 11
+- eventid_fk: 11
   eventdate: 20160925
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1168,8 +1051,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 118
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161011
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1178,8 +1060,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 119
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161013
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1188,8 +1069,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 120
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161015
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1198,8 +1078,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 121
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161017
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1208,8 +1087,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 122
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161019
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1218,8 +1096,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 123
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161021
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -1228,8 +1105,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 124
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161023
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1238,8 +1114,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 125
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161025
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1248,8 +1123,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 126
-  eventid_fk: 12
+- eventid_fk: 12
   eventdate: 20161027
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -1258,8 +1132,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 127
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170608
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1268,8 +1141,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 128
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170610
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1278,8 +1150,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 129
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170612
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1288,8 +1159,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 130
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170614
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1298,8 +1168,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 131
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170616
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1308,8 +1177,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 132
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170618
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1318,8 +1186,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 133
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170620
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1328,8 +1195,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 134
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170622
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1338,8 +1204,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 135
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170624
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -1348,8 +1213,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 136
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170626
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1358,8 +1222,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 137
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170628
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1368,8 +1231,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 138
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170630
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -1378,8 +1240,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 139
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170702
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1388,8 +1249,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 140
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170704
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1398,8 +1258,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 141
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170706
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -1408,8 +1267,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 142
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170708
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1418,8 +1276,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 143
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170710
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1428,8 +1285,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 144
-  eventid_fk: 13
+- eventid_fk: 13
   eventdate: 20170712
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1438,8 +1294,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 145
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170728
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1448,8 +1303,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 146
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170730
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -1458,8 +1312,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 147
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170801
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1468,8 +1321,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 148
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170803
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1478,8 +1330,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 149
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170805
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1488,8 +1339,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 150
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170807
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1498,8 +1348,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 151
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170809
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1508,8 +1357,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 152
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170811
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1518,8 +1366,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 153
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170813
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1528,8 +1375,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 154
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170815
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1538,8 +1384,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 155
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170817
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1548,8 +1393,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 156
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170819
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1558,8 +1402,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 157
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170821
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1568,8 +1411,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 158
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170823
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -1578,8 +1420,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 159
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170825
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1588,8 +1429,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 160
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170827
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1598,8 +1438,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 161
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170829
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1608,8 +1447,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 162
-  eventid_fk: 14
+- eventid_fk: 14
   eventdate: 20170831
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1618,8 +1456,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 163
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20170916
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -1628,8 +1465,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 164
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20170918
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1638,8 +1474,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 165
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20170920
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1648,8 +1483,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 166
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20170922
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -1658,8 +1492,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 167
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20170924
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1668,8 +1501,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 168
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20170926
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1678,8 +1510,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 169
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20170928
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -1688,8 +1519,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 170
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20170930
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1698,8 +1528,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 171
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171002
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -1708,8 +1537,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 172
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171004
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1718,8 +1546,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 173
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171006
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -1728,8 +1555,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 174
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171008
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1738,8 +1564,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 175
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171010
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1748,8 +1573,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 176
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171012
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1758,8 +1582,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 177
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171014
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1768,8 +1591,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 178
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171016
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1778,8 +1600,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 179
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171018
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1788,8 +1609,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 180
-  eventid_fk: 15
+- eventid_fk: 15
   eventdate: 20171020
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -1798,8 +1618,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 181
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171105
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -1808,8 +1627,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 182
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171107
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1818,8 +1636,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 183
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171109
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1828,8 +1645,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 184
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171111
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1838,8 +1654,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 185
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171113
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1848,8 +1663,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 186
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171115
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -1858,8 +1672,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 187
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171117
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1868,8 +1681,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 188
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171119
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -1878,8 +1690,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 189
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171121
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -1888,8 +1699,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 190
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171123
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1898,8 +1708,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 191
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171125
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1908,8 +1717,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 192
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171127
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -1918,8 +1726,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 193
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171129
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -1928,8 +1735,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 194
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171201
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -1938,8 +1744,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 195
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171203
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -1948,8 +1753,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 196
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171205
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -1958,8 +1762,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 197
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171207
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -1968,8 +1771,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 198
-  eventid_fk: 16
+- eventid_fk: 16
   eventdate: 20171209
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -1978,8 +1780,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 199
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180721
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -1988,8 +1789,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 200
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180723
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -1998,8 +1798,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 201
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180725
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2008,8 +1807,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 202
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180727
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -2018,8 +1816,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 203
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180729
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2028,8 +1825,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 204
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180731
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2038,8 +1834,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 205
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180802
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -2048,8 +1843,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 206
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180804
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2058,8 +1852,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 207
-  eventid_fk: 17
+- eventid_fk: 17
   eventdate: 20180806
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2068,8 +1861,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 208
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180822
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -2078,8 +1870,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 209
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180824
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2088,8 +1879,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 210
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180826
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2098,8 +1888,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 211
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180828
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2108,8 +1897,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 212
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180830
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2118,8 +1906,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 213
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180901
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -2128,8 +1915,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 214
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180903
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2138,8 +1924,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 215
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180905
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2148,8 +1933,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 216
-  eventid_fk: 18
+- eventid_fk: 18
   eventdate: 20180907
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2158,8 +1942,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 217
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20180923
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2168,8 +1951,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 218
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20180925
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -2178,8 +1960,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 219
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20180927
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -2188,8 +1969,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 220
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20180929
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2198,8 +1978,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 221
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20181001
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -2208,8 +1987,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 222
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20181003
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2218,8 +1996,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 223
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20181005
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2228,8 +2005,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 224
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20181007
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2238,8 +2014,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 225
-  eventid_fk: 19
+- eventid_fk: 19
   eventdate: 20181009
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2248,8 +2023,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 226
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181025
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2258,8 +2032,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 227
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181027
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2268,8 +2041,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 228
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181029
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -2278,8 +2050,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 229
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181031
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2288,8 +2059,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 230
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181102
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2298,8 +2068,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 231
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181104
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2308,8 +2077,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 232
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181106
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2318,8 +2086,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 233
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181108
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -2328,8 +2095,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 234
-  eventid_fk: 20
+- eventid_fk: 20
   eventdate: 20181110
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2338,8 +2104,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 235
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181126
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -2348,8 +2113,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 236
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181128
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2358,8 +2122,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 237
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181130
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2368,8 +2131,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 238
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181202
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2378,8 +2140,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 239
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181204
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2388,8 +2149,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 240
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181206
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2398,8 +2158,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 241
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181208
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2408,8 +2167,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 242
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181210
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2418,8 +2176,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 243
-  eventid_fk: 21
+- eventid_fk: 21
   eventdate: 20181212
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2428,8 +2185,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 244
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20181228
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2438,8 +2194,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 245
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20181230
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2448,8 +2203,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 246
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20190101
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -2458,8 +2212,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 247
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20190103
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2468,8 +2221,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 248
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20190105
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2478,8 +2230,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 249
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20190107
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2488,8 +2239,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 250
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20190109
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2498,8 +2248,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 251
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20190111
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -2508,8 +2257,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 252
-  eventid_fk: 22
+- eventid_fk: 22
   eventdate: 20190113
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2518,8 +2266,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 253
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190824
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2528,8 +2275,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 254
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190826
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2538,8 +2284,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 255
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190828
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -2548,8 +2293,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 256
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190830
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2558,8 +2302,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 257
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190901
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -2568,8 +2311,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 258
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190903
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2578,8 +2320,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 259
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190905
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2588,8 +2329,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 260
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190907
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -2598,8 +2338,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 261
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190909
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2608,8 +2347,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 262
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190911
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2618,8 +2356,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 263
-  eventid_fk: 23
+- eventid_fk: 23
   eventdate: 20190913
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2628,8 +2365,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 264
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20190929
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -2638,8 +2374,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 265
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191001
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2648,8 +2383,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 266
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191003
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -2658,8 +2392,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 267
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191005
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2668,8 +2401,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 268
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191007
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2678,8 +2410,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 269
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191009
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2688,8 +2419,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 270
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191011
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2698,8 +2428,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 271
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191013
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2708,8 +2437,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 272
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191015
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -2718,8 +2446,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 273
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191017
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -2728,8 +2455,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 274
-  eventid_fk: 24
+- eventid_fk: 24
   eventdate: 20191019
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -2738,8 +2464,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 275
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191104
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2748,8 +2473,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 276
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191106
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2758,8 +2482,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 277
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191108
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -2768,8 +2491,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 278
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191110
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2778,8 +2500,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 279
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191112
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2788,8 +2509,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 280
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191114
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2798,8 +2518,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 281
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191116
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -2808,8 +2527,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 282
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191118
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2818,8 +2536,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 283
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191120
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2828,8 +2545,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 284
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191122
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2838,8 +2554,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 285
-  eventid_fk: 25
+- eventid_fk: 25
   eventdate: 20191124
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -2848,8 +2563,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 286
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191210
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -2858,8 +2572,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 287
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191212
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2868,8 +2581,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 288
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191214
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -2878,8 +2590,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 289
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191216
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -2888,8 +2599,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 290
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191218
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -2898,8 +2608,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 291
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191220
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2908,8 +2617,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 292
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191222
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -2918,8 +2626,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 293
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191224
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2928,8 +2635,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 294
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191226
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -2938,8 +2644,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 295
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191228
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -2948,8 +2653,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 296
-  eventid_fk: 26
+- eventid_fk: 26
   eventdate: 20191230
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -2958,8 +2662,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 297
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200115
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -2968,8 +2671,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 298
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200117
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -2978,8 +2680,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 299
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200119
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -2988,8 +2689,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 300
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200121
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -2998,8 +2698,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 301
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200123
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -3008,8 +2707,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 302
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200125
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -3018,8 +2716,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 303
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200127
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -3028,8 +2725,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 304
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200129
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3038,8 +2734,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 305
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200131
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -3048,8 +2743,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 306
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200202
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -3058,8 +2752,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 307
-  eventid_fk: 27
+- eventid_fk: 27
   eventdate: 20200204
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3068,8 +2761,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 308
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200901
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3078,8 +2770,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 309
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200903
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3088,8 +2779,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 310
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200905
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -3098,8 +2788,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 311
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200907
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -3108,8 +2797,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 312
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200909
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -3118,8 +2806,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 313
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200911
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -3128,8 +2815,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 314
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200913
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -3138,8 +2824,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 315
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200915
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3148,8 +2833,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 316
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200917
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3158,8 +2842,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 317
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200919
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3168,8 +2851,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 318
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200921
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -3178,8 +2860,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 319
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200923
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -3188,8 +2869,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 320
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200925
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -3198,8 +2878,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 321
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200927
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -3208,8 +2887,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 322
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20200929
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3218,8 +2896,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 323
-  eventid_fk: 28
+- eventid_fk: 28
   eventdate: 20201001
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -3228,8 +2905,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 324
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201017
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3238,8 +2914,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 325
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201019
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -3248,8 +2923,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 326
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201021
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3258,8 +2932,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 327
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201023
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -3268,8 +2941,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 328
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201025
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -3278,8 +2950,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 329
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201027
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -3288,8 +2959,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 330
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201029
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3298,8 +2968,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 331
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201031
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -3308,8 +2977,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 332
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201102
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3318,8 +2986,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 333
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201104
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -3328,8 +2995,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 334
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201106
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3338,8 +3004,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 335
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201108
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3348,8 +3013,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 336
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201110
   eventtime: 21:00:00.000000 -08:00
   salestatus: false
@@ -3358,8 +3022,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 337
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201112
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -3368,8 +3031,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 338
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201114
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -3378,8 +3040,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 339
-  eventid_fk: 29
+- eventid_fk: 29
   eventdate: 20201116
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3388,8 +3049,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 340
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201202
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -3398,8 +3058,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 341
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201204
   eventtime: 17:00:00.000000 -08:00
   salestatus: false
@@ -3408,8 +3067,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 342
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201206
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3418,8 +3076,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 343
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201208
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -3428,8 +3085,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 344
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201210
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -3438,8 +3094,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 345
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201212
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -3448,8 +3103,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 346
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201214
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -3458,8 +3112,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 347
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201216
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3468,8 +3121,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 348
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201218
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -3478,8 +3130,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 349
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201220
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -3488,8 +3139,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 350
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201222
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3498,8 +3148,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 351
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201224
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -3508,8 +3157,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 352
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201226
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3518,8 +3166,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 353
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201228
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -3528,8 +3175,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 354
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20201230
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3538,8 +3184,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 355
-  eventid_fk: 30
+- eventid_fk: 30
   eventdate: 20210101
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -3548,8 +3193,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 356
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210117
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -3558,8 +3202,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 357
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210119
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -3568,8 +3211,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 358
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210121
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -3578,8 +3220,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 359
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210123
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -3588,8 +3229,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 360
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210125
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3598,8 +3238,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 361
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210127
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3608,8 +3247,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 362
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210129
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
@@ -3618,8 +3256,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 363
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210131
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
@@ -3628,8 +3265,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 364
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210202
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
@@ -3638,8 +3274,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 365
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210204
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -3648,8 +3283,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 366
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210206
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
@@ -3658,8 +3292,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 367
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210208
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
@@ -3668,8 +3301,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 368
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210210
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
@@ -3678,8 +3310,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 369
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210212
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
@@ -3688,8 +3319,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 370
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210214
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
@@ -3698,8 +3328,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 371
-  eventid_fk: 31
+- eventid_fk: 31
   eventdate: 20210216
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
@@ -3708,8 +3337,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 372
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20210915
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -3718,8 +3346,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 373
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20210917
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
@@ -3728,8 +3355,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 374
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20210919
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -3738,8 +3364,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 375
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20210921
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
@@ -3748,8 +3373,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 376
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20210923
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
@@ -3758,8 +3382,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 377
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20210925
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
@@ -3768,8 +3391,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 378
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20210927
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -3778,8 +3400,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 379
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20210929
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
@@ -3788,8 +3409,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 380
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20211001
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
@@ -3798,8 +3418,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 381
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20211003
   eventtime: 21:00:00.000000 -08:00
   salestatus: true
@@ -3808,8 +3427,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 382
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20211005
   eventtime: 21:00:00.000000 -08:00
   salestatus: true
@@ -3818,8 +3436,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 383
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20211007
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
@@ -3828,8 +3445,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 384
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20211009
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
@@ -3838,8 +3454,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 385
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20211011
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
@@ -3848,8 +3463,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 386
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20211013
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
@@ -3858,8 +3472,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 387
-  eventid_fk: 32
+- eventid_fk: 32
   eventdate: 20211015
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
@@ -3868,8 +3481,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 388
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211031
   eventtime: 21:00:00.000000 -08:00
   salestatus: true
@@ -3878,8 +3490,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 389
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211102
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -3888,8 +3499,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 390
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211104
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
@@ -3898,8 +3508,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 391
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211106
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
@@ -3908,8 +3517,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 392
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211108
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
@@ -3918,8 +3526,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 393
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211110
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
@@ -3928,8 +3535,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 394
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211112
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
@@ -3938,8 +3544,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 395
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211114
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
@@ -3948,8 +3553,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 396
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211116
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
@@ -3958,8 +3562,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 397
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211118
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
@@ -3968,8 +3571,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 398
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211120
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
@@ -3978,8 +3580,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 399
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211122
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -3988,8 +3589,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 400
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211124
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
@@ -3998,8 +3598,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 401
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211126
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4008,8 +3607,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 402
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211128
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
@@ -4018,8 +3616,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 403
-  eventid_fk: 33
+- eventid_fk: 33
   eventdate: 20211130
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -4028,8 +3625,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 404
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20211216
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
@@ -4038,8 +3634,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 405
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20211218
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4048,8 +3643,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 406
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20211220
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
@@ -4058,8 +3652,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 407
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20211222
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
@@ -4068,8 +3661,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 408
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20211224
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
@@ -4078,8 +3670,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 409
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20211226
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4088,8 +3679,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 410
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20211228
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
@@ -4098,8 +3688,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 411
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20211230
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
@@ -4108,8 +3697,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 412
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20220101
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -4118,8 +3706,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 413
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20220103
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
@@ -4128,8 +3715,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 414
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20220105
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
@@ -4138,8 +3724,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 415
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20220107
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -4148,8 +3733,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 416
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20220109
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4158,8 +3742,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 417
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20220111
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -4168,8 +3751,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 418
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20220113
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
@@ -4178,8 +3760,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 419
-  eventid_fk: 34
+- eventid_fk: 34
   eventdate: 20220115
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
@@ -4188,8 +3769,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 420
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220131
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -4198,8 +3778,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 421
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220202
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
@@ -4208,8 +3787,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 422
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220204
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -4218,8 +3796,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 423
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220206
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
@@ -4228,8 +3805,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 424
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220208
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
@@ -4238,8 +3814,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 425
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220210
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -4248,8 +3823,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 426
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220212
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
@@ -4258,8 +3832,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 427
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220214
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -4268,8 +3841,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 428
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220216
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -4278,8 +3850,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 429
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220218
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
@@ -4288,8 +3859,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 430
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220220
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
@@ -4298,8 +3868,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 431
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220222
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
@@ -4308,8 +3877,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 432
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220224
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -4318,8 +3886,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 433
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220226
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4328,8 +3895,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 434
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220228
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
@@ -4338,8 +3904,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 435
-  eventid_fk: 35
+- eventid_fk: 35
   eventdate: 20220302
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
@@ -4348,8 +3913,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 436
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220318
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
@@ -4358,8 +3922,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 437
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220320
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -4368,8 +3931,7 @@
   purchaseuri: http://null.com
   ispreview: true
   defaulttickettype: 1
-- eventinstanceid: 438
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220322
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4378,8 +3940,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 439
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220324
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
@@ -4388,8 +3949,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 440
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220326
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4398,8 +3958,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 441
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220328
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
@@ -4408,8 +3967,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 442
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220330
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
@@ -4418,8 +3976,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 443
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220401
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
@@ -4428,8 +3985,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 444
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220403
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -4438,8 +3994,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 445
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220405
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4448,8 +4003,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 446
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220407
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
@@ -4458,8 +4012,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 447
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220409
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
@@ -4468,8 +4021,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 448
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220411
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
@@ -4478,8 +4030,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 449
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220413
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
@@ -4488,8 +4039,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 450
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220415
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
@@ -4498,8 +4048,7 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
-- eventinstanceid: 451
-  eventid_fk: 36
+- eventid_fk: 36
   eventdate: 20220417
   eventtime: 14:00:00.000000 -08:00
   salestatus: true

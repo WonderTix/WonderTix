@@ -18,7 +18,6 @@ async function seedSeasonTickets(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      seasonticketid: item.seasonticketid,
       orderitemid_fk: item.orderitemid_fk,
       eventticketid_fk: item.eventticketid_fk,
       eventid_fk: item.eventid_fk,
