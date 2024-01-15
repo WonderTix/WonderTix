@@ -5,7 +5,6 @@ required=(
   "ARTIFACTS"
   "ENV"
   "SHORT_SHA"
-  "AUTH0_CLIENT_SECRET"
   "AUTH0_CLIENT_ID"
   "AUTH0_URL"
   "PUBLIC_STRIPE_KEY"
@@ -25,7 +24,6 @@ URL=${ROOT_URL:-$SERVER_REVISION}
   --destination=${ARTIFACTS}/client-img-${ENV}:${SHORT_SHA} \
   --cache=true \
   --cache-repo=${KANIKO_CACHE} \
-  --build-arg AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET} \
   --build-arg REACT_APP_API_1_URL=${URL}/api/1 \
   --build-arg REACT_APP_API_2_URL=${URL}/api/2 \
   --build-arg REACT_APP_AUTH0_AUDIENCE=${URL} \
