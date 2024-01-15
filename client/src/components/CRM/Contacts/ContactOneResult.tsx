@@ -198,6 +198,12 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
                 <p className='flex justify-between'>
                   <span className='font-bold'>
                     {item.quantity} x {item.description}
+                    {item.seasonname && (
+                      <span className='font-normal italic'>
+                        {' '}
+                        - {item.seasonname}
+                      </span>
+                    )}
                   </span>
                   <span className='font-bold'>
                     {toDollarAmount(Number(item.price))}

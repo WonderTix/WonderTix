@@ -310,6 +310,11 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                             events: {
                               select: {
                                 eventname: true,
+                                seasons: {
+                                  select: {
+                                    name: true,
+                                  },
+                                },
                               },
                             },
                           },
@@ -355,6 +360,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
             eventdate: ticket.eventtickets[0].eventinstances.eventdate,
             eventtime: ticket.eventtickets[0].eventinstances.eventtime,
             eventname: ticket.eventtickets[0].eventinstances.events.eventname,
+            seasonname: ticket.eventtickets[0].eventinstances.events.seasons?.name,
             tickettype: ticket.eventtickets[0].ticketrestrictions?.tickettype.description,
           };
         }).filter((ticket) => ticket !== null);
@@ -367,6 +373,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
           eventdate: ticketInfo[0].eventdate,
           eventtime: ticketInfo[0].eventtime,
           eventname: ticketInfo[0].eventname,
+          seasonname: ticketInfo[0].seasonname,
           tickettype: ticketInfo[0].tickettype,
         };
       }).filter((item) => item !== null);
