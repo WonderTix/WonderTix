@@ -8,12 +8,13 @@ import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
-import {getInstanceTicketType} from './ShowingUtils';
+import {getInstanceTicketType, SaveIcon, BackIcon} from './ShowingUtils';
+import {FormButton} from './FormButton';
 
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
   onSubmit: (event, action) => Promise<void>;
-  onDelete?: (event?) => void;
+  onDelete?: (event?) => Promise<void>;
   onLeaveEdit?: () => void;
 }
 
@@ -33,10 +34,14 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues
       ? initialValues.ticketrestrictions
-      : [getInstanceTicketType(ticketTypes.find((type) => type.tickettypeid_fk === 1))],
+      : [
+          getInstanceTicketType(
+            ticketTypes.find((type) => type.tickettypeid_fk === 1),
+          ),
+        ],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
-    detail: initialValues? initialValues.detail: '',
+    detail: initialValues?.detail ? initialValues.detail : '',
   };
 
   const inputControlClassName = {
@@ -86,12 +91,12 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 className={inputControlClassName}
               />
               <Field
-                  name='detail'
-                  component={InputControl}
-                  label='Detail'
-                  type='text'
-                  id={values.eventinstanceid}
-                  className={inputControlClassName}
+                name='detail'
+                component={InputControl}
+                label='Detail'
+                type='text'
+                id={values.eventinstanceid}
+                className={inputControlClassName}
               />
               <Field
                 name='totalseats'
@@ -132,29 +137,23 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 );
               }}
             />
-            <div
-              className={
-                'flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
-              }
-            >
-              <FormSubmitButton />
-              {onDelete && (
-                <FormDeleteButton
-                  onDelete={onDelete}
-                  label={`Delete Showing ${values.eventinstanceid}`}
-                />
-              )}
+            <div className='flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'>
+              <FormSubmitButton
+                className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
+                testID='showing-save-button'
+              >
+                <SaveIcon className='h-7 w-7' />
+              </FormSubmitButton>
               {onLeaveEdit && (
-                <button
-                  className={
-                    'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
-                  }
-                  onClick={onLeaveEdit}
+                <FormButton
+                  title='Back'
+                  testID='showing-leave-edit'
                   disabled={showPopUp}
-                  type={'button'}
+                  onClick={onLeaveEdit}
+                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
                 >
-                  Cancel
-                </button>
+                  <BackIcon className='h-7 w-7' />
+                </FormButton>
               )}
             </div>
           </div>

@@ -13,7 +13,10 @@ interface itemProps {
 
 export const LineItem = (props: itemProps) => {
   const {label, information, event, description, onClickMethod} = props;
-  const [additionalClass, setAdditionalClass] = useState(!event && description? 'truncate': '');
+  const [additionalClass, setAdditionalClass] = useState(
+    !event? 'truncate' : '',
+  );
+
   const divClass = !event
     ? 'flex flex-row justify-between min-[768px]:grid min-[768px]:grid-cols-12 text-zinc-800'
     : 'grid grid-cols-12 gap-1 mb-4 text-zinc-800';
@@ -33,7 +36,7 @@ export const LineItem = (props: itemProps) => {
       <p className={labelClass}>{label}: </p>
       <p
         className={`${informationClass} ${additionalClass}`}
-        onClick={() => onClickMethod(setAdditionalClass, additionalClass)}
+        {...(onClickMethod && {onClick: () => onClickMethod(setAdditionalClass, additionalClass)})}
       >
         {information}
       </p>

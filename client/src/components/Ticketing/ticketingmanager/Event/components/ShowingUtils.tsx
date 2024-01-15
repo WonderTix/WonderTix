@@ -35,33 +35,33 @@ export const createSubmitFunction = (
   onError?,
 ) => {
   return async (event, actions?) => {
-      actions?.setStatus('Submitting...');
-      try {
-        const submitRes = await fetch(url, {
-          credentials: 'include',
-          method: method,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(event),
-        });
+    actions?.setStatus('Submitting...');
+    try {
+      const submitRes = await fetch(url, {
+        credentials: 'include',
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(event),
+      });
 
-        actions?.setSubmitting(false);
+      actions?.setSubmitting(false);
 
-        if (!submitRes.ok) {
-          throw submitRes;
-        }
-        if (onSuccess) {
-          await onSuccess(submitRes);
-        }
-      } catch (error) {
-        actions?.setSubmitting(false);
-        if (onError) {
-          await onError(error);
-        }
+      if (!submitRes.ok) {
+        throw submitRes;
       }
-    };
+      if (onSuccess) {
+        await onSuccess(submitRes);
+      }
+    } catch (error) {
+      actions?.setSubmitting(false);
+      if (onError) {
+        await onError(error);
+      }
+    }
+  };
 };
 
 export const createDeleteFunction = (
@@ -264,6 +264,85 @@ export const CirclePlusIcon = (props: {className?: string}) => {
   );
 };
 
+export const SaveIcon = (props: {className?: string}) => {
+  const {className} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
+      viewBox='0 0 24 24'
+      strokeWidth='1.5'
+      stroke='currentColor'
+      className={className}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12'
+      />
+    </svg>
+  );
+};
+
+export const BackIcon = (props: {className?: string}) => {
+  const {className} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
+      viewBox='0 0 24 24'
+      strokeWidth='1.5'
+      stroke='currentColor'
+      className={className}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3'
+      />
+    </svg>
+  );
+};
+
+export const EditIcon = (props: {className?: string}) => {
+  const {className} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+      />
+    </svg>
+  );
+};
+
+export const CloneIcon = (props: {className?: string}) => {
+  const {className} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
+      viewBox='0 0 24 24'
+      strokeWidth='1.5'
+      stroke='currentColor'
+      className={className}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75'
+      />
+    </svg>
+  );
+};
 export const cloneShowing = (showing) => {
   const toReturn = {};
   Object.keys(showing).forEach((key) => {

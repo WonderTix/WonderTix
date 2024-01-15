@@ -5,7 +5,8 @@ import {eventGeneralSchema} from './event.schemas';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {getData} from './ShowingUtils';
+import {BackIcon, getData, SaveIcon} from './ShowingUtils';
+import {FormButton} from './FormButton';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
@@ -16,7 +17,9 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onLeaveEdit} = props;
   const {eventData, showPopUp, token} = useEvent();
   const [seasons, setSeasons] = useState([]);
-  const [showButton, setShowButton] = useState(eventData && eventData.imageurl !== 'Default Event Image');
+  const [showButton, setShowButton] = useState(
+    eventData && eventData.imageurl !== 'Default Event Image',
+  );
 
   const handleInputChange = (event) => {
     setShowButton(event.target.value !== 'Default Event Image');
@@ -40,7 +43,10 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     eventname: eventData ? eventData.eventname : '',
     eventid: eventData ? eventData.eventid : 0,
     eventdescription: eventData ? eventData.eventdescription : '',
-    imageurl: eventData && eventData.imageurl !== '' ? eventData.imageurl : 'Default Event Image',
+    imageurl:
+      eventData && eventData.imageurl !== ''
+        ? eventData.imageurl
+        : 'Default Event Image',
     active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
   };
@@ -66,21 +72,25 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
             </h2>
             <div
               className={
-                'col-span-12 min-[650px]:col-span-6 flex flex-row gap-4 flex-wrap justify-center min-[650px]:justify-end'
+                'col-span-12 min-[650px]:col-span-6 flex flex-row gap-2 flex-wrap justify-center min-[650px]:justify-end'
               }
             >
-              <FormSubmitButton />
+              <FormSubmitButton
+                className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl h-fit'
+                testID='event-save-button'
+              >
+                <SaveIcon className='h-6 w-6' />
+              </FormSubmitButton>
               {onLeaveEdit && eventData && (
-                <button
-                  className={
-                    'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold h-fit'
-                  }
-                  onClick={onLeaveEdit}
+                <FormButton
+                  title='Back'
+                  testID='event-leave-edit'
                   disabled={showPopUp}
-                  type={'button'}
+                  onClick={onLeaveEdit}
+                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
                 >
-                  Cancel
-                </button>
+                  <BackIcon className='h-6 w-6' />
+                </FormButton>
               )}
             </div>
           </div>

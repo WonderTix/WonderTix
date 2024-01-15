@@ -3,17 +3,25 @@ import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
-import {cloneShowing, createSubmitFunction} from './ShowingUtils';
-
+import {
+  CloneIcon,
+  cloneShowing,
+  createSubmitFunction,
+  EditIcon,
+  TrashCanIcon,
+} from './ShowingUtils';
 import {LineItem} from './LineItem';
+import {FormButton} from './FormButton';
+import {FormDeleteButton} from './FormDeleteButton';
 
 interface EventInstanceViewProps {
   showing: UpdatedShowing;
   setEdit: () => void;
+  onDelete: () => void;
 }
 
 export const EventShowingView = (props: EventInstanceViewProps) => {
-  const {showing, setEdit} = props;
+  const {showing, setEdit, onDelete} = props;
   const {
     editing,
     showPopUp,
@@ -146,29 +154,34 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             'flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
           }
         >
-          <button
+          <FormButton
+            title='Edit'
+            testID={`${showing.eventinstanceid}-showing-edit-button`}
+            className='flex items-center justify-center bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
             disabled={editing || showPopUp}
-            type={'button'}
             onClick={setEdit}
-            className={
-              ' bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold p-2 px-4 rounded-xl'
-            }
           >
-            Edit
-          </button>
-          <button
-            disabled={editing || showPopUp}
-            type={'button'}
-            onClick={() => {
-              setEditing((editing) => !editing);
-              return submitClone(cloneShowing(showing));
-            }}
-            className={
-              ' bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold p-2 px-4 rounded-xl'
-            }
+            <EditIcon className='h-6 w-6' />
+          </FormButton>
+          <FormButton
+              title='Clone'
+              testID={`${showing.eventinstanceid}-showing-clone-button`}
+              className='flex justify-center items-center bg-white hover:bg-gray-50 shadow-xl disabled:bg-gray-500 text-white font-bold p-2 rounded-xl'
+              disabled={editing || showPopUp}
+              onClick={() => {
+                setEditing((editing) => !editing);
+                return submitClone(cloneShowing(showing));
+              }}
           >
-            Clone
-          </button>
+            <CloneIcon className={`h-6 w-6 ${!editing?'fill-blue-500':''}`}/>
+          </FormButton>
+          <FormDeleteButton
+            onDelete={onDelete}
+            testID={`${showing.eventinstanceid}-showing-delete-button`}
+            className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
+          >
+            <TrashCanIcon className='h-6 w-6' />
+          </FormDeleteButton>
         </div>
       </div>
     </div>
