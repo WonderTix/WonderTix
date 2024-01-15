@@ -4,7 +4,6 @@ import {Field, FieldArray, Formik} from 'formik';
 import {InputControl} from './InputControl';
 import {toDateStringFormat} from './util/EventsUtil';
 import {TicketTypeUpdateTable} from './TicketTypeUpdateTable';
-import {FormDeleteButton} from './FormDeleteButton';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
@@ -14,12 +13,11 @@ import {FormButton} from './FormButton';
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
   onSubmit: (event, action) => Promise<void>;
-  onDelete?: (event?) => Promise<void>;
   onLeaveEdit?: () => void;
 }
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
-  const {initialValues, onSubmit, onDelete, onLeaveEdit} = props;
+  const {initialValues, onSubmit, onLeaveEdit} = props;
   const {eventID, showPopUp, ticketTypes} = useEvent();
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,

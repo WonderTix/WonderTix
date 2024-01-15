@@ -3,29 +3,6 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import {toDateStringFormat} from './util/EventsUtil';
 
-const makeApiCall = async (method, url, token, event, onSuccess, onError) => {
-  try {
-    const submitRes = await fetch(url, {
-      credentials: 'include',
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(event),
-    });
-    if (!submitRes.ok) {
-      throw submitRes;
-    }
-    if (onSuccess) {
-      await onSuccess(submitRes);
-    }
-  } catch (error) {
-    if (onError) {
-      await onError(error);
-    }
-  }
-};
 
 export const createSubmitFunction = (
   method: string,
