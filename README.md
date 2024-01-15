@@ -37,7 +37,7 @@ Future features include managing/creating email campaigns and ticket exchanges.
    ```
 
 2. Create a `.env` file and copy over the contents from the `.env.dist` (.env example) file.
-   1. Set a value for the `AUTH0_CLIENT_ID`. Currently, we use the Wondertix Development Single Page Application in the `wtix-dev` Auth0 tenant for authenticating requests made from locally running instances of Wondertix. If you don't have access to the `wtix-dev` tenant, ask a team lead for access and/or for the values of the Client ID and Client Secret.
+   1. Set a value for the `AUTH0_CLIENT_ID`. Currently, we use the Wondertix Development Single Page Application in the `wtix-dev` Auth0 tenant for authenticating requests made from locally running instances of Wondertix. If you don't have access to the `wtix-dev` tenant, ask a team lead for access and/or for the value of the Client ID.
    2. Set values for the `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. For testing, we also send requests from locally running instances of Wondertix to an external Stripe account. The Stripe account we use for this is `wtix-dev`. Likewise, if you don't already, ask a team lead for access and/or for the values of `wtix-dev`'s private and public keys. 
 3. Create mkcert certificates.
    1. Navigate to `<path/to/WonderTix/server>` and `<path/to/WonderTix/client>`.
