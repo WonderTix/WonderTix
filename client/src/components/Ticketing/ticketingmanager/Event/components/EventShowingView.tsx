@@ -44,14 +44,14 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
     setEditing((editing) => !editing);
   };
   const onCloneError = async () => {
-      setReloadShowing((reload) => !reload);
-      setPopUpProps(
-          'Failure',
-          'Showing clone failed',
-          false,
-          `clone-modal-failure`,
-      );
-      setEditing((editing) => !editing);
+    setReloadShowing((reload) => !reload);
+    setPopUpProps(
+      'Failure',
+      'Showing clone failed',
+      false,
+      `clone-modal-failure`,
+    );
+    setEditing((editing) => !editing);
   };
   const submitClone = createSubmitFunction(
     'POST',
@@ -63,7 +63,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
   return (
     <div className={'bg-gray-300 rounded-xl p-2'}>
       <div
-        className={`bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[175px] gap-2`}
+        className={`bg-gray-200 grid grid-cols-12 p-4 rounded-lg gap-2`}
         data-testid='showing-card'
       >
         <div
@@ -81,6 +81,17 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             label={'Time'}
             information={format(showingDate, 'h:mm a')}
           />
+          {showing.detail && showing.detail !== '' && (
+            <LineItem
+              label={'Detail'}
+              information={showing.detail}
+              description={true}
+              onClickMethod={(
+                set: React.Dispatch<React.SetStateAction<string>>,
+                current: string,
+              ) => set(current.includes('truncate') ? '' : 'truncate')}
+            />
+          )}
           <LineItem label={'Total Tickets'} information={showing.totalseats} />
           <LineItem
             label={'Available Tickets'}

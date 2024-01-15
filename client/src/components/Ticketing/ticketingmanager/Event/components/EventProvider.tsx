@@ -6,7 +6,7 @@ import {
   useFetchToken,
 } from './ShowingUtils';
 import {useParams} from 'react-router-dom';
-import {EventPageV2} from './EventPageV2';
+import {EventPage} from './EventPage';
 
 interface EventContextType {
   eventID: number;
@@ -121,7 +121,7 @@ export const EventProvider = () => {
         handleProceed,
       }}
     >
-      <EventPageV2 />
+      <EventPage />
     </EventContext.Provider>
   );
 };

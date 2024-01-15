@@ -3,14 +3,10 @@ import {useAppDispatch} from '../app/hooks';
 import {Collapse} from '@mui/material';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import {
-  addTicketToCart,
-  Ticket,
-} from '../ticketingmanager/ticketingSlice';
+import {addTicketToCart, Ticket} from '../ticketingmanager/ticketingSlice';
 import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import {formatUSD} from '../ticketingmanager/RefundOrders/RefundOrders';
-
 
 /**
  * @module
@@ -104,48 +100,50 @@ const TicketPickerReducer = (
   action: any,
 ): TicketPickerState => {
   switch (action.type) {
-  case 'date_selected': {
-    const {tickets, date} = action.payload;
-    const sameDayShows = tickets
-      .filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)))
-      .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime()));
+    case 'date_selected': {
+      const {tickets, date} = action.payload;
+      const sameDayShows = tickets
+        .filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)))
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        );
 
-    return {
-      ...state,
-      selectedDate: date,
-      selectedTicket: undefined,
-      displayedShowings: sameDayShows,
-      showCalendar: false,
-      showTimes: true,
-      showClearBtn: true,
-      prompt: 'selectTime',
-    };
-  }
-  case 'time_selected': {
-    return {
-      ...state,
-      selectedTicket: action.payload,
-      showTimes: false,
-      prompt: 'showSelection',
-    };
-  }
-  case 'reset': {
-    return initialState;
-  }
-  case 'change_qty': {
-    return {...state, qty: action.payload};
-  }
-  case 'toggle_concession': {
-    return {...state, concessions: !state.concessions};
-  }
-  case 'change_pay_what': {
-    return {...state, payWhatPrice: action.payload};
-  }
-  case 'change_ticket_type': {
-    return {...state, selectedTicketType: action.payload.selectedTicketType};
-  }
-  default:
-    throw new Error('Received undefined action type');
+      return {
+        ...state,
+        selectedDate: date,
+        selectedTicket: undefined,
+        displayedShowings: sameDayShows,
+        showCalendar: false,
+        showTimes: true,
+        showClearBtn: true,
+        prompt: 'selectTime',
+      };
+    }
+    case 'time_selected': {
+      return {
+        ...state,
+        selectedTicket: action.payload,
+        showTimes: false,
+        prompt: 'showSelection',
+      };
+    }
+    case 'reset': {
+      return initialState;
+    }
+    case 'change_qty': {
+      return {...state, qty: action.payload};
+    }
+    case 'toggle_concession': {
+      return {...state, concessions: !state.concessions};
+    }
+    case 'change_pay_what': {
+      return {...state, payWhatPrice: action.payload};
+    }
+    case 'change_ticket_type': {
+      return {...state, selectedTicketType: action.payload.selectedTicketType};
+    }
+    default:
+      throw new Error('Received undefined action type');
   }
 };
 
@@ -193,7 +191,9 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   ] = useReducer(TicketPickerReducer, initialState);
 
   const appDispatch = useAppDispatch();
-  const [showingTicketTypes, setShowingTicketTypes] = useState<TicketType[]>([]);
+  const [showingTicketTypes, setShowingTicketTypes] = useState<TicketType[]>(
+    [],
+  );
   const [numAvail, setNumAvail] = useState(Number);
 
   useEffect(() => {
@@ -202,7 +202,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         try {
           const response = await fetch(
             process.env.REACT_APP_API_2_URL +
-            `/ticket-restriction/${selectedTicket.event_instance_id}`,
+              `/ticket-restriction/${selectedTicket.event_instance_id}`,
           );
           if (!response.ok) {
             throw response;
@@ -229,9 +229,9 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     if (selectedTicket && selectedTicketType) {
       const fetchData = async () => {
         try {
-          const response= await fetch(
+          const response = await fetch(
             process.env.REACT_APP_API_2_URL +
-            `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketType.id}`,
+              `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketType.id}`,
           );
           if (!response.ok) {
             throw response;
@@ -276,18 +276,12 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
 
   const promptMarkup = {
     selectDate: (
-      <label
-        className='text-white font-semibold text-xl'
-        htmlFor='date-select'
-      >
+      <label className='text-white font-semibold text-xl' htmlFor='date-select'>
         Select date below ({props.tickets.length} showings)
       </label>
     ),
     selectTime: (
-      <label
-        className='text-white'
-        htmlFor='time-select'
-      >
+      <label className='text-white' htmlFor='time-select'>
         {selectedDate ? format(selectedDate, 'eee, MMM dd') : ''}
         <span className='text-white font-bold'> - Choose time:</span>
       </label>
@@ -343,7 +337,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           </select>
         </div>
       </Collapse>
-      <Collapse in={showTimes}>
+      <Collapse in={showTimes} sx={{maxWidth: '100%'}}>
         <EventInstanceSelect
           check={prompt}
           eventInstances={displayedShowings}
@@ -388,8 +382,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             ? numAvail > 0
               ? 'Quantity'
               : 'Can\'t add more to cart'
-            : 'Quantity (select ticket)'
-          }
+            : 'Quantity (select ticket)'}
         </label>
         <select
           id='qty-select'
@@ -456,7 +449,8 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           !qty ||
           !selectedTicket ||
           qty > selectedTicket.availableseats ||
-          (selectedTicketType.name === 'Pay What You Can' && (payWhatPrice == null || payWhatPrice < 0))
+          (selectedTicketType.name === 'Pay What You Can' &&
+            (payWhatPrice == null || payWhatPrice < 0))
         }
         className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 mt-7 bg-blue-500 text-white enabled:hover:bg-blue-600 rounded-xl'
         onClick={handleSubmit}

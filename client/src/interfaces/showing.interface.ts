@@ -44,4 +44,5 @@ export interface UpdatedShowing {
   totalseats: number;
   availableseats: number;
   ispreview: boolean;
+  detail: string;
 }

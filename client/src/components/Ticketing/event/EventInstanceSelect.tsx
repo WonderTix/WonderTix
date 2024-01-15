@@ -17,7 +17,11 @@ interface EventInstanceSelectProps {
  * @param {EventInstanceSelectProps} props
  * @returns the selection of date and others once clicked
  */
-const EventInstanceSelect = ({check, eventInstances, eventInstanceSelected}: EventInstanceSelectProps) => {
+const EventInstanceSelect = ({
+  check,
+  eventInstances,
+  eventInstanceSelected,
+}: EventInstanceSelectProps) => {
   const [selectedId, setSelectedId] = useState(-1);
 
   useEffect(() => {
@@ -28,7 +32,9 @@ const EventInstanceSelect = ({check, eventInstances, eventInstanceSelected}: Eve
 
   const handleClick = (id: number) => {
     setSelectedId(id);
-    const eventInstance = eventInstances.find((obj) => obj.event_instance_id === id);
+    const eventInstance = eventInstances.find(
+      (obj) => obj.event_instance_id === id,
+    );
     if (eventInstanceSelected) {
       eventInstanceSelected(eventInstance);
     }
@@ -37,10 +43,8 @@ const EventInstanceSelect = ({check, eventInstances, eventInstanceSelected}: Eve
   return (
     <select
       value={selectedId}
-      onChange={(ev): void =>
-        handleClick(parseFloat(ev.target.value))
-      }
-      className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl'
+      onChange={(ev): void => handleClick(parseFloat(ev.target.value))}
+      className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl max-w-full'
       id='time-select'
     >
       <option className='text-zinc-300' disabled value={-1}>
@@ -48,7 +52,9 @@ const EventInstanceSelect = ({check, eventInstances, eventInstanceSelected}: Eve
       </option>
       {eventInstances.map((ticket) => (
         <option key={ticket.event_instance_id} value={ticket.event_instance_id}>
-          {format(new Date(ticket.date), 'h:mm a')}
+          {`${format(new Date(ticket.date), 'h:mm a')}${
+            ticket.detail && ticket.detail != '' ? ` - ${ticket.detail}` : ''
+          }`}
         </option>
       ))}
     </select>

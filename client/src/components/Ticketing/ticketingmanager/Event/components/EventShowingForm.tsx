@@ -36,6 +36,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
       : [getInstanceTicketType(ticketTypes.find((type) => type.tickettypeid_fk === 1))],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
+    detail: initialValues? initialValues.detail: '',
   };
 
   const inputControlClassName = {
@@ -54,7 +55,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
         <form onSubmit={handleSubmit} className={'bg-gray-300 rounded-xl p-2'}>
           <div
             className={
-              'bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[250px] gap-2'
+              'bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[280px] gap-2'
             }
           >
             <div
@@ -83,6 +84,14 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 type='time'
                 id={values.eventinstanceid}
                 className={inputControlClassName}
+              />
+              <Field
+                  name='detail'
+                  component={InputControl}
+                  label='Detail'
+                  type='text'
+                  id={values.eventinstanceid}
+                  className={inputControlClassName}
               />
               <Field
                 name='totalseats'

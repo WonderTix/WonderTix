@@ -60,6 +60,7 @@ export interface Ticket {
   concession_price: number;
   totalseats?: number;
   availableseats: number;
+  detail: string;
 }
 
 /**

@@ -30,6 +30,7 @@ const ticket1: Ticket = {
   ticket_price: 15.99,
   concession_price: 4.99,
   availableseats: 34,
+  detail: '',
 };
 
 const ticket2: Ticket = {
@@ -40,6 +41,7 @@ const ticket2: Ticket = {
   ticket_price: 19.99,
   concession_price: 9.99,
   availableseats: 20,
+  detail: '',
 };
 
 const ticketType: TicketType = {
