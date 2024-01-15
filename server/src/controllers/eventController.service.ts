@@ -19,6 +19,7 @@ export interface LineItem {
 
 export const createStripeCheckoutSession = async (
     contactID: number,
+    contactEmail: string,
     donation: number,
     lineItems: LineItem[],
     discount: any,
@@ -33,6 +34,8 @@ export const createStripeCheckoutSession = async (
     mode: 'payment',
     success_url: `${process.env.FRONTEND_URL}/success`,
     cancel_url: `${process.env.FRONTEND_URL}`,
+    customer_creation: 'always',
+    customer_email: contactEmail,
     metadata: {
       sessionType: '__ticketing',
       contactID,
