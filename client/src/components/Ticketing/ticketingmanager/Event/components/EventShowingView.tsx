@@ -71,7 +71,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             label='Date'
             information={format(showingDate, 'eee, MMM dd yyyy')}
           />
-          <LineItem label='Time' information={format(showingDate, 'hh:mm a')} />
+          <LineItem label='Time' information={format(showingDate, 'h:mm a')} />
           <LineItem label='Total Tickets' information={showing.totalseats} />
           <LineItem
             label='Available Tickets'
