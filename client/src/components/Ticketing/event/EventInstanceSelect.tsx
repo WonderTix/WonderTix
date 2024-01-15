@@ -53,7 +53,7 @@ const EventInstanceSelect = ({
       {eventInstances.map((ticket) => (
         <option key={ticket.event_instance_id} value={ticket.event_instance_id}>
           {`${format(new Date(ticket.date), 'h:mm a')}${
-            ticket.detail && ticket.detail != '' ? ` - ${ticket.detail}` : ''
+              (ticket.detail ?? '') != '' ? ` (${ticket.detail})` : ''
           }`}
         </option>
       ))}

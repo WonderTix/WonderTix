@@ -3,7 +3,6 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import {toDateStringFormat} from './util/EventsUtil';
 
-
 export const createSubmitFunction = (
   method: string,
   url: string,
@@ -246,16 +245,16 @@ export const SaveIcon = (props: {className?: string}) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
+      className={className}
       fill='none'
       viewBox='0 0 24 24'
-      strokeWidth='1.5'
       stroke='currentColor'
-      className={className}
+      strokeWidth='2'
     >
       <path
         strokeLinecap='round'
         strokeLinejoin='round'
-        d='M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12'
+        d='M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4'
       />
     </svg>
   );
@@ -275,7 +274,7 @@ export const BackIcon = (props: {className?: string}) => {
       <path
         strokeLinecap='round'
         strokeLinejoin='round'
-        d='M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3'
+        d='M10 19l-7-7m0 0l7-7m-7 7h18'
       />
     </svg>
   );
@@ -315,7 +314,7 @@ export const CloneIcon = (props: {className?: string}) => {
       <path
         strokeLinecap='round'
         strokeLinejoin='round'
-        d='M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75'
+        d='M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2'
       />
     </svg>
   );

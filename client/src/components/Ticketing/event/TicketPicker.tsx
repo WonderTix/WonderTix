@@ -287,9 +287,13 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       </label>
     ),
     showSelection: (
-      <p className='text-white'>
+      <p className='text-white text-center'>
         {selectedTicket
-          ? format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a')
+          ? `${format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a')}${
+              (selectedTicket?.detail ?? '') != ''
+                ? ` (${selectedTicket.detail})`
+                : ''
+            }`
           : ''}
       </p>
     ),
