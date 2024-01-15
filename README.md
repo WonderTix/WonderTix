@@ -37,13 +37,13 @@ Future features include managing/creating email campaigns and ticket exchanges.
    ```
 
 2. Create a `.env` file and copy over the contents from the `.env.dist` (.env example) file.
-   1. Set a value for the `AUTH0_CLIENT_ID`. Currently, we use the Wondertix Development Single Page Application in the `wtix-dev` tenant for authenticating requests made from locally running instances of Wondertix. If you don't have access to `wtix-dev` tenant, ask a team lead for access and/or for the values of the Client ID and Client Secret.
-   2. Set values for the `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. For testing, we also send requests from locally running instances of Wondertix to an external Stripe account. The Stripe account we use for this is `wtix-dev`. Likewise, if you don't already, ask a team lead for access and/or for the values of the `wtix-dev`'s private and public keys. 
+   1. Set a value for the `AUTH0_CLIENT_ID`. Currently, we use the Wondertix Development Single Page Application in the `wtix-dev` Auth0 tenant for authenticating requests made from locally running instances of Wondertix. If you don't have access to the `wtix-dev` tenant, ask a team lead for access and/or for the values of the Client ID and Client Secret.
+   2. Set values for the `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. For testing, we also send requests from locally running instances of Wondertix to an external Stripe account. The Stripe account we use for this is `wtix-dev`. Likewise, if you don't already, ask a team lead for access and/or for the values of `wtix-dev`'s private and public keys. 
 3. Create mkcert certificates.
    1. Navigate to `<path/to/WonderTix/server>` and `<path/to/WonderTix/client>`.
    2. Run `mkcert -install` to install the local certificate authority.
    3. Run `mkcert localhost` to create a certificate.   
-4. Run `docker-compose up -d` (or `docker compose up` to see live container logs in the terminal). This starts a locally running instance of Wondertix in docker containers. 
+4. Run `docker-compose up -d` (or `docker compose up` to see live container logs in the terminal). This starts a locally running instance of Wondertix using docker containers. 
 5. To test the checkout process with Stripe, make sure you have the [Stripe CLI](https://stripe.com/docs/stripe-cli) installed. 
    1. Once the Stripe CLI is installed, run `stripe login` and press enter to open the browser. 
    2. In the browser that the Stripe CLI opens, make sure you select `Wondertix Dev` as the account, verify that the code matches that in your terminal, and select `Allow Access`. If `Wondertix Dev` does not appear as an option, you will need to ask for access to the account. You should only need to login to the account like this once. 
