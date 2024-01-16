@@ -1,3 +1,4 @@
+
 /**
  * Type for information relating to a contact.
  */
@@ -14,6 +15,8 @@ export type Contact = {
   donorBadge: boolean,
   volunteerList: boolean,
   contactId?: number,
+  orders?: any,
+  donations?: any,
 }
 
 export const emptyContact: Contact = {
@@ -28,6 +31,21 @@ export const emptyContact: Contact = {
   vip: false,
   donorBadge: false,
   volunteerList: false,
+};
+
+export const toReadableDonationFrequency = (key: string): string => {
+   switch (key) {
+     case 'one-time':
+       return 'One-time';
+     case 'weekly':
+       return 'Weekly';
+     case 'monthly':
+       return 'Monthly';
+     case 'yearly':
+       return 'Yearly';
+     default:
+       return key;
+   }
 };
 
 export const editContact = async (contact: Contact, contactId: number, token: string) => {

@@ -7,8 +7,10 @@ import {Contact, editContact, deleteContact} from './contactUtils';
 
 interface ContactCardProps {
   contact: Contact;
+  showMoreButton?: boolean;
   token: string;
-  refreshContacts: () => void;
+  onRefresh: () => void;
+  onRemove?: () => void;
 }
 
 /**
@@ -16,14 +18,18 @@ interface ContactCardProps {
  *
  * @param ContactCardProps
  * @param {Contact} ContactCardProps.contact
+ * @param {boolean} ContactCardProps.showMoreButton
  * @param {string} ContactCardProps.token
- * @param {func} ContactCardProps.refreshContacts
+ * @param {func} ContactCardProps.onRefresh
+ * @param {func} ContactCardProps.onRemove
  * @returns {ReactElement}
  */
 const ContactCard = ({
   contact,
+  showMoreButton = true,
   token,
-  refreshContacts,
+  onRefresh,
+  onRemove,
 }: ContactCardProps): React.ReactElement => {
   const {
     first,
@@ -50,7 +56,7 @@ const ContactCard = ({
     if (responseCode === 204) {
       setShowEditPopUp(false);
       setErrorMsg(null);
-      void refreshContacts();
+      void onRefresh();
     } else if (responseCode === 400) {
       setErrorMsg('Contact with email already exists');
     } else {
@@ -63,7 +69,10 @@ const ContactCard = ({
 
     const responseCode = await deleteContact(contactId, token);
     if (responseCode === 204) {
-      void refreshContacts();
+      void onRefresh();
+      if (onRemove) {
+        onRemove();
+      }
     } else if (responseCode === 400) {
       setErrorMsg('Cannot remove a customer with orders or donations');
       setShowErrorPopUp(true);
@@ -194,14 +203,16 @@ const ContactCard = ({
             {volunteerList ? 'Yes' : 'No'}
           </span>
         </p>
-        <button
-          className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 mt-4 shadow-md px-4 py-2 text-base
-          font-medium text-white rounded-lg justify-end w-full focus:outline-none focus:ring-2 focus:ring-offset-2
-          focus:ring-indigo-500'
-          onClick={() => navigate(`/admin/contacts/show/${contactId}`)}
-        >
-          Show More Information
-        </button>
+        {showMoreButton && (
+          <button
+            className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 mt-4 shadow-md px-4 py-2 text-base
+            font-medium text-white rounded-lg justify-end w-full focus:outline-none focus:ring-2 focus:ring-offset-2
+            focus:ring-indigo-500'
+            onClick={() => navigate(`/admin/contacts/show/${contactId}`)}
+          >
+            Show More Information
+          </button>
+        )}
       </section>
       {showEditPopUp && (
         <ContactPopUp
