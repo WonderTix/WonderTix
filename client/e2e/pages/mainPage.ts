@@ -262,7 +262,6 @@ export class MainPage {
   // Stripe is slow and sometimes has an account popup after email entry.
   // This function waits to see if it will pop up and handle it appropriately.
   async fillStripeInfo(customer: CustomerInfo, ccInfo: CreditCardInfo, timeoutAdd = 0) {
-    await this.stripeEmail.fill(customer.email);
     await this.page.waitForTimeout(10000 + timeoutAdd);
     if (await this.page.getByText('Use your saved information').isVisible()) {
       this.page.getByRole('button', {name: 'Cancel'}).click();

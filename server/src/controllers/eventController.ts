@@ -80,6 +80,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     if (donation + orderTotal > 0) {
       toSend = await createStripeCheckoutSession(
           contactid,
+          formData.email,
           donation,
         donation ? cartRows.concat(donationItem) : cartRows,
         discount,
