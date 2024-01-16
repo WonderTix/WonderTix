@@ -48,7 +48,7 @@ const EventInstanceSelect = ({check, eventInstances, eventInstanceSelected}: Eve
       </option>
       {eventInstances.map((ticket) => (
         <option key={ticket.event_instance_id} value={ticket.event_instance_id}>
-          {format(new Date(ticket.date), 'hh:mm a')}
+          {format(new Date(ticket.date), 'h:mm a')}
         </option>
       ))}
     </select>

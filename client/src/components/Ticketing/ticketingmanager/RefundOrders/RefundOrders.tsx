@@ -226,7 +226,7 @@ const RefundOrders = () => {
                         `${instance.orderdate} ${instance.ordertime
                           .split('T')[1]
                           .slice(0, 8)}`,
-                      ), 'MM/dd/yyyy, hh:mm a')}
+                      ), 'MM/dd/yyyy, h:mm a')}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {Array.isArray(instance.showings) ? (
