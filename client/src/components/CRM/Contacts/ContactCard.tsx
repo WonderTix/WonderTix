@@ -178,8 +178,24 @@ const ContactCard = ({
           <span data-testid='phone'>{phone}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>Full Address:</span>
-          <span data-testid='address'>{address}, {city}, {state} {postalCode}, {country}</span>
+          <span className='font-semibold'>Address:</span>
+          <span data-testid='address'>{address}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>City:</span>
+          <span data-testid='address'>{city}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>State:</span>
+          <span data-testid='address'>{state}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>Country:</span>
+          <span data-testid='address'>{country}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>Postal Code:</span>
+          <span data-testid='address'>{postalCode}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Seating Accommodation:</span>
