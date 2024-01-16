@@ -2,6 +2,7 @@ import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceControl
 import CartItem from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {eventinstances} from '@prisma/client';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
 
@@ -90,15 +91,21 @@ export const getOrderItems = async (
     },
   });
   const eventInstanceMap = new Map(
-      eventInstances.map((instance) => [
-        instance.eventinstanceid,
-        {
-          ...instance,
-          ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => [res.tickettypeid_fk, res])),
-        },
-      ]));
+      eventInstances.map((instance) => {
+        let availableseats = instance.totalseats ?? 0;
+        return [
+          instance.eventinstanceid,
+          {
+            ...instance,
+            ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => {
+              availableseats-=(res.ticketlimit-res.eventtickets.length);
+              return [res.tickettypeid_fk, res];
+            })),
+            availableseats: availableseats,
+          },
+        ];
+      }));
   let orderTotal = 0;
-
   for (const item of cartItems) {
     const eventInstance = eventInstanceMap.get(item.product_id);
     if (!eventInstance) {
@@ -116,7 +123,7 @@ export const getOrderItems = async (
     orderItems = orderItems.concat(
         getTickets(
             eventInstance.ticketRestrictionMap.get(item.typeID),
-            eventInstance.ticketRestrictionMap.get(eventInstance.defaulttickettype ?? 1),
+            eventInstance,
             item.qty,
             item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
         ),
@@ -143,7 +150,7 @@ export const getOrderItems = async (
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats: (instance.ticketRestrictionMap.get(instance.defaulttickettype??1)?.eventtickets ?? []).length,
+            availableseats: instance.availableseats,
           },
         }));
   }
@@ -158,41 +165,36 @@ export const getOrderItems = async (
 
 const getTickets = (
     ticketRestriction: LoadedTicketRestriction | undefined,
-    defaultTicketRestriction: LoadedTicketRestriction | undefined,
+    eventInstance: any,
     quantity: number,
     price: number,
 ) => {
-  if (!ticketRestriction || !defaultTicketRestriction) {
+  if (!ticketRestriction) {
     throw new InvalidInputError(422, `Requested tickets no longer available`);
   }
 
   if (
-    ticketRestriction.eventtickets.length < quantity || defaultTicketRestriction.eventtickets.length < quantity) {
+    ticketRestriction.eventtickets.length < quantity || (eventInstance.availableseats-=quantity) < 0) {
     throw new InvalidInputError(422, `Requested tickets no longer available`);
   }
 
-  const ticketsToSellForType = ticketRestriction.eventtickets.splice(0, quantity).map((ticket) => ticket.eventticketid);
-  const ticketsToSellForDefault = ticketRestriction !== defaultTicketRestriction?
-      defaultTicketRestriction.eventtickets
-          .splice(0, quantity)
-          .map((ticket) => ticket.eventticketid):
-      [];
-
-  return ticketsToSellForType.map((ticketID, index) => ({
-    price,
-    singletickets: {
-      create: {
-        eventtickets: {
-          connect: [
-            {
-              eventticketid: ticketID,
+  return ticketRestriction
+      .eventtickets
+      .splice(0, quantity).map((ticket) => ticket.eventticketid)
+      .map((ticketID) => ({
+        price,
+        singletickets: {
+          create: {
+            eventtickets: {
+              connect: [
+                {
+                  eventticketid: ticketID,
+                },
+              ],
             },
-            ...(ticketRestriction !== defaultTicketRestriction? [{eventticketid: ticketsToSellForDefault[index]}]:[]),
-          ],
+          },
         },
-      },
-    },
-  }));
+      }));
 };
 
 interface checkoutForm {
