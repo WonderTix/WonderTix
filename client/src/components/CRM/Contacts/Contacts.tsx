@@ -198,7 +198,7 @@ const Contacts = (): React.ReactElement => {
               <ContactCard
                 contact={contact}
                 token={token}
-                refreshContacts={getData}
+                onRefresh={getData}
                 key={contact.contactId}
               />
             ))
