@@ -8,7 +8,11 @@ interface DonationButtonProps {
 
 /**
  * Returns an individual button for the donation amount button array
- * @param {DonationButtonProps}
+ *
+ * @param DonationButtonProps
+ * @param {number} DonationButtonProps.amount
+ * @param {string} DonationButtonProps.label
+ * @param {func} DonationButtonProps.onClick
  * @returns {ReactElement}
  */
 export default function DonationButton({
