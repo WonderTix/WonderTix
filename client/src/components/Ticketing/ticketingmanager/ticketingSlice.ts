@@ -286,7 +286,7 @@ export const createCartItem = (data: {
       desc: `${tickettype.name} - ${format(
         new Date(ticket.date),
         'eee, MMM dd - h:mm a',
-      )}`,
+      )}${(ticket.detail ?? '')=== ''?'':` (${ticket.detail})`}`,
       typeID: tickettype.id,
       date: ticket.date,
       name: `${titleCase(event.title)} Ticket${qty > 1 ? 's' : ''}`,
