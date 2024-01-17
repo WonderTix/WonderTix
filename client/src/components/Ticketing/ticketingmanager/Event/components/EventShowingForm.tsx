@@ -31,7 +31,11 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     defaulttickettype: 1,
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues
-      ? initialValues.ticketrestrictions
+      ? initialValues.ticketrestrictions.map((restriction) => {
+        // Remove ticketssold from restriction so it isn't passed to PUT API
+        const {ticketssold, ...restOfRestriction} = restriction;
+        return restOfRestriction;
+      })
       : [getInstanceTicketType(ticketTypes.find((type) => type.tickettypeid_fk === 1))],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,

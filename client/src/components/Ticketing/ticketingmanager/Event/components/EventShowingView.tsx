@@ -4,11 +4,11 @@ import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
 import {
-  cloneShowing,
-  createSubmitFunction,
-  CloneIcon,
-  EditIcon,
-  TrashCanIcon,
+    cloneShowing,
+    createSubmitFunction,
+    CloneIcon,
+    EditIcon,
+    TrashCanIcon,
 } from './ShowingUtils';
 import {LineItem} from './LineItem';
 import {FormButton} from './FormButton';
@@ -52,14 +52,14 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
     setEditing((editing) => !editing);
   };
   const onCloneError = async () => {
-      setReloadShowing((reload) => !reload);
-      setPopUpProps(
-          'Failure',
-          'Showing clone failed',
-          false,
-          `clone-modal-failure`,
-      );
-      setEditing((editing) => !editing);
+    setReloadShowing((reload) => !reload);
+    setPopUpProps(
+      'Failure',
+      'Showing clone failed',
+      false,
+      'clone-modal-failure',
+    );
+    setEditing((editing) => !editing);
   };
   const submitClone = createSubmitFunction(
     'POST',
@@ -69,29 +69,18 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
     onCloneError,
   );
   return (
-    <div className={'bg-gray-300 rounded-xl p-2'}>
+    <div className='bg-gray-300 rounded-xl p-2'>
       <div
-        className={`bg-gray-200 grid grid-cols-12 p-4 rounded-lg gap-2`}
+        className='bg-gray-200 grid grid-cols-12 p-4 rounded-lg gap-2'
         data-testid='showing-card'
       >
-        <div
-          className={`flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%] shadow-xl`}
-        >
-          <LineItem
-            label={'Showing ID'}
-            information={showing.eventinstanceid}
-          />
-          <LineItem
-            label={'Date'}
-            information={format(showingDate, 'eee, MMM dd yyyy')}
-          />
-          <LineItem
-            label={'Time'}
-            information={format(showingDate, 'h:mm a')}
-          />
+        <div className='flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%] shadow-xl'>
+          <LineItem label='Showing ID' information={showing.eventinstanceid}/>
+          <LineItem label='Date' information={format(showingDate, 'eee, MMM dd yyyy')}/>
+          <LineItem label='Time' information={format(showingDate, 'h:mm a')}/>
           {showing.detail && showing.detail !== '' && (
             <LineItem
-              label={'Detail'}
+              label='Detail'
               information={showing.detail}
               onClickMethod={(
                 set: React.Dispatch<React.SetStateAction<string>>,
@@ -99,37 +88,29 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
               ) => set(current.includes('truncate') ? '' : 'truncate')}
             />
           )}
-          <LineItem label={'Total Tickets'} information={showing.totalseats} />
-          <LineItem
-            label={'Available Tickets'}
-            information={showing.availableseats}
-          />
+          <LineItem label='Total Tickets' information={showing.totalseats} />
+          <LineItem label='Available Tickets' information={showing.availableseats}/>
         </div>
-        <div
-          className={
-            'overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl border border-white rounded-xl bg-white w-[100%] min-h-[100px]'
-          }
-        >
-          <table className={'table table-fixed text-sm min-w-[100%]'}>
+        <div className='overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl border border-white rounded-xl bg-white w-[100%] min-h-[100px]'>
+          <table className='table table-fixed text-sm min-w-[100%]'>
             <thead
               className={`text-left text-zinc-800 whitespace-nowrap bg-gray-300 ${
                 showPopUp ? '' : 'sticky'
               } top-0 `}
             >
               <tr>
-                <th className={'px-2 py-1 border border-white'}>
+                <th className='px-2 py-1 border border-white'>
                   Admission Type
                 </th>
-                <th className={'px-2 py-1 border border-white'}>
-                  Ticket Price
-                </th>
-                <th className={'px-2 py-1 border border-white'}>
+                <th className='px-2 py-1 border border-white'>Ticket Price</th>
+                <th className='px-2 py-1 border border-white'>
                   Concession Price
                 </th>
-                <th className={'px-2 py-1 border border-white'}>Quantity</th>
+                <th className='px-2 py-1 border border-white'>Quantity</th>
+                <th className='px-2 py-1 border border-white'>Sold</th>
               </tr>
             </thead>
-            <tbody className={'whitespace-nowrap'}>
+            <tbody className='whitespace-nowrap'>
               {showing.ticketrestrictions.length !== 0 &&
                 showing.ticketrestrictions
                   .sort((a) => (a.tickettypeid_fk === 1 ? -1 : 1))
@@ -137,22 +118,19 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
                     <tr
                       key={`${showing.eventinstanceid} ${type.tickettypeid_fk} ${index}`}
                     >
-                      <td className={'px-2'}>{type.description}</td>
-                      <td className={'px-2'}>{formatUSD.format(type.price)}</td>
-                      <td className={'px-2'}>
+                      <td className='px-2'>{type.description}</td>
+                      <td className='px-2'>{formatUSD.format(type.price)}</td>
+                      <td className='px-2'>
                         {formatUSD.format(type.concessionprice)}
                       </td>
-                      <td className={'px-2'}>{type.ticketlimit}</td>
+                      <td className='px-2'>{type.ticketlimit}</td>
+                      <td className='px-2'>{type.ticketssold}</td>
                     </tr>
                   ))}
             </tbody>
           </table>
         </div>
-        <div
-          className={
-            'flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
-          }
-        >
+        <div className='flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'>
           <FormButton
             title='Edit'
             testID={`${showing.eventinstanceid}-showing-edit-button`}
