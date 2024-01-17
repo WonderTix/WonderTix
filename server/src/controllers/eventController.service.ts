@@ -19,6 +19,7 @@ export interface LineItem {
 
 export const createStripeCheckoutSession = async (
     contactID: number,
+    contactEmail: string,
     donation: number,
     lineItems: LineItem[],
     discount: any,
@@ -33,6 +34,8 @@ export const createStripeCheckoutSession = async (
     mode: 'payment',
     success_url: `${process.env.FRONTEND_URL}/success`,
     cancel_url: `${process.env.FRONTEND_URL}`,
+    customer_creation: 'always',
+    customer_email: contactEmail,
     metadata: {
       sessionType: '__ticketing',
       contactID,
@@ -44,6 +47,48 @@ export const createStripeCheckoutSession = async (
   const session = await stripe.checkout.sessions.create(checkoutObject);
   return {id: session.id};
 };
+
+export const createStripePaymentIntent = async (
+  orderTotal: number
+) => {
+  const intentObject: JsonObject = {
+    currency: 'usd', // hardcode
+    payment_method_types: ['card_present'],
+    capture_method: 'automatic',
+    amount: orderTotal
+  }
+  const intent = await stripe.paymentIntents.create(intentObject);
+  return intent.id;
+}
+
+export const requestStripeReaderPayment = async (
+  readerID: string,
+  paymentIntentID: string
+) => {
+  //const reader = await stripe.terminal.readers.retrieve(readerID);
+  const requestPay = await stripe.terminal.readers.processPaymentIntent(
+    readerID,
+    {
+        payment_intent: paymentIntentID
+    }
+  );
+  return requestPay;
+}
+
+export const testPayReader = async (
+  readerID: string
+) => {
+  const pay = await stripe.testHelpers.terminal.readers.presentPaymentMethod(readerID);
+  return pay;
+}
+
+// temporary, this should be webhook
+export const checkPaymentStatus = async (
+  paymentIntentID: string
+) => {
+  const checkPayment = await stripe.paymentIntents.retrieve(paymentIntentID);
+  return checkPayment;
+}
 
 export const createStripeCoupon = async (discount: any) => {
   const stripeCoupon = await stripe.coupons.create({

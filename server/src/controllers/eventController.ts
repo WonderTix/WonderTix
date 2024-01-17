@@ -4,6 +4,10 @@ import {Prisma} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
+  createStripePaymentIntent,
+  requestStripeReaderPayment,
+  testPayReader,
+  checkPaymentStatus,
   getOrderItems,
   LineItem,
   updateContact,
@@ -80,6 +84,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     if (donation + orderTotal > 0) {
       toSend = await createStripeCheckoutSession(
           contactid,
+          formData.email,
           donation,
         donation ? cartRows.concat(donationItem) : cartRows,
         discount,
@@ -109,6 +114,69 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     if (orderID) await orderCancel(prisma, orderID);
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).json(error.message);
+      return;
+    }
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError ||
+      error instanceof Prisma.PrismaClientValidationError
+    ) {
+      res.status(400).json(error.message);
+      return;
+    }
+    res.status(500).json(error);
+  }
+});
+
+eventController.post('/reader-checkout', async (req: Request, res: Response) => {
+  const {cartItems, readerID} = req.body;
+  let orderID = 0;
+  let paymentIntentID = "";
+  //let toSend = {id: 'comp'};
+  try {
+    if (!cartItems.length) {
+      return res.status(400).json({error: 'Cart is empty'});
+    }
+    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
+      await getOrderItems(cartItems, prisma);
+
+    if (orderTotal > 0) {
+      paymentIntentID = await createStripePaymentIntent(
+        orderTotal
+      )
+      
+      const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
+      
+      // TESTING BELOW
+      const pay = await testPayReader(readerID);
+    }
+
+    // not adding to prisma at this point
+    /*orderID = await orderFulfillment(
+        prisma,
+        orderItems,
+        contactid,
+        orderTotal,
+        eventInstanceQueries,
+        toSend.id,
+    );*/
+    /*if (toSend.id === 'comp') {
+      await prisma.orders.update({
+        where: {
+          orderid: orderID,
+        },
+        data: {
+          checkout_sessions: `comp-${orderID}`,
+          payment_intent: `comp-${orderID}`,
+        },
+      });
+    }*/
+    const checkPayment = await checkPaymentStatus(paymentIntentID);
+    res.json({status: checkPayment.status});
+  } catch (error) {
+    console.error(error);
+    //if (orderID) await orderCancel(prisma, orderID);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;

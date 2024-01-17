@@ -18,6 +18,11 @@ import {getAllTicketRestrictions} from './utils/adminApiRequests';
 import {useFetchToken} from '../Event/components/ShowingUtils';
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
 
+import {loadStripe} from '@stripe/stripe-js';
+
+const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
+const stripePromise = loadStripe(pk);
+
 const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
     {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
@@ -241,7 +246,7 @@ const AdminPurchase = () => {
     }));
   };
 
-  const handlePurchase = () => {
+  const handlePurchase = (toReader: boolean) => {
     if (eventData.length === 0) {
       setErrMsg('Cart is empty.');
       setDialog(true);
@@ -328,7 +333,39 @@ const AdminPurchase = () => {
     }
 
     const cartItems = Object.values(aggregatedCartItems);
-    navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
+    if (toReader) {
+      stripePromise.then((stripe) => {
+        if (!stripe) return; // throw?
+
+        const readerID = 'tmr_FaJp6QTEN8Mhfi'; // hardcode
+
+        fetch( // create session and put order in database
+          process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
+          {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({cartItems, readerID}),
+          },
+        ).then((response) => { // response should be payment status
+          if (!response.ok) {
+            throw response;
+          }
+
+          response.json().then((result) => {
+            if (result.status == 'succeeded') {
+              console.log('payment succeeded!');
+            } else {
+              console.log('payment failed!');
+            }
+          });
+        });
+      });
+    } else {
+      navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
+    }
   };
 
   // TABLE COLUMN DEFINITION
@@ -582,9 +619,17 @@ const AdminPurchase = () => {
             <div className='mt-4 text-center'>
               <button
                 className='bg-green-600 px-8 py-1 text-white rounded-xl hover:bg-green-700 disabled:opacity-40 m-2'
-                onClick={handlePurchase}
+                onClick={() => handlePurchase(false)}
               >
                 Proceed to Checkout
+              </button>
+            </div>
+            <div className='mt-4 text-center'>
+              <button
+                className='bg-green-600 px-8 py-1 text-white rounded-xl hover:bg-green-700 disabled:opacity-40 m-2'
+                onClick={() => handlePurchase(true)}
+              >
+                Send to Reader
               </button>
             </div>
           </div>
