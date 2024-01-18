@@ -338,6 +338,11 @@ eventInstanceController.get(
             ticketrestrictions: {
               include: {
                 tickettype: true,
+                eventtickets: {
+                  where: {
+                    singleticket_fk: {not: null},
+                  },
+                },
               },
             },
           },
@@ -350,6 +355,7 @@ eventInstanceController.get(
             price: restriction.price,
             concessionprice: restriction.concessionprice,
             ticketlimit: restriction.ticketlimit,
+            ticketssold: restriction.eventtickets.length,
             description: restriction.tickettype.description,
           })),
         })));
