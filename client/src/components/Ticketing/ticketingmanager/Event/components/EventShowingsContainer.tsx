@@ -111,7 +111,7 @@ export const EventShowingsContainer = () => {
           </h2>
           <button
             className={
-              'bg-green-500 hover:bg-green-700 w-fit h-fit font-bold disabled:bg-gray-500 text-white px-2 py-1 rounded-xl flex gap-1 items-stretch my-auto'
+              'bg-green-500 hover:bg-green-700 w-fit h-fit font-medium disabled:bg-gray-500 text-white pl-1 pr-2 py-1 rounded-lg flex gap-1 items-stretch my-auto'
             }
             onClick={() => {
               setAdd((add) => !add);
@@ -124,7 +124,7 @@ export const EventShowingsContainer = () => {
               xmlns='http://www.w3.org/2000/svg'
               fill='none'
               viewBox='0 0 20 20'
-              strokeWidth='3'
+              strokeWidth='2.5'
               stroke='currentColor'
               className='w-5 h-5'
             >

@@ -1,12 +1,12 @@
 /**
  * Main Interface for To describe shows that are options for the event
  * Contains:
- *  id of the show newely created or show that is updated
+ *  id of the show newly created or show that is updated
  *  event id of the Event it adjacent to
  *  start time of the event and event data
  *  sales status -- available or published
  * totalseats is the total amount of available seats for the event
- * during initial add totall seats equal to available seats
+ * during initial add total seats equal to available seats
  */
 
 export interface eventInstanceTicketType {
@@ -15,6 +15,7 @@ export interface eventInstanceTicketType {
   price: number;
   concessionprice: number;
   ticketlimit: number;
+  ticketssold: number;
   description: string;
 }
 
