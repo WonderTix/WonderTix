@@ -1,5 +1,5 @@
 import {defineConfig, devices} from '@playwright/test';
-import path = require('path');
+import * as path from 'path';
 
 /**
  * Read environment variables from file.
