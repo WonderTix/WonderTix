@@ -10,22 +10,9 @@ import {
   selectDiscount,
   fetchDiscountData,
   removeDiscountFromCart,
-  DiscountItem,
+  DiscountItem, selectCartTotal,
 } from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
-
-/**
- * @param {Item} price: number, qty: number
- * @param {Function} itemCost - item: Item, item.price * item.qty
- * @param {Function} subtotalReducer - acc: number, item: Item, acc + itemCost(item)
- * @param {Function} totalReducer - subtotal: number, discount: DiscountItem
- */
-type Item = {
-  price: number;
-  qty: number;
-  payWhatCan: boolean;
-  payWhatPrice?: number;
-};
 
 /**
  * TargetItem is the type that can uniquely identify a cartItem
@@ -37,18 +24,6 @@ type TargetItem = {
   eventInstanceId: number;
   ticketTypeId: number;
 }
-const itemCost = (item: Item) => item.price * item.qty;
-const subtotalReducer = (acc: number, item: Item) => {
-  if (!item.payWhatCan) {
-    return acc + itemCost(item);
-  } else {
-    return acc + item.payWhatPrice;
-  }
-};
-const totalReducer = (subtotal: number, discount: DiscountItem) => {
-  const total = subtotal * (1 - discount.percent / 100) - discount.amount;
-  return total < 0 ? 0 : total;
-};
 
 /**
  * Cart handler on clicks, resets and complete orders
@@ -56,17 +31,18 @@ const totalReducer = (subtotal: number, discount: DiscountItem) => {
  * @returns {ReactElement}
  */
 const Cart = (): ReactElement => {
-  const history = useNavigate();
-  const navigate = useNavigate();
-
   enum RemoveContext {
     single,
     all,
   }
 
+  const navigate = useNavigate();
+
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartContents);
-  const subtotal = items.reduce(subtotalReducer, 0);
+  const discount = useAppSelector(selectDiscount);
+  const total = useAppSelector(selectCartTotal);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<TargetItem | null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
@@ -74,8 +50,6 @@ const Cart = (): ReactElement => {
   const [discountText, setDiscountText] = useState<string | null>(null);
   const [validDiscount, setValidDiscount] = useState(false);
   const [discountClicked, setDiscountClicked] = useState(false);
-  const discount = useAppSelector(selectDiscount);
-  const total = totalReducer(subtotal, discount);
 
   useEffect(() => {
     if (discount.code !== '') {
@@ -137,7 +111,7 @@ const Cart = (): ReactElement => {
   const removeDiscount = () => {
     setValidDiscount(false);
     setDiscountClicked(false);
-    setDiscountText('');
+    setDiscountText(null);
     dispatch(removeDiscountFromCart());
   };
 
@@ -149,7 +123,7 @@ const Cart = (): ReactElement => {
   };
 
   const navigateToCompleteOrder = () => {
-    history('/completeorder');
+    navigate('/completeorder');
   };
 
   return (
@@ -218,12 +192,12 @@ const Cart = (): ReactElement => {
               {!validDiscount && discountClicked && (
                 <p className='text-amber-300 italic'>Invalid discount code</p>
               )}
-              <div className='input-group flex items-center gap-1 w-full p-3 rounded-xl bg-sky-500'>
+              <div className='flex items-center gap-1 w-full p-3 rounded-xl bg-sky-500'>
                 <input
                   type='text'
                   placeholder='Discount code...'
                   aria-label='Discount code'
-                  className='input input-bordered rounded-md pl-2'
+                  className='rounded-md pl-2'
                   value={discountText ? discountText : discount.code}
                   onChange={(e) => {
                     setDiscountText(e.target.value);
@@ -257,6 +231,7 @@ const Cart = (): ReactElement => {
                   <button
                     className='text-white enabled:hover:text-gray-200'
                     onClick={removeDiscount}
+                    aria-label='Remove discount code'
                   >
                     <svg
                       xmlns='http://www.w3.org/2000/svg'

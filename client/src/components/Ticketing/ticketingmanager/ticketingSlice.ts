@@ -646,6 +646,17 @@ const ticketingSlice = createSlice({
  *
  * @param state
  */
+export const selectDiscountValue = (state: RootState): number => {
+  const subtotal = selectCartSubtotal(state);
+  const percentAmountDifference = subtotal - (subtotal * (1 - state.ticketing.discount.percent / 100));
+  if (state.ticketing.discount.amount && state.ticketing.discount.percent) {
+    return Math.min(percentAmountDifference, state.ticketing.discount.amount);
+  } else if (state.ticketing.discount.amount) {
+    return state.ticketing.discount.amount;
+  } else if (state.ticketing.discount.percent) {
+    return state.ticketing.discount.percent;
+  }
+};
 export const selectCartSubtotal = (state: RootState): number =>
   state.ticketing.cart.reduce((tot, item) => {
     if (!item.payWhatCan) {
@@ -654,12 +665,14 @@ export const selectCartSubtotal = (state: RootState): number =>
       return tot + item.payWhatPrice;
     }
   }, 0);
-export const selectCartTotal = (state: RootState): number =>
-  Math.max(
-    selectCartSubtotal(state) * (1 - state.ticketing.discount.percent / 100) -
-      state.ticketing.discount.amount,
-    0,
-  );
+export const selectCartTotal = (state: RootState): number => {
+  const subtotal = selectCartSubtotal(state);
+  if (state.ticketing.discount.amount || state.ticketing.discount.percent) {
+    return Math.max(subtotal - selectDiscountValue(state), 0);
+  } else {
+    return subtotal;
+  }
+};
 export const selectCartItem = (
   state: RootState,
   event_instance_id: number,
