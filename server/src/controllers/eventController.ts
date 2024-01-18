@@ -129,6 +129,15 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /2/events/reader-checkout:
+ *   post:
+ *     summary: Create Reader Payment Intent and Request Payment
+ *     tags:
+ *     - New Event API
+ */
+
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
   const {cartItems, readerID} = req.body;
   let orderID = 0;
@@ -139,18 +148,20 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       return res.status(400).json({error: 'Cart is empty'});
     }
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma);
+      await getOrderItems(cartItems, prisma); //do we need to use this
 
-    if (orderTotal > 0) {
+    //console.log(orderTotal);
+
+    //if (orderTotal > 0) {
       paymentIntentID = await createStripePaymentIntent(
-        orderTotal
+        100
       )
       
       const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
       
       // TESTING BELOW
       const pay = await testPayReader(readerID);
-    }
+    //}
 
     // not adding to prisma at this point
     /*orderID = await orderFulfillment(
@@ -172,7 +183,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         },
       });
     }*/
-    const checkPayment = await checkPaymentStatus(paymentIntentID);
+    const checkPayment = await checkPaymentStatus(paymentIntentID); // probably in webhook instead
     res.json({status: checkPayment.status});
   } catch (error) {
     console.error(error);
