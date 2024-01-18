@@ -145,13 +145,13 @@ model eventtickets {
   eventticketid          Int                 @id(map: "tickets_pkey") @default(autoincrement())
   eventinstanceid_fk     Int
   ticketrestrictionid_fk Int?
-  singleticket_fk        Int?
+  singleticketid_fk      Int?                @unique
   redeemed               Boolean?            @default(false)
   redeemed_ts            DateTime?           @db.Timetz(6)
   donated                Boolean?            @default(false)
   ticketrestrictions     ticketrestrictions? @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Cascade, onUpdate: Cascade)
   eventinstances         eventinstances      @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction, map: "tickets_eventinstanceid_fkey")
-  singleticket           singletickets?      @relation(fields: [singleticket_fk], references: [singleticketid], onDelete: SetNull, onUpdate: NoAction)
+  singleticket           singletickets?      @relation(fields: [singleticketid_fk], references: [singleticketid], onDelete: SetNull, onUpdate: Cascade)
   seasontickets          seasontickets[]
 }
 
@@ -250,11 +250,11 @@ model seasontickettypepricedefault {
 /// when swapped, the original single ticket is marked as swapped,
 /// the old event ticket is marked as not purchased and a new single ticket is created with the old order item id and new event ticket id
 model singletickets {
-  singleticketid   Int            @id @default(autoincrement())
+  singleticketid   Int           @id @default(autoincrement())
   orderitemid_fk   Int
-  ticketwasswapped Boolean?       @default(false)
-  eventtickets     eventtickets[]
-  orderitems       orderitems     @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: Cascade, onUpdate: NoAction)
+  ticketwasswapped Boolean?      @default(false)
+  orderitems       orderitems    @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: Cascade, onUpdate: NoAction)
+  eventticket      eventtickets?
 }
 
 /// used to create and assign tasks such as a todo-list, memo, investigate and issue, etc.

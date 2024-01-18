@@ -41,7 +41,6 @@ export const validateTicketRestrictionsOnUpdate = (
     eventInstance: LoadedEventInstance,
     newRestrictions: Map<number, instanceTicketType>,
 ) : any[] => {
-  const seasonTicketTypePriceDefaults = new Map(eventInstance.events.seasons?.seasontickettypepricedefaults.map((def) => [def.tickettypeid_fk, def.id]));
   const queryBatch = eventInstance.ticketrestrictions.map((oldRestriction: LoadedTicketRestriction) => {
     const newRestriction = newRestrictions.get(oldRestriction.tickettypeid_fk);
     newRestrictions.delete(oldRestriction.tickettypeid_fk);
@@ -49,11 +48,10 @@ export const validateTicketRestrictionsOnUpdate = (
         prisma,
         newRestriction,
         oldRestriction,
-        seasonTicketTypePriceDefaults,
         eventInstance.totalseats ?? 0,
-        eventInstance.defaulttickettype ?? 1,
     );
   }).flat(Infinity);
+  const seasonTicketTypePriceDefaults = new Map(eventInstance.events.seasons?.seasontickettypepricedefaults.map((def) => [def.tickettypeid_fk, def.id]));
   return queryBatch.concat([...newRestrictions.values()].map(({description, ...newRestriction}) => {
     const tickets: number = Math.min(eventInstance.totalseats ?? 0, newRestriction.ticketlimit);
     return prisma.ticketrestrictions.create({
@@ -78,26 +76,19 @@ const getTicketRestrictionUpdate = (
     prisma: ExtendedPrismaClient,
     newRestriction: instanceTicketType | undefined,
     oldRestriction: LoadedTicketRestriction,
-    seasonTicketTypePriceDefaults: Map<number, number>,
     totalseats: number,
-    defaultTicketType: number,
 ) => {
   const availableTickets:eventtickets[] = [];
   const soldTickets: eventtickets[] = [];
   oldRestriction.eventtickets.forEach((ticket) =>
       ticket.singleticket_fk? soldTickets.push(ticket): availableTickets.push(ticket),
   );
-  if ((!newRestriction || !newRestriction.ticketlimit) && !soldTickets.length && oldRestriction.tickettypeid_fk !== defaultTicketType) {
+  if ((!newRestriction || !newRestriction.ticketlimit) && !soldTickets.length) {
     return [prisma.ticketrestrictions.delete({
       where: {
         ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
       },
     })];
-  } else if ((!newRestriction || !newRestriction.ticketlimit) && !soldTickets.length) {
-    throw new InvalidInputError(
-        422,
-        `Can not remove default ticket type`,
-    );
   } else if (!newRestriction || !newRestriction.ticketlimit) {
     throw new InvalidInputError(
         422,
@@ -107,11 +98,6 @@ const getTicketRestrictionUpdate = (
     throw new InvalidInputError(
         422,
         `Can not reduce individual ticket type quantity below quantity sold to date`,
-    );
-  } else if (oldRestriction.tickettypeid_fk === defaultTicketType && totalseats !== +newRestriction.ticketlimit) {
-    throw new InvalidInputError(
-        422,
-        `Default ticket type quantity must be equal to total seats`,
     );
   }
 
@@ -126,7 +112,6 @@ const getTicketRestrictionUpdate = (
       ticketlimit: +newRestriction.ticketlimit,
       price: oldRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
       concessionprice: +newRestriction.concessionprice,
-      seasontickettypepricedefaultid_fk: seasonTicketTypePriceDefaults.get(oldRestriction.tickettypeid_fk),
       ...(difference > 0 && {
         eventtickets: {
           create: Array(difference).fill({
@@ -171,11 +156,8 @@ export const validateShowingOnUpdate = (
     oldEvent: LoadedEventInstance,
     newEvent: eventInstanceRequest,
 ) => {
-  const soldTickets= oldEvent.ticketrestrictions
-      .find((restriction) => restriction.tickettypeid_fk === oldEvent.defaulttickettype)
-      ?.eventtickets.filter((ticket) => ticket.singleticket_fk).length ?? 0;
-
-  const newTotalSeats = soldTickets > newEvent.totalseats? soldTickets: +newEvent.totalseats;
+  const soldTickets = (oldEvent.totalseats ?? 0) - (oldEvent.availableseats ?? 0);
+  const newTotalSeats = soldTickets > +newEvent.totalseats? soldTickets: +newEvent.totalseats;
   return {
     ispreview: newEvent.ispreview,
     purchaseuri: newEvent.purchaseuri,

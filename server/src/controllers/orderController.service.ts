@@ -1,5 +1,7 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {freq} from '@prisma/client';
+import {validateTicketRestrictionsOnUpdate} from './eventInstanceController.service';
+import {inflate} from 'zlib';
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -102,38 +104,6 @@ export const orderFulfillment = async (
   return result[0].orderid;
 };
 
-const updateAvailableSeats = async (prisma: ExtendedPrismaClient) => {
-  const queriesToBatch: any[] = [];
-  const eventInstances = await prisma.eventinstances.findMany({
-    include: {
-      ticketrestrictions: {
-        include: {
-          eventtickets: {
-            where: {
-              singleticket_fk: null,
-            },
-          },
-        },
-      },
-    },
-  });
-  eventInstances.forEach((instance) => {
-    const defaultRestriction = instance.ticketrestrictions.find((res) => res.tickettypeid_fk === instance.defaulttickettype);
-    if (defaultRestriction?.eventtickets.length === instance.availableseats) return;
-    queriesToBatch.push(
-        prisma.eventinstances.update({
-          where: {
-            eventinstanceid: instance.eventinstanceid,
-          },
-          data: {
-            availableseats: defaultRestriction?.eventtickets.length ?? 0,
-          },
-        }),
-    );
-  });
-  await prisma.$transaction(queriesToBatch);
-  return;
-};
 
 export const orderCancel = async (
     prisma: ExtendedPrismaClient,
@@ -153,6 +123,14 @@ export const orderCancel = async (
       },
       data: {
         refund_intent: refundIntent,
+        orderitems: {
+          updateMany: {
+            where: {},
+            data: {
+              refunded: true,
+            },
+          },
+        },
       },
       include: {
         orderitems: {
@@ -162,34 +140,26 @@ export const orderCancel = async (
         },
       },
     });
-    await prisma.$transaction(
-        updatedOrder.orderitems.map((item) =>
-          prisma.orderitems.update({
+    await prisma.$transaction(updatedOrder
+        .orderitems
+        .map((item) => item.singletickets).flat(1)
+        .map((ticket) =>
+          prisma.singletickets.update({
             where: {
-              orderitemid: item.orderitemid,
+              singleticketid: ticket.singleticketid,
             },
             data: {
-              refunded: true,
-              singletickets: {
-                update: item.singletickets.map((singleticket) => ({
-                  where: {
-                    singleticketid: singleticket.singleticketid,
-                  },
-                  data: {
-                    eventtickets: {
-                      set: [],
-                    },
-                  },
-                })),
+              eventticket: {
+                disconnect: true,
               },
             },
           }),
         ),
     );
   }
-  await updateAvailableSeats(prisma);
   return;
 };
+
 const getOrderDateAndTime = () => {
   const date = new Date();
 

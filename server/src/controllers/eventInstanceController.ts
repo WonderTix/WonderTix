@@ -78,18 +78,10 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
           active: true,
         },
       },
-      include: {
-        ticketrestrictions: {
-          include: {
-            tickettype: true,
-          },
-        },
-      },
     });
     const allIds:number[] = [];
     let byId = {};
     tickets.forEach((ticket) => {
-      const defaultRestriction = ticket.ticketrestrictions.find((res) => res.tickettypeid_fk === ticket.defaulttickettype);
       allIds.push(ticket.eventinstanceid);
       byId = {...byId, [ticket.eventinstanceid]: {
         event_instance_id: ticket.eventinstanceid,
@@ -97,9 +89,6 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
         date: getDate(ticket.eventtime.toISOString(), ticket.eventdate),
         totalseats: ticket.totalseats,
         availableseats: ticket.availableseats,
-        admission_type: defaultRestriction?.tickettype.description,
-        ticket_price: defaultRestriction?.price,
-        concession_price: defaultRestriction?.concessionprice,
       }};
     });
     res.send({data: {allIds, byId}});
@@ -212,7 +201,6 @@ eventInstanceController.get(
     async (req: Request, res: Response) => {
       try {
         const instances = await prisma.eventinstances.findMany({
-          where: {},
           select: {
             eventinstanceid: true,
             totalseats: true,
