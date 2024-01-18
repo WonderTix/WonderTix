@@ -271,6 +271,33 @@ const validateContact = (formData: checkoutForm) => {
   };
 };
 
+export const validateDiscount = async (discount: any, cartItems: CartItem[], prisma: ExtendedPrismaClient) => {
+  const eventIds = new Set<number>();
+  cartItems.forEach((item) => eventIds.add(item.eventId));
+  const numEventsInCart = eventIds.size;
+
+  const totalCartTicketCount = cartItems.reduce((tot, item) => {
+    return tot + item.qty;
+  }, 0);
+
+  const existingDiscount = await prisma.discounts.findFirst({
+    where: {
+      code: discount.code,
+      active: true,
+    },
+  });
+
+  if (!existingDiscount) {
+    throw new InvalidInputError(422, 'Invalid discount code');
+  }
+  if (existingDiscount.min_events && existingDiscount.min_events > numEventsInCart) {
+    throw new InvalidInputError(422, `Not enough events in cart for discount code ${discount.code}`);
+  }
+  if (existingDiscount.min_tickets && existingDiscount.min_tickets > totalCartTicketCount) {
+    throw new InvalidInputError(422, `Not enough tickets in cart for discount code ${discount.code}`);
+  }
+};
+
 const validateName = (name: string, type: string): string => {
   if (!name || !name.length) {
     throw new InvalidInputError(422, `A valid ${type} must be provided`);

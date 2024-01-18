@@ -7,6 +7,7 @@ import {
   getOrderItems,
   LineItem,
   updateContact,
+  validateDiscount,
 } from './eventController.service';
 import {orderCancel, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -63,9 +64,13 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     } else if (donation && donation < 0) {
       return res.status(422).json({error: 'Amount of donation can not be negative'});
     }
+
+    await validateDiscount(discount, cartItems, prisma);
+
     const {contactid} = await updateContact(formData, prisma);
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
       await getOrderItems(cartItems, prisma);
+
     const donationItem: LineItem = {
       price_data: {
         currency: 'usd',
@@ -222,7 +227,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       },
     });
     return res.json(events.map((event) => ({
-      id: event.eventid.toString(),
+      id: event.eventid,
       seasonid: event.seasonid_fk,
       title: event.eventname,
       description: event.eventdescription,

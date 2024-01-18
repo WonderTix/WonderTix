@@ -19,7 +19,7 @@ const event = {
   title: 'Test Title',
   description: 'Test description',
   imageurl: 'https://test.com/image.jpg',
-  id: '0',
+  id: 0,
 };
 
 let store: any;
