@@ -6,23 +6,23 @@ import {titleCase} from '../../../../utils/arrays';
 import {useAuth0} from '@auth0/auth0-react';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import format from 'date-fns/format';
+import {useFetchToken} from '../Event/components/ShowingUtils';
 
 
 const renderCheckbox = (params: GridCellParams) => (
   <Checkbox checked={params.value as boolean} disabled color='info' />
 );
 
-const RenderCheckin = (props:{params: GridCellParams}) => {
+interface RenderCheckinProps {
+  params: GridCellParams;
+}
+
+const RenderCheckin = (props: RenderCheckinProps) => {
   const {params} = props;
-  const {getAccessTokenSilently} = useAuth0();
+  const {token} = useFetchToken();
   const [checked, setChecked] = useState(params.value as boolean);
   const checkInGuest = async (isCheckedIn: boolean, rowId: string) => {
-    try {
       const [contactId, instanceId] = rowId.split('-');
-      const token = await getAccessTokenSilently({
-        audience: process.env.REACT_APP_ROOT_URL,
-        scope: 'admin',
-      });
       const res = await fetch(
           process.env.REACT_APP_API_2_URL + `/events/checkin`,
           {
@@ -36,24 +36,23 @@ const RenderCheckin = (props:{params: GridCellParams}) => {
           },
       );
       if (!res.ok) {
-        throw new Error(`Failed to check in guest. HTTP status: ${res.status}`);
+        throw new Error(`Failed to update guest checkin status`);
       }
-      return;
-    } catch (err) {
-      console.error(err.message);
-    }
   };
 
+  if (token === '') return null;
   return (
     <Checkbox
       color='primary'
       checked={checked}
-      onChange={async () => {
-          setChecked((prev) => !prev);
-          await checkInGuest(
-              !checked,
-              params.row.id,
-          );
+      onChange={() => {
+        checkInGuest(
+            !checked,
+            params.row.id,
+        )
+            .then(() =>
+                setChecked((prev) => !prev))
+            .catch((error) => console.error(error));
       }}
     />
   );
@@ -66,7 +65,7 @@ const renderTicketTypes = (params: GridCellParams) => {
         {
           typeof ticketTypes === 'object' &&
             Object.keys(ticketTypes).map((key, index) => (
-                <li key={index}>{key} - {ticketTypes[key]}</li>
+                <li key={`${params.row.id}-${index}`}>{key} - {ticketTypes[key]}</li>
             ))
         }
       </ul>
@@ -209,7 +208,7 @@ const DoorList = (): ReactElement => {
         scope: 'admin',
       });
       const response = await fetch(
-        process.env.REACT_APP_API_2_URL + `/event-instance/doorlist?eventinstanceid=${event}`,
+        process.env.REACT_APP_API_2_URL + `/event-instance/doorlist/${event}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -224,7 +223,7 @@ const DoorList = (): ReactElement => {
       }
       const eventInstance = await response.json();
       setEventName(eventInstance.eventName);
-      setDate(new Date(`${toDateStringFormat(eventInstance.eventDate)} ${eventInstance.eventTime.split('T').slice(0, 8)}`));
+      setDate(new Date(`${toDateStringFormat(eventInstance.eventDate)}T${eventInstance.eventTime.split('T')[1].slice(0, 8)}`));
       setDoorList(eventInstance.doorlist);
     } catch (error) {
       console.error(error.message);

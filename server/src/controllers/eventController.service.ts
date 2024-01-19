@@ -60,17 +60,18 @@ export const createStripeCoupon = async (discount: any) => {
   return stripeCoupon.id;
 };
 
-interface ToReturn {
+interface OrderItemsReturn {
   orderItems: any[];
   cartRows: LineItem[];
   orderTotal: number;
   eventInstanceQueries: any[];
 }
+
 export const getOrderItems = async (
     cartItems: CartItem[],
     prisma: ExtendedPrismaClient,
-): Promise<ToReturn> => {
-  const toReturn: ToReturn = {
+): Promise<OrderItemsReturn> => {
+  const toReturn: OrderItemsReturn = {
     orderItems: [],
     cartRows: [],
     eventInstanceQueries: [],
@@ -141,7 +142,7 @@ export const getOrderItems = async (
   }
 
   eventInstanceMap.forEach(({eventinstanceid, availableseats}) =>
-    toReturn.eventInstanceQueries.push(updateAvailableSeats(prisma, eventinstanceid, availableseats ?? 0)));
+    toReturn.eventInstanceQueries.push(updateAvailableSeats(prisma, eventinstanceid, availableseats)));
 
   return toReturn;
 };

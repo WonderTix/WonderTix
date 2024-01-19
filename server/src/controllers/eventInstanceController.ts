@@ -54,10 +54,8 @@ const getDate = (time: string, date: number) => {
  *                               eventid: {type: integer}
  *                               totalseats: {type: integer}
  *                               availableseats: {type: integer}
- *                               admission_type: {type: string}
- *                               ticket_price: {type: integer}
- *                               concession_price: {type: integer}
  *                               date: {type: string}
+ *                               detail: {type: string}
  *                       allIds: {type: array, items: {type: integer}}
  *       400:
  *        description: bad request
@@ -89,7 +87,7 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
         date: getDate(ticket.eventtime.toISOString(), ticket.eventdate),
         totalseats: ticket.totalseats,
         availableseats: ticket.availableseats,
-              detail: ticket.detail,
+        detail: ticket.detail,
       }};
     });
     res.send({data: {allIds, byId}});
@@ -105,7 +103,6 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
     res.status(500).send({error: 'Internal Server Error'});
   }
 });
-
 
 /**
  * @swagger
@@ -423,12 +420,56 @@ eventInstanceController.get('/', async (req: Request, res: Response) => {
 eventInstanceController.use(checkJwt);
 eventInstanceController.use(checkScopes);
 
-eventInstanceController.get('/doorlist',
+/**
+ * @swagger
+ * /2/event-instance/doorlist/{id}:
+ *   get:
+ *     summary: Get doorlist
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     tags:
+ *       - New event instance
+ *     security:
+ *      - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 eventName: {type: string}
+ *                 eventTime: {type: string}
+ *                 eventDate: {type: string}
+ *                 doorlist:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id: {type: string}
+ *                       firstName: {type: string}
+ *                       lastName: {type: string}
+ *                       phone: {type: string}
+ *                       email: {type: string}
+ *                       vip: {type: boolean}
+ *                       donorBadge: {type: string}
+ *                       accommodations: {type: string}
+ *                       address: {type: string}
+ *                       num_tickets:
+ *                          type: object
+ *                          properties:
+ *                             ticketTypeCount: {type: integer}
+ *                       arrived: {type: boolean}
+ *       401:
+ *         description: Unauthorized
+ */
+eventInstanceController.get('/doorlist/:id',
     async (req: Request, res: Response) => {
       try {
-        const id = req.query.eventinstanceid;
+        const id = req.params.id;
 
-        if (typeof id !== 'string' || isNaN(Number(id))) {
+        if (isNaN(Number(id))) {
           return res.status(400).send({error: `Invalid Showing Id`});
         }
 
@@ -465,7 +506,6 @@ eventInstanceController.get('/doorlist',
             },
           },
         });
-
         if (!eventInstance) {
           return res.status(400).send({error: `Showing ${id} does not exist`});
         }
@@ -478,7 +518,6 @@ eventInstanceController.get('/doorlist',
           let row = doorlist.get(contact.contactid);
           if (!row) {
             row = {
-              instanceId: eventInstance.eventinstanceid,
               firstName: contact.firstname,
               lastName: contact.lastname,
               email: contact.email,
@@ -502,8 +541,8 @@ eventInstanceController.get('/doorlist',
         return res.json({
           eventName: eventInstance.events.eventname,
           eventTime: eventInstance.eventtime,
-          eventData: eventInstance.eventdate,
-          doorlist: Array.from(doorlist).map(([key, value]) => ({...value, id: `${key}-${value.instanceId}`})),
+          eventDate: eventInstance.eventdate,
+          doorlist: Array.from(doorlist).map(([key, value]) => ({...value, id: `${key}-${eventInstance.eventinstanceid}`})),
         });
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {

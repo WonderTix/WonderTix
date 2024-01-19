@@ -12,7 +12,7 @@ export default Prisma.defineExtension((prisma) => {
             return () => prisma.eventtickets.aggregate({
               where: {
                 eventinstanceid_fk: eventinstanceid,
-                singleticketid_fk: null,
+                singleticketid_fk: {not: null},
               },
               _count: {
                 eventticketid: true,

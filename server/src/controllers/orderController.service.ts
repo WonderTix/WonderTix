@@ -223,7 +223,7 @@ const updateAvailableSeats = async (
       eventinstanceid: instance.eventinstanceid,
     },
     data: {
-      availableseats: (instance.totalseats ?? 0) - instance.eventtickets.length,
+      availableseats: instance.totalseats - instance.eventtickets.length,
     },
   })),
   );

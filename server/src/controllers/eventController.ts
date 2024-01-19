@@ -55,7 +55,7 @@ export const eventController = Router();
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
   const {cartItems, formData, donation = 0, discount} = req.body;
-  let order:orders | null = null;
+  let order :orders | null = null;
   let toSend = {id: 'comp'};
   try {
     if (!cartItems.length && donation === 0) {
@@ -1127,7 +1127,6 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
 
     return res.send();
   } catch (error) {
-    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
       return;

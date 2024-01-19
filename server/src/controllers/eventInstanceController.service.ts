@@ -48,12 +48,12 @@ export const validateTicketRestrictionsOnUpdate = (
         prisma,
         newRestriction,
         oldRestriction,
-        eventInstance.totalseats ?? 0,
+        eventInstance.totalseats,
     );
   }).flat(Infinity);
   const seasonTicketTypePriceDefaults = new Map(eventInstance.events.seasons?.seasontickettypepricedefaults.map((def) => [def.tickettypeid_fk, def.id]));
   return queryBatch.concat([...newRestrictions.values()].map(({description, ...newRestriction}) => {
-    const tickets: number = Math.min(eventInstance.totalseats ?? 0, newRestriction.ticketlimit);
+    const tickets: number = Math.min(eventInstance.totalseats, newRestriction.ticketlimit);
     return prisma.ticketrestrictions.create({
       data: {
         ...newRestriction,
@@ -94,6 +94,11 @@ const getTicketRestrictionUpdate = (
         422,
         `Can not remove ticket type for which tickets have already been sold`,
     );
+  } else if (newRestriction.ticketlimit > totalseats) {
+    throw new InvalidInputError(
+        422,
+        `Restriction ticket limit can not exceed total seats for showing`,
+    );
   } else if (soldTickets.length > newRestriction.ticketlimit) {
     throw new InvalidInputError(
         422,
@@ -102,7 +107,7 @@ const getTicketRestrictionUpdate = (
   }
 
   const newQuantity= Math.min(totalseats, newRestriction.ticketlimit);
-  const difference = newQuantity- oldRestriction.eventtickets.length;
+  const difference = newQuantity-oldRestriction.eventtickets.length;
 
   return [prisma.ticketrestrictions.update({
     where: {
@@ -156,8 +161,8 @@ export const validateShowingOnUpdate = (
     oldEvent: LoadedEventInstance,
     newEvent: eventInstanceRequest,
 ) => {
-  const soldTickets = (oldEvent.totalseats ?? 0) - (oldEvent.availableseats ?? 0);
-  const newTotalSeats = soldTickets > +newEvent.totalseats? soldTickets: +newEvent.totalseats;
+  const soldTickets = oldEvent.totalseats - oldEvent.availableseats;
+  const newTotalSeats = Math.max(soldTickets, +newEvent.totalseats);
   return {
     ispreview: newEvent.ispreview,
     purchaseuri: newEvent.purchaseuri,
