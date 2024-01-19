@@ -72,7 +72,7 @@ const DiscountCodes = (): ReactElement => {
       width: 100,
       valueFormatter: (params: GridValueFormatterParams<number>) => {
         if (params.value == null) {
-          return toDollarAmount(0);
+          return '$';
         }
         return toDollarAmount(params.value);
       },
