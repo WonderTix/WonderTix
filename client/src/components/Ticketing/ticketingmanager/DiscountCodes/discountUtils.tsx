@@ -12,7 +12,7 @@ export type DiscountCode = {
   minEvents?: number,
 }
 
-export const emptyDiscountCode = {
+export const baseDiscountCode = {
   code: '',
   active: false,
 };
@@ -22,8 +22,8 @@ export const createDiscountCode = async (discountCode: DiscountCode, token: stri
     const response = await fetch(
       `${process.env.REACT_APP_API_2_URL}/discount`,
       {
-        credentials: 'include',
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -108,8 +108,8 @@ export const deleteDiscountCode = async (discountId: number, token: string) => {
     const response = await fetch(
       `${process.env.REACT_APP_API_2_URL}/discount/${discountId}`,
       {
-        credentials: 'include',
         method: 'DELETE',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,

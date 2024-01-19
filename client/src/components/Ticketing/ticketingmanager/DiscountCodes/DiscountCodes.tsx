@@ -13,7 +13,7 @@ import {Switch, Tooltip} from '@mui/material';
 import DiscountPopUp, {DiscountPopUpProps} from './DiscountPopUp';
 import {
   DiscountCode,
-  emptyDiscountCode,
+  baseDiscountCode,
   createDiscountCode,
   getDiscountCodes,
   editDiscountCode,
@@ -308,7 +308,7 @@ const DiscountCodes = (): ReactElement => {
                     },
                     onSubmit: handleCreateDiscountCode,
                     primaryLabel: 'Create',
-                    values: emptyDiscountCode,
+                    values: baseDiscountCode,
                   })
                 }
               >

@@ -9,73 +9,11 @@ export const discountController = Router();
 
 /**
  * @swagger
- * /2/discount/{id}:
- *   get:
- *     summary: get a discount
- *     tags:
- *     - New Discount
- *     parameters:
- *     - $ref: '#/components/parameters/id'
- *     responses:
- *       200:
- *         description: discount updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Discount'
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-discountController.get('/:id', async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const discountExists = await prisma.discounts.findUnique({
-      where: {
-        discountid: Number(id),
-      },
-    });
-    if (!discountExists) {
-      res.status(404).json({error: 'discount not found'});
-      return;
-    }
-    const discount = await prisma.discounts.findUnique({
-      where: {
-        discountid: Number(id),
-      },
-    });
-    res.status(200).json(discount);
-
-    return;
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
-    }
-
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
-    }
-
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
-
-/**
- * @swagger
  * /2/discount:
  *   get:
  *     summary: get all discounts
  *     tags:
  *     - New Discount
- *     security:
- *     - bearerAuth: []
  *     responses:
  *       200:
  *         description: discount updated successfully.
@@ -117,8 +55,6 @@ discountController.get('/', async (req: Request, res: Response) => {
       };
     }
 
-    console.log(filters);
-
     if (Object.keys(filters).length > 0) {
       const discounts = await prisma.discounts.findMany({
         where: filters,
@@ -150,6 +86,62 @@ discountController.get('/', async (req: Request, res: Response) => {
 
 discountController.use(checkJwt);
 discountController.use(checkScopes);
+
+/**
+ * @swagger
+ * /2/discount/{id}:
+ *   get:
+ *     summary: get a discount
+ *     tags:
+ *     - New Discount
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: discount updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Discount'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+discountController.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const discount = await prisma.discounts.findUnique({
+      where: {
+        discountid: Number(id),
+      },
+    });
+
+    if (!discount) {
+      res.status(404).json({error: 'discount not found'});
+      return;
+    }
+
+    res.status(200).json(discount);
+    return;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
 
 /**
  * @swagger

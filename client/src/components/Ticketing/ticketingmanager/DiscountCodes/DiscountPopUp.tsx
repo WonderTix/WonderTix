@@ -37,7 +37,7 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
   const discountCodePopUpRef = useRef(null);
 
   useEffect(() => {
-    // Code within the useEffect traps focus within the ContactPopUp when tabbing through
+    // Code within the useEffect traps focus within the DiscountPopUp when tabbing through
     // interactible elements. See: https://medium.com/cstech/achieving-focus-trapping-in-a-react-modal-component-3f28f596f35b
     const popUpElement = discountCodePopUpRef.current;
     popUpElement.focus();
