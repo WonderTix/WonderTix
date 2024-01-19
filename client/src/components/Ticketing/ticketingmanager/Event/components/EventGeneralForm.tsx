@@ -5,7 +5,8 @@ import {eventGeneralSchema} from './event.schemas';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {getData} from './ShowingUtils';
+import {BackIcon, getData, SaveIcon} from './ShowingUtils';
+import {FormButton} from './FormButton';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
@@ -51,7 +52,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
     >
-      {({handleSubmit, values, setFieldValue}) => (
+      {({handleSubmit, values, setFieldValue, isSubmitting}) => (
         <form
           className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'}
           onSubmit={handleSubmit}
@@ -66,21 +67,25 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
             </h2>
             <div
               className={
-                'col-span-12 min-[650px]:col-span-6 flex flex-row gap-4 flex-wrap justify-center min-[650px]:justify-end'
+                'col-span-12 min-[650px]:col-span-6 flex flex-row gap-2 flex-wrap justify-center min-[650px]:justify-end'
               }
             >
-              <FormSubmitButton />
+              <FormSubmitButton
+                className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl h-fit shadow-xl'
+                testID='event-save-button'
+              >
+                <SaveIcon className='h-6 w-6' />
+              </FormSubmitButton>
               {onLeaveEdit && eventData && (
-                <button
-                  className={
-                    'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold h-fit'
-                  }
+                <FormButton
+                  title='Back'
+                  testID='event-leave-edit'
+                  disabled={isSubmitting || showPopUp}
                   onClick={onLeaveEdit}
-                  disabled={showPopUp}
-                  type={'button'}
+                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
                 >
-                  Cancel
-                </button>
+                  <BackIcon className='h-6 w-6' />
+                </FormButton>
               )}
             </div>
           </div>

@@ -100,6 +100,7 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
         admission_type: defaultRestriction?.tickettype.description,
         ticket_price: defaultRestriction?.price,
         concession_price: defaultRestriction?.concessionprice,
+        detail: ticket.detail,
       }};
     });
     res.send({data: {allIds, byId}});
@@ -492,6 +493,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
         purchaseuri: eventToCreate.purchaseuri,
         ispreview: eventToCreate.ispreview,
         defaulttickettype: eventToCreate.defaulttickettype,
+        detail: eventToCreate.detail,
       },
       include: {
         events: {

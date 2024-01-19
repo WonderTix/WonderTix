@@ -39,6 +39,7 @@ export interface eventInstanceRequest {
   instanceTicketTypes: instanceTicketType[];
   salestatus: boolean;
   totalseats: number;
+  detail: string;
 }
 
 export interface ticketRestriction {

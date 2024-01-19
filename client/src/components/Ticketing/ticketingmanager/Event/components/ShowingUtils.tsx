@@ -3,30 +3,6 @@ import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
 import {toDateStringFormat} from './util/EventsUtil';
 
-const makeApiCall = async (method, url, token, event, onSuccess, onError) => {
-  try {
-    const submitRes = await fetch(url, {
-      credentials: 'include',
-      method: method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(event),
-    });
-    if (!submitRes.ok) {
-      throw submitRes;
-    }
-    if (onSuccess) {
-      await onSuccess(submitRes);
-    }
-  } catch (error) {
-    if (onError) {
-      await onError(error);
-    }
-  }
-};
-
 export const createSubmitFunction = (
   method: string,
   url: string,
@@ -264,6 +240,85 @@ export const CirclePlusIcon = (props: {className?: string}) => {
   );
 };
 
+export const SaveIcon = (props: {className?: string}) => {
+  const {className} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth='2'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4'
+      />
+    </svg>
+  );
+};
+
+export const BackIcon = (props: {className?: string}) => {
+  const {className} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
+      viewBox='0 0 24 24'
+      strokeWidth='1.5'
+      stroke='currentColor'
+      className={className}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M10 19l-7-7m0 0l7-7m-7 7h18'
+      />
+    </svg>
+  );
+};
+
+export const EditIcon = (props: {className?: string}) => {
+  const {className} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+      />
+    </svg>
+  );
+};
+
+export const CloneIcon = (props: {className?: string}) => {
+  const {className} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill='none'
+      viewBox='0 0 24 24'
+      strokeWidth='1.5'
+      stroke='currentColor'
+      className={className}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2'
+      />
+    </svg>
+  );
+};
 export const cloneShowing = (showing) => {
   const toReturn = {};
   Object.keys(showing).forEach((key) => {

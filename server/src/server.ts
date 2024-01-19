@@ -184,6 +184,7 @@ const openApiSpec = swaggerJsdoc({
             purchaseurl: {type: 'string'},
             ispreview: {type: 'boolean'},
             defaulttickettype: {type: 'integer'},
+            detail: {type: 'string'},
           },
         },
         EventTicket: {
@@ -425,6 +426,7 @@ const openApiSpec = swaggerJsdoc({
             ispreview: {type: 'boolean'},
             defaulttickettype: {type: 'integer'},
             instanceTicketTypes: {type: 'array'},
+            detail: {type: 'string'},
           },
         },
         EventTicket: {
