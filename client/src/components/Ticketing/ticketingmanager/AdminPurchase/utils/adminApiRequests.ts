@@ -27,8 +27,14 @@ export const getDiscountCode = async (code: string) => {
         },
       },
     );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch discount code ${code}`);
+    }
+
     return await response.json();
   } catch (error) {
     console.error(error.message);
+    return null;
   }
 };
