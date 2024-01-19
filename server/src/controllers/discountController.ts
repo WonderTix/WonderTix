@@ -34,7 +34,6 @@ export const discountController = Router();
 discountController.get('/code/:code', async (req: Request, res: Response) => {
   try {
     const code = req.params.code;
-    console.log(req);
     const filters: any = {
       code: code,
     };
@@ -45,7 +44,6 @@ discountController.get('/code/:code', async (req: Request, res: Response) => {
       };
     }
 
-    console.log(filters);
     const discount = await prisma.discounts.findUnique({
       where: filters,
     });
