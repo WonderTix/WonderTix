@@ -49,7 +49,7 @@ const DiscountCodes = (): ReactElement => {
         return (
           <Switch
             checked={params.value || false}
-            onChange={(e) =>
+            onChange={() =>
               handleActivateDiscountCode({
                 discountId: params.row.discountid,
                 code: params.row.code,
@@ -88,7 +88,7 @@ const DiscountCodes = (): ReactElement => {
       },
       renderHeader: () => (
         <Tooltip
-          title='Discounts with a percent and amount value will use the percent value capped at the amount value'
+          title='Discounts with a non-zero percent and amount value will use the percent capped at the amount off'
           placement='top'
           arrow
         >
