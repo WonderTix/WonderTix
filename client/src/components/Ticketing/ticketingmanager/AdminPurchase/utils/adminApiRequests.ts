@@ -19,7 +19,7 @@ export const getAllTicketRestrictions = async () => {
 export const getDiscountCode = async (code: string) => {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_API_2_URL}/discount?code=${code}&active=true`,
+      `${process.env.REACT_APP_API_2_URL}/discount/code/${code}?active=true`,
       {
         method: 'GET',
         headers: {

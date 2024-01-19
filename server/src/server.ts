@@ -110,6 +110,14 @@ const openApiSpec = swaggerJsdoc({
             type: 'string',
           },
         },
+        code: {
+          name: 'code',
+          in: 'path',
+          description: 'Discount Code',
+          schema: {
+            type: 'string',
+          },
+        },
       },
       schemas: {
         Contact: {
@@ -134,8 +142,8 @@ const openApiSpec = swaggerJsdoc({
             discountid: {type: 'integer'},
             code: {type: 'string'},
             active: {type: 'boolean'},
-            amount: {type: 'number'},
-            percent: {type: 'number'},
+            amount: {type: 'integer'},
+            percent: {type: 'integer'},
             tickettypeid_fk: {type: 'integer'},
             usagelimit: {type: 'integer'},
             min_tickets: {type: 'integer'},
@@ -375,8 +383,8 @@ const openApiSpec = swaggerJsdoc({
           properties: {
             code: {type: 'string'},
             active: {type: 'boolean'},
-            amount: {type: 'number'},
-            percent: {type: 'number'},
+            amount: {type: 'integer'},
+            percent: {type: 'integer'},
             tickettypeid_fk: {type: 'integer'},
             usagelimit: {type: 'integer'},
             min_tickets: {type: 'integer'},

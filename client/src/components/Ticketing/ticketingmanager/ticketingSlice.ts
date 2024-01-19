@@ -245,15 +245,15 @@ export const fetchDiscountData = createAsyncThunk(
   'ticketing/fetchDiscount',
   async (code: string) => {
     const url =
-      `${process.env.REACT_APP_API_2_URL}/discount?code=${code}&active=true`;
-    const discountArray: Discount[] = await fetchData(url);
+      `${process.env.REACT_APP_API_2_URL}/discount/code/${code}?active=true`;
+    const discountResp: Discount = await fetchData(url);
     const discount: DiscountItem = {
-      discountid: discountArray[0].discountid,
-      code: discountArray[0].code,
-      amount: discountArray[0].amount,
-      percent: discountArray[0].percent,
-      min_tickets: discountArray[0].min_tickets,
-      min_events: discountArray[0].min_events,
+      discountid: discountResp.discountid,
+      code: discountResp.code,
+      amount: discountResp.amount,
+      percent: discountResp.percent,
+      min_tickets: discountResp.min_tickets,
+      min_events: discountResp.min_events,
     };
 
     return {discount};

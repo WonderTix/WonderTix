@@ -10,7 +10,7 @@ import {
   selectDiscount,
   fetchDiscountData,
   removeDiscountFromCart,
-  DiscountItem, selectCartTotal,
+  DiscountItem, selectCartTotal, selectDiscountValue,
 } from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
 
@@ -42,6 +42,7 @@ const Cart = (): ReactElement => {
   const items = useAppSelector(selectCartContents);
   const discount = useAppSelector(selectDiscount);
   const total = useAppSelector(selectCartTotal);
+  const discountValue = useAppSelector(selectDiscountValue);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<TargetItem | null>(null);
@@ -93,10 +94,10 @@ const Cart = (): ReactElement => {
   const printDiscountText = (disc: DiscountItem) => {
     if (disc.code === '') return;
 
-    if (disc.amount === 0) {
+    if (!disc.amount || disc.amount === 0) {
       return disc.percent + '% discount';
     } else {
-      return '$' + disc.amount + ' discount';
+      return '$' + discountValue + ' discount';
     }
   };
 

@@ -4,8 +4,76 @@ import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 const prisma = extendPrismaClient();
-
 export const discountController = Router();
+
+/**
+ * @swagger
+ * /2/discount/code/{code}:
+ *   get:
+ *     summary: get a discount
+ *     tags:
+ *     - New Discount
+ *     parameters:
+ *     - $ref: '#/components/parameters/code'
+ *     responses:
+ *       200:
+ *         description: discount acquired successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Discount'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+discountController.get('/code/:code', async (req: Request, res: Response) => {
+  try {
+    const code = req.params.code;
+    console.log(req);
+    const filters: any = {
+      code: code,
+    };
+
+    if (req.query.active) {
+      filters.active = {
+        equals: Boolean(req.query.active),
+      };
+    }
+
+    console.log(filters);
+    const discount = await prisma.discounts.findUnique({
+      where: filters,
+    });
+
+    if (!discount) {
+      res.status(404).json({error: 'discount not found'});
+      return;
+    }
+
+    res.status(200).json(discount);
+    return;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+discountController.use(checkJwt);
+discountController.use(checkScopes);
 
 /**
  * @swagger
@@ -14,9 +82,11 @@ export const discountController = Router();
  *     summary: get all discounts
  *     tags:
  *     - New Discount
+ *     security:
+ *     - bearerAuth: []
  *     responses:
  *       200:
- *         description: discount updated successfully.
+ *         description: discounts acquired successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -84,9 +154,6 @@ discountController.get('/', async (req: Request, res: Response) => {
   }
 });
 
-discountController.use(checkJwt);
-discountController.use(checkScopes);
-
 /**
  * @swagger
  * /2/discount/{id}:
@@ -94,11 +161,13 @@ discountController.use(checkScopes);
  *     summary: get a discount
  *     tags:
  *     - New Discount
+ *     security:
+ *     - bearerAuth: []
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     responses:
  *       200:
- *         description: discount updated successfully.
+ *         description: discount acquired successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -192,8 +261,8 @@ discountController.post('/', async (req: Request, res: Response) => {
         min_tickets: req.body.min_tickets,
       },
     });
-    res.status(201).json(discount);
 
+    res.status(201).json(discount);
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -242,7 +311,7 @@ discountController.post('/', async (req: Request, res: Response) => {
 discountController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const discount = await prisma.discounts.update({
+    await prisma.discounts.update({
       where: {
         discountid: Number(id),
       },
@@ -257,6 +326,7 @@ discountController.put('/:id', async (req: Request, res: Response) => {
         min_tickets: req.body.min_tickets,
       },
     });
+
     res.status(204).json();
     return;
   } catch (error) {
@@ -287,7 +357,7 @@ discountController.put('/:id', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       204:
- *         description: discount updated successfully.
+ *         description: discount deleted successfully.
  *       400:
  *         description: bad request
  *         content:
@@ -316,19 +386,17 @@ discountController.delete('/:id', async (req: Request, res: Response) => {
         discountid: Number(id),
       },
     });
-    res.status(204).json();
 
+    res.status(204).json();
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 

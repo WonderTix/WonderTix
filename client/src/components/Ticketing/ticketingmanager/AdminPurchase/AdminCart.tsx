@@ -110,9 +110,8 @@ const AdminCart = ({
   };
 
   const handleApplyDiscount = async () => {
-    const discounts = await getDiscountCode(discountText);
-    if (discounts.length > 0) {
-      const discount = discounts[0];
+    const discount = await getDiscountCode(discountText);
+    if (discount) {
       const valid = validateDiscountCode(discount);
       if (valid) {
         setAppliedDiscount(discount);

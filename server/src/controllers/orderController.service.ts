@@ -153,6 +153,7 @@ export const orderCancel = async (
       },
       data: {
         refund_intent: refundIntent,
+        discountid_fk: null,
       },
       include: {
         orderitems: {
