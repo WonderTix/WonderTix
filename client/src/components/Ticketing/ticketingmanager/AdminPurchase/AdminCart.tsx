@@ -146,7 +146,10 @@ const AdminCart = ({
         </button>
       </section>
       <section className='flex flex-col items-center gap-2 bg-zinc-800 rounded-xl px-5 py-3'>
-        <div className='bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-sm ml-auto'>
+        <div className={
+          `bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md ml-auto
+          ${appliedDiscount && 'bg-zinc-800 border-2 border-zinc-900'}`
+        }>
           <input
             type='text'
             placeholder='Discount code...'

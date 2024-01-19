@@ -5,7 +5,7 @@ import React, {ReactElement, useEffect, useRef} from 'react';
  * Describes the title and the message that is sent to the component.
  * Contains call back to parent component to close the PopUp windows.
  */
-interface popUpProps {
+export interface PopUpProps {
   dataTestId?: string;
   title: string;
   message: string;
@@ -44,7 +44,7 @@ const PopUp = ({
   success,
   showSecondary = true,
   showClose = true,
-}: popUpProps): ReactElement => {
+}: PopUpProps): ReactElement => {
   const popUpRef = useRef(null);
 
   useEffect(() => {

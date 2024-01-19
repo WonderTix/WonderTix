@@ -5,17 +5,19 @@ import {
   GridRenderCellParams,
   GridValueFormatterParams,
 } from '@mui/x-data-grid';
-import PopUp from '../../PopUp';
+import PopUp, {PopUpProps} from '../../PopUp';
 import {useFetchToken} from '../Event/components/ShowingUtils';
 import {LoadingScreen} from '../../mainpage/LoadingScreen';
 import {toDollarAmount} from '../../../../utils/arrays';
 import {Switch, Tooltip} from '@mui/material';
-import DiscountPopUp from './DiscountPopUp';
+import DiscountPopUp, {DiscountPopUpProps} from './DiscountPopUp';
 import {
   DiscountCode,
   emptyDiscountCode,
   createDiscountCode,
-  editDiscountCode, deleteDiscountCode,
+  getDiscountCodes,
+  editDiscountCode,
+  deleteDiscountCode,
 } from './discountUtils';
 
 /**
@@ -26,12 +28,9 @@ const DiscountCodes = (): ReactElement => {
   const {token} = useFetchToken();
 
   const [discountCodes, setDiscountCodes] = useState([]);
-  const [confirmDeleteData, setConfirmDeleteData] = useState(null);
-  const [showEditDiscountPopUp, setShowEditDiscountPopUp] = useState(false);
-  const [showCreateDiscountPopUp, setShowCreateDiscountPopUp] = useState(false);
-  const [showErrorPopUp, setShowErrorPopUp] = useState(false);
-  const [targetDiscountCode, setTargetDiscountCode] =
-    useState<DiscountCode>(null);
+  const [popUpProps, setPopUpProps] = useState<PopUpProps | null>(null);
+  const [discountPopUpProps, setDiscountPopUpProps] =
+    useState<DiscountPopUpProps | null>(null);
   const [error, setError] = useState(null);
 
   // Defines the columns of the grid
@@ -51,7 +50,7 @@ const DiscountCodes = (): ReactElement => {
           <Switch
             checked={params.value || false}
             onChange={(e) =>
-              handleActivateDiscountCode(e, {
+              handleActivateDiscountCode({
                 discountId: params.row.discountid,
                 code: params.row.code,
                 active: !params.row.active,
@@ -136,18 +135,25 @@ const DiscountCodes = (): ReactElement => {
             <button
               className='p-2 rounded-lg text-zinc-500 hover:text-zinc-600 hover:bg-zinc-100
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-              onClick={() => {
-                setTargetDiscountCode({
-                  discountId: cell.row.discountid,
-                  code: cell.row.code,
-                  active: cell.row.active,
-                  amount: cell.row.amount,
-                  percent: cell.row.percent,
-                  minTickets: cell.row.min_tickets,
-                  minEvents: cell.row.min_events,
-                });
-                setShowEditDiscountPopUp(true);
-              }}
+              onClick={() =>
+                setDiscountPopUpProps({
+                  onCancel: () => {
+                    setDiscountPopUpProps(null);
+                    setError(null);
+                  },
+                  title: 'Edit Discount Code',
+                  onSubmit: handleEditDiscountCode,
+                  values: {
+                    discountId: cell.row.discountid,
+                    code: cell.row.code,
+                    active: cell.row.active,
+                    amount: cell.row.amount,
+                    percent: cell.row.percent,
+                    minTickets: cell.row.min_tickets,
+                    minEvents: cell.row.min_events,
+                  },
+                })
+              }
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -170,10 +176,14 @@ const DiscountCodes = (): ReactElement => {
               className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
               onClick={() => {
-                setConfirmDeleteData({
+                setPopUpProps({
                   title: 'Delete Discount Code',
                   message: 'Click delete to remove this discount code',
-                  cellData: cell,
+                  primaryLabel: 'Delete',
+                  secondaryLabel: 'Cancel',
+                  handleClose: () => setPopUpProps(null),
+                  handleProceed: () => handleDeleteClick(cell),
+                  success: false,
                 });
               }}
             >
@@ -198,15 +208,15 @@ const DiscountCodes = (): ReactElement => {
     },
   ];
 
-  const getRowId = (row) => {
-    return row.discountid;
+  const handleGetDiscountCodes = async () => {
+    setDiscountCodes(await getDiscountCodes(token));
   };
 
   const handleCreateDiscountCode = async (discountCode: DiscountCode) => {
     const statusCode = await createDiscountCode(discountCode, token);
     if (statusCode === 201) {
-      void getDiscountCodes();
-      setShowCreateDiscountPopUp(false);
+      void handleGetDiscountCodes();
+      setDiscountPopUpProps(null);
       setError(null);
     } else if (statusCode === 400) {
       setError('Discount with this code already exists');
@@ -215,31 +225,30 @@ const DiscountCodes = (): ReactElement => {
     }
   };
 
-  const handleActivateDiscountCode = async (
-    event,
-    discountCode: DiscountCode,
-  ) => {
+  const handleActivateDiscountCode = async (discountCode: DiscountCode) => {
     const statusCode = await editDiscountCode(discountCode, token);
 
     if (statusCode === 204) {
-      void getDiscountCodes();
-      setShowEditDiscountPopUp(false);
-      setError(null);
-      setTargetDiscountCode(null);
+      void handleGetDiscountCodes();
     } else {
-      setError('Failed to edit discount code');
+      setPopUpProps({
+        title: 'Failure',
+        message: 'Failed to change activation state of discount code',
+        handleProceed: () => setPopUpProps(null),
+        success: false,
+        showSecondary: false,
+        showClose: false,
+      });
     }
   };
 
-  // handles editing a ticket type
   const handleEditDiscountCode = async (discountCode: DiscountCode) => {
     const statusCode = await editDiscountCode(discountCode, token);
 
     if (statusCode === 204) {
-      void getDiscountCodes();
-      setShowEditDiscountPopUp(false);
+      void handleGetDiscountCodes();
+      setDiscountPopUpProps(null);
       setError(null);
-      setTargetDiscountCode(null);
     } else if (statusCode === 400) {
       setError('Discount with this code already exists');
     } else {
@@ -247,45 +256,32 @@ const DiscountCodes = (): ReactElement => {
     }
   };
 
-  // handles the click event of the delete button
   const handleDeleteClick = async (cell: GridRenderCellParams) => {
-    setConfirmDeleteData(null);
+    setPopUpProps(null);
 
-    const discountId = cell.row.discountid;
-    const statusCode = await deleteDiscountCode(discountId, token);
+    const statusCode = await deleteDiscountCode(cell.row.discountid, token);
 
     if (statusCode === 204) {
-      void getDiscountCodes();
+      void handleGetDiscountCodes();
     } else {
-      setError('Cannot delete a discount code that has been used');
-      setShowErrorPopUp(true);
+      setPopUpProps({
+        title: 'Failure',
+        message: 'Cannot delete a discount code that has been used',
+        handleProceed: () => setPopUpProps(null),
+        success: false,
+        showSecondary: false,
+        showClose: false,
+      });
     }
   };
 
-  // Fetches all Discount Codes from the API in the backend
-  const getDiscountCodes = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_2_URL}/discount`,
-        {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        },
-      );
-      const jsonRes = await response.json();
-      setDiscountCodes(jsonRes);
-    } catch (error) {
-      console.error(error.message);
-    }
+  const getRowId = (row) => {
+    return row.discountid;
   };
 
   useEffect(() => {
     if (token) {
-      void getDiscountCodes();
+      void handleGetDiscountCodes();
     }
   }, [token]);
 
@@ -294,7 +290,7 @@ const DiscountCodes = (): ReactElement => {
   } else {
     return (
       <div className='w-full h-screen absolute'>
-        <div className='w-full h-screen overflow-x-hidden absolute'>
+        <main className='w-full h-screen overflow-x-hidden absolute'>
           <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
             <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-indigo-500 mb-10 pb-4'>
               Manage Discount Codes
@@ -304,7 +300,17 @@ const DiscountCodes = (): ReactElement => {
                 className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 mb-3 shadow-md px-4 py-2 text-sm
                   font-medium text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2
                   focus:ring-indigo-500'
-                onClick={() => setShowCreateDiscountPopUp(true)}
+                onClick={() =>
+                  setDiscountPopUpProps({
+                    onCancel: () => {
+                      setDiscountPopUpProps(null);
+                      setError(null);
+                    },
+                    onSubmit: handleCreateDiscountCode,
+                    primaryLabel: 'Create',
+                    values: emptyDiscountCode,
+                  })
+                }
               >
                 Create Discount Code
               </button>
@@ -320,56 +326,11 @@ const DiscountCodes = (): ReactElement => {
               />
             </div>
           </div>
-        </div>
-        {showCreateDiscountPopUp && (
-          <DiscountPopUp
-            errorMessage={error}
-            onCancel={() => {
-              setShowCreateDiscountPopUp(false);
-              setError(null);
-            }}
-            onSubmit={handleCreateDiscountCode}
-            primaryLabel='Create'
-            values={emptyDiscountCode}
-          />
+        </main>
+        {discountPopUpProps && (
+          <DiscountPopUp errorMessage={error} {...discountPopUpProps} />
         )}
-        {showEditDiscountPopUp && (
-          <DiscountPopUp
-            errorMessage={error}
-            onCancel={() => {
-              setShowEditDiscountPopUp(false);
-              setError(null);
-              setTargetDiscountCode(null);
-            }}
-            title='Edit Discount Code'
-            onSubmit={handleEditDiscountCode}
-            values={targetDiscountCode}
-          />
-        )}
-        {confirmDeleteData && (
-          <PopUp
-            title={confirmDeleteData.title}
-            message={confirmDeleteData.message}
-            handleClose={() => setConfirmDeleteData(null)}
-            handleProceed={() => handleDeleteClick(confirmDeleteData.cellData)}
-            primaryLabel='Delete'
-            secondaryLabel='Cancel'
-            success={false}
-          />
-        )}
-        {showErrorPopUp && (
-          <PopUp
-            title='Failure'
-            message={error}
-            handleProceed={() => {
-              setShowErrorPopUp(false);
-              setError(null);
-            }}
-            success={false}
-            showSecondary={false}
-            showClose={false}
-          />
-        )}
+        {popUpProps && <PopUp {...popUpProps} />}
       </div>
     );
   }

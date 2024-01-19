@@ -159,8 +159,8 @@ export type DiscountItem = {
   code: string;
   amount: number;
   percent: number;
-  minTickets: number;
-  minEvents: number;
+  min_tickets: number;
+  min_events: number;
 };
 
 /**
@@ -251,8 +251,8 @@ export const fetchDiscountData = createAsyncThunk(
       code: discountArray[0].code,
       amount: discountArray[0].amount,
       percent: discountArray[0].percent,
-      minTickets: discountArray[0].min_tickets,
-      minEvents: discountArray[0].min_events,
+      min_tickets: discountArray[0].min_tickets,
+      min_events: discountArray[0].min_events,
     };
 
     return {discount};
@@ -392,8 +392,8 @@ export const totalCartEventCount = (state: ticketingState) => {
 };
 
 const isValidDiscount = (discount: DiscountItem, state: ticketingState) => {
-  return !(totalCartTicketCount(state) < discount.minTickets ||
-    totalCartEventCount(state) < discount.minEvents);
+  return !(totalCartTicketCount(state) < discount.min_tickets ||
+    totalCartEventCount(state) < discount.min_events);
 };
 
 /**
@@ -591,7 +591,7 @@ export const INITIAL_STATE: ticketingState = {
   tickettype: {id: -1, name: '', price: '', concessions: ''},
   events: [],
   status: 'idle',
-  discount: {discountid: -1, code: '', amount: 0, percent: 0, minTickets: 0, minEvents: 0},
+  discount: {discountid: -1, code: '', amount: 0, percent: 0, min_tickets: 0, min_events: 0},
 };
 
 /** ticketSlice = createSlice, creates the ticketing slice */

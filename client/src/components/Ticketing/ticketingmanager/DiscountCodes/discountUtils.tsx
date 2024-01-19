@@ -31,10 +31,10 @@ export const createDiscountCode = async (discountCode: DiscountCode, token: stri
         body: JSON.stringify({
           code: discountCode.code,
           active: discountCode.active,
-          ...(discountCode.amount && {amount: Number(discountCode.amount)}),
-          ...(discountCode.percent && {percent: Number(discountCode.percent)}),
-          ...(discountCode.minTickets && {min_tickets: Number(discountCode.minTickets)}),
-          ...(discountCode.minEvents && {min_events: Number(discountCode.minEvents)}),
+          amount: (discountCode.amount || discountCode.amount === 0) ? Number(discountCode.amount) : null,
+          percent: (discountCode.percent || discountCode.percent === 0) ? Number(discountCode.percent) : null,
+          min_tickets: (discountCode.minTickets || discountCode.minTickets === 0) ? Number(discountCode.minTickets) : null,
+          min_events: (discountCode.minEvents || discountCode.minEvents === 0) ? Number(discountCode.minEvents) : null,
         }),
       },
     );
@@ -50,9 +50,29 @@ export const createDiscountCode = async (discountCode: DiscountCode, token: stri
   }
 };
 
+export const getDiscountCodes = async (token: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_2_URL}/discount`,
+      {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      },
+    );
+    const discountCodes = await response.json();
+    return discountCodes;
+  } catch (error) {
+    console.error(error.message);
+    return [];
+  }
+};
+
 export const editDiscountCode = async (discountCode: DiscountCode, token: string) => {
   try {
-    console.log(discountCode);
     const response = await fetch(
       `${process.env.REACT_APP_API_2_URL}/discount/${discountCode.discountId}`,
       {

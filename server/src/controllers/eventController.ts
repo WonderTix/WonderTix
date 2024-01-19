@@ -64,8 +64,9 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     } else if (donation && donation < 0) {
       return res.status(422).json({error: 'Amount of donation can not be negative'});
     }
-
-    await validateDiscount(discount, cartItems, prisma);
+    if (discount.code != '') {
+      await validateDiscount(discount, cartItems, prisma);
+    }
 
     const {contactid} = await updateContact(formData, prisma);
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
@@ -100,7 +101,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         orderTotal,
         eventInstanceQueries,
         toSend.id,
-        discount ? discount.discountid : null,
+        discount.code != '' ? discount.discountid : null,
     );
     if (toSend.id === 'comp') {
       await prisma.orders.update({

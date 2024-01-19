@@ -1,14 +1,13 @@
-/* eslint-disable react/react-in-jsx-scope */
-
 import {
   removeAllTicketsFromCart,
 } from '../ticketingSlice';
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {useAppDispatch} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
-import {ReactElement, useState} from 'react';
+import React, {ReactElement, useState} from 'react';
 import AdminCompleteOrderForm, {
   CheckoutFormInfo,
 } from './AdminCompleteOrderForm';
+import {emptyDiscountCode} from './utils/adminCommon';
 import {useNavigate, useLocation} from 'react-router-dom';
 import AdminCart from './AdminCart';
 
@@ -25,7 +24,7 @@ export default function AdminCheckout(): ReactElement {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const [discount, setDiscount] = useState(null);
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
 
   const eventDataFromPurchase = location.state?.eventData || [];
   const cartItems = location.state?.cartItems || [];
@@ -36,6 +35,7 @@ export default function AdminCheckout(): ReactElement {
         formData.seatingAcc = formData.comments;
       }
       const donation = +formData.donation;
+      const discount = appliedDiscount ? appliedDiscount : emptyDiscountCode;
 
       const stripe = await stripePromise;
       if (!stripe) return;
@@ -96,7 +96,7 @@ export default function AdminCheckout(): ReactElement {
             <AdminCart
               backButtonRoute='../ticketing/purchaseticket'
               eventDataFromPurchase={eventDataFromPurchase}
-              onDiscountChange={setDiscount}
+              onDiscountChange={setAppliedDiscount}
             />
           </div>
         </div>

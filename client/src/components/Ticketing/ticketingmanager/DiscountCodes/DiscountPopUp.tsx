@@ -3,7 +3,7 @@ import {Field, Form} from 'react-final-form';
 import {FormInput} from '../../FormInput';
 import {DiscountCode} from './discountUtils';
 
-interface DiscountPopUpProps {
+export interface DiscountPopUpProps {
   errorMessage?: string;
   onCancel: (event: any) => void;
   onSubmit: (event: any) => void;

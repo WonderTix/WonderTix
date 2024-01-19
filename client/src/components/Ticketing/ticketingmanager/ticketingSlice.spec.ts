@@ -76,8 +76,8 @@ const discount1: DiscountItem = {
   code: '',
   amount: 0,
   percent: 0,
-  minTickets: 0,
-  minEvents: 0,
+  min_tickets: 0,
+  min_events: 0,
 };
 
 const ticketingInitState: ticketingState = {
@@ -175,7 +175,7 @@ describe('Ticketing slice', () => {
       const eventid = 1;
       expect(selectEventData(ROOT_INIT_STATE, eventid))
         .toEqual({
-          id: '1',
+          id: 1,
           title: 'Event 1',
           description: 'lorem ipsum donor',
           imageurl: 'https://test.com/image.jpg',
@@ -269,5 +269,3 @@ describe('Ticketing slice', () => {
     });
   });
 });
-
-
