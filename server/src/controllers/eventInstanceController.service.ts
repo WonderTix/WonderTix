@@ -164,6 +164,7 @@ export const validateShowingOnUpdate = (
     salestatus: newEvent.salestatus,
     totalseats: newTotalSeats,
     availableseats: newTotalSeats - soldTickets,
+    detail: newEvent.detail,
     ...validateDateAndTime(newEvent.eventdate, newEvent.eventtime),
   };
 };

@@ -89,6 +89,7 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
         date: getDate(ticket.eventtime.toISOString(), ticket.eventdate),
         totalseats: ticket.totalseats,
         availableseats: ticket.availableseats,
+              detail: ticket.detail,
       }};
     });
     res.send({data: {allIds, byId}});
@@ -576,6 +577,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
         purchaseuri: eventToCreate.purchaseuri,
         ispreview: eventToCreate.ispreview,
         defaulttickettype: eventToCreate.defaulttickettype,
+        detail: eventToCreate.detail,
       },
       include: {
         events: {

@@ -212,6 +212,7 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
                 <p className='text-xs'>
                   {item.tickettype} • {format(eventDate, 'MMM dd, yyyy')} •{' '}
                   {format(eventDate, 'h:mm a')}
+                  {item.detail && <span> ({item.detail})</span>}
                 </p>
               </article>
             );
