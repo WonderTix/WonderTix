@@ -8,6 +8,10 @@ export type Contact = {
   email: string,
   phone: string,
   address: string,
+  city: string,
+  state: string,
+  country: string,
+  postalCode: string,
   comments?: string,
   seatingAcc: string,
   newsletter: boolean,
@@ -17,6 +21,7 @@ export type Contact = {
   contactId?: number,
   orders?: any,
   donations?: any,
+  createdDate: string,
 }
 
 export const emptyContact: Contact = {
@@ -25,12 +30,17 @@ export const emptyContact: Contact = {
   email: '',
   phone: '',
   address: '',
+  city: '',
+  state: '',
+  country: '',
+  postalCode: '',
   comments: '',
   seatingAcc: 'None',
   newsletter: false,
   vip: false,
   donorBadge: false,
   volunteerList: false,
+  createdDate: '',
 };
 
 export const toReadableDonationFrequency = (key: string): string => {
@@ -49,9 +59,7 @@ export const toReadableDonationFrequency = (key: string): string => {
 };
 
 export const editContact = async (contact: Contact, contactId: number, token: string) => {
-  if (contact.seatingAcc === 'Other') {
-    contact.seatingAcc = contact.comments;
-  }
+  contact.seatingAcc = !contact.comments ? contact.seatingAcc : `${contact.seatingAcc} - ${contact.comments}`;
 
   try {
     const response = await fetch(
@@ -69,6 +77,10 @@ export const editContact = async (contact: Contact, contactId: number, token: st
           email: contact.email,
           phone: contact.phone,
           address: contact.address,
+          city: contact.city,
+          state: contact.state,
+          country: contact.country,
+          postalcode: contact.postalCode,
           donorbadge: contact.donorBadge,
           seatingaccom: contact.seatingAcc,
           vip: contact.vip,
@@ -79,7 +91,7 @@ export const editContact = async (contact: Contact, contactId: number, token: st
     );
 
     if (!response.ok) {
-      console.error('Failed to remove customer');
+      console.error('Failed to update contact');
     }
     return response.status;
   } catch (error) {
@@ -100,7 +112,7 @@ export const deleteContact = async (contactId: number, token: string) => {
     });
 
     if (!response.ok) {
-      console.error('Failed to remove customer');
+      console.error('Failed to remove contact');
     }
     return response.status;
   } catch (error) {

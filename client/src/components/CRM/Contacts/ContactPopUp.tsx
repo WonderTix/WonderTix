@@ -229,6 +229,50 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   labelClassName='block text-sm font-medium text-slate-700 ml-1'
                   inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                 />
+                <div className='grid gap-3 tab:grid-cols-2'>
+                  <Field
+                    component={FormInput}
+                    name='city'
+                    label='City'
+                    placeholder='City'
+                    type='text'
+                    id='city'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                  />
+                  <Field
+                    component={FormInput}
+                    name='state'
+                    label='State'
+                    placeholder='State'
+                    type='text'
+                    id='state'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                  />
+                </div>
+                  <div className='grid gap-3 tab:grid-cols-2'>
+                  <Field
+                    component={FormInput}
+                    name='country'
+                    label='Country'
+                    placeholder='Country'
+                    type='text'
+                    id='country'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                  />
+                  <Field
+                    component={FormInput}
+                    name='postalCode'
+                    label='Postal Code'
+                    placeholder='Postal Code'
+                    type='text'
+                    id='zipcode'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName="w-full border border-zinc-300 p-3 rounded-lg"
+                  />
+                </div>
                 <div>
                   <label
                     className='block text-sm font-medium text-slate-700 ml-1'

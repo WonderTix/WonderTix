@@ -51,12 +51,17 @@ const Contacts = (): React.ReactElement => {
                 email: contact.email,
                 phone: contact.phone,
                 address: contact.address,
+                city: contact.city,
+                state: contact.state,
+                country: contact.country,
+                postalCode: contact.postalcode,
                 donorBadge: contact.donorbadge,
                 seatingAcc: contact.seatingaccom,
                 vip: contact.vip,
                 volunteerList: contact.volunteerlist,
                 newsletter: contact.newsletter,
                 contactId: contact.contactid,
+                createdDate: contact.createddate,
               };
             }),
           );
@@ -80,9 +85,7 @@ const Contacts = (): React.ReactElement => {
   };
 
   const handleCreateContact = async (contact: Contact) => {
-    if (contact.seatingAcc === 'Other') {
-      contact.seatingAcc = contact.comments;
-    }
+    contact.seatingAcc = !contact.comments ? contact.seatingAcc : `${contact.seatingAcc} - ${contact.comments}`;
 
     try {
       const response = await fetch(
@@ -98,6 +101,10 @@ const Contacts = (): React.ReactElement => {
             email: contact.email,
             phone: contact.phone,
             address: contact.address,
+            city: contact.city,
+            state: contact.state,
+            country: contact.country,
+            postalcode: contact.postalCode,
             donorbadge: contact.donorBadge,
             seatingaccom: contact.seatingAcc,
             vip: contact.vip,
