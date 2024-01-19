@@ -1,11 +1,6 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {freq, orderitems, orders, singletickets} from '@prisma/client';
 
-
-interface LoadedOrder extends orders {
-  orderitems: LoadedOrderItem[]
-}
-
 interface LoadedOrderItem extends orderitems {
   singletickets: singletickets[],
 }
