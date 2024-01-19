@@ -340,7 +340,7 @@ eventInstanceController.get(
                 tickettype: true,
                 eventtickets: {
                   where: {
-                    singleticket_fk: {not: null},
+                    singleticketid_fk: {not: null},
                   },
                 },
               },

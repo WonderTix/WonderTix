@@ -2,7 +2,13 @@ import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {Prisma} from '@prisma/client';
-import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook} from './orderController.service';
+import {
+  createDonationRecord,
+  donationCancel,
+  updateCanceledOrder,
+  ticketingWebhook,
+  updateRefundedOrder
+} from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -184,7 +190,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             singletickets: {
               select: {
                 ticketwasswapped: true,
-                eventtickets: {
+                eventticket: {
                   select: {
                     eventinstances: {
                       select: {
@@ -203,6 +209,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         },
       },
     });
+
     const donationMap= new Map((await prisma.donations.findMany({
       where: {
         payment_intent: {in: orders.map((order) => order.payment_intent ?? '')},
@@ -222,8 +229,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         item.singletickets
             .filter((ticket) => !ticket.ticketwasswapped)
             .map((ticket) => {
-              if (!ticket.eventtickets.length) return null;
-              return ticket.eventtickets[0].eventinstances.events.eventname;
+              return ticket.eventticket?.eventinstances.events.eventname;
             }),
       ).flat()
           .filter((name, index, array) => name && array.indexOf(name)=== index);
@@ -308,7 +314,7 @@ orderController.put('/refund/:id', async (req, res) => {
       refundIntent = refund.id;
     }
     await donationCancel(prisma, order.payment_intent, refundIntent);
-    await orderCancel(prisma, order.orderid, refundIntent);
+    await updateRefundedOrder(prisma, order, refundIntent);
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);

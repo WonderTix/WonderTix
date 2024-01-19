@@ -47,14 +47,14 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
         },
         eventtickets: {
           some: {
-            singleticket_fk: null,
+            singleticketid_fk: null,
           },
         },
       },
       include: {
         eventtickets: {
           where: {
-            singleticket_fk: {not: null},
+            singleticketid_fk: {not: null},
           },
         },
         tickettype: {
@@ -131,14 +131,14 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
         },
         eventtickets: {
           some: {
-            singleticket_fk: null,
+            singleticketid_fk: null,
           },
         },
       },
       include: {
         eventtickets: {
           where: {
-            singleticket_fk: {not: null},
+            singleticketid_fk: {not: null},
           },
         },
         tickettype: {
@@ -213,14 +213,14 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
         },
         eventtickets: {
           some: {
-            singleticket_fk: null,
+            singleticketid_fk: null,
           },
         },
       },
       include: {
         eventtickets: {
           where: {
-            singleticket_fk: {not: null},
+            singleticketid_fk: {not: null},
           },
         },
         tickettype: {

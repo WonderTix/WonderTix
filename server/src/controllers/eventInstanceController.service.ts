@@ -81,7 +81,7 @@ const getTicketRestrictionUpdate = (
   const availableTickets:eventtickets[] = [];
   const soldTickets: eventtickets[] = [];
   oldRestriction.eventtickets.forEach((ticket) =>
-      ticket.singleticket_fk? soldTickets.push(ticket): availableTickets.push(ticket),
+      ticket.singleticketid_fk? soldTickets.push(ticket): availableTickets.push(ticket),
   );
   if ((!newRestriction || !newRestriction.ticketlimit) && !soldTickets.length) {
     return [prisma.ticketrestrictions.delete({

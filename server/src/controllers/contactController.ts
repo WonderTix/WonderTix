@@ -292,7 +292,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 singletickets: {
                   select: {
                     ticketwasswapped: true,
-                    eventtickets: {
+                    eventticket: {
                       select: {
                         ticketrestrictions: {
                           select: {
@@ -354,14 +354,14 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         const singleTickets = item.singletickets.filter((ticket) => !ticket.ticketwasswapped);
         const quantity = singleTickets.length;
         const ticketInfo = singleTickets.map((ticket) => {
-          if (!ticket.eventtickets.length) return null;
+          if (!ticket.eventticket) return null;
           return {
-            description: ticket.eventtickets[0].eventinstances.events.eventname,
-            eventdate: ticket.eventtickets[0].eventinstances.eventdate,
-            eventtime: ticket.eventtickets[0].eventinstances.eventtime,
-            eventname: ticket.eventtickets[0].eventinstances.events.eventname,
-            seasonname: ticket.eventtickets[0].eventinstances.events.seasons?.name,
-            tickettype: ticket.eventtickets[0].ticketrestrictions?.tickettype.description,
+            description: ticket.eventticket.eventinstances.events.eventname,
+            eventdate: ticket.eventticket.eventinstances.eventdate,
+            eventtime: ticket.eventticket.eventinstances.eventtime,
+            eventname: ticket.eventticket.eventinstances.events.eventname,
+            seasonname: ticket.eventticket.eventinstances.events.seasons?.name,
+            tickettype: ticket.eventticket.ticketrestrictions?.tickettype.description,
           };
         }).filter((ticket) => ticket !== null);
 

@@ -61,18 +61,23 @@ export const createStripeCoupon = async (discount: any) => {
   return stripeCoupon.id;
 };
 
-export const getOrderItems = async (
-    cartItems: CartItem[],
-    prisma: ExtendedPrismaClient,
-): Promise<{
+interface ToReturn {
   orderItems: any[];
   cartRows: LineItem[];
   orderTotal: number;
   eventInstanceQueries: any[];
-}> => {
-  let orderItems: any[] = [];
-  const cartRows: LineItem[] = [];
-  const eventInstanceQueries = [];
+};
+export const getOrderItems = async (
+    cartItems: CartItem[],
+    prisma: ExtendedPrismaClient,
+): Promise<ToReturn> => {
+  const toReturn: ToReturn = {
+    orderItems: [],
+    cartRows: [],
+    eventInstanceQueries: [],
+    orderTotal: 0,
+  };
+
   const eventInstances = await prisma.eventinstances.findMany({
     where: {
       eventinstanceid: {in: cartItems.map((item) => Number(item.product_id))},
@@ -82,7 +87,7 @@ export const getOrderItems = async (
         include: {
           eventtickets: {
             where: {
-              singleticket_fk: null,
+              singleticketid_fk: null,
             },
           },
         },
@@ -92,20 +97,17 @@ export const getOrderItems = async (
   });
   const eventInstanceMap = new Map(
       eventInstances.map((instance) => {
-        let availableseats = instance.totalseats ?? 0;
         return [
           instance.eventinstanceid,
           {
             ...instance,
             ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => {
-              availableseats-=(res.ticketlimit-res.eventtickets.length);
               return [res.tickettypeid_fk, res];
             })),
-            availableseats: availableseats,
           },
         ];
       }));
-  let orderTotal = 0;
+
   for (const item of cartItems) {
     const eventInstance = eventInstanceMap.get(item.product_id);
     if (!eventInstance) {
@@ -114,13 +116,13 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-    if ((item.payWhatCan && item.payWhatPrice && item.payWhatPrice < 0) || item.price < 0) {
+    if (item.payWhatCan && (item.payWhatPrice ?? -1) < 0 || item.price < 0) {
       throw new InvalidInputError(
           422,
           `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
       );
     }
-    orderItems = orderItems.concat(
+    toReturn.orderItems.push(
         getTickets(
             eventInstance.ticketRestrictionMap.get(item.typeID),
             eventInstance,
@@ -128,40 +130,40 @@ export const getOrderItems = async (
             item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
         ),
     );
-    cartRows.push({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: eventInstance.events.eventname,
-          description: (item.payWhatCan && item.qty != 1 ? `${item.desc}, Qty ${item.qty}`: item.desc),
-        },
-        unit_amount: (item.payWhatPrice? item.payWhatPrice: item.price) * 100,
-      },
-      quantity: item.payWhatPrice? 1: item.qty,
+    toReturn.cartRows.push(
+        getCartRow(
+            eventInstance.events.eventname,
+        item.payWhatCan && item.qty !== 1 ? `${item.desc}, Qty ${item.qty}`: item.desc,
+        (item.payWhatPrice? item.payWhatPrice: item.price) * 100,
+        item.payWhatPrice? 1: item.qty,
+        ));
+
+    toReturn.orderTotal += item.payWhatCan && item.payWhatPrice? item.payWhatPrice: item.price * item.qty;
+  }
+
+  eventInstanceMap.forEach(({eventinstanceid, availableseats}) =>
+    toReturn.eventInstanceQueries.push(updateAvailableSeats(prisma, eventinstanceid, availableseats ?? 0)));
+
+  return {...toReturn, orderItems: toReturn.orderItems.flat(1)};
+};
+
+const updateAvailableSeats =
+    (prisma: ExtendedPrismaClient, instanceId: number, availablSeats: number) => prisma.eventinstances.update({
+      where: {eventinstanceid: instanceId},
+      data: {availableseats: availablSeats},
     });
 
-    orderTotal += item.payWhatCan? item.payWhatPrice ?? 0: item.price * item.qty;
-  }
-
-  for (const [, instance] of eventInstanceMap) {
-    eventInstanceQueries.push(
-        prisma.eventinstances.update({
-          where: {
-            eventinstanceid: instance.eventinstanceid,
-          },
-          data: {
-            availableseats: instance.availableseats,
-          },
-        }));
-  }
-
-  return {
-    cartRows,
-    orderItems,
-    orderTotal,
-    eventInstanceQueries,
-  };
-};
+const getCartRow = (name: string, description: string, unitAmount: number, quantity: number): LineItem => ({
+  price_data: {
+    currency: 'usd',
+    product_data: {
+      name,
+      description,
+    },
+    unit_amount: unitAmount,
+  },
+  quantity,
+});
 
 const getTickets = (
     ticketRestriction: LoadedTicketRestriction | undefined,
@@ -180,17 +182,15 @@ const getTickets = (
 
   return ticketRestriction
       .eventtickets
-      .splice(0, quantity).map((ticket) => ticket.eventticketid)
-      .map((ticketID) => ({
+      .splice(0, quantity)
+      .map((ticket) => ({
         price,
         singletickets: {
           create: {
-            eventtickets: {
-              connect: [
-                {
-                  eventticketid: ticketID,
-                },
-              ],
+            eventticket: {
+              connect: {
+                eventticketid: ticket.eventticketid,
+              },
             },
           },
         },

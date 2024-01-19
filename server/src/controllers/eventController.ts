@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma} from '@prisma/client';
+import {orders, Prisma} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
@@ -8,7 +8,7 @@ import {
   LineItem,
   updateContact,
 } from './eventController.service';
-import {orderCancel, orderFulfillment} from './orderController.service';
+import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 const prisma = extendPrismaClient();
@@ -55,7 +55,7 @@ export const eventController = Router();
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
   const {cartItems, formData, donation = 0, discount} = req.body;
-  let orderID = 0;
+  let order:orders | null = null;
   let toSend = {id: 'comp'};
   try {
     if (!cartItems.length && donation === 0) {
@@ -64,8 +64,12 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       return res.status(422).json({error: 'Amount of donation can not be negative'});
     }
     const {contactid} = await updateContact(formData, prisma);
-    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma);
+    const {
+      cartRows,
+      orderItems,
+      orderTotal,
+      eventInstanceQueries,
+    } = await getOrderItems(cartItems, prisma);
     const donationItem: LineItem = {
       price_data: {
         currency: 'usd',
@@ -87,7 +91,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       );
     }
 
-    orderID = await orderFulfillment(
+    order = await orderFulfillment(
         prisma,
         orderItems,
         contactid,
@@ -95,21 +99,23 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         eventInstanceQueries,
         toSend.id,
     );
+
     if (toSend.id === 'comp') {
       await prisma.orders.update({
         where: {
-          orderid: orderID,
+          orderid: order.orderid,
         },
         data: {
-          checkout_sessions: `comp-${orderID}`,
-          payment_intent: `comp-${orderID}`,
+          checkout_sessions: `comp-${order.orderid}`,
+          payment_intent: `comp-${order.orderid}`,
         },
       });
     }
+
     res.json(toSend);
   } catch (error) {
     console.error(error);
-    if (orderID) await orderCancel(prisma, orderID);
+    if (order) await updateCanceledOrder(prisma, order);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
