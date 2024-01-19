@@ -5,11 +5,11 @@ import {
   GridRenderCellParams,
   GridValueFormatterParams,
 } from '@mui/x-data-grid';
-import PopUp, {PopUpProps} from '../../PopUp';
-import {useFetchToken} from '../Event/components/ShowingUtils';
-import {LoadingScreen} from '../../mainpage/LoadingScreen';
-import {toDollarAmount} from '../../../../utils/arrays';
 import {Switch, Tooltip} from '@mui/material';
+import {useFetchToken} from '../Event/components/ShowingUtils';
+import {toDollarAmount} from '../../../../utils/arrays';
+import {LoadingScreen} from '../../mainpage/LoadingScreen';
+import PopUp, {PopUpProps} from '../../PopUp';
 import DiscountPopUp, {DiscountPopUpProps} from './DiscountPopUp';
 import {
   DiscountCode,
@@ -21,6 +21,7 @@ import {
 } from './discountUtils';
 
 /**
+ * The Admin Panel to Create, View, Edit, and Delete Discount codes.
  *
  * @returns ReactElement
  */
