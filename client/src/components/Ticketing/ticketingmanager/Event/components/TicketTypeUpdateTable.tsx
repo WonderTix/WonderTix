@@ -192,7 +192,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       type={'number'}
                       component={InputControl}
                       hidden={true}
-                      label={'Ticket Quantity'}
+                      label={'Ticket Type Quantity'}
                       className={{
                         controlClass: '',
                         inputClass: 'w-[50px]',
