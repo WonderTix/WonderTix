@@ -1107,7 +1107,7 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
       return res.status(400).send('Invalid request');
     }
 
-   await prisma.eventtickets.updateMany({
+    await prisma.eventtickets.updateMany({
       where: {
         eventinstanceid_fk: +instanceId,
         singleticket: {

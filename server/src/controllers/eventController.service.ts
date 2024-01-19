@@ -65,7 +65,7 @@ interface ToReturn {
   cartRows: LineItem[];
   orderTotal: number;
   eventInstanceQueries: any[];
-};
+}
 export const getOrderItems = async (
     cartItems: CartItem[],
     prisma: ExtendedPrismaClient,

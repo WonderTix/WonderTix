@@ -1,5 +1,5 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {DataGrid, GridCell, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
+import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
 import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 import {titleCase} from '../../../../utils/arrays';
@@ -12,12 +12,6 @@ const renderCheckbox = (params: GridCellParams) => (
   <Checkbox checked={params.value as boolean} disabled color='info' />
 );
 
-/**
- * renders in the check in for guests
- *
- * @param {GridCellParams} params
- * @returns edits the checkInGuest value
- */
 const RenderCheckin = (props:{params: GridCellParams}) => {
   const {params} = props;
   const {getAccessTokenSilently} = useAuth0();
@@ -54,7 +48,7 @@ const RenderCheckin = (props:{params: GridCellParams}) => {
     <Checkbox
       color='primary'
       checked={checked}
-      onChange={async (e) => {
+      onChange={async () => {
           setChecked((prev) => !prev);
           await checkInGuest(
               !checked,
