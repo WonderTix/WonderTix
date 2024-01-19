@@ -105,6 +105,7 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
   }
 });
 
+
 /**
  * @swagger
  * /2/event-instance/list/active:
@@ -420,6 +421,101 @@ eventInstanceController.get('/', async (req: Request, res: Response) => {
 
 eventInstanceController.use(checkJwt);
 eventInstanceController.use(checkScopes);
+
+eventInstanceController.get('/doorlist',
+    async (req: Request, res: Response) => {
+      try {
+        const id = req.query.eventinstanceid;
+
+        if (typeof id !== 'string' || isNaN(Number(id))) {
+          return res.status(400).send({error: `Invalid Showing Id`});
+        }
+
+        const eventInstance = await prisma.eventinstances.findUnique({
+          where: {
+            eventinstanceid: +id,
+          },
+          include: {
+            events: true,
+            eventtickets: {
+              where: {
+                singleticketid_fk: {not: null},
+              },
+              include: {
+                ticketrestrictions: {
+                  include: {
+                    tickettype: true,
+                  },
+                },
+                singleticket: {
+                  include: {
+                    orderitems: {
+                      include: {
+                        orders: {
+                          include: {
+                            contacts: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        if (!eventInstance) {
+          return res.status(400).send({error: `Showing ${id} does not exist`});
+        }
+
+        const doorlist = new Map();
+
+        eventInstance.eventtickets.forEach((ticket) => {
+          const contact= ticket.singleticket?.orderitems.orders.contacts;
+          if (!contact) return;
+          let row = doorlist.get(contact.contactid);
+          if (!row) {
+            row = {
+              instanceId: eventInstance.eventinstanceid,
+              firstName: contact.firstname,
+              lastName: contact.lastname,
+              email: contact.email,
+              phone: contact.phone,
+              vip: contact.vip,
+              donorBadge: contact.donorbadge,
+              accommodations: contact.seatingaccom,
+              address: contact.address,
+              arrived: true,
+              num_tickets: {},
+            };
+            doorlist.set(contact.contactid, row);
+          }
+          if (!ticket.ticketrestrictions) return;
+          row.arrived = row.arrived && ticket.redeemed;
+
+          const description = ticket.ticketrestrictions.tickettype.description;
+          row.num_tickets[description]= (row.num_tickets[description] ?? 0)+1;
+        });
+
+        return res.json({
+          eventName: eventInstance.events.eventname,
+          eventTime: eventInstance.eventtime,
+          eventData: eventInstance.eventdate,
+          doorlist: Array.from(doorlist).map(([key, value]) => ({...value, id: `${key}-${value.instanceId}`})),
+        });
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+          res.status(400).send({error: error.message});
+          return;
+        }
+        if (error instanceof Prisma.PrismaClientValidationError) {
+          res.status(400).send({error: error.message});
+          return;
+        }
+        res.status(500).send({error: 'Internal Server Error'});
+      }
+    });
 
 /**
  * @swagger

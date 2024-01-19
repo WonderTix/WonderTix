@@ -4,8 +4,8 @@ import {orders, Prisma} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
+  getCartRow,
   getOrderItems,
-  LineItem,
   updateContact,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
@@ -63,31 +63,27 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     } else if (donation && donation < 0) {
       return res.status(422).json({error: 'Amount of donation can not be negative'});
     }
+
     const {contactid} = await updateContact(formData, prisma);
+
     const {
       cartRows,
       orderItems,
       orderTotal,
       eventInstanceQueries,
     } = await getOrderItems(cartItems, prisma);
-    const donationItem: LineItem = {
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: 'Donation',
-          description: 'A generous donation',
-        },
-        unit_amount: donation * 100,
-      },
-      quantity: 1,
-    };
+
+    if (donation) {
+      cartRows.push(getCartRow('Donation', 'A generous donation', donation*100, 1));
+    }
+
     if (donation + orderTotal > 0) {
       toSend = await createStripeCheckoutSession(
           contactid,
           formData.email,
           donation,
-        donation ? cartRows.concat(donationItem) : cartRows,
-        discount,
+          cartRows,
+          discount,
       );
     }
 
@@ -1106,20 +1102,32 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
  */
 eventController.put('/checkin', async (req: Request, res: Response) => {
   try {
-    const {ticketID, isCheckedIn} = req.body;
-    if (!ticketID) {
-      return res.status(400).send('No Ticket ID provided');
+    const {instanceId, isCheckedIn, contactId} = req.body;
+    if (!instanceId || !contactId) {
+      return res.status(400).send('Invalid request');
     }
-    await prisma.eventtickets.update({
+
+   await prisma.eventtickets.updateMany({
       where: {
-        eventticketid: Number(ticketID),
+        eventinstanceid_fk: +instanceId,
+        singleticket: {
+          orderitems: {
+            orders: {
+              contacts: {
+                contactid: +contactId,
+              },
+            },
+          },
+        },
       },
       data: {
         redeemed: isCheckedIn,
       },
     });
-    return res.send(`Ticket ${ticketID} successfully ${isCheckedIn?'redeemed':'un-redeemed'}`);
+
+    return res.send();
   } catch (error) {
+    console.log(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
       return;

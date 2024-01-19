@@ -122,7 +122,7 @@ export const getOrderItems = async (
       );
     }
     toReturn.orderItems.push(
-        getTickets(
+        ...getTickets(
             eventInstance.ticketRestrictionMap.get(item.typeID),
             eventInstance,
             item.qty,
@@ -143,7 +143,7 @@ export const getOrderItems = async (
   eventInstanceMap.forEach(({eventinstanceid, availableseats}) =>
     toReturn.eventInstanceQueries.push(updateAvailableSeats(prisma, eventinstanceid, availableseats ?? 0)));
 
-  return {...toReturn, orderItems: toReturn.orderItems.flat(1)};
+  return toReturn;
 };
 
 const updateAvailableSeats =
@@ -152,7 +152,7 @@ const updateAvailableSeats =
       data: {availableseats: availablSeats},
     });
 
-const getCartRow = (name: string, description: string, unitAmount: number, quantity: number): LineItem => ({
+export const getCartRow = (name: string, description: string, unitAmount: number, quantity: number): LineItem => ({
   price_data: {
     currency: 'usd',
     product_data: {
