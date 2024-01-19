@@ -88,6 +88,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           formData.email,
           donation,
         donation ? cartRows.concat(donationItem) : cartRows,
+        orderTotal,
         discount,
       );
     }

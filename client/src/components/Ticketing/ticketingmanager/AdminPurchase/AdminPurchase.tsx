@@ -34,7 +34,6 @@ const AdminPurchase = () => {
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
-  const {token} = useFetchToken();
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
@@ -126,7 +125,9 @@ const AdminPurchase = () => {
 
     // get matching event for availableseats quantity
     const matchingEvent = eventListFull.find(
-      (event) => event.eventid === row.eventid && event.eventinstanceid === eventInstanceID,
+      (event) =>
+        event.eventid === row.eventid &&
+        event.eventinstanceid === eventInstanceID,
     );
 
     // get ticket restrictions for event instance
@@ -272,11 +273,16 @@ const AdminPurchase = () => {
     });
 
     for (const eventinstanceid in eventInstanceQtys) {
-      if (Object.prototype.hasOwnProperty.call(eventInstanceQtys, eventinstanceid)) {
-        const matchingEventInstance = eventData.find((event) =>
-          event.eventinstanceid == Number(eventinstanceid),
+      if (
+        Object.prototype.hasOwnProperty.call(eventInstanceQtys, eventinstanceid)
+      ) {
+        const matchingEventInstance = eventData.find(
+          (event) => event.eventinstanceid == Number(eventinstanceid),
         );
-        if (eventInstanceQtys[eventinstanceid] > matchingEventInstance.availableseats) {
+        if (
+          eventInstanceQtys[eventinstanceid] >
+          matchingEventInstance.availableseats
+        ) {
           setErrMsg('Quantity selected for showing exceeds available seats.');
           setDialog(true);
           return;
@@ -297,6 +303,7 @@ const AdminPurchase = () => {
         // If this item doesn't exist in the cart, add it
         aggregatedCartItems[key] = {
           product_id: row.eventinstanceid,
+          eventId: row.eventid,
           price: row.price,
           desc: row.ticketTypes,
           typeID: row.typeID,
@@ -320,7 +327,9 @@ const AdminPurchase = () => {
         );
 
         if (item.qty > correspondingRow.seatsForType) {
-          setErrMsg('Quantity selected for ticket type exceeds available seats.');
+          setErrMsg(
+            'Quantity selected for ticket type exceeds available seats.',
+          );
           setDialog(true);
           return;
         }
@@ -427,11 +436,7 @@ const AdminPurchase = () => {
       field: 'seatsAvailable',
       headerName: 'Seats',
       width: 80,
-      renderCell: (params) => (
-        <span>
-          {params.row.seatsForType}
-        </span>
-      ),
+      renderCell: (params) => <span>{params.row.seatsForType}</span>,
     },
     {
       field: 'price',
@@ -473,10 +478,25 @@ const AdminPurchase = () => {
       width: 150,
       renderCell: (params) => (
         <button
-          className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
+          className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
           onClick={() => removeRow(params.row.id)}
+          aria-label='Delete ticket'
         >
-          Remove
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            className='h-5 w-5'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke='currentColor'
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+            />
+          </svg>
         </button>
       ),
     },
@@ -571,17 +591,29 @@ const AdminPurchase = () => {
                 hideFooter
               />
             )}
-            <div className='mt-4'>
-              <button
-                className='bg-blue-500 px-2 py-1 text-white rounded-xl hover:bg-blue-600 disabled:opacity-40 m-2'
-                onClick={addNewRow}
+            <button
+              className='w-full inline-flex items-center justify-center rounded-md border border-gray-300 shadow-sm px-4 py-1 mt-2 bg-white text-zinc-700 hover:bg-gray-50'
+              onClick={addNewRow}
+              aria-label='Add ticket'
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-6 w-6'
+                fill='none'
+                viewBox='0 0 24 24'
+                stroke='currentColor'
+                strokeWidth={2}
               >
-                Add Ticket
-              </button>
-            </div>
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M12 6v6m0 0v6m0-6h6m-6 0H6'
+                />
+              </svg>
+            </button>
             <div className='mt-4 text-center'>
               <button
-                className='bg-green-600 px-8 py-1 text-white rounded-xl hover:bg-green-700 disabled:opacity-40 m-2'
+                className='bg-green-600 px-7 py-2 text-sm font-medium text-white rounded-lg hover:bg-green-700 disabled:opacity-40 m-2'
                 onClick={handlePurchase}
               >
                 Proceed to Checkout

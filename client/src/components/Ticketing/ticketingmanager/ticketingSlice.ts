@@ -493,7 +493,7 @@ const addTicketReducer: CaseReducer<
           ...state.cart,
           applyConcession(ticket.concession_price, newCartItem),
         ] : [...state.cart, newCartItem],
-    } : state;
+    } : {...state};
   }
 
   if (!isValidDiscount(state.discount, updatedState)) {
@@ -648,13 +648,13 @@ const ticketingSlice = createSlice({
  */
 export const selectDiscountValue = (state: RootState): number => {
   const subtotal = selectCartSubtotal(state);
-  const percentAmountDifference = subtotal - (subtotal * (1 - state.ticketing.discount.percent / 100));
+  const percentAmountDifference = (+state.ticketing.discount.percent / 100) * subtotal;
   if (state.ticketing.discount.amount && state.ticketing.discount.percent) {
     return Math.min(percentAmountDifference, state.ticketing.discount.amount);
   } else if (state.ticketing.discount.amount) {
     return state.ticketing.discount.amount;
-  } else if (state.ticketing.discount.percent) {
-    return state.ticketing.discount.percent;
+  } else {
+    return percentAmountDifference;
   }
 };
 export const selectCartSubtotal = (state: RootState): number =>

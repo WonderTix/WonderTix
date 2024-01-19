@@ -2,11 +2,10 @@
 
 import {
   removeAllTicketsFromCart,
-  selectDiscount,
 } from '../ticketingSlice';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
-import {ReactElement} from 'react';
+import {ReactElement, useState} from 'react';
 import AdminCompleteOrderForm, {
   CheckoutFormInfo,
 } from './AdminCompleteOrderForm';
@@ -26,9 +25,10 @@ export default function AdminCheckout(): ReactElement {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const [discount, setDiscount] = useState(null);
+
   const eventDataFromPurchase = location.state?.eventData || [];
   const cartItems = location.state?.cartItems || [];
-  const discount = useAppSelector(selectDiscount);
 
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
@@ -59,7 +59,6 @@ export default function AdminCheckout(): ReactElement {
         dispatch(removeAllTicketsFromCart());
         navigate(`/success`);
       }
-      const paymentIntent = session.payment_intent;
       const result = await stripe.redirectToCheckout({sessionId: session.id});
       if (result.error) {
         console.error(result.error.message);
@@ -91,12 +90,13 @@ export default function AdminCheckout(): ReactElement {
           </div>
           <div
             className='md:w-[30rem] w-full mt-10
-               md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
-                flex-col items-center rounded-xl justify-between'
+              md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
+              flex-col items-center rounded-xl justify-between'
           >
             <AdminCart
               backButtonRoute='../ticketing/purchaseticket'
               eventDataFromPurchase={eventDataFromPurchase}
+              onDiscountChange={setDiscount}
             />
           </div>
         </div>
