@@ -61,6 +61,7 @@ const Contacts = (): React.ReactElement => {
                 volunteerList: contact.volunteerlist,
                 newsletter: contact.newsletter,
                 contactId: contact.contactid,
+                createdDate: contact.createddate,
               };
             }),
           );

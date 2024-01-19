@@ -21,6 +21,7 @@ export type Contact = {
   contactId?: number,
   orders?: any,
   donations?: any,
+  createdDate: string,
 }
 
 export const emptyContact: Contact = {
@@ -39,6 +40,7 @@ export const emptyContact: Contact = {
   vip: false,
   donorBadge: false,
   volunteerList: false,
+  createdDate: '',
 };
 
 export const toReadableDonationFrequency = (key: string): string => {

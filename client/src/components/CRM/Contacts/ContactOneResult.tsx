@@ -62,6 +62,7 @@ export const ContactOneResult = (): ReactElement => {
             contactId: res.data.contactid,
             orders: res.data.orders,
             donations: res.data.donations,
+            createdDate: res.data.createddate,
           };
           setContact(contact);
         })

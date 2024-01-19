@@ -4,6 +4,7 @@ import {Tooltip} from '@mui/material';
 import PopUp from '../../Ticketing/PopUp';
 import ContactPopUp from './ContactPopUp';
 import {Contact, editContact, deleteContact} from './contactUtils';
+import format from 'date-fns/format';
 
 interface ContactCardProps {
   contact: Contact;
@@ -47,6 +48,7 @@ const ContactCard = ({
     seatingAcc,
     vip,
     volunteerList,
+    createdDate,
   } = contact;
 
   const navigate = useNavigate();
@@ -222,6 +224,10 @@ const ContactCard = ({
           <span data-testid='contact-volunteer'>
             {volunteerList ? 'Yes' : 'No'}
           </span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>Created Date:</span>
+          <span data-testid='contact-created-datetime'>{format(new Date(createdDate), 'Pp')}</span>
         </p>
         {showMoreButton && (
           <button
