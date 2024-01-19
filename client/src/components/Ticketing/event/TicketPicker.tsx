@@ -293,9 +293,13 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       </label>
     ),
     showSelection: (
-      <p className='text-white'>
+      <p className='text-white text-center'>
         {selectedTicket
-          ? format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a')
+          ? `${format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a')}${
+                (selectedTicket?.detail ?? '') !== ''
+                ? ` (${selectedTicket.detail})`
+                : ''
+            }`
           : ''}
       </p>
     ),
@@ -343,7 +347,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           </select>
         </div>
       </Collapse>
-      <Collapse in={showTimes}>
+      <Collapse in={showTimes} sx={{maxWidth: '100%'}}>
         <EventInstanceSelect
           check={prompt}
           eventInstances={displayedShowings}

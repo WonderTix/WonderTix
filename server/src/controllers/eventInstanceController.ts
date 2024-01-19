@@ -100,6 +100,7 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
         admission_type: defaultRestriction?.tickettype.description,
         ticket_price: defaultRestriction?.price,
         concession_price: defaultRestriction?.concessionprice,
+        detail: ticket.detail,
       }};
     });
     res.send({data: {allIds, byId}});
@@ -350,6 +351,11 @@ eventInstanceController.get(
             ticketrestrictions: {
               include: {
                 tickettype: true,
+                eventtickets: {
+                  where: {
+                    singleticket_fk: {not: null},
+                  },
+                },
               },
             },
           },
@@ -362,6 +368,7 @@ eventInstanceController.get(
             price: restriction.price,
             concessionprice: restriction.concessionprice,
             ticketlimit: restriction.ticketlimit,
+            ticketssold: restriction.eventtickets.length,
             description: restriction.tickettype.description,
           })),
         })));
@@ -486,6 +493,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
         purchaseuri: eventToCreate.purchaseuri,
         ispreview: eventToCreate.ispreview,
         defaulttickettype: eventToCreate.defaulttickettype,
+        detail: eventToCreate.detail,
       },
       include: {
         events: {

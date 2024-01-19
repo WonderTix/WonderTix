@@ -101,11 +101,12 @@ model eventinstances {
   eventid_fk         Int
   eventdate          Int
   eventtime          DateTime             @db.Timetz(6)
-  salestatus         Boolean?
-  totalseats         Int?
-  availableseats     Int?
+  salestatus         Boolean              @default(true)
+  totalseats         Int                  @default(0)
+  availableseats     Int                  @default(0)
+  detail             String?              @db.VarChar(255)
   purchaseuri        String?              @db.VarChar(255)
-  ispreview          Boolean?             @default(false)
+  ispreview          Boolean              @default(false)
   defaulttickettype  Int?
   deletedat          DateTime?
   tickettype         tickettype?          @relation(fields: [defaulttickettype], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)

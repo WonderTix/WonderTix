@@ -34,7 +34,7 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
       true,
       `delete-modal-showing-id-${showing.eventinstanceid}`,
     );
-    setEditing((editing) => !editing);
+    setEditing(false);
   };
   const onError = async (event) => {
     try {
@@ -67,6 +67,11 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
             onSubmitSuccess,
             onError,
           )}
+          onLeaveEdit={onEditClick}
+        />
+      ) : (
+        <EventShowingView
+          setEdit={onEditClick}
           onDelete={createDeleteFunction(
             'DELETE',
             `${process.env.REACT_APP_API_2_URL}/event-instance/${showing.eventinstanceid}`,
@@ -74,10 +79,8 @@ export const EventShowingContainer = (props: EventShowingContainerProps) => {
             onDeleteSuccess,
             onError,
           )}
-          onLeaveEdit={onEditClick}
+          showing={showing}
         />
-      ) : (
-        <EventShowingView setEdit={onEditClick} showing={showing} />
       )}
     </>
   );
