@@ -8,6 +8,8 @@ export interface CustomerInfo {
   fullName: string;
   streetAddress: string;
   postCode: string;
+  city: string;
+  state: string;
   country: string;
   phoneNumber: string;
   email: string;
@@ -42,6 +44,8 @@ export class CustomerInfo {
     this.fullName = this.firstName + ' ' + this.lastName;
     this.streetAddress = customer.streetAddress;
     this.postCode = customer.postCode;
+    this.city = customer.city;
+    this.state = customer.state;
     this.country = customer.country;
     if (customer.phoneNumber == '') {
       this.phoneNumber = generatePhoneNumber();
@@ -69,6 +73,8 @@ export const JANE_DOE: CustomerInfo = {
   fullName: 'Jane Doe',
   streetAddress: '618 William Street, Key West, FL',
   postCode: '33040',
+  city: 'Portland',
+  state: 'OR',
   country: 'USA',
   phoneNumber: '(207)283-8797',
   email: 'jane.doe@wondertix.com',
@@ -87,6 +93,8 @@ export const JOHN_DOE: CustomerInfo = {
   fullName: '',
   streetAddress: '8 Strawberry Ln, Yarmouth Port, MA',
   postCode: '02675',
+  city: 'Portland',
+  state: 'OR',
   country: 'USA',
   phoneNumber: '',
   email: '',

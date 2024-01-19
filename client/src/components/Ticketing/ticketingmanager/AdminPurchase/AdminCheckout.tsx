@@ -32,9 +32,8 @@ export default function AdminCheckout(): ReactElement {
 
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
-      if (formData.seatingAcc === 'Other') {
-        formData.seatingAcc = formData.comments;
-      }
+      formData.seatingAcc = !formData.comments ? formData.seatingAcc : `${formData.seatingAcc} - ${formData.comments}`;
+
       const donation = +formData.donation;
 
       const stripe = await stripePromise;

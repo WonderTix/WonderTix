@@ -51,9 +51,8 @@ export default function CheckoutPage(): ReactElement {
   const dispatch = useAppDispatch();
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
-      if (formData.seatingAcc === 'Other') {
-        formData.seatingAcc = formData.comments;
-      }
+      formData.seatingAcc = !formData.comments ? formData.seatingAcc : `${formData.seatingAcc} - ${formData.comments}`;
+
       const stripe = await stripePromise;
       if (!stripe) return;
       const response = await fetch(

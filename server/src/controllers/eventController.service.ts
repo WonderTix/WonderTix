@@ -202,12 +202,13 @@ interface checkoutForm {
   lastName: string;
   streetAddress: string;
   postalCode: string;
+  city: string,
+  state: string;
   country: string;
   phone: string;
   email: string;
   visitSource: string;
   seatingAcc: string;
-  comments: string;
   optIn: boolean;
 }
 
@@ -261,6 +262,10 @@ const validateContact = (formData: checkoutForm) => {
     ),
     // Only include or validate the following if provided
     ...(formData.streetAddress && {address: formData.streetAddress}),
+    ...(formData.city && {city: formData.city}),
+    ...(formData.state && {state: formData.state}),
+    ...(formData.postalCode && {postalcode: formData.postalCode}),
+    ...(formData.country && {country: formData.country}),
     ...(formData.phone && {
       phone: validateWithRegex(
           formData.phone,

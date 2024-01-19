@@ -13,6 +13,8 @@ import {EventRow} from './utils/adminCommon';
  * @param {string} lastName
  * @param {string} streetAddress
  * @param {string} postalCode
+ * @param {string} city
+ * @param {string} state
  * @param {string} country
  * @param {string} phone
  * @param {string} email
@@ -27,6 +29,8 @@ export interface CheckoutFormInfo {
   lastName: string;
   streetAddress: string;
   postalCode: string;
+  city: string;
+  state: string;
   country: string;
   phone?: string;
   email: string;
@@ -68,6 +72,8 @@ export default function AdminCompleteOrderForm({
     lastName: '',
     streetAddress: '',
     postalCode: '',
+    city: '',
+    state: '',
     country: '',
     phone: '',
     email: '',
@@ -175,6 +181,26 @@ export default function AdminCompleteOrderForm({
                   placeholder='Postal Code'
                   type='text'
                   id='postal-code'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='city'
+                  label='City'
+                  placeholder='City'
+                  type='text'
+                  id='city'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='state'
+                  label='State'
+                  placeholder='State'
+                  type='text'
+                  id='state'
                   labelClassName='block text-sm font-medium text-slate-700 ml-1'
                   inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                 />
