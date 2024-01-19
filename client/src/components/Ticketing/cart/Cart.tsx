@@ -180,7 +180,7 @@ const Cart = (): ReactElement => {
             <p className='text-zinc-500'>There&apos;s nothing in your cart</p>
           )}
         </div>
-        <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-900'>
+        <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-800'>
           <div className='mb-3'>
             <h2 className='text-zinc-100 text-xl font-semibold'>Subtotal</h2>
             <p data-testid='subtotal-display' className='text-amber-300 italic'>
@@ -193,12 +193,12 @@ const Cart = (): ReactElement => {
               {!validDiscount && discountClicked && (
                 <p className='text-amber-300 italic'>Invalid discount code</p>
               )}
-              <div className='flex items-center gap-1 w-full p-3 rounded-xl bg-sky-500'>
+              <div className='flex items-center justify-center gap-1 px-2 py-1 rounded-xl shadow-md ml-auto bg-zinc-600'>
                 <input
                   type='text'
                   placeholder='Discount code...'
                   aria-label='Discount code'
-                  className='rounded-md pl-2'
+                  className='p-1 px-2 rounded-md text-zinc-100 bg-zinc-600 disabled:bg-zinc-800'
                   value={discountText ? discountText : discount.code}
                   onChange={(e) => {
                     setDiscountText(e.target.value);
@@ -208,7 +208,7 @@ const Cart = (): ReactElement => {
                 />
                 {!validDiscount ? (
                   <button
-                    className='text-white enabled:hover:text-gray-200'
+                    className='p-2 text-zinc-300 hover:bg-zinc-700 hover:text-zinc-100 justify-end rounded-full'
                     onClick={applyDiscount}
                     aria-label='Apply discount code'
                   >
@@ -230,7 +230,7 @@ const Cart = (): ReactElement => {
                   </button>
                 ) : (
                   <button
-                    className='text-white enabled:hover:text-gray-200'
+                    className='p-2 text-zinc-300 hover:bg-zinc-700 hover:text-zinc-100 justify-end rounded-full'
                     onClick={removeDiscount}
                     aria-label='Remove discount code'
                   >
