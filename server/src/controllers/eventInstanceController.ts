@@ -72,6 +72,9 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
       where: {
         salestatus: true,
         availableseats: {gt: 0},
+        ticketrestrictions: {
+          some: {},
+        },
         events: {
           active: true,
         },
@@ -301,7 +304,7 @@ eventInstanceController.get('/:id', async (req: Request, res: Response) => {
  * @swagger
  * /2/event-instance/event/{id}:
  *   get:
- *     summary: get all event instances related to a event
+ *     summary: get all event instances related to an event
  *     tags:
  *     - New event instance
  *     parameters:

@@ -151,7 +151,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 eventController.get('/showings', async (req: Request, res: Response) => {
   try {
     const events = await prisma.events.findMany({
-      where: {},
       include: {
         eventinstances: {
           include: {
@@ -207,6 +206,9 @@ eventController.get('/slice', async (req: Request, res: Response) => {
             deletedat: null,
             availableseats: {gt: 0},
             salestatus: true,
+            ticketrestrictions: {
+              some: {},
+            },
           },
         },
       },
