@@ -1,17 +1,15 @@
 /* eslint-disable react/react-in-jsx-scope */
 
-import {
-  removeAllTicketsFromCart,
-  selectDiscount,
-} from '../ticketingSlice';
+import {removeAllTicketsFromCart, selectDiscount} from '../ticketingSlice';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
-import {ReactElement} from 'react';
+import {ReactElement, useState} from 'react';
 import AdminCompleteOrderForm, {
   CheckoutFormInfo,
 } from './AdminCompleteOrderForm';
 import {useNavigate, useLocation} from 'react-router-dom';
 import AdminCart from './AdminCart';
+import PopUp from '../../PopUp';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -29,10 +27,13 @@ export default function AdminCheckout(): ReactElement {
   const eventDataFromPurchase = location.state?.eventData || [];
   const cartItems = location.state?.cartItems || [];
   const discount = useAppSelector(selectDiscount);
+  const [popUpMessage, setPopUpMessage] = useState('');
 
   const doCheckout = async (formData: CheckoutFormInfo) => {
     try {
-      formData.seatingAcc = !formData.comments ? formData.seatingAcc : `${formData.seatingAcc} - ${formData.comments}`;
+      formData.seatingAcc = !formData.comments
+        ? formData.seatingAcc
+        : `${formData.seatingAcc} - ${formData.comments}`;
 
       const donation = +formData.donation;
 
@@ -58,20 +59,17 @@ export default function AdminCheckout(): ReactElement {
         dispatch(removeAllTicketsFromCart());
         navigate(`/success`);
       }
-      const paymentIntent = session.payment_intent;
       const result = await stripe.redirectToCheckout({sessionId: session.id});
       if (result.error) {
         console.error(result.error.message);
       }
     } catch (error) {
       console.error('Error response status: ', error.status);
-      if (error.json) {
-        const errorMessage = await error.json();
-        console.error('Error message from server: ', errorMessage);
-      }
+      console.log(error);
+      setPopUpMessage(error.json ? (await error.json()).error: 'Checkout failed');
     }
   };
-
+  console.log(popUpMessage);
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='flex flex-col lg:ml-[15rem] lg:mx-[5rem] md:ml-[13rem] tab:mx-[2rem] mx-[0.5rem] mt=[5rem] mb-[9rem]'>
@@ -100,6 +98,16 @@ export default function AdminCheckout(): ReactElement {
           </div>
         </div>
       </div>
+      {popUpMessage && popUpMessage !== '' && (
+        <PopUp
+          title='Checkout Failed'
+          message={popUpMessage}
+          handleProceed={() => setPopUpMessage('')}
+          handleClose={() => setPopUpMessage('')}
+          success={false}
+          showSecondary={false}
+        />
+      )}
     </div>
   );
 }
