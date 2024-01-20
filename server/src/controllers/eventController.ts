@@ -77,7 +77,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       cartRows.push(getCartRow('Donation', 'A generous donation', donation*100, 1));
     }
 
-    if (donation + orderTotal > 0) {
+    if (donation + orderTotal > .49) {
       toSend = await createStripeCheckoutSession(
           contactid,
           formData.email,
@@ -85,6 +85,8 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           cartRows,
           discount,
       );
+    } else if (donation+orderTotal > 0) {
+      return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
     order = await orderFulfillment(
