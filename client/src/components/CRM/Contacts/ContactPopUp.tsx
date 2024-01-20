@@ -1,6 +1,10 @@
 import React, {ReactElement, useEffect, useRef} from 'react';
 import {Field, Form} from 'react-final-form';
-import {Contact} from './contactUtils';
+import {
+  Contact,
+  contactSeatingAccOptions,
+  seatingAccInOptions,
+} from './contactUtils';
 import {FormInput} from '../../Ticketing/FormInput';
 
 interface ContactPopUpProps {
@@ -33,6 +37,17 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
     title = 'Create Contact',
     values,
   } = props;
+
+  // Assigns seatingAcc to comments input if there's a custom accommodation
+  const contact = {
+    ...values,
+    ...(!seatingAccInOptions(values.seatingAcc)
+      ? {
+          comments: values.seatingAcc,
+          seatingAcc: 'Other',
+        }
+      : null),
+  };
 
   const contactPopUpRef = useRef(null);
 
@@ -80,7 +95,10 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
   const validate = (formValues: Contact) => {
     const errors = {};
 
-    if (formValues.seatingAcc === 'Other' && (!formValues.comments || formValues.comments === '')) {
+    if (
+      formValues.seatingAcc === 'Other' &&
+      (!formValues.comments || formValues.comments === '')
+    ) {
       errors['comments'] = 'Please Input Accommodation';
     }
     if (!formValues.email?.match(new RegExp('.+@.+\\..+'))) {
@@ -99,8 +117,10 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
     }
 
     Object.keys(values).forEach((key) => {
-      if (['first', 'last', 'email'].includes(key) &&
-        (!formValues[key] || formValues[key] === '')) {
+      if (
+        ['first', 'last', 'email'].includes(key) &&
+        (!formValues[key] || formValues[key] === '')
+      ) {
         errors[key] = 'Required';
       }
     });
@@ -115,9 +135,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
       aria-modal='true'
       ref={contactPopUpRef}
     >
-      <div
-        className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-scroll shadow-xl'
-      >
+      <div className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-scroll shadow-xl'>
         <button
           type='button'
           onClick={onCancel}
@@ -145,8 +163,8 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
         <Form
           onSubmit={onSubmit}
           validate={validate}
-          initialValues={values}
-          render={({handleSubmit, submitting, values}) => (
+          initialValues={contact}
+          render={({handleSubmit, submitting}) => (
             <form onSubmit={handleSubmit} noValidate>
               <h3
                 className='text-lg leading-6 font-medium text-gray-900 p-4 pt-5 tab:p-6'
@@ -251,7 +269,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 </div>
-                  <div className='grid gap-3 tab:grid-cols-2'>
+                <div className='grid gap-3 tab:grid-cols-2'>
                   <Field
                     component={FormInput}
                     name='country'
@@ -270,7 +288,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     type='text'
                     id='zipcode'
                     labelClassName='block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName="w-full border border-zinc-300 p-3 rounded-lg"
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 </div>
                 <div>
@@ -286,41 +304,25 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     name='seatingAcc'
                     id='seating-acc'
                   >
-                    <option value='None'>
-                      Not at this time
-                    </option>
-                    <option value='Wheel Chair'>
-                      Wheelchair seat(s)
-                    </option>
-                    <option value='Aisle Seat'>
-                      Aisle seat(s)
-                    </option>
-                    <option value='First/Ground floor'>
-                      Seat(s) on the ground or the first level
-                    </option>
-                    <option value='ASL Interpreter'>
-                      Seat(s) in the ASL interpreters section
-                    </option>
-                    <option value='Wide Seats'>
-                      Wide seat(s)
-                    </option>
-                    <option value='Other'>
-                      Other
-                    </option>
+                    {Object.keys(contactSeatingAccOptions).map(
+                      (value, index) => (
+                        <option key={index} value={value}>
+                          {contactSeatingAccOptions[value]}
+                        </option>
+                      ),
+                    )}
                   </Field>
                 </div>
-                {values.seatingAcc === 'Other' && (
-                  <Field
-                    component={FormInput}
-                    name='comments'
-                    type='text'
-                    placeholder='What is their accommodation?'
-                    id='comments'
-                    label='Other Accommodation'
-                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
-                  />
-                )}
+                <Field
+                  component={FormInput}
+                  name='comments'
+                  type='text'
+                  placeholder='Comments'
+                  id='comments'
+                  label='Comments'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                />
                 <div className='grid gap-x-3 gap-y-2 tab:grid-cols-2 ml-2 mt-1'>
                   <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
@@ -329,9 +331,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       name='newsletter'
                       id='newsletter'
                     />
-                    <label htmlFor='newsletter'>
-                      Subscribe to Newsletter
-                    </label>
+                    <label htmlFor='newsletter'>Subscribe to Newsletter</label>
                   </div>
                   <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
@@ -340,9 +340,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       name='donorBadge'
                       id='donor-badge'
                     />
-                    <label htmlFor='donor-badge'>
-                      Donor Badge
-                    </label>
+                    <label htmlFor='donor-badge'>Donor Badge</label>
                   </div>
                   <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
@@ -351,9 +349,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       name='vip'
                       id='vip'
                     />
-                    <label htmlFor='vip'>
-                      VIP
-                    </label>
+                    <label htmlFor='vip'>VIP</label>
                   </div>
                   <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
@@ -362,9 +358,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       name='volunteerList'
                       id='volunteer-list'
                     />
-                    <label htmlFor='volunteer-list'>
-                      Volunteer List
-                    </label>
+                    <label htmlFor='volunteer-list'>Volunteer List</label>
                   </div>
                 </div>
               </article>

@@ -1,28 +1,27 @@
-
 /**
  * Type for information relating to a contact.
  */
 export type Contact = {
-  first: string,
-  last: string,
-  email: string,
-  phone: string,
-  address: string,
-  city: string,
-  state: string,
-  country: string,
-  postalCode: string,
-  comments?: string,
-  seatingAcc: string,
-  newsletter: boolean,
-  vip: boolean,
-  donorBadge: boolean,
-  volunteerList: boolean,
-  contactId?: number,
-  orders?: any,
-  donations?: any,
-  createdDate: string,
-}
+  first: string;
+  last: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+  comments?: string;
+  seatingAcc: string;
+  newsletter: boolean;
+  vip: boolean;
+  donorBadge: boolean;
+  volunteerList: boolean;
+  contactId?: number;
+  orders?: any;
+  donations?: any;
+  createdDate: string;
+};
 
 export const emptyContact: Contact = {
   first: '',
@@ -43,23 +42,45 @@ export const emptyContact: Contact = {
   createdDate: '',
 };
 
-export const toReadableDonationFrequency = (key: string): string => {
-   switch (key) {
-     case 'one-time':
-       return 'One-time';
-     case 'weekly':
-       return 'Weekly';
-     case 'monthly':
-       return 'Monthly';
-     case 'yearly':
-       return 'Yearly';
-     default:
-       return key;
-   }
+export const contactSeatingAccOptions = {
+  'None': 'Not at this time',
+  'Wheel Chair': 'Wheelchair seat(s)',
+  'Aisle Seat': 'Aisle seat(s)',
+  'First/Ground floor': 'Seat(s) on the ground or the first level',
+  'ASL Interpreter': 'Seat(s) in the ASL interpreters section',
+  'Wide Seats': 'Wide seat(s)',
+  'Other': 'Other (describe in Comments section)',
 };
 
-export const editContact = async (contact: Contact, contactId: number, token: string) => {
-  contact.seatingAcc = !contact.comments ? contact.seatingAcc : `${contact.seatingAcc} - ${contact.comments}`;
+export const seatingAccInOptions = (value: string) => {
+  return Object.keys(contactSeatingAccOptions).includes(value);
+};
+
+export const toReadableDonationFrequency = (key: string): string => {
+  switch (key) {
+    case 'one_time':
+      return 'One-time';
+    case 'weekly':
+      return 'Weekly';
+    case 'monthly':
+      return 'Monthly';
+    case 'yearly':
+      return 'Yearly';
+    default:
+      return key;
+  }
+};
+
+export const editContact = async (
+  contact: Contact,
+  contactId: number,
+  token: string,
+) => {
+  contact.seatingAcc = !contact.comments
+    ? contact.seatingAcc
+    : contact.seatingAcc === 'Other'
+    ? contact.comments
+    : `${contact.seatingAcc} - ${contact.comments}`;
 
   try {
     const response = await fetch(
@@ -102,14 +123,17 @@ export const editContact = async (contact: Contact, contactId: number, token: st
 
 export const deleteContact = async (contactId: number, token: string) => {
   try {
-    const response = await fetch(process.env.REACT_APP_API_2_URL + `/contact/${contactId}`, {
-      credentials: 'include',
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+    const response = await fetch(
+      process.env.REACT_APP_API_2_URL + `/contact/${contactId}`,
+      {
+        credentials: 'include',
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       console.error('Failed to remove contact');
