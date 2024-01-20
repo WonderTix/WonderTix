@@ -42,7 +42,7 @@ export const emptyContact: Contact = {
   createdDate: '',
 };
 
-export const contactSeatingAccOptions = {
+export const seatingAccOptions = {
   'None': 'Not at this time',
   'Wheel Chair': 'Wheelchair seat(s)',
   'Aisle Seat': 'Aisle seat(s)',
@@ -53,7 +53,7 @@ export const contactSeatingAccOptions = {
 };
 
 export const seatingAccInOptions = (value: string) => {
-  return Object.keys(contactSeatingAccOptions).includes(value);
+  return Object.keys(seatingAccOptions).includes(value);
 };
 
 export const toReadableDonationFrequency = (key: string): string => {

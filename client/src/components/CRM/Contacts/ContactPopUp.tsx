@@ -2,7 +2,7 @@ import React, {ReactElement, useEffect, useRef} from 'react';
 import {Field, Form} from 'react-final-form';
 import {
   Contact,
-  contactSeatingAccOptions,
+  seatingAccOptions,
   seatingAccInOptions,
 } from './contactUtils';
 import {FormInput} from '../../Ticketing/FormInput';
@@ -304,10 +304,10 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     name='seatingAcc'
                     id='seating-acc'
                   >
-                    {Object.keys(contactSeatingAccOptions).map(
+                    {Object.keys(seatingAccOptions).map(
                       (value, index) => (
                         <option key={index} value={value}>
-                          {contactSeatingAccOptions[value]}
+                          {seatingAccOptions[value]}
                         </option>
                       ),
                     )}
