@@ -170,11 +170,7 @@ export const updateRefundedOrder = async (
         include: {
           singletickets: {
             include: {
-              eventticket: {
-                include: {
-                  eventinstances: true,
-                },
-              },
+              eventticket: true,
             },
           },
         },
@@ -187,7 +183,7 @@ export const updateRefundedOrder = async (
       .map((item) => item.singletickets)
       .flat(1)
       .filter((ticket) => ticket.eventticket)
-      .map((ticket) => ticket.eventticket?.eventinstances.eventinstanceid));
+      .map((ticket) => ticket.eventticket?.eventinstanceid_fk));
 
   await updateRefundedOrderItems(
       prisma,

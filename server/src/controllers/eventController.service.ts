@@ -142,12 +142,12 @@ export const getOrderItems = async (
   }
 
   eventInstanceMap.forEach(({eventinstanceid, availableseats}) =>
-    toReturn.eventInstanceQueries.push(updateAvailableSeats(prisma, eventinstanceid, availableseats)));
+    toReturn.eventInstanceQueries.push(getUpdateAvailableSeatsQuery(prisma, eventinstanceid, availableseats)));
 
   return toReturn;
 };
 
-const updateAvailableSeats =
+const getUpdateAvailableSeatsQuery =
     (prisma: ExtendedPrismaClient, instanceId: number, availablSeats: number) => prisma.eventinstances.update({
       where: {eventinstanceid: instanceId},
       data: {availableseats: availablSeats},
