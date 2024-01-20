@@ -65,11 +65,12 @@ export default function AdminCheckout(): ReactElement {
       }
     } catch (error) {
       console.error('Error response status: ', error.status);
-      console.log(error);
-      setPopUpMessage(error.json ? (await error.json()).error: 'Checkout failed');
+      setPopUpMessage(
+        error.json ? (await error.json()).error : 'Checkout failed',
+      );
     }
   };
-  console.log(popUpMessage);
+
   return (
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='flex flex-col lg:ml-[15rem] lg:mx-[5rem] md:ml-[13rem] tab:mx-[2rem] mx-[0.5rem] mt=[5rem] mb-[9rem]'>
