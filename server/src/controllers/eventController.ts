@@ -150,11 +150,9 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
       await getOrderItems(cartItems, prisma); //do we need to use this
 
-    //console.log(orderTotal);
-
     //if (orderTotal > 0) {
       paymentIntentID = await createStripePaymentIntent(
-        100
+        orderTotal * 100
       )
       
       const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);

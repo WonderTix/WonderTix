@@ -337,7 +337,7 @@ const AdminPurchase = () => {
       stripePromise.then((stripe) => {
         if (!stripe) return; // throw?
 
-        const readerID = 'tmr_FaJp6QTEN8Mhfi'; // hardcode
+        const readerID = 'tmr_Fapnge4nQejTzH'; // hardcode
 
         fetch( // create session and put order in database
           process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
