@@ -142,13 +142,13 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
   const {cartItems, readerID} = req.body;
   let orderID = 0;
   let paymentIntentID = "";
-  //let toSend = {id: 'comp'};
+  let contactid = 1; //database value for anonymous
   try {
     if (!cartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
     }
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma); //do we need to use this
+      await getOrderItems(cartItems, prisma);
 
     //if (orderTotal > 0) {
       paymentIntentID = await createStripePaymentIntent(
@@ -162,30 +162,22 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     //}
 
     // not adding to prisma at this point
-    /*orderID = await orderFulfillment(
+    orderID = await orderFulfillment(
         prisma,
         orderItems,
         contactid,
         orderTotal,
         eventInstanceQueries,
-        toSend.id,
-    );*/
-    /*if (toSend.id === 'comp') {
-      await prisma.orders.update({
-        where: {
-          orderid: orderID,
-        },
-        data: {
-          checkout_sessions: `comp-${orderID}`,
-          payment_intent: `comp-${orderID}`,
-        },
-      });
-    }*/
+        readerID,
+        undefined,
+        paymentIntentID
+    );
     const checkPayment = await checkPaymentStatus(paymentIntentID); // probably in webhook instead
     res.json({status: checkPayment.status});
   } catch (error) {
     console.error(error);
-    //if (orderID) await orderCancel(prisma, orderID);
+    //if (orderID) await orderCancel(prisma, orderID); I think we have to be more careful with order cancellations
+    //than this depending on situation with reader.
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;

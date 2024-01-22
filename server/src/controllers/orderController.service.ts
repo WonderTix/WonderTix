@@ -81,8 +81,9 @@ export const orderFulfillment = async (
     contactid: number,
     ordertotal: number,
     eventInstanceQueries: any[],
-    sessionID: string,
+    sessionID: string, //reader_id when payment reader purchase
     discount?: number,
+    paymentIntet?: string //only needed this early for reader purchase
 ) => {
   const result = await prisma.$transaction([
     prisma.orders.create({
