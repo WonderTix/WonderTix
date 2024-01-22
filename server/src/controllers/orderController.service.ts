@@ -96,6 +96,7 @@ export const orderFulfillment = async (
         orderitems: {
           create: orderItems,
         },
+        payment_intent: paymentIntet
       },
     }),
     ...eventInstanceQueries,
