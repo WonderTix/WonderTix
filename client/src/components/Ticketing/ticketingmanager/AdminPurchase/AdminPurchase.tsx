@@ -241,6 +241,17 @@ const AdminPurchase = () => {
     }));
   };
 
+  const handlePositionChange = (event, row) => {
+    const newPosition = event.target.value;
+    const updatedRows = eventData.map((r) => {
+      if (r.id === row.id) {
+        return {...r, position: newPosition};
+      }
+      return r;
+    });
+    setEventData(updatedRows);
+  };
+
   const handlePurchase = () => {
     if (eventData.length === 0) {
       setErrMsg('Cart is empty.');
@@ -472,12 +483,38 @@ const AdminPurchase = () => {
       headerName: '',
       width: 150,
       renderCell: (params) => (
-        <button
-          className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
-          onClick={() => removeRow(params.row.id)}
-        >
-          Remove
-        </button>
+        !params.row.complimentary ? (
+          <button
+            className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
+            onClick={() => removeRow(params.row.id)}
+          >
+            Remove
+          </button>
+        ) : <select
+        className='w-full'
+        value={params.row.position || ''}
+        onChange={(e) => handlePositionChange(e, params.row)}
+      >
+        <option value=''>Select Position</option>
+        <option value='backHouse'>Back House</option>
+        <option value='frontHouse'>Front House</option>
+        <option value='inHouse'>In House</option>
+      </select>
+      ),
+    },
+    {
+      field: 'compAction',
+      headerName: '',
+      width: 150,
+      renderCell: (params) => (
+        params.row.complimentary ? (
+          <button
+            className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
+            onClick={() => removeRow(params.row.id)}
+          >
+            Remove
+          </button>
+        ) : null // Render null if Comp is checked
       ),
     },
   ];
