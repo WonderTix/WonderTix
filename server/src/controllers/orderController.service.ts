@@ -81,7 +81,7 @@ export const orderFulfillment = async (
     contactid: number,
     ordertotal: number,
     eventInstanceQueries: any[],
-    sessionID: string, //reader_id when payment reader purchase
+    sessionID?: string, //reader_id when payment reader purchase
     discount?: number,
     paymentIntet?: string //only needed this early for reader purchase
 ) => {

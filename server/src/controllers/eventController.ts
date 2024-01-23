@@ -168,7 +168,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         contactid,
         orderTotal,
         eventInstanceQueries,
-        readerID,
+        undefined,
         undefined,
         paymentIntentID
     );
