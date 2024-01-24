@@ -64,7 +64,6 @@ export const requestStripeReaderPayment = async (
   readerID: string,
   paymentIntentID: string
 ) => {
-  //const reader = await stripe.terminal.readers.retrieve(readerID);
   const requestPay = await stripe.terminal.readers.processPaymentIntent(
     readerID,
     {
