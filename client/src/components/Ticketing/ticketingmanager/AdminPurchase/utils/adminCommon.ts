@@ -38,3 +38,9 @@ export const initialTicketTypeRestriction: ticketTypeRestriction = {
   ticketssold: 0,
   description: '',
 };
+
+export type ReaderRow = {
+  id: string;
+  device_type: string;
+  location: string;
+};
