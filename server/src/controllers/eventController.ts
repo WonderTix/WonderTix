@@ -139,7 +139,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
  */
 
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {cartItems, readerID} = req.body;
+  const {cartItems, readerID, discount} = req.body;
   let orderID = 0;
   let paymentIntentID = "";
   let contactid = 1; //database value for anonymous
@@ -150,7 +150,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
       await getOrderItems(cartItems, prisma);
 
-    //if (orderTotal > 0) {
+    if (orderTotal > 0) {
       paymentIntentID = await createStripePaymentIntent(
         orderTotal * 100
       )
@@ -159,21 +159,23 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       
       // TESTING BELOW
       const pay = await testPayReader(readerID);
-    //}
-
-    // not adding to prisma at this point
+    }
+    
+    // add order to database with prisma
     orderID = await orderFulfillment(
         prisma,
         orderItems,
         contactid,
         orderTotal,
         eventInstanceQueries,
-        readerID,
         undefined,
+        undefined, // could put in discount but they don't seem to do this in normal checkout
         paymentIntentID
     );
-    const checkPayment = await checkPaymentStatus(paymentIntentID); // probably in webhook instead
-    res.json({status: checkPayment.status});
+    
+    const status = await checkPaymentStatus(paymentIntentID)
+
+    res.json({status: status});
   } catch (error) {
     console.error(error);
     //if (orderID) await orderCancel(prisma, orderID); I think we have to be more careful with order cancellations
@@ -192,6 +194,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     res.status(500).json(error);
   }
 });
+
 
 /**
  * @swagger

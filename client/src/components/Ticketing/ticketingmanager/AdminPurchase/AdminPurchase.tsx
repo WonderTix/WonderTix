@@ -18,6 +18,13 @@ import {getAllTicketRestrictions} from './utils/adminApiRequests';
 import {useFetchToken} from '../Event/components/ShowingUtils';
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
 
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+
+import {
+  removeAllTicketsFromCart,
+  selectDiscount,
+} from '../ticketingSlice';
+
 import {loadStripe} from '@stripe/stripe-js';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
@@ -40,6 +47,8 @@ const AdminPurchase = () => {
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
   const {token} = useFetchToken();
+
+  const discount = useAppSelector(selectDiscount);
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
@@ -337,29 +346,39 @@ const AdminPurchase = () => {
       stripePromise.then((stripe) => {
         if (!stripe) return; // throw?
 
-        const readerID = 'tmr_Fapnge4nQejTzH'; // hardcode
+        fetch(
+          process.env.REACT_APP_API_2_URL + '/order/readers',
+        ).then((response) => {
+          response.json().then((readers) => {
+            console.log(readers);
 
-        fetch( // create session and put order in database
-          process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
-          {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
+            const readerID = readers.data[0].id;
+            console.log(readerID);
+            // const readerID = 'tmr_FaJp6QTEN8Mhfi'; // hardcode
+
+            fetch( // create session and put order in database
+            process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
+            {
+              credentials: 'include',
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({cartItems, readerID, discount}),
             },
-            body: JSON.stringify({cartItems, readerID}),
-          },
-        ).then((response) => { // response should be payment status
-          if (!response.ok) {
-            throw response;
-          }
+            ).then((response) => { // response should be payment intent ID
+              if (!response.ok) {
+                throw response;
+              }
 
-          response.json().then((result) => {
-            if (result.status == 'succeeded') {
-              console.log('payment succeeded!');
-            } else {
-              console.log('payment failed!');
-            }
+              response.json().then((result) => {
+                if (result.status == 'succeeded') {
+                  console.log('payment succeeded!');
+                } else {
+                  console.log('payment failed!');
+                }
+              });
+            });
           });
         });
       });

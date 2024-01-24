@@ -1,5 +1,7 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {freq} from '@prisma/client';
+const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
+const stripe = require('stripe')(stripeKey);
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -15,6 +17,7 @@ export const ticketingWebhook = async (
   if (!order) return;
 
   switch (eventType) {
+    // I believe this is here because paymentIntent isn't populated until checkout session is complete
     case 'checkout.session.completed': {
       await prisma.orders.update({
         where: {
@@ -29,6 +32,16 @@ export const ticketingWebhook = async (
     case 'checkout.session.expired':
       await orderCancel(prisma, order.orderid);
       break;
+    case 'charge.succeeded': {
+      // communicate success to AdminPurchase? I don't think we need to update with paymentIntent because we already have it
+      
+      break;
+    }
+    case 'charge.failed': {
+      // cancel order because charge failed
+      //await orderCancel(prisma, order.orderid);
+      break;
+    }
   }
 };
 
@@ -81,9 +94,9 @@ export const orderFulfillment = async (
     contactid: number,
     ordertotal: number,
     eventInstanceQueries: any[],
-    sessionID: string, //reader_id when payment reader purchase
+    sessionID?: string, //reader_id when payment reader purchase
     discount?: number,
-    paymentIntet?: string //only needed this early for reader purchase
+    paymentIntent?: string //only needed this early for reader purchase
 ) => {
   const result = await prisma.$transaction([
     prisma.orders.create({
@@ -93,10 +106,10 @@ export const orderFulfillment = async (
         contactid_fk: contactid,
         ordertotal,
         discountid_fk: discount,
+        payment_intent: paymentIntent,
         orderitems: {
           create: orderItems,
         },
-        payment_intent: paymentIntet
       },
     }),
     ...eventInstanceQueries,
@@ -203,3 +216,11 @@ const getOrderDateAndTime = () => {
 
   return {orderdate, ordertime};
 };
+
+export const discoverReaders = async () => {
+  //const discoverResult = await stripe.terminal.readers.discoverReaders({simulated: true});
+  const discoverResult = await stripe.terminal.readers.list();
+
+  return discoverResult;
+}
+
