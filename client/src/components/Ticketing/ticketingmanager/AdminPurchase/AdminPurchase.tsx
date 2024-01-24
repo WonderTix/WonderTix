@@ -38,8 +38,6 @@ const AdminPurchase = () => {
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
 
-  // const [readerData, setReaderData] = useState<ReaderRow[]>([]);
-
   const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
 
@@ -356,9 +354,7 @@ const AdminPurchase = () => {
 
         const readerID = selectedReader;
         console.log(readerID);
-        // const readerID = 'tmr_FaJp6QTEN8Mhfi'; // hardcode
-
-        fetch( // create session and put order in database
+        fetch( // create intent and put order in database
         process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
         {
           credentials: 'include',
@@ -379,8 +375,14 @@ const AdminPurchase = () => {
             } else {
               console.log('payment failed!');
             }
+          }).catch((error) => {
+            console.log(error);
           });
+        }).catch((error) => {
+          console.log(error);
         });
+      }).catch((error) => {
+        console.log(error);
       });
     } else {
       navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
@@ -539,9 +541,7 @@ const AdminPurchase = () => {
   ];
 
   const reader_handleChange = (event) => {
-    console.log(event.id);
-    setSelectedReader(event.id);
-    console.log(selectedReader);
+    setSelectedReader(event.target.value);
   };
 
   useEffect(() => {
@@ -617,11 +617,11 @@ const AdminPurchase = () => {
       try {
         const response = await fetch(process.env.REACT_APP_API_2_URL + '/order/readers');
         const readers = await response.json();
-        console.log(readers);
         setReaderList(readers.data);
       } catch (error) {
         console.error(error.message);
         setErrMsg(error.message);
+        setDialog(true);
         setIsReadersLoading(false);
       }
     };
@@ -630,7 +630,7 @@ const AdminPurchase = () => {
 
   useEffect(() => {
     if (readerList.length > 0) {
-      reader_handleChange(readerList[0]);
+      setSelectedReader(readerList[0].id); // Default to first reader found
     }
   }, [readerList]);
 
@@ -671,7 +671,7 @@ const AdminPurchase = () => {
                 Proceed to Checkout
               </button>
             </div>
-            <div className="App">
+            <div className="reader-selector">
               <h1>Select a reader</h1>
               <select value={selectedReader} onChange={reader_handleChange}>
                 {readerList.map((reader) => (
