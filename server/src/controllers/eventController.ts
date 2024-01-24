@@ -173,9 +173,9 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         paymentIntentID
     );
     
-    const status = await checkPaymentStatus(paymentIntentID)
+    const checkPayment = await checkPaymentStatus(paymentIntentID)
 
-    res.json({status: status});
+    res.json({status: checkPayment.status});
   } catch (error) {
     console.error(error);
     //if (orderID) await orderCancel(prisma, orderID); I think we have to be more careful with order cancellations
