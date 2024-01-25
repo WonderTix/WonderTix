@@ -28,7 +28,6 @@ async function seedEventInstances(prisma: PrismaClient) {
       availableseats: item.totalseats ?? 100,
       purchaseuri: item.purchaseuri,
       ispreview: item.ispreview,
-      defaulttickettype: item.defaulttickettype,
     }));
 
     await prisma.eventinstances.createMany({

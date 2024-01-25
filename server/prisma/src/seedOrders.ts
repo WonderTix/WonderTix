@@ -21,12 +21,9 @@ async function seedOrders(prisma: PrismaClient) {
 
     const preparedData = data.map((item) => ({
       contactid_fk: item.contactid_fk,
-      orderdate: item.orderdate,
-      ordertime: parseTime(item.ordertime),
+      orderdateandtime: new Date(),
       discountid_fk: item.discountid_fk,
       payment_intent: item.payment_intent,
-      refund_intent: item.refund_intent,
-      ordertotal: parseFloat(item.ordertotal.replace('$', '')),
     }));
 
     await prisma.orders.createMany({

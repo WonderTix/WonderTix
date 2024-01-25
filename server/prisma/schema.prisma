@@ -9,24 +9,23 @@ datasource db {
 
 /// customer information
 model contacts {
-  contactid     Int         @id @default(autoincrement())
-  firstname     String?     @db.VarChar(255)
-  lastname      String?     @db.VarChar(255)
-  email         String?     @unique @db.VarChar(100)
-  address       String?     @db.VarChar(255)
-  phone         String?     @db.VarChar(15)
-  donorbadge    Boolean?    @default(false)
-  seatingaccom  String?     @db.VarChar(255)
-  vip           Boolean?    @default(false)
-  volunteerlist Boolean?    @default(false)
-  newsletter    Boolean?    @default(false)
-  donations     donations[]
+  contactid     Int      @id @default(autoincrement())
+  firstname     String?  @db.VarChar(255)
+  lastname      String?  @db.VarChar(255)
+  email         String?  @unique @db.VarChar(100)
+  address       String?  @db.VarChar(255)
+  city          String?  @db.VarChar(255)
+  state         String?  @db.VarChar(255)
+  country       String?  @db.VarChar(255)
+  postalcode    String?  @db.VarChar(255)
+  phone         String?  @db.VarChar(15)
+  seatingaccom  String?  @db.VarChar(255)
+  donorbadge    Boolean? @default(false)
+  vip           Boolean? @default(false)
+  volunteerlist Boolean? @default(false)
+  newsletter    Boolean? @default(false)
+  createddate   DateTime @default(now()) @db.Timestamptz(3)
   orders        orders[]
-  city          String?     @db.VarChar(255)
-  state         String?     @db.VarChar(255)
-  country       String?     @db.VarChar(255)
-  postalcode    String?     @db.VarChar(255)
-  createddate   DateTime    @default(now()) @db.Timestamptz(3)
 }
 
 /// date is used to store information about specific dates to simplify queries
@@ -91,18 +90,17 @@ model discounts {
 /// donations can be one time or recurring, stored in the frequency field
 /// payment_intent and refund_intent are stripe payment intent ids
 model donations {
-  donationid     Int       @id @default(autoincrement())
-  contactid_fk   Int?
-  isanonymous    Boolean?  @default(false)
-  amount         Decimal?  @db.Money
-  donorname      String?   @db.VarChar(255)
-  frequency      freq?
-  comments       String?   @db.VarChar(255)
-  payment_intent String?   @db.VarChar(255)
-  refund_intent  String?   @db.VarChar(255)
-  donationdate   Int?
-  date           date?     @relation(fields: [donationdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
-  contacts       contacts? @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "donations_donoid_fkey")
+  donationid  Int      @id @default(autoincrement())
+  orderid_fk  Int
+  refundid_fk Int?
+  anonymous   Boolean  @default(false)
+  amount      Decimal  @db.Money
+  frequency   freq
+  comments    String?  @db.VarChar(255)
+  order       orders   @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  refund      refunds? @relation(fields: [refundid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  date        date?    @relation(fields: [dateDateid], references: [dateid])
+  dateDateid  Int?
 }
 
 /// an event instance is a specific showing of an event
@@ -119,12 +117,9 @@ model eventinstances {
   detail             String?              @db.VarChar(255)
   purchaseuri        String?              @db.VarChar(255)
   ispreview          Boolean              @default(false)
-  defaulttickettype  Int?
   deletedat          DateTime?
-  tickettype         tickettype?          @relation(fields: [defaulttickettype], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
   date               date                 @relation(fields: [eventdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
-  events             events               @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction, map: "eventinstances_eventid_fkey")
-  eventtickets       eventtickets[]
+  event              events               @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction, map: "eventinstances_eventid_fkey")
   ticketrestrictions ticketrestrictions[]
 }
 
@@ -134,61 +129,61 @@ model events {
   eventid              Int              @id @default(autoincrement())
   seasonid_fk          Int?
   eventname            String           @db.VarChar(255)
-  eventdescription     String?          @db.VarChar(255)
-  active               Boolean?
-  seasonticketeligible Boolean?
+  eventdescription     String           @default("") @db.VarChar(255)
+  active               Boolean          @default(true)
+  seasonticketeligible Boolean          @default(true)
   imageurl             String?          @db.VarChar(255)
   deletedat            DateTime?
   eventinstances       eventinstances[]
   seasons              seasons?         @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
-  seasontickets        seasontickets[]
 }
 
-/// event tickets is a ticket that can be purchased for an event instance
-/// a ticket is redeemed when it is used to enter an event instance
-/// tickets can be donated back to wondertix or refunded
-model eventtickets {
-  eventticketid          Int                 @id(map: "tickets_pkey") @default(autoincrement())
-  eventinstanceid_fk     Int
-  ticketrestrictionid_fk Int?
-  singleticketid_fk      Int?                @unique
-  redeemed               Boolean?            @default(false)
-  redeemed_ts            DateTime?           @db.Timetz(6)
-  donated                Boolean?            @default(false)
-  ticketrestrictions     ticketrestrictions? @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Cascade, onUpdate: Cascade)
-  eventinstances         eventinstances      @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction, map: "tickets_eventinstanceid_fkey")
-  singleticket           singletickets?      @relation(fields: [singleticketid_fk], references: [singleticketid], onDelete: SetNull, onUpdate: Cascade)
-  seasontickets          seasontickets[]
+model order_ticketitems {
+  orderid_fk      Int
+  ticketitemid_fk Int         @id @unique
+  refundid_fk     Int?
+  price           Decimal
+  refund          refunds?    @relation(fields: [refundid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  order           orders      @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  ticketitem      ticketitems @relation(fields: [ticketitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
 }
 
-/// a line item in a customers order
-/// the price is the price of the item at the time of purchase before any discounts are applied
-model orderitems {
-  orderitemid   Int             @id @default(autoincrement())
-  orderid_fk    Int
-  price         Decimal?        @db.Money
-  refunded      Boolean         @default(false)
-  orders        orders          @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: NoAction, map: "orderitems_orderid_fkey")
-  seasontickets seasontickets[]
-  singletickets singletickets[]
+/// supertable for sub ticket items tables (subscription, order, and exchange)
+model ticketitems {
+  id                     Int                @id @default(autoincrement())
+  ticketrestrictionid_fk Int
+  donated                Boolean            @default(false)
+  redeemed               DateTime?          @db.Timestamp(3)
+  ticketrestriction      ticketrestrictions @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Restrict, onUpdate: Cascade)
+  order_ticketitem       order_ticketitems?
 }
 
 /// a customers order
 /// refund and payment intents are the uuids from stripe when a refund or payment is made
 model orders {
-  orderid           Int          @id @default(autoincrement())
+  orderid           Int                 @id @default(autoincrement())
+  orderdateandtime  DateTime            @default(now()) @db.Timestamp(3)
   contactid_fk      Int
-  orderdate         Int
-  ordertime         DateTime?    @db.Timetz(6)
   discountid_fk     Int?
-  payment_intent    String?      @db.VarChar(255)
-  checkout_sessions String?      @db.VarChar(255)
-  refund_intent     String?      @db.VarChar(255)
-  ordertotal        Decimal?     @db.Money
-  orderitems        orderitems[]
-  contacts          contacts     @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "orders_contactid_fkey")
-  discounts         discounts?   @relation(fields: [discountid_fk], references: [discountid], onDelete: NoAction, onUpdate: NoAction, map: "orders_discountid_fkey")
-  date              date         @relation(fields: [orderdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  payment_intent    String?             @db.VarChar(255)
+  checkout_sessions String?             @db.VarChar(255)
+  contacts          contacts            @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  discounts         discounts?          @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
+  donations         donations[]
+  refunds           refunds[]
+  order_ticketitems order_ticketitems[]
+  date              date?               @relation(fields: [dateDateid], references: [dateid])
+  dateDateid        Int?
+}
+
+model refunds {
+  id                Int                 @id @default(autoincrement())
+  orderid_fk        Int
+  refund_intent     String
+  refunddateandtime DateTime            @default(now()) @db.Timestamp()
+  order             orders              @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
+  donations         donations[]
+  order_ticketitems order_ticketitems[]
 }
 
 /// provides a way to store reports
@@ -206,35 +201,10 @@ model seasons {
   enddate                       Int
   imageurl                      String?                        @db.VarChar(255)
   events                        events[]
+  deletedat                     DateTime?
   date_seasons_enddateTodate    date                           @relation("seasons_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   date_seasons_startdateTodate  date                           @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   seasontickettypepricedefaults seasontickettypepricedefault[]
-}
-
-/// a season ticket is a ticket that is not part of a bulk package of tickets during a season
-/// season tickets may be sold before the event is scheduled so the eventid_fk is nullable
-/// tickets can be swapped for another event ticket
-/// when swapped the old season ticket is marked and the old event ticket is marked as not purcahsed
-/// a new season ticket is created for the new event ticket and the orderitem is updated to point to the new season ticket
-model seasontickets {
-  seasonticketid        Int              @id @default(autoincrement())
-  orderitemid_fk        Int
-  eventticketid_fk      Int?
-  eventid_fk            Int
-  seasontickettypeid_fk Int
-  ticketwasswapped      Boolean?         @default(false)
-  events                events           @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction)
-  eventtickets          eventtickets?    @relation(fields: [eventticketid_fk], references: [eventticketid], onDelete: NoAction, onUpdate: NoAction)
-  orderitems            orderitems       @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: NoAction, onUpdate: NoAction)
-  seasontickettype      seasontickettype @relation(fields: [seasontickettypeid_fk], references: [seasontickettypeid], onDelete: NoAction, onUpdate: NoAction)
-}
-
-/// ticket types for season tickets
-model seasontickettype {
-  seasontickettypeid Int             @id @default(autoincrement())
-  description        String          @db.VarChar(100)
-  price              Decimal         @db.Money
-  seasontickets      seasontickets[]
 }
 
 /// price of ticket type for all events in a given season
@@ -249,18 +219,6 @@ model seasontickettypepricedefault {
   ticketrestrictions ticketrestrictions[]
 
   @@unique([seasonid_fk, tickettypeid_fk])
-}
-
-/// a single ticket is a purchased event instance ticket
-/// a single ticket can be swapped for another event instance ticket
-/// when swapped, the original single ticket is marked as swapped,
-/// the old event ticket is marked as not purchased and a new single ticket is created with the old order item id and new event ticket id
-model singletickets {
-  singleticketid   Int           @id @default(autoincrement())
-  orderitemid_fk   Int
-  ticketwasswapped Boolean?      @default(false)
-  orderitems       orderitems    @relation(fields: [orderitemid_fk], references: [orderitemid], onDelete: Cascade, onUpdate: NoAction)
-  eventticket      eventtickets?
 }
 
 /// used to create and assign tasks such as a todo-list, memo, investigate and issue, etc.
@@ -308,10 +266,11 @@ model ticketrestrictions {
   price                             Decimal                       @default(0) @db.Money
   concessionprice                   Decimal                       @default(0) @db.Money
   seasontickettypepricedefaultid_fk Int?
-  eventinstances                    eventinstances                @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction)
+  deletedat                         DateTime?                     @db.Timestamp(3)
+  eventinstance                     eventinstances                @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction)
   tickettype                        tickettype                    @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
   seasontickettypepricedefault      seasontickettypepricedefault? @relation(fields: [seasontickettypepricedefaultid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  eventtickets                      eventtickets[]
+  ticketitems                       ticketitems[]
 }
 
 /// types of tickets that can be assigned to an event
@@ -322,7 +281,6 @@ model tickettype {
   concessions                   Decimal                        @db.Money
   deprecated                    Boolean?                       @default(false)
   discounts                     discounts[]
-  eventinstances                eventinstances[]
   ticketrestrictions            ticketrestrictions[]
   seasontickettypepricedefaults seasontickettypepricedefault[]
 }

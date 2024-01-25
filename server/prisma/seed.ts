@@ -46,16 +46,12 @@ async function main() {
       await importDates(prisma);
       await importUsers(prisma);
       await importContacts(prisma);
-      await importDonations(prisma);
       await importSeasons(prisma);
       await importDiscounts(prisma);
       await importTicketTypes(prisma);
       await importEvents(prisma);
       await importEventInstances(prisma);
       await importTicketRestrictions(prisma);
-      await importOrders(prisma);
-      await importOrderItems(prisma);
-      await importSeasonTicketTypes(prisma);
 
       // PPH SEEDING HERE
       await importPPHAccounts(prisma);

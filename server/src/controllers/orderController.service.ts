@@ -1,9 +1,13 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {freq, orderitems, orders, singletickets} from '@prisma/client';
+import {
+  orders,
+  ticketitems,
+  donations,
+  ticketrestrictions,
+  // eslint-disable-next-line camelcase
+  order_ticketitems,
+} from '@prisma/client';
 
-interface LoadedOrderItem extends orderitems {
-  singletickets: singletickets[],
-}
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -35,69 +39,27 @@ export const ticketingWebhook = async (
   }
 };
 
-
-export const donationCancel = async (
-    prisma: ExtendedPrismaClient,
-    paymentIntent: string,
-    refundIntent: string,
-) => {
-  const result = await prisma.donations.updateMany({
-    where: {
-      payment_intent: paymentIntent,
-    },
-    data: {
-      refund_intent: refundIntent,
-    },
-  });
-  return result.count;
-};
-
-export const createDonationRecord = async (
-    prisma: ExtendedPrismaClient,
-    paymentIntent: string,
-    donationAmount: number,
-    customerID: number,
-    userComments?: string,
-    anonymous?: boolean,
-    frequency?: freq,
-) => {
-  const contact = await prisma.contacts.findUnique({where: {contactid: +customerID}});
-  if (!contact) {
-    throw new Error('Contact does not exist');
-  }
-  await prisma.donations.create({
-    data: {
-      contactid_fk: contact.contactid,
-      isanonymous: anonymous ?? false,
-      amount: donationAmount,
-      donorname: `${contact.firstname}  ${contact.lastname}`,
-      frequency: frequency ?? 'one_time',
-      payment_intent: paymentIntent,
-      donationdate: getOrderDateAndTime().orderdate,
-      ...(userComments && {comments: userComments}),
-    }});
-};
-
 export const orderFulfillment = async (
     prisma: ExtendedPrismaClient,
-    orderItems: any[],
     contactid: number,
-    ordertotal: number,
     eventInstanceQueries: any[],
-    sessionID: string,
+    checkoutSession: string,
+    orderItems: {
+        orderTicketItems?: any[],
+        donations?: any[],
+    },
     discount?: number,
 ) => {
+  // will later include subscription items
+  const {orderTicketItems, donations} = orderItems;
   const result = await prisma.$transaction([
     prisma.orders.create({
       data: {
-        ...getOrderDateAndTime(),
-        checkout_sessions: sessionID,
         contactid_fk: contactid,
-        ordertotal,
+        checkout_sessions: checkoutSession,
         discountid_fk: discount,
-        orderitems: {
-          create: orderItems,
-        },
+        ...(orderTicketItems && {order_ticketitems: {create: orderTicketItems}}),
+        ...(donations && {donations: {create: donations}}),
       },
     }),
     ...eventInstanceQueries,
@@ -110,28 +72,20 @@ export const updateCanceledOrder = async (
     prisma: ExtendedPrismaClient,
     order: orders,
 ) => {
+  if (order.payment_intent) {
+    throw new Error('Can not delete order that has been processed Stripe, order must be refunded');
+  }
+
   const deletedOrder = await prisma.orders.delete({
     where: {
       orderid: order.orderid,
     },
     include: {
-      orderitems: {
+      order_ticketitems: {
         include: {
-          singletickets: {
+          ticketitem: {
             include: {
-              eventticket: {
-                include: {
-                  eventinstances: {
-                    include: {
-                      eventtickets: {
-                        where: {
-                          singleticketid_fk: {not: null},
-                        },
-                      },
-                    },
-                  },
-                },
-              },
+              ticketrestriction: true,
             },
           },
         },
@@ -139,13 +93,10 @@ export const updateCanceledOrder = async (
     },
   });
 
-  const eventInstances = new Set(deletedOrder
-      .orderitems
-      .map((item) => item.singletickets)
-      .flat(1)
-      .filter((ticket) => ticket.eventticket)
-      .map((ticket) => ticket.eventticket?.eventinstances.eventinstanceid));
-
+  const eventInstances = new Set(
+      deletedOrder
+          .order_ticketitems
+          .map((item) => item.ticketitem.ticketrestriction.eventinstanceid_fk));
   await updateAvailableSeats(
       prisma,
       // @ts-ignore
@@ -153,42 +104,49 @@ export const updateCanceledOrder = async (
   );
 };
 
-export const updateRefundedOrder = async (
+interface LoadedOrder extends orders {
+    order_ticketitems: LoadedOrderTicketItem[];
+    donations: donations[];
+}
+
+// eslint-disable-next-line camelcase
+interface LoadedOrderTicketItem extends order_ticketitems {
+    ticketitem: LoadedTicketItem;
+}
+
+interface LoadedTicketItem extends ticketitems {
+    ticketrestriction: ticketrestrictions;
+}
+
+
+export const createRefundedOrder = async (
     prisma: ExtendedPrismaClient,
     order: orders,
+    orderTicketItems: LoadedOrderTicketItem[],
+    donations: donations[],
     refundIntent: string,
 ) => {
-  const updateOrder = await prisma.orders.update({
-    where: {
-      orderid: order.orderid,
-    },
-    data: {
-      refund_intent: refundIntent,
-    },
-    include: {
-      orderitems: {
-        include: {
-          singletickets: {
-            include: {
-              eventticket: true,
-            },
-          },
-        },
-      },
-    },
+  const eventInstances = new Set<number>();
+  const ticketRefundItems = orderTicketItems.map((item) => {
+    eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
+    return {
+      ticketitemid_fk: item.ticketitemid_fk,
+    };
   });
 
-  const eventInstances = new Set(updateOrder
-      .orderitems
-      .map((item) => item.singletickets)
-      .flat(1)
-      .filter((ticket) => ticket.eventticket)
-      .map((ticket) => ticket.eventticket?.eventinstanceid_fk));
+  const donationRefundItems = donations.map((item) => ({
+    donationid: item.donationid,
+  }));
 
-  await updateRefundedOrderItems(
-      prisma,
-      updateOrder.orderitems,
-  );
+
+  prisma.refunds.create({
+    data: {
+      orderid_fk: order.orderid,
+      refund_intent: refundIntent,
+      ...(donationRefundItems.length && {donations: {connect: donationRefundItems}}),
+      ...(ticketRefundItems.length && {order_ticketitems: {connect: ticketRefundItems}}),
+    },
+  });
 
   await updateAvailableSeats(
       prisma,
@@ -206,9 +164,15 @@ const updateAvailableSeats = async (
       eventinstanceid: {in: instanceIds},
     },
     include: {
-      eventtickets: {
-        where: {
-          singleticketid_fk: {not: null},
+      ticketrestrictions: {
+        include: {
+          ticketitems: {
+            include: {
+              order_ticketitem: {
+                where: {refundid_fk: null},
+              },
+            },
+          },
         },
       },
     },
@@ -219,47 +183,10 @@ const updateAvailableSeats = async (
       eventinstanceid: instance.eventinstanceid,
     },
     data: {
-      availableseats: instance.totalseats - instance.eventtickets.length,
+      availableseats: instance.totalseats - instance.ticketrestrictions.reduce<number>((acc, res) => acc+res.ticketitems.length, 0),
     },
   })),
   );
 };
 
-const updateRefundedOrderItems = async (
-    prisma: ExtendedPrismaClient,
-    orderItems: LoadedOrderItem[],
-) => {
-  await prisma.orderitems.updateMany({
-    where: {orderitemid: {in: orderItems.map((item) => item.orderitemid)}},
-    data: {
-      refunded: true,
-    },
-  });
 
-  const singleTicketsToUpdate = orderItems
-      .map((item) => item.singletickets)
-      .flat(1)
-      .filter((ticket) => !ticket.ticketwasswapped)
-      .map((ticket) => ticket.singleticketid);
-
-  await prisma.eventtickets.updateMany({
-    where: {
-      singleticketid_fk: {in: singleTicketsToUpdate},
-    },
-    data: {
-      singleticketid_fk: null,
-    },
-  });
-};
-
-const getOrderDateAndTime = () => {
-  const date = new Date();
-
-  const formatDatePart = (part: number) => part.toString().padStart(2, '0');
-
-  const orderdate = parseInt(`${date.getFullYear()}${formatDatePart(date.getMonth() + 1)}${formatDatePart(date.getDate())}`, 10);
-
-  const ordertime = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString();
-
-  return {orderdate, ordertime};
-};
