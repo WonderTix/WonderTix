@@ -82,14 +82,6 @@ export const testPayReader = async (
   return pay;
 }
 
-// temporary, this should be webhook
-export const checkPaymentStatus = async (
-  paymentIntentID: string
-) => {
-  const checkPayment = await stripe.paymentIntents.retrieve(paymentIntentID);
-  return checkPayment;
-}
-
 export const createStripeCoupon = async (discount: any) => {
   const stripeCoupon = await stripe.coupons.create({
     [discount.amount ? 'amount_off' : 'percent_off']: discount.amount ?

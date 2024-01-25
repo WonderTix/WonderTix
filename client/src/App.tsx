@@ -43,6 +43,7 @@ import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurc
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/Event/components/EventProvider';
 import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
+import ReaderPurchasePage from './components/Ticketing/ticketingmanager/AdminPurchase/ReaderPurchasePage';
 
 const App = () => {
   return (
@@ -180,6 +181,10 @@ const App = () => {
         <Route
           path='/ticketing/refund'
           element={<ProtectedRoute component={RefundOrdersMain} />}
+        />
+        <Route
+          path='ticketing/purchaseticket/:id'
+          element={<ProtectedRoute component={ReaderPurchasePage}/>}
         />
         <Route path='*' element={<PageNotFound />} />
       </Routes>

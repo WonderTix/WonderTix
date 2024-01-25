@@ -355,10 +355,12 @@ const AdminPurchase = () => {
           }
 
           response.json().then((result) => {
-            if (result.status == 'succeeded') {
-              console.log('payment succeeded!');
+            if (result.status === 'payment sent') {
+              console.log('payment sent!');
+              navigate('/ticketing/purchaseticket/' + result.id);
             } else {
               console.log('payment failed!');
+              console.log(result);
             }
           });
         });

@@ -1,5 +1,6 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {freq} from '@prisma/client';
+import WebSocket from 'ws';
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -32,6 +33,12 @@ export const ticketingWebhook = async (
   }
 };
 
+export const readerWebhook = async (
+  paymentIntentID: string
+) => {
+  const ws = new WebSocket('ws://localhost:8000/wss/reader/' + paymentIntentID);
+  ws.send('payment complete');
+}
 
 export const donationCancel = async (
     prisma: ExtendedPrismaClient,

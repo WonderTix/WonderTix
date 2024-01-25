@@ -7,7 +7,6 @@ import {
   createStripePaymentIntent,
   requestStripeReaderPayment,
   testPayReader,
-  checkPaymentStatus,
   getOrderItems,
   LineItem,
   updateContact,
@@ -156,9 +155,6 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       )
       
       const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
-      
-      // TESTING BELOW
-      const pay = await testPayReader(readerID);
     //}
 
     // not adding to prisma at this point
@@ -172,8 +168,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         undefined,
         paymentIntentID
     );
-    const checkPayment = await checkPaymentStatus(paymentIntentID); // probably in webhook instead
-    res.json({status: checkPayment.status});
+    res.json({status: 'payment sent', id: paymentIntentID});
   } catch (error) {
     console.error(error);
     //if (orderID) await orderCancel(prisma, orderID); I think we have to be more careful with order cancellations

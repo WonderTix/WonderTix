@@ -2,7 +2,7 @@ import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {Prisma} from '@prisma/client';
-import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook} from './orderController.service';
+import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook, readerWebhook} from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -14,6 +14,7 @@ orderController.post(
     '/webhook',
     express.raw({type: 'application/json'}),
     async (req: Request, res: Response) => {
+      console.log("here");
       const sig = req.headers['stripe-signature'];
       try {
         const event = await stripe.webhooks.constructEvent(
@@ -25,6 +26,12 @@ orderController.post(
         const object = event.data.object;
         const metaData = object.metadata;
 
+        // Handle in-person payments
+        if(event.type === 'terminal.reader.action_succeeded') {
+          await readerWebhook(object.action.process_payment_intent.payment_intent);
+        }
+        
+        // Handle online payments
         if (metaData.sessionType === '__ticketing') {
           await ticketingWebhook(
               prisma,

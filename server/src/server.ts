@@ -16,6 +16,7 @@ import path from 'path';
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
+import {WebSocketServer} from 'ws';
 import 'reflect-metadata';
 import {accountsRouter} from './api/accounts/accounts.router';
 import {contactsRouter} from './api/contacts/contacts.router';
@@ -650,6 +651,9 @@ const createServer = async () => {
   } else {
     server = http.createServer(app);
   }
+
+  const wss = new WebSocketServer({server: server});
+  console.log(wss);
 
   return server;
 };
