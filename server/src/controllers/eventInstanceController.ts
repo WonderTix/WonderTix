@@ -550,7 +550,14 @@ eventInstanceController.get('/doorlist/:id',
           eventName: eventInstance.event.eventname,
           eventDate: eventInstance.eventdate,
           eventTime: eventInstance.eventtime,
-          doorlist: Array.from(doorlist).map(([key, value]) => ({...value, id: `${key}-${eventInstance.eventinstanceid}`})),
+          doorlist: Array
+              .from(doorlist)
+              .map(([key, value]) => (
+                {...value,
+                  num_tickets: Object.keys(value.num_tickets).map((key) => `${key}-${value.num_tickets[key]}`).join(','),
+                  id: `${key}-${eventInstance.eventinstanceid}`,
+                }),
+              ),
         });
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {

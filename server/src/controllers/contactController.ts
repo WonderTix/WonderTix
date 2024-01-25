@@ -338,34 +338,55 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 
     const {orders, ...remainderOfContact} = contact;
     const formattedDonations: any[] = [];
-    const flattenedOrders = contact.orders.map((order) => {
-      let ordertotal = 0;
-      const ticketItems = order.order_ticketitems.map((ticket) => {
-        ordertotal+=Number(ticket.price);
-        return {
-          price: ticket.price,
-          refunded: ticket.refundid_fk,
-          redeemed: ticket.ticketitem.redeemed,
-          donated: ticket.ticketitem.donated,
-          description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
-          eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
-          eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
-          eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
-          detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
-          seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
-          tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
-        };
-      });
+    const flattenedOrders : any[] = [];
+    contact.orders.forEach((order) => {
+      const orderItemsMap = new Map<string, any>();
+      const {ordertotal, refunded} = order
+          .order_ticketitems
+          .reduce<{ordertotal: number, refunded: boolean}>((acc, ticket) => {
+            const key = `${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
+            const item = orderItemsMap.get(key);
+            if (item) {
+              item['quantity'] = item['quantity']+1;
+            } else {
+              orderItemsMap.set(key,
+                  {
+                    price: ticket.price,
+                    refunded: ticket.refundid_fk,
+                    redeemed: ticket.ticketitem.redeemed,
+                    donated: ticket.ticketitem.donated,
+                    description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+                    eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
+                    eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
+                    eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+                    detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
+                    seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
+                    tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
+                    quantity: 1,
+                  });
+            }
+            return {
+              ordertotal: acc.ordertotal+Number(ticket.price),
+              refunded: acc.refunded && ticket.refundid_fk !== null,
+            };
+          }, {ordertotal: 0, refunded: false});
 
-      formattedDonations.push(...order.donations);
+      formattedDonations.push(...order.donations.map((donation) => ({
+        ...donation,
+        refunded: donation.refundid_fk !== null,
+        donationdate: order.orderdateandtime,
+      })));
 
-      return {
+      if(!ordertotal) return;
+
+      flattenedOrders.push({
         orderid: order.orderid,
         orderdateandtime: order.orderdateandtime,
         ordertotal,
-        ticketItems,
-        donations: order.donations,
-      };
+        refunded,
+        orderitems: [...orderItemsMap.values()],
+        donationTotal: order.donations.reduce<number>((acc, donation) => acc+Number(donation.amount), 0),
+      });
     });
 
     const toReturn = {

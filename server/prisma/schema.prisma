@@ -54,9 +54,7 @@ model date {
   weekend                             Boolean
   discounts_discounts_enddateTodate   discounts[]      @relation("discounts_enddateTodate")
   discounts_discounts_startdateTodate discounts[]      @relation("discounts_startdateTodate")
-  donations                           donations[]
   eventinstances                      eventinstances[]
-  orders                              orders[]
   seasons_seasons_enddateTodate       seasons[]        @relation("seasons_enddateTodate")
   seasons_seasons_startdateTodate     seasons[]        @relation("seasons_startdateTodate")
   task_task_dateassignedTodate        task[]           @relation("task_dateassignedTodate")
@@ -99,8 +97,6 @@ model donations {
   comments    String?  @db.VarChar(255)
   order       orders   @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
   refund      refunds? @relation(fields: [refundid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  date        date?    @relation(fields: [dateDateid], references: [dateid])
-  dateDateid  Int?
 }
 
 /// an event instance is a specific showing of an event
@@ -172,8 +168,6 @@ model orders {
   donations         donations[]
   refunds           refunds[]
   order_ticketitems order_ticketitems[]
-  date              date?               @relation(fields: [dateDateid], references: [dateid])
-  dateDateid        Int?
 }
 
 model refunds {

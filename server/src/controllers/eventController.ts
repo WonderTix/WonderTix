@@ -1124,12 +1124,12 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         },
         order_ticketitem: {
           order: {
-            contactid_fk: contactId,
+            contactid_fk: +contactId,
           },
         },
       },
       data: {
-        redeemed: isCheckedIn? null: new Date(),
+        redeemed: isCheckedIn? new Date(): null,
       },
     });
 
