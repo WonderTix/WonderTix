@@ -19,7 +19,6 @@ export type Contact = {
   volunteerList: boolean;
   contactId?: number;
   orders?: any;
-  donations?: any;
   createdDate: string;
 };
 
@@ -44,7 +43,7 @@ export const emptyContact: Contact = {
 
 export const toReadableDonationFrequency = (key: string): string => {
   switch (key) {
-    case 'one-time':
+    case 'one_time':
       return 'One-time';
     case 'weekly':
       return 'Weekly';

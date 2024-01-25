@@ -10,11 +10,19 @@ interface ContactOrderProps {
   orderTime: string;
   refundIntent: string;
   orderItems: any[];
+  donation?: any;
 }
 
 const ContactOrder = (props: ContactOrderProps): ReactElement => {
-  const {orderId, orderTotal, orderDate, orderTime, refundIntent, orderItems} =
-    props;
+  const {
+    orderId,
+    orderTotal,
+    orderDate,
+    orderTime,
+    refundIntent,
+    orderItems,
+    donation,
+  } = props;
 
   const date = new Date(
     `${toDateStringFormat(orderDate)}T${orderTime.split('T')[1].slice(0, 8)}`,
@@ -55,9 +63,9 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
           </p>
         </article>
         <aside>
-          {orderItems.length === 0 && (
+          {orderItems.length === 0 && !donation && (
             <p className='text-center text-md mt-1 w-full text-zinc-400 font-medium'>
-              No order items
+              No order items or donation
             </p>
           )}
           {orderItems.map((item, index) => (
@@ -73,6 +81,12 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
               eventTime={item.eventtime}
             />
           ))}
+          {donation && (
+            <DonationOrderItem
+              amount={donation.amount}
+              refundIntent={donation.refund_intent}
+            />
+          )}
         </aside>
       </div>
       <footer>
@@ -126,6 +140,31 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
       <p className='text-xs'>
         {ticketType} • {format(time, 'MMM dd, yyyy')} • {format(time, 'h:mm a')}
         {detail && <span> ({detail})</span>}
+      </p>
+    </article>
+  );
+};
+
+interface DonationOrderItem {
+  amount: string;
+  refundIntent: string;
+}
+
+const DonationOrderItem = (props: DonationOrderItem): ReactElement => {
+  const {amount, refundIntent} = props;
+
+  return (
+    <article className='border border-zinc-300 px-4 py-3 rounded-xl mb-2'>
+      <p className='flex justify-between font-bold'>
+        <span>Donation</span>
+        <span className='flex items-center gap-2'>
+          {refundIntent && (
+            <span className='py-1 px-2 text-xs text-white bg-orange-500 shadow-sm rounded-md'>
+              REFUNDED
+            </span>
+          )}
+          {toDollarAmount(Number(amount))}
+        </span>
       </p>
     </article>
   );

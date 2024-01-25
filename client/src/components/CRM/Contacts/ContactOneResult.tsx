@@ -62,7 +62,6 @@ export const ContactOneResult = (): ReactElement => {
             volunteerList: res.data.volunteerlist,
             contactId: res.data.contactid,
             orders: res.data.orders,
-            donations: res.data.donations,
             createdDate: res.data.createddate,
           };
           setContact(contact);
@@ -127,22 +126,15 @@ export const ContactOneResult = (): ReactElement => {
                     orderTime={order.ordertime}
                     refundIntent={order.refund_intent}
                     orderItems={order.orderitems}
+                    donation={order.donation}
                   />
                 ))
               ))}
-            {tabValue === 1 &&
-              (contact.donations.length === 0 ? (
-                <p className='text-center text-zinc-400 font-medium mt-4'>
-                  No donations
-                </p>
-              ) : (
-                contact.donations.map((donation) => (
-                  <ContactDonation
-                    donation={donation}
-                    key={donation.donationid}
-                  />
-                ))
-              ))}
+            {tabValue === 1 && (
+              <p className='text-center text-zinc-400 font-medium mt-4'>
+                This tab is currently inactive
+              </p>
+            )}
           </div>
         </main>
       </div>
@@ -150,6 +142,7 @@ export const ContactOneResult = (): ReactElement => {
   }
 };
 
+// FIXME: No standalone donations yet
 export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
   const {donationid, donationdate, frequency, refund_intent, amount} = donation;
 

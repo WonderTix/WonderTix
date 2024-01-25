@@ -309,6 +309,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
             orderdate: true,
             ordertime: true,
             refund_intent: true,
+            donations: true,
             ordertotal: true,
             orderitems: {
               select: {
@@ -352,18 +353,6 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
             },
           },
         },
-        donations: {
-          orderBy: {
-            donationdate: 'desc',
-          },
-          select: {
-            donationid: true,
-            donationdate: true,
-            frequency: true,
-            refund_intent: true,
-            amount: true,
-          },
-        },
       },
     });
 
@@ -372,7 +361,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       return;
     }
 
-    const {orders, donations, ...remainderOfContact} = contact;
+    const {orders, ...remainderOfContact} = contact;
 
     const flattenedOrders = contact.orders.map((order) => {
       const orderItems = order.orderitems.map((item) => {
@@ -405,29 +394,29 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         };
       }).filter((item) => item !== null);
 
+      let formattedDonation = null;
+      if (order.donations) {
+        const {donationdate, ...restOfDonation} = order.donations;
+        formattedDonation = !donationdate ? null : {
+          donationdate: `${donationdate.toString().slice(0, 4)}-${donationdate.toString().slice(4, 6)}-${donationdate.toString().slice(6, 8)}`,
+          ...restOfDonation,
+        };
+      }
+
       return {
         orderid: order.orderid,
         orderdate: `${order.orderdate.toString().slice(0, 4)}-${order.orderdate.toString().slice(4, 6)}-${order.orderdate.toString().slice(6, 8)}`,
         ordertime: order.ordertime,
         refund_intent: order.refund_intent,
+        donation: formattedDonation,
         ordertotal: order.ordertotal,
         orderitems: orderItems,
-      };
-    });
-
-    const formattedDonations = donations.map((donation) => {
-      const {donationdate, ...restOfDonation} = donation;
-      if (!donationdate) return null;
-      return {
-        donationdate: `${donationdate.toString().slice(0, 4)}-${donationdate.toString().slice(4, 6)}-${donationdate.toString().slice(6, 8)}`,
-        ...restOfDonation,
       };
     });
 
     const toReturn = {
       ...remainderOfContact,
       orders: flattenedOrders,
-      donations: formattedDonations,
     };
 
     res.status(200).json(toReturn);
