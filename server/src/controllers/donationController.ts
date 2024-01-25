@@ -270,7 +270,6 @@ donationController.get('/search', async (req: Request, res: Response) => {
     comments,
     // paymentIntent,
     // refundIntent,
-    donationDate,
   } = req.query;
 
   try {

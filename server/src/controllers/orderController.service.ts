@@ -104,10 +104,6 @@ export const updateCanceledOrder = async (
   );
 };
 
-interface LoadedOrder extends orders {
-    order_ticketitems: LoadedOrderTicketItem[];
-    donations: donations[];
-}
 
 // eslint-disable-next-line camelcase
 interface LoadedOrderTicketItem extends order_ticketitems {

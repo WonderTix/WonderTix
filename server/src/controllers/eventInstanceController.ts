@@ -6,7 +6,6 @@ import {
   InvalidInputError,
   validateDateAndTime,
   updateShowing,
-  validateTicketRestrictionsOnUpdate,
 } from './eventInstanceController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {parseIntToDate} from '../api/db';
