@@ -54,6 +54,7 @@ export const createDonationRecord = async (
     paymentIntent: string,
     donationAmount: number,
     customerID: number,
+    orderId?: number,
     userComments?: string,
     anonymous?: boolean,
     frequency?: freq,
@@ -62,17 +63,21 @@ export const createDonationRecord = async (
   if (!contact) {
     throw new Error('Contact does not exist');
   }
-  await prisma.donations.create({
-    data: {
-      contactid_fk: contact.contactid,
-      isanonymous: anonymous ?? false,
-      amount: donationAmount,
-      donorname: `${contact.firstname}  ${contact.lastname}`,
-      frequency: frequency ?? 'one_time',
-      payment_intent: paymentIntent,
-      donationdate: getOrderDateAndTime().orderdate,
-      ...(userComments && {comments: userComments}),
-    }});
+  const result = await prisma.$transaction([
+    prisma.donations.create({
+      data: {
+        contactid_fk: contact.contactid,
+        orderid_fk: orderId,
+        isanonymous: anonymous ?? false,
+        amount: donationAmount,
+        donorname: `${contact.firstname}  ${contact.lastname}`,
+        frequency: frequency ?? 'one_time',
+        payment_intent: paymentIntent,
+        donationdate: getOrderDateAndTime().orderdate,
+        ...(userComments && {comments: userComments}),
+      }}),
+  ]);
+  return result[0].donationid;
 };
 
 export const orderFulfillment = async (

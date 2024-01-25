@@ -35,15 +35,34 @@ orderController.post(
         }
 
         if (event.type === 'checkout.session.completed' && !isNaN(metaData.donation) && +metaData.donation > 0) {
-          await createDonationRecord(
+          const order = await prisma.orders.findFirst({
+            where: {
+              payment_intent: object.payment_intent,
+            },
+            select: {
+              orderid: true,
+            },
+          });
+          const donationId = await createDonationRecord(
               prisma,
               object.payment_intent,
               metaData.donation,
               metaData.contactID,
+              order?.orderid,
               metaData.comments,
               metaData.anonymous,
               metaData.frequency,
           );
+          if (order) {
+            await prisma.orders.update({
+              where: {
+                orderid: order.orderid,
+              },
+              data: {
+                donationid_fk: donationId,
+              },
+            });
+          }
         }
         return res.send();
       } catch (error) {
@@ -92,6 +111,7 @@ orderController.post('/', async (req: Request, res: Response) => {
     const order = prisma.orders.create({
       data: {
         contactid_fk: req.body.contact,
+        donationid_fk: req.body.donation,
         orderdate: req.body.orderdate,
         ordertime: req.body.ordertime,
         discountid_fk: req.body.discount,
@@ -417,6 +437,7 @@ orderController.put('/:id', async (req: Request, res: Response) => {
       },
       data: {
         contactid_fk: req.body.contact,
+        donationid_fk: req.body.donation,
         orderdate: req.body.orderdate,
         ordertime: req.body.ordertime,
         discountid_fk: req.body.discount,

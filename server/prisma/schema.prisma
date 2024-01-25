@@ -93,6 +93,7 @@ model discounts {
 model donations {
   donationid     Int       @id @default(autoincrement())
   contactid_fk   Int?
+  orderid_fk     Int?      @unique
   isanonymous    Boolean?  @default(false)
   amount         Decimal?  @db.Money
   donorname      String?   @db.VarChar(255)
@@ -103,6 +104,7 @@ model donations {
   donationdate   Int?
   date           date?     @relation(fields: [donationdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   contacts       contacts? @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "donations_donoid_fkey")
+  orders         orders?
 }
 
 /// an event instance is a specific showing of an event
@@ -178,6 +180,7 @@ model orderitems {
 model orders {
   orderid           Int          @id @default(autoincrement())
   contactid_fk      Int
+  donationid_fk     Int?         @unique
   orderdate         Int
   ordertime         DateTime?    @db.Timetz(6)
   discountid_fk     Int?
@@ -187,6 +190,7 @@ model orders {
   ordertotal        Decimal?     @db.Money
   orderitems        orderitems[]
   contacts          contacts     @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "orders_contactid_fkey")
+  donations         donations?   @relation(fields: [donationid_fk], references: [donationid], onDelete: SetNull, onUpdate: NoAction, map: "orders_donationid_fkey")
   discounts         discounts?   @relation(fields: [discountid_fk], references: [discountid], onDelete: NoAction, onUpdate: NoAction, map: "orders_discountid_fkey")
   date              date         @relation(fields: [orderdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
 }

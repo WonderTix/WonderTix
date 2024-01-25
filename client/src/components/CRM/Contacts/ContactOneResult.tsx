@@ -10,6 +10,7 @@ import {LoadingScreen} from '../../Ticketing/mainpage/LoadingScreen';
 import {toDateStringFormat} from '../../Ticketing/ticketingmanager/Event/components/util/EventsUtil';
 import {toDollarAmount} from '../../../utils/arrays';
 import ContactCard from './ContactCard';
+import ContactOrder from './ContactOrder';
 import {Contact, toReadableDonationFrequency} from './contactUtils';
 
 /**
@@ -118,7 +119,15 @@ export const ContactOneResult = (): ReactElement => {
                 </p>
               ) : (
                 contact.orders.map((order) => (
-                  <ContactOrder order={order} key={order.orderid} />
+                  <ContactOrder
+                    key={order.orderid}
+                    orderId={order.orderid}
+                    orderTotal={order.ordertotal}
+                    orderDate={order.orderdate}
+                    orderTime={order.ordertime}
+                    refundIntent={order.refund_intent}
+                    orderItems={order.orderitems}
+                  />
                 ))
               ))}
             {tabValue === 1 &&
@@ -139,99 +148,6 @@ export const ContactOneResult = (): ReactElement => {
       </div>
     );
   }
-};
-
-export const ContactOrder = ({order}: {order: any}): ReactElement => {
-  const {orderdate, orderid, ordertime, ordertotal, refund_intent, orderitems} =
-    order;
-
-  const date = new Date(
-    `${toDateStringFormat(orderdate)}T${ordertime.split('T')[1].slice(0, 8)}`,
-  );
-
-  return (
-    <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
-      <header className='flex gap-2 items-start justify-between mb-4'>
-        <h2 className='text-2xl font-semibold'>Order {orderid}</h2>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          className='h-7 w-7'
-          fill='none'
-          viewBox='0 0 24 24'
-          stroke='currentColor'
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z'
-          />
-        </svg>
-      </header>
-      <div className='grid md:grid-cols-2'>
-        <article>
-          <p className='flex flex-row gap-3 text-lg w-full'>
-            <span className='font-semibold'>Order Date:</span>
-            <span>{format(date, 'MMM dd, yyyy')}</span>
-          </p>
-          <p className='flex flex-row gap-3 text-lg mt-1 w-full'>
-            <span className='font-semibold'>Order Time:</span>
-            <span>{format(date, 'h:mm a')}</span>
-          </p>
-          <p className='flex flex-row gap-3 text-lg my-1 w-full'>
-            <span className='font-semibold'>Refunded:</span>
-            <span>{refund_intent ? 'Yes' : 'No'}</span>
-          </p>
-        </article>
-        <aside>
-          {orderitems.length === 0 && (
-            <p className='text-center text-md mt-1 w-full text-zinc-400 font-medium'>
-              No order items
-            </p>
-          )}
-          {orderitems.map((item, index) => {
-            const eventDate = new Date(
-              `${toDateStringFormat(item.eventdate)}T${item.eventtime
-                .split('T')[1]
-                .slice(0, 8)}`,
-            );
-            return (
-              <article
-                key={index}
-                className='border border-zinc-300 px-4 pt-3 pb-4 rounded-xl mb-2'
-              >
-                <p className='flex justify-between'>
-                  <span className='font-bold'>
-                    {item.quantity} x {item.description}
-                    {item.seasonname && (
-                      <span className='font-normal italic'>
-                        {' '}
-                        - {item.seasonname}
-                      </span>
-                    )}
-                  </span>
-                  <span className='font-bold'>
-                    {toDollarAmount(Number(item.price))}
-                  </span>
-                </p>
-                <p className='text-xs'>
-                  {item.tickettype} • {format(eventDate, 'MMM dd, yyyy')} •{' '}
-                  {format(eventDate, 'h:mm a')}
-                  {item.detail && <span> ({item.detail})</span>}
-                </p>
-              </article>
-            );
-          })}
-        </aside>
-      </div>
-      <footer>
-        <p className='flex flex-row gap-3 text-xl mt-2 w-full'>
-          <span className='font-semibold'>Order Total:</span>
-          <span>{toDollarAmount(Number(ordertotal))}</span>
-        </p>
-      </footer>
-    </section>
-  );
 };
 
 export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
