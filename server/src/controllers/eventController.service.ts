@@ -4,7 +4,6 @@ import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
-
 export interface LineItem {
   price_data: {
     currency: string;
@@ -65,7 +64,6 @@ export const requestStripeReaderPayment = async (
   readerID: string,
   paymentIntentID: string
 ) => {
-  //const reader = await stripe.terminal.readers.retrieve(readerID);
   const requestPay = await stripe.terminal.readers.processPaymentIntent(
     readerID,
     {

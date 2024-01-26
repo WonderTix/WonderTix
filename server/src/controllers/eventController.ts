@@ -138,7 +138,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
  */
 
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {cartItems, readerID} = req.body;
+  const {cartItems, readerID, discount} = req.body;
   let orderID = 0;
   let paymentIntentID = "";
   let contactid = 1; //database value for anonymous
@@ -149,15 +149,15 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
       await getOrderItems(cartItems, prisma);
 
-    //if (orderTotal > 0) {
+    if (orderTotal > 0) {
       paymentIntentID = await createStripePaymentIntent(
         orderTotal * 100
       )
       
       const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
-    //}
-
-    // not adding to prisma at this point
+    }
+    
+    // add order to database with prisma
     orderID = await orderFulfillment(
         prisma,
         orderItems,
@@ -165,7 +165,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         orderTotal,
         eventInstanceQueries,
         undefined,
-        undefined,
+        undefined, // could put in discount but they don't seem to do this in normal checkout
         paymentIntentID
     );
     res.json({status: 'payment sent', id: paymentIntentID});
@@ -187,6 +187,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     res.status(500).json(error);
   }
 });
+
 
 /**
  * @swagger

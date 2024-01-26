@@ -16,7 +16,14 @@ import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import {format, parse} from 'date-fns';
 import {getAllTicketRestrictions} from './utils/adminApiRequests';
 import {useFetchToken} from '../Event/components/ShowingUtils';
-import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
+import {initialTicketTypeRestriction, EventRow, ReaderRow} from './utils/adminCommon';
+
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+
+import {
+  removeAllTicketsFromCart,
+  selectDiscount,
+} from '../ticketingSlice';
 
 import {loadStripe} from '@stripe/stripe-js';
 
@@ -30,16 +37,24 @@ const AdminPurchase = () => {
   const location = useLocation();
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
+
   const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
+
+  const [readerList, setReaderList] = useState([]);
+  const [selectedReader, setSelectedReader] = useState('Select Reader');
+
   const [eventListFull, setEventListFull] = useState([]);
   const [priceByRowId, setPriceByRowId] = useState({});
   const [isEventsLoading, setIsEventsLoading] = useState(true);
+  const [isReadersLoading, setIsReadersLoading] = useState(true);
   const [allTicketRestrictions, setAllTicketRestrictions] = useState([]);
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
   const {token} = useFetchToken();
+
+  const discount = useAppSelector(selectDiscount);
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
@@ -337,19 +352,19 @@ const AdminPurchase = () => {
       stripePromise.then((stripe) => {
         if (!stripe) return; // throw?
 
-        const readerID = 'tmr_Fapnge4nQejTzH'; // hardcode
-
-        fetch( // create session and put order in database
-          process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
-          {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({cartItems, readerID}),
+        const readerID = selectedReader;
+        console.log(readerID);
+        fetch( // create intent and put order in database
+        process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
+        {
+          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        ).then((response) => { // response should be payment status
+          body: JSON.stringify({cartItems, readerID, discount}),
+        },
+        ).then((response) => { // response should be payment intent ID
           if (!response.ok) {
             throw response;
           }
@@ -362,8 +377,14 @@ const AdminPurchase = () => {
               console.log('payment failed!');
               console.log(result);
             }
+          }).catch((error) => {
+            console.log(error);
           });
+        }).catch((error) => {
+          console.log(error);
         });
+      }).catch((error) => {
+        console.log(error);
       });
     } else {
       navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
@@ -521,6 +542,10 @@ const AdminPurchase = () => {
     },
   ];
 
+  const reader_handleChange = (event) => {
+    setSelectedReader(event.target.value);
+  };
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -589,6 +614,28 @@ const AdminPurchase = () => {
     void fetchAllTicketRestrictions();
   }, []);
 
+  useEffect(() => { // probably should be await
+    const fetchReaders = async () => {
+      try {
+        const response = await fetch(process.env.REACT_APP_API_2_URL + '/order/readers');
+        const readers = await response.json();
+        setReaderList(readers.data);
+      } catch (error) {
+        console.error(error.message);
+        setErrMsg(error.message);
+        setDialog(true);
+        setIsReadersLoading(false);
+      }
+    };
+    fetchReaders();
+  }, []);
+
+  useEffect(() => {
+    if (readerList.length > 0) {
+      setSelectedReader(readerList[0].id); // Default to first reader found
+    }
+  }, [readerList]);
+
   return (
     <div className='w-full h-screen absolute'>
       <div className='w-full h-screen overflow-x-hidden absolute '>
@@ -625,6 +672,16 @@ const AdminPurchase = () => {
               >
                 Proceed to Checkout
               </button>
+            </div>
+            <div className="reader-selector">
+              <h1>Select a reader</h1>
+              <select value={selectedReader} onChange={reader_handleChange}>
+                {readerList.map((reader) => (
+                  <option key={reader.id} value={reader.id}>
+                    {reader.id}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className='mt-4 text-center'>
               <button
