@@ -140,7 +140,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       const orderItems = new Map<string, number>();
       // eslint-disable-next-line camelcase
       const ticketTotal = order_ticketitems.reduce<number>((acc, item) => {
-        const key = `${item.ticketitem.ticketrestriction.eventinstance.event.eventname} - ${item.ticketitem.ticketrestriction.tickettype.description}`;
+        const key = `${item.ticketitem.ticketrestriction.eventinstance.event.eventname}`;
         orderItems.set(key, (orderItems.get(key) ?? 0)+1);
         return acc+Number(item.price);
       }, 0);
@@ -150,7 +150,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         name: `${contacts.firstname} ${contacts.lastname}`,
         orderdate: orderdateandtime,
         ...remainderOfOrder,
-        items: Array.from(orderItems),
+        items: [...orderItems.entries()].map(([key, value]) => `${value} x ${key}`),
         donation: donations.reduce<number>((acc, donation) => Number(donation.amount)+acc, 0),
       };
     });

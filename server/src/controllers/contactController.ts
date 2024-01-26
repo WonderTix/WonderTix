@@ -369,7 +369,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
               ordertotal: acc.ordertotal+Number(ticket.price),
               refunded: acc.refunded && ticket.refundid_fk !== null,
             };
-          }, {ordertotal: 0, refunded: false});
+          }, {ordertotal: 0, refunded: true});
 
       formattedDonations.push(...order.donations.map((donation) => ({
         ...donation,
