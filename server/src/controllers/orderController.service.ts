@@ -96,7 +96,7 @@ export const updateCanceledOrder = async (
   const eventInstances = new Set(
       deletedOrder
           .order_ticketitems
-          .map((item) => item.ticketitem.ticketrestriction.eventinstanceid_fk));
+          .map((item) => item.ticketitem?.ticketrestriction.eventinstanceid_fk));
   await updateAvailableSeats(
       prisma,
       // @ts-ignore
@@ -135,7 +135,7 @@ export const createRefundedOrder = async (
   }));
 
 
-  prisma.refunds.create({
+  await prisma.refunds.create({
     data: {
       orderid_fk: order.orderid,
       refund_intent: refundIntent,
@@ -161,12 +161,13 @@ const updateAvailableSeats = async (
     },
     include: {
       ticketrestrictions: {
+        where: {
+          deletedat: null,
+        },
         include: {
           ticketitems: {
-            include: {
-              order_ticketitem: {
-                where: {refundid_fk: null},
-              },
+            where: {
+              order_ticketitem: {refundid_fk: null},
             },
           },
         },

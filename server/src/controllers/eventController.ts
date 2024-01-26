@@ -3,7 +3,7 @@ import {checkJwt, checkScopes} from '../auth';
 import {orders, Prisma} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
-  createStripeCheckoutSession,
+  createStripeCheckoutSession, expireCheckoutSession,
   getDonationItems,
   getTicketItems,
   updateContact,
@@ -58,9 +58,9 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   let order :orders | null = null;
   let toSend = {id: 'comp'};
   try {
-    if (!cartItems.length && donation === 0) {
+    if (!cartItems.length && !donation) {
       return res.status(400).json({error: 'Cart is empty'});
-    } else if (donation && donation < 0) {
+    } else if (donation < 0) {
       return res.status(422).json({error: 'Amount of donation can not be negative'});
     }
 
@@ -73,7 +73,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       eventInstanceQueries,
     } = await getTicketItems(cartItems, prisma);
 
-    console.log(orderTicketItems);
     const {
       donations,
       donationCartRows,
@@ -120,6 +119,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     if (order) await updateCanceledOrder(prisma, order);
+    if (toSend.id !== 'comp') await expireCheckoutSession(toSend.id);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
@@ -162,7 +162,11 @@ eventController.get('/showings', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           include: {
-            ticketrestrictions: true,
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+            },
           },
         },
         seasons: true,
@@ -215,7 +219,9 @@ eventController.get('/slice', async (req: Request, res: Response) => {
             availableseats: {gt: 0},
             salestatus: true,
             ticketrestrictions: {
-              some: {},
+              some: {
+                deletedat: null,
+              },
             },
           },
         },
@@ -335,7 +341,11 @@ eventController.get('/showings/:id', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           include: {
-            ticketrestrictions: true,
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+            },
           },
         },
         seasons: true,
@@ -447,7 +457,11 @@ eventController.get('/active/showings', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           include: {
-            ticketrestrictions: true,
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+            },
           },
         },
         seasons: true,
@@ -553,7 +567,11 @@ eventController.get(
           include: {
             eventinstances: {
               include: {
-                ticketrestrictions: true,
+                ticketrestrictions: {
+                  where: {
+                    deletedat: null,
+                  },
+                },
               },
             },
             seasons: true,
@@ -1123,6 +1141,7 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
           eventinstanceid_fk: +instanceId,
         },
         order_ticketitem: {
+          refundid_fk: null,
           order: {
             contactid_fk: +contactId,
           },

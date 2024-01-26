@@ -498,6 +498,9 @@ eventInstanceController.get('/doorlist/:id',
                 ticketitems: {
                   include: {
                     order_ticketitem: {
+                      where: {
+                        refundid_fk: null,
+                      },
                       include: {
                         order: {
                           include: {
@@ -535,7 +538,7 @@ eventInstanceController.get('/doorlist/:id',
             };
             doorlist.set(contact.contactid, row);
           }
-          row.arrived = row.arrived && (redeemed != null);
+          row.arrived = row.arrived && (redeemed !== null);
 
           row.num_tickets[description]= (row.num_tickets[description] ?? 0)+1;
         };

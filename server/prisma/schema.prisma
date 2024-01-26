@@ -136,12 +136,12 @@ model events {
 
 model order_ticketitems {
   orderid_fk      Int
-  ticketitemid_fk Int         @id @unique
+  ticketitemid_fk Int         @id
   refundid_fk     Int?
   price           Decimal
   refund          refunds?    @relation(fields: [refundid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
   order           orders      @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
-  ticketitem      ticketitems @relation(fields: [ticketitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  ticketitem      ticketitems @relation(fields: [ticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// supertable for sub ticket items tables (subscription, order, and exchange)
@@ -149,6 +149,7 @@ model ticketitems {
   id                     Int                @id @default(autoincrement())
   ticketrestrictionid_fk Int
   donated                Boolean            @default(false)
+  order_ticketitemid_fk  Int                @unique
   redeemed               DateTime?          @db.Timestamp(3)
   ticketrestriction      ticketrestrictions @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Restrict, onUpdate: Cascade)
   order_ticketitem       order_ticketitems?

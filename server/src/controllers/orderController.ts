@@ -100,6 +100,9 @@ orderController.get('/refund', async (req: Request, res: Response) => {
           },
         },
         order_ticketitems: {
+          where: {
+            refundid_fk: null,
+          },
           include: {
             ticketitem: {
               include: {
@@ -117,7 +120,11 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             },
           },
         },
-        donations: true,
+        donations: {
+          where: {
+            refundid_fk: null,
+          },
+        },
       },
     });
 
@@ -141,7 +148,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         price: ticketTotal,
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
-        orderdate: orderdateandtime.toISOString(),
+        orderdate: orderdateandtime,
         ...remainderOfOrder,
         items: Array.from(orderItems),
         donation: donations.reduce<number>((acc, donation) => Number(donation.amount)+acc, 0),
