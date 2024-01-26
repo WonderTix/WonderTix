@@ -16,7 +16,7 @@ import path from 'path';
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
-import {WebSocketServer} from 'ws';
+import WebSocket, {WebSocketServer} from 'ws';
 import 'reflect-metadata';
 import {accountsRouter} from './api/accounts/accounts.router';
 import {contactsRouter} from './api/contacts/contacts.router';
@@ -51,6 +51,9 @@ import {seasonTicketTypeController} from './controllers/seasonTicketTypeControll
 import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
 import {seasonTicketTypePriceDefaultController} from './controllers/seasonTicketTypePriceDefaultController';
+
+let connection = false
+let currentConnection : WebSocket;
 
 const openApiSpec = swaggerJsdoc({
   definition: {
@@ -584,6 +587,7 @@ const createServer = async () => {
 
   dotenv.config({path: envPath});
 
+  process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
   const app = express();
 
@@ -653,7 +657,20 @@ const createServer = async () => {
   }
 
   const wss = new WebSocketServer({server: server});
-  console.log(wss);
+
+  wss.on('connection', function connection(ws) {
+    ws.on('error', console.error);
+
+    ws.on('message', function message(data, isBinary) {
+      wss.clients.forEach(function each(client) {
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          client.send(data, { binary: isBinary });
+        }
+      });
+    });
+  });
+
+  
 
   return server;
 };

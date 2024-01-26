@@ -36,8 +36,13 @@ export const ticketingWebhook = async (
 export const readerWebhook = async (
   paymentIntentID: string
 ) => {
-  const ws = new WebSocket('ws://localhost:8000/wss/reader/' + paymentIntentID);
-  ws.send('payment complete');
+  console.log('new websocket');
+  const ws = new WebSocket('wss://localhost:8000/wss/reader/' + paymentIntentID);
+  console.log('setup error')
+  ws.on('error', console.error)
+  ws.on('open', () => {
+    console.log('send message');
+    ws.send('payment complete');});
 }
 
 export const donationCancel = async (
