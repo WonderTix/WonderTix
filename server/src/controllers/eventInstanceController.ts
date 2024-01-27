@@ -80,20 +80,38 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
           active: true,
         },
       },
+      include: {
+        ticketrestrictions: {
+          where: {
+            deletedat: null,
+          },
+          include: {
+            ticketitems: {
+              where: {
+                order_ticketitem: {
+                  refund: null,
+                },
+              },
+            },
+          },
+        },
+      },
     });
     const allIds:number[] = [];
     let byId = {};
-    tickets.forEach((ticket) => {
-      allIds.push(ticket.eventinstanceid);
-      byId = {...byId, [ticket.eventinstanceid]: {
-        event_instance_id: ticket.eventinstanceid,
-        eventid: String(ticket.eventid_fk),
-        date: getDate(ticket.eventtime.toISOString(), ticket.eventdate),
-        totalseats: ticket.totalseats,
-        availableseats: ticket.availableseats,
-        detail: ticket.detail,
-      }};
-    });
+    tickets
+        .filter((ticket) => ticket.ticketrestrictions.filter((res) => res.ticketlimit - res.ticketitems.length > 0).length)
+        .forEach((ticket) => {
+          allIds.push(ticket.eventinstanceid);
+          byId = {...byId, [ticket.eventinstanceid]: {
+            event_instance_id: ticket.eventinstanceid,
+            eventid: String(ticket.eventid_fk),
+            date: getDate(ticket.eventtime.toISOString(), ticket.eventdate),
+            totalseats: ticket.totalseats,
+            availableseats: ticket.availableseats,
+            detail: ticket.detail,
+          }};
+        });
     res.send({data: {allIds, byId}});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

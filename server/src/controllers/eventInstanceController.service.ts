@@ -69,12 +69,11 @@ export const validateTicketRestrictionsOnUpdate = (
       price: newRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
       concessionprice: +newRestriction.concessionprice,
       ticketlimit: tickets,
-      eventinstanceid_fk: +eventInstance.eventinstanceid,
       seasontickettypepricedefaultid_fk: seasonTicketTypePriceDefaults.get(+newRestriction.tickettypeid_fk),
     };
   });
 
-  return {update: updates.remove, delete: updates.remove, create};
+  return {update: updates.update, delete: updates.remove, create};
 };
 
 const getTicketRestrictionUpdate = (
@@ -86,19 +85,17 @@ const getTicketRestrictionUpdate = (
   if ((!newRestriction || !newRestriction.ticketlimit) && !oldRestriction.ticketitems.length) {
     return {
       remove: {
-        where: {
-          ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
-        },
+        ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
       },
     };
-  } else if (!newRestriction || !newRestriction.ticketlimit && !soldTickets) {
+  } else if ((!newRestriction || !newRestriction.ticketlimit) && !soldTickets) {
     return {
       update: {
         where: {
-          ticketrestrictionid: oldRestriction.ticketrestrictionsid,
+          ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
         },
         data: {
-          deleteat: new Date(),
+          deletedat: new Date(),
         },
       },
     };

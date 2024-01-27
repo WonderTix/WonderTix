@@ -235,19 +235,37 @@ eventController.get('/slice', async (req: Request, res: Response) => {
             availableseats: {gt: 0},
             salestatus: true,
           },
+          include: {
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+              include: {
+                ticketitems: {
+                  where: {
+                    order_ticketitem: {
+                      refund: null,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     });
-    return res.json(events.map((event) => ({
-      id: event.eventid.toString(),
-      seasonid: event.seasonid_fk,
-      title: event.eventname,
-      description: event.eventdescription,
-      active: event.active,
-      seasonticketeligible: event.seasonticketeligible,
-      imageurl: event.imageurl,
-      numShows: event.eventinstances.length.toString(),
-    })));
+    return res.json(events
+        .filter((event) => event.eventinstances.filter((instance) => instance.ticketrestrictions.filter((res) => res.ticketlimit - res.ticketitems.length > 0).length).length)
+        .map((event) => ({
+          id: event.eventid.toString(),
+          seasonid: event.seasonid_fk,
+          title: event.eventname,
+          description: event.eventdescription,
+          active: event.active,
+          seasonticketeligible: event.seasonticketeligible,
+          imageurl: event.imageurl,
+          numShows: event.eventinstances.length.toString(),
+        })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});

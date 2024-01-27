@@ -382,7 +382,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         donationdate: order.orderdateandtime,
       })));
 
-      if (!ordertotal) return;
+      if (!orderItemsMap.size) return;
 
       flattenedOrders.push({
         orderid: order.orderid,
