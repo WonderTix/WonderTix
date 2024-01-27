@@ -86,7 +86,23 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     }
     const orders = await prisma.orders.findMany({
       where: {
-        payment_intent: {not: null},
+        stripe_intent: {not: null},
+        OR: [
+          {
+            order_ticketitems: {
+              some: {
+                refund: null,
+              },
+            },
+          },
+          {
+            donations: {
+              some: {
+                refund: null,
+              },
+            },
+          },
+        ],
         contacts: {
           email: {contains: email},
         },
@@ -101,9 +117,10 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         },
         order_ticketitems: {
           where: {
-            refundid_fk: null,
+            refund: null,
           },
           include: {
+            refund: true,
             ticketitem: {
               include: {
                 ticketrestriction: {
@@ -122,7 +139,10 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         },
         donations: {
           where: {
-            refundid_fk: null,
+            refund: null,
+          },
+          include: {
+            refund: true,
           },
         },
       },
@@ -140,6 +160,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       const orderItems = new Map<string, number>();
       // eslint-disable-next-line camelcase
       const ticketTotal = order_ticketitems.reduce<number>((acc, item) => {
+        if (item.refund) return acc;
         const key = `${item.ticketitem.ticketrestriction.eventinstance.event.eventname}`;
         orderItems.set(key, (orderItems.get(key) ?? 0)+1);
         return acc+Number(item.price);
@@ -151,7 +172,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         orderdate: orderdateandtime,
         ...remainderOfOrder,
         items: [...orderItems.entries()].map(([key, value]) => `${value} x ${key}`),
-        donation: donations.reduce<number>((acc, donation) => Number(donation.amount)+acc, 0),
+        donation: donations.reduce<number>((acc, donation) => donation.refund?acc:Number(donation.amount)+acc, 0),
       };
     });
     return res.json(toReturn);
@@ -203,9 +224,10 @@ orderController.put('/refund/:id', async (req, res) => {
       include: {
         order_ticketitems: {
           where: {
-            refundid_fk: null,
+            refund: null,
           },
           include: {
+            refund: true,
             ticketitem: {
               include: {
                 ticketrestriction: true,
@@ -215,7 +237,10 @@ orderController.put('/refund/:id', async (req, res) => {
         },
         donations: {
           where: {
-            refundid_fk: null,
+            refund: null,
+          },
+          include: {
+            refund: true,
           },
         },
       },
@@ -224,7 +249,7 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order) {
       return res.status(400).json({error: `Order ${orderID} does not exist`});
     }
-    if (!order.payment_intent) {
+    if (!order.stripe_intent) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
     if (!order.donations.length && !order.order_ticketitems.length) {
@@ -232,17 +257,17 @@ orderController.put('/refund/:id', async (req, res) => {
     }
 
     let refundIntent;
-    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
+    if (order.stripe_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
     else {
       const refund = await stripe.refunds.create({
-        payment_intent: order.payment_intent,
+        payment_intent: order.stripe_intent,
       });
       if (refund.status !== 'succeeded') {
         throw new Error(`Refund failed`);
       }
       refundIntent = refund.id;
     }
-    await createRefundedOrder(prisma, order, order.order_ticketitems, order.donations, refundIntent);
+    await createRefundedOrder(prisma, order.contactid_fk, order.order_ticketitems, order.donations, refundIntent);
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);

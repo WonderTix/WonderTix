@@ -305,6 +305,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
           include: {
             order_ticketitems: {
               include: {
+                refund: true,
                 ticketitem: {
                   include: {
                     ticketrestriction: {
@@ -325,7 +326,11 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 },
               },
             },
-            donations: true,
+            donations: {
+              include: {
+                refund: true,
+              },
+            },
           },
         },
       },
@@ -352,7 +357,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
               orderItemsMap.set(key,
                   {
                     price: ticket.price,
-                    refunded: ticket.refundid_fk,
+                    refunded: ticket.refund !== null,
                     redeemed: ticket.ticketitem.redeemed,
                     donated: ticket.ticketitem.donated,
                     description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
@@ -367,13 +372,13 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
             }
             return {
               ordertotal: acc.ordertotal+Number(ticket.price),
-              refunded: acc.refunded && ticket.refundid_fk !== null,
+              refunded: acc.refunded && ticket.refund !== null,
             };
           }, {ordertotal: 0, refunded: true});
 
       formattedDonations.push(...order.donations.map((donation) => ({
         ...donation,
-        refunded: donation.refundid_fk !== null,
+        refunded: donation.refund !== null,
         donationdate: order.orderdateandtime,
       })));
 

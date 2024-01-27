@@ -5,7 +5,7 @@ import {
   donations,
   ticketrestrictions,
   // eslint-disable-next-line camelcase
-  order_ticketitems,
+  order_ticketitems, order_type,
 } from '@prisma/client';
 
 
@@ -28,7 +28,7 @@ export const ticketingWebhook = async (
           orderid: order.orderid,
         },
         data: {
-          payment_intent: paymentIntent,
+          stripe_intent: paymentIntent,
         },
       });
       break;
@@ -58,6 +58,8 @@ export const orderFulfillment = async (
         contactid_fk: contactid,
         checkout_sessions: checkoutSession,
         discountid_fk: discount,
+        // eslint-disable-next-line camelcase
+        order_type: order_type.purchase,
         ...(orderTicketItems && {order_ticketitems: {create: orderTicketItems}}),
         ...(donations && {donations: {create: donations}}),
       },
@@ -72,7 +74,7 @@ export const updateCanceledOrder = async (
     prisma: ExtendedPrismaClient,
     order: orders,
 ) => {
-  if (order.payment_intent) {
+  if (order.stripe_intent) {
     throw new Error('Can not delete order that has been processed Stripe, order must be refunded');
   }
 
@@ -117,7 +119,7 @@ interface LoadedTicketItem extends ticketitems {
 
 export const createRefundedOrder = async (
     prisma: ExtendedPrismaClient,
-    order: orders,
+    contactId: number,
     orderTicketItems: LoadedOrderTicketItem[],
     donations: donations[],
     refundIntent: string,
@@ -126,21 +128,29 @@ export const createRefundedOrder = async (
   const ticketRefundItems = orderTicketItems.map((item) => {
     eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
     return {
-      ticketitemid_fk: item.ticketitemid_fk,
+      amount: item.price,
+      order_ticketitemid_fk: item.ticketitemid_fk,
     };
   });
 
   const donationRefundItems = donations.map((item) => ({
-    donationid: item.donationid,
+    amount: item.amount,
+    donationid_fk: item.donationid,
   }));
 
 
-  await prisma.refunds.create({
+  await prisma.orders.create({
     data: {
-      orderid_fk: order.orderid,
-      refund_intent: refundIntent,
-      ...(donationRefundItems.length && {donations: {connect: donationRefundItems}}),
-      ...(ticketRefundItems.length && {order_ticketitems: {connect: ticketRefundItems}}),
+      contactid_fk: contactId,
+      // eslint-disable-next-line camelcase
+      order_type: order_type.refund,
+      stripe_intent: refundIntent,
+      refunditems: {
+        create: [
+          ...ticketRefundItems,
+          ...donationRefundItems,
+        ],
+      },
     },
   });
 
@@ -167,7 +177,7 @@ const updateAvailableSeats = async (
         include: {
           ticketitems: {
             where: {
-              order_ticketitem: {refundid_fk: null},
+              order_ticketitem: {refund: null},
             },
           },
         },

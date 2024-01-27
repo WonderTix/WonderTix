@@ -51,7 +51,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
         ticketitems: {
           where: {
             order_ticketitem: {
-              refundid_fk: null,
+              refund: null,
             },
           },
           include: {
@@ -67,7 +67,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
     });
     return res.json(
         ticketRestrictions
-            .filter((res) => res.ticketlimit > res.ticketitems.filter((item) => !item.order_ticketitem?.refundid_fk).length)
+            .filter((res) => res.ticketlimit > res.ticketitems.length)
             .map((restriction) => ({
               id: restriction.ticketrestrictionsid,
               eventinstanceid: restriction.eventinstanceid_fk,
@@ -76,7 +76,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
               concessionprice: +restriction.concessionprice,
               price: +restriction.price,
               ticketlimit: restriction.ticketlimit,
-              ticketssold: restriction.ticketitems.filter((item) => !item.order_ticketitem?.refundid_fk).length,
+              ticketssold: restriction.ticketitems.length,
             })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -137,7 +137,7 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
         ticketitems: {
           where: {
             order_ticketitem: {
-              refundid_fk: null,
+              refund: null,
             },
           },
           include: {
@@ -153,13 +153,13 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
     });
     return res.json(
         ticketRestrictions
-            .filter((res) => res.ticketlimit > res.ticketitems.filter((item) => !item.order_ticketitem?.refundid_fk).length)
+            .filter((res) => res.ticketlimit > res.ticketitems.length)
             .map((restriction) => {
               const {ticketitems, tickettype, ...restrictionData} = restriction;
               return {
                 ...restrictionData,
                 description: tickettype.description,
-                ticketssold: ticketitems.filter((item) => !item.order_ticketitem?.refundid_fk).length,
+                ticketssold: ticketitems.length,
               };
             }),
     );
@@ -223,7 +223,7 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
         ticketitems: {
           where: {
             order_ticketitem: {
-              refundid_fk: null,
+              refund: null,
             },
           },
           include: {
@@ -244,7 +244,7 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
     return res.status(200).json({
       ...restrictionData,
       description: tickettype.description,
-      ticketssold: ticketitems.filter((item) => !item.order_ticketitem?.refundid_fk).length,
+      ticketssold: ticketitems.length,
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

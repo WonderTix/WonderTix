@@ -117,7 +117,7 @@ export const getTicketItems = async (
           ticketitems: {
             where: {
               order_ticketitem: {
-                refundid_fk: null,
+                refund: null,
               },
             },
             include: {

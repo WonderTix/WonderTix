@@ -110,7 +110,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         },
         data: {
           checkout_sessions: `comp-${order.orderid}`,
-          payment_intent: `comp-${order.orderid}`,
+          stripe_intent: `comp-${order.orderid}`,
         },
       });
     }
@@ -1141,7 +1141,7 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
           eventinstanceid_fk: +instanceId,
         },
         order_ticketitem: {
-          refundid_fk: null,
+          refund: null,
           order: {
             contactid_fk: +contactId,
           },

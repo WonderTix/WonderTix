@@ -347,7 +347,7 @@ eventInstanceController.get(
                 ticketitems: {
                   where: {
                     order_ticketitem: {
-                      refundid_fk: null,
+                      refund: null,
                     },
                   },
                 },
@@ -499,7 +499,7 @@ eventInstanceController.get('/doorlist/:id',
                   include: {
                     order_ticketitem: {
                       where: {
-                        refundid_fk: null,
+                        refund: null,
                       },
                       include: {
                         order: {
@@ -734,7 +734,11 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
           include: {
             ticketitems: {
               include: {
-                order_ticketitem: true,
+                order_ticketitem: {
+                  include: {
+                    refund: true,
+                  },
+                },
               },
             },
           },
@@ -761,7 +765,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
           ...eventInstanceToUpdate,
           ticketrestrictions: eventInstanceToUpdate
               .ticketrestrictions
-              .map((res) => ({...res, availabletickets: res.ticketlimit - res.ticketitems.filter((ticket) => !ticket.order_ticketitem?.refundid_fk).length}))},
+              .map((res) => ({...res, availabletickets: res.ticketlimit - res.ticketitems.filter((ticket) => !ticket.order_ticketitem?.refund).length}))},
         requestEventInstance,
     );
     return res.status(204).send('Showing successfully updated');

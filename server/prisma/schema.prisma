@@ -88,15 +88,14 @@ model discounts {
 /// donations can be one time or recurring, stored in the frequency field
 /// payment_intent and refund_intent are stripe payment intent ids
 model donations {
-  donationid  Int      @id @default(autoincrement())
-  orderid_fk  Int
-  refundid_fk Int?
-  anonymous   Boolean  @default(false)
-  amount      Decimal  @db.Money
-  frequency   freq
-  comments    String?  @db.VarChar(255)
-  order       orders   @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
-  refund      refunds? @relation(fields: [refundid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  donationid Int          @id @default(autoincrement())
+  orderid_fk Int
+  anonymous  Boolean      @default(false)
+  amount     Decimal      @db.Money
+  frequency  freq
+  comments   String?      @db.VarChar(255)
+  order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  refund     refunditems?
 }
 
 /// an event instance is a specific showing of an event
@@ -136,12 +135,11 @@ model events {
 
 model order_ticketitems {
   orderid_fk      Int
-  ticketitemid_fk Int         @id
-  refundid_fk     Int?
+  ticketitemid_fk Int          @id
   price           Decimal
-  refund          refunds?    @relation(fields: [refundid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  order           orders      @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
-  ticketitem      ticketitems @relation(fields: [ticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  order           orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  ticketitem      ticketitems  @relation(fields: [ticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  refund          refunditems?
 }
 
 /// supertable for sub ticket items tables (subscription, order, and exchange)
@@ -149,7 +147,6 @@ model ticketitems {
   id                     Int                @id @default(autoincrement())
   ticketrestrictionid_fk Int
   donated                Boolean            @default(false)
-  order_ticketitemid_fk  Int                @unique
   redeemed               DateTime?          @db.Timestamp(3)
   ticketrestriction      ticketrestrictions @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Restrict, onUpdate: Cascade)
   order_ticketitem       order_ticketitems?
@@ -162,23 +159,25 @@ model orders {
   orderdateandtime  DateTime            @default(now()) @db.Timestamp(3)
   contactid_fk      Int
   discountid_fk     Int?
-  payment_intent    String?             @db.VarChar(255)
+  order_type        order_type
+  stripe_intent     String?             @db.VarChar(255)
   checkout_sessions String?             @db.VarChar(255)
   contacts          contacts            @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts         discounts?          @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donations         donations[]
-  refunds           refunds[]
+  refunditems       refunditems[]
   order_ticketitems order_ticketitems[]
 }
 
-model refunds {
-  id                Int                 @id @default(autoincrement())
-  orderid_fk        Int
-  refund_intent     String
-  refunddateandtime DateTime            @default(now()) @db.Timestamp()
-  order             orders              @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
-  donations         donations[]
-  order_ticketitems order_ticketitems[]
+model refunditems {
+  id                    Int                @id @default(autoincrement())
+  orderid_fk            Int
+  order_ticketitemid_fk Int?               @unique
+  donationid_fk         Int?               @unique
+  amount                Decimal            @db.Money
+  order                 orders             @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  donation              donations?         @relation(fields: [donationid_fk], references: [donationid], onDelete: Restrict, onUpdate: Cascade)
+  order_ticketitem      order_ticketitems? @relation(fields: [order_ticketitemid_fk], references: [ticketitemid_fk], onDelete: Restrict, onUpdate: Cascade)
 }
 
 /// provides a way to store reports
@@ -303,6 +302,11 @@ enum state {
   not_started
   in_progress
   completed
+}
+
+enum order_type {
+  purchase
+  refund
 }
 
 model StripeWebhook {
