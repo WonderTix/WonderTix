@@ -160,7 +160,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       const orderItems = new Map<string, number>();
       // eslint-disable-next-line camelcase
       const ticketTotal = order_ticketitems.reduce<number>((acc, item) => {
-        if (item.refund) return acc;
+        if (item.refund || !item.ticketitem) return acc;
         const key = `${item.ticketitem.ticketrestriction.eventinstance.event.eventname}`;
         orderItems.set(key, (orderItems.get(key) ?? 0)+1);
         return acc+Number(item.price);

@@ -349,6 +349,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       const {ordertotal, refunded} = order
           .order_ticketitems
           .reduce<{ordertotal: number, refunded: boolean}>((acc, ticket) => {
+            if (!ticket.ticketitem) return acc;
             const key = `${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
             const item = orderItemsMap.get(key);
             if (item) {

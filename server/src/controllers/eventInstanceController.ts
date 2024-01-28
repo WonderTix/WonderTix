@@ -373,7 +373,6 @@ eventInstanceController.get(
             },
           },
         });
-        eventInstances.forEach((e) => e.eventinstanceid===372?console.log(e.ticketrestrictions):null);
         return res.send(eventInstances.map((instance) => ({
           ...instance,
           ticketrestrictions: instance.ticketrestrictions.map((restriction) => ({
@@ -514,11 +513,16 @@ eventInstanceController.get('/doorlist/:id',
               include: {
                 tickettype: true,
                 ticketitems: {
+                  where: {
+                    order_ticketitem: {
+                      refund: null,
+                      order: {
+                        stripe_intent: {not: null},
+                      },
+                    },
+                  },
                   include: {
                     order_ticketitem: {
-                      where: {
-                        refund: null,
-                      },
                       include: {
                         order: {
                           include: {
@@ -563,7 +567,7 @@ eventInstanceController.get('/doorlist/:id',
 
         eventInstance.ticketrestrictions.forEach((res) => {
           res.ticketitems.forEach((ticket) =>
-            forEachTicket(res.tickettype.description, ticket.redeemed, ticket.order_ticketitem?.order.contacts),
+            forEachTicket(res.tickettype.description, ticket.redeemed, ticket.order_ticketitem.order.contacts),
           );
         });
 

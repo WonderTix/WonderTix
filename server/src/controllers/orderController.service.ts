@@ -109,7 +109,7 @@ export const updateCanceledOrder = async (
 
 // eslint-disable-next-line camelcase
 interface LoadedOrderTicketItem extends order_ticketitems {
-    ticketitem: LoadedTicketItem;
+    ticketitem: LoadedTicketItem | null;
 }
 
 interface LoadedTicketItem extends ticketitems {
@@ -126,10 +126,10 @@ export const createRefundedOrder = async (
 ) => {
   const eventInstances = new Set<number>();
   const ticketRefundItems = orderTicketItems.map((item) => {
-    eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
+    if (item.ticketitem) eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
     return {
       amount: item.price,
-      order_ticketitemid_fk: item.ticketitemid_fk,
+      order_ticketitemid_fk: item.id,
     };
   });
 

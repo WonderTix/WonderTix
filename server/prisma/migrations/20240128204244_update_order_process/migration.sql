@@ -131,16 +131,17 @@ DROP TABLE "singletickets";
 
 -- CreateTable
 CREATE TABLE "order_ticketitems" (
+    "id" INTEGER NOT NULL,
     "orderid_fk" INTEGER NOT NULL,
-    "ticketitemid_fk" INTEGER NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
 
-    CONSTRAINT "order_ticketitems_pkey" PRIMARY KEY ("ticketitemid_fk")
+    CONSTRAINT "order_ticketitems_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "ticketitems" (
     "id" SERIAL NOT NULL,
+    "order_ticketitemid_fk" INTEGER NOT NULL,
     "ticketrestrictionid_fk" INTEGER NOT NULL,
     "donated" BOOLEAN NOT NULL DEFAULT false,
     "redeemed" TIMESTAMP(3),
@@ -160,6 +161,9 @@ CREATE TABLE "refunditems" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ticketitems_order_ticketitemid_fk_key" ON "ticketitems"("order_ticketitemid_fk");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "refunditems_order_ticketitemid_fk_key" ON "refunditems"("order_ticketitemid_fk");
 
 -- CreateIndex
@@ -172,10 +176,10 @@ ALTER TABLE "donations" ADD CONSTRAINT "donations_orderid_fk_fkey" FOREIGN KEY (
 ALTER TABLE "order_ticketitems" ADD CONSTRAINT "order_ticketitems_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "order_ticketitems" ADD CONSTRAINT "order_ticketitems_ticketitemid_fk_fkey" FOREIGN KEY ("ticketitemid_fk") REFERENCES "ticketitems"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ticketitems" ADD CONSTRAINT "ticketitems_ticketrestrictionid_fk_fkey" FOREIGN KEY ("ticketrestrictionid_fk") REFERENCES "ticketrestrictions"("ticketrestrictionsid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ticketitems" ADD CONSTRAINT "ticketitems_ticketrestrictionid_fk_fkey" FOREIGN KEY ("ticketrestrictionid_fk") REFERENCES "ticketrestrictions"("ticketrestrictionsid") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ticketitems" ADD CONSTRAINT "ticketitems_order_ticketitemid_fk_fkey" FOREIGN KEY ("order_ticketitemid_fk") REFERENCES "order_ticketitems"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_contactid_fkey" FOREIGN KEY ("contactid_fk") REFERENCES "contacts"("contactid") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -190,4 +194,4 @@ ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_orderid_fk_fkey" FOREIGN K
 ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_donationid_fk_fkey" FOREIGN KEY ("donationid_fk") REFERENCES "donations"("donationid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_order_ticketitemid_fk_fkey" FOREIGN KEY ("order_ticketitemid_fk") REFERENCES "order_ticketitems"("ticketitemid_fk") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_order_ticketitemid_fk_fkey" FOREIGN KEY ("order_ticketitemid_fk") REFERENCES "order_ticketitems"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
