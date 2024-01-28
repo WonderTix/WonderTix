@@ -93,18 +93,18 @@ const DoorList = (): ReactElement => {
         {
             field: 'arrived',
             headerName: 'Arrived',
-            width: 65,
+            width: 60,
             renderCell: (params: GridCellParams) => <RenderCheckin params={params} token={token}/>,
         },
-        {field: 'firstName', headerName: 'First Name', width: 100},
-        {field: 'lastName', headerName: 'Last Name', width: 100},
+        {field: 'firstName', headerName: 'First Name', width: 120},
+        {field: 'lastName', headerName: 'Last Name', width: 120},
         {
             field: 'num_tickets',
             headerName: 'Tickets',
             width: 220,
             renderCell: renderTicketTypes,
         },
-        {field: 'email', headerName: 'Email', width: 150},
+        {field: 'email', headerName: 'Email', width: 200},
         {field: 'phone', headerName: 'Phone Number', width: 130},
         {field: 'vip', headerName: 'VIP', width: 65, renderCell: renderCheckbox},
         {
