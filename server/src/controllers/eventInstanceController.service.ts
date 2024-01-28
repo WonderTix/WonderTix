@@ -29,7 +29,7 @@ export interface LoadedTicketRestriction extends ticketrestrictions {
 
 export interface LoadedTicketItem extends ticketitems {
     // eslint-disable-next-line camelcase
-    order_ticketitem: order_ticketitems | null;
+    order_ticketitem: order_ticketitems;
 }
 export interface LoadedEventInstance extends eventinstances {
   ticketrestrictions: LoadedTicketRestriction[],
@@ -122,7 +122,7 @@ const getTicketRestrictionUpdate = (
         ticketrestrictionsid: oldRestriction.ticketrestrictionsid,
       },
       data: {
-        ticketlimit: Math.min(totalseats, newRestriction.ticketlimit),
+        ticketlimit: newRestriction.ticketlimit,
         price: oldRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
         concessionprice: +newRestriction.concessionprice,
       },

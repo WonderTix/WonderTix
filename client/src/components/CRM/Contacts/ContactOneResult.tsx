@@ -176,7 +176,7 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
             <span className='font-semibold'>Order Time:</span>
             <span>{format(date, 'h:mm a')}</span>
           </p>
-            {donationTotal != 0 &&
+            {donationTotal !== 0 &&
             <p className='flex flex-row gap-3 text-lg mt-1 w-full'>
                 <span className='font-semibold'>Donation:</span>
                 <span>{toDollarAmount(donationTotal)}</span>

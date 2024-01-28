@@ -50,7 +50,6 @@ export const orderFulfillment = async (
     },
     discount?: number,
 ) => {
-  // will later include subscription items
   const {orderTicketItems, donations} = orderItems;
   const result = await prisma.$transaction([
     prisma.orders.create({

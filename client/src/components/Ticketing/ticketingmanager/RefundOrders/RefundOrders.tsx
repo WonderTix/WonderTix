@@ -130,7 +130,6 @@ const RefundOrders = () => {
       );
     }
   };
-    console.log(orders);
   return (
     <>
       {show.showPopUp && (

@@ -120,7 +120,6 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             refund: null,
           },
           include: {
-            refund: true,
             ticketitem: {
               include: {
                 ticketrestriction: {
@@ -141,9 +140,6 @@ orderController.get('/refund', async (req: Request, res: Response) => {
           where: {
             refund: null,
           },
-          include: {
-            refund: true,
-          },
         },
       },
     });
@@ -160,7 +156,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       const orderItems = new Map<string, number>();
       // eslint-disable-next-line camelcase
       const ticketTotal = order_ticketitems.reduce<number>((acc, item) => {
-        if (item.refund || !item.ticketitem) return acc;
+        if (!item.ticketitem) return acc;
         const key = `${item.ticketitem.ticketrestriction.eventinstance.event.eventname}`;
         orderItems.set(key, (orderItems.get(key) ?? 0)+1);
         return acc+Number(item.price);
@@ -172,7 +168,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         orderdate: orderdateandtime,
         ...remainderOfOrder,
         items: [...orderItems.entries()].map(([key, value]) => `${value} x ${key}`),
-        donation: donations.reduce<number>((acc, donation) => donation.refund?acc:Number(donation.amount)+acc, 0),
+        donation: donations.reduce<number>((acc, donation) => Number(donation.amount)+acc, 0),
       };
     });
     return res.json(toReturn);
@@ -227,7 +223,6 @@ orderController.put('/refund/:id', async (req, res) => {
             refund: null,
           },
           include: {
-            refund: true,
             ticketitem: {
               include: {
                 ticketrestriction: true,
@@ -238,9 +233,6 @@ orderController.put('/refund/:id', async (req, res) => {
         donations: {
           where: {
             refund: null,
-          },
-          include: {
-            refund: true,
           },
         },
       },

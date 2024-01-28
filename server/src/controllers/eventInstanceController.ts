@@ -65,7 +65,7 @@ const getDate = (time: string, date: number) => {
  *       500:
  *        description: Internal Server Error. An error occurred while processing the request.
  */
-eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
+eventInstanceController.get('/tickets', async (_, res: Response) => {
   try {
     const tickets = await prisma.eventinstances.findMany({
       where: {
@@ -149,7 +149,7 @@ eventInstanceController.get('/tickets', async (req: Request, res: Response) => {
  */
 eventInstanceController.get(
     '/list/active',
-    async (req: Request, res: Response) => {
+    async (_, res: Response) => {
       try {
         const instances = await prisma.eventinstances.findMany({
           where: {
@@ -219,7 +219,7 @@ eventInstanceController.get(
  */
 eventInstanceController.get(
     '/list/allevents',
-    async (req: Request, res: Response) => {
+    async (_, res: Response) => {
       try {
         const instances = await prisma.eventinstances.findMany({
           select: {
@@ -427,7 +427,7 @@ eventInstanceController.get(
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventInstanceController.get('/', async (req: Request, res: Response) => {
+eventInstanceController.get('/', async (_, res: Response) => {
   try {
     const eventinstances = await prisma.eventinstances.findMany({});
     return res.status(200).json(eventinstances);
@@ -579,7 +579,7 @@ eventInstanceController.get('/doorlist/:id',
               .from(doorlist)
               .map(([key, value]) => (
                 {...value,
-                  num_tickets: Object.keys(value.num_tickets).map((key) => `${key}-${value.num_tickets[key]}`).join(','),
+                  num_tickets: Object.keys(value.num_tickets).map((key) => `${value.num_tickets[key]} x ${key}`).join(','),
                   id: `${key}-${eventInstance.eventinstanceid}`,
                 }),
               ),
