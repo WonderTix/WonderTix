@@ -50,7 +50,7 @@ export const readerWebhook = async (
   eventType: string,
 ) => {
   console.log('new websocket');
-  const ws = new WebSocket('wss://localhost:8000/wss/reader');
+  const ws = new WebSocket('wss://localhost:8000/wss/reader/');
   ws.on('error', console.error);
   ws.on('open', () => {
     console.log('send message');

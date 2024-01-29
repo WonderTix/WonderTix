@@ -3,40 +3,83 @@ import {
   Button,
 } from '@mui/material';
 import PopUp from '../../PopUp';
-import {useNavigate, useParams} from 'react-router';
+import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
+
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+
+import {
+  removeAllTicketsFromCart,
+  selectDiscount,
+} from '../ticketingSlice';
 
 const ReaderPurchase = () => {
   const [status, setStatus] = useState('Awaiting Response...');
 
+  const location = useLocation();
+  const cartItems = location.state?.cartItems || [];
+  const readerID = location.state?.readerID || '';
+  const discount = useAppSelector(selectDiscount);
+
   const event = 'reader';
   const paymentIntentID = useParams().id;
-  const socketURL = 'wss://localhost:8000/wss/reader';
+
+  const socketURL = 'wss://localhost:8000/wss/reader/';
 
   const {sendMessage, lastMessage} = useWebSocket(socketURL, {
     shouldReconnect: () => true,
-    onMessage: () => {
-      console.log(lastMessage);
-      setStatus(lastMessage.data);
+    onMessage: (event) => {
+      console.log(event);
+      setStatus(event.data);
     },
-    onOpen: () => sendMessage('reader websocket opened'),
+      onOpen: () => sendMessage('reader websocket opened'),
   });
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.log('lastMessage changed');
     console.log(lastMessage);
-  }, [lastMessage]);
+  }, [lastMessage]); */
+
+  useEffect(() => {
+    const processPayment = async () => {
+      try {
+        console.log({cartItems, paymentIntentID, readerID, discount});
+        const response = await fetch( // request payment and put order in database
+          process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
+          {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({cartItems, paymentIntentID, readerID, discount}),
+          },
+        );
+
+        if (!response.ok) {
+          throw response;
+        }
+
+        const result = await response.json();
+        if (result.status === 'order sent') {
+          console.log('order sent!');
+        } else {
+          console.log('order failed!');
+          console.log(result);
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    processPayment();
+  }, []);
 
   const handleRefresh = () => {
-    // Send a message to the websocket server to request the latest status
-    sendMessage('message');
+    // not sure what this will do or if we even need this
   };
 
   const handleCancel = () => {
-    // Navigate to another page or show a confirmation dialog
-    // You can use the useNavigate hook from react-router
-    // const navigate = useNavigate();
-    // navigate('/some-page');
+    // orderCancel probably
   };
 
   return (

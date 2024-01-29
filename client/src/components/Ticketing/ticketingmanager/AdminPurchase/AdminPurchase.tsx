@@ -20,8 +20,6 @@ import {initialTicketTypeRestriction, EventRow, ReaderRow} from './utils/adminCo
 
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 
-import {WebSocket} from 'ws';
-
 import {
   removeAllTicketsFromCart,
   selectDiscount,
@@ -263,21 +261,6 @@ const AdminPurchase = () => {
     }));
   };
 
-  // Fetch the certificate from the server
-  /* fetch('https://localhost:8000/localhost.pem')
-  .then((response) => response.text()) // Convert the response to text
-  .then((cert) => {
-    // Create a WebSocket connection with the certificate
-    const ws = new WebSocket('wss://localhost:8000', {ca: cert});
-    ws.onmessage = (event) => {
-      console.log(event.data);
-    };
-  })
-  .catch((error) => {
-    // Handle any errors
-    console.error(error);
-  }); */
-
   const handlePurchase = (toReader: boolean) => {
     if (eventData.length === 0) {
       setErrMsg('Cart is empty.');
@@ -369,7 +352,9 @@ const AdminPurchase = () => {
       stripePromise.then((stripe) => {
         if (!stripe) return; // throw?
 
-        fetch( // create intent and put order in database
+        // we need to do this in this file so we can navigate to the
+        // directory based on the payment intent we create here
+        fetch( // create intent
         process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
         {
           credentials: 'include',
@@ -387,37 +372,8 @@ const AdminPurchase = () => {
             const readerID = selectedReader;
             const paymentIntentID = result.id;
 
-            navigate('/ticketing/purchaseticket/' + paymentIntentID);
             console.log(readerID);
-
-            fetch( // create intent and put order in database
-            process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
-            {
-              credentials: 'include',
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({cartItems, paymentIntentID, readerID, discount}),
-            },
-            ).then((response) => { // response should be payment intent ID
-              if (!response.ok) {
-                throw response;
-              }
-
-              response.json().then((result) => {
-                if (result.status === 'order sent') {
-                  console.log('order sent!');
-                } else {
-                  console.log('order failed!');
-                  console.log(result);
-                }
-              }).catch((error) => {
-                console.log(error);
-              }); 
-            }).catch((error) => {
-              console.log(error);
-            });
+            navigate(paymentIntentID, {state: {cartItems, paymentIntentID, readerID}});
           }).catch((error) => {
             console.log(error);
           });
