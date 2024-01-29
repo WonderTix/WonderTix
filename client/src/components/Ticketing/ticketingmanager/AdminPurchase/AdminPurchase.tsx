@@ -20,6 +20,8 @@ import {initialTicketTypeRestriction, EventRow, ReaderRow} from './utils/adminCo
 
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 
+import {WebSocket} from 'ws';
+
 import {
   removeAllTicketsFromCart,
   selectDiscount,
@@ -261,6 +263,21 @@ const AdminPurchase = () => {
     }));
   };
 
+  // Fetch the certificate from the server
+  /* fetch('https://localhost:8000/localhost.pem')
+  .then((response) => response.text()) // Convert the response to text
+  .then((cert) => {
+    // Create a WebSocket connection with the certificate
+    const ws = new WebSocket('wss://localhost:8000', {ca: cert});
+    ws.onmessage = (event) => {
+      console.log(event.data);
+    };
+  })
+  .catch((error) => {
+    // Handle any errors
+    console.error(error);
+  }); */
+
   const handlePurchase = (toReader: boolean) => {
     if (eventData.length === 0) {
       setErrMsg('Cart is empty.');
@@ -352,31 +369,55 @@ const AdminPurchase = () => {
       stripePromise.then((stripe) => {
         if (!stripe) return; // throw?
 
-        const readerID = selectedReader;
-        console.log(readerID);
         fetch( // create intent and put order in database
-        process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
+        process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
         {
           credentials: 'include',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({cartItems, readerID, discount}),
+          body: JSON.stringify({cartItems}),
         },
-        ).then((response) => { // response should be payment intent ID
+        ).then((response) => {
           if (!response.ok) {
             throw response;
           }
-
           response.json().then((result) => {
-            if (result.status === 'payment sent') {
-              console.log('payment sent!');
-              navigate('/ticketing/purchaseticket/' + result.id);
-            } else {
-              console.log('payment failed!');
-              console.log(result);
-            }
+            const readerID = selectedReader;
+            const paymentIntentID = result.id;
+
+            navigate('/ticketing/purchaseticket/' + paymentIntentID);
+            console.log(readerID);
+
+            fetch( // create intent and put order in database
+            process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
+            {
+              credentials: 'include',
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({cartItems, paymentIntentID, readerID, discount}),
+            },
+            ).then((response) => { // response should be payment intent ID
+              if (!response.ok) {
+                throw response;
+              }
+
+              response.json().then((result) => {
+                if (result.status === 'order sent') {
+                  console.log('order sent!');
+                } else {
+                  console.log('order failed!');
+                  console.log(result);
+                }
+              }).catch((error) => {
+                console.log(error);
+              }); 
+            }).catch((error) => {
+              console.log(error);
+            });
           }).catch((error) => {
             console.log(error);
           });
@@ -673,8 +714,8 @@ const AdminPurchase = () => {
                 Proceed to Checkout
               </button>
             </div>
-            <div className="reader-selector">
-              <h1>Select a reader</h1>
+            <div className="mt-4 text-center">
+              <h1>Select a Reader</h1>
               <select value={selectedReader} onChange={reader_handleChange}>
                 {readerList.map((reader) => (
                   <option key={reader.id} value={reader.id}>

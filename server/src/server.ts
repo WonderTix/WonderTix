@@ -575,6 +575,26 @@ const openApiSpec = swaggerJsdoc({
   apis: ['./src/api/**/*.ts', './src/controllers/**/*.ts'],
 });
 
+
+function waitForOpenConnection(socket: any) {
+  return new Promise((resolve, reject) => {
+    const maxNumberOfAttempts = 20;
+    const intervalTime = 200; // ms
+
+    let currentAttempt = 0;
+    const interval = setInterval(() => {
+      if (currentAttempt > maxNumberOfAttempts - 1) {
+        clearInterval(interval);
+        reject(new Error('Maximum number of attempts exceeded'));
+      } else if (socket.readyState === socket.OPEN) {
+        clearInterval(interval);
+        resolve('resolved');
+      }
+      currentAttempt++;
+    }, intervalTime);
+  });
+}
+
 const createServer = async () => {
   let envPath;
   if (process.env.ENV === 'local') {
@@ -589,7 +609,7 @@ const createServer = async () => {
 
   // WARNING: FOR INITIAL WEBSOCKET TESTING ONLY
   // NEED TO GET PROPER SECURITY SETUP BEFORE PULL REQUEST
-  process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'; 
+  process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 
   const app = express();
 
@@ -664,15 +684,17 @@ const createServer = async () => {
     ws.on('error', console.error);
 
     ws.on('message', function message(data, isBinary) {
+      console.log(`Message: ${data.toString()}`);
       wss.clients.forEach(function each(client) {
-        if (client !== ws && client.readyState === WebSocket.OPEN) {
-          client.send(data, { binary: isBinary });
+        if (client !== ws) {
+          waitForOpenConnection(client).then(() => {
+            console.log('Data sent');
+            client.send(data, { binary: isBinary });
+          });
         }
       });
     });
   });
-
-  
 
   return server;
 };
