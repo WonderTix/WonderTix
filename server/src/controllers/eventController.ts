@@ -189,7 +189,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     const pay = await testPayReader(readerID);
     
     // add order to database with prisma
-    /* orderID = await orderFulfillment(
+    orderID = await orderFulfillment(
         prisma,
         orderItems,
         contactid,
@@ -198,7 +198,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         undefined,
         undefined, // could put in discount but they don't seem to do this in normal checkout
         paymentIntentID
-    ); */
+    );
     res.json({status: 'order sent'});
   } catch (error) {
     console.error(error);

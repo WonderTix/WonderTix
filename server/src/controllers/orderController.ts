@@ -29,10 +29,10 @@ orderController.post(
         const metaData = object.metadata;
 
         // Handle in-person payments
-        if(event.type === 'terminal.reader.action_succeeded' ||
-          event.type === 'charge.succeeded') {
-          await readerWebhook(event.type);
-        }
+        // if(event.type === 'terminal.reader.action_succeeded' ||
+        //   event.type === 'charge.succeeded') {
+        await readerWebhook(event.type);
+        // }
         
         // Handle online payments
         if (metaData.sessionType === '__ticketing') {

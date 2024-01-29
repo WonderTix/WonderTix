@@ -586,9 +586,9 @@ function waitForOpenConnection(socket: any) {
       if (currentAttempt > maxNumberOfAttempts - 1) {
         clearInterval(interval);
         reject(new Error('Maximum number of attempts exceeded'));
-      } else if (socket.readyState === socket.OPEN) {
+      } else if (socket.readyState === WebSocket.OPEN) {
         clearInterval(interval);
-        resolve('resolved');
+        resolve('Socket Open');
       }
       currentAttempt++;
     }, intervalTime);
@@ -686,11 +686,11 @@ const createServer = async () => {
     ws.on('message', function message(data, isBinary) {
       console.log(`Message: ${data.toString()}`);
       wss.clients.forEach(function each(client) {
-        if (client !== ws) {
-          waitForOpenConnection(client).then(() => {
-            console.log('Data sent');
-            client.send(data, { binary: isBinary });
-          });
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          // waitForOpenConnection(client).then(() => {
+          console.log('Data sent');
+          client.send(data, { binary: isBinary });
+          // });
         }
       });
     });
