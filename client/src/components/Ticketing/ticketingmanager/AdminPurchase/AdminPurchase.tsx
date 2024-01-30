@@ -352,31 +352,28 @@ const AdminPurchase = () => {
       stripePromise.then((stripe) => {
         if (!stripe) return; // throw?
 
-        const readerID = selectedReader;
-        console.log(readerID);
-        fetch( // create intent and put order in database
-        process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
+        // we need to do this in this file so we can navigate to the
+        // directory based on the payment intent we create here
+        fetch( // create intent
+        process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
         {
           credentials: 'include',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({cartItems, readerID, discount}),
+          body: JSON.stringify({cartItems}),
         },
-        ).then((response) => { // response should be payment intent ID
+        ).then((response) => {
           if (!response.ok) {
             throw response;
           }
-
           response.json().then((result) => {
-            if (result.status === 'payment sent') {
-              console.log('payment sent!');
-              navigate('/ticketing/purchaseticket/' + result.id);
-            } else {
-              console.log('payment failed!');
-              console.log(result);
-            }
+            const readerID = selectedReader;
+            const paymentIntentID = result.id;
+
+            console.log(readerID);
+            navigate(paymentIntentID, {state: {cartItems, paymentIntentID, readerID}});
           }).catch((error) => {
             console.log(error);
           });
@@ -673,8 +670,8 @@ const AdminPurchase = () => {
                 Proceed to Checkout
               </button>
             </div>
-            <div className="reader-selector">
-              <h1>Select a reader</h1>
+            <div className="mt-4 text-center">
+              <h1>Select a Reader</h1>
               <select value={selectedReader} onChange={reader_handleChange}>
                 {readerList.map((reader) => (
                   <option key={reader.id} value={reader.id}>

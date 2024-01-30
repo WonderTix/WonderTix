@@ -3,6 +3,9 @@ import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {Prisma} from '@prisma/client';
 import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook, readerWebhook, discoverReaders} from './orderController.service';
+import {WebSocket} from 'ws';
+import fs from 'fs';
+
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -26,9 +29,10 @@ orderController.post(
         const metaData = object.metadata;
 
         // Handle in-person payments
-        if(event.type === 'terminal.reader.action_succeeded') {
-          await readerWebhook(object.action.process_payment_intent.payment_intent);
-        }
+        // if(event.type === 'terminal.reader.action_succeeded' ||
+        //   event.type === 'charge.succeeded') {
+        await readerWebhook(event.type);
+        // }
         
         // Handle online payments
         if (metaData.sessionType === '__ticketing') {
@@ -51,6 +55,7 @@ orderController.post(
               metaData.frequency,
           );
         }
+
         return res.send();
       } catch (error) {
         console.error(error);

@@ -1,24 +1,14 @@
-import React, {useEffect} from 'react';
-import {useNavigate, useParams} from 'react-router';
-import useWebSocket from 'react-use-websocket';
+import React from 'react';
+import Udash_nav from '../udash_navbar';
+import ReaderPurchase from './ReaderPurchase';
 
 const ReaderPurchasePage = () => {
-    const event = 'reader';
-    const paymentIntentID = useParams().id;
-    const socketURL = 'wss://localhost:8000/wss/reader/' + paymentIntentID;
-
-    const {sendMessage, lastMessage} = useWebSocket(socketURL, {
-        shouldReconnect: () => true,
-        onMessage: () => {
-            console.log(lastMessage);
-        },
-        onOpen: () => sendMessage('message'),
-    });
-
-
-    return (
-        <p>page</p>
-    );
+  return (
+    <div className='flex flex-row'>
+      <Udash_nav />
+      <ReaderPurchase />
+    </div>
+  );
 };
 
 export default ReaderPurchasePage;
