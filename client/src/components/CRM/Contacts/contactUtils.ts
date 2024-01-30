@@ -11,8 +11,9 @@ export type Contact = {
   state: string;
   country: string;
   postalCode: string;
-  comments?: string;
+  comments: string;
   seatingAcc: string;
+  otherSeatingAcc?: string;
   newsletter: boolean;
   vip: boolean;
   donorBadge: boolean;
@@ -49,7 +50,7 @@ export const seatingAccOptions = {
   'First/Ground floor': 'Seat(s) on the ground or the first level',
   'ASL Interpreter': 'Seat(s) in the ASL interpreters section',
   'Wide Seats': 'Wide seat(s)',
-  'Other': 'Other (describe in Comments section)',
+  'Other': 'Other',
 };
 
 export const seatingAccInOptions = (value: string) => {
@@ -76,11 +77,9 @@ export const editContact = async (
   contactId: number,
   token: string,
 ) => {
-  contact.seatingAcc = !contact.comments
-    ? contact.seatingAcc
-    : contact.seatingAcc === 'Other'
-    ? contact.comments
-    : `${contact.seatingAcc} - ${contact.comments}`;
+  if (contact.seatingAcc === 'Other') {
+    contact.seatingAcc = contact.otherSeatingAcc;
+  }
 
   try {
     const response = await fetch(
@@ -104,6 +103,7 @@ export const editContact = async (
           postalcode: contact.postalCode,
           donorbadge: contact.donorBadge,
           seatingaccom: contact.seatingAcc,
+          comments: contact.comments,
           vip: contact.vip,
           volunteerlist: contact.volunteerList,
           newsletter: contact.newsletter,

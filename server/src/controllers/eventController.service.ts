@@ -207,6 +207,7 @@ interface checkoutForm {
   email: string;
   visitSource: string;
   seatingAcc: string;
+  comments: string;
   optIn: boolean;
 }
 
@@ -272,6 +273,7 @@ const validateContact = (formData: checkoutForm) => {
       ),
     }),
     ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
+    ...(formData.comments && {comments: formData.comments}),
     ...(formData.optIn && {newsletter: formData.optIn}),
   };
 };

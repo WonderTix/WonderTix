@@ -38,12 +38,12 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
     values,
   } = props;
 
-  // Assigns seatingAcc to comments input if there's a custom accommodation
+  // Assigns seatingAcc to otherSeatingAcc input if there's a custom accommodation
   const contact = {
     ...values,
     ...(!seatingAccInOptions(values.seatingAcc)
       ? {
-          comments: values.seatingAcc,
+          otherSeatingAcc: values.seatingAcc,
           seatingAcc: 'Other',
         }
       : null),
@@ -97,9 +97,9 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
 
     if (
       formValues.seatingAcc === 'Other' &&
-      (!formValues.comments || formValues.comments === '')
+      (!formValues.otherSeatingAcc || formValues.otherSeatingAcc === '')
     ) {
-      errors['comments'] = 'Please Input Accommodation';
+      errors['otherSeatingAcc'] = 'Please Input Accommodation';
     }
     if (!formValues.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
@@ -164,7 +164,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
           onSubmit={onSubmit}
           validate={validate}
           initialValues={contact}
-          render={({handleSubmit, submitting}) => (
+          render={({handleSubmit, submitting, values}) => (
             <form onSubmit={handleSubmit} noValidate>
               <h3
                 className='text-lg leading-6 font-medium text-gray-900 p-4 pt-5 tab:p-6'
@@ -313,6 +313,18 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     )}
                   </Field>
                 </div>
+                {(values.seatingAcc === 'Other' || !seatingAccInOptions(values.seatingAcc)) && (
+                  <Field
+                    component={FormInput}
+                    name='otherSeatingAcc'
+                    type='text'
+                    placeholder='What is their accommodation?'
+                    id='other-seating-acc'
+                    label='Other Accommodation'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                  />
+                )}
                 <Field
                   component={FormInput}
                   name='comments'
