@@ -587,10 +587,6 @@ const createServer = async () => {
 
   dotenv.config({path: envPath});
 
-  // WARNING: FOR INITIAL WEBSOCKET TESTING ONLY
-  // NEED TO GET PROPER SECURITY SETUP BEFORE PULL REQUEST
-  process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'; 
-
   const app = express();
 
   /* Middleware */

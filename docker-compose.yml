@@ -23,6 +23,7 @@ services:
       ENV: local
       CI: ${CI}
       SHOULD_SEED: ${SHOULD_SEED}
+      NODE_EXTRA_CA_CERTS: rootCA.pem
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules
