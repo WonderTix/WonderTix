@@ -47,7 +47,10 @@ Future features include managing/creating email campaigns and ticket exchanges.
 3. Create mkcert certificates.
    1. Navigate to `<path/to/WonderTix/server>` and `<path/to/WonderTix/client>`.
    2. Run `mkcert -install` to install the local certificate authority.
-   3. Run `mkcert localhost` to create a certificate.   
+   3. Run `mkcert localhost` to create a certificate.
+   4. In the server directory, run the following command:
+      - On Windows: `copy ($(mkcert -CAROOT) + '/rootCA.pem') .`.
+      - On Mac/Linux: `cp $(mkcert -CAROOT)/rootCA.pem .`.
 4. Run `docker-compose up -d`.
 5. To test the checkout process with Stripe, make sure the Stripe CLI is installed.
    1. Run `stripe login` and press enter to accept access. This only needs to be done once.
