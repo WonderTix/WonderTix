@@ -104,6 +104,8 @@ const AdminPurchase = () => {
           eventtime: null,
           eventinstanceid: null,
           ticketRestrictionInfo: [initialTicketTypeRestriction],
+          position: null,
+
         };
       }
       return r;
@@ -316,6 +318,7 @@ const AdminPurchase = () => {
           product_img_url: row.imageurl,
           qty: 1, // default 1
           payWhatCan: false,
+          position: row.position,
         };
       }
     });
