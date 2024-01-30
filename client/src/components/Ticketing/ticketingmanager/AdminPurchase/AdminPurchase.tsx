@@ -18,18 +18,6 @@ import {getAllTicketRestrictions} from './utils/adminApiRequests';
 import {useFetchToken} from '../Event/components/ShowingUtils';
 import {initialTicketTypeRestriction, EventRow, ReaderRow} from './utils/adminCommon';
 
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
-
-import {
-  removeAllTicketsFromCart,
-  selectDiscount,
-} from '../ticketingSlice';
-
-import {loadStripe} from '@stripe/stripe-js';
-
-const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
-const stripePromise = loadStripe(pk);
-
 const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
     {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
@@ -53,8 +41,6 @@ const AdminPurchase = () => {
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
   const {token} = useFetchToken();
-
-  const discount = useAppSelector(selectDiscount);
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
@@ -349,34 +335,28 @@ const AdminPurchase = () => {
 
     const cartItems = Object.values(aggregatedCartItems);
     if (toReader) {
-      stripePromise.then((stripe) => {
-        if (!stripe) return; // throw?
-
-        // we need to do this in this file so we can navigate to the
-        // directory based on the payment intent we create here
-        fetch( // create intent
-        process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
-        {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({cartItems}),
+      // we need to do this in this file so we can navigate to the
+      // directory based on the payment intent we create here
+      fetch( // create intent
+      process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
+      {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        ).then((response) => {
-          if (!response.ok) {
-            throw response;
-          }
-          response.json().then((result) => {
-            const readerID = selectedReader;
-            const paymentIntentID = result.id;
+        body: JSON.stringify({cartItems}),
+      },
+      ).then((response) => {
+        if (!response.ok) {
+          throw response;
+        }
+        response.json().then((result) => {
+          const readerID = selectedReader;
+          const paymentIntentID = result.id;
 
-            console.log(readerID);
-            navigate(paymentIntentID, {state: {cartItems, paymentIntentID, readerID}});
-          }).catch((error) => {
-            console.log(error);
-          });
+          console.log(readerID);
+          navigate(paymentIntentID, {state: {cartItems, paymentIntentID, readerID}});
         }).catch((error) => {
           console.log(error);
         });

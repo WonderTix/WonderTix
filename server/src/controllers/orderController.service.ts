@@ -33,16 +33,6 @@ export const ticketingWebhook = async (
     case 'checkout.session.expired':
       await orderCancel(prisma, order.orderid);
       break;
-    case 'charge.succeeded': {
-      // communicate success to AdminPurchase? I don't think we need to update with paymentIntent because we already have it
-      
-      break;
-    }
-    case 'charge.failed': {
-      // cancel order because charge failed
-      //await orderCancel(prisma, order.orderid);
-      break;
-    }
   }
 };
 

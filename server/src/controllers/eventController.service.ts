@@ -54,7 +54,10 @@ export const createStripePaymentIntent = async (
     currency: 'usd', // hardcode
     payment_method_types: ['card_present'],
     capture_method: 'automatic',
-    amount: orderTotal
+    amount: orderTotal,
+    metadata: {
+      sessionType: '__reader',
+    },
   }
   const intent = await stripe.paymentIntents.create(intentObject);
   return intent.id;
