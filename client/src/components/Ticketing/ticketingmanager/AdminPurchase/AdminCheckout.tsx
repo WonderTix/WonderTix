@@ -76,11 +76,11 @@ export default function AdminCheckout(): ReactElement {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='flex flex-col lg:ml-[15rem] lg:mx-[5rem] md:ml-[13rem] tab:mx-[2rem] mx-[0.5rem] mt=[5rem] mb-[9rem]'>
         <div className='flex flex-col mt-[6rem] items-center md:flex-row rounded-[1rem] md:items-stretch md:bg-white w-full h-full'>
-          <div className='min-w-414 w-full h-full md:m-[2rem] mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
+          <div className='min-w-414 w-full h-full md:m-[2rem] md:mr-5 mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
             <div className='flex flex-col items-center h-auto w-full'>
-              <div className='text-2xl lg:text-5xl font-bold mb-5'>
+              <h1 className='text-3xl font-bold mb-5'>
                 Complete Order
-              </div>
+              </h1>
               <AdminCompleteOrderForm
                 onSubmit={doCheckout}
                 backButtonRoute='../ticketing/purchaseticket'

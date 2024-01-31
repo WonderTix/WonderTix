@@ -2,6 +2,7 @@ import React, {ReactElement, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router';
 import {EventRow} from './utils/adminCommon';
 import {getDiscountCode} from './utils/adminApiRequests';
+import {SearchIcon, XIcon} from '../../Icons';
 
 /**
  * Math to dollar - `$${(Math.round(x * 100) / 100).toFixed(2)}`
@@ -146,14 +147,14 @@ const AdminCart = ({
       </section>
       <section className='flex flex-col items-center gap-2 bg-zinc-800 rounded-xl px-5 py-3'>
         <div className={
-          `bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md ml-auto
+          `bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md w-full
           ${appliedDiscount && 'bg-zinc-800 border-2 border-zinc-900'}`
         }>
           <input
             type='text'
             placeholder='Discount code...'
             aria-label='Discount code'
-            className='p-1 px-2 rounded-md text-zinc-100 bg-zinc-700 disabled:bg-zinc-800'
+            className='p-1 px-2 w-full rounded-md text-zinc-100 bg-zinc-700 disabled:bg-zinc-800'
             value={
               discountText
                 ? discountText
@@ -173,21 +174,7 @@ const AdminCart = ({
               onClick={handleApplyDiscount}
               aria-label='Apply discount code'
             >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-5 w-5'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                strokeWidth='3'
-                aria-hidden='true'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-                />
-              </svg>
+              <SearchIcon className='h-5 w-5' strokeWidth={3} />
             </button>
           ) : (
             <button
@@ -195,21 +182,7 @@ const AdminCart = ({
               onClick={handleRemoveDiscount}
               aria-label='Remove discount code'
             >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-5 w-5'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                strokeWidth='3'
-                aria-hidden='true'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M6 18L18 6M6 6l12 12'
-                />
-              </svg>
+              <XIcon className='h-5 w-5' strokeWidth={3} />
             </button>
           )}
         </div>

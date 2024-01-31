@@ -2,6 +2,7 @@ import React, {ReactElement, useEffect, useRef} from 'react';
 import {Field, Form} from 'react-final-form';
 import {FormInput} from '../../FormInput';
 import {DiscountCode} from './discountUtils';
+import {ExclamationCircleIcon, XIcon} from '../../Icons';
 
 export interface DiscountPopUpProps {
   errorMessage?: string;
@@ -85,14 +86,19 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
     if (formValues.amount < 0) {
       errors['amount'] = 'Must be 0 or greater';
     }
-    if (formValues.percent < 0) {
-      errors['percent'] = 'Must be 0 or greater';
+    if (formValues.percent < 0 || formValues.percent > 100) {
+      errors['percent'] = 'Must be between 0 and 100';
     }
     if (formValues.minTickets < 0) {
-      errors['percent'] = 'Must be 0 or greater';
+      errors['minTickets'] = 'Must be 0 or greater';
     }
     if (formValues.minEvents < 0) {
-      errors['percent'] = 'Must be 0 or greater';
+      errors['minEvents'] = 'Must be 0 or greater';
+    }
+
+    if (!formValues.amount && !formValues.percent) {
+      errors['amount'] = 'Amount or Percent must have a value';
+      errors['percent'] = 'Amount or Percent must have a value';
     }
 
     Object.keys(values).forEach((key) => {
@@ -112,9 +118,7 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
       aria-modal='true'
       ref={discountCodePopUpRef}
     >
-      <div
-        className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-scroll shadow-xl'
-      >
+      <div className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-scroll shadow-xl'>
         <button
           type='button'
           onClick={onCancel}
@@ -123,21 +127,7 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
           data-modal-toggle='popup-modal'
           aria-label='Close modal'
         >
-          <svg
-            aria-hidden='true'
-            className='w-5 h-5'
-            fill='currentColor'
-            viewBox='0 0 20 20'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              fillRule='evenodd'
-              d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414
-                1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293
-                4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
-              clipRule='evenodd'
-            />
-          </svg>
+          <XIcon className='w-5 h-5' strokeWidth={2.5} />
         </button>
         <Form
           onSubmit={onSubmit}
@@ -153,79 +143,66 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
               </h3>
               {errorMessage && (
                 <p className='rounded-md bg-red-200 text-red-800 font-semibold flex items-center justify-center gap-2 px-2 py-1 mx-4 tab:mx-6 mb-4'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    className='h-5 w-5'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    stroke='currentColor'
-                    strokeWidth={2.5}
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-                    />
-                  </svg>
+                  <ExclamationCircleIcon className='h-5 w-5' strokeWidth={2.5} />
                   {errorMessage}
                 </p>
               )}
-              <article className="flex flex-col gap-y-3 px-4 pb-4 tab:px-6 tab:pb-6">
+              <article className='flex flex-col gap-y-3 px-4 pb-4 tab:px-6 tab:pb-6'>
                 <Field
                   required
                   component={FormInput}
-                  name="code"
-                  label="Code"
-                  placeholder="Code"
-                  type="text"
-                  id="code"
+                  name='code'
+                  label='Code'
+                  placeholder='Code'
+                  type='text'
+                  id='code'
                   labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1'
-                  inputClassName="w-full border border-zinc-300 p-3 rounded-lg"
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                 />
-                <div className="grid gap-3 tab:grid-cols-2">
+                <div className='grid gap-3 tab:grid-cols-2'>
                   <Field
                     required
                     component={FormInput}
-                    name="amount"
-                    label="Amount Off"
-                    placeholder="Amount Off"
-                    type="number"
-                    id="amount"
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="w-full border border-zinc-300 p-3 rounded-lg"
+                    name='amount'
+                    label='Amount Off'
+                    placeholder='Amount Off'
+                    type='number'
+                    id='amount'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                   <Field
                     required
                     component={FormInput}
-                    name="percent"
-                    label="Percent Off"
-                    placeholder="Percent Off"
-                    type="number"
-                    id="percent"
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="w-full border border-zinc-300 p-3 rounded-lg"
+                    name='percent'
+                    label='Percent Off'
+                    placeholder='Percent Off'
+                    type='number'
+                    id='percent'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 </div>
-                <div className="grid gap-3 tab:grid-cols-2">
+                <div className='grid gap-3 tab:grid-cols-2'>
                   <Field
                     component={FormInput}
-                    name="minTickets"
-                    label="Minimum Tickets"
-                    placeholder="Minimum Tickets"
-                    type="number"
-                    id="minTickets"
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="w-full border border-zinc-300 p-3 rounded-lg"
+                    name='minTickets'
+                    label='Minimum Tickets'
+                    placeholder='Minimum Tickets'
+                    type='number'
+                    id='minTickets'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                   <Field
                     component={FormInput}
-                    name="minEvents"
-                    label="Minimum Events"
-                    placeholder="Minimum Events"
-                    type="number"
-                    id="minEvents"
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="w-full border border-zinc-300 p-3 rounded-lg"
+                    name='minEvents'
+                    label='Minimum Events'
+                    placeholder='Minimum Events'
+                    type='number'
+                    id='minEvents'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 </div>
               </article>
