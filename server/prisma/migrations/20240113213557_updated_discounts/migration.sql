@@ -22,8 +22,11 @@ ALTER TABLE "discounts" DROP CONSTRAINT "discounts_startdate_fkey";
 ALTER TABLE "discounts" DROP COLUMN "createdby_fk",
 DROP COLUMN "enddate",
 DROP COLUMN "startdate",
-ADD COLUMN     "active" BOOLEAN NOT NULL,
-ALTER COLUMN "code" SET NOT NULL;
+DROP COLUMN "amount",
+ADD COLUMN "active" BOOLEAN NOT NULL,
+ALTER COLUMN "code" SET NOT NULL,
+ADD COLUMN "amount" MONEY,
+ALTER COLUMN "percent" SET DATA TYPE DECIMAL(65,30);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "discounts_code_key" ON "discounts"("code");
