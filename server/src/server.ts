@@ -578,7 +578,7 @@ const openApiSpec = swaggerJsdoc({
 
 function waitForOpenConnection(socket: any) {
   return new Promise((resolve, reject) => {
-    const maxNumberOfAttempts = 20;
+    const maxNumberOfAttempts = 50;
     const intervalTime = 200; // ms
 
     let currentAttempt = 0;
@@ -589,6 +589,10 @@ function waitForOpenConnection(socket: any) {
       } else if (socket.readyState === WebSocket.OPEN) {
         clearInterval(interval);
         resolve('Socket Open');
+      } else if (socket.readyState === WebSocket.CLOSING) {
+        socket.close(); // force close
+        clearInterval(interval);
+        resolve('Socket Already Closing');
       }
       currentAttempt++;
     }, intervalTime);
@@ -682,11 +686,13 @@ const createServer = async () => {
     ws.on('message', function message(data, isBinary) {
       console.log(`Message: ${data.toString()}`);
       wss.clients.forEach(function each(client) {
-        if (client !== ws && client.readyState === WebSocket.OPEN) {
-          // waitForOpenConnection(client).then(() => {
-          console.log('Data sent');
-          client.send(data, { binary: isBinary });
-          // });
+        if (client !== ws) {
+          waitForOpenConnection(client).then(() => {
+            console.log('Data sent');
+            client.send(data, { binary: isBinary });
+          }).catch((error) => {
+            console.log(error.message);
+          });
         }
       });
     });

@@ -17,6 +17,7 @@ const ReaderPurchase = () => {
   const [status, setStatus] = useState('Awaiting Response...');
 
   const location = useLocation();
+  const navigate = useNavigate();
   const cartItems = location.state?.cartItems || [];
   const readerID = location.state?.readerID || '';
   const discount = useAppSelector(selectDiscount);
@@ -26,11 +27,16 @@ const ReaderPurchase = () => {
 
   const socketURL = 'wss://localhost:8000/wss/reader/';
 
-  const {sendMessage, lastMessage} = useWebSocket(socketURL, {
+  const {sendMessage, lastMessage, getWebSocket} = useWebSocket(socketURL, {
     shouldReconnect: () => true,
     onMessage: (event) => {
       console.log(event);
       setStatus(event.data);
+      if (event.data === 'payment_intent.succeeded') {
+        const ws = getWebSocket();
+        ws.close();
+        navigate(`/success`);
+      }
     },
       onOpen: () => sendMessage('reader websocket opened'),
   });
@@ -56,7 +62,7 @@ const ReaderPurchase = () => {
           },
         );
 
-        if (!response.ok) {
+        if (!response.ok) { // order has already been cancelled at this point
           throw response;
         }
 
@@ -69,6 +75,7 @@ const ReaderPurchase = () => {
         }
       } catch (error) {
         console.error(error.message);
+        navigate('/ticketing/purchaseticket'); // maybe should be error display instead
       }
     };
     processPayment();
@@ -79,7 +86,10 @@ const ReaderPurchase = () => {
   };
 
   const handleCancel = () => {
-    // orderCancel probably
+    // orderCancel probably, but we have to be really careful with this kind of thing
+    // since we don't know at what stage of the stripe process we are at really,
+    // unless we check for status, for example if status is payment_intent.succeeded
+    // or charge.succeeded, this should do nothing.
   };
 
   return (

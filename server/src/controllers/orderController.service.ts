@@ -37,7 +37,9 @@ export const ticketingWebhook = async (
 };
 
 export const readerWebhook = async (
+  prisma: ExtendedPrismaClient,
   eventType: string,
+  paymentIntent: string,
 ) => {
   console.log('new websocket');
   const ws = new WebSocket('wss://localhost:8000/wss/reader/');
@@ -47,6 +49,23 @@ export const readerWebhook = async (
     ws.send(`${eventType}`);
     ws.close();
   });
+
+  switch (eventType) {
+    case 'payment_intent.payment_failed':
+      const order = await prisma.orders.findFirst({
+        where: {
+          payment_intent: paymentIntent,
+        },
+      });
+      if (!order) return;
+      console.log(order);
+      await orderCancel(prisma, order.orderid);
+      break;
+    case 'payment_intent.requires_action':
+      break;
+    case 'payment_intent.succeeded':
+      break;
+  }
 }
 
 export const donationCancel = async (

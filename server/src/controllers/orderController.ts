@@ -15,6 +15,7 @@ orderController.post(
     '/webhook',
     express.raw({type: 'application/json'}),
     async (req: Request, res: Response) => {
+      console.log("webhook called");
       const sig = req.headers['stripe-signature'];
       try {
         const event = await stripe.webhooks.constructEvent(
@@ -26,9 +27,15 @@ orderController.post(
         const object = event.data.object;
         const metaData = object.metadata;
 
+        // console.log("About try reader webhook: " + metaData.sessionType);
+
         // Handle in-person payments
         if (metaData.sessionType === '__reader') {
-          await readerWebhook(event.type);
+          await readerWebhook(
+            prisma,
+            event.type,
+            object.id, // should be a payment_intent ID
+          );
         }
 
         // Handle online payments

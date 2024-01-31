@@ -185,8 +185,6 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       await getOrderItems(cartItems, prisma);
 
     const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
-
-    const pay = await testPayReader(readerID);
     
     // add order to database with prisma
     orderID = await orderFulfillment(
@@ -202,8 +200,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     res.json({status: 'order sent'});
   } catch (error) {
     console.error(error);
-    //if (orderID) await orderCancel(prisma, orderID); I think we have to be more careful with order cancellations
-    //than this depending on situation with reader.
+    if (orderID) await orderCancel(prisma, orderID);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
