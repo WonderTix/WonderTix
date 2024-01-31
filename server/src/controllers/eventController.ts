@@ -111,7 +111,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         },
         data: {
           checkout_sessions: `comp-${order.orderid}`,
-          stripe_intent: `comp-${order.orderid}`,
+          payment_intent: `comp-${order.orderid}`,
         },
       });
     }

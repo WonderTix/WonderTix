@@ -517,7 +517,7 @@ eventInstanceController.get('/doorlist/:id',
                     order_ticketitem: {
                       refund: null,
                       order: {
-                        stripe_intent: {not: null},
+                        payment_intent: {not: null},
                       },
                     },
                   },
