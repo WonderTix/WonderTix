@@ -206,7 +206,7 @@ const ContactCard = ({
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Comments:</span>
-          <span data-testid='contact-accommodation'>{comments}</span>
+          <span data-testid='contact-comments'>{comments}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Newsletter:</span>
