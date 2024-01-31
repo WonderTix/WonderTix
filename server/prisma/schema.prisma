@@ -160,23 +160,30 @@ model orders {
   orderdateandtime  DateTime            @default(now()) @db.Timestamp(3)
   contactid_fk      Int
   discountid_fk     Int?
-  order_type        order_type
-  stripe_intent     String?             @db.VarChar(255)
-  checkout_sessions String?             @db.VarChar(255)
+  payment_intent    String?             @unique @db.VarChar(255)
+  checkout_sessions String?             @unique @db.VarChar(255)
   contacts          contacts            @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts         discounts?          @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donations         donations[]
-  refunditems       refunditems[]
+  refunds           refunds[]
   order_ticketitems order_ticketitems[]
+}
+
+model refunds {
+  id            Int           @id @default(autoincrement())
+  orderid_fk    Int
+  refund_intent String        @unique @db.VarChar(255)
+  order         orders        @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
+  refunditems   refunditems[]
 }
 
 model refunditems {
   id                    Int                @id @default(autoincrement())
-  orderid_fk            Int
+  refundid_fk           Int
   order_ticketitemid_fk Int?               @unique
   donationid_fk         Int?               @unique
   amount                Decimal            @db.Money
-  order                 orders             @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  refund                refunds            @relation(fields: [refundid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
   donation              donations?         @relation(fields: [donationid_fk], references: [donationid], onDelete: Restrict, onUpdate: Cascade)
   order_ticketitem      order_ticketitems? @relation(fields: [order_ticketitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
 }
@@ -303,11 +310,6 @@ enum state {
   not_started
   in_progress
   completed
-}
-
-enum order_type {
-  purchase
-  refund
 }
 
 model StripeWebhook {

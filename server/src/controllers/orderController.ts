@@ -86,7 +86,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     }
     const orders = await prisma.orders.findMany({
       where: {
-        stripe_intent: {not: null},
+        payment_intent: {not: null},
         OR: [
           {
             order_ticketitems: {
@@ -241,7 +241,7 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order) {
       return res.status(400).json({error: `Order ${orderID} does not exist`});
     }
-    if (!order.stripe_intent) {
+    if (!order.payment_intent) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
     if (!order.donations.length && !order.order_ticketitems.length) {
@@ -249,17 +249,17 @@ orderController.put('/refund/:id', async (req, res) => {
     }
 
     let refundIntent;
-    if (order.stripe_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
+    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
     else {
       const refund = await stripe.refunds.create({
-        payment_intent: order.stripe_intent,
+        payment_intent: order.payment_intent,
       });
       if (refund.status !== 'succeeded') {
         throw new Error(`Refund failed`);
       }
       refundIntent = refund.id;
     }
-    await createRefundedOrder(prisma, order.contactid_fk, order.order_ticketitems, order.donations, refundIntent);
+    await createRefundedOrder(prisma, order, order.order_ticketitems, order.donations, refundIntent);
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);

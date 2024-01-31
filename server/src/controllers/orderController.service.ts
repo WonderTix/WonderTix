@@ -5,7 +5,7 @@ import {
   donations,
   ticketrestrictions,
   // eslint-disable-next-line camelcase
-  order_ticketitems, order_type,
+  order_ticketitems,
 } from '@prisma/client';
 
 
@@ -28,7 +28,7 @@ export const ticketingWebhook = async (
           orderid: order.orderid,
         },
         data: {
-          stripe_intent: paymentIntent,
+          payment_intent: paymentIntent,
         },
       });
       break;
@@ -57,8 +57,6 @@ export const orderFulfillment = async (
         contactid_fk: contactid,
         checkout_sessions: checkoutSession,
         discountid_fk: discount,
-        // eslint-disable-next-line camelcase
-        order_type: order_type.purchase,
         ...(orderTicketItems && {order_ticketitems: {create: orderTicketItems}}),
         ...(donations && {donations: {create: donations}}),
       },
@@ -73,7 +71,7 @@ export const updateCanceledOrder = async (
     prisma: ExtendedPrismaClient,
     order: orders,
 ) => {
-  if (order.stripe_intent) {
+  if (order.payment_intent) {
     throw new Error('Can not delete order that has been processed Stripe, order must be refunded');
   }
 
@@ -118,7 +116,7 @@ interface LoadedTicketItem extends ticketitems {
 
 export const createRefundedOrder = async (
     prisma: ExtendedPrismaClient,
-    contactId: number,
+    order: orders,
     orderTicketItems: LoadedOrderTicketItem[],
     donations: donations[],
     refundIntent: string,
@@ -138,12 +136,10 @@ export const createRefundedOrder = async (
   }));
 
 
-  await prisma.orders.create({
+  await prisma.refunds.create({
     data: {
-      contactid_fk: contactId,
-      // eslint-disable-next-line camelcase
-      order_type: order_type.refund,
-      stripe_intent: refundIntent,
+      orderid_fk: 1,
+      refund_intent: refundIntent,
       refunditems: {
         create: [
           ...ticketRefundItems,

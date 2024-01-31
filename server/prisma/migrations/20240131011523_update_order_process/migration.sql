@@ -11,25 +11,22 @@
   - You are about to drop the column `orderdate` on the `orders` table. All the data in the column will be lost.
   - You are about to drop the column `ordertime` on the `orders` table. All the data in the column will be lost.
   - You are about to drop the column `ordertotal` on the `orders` table. All the data in the column will be lost.
-  - You are about to drop the column `payment_intent` on the `orders` table. All the data in the column will be lost.
   - You are about to drop the column `refund_intent` on the `orders` table. All the data in the column will be lost.
   - You are about to drop the `eventtickets` table. If the table is not empty, all the data it contains will be lost.
   - You are about to drop the `orderitems` table. If the table is not empty, all the data it contains will be lost.
   - You are about to drop the `seasontickets` table. If the table is not empty, all the data it contains will be lost.
   - You are about to drop the `seasontickettype` table. If the table is not empty, all the data it contains will be lost.
   - You are about to drop the `singletickets` table. If the table is not empty, all the data it contains will be lost.
+  - A unique constraint covering the columns `[payment_intent]` on the table `orders` will be added. If there are existing duplicate values, this will fail.
+  - A unique constraint covering the columns `[checkout_sessions]` on the table `orders` will be added. If there are existing duplicate values, this will fail.
   - Added the required column `orderid_fk` to the `donations` table without a default value. This is not possible if the table is not empty.
   - Made the column `amount` on table `donations` required. This step will fail if there are existing NULL values in that column.
   - Made the column `frequency` on table `donations` required. This step will fail if there are existing NULL values in that column.
   - Made the column `eventdescription` on table `events` required. This step will fail if there are existing NULL values in that column.
   - Made the column `active` on table `events` required. This step will fail if there are existing NULL values in that column.
   - Made the column `seasonticketeligible` on table `events` required. This step will fail if there are existing NULL values in that column.
-  - Added the required column `order_type` to the `orders` table without a default value. This is not possible if the table is not empty.
 
 */
--- CreateEnum
-CREATE TYPE "order_type" AS ENUM ('purchase', 'refund');
-
 -- DropForeignKey
 ALTER TABLE "donations" DROP CONSTRAINT "donations_donationdate_fkey";
 
@@ -102,11 +99,8 @@ ALTER COLUMN "seasonticketeligible" SET DEFAULT true;
 ALTER TABLE "orders" DROP COLUMN "orderdate",
 DROP COLUMN "ordertime",
 DROP COLUMN "ordertotal",
-DROP COLUMN "payment_intent",
 DROP COLUMN "refund_intent",
-ADD COLUMN     "order_type" "order_type" NOT NULL,
-ADD COLUMN     "orderdateandtime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "stripe_intent" VARCHAR(255);
+ADD COLUMN     "orderdateandtime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 -- AlterTable
 ALTER TABLE "seasons" ADD COLUMN     "deletedat" TIMESTAMP(3);
@@ -131,7 +125,7 @@ DROP TABLE "singletickets";
 
 -- CreateTable
 CREATE TABLE "order_ticketitems" (
-    "id" INTEGER NOT NULL,
+    "id" SERIAL NOT NULL,
     "orderid_fk" INTEGER NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
 
@@ -150,9 +144,18 @@ CREATE TABLE "ticketitems" (
 );
 
 -- CreateTable
-CREATE TABLE "refunditems" (
+CREATE TABLE "refunds" (
     "id" SERIAL NOT NULL,
     "orderid_fk" INTEGER NOT NULL,
+    "refund_intent" VARCHAR(255) NOT NULL,
+
+    CONSTRAINT "refunds_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "refunditems" (
+    "id" SERIAL NOT NULL,
+    "refundid_fk" INTEGER NOT NULL,
     "order_ticketitemid_fk" INTEGER,
     "donationid_fk" INTEGER,
     "amount" MONEY NOT NULL,
@@ -164,10 +167,19 @@ CREATE TABLE "refunditems" (
 CREATE UNIQUE INDEX "ticketitems_order_ticketitemid_fk_key" ON "ticketitems"("order_ticketitemid_fk");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "refunds_refund_intent_key" ON "refunds"("refund_intent");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "refunditems_order_ticketitemid_fk_key" ON "refunditems"("order_ticketitemid_fk");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "refunditems_donationid_fk_key" ON "refunditems"("donationid_fk");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "orders_payment_intent_key" ON "orders"("payment_intent");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "orders_checkout_sessions_key" ON "orders"("checkout_sessions");
 
 -- AddForeignKey
 ALTER TABLE "donations" ADD CONSTRAINT "donations_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -188,7 +200,10 @@ ALTER TABLE "orders" ADD CONSTRAINT "orders_contactid_fkey" FOREIGN KEY ("contac
 ALTER TABLE "orders" ADD CONSTRAINT "orders_discountid_fkey" FOREIGN KEY ("discountid_fk") REFERENCES "discounts"("discountid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "refunds" ADD CONSTRAINT "refunds_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_refundid_fk_fkey" FOREIGN KEY ("refundid_fk") REFERENCES "refunds"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_donationid_fk_fkey" FOREIGN KEY ("donationid_fk") REFERENCES "donations"("donationid") ON DELETE RESTRICT ON UPDATE CASCADE;
