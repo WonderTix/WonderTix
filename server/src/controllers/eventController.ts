@@ -4,6 +4,7 @@ import {Prisma} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
+  getDiscountAmount,
   getOrderItems,
   LineItem,
   updateContact,
@@ -71,6 +72,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     const {contactid} = await updateContact(formData, prisma);
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
       await getOrderItems(cartItems, prisma);
+    const discountAmount = getDiscountAmount(discount, orderTotal);
 
     const donationItem: LineItem = {
       price_data: {
@@ -83,7 +85,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       },
       quantity: 1,
     };
-    if (donation + orderTotal > 0) {
+    if (donation + orderTotal - discountAmount > 0) {
       toSend = await createStripeCheckoutSession(
           contactid,
           formData.email,

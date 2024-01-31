@@ -250,7 +250,7 @@ export const fetchDiscountData = createAsyncThunk(
     const discount: DiscountItem = {
       discountid: discountResp.discountid,
       code: discountResp.code,
-      amount: discountResp.amount,
+      amount: Number(discountResp.amount),
       percent: discountResp.percent,
       min_tickets: discountResp.min_tickets,
       min_events: discountResp.min_events,

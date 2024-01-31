@@ -50,12 +50,7 @@ export const createStripeCheckoutSession = async (
 };
 
 export const createStripeCoupon = async (discount: any, orderTotal: number) => {
-  let amountOff = 0;
-  if (discount.amount && discount.percent) {
-    amountOff = Math.min((+discount.percent / 100) * orderTotal, discount.amount);
-  } else if (discount.amount) {
-    amountOff = discount.amount;
-  }
+  const amountOff = getDiscountAmount(discount, orderTotal);
 
   const stripeCoupon = await stripe.coupons.create({
     [discount.amount ? 'amount_off' : 'percent_off']: discount.amount ?
@@ -201,6 +196,16 @@ const getTickets = (
       },
     },
   }));
+};
+
+export const getDiscountAmount = (discount: any, orderTotal: number) => {
+  let amountOff = 0;
+  if (discount.amount && discount.percent) {
+    amountOff = Math.min((+discount.percent / 100) * orderTotal, discount.amount);
+  } else if (discount.amount) {
+    amountOff = Math.min(discount.amount, orderTotal);
+  }
+  return amountOff;
 };
 
 interface checkoutForm {
