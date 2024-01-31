@@ -1,23 +1,25 @@
-
 /**
  * Type for information relating to a discount code.
  */
 export type DiscountCode = {
-  discountId?: number,
-  code: string,
-  active: boolean,
-  amount?: number,
-  percent?: number,
-  minTickets?: number,
-  minEvents?: number,
-}
+  discountId?: number;
+  code: string;
+  active: boolean;
+  amount?: number;
+  percent?: number;
+  minTickets?: number;
+  minEvents?: number;
+};
 
 export const baseDiscountCode = {
   code: '',
   active: false,
 };
 
-export const createDiscountCode = async (discountCode: DiscountCode, token: string) => {
+export const createDiscountCode = async (
+  discountCode: DiscountCode,
+  token: string,
+) => {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_2_URL}/discount`,
@@ -31,10 +33,22 @@ export const createDiscountCode = async (discountCode: DiscountCode, token: stri
         body: JSON.stringify({
           code: discountCode.code,
           active: discountCode.active,
-          amount: (discountCode.amount || discountCode.amount === 0) ? Number(discountCode.amount) : null,
-          percent: (discountCode.percent || discountCode.percent === 0) ? Number(discountCode.percent) : null,
-          min_tickets: (discountCode.minTickets || discountCode.minTickets === 0) ? Number(discountCode.minTickets) : null,
-          min_events: (discountCode.minEvents || discountCode.minEvents === 0) ? Number(discountCode.minEvents) : null,
+          amount:
+            discountCode.amount || discountCode.amount === 0
+              ? Number(discountCode.amount)
+              : null,
+          percent:
+            discountCode.percent || discountCode.percent === 0
+              ? Number(discountCode.percent)
+              : null,
+          min_tickets:
+            discountCode.minTickets || discountCode.minTickets === 0
+              ? Number(discountCode.minTickets)
+              : null,
+          min_events:
+            discountCode.minEvents || discountCode.minEvents === 0
+              ? Number(discountCode.minEvents)
+              : null,
         }),
       },
     );
@@ -64,14 +78,22 @@ export const getDiscountCodes = async (token: string) => {
       },
     );
     const discountCodes = await response.json();
-    return discountCodes;
+    return discountCodes.map((code) => {
+      return {
+        ...code,
+        amount: Number(code.amount),
+      };
+    });
   } catch (error) {
     console.error(error.message);
     return [];
   }
 };
 
-export const editDiscountCode = async (discountCode: DiscountCode, token: string) => {
+export const editDiscountCode = async (
+  discountCode: DiscountCode,
+  token: string,
+) => {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_2_URL}/discount/${discountCode.discountId}`,
@@ -85,10 +107,22 @@ export const editDiscountCode = async (discountCode: DiscountCode, token: string
         body: JSON.stringify({
           code: discountCode.code,
           active: discountCode.active,
-          amount: (discountCode.amount || discountCode.amount === 0) ? Number(discountCode.amount) : null,
-          percent: (discountCode.percent || discountCode.percent === 0) ? Number(discountCode.percent) : null,
-          min_tickets: (discountCode.minTickets || discountCode.minTickets === 0) ? Number(discountCode.minTickets) : null,
-          min_events: (discountCode.minEvents || discountCode.minEvents === 0) ? Number(discountCode.minEvents) : null,
+          amount:
+            discountCode.amount || discountCode.amount === 0
+              ? Number(discountCode.amount)
+              : null,
+          percent:
+            discountCode.percent || discountCode.percent === 0
+              ? Number(discountCode.percent)
+              : null,
+          min_tickets:
+            discountCode.minTickets || discountCode.minTickets === 0
+              ? Number(discountCode.minTickets)
+              : null,
+          min_events:
+            discountCode.minEvents || discountCode.minEvents === 0
+              ? Number(discountCode.minEvents)
+              : null,
         }),
       },
     );

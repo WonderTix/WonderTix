@@ -66,7 +66,7 @@ model discounts {
   code            String      @unique @db.VarChar(32)
   active          Boolean
   amount          Decimal?    @db.Money
-  percent         Decimal?
+  percent         Int?
   tickettypeid_fk Int?
   usagelimit      Int?
   min_tickets     Int?
