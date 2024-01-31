@@ -61,8 +61,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
   try {
     if (!cartItems.length && !donation) {
       return res.status(400).json({error: 'Cart is empty'});
-    } else if (donation < 0) {
-      return res.status(422).json({error: 'Amount of donation can not be negative'});
     }
 
     const {contactid} = await updateContact(formData, prisma);
@@ -256,7 +254,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       },
     });
     return res.json(events
-        .filter((event) => event.eventinstances.filter((instance) => instance.ticketrestrictions.filter((res) => res.ticketlimit - res.ticketitems.length > 0).length).length)
+        .filter((event) => event.eventinstances.filter((instance) => instance.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length).length)
         .map((event) => ({
           id: event.eventid.toString(),
           seasonid: event.seasonid_fk,

@@ -100,7 +100,7 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
     const allIds:number[] = [];
     let byId = {};
     tickets
-        .filter((ticket) => ticket.ticketrestrictions.filter((res) => res.ticketlimit - res.ticketitems.length > 0).length)
+        .filter((ticket) => ticket.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length)
         .forEach((ticket) => {
           allIds.push(ticket.eventinstanceid);
           byId = {...byId, [ticket.eventinstanceid]: {
@@ -537,6 +537,7 @@ eventInstanceController.get('/doorlist/:id',
             },
           },
         });
+
         if (!eventInstance) {
           return res.status(400).send({error: `Showing ${id} does not exist`});
         }
@@ -562,7 +563,7 @@ eventInstanceController.get('/doorlist/:id',
           }
           row.arrived = row.arrived && (redeemed !== null);
 
-          row.num_tickets[description]= (row.num_tickets[description] ?? 0)+1;
+          row.num_tickets[description]=(row.num_tickets[description] ?? 0)+1;
         };
 
         eventInstance.ticketrestrictions.forEach((res) => {
@@ -842,8 +843,9 @@ eventInstanceController.delete('/:id', async (req: Request, res: Response) => {
     );
 
     if (!eventInstanceExists) {
-      return res.status(404).send({error: `Event instance ${id} not found`});
+        return res.status(404).send({error: `Event instance ${id} not found`});
     }
+
     return res.status(204).send('Event Instance Deleted');
   } catch (error) {
     console.error(error);

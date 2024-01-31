@@ -346,7 +346,10 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
     const flattenedOrders : any[] = [];
     contact.orders.forEach((order) => {
       const orderItemsMap = new Map<string, any>();
-      const {ordertotal, refunded} = order
+      const {
+        ordertotal,
+        refunded,
+      } = order
           .order_ticketitems
           .reduce<{ordertotal: number, refunded: boolean}>((acc, ticket) => {
             if (!ticket.ticketitem) return acc;

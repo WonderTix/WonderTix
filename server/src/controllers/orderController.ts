@@ -250,6 +250,7 @@ orderController.put('/refund/:id', async (req, res) => {
 
     let refundIntent;
     if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
+    else if (order.payment_intent.includes('seeded-order')) refundIntent = `refund-seeded-order-${order.orderid}`;
     else {
       const refund = await stripe.refunds.create({
         payment_intent: order.payment_intent,

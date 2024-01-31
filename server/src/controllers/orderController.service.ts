@@ -6,6 +6,7 @@ import {
   ticketrestrictions,
   // eslint-disable-next-line camelcase
   order_ticketitems,
+  PrismaClient,
 } from '@prisma/client';
 
 
@@ -21,6 +22,7 @@ export const ticketingWebhook = async (
     },
   });
   if (!order) return;
+
   switch (eventType) {
     case 'checkout.session.completed': {
       await prisma.orders.update({
@@ -138,7 +140,7 @@ export const createRefundedOrder = async (
 
   await prisma.refunds.create({
     data: {
-      orderid_fk: 1,
+      orderid_fk: order.orderid,
       refund_intent: refundIntent,
       refunditems: {
         create: [
@@ -156,8 +158,8 @@ export const createRefundedOrder = async (
   );
 };
 
-const updateAvailableSeats = async (
-    prisma: ExtendedPrismaClient,
+export const updateAvailableSeats = async (
+    prisma: ExtendedPrismaClient | PrismaClient,
     instanceIds: number[],
 ) => {
   const eventInstances = await prisma.eventinstances.findMany({
@@ -179,7 +181,6 @@ const updateAvailableSeats = async (
       },
     },
   });
-
   await prisma.$transaction(eventInstances.map((instance) => prisma.eventinstances.update({
     where: {
       eventinstanceid: instance.eventinstanceid,

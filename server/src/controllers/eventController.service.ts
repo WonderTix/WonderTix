@@ -51,6 +51,7 @@ export const createStripeCheckoutSession = async (
 export const expireCheckoutSession = async (
     id: string,
 ) => stripe.checkout.sessions.expire(id);
+
 export const createStripeCoupon = async (discount: any) => {
   const stripeCoupon = await stripe.coupons.create({
     [discount.amount ? 'amount_off' : 'percent_off']: discount.amount ?

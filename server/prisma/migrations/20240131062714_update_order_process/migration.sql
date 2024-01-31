@@ -103,7 +103,7 @@ DROP COLUMN "refund_intent",
 ADD COLUMN     "orderdateandtime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 -- AlterTable
-ALTER TABLE "seasons" ADD COLUMN     "deletedat" TIMESTAMP(3);
+ALTER TABLE "seasons" ADD COLUMN     "deletedat" TIMESTAMP;
 
 -- AlterTable
 ALTER TABLE "ticketrestrictions" ADD COLUMN     "deletedat" TIMESTAMP(3);
@@ -127,7 +127,7 @@ DROP TABLE "singletickets";
 CREATE TABLE "order_ticketitems" (
     "id" SERIAL NOT NULL,
     "orderid_fk" INTEGER NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
+    "price" MONEY NOT NULL,
 
     CONSTRAINT "order_ticketitems_pkey" PRIMARY KEY ("id")
 );

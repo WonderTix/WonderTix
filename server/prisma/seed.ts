@@ -8,6 +8,7 @@ const importSeasons = require("./src/seedSeasons");
 const importTicketRestrictions = require("./src/seedTicketRestrictions");
 const importTicketTypes = require("./src/seedTicketTypes");
 const importUsers = require("./src/seedUsers");
+import importOrders from "./src/seedOrders";
 // PPH IMPORT HERE
 const importPPHAccounts = require("./src/seedPPH_Accounts");
 const importPPHContacts = require("./src/seedPPH_Contacts");
@@ -46,6 +47,7 @@ async function main() {
       await importEvents(prisma);
       await importEventInstances(prisma);
       await importTicketRestrictions(prisma);
+      await importOrders(prisma);
 
       // PPH SEEDING HERE
       await importPPHAccounts(prisma);

@@ -40,6 +40,7 @@ const RenderCheckin = (props: RenderCheckinProps) => {
   };
 
   if (token === '') return null;
+
   return (
     <Checkbox
       color='primary'
@@ -56,7 +57,7 @@ const RenderCheckin = (props: RenderCheckinProps) => {
 const renderTicketTypes = (params: GridCellParams) => {
   const ticketTypes = params.value?.split(',');
   return (
-    <ul className={'w-full h-[90%] overflow-y-scroll'}>
+    <ul className={'w-full h-[80%] overflow-y-scroll'}>
       {typeof ticketTypes === 'object' &&
         ticketTypes.map((value, index) => (
           <li key={`${params.row.id}-${index}`}>
