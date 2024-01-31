@@ -843,7 +843,7 @@ eventInstanceController.delete('/:id', async (req: Request, res: Response) => {
     );
 
     if (!eventInstanceExists) {
-        return res.status(404).send({error: `Event instance ${id} not found`});
+      return res.status(404).send({error: `Event instance ${id} not found`});
     }
 
     return res.status(204).send('Event Instance Deleted');

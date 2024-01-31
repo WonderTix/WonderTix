@@ -74,8 +74,6 @@ const renderTicketTypes = (params: GridCellParams) => {
  * @returns {ReactElement} DoorList
  */
 const DoorList = (): ReactElement => {
-  const {getAccessTokenSilently} = useAuth0();
-
   const [doorList, setDoorList] = useState([]);
   const [eventName, setEventName] = useState('');
   const [date, setDate] = useState<Date>(null);
