@@ -2,7 +2,7 @@ import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {Prisma} from '@prisma/client';
-import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook, readerWebhook, discoverReaders} from './orderController.service';
+import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook, readerWebhook, discoverReaders, abortPaymentIntent} from './orderController.service';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
@@ -26,14 +26,14 @@ orderController.post(
 
         const object = event.data.object;
         const metaData = object.metadata;
-
-        // console.log("About try reader webhook: " + metaData.sessionType);
+        const action = object.action;
 
         // Handle in-person payments
-        if (metaData.sessionType === '__reader') {
+        if (metaData.sessionType === '__reader' || event.type === 'terminal.reader.action_failed') {
           await readerWebhook(
             prisma,
             event.type,
+            action ? action.failure_message : 'no error',
             object.id, // should be a payment_intent ID
           );
         }
@@ -151,9 +151,28 @@ orderController.post('/', async (req: Request, res: Response) => {
 orderController.get('/readers', async (req: Request, res: Response) => {
   try {
     const toReturn = await discoverReaders();
-    return res.json(toReturn);
+    return res.status(200).json(toReturn);
   } catch (error) {
     res.status(500).json({error});
+  }
+});
+
+/**
+ * @swagger
+ * /2/order/reader-cancel:
+ *   post:
+ *     summary: Cancel payment intent and cancel order in prisma
+ *     tags:
+ *     - New Event API
+ */
+
+orderController.post('/reader-cancel', async (req: Request, res: Response) => {
+  const {paymentIntentID} = req.body;
+  try {
+    await abortPaymentIntent(prisma, paymentIntentID);
+    return res.status(200).json('Reader order successfully cancelled');
+  } catch (error) {
+    res.status(500).json({error: 'Internal Server Error'});
   }
 });
 

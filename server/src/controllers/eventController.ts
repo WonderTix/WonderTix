@@ -140,6 +140,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 eventController.post('/reader-intent', async (req: Request, res: Response) => {
   const {cartItems} = req.body;
   let paymentIntentID = "";
+  let clientSecret = "";
 
   try {
     if (!cartItems.length) {
@@ -149,11 +150,13 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
       await getOrderItems(cartItems, prisma);
 
     if (orderTotal > 0) {
-      paymentIntentID = await createStripePaymentIntent(
+      const {id, secret} = await createStripePaymentIntent(
         orderTotal * 100
       )
+      paymentIntentID = id;
+      clientSecret = secret;
     }
-    res.json({id: paymentIntentID});
+    res.json({id: paymentIntentID, secret: clientSecret});
   } catch (error) {
     console.error(error);
     if (error instanceof InvalidInputError) {
@@ -215,7 +218,6 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     res.status(500).json(error);
   }
 });
-
 
 /**
  * @swagger

@@ -54,20 +54,22 @@ export const createStripePaymentIntent = async (
     currency: 'usd', // hardcode
     payment_method_types: ['card_present'],
     capture_method: 'automatic',
+    confirmation_method: 'automatic',
     amount: orderTotal,
+    // off_session: false, // customer present
     metadata: {
       sessionType: '__reader',
     },
   }
   const intent = await stripe.paymentIntents.create(intentObject);
-  return intent.id;
+
+  return {id: intent.id, secret: intent.client_secret};
 }
 
 export const requestStripeReaderPayment = async (
   readerID: string,
   paymentIntentID: string
 ) => {
-  console.log('requesting payment');
   const requestPay = await stripe.terminal.readers.processPaymentIntent(
     readerID,
     {

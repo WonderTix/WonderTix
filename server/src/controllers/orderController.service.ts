@@ -39,6 +39,7 @@ export const ticketingWebhook = async (
 export const readerWebhook = async (
   prisma: ExtendedPrismaClient,
   eventType: string,
+  errMsg: string,
   paymentIntent: string,
 ) => {
   console.log('new websocket');
@@ -46,7 +47,7 @@ export const readerWebhook = async (
   ws.on('error', console.error);
   ws.on('open', () => {
     console.log('send message');
-    ws.send(`${eventType}`);
+    ws.send(JSON.stringify({eventType, errMsg}));
     ws.close();
   });
 
@@ -59,6 +60,7 @@ export const readerWebhook = async (
       });
       if (!order) return;
       console.log(order);
+      const intent = stripe.paymentIntents.cancel(paymentIntent); // avoid double charge
       await orderCancel(prisma, order.orderid);
       break;
     case 'payment_intent.requires_action':
@@ -246,3 +248,20 @@ export const discoverReaders = async () => {
   return discoverResult;
 }
 
+export const abortPaymentIntent = async (
+  prisma: ExtendedPrismaClient,
+  paymentIntentID: string
+) => {
+  const order = await prisma.orders.findFirst({
+    where: {
+      payment_intent: paymentIntentID,
+    },
+  });
+  if (!order) throw new Error('Unable to find order!');
+  console.log(order);
+  const intent = stripe.paymentIntents.cancel(paymentIntentID); // avoid double charge
+
+  if (!intent) throw new Error('Unable to find payment Intent!');
+
+  await orderCancel(prisma, order.orderid);
+}

@@ -354,9 +354,10 @@ const AdminPurchase = () => {
         response.json().then((result) => {
           const readerID = selectedReader;
           const paymentIntentID = result.id;
+          const clientSecret = result.secret;
 
           console.log(readerID);
-          navigate(paymentIntentID, {state: {cartItems, paymentIntentID, readerID}});
+          navigate(paymentIntentID, {state: {cartItems, paymentIntentID, clientSecret, readerID}});
         }).catch((error) => {
           console.log(error);
         });
