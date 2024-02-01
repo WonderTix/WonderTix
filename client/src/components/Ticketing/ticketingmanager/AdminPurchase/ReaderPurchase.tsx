@@ -35,30 +35,31 @@ const ReaderPurchase = () => {
 
   const socketURL = 'wss://localhost:8000/wss/reader/';
 
-  const {sendMessage, lastMessage, getWebSocket} = useWebSocket(socketURL, {
+  const {getWebSocket} = useWebSocket(socketURL, {
     shouldReconnect: () => true,
     onMessage: (event) => {
       const data = JSON.parse(event.data);
-      console.log(data);
-      setStatus(data.eventType);
-      if (data.eventType === 'payment_intent.succeeded') {
-        const ws = getWebSocket();
-        ws.close();
-        navigate(`/success`);
-      } else if (data.eventType === 'payment_intent.requires_action') { // not sure if this needs to be handelled but I think this is how its done
-        stripePromise.then((stripe) => {
-          if (!stripe) return;
-          stripe.confirmCardPayment(clientSecret).then((result) => {
-            console.log(result); // should handle failure/success here
+      if (data.messageType === 'reader' && data.paymentIntent === paymentIntentID) {
+        console.log(data);
+        setStatus(data.eventType);
+        if (data.eventType === 'payment_intent.succeeded') {
+          const ws = getWebSocket();
+          ws.close();
+          navigate(`/success`);
+        } else if (data.eventType === 'payment_intent.requires_action') { // not sure if this needs to be handelled but I think this is how its done
+          stripePromise.then((stripe) => {
+            if (!stripe) return;
+            stripe.confirmCardPayment(clientSecret).then((result) => {
+              console.log(result); // should handle failure/success here
+            });
           });
-        });
-      } else if (data.eventType === 'terminal.reader.action_failed') {
-        console.log(data.errMsg);
-        setErrMsg(data.errMsg + ' Order canceled. Please Try again.');
-        setDialog(true);
+        } else if (data.eventType === 'terminal.reader.action_failed') {
+          console.log(data.errMsg);
+          setErrMsg(data.errMsg + ' Order canceled. Please Try again.');
+          setDialog(true);
+        }
       }
     },
-      onOpen: () => sendMessage('reader websocket opened'),
   });
 
   useEffect(() => {
