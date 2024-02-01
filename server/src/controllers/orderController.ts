@@ -15,7 +15,6 @@ orderController.post(
     '/webhook',
     express.raw({type: 'application/json'}),
     async (req: Request, res: Response) => {
-      console.log("webhook called");
       const sig = req.headers['stripe-signature'];
       try {
         const event = await stripe.webhooks.constructEvent(

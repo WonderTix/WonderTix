@@ -40,7 +40,9 @@ const ReaderPurchase = () => {
     onMessage: (event) => {
       const ws = getWebSocket();
       const data = JSON.parse(event.data);
-      if (data.messageType === 'reader' && data.paymentIntent === paymentIntentID) {
+      if (data.messageType === 'reader' &&
+          data.paymentIntent === paymentIntentID ||
+          data.paymentIntent === readerID) { // in the case of terminal event, paymentIntent is a readerID
         console.log(data);
         setStatus(data.eventType);
         if (data.eventType === 'payment_intent.succeeded') {
@@ -55,7 +57,6 @@ const ReaderPurchase = () => {
           });
         } else if (data.eventType === 'terminal.reader.action_failed') {
           ws.close();
-        console.log(data.errMsg);
           setErrMsg(data.errMsg + ' Order canceled. Please Try again.');
           setDialog(true);
         }
@@ -74,7 +75,7 @@ const ReaderPurchase = () => {
         const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
         if (!paymentIntent) throw new Error('Cannot find payment intent!');
 
-        if (paymentIntent.status === 'canceled') return;
+        if (paymentIntent.status === 'canceled') throw new Error('Payment Already Canceled!');
 
         const response = await fetch( // request payment and put order in database
           process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
@@ -114,6 +115,7 @@ const ReaderPurchase = () => {
       e.preventDefault();
       e.returnValue = '';
       handleCancel();
+      navigate('/ticketing/purchaseticket');
     };
 
     window.addEventListener('beforeunload', alertUser);
