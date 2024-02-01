@@ -42,7 +42,12 @@ export const readerWebhook = async (
   errMsg: string,
   paymentIntent: string,
 ) => {
-  const ws = new WebSocket('wss://localhost:8000/wss/reader/');
+  const socketURL = process.env.WEBSOCKET_URL;
+  if (socketURL === undefined) {
+    console.error('websocket url undefined');
+    return;
+  }
+  const ws = new WebSocket(socketURL);
   ws.on('error', console.error);
   ws.on('open', () => {
     const messageType = 'reader';

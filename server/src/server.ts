@@ -52,9 +52,6 @@ import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
 import {seasonTicketTypePriceDefaultController} from './controllers/seasonTicketTypePriceDefaultController';
 
-let connection = false
-let currentConnection : WebSocket;
-
 const openApiSpec = swaggerJsdoc({
   definition: {
     openapi: '3.0.0',

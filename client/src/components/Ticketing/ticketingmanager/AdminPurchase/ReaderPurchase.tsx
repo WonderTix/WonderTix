@@ -33,7 +33,8 @@ const ReaderPurchase = () => {
   const event = 'reader';
   const paymentIntentID = useParams().id;
 
-  const socketURL = 'wss://localhost:8000/wss/reader/';
+  // const socketURL = process.env.WEBSOCKET_URL; use this once the env variable works
+  const socketURL = process.env.REACT_APP_ROOT_URL.replace('https', 'wss') + '/wss';
 
   const {getWebSocket} = useWebSocket(socketURL, {
     shouldReconnect: () => true,
