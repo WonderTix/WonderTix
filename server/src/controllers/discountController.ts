@@ -123,18 +123,12 @@ discountController.get('/', async (req: Request, res: Response) => {
       };
     }
 
-    if (Object.keys(filters).length > 0) {
-      const discounts = await prisma.discounts.findMany({
-        where: filters,
-        orderBy: {
-          discountid: 'desc',
-        },
-      });
-      res.status(200).json(discounts);
-      return;
-    }
-
-    const discounts = await prisma.discounts.findMany();
+    const discounts = await prisma.discounts.findMany({
+      ...(filters && {where: filters}),
+      orderBy: {
+        discountid: 'asc',
+      },
+    });
     res.status(200).json(discounts);
     return;
   } catch (error) {
@@ -249,20 +243,20 @@ discountController.post('/', async (req: Request, res: Response) => {
   try {
     // Validations
     const {amount, percent, usagelimit, min_events, min_tickets} = req.body;
-    if (amount < 0) {
-      return res.status(400).json({error: 'Amount cannot be negative'});
+    if (amount && amount < 1) {
+      return res.status(400).json({error: 'Amount cannot be 0 or less'});
     }
-    if (percent < 0 || percent > 100) {
-      return res.status(400).json({error: 'Percent cannot be negative or greater than 100'});
+    if (percent && percent < 1 || percent > 100) {
+      return res.status(400).json({error: 'Percent cannot be less than 0 or greater than 100'});
     }
-    if (usagelimit < 0) {
-      return res.status(400).json({error: 'Usage limit cannot be negative'});
+    if (usagelimit && usagelimit < 1) {
+      return res.status(400).json({error: 'Usage limit cannot be 0 or less'});
     }
-    if (min_events < 0) {
-      return res.status(400).json({error: 'Min events cannot be negative'});
+    if (min_events && min_events < 1) {
+      return res.status(400).json({error: 'Min events cannot be 0 or less'});
     }
-    if (min_tickets < 0) {
-      return res.status(400).json({error: 'Min tickets cannot be negative'});
+    if (min_tickets && min_tickets < 1) {
+      return res.status(400).json({error: 'Min tickets cannot be 0 or less'});
     }
 
     // Attempt to create discount
@@ -328,6 +322,24 @@ discountController.post('/', async (req: Request, res: Response) => {
 discountController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
+    const {amount, percent, usagelimit, min_events, min_tickets} = req.body;
+
+    if (amount && amount < 1) {
+      return res.status(400).json({error: 'Amount cannot be 0 or less'});
+    }
+    if (percent && percent < 1 || percent > 100) {
+      return res.status(400).json({error: 'Percent cannot be less than 0 or greater than 100'});
+    }
+    if (usagelimit && usagelimit < 1) {
+      return res.status(400).json({error: 'Usage limit cannot be 0 or less'});
+    }
+    if (min_events && min_events < 1) {
+      return res.status(400).json({error: 'Min events cannot be 0 or less'});
+    }
+    if (min_tickets && min_tickets < 1) {
+      return res.status(400).json({error: 'Min tickets cannot be 0 or less'});
+    }
+
     await prisma.discounts.update({
       where: {
         discountid: Number(id),

@@ -90,7 +90,7 @@ const DiscountCodes = (): ReactElement => {
       },
       renderHeader: () => (
         <Tooltip
-          title='Discounts with a non-zero percent and amount value will use the percent capped at the amount off'
+          title='Discounts with a percent and amount value will use the percent capped at the amount off'
           placement='top'
           arrow
         >
@@ -120,7 +120,7 @@ const DiscountCodes = (): ReactElement => {
       sortable: false,
       renderCell: (cell) => (
         <>
-          <Tooltip title='Edit' placement='top' arrow>
+          <Tooltip title='Edit' placement='top' enterDelay={500} arrow>
             <button
               className='p-2 rounded-lg text-zinc-500 hover:text-zinc-600 hover:bg-zinc-100
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
@@ -147,7 +147,7 @@ const DiscountCodes = (): ReactElement => {
               <EditIcon className='h-5 w-5' strokeWidth={2} />
             </button>
           </Tooltip>
-          <Tooltip title='Delete discount code' placement='top' arrow>
+          <Tooltip title='Delete' placement='top' enterDelay={500} arrow>
             <button
               className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'

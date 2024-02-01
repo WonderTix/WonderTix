@@ -1,6 +1,6 @@
 - code: SAVE10
   active: true
-  amount: 0
+  amount:
   percent: 10
   tickettypeid_fk:
   usagelimit:
@@ -9,7 +9,7 @@
 - code: FIVEOFF
   active: true
   amount: 5
-  percent: 0
+  percent:
   tickettypeid_fk:
   usagelimit:
   min_tickets:
@@ -17,7 +17,7 @@
 - code: TENOFF
   active: true
   amount: 10
-  percent: 0
+  percent:
   tickettypeid_fk:
   usagelimit:
   min_tickets:

@@ -81,7 +81,7 @@ export const getDiscountCodes = async (token: string) => {
     return discountCodes.map((code) => {
       return {
         ...code,
-        amount: Number(code.amount),
+        amount: code.amount ? Number(code.amount) : code.amount,
       };
     });
   } catch (error) {

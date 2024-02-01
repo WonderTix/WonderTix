@@ -80,25 +80,25 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
 
   const validate = (formValues: DiscountCode) => {
     const errors = {};
-    if (formValues.code?.length > 32) {
-      errors['code'] = 'Must be 32 characters or less';
-    }
-    if (formValues.amount < 0) {
-      errors['amount'] = 'Must be 0 or greater';
-    }
-    if (formValues.percent < 0 || formValues.percent > 100) {
-      errors['percent'] = 'Must be between 0 and 100';
-    }
-    if (formValues.minTickets < 0) {
-      errors['minTickets'] = 'Must be 0 or greater';
-    }
-    if (formValues.minEvents < 0) {
-      errors['minEvents'] = 'Must be 0 or greater';
-    }
-
     if (!formValues.amount && !formValues.percent) {
       errors['amount'] = 'Amount or Percent must have a value';
       errors['percent'] = 'Amount or Percent must have a value';
+    }
+
+    if (formValues.code?.length > 32) {
+      errors['code'] = 'Must be 32 characters or less';
+    }
+    if (formValues.amount && formValues.amount <= 0) {
+      errors['amount'] = 'Must be greater than 0';
+    }
+    if (formValues.percent && formValues.percent < 1 || formValues.percent > 100) {
+      errors['percent'] = 'Must be between 1 and 100';
+    }
+    if (formValues.minTickets && formValues.minTickets < 1) {
+      errors['minTickets'] = 'Must be 1 or greater';
+    }
+    if (formValues.minEvents && formValues.minEvents < 1) {
+      errors['minEvents'] = 'Must be 1 or greater';
     }
 
     Object.keys(values).forEach((key) => {
