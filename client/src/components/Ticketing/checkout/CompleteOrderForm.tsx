@@ -16,6 +16,7 @@ import {useAuth0} from '@auth0/auth0-react';
  * @param {string} phone
  * @param {string} email
  * @param {string} visitSource
+ * @param {string} contacts
  * @param {string} seatingAcc
  * @param {string} comments
  */
@@ -31,6 +32,7 @@ export interface CheckoutFormInfo {
   phone?: string;
   email: string;
   visitSource?: string;
+  contacts: string;
   seatingAcc: string;
   comments?: string;
 }
@@ -74,6 +76,7 @@ export default function CompleteOrderForm({
     email: isAuthenticated ? user.email : '',
     confirmEmail: isAuthenticated ? user.email : '',
     visitSource: '',
+    contacts: '',
     seatingAcc: 'None',
     comments: '',
     optIn: true,
@@ -240,6 +243,16 @@ export default function CompleteOrderForm({
                     placeholder='How did you hear about us?'
                     type='text'
                     id='visit-source'
+                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
+                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                  />
+                  <Field
+                    component={FormInput}
+                    name='contacts'
+                    label='Contacts'
+                    placeholder='Contacts'
+                    type='text'
+                    id='contacts'
                     labelClassName="block text-sm font-medium text-slate-700 ml-1"
                     inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                   />

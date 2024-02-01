@@ -19,6 +19,7 @@ import {EventRow} from './utils/adminCommon';
  * @param {string} phone
  * @param {string} email
  * @param {string} visitSource
+ * @param {string} contacts
  * @param {string} seatingAcc
  * @param {string} comments
  * @param {number} donation
@@ -35,6 +36,7 @@ export interface CheckoutFormInfo {
   phone?: string;
   email: string;
   visitSource?: string;
+  contacts: string;
   seatingAcc: string;
   comments?: string;
   donation?: number;
@@ -78,6 +80,7 @@ export default function AdminCompleteOrderForm({
     phone: '',
     email: '',
     visitSource: '',
+    contacts: '',
     seatingAcc: 'None',
     comments: '',
     donation: undefined,
@@ -233,6 +236,16 @@ export default function AdminCompleteOrderForm({
                   id='visit-source'
                   labelClassName='block text-sm font-medium text-slate-700 ml-1'
                   inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='contacts'
+                  label='Contacts'
+                  placeholder='Contacts'
+                  type='text'
+                  id='contacts'
+                  labelClassName="block text-sm font-medium text-slate-700 ml-1"
+                  inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
                 />
                 <div>
                   <label
