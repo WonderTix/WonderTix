@@ -42,12 +42,11 @@ export const readerWebhook = async (
   errMsg: string,
   paymentIntent: string,
 ) => {
-  console.log('new websocket');
   const ws = new WebSocket('wss://localhost:8000/wss/reader/');
   ws.on('error', console.error);
   ws.on('open', () => {
-    console.log('send message');
-    ws.send(JSON.stringify({eventType, errMsg}));
+    const messageType = 'reader';
+    ws.send(JSON.stringify({messageType, paymentIntent, eventType, errMsg}));
     ws.close();
   });
 

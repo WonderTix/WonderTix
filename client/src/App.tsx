@@ -183,7 +183,7 @@ const App = () => {
           element={<ProtectedRoute component={RefundOrdersMain} />}
         />
         <Route
-          path='ticketing/purchaseticket/:id'
+          path='/ticketing/purchaseticket/:id'
           element={<ProtectedRoute component={ReaderPurchasePage}/>}
         />
         <Route path='*' element={<PageNotFound />} />
