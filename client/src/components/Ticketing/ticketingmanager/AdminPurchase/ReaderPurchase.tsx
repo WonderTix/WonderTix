@@ -38,11 +38,11 @@ const ReaderPurchase = () => {
   const {sendMessage, lastMessage, getWebSocket} = useWebSocket(socketURL, {
     shouldReconnect: () => true,
     onMessage: (event) => {
+      const ws = getWebSocket();
       const data = JSON.parse(event.data);
       console.log(data);
       setStatus(data.eventType);
       if (data.eventType === 'payment_intent.succeeded') {
-        const ws = getWebSocket();
         ws.close();
         navigate(`/success`);
       } else if (data.eventType === 'payment_intent.requires_action') { // not sure if this needs to be handelled but I think this is how its done
@@ -53,6 +53,7 @@ const ReaderPurchase = () => {
           });
         });
       } else if (data.eventType === 'terminal.reader.action_failed') {
+        ws.close();
         console.log(data.errMsg);
         setErrMsg(data.errMsg + ' Order canceled. Please Try again.');
         setDialog(true);
@@ -65,6 +66,15 @@ const ReaderPurchase = () => {
     const processPayment = async () => {
       try {
         console.log({cartItems, paymentIntentID, clientSecret, readerID, discount});
+
+        const stripe = await stripePromise;
+        if (!stripe) throw new Error('Failed to initialize stripe!');
+
+        const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
+        if (!paymentIntent) throw new Error('Cannot find payment intent!');
+
+        if (paymentIntent.status === 'canceled') return;
+
         const response = await fetch( // request payment and put order in database
           process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
           {
@@ -98,6 +108,17 @@ const ReaderPurchase = () => {
       }
     };
     processPayment();
+
+    const alertUser = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+      handleCancel();
+    };
+
+    window.addEventListener('beforeunload', alertUser);
+    return () => {
+      window.removeEventListener('beforeunload', alertUser);
+    };
   }, []);
 
   const handleCloseDialog = () => {
@@ -116,7 +137,8 @@ const ReaderPurchase = () => {
       setStatus('payment_intent.' + paymentIntent.status);
     } catch (error) {
       console.error(error.message);
-      navigate('/ticketing/purchaseticket'); // maybe should be error display instead
+      setErrMsg(error.message);
+      setDialog(true);
     }
   };
 
@@ -152,16 +174,13 @@ const ReaderPurchase = () => {
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
             Reader Order Status
           </h1>
-          {/* Add a div to display the status */}
           <div className='text-3xl font-semibold'>
             {'ID: ' + paymentIntentID}
           </div>
           <div className='text-3xl font-semibold'>
             {'Status: ' + status}
           </div>
-          {/* Add a div to display the buttons */}
           <div className='flex mt-10 gap-4'>
-            {/* Use the Button component from Material UI [^1^][5] */}
             <Button variant='contained' color='primary' onClick={handleRefresh}>
               Refresh Status
             </Button>
