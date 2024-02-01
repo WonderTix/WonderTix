@@ -10,7 +10,10 @@ import {
   selectDiscount,
   fetchDiscountData,
   removeDiscountFromCart,
-  DiscountItem, selectCartTotal, selectDiscountValue, selectCartSubtotal,
+  DiscountItem,
+  selectCartTotal,
+  selectDiscountValue,
+  selectCartSubtotal,
 } from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
 
@@ -23,7 +26,7 @@ import {useNavigate} from 'react-router-dom';
 type TargetItem = {
   eventInstanceId: number;
   ticketTypeId: number;
-}
+};
 
 /**
  * Cart handler on clicks, resets and complete orders
@@ -40,9 +43,9 @@ const Cart = (): ReactElement => {
 
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartContents);
-  const discount = useAppSelector(selectDiscount);
-  const total = useAppSelector(selectCartTotal);
   const subtotal = useAppSelector(selectCartSubtotal);
+  const total = useAppSelector(selectCartTotal);
+  const discount = useAppSelector(selectDiscount);
   const discountValue = useAppSelector(selectDiscountValue);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -74,10 +77,12 @@ const Cart = (): ReactElement => {
   const handleRemove = () => {
     if (removeContext === RemoveContext.single) {
       if (targetItem) {
-        dispatch(removeTicketFromCart({
-          id: targetItem.eventInstanceId,
-          tickettypeId: targetItem.ticketTypeId,
-        }));
+        dispatch(
+          removeTicketFromCart({
+            id: targetItem.eventInstanceId,
+            tickettypeId: targetItem.ticketTypeId,
+          }),
+        );
         resetModal();
       }
     } else if (removeContext === RemoveContext.all) {
@@ -120,7 +125,10 @@ const Cart = (): ReactElement => {
   const displayModal = (eventInstanceId: number, ticketTypeId: number) => {
     setRemoveContext(RemoveContext.single);
     setRemoveContextMessage('this');
-    setTargetItem({eventInstanceId: eventInstanceId, ticketTypeId: ticketTypeId});
+    setTargetItem({
+      eventInstanceId: eventInstanceId,
+      ticketTypeId: ticketTypeId,
+    });
     openModal();
   };
 

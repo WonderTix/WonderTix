@@ -33,22 +33,14 @@ export const createDiscountCode = async (
         body: JSON.stringify({
           code: discountCode.code,
           active: discountCode.active,
-          amount:
-            discountCode.amount || discountCode.amount === 0
-              ? Number(discountCode.amount)
-              : null,
-          percent:
-            discountCode.percent || discountCode.percent === 0
-              ? Number(discountCode.percent)
-              : null,
-          min_tickets:
-            discountCode.minTickets || discountCode.minTickets === 0
-              ? Number(discountCode.minTickets)
-              : null,
-          min_events:
-            discountCode.minEvents || discountCode.minEvents === 0
-              ? Number(discountCode.minEvents)
-              : null,
+          amount: discountCode.amount ? Number(discountCode.amount) : null,
+          percent: discountCode.percent ? Number(discountCode.percent) : null,
+          min_tickets: discountCode.minTickets
+            ? Number(discountCode.minTickets)
+            : null,
+          min_events: discountCode.minEvents
+            ? Number(discountCode.minEvents)
+            : null,
         }),
       },
     );
@@ -107,22 +99,14 @@ export const editDiscountCode = async (
         body: JSON.stringify({
           code: discountCode.code,
           active: discountCode.active,
-          amount:
-            discountCode.amount || discountCode.amount === 0
-              ? Number(discountCode.amount)
-              : null,
-          percent:
-            discountCode.percent || discountCode.percent === 0
-              ? Number(discountCode.percent)
-              : null,
-          min_tickets:
-            discountCode.minTickets || discountCode.minTickets === 0
-              ? Number(discountCode.minTickets)
-              : null,
-          min_events:
-            discountCode.minEvents || discountCode.minEvents === 0
-              ? Number(discountCode.minEvents)
-              : null,
+          amount: discountCode.amount ? Number(discountCode.amount) : null,
+          percent: discountCode.percent ? Number(discountCode.percent) : null,
+          min_tickets: discountCode.minTickets
+            ? Number(discountCode.minTickets)
+            : null,
+          min_events: discountCode.minEvents
+            ? Number(discountCode.minEvents)
+            : null,
         }),
       },
     );
