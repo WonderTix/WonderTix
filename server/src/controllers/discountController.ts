@@ -243,7 +243,7 @@ discountController.post('/', async (req: Request, res: Response) => {
   try {
     // Validations
     const {amount, percent, usagelimit, min_events, min_tickets} = req.body;
-    if (amount && amount < 1) {
+    if (amount && amount <= 0) {
       return res.status(400).json({error: 'Amount cannot be 0 or less'});
     }
     if (percent && percent < 1 || percent > 100) {
@@ -324,7 +324,7 @@ discountController.put('/:id', async (req: Request, res: Response) => {
     const id = req.params.id;
     const {amount, percent, usagelimit, min_events, min_tickets} = req.body;
 
-    if (amount && amount < 1) {
+    if (amount && amount <= 0) {
       return res.status(400).json({error: 'Amount cannot be 0 or less'});
     }
     if (percent && percent < 1 || percent > 100) {
