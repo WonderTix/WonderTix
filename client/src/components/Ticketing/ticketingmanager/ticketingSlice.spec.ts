@@ -16,7 +16,7 @@ import ticketReducer, {
 } from './ticketingSlice';
 
 const event: Event = {
-  id: '1',
+  id: 1,
   title: 'Event 1',
   description: 'lorem ipsum donor',
   imageurl: 'https://test.com/image.jpg',
@@ -24,7 +24,7 @@ const event: Event = {
 
 const ticket1: Ticket = {
   event_instance_id: 1,
-  eventid: '1',
+  eventid: 1,
   admission_type: 'General Admission - Adult',
   date: new Date('2021-07-31T19:00:00'),
   ticket_price: 15.99,
@@ -35,7 +35,7 @@ const ticket1: Ticket = {
 
 const ticket2: Ticket = {
   event_instance_id: 2,
-  eventid: '1',
+  eventid: 1,
   admission_type: 'General Admission - Adult',
   date: new Date('2021-08-07T16:00:00'),
   ticket_price: 19.99,
@@ -74,11 +74,12 @@ const ticketRestriction2: TicketRestriction = {
 };
 
 const discount1: DiscountItem = {
+  discountid: -1,
   code: '',
   amount: 0,
   percent: 0,
-  minTickets: 0,
-  minEvents: 0,
+  min_tickets: 0,
+  min_events: 0,
 };
 
 const ticketingInitState: ticketingState = {
@@ -108,6 +109,7 @@ const ROOT_INIT_STATE: RootState = {
 describe('Ticketing slice', () => {
   const newCartItem: CartItem = {
     product_id: ticket1.event_instance_id,
+    eventId: 1,
     qty: 2,
     name: 'Event 1 Tickets',
     date: new Date('2021-07-31T19:00:00'),
@@ -128,6 +130,7 @@ describe('Ticketing slice', () => {
   describe('selectors', () => {
     const item1: CartItem = {
       product_id: 1,
+      eventId: 1,
       typeID: 1,
       qty: 2,
       name: 'thing',
@@ -145,6 +148,7 @@ describe('Ticketing slice', () => {
           item1,
           {
             product_id: 2,
+            eventId: 1,
             typeID: 1,
             qty: 4,
             name: 'thing2',
@@ -170,10 +174,10 @@ describe('Ticketing slice', () => {
     });
 
     it('selectEventData', () => {
-      const eventid = '1';
+      const eventid = 1;
       expect(selectEventData(ROOT_INIT_STATE, eventid))
         .toEqual({
-          id: '1',
+          id: 1,
           title: 'Event 1',
           description: 'lorem ipsum donor',
           imageurl: 'https://test.com/image.jpg',
@@ -200,7 +204,7 @@ describe('Ticketing slice', () => {
     });
 
     it('Date data is deserialized', () => {
-      const eventid = '1';
+      const eventid = 1;
       const eventData = selectEventData(ROOT_INIT_STATE, eventid);
       expect(eventData!.tickets[0].date instanceof Date).toEqual(true);
     });
@@ -269,5 +273,3 @@ describe('Ticketing slice', () => {
     });
   });
 });
-
-

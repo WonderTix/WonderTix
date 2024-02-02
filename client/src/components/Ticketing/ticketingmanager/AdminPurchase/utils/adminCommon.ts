@@ -39,8 +39,11 @@ export const initialTicketTypeRestriction: ticketTypeRestriction = {
   description: '',
 };
 
-export type ReaderRow = {
-  id: string;
-  device_type: string;
-  location: string;
+export const emptyDiscountCode = {
+  discountid: -1,
+  code: '',
+  amount: 0,
+  percent: 0,
+  min_tickets: 0,
+  min_events: 0,
 };

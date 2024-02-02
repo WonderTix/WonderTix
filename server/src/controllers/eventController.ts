@@ -7,9 +7,11 @@ import {
   createStripePaymentIntent,
   requestStripeReaderPayment,
   testPayReader,
+  getDiscountAmount,
   getOrderItems,
   LineItem,
   updateContact,
+  validateDiscount,
 } from './eventController.service';
 import {orderCancel, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -66,9 +68,15 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     } else if (donation && donation < 0) {
       return res.status(422).json({error: 'Amount of donation can not be negative'});
     }
+    if (discount.code != '') {
+      await validateDiscount(discount, cartItems, prisma);
+    }
+
     const {contactid} = await updateContact(formData, prisma);
     const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
       await getOrderItems(cartItems, prisma);
+    const discountAmount = getDiscountAmount(discount, orderTotal);
+
     const donationItem: LineItem = {
       price_data: {
         currency: 'usd',
@@ -80,12 +88,13 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       },
       quantity: 1,
     };
-    if (donation + orderTotal > 0) {
+    if (donation + orderTotal - discountAmount > 0) {
       toSend = await createStripeCheckoutSession(
           contactid,
           formData.email,
           donation,
         donation ? cartRows.concat(donationItem) : cartRows,
+        orderTotal,
         discount,
       );
     }
@@ -97,6 +106,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         orderTotal,
         eventInstanceQueries,
         toSend.id,
+        discount.code != '' ? discount.discountid : null,
     );
     if (toSend.id === 'comp') {
       await prisma.orders.update({
@@ -315,7 +325,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       },
     });
     return res.json(events.map((event) => ({
-      id: event.eventid.toString(),
+      id: event.eventid,
       seasonid: event.seasonid_fk,
       title: event.eventname,
       description: event.eventdescription,

@@ -11,21 +11,11 @@ import {
   fetchDiscountData,
   removeDiscountFromCart,
   DiscountItem,
+  selectCartTotal,
+  selectDiscountValue,
+  selectCartSubtotal,
 } from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
-
-/**
- * @param {Item} price: number, qty: number
- * @param {Function} itemCost - item: Item, item.price * item.qty
- * @param {Function} subtotalReducer - acc: number, item: Item, acc + itemCost(item)
- * @param {Function} totalReducer - subtotal: number, discount: DiscountItem
- */
-type Item = {
-  price: number;
-  qty: number;
-  payWhatCan: boolean;
-  payWhatPrice?: number;
-};
 
 /**
  * TargetItem is the type that can uniquely identify a cartItem
@@ -36,18 +26,6 @@ type Item = {
 type TargetItem = {
   eventInstanceId: number;
   ticketTypeId: number;
-}
-const itemCost = (item: Item) => item.price * item.qty;
-const subtotalReducer = (acc: number, item: Item) => {
-  if (!item.payWhatCan) {
-    return acc + itemCost(item);
-  } else {
-    return acc + item.payWhatPrice;
-  }
-};
-const totalReducer = (subtotal: number, discount: DiscountItem) => {
-  const total = subtotal * (1 - discount.percent / 100) - discount.amount;
-  return total < 0 ? 0 : total;
 };
 
 /**
@@ -56,17 +34,20 @@ const totalReducer = (subtotal: number, discount: DiscountItem) => {
  * @returns {ReactElement}
  */
 const Cart = (): ReactElement => {
-  const history = useNavigate();
-  const navigate = useNavigate();
-
   enum RemoveContext {
     single,
     all,
   }
 
+  const navigate = useNavigate();
+
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartContents);
-  const subtotal = items.reduce(subtotalReducer, 0);
+  const subtotal = useAppSelector(selectCartSubtotal);
+  const total = useAppSelector(selectCartTotal);
+  const discount = useAppSelector(selectDiscount);
+  const discountValue = useAppSelector(selectDiscountValue);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<TargetItem | null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
@@ -74,8 +55,6 @@ const Cart = (): ReactElement => {
   const [discountText, setDiscountText] = useState<string | null>(null);
   const [validDiscount, setValidDiscount] = useState(false);
   const [discountClicked, setDiscountClicked] = useState(false);
-  const discount = useAppSelector(selectDiscount);
-  const total = totalReducer(subtotal, discount);
 
   useEffect(() => {
     if (discount.code !== '') {
@@ -98,10 +77,12 @@ const Cart = (): ReactElement => {
   const handleRemove = () => {
     if (removeContext === RemoveContext.single) {
       if (targetItem) {
-        dispatch(removeTicketFromCart({
-          id: targetItem.eventInstanceId,
-          tickettypeId: targetItem.ticketTypeId,
-        }));
+        dispatch(
+          removeTicketFromCart({
+            id: targetItem.eventInstanceId,
+            tickettypeId: targetItem.ticketTypeId,
+          }),
+        );
         resetModal();
       }
     } else if (removeContext === RemoveContext.all) {
@@ -119,10 +100,10 @@ const Cart = (): ReactElement => {
   const printDiscountText = (disc: DiscountItem) => {
     if (disc.code === '') return;
 
-    if (disc.amount === 0) {
+    if (!disc.amount || disc.amount === 0) {
       return disc.percent + '% discount';
     } else {
-      return '$' + disc.amount + ' discount';
+      return `${toDollarAmount(Math.min(discountValue, subtotal))} discount`;
     }
   };
 
@@ -137,19 +118,22 @@ const Cart = (): ReactElement => {
   const removeDiscount = () => {
     setValidDiscount(false);
     setDiscountClicked(false);
-    setDiscountText('');
+    setDiscountText(null);
     dispatch(removeDiscountFromCart());
   };
 
   const displayModal = (eventInstanceId: number, ticketTypeId: number) => {
     setRemoveContext(RemoveContext.single);
     setRemoveContextMessage('this');
-    setTargetItem({eventInstanceId: eventInstanceId, ticketTypeId: ticketTypeId});
+    setTargetItem({
+      eventInstanceId: eventInstanceId,
+      ticketTypeId: ticketTypeId,
+    });
     openModal();
   };
 
   const navigateToCompleteOrder = () => {
-    history('/completeorder');
+    navigate('/completeorder');
   };
 
   return (
@@ -205,7 +189,7 @@ const Cart = (): ReactElement => {
             <p className='text-zinc-500'>There&apos;s nothing in your cart</p>
           )}
         </div>
-        <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-900'>
+        <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-800'>
           <div className='mb-3'>
             <h2 className='text-zinc-100 text-xl font-semibold'>Subtotal</h2>
             <p data-testid='subtotal-display' className='text-amber-300 italic'>
@@ -218,12 +202,12 @@ const Cart = (): ReactElement => {
               {!validDiscount && discountClicked && (
                 <p className='text-amber-300 italic'>Invalid discount code</p>
               )}
-              <div className='input-group flex items-center gap-1 w-full p-3 rounded-xl bg-sky-500'>
+              <div className='flex items-center justify-center gap-1 px-2 py-1 rounded-xl shadow-md ml-auto bg-zinc-600'>
                 <input
                   type='text'
                   placeholder='Discount code...'
                   aria-label='Discount code'
-                  className='input input-bordered rounded-md pl-2'
+                  className='p-1 px-2 rounded-md text-zinc-100 bg-zinc-600 disabled:bg-zinc-800'
                   value={discountText ? discountText : discount.code}
                   onChange={(e) => {
                     setDiscountText(e.target.value);
@@ -233,7 +217,7 @@ const Cart = (): ReactElement => {
                 />
                 {!validDiscount ? (
                   <button
-                    className='text-white enabled:hover:text-gray-200'
+                    className='p-2 text-zinc-300 hover:bg-zinc-700 hover:text-zinc-100 justify-end rounded-full'
                     onClick={applyDiscount}
                     aria-label='Apply discount code'
                   >
@@ -255,8 +239,9 @@ const Cart = (): ReactElement => {
                   </button>
                 ) : (
                   <button
-                    className='text-white enabled:hover:text-gray-200'
+                    className='p-2 text-zinc-300 hover:bg-zinc-700 hover:text-zinc-100 justify-end rounded-full'
                     onClick={removeDiscount}
+                    aria-label='Remove discount code'
                   >
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
