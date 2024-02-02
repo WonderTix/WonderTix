@@ -8,7 +8,6 @@ import {
   getDonationItems,
   getTicketItems,
   getDiscountAmount,
-  LineItem,
   updateContact,
   validateDiscount,
 } from './eventController.service';

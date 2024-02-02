@@ -105,7 +105,7 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
           allIds.push(ticket.eventinstanceid);
           byId = {...byId, [ticket.eventinstanceid]: {
             event_instance_id: ticket.eventinstanceid,
-            eventid: String(ticket.eventid_fk),
+            eventid: ticket.eventid_fk,
             date: getDate(ticket.eventtime.toISOString(), ticket.eventdate),
             totalseats: ticket.totalseats,
             availableseats: ticket.availableseats,
