@@ -1,6 +1,10 @@
 import React, {ReactElement, useEffect, useRef} from 'react';
 import {Field, Form} from 'react-final-form';
-import {Contact} from './contactUtils';
+import {
+  Contact,
+  seatingAccOptions,
+  seatingAccInOptions,
+} from './contactUtils';
 import {FormInput} from '../../Ticketing/FormInput';
 
 interface ContactPopUpProps {
@@ -33,6 +37,17 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
     title = 'Create Contact',
     values,
   } = props;
+
+  // Assigns seatingAcc to otherSeatingAcc input if there's a custom accommodation
+  const contact = {
+    ...values,
+    ...(!seatingAccInOptions(values.seatingAcc)
+      ? {
+          otherSeatingAcc: values.seatingAcc,
+          seatingAcc: 'Other',
+        }
+      : null),
+  };
 
   const contactPopUpRef = useRef(null);
 
@@ -80,8 +95,11 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
   const validate = (formValues: Contact) => {
     const errors = {};
 
-    if (formValues.seatingAcc === 'Other' && (!formValues.comments || formValues.comments === '')) {
-      errors['comments'] = 'Please Input Accommodation';
+    if (
+      formValues.seatingAcc === 'Other' &&
+      (!formValues.otherSeatingAcc || formValues.otherSeatingAcc === '')
+    ) {
+      errors['otherSeatingAcc'] = 'Please Input Accommodation';
     }
     if (!formValues.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
@@ -99,8 +117,10 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
     }
 
     Object.keys(values).forEach((key) => {
-      if (['first', 'last', 'email'].includes(key) &&
-        (!formValues[key] || formValues[key] === '')) {
+      if (
+        ['first', 'last', 'email'].includes(key) &&
+        (!formValues[key] || formValues[key] === '')
+      ) {
         errors[key] = 'Required';
       }
     });
@@ -115,9 +135,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
       aria-modal='true'
       ref={contactPopUpRef}
     >
-      <div
-        className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-scroll shadow-xl'
-      >
+      <div className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-scroll shadow-xl'>
         <button
           type='button'
           onClick={onCancel}
@@ -145,7 +163,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
         <Form
           onSubmit={onSubmit}
           validate={validate}
-          initialValues={values}
+          initialValues={contact}
           render={({handleSubmit, submitting, values}) => (
             <form onSubmit={handleSubmit} noValidate>
               <h3
@@ -229,6 +247,50 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                   labelClassName='block text-sm font-medium text-slate-700 ml-1'
                   inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                 />
+                <div className='grid gap-3 tab:grid-cols-2'>
+                  <Field
+                    component={FormInput}
+                    name='city'
+                    label='City'
+                    placeholder='City'
+                    type='text'
+                    id='city'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                  />
+                  <Field
+                    component={FormInput}
+                    name='state'
+                    label='State'
+                    placeholder='State'
+                    type='text'
+                    id='state'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                  />
+                </div>
+                <div className='grid gap-3 tab:grid-cols-2'>
+                  <Field
+                    component={FormInput}
+                    name='country'
+                    label='Country'
+                    placeholder='Country'
+                    type='text'
+                    id='country'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                  />
+                  <Field
+                    component={FormInput}
+                    name='postalCode'
+                    label='Postal Code'
+                    placeholder='Postal Code'
+                    type='text'
+                    id='zipcode'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                  />
+                </div>
                 <div>
                   <label
                     className='block text-sm font-medium text-slate-700 ml-1'
@@ -242,41 +304,37 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                     name='seatingAcc'
                     id='seating-acc'
                   >
-                    <option value='None'>
-                      Not at this time
-                    </option>
-                    <option value='Wheel Chair'>
-                      Wheelchair seat(s)
-                    </option>
-                    <option value='Aisle Seat'>
-                      Aisle seat(s)
-                    </option>
-                    <option value='First/Ground floor'>
-                      Seat(s) on the ground or the first level
-                    </option>
-                    <option value='ASL Interpreter'>
-                      Seat(s) in the ASL interpreters section
-                    </option>
-                    <option value='Wide Seats'>
-                      Wide seat(s)
-                    </option>
-                    <option value='Other'>
-                      Other
-                    </option>
+                    {Object.keys(seatingAccOptions).map(
+                      (value, index) => (
+                        <option key={index} value={value}>
+                          {seatingAccOptions[value]}
+                        </option>
+                      ),
+                    )}
                   </Field>
                 </div>
-                {values.seatingAcc === 'Other' && (
+                {(values.seatingAcc === 'Other' || !seatingAccInOptions(values.seatingAcc)) && (
                   <Field
                     component={FormInput}
-                    name='comments'
+                    name='otherSeatingAcc'
                     type='text'
                     placeholder='What is their accommodation?'
-                    id='comments'
+                    id='other-seating-acc'
                     label='Other Accommodation'
                     labelClassName='block text-sm font-medium text-slate-700 ml-1'
                     inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                   />
                 )}
+                <Field
+                  component={FormInput}
+                  name='comments'
+                  type='text'
+                  placeholder='Comments'
+                  id='comments'
+                  label='Comments'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                />
                 <div className='grid gap-x-3 gap-y-2 tab:grid-cols-2 ml-2 mt-1'>
                   <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
@@ -285,9 +343,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       name='newsletter'
                       id='newsletter'
                     />
-                    <label htmlFor='newsletter'>
-                      Subscribe to Newsletter
-                    </label>
+                    <label htmlFor='newsletter'>Subscribe to Newsletter</label>
                   </div>
                   <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
@@ -296,9 +352,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       name='donorBadge'
                       id='donor-badge'
                     />
-                    <label htmlFor='donor-badge'>
-                      Donor Badge
-                    </label>
+                    <label htmlFor='donor-badge'>Donor Badge</label>
                   </div>
                   <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
@@ -307,9 +361,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       name='vip'
                       id='vip'
                     />
-                    <label htmlFor='vip'>
-                      VIP
-                    </label>
+                    <label htmlFor='vip'>VIP</label>
                   </div>
                   <div className='flex gap-4 text-sm text-zinc-700'>
                     <Field
@@ -318,9 +370,7 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                       name='volunteerList'
                       id='volunteer-list'
                     />
-                    <label htmlFor='volunteer-list'>
-                      Volunteer List
-                    </label>
+                    <label htmlFor='volunteer-list'>Volunteer List</label>
                   </div>
                 </div>
               </article>

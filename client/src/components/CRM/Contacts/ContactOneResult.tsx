@@ -50,7 +50,12 @@ export const ContactOneResult = (): ReactElement => {
             email: res.data.email,
             phone: res.data.phone,
             address: res.data.address,
+            city: res.data.city,
+            state: res.data.state,
+            country: res.data.country,
+            postalCode: res.data.postalcode,
             seatingAcc: res.data.seatingaccom,
+            comments: res.data.comments,
             newsletter: res.data.newsletter,
             vip: res.data.vip,
             donorBadge: res.data.donorbadge,
@@ -58,6 +63,7 @@ export const ContactOneResult = (): ReactElement => {
             contactId: res.data.contactid,
             orders: res.data.orders,
             donations: res.data.donations,
+            createdDate: res.data.createddate,
           };
           setContact(contact);
         })

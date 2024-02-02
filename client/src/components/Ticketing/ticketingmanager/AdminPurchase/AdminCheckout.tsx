@@ -29,11 +29,13 @@ export default function AdminCheckout(): ReactElement {
   const eventDataFromPurchase = location.state?.eventData || [];
   const cartItems = location.state?.cartItems || [];
 
-  const doCheckout = async (formData: CheckoutFormInfo) => {
+  const doCheckout = async (checkoutFormInfo: CheckoutFormInfo) => {
     try {
+      const formData = {...checkoutFormInfo};
       if (formData.seatingAcc === 'Other') {
-        formData.seatingAcc = formData.comments;
+        formData.seatingAcc = formData.otherSeatingAcc;
       }
+
       const donation = +formData.donation;
       const discount = appliedDiscount ? appliedDiscount : emptyDiscountCode;
 
