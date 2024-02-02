@@ -48,6 +48,20 @@ export const createStripeCheckoutSession = async (
   return {id: session.id};
 };
 
+export const createStripeCoupon = async (discount: any, orderTotal: number) => {
+  const amountOff = getDiscountAmount(discount, orderTotal);
+
+  const stripeCoupon = await stripe.coupons.create({
+    [discount.amount ? 'amount_off' : 'percent_off']: discount.amount ?
+      amountOff * 100 :
+      discount.percent,
+    duration: 'once',
+    name: discount.code,
+    currency: 'usd',
+  });
+  return stripeCoupon.id;
+};
+
 export const createStripePaymentIntent = async (
   orderTotal: number
 ) => {
@@ -86,20 +100,6 @@ export const testPayReader = async (
   const pay = await stripe.testHelpers.terminal.readers.presentPaymentMethod(readerID);
   return pay;
 }
-
-export const createStripeCoupon = async (discount: any, orderTotal: number) => {
-  const amountOff = getDiscountAmount(discount, orderTotal);
-
-  const stripeCoupon = await stripe.coupons.create({
-    [discount.amount ? 'amount_off' : 'percent_off']: discount.amount ?
-      amountOff * 100 :
-      discount.percent,
-    duration: 'once',
-    name: discount.code,
-    currency: 'usd',
-  });
-  return stripeCoupon.id;
-};
 
 export const getOrderItems = async (
     cartItems: CartItem[],
