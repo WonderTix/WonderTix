@@ -1,12 +1,13 @@
-/* eslint-disable react/react-in-jsx-scope */
-
-import {removeAllTicketsFromCart, selectDiscount} from '../ticketingSlice';
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {
+  removeAllTicketsFromCart,
+} from '../ticketingSlice';
+import {useAppDispatch} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
-import {ReactElement, useState} from 'react';
+import React, {ReactElement, useState} from 'react';
 import AdminCompleteOrderForm, {
   CheckoutFormInfo,
 } from './AdminCompleteOrderForm';
+import {emptyDiscountCode} from './utils/adminCommon';
 import {useNavigate, useLocation} from 'react-router-dom';
 import AdminCart from './AdminCart';
 import PopUp from '../../PopUp';
@@ -24,18 +25,22 @@ export default function AdminCheckout(): ReactElement {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
+
   const eventDataFromPurchase = location.state?.eventData || [];
   const cartItems = location.state?.cartItems || [];
-  const discount = useAppSelector(selectDiscount);
+
   const [popUpMessage, setPopUpMessage] = useState('');
 
-  const doCheckout = async (formData: CheckoutFormInfo) => {
+  const doCheckout = async (checkoutFormInfo: CheckoutFormInfo) => {
     try {
-      formData.seatingAcc = !formData.comments
-        ? formData.seatingAcc
-        : `${formData.seatingAcc} - ${formData.comments}`;
+      const formData = {...checkoutFormInfo};
+      if (formData.seatingAcc === 'Other') {
+        formData.seatingAcc = formData.otherSeatingAcc;
+      }
 
       const donation = +formData.donation;
+      const discount = appliedDiscount ? appliedDiscount : emptyDiscountCode;
 
       const stripe = await stripePromise;
       if (!stripe) return;
@@ -75,11 +80,11 @@ export default function AdminCheckout(): ReactElement {
     <div className='w-full h-screen overflow-x-hidden absolute'>
       <div className='flex flex-col lg:ml-[15rem] lg:mx-[5rem] md:ml-[13rem] tab:mx-[2rem] mx-[0.5rem] mt=[5rem] mb-[9rem]'>
         <div className='flex flex-col mt-[6rem] items-center md:flex-row rounded-[1rem] md:items-stretch md:bg-white w-full h-full'>
-          <div className='min-w-414 w-full h-full md:m-[2rem] mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
+          <div className='min-w-414 w-full h-full md:m-[2rem] md:mr-5 mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
             <div className='flex flex-col items-center h-auto w-full'>
-              <div className='text-2xl lg:text-5xl font-bold mb-5'>
+              <h1 className='text-3xl font-bold mb-5'>
                 Complete Order
-              </div>
+              </h1>
               <AdminCompleteOrderForm
                 onSubmit={doCheckout}
                 backButtonRoute='../ticketing/purchaseticket'
@@ -89,12 +94,13 @@ export default function AdminCheckout(): ReactElement {
           </div>
           <div
             className='md:w-[30rem] w-full mt-10
-               md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
-                flex-col items-center rounded-xl justify-between'
+              md:ml-5 md:m-[2rem] bg-zinc-900 p-9 flex
+              flex-col items-center rounded-xl justify-between'
           >
             <AdminCart
               backButtonRoute='../ticketing/purchaseticket'
               eventDataFromPurchase={eventDataFromPurchase}
+              onDiscountChange={setAppliedDiscount}
             />
           </div>
         </div>

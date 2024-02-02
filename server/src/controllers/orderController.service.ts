@@ -50,7 +50,7 @@ export const orderFulfillment = async (
         orderTicketItems?: any[],
         donations?: any[],
     },
-    discount?: number,
+    discountId?: number,
 ) => {
   const {orderTicketItems, donations} = orderItems;
   const result = await prisma.$transaction([
@@ -58,7 +58,7 @@ export const orderFulfillment = async (
       data: {
         contactid_fk: contactid,
         checkout_sessions: checkoutSession,
-        discountid_fk: discount,
+        discountid_fk: discountId,
         ...(orderTicketItems && {order_ticketitems: {create: orderTicketItems}}),
         ...(donations && {donations: {create: donations}}),
       },
@@ -149,6 +149,15 @@ export const createRefundedOrder = async (
         ],
       },
     },
+  });
+
+  await prisma.orders.update({
+      where: {
+          orderid: order.orderid,
+      },
+      data: {
+         discountid_fk: null,
+      },
   });
 
   await updateAvailableSeats(

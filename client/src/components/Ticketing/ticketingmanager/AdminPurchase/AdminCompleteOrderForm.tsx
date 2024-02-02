@@ -20,6 +20,7 @@ import {EventRow} from './utils/adminCommon';
  * @param {string} email
  * @param {string} visitSource
  * @param {string} seatingAcc
+ * @param {string} otherSeatingAcc
  * @param {string} comments
  * @param {number} donation
  */
@@ -36,6 +37,7 @@ export interface CheckoutFormInfo {
   email: string;
   visitSource?: string;
   seatingAcc: string;
+  otherSeatingAcc?: string;
   comments?: string;
   donation?: number;
 }
@@ -79,6 +81,7 @@ export default function AdminCompleteOrderForm({
     email: '',
     visitSource: '',
     seatingAcc: 'None',
+    otherSeatingAcc: '',
     comments: '',
     donation: undefined,
     optIn: undefined,
@@ -86,14 +89,7 @@ export default function AdminCompleteOrderForm({
 
   const validate = (values) => {
     const errors = {};
-    Object.keys(baseValues).forEach((key) => {
-      if (
-        ['firstName', 'lastName', 'email'].includes(key) &&
-        (!values[key] || values[key] === '')
-      ) {
-        errors[key] = 'Required';
-      }
-    });
+
     if (!values.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
     }
@@ -110,13 +106,21 @@ export default function AdminCompleteOrderForm({
     }
     if (
       values.seatingAcc === 'Other' &&
-      (!values.comments || values.comments === '')
+      (!values.otherSeatingAcc || values.otherSeatingAcc === '')
     ) {
-      errors['comments'] = 'Please Input Accommodation';
+      errors['otherSeatingAcc'] = 'Please Input Accommodation';
     }
     if (values.donation < 0) {
       errors['donation'] = 'Invalid';
     }
+    Object.keys(baseValues).forEach((key) => {
+      if (
+        ['firstName', 'lastName', 'email'].includes(key) &&
+        (!values[key] || values[key] === '')
+      ) {
+        errors[key] = 'Required';
+      }
+    });
     return errors;
   };
 
@@ -127,7 +131,7 @@ export default function AdminCompleteOrderForm({
           onSubmit={onSubmit}
           validate={validate}
           initialValues={baseValues}
-          render={({handleSubmit, submitting}) => (
+          render={({handleSubmit, submitting, values}) => (
             <form
               onSubmit={handleSubmit}
               noValidate
@@ -258,10 +262,22 @@ export default function AdminCompleteOrderForm({
                     </option>
                     <option value='Wide Seats'>Wide seat(s)</option>
                     <option value='Other'>
-                      Other (describe in comment section)
+                      Other
                     </option>
                   </Field>
                 </div>
+                {values.seatingAcc === 'Other' && (
+                  <Field
+                    component={FormInput}
+                    name='otherSeatingAcc'
+                    type='text'
+                    placeholder='What is their accommodation?'
+                    id='other-seating-acc'
+                    label='Other Accommodation'
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                  />
+                )}
                 <Field
                   component={FormInput}
                   name='comments'

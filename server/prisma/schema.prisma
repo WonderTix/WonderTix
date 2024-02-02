@@ -20,6 +20,7 @@ model contacts {
   country       String?  @db.VarChar(255)
   postalcode    String?  @db.VarChar(255)
   seatingaccom  String?  @db.VarChar(255)
+  comments      String?  @db.VarChar(255)
   donorbadge    Boolean? @default(false)
   vip           Boolean? @default(false)
   volunteerlist Boolean? @default(false)
@@ -30,58 +31,51 @@ model contacts {
 
 /// date is used to store information about specific dates to simplify queries
 model date {
-  dateid                              Int              @id
-  date_actual                         DateTime         @db.Date
-  day_name                            String           @db.VarChar(9)
-  day_of_week                         Int
-  day_of_month                        Int
-  day_of_quarter                      Int
-  day_of_year                         Int
-  week_of_month                       Int
-  week_of_year                        Int
-  month_actual                        Int
-  month_name                          String           @db.VarChar(9)
-  quarter                             Int
-  year_actual                         Int
-  first_day_of_week                   DateTime         @db.Date
-  last_day_of_week                    DateTime         @db.Date
-  first_day_of_month                  DateTime         @db.Date
-  last_day_of_month                   DateTime         @db.Date
-  first_day_of_quarter                DateTime         @db.Date
-  last_day_of_quarter                 DateTime         @db.Date
-  first_day_of_year                   DateTime         @db.Date
-  last_day_of_year                    DateTime         @db.Date
-  weekend                             Boolean
-  discounts_discounts_enddateTodate   discounts[]      @relation("discounts_enddateTodate")
-  discounts_discounts_startdateTodate discounts[]      @relation("discounts_startdateTodate")
-  eventinstances                      eventinstances[]
-  seasons_seasons_enddateTodate       seasons[]        @relation("seasons_enddateTodate")
-  seasons_seasons_startdateTodate     seasons[]        @relation("seasons_startdateTodate")
-  task_task_dateassignedTodate        task[]           @relation("task_dateassignedTodate")
-  task_task_datecreatedTodate         task[]           @relation("task_datecreatedTodate")
-  task_task_datedueTodate             task[]           @relation("task_datedueTodate")
+  dateid                          Int              @id
+  date_actual                     DateTime         @db.Date
+  day_name                        String           @db.VarChar(9)
+  day_of_week                     Int
+  day_of_month                    Int
+  day_of_quarter                  Int
+  day_of_year                     Int
+  week_of_month                   Int
+  week_of_year                    Int
+  month_actual                    Int
+  month_name                      String           @db.VarChar(9)
+  quarter                         Int
+  year_actual                     Int
+  first_day_of_week               DateTime         @db.Date
+  last_day_of_week                DateTime         @db.Date
+  first_day_of_month              DateTime         @db.Date
+  last_day_of_month               DateTime         @db.Date
+  first_day_of_quarter            DateTime         @db.Date
+  last_day_of_quarter             DateTime         @db.Date
+  first_day_of_year               DateTime         @db.Date
+  last_day_of_year                DateTime         @db.Date
+  weekend                         Boolean
+  eventinstances                  eventinstances[]
+  seasons_seasons_enddateTodate   seasons[]        @relation("seasons_enddateTodate")
+  seasons_seasons_startdateTodate seasons[]        @relation("seasons_startdateTodate")
+  task_task_dateassignedTodate    task[]           @relation("task_dateassignedTodate")
+  task_task_datecreatedTodate     task[]           @relation("task_datecreatedTodate")
+  task_task_datedueTodate         task[]           @relation("task_datedueTodate")
 }
 
-/// discounts are applied to orders and may be limited to specific ticket types, event and/or dates
+/// discounts are applied to orders and may be limited to specific ticket types
 /// amount is a fixed amount discount, percent is a percentage discount
 /// discounts with a percent and amount value will use the percent value capped at the amount value
 model discounts {
-  discountid                     Int         @id @default(autoincrement())
-  code                           String?     @db.VarChar(32)
-  amount                         Int?
-  percent                        Int?
-  startdate                      Int?
-  enddate                        Int?
-  tickettypeid_fk                Int?
-  createdby_fk                   Int?
-  usagelimit                     Int?
-  min_tickets                    Int?
-  min_events                     Int?
-  users                          users?      @relation(fields: [createdby_fk], references: [userid], onDelete: NoAction, onUpdate: NoAction)
-  date_discounts_enddateTodate   date?       @relation("discounts_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
-  date_discounts_startdateTodate date?       @relation("discounts_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
-  tickettype                     tickettype? @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
-  orders                         orders[]
+  discountid      Int         @id @default(autoincrement())
+  code            String      @unique @db.VarChar(32)
+  active          Boolean
+  amount          Decimal?    @db.Money
+  percent         Int?
+  tickettypeid_fk Int?
+  usagelimit      Int?
+  min_tickets     Int?
+  min_events      Int?
+  tickettype      tickettype? @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  orders          orders[]
 }
 
 /// customer or anonymous donations
@@ -290,13 +284,12 @@ model tickettype {
 /// users have access to the admin area to manage events, tickets, etc
 /// only users with the is_superadmin flag can access the reports
 model users {
-  userid                       Int         @id @default(autoincrement())
-  username                     String      @db.VarChar(255)
-  is_superadmin                Boolean     @default(false)
-  auth0_id                     String?     @db.VarChar(255)
-  discounts                    discounts[]
-  task_task_assignto_fkTousers task[]      @relation("task_assignto_fkTousers")
-  task_task_reportto_fkTousers task[]      @relation("task_reportto_fkTousers")
+  userid                       Int     @id @default(autoincrement())
+  username                     String  @db.VarChar(255)
+  is_superadmin                Boolean @default(false)
+  auth0_id                     String? @db.VarChar(255)
+  task_task_assignto_fkTousers task[]  @relation("task_assignto_fkTousers")
+  task_task_reportto_fkTousers task[]  @relation("task_reportto_fkTousers")
 }
 
 enum freq {

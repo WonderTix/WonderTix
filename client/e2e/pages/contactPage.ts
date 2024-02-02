@@ -18,6 +18,7 @@ export class ContactPage {
     readonly customerNewsletter: Locator;
     readonly customerDonor: Locator;
     readonly customerAccommodations: Locator;
+    readonly customerComments: Locator;
     readonly customerVIP: Locator;
     readonly customerVolunteer: Locator;
 
@@ -37,6 +38,7 @@ export class ContactPage {
         this.customerNewsletter = page.getByTestId('contact-newsletter');
         this.customerDonor = page.getByTestId('contact-donorbadge');
         this.customerAccommodations = page.getByTestId('contact-accommodation');
+        this.customerComments = page.getByTestId('contact-comments');
         this.customerVIP = page.getByTestId('contact-vip');
         this.customerVolunteer = page.getByTestId('contact-volunteer');
     }
@@ -61,6 +63,7 @@ export class ContactPage {
         expect(await currentCard.getByTestId('contact-postalCode').textContent()).toBe(customer.postCode);
         expect(await currentCard.getByTestId('contact-phone').textContent()).toBe(customer.phoneNumber);
         expect(await currentCard.getByTestId('contact-accommodation').textContent()).toBe(customer.accommodations);
+        expect(await currentCard.getByTestId('contact-comments').textContent()).toBe(customer.comments);
     }
 
     // Incomplete, page functionality not implemented

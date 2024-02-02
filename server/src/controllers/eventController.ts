@@ -7,7 +7,10 @@ import {
   expireCheckoutSession,
   getDonationItems,
   getTicketItems,
+  getDiscountAmount,
+  LineItem,
   updateContact,
+  validateDiscount,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -63,6 +66,10 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       return res.status(400).json({error: 'Cart is empty'});
     }
 
+    if (discount.code != '') {
+      await validateDiscount(discount, cartItems, prisma);
+    }
+
     const {contactid} = await updateContact(formData, prisma);
 
     const {
@@ -78,13 +85,15 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       donationTotal,
     } = getDonationItems([donation]);
 
+    const discountAmount = getDiscountAmount(discount, ticketTotal);
 
-    if (ticketTotal + donationTotal > .49) {
+    if (ticketTotal + donationTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
           contactid,
           formData.email,
           donation,
           ticketCartRows.concat(donationCartRows),
+          ticketTotal,
           discount,
       );
     } else if (ticketTotal + donationTotal > 0) {
@@ -100,6 +109,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           orderTicketItems,
           donations,
         },
+        discount.code != '' ? discount.discountid : null,
     );
 
     if (toSend.id === 'comp') {
@@ -256,7 +266,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
     return res.json(events
         .filter((event) => event.eventinstances.filter((instance) => instance.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length).length)
         .map((event) => ({
-          id: event.eventid.toString(),
+          id: event.eventid,
           seasonid: event.seasonid_fk,
           title: event.eventname,
           description: event.eventdescription,
