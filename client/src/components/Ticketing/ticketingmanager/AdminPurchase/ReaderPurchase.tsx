@@ -154,9 +154,24 @@ const ReaderPurchase = () => {
   };
 
   const handleCancel = async () => {
-    if (status != 'terminal.reader.action.succeeded' && // must make sure we haven't already finished charging
-        status != 'payment.intent.succeeded' &&
-        status != 'charge.succeeded') {
+    let newStatus = '';
+    try {
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error('Failed to initialize stripe!');
+
+      const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
+      if (!paymentIntent) throw new Error('Cannot find payment intent!');
+
+      newStatus = 'payment_intent.' + paymentIntent.status;
+      setStatus(newStatus);
+    } catch (error) {
+      console.error(error.message);
+      setErrMsg(error.message);
+      setDialog(true);
+    }
+    if (newStatus != 'terminal.reader.action_succeeded' && // must make sure we haven't already finished charging
+        newStatus != 'payment_intent.succeeded' &&
+        newStatus != 'charge.succeeded') {
       const response = await fetch( // request payment and put order in database
         process.env.REACT_APP_API_2_URL + `/order/reader-cancel`,
         {
@@ -175,6 +190,9 @@ const ReaderPurchase = () => {
 
       console.log('order cancelled!');
       navigate('/ticketing/purchaseticket');
+    } else {
+      setErrMsg('Order completed before cancelation could occur.');
+      setDialog(true);
     }
   };
 
