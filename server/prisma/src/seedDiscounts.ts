@@ -19,12 +19,10 @@ async function seedDiscounts(prisma: PrismaClient) {
 
     const preparedData = data.map((item) => ({
       code: item.code,
+      active: item.active,
       amount: item.amount,
       percent: item.percent,
-      startdate: item.startdate,
-      enddate: item.enddate,
       tickettypeid_fk: item.tickettypeid,
-      createdby_fk: item.createdby,
       usagelimit: item.usagelimit,
       min_tickets: item.min_tickets,
       min_events: item.min_events,

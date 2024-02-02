@@ -54,7 +54,7 @@ const EventShowings = (): ReactElement => {
   };
 
   const {eventid} = useParams<EventPageProps>();
-  const eventData = useAppSelector((state) => selectEventData(state, eventid));
+  const eventData = useAppSelector((state) => selectEventData(state, Number(eventid)));
   if (eventData === undefined) return <p>Whoops! Event not found</p>;
   const {title, description, tickets} = eventData;
   const imageUrl = eventData.imageurl;
