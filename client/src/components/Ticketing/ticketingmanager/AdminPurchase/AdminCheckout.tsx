@@ -30,11 +30,13 @@ export default function AdminCheckout(): ReactElement {
   const cartItems = location.state?.cartItems || [];
   const discount = useAppSelector(selectDiscount);
 
-  const doCheckout = async (formData: CheckoutFormInfo) => {
+  const doCheckout = async (checkoutFormInfo: CheckoutFormInfo) => {
     try {
+      const formData = {...checkoutFormInfo};
       if (formData.seatingAcc === 'Other') {
-        formData.seatingAcc = formData.comments;
+        formData.seatingAcc = formData.otherSeatingAcc;
       }
+
       const donation = +formData.donation;
 
       const stripe = await stripePromise;

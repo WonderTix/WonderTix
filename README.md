@@ -37,13 +37,8 @@ Future features include managing/creating email campaigns and ticket exchanges.
    ```
 
 2. Create a `.env` file and copy over the contents from the `.env.dist` (.env example) file.
-   1. Set the values for `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET`. *you must get these values from the team lead*
-   2. Set the value for `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. *you must get this value from the team lead*
-   3. Set the value for `PRIVATE_STRIPE_WEBHOOK`. **explained in step 5**
-   4. Team Leads Auth0 Key provisioning instructions: 
-      1. Obtain access to the wtix-dev Auth0 account. 
-      2. Go to Applications > Applications > Default App
-      3. Use a secure note transfer service to send the Client ID and Client Secret to your team members. 
+   1. Set a value for the `AUTH0_CLIENT_ID`. Currently, we use the Wondertix Development Single Page Application in the `wtix-dev` Auth0 tenant for authenticating requests made from locally running instances of Wondertix. If you don't have access to the `wtix-dev` tenant, ask a team lead for access and/or for the value of the Client ID.
+   2. Set values for the `PRIVATE_STRIPE_KEY` and `PUBLIC_STRIPE_KEY`. For testing, we also send requests from locally running instances of Wondertix to an external Stripe account. The Stripe account we use for this is `wtix-dev`. Likewise, if you don't already, ask a team lead for access and/or for the values of `wtix-dev`'s private and public keys. 
 3. Create mkcert certificates.
    1. Navigate to `<path/to/WonderTix/server>` and `<path/to/WonderTix/client>`.
    2. Run `mkcert -install` to install the local certificate authority.
@@ -51,11 +46,13 @@ Future features include managing/creating email campaigns and ticket exchanges.
    4. In the server directory, run the following command:
       - On Windows: `copy ($(mkcert -CAROOT) + '/rootCA.pem') .`.
       - On Mac/Linux: `cp $(mkcert -CAROOT)/rootCA.pem .`.
-4. Run `docker-compose up -d`.
-5. To test the checkout process with Stripe, make sure the Stripe CLI is installed.
-   1. Run `stripe login` and press enter to accept access. This only needs to be done once.
-   2. Run `stripe listen --forward-to https://localhost:8000/api/2/order/webhook --events checkout.session.completed,checkout.session.expired` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable.
-      - Please note that stripe listen must remain running in order for the checkout process to complete.
+4. Run `docker-compose up -d` (or `docker compose up` to see live container logs in the terminal). This starts a locally running instance of Wondertix using docker containers. 
+5. To test the checkout process with Stripe, make sure you have the [Stripe CLI](https://stripe.com/docs/stripe-cli) installed. 
+   1. Once the Stripe CLI is installed, run `stripe login` and press enter to open the browser. 
+   2. In the browser that the Stripe CLI opens, make sure you select `Wondertix Dev` as the account, verify that the code matches that in your terminal, and select `Allow Access`. If `Wondertix Dev` does not appear as an option, you will need to ask for access to the account. You should only need to login to the account like this once. 
+   3. Back in your terminal, run `stripe listen --forward-to https://localhost:8000/api/2/order/webhook --events checkout.session.completed,checkout.session.expired` and copy the resulting ***signing secret*** as your `PRIVATE_STRIPE_WEBHOOK` variable in the `.env` file. This tells Stripe to forward events to your local webhook. See the `stripe listen` command [API docs](https://stripe.com/docs/cli/listen) for more details. 
+      - __NOTE__ - stripe listen _must_ remain running in your terminal for events to be forwarded and, subsequently, for the checkout process to complete. This means that everytime you wish to test the checkout process locally, you have to run the `stripe listen` command and leave it running. You should see your device listed in the Stripe developer portal on the `Wondertix Dev` account under `Webhooks -> Local listeners` and the `Status` should be `Listening`. 
+   4. You should now be able to sucessfully checkout with Stripe locally and see order details updated. See [Test Payment Methods](https://stripe.com/docs/testing) for how to checkout with Stripe in test mode. 
 6. The client will be available at <https://localhost:3000>
 7. The server will be available at <https://localhost:8000>
 8. The swagger docs will be available at <https://localhost:8000/api/docs>

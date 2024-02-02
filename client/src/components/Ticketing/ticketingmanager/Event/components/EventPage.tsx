@@ -6,7 +6,7 @@ import {LoadingScreen} from '../../../mainpage/LoadingScreen';
 import Udash_nav from '../../udash_navbar';
 import PopUp from '../../../PopUp';
 
-export const EventPageV2 = () => {
+export const EventPage = () => {
   const {
     eventID,
     loading,

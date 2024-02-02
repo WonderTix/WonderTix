@@ -238,6 +238,8 @@ interface checkoutForm {
   lastName: string;
   streetAddress: string;
   postalCode: string;
+  city: string,
+  state: string;
   country: string;
   phone: string;
   email: string;
@@ -297,6 +299,10 @@ const validateContact = (formData: checkoutForm) => {
     ),
     // Only include or validate the following if provided
     ...(formData.streetAddress && {address: formData.streetAddress}),
+    ...(formData.city && {city: formData.city}),
+    ...(formData.state && {state: formData.state}),
+    ...(formData.postalCode && {postalcode: formData.postalCode}),
+    ...(formData.country && {country: formData.country}),
     ...(formData.phone && {
       phone: validateWithRegex(
           formData.phone,
@@ -305,6 +311,7 @@ const validateContact = (formData: checkoutForm) => {
       ),
     }),
     ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
+    ...(formData.comments && {comments: formData.comments}),
     ...(formData.optIn && {newsletter: formData.optIn}),
   };
 };

@@ -66,7 +66,6 @@ gcloud run deploy "wtix-server-${ENV}" \
   ROOT_URL=${ROOT_URL},\
   SHOULD_SEED=${SHOULD_SEED}" \
   --set-secrets="\
-  AUTH0_CLIENT_SECRET=AUTH0_CLIENT_SECRET:${ENV},\
   DATABASE_URL=DATABASE_URL:${ENV},\
   DB_DATABASE=DB_DATABASE:${ENV},\
   DB_HOST=DB_HOST:${ENV},\

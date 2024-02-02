@@ -21,6 +21,7 @@ export class EventsPage {
   readonly allViewOption : Locator;
 
   readonly newEventSave: Locator;
+  readonly newShowingSave: Locator;
   readonly leftBarEvent: Locator;
   readonly eventContinue: Locator;
   readonly eventClose: Locator;
@@ -34,7 +35,8 @@ export class EventsPage {
   readonly editEventDate: Locator;
   readonly editEventTime: Locator;
   readonly editTicketQuantity: Locator;
-  readonly cancelButton: Locator;
+  readonly eventCancelButton: Locator;
+  readonly showingCancelButton: Locator;
   readonly homePage: Locator;
   readonly takeMeThere: Locator;
   readonly getTickets: Locator;
@@ -72,7 +74,7 @@ export class EventsPage {
     this.eventNameBlank = page.getByLabel('Event Name:');
     this.eventDesBlank = page.getByLabel('Event Description:');
     this.imageURL = page.getByLabel('Image URL:');
-    this.newEventSave = page.getByLabel('Save');
+    this.newEventSave = page.getByTestId('event-save-button');
 
     this.eventContinue = page.getByRole('button', {name: 'Continue'});
     this.eventClose = page.getByRole('button', {name: 'Close', exact: true});
@@ -81,10 +83,12 @@ export class EventsPage {
     this.editEventName = page.getByLabel('Event Name:');
     this.editEventDes = page.getByLabel('Event Description:');
     this.editAddShowing = page.getByLabel('Add Showing');
+    this.newShowingSave = page.getByTestId('showing-save-button');
     this.editShowingId = page
       .locator('div:nth-child(3) > .bg-blue-500')
       .first();
-    this.cancelButton = page.getByRole('button', {name: 'Cancel'});
+    this.eventCancelButton = page.getByTestId('event-leave-edit');
+    this.showingCancelButton = page.getByTestId('showing-leave-edit');
     this.editEventDate = page.getByLabel('Event Date:');
     this.editEventTime = page.getByLabel('Event Time:');
     this.editTicketQuantity = page.getByLabel('Ticket Quantity:');
@@ -167,27 +171,33 @@ export class EventsPage {
     await this.editEventTime.fill(showing.showingTime24hour);
     await this.editTicketQuantity.click();
     await this.editTicketQuantity.fill(showing.showingQuantity);
-    await this.newEventSave.click();
+    await this.newShowingSave.click();
     await this.eventContinue.click();
   }
 
- /**
-  * Searches for and deletes a specific showing based on the provided showing details.
-  *
-  * @param {ShowingInfo} aShowing - Object with showing details to be deleted, data needed:
-  *    - `showingDate`: Date of showing (YYYY-MM-DD format, e.g., "2023-10-17").
-  *    - `showingTime12hour`: Time in 12-hour format (e.g., '12:10 AM').
-  */
-  async searchDeleteShowing(aShowing:ShowingInfo) {
-   const showingCardLocator = this.showingCard
-      .filter({hasText: aShowing.showingWholeDate + 'Time:' + ' ' + aShowing.showingTime12hour})
-      .getByRole('button', {name: 'Edit'});
-   const disabled = await showingCardLocator.isDisabled();
+  /**
+   * Searches for and deletes a specific showing based on the provided showing details.
+   *
+   * @param {ShowingInfo} aShowing - Object with showing details to be deleted, data needed:
+   *    - `showingDate`: Date of showing (YYYY-MM-DD format, e.g., "2023-10-17").
+   *    - `showingTime12hour`: Time in 12-hour format (e.g., '12:10 AM').
+   */
+  async searchDeleteShowing(aShowing: ShowingInfo) {
+    const showingCardLocator = this.showingCard
+      .filter({
+        hasText:
+          aShowing.showingWholeDate +
+          'Time:' +
+          ' ' +
+          aShowing.showingTime12hour,
+      });
+    const showingID = await showingCardLocator.locator(":text('Showing ID: ') + p").textContent();
+    const deleteButton = this.page.getByTestId(`${showingID}-showing-delete-button`);
+    const disabled = await deleteButton.isDisabled();
     if (disabled) {
       await this.page.reload();
     }
-    await showingCardLocator.click();
-    await this.deleteShowingButton.click();
+    await deleteButton.click();
     await this.eventContinue.click();
   }
 
@@ -264,16 +274,17 @@ export class EventsPage {
     *    - `showingQuantity`: Quantity of showings (e.g., '10').
     */
   async editShowingInfo(aShowing: ShowingInfo) {
-    const disabled = await this.editShowingButton.isDisabled();
+    const editShowingButton = this.page.getByTestId(new RegExp('.*-showing-edit-button'));
+    const disabled = await editShowingButton.isDisabled();
     if (disabled) {
       await this.page.reload();
     }
-     await this.editShowingButton.click();
-     await this.editEventDate.fill(aShowing.showingDate);
-     await this.ticketQuantityOption.click();
-     await this.ticketQuantityOption.fill(aShowing.showingQuantity);
-     await this.page.getByLabel('Save').click();
-     await this.eventContinue.click();
+    await editShowingButton.click();
+    await this.editEventDate.fill(aShowing.showingDate);
+    await this.ticketQuantityOption.click();
+    await this.ticketQuantityOption.fill(aShowing.showingQuantity);
+    await this.page.getByTestId('showing-save-button').click();
+    await this.eventContinue.click();
   }
 
   async goto() {

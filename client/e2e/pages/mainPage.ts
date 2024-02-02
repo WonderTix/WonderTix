@@ -32,9 +32,12 @@ export class MainPage {
   readonly cartLastName: Locator;
   readonly cartStreetAddress: Locator;
   readonly cartPostCode: Locator;
+  readonly cartCity: Locator;
+  readonly cartState: Locator;
   readonly cartCountry: Locator;
   readonly cartPhone: Locator;
   readonly cartEmail: Locator;
+  readonly cartConfirmEmail: Locator;
   readonly cartSource: Locator;
   readonly cartAccommodations: Locator;
   readonly cartNext: Locator;
@@ -75,9 +78,12 @@ export class MainPage {
     this.cartLastName = page.locator('#last-name');
     this.cartStreetAddress = page.locator('#address');
     this.cartPostCode = page.locator('#zipcode');
+    this.cartCity = page.locator('#city');
+    this.cartState = page.locator('#state');
     this.cartCountry = page.locator('#country');
     this.cartPhone = page.locator('#phone-number');
     this.cartEmail = page.locator('#contact-email');
+    this.cartConfirmEmail = page.locator('#confirm-email');
     this.cartSource = page.locator('#visit-source');
     this.cartAccommodations = page.locator('#seating-acc');
     this.cartNext = page.getByRole('button', {name: 'Next'});
@@ -242,9 +248,12 @@ export class MainPage {
     await this.cartLastName.fill(customer.lastName);
     await this.cartStreetAddress.fill(customer.streetAddress);
     await this.cartPostCode.fill(customer.postCode);
+    await this.cartCity.fill(customer.city);
+    await this.cartState.fill(customer.state);
     await this.cartCountry.fill(customer.country);
     await this.cartPhone.fill(customer.phoneNumber);
     await this.cartEmail.fill(customer.email);
+    await this.cartConfirmEmail.fill(customer.email);
     await this.cartAccommodations.selectOption({
       value: customer.accommodations,
     });
@@ -262,7 +271,6 @@ export class MainPage {
   // Stripe is slow and sometimes has an account popup after email entry.
   // This function waits to see if it will pop up and handle it appropriately.
   async fillStripeInfo(customer: CustomerInfo, ccInfo: CreditCardInfo, timeoutAdd = 0) {
-    await this.stripeEmail.fill(customer.email);
     await this.page.waitForTimeout(10000 + timeoutAdd);
     if (await this.page.getByText('Use your saved information').isVisible()) {
       this.page.getByRole('button', {name: 'Cancel'}).click();

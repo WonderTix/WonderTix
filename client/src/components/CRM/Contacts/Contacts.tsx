@@ -51,12 +51,18 @@ const Contacts = (): React.ReactElement => {
                 email: contact.email,
                 phone: contact.phone,
                 address: contact.address,
+                city: contact.city,
+                state: contact.state,
+                country: contact.country,
+                postalCode: contact.postalcode,
                 donorBadge: contact.donorbadge,
                 seatingAcc: contact.seatingaccom,
+                comments: contact.comments,
                 vip: contact.vip,
                 volunteerList: contact.volunteerlist,
                 newsletter: contact.newsletter,
                 contactId: contact.contactid,
+                createdDate: contact.createddate,
               };
             }),
           );
@@ -81,7 +87,7 @@ const Contacts = (): React.ReactElement => {
 
   const handleCreateContact = async (contact: Contact) => {
     if (contact.seatingAcc === 'Other') {
-      contact.seatingAcc = contact.comments;
+      contact.seatingAcc = contact.otherSeatingAcc;
     }
 
     try {
@@ -98,8 +104,13 @@ const Contacts = (): React.ReactElement => {
             email: contact.email,
             phone: contact.phone,
             address: contact.address,
+            city: contact.city,
+            state: contact.state,
+            country: contact.country,
+            postalcode: contact.postalCode,
             donorbadge: contact.donorBadge,
             seatingaccom: contact.seatingAcc,
+            comments: contact.comments,
             vip: contact.vip,
             volunteerlist: contact.volunteerList,
             newsletter: contact.newsletter,
@@ -198,7 +209,7 @@ const Contacts = (): React.ReactElement => {
               <ContactCard
                 contact={contact}
                 token={token}
-                refreshContacts={getData}
+                onRefresh={getData}
                 key={contact.contactId}
               />
             ))
