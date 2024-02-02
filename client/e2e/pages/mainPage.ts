@@ -39,7 +39,6 @@ export class MainPage {
   readonly cartEmail: Locator;
   readonly cartConfirmEmail: Locator;
   readonly cartSource: Locator;
-  readonly cartContacts: Locator;
   readonly cartAccommodations: Locator;
   readonly cartNext: Locator;
   readonly stripeEmail: Locator;
@@ -86,7 +85,6 @@ export class MainPage {
     this.cartEmail = page.locator('#contact-email');
     this.cartConfirmEmail = page.locator('#confirm-email');
     this.cartSource = page.locator('#visit-source');
-    this.cartContacts = page.locator('#contacts');
     this.cartAccommodations = page.locator('#seating-acc');
     this.cartNext = page.getByRole('button', {name: 'Next'});
     this.stripeEmail = page.locator('#email');
