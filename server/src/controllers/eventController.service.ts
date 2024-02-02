@@ -21,14 +21,10 @@ export interface LineItem {
 export const createStripeCheckoutSession = async (
     contactID: number,
     contactEmail: string,
-    donation: number,
     lineItems: LineItem[],
-    orderTotal: number,
     discount: any,
 ) => {
   const expire = Math.round((new Date().getTime() + 1799990) / 1000);
-  const couponID =
-    discount.code != '' ? await createStripeCoupon(discount, orderTotal) : null;
   const checkoutObject: JsonObject = {
     payment_method_types: ['card'],
     expires_at: expire,
@@ -43,8 +39,9 @@ export const createStripeCheckoutSession = async (
       contactID,
       discountCode: null,
     },
-    ...(couponID && {discounts: [{coupon: couponID}]}),
+    ...(discount.code != '' && discount.amountOff && {discounts: [{coupon: (await createStripeCoupon(discount)).id}]}),
   };
+
   const session = await stripe.checkout.sessions.create(checkoutObject);
   return {id: session.id};
 };
@@ -53,18 +50,13 @@ export const expireCheckoutSession = async (
     id: string,
 ) => stripe.checkout.sessions.expire(id);
 
-export const createStripeCoupon = async (discount: any, orderTotal: number) => {
-  const amountOff = getDiscountAmount(discount, orderTotal);
-
-  const stripeCoupon = await stripe.coupons.create({
-    [discount.amount ? 'amount_off' : 'percent_off']: discount.amount ?
-      amountOff * 100 :
-      discount.percent,
+export const createStripeCoupon = async (discount: any) => {
+  return stripe.coupons.create({
+    ['amount_off']: discount.amountOff*100,
     duration: 'once',
     name: discount.code,
     currency: 'usd',
   });
-  return stripeCoupon.id;
 };
 
 export const getDonationItems = (donationCartItems: number[]) => {
@@ -232,13 +224,16 @@ const getTickets = (
 };
 
 export const getDiscountAmount = (discount: any, orderTotal: number) => {
-  let amountOff = 0;
   if (discount.amount && discount.percent) {
-    amountOff = Math.min((+discount.percent / 100) * orderTotal, discount.amount);
-  } else if (discount.amount) {
-    amountOff = Math.min(discount.amount, orderTotal);
+    return Math.min((+discount.percent / 100) * orderTotal, discount.amount);
   }
-  return amountOff;
+  if (discount.amount) {
+    return Math.min(discount.amount, orderTotal);
+  }
+  if (discount.percent) {
+    return orderTotal*(+discount.percent)/100;
+  }
+  throw new Error(`Invalid discount`);
 };
 
 interface checkoutForm {
@@ -339,7 +334,6 @@ export const validateDiscount = async (discount: any, cartItems: CartItem[], pri
       active: true,
     },
   });
-
   if (!existingDiscount) {
     throw new InvalidInputError(422, 'Invalid discount code');
   }

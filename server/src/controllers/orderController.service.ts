@@ -152,12 +152,12 @@ export const createRefundedOrder = async (
   });
 
   await prisma.orders.update({
-      where: {
-          orderid: order.orderid,
-      },
-      data: {
-         discountid_fk: null,
-      },
+    where: {
+      orderid: order.orderid,
+    },
+    data: {
+      discountid_fk: null,
+    },
   });
 
   await updateAvailableSeats(
