@@ -22,11 +22,12 @@ export const createStripeCheckoutSession = async (
     contactEmail: string,
     donation: number,
     lineItems: LineItem[],
+    orderTotal: number,
     discount: any,
 ) => {
   const expire = Math.round((new Date().getTime() + 1799990) / 1000);
   const couponID =
-    discount.code != '' ? await createStripeCoupon(discount) : null;
+    discount.code != '' ? await createStripeCoupon(discount, orderTotal) : null;
   const checkoutObject: JsonObject = {
     payment_method_types: ['card'],
     expires_at: expire,
@@ -42,16 +43,18 @@ export const createStripeCheckoutSession = async (
       donation,
       discountCode: null,
     },
-    ...(couponID && {discounts: [{couponID}]}),
+    ...(couponID && {discounts: [{coupon: couponID}]}),
   };
   const session = await stripe.checkout.sessions.create(checkoutObject);
   return {id: session.id};
 };
 
-export const createStripeCoupon = async (discount: any) => {
+export const createStripeCoupon = async (discount: any, orderTotal: number) => {
+  const amountOff = getDiscountAmount(discount, orderTotal);
+
   const stripeCoupon = await stripe.coupons.create({
     [discount.amount ? 'amount_off' : 'percent_off']: discount.amount ?
-      discount.amount * 100 :
+      amountOff * 100 :
       discount.percent,
     duration: 'once',
     name: discount.code,
@@ -195,6 +198,16 @@ const getTickets = (
   }));
 };
 
+export const getDiscountAmount = (discount: any, orderTotal: number) => {
+  let amountOff = 0;
+  if (discount.amount && discount.percent) {
+    amountOff = Math.min((+discount.percent / 100) * orderTotal, discount.amount);
+  } else if (discount.amount) {
+    amountOff = Math.min(discount.amount, orderTotal);
+  }
+  return amountOff;
+};
+
 interface checkoutForm {
   firstName: string;
   lastName: string;
@@ -276,6 +289,33 @@ const validateContact = (formData: checkoutForm) => {
     ...(formData.comments && {comments: formData.comments}),
     ...(formData.optIn && {newsletter: formData.optIn}),
   };
+};
+
+export const validateDiscount = async (discount: any, cartItems: CartItem[], prisma: ExtendedPrismaClient) => {
+  const eventIds = new Set<number>();
+  cartItems.forEach((item) => eventIds.add(item.eventId));
+  const numEventsInCart = eventIds.size;
+
+  const totalCartTicketCount = cartItems.reduce((tot, item) => {
+    return tot + item.qty;
+  }, 0);
+
+  const existingDiscount = await prisma.discounts.findFirst({
+    where: {
+      code: discount.code,
+      active: true,
+    },
+  });
+
+  if (!existingDiscount) {
+    throw new InvalidInputError(422, 'Invalid discount code');
+  }
+  if (existingDiscount.min_events && existingDiscount.min_events > numEventsInCart) {
+    throw new InvalidInputError(422, `Not enough events in cart for discount code ${discount.code}`);
+  }
+  if (existingDiscount.min_tickets && existingDiscount.min_tickets > totalCartTicketCount) {
+    throw new InvalidInputError(422, `Not enough tickets in cart for discount code ${discount.code}`);
+  }
 };
 
 const validateName = (name: string, type: string): string => {

@@ -1,8 +1,8 @@
 /**
  * Auth
- * Authentification for user longin
+ * Authentication for user longin
  * Wired with Auth Express Library
- * Performs scoping of users and route availabe for them
+ * Performs scoping of users and route available for them
  */
 
 import {auth, requiredScopes} from 'express-oauth2-jwt-bearer';
