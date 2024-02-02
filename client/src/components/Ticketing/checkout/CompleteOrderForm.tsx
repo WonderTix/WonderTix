@@ -17,6 +17,7 @@ import {useAuth0} from '@auth0/auth0-react';
  * @param {string} email
  * @param {string} visitSource
  * @param {string} seatingAcc
+ * @param {string} otherSeatingAcc
  * @param {string} comments
  */
 export interface CheckoutFormInfo {
@@ -32,6 +33,7 @@ export interface CheckoutFormInfo {
   email: string;
   visitSource?: string;
   seatingAcc: string;
+  otherSeatingAcc?: string;
   comments?: string;
 }
 
@@ -75,6 +77,7 @@ export default function CompleteOrderForm({
     confirmEmail: isAuthenticated ? user.email : '',
     visitSource: '',
     seatingAcc: 'None',
+    otherSeatingAcc: '',
     comments: '',
     optIn: true,
   };
@@ -82,8 +85,11 @@ export default function CompleteOrderForm({
   const validate = (values) => {
     const errors = {};
 
-    if (values.seatingAcc === 'Other' && (!values.comments || values.comments === '')) {
-      errors['comments'] = 'Please Input Accommodation';
+    if (
+      values.seatingAcc === 'Other' &&
+      (!values.otherSeatingAcc || values.otherSeatingAcc === '')
+    ) {
+      errors['otherSeatingAcc'] = 'Please Input Accommodation';
     }
     if (!values.email?.match(new RegExp('.+@.+\\..+'))) {
       errors['email'] = 'Invalid';
@@ -98,7 +104,8 @@ export default function CompleteOrderForm({
       values.phone &&
       values.phone !== '' &&
       !values.phone.match(
-        new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$',
+        new RegExp(
+          '^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$',
         ),
       )
     ) {
@@ -106,8 +113,17 @@ export default function CompleteOrderForm({
     }
 
     Object.keys(baseValues).forEach((key) => {
-      if (['firstName', 'lastName', 'streetAddress', 'postalCode', 'email', 'confirmEmail'].includes(key) &&
-        (!values[key] || values[key] === '')) {
+      if (
+        [
+          'firstName',
+          'lastName',
+          'streetAddress',
+          'postalCode',
+          'email',
+          'confirmEmail',
+        ].includes(key) &&
+        (!values[key] || values[key] === '')
+      ) {
         errors[key] = 'Required';
       }
     });
@@ -117,15 +133,13 @@ export default function CompleteOrderForm({
 
   return (
     <div className='w-full h-full flex flex-col items-center'>
-      <h2 className='text-2xl font-bold mb-5'>
-        Contact
-      </h2>
+      <h2 className='text-2xl font-bold mb-5'>Contact</h2>
       <div className='min-w-414 sm:w-full h-full'>
         <Form
           onSubmit={onSubmit}
           validate={validate}
           initialValues={baseValues}
-          render={({handleSubmit, submitting}) => (
+          render={({handleSubmit, submitting, values}) => (
             <form
               onSubmit={handleSubmit}
               noValidate
@@ -141,7 +155,7 @@ export default function CompleteOrderForm({
                     type='text'
                     id='first-name'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full  border border-zinc-300 p-4 rounded-lg"
+                    inputClassName='input w-full  border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -151,7 +165,7 @@ export default function CompleteOrderForm({
                     type='text'
                     id='last-name'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full  border border-zinc-300 p-4 rounded-lg"
+                    inputClassName='input w-full  border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -161,7 +175,7 @@ export default function CompleteOrderForm({
                     type='text'
                     id='address'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -171,7 +185,7 @@ export default function CompleteOrderForm({
                     type='text'
                     id='zipcode'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -180,8 +194,8 @@ export default function CompleteOrderForm({
                     placeholder='City'
                     type='text'
                     id='city'
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -190,8 +204,8 @@ export default function CompleteOrderForm({
                     placeholder='State'
                     type='text'
                     id='state'
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -200,8 +214,8 @@ export default function CompleteOrderForm({
                     placeholder='Country'
                     type='text'
                     id='country'
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -210,8 +224,8 @@ export default function CompleteOrderForm({
                     placeholder='Phone'
                     type='text'
                     id='phone-number'
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -221,7 +235,7 @@ export default function CompleteOrderForm({
                     type='email'
                     id='contact-email'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -231,7 +245,7 @@ export default function CompleteOrderForm({
                     type='confirmEmail'
                     id='confirm-email'
                     labelClassName="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <Field
                     component={FormInput}
@@ -240,8 +254,8 @@ export default function CompleteOrderForm({
                     placeholder='How did you hear about us?'
                     type='text'
                     id='visit-source'
-                    labelClassName="block text-sm font-medium text-slate-700 ml-1"
-                    inputClassName="input w-full border border-zinc-300 p-4 rounded-lg"
+                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                    inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
                   />
                   <div>
                     <label
@@ -256,29 +270,31 @@ export default function CompleteOrderForm({
                       name='seatingAcc'
                       id='seating-acc'
                     >
-                      <option value='None'>
-                        Not at this time
-                      </option>
-                      <option value='Wheel Chair'>
-                        Wheelchair seat(s)
-                      </option>
-                      <option value='Aisle Seat'>
-                        Aisle seat(s)
-                      </option>
+                      <option value='None'>Not at this time</option>
+                      <option value='Wheel Chair'>Wheelchair seat(s)</option>
+                      <option value='Aisle Seat'>Aisle seat(s)</option>
                       <option value='First/Ground floor'>
                         Seat(s) on the ground or the first level
                       </option>
                       <option value='ASL Interpreter'>
                         Seat(s) in the ASL interpreters section
                       </option>
-                      <option value='Wide Seats'>
-                        Wide seat(s)
-                      </option>
-                      <option value='Other'>
-                        Other (describe in Comments section)
-                      </option>
+                      <option value='Wide Seats'>Wide seat(s)</option>
+                      <option value='Other'>Other</option>
                     </Field>
                   </div>
+                  {values.seatingAcc === 'Other' && (
+                    <Field
+                      component={FormInput}
+                      name='otherSeatingAcc'
+                      type='text'
+                      placeholder='What is your accommodation?'
+                      id='other-seating-acc'
+                      label='Other Accommodation'
+                      labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                      inputClassName='input w-full border border-zinc-300 p-4 rounded-lg'
+                    />
+                  )}
                   <Field
                     component={FormInput}
                     name='comments'
