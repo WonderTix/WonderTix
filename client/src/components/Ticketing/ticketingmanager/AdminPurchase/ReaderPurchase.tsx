@@ -47,7 +47,7 @@ const ReaderPurchase = () => {
         console.log(data);
         setStatus(data.eventType);
         if (data.eventType === 'payment_intent.succeeded') {
-            ws.close();
+          ws.close();
           navigate(`/success`);
         } else if (data.eventType === 'payment_intent.requires_action') { // not sure if this needs to be handelled but I think this is how its done
           stripePromise.then((stripe) => {
@@ -138,7 +138,14 @@ const ReaderPurchase = () => {
       const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
       if (!paymentIntent) throw new Error('Cannot find payment intent!');
 
-      setStatus('payment_intent.' + paymentIntent.status);
+      const newStatus = 'payment_intent.' + paymentIntent.status;
+      setStatus(newStatus);
+
+      if (newStatus === 'payment_intent.succeeded') {
+        const ws = getWebSocket();
+        ws.close();
+        navigate(`/success`);
+      }
     } catch (error) {
       console.error(error.message);
       setErrMsg(error.message);
