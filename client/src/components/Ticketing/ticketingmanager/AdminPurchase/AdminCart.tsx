@@ -86,7 +86,7 @@ const AdminCart = ({
           0,
         );
       } else if (appliedDiscount.amount) {
-        return subtotal - appliedDiscount.amount;
+        return Math.max(subtotal - appliedDiscount.amount, 0);
       } else {
         return (1 - +appliedDiscount.percent / 100) * subtotal;
       }
