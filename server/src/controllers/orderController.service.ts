@@ -171,18 +171,6 @@ export const orderCancel = async (
             },
             data: {
               refunded: true,
-              singletickets: {
-                update: item.singletickets.map((singleticket) => ({
-                  where: {
-                    singleticketid: singleticket.singleticketid,
-                  },
-                  data: {
-                    eventtickets: {
-                      set: [],
-                    },
-                  },
-                })),
-              },
             },
           }),
         ),
