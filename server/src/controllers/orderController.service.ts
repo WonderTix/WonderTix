@@ -18,7 +18,6 @@ export const ticketingWebhook = async (
   if (!order) return;
 
   switch (eventType) {
-    // I believe this is here because paymentIntent isn't populated until checkout session is complete
     case 'checkout.session.completed': {
       await prisma.orders.update({
         where: {
@@ -246,7 +245,6 @@ const getOrderDateAndTime = () => {
 };
 
 export const discoverReaders = async () => {
-  //const discoverResult = await stripe.terminal.readers.discoverReaders({simulated: true});
   const discoverResult = await stripe.terminal.readers.list();
 
   return discoverResult;

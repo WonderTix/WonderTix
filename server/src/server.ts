@@ -694,12 +694,18 @@ const createServer = async () => {
 
   const wss = new WebSocketServer({server: server});
 
-  wss.on('connection', function connection(ws) {
+  // Whenever a websocket sends a message, the server sends it to every
+  // other websocket. All messages should include a 'messageType' string field
+  // so that receiving websockets can tell whether they care about the message.
+
+  // Based on the client broadcast example from the library
+  // https://www.npmjs.com/package/ws#server-broadcast
+  wss.on('connection', (ws) => {
     ws.on('error', console.error);
 
-    ws.on('message', function message(data, isBinary) {
+    ws.on('message', (data, isBinary) => {
       console.log(`Message: ${data.toString()}`);
-      wss.clients.forEach(function each(client) {
+      wss.clients.forEach((client) => {
         if (client !== ws) {
           waitForOpenConnection(client).then(() => {
             console.log('Data sent');
