@@ -23,6 +23,7 @@ const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
     {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
   ];
+  const {token} = useFetchToken();
   const location = useLocation();
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
@@ -603,7 +604,20 @@ const AdminPurchase = () => {
   useEffect(() => { // probably should be await
     const fetchReaders = async () => {
       try {
-        const response = await fetch(process.env.REACT_APP_API_2_URL + '/order/readers');
+        if (!token) return;
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL + `/order/readers`,
+          {
+            credentials: 'include',
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+
+        if (!response.ok) throw response;
+
         const readers = await response.json();
         setReaderList(readers.data);
       } catch (error) {
@@ -614,7 +628,7 @@ const AdminPurchase = () => {
       }
     };
     fetchReaders();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (readerList.length > 0) {

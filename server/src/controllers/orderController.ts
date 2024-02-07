@@ -136,47 +136,6 @@ orderController.post('/', async (req: Request, res: Response) => {
   }
 });
 
-/**
- * @swagger
- * /2/order/readers:
- *   get:
- *     summary: get all terminal readers
- *     tags:
- *     - New Order
- *     responses:
- *       200:
- *         description: readers fetched successfully
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-orderController.get('/readers', async (req: Request, res: Response) => {
-  try {
-    const toReturn = await discoverReaders();
-    return res.status(200).json(toReturn);
-  } catch (error) {
-    res.status(500).json({error});
-  }
-});
-
-/**
- * @swagger
- * /2/order/reader-cancel:
- *   post:
- *     summary: Cancel payment intent and cancel order in prisma
- *     tags:
- *     - New Event API
- */
-
-orderController.post('/reader-cancel', async (req: Request, res: Response) => {
-  const {paymentIntentID} = req.body;
-  try {
-    await abortPaymentIntent(prisma, paymentIntentID);
-    return res.status(200).json('Reader order successfully cancelled');
-  } catch (error) {
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
-
 orderController.use(checkJwt);
 orderController.use(checkScopes);
 
@@ -306,6 +265,47 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       res.status(400).json({error: error.message});
       return;
     }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/order/readers:
+ *   get:
+ *     summary: get all terminal readers
+ *     tags:
+ *     - New Order
+ *     responses:
+ *       200:
+ *         description: readers fetched successfully
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+orderController.get('/readers', async (req: Request, res: Response) => {
+  try {
+    const toReturn = await discoverReaders();
+    return res.status(200).json(toReturn);
+  } catch (error) {
+    res.status(500).json({error});
+  }
+});
+
+/**
+ * @swagger
+ * /2/order/reader-cancel:
+ *   post:
+ *     summary: Cancel payment intent and cancel order in prisma
+ *     tags:
+ *     - New Event API
+ */
+
+orderController.post('/reader-cancel', async (req: Request, res: Response) => {
+  const {paymentIntentID} = req.body;
+  try {
+    await abortPaymentIntent(prisma, paymentIntentID);
+    return res.status(200).json('Reader order successfully cancelled');
+  } catch (error) {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });

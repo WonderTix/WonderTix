@@ -8,6 +8,8 @@ import useWebSocket from 'react-use-websocket';
 
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 
+import {useFetchToken} from '../Event/components/ShowingUtils';
+
 import {
   removeAllTicketsFromCart,
   selectDiscount,
@@ -19,6 +21,7 @@ const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
 
 const ReaderPurchase = () => {
+  const {token} = useFetchToken();
   const [status, setStatus] = useState('Awaiting Response...');
 
   const location = useLocation();
@@ -112,11 +115,9 @@ const ReaderPurchase = () => {
     };
     processPayment();
 
-    const alertUser = (e) => {
+    const alertUser = async (e) => {
       e.preventDefault();
-      e.returnValue = '';
       handleCancel();
-      navigate('/ticketing/purchaseticket');
     };
 
     window.addEventListener('beforeunload', alertUser);
@@ -156,6 +157,7 @@ const ReaderPurchase = () => {
   const handleCancel = async () => {
     let newStatus = '';
     try {
+      console.log('canceling');
       const stripe = await stripePromise;
       if (!stripe) throw new Error('Failed to initialize stripe!');
 
@@ -172,14 +174,16 @@ const ReaderPurchase = () => {
     if (newStatus != 'terminal.reader.action_succeeded' && // must make sure we haven't already finished charging
         newStatus != 'payment_intent.succeeded' &&
         newStatus != 'charge.succeeded') {
+      if (!token) return;
       const response = await fetch( // request payment and put order in database
         process.env.REACT_APP_API_2_URL + `/order/reader-cancel`,
         {
           credentials: 'include',
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-          },
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
           body: JSON.stringify({paymentIntentID}),
         },
       );
