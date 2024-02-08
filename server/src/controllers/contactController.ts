@@ -376,7 +376,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                   });
             }
             return {
-              ordertotal: acc.ordertotal+Number(ticket.price),
+              ordertotal: acc.ordertotal + Number(ticket.price),
               refunded: acc.refunded && ticket.refund !== null,
             };
           }, {ordertotal: 0, refunded: true});
@@ -395,14 +395,13 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         ordertotal,
         refunded,
         orderitems: [...orderItemsMap.values()],
-        donationTotal: order.donations.reduce<number>((acc, donation) => acc+Number(donation.amount), 0),
+        donations: formattedDonations,
       });
     });
 
     const toReturn = {
       ...remainderOfContact,
       orders: flattenedOrders,
-      donations: formattedDonations,
     };
 
     res.status(200).json(toReturn);

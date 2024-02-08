@@ -6,32 +6,28 @@ import {toDollarAmount} from '../../../utils/arrays';
 interface ContactOrderProps {
   orderId: number;
   orderTotal: number;
-  orderDate: string;
-  orderTime: string;
-  refundIntent: string;
+  orderDateAndTime: string;
+  refunded: string;
   orderItems: any[];
-  donation?: any;
+  donations: any[];
 }
 
 const ContactOrder = (props: ContactOrderProps): ReactElement => {
   const {
     orderId,
     orderTotal,
-    orderDate,
-    orderTime,
-    refundIntent,
+    orderDateAndTime,
+    refunded,
     orderItems,
-    donation,
+    donations,
   } = props;
 
-  const date = new Date(
-    `${toDateStringFormat(orderDate)}T${orderTime.split('T')[1].slice(0, 8)}`,
-  );
+  const date = new Date(orderDateAndTime);
 
   return (
-    <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
-      <header className='flex gap-2 items-start justify-between mb-4'>
-        <h2 className='text-2xl font-semibold'>Order {orderId}</h2>
+    <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-700'>
+      <header className='flex gap-2 items-start justify-between mb-4 text-zinc-800'>
+        <h2 className='text-2xl font-medium'>Order #{orderId}</h2>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           className='h-7 w-7'
@@ -47,8 +43,8 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
           />
         </svg>
       </header>
-      <div className='grid md:grid-cols-2'>
-        <article>
+      <div className='grid md:grid-cols-5'>
+        <article className='col-span-2'>
           <p className='flex flex-row gap-3 text-lg w-full'>
             <span className='font-semibold'>Order Date:</span>
             <span>{format(date, 'MMM dd, yyyy')}</span>
@@ -59,11 +55,11 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
           </p>
           <p className='flex flex-row gap-3 text-lg my-1 w-full'>
             <span className='font-semibold'>Refunded:</span>
-            <span>{refundIntent ? 'Yes' : 'No'}</span>
+            <span>{refunded ? 'Yes' : 'No'}</span>
           </p>
         </article>
-        <aside>
-          {orderItems.length === 0 && !donation && (
+        <aside className='col-span-3'>
+          {!orderItems && !donations && (
             <p className='text-center text-md mt-1 w-full text-zinc-400 font-medium'>
               No order items or donation
             </p>
@@ -72,21 +68,23 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
             <TicketOrderItem
               key={index}
               price={item.price}
+              refunded={item.refunded}
               ticketType={item.tickettype}
               quantity={item.quantity}
-              description={item.description}
+              eventName={item.eventname}
               seasonName={item.seasonname}
               detail={item.detail}
               eventDate={item.eventdate}
               eventTime={item.eventtime}
             />
           ))}
-          {donation && (
+          {donations.map((donation, index) => (
             <DonationOrderItem
+              key={index}
               amount={donation.amount}
-              refundIntent={donation.refund_intent}
+              refunded={donation.refunded}
             />
-          )}
+          ))}
         </aside>
       </div>
       <footer>
@@ -101,9 +99,10 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
 
 interface TicketOrderItem {
   price: number;
+  refunded: boolean;
   ticketType: string;
   quantity: number;
-  description: string;
+  eventName: string;
   seasonName?: string;
   detail?: string;
   eventDate: string;
@@ -113,9 +112,10 @@ interface TicketOrderItem {
 const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
   const {
     price,
+    refunded,
     ticketType,
     quantity,
-    description,
+    eventName,
     seasonName,
     detail,
     eventDate,
@@ -128,14 +128,21 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
 
   return (
     <article className='border border-zinc-300 px-4 pt-3 pb-4 rounded-xl mb-2'>
-      <p className='flex justify-between'>
-        <span className='font-bold'>
-          {quantity} x {description}
+      <p className='flex justify-between font-bold gap-2'>
+        <span>
+          {quantity} x {eventName}
           {seasonName && (
             <span className='font-normal italic'> - {seasonName}</span>
           )}
         </span>
-        <span className='font-bold'>{toDollarAmount(Number(price))}</span>
+        <span className='flex items-center gap-2'>
+          {refunded && (
+            <span className='py-1 px-2 text-xs text-green-800 bg-green-200 shadow-sm rounded-md'>
+              REFUNDED
+            </span>
+          )}
+          {toDollarAmount(Number(price))}
+        </span>
       </p>
       <p className='text-xs'>
         {ticketType} • {format(time, 'MMM dd, yyyy')} • {format(time, 'h:mm a')}
@@ -147,19 +154,19 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
 
 interface DonationOrderItem {
   amount: string;
-  refundIntent: string;
+  refunded: boolean;
 }
 
 const DonationOrderItem = (props: DonationOrderItem): ReactElement => {
-  const {amount, refundIntent} = props;
+  const {amount, refunded} = props;
 
   return (
     <article className='border border-zinc-300 px-4 py-3 rounded-xl mb-2'>
       <p className='flex justify-between font-bold'>
         <span>Donation</span>
         <span className='flex items-center gap-2'>
-          {refundIntent && (
-            <span className='py-1 px-2 text-xs text-white bg-orange-500 shadow-sm rounded-md'>
+          {refunded && (
+            <span className='py-1 px-2 text-xs text-green-800 bg-green-200 shadow-sm rounded-md'>
               REFUNDED
             </span>
           )}
