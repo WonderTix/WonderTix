@@ -42,11 +42,8 @@ import {donationController} from './controllers/donationController';
 import {eventInstanceController} from './controllers/eventInstanceController';
 import {eventController} from './controllers/eventController';
 import {orderController} from './controllers/orderController';
-import {orderItemController} from './controllers/orderItemController';
 import {savedreportController} from './controllers/savedReportController';
 import {seasonController} from './controllers/seasonController';
-import {seasonTicketController} from './controllers/seasonTicketController';
-import {seasonTicketTypeController} from './controllers/seasonTicketTypeController';
 import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
 import {seasonTicketTypePriceDefaultController} from './controllers/seasonTicketTypePriceDefaultController';
@@ -110,6 +107,14 @@ const openApiSpec = swaggerJsdoc({
             type: 'string',
           },
         },
+        code: {
+          name: 'code',
+          in: 'path',
+          description: 'Discount Code',
+          schema: {
+            type: 'string',
+          },
+        },
       },
       schemas: {
         Contact: {
@@ -119,14 +124,15 @@ const openApiSpec = swaggerJsdoc({
             firstname: {type: 'string'},
             lastname: {type: 'string'},
             email: {type: 'string'},
-            phone: {type: 'string'},
             address: {type: 'string'},
             city: {type: 'string'},
             state: {type: 'string'},
             country: {type: 'string'},
             postalcode: {type: 'string'},
-            seatingaccom: {type: 'string'},
+            phone: {type: 'string'},
             donorbadge: {type: 'boolean'},
+            seatingaccom: {type: 'string'},
+            comments: {type: 'string'},
             vip: {type: 'boolean'},
             volunteerlist: {type: 'boolean'},
             newsletter: {type: 'boolean'},
@@ -137,12 +143,10 @@ const openApiSpec = swaggerJsdoc({
           properties: {
             discountid: {type: 'integer'},
             code: {type: 'string'},
-            amount: {type: 'integer'},
+            active: {type: 'boolean'},
+            amount: {type: 'number'},
             percent: {type: 'integer'},
-            startdate: {type: 'integer'},
-            enddate: {type: 'integer'},
             tickettypeid_fk: {type: 'integer'},
-            createdby_fk: {type: 'integer'},
             usagelimit: {type: 'integer'},
             min_tickets: {type: 'integer'},
             min_events: {type: 'integer'},
@@ -208,7 +212,6 @@ const openApiSpec = swaggerJsdoc({
           properties: {
             orderid: {type: 'integer'},
             contactid_fk: {type: 'integer'},
-            donationid_fk: {type: 'integer'},
             orderdate: {type: 'integer'},
             checkout_sessions: {type: 'string'},
             ordertime: {type: 'string'},
@@ -369,14 +372,15 @@ const openApiSpec = swaggerJsdoc({
             firstname: {type: 'string'},
             lastname: {type: 'string'},
             email: {type: 'string'},
-            phone: {type: 'string'},
             address: {type: 'string'},
             city: {type: 'string'},
             state: {type: 'string'},
             country: {type: 'string'},
             postalcode: {type: 'string'},
+            phone: {type: 'string'},
             donorbadge: {type: 'boolean'},
             seatingaccom: {type: 'string'},
+            comments: {type: 'string'},
             vip: {type: 'boolean'},
             volunteerlist: {type: 'string'},
             newsletter: {type: 'boolean'},
@@ -386,12 +390,10 @@ const openApiSpec = swaggerJsdoc({
           type: 'object',
           properties: {
             code: {type: 'string'},
-            amount: {type: 'integer'},
+            active: {type: 'boolean'},
+            amount: {type: 'number'},
             percent: {type: 'integer'},
-            startdate: {type: 'integer'},
-            enddate: {type: 'integer'},
             tickettypeid_fk: {type: 'integer'},
-            createdby_fk: {type: 'integer'},
             usagelimit: {type: 'integer'},
             min_tickets: {type: 'integer'},
             min_events: {type: 'integer'},
@@ -454,7 +456,6 @@ const openApiSpec = swaggerJsdoc({
           type: 'object',
           properties: {
             contactid_fk: {type: 'integer'},
-            donationid_fk: {type: 'integer'},
             orderdate: {type: 'integer'},
             ordertime: {type: 'string'},
             disocuntid_fk: {type: 'integer'},
@@ -637,11 +638,8 @@ const createServer = async () => {
   app.use('/api/2/events', eventController);
   app.use('/api/2/event-instance', eventInstanceController);
   app.use('/api/2/order', orderController);
-  app.use('/api/2/order-item', orderItemController);
   app.use('/api/2/saved-report', savedreportController);
   app.use('/api/2/season', seasonController);
-  app.use('/api/2/season-ticket', seasonTicketController);
-  app.use('/api/2/season-ticket-type', seasonTicketTypeController);
   app.use('/api/2/task', taskController);
   app.use('/api/2/task-note', taskNoteController);
   app.use('/api/2/ticket-restriction', ticketRestrictionController);

@@ -11,14 +11,16 @@ export type Contact = {
   state: string;
   country: string;
   postalCode: string;
-  comments?: string;
+  comments: string;
   seatingAcc: string;
+  otherSeatingAcc?: string;
   newsletter: boolean;
   vip: boolean;
   donorBadge: boolean;
   volunteerList: boolean;
   contactId?: number;
   orders?: any;
+  donations?: any;
   createdDate: string;
 };
 
@@ -41,19 +43,33 @@ export const emptyContact: Contact = {
   createdDate: '',
 };
 
+export const seatingAccOptions = {
+  'None': 'Not at this time',
+  'Wheel Chair': 'Wheelchair seat(s)',
+  'Aisle Seat': 'Aisle seat(s)',
+  'First/Ground floor': 'Seat(s) on the ground or the first level',
+  'ASL Interpreter': 'Seat(s) in the ASL interpreters section',
+  'Wide Seats': 'Wide seat(s)',
+  'Other': 'Other',
+};
+
+export const seatingAccInOptions = (value: string) => {
+  return Object.keys(seatingAccOptions).includes(value);
+};
+
 export const toReadableDonationFrequency = (key: string): string => {
-  switch (key) {
-    case 'one_time':
-      return 'One-time';
-    case 'weekly':
-      return 'Weekly';
-    case 'monthly':
-      return 'Monthly';
-    case 'yearly':
-      return 'Yearly';
-    default:
-      return key;
-  }
+   switch (key) {
+     case 'one_time':
+       return 'One-time';
+     case 'weekly':
+       return 'Weekly';
+     case 'monthly':
+       return 'Monthly';
+     case 'yearly':
+       return 'Yearly';
+     default:
+       return key;
+   }
 };
 
 export const editContact = async (
@@ -61,9 +77,9 @@ export const editContact = async (
   contactId: number,
   token: string,
 ) => {
-  contact.seatingAcc = !contact.comments
-    ? contact.seatingAcc
-    : `${contact.seatingAcc} - ${contact.comments}`;
+  if (contact.seatingAcc === 'Other') {
+    contact.seatingAcc = contact.otherSeatingAcc;
+  }
 
   try {
     const response = await fetch(
@@ -87,6 +103,7 @@ export const editContact = async (
           postalcode: contact.postalCode,
           donorbadge: contact.donorBadge,
           seatingaccom: contact.seatingAcc,
+          comments: contact.comments,
           vip: contact.vip,
           volunteerlist: contact.volunteerList,
           newsletter: contact.newsletter,

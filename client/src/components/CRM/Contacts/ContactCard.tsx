@@ -46,6 +46,7 @@ const ContactCard = ({
     newsletter,
     donorBadge,
     seatingAcc,
+    comments,
     vip,
     volunteerList,
     createdDate,
@@ -202,6 +203,10 @@ const ContactCard = ({
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Seating Accommodation:</span>
           <span data-testid='contact-accommodation'>{seatingAcc}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>Comments:</span>
+          <span data-testid='contact-comments'>{comments}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Newsletter:</span>

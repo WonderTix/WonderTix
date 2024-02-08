@@ -225,8 +225,8 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
     );
     const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
-        eventinstances: {
-          events: {
+        eventinstance: {
+          event: {
             seasonid_fk: +seasonid,
           },
         },
@@ -305,8 +305,8 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           }), prisma.ticketrestrictions.updateMany({
             where: {
               tickettypeid_fk: +tickettypeid_fk,
-              eventinstances: {
-                events: {
+              eventinstance: {
+                event: {
                   seasonid_fk: +seasonid,
                 },
               },
