@@ -287,9 +287,9 @@ eventController.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /2/events/PPH:
+ * /2/events/listing:
  *   get:
- *     summary: get all events from the new database
+ *     summary: get all events for performance report
  *     tags:
  *     - New Event API
  *     security:
@@ -306,14 +306,15 @@ eventController.get('/', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.get('/PPH', async (req: Request, res: Response) => {
+eventController.get('/listing', async (req: Request, res: Response) => {
   try {
-    const pph_events = await prisma.pphEvents.findMany({
-      orderBy: {
-        last_modified_date: 'desc'
-      }
+    const events = await prisma.events.findMany({
+      include: {
+        eventinstances: true,
+        _count: true
+      },
     });
-    return res.json(pph_events)
+    return res.json(events);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -325,7 +326,7 @@ eventController.get('/PPH', async (req: Request, res: Response) => {
     }
     return res.status(500).json({error: 'Internal Server Error'});
   }
-})
+});
 
 /**
  * @swagger
