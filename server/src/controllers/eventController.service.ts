@@ -66,12 +66,11 @@ export const createStripePaymentIntent = async (
   orderTotal: number
 ) => {
   const intentObject: JsonObject = {
-    currency: 'usd', // hardcode
+    currency: 'usd',
     payment_method_types: ['card_present'],
     capture_method: 'automatic',
     confirmation_method: 'automatic',
     amount: orderTotal,
-    // off_session: false, // customer present
     metadata: {
       sessionType: '__reader',
     },

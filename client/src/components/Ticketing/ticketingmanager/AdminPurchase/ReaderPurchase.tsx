@@ -47,7 +47,6 @@ const ReaderPurchase = () => {
       if (data.messageType === 'reader' &&
           data.paymentIntent === paymentIntentID ||
           data.paymentIntent === readerID) { // in the case of terminal event, paymentIntent is a readerID
-        console.log(data);
         setStatus(data.eventType);
         if (data.eventType === 'payment_intent.succeeded') {
           ws.close();
@@ -71,8 +70,6 @@ const ReaderPurchase = () => {
   useEffect(() => {
     const processPayment = async () => {
       try {
-        console.log({cartItems, paymentIntentID, clientSecret, readerID, discount});
-
         const stripe = await stripePromise;
         if (!stripe) throw new Error('Failed to initialize stripe!');
 
@@ -157,7 +154,6 @@ const ReaderPurchase = () => {
   const handleCancel = async () => {
     let newStatus = '';
     try {
-      console.log('canceling');
       const stripe = await stripePromise;
       if (!stripe) throw new Error('Failed to initialize stripe!');
 

@@ -35,7 +35,7 @@ orderController.post(
             prisma,
             event.type,
             action ? action.failure_message : 'no error',
-            object.id, // should be a payment_intent ID
+            object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
           );
         }
 

@@ -366,14 +366,12 @@ const AdminPurchase = () => {
           const readerID = selectedReader;
           const paymentIntentID = result.id;
           const clientSecret = result.secret;
-
-          console.log(readerID);
           navigate(paymentIntentID, {state: {cartItems, paymentIntentID, clientSecret, readerID}});
         }).catch((error) => {
-          console.log(error);
+          console.error(error);
         });
       }).catch((error) => {
-        console.log(error);
+        console.error(error);
       });
     } else {
       navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
@@ -601,7 +599,7 @@ const AdminPurchase = () => {
     void fetchAllTicketRestrictions();
   }, []);
 
-  useEffect(() => { // probably should be await
+  useEffect(() => {
     const fetchReaders = async () => {
       try {
         if (!token) return;

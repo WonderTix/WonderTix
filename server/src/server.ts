@@ -606,7 +606,7 @@ function waitForOpenConnection(socket: any) {
       } else if (socket.readyState === WebSocket.CLOSING) {
         socket.close(); // force close
         clearInterval(interval);
-        reject(new Error('Socket closing')); // is this correct? it might send to closing socket
+        reject(new Error('Socket closing'));
       }
       currentAttempt++;
     }, intervalTime);
