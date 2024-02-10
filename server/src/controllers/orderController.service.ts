@@ -48,11 +48,11 @@ export const orderFulfillment = async (
     checkoutSession: string,
     orderItems: {
         orderTicketItems?: any[],
-        donations?: any[],
+        donationItem?: any,
     },
     discountId?: number,
 ) => {
-  const {orderTicketItems, donations} = orderItems;
+  const {orderTicketItems, donationItem} = orderItems;
   const result = await prisma.$transaction([
     prisma.orders.create({
       data: {
@@ -60,7 +60,7 @@ export const orderFulfillment = async (
         checkout_sessions: checkoutSession,
         discountid_fk: discountId,
         ...(orderTicketItems && {order_ticketitems: {create: orderTicketItems}}),
-        ...(donations && {donations: {create: donations}}),
+        ...(donationItem && {donation: {create: donationItem}}),
       },
     }),
     ...eventInstanceQueries,
@@ -74,7 +74,7 @@ export const updateCanceledOrder = async (
     order: orders,
 ) => {
   if (order.payment_intent) {
-    throw new Error('Can not delete order that has been processed Stripe, order must be refunded');
+    throw new Error('Can not delete order that has been processed by Stripe, order must be refunded');
   }
 
   const deletedOrder = await prisma.orders.delete({
@@ -120,8 +120,8 @@ export const createRefundedOrder = async (
     prisma: ExtendedPrismaClient,
     order: orders,
     orderTicketItems: LoadedOrderTicketItem[],
-    donations: donations[],
     refundIntent: string,
+    donations?: donations | null,
 ) => {
   const eventInstances = new Set<number>();
   const ticketRefundItems = orderTicketItems.map((item) => {
@@ -132,10 +132,10 @@ export const createRefundedOrder = async (
     };
   });
 
-  const donationRefundItems = donations.map((item) => ({
-    amount: item.amount,
-    donationid_fk: item.donationid,
-  }));
+  const donationRefundItems = donations? [{
+    amount: donations.amount,
+    donationid_fk: donations.donationid,
+  }]: [];
 
 
   await prisma.refunds.create({

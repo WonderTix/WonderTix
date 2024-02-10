@@ -3,14 +3,9 @@ import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
 import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 import {titleCase} from '../../../../utils/arrays';
-import {useAuth0} from '@auth0/auth0-react';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import format from 'date-fns/format';
 import {useFetchToken} from '../Event/components/ShowingUtils';
-
-const renderCheckbox = (params: GridCellParams) => (
-  <Checkbox checked={params.value as boolean} disabled color='info' />
-);
 
 interface RenderCheckinProps {
   params: GridCellParams;
@@ -105,18 +100,19 @@ const DoorList = (): ReactElement => {
         },
         {field: 'email', headerName: 'Email', width: 200},
         {field: 'phone', headerName: 'Phone Number', width: 130},
-        {field: 'vip', headerName: 'VIP', width: 65, renderCell: renderCheckbox},
+        {field: 'vip', headerName: 'VIP', width: 65, type: 'boolean'},
         {
             field: 'donorBadge',
             headerName: 'Donor',
             width: 65,
-            renderCell: renderCheckbox,
+            type: 'boolean',
         },
         {field: 'accommodations', headerName: 'Accommodations', width: 200},
         {field: 'address', headerName: 'Address', width: 170},
     ];
 
-  useEffect(() => {
+  useEffect(
+      () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(

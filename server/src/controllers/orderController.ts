@@ -96,10 +96,8 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             },
           },
           {
-            donations: {
-              some: {
-                refund: null,
-              },
+            donation: {
+              refund: null,
             },
           },
         ],
@@ -136,7 +134,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             },
           },
         },
-        donations: {
+        donation: {
           where: {
             refund: null,
           },
@@ -149,8 +147,8 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         contacts,
         // eslint-disable-next-line camelcase
         order_ticketitems,
-        donations,
-        orderdateandtime,
+        donation,
+        orderdatetime,
         ...remainderOfOrder
       } = order;
       const orderItems = new Map<string, number>();
@@ -165,10 +163,10 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         price: ticketTotal,
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
-        orderdate: orderdateandtime,
+        orderdate: orderdatetime,
         ...remainderOfOrder,
         items: [...orderItems.entries()].map(([key, value]) => `${value} x ${key}`),
-        donation: donations.reduce<number>((acc, donation) => Number(donation.amount)+acc, 0),
+        donation: +(donation?.amount ?? 0),
       };
     });
     return res.json(toReturn);
@@ -230,7 +228,7 @@ orderController.put('/refund/:id', async (req, res) => {
             },
           },
         },
-        donations: {
+        donation: {
           where: {
             refund: null,
           },
@@ -244,7 +242,7 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order.payment_intent) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
-    if (!order.donations.length && !order.order_ticketitems.length) {
+    if (!order.donation && !order.order_ticketitems.length) {
       return res.status(400).json({error: `Order ${orderID} has already been fully refunded`});
     }
 
@@ -260,7 +258,7 @@ orderController.put('/refund/:id', async (req, res) => {
       }
       refundIntent = refund.id;
     }
-    await createRefundedOrder(prisma, order, order.order_ticketitems, order.donations, refundIntent);
+    await createRefundedOrder(prisma, order, order.order_ticketitems, refundIntent, order.donation);
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);

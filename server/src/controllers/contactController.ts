@@ -301,7 +301,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       include: {
         orders: {
           orderBy: {
-            orderdateandtime: 'desc',
+            orderdatetime: 'desc',
           },
           include: {
             order_ticketitems: {
@@ -327,7 +327,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 },
               },
             },
-            donations: {
+            donation: {
               include: {
                 refund: true,
               },
@@ -354,10 +354,10 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
           .order_ticketitems
           .reduce<{ordertotal: number, refunded: boolean}>((acc, ticket) => {
             if (!ticket.ticketitem) return acc;
-            const key = `${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
+            const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
             const item = orderItemsMap.get(key);
             if (item) {
-              item['quantity'] = item['quantity']+1;
+              item.quantity+=1;
             } else {
               orderItemsMap.set(key,
                   {
@@ -381,21 +381,23 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
             };
           }, {ordertotal: 0, refunded: true});
 
-      formattedDonations.push(...order.donations.map((donation) => ({
-        ...donation,
-        refunded: donation.refund !== null,
-        donationdate: order.orderdateandtime,
-      })));
+      if (order.donation) {
+        formattedDonations.push({
+          ...order.donation,
+          refunded: order.donation.refund !== null,
+          donationdate: order.orderdatetime,
+        });
+      }
 
       if (!orderItemsMap.size) return;
 
       flattenedOrders.push({
         orderid: order.orderid,
-        orderdateandtime: order.orderdateandtime,
+        orderdatetime: order.orderdatetime,
         ordertotal,
         refunded,
         orderitems: [...orderItemsMap.values()],
-        donationTotal: order.donations.reduce<number>((acc, donation) => acc+Number(donation.amount), 0),
+        donationTotal: +(order.donation?.amount ?? 0),
       });
     });
 

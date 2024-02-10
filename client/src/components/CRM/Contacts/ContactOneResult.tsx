@@ -143,10 +143,10 @@ export const ContactOneResult = (): ReactElement => {
 };
 
 export const ContactOrder = ({order}: {order: any}): ReactElement => {
-  const {orderdateandtime, orderid, ordertotal, refunded, orderitems, donationTotal = 0} =
+  const {orderdatetime, orderid, ordertotal, refunded, orderitems, donationTotal = 0} =
     order;
 
-  const date = new Date(orderdateandtime);
+  const date = new Date(orderdatetime);
 
   return (
     <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
