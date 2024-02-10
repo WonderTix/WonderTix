@@ -12,7 +12,7 @@ import {
 } from '@mui/x-data-grid';
 import {Tooltip} from '@mui/material';
 import {useFetchToken} from '../Event/components/ShowingUtils';
-import PopUp from '../../PopUp';
+import PopUp, {PopUpProps} from '../../PopUp';
 import {LoadingScreen} from '../../mainpage/LoadingScreen';
 import {EditIcon, SaveIcon, TrashCanIcon, XIcon} from '../../Icons';
 import {toDollarAmount} from '../../../../utils/arrays';
@@ -35,8 +35,7 @@ const TicketTypes = (): ReactElement => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [addTicketClicked, setAddTicketClicked] = useState(false);
   const [newTicketType, setNewTicketType] = useState(emptyTicketType);
-  const [confirmDeleteData, setConfirmDeleteData] = useState(null);
-  const [errorPopUpProps, setErrorPopUpProps] = useState(null);
+  const [popUpProps, setPopUpProps] = useState<PopUpProps | null>(null);
 
   useEffect(() => {
     if (token !== '') {
@@ -108,8 +107,7 @@ const TicketTypes = (): ReactElement => {
     },
     {
       field: 'actions',
-      headerName: 'Actions',
-      headerAlign: 'center',
+      headerName: '',
       width: 100,
       align: 'center',
       renderCell: (cell) => {
@@ -143,11 +141,14 @@ const TicketTypes = (): ReactElement => {
                 className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
                 onClick={() => {
-                  setConfirmDeleteData({
+                  setPopUpProps({
                     title: 'Delete Ticket Type',
                     message:
                       'Are you sure you want to delete this ticket type?',
-                    ticketTypeId: cell.row.id,
+                    handleProceed: () => handleDeleteClick(cell.row.id),
+                    primaryLabel: 'Delete',
+                    secondaryLabel: 'Cancel',
+                    success: false,
                   });
                 }}
               >
@@ -199,9 +200,13 @@ const TicketTypes = (): ReactElement => {
       setAddTicketClicked(!addTicketClicked);
       void getAllTicketTypes();
     } else {
-      setErrorPopUpProps({
-        title: 'Failed to Create Ticket Type',
+      setPopUpProps({
+        title: 'Failed to Create Ticket Types',
         message: response.error,
+        success: false,
+        handleProceed: () => setPopUpProps(null),
+        showSecondary: false,
+        showClose: false,
       });
     }
   };
@@ -211,9 +216,13 @@ const TicketTypes = (): ReactElement => {
     if (!ticketTypes.error) {
       setTicketTypes(ticketTypes);
     } else {
-      setErrorPopUpProps({
+      setPopUpProps({
         title: 'Failed to Get Ticket Types',
         message: ticketTypes.error,
+        success: false,
+        handleProceed: () => setPopUpProps(null),
+        showSecondary: false,
+        showClose: false,
       });
     }
   };
@@ -240,9 +249,13 @@ const TicketTypes = (): ReactElement => {
             concessions: response.concessions,
           };
         } else {
-          setErrorPopUpProps({
+          setPopUpProps({
             title: 'Failed to Edit Ticket Type',
             message: response.error,
+            success: false,
+            handleProceed: () => setPopUpProps(null),
+            showSecondary: false,
+            showClose: false,
           });
         }
       }
@@ -252,15 +265,19 @@ const TicketTypes = (): ReactElement => {
   );
 
   const handleDeleteClick = async (ticketTypeId: number) => {
-    setConfirmDeleteData(null);
+    setPopUpProps(null);
 
     const response = await deleteTicketType(ticketTypeId, token);
     if (!response.error) {
       void getAllTicketTypes();
     } else {
-      setErrorPopUpProps({
+      setPopUpProps({
         title: 'Failed to Delete Ticket Type',
         message: response.error,
+        success: false,
+        handleProceed: () => setPopUpProps(null),
+        showSecondary: false,
+        showClose: false,
       });
     }
   };
@@ -386,32 +403,12 @@ const TicketTypes = (): ReactElement => {
               pageSize={10}
               experimentalFeatures={{newEditingApi: true}}
               processRowUpdate={handleEditTicket}
-              onProcessRowUpdateError={(err) => console.error(err)}
             />
           </div>
         </div>
       </main>
-      {confirmDeleteData && (
-        <PopUp
-          title={confirmDeleteData.title}
-          message={confirmDeleteData.message}
-          handleClose={() => setConfirmDeleteData(null)}
-          handleProceed={() =>
-            handleDeleteClick(confirmDeleteData.ticketTypeId)
-          }
-          success={false}
-        />
-      )}
-      {errorPopUpProps && (
-        <PopUp
-          title={errorPopUpProps.title}
-          message={errorPopUpProps.message}
-          handleProceed={() => setErrorPopUpProps(null)}
-          handleClose={() => setErrorPopUpProps(null)}
-          showSecondary={false}
-          showClose={false}
-          success={false}
-        />
+      {popUpProps && (
+        <PopUp {...popUpProps} handleClose={() => setPopUpProps(null)} />
       )}
     </div>
   );
