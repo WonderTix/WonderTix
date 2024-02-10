@@ -1,9 +1,8 @@
-import React, {ReactElement, useEffect, useState} from 'react';
+import React, {ReactElement, useCallback, useEffect, useState} from 'react';
 import {
   DataGrid,
   GridColumns,
   GridEventListener,
-  GridRenderCellParams,
   GridRowEditStopReasons,
   GridRowId,
   GridRowModel,
@@ -13,29 +12,35 @@ import {
 } from '@mui/x-data-grid';
 import {Tooltip} from '@mui/material';
 import {useFetchToken} from '../Event/components/ShowingUtils';
-import PopUp, {PopUpProps} from '../../PopUp';
+import PopUp from '../../PopUp';
 import {LoadingScreen} from '../../mainpage/LoadingScreen';
 import {EditIcon, SaveIcon, TrashCanIcon, XIcon} from '../../Icons';
 import {toDollarAmount} from '../../../../utils/arrays';
+import {
+  createTicketType,
+  deleteTicketType,
+  editTicketType,
+  emptyTicketType,
+  getTicketTypes,
+} from './ticketTypeUtils';
 
-// Web page that manages ticket types
+/**
+ * The page that manages WonderTix ticket types.
+ *
+ */
 const TicketTypes = (): ReactElement => {
-  const [ticketTypes, setTicketTypes] = useState([]);
-  const [addTicketClicked, setAddTicketClicked] = useState(false);
-  const [newTicketType, setTicketType] = useState('');
-  const [newTicketPrice, setTicketPrice] = useState(0);
-  const [newConcessionsPrice, setConcessionsPrice] = useState(0);
-  const [confirmDeleteData, setConfirmDeleteData] = useState(null);
-  const [errorPopUpData, setErrorPopUpData] = useState<PopUpProps | null>(null);
   const {token} = useFetchToken();
 
-  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
-    {},
-  );
+  const [ticketTypes, setTicketTypes] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [addTicketClicked, setAddTicketClicked] = useState(false);
+  const [newTicketType, setNewTicketType] = useState(emptyTicketType);
+  const [confirmDeleteData, setConfirmDeleteData] = useState(null);
+  const [errorPopUpProps, setErrorPopUpProps] = useState(null);
 
   useEffect(() => {
     if (token !== '') {
-      void getTicketTypes();
+      void getAllTicketTypes();
     }
   }, [token]);
 
@@ -142,7 +147,7 @@ const TicketTypes = (): ReactElement => {
                     title: 'Delete Ticket Type',
                     message:
                       'Are you sure you want to delete this ticket type?',
-                    cellData: cell,
+                    ticketTypeId: cell.row.id,
                   });
                 }}
               >
@@ -188,120 +193,89 @@ const TicketTypes = (): ReactElement => {
     },
   ];
 
-  // handles editing a ticket type
-  const handleEditTicket = React.useCallback(
+  const handleAddTicketType = async () => {
+    const response = await createTicketType(newTicketType, token);
+    if (!response.error) {
+      setAddTicketClicked(!addTicketClicked);
+      void getAllTicketTypes();
+    } else {
+      setErrorPopUpProps({
+        title: 'Failed to Create Ticket Type',
+        message: response.error,
+      });
+    }
+  };
+
+  const getAllTicketTypes = async () => {
+    const ticketTypes = await getTicketTypes();
+    if (!ticketTypes.error) {
+      setTicketTypes(ticketTypes);
+    } else {
+      setErrorPopUpProps({
+        title: 'Failed to Get Ticket Types',
+        message: ticketTypes.error,
+      });
+    }
+  };
+
+  const handleEditTicket = useCallback(
     async (newRow: GridRowModel, prevRow: GridRowModel) => {
       if (
         newRow.description !== prevRow.description ||
         newRow.price !== prevRow.price ||
         newRow.concessions !== prevRow.concessions
       ) {
-        await fetch(
-          `${process.env.REACT_APP_API_2_URL}/ticket-type/${newRow.id}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(newRow),
-          },
-        );
+        const ticketType = {
+          id: newRow.id,
+          description: newRow.description,
+          price: newRow.price,
+          concessions: newRow.concessions,
+        };
+
+        const response = await editTicketType(ticketType, token);
+        if (!response.error) {
+          return {
+            ...newRow,
+            price: response.price,
+            concessions: response.concessions,
+          };
+        } else {
+          setErrorPopUpProps({
+            title: 'Failed to Edit Ticket Type',
+            message: response.error,
+          });
+        }
       }
-      return newRow;
+      return prevRow;
     },
     [ticketTypes],
   );
 
-  // handles the click event of the delete button
-  const handleDeleteClick = async (cell: GridRenderCellParams) => {
-    const ticketId = Number(cell.row.id);
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_API_2_URL + '/ticket-type/' + ticketId,
-        {
-          credentials: 'include',
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (!response.ok) {
-        throw response;
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const handleDeleteClick = async (ticketTypeId: number) => {
     setConfirmDeleteData(null);
-    // refreshes the page, i.e. re-renders the table
-    getTicketTypes();
-  };
 
-  // Fetches all the ticket types from the API in the backend
-  const getTicketTypes = async () => {
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_API_2_URL + '/ticket-type/editable',
-        {
-          credentials: 'omit',
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        },
-      );
-      const jsonRes = await response.json();
-      setTicketTypes(jsonRes);
-    } catch (error) {
-      console.error(error.message);
+    const response = await deleteTicketType(ticketTypeId, token);
+    if (!response.error) {
+      void getAllTicketTypes();
+    } else {
+      setErrorPopUpProps({
+        title: 'Failed to Delete Ticket Type',
+        message: response.error,
+      });
     }
   };
 
-  // stores the name of the ticket type
-  const handleNameChange = (event) => {
-    setTicketType(event.target.value);
-  };
-
-  // stores the price of the ticket type
-  const handlePriceChange = (event) => {
-    setTicketPrice(event.target.value);
-  };
-
-  // stores the concession price of the ticket type
-  const handleConcessionsChange = (event) => {
-    setConcessionsPrice(event.target.value);
-  };
-
-  // handles the submit click when adding new ticket type
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_API_2_URL + '/ticket-type/',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            description: newTicketType,
-            price: newTicketPrice,
-            concessions: newConcessionsPrice,
-          }),
-        },
-      );
-      if (response.ok) {
-        // closes the form:
-        setAddTicketClicked(!addTicketClicked);
-        // refreshes the page, i.e. re-renders the table:
-        getTicketTypes();
-      }
-    } catch (error) {
-      console.log(error);
+  const handleNewTicketTypeChange = (event) => {
+    switch (event.target.name) {
+      case 'description':
+        setNewTicketType({...newTicketType, description: event.target.value});
+        break;
+      case 'price':
+        setNewTicketType({...newTicketType, price: event.target.value});
+        break;
+      case 'concessions':
+        setNewTicketType({...newTicketType, concessions: event.target.value});
+        break;
     }
   };
 
@@ -311,16 +285,16 @@ const TicketTypes = (): ReactElement => {
       <div className='bg-violet-200 rounded-xl p-10 shadow-md mb-4'>
         <div className='shadow-xl p-5 rounded-xl bg-violet-700'>
           <div className='mb-3'>
-            <label className='text-white' htmlFor='name'>
+            <label className='text-white' htmlFor='description'>
               Name
             </label>
             <input
               className='rounded-lg p-2 bg-blue-100 w-full mt-1'
-              placeholder='Enter name of new ticket type'
+              placeholder='Name of ticket type'
               type='text'
-              id='name'
-              name='name'
-              onChange={handleNameChange}
+              id='description'
+              name='description'
+              onChange={handleNewTicketTypeChange}
               required
             />
           </div>
@@ -336,8 +310,7 @@ const TicketTypes = (): ReactElement => {
                 min='0'
                 id='price'
                 name='price'
-                onChange={handlePriceChange}
-                required
+                onChange={handleNewTicketTypeChange}
               />
             </div>
             <div>
@@ -351,22 +324,21 @@ const TicketTypes = (): ReactElement => {
                 min='0'
                 id='concessions'
                 name='concessions'
-                onChange={handleConcessionsChange}
-                required
+                onChange={handleNewTicketTypeChange}
               />
             </div>
           </div>
-          <div className='mt-5'>
+          <div className='mt-4'>
             <button
-              className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 shadow-md px-3 py-1
+              className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 shadow-md px-3 py-1.5
                 text-white rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2
                 focus:ring-indigo-500'
-              onClick={handleSubmit}
+              onClick={handleAddTicketType}
             >
               Submit
             </button>
             <button
-              className='bg-red-500 hover:bg-red-600 disabled:opacity-40 shadow-md px-3 py-1 ml-3
+              className='bg-red-500 hover:bg-red-600 disabled:opacity-40 shadow-md px-3 py-1.5 ml-3
                 text-white rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2
                 focus:ring-red-500'
               onClick={() => setAddTicketClicked(!addTicketClicked)}
@@ -394,7 +366,10 @@ const TicketTypes = (): ReactElement => {
                 font-medium text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2
                 focus:ring-indigo-500'
               type='submit'
-              onClick={() => setAddTicketClicked(!addTicketClicked)}
+              onClick={() => {
+                setNewTicketType(emptyTicketType);
+                setAddTicketClicked(!addTicketClicked);
+              }}
             >
               Add New Ticket Type
             </button>
@@ -421,18 +396,23 @@ const TicketTypes = (): ReactElement => {
           title={confirmDeleteData.title}
           message={confirmDeleteData.message}
           handleClose={() => setConfirmDeleteData(null)}
-          handleProceed={() => handleDeleteClick(confirmDeleteData.cellData)}
+          handleProceed={() =>
+            handleDeleteClick(confirmDeleteData.ticketTypeId)
+          }
           success={false}
         />
       )}
-      {/* {errorPopUpData && (*/}
-      {/*  <PopUp*/}
-      {/*    title={errorPopUpData.title}*/}
-      {/*    message={errorPopUpData.message}*/}
-      {/*    handleProceed={errorPopUpData.handleProceed}*/}
-      {/*    success={false}*/}
-      {/*  />*/}
-      {/* )}*/}
+      {errorPopUpProps && (
+        <PopUp
+          title={errorPopUpProps.title}
+          message={errorPopUpProps.message}
+          handleProceed={() => setErrorPopUpProps(null)}
+          handleClose={() => setErrorPopUpProps(null)}
+          showSecondary={false}
+          showClose={false}
+          success={false}
+        />
+      )}
     </div>
   );
 };
