@@ -10,10 +10,10 @@ import {
   GridRowModesModel,
   GridValueFormatterParams,
 } from '@mui/x-data-grid';
-import {Tooltip} from '@mui/material';
 import {useFetchToken} from '../Event/components/ShowingUtils';
-import PopUp, {PopUpProps} from '../../PopUp';
 import {LoadingScreen} from '../../mainpage/LoadingScreen';
+import PopUp, {PopUpProps} from '../../PopUp';
+import IconButton from '../../IconButton';
 import {EditIcon, SaveIcon, TrashCanIcon, XIcon} from '../../Icons';
 import {toDollarAmount} from '../../../../utils/arrays';
 import {
@@ -27,6 +27,7 @@ import {
 /**
  * The page that manages WonderTix ticket types.
  *
+ * @returns ReactElement
  */
 const TicketTypes = (): ReactElement => {
   const {token} = useFetchToken();
@@ -113,81 +114,52 @@ const TicketTypes = (): ReactElement => {
       renderCell: (cell) => {
         const isInEditMode =
           rowModesModel[cell.row.id]?.mode === GridRowModes.Edit;
+
         if (!isInEditMode) {
           return [
-            <Tooltip
-              title='Edit'
-              placement='top'
-              enterDelay={500}
-              arrow
+            <IconButton
               key='edit'
+              onClick={handleEditClick(cell.row.id)}
+              tooltip='Edit'
             >
-              <button
-                className='p-2 rounded-lg text-zinc-500 hover:text-zinc-600 hover:bg-zinc-100
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                onClick={handleEditClick(cell.row.id)}
-              >
-                <EditIcon className='h-5 w-5' strokeWidth={2} />
-              </button>
-            </Tooltip>,
-            <Tooltip
-              title='Delete'
-              placement='top'
-              enterDelay={500}
-              arrow
+              <EditIcon className='h-5 w-5' strokeWidth={2} />
+            </IconButton>,
+            <IconButton
               key='delete'
+              hoverColor='red'
+              onClick={() => {
+                setPopUpProps({
+                  title: 'Delete Ticket Type',
+                  message:
+                    'Are you sure you want to delete this ticket type?',
+                  handleProceed: () => handleDeleteClick(cell.row.id),
+                  primaryLabel: 'Delete',
+                  secondaryLabel: 'Cancel',
+                  success: false,
+                });
+              }}
+              tooltip='Delete'
             >
-              <button
-                className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-                onClick={() => {
-                  setPopUpProps({
-                    title: 'Delete Ticket Type',
-                    message:
-                      'Are you sure you want to delete this ticket type?',
-                    handleProceed: () => handleDeleteClick(cell.row.id),
-                    primaryLabel: 'Delete',
-                    secondaryLabel: 'Cancel',
-                    success: false,
-                  });
-                }}
-              >
-                <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
-              </button>
-            </Tooltip>,
+              <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
+            </IconButton>,
           ];
         } else {
           return [
-            <Tooltip
+            <IconButton
               key='save'
-              title='Save'
-              placement='top'
-              enterDelay={500}
-              arrow
+              hoverColor='green'
+              onClick={handleSaveClick(cell.row.id)}
+              tooltip='Save'
             >
-              <button
-                className='p-2 rounded-lg text-zinc-500 hover:text-emerald-700 hover:bg-emerald-100
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500'
-                onClick={handleSaveClick(cell.row.id)}
-              >
-                <SaveIcon className='h-5 w-5' strokeWidth={2} />
-              </button>
-            </Tooltip>,
-            <Tooltip
+              <SaveIcon className='h-5 w-5' strokeWidth={2} />
+            </IconButton>,
+            <IconButton
               key='cancel'
-              title='Cancel'
-              placement='top'
-              enterDelay={500}
-              arrow
+              onClick={handleCancelClick(cell.row.id)}
+              tooltip='Cancel'
             >
-              <button
-                className='p-2 rounded-lg text-zinc-500 hover:text-zinc-600 hover:bg-zinc-100
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                onClick={handleCancelClick(cell.row.id)}
-              >
-                <XIcon className='h-5 w-5' strokeWidth={2.2} />
-              </button>
-            </Tooltip>,
+              <XIcon className='h-5 w-5' strokeWidth={2.2} />
+            </IconButton>,
           ];
         }
       },
@@ -201,7 +173,7 @@ const TicketTypes = (): ReactElement => {
       void getAllTicketTypes();
     } else {
       setPopUpProps({
-        title: 'Failed to Create Ticket Types',
+        title: 'Failed to Create Ticket Type',
         message: response.error,
         success: false,
         handleProceed: () => setPopUpProps(null),
