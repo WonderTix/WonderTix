@@ -130,8 +130,7 @@ const TicketTypes = (): ReactElement => {
               onClick={() => {
                 setPopUpProps({
                   title: 'Delete Ticket Type',
-                  message:
-                    'Are you sure you want to delete this ticket type?',
+                  message: 'Are you sure you want to delete this ticket type?',
                   handleProceed: () => handleDeleteClick(cell.row.id),
                   primaryLabel: 'Delete',
                   secondaryLabel: 'Cancel',
