@@ -42,6 +42,11 @@ contactsRouter.use(checkScopes);
  *           type: string
  *         description: phone number of the contact to filter by
  *       - in: query
+ *         name: visitSource
+ *         schema:
+ *           type: string
+ *         description: source they heard about us by filter by
+ *       - in: query
  *         name: address
  *         schema:
  *           type: string
@@ -294,6 +299,8 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *                 type: string
  *               phone:
  *                 type: string
+ *               visitSource:
+ *                 type: string
  *               address:
  *                 type: string
  *               vip:
@@ -325,6 +332,8 @@ contactsRouter.delete('/:id', async (req: Request, res: Response) => {
  *                     email:
  *                       type: string
  *                     phone:
+ *                       type: string
+ *                     visitSource:
  *                       type: string
  *                     address:
  *                       type: string
