@@ -59,27 +59,25 @@ export const createStripeCoupon = async (discount: any) => {
   });
 };
 
-export const getDonationItems = (donationCartItems: number[]) => {
-  const donations: any[] = [];
-  const donationCartRows: LineItem[] = [];
-  let donationTotal = 0;
-  donationCartItems.forEach((donation) => {
-    if (donation < 0) {
-      throw new Error('Amount of donation can not be negative');
-    } else if (!donation) {
-      return;
-    }
-    donations.push({
-      amount: donation,
-      frequency: freq.one_time,
-    });
-    donationCartRows.push(
-        getCartRow('Donation', 'A generous donation', donation*100, 1),
-    );
-    donationTotal+=donation;
-  });
+export const getDonationItem = (donationCartItem: number) => {
+  if (donationCartItem < 0 ) {
+    throw new Error('Amount of donation can not be negative');
+  }
 
-  return {donations, donationCartRows, donationTotal};
+  if (!donationCartItem) {
+    return {
+      donationTotal: 0,
+    };
+  }
+
+  return {
+    donationItem: {
+      amount: donationCartItem,
+      frequency: freq.one_time,
+    },
+    donationCartRow: getCartRow('Donation', 'A generous donation', donationCartItem*100, 1),
+    donationTotal: donationCartItem,
+  };
 };
 
 interface TicketItemsReturn {

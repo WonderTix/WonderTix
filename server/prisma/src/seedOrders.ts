@@ -22,12 +22,12 @@ export default async function seedOrders(prisma: PrismaClient) {
               contactid_fk: contact.contactid,
               payment_intent: `seeded-order-${index}`,
               ...(!(index%4) && {
-                donations: {
-                  create: [{
+                donation: {
+                  create: {
                     amount: (Math.random()*150)+1,
                     frequency: freq.one_time,
                     comments: 'Seeded Donation',
-                  }],
+                  },
                 },
               }),
               order_ticketitems: {

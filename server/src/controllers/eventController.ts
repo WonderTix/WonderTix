@@ -5,7 +5,7 @@ import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
   expireCheckoutSession,
-  getDonationItems,
+  getDonationItem,
   getTicketItems,
   getDiscountAmount,
   updateContact,
@@ -79,20 +79,20 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     } = await getTicketItems(cartItems, prisma);
 
     const {
-      donations,
-      donationCartRows,
+      donationItem,
+      donationCartRow,
       donationTotal,
-    } = getDonationItems([donation]);
+    } = getDonationItem(donation);
 
     const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
     if (ticketTotal + donationTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
           contactid,
           formData.email,
-          ticketCartRows.concat(donationCartRows),
+          donationCartRow? ticketCartRows.concat([donationCartRow]): ticketCartRows,
           {...discount, amountOff: discountAmount},
       );
-    } else if (ticketTotal + donationTotal > 0) {
+    } else if (ticketTotal + donationTotal - discountAmount > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
@@ -103,7 +103,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         toSend.id,
         {
           orderTicketItems,
-          donations,
+          donationItem,
         },
         discount.code != '' ? discount.discountid : null,
     );

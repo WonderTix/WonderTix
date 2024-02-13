@@ -83,7 +83,7 @@ model discounts {
 /// payment_intent and refund_intent are stripe payment intent ids
 model donations {
   donationid Int          @id @default(autoincrement())
-  orderid_fk Int
+  orderid_fk Int          @unique
   anonymous  Boolean      @default(false)
   amount     Decimal      @db.Money
   frequency  freq
@@ -118,8 +118,8 @@ model events {
   eventid              Int              @id @default(autoincrement())
   seasonid_fk          Int?
   eventname            String           @db.VarChar(255)
-  eventdescription     String           @default("") @db.VarChar(255)
-  active               Boolean          @default(true)
+  eventdescription     String           @db.VarChar(255)
+  active               Boolean          @default(false)
   seasonticketeligible Boolean          @default(true)
   imageurl             String?          @db.VarChar(255)
   deletedat            DateTime?
@@ -151,14 +151,14 @@ model ticketitems {
 /// refund and payment intents are the uuids from stripe when a refund or payment is made
 model orders {
   orderid           Int                 @id @default(autoincrement())
-  orderdateandtime  DateTime            @default(now()) @db.Timestamp(3)
+  orderdatetime     DateTime            @default(now()) @db.Timestamp(3)
   contactid_fk      Int
   discountid_fk     Int?
   payment_intent    String?             @unique @db.VarChar(255)
   checkout_sessions String?             @unique @db.VarChar(255)
   contacts          contacts            @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts         discounts?          @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
-  donations         donations[]
+  donation          donations?
   refunds           refunds[]
   order_ticketitems order_ticketitems[]
 }

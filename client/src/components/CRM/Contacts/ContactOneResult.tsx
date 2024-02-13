@@ -125,7 +125,7 @@ export const ContactOneResult = (): ReactElement => {
                     orderDateAndTime={order.orderdateandtime}
                     refunded={order.refunded}
                     orderItems={order.orderitems}
-                    donations={order.donations}
+                    donation={order.donation}
                   />
                 ))
               ))}
