@@ -191,7 +191,7 @@ export const getCartRow = (name: string, description: string, unitAmount: number
       name,
       description,
     },
-    unit_amount: unitAmount,
+    unit_amount: Math.floor(unitAmount),
   },
   quantity,
 });

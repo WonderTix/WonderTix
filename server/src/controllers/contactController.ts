@@ -300,6 +300,9 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       },
       include: {
         orders: {
+          where: {
+            payment_intent: {not: null},
+          },
           orderBy: {
             orderdatetime: 'desc',
           },
