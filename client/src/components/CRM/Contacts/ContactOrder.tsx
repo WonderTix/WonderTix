@@ -6,23 +6,23 @@ import {toDollarAmount} from '../../../utils/arrays';
 interface ContactOrderProps {
   orderId: number;
   orderTotal: number;
-  orderDateAndTime: string;
+  orderDateTime: string;
   refunded: string;
   orderItems: any[];
-  donations: any[];
+  donation: any;
 }
 
 const ContactOrder = (props: ContactOrderProps): ReactElement => {
   const {
     orderId,
     orderTotal,
-    orderDateAndTime,
+    orderDateTime,
     refunded,
     orderItems,
-    donations,
+    donation,
   } = props;
 
-  const date = new Date(orderDateAndTime);
+  const date = new Date(orderDateTime);
 
   return (
     <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-700'>
@@ -59,7 +59,7 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
           </p>
         </article>
         <aside className='col-span-3'>
-          {!orderItems && !donations && (
+          {!orderItems && !donation && (
             <p className='text-center text-md mt-1 w-full text-zinc-400 font-medium'>
               No order items or donation
             </p>
@@ -78,13 +78,12 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
               eventTime={item.eventtime}
             />
           ))}
-          {donations.map((donation, index) => (
+          {donation && (
             <DonationOrderItem
-              key={index}
               amount={donation.amount}
               refunded={donation.refunded}
             />
-          ))}
+          )}
         </aside>
       </div>
       <footer>

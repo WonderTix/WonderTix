@@ -13,7 +13,9 @@ import ContactOrder from './ContactOrder';
 import {Contact, toReadableDonationFrequency} from './contactUtils';
 
 /**
- * @returns {ReactElement} ContactOneResult - order and donation history for a contact
+ * The page that displays order and donation history for a contact.
+ *
+ * @returns {ReactElement} ContactOneResult
  */
 export const ContactOneResult = (): ReactElement => {
   const {token} = useFetchToken();
@@ -122,7 +124,7 @@ export const ContactOneResult = (): ReactElement => {
                     key={order.orderid}
                     orderId={order.orderid}
                     orderTotal={order.ordertotal}
-                    orderDateAndTime={order.orderdateandtime}
+                    orderDateTime={order.orderdatetime}
                     refunded={order.refunded}
                     orderItems={order.orderitems}
                     donation={order.donation}
