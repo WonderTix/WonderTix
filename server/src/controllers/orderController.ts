@@ -2,7 +2,7 @@ import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {Prisma} from '@prisma/client';
-import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook} from './orderController.service';
+import {createDonationRecord, orderCancel, setOrderRefundIntent, setDonationRefundIntent, ticketingWebhook} from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -297,8 +297,10 @@ orderController.put('/refund/:id', async (req, res) => {
     }
 
     let refundIntent;
-    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
-    else {
+    if (order.payment_intent.includes('comp')) {
+      refundIntent = `refund-comp-${order.orderid}`;
+      await orderCancel(prisma, order.orderid, refundIntent);
+    } else {
       const refund = await stripe.refunds.create({
         payment_intent: order.payment_intent,
       });
@@ -306,9 +308,9 @@ orderController.put('/refund/:id', async (req, res) => {
         throw new Error(`Refund failed`);
       }
       refundIntent = refund.id;
+      await setOrderRefundIntent(prisma,Number(orderID),refundIntent);
+      await setDonationRefundIntent(prisma,order.payment_intent,refundIntent);
     }
-    await donationCancel(prisma, order.payment_intent, refundIntent);
-    await orderCancel(prisma, order.orderid, refundIntent);
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);

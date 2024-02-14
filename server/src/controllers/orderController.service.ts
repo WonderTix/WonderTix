@@ -191,6 +191,41 @@ export const orderCancel = async (
   await updateAvailableSeats(prisma);
   return;
 };
+
+export const setOrderRefundIntent = async (
+  prisma: ExtendedPrismaClient,
+  orderID: number,
+  refundIntent: string,
+) => {
+  await prisma.orders.update({
+    where: {
+      orderid: orderID,
+    },
+    data: {
+      refund_intent: refundIntent,
+      refund_status: 'pending',
+    },
+  });
+  return;
+}
+
+export const setDonationRefundIntent = async (
+  prisma: ExtendedPrismaClient,
+  paymentIntent: string,
+  refundIntent: string,
+) => {
+  const result = await prisma.donations.updateMany({
+    where: {
+      payment_intent: paymentIntent
+    },
+    data: {
+      refund_intent: refundIntent,
+      refund_status: 'pending'
+    }
+  });
+  return result.count;
+}
+
 const getOrderDateAndTime = () => {
   const date = new Date();
 
