@@ -57,6 +57,7 @@ const Contacts = (): React.ReactElement => {
                 postalCode: contact.postalcode,
                 donorBadge: contact.donorbadge,
                 seatingAcc: contact.seatingaccom,
+                comments: contact.comments,
                 vip: contact.vip,
                 volunteerList: contact.volunteerlist,
                 newsletter: contact.newsletter,
@@ -85,7 +86,9 @@ const Contacts = (): React.ReactElement => {
   };
 
   const handleCreateContact = async (contact: Contact) => {
-    contact.seatingAcc = !contact.comments ? contact.seatingAcc : `${contact.seatingAcc} - ${contact.comments}`;
+    if (contact.seatingAcc === 'Other') {
+      contact.seatingAcc = contact.otherSeatingAcc;
+    }
 
     try {
       const response = await fetch(
@@ -107,6 +110,7 @@ const Contacts = (): React.ReactElement => {
             postalcode: contact.postalCode,
             donorbadge: contact.donorBadge,
             seatingaccom: contact.seatingAcc,
+            comments: contact.comments,
             vip: contact.vip,
             volunteerlist: contact.volunteerList,
             newsletter: contact.newsletter,

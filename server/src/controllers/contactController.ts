@@ -55,6 +55,7 @@ contactController.post('/', async (req: Request, res: Response) => {
         postalcode: req.body.postalcode,
         donorbadge: req.body.donorbadge,
         seatingaccom: req.body.seatingaccom,
+        comments: req.body.comments,
         vip: req.body.vip,
         volunteerlist: req.body.volunteerlist,
         newsletter: req.body.newsletter,
@@ -135,22 +136,22 @@ contactController.get('/', async (req: Request, res: Response) => {
     if (req.params.city) {
       filters.city = {
         contains: req.params.city,
-      }
+      };
     }
     if (req.params.state) {
       filters.state = {
         contains: req.params.state,
-      }
+      };
     }
     if (req.params.country) {
       filters.country = {
         contains: req.params.country,
-      }
+      };
     }
     if (req.params.postalcode) {
       filters.postalcode = {
         contains: req.params.postalcode,
-      }
+      };
     }
     if (req.params.phone) {
       filters.phone = {
@@ -495,6 +496,7 @@ contactController.put('/:id', async (req: Request, res: Response) => {
         country: req.body.country,
         donorbadge: req.body.donorbadge,
         seatingaccom: req.body.seatingaccom,
+        comments: req.body.comments,
         vip: req.body.vip,
         volunteerlist: req.body.volunteerlist,
         newsletter: req.body.newsletter,
