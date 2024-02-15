@@ -15,7 +15,7 @@ export type EventRow = {
   imageurl?: string;
   qty?: number;
   typeID?: number;
-  position?: string;
+  department?: string;
 };
 
 export interface ticketTypeRestriction {

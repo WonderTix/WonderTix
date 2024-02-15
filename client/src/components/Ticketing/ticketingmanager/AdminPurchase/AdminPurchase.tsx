@@ -104,7 +104,7 @@ const AdminPurchase = () => {
           eventtime: null,
           eventinstanceid: null,
           ticketRestrictionInfo: [initialTicketTypeRestriction],
-          position: null,
+          department: null,
 
         };
       }
@@ -245,11 +245,11 @@ const AdminPurchase = () => {
     }));
   };
 
-  const handlePositionChange = (event, row) => {
-    const newPosition = event.target.value;
+  const handleDepartmentChange = (event, row) => {
+    const newDepartment = event.target.value;
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
-        return {...r, position: newPosition};
+        return {...r, department: newDepartment};
       }
       return r;
     });
@@ -326,7 +326,7 @@ const AdminPurchase = () => {
           product_img_url: row.imageurl,
           qty: 1, // default 1
           payWhatCan: false,
-          position: row.position,
+          department: row.department,
         };
       }
     });
@@ -501,10 +501,10 @@ const AdminPurchase = () => {
           </button>
         ) : <select
         className='w-full'
-        value={params.row.position || ''}
-        onChange={(e) => handlePositionChange(e, params.row)}
+        value={params.row.department || ''}
+        onChange={(e) => handleDepartmentChange(e, params.row)}
       >
-        <option value=''>Select Position</option>
+        <option value=''>Select Department</option>
         <option value='backHouse'>Back House</option>
         <option value='frontHouse'>Front House</option>
         <option value='inHouse'>In House</option>
