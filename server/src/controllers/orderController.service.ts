@@ -4,7 +4,8 @@ import {
   ticketitems,
   donations,
   ticketrestrictions,
-  PrismaClient, orderticketitems,
+  PrismaClient,
+  orderticketitems,
 } from '@prisma/client';
 
 
@@ -61,7 +62,7 @@ export const orderFulfillment = async (
         discountid_fk: discountId,
         ordersubtotal: orderSubtotal,
         discounttotal: discountTotal,
-        ...(orderTicketItems && {order_ticketitems: {create: orderTicketItems}}),
+        ...(orderTicketItems && {orderticketitems: {create: orderTicketItems}}),
         ...(donationItem && {donation: {create: donationItem}}),
       },
     }),
@@ -129,7 +130,7 @@ export const createRefundedOrder = async (
     if (item.ticketitem) eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
     return {
       amount: item.price,
-      order_ticketitemid_fk: item.id,
+      orderticketitemid_fk: item.id,
     };
   });
 

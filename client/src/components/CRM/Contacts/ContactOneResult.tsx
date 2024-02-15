@@ -232,7 +232,7 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
       <footer>
         <p className='flex flex-row gap-3 text-xl mt-2 w-full'>
           <span className='font-semibold'>Order Total:</span>
-          <span>{toDollarAmount(ordertotal+donationTotal )}</span>
+          <span>{toDollarAmount(ordertotal)}</span>
         </p>
       </footer>
     </section>
