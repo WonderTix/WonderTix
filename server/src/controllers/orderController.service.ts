@@ -1,5 +1,5 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {freq} from '@prisma/client';
+import {freq, state} from '@prisma/client';
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -203,7 +203,7 @@ export const setOrderRefundIntent = async (
     },
     data: {
       refund_intent: refundIntent,
-      refund_status: 'pending',
+      refund_status: state.in_progress,
     },
   });
   return;
@@ -220,7 +220,7 @@ export const setDonationRefundIntent = async (
     },
     data: {
       refund_intent: refundIntent,
-      refund_status: 'pending'
+      refund_status: state.in_progress,
     }
   });
   return result.count;
