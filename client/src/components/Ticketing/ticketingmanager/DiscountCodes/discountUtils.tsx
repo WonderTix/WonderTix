@@ -46,7 +46,6 @@ export const createDiscountCode = async (
     );
 
     if (!response.ok) {
-      console.log(response);
       console.error('Failed to create discount code');
     }
     return response.status;
