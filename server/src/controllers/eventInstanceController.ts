@@ -88,7 +88,7 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
           include: {
             ticketitems: {
               where: {
-                order_ticketitem: {
+                orderticketitem: {
                   refund: null,
                 },
               },
@@ -364,7 +364,7 @@ eventInstanceController.get(
                 tickettype: true,
                 ticketitems: {
                   where: {
-                    order_ticketitem: {
+                    orderticketitem: {
                       refund: null,
                     },
                   },
@@ -514,7 +514,7 @@ eventInstanceController.get('/doorlist/:id',
                 tickettype: true,
                 ticketitems: {
                   where: {
-                    order_ticketitem: {
+                    orderticketitem: {
                       refund: null,
                       order: {
                         payment_intent: {not: null},
@@ -522,7 +522,7 @@ eventInstanceController.get('/doorlist/:id',
                     },
                   },
                   include: {
-                    order_ticketitem: {
+                    orderticketitem: {
                       include: {
                         order: {
                           include: {
@@ -568,7 +568,7 @@ eventInstanceController.get('/doorlist/:id',
 
         eventInstance.ticketrestrictions.forEach((res) => {
           res.ticketitems.forEach((ticket) =>
-            forEachTicket(res.tickettype.description, ticket.redeemed, ticket.order_ticketitem.order.contacts),
+            forEachTicket(res.tickettype.description, ticket.redeemed, ticket.orderticketitem.order.contacts),
           );
         });
 
@@ -757,7 +757,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
           include: {
             ticketitems: {
               include: {
-                order_ticketitem: {
+                orderticketitem: {
                   include: {
                     refund: true,
                   },
@@ -788,7 +788,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
           ...eventInstanceToUpdate,
           ticketrestrictions: eventInstanceToUpdate
               .ticketrestrictions
-              .map((res) => ({...res, availabletickets: res.ticketlimit - res.ticketitems.filter((ticket) => !ticket.order_ticketitem?.refund).length}))},
+              .map((res) => ({...res, availabletickets: res.ticketlimit - res.ticketitems.filter((ticket) => !ticket.orderticketitem?.refund).length}))},
         requestEventInstance,
     );
     return res.status(204).send('Showing successfully updated');

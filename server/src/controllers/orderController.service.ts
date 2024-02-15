@@ -4,9 +4,7 @@ import {
   ticketitems,
   donations,
   ticketrestrictions,
-  // eslint-disable-next-line camelcase
-  order_ticketitems,
-  PrismaClient,
+  PrismaClient, orderticketitems,
 } from '@prisma/client';
 
 
@@ -46,6 +44,8 @@ export const orderFulfillment = async (
     contactid: number,
     eventInstanceQueries: any[],
     checkoutSession: string,
+    orderSubtotal: number,
+    discountTotal: number,
     orderItems: {
         orderTicketItems?: any[],
         donationItem?: any,
@@ -59,6 +59,8 @@ export const orderFulfillment = async (
         contactid_fk: contactid,
         checkout_sessions: checkoutSession,
         discountid_fk: discountId,
+        ordersubtotal: orderSubtotal,
+        discounttotal: discountTotal,
         ...(orderTicketItems && {order_ticketitems: {create: orderTicketItems}}),
         ...(donationItem && {donation: {create: donationItem}}),
       },
@@ -82,7 +84,7 @@ export const updateCanceledOrder = async (
       orderid: order.orderid,
     },
     include: {
-      order_ticketitems: {
+      orderticketitems: {
         include: {
           ticketitem: {
             include: {
@@ -96,7 +98,7 @@ export const updateCanceledOrder = async (
 
   const eventInstances = new Set(
       deletedOrder
-          .order_ticketitems
+          .orderticketitems
           .map((item) => item.ticketitem?.ticketrestriction.eventinstanceid_fk));
   await updateAvailableSeats(
       prisma,
@@ -106,8 +108,7 @@ export const updateCanceledOrder = async (
 };
 
 
-// eslint-disable-next-line camelcase
-interface LoadedOrderTicketItem extends order_ticketitems {
+interface LoadedOrderTicketItem extends orderticketitems {
     ticketitem: LoadedTicketItem | null;
 }
 
@@ -183,7 +184,7 @@ export const updateAvailableSeats = async (
         include: {
           ticketitems: {
             where: {
-              order_ticketitem: {refund: null},
+              orderticketitem: {refund: null},
             },
           },
         },

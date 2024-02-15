@@ -30,7 +30,8 @@ export default async function seedOrders(prisma: PrismaClient) {
                   },
                 },
               }),
-              order_ticketitems: {
+              ordersubtotal: (Number(restriction.price) * orderItemCount),
+              orderticketitems: {
                 create: Array(orderItemCount).fill({
                   price: restriction?.price,
                   ticketitem: {

@@ -89,7 +89,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         payment_intent: {not: null},
         OR: [
           {
-            order_ticketitems: {
+            orderticketitems: {
               some: {
                 refund: null,
               },
@@ -113,7 +113,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             email: true,
           },
         },
-        order_ticketitems: {
+        orderticketitems: {
           where: {
             refund: null,
           },
@@ -145,15 +145,14 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     const toReturn = orders.map((order) => {
       const {
         contacts,
-        // eslint-disable-next-line camelcase
-        order_ticketitems,
+        orderticketitems,
         donation,
         orderdatetime,
         ...remainderOfOrder
       } = order;
       const orderItems = new Map<string, number>();
       // eslint-disable-next-line camelcase
-      const ticketTotal = order_ticketitems.reduce<number>((acc, item) => {
+      const ticketTotal = orderticketitems.reduce<number>((acc, item) => {
         if (!item.ticketitem) return acc;
         const key = `${item.ticketitem.ticketrestriction.eventinstance.event.eventname}`;
         orderItems.set(key, (orderItems.get(key) ?? 0)+1);
@@ -216,7 +215,7 @@ orderController.put('/refund/:id', async (req, res) => {
         orderid: Number(orderID),
       },
       include: {
-        order_ticketitems: {
+        orderticketitems: {
           where: {
             refund: null,
           },
@@ -242,7 +241,7 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order.payment_intent) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
-    if (!order.donation && !order.order_ticketitems.length) {
+    if (!order.donation && !order.orderticketitems.length) {
       return res.status(400).json({error: `Order ${orderID} has already been fully refunded`});
     }
 
@@ -258,7 +257,7 @@ orderController.put('/refund/:id', async (req, res) => {
       }
       refundIntent = refund.id;
     }
-    await createRefundedOrder(prisma, order, order.order_ticketitems, refundIntent, order.donation);
+    await createRefundedOrder(prisma, order, order.orderticketitems, refundIntent, order.donation);
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);
