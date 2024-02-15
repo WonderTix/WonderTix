@@ -257,7 +257,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
  * @swagger
  * /2/order/refund/{id}:
  *   put:
- *     summary: refund an order based on order id (adds refund intent to any associated donations)
+ *     summary: begin refund process for an order based on order id (adds refund intent to any associated donations)
  *     tags:
  *     - New Order
  *     parameters:
@@ -293,7 +293,7 @@ orderController.put('/refund/:id', async (req, res) => {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
     if (order.refund_intent) {
-      return res.status(400).json({error: `Order ${orderID} has already been refunded`});
+      return res.status(400).json({error: `Order ${orderID} has already begun refund process`});
     }
 
     let refundIntent;

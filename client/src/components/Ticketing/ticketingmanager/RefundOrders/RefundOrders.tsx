@@ -65,8 +65,8 @@ const RefundOrders = () => {
         orders.filter((order) => order.orderid !== orderID),
       );
       setPopUp(
-        'Refund Successful',
-        `Order ${orderID} successfully refunded`,
+        'Refund Process Started',
+        `Order ${orderID} refund process successfully started`,
         true,
         true,
         show.handleClose,
