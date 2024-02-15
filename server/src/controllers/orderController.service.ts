@@ -1,3 +1,4 @@
+import { match } from 'assert';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {freq, state} from '@prisma/client';
 
@@ -30,23 +31,6 @@ export const ticketingWebhook = async (
       await orderCancel(prisma, order.orderid);
       break;
   }
-};
-
-
-export const donationCancel = async (
-    prisma: ExtendedPrismaClient,
-    paymentIntent: string,
-    refundIntent: string,
-) => {
-  const result = await prisma.donations.updateMany({
-    where: {
-      payment_intent: paymentIntent,
-    },
-    data: {
-      refund_intent: refundIntent,
-    },
-  });
-  return result.count;
 };
 
 export const createDonationRecord = async (
@@ -153,6 +137,7 @@ export const orderCancel = async (
       },
       data: {
         refund_intent: refundIntent,
+        refund_status: state.in_progress,
         discountid_fk: null,
       },
       include: {
@@ -192,31 +177,14 @@ export const orderCancel = async (
   return;
 };
 
-export const setOrderRefundIntent = async (
-  prisma: ExtendedPrismaClient,
-  orderID: number,
-  refundIntent: string,
-) => {
-  await prisma.orders.update({
-    where: {
-      orderid: orderID,
-    },
-    data: {
-      refund_intent: refundIntent,
-      refund_status: state.in_progress,
-    },
-  });
-  return;
-}
-
-export const setDonationRefundIntent = async (
+export const donationCancel = async (
   prisma: ExtendedPrismaClient,
   paymentIntent: string,
   refundIntent: string,
 ) => {
   const result = await prisma.donations.updateMany({
     where: {
-      payment_intent: paymentIntent
+      payment_intent: paymentIntent,
     },
     data: {
       refund_intent: refundIntent,
@@ -224,6 +192,41 @@ export const setDonationRefundIntent = async (
     }
   });
   return result.count;
+}
+
+export const updateRefundStatus = async (
+  prisma: ExtendedPrismaClient,
+  paymentIntent: string,
+  refundStatus: string,
+) => {
+  let refundStatusState : state;
+  switch(refundStatus) {
+    case "succeeded": 
+      refundStatusState = state.completed;
+      break;
+    case "pending":
+      refundStatusState = state.in_progress;
+      break;
+    default:
+      refundStatusState = state.failed;
+      break;
+  }
+  await prisma.orders.updateMany({
+    where: {
+      payment_intent: paymentIntent,
+    },
+    data: {
+      refund_status: refundStatusState,
+    },
+  });
+  await prisma.donations.updateMany({
+    where: {
+      payment_intent: paymentIntent,
+    },
+    data: {
+      refund_status: refundStatusState,
+    },
+  });
 }
 
 const getOrderDateAndTime = () => {
