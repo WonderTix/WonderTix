@@ -44,7 +44,8 @@ orderController.post(
               metaData.anonymous,
               metaData.frequency,
           );
-        } else if (event.type === 'charge.refunded' || event.type === 'charge.refunded.updated') {
+        } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
+          console.log('here');
           await updateRefundStatus(
               prisma, 
               object.payment_intent,
