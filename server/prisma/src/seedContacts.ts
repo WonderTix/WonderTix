@@ -14,14 +14,17 @@ async function seedContacts(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/legacy-data/contacts.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/contacts.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      contactid: item.contactid,
       firstname: item.firstname,
       lastname: item.lastname,
       address: item.address,
+      city: item.city,
+      state: item.state,
+      country: item.country,
+      postalcode: item.postalcode,
       email: item.email,
       phone: item.phone,
       donorbadge: item.donorbadge,

@@ -1,4 +1,4 @@
-import {InvalidInputError} from './eventInstanceController.service';
+import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceController.service';
 import CartItem from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -18,15 +18,16 @@ export interface LineItem {
 }
 
 export const createStripeCheckoutSession = async (
-    customerID: number,
+    contactID: number,
+    contactEmail: string,
     donation: number,
     lineItems: LineItem[],
-    orderID: number,
+    orderTotal: number,
     discount: any,
 ) => {
   const expire = Math.round((new Date().getTime() + 1799990) / 1000);
   const couponID =
-    discount.code != '' ? await createStripeCoupon(discount) : null;
+    discount.code != '' ? await createStripeCoupon(discount, orderTotal) : null;
   const checkoutObject: JsonObject = {
     payment_method_types: ['card'],
     expires_at: expire,
@@ -34,22 +35,26 @@ export const createStripeCheckoutSession = async (
     mode: 'payment',
     success_url: `${process.env.FRONTEND_URL}/success`,
     cancel_url: `${process.env.FRONTEND_URL}`,
+    customer_creation: 'always',
+    customer_email: contactEmail,
     metadata: {
       sessionType: '__ticketing',
-      customerID,
+      contactID,
       donation,
       discountCode: null,
     },
-    ...(couponID && {discounts: [{couponID}]}),
+    ...(couponID && {discounts: [{coupon: couponID}]}),
   };
   const session = await stripe.checkout.sessions.create(checkoutObject);
   return {id: session.id};
 };
 
-export const createStripeCoupon = async (discount: any) => {
+export const createStripeCoupon = async (discount: any, orderTotal: number) => {
+  const amountOff = getDiscountAmount(discount, orderTotal);
+
   const stripeCoupon = await stripe.coupons.create({
     [discount.amount ? 'amount_off' : 'percent_off']: discount.amount ?
-      discount.amount * 100 :
+      amountOff * 100 :
       discount.percent,
     duration: 'once',
     name: discount.code,
@@ -75,33 +80,26 @@ export const getOrderItems = async (
       eventinstanceid: {in: cartItems.map((item) => Number(item.product_id))},
     },
     include: {
-      eventtickets: {
-        where: {
-          singleticket_fk: null,
+      ticketrestrictions: {
+        include: {
+          eventtickets: {
+            where: {
+              singleticket_fk: null,
+            },
+          },
         },
       },
-      ticketrestrictions: true,
       events: true,
     },
   });
   const eventInstanceMap = new Map(
-      eventInstances.map((instance) => {
-        const ticketTypeMap = new Map<number, number[]>();
-        instance.eventtickets.forEach((ticket) => {
-          ticketTypeMap.set(ticket.tickettypeid_fk ?? 1, [
-            ticket.eventticketid,
-            ...(ticketTypeMap.get(ticket.tickettypeid_fk ?? 1) ?? []),
-          ]);
-        });
-        return [
-          instance.eventinstanceid,
-          {
-            ...instance,
-            ticketTypeMap,
-          },
-        ];
-      }),
-  );
+      eventInstances.map((instance) => [
+        instance.eventinstanceid,
+        {
+          ...instance,
+          ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => [res.tickettypeid_fk, res])),
+        },
+      ]));
   let orderTotal = 0;
 
   for (const item of cartItems) {
@@ -112,72 +110,33 @@ export const getOrderItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
-
-    // Pay What You Can tickets are a single price for the entire cart row so the order
-    // of ticket must show up as a single price for 1 item in Stripe
-    if (item.payWhatCan && item.payWhatPrice) {
-      if (item.payWhatPrice < 0) {
-        throw new InvalidInputError(
-            422,
-            `Ticket Price ${item.payWhatPrice} for showing ${item.product_id} of ${item.name} is invalid`,
-        );
-      }
-
-      orderItems = orderItems.concat(
-          getTickets(
-              prisma,
-              eventInstance.ticketTypeMap,
-              item.typeID,
-              item.qty,
-              item.payWhatPrice / item.qty,
-          ),
+    if ((item.payWhatCan && item.payWhatPrice && item.payWhatPrice < 0) || item.price < 0) {
+      throw new InvalidInputError(
+          422,
+          `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
       );
-
-      cartRows.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: eventInstance.events.eventname,
-            description: `${item.desc}, Qty ${item.qty}`,
-          },
-          unit_amount: item.payWhatPrice * 100,
-        },
-        quantity: 1,
-      });
-
-      orderTotal += item.payWhatPrice;
-    } else {
-      if (item.price < 0) {
-        throw new InvalidInputError(
-            422,
-            `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
-        );
-      }
-
-      orderItems = orderItems.concat(
-          getTickets(
-              prisma,
-              eventInstance.ticketTypeMap,
-              item.typeID,
-              item.qty,
-              item.price,
-          ),
-      );
-
-      cartRows.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: eventInstance.events.eventname,
-            description: item.desc,
-          },
-          unit_amount: item.price * 100,
-        },
-        quantity: item.qty,
-      });
-
-      orderTotal += item.price * item.qty;
     }
+    orderItems = orderItems.concat(
+        getTickets(
+            eventInstance.ticketRestrictionMap.get(item.typeID),
+            eventInstance.ticketRestrictionMap.get(eventInstance.defaulttickettype ?? 1),
+            item.qty,
+            item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
+        ),
+    );
+    cartRows.push({
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: eventInstance.events.eventname,
+          description: (item.payWhatCan && item.qty != 1 ? `${item.desc}, Qty ${item.qty}`: item.desc),
+        },
+        unit_amount: (item.payWhatPrice? item.payWhatPrice: item.price) * 100,
+      },
+      quantity: item.payWhatPrice? 1: item.qty,
+    });
+
+    orderTotal += item.payWhatCan? item.payWhatPrice ?? 0: item.price * item.qty;
   }
 
   for (const [, instance] of eventInstanceMap) {
@@ -187,25 +146,9 @@ export const getOrderItems = async (
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats: (instance.ticketTypeMap.get(1) ?? []).length,
-            ticketrestrictions: {
-              update: instance.ticketrestrictions.map((restriction) => ({
-                where: {
-                  ticketrestrictionsid: restriction.ticketrestrictionsid,
-                },
-                data: {
-                  ticketssold:
-                  restriction.ticketlimit -
-                  (
-                    instance.ticketTypeMap.get(restriction.tickettypeid_fk) ??
-                    []
-                  ).length,
-                },
-              })),
-            },
+            availableseats: (instance.ticketRestrictionMap.get(instance.defaulttickettype??1)?.eventtickets ?? []).length,
           },
-        }),
-    );
+        }));
   }
 
   return {
@@ -217,24 +160,26 @@ export const getOrderItems = async (
 };
 
 const getTickets = (
-    prisma: ExtendedPrismaClient,
-    availableTickets: Map<number, number[]>,
-    typeID: number,
+    ticketRestriction: LoadedTicketRestriction | undefined,
+    defaultTicketRestriction: LoadedTicketRestriction | undefined,
     quantity: number,
     price: number,
 ) => {
-  const ticketsForType = availableTickets.get(typeID) ?? [];
-  const ticketsForGA = availableTickets.get(1) ?? [];
-  if (
-    ticketsForType.length < quantity ||
-    (typeID !== 1 && ticketsForGA.length < quantity)
-  ) {
-    throw new InvalidInputError(422, `Requested Tickets no longer available`);
+  if (!ticketRestriction || !defaultTicketRestriction) {
+    throw new InvalidInputError(422, `Requested tickets no longer available`);
   }
 
-  const ticketsToSellForType = ticketsForType.splice(0, quantity);
-  const ticketsToSellForGA =
-    typeID != 1 ? ticketsForGA.splice(0, quantity) : [];
+  if (
+    ticketRestriction.eventtickets.length < quantity || defaultTicketRestriction.eventtickets.length < quantity) {
+    throw new InvalidInputError(422, `Requested tickets no longer available`);
+  }
+
+  const ticketsToSellForType = ticketRestriction.eventtickets.splice(0, quantity).map((ticket) => ticket.eventticketid);
+  const ticketsToSellForDefault = ticketRestriction !== defaultTicketRestriction?
+      defaultTicketRestriction.eventtickets
+          .splice(0, quantity)
+          .map((ticket) => ticket.eventticketid):
+      [];
 
   return ticketsToSellForType.map((ticketID, index) => ({
     price,
@@ -245,13 +190,22 @@ const getTickets = (
             {
               eventticketid: ticketID,
             },
-          ].concat(
-            typeID != 1 ? [{eventticketid: ticketsToSellForGA[index]}] : [],
-          ),
+            ...(ticketRestriction !== defaultTicketRestriction? [{eventticketid: ticketsToSellForDefault[index]}]:[]),
+          ],
         },
       },
     },
   }));
+};
+
+export const getDiscountAmount = (discount: any, orderTotal: number) => {
+  let amountOff = 0;
+  if (discount.amount && discount.percent) {
+    amountOff = Math.min((+discount.percent / 100) * orderTotal, discount.amount);
+  } else if (discount.amount) {
+    amountOff = Math.min(discount.amount, orderTotal);
+  }
+  return amountOff;
 };
 
 interface checkoutForm {
@@ -259,6 +213,8 @@ interface checkoutForm {
   lastName: string;
   streetAddress: string;
   postalCode: string;
+  city: string,
+  state: string;
   country: string;
   phone: string;
   email: string;
@@ -318,6 +274,10 @@ const validateContact = (formData: checkoutForm) => {
     ),
     // Only include or validate the following if provided
     ...(formData.streetAddress && {address: formData.streetAddress}),
+    ...(formData.city && {city: formData.city}),
+    ...(formData.state && {state: formData.state}),
+    ...(formData.postalCode && {postalcode: formData.postalCode}),
+    ...(formData.country && {country: formData.country}),
     ...(formData.phone && {
       phone: validateWithRegex(
           formData.phone,
@@ -326,8 +286,36 @@ const validateContact = (formData: checkoutForm) => {
       ),
     }),
     ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
+    ...(formData.comments && {comments: formData.comments}),
     ...(formData.optIn && {newsletter: formData.optIn}),
   };
+};
+
+export const validateDiscount = async (discount: any, cartItems: CartItem[], prisma: ExtendedPrismaClient) => {
+  const eventIds = new Set<number>();
+  cartItems.forEach((item) => eventIds.add(item.eventId));
+  const numEventsInCart = eventIds.size;
+
+  const totalCartTicketCount = cartItems.reduce((tot, item) => {
+    return tot + item.qty;
+  }, 0);
+
+  const existingDiscount = await prisma.discounts.findFirst({
+    where: {
+      code: discount.code,
+      active: true,
+    },
+  });
+
+  if (!existingDiscount) {
+    throw new InvalidInputError(422, 'Invalid discount code');
+  }
+  if (existingDiscount.min_events && existingDiscount.min_events > numEventsInCart) {
+    throw new InvalidInputError(422, `Not enough events in cart for discount code ${discount.code}`);
+  }
+  if (existingDiscount.min_tickets && existingDiscount.min_tickets > totalCartTicketCount) {
+    throw new InvalidInputError(422, `Not enough tickets in cart for discount code ${discount.code}`);
+  }
 };
 
 const validateName = (name: string, type: string): string => {

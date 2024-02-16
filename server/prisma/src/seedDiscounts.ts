@@ -14,18 +14,15 @@ async function seedDiscounts(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/legacy-data/discounts.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/discounts.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      discountid: item.discountid,
       code: item.code,
+      active: item.active,
       amount: item.amount,
       percent: item.percent,
-      startdate: item.startdate,
-      enddate: item.enddate,
       tickettypeid_fk: item.tickettypeid,
-      createdby_fk: item.createdby,
       usagelimit: item.usagelimit,
       min_tickets: item.min_tickets,
       min_events: item.min_events,

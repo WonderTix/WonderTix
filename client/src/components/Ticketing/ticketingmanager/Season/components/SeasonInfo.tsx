@@ -9,11 +9,23 @@ import {
   deleteSeasonInfo,
   updateEventSeason,
 } from './utils/apiRequest';
-import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
+import {
+  seasonDefaultValues,
+  SeasonProps,
+  SeasonTicketValues,
+} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
+import {SeasonTicketTypeUpdateTable} from './utils/SeasonTicketTypeUpdateTable';
 
-const SeasonInfo = (props: SeasonProps) => {
+const SeasonInfo = (
+  props: SeasonProps & {
+    onUpdateSeasonTicketType: (
+      requestData: any,
+      seasonId: number,
+    ) => Promise<void>;
+  },
+) => {
   const {
     seasonId,
     isFormEditing,
@@ -24,13 +36,20 @@ const SeasonInfo = (props: SeasonProps) => {
     setPopUpMessage,
     setIsFormEditing,
     token,
+    seasonTicketTypeData,
+    onUpdateSeasonTicketType,
   } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [tempImageUrl, setTempImageUrl] = useState('');
   const [activeSeasonSwitch, setActiveSeasonSwitch] = useState<
     boolean | undefined
   >();
-
+  const [someActiveEvents, setSomeActiveEvents] = useState(false);
+  const [updatedTicketData, setUpdatedTicketData] = useState<
+    SeasonTicketValues[]
+  >([]);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const {name, startdate, enddate, imageurl} = seasonValues;
   const navigate = useNavigate();
 
@@ -51,8 +70,15 @@ const SeasonInfo = (props: SeasonProps) => {
     }
   };
 
-  const handleCreateNewSeason = async (reqObject: RequestBody) => {
+  const handleTicketTypeUpdate = (
+    updatedTicketTypeData: SeasonTicketValues[],
+  ) => {
+    setUpdatedTicketData(updatedTicketTypeData);
+  };
+
+  const handleCreateNewSeason = async (reqObject: RequestBody, ticketTypes) => {
     const createdSeasonId = await createNewSeason(reqObject, token);
+    await onUpdateSeasonTicketType(ticketTypes, createdSeasonId);
     if (createdSeasonId) {
       setPopUpMessage({
         title: 'Success',
@@ -81,8 +107,9 @@ const SeasonInfo = (props: SeasonProps) => {
     });
   };
 
-  const handleUpdateSeason = async (reqObject: RequestBody) => {
+  const handleUpdateSeason = async (reqObject: RequestBody, ticketTypes) => {
     const updateSeason = await updateSeasonInfo(reqObject, seasonId, token);
+    await onUpdateSeasonTicketType(ticketTypes, seasonId);
     const {imageurl} = reqObject;
     if (updateSeason) {
       setPopUpMessage({
@@ -104,8 +131,29 @@ const SeasonInfo = (props: SeasonProps) => {
     }
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
+
+    // Validate Table Data
+    const isTableDataValid = updatedTicketData.every(
+      (ticketType) =>
+        String(ticketType.price) !== '' &&
+        String(ticketType.concessionprice) !== '' &&
+        Number(ticketType.price) >= 0 &&
+        Number(ticketType.concessionprice) >= 0,
+    );
+
+    if (!isTableDataValid) {
+      handleInvalidTicketTypeValue(event);
+      return;
+    }
+
+    // Round Table Data to 2 decimal places
+    const roundedTicketData = updatedTicketData.map((ticketType) => ({
+      ...ticketType,
+      price: Number(ticketType.price).toFixed(2),
+      concessionprice: Number(ticketType.concessionprice).toFixed(2),
+    }));
 
     // formatting request body for POST and PUT request
     const reqObject = {
@@ -115,19 +163,62 @@ const SeasonInfo = (props: SeasonProps) => {
       imageurl: imageurl === '' ? 'Default Season Image' : imageurl,
     };
 
-    setIsFormEditing(false);
     if (seasonId === 0) {
-      void handleCreateNewSeason(reqObject);
+      await handleCreateNewSeason(reqObject, roundedTicketData);
     } else {
-      void handleUpdateSeason(reqObject);
+      await handleUpdateSeason(reqObject, roundedTicketData);
     }
+    setIsFormEditing(false);
   };
 
   const onChangeHandler = (event) => {
-    setSeasonValues((seasonValues) => ({
+    setTouched((prev) => ({
+      ...prev,
+      [event.target.name]: true,
+    }));
+    const currentValues = {
       ...seasonValues,
       [event.target.name]: event.target.value,
-    }));
+    };
+    validateSeasonInformation(currentValues);
+    setSeasonValues(currentValues);
+  };
+
+  const validateSeasonInformation = (currentValues) => {
+    const errors = {};
+    Object.keys(currentValues).forEach((key) => {
+      switch (key) {
+        case 'startdate' || 'enddate': {
+          const date = new Date(currentValues[key]);
+          if (date.toString() === 'Invalid Date') {
+            errors[key] = 'Invalid Date';
+          }
+          break;
+        }
+        case 'name': {
+          if (!currentValues[key] || currentValues[key].trim() === '') {
+            errors[key] = 'Required';
+          }
+          break;
+        }
+        case 'imageurl': {
+          if (currentValues[key] && currentValues[key].length > 255) {
+            errors[key] = 'Image URL must be no greater than 255 characters';
+          }
+        }
+      }
+    });
+
+    if (
+      !errors['startdate'] &&
+      !errors['enddate'] &&
+      new Date(currentValues.enddate).getTime() <
+        new Date(currentValues.startdate).getTime()
+    ) {
+      errors['enddate'] = 'End date can not occur before start date';
+    }
+
+    setErrors(errors);
   };
 
   const handleCancelButton = (event) => {
@@ -138,6 +229,19 @@ const SeasonInfo = (props: SeasonProps) => {
       setIsFormEditing(false);
       setSeasonValues({...seasonValues, imageurl: tempImageUrl});
     }
+  };
+
+  const handleInvalidTicketTypeValue = (event) => {
+    event.preventDefault();
+    setPopUpMessage({
+      title: 'Invalid Ticket Type Value',
+      message: 'Please enter a valid Ticket Price & Concession Price',
+      success: false,
+      handleClose: () => setShowPopUp(false),
+      handleProceed: () => setShowPopUp(false),
+      showSecondary: false,
+    });
+    setShowPopUp(true);
   };
 
   const deleteConfirmationHandler = (event) => {
@@ -158,8 +262,15 @@ const SeasonInfo = (props: SeasonProps) => {
   }, [seasonId]);
 
   useEffect(() => {
-    const isSeasonActive = eventsInSeason.every((event) => event.active);
+    let isSeasonActive = true;
+    let isActiveEvents = false;
+    eventsInSeason.forEach((event) => {
+      isSeasonActive = isSeasonActive && event.active;
+      isActiveEvents = isActiveEvents || event.active;
+    });
+
     setActiveSeasonSwitch(isSeasonActive);
+    setSomeActiveEvents(isActiveEvents);
   }, [eventsInSeason]);
 
   if (activeSeasonSwitch === undefined) return <LoadingScreen />;
@@ -169,7 +280,11 @@ const SeasonInfo = (props: SeasonProps) => {
       <section className='flex flex-col gap-3 text-center tab:flex-row tab:text-start tab:justify-between tab:flex-wrap tab:mb-5'>
         <h1 className='text-4xl font-semibold'>Edit Season</h1>
         <article className='flex flex-wrap justify-center gap-2 mb-3 tab:mb-0'>
-          <button className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'>
+          <button
+            disabled={Object.keys(errors).length !== 0}
+            type='submit'
+            className='bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-7 rounded-xl'
+          >
             Save
           </button>
           <button
@@ -181,7 +296,7 @@ const SeasonInfo = (props: SeasonProps) => {
         </article>
       </section>
       <div className='grid grid-cols-12'>
-        <div className='flex flex-col gap-3 col-span-12 mb-5 text-center tab:text-start tab:col-span-6'>
+        <div className='flex flex-col gap-3 col-span-12 mb-5 text-center tab:text-start lg:col-span-2'>
           <label htmlFor='seasonName'>
             Season Name:
             <input
@@ -193,6 +308,11 @@ const SeasonInfo = (props: SeasonProps) => {
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
+            {touched['name'] && errors['name'] && (
+              <p className='text-xs text-red-500 text-center'>
+                {errors['name']}
+              </p>
+            )}
           </label>
           <label htmlFor='startDate'>
             Start Date:
@@ -205,6 +325,11 @@ const SeasonInfo = (props: SeasonProps) => {
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
+            {touched['startdate'] && errors['startdate'] && (
+              <p className='text-xs text-red-500 text-center'>
+                {errors['startdate']}
+              </p>
+            )}
           </label>
           <label htmlFor='endDate'>
             End Date:
@@ -217,6 +342,11 @@ const SeasonInfo = (props: SeasonProps) => {
               className='text-sm w-full rounded-lg p-1 border border-zinc-400'
               required
             />
+            {(touched['enddate'] || touched['startdate'])&& errors['enddate'] && (
+              <p className='text-xs text-red-500 text-center'>
+                {errors['enddate']}
+              </p>
+            )}
           </label>
           <label htmlFor='imageUrl'>
             Image URL:
@@ -229,36 +359,56 @@ const SeasonInfo = (props: SeasonProps) => {
                 onChange={onChangeHandler}
                 className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-gray-200'
               />
-              <button
-                className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold px-4 py-1 rounded-xl'
-                onClick={(event) => {
-                  event.preventDefault();
-                  setSeasonValues((seasonValues) => ({
-                    ...seasonValues,
-                    imageurl: '',
-                  }));
-                }}
-              >
-                Default
-              </button>
+              {seasonValues.imageurl !== '' && (
+                <button
+                  className='bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white font-bold px-4 py-1 rounded-xl'
+                  onClick={() => {
+                    setSeasonValues((seasonValues) => ({
+                      ...seasonValues,
+                      imageurl: '',
+                    }));
+                    setErrors((prev) => {
+                      // @ts-ignore
+                      const {imageurl, ...rest} = prev;
+                      return rest;
+                    });
+                  }}
+                >
+                  Default
+                </button>
+              )}
             </div>
+            {touched['imageurl'] && errors['imageurl'] && (
+              <p className='text-xs text-red-500 text-center'>
+                {errors['imageurl']}
+              </p>
+            )}
           </label>
         </div>
-        <article className='col-span-12 tab:col-span-6'>
+        <article className='col-span-12 lg:col-span-2 pl-2'>
           <SeasonImage
             className='h-auto max-w-[175px] mx-auto mt-5'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
         </article>
+        <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3 rounded-lg'>
+          <SeasonTicketTypeUpdateTable
+            seasonTicketTypeData={seasonTicketTypeData}
+            onUpdate={handleTicketTypeUpdate}
+          />
+        </div>
       </div>
     </form>
   ) : (
     <ViewSeasonInfo
       {...seasonValues}
       activeSeasonSwitch={activeSeasonSwitch}
+      someActiveEvents={someActiveEvents}
       setIsFormEditing={setIsFormEditing}
+      seasonTicketTypeData={seasonTicketTypeData}
       setActiveSeasonSwitch={setActiveSeasonSwitch}
+      setSomeActiveEvents={setSomeActiveEvents}
       handleUpdateSeasonEvents={handleUpdateSeasonEvents}
       deleteConfirmationHandler={deleteConfirmationHandler}
     />

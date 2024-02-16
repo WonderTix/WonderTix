@@ -16,17 +16,16 @@ async function seedEventInstances(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/legacy-data/eventinstances.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/eventinstances.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      eventinstanceid: item.eventinstanceid,
       eventid_fk: item.eventid_fk,
       eventdate: item.eventdate,
       eventtime: parseDateTime(item.eventtime),
       salestatus: item.salestatus,
-      totalseats: item.totalseats,
-      availableseats: item.availableseats,
+      totalseats: item.totalseats ?? 100,
+      availableseats: item.totalseats ?? 100,
       purchaseuri: item.purchaseuri,
       ispreview: item.ispreview,
       defaulttickettype: item.defaulttickettype,

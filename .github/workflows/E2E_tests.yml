@@ -21,27 +21,28 @@ jobs:
       FRONTEND_URL: ${{ secrets.LOCAL_FRONTEND_URL }}
       AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
       AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
       AUTH0_URL: ${{ secrets.AUTH0_URL }}
-      TEST_EMAIL: ${{ secrets.TEST_EMAIL }} 
-      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }} 
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
       ENV: local
+
     steps:
       - uses: actions/checkout@v3
+
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
-          cache: 'npm'
+          node-version: "18.x"
+          cache: "npm"
           cache-dependency-path: ./client/package-lock.json
-      
+
       - name: npm install
         run: npm install --force
         working-directory: ./client
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      
+
       - name: Install mkcert
         run: |
           sudo apt-get update
@@ -49,7 +50,7 @@ jobs:
           curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
           chmod +x mkcert-v*-linux-amd64
           sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
-      
+
       - name: Install client CA
         run: |
           mkcert -install
@@ -61,38 +62,57 @@ jobs:
           mkcert -install
           mkcert localhost
         working-directory: ./server
-        
+
       - name: docker setup
         run: docker-compose up -d
 
-      - name: 90 second wait for client and server start
-        run: sleep 90s
-        
+      - name: 30 seconds wait for client and server start, database seed
+        run: sleep 30s
+
       - name: Check client E2E(UI) Tests
-        run: npm run test:playwright
+        run: npx playwright test
         # run: DEBUG=pw:api npx playwright test
         working-directory: ./client
-      
+
+      - name: Capture Logs
+        if: always()
+        run: |
+          docker-compose logs server > server.log
+          docker-compose logs client > client.log
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: |
+            server.log
+            client.log
+          retention-days: 14
+
+      - name: docker teardown
+        run: docker-compose down
+
       - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-report
           path: ./client/playwright
-          retention-days: 30
+          retention-days: 14
+
       - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: test-results
           path: ./client/test-results
-          retention-days: 30
-
+          retention-days: 14
+          
   # test-server:
   #   name: Run Tests on server
   #   runs-on: ubuntu-latest
   #   env:
   #     AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
   #     AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-  #     AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
   #     AUTH0_URL: ${{ secrets.AUTH0_URL }}
   #   steps:
   #     - uses: actions/checkout@v3

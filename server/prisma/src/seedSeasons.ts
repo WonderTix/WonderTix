@@ -14,11 +14,10 @@ async function seedSeasons(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/legacy-data/seasons.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/seasons.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      seasonid: item.seasonid,
       name: item.name,
       startdate: item.startdate,
       enddate: item.enddate,

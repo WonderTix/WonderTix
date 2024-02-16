@@ -67,7 +67,7 @@ const paymentRows = [
   },
 ];
 
-const PaymentSummaryReport: React.FC = (): React.ReactElement => {
+const PaymentSummaryReport = (): React.ReactElement => {
   const rowHeight = 36;
   const paymentTableRows = paymentRows.length;
   const paymentTableHeight = ((paymentTableRows * rowHeight) + rowHeight + 5);

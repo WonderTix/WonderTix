@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getAllEvents, updateEventSeason} from './utils/apiRequest';
+import {updateEventSeason} from './utils/apiRequest';
 import EventCard from './EventCard';
 import {seasonEventInfo} from './utils/seasonCommon';
 

@@ -15,7 +15,7 @@ async function seedDonations(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/legacy-data/donations.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/donations.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const frequencyMapping = {
@@ -26,7 +26,6 @@ async function seedDonations(prisma: PrismaClient) {
     };
 
     const preparedData = data.map((item) => ({
-      donationid: item.donationid,
       contactid_fk: item.contactid_fk,
       isanonymous: item.isanonymous,
       amount: parseFloat(item.amount.replace('$', '')),

@@ -42,36 +42,40 @@ export const contactController = Router();
  */
 contactController.post('/', async (req: Request, res: Response) => {
   try {
-    const contact = prisma.contacts.create({
+    const contact = await prisma.contacts.create({
       data: {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         email: req.body.email,
         phone: req.body.phone,
+        address: req.body.address,
+        city: req.body.city,
+        state: req.body.state,
+        country: req.body.country,
+        postalcode: req.body.postalcode,
         donorbadge: req.body.donorbadge,
         seatingaccom: req.body.seatingaccom,
+        comments: req.body.comments,
         vip: req.body.vip,
         volunteerlist: req.body.volunteerlist,
         newsletter: req.body.newsletter,
       },
     });
     res.status(201).json(contact);
-
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     res.status(500).json({error: 'Internal Server Error'});
+    return;
   }
 });
 
@@ -129,6 +133,26 @@ contactController.get('/', async (req: Request, res: Response) => {
         contains: req.params.address,
       };
     }
+    if (req.params.city) {
+      filters.city = {
+        contains: req.params.city,
+      };
+    }
+    if (req.params.state) {
+      filters.state = {
+        contains: req.params.state,
+      };
+    }
+    if (req.params.country) {
+      filters.country = {
+        contains: req.params.country,
+      };
+    }
+    if (req.params.postalcode) {
+      filters.postalcode = {
+        contains: req.params.postalcode,
+      };
+    }
     if (req.params.phone) {
       filters.phone = {
         contains: req.params.phone,
@@ -165,24 +189,20 @@ contactController.get('/', async (req: Request, res: Response) => {
         where: filters,
       });
       res.status(200).json(contacts);
-
       return;
     }
 
     const contacts = await prisma.contacts.findMany();
     res.status(200).json(contacts);
-
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
@@ -220,34 +240,207 @@ contactController.get('/', async (req: Request, res: Response) => {
 contactController.get('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const contactExists = await prisma.contacts.findUnique({
-      where: {
-        contactid: Number(id),
-      },
-    });
-    if (!contactExists) {
-      res.status(404).json({error: 'Contact not found'});
-
-      return;
-    }
     const contact = await prisma.contacts.findUnique({
       where: {
         contactid: Number(id),
       },
     });
-    res.status(200).json(contact);
 
+    if (!contact) {
+      res.status(404).json({error: 'Contact not found'});
+      return;
+    }
+
+    res.status(200).json(contact);
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
+      return;
+    }
 
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/contact/orders/{id}:
+ *   get:
+ *     summary: get a contact including orders and donations
+ *     tags:
+ *     - New Contact
+ *     parameters:
+ *     - $ref: '#/components/parameters/id'
+ *     security:
+ *      - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Contact got successfully.
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+contactController.get('/orders/:id', async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const contact = await prisma.contacts.findUnique({
+      where: {
+        contactid: Number(id),
+      },
+      include: {
+        orders: {
+          orderBy: [{
+            orderdate: 'desc',
+          }, {
+            ordertime: 'desc',
+          }],
+          select: {
+            orderid: true,
+            orderdate: true,
+            ordertime: true,
+            refund_intent: true,
+            ordertotal: true,
+            orderitems: {
+              select: {
+                price: true,
+                singletickets: {
+                  select: {
+                    ticketwasswapped: true,
+                    eventtickets: {
+                      select: {
+                        ticketrestrictions: {
+                          select: {
+                            tickettype: {
+                              select: {
+                                description: true,
+                              },
+                            },
+                          },
+                        },
+                        eventinstances: {
+                          select: {
+                            eventdate: true,
+                            eventtime: true,
+                            detail: true,
+                            events: {
+                              select: {
+                                eventname: true,
+                                seasons: {
+                                  select: {
+                                    name: true,
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        donations: {
+          orderBy: {
+            donationdate: 'desc',
+          },
+          select: {
+            donationid: true,
+            donationdate: true,
+            frequency: true,
+            refund_intent: true,
+            amount: true,
+          },
+        },
+      },
+    });
+
+    if (!contact) {
+      res.status(404).json({error: 'Contact not found'});
+      return;
+    }
+
+    const {orders, donations, ...remainderOfContact} = contact;
+
+    const flattenedOrders = contact.orders.map((order) => {
+      const orderItems = order.orderitems.map((item) => {
+        const singleTickets = item.singletickets.filter((ticket) => !ticket.ticketwasswapped);
+        const quantity = singleTickets.length;
+        const ticketInfo = singleTickets.map((ticket) => {
+          if (!ticket.eventtickets.length) return null;
+          return {
+            description: ticket.eventtickets[0].eventinstances.events.eventname,
+            eventdate: ticket.eventtickets[0].eventinstances.eventdate,
+            eventtime: ticket.eventtickets[0].eventinstances.eventtime,
+            eventname: ticket.eventtickets[0].eventinstances.events.eventname,
+            detail: ticket.eventtickets[0].eventinstances.detail,
+            seasonname: ticket.eventtickets[0].eventinstances.events.seasons?.name,
+            tickettype: ticket.eventtickets[0].ticketrestrictions?.tickettype.description,
+          };
+        }).filter((ticket) => ticket !== null);
+
+        if (!ticketInfo[0]) return null;
+        return {
+          price: item.price,
+          quantity: quantity,
+          description: ticketInfo[0].description,
+          eventdate: ticketInfo[0].eventdate,
+          eventtime: ticketInfo[0].eventtime,
+          eventname: ticketInfo[0].eventname,
+          seasonname: ticketInfo[0].seasonname,
+          tickettype: ticketInfo[0].tickettype,
+          detail: ticketInfo[0].detail,
+        };
+      }).filter((item) => item !== null);
+
+      return {
+        orderid: order.orderid,
+        orderdate: `${order.orderdate.toString().slice(0, 4)}-${order.orderdate.toString().slice(4, 6)}-${order.orderdate.toString().slice(6, 8)}`,
+        ordertime: order.ordertime,
+        refund_intent: order.refund_intent,
+        ordertotal: order.ordertotal,
+        orderitems: orderItems,
+      };
+    });
+
+    const formattedDonations = donations.map((donation) => {
+      const {donationdate, ...restOfDonation} = donation;
+      if (!donationdate) return null;
+      return {
+        donationdate: `${donationdate.toString().slice(0, 4)}-${donationdate.toString().slice(4, 6)}-${donationdate.toString().slice(6, 8)}`,
+        ...restOfDonation,
+      };
+    });
+
+    const toReturn = {
+      ...remainderOfContact,
+      orders: flattenedOrders,
+      donations: formattedDonations,
+    };
+
+    res.status(200).json(toReturn);
+    return;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
       return;
     }
 
@@ -287,7 +480,7 @@ contactController.get('/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const contact = prisma.contacts.update({
+    const contact = await prisma.contacts.update({
       where: {
         contactid: Number(id),
       },
@@ -296,26 +489,30 @@ contactController.put('/:id', async (req: Request, res: Response) => {
         lastname: req.body.lastname,
         email: req.body.email,
         phone: req.body.phone,
+        address: req.body.address,
+        city: req.body.city,
+        state: req.body.state,
+        postalcode: req.body.postalcode,
+        country: req.body.country,
         donorbadge: req.body.donorbadge,
         seatingaccom: req.body.seatingaccom,
+        comments: req.body.comments,
         vip: req.body.vip,
         volunteerlist: req.body.volunteerlist,
         newsletter: req.body.newsletter,
       },
     });
-    res.status(204).json();
 
+    res.status(204).json();
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
@@ -358,10 +555,10 @@ contactController.delete('/:id', async (req: Request, res: Response) => {
     });
     if (!contactExists) {
       res.status(404).json({error: 'Contact not found'});
-
       return;
     }
-    const contact = prisma.contacts.delete({
+
+    await prisma.contacts.delete({
       where: {
         contactid: Number(id),
       },
@@ -372,17 +569,14 @@ contactController.delete('/:id', async (req: Request, res: Response) => {
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
-

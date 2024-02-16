@@ -19,8 +19,12 @@ export default interface Event {
 }
 
 export interface instanceTicketType {
-  typeID: number;
-  typeQuantity: number;
+  tickettypeid_fk: number;
+  seasontickettypepricedefaultid_fk: number;
+  price: number;
+  concessionprice: number;
+  ticketlimit: number;
+  description: string;
 }
 
 export interface eventInstanceRequest {
@@ -35,6 +39,7 @@ export interface eventInstanceRequest {
   instanceTicketTypes: instanceTicketType[];
   salestatus: boolean;
   totalseats: number;
+  detail: string;
 }
 
 export interface ticketRestriction {

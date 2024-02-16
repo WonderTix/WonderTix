@@ -16,11 +16,10 @@ async function seedOrders(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/legacy-data/orders.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/orders.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      orderid: item.orderid,
       contactid_fk: item.contactid_fk,
       orderdate: item.orderdate,
       ordertime: parseTime(item.ordertime),

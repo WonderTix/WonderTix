@@ -1,4 +1,5 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {freq} from '@prisma/client';
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -30,6 +31,50 @@ export const ticketingWebhook = async (
       break;
   }
 };
+
+
+export const donationCancel = async (
+    prisma: ExtendedPrismaClient,
+    paymentIntent: string,
+    refundIntent: string,
+) => {
+  const result = await prisma.donations.updateMany({
+    where: {
+      payment_intent: paymentIntent,
+    },
+    data: {
+      refund_intent: refundIntent,
+    },
+  });
+  return result.count;
+};
+
+export const createDonationRecord = async (
+    prisma: ExtendedPrismaClient,
+    paymentIntent: string,
+    donationAmount: number,
+    customerID: number,
+    userComments?: string,
+    anonymous?: boolean,
+    frequency?: freq,
+) => {
+  const contact = await prisma.contacts.findUnique({where: {contactid: +customerID}});
+  if (!contact) {
+    throw new Error('Contact does not exist');
+  }
+  await prisma.donations.create({
+    data: {
+      contactid_fk: contact.contactid,
+      isanonymous: anonymous ?? false,
+      amount: donationAmount,
+      donorname: `${contact.firstname}  ${contact.lastname}`,
+      frequency: frequency ?? 'one_time',
+      payment_intent: paymentIntent,
+      donationdate: getOrderDateAndTime().orderdate,
+      ...(userComments && {comments: userComments}),
+    }});
+};
+
 export const orderFulfillment = async (
     prisma: ExtendedPrismaClient,
     orderItems: any[],
@@ -37,7 +82,7 @@ export const orderFulfillment = async (
     ordertotal: number,
     eventInstanceQueries: any[],
     sessionID: string,
-    discount?: number,
+    discountId?: number,
 ) => {
   const result = await prisma.$transaction([
     prisma.orders.create({
@@ -46,7 +91,7 @@ export const orderFulfillment = async (
         checkout_sessions: sessionID,
         contactid_fk: contactid,
         ordertotal,
-        discountid_fk: discount,
+        discountid_fk: discountId,
         orderitems: {
           create: orderItems,
         },
@@ -61,50 +106,30 @@ const updateAvailableSeats = async (prisma: ExtendedPrismaClient) => {
   const queriesToBatch: any[] = [];
   const eventInstances = await prisma.eventinstances.findMany({
     include: {
-      eventtickets: true,
+      ticketrestrictions: {
+        include: {
+          eventtickets: {
+            where: {
+              singleticket_fk: null,
+            },
+          },
+        },
+      },
     },
   });
-
   eventInstances.forEach((instance) => {
-    const ticketsSold = new Map<number, number>();
-
-    instance.eventtickets.forEach((ticket) => {
-      const count = ticketsSold.get(ticket.tickettypeid_fk ?? 1) ?? 0;
-      ticketsSold.set(
-          ticket.tickettypeid_fk ?? 1,
-        ticket.singleticket_fk ? count + 1 : count,
-      );
-    });
-    const updatedAvailable =
-      (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0);
-
-    if (updatedAvailable === instance.availableseats) return;
-
+    const defaultRestriction = instance.ticketrestrictions.find((res) => res.tickettypeid_fk === instance.defaulttickettype);
+    if (defaultRestriction?.eventtickets.length === instance.availableseats) return;
     queriesToBatch.push(
         prisma.eventinstances.update({
           where: {
             eventinstanceid: instance.eventinstanceid,
           },
           data: {
-            availableseats:
-            (instance.totalseats ?? 0) - (ticketsSold.get(1) ?? 0),
+            availableseats: defaultRestriction?.eventtickets.length ?? 0,
           },
         }),
     );
-    for (const entry of ticketsSold) {
-      if (entry[0] === 1) continue;
-      queriesToBatch.push(
-          prisma.ticketrestrictions.updateMany({
-            where: {
-              tickettypeid_fk: entry[0],
-              eventinstanceid_fk: instance.eventinstanceid,
-            },
-            data: {
-              ticketssold: entry[1],
-            },
-          }),
-      );
-    }
   });
   await prisma.$transaction(queriesToBatch);
   return;
@@ -128,6 +153,7 @@ export const orderCancel = async (
       },
       data: {
         refund_intent: refundIntent,
+        discountid_fk: null,
       },
       include: {
         orderitems: {

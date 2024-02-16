@@ -75,6 +75,7 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
                   smooth={true}
                   duration={600}
                   className='cursor-pointer px-4 py-2 inline-block'
+                  tabIndex={0}
                 >
                   Events
                 </Link>
@@ -82,21 +83,23 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
                 <button onClick={() => navigate('/')} className="px-4 py-2">Events</button>
               )}
             </li>
-            {!bMode && (
-              <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
-                <Link
-                  to='seasontickets'
-                  smooth={true}
-                  duration={600}
-                  className='cursor-pointer px-4 py-2 inline-block'
-                >
-                  Seasonal Tickets
-                </Link>
-              </li>
-            )}
-            <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
-              <button onClick={() => navigate('/donate')} className='px-4 py-2'>Donate</button>
-            </li>
+            {/* FIXME: These were removed per #563 in prep for the initial site launch*/}
+            {/* {!bMode && (*/}
+            {/*   <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>*/}
+            {/*     <Link*/}
+            {/*       to='seasontickets'*/}
+            {/*       smooth={true}*/}
+            {/*       duration={600}*/}
+            {/*       className='cursor-pointer px-4 py-2 inline-block'*/}
+            {/*       tabIndex={0}*/}
+            {/*     >*/}
+            {/*       Subscriptions*/}
+            {/*     </Link>*/}
+            {/*   </li>*/}
+            {/* )}*/}
+            {/* <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>*/}
+            {/*   <button onClick={() => navigate('/donate')} className='px-4 py-2'>Donate</button>*/}
+            {/* </li>*/}
           </ul>
         </div>
 
@@ -111,53 +114,53 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
         <div className='hidden md:flex gap-4'>
           <div className='flex items-center justify-end'>
             {login ? (
-              <div
-                className='flex items-center relative cursor-pointer px-4 flex-shrink-0'
-                onClick={() => setProfile(!profile)}
-              >
-                <div className='rounded-full'>
-                  {profile && (
-                    <div>
-                      {admin ? (
-                        <AdminNavDropdown />
-                      ) : (
-                        <ul className='p-2 w-full border-r bg-zinc-100 absolute rounded left-0 shadow mt-12 sm:mt-[4.3rem] '>
-                          <li className='flex w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center'>
-                            <AuthNav />
-                          </li>
-                        </ul>
-                      )}
-                    </div>
-                  )}
-                  <div className='relative'>
-                    <div>
-                      <img
-                        src={picture}
-                        className='rounded-3xl w-10 h-10'
-                        alt='Profile picture'
-                      />
+              <div className='relative'>
+                <button
+                  className='flex items-center relative cursor-pointer px-4 flex-shrink-0'
+                  onClick={() => setProfile(!profile)}
+                >
+                  <div className='rounded-full'>
+                    <div className='relative'>
+                      <div>
+                        <img
+                          src={picture}
+                          className='rounded-3xl w-10 h-10'
+                          alt='Profile picture'
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <p className='text-gray-800 text-sm mx-3'>{name}</p>
-                <div className='cursor-pointer text-gray-600'>
-                  <svg
-                    aria-haspopup='true'
-                    xmlns='http://www.w3.org/2000/svg'
-                    className='icon icon-tabler icon-tabler-chevron-down'
-                    width={20}
-                    height={20}
-                    viewBox='0 0 24 24'
-                    strokeWidth='1.5'
-                    stroke='currentColor'
-                    fill='none'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                  >
-                    <path stroke='none' d='M0 0h24v24H0z' />
-                    <polyline points='6 9 12 15 18 9' />
-                  </svg>
-                </div>
+                  <p className='text-gray-800 text-sm mx-3'>{name}</p>
+                  <div className='cursor-pointer text-gray-600'>
+                    <svg
+                      aria-haspopup='true'
+                      xmlns='http://www.w3.org/2000/svg'
+                      className='icon icon-tabler icon-tabler-chevron-down'
+                      width={20}
+                      height={20}
+                      viewBox='0 0 24 24'
+                      strokeWidth='1.5'
+                      stroke='currentColor'
+                      fill='none'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    >
+                      <path stroke='none' d='M0 0h24v24H0z' />
+                      <polyline points='6 9 12 15 18 9' />
+                    </svg>
+                  </div>
+                </button>
+                {profile && (
+                  admin ? (
+                    <AdminNavDropdown />
+                  ) : (
+                    <ul className='border-r bg-zinc-100 rounded shadow absolute w-full mt-6'>
+                      <li className='flex justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center p-4'>
+                        <AuthNav />
+                      </li>
+                    </ul>
+                  )
+                )}
               </div>
             ) : (
               <div className='flex px-5 flex-row gap-1 items-center text-zinc-500 font-semibold rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out '>
@@ -185,30 +188,32 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
         {/* Mobile top-left profile nav button */}
         <div className='md:hidden z-10 flex absolute flex-col w-auto items-start'>
           {login ? (
-            <div
-              className='flex items-center relative cursor-pointer pr-4'
-              onClick={() => setProfile(!profile)}
-            >
-              <div className='rounded-full'>
-                {profile && (
-                  <div className='w-40'>
-                    {admin ? (
-                      <AdminNavDropdown />
-                    ) : (
-                      <ul className='p-2 w-max border-r bg-zinc-100 absolute rounded left-0 shadow mt-12 sm:mt-[4.3rem]'>
-                        <li className='flex w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center'>
-                          <AuthNav />
-                        </li>
-                      </ul>
-                    )}
-                  </div>
-                )}
-                <img
-                  src={picture}
-                  className='rounded-3xl w-10 h-10'
-                  alt='Profile picture'
-                />
-              </div>
+            <div className='relative'>
+              <button
+                className='flex items-center relative cursor-pointer mr-4'
+                onClick={() => setProfile(!profile)}
+              >
+                <div className='rounded-full'>
+                  <img
+                    src={picture}
+                    className='rounded-3xl w-10 h-10'
+                    alt='Profile picture'
+                  />
+                </div>
+              </button>
+              {profile && (
+                <div className='absolute w-44'>
+                  {admin ? (
+                    <AdminNavDropdown />
+                  ) : (
+                    <ul className='p-2 w-max border-r bg-zinc-100 absolute rounded left-0 shadow mt-6'>
+                      <li className='flex w-full justify-between text-gray-600 hover:text-indigo-700 cursor-pointer items-center p-4'>
+                        <AuthNav />
+                      </li>
+                    </ul>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div className='flex pr-5 flex-row gap-1 items-center text-zinc-500 font-semibold rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out '>
@@ -244,21 +249,22 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
             </button>
           )}
         </li>
-        {!bMode && (
-          <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300 text-black font-semibold'>
-            <Link to='seasontickets' smooth={true} duration={500} className='cursor-pointer p-3'>
-              Seasonal Tickets
-            </Link>
-          </li>
-        )}
-        <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center text-black font-semibold hover:scale-105 duration-300'>
-          <button
-            onClick={() => navigate('/donate')}
-            className='border-none bg-transparent p-3'
-          >
-            Donate
-          </button>
-        </li>
+        {/* FIXME: These were removed per #563 in prep for the initial site launch*/}
+        {/* {!bMode && (*/}
+        {/*   <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300 text-black font-semibold'>*/}
+        {/*     <Link to='seasontickets' smooth={true} duration={500} className='cursor-pointer p-3'>*/}
+        {/*       Subscriptions*/}
+        {/*     </Link>*/}
+        {/*   </li>*/}
+        {/* )}*/}
+        {/* <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center text-black font-semibold hover:scale-105 duration-300'>*/}
+        {/*   <button*/}
+        {/*     onClick={() => navigate('/donate')}*/}
+        {/*     className='border-none bg-transparent p-3'*/}
+        {/*   >*/}
+        {/*     Donate*/}
+        {/*   </button>*/}
+        {/* </li>*/}
         <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center text-black font-semibold hover:scale-105 duration-300'>
           <button
             onClick={() => navigate('/cart')}

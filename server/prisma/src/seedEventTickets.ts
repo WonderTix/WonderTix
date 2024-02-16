@@ -14,11 +14,10 @@ async function seedEventTickets(prisma: PrismaClient) {
       return;
     }
 
-    const yamlData = fs.readFileSync('./prisma/legacy-data/eventtickets.yaml', 'utf8');
+    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/eventtickets.yaml', 'utf8');
     const data: any[] = yaml.load(yamlData);
 
     const preparedData = data.map((item) => ({
-      eventticketid: item.eventticketid,
       eventinstanceid_fk: item.eventinstanceid_fk,
       tickettypeid_fk: item.tickettypeid_fk ?? 1,
       redeemed: item.redeemed,

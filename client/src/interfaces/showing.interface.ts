@@ -1,31 +1,22 @@
 /**
  * Main Interface for To describe shows that are options for the event
  * Contains:
- *  id of the show newely created or show that is updated
+ *  id of the show newly created or show that is updated
  *  event id of the Event it adjacent to
  *  start time of the event and event data
  *  sales status -- available or published
  * totalseats is the total amount of available seats for the event
- * during initial add totall seats equal to available seats
+ * during initial add total seats equal to available seats
  */
 
-
 export interface eventInstanceTicketType {
-  typeID: number;
-  typePrice: number;
-  typeConcessionPrice: number;
-  typeQuantity: number;
-}
-
-export interface WtixEvent {
-  eventid: number;
-  seasonid?: number;
-  eventname: string;
-  eventdescription: string;
-  active: boolean;
-  seasonticketeligible?: boolean;
-  imageurl: string;
-  showings: Showing[];
+  tickettypeid_fk: number;
+  seasontickettypepricedefaultid_fk: number;
+  price: number;
+  concessionprice: number;
+  ticketlimit: number;
+  ticketssold: number;
+  description: string;
 }
 
 export interface Showing {
@@ -36,7 +27,7 @@ export interface Showing {
   eventtime: string;
   eventdate: string;
   salestatus: boolean;
-  ticketTypeId: (string | number) [];
+  ticketTypeId: (string | number)[];
   seatsForType: number[];
   totalseats: number;
   availableseats: number;
@@ -45,13 +36,14 @@ export interface Showing {
 export interface UpdatedShowing {
   id?: number;
   index: number;
-  eventinstanceid: number,
+  eventinstanceid: number;
   eventid_fk: number;
   eventtime: string;
   eventdate: string;
   salestatus: boolean;
-  ticketrestrictions: eventInstanceTicketType[]
+  ticketrestrictions: eventInstanceTicketType[];
   totalseats: number;
   availableseats: number;
   ispreview: boolean;
+  detail: string;
 }

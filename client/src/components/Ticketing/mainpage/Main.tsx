@@ -1,6 +1,6 @@
 import Navbar from './Navbar';
-import Hero from './hero';
-import Footer from './footer';
+import Hero from './Hero';
+import Footer from './Footer';
 import Seasonaltickets from './Seasonalt';
 import {useAuth0} from '@auth0/auth0-react';
 import React from 'react';
@@ -23,7 +23,8 @@ const Mainpage = () => {
     <div>
       <Navbar />
       <Hero />
-      <Seasonaltickets/>
+      {/* FIXME: This was removed per #563 in prep for the initial site launch*/}
+      {/* <Seasonaltickets/>*/}
       <Footer/>
     </div>
   );

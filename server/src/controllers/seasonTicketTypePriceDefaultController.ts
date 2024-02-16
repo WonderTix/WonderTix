@@ -8,10 +8,6 @@ import {InvalidInputError} from './eventInstanceController.service';
 const prisma = extendPrismaClient();
 export const seasonTicketTypePriceDefaultController = Router();
 
-// All further routes require appropriate authentication
-seasonTicketTypePriceDefaultController.use(checkJwt);
-seasonTicketTypePriceDefaultController.use(checkScopes);
-
 interface SeasonTicketTypePriceDefaultRequestItem {
     tickettypeid_fk: number;
     price: number;
@@ -27,8 +23,6 @@ interface SeasonTicketTypePriceDefaultRequestItem {
  *     - Season Ticket Type Price Default API
  *     parameters:
  *     - $ref: '#/components/parameters/seasonid'
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: array of updated season ticket type prices
@@ -52,7 +46,98 @@ seasonTicketTypePriceDefaultController.get('/:seasonid', async (req: Request, re
       where: {
         seasonid_fk: +seasonid,
       },
+      include: {
+        tickettype: {
+          select: {
+            description: true,
+          },
+        },
+      },
     });
+    return res.json(
+        toSend
+            .map((defaultTicketType) => ({
+              id: defaultTicketType.id,
+              seasonid_fk: defaultTicketType.seasonid_fk,
+              tickettypeid_fk: defaultTicketType.tickettypeid_fk,
+              price: defaultTicketType.price,
+              concessionprice: defaultTicketType.concessionprice,
+              description: defaultTicketType.tickettype.description,
+            })),
+    );
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).send({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).send({error: error.message});
+    }
+    return res.status(500).send({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/season-ticket-type-price-default/events/{seasonid}:
+ *   get:
+ *     summary: get season ticket types in the format needed by the events page
+ *     tags:
+ *     - Season Ticket Type Price Default API
+ *     parameters:
+ *     - $ref: '#/components/parameters/seasonid'
+ *     responses:
+ *       200:
+ *         description: array of  season ticket types
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/SeasonTicketTypePriceDefault'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+seasonTicketTypePriceDefaultController.get('/events/:seasonid', async (req: Request, res: Response) => {
+  try {
+    const {seasonid} = req.params;
+    let seasonResult:any[]= [];
+    const ticketResult = await prisma.tickettype.findMany({
+      where: {
+        deprecated: false,
+        seasontickettypepricedefaults: {
+          every: {
+            seasonid_fk: {not: +seasonid},
+          },
+        },
+      },
+    });
+    if (+seasonid>0) {
+      seasonResult = await prisma.seasontickettypepricedefault.findMany({
+        where: {
+          seasonid_fk: +seasonid,
+        },
+        include: {
+          tickettype: true,
+        },
+      });
+    }
+    const toSend = ticketResult.map((type) => ({
+      concessionprice: type.concessions,
+      price: type.price,
+      tickettypeid_fk: type.tickettypeid,
+      description: type.description,
+    })).concat(seasonResult.map((type) => {
+      return {
+        concessionprice: type.concessionprice,
+        price: type.price,
+        tickettypeid_fk: type.tickettypeid_fk,
+        description: type.tickettype.description,
+      };
+    }));
     return res.json(toSend);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -65,6 +150,9 @@ seasonTicketTypePriceDefaultController.get('/:seasonid', async (req: Request, re
   }
 });
 
+// All further routes require appropriate authentication
+seasonTicketTypePriceDefaultController.use(checkJwt);
+seasonTicketTypePriceDefaultController.use(checkScopes);
 
 /**
  * @swagger
@@ -127,7 +215,32 @@ seasonTicketTypePriceDefaultController.get('/:seasonid', async (req: Request, re
 seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, res: Response) => {
   try {
     const {seasonid} = req.params;
-    const toUpdate: Map<number, SeasonTicketTypePriceDefaultRequestItem> = new Map(req.body?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk, item]));
+    const toUpdate: Map<number, SeasonTicketTypePriceDefaultRequestItem> = new Map(
+        req.body?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk,
+          {
+            ...item,
+            price: +item.price,
+            concessionprice: +item.concessionprice,
+          }]),
+    );
+    const ticketRestrictions = await prisma.ticketrestrictions.findMany({
+      where: {
+        eventinstances: {
+          events: {
+            seasonid_fk: +seasonid,
+          },
+        },
+      },
+    });
+    const ticketResMap = new Map<number, number[]>();
+    ticketRestrictions.forEach((res) => {
+      const current = ticketResMap.get(res.tickettypeid_fk);
+      if (!current) {
+        ticketResMap.set(res.tickettypeid_fk, [res.ticketrestrictionsid]);
+        return;
+      }
+      current.push(res.ticketrestrictionsid);
+    });
     const current = await prisma.seasontickettypepricedefault.findMany({
       where: {
         seasonid_fk: +seasonid,
@@ -153,16 +266,16 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           id: item.id,
         },
         data: {
-          price: !item.tickettypeid_fk? 0: +update.price,
-          concessionprice: +update.concessionprice,
+          price: !item.tickettypeid_fk? 0: update.price,
+          concessionprice: update.concessionprice,
           ticketrestrictions: {
             updateMany: {
               where: {
                 seasontickettypepricedefaultid_fk: item.id,
               },
               data: {
-                ...(item.tickettypeid_fk && +item.price !== +update.price && {price: +update.price}),
-                ...(+item.concessionprice !== +update.concessionprice && {concessionprice: +update.concessionprice}),
+                ...(item.tickettypeid_fk && +item.price !== update.price && {price: update.price}),
+                ...(+item.concessionprice !== update.concessionprice && {concessionprice: update.concessionprice}),
               },
             },
           },
@@ -173,20 +286,62 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           tickettypeid_fk,
           price,
           concessionprice,
-        }) => {
-          if (price < 0 || concessionprice < 0 ) {
+        }) : any[] => {
+          if (price < 0 || concessionprice < 0) {
             throw new InvalidInputError(422, `Price can not be negative`);
           }
-          return prisma.seasontickettypepricedefault.create({
+          return [prisma.seasontickettypepricedefault.create({
             data: {
               seasonid_fk: +seasonid,
               tickettypeid_fk: +tickettypeid_fk,
-              price: +tickettypeid_fk === 0? 0: +price,
+              price: +tickettypeid_fk === 0 ? 0 : +price,
+              concessionprice: +concessionprice,
+              ticketrestrictions: {
+                connect: ticketResMap.get(+tickettypeid_fk)?.map((id) => ({
+                  ticketrestrictionsid: id,
+                })),
+              },
+            },
+          }), prisma.ticketrestrictions.updateMany({
+            where: {
+              tickettypeid_fk: +tickettypeid_fk,
+              eventinstances: {
+                events: {
+                  seasonid_fk: +seasonid,
+                },
+              },
+            },
+            data: {
+              price: +tickettypeid_fk === 0 ? 0 : +price,
               concessionprice: +concessionprice,
             },
-          });
-        })));
-    return res.json(await prisma.seasontickettypepricedefault.findMany({where: {seasonid_fk: +seasonid}}));
+          })];
+        })
+        .flat(1),
+    ));
+    const toSend = await prisma.seasontickettypepricedefault.findMany({
+      where: {
+        seasonid_fk: +seasonid,
+      },
+      include: {
+        tickettype: {
+          select: {
+            description: true,
+          },
+        },
+      },
+    });
+    return res.json(
+        toSend
+            .map((defaultTicketType) => ({
+              id: defaultTicketType.id,
+              seasonid_fk: defaultTicketType.seasonid_fk,
+              tickettypeid_fk: defaultTicketType.tickettypeid_fk,
+              price: defaultTicketType.price,
+              concessionprice: defaultTicketType.concessionprice,
+              description: defaultTicketType.tickettype.description,
+            })),
+    );
   } catch (error) {
     if (error instanceof InvalidInputError) {
       return res.status(error.code).send({error: error.message});
@@ -200,3 +355,4 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
     return res.status(500).send({error: 'Internal Server Error'});
   }
 });
+

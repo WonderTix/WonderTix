@@ -1,0 +1,216 @@
+- seasonid_fk: 1
+  eventname: Our Town
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://www.arts.gov/sites/default/files/styles/portrait_crop/public/Our%20Town%20Cover%20new.jpg?h=52605a11&itok=PE1XH64E
+- seasonid_fk: 1
+  eventname: Guys and Dolls
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://assets.playbill.com/playbill-covers/566eed1749fdc5b4801381801a49391f-guys-and-dolls-playbill-1992-04-web.jpg
+- seasonid_fk: 1
+  eventname: Streetcar Named Desire
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/commons/f/fe/A_Streetcar_Named_Desire_%281951%29.jpg
+- seasonid_fk: 1
+  eventname: Hamilton
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/8/83/Hamilton-poster.jpg
+- seasonid_fk: 1
+  eventname: Importance Of Being Ernest
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1633225294l/1162506._SY475_.jpg
+- seasonid_fk: 1
+  eventname: West Side Story
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/6/6a/West_Side_001.jpg
+- seasonid_fk: 2
+  eventname: What I Learned In Paris
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://www.theatreinchicago.com/images/play/what-i-learned-8132.jpg
+- seasonid_fk: 2
+  eventname: Hamlet
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: http://dramatica.com/resources/onesheets/hamlet-one-sheet.jpg
+- seasonid_fk: 2
+  eventname: Cat On A Hot Tin Roof
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1389369390l/72159.jpg
+- seasonid_fk: 2
+  eventname: Waiting for Godot
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://m.media-amazon.com/images/M/MV5BYjNkYWU0ODctNjM3OC00ODEwLWI3ZjEtZDBlOGFhMWViOGJmXkEyXkFqcGdeQXVyNjI2OTgxNzY@._V1_.jpg
+- seasonid_fk: 2
+  eventname: Angels In America
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg
+- seasonid_fk: 2
+  eventname: Whos Afraid of Virginia Woolf
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/7/7c/Original_movie_poster_for_the_film_Who%27s_Afraid_of_Virginia_Woolf%3F.jpg
+- seasonid_fk: 3
+  eventname: Hamlet
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: http://dramatica.com/resources/onesheets/hamlet-one-sheet.jpg
+- seasonid_fk: 3
+  eventname: Oedipus Rex
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://m.media-amazon.com/images/M/MV5BY2UwOTAzOWEtZTk1My00YTU0LWJhMWEtNzkwMTc0NGUxNTM1XkEyXkFqcGdeQXVyNzQzNzQxNzI@._V1_FMjpg_UX1000_.jpg
+- seasonid_fk: 3
+  eventname: Romeo And Juliet
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://m.media-amazon.com/images/I/51d4v0fDV+L.jpg
+- seasonid_fk: 3
+  eventname: Death of a Salesman
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/2/20/DeathOfASalesman.jpg
+- seasonid_fk: 4
+  eventname: Death of a Salesman
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/2/20/DeathOfASalesman.jpg
+- seasonid_fk: 4
+  eventname: Sweeney Todd
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/2/2a/SweeneyToddLogo.jpg
+- seasonid_fk: 4
+  eventname: Midsummer Nights Dream
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1608578298l/56220058._SX318_.jpg
+- seasonid_fk: 4
+  eventname: Hamilton
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/8/83/Hamilton-poster.jpg
+- seasonid_fk: 4
+  eventname: West Side Story
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/6/6a/West_Side_001.jpg
+- seasonid_fk: 4
+  eventname: Cat On A Hot Tin Roof
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1389369390l/72159.jpg
+- seasonid_fk: 5
+  eventname: M. Butterfly
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://m.media-amazon.com/images/I/41u2seK6FYL.jpg
+- seasonid_fk: 5
+  eventname: Importance Of Being Ernest
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1633225294l/1162506._SY475_.jpg
+- seasonid_fk: 5
+  eventname: Oedipus Rex
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://m.media-amazon.com/images/M/MV5BY2UwOTAzOWEtZTk1My00YTU0LWJhMWEtNzkwMTc0NGUxNTM1XkEyXkFqcGdeQXVyNzQzNzQxNzI@._V1_FMjpg_UX1000_.jpg
+- seasonid_fk: 5
+  eventname: What I Learned In Paris
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://www.theatreinchicago.com/images/play/what-i-learned-8132.jpg
+- seasonid_fk: 5
+  eventname: Midsummer Nights Dream
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1608578298l/56220058._SX318_.jpg
+- seasonid_fk: 6
+  eventname: Whos Afraid of Virginia Woolf
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/7/7c/Original_movie_poster_for_the_film_Who%27s_Afraid_of_Virginia_Woolf%3F.jpg
+- seasonid_fk: 6
+  eventname: Hamilton
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/8/83/Hamilton-poster.jpg
+- seasonid_fk: 6
+  eventname: Sweeney Todd
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/2/2a/SweeneyToddLogo.jpg
+- seasonid_fk: 6
+  eventname: Antigone
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: false
+  seasonticketeligible: true
+  imageurl: http://mphsaplit.weebly.com/uploads/8/8/7/6/88769472/antigone-2-jpg.jpg?296
+- seasonid_fk: 7
+  eventname: Angels In America
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: true
+  seasonticketeligible: true
+  imageurl: https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg
+- seasonid_fk: 7
+  eventname: The Crucible
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: true
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/7/75/Cruciblecover.jpg
+- seasonid_fk: 7
+  eventname: West Side Story
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: true
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/6/6a/West_Side_001.jpg
+- seasonid_fk: 7
+  eventname: Our Town
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: true
+  seasonticketeligible: true
+  imageurl: https://www.arts.gov/sites/default/files/styles/portrait_crop/public/Our%20Town%20Cover%20new.jpg?h=52605a11&itok=PE1XH64E
+- seasonid_fk: 7
+  eventname: Guys and Dolls
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: true
+  seasonticketeligible: true
+  imageurl: https://assets.playbill.com/playbill-covers/566eed1749fdc5b4801381801a49391f-guys-and-dolls-playbill-1992-04-web.jpg

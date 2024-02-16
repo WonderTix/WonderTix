@@ -30,6 +30,7 @@ export interface SeasonProps {
   setShowPopUp: (value) => void;
   setPopUpMessage: (value) => void;
   setSeasonId: (value) => void;
+  seasonTicketTypeData: SeasonTicketValues[];
 }
 
 export interface SeasonInfo {
@@ -47,3 +48,10 @@ export const seasonDefaultValues: SeasonInfo = {
   enddate: '',
   imageurl: '',
 };
+
+export interface SeasonTicketValues {
+  tickettypeid_fk: number,
+  description: string,
+  price: number,
+  concessionprice: number,
+}
