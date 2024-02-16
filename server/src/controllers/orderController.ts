@@ -45,7 +45,6 @@ orderController.post(
               metaData.frequency,
           );
         } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
-          console.log('here');
           await updateRefundStatus(
               prisma, 
               object.payment_intent,
@@ -271,7 +270,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
  *     - $ref: '#/components/parameters/id'
  *     responses:
  *       200:
- *         description: orders refunded successfully
+ *         description: refund process started
  *       400:
  *         description: bad request
  *         content:
@@ -311,9 +310,6 @@ orderController.put('/refund/:id', async (req, res) => {
       const refund = await stripe.refunds.create({
         payment_intent: order.payment_intent,
       });
-      if (refund.status !== 'succeeded') {
-        throw new Error(`Refund failed`);
-      }
       refundIntent = refund.id;
       await orderCancel(prisma,Number(orderID),refundIntent);
       await donationCancel(prisma,order.payment_intent,refundIntent);
