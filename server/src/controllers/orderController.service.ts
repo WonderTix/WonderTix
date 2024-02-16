@@ -136,7 +136,6 @@ export const orderCancel = async (
       },
       data: {
         refund_intent: refundIntent,
-        refund_status: state.in_progress,
         discountid_fk: null,
       },
       include: {
@@ -187,7 +186,6 @@ export const donationCancel = async (
     },
     data: {
       refund_intent: refundIntent,
-      refund_status: state.in_progress,
     }
   });
   return result.count;
@@ -210,7 +208,7 @@ export const updateRefundStatus = async (
       refundStatusState = state.failed;
       break;
   }
-  await prisma.orders.updateMany({
+  await prisma.donations.updateMany({
     where: {
       payment_intent: paymentIntent,
     },
@@ -218,7 +216,7 @@ export const updateRefundStatus = async (
       refund_status: refundStatusState,
     },
   });
-  await prisma.donations.updateMany({
+  await prisma.orders.updateMany({
     where: {
       payment_intent: paymentIntent,
     },
