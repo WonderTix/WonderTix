@@ -494,10 +494,12 @@ const AdminPurchase = () => {
       renderCell: (params) => (
         !params.row.complimentary ? (
           <button
-            className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
-            onClick={() => removeRow(params.row.id)}
+          className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
+          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+          onClick={() => removeRow(params.row.id)}
+          aria-label='Delete ticket'
           >
-            Remove
+            <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
           </button>
         ) : <select
         className='w-full'
@@ -518,10 +520,12 @@ const AdminPurchase = () => {
       renderCell: (params) => (
         params.row.complimentary ? (
           <button
-            className='bg-red-500 px-2 py-1 text-white rounded-xl hover:bg-red-600 disabled:opacity-40 m-2'
+            className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
             onClick={() => removeRow(params.row.id)}
+            aria-label='Delete ticket'
           >
-            Remove
+            <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
           </button>
         ) : null // Render null if Comp is checked
       ),
