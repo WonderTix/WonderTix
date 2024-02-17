@@ -104,6 +104,8 @@ const AdminPurchase = () => {
           eventtime: null,
           eventinstanceid: null,
           ticketRestrictionInfo: [initialTicketTypeRestriction],
+          department: null,
+
         };
       }
       return r;
@@ -243,6 +245,17 @@ const AdminPurchase = () => {
     }));
   };
 
+  const handleDepartmentChange = (event, row) => {
+    const newDepartment = event.target.value;
+    const updatedRows = eventData.map((r) => {
+      if (r.id === row.id) {
+        return {...r, department: newDepartment};
+      }
+      return r;
+    });
+    setEventData(updatedRows);
+  };
+
   const handlePurchase = () => {
     if (eventData.length === 0) {
       setErrMsg('Cart is empty.');
@@ -313,6 +326,7 @@ const AdminPurchase = () => {
           product_img_url: row.imageurl,
           qty: 1, // default 1
           payWhatCan: false,
+          department: row.department,
         };
       }
     });
@@ -478,14 +492,42 @@ const AdminPurchase = () => {
       headerName: '',
       width: 150,
       renderCell: (params) => (
-        <button
+        !params.row.complimentary ? (
+          <button
           className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
           onClick={() => removeRow(params.row.id)}
           aria-label='Delete ticket'
-        >
-          <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
-        </button>
+          >
+            <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
+          </button>
+        ) : <select
+        className='w-full'
+        value={params.row.department || ''}
+        onChange={(e) => handleDepartmentChange(e, params.row)}
+      >
+        <option value=''>Select Department</option>
+        <option value='backHouse'>Back House</option>
+        <option value='frontHouse'>Front House</option>
+        <option value='inHouse'>In House</option>
+      </select>
+      ),
+    },
+    {
+      field: 'compAction',
+      headerName: '',
+      width: 150,
+      renderCell: (params) => (
+        params.row.complimentary ? (
+          <button
+            className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
+            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+            onClick={() => removeRow(params.row.id)}
+            aria-label='Delete ticket'
+          >
+            <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
+          </button>
+        ) : null // Render null if Comp is checked
       ),
     },
   ];
