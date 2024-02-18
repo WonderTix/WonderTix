@@ -48,6 +48,7 @@ contactController.post('/', async (req: Request, res: Response) => {
         lastname: req.body.lastname,
         email: req.body.email,
         phone: req.body.phone,
+        visitSource: req.body.visitSource,
         address: req.body.address,
         city: req.body.city,
         state: req.body.state,
@@ -155,6 +156,11 @@ contactController.get('/', async (req: Request, res: Response) => {
     if (req.params.phone) {
       filters.phone = {
         contains: req.params.phone,
+      };
+    }
+    if (req.params.visitSource) {
+      filters.visitSource = {
+        equals: req.params.visitSource,
       };
     }
     if (req.params.donorbadge) {
@@ -489,6 +495,7 @@ contactController.put('/:id', async (req: Request, res: Response) => {
         email: req.body.email,
         phone: req.body.phone,
         address: req.body.address,
+        visitSource: req.body.visitSource,
         city: req.body.city,
         state: req.body.state,
         postalcode: req.body.postalcode,
