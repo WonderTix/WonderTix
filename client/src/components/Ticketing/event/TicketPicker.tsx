@@ -277,7 +277,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   const promptMarkup = {
     selectDate: (
       <label
-        className='text-white font-semibold text-xl'
+        className='text-white font-semibold text-2xl'
         htmlFor='date-select'
       >
         Select date below ({props.tickets.length} showings)
@@ -289,7 +289,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         htmlFor='time-select'
       >
         {selectedDate ? format(selectedDate, 'eee, MMM dd') : ''}
-        <span className='text-white font-bold'> - Choose time:</span>
+        <span className='text-white font-bold text-2xl'> - Choose time:</span>
       </label>
     ),
     showSelection: (
@@ -336,7 +336,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
               handleClick(new Date(ev.target.value), props.tickets)
             }
           >
-            <option className='text-zinc-300' value='' disabled>
+            <option className='text-zinc-300 text-xl' value='' disabled>
               select date
             </option>
             {uniqueDates.map((dateStr, index) => (
@@ -357,7 +357,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       <div className='flex flex-col gap-2 mt-7'>
         <label
           htmlFor='ticket-type-select'
-          className='text-center text-zinc-200'
+          className='text-center text-zinc-200 text-xl'
         >
           Ticket Type
         </label>
@@ -376,7 +376,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           }
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
         >
-          <option className='text-zinc-300' value={-1} disabled>
+          <option className='text-zinc-300 text-xl' value={-1} disabled>
             select ticket type
           </option>
           {showingTicketTypes.map((t) => (
@@ -387,7 +387,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         </select>
       </div>
       <div className='flex flex-col gap-2 mt-3'>
-        <label htmlFor='qty-select' className='text-center text-zinc-200'>
+        <label htmlFor='qty-select' className='text-center text-zinc-200 text-xl'>
           {selectedTicket
             ? numAvail > 0
               ? 'Quantity'
@@ -402,7 +402,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           onChange={(e) => dispatch(changeQty(parseInt(e.target.value)))}
           className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
         >
-          <option className='text-zinc-300' value={0} disabled>
+          <option className='text-zinc-300 text-xl' value={0} disabled>
             select qty
           </option>
           {range(numAvail, false).map((n) =>
@@ -462,7 +462,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           qty > selectedTicket.availableseats ||
           (selectedTicketType.name === 'Pay What You Can' && (payWhatPrice == null || payWhatPrice < 0))
         }
-        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 mt-7 bg-blue-500 text-white enabled:hover:bg-blue-600 rounded-xl'
+        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 mt-7 bg-blue-500 text-white enabled:hover:bg-blue-600 rounded-2xl'
         onClick={handleSubmit}
       >
         Get Tickets

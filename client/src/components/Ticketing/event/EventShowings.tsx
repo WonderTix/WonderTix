@@ -98,10 +98,10 @@ const EventShowings = (): ReactElement => {
               <h1 data-testid='event-title' className='text-white text-4xl font-bold'>
                 {titleCase(title)}
               </h1>
-              <p className='text-zinc-200 font-semibold text-xl mt-6'>
+              <p className='text-zinc-200 font-semibold text-2xl mt-6'>
                 Event description
               </p>
-              <p className='text-zinc-100 pr-7'>
+              <p className='text-zinc-100 text-xl pr-7'>
                 {description ? description : ''}
               </p>
             </div>
