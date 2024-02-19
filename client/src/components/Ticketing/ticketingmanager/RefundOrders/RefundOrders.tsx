@@ -130,7 +130,6 @@ const RefundOrders = () => {
       );
     }
   };
-
   return (
     <>
       {show.showPopUp && (
@@ -194,7 +193,7 @@ const RefundOrders = () => {
                   Order Date & Time
                 </td>
                 <td className='row-start-1 justify-self-start py-2 col-span-1'>
-                  Event(s)
+                    Ticket(s)
                 </td>
                 <td className='row-start-1 justify-self-start py-2 col-span-1'>
                   Donation Total
@@ -207,8 +206,8 @@ const RefundOrders = () => {
             </thead>
             <tbody>
               {orders.length === 0 ? (
-                <tr className='text-center text-gray-600'>
-                  <td className={'col-span-5'}>
+                <tr className='text-center text-gray-600 grid grid-cols-6'>
+                  <td className={'col-span-6'}>
                     <p>No Refundable Orders</p>
                   </td>
                 </tr>
@@ -223,19 +222,14 @@ const RefundOrders = () => {
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {format(new Date(
-                        `${instance.orderdate} ${instance.ordertime
-                          .split('T')[1]
-                          .slice(0, 8)}`,
+                          instance.orderdate,
                       ), 'MM/dd/yyyy, h:mm a')}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {Array.isArray(instance.showings) ? (
-                        instance.showings.map((showing, showingIndex) => (
-                          <p key={showingIndex}>{showing}</p>
-                        ))
-                      ) : (
-                        <>{instance.showings}</>
-                      )}
+                      {instance.items.length ?
+                          instance.items.map((showing, showingIndex) => (<p key={showingIndex}>{showing}</p>)):
+                          <p>No Tickets in order</p>
+                      }
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
                       {formatUSD(instance.donation ?? 0)}

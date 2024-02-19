@@ -143,12 +143,10 @@ export const ContactOneResult = (): ReactElement => {
 };
 
 export const ContactOrder = ({order}: {order: any}): ReactElement => {
-  const {orderdate, orderid, ordertime, ordertotal, refund_intent, orderitems} =
+  const {orderdatetime, orderid, ordertotal, refunded, orderitems, donationTotal = 0} =
     order;
 
-  const date = new Date(
-    `${toDateStringFormat(orderdate)}T${ordertime.split('T')[1].slice(0, 8)}`,
-  );
+  const date = new Date(orderdatetime);
 
   return (
     <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
@@ -179,9 +177,15 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
             <span className='font-semibold'>Order Time:</span>
             <span>{format(date, 'h:mm a')}</span>
           </p>
+            {donationTotal !== 0 &&
+            <p className='flex flex-row gap-3 text-lg mt-1 w-full'>
+                <span className='font-semibold'>Donation:</span>
+                <span>{toDollarAmount(donationTotal)}</span>
+            </p>
+            }
           <p className='flex flex-row gap-3 text-lg my-1 w-full'>
             <span className='font-semibold'>Refunded:</span>
-            <span>{refund_intent ? 'Yes' : 'No'}</span>
+            <span>{refunded ? 'Yes' : 'No'}</span>
           </p>
         </article>
         <aside>
@@ -203,7 +207,7 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
               >
                 <p className='flex justify-between'>
                   <span className='font-bold'>
-                    {item.quantity} x {item.description}
+                    {item.quantity} x {item.eventname}
                     {item.seasonname && (
                       <span className='font-normal italic'>
                         {' '}
@@ -228,7 +232,7 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
       <footer>
         <p className='flex flex-row gap-3 text-xl mt-2 w-full'>
           <span className='font-semibold'>Order Total:</span>
-          <span>{toDollarAmount(Number(ordertotal))}</span>
+          <span>{toDollarAmount(ordertotal)}</span>
         </p>
       </footer>
     </section>
@@ -236,9 +240,9 @@ export const ContactOrder = ({order}: {order: any}): ReactElement => {
 };
 
 export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
-  const {donationid, donationdate, frequency, refund_intent, amount} = donation;
+  const {donationid, donationdate, frequency, refunded, amount} = donation;
 
-  const date = new Date(`${toDateStringFormat(donationdate)}T00:00:00`);
+  const date = new Date(donationdate);
 
   return (
     <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
@@ -270,7 +274,7 @@ export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
         </p>
         <p className='flex flex-row gap-3 text-lg my-1 w-full'>
           <span className='font-semibold'>Refunded:</span>
-          <span>{refund_intent ? 'Yes' : 'No'}</span>
+          <span>{refunded ? 'Yes' : 'No'}</span>
         </p>
       </article>
       <footer>

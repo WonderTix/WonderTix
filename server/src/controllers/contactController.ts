@@ -300,47 +300,26 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       },
       include: {
         orders: {
-          orderBy: [{
-            orderdate: 'desc',
-          }, {
-            ordertime: 'desc',
-          }],
-          select: {
-            orderid: true,
-            orderdate: true,
-            ordertime: true,
-            refund_intent: true,
-            ordertotal: true,
-            orderitems: {
-              select: {
-                price: true,
-                singletickets: {
-                  select: {
-                    ticketwasswapped: true,
-                    eventtickets: {
-                      select: {
-                        ticketrestrictions: {
-                          select: {
-                            tickettype: {
-                              select: {
-                                description: true,
-                              },
-                            },
-                          },
-                        },
-                        eventinstances: {
-                          select: {
-                            eventdate: true,
-                            eventtime: true,
-                            detail: true,
-                            events: {
-                              select: {
-                                eventname: true,
-                                seasons: {
-                                  select: {
-                                    name: true,
-                                  },
-                                },
+          where: {
+            payment_intent: {not: null},
+          },
+          orderBy: {
+            orderdatetime: 'desc',
+          },
+          include: {
+            orderticketitems: {
+              include: {
+                refund: true,
+                ticketitem: {
+                  include: {
+                    ticketrestriction: {
+                      include: {
+                        tickettype: true,
+                        eventinstance: {
+                          include: {
+                            event: {
+                              include: {
+                                seasons: true,
                               },
                             },
                           },
@@ -351,18 +330,11 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 },
               },
             },
-          },
-        },
-        donations: {
-          orderBy: {
-            donationdate: 'desc',
-          },
-          select: {
-            donationid: true,
-            donationdate: true,
-            frequency: true,
-            refund_intent: true,
-            amount: true,
+            donation: {
+              include: {
+                refund: true,
+              },
+            },
           },
         },
       },
@@ -373,56 +345,58 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       return;
     }
 
-    const {orders, donations, ...remainderOfContact} = contact;
+    const {orders, ...remainderOfContact} = contact;
+    const formattedDonations: any[] = [];
+    const flattenedOrders : any[] = [];
+    contact.orders.forEach((order) => {
+      const orderItemsMap = new Map<string, any>();
+      const
+        refunded = order
+            .orderticketitems
+            .reduce<boolean>((acc, ticket) => {
+              if (!ticket.ticketitem) return acc;
+              const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
+              const item = orderItemsMap.get(key);
+              if (item) {
+                item.quantity+=1;
+              } else {
+                orderItemsMap.set(key,
+                    {
+                      price: ticket.price,
+                      refunded: ticket.refund !== null,
+                      redeemed: ticket.ticketitem.redeemed,
+                      donated: ticket.ticketitem.donated,
+                      description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+                      eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
+                      eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
+                      eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+                      detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
+                      seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
+                      tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
+                      quantity: 1,
+                    });
+              }
+              return acc && ticket.refund !== null;
+            }, true);
 
-    const flattenedOrders = contact.orders.map((order) => {
-      const orderItems = order.orderitems.map((item) => {
-        const singleTickets = item.singletickets.filter((ticket) => !ticket.ticketwasswapped);
-        const quantity = singleTickets.length;
-        const ticketInfo = singleTickets.map((ticket) => {
-          if (!ticket.eventtickets.length) return null;
-          return {
-            description: ticket.eventtickets[0].eventinstances.events.eventname,
-            eventdate: ticket.eventtickets[0].eventinstances.eventdate,
-            eventtime: ticket.eventtickets[0].eventinstances.eventtime,
-            eventname: ticket.eventtickets[0].eventinstances.events.eventname,
-            detail: ticket.eventtickets[0].eventinstances.detail,
-            seasonname: ticket.eventtickets[0].eventinstances.events.seasons?.name,
-            tickettype: ticket.eventtickets[0].ticketrestrictions?.tickettype.description,
-          };
-        }).filter((ticket) => ticket !== null);
+      if (order.donation) {
+        formattedDonations.push({
+          ...order.donation,
+          refunded: order.donation.refund !== null,
+          donationdate: order.orderdatetime,
+        });
+      }
 
-        if (!ticketInfo[0]) return null;
-        return {
-          price: item.price,
-          quantity: quantity,
-          description: ticketInfo[0].description,
-          eventdate: ticketInfo[0].eventdate,
-          eventtime: ticketInfo[0].eventtime,
-          eventname: ticketInfo[0].eventname,
-          seasonname: ticketInfo[0].seasonname,
-          tickettype: ticketInfo[0].tickettype,
-          detail: ticketInfo[0].detail,
-        };
-      }).filter((item) => item !== null);
+      if (!orderItemsMap.size) return;
 
-      return {
+      flattenedOrders.push({
         orderid: order.orderid,
-        orderdate: `${order.orderdate.toString().slice(0, 4)}-${order.orderdate.toString().slice(4, 6)}-${order.orderdate.toString().slice(6, 8)}`,
-        ordertime: order.ordertime,
-        refund_intent: order.refund_intent,
-        ordertotal: order.ordertotal,
-        orderitems: orderItems,
-      };
-    });
-
-    const formattedDonations = donations.map((donation) => {
-      const {donationdate, ...restOfDonation} = donation;
-      if (!donationdate) return null;
-      return {
-        donationdate: `${donationdate.toString().slice(0, 4)}-${donationdate.toString().slice(4, 6)}-${donationdate.toString().slice(6, 8)}`,
-        ...restOfDonation,
-      };
+        orderdatetime: order.orderdatetime,
+        ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
+        refunded,
+        orderitems: [...orderItemsMap.values()],
+        donationTotal: +(order.donation?.amount ?? 0),
+      });
     });
 
     const toReturn = {
@@ -480,7 +454,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const contact = await prisma.contacts.update({
+    await prisma.contacts.update({
       where: {
         contactid: Number(id),
       },

@@ -35,11 +35,12 @@ export const TicketTypeSelect = (props: {
   };
   return (
     <>
-      <label hidden htmlFor={`${field.name} ${index} select`}>
+      <label hidden htmlFor={field.name}>
         Ticket Type Select number {index}
       </label>
       <select
         name={field.name}
+        id={field.name}
         onChange={handleChange}
         value={field.value}
         className={'w-full'}

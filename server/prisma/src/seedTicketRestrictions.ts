@@ -24,7 +24,7 @@ async function seedTicketRestrictions(prisma: PrismaClient) {
     const data: any[] = yaml.load(yamlData);
     const queryBatch: any[] = [];
     eventInstances.forEach((instance) => {
-      const type = ticketTypes.get(instance.defaulttickettype ?? 1);
+      const type = ticketTypes.get(1);
       evenInstanceMap.set(instance.eventinstanceid, instance);
       if (!type) return;
       queryBatch.push(prisma.ticketrestrictions.create({
@@ -34,18 +34,13 @@ async function seedTicketRestrictions(prisma: PrismaClient) {
           ticketlimit: instance.totalseats ?? 100,
           price: type.price,
           concessionprice: type.concessions,
-          eventtickets: {
-            create: Array(instance.totalseats ?? 100).fill({
-              eventinstanceid_fk: instance.eventinstanceid,
-            }),
-          },
         },
       }));
     });
     data.forEach((item) => {
       const type = ticketTypes.get(+item.tickettypeid_fk);
       const instance = evenInstanceMap.get(+item.eventinstanceid_fk);
-      if (!instance || !type || type.tickettypeid === instance.defaulttickettype) return;
+      if (!instance || !type || type.tickettypeid === 1) return;
       queryBatch.push(prisma.ticketrestrictions.create({
         data: {
           eventinstanceid_fk: +item.eventinstanceid_fk,
@@ -53,11 +48,6 @@ async function seedTicketRestrictions(prisma: PrismaClient) {
           ticketlimit: Math.min(item.ticketlimit, instance.totalseats),
           price: type.price,
           concessionprice: type.concessions,
-          eventtickets: {
-            create: Array(Math.min(item.ticketlimit, instance.totalseats)).fill({
-              eventinstanceid_fk: item.eventinstanceid_fk,
-            }),
-          },
         },
       }));
     });

@@ -35,8 +35,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
         // Remove ticketssold from restriction so it isn't passed to PUT API
         const {ticketssold, ...restOfRestriction} = restriction;
         return restOfRestriction;
-      })
-      : [getInstanceTicketType(ticketTypes.find((type) => type.tickettypeid_fk === 1))],
+      }): [],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
     detail: initialValues?.detail ? initialValues.detail : '',
@@ -103,17 +102,6 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 type='number'
                 id={values.eventinstanceid}
                 className={inputControlClassName}
-                onChange={async (event) => {
-                  const defaultType = values.instanceTicketTypes.findIndex(
-                    (type) =>
-                      type.tickettypeid_fk === +values.defaulttickettype,
-                  );
-                  await setFieldValue('totalseats', event.target.value);
-                  await setFieldValue(
-                    `instanceTicketTypes[${defaultType}].ticketlimit`,
-                    event.target.value,
-                  );
-                }}
               />
               <div className={'grid grid-cols-2 text-zinc-800'}>
                 <p className={'text-sm font-bold'}>Available Seats</p>
