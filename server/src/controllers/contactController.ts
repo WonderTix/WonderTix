@@ -478,9 +478,9 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       const flattenedDonation = {
         donationid: order.donation?.donationid,
         anonymous: order.donation?.anonymous,
-        amount: order.donation?.anonymous,
-        frequency: order.donation?.anonymous,
-        comments: order.donation?.anonymous,
+        amount: order.donation?.amount,
+        frequency: order.donation?.frequency,
+        comments: order.donation?.comments,
         refunded: order.donation?.refund !== null,
       };
 
