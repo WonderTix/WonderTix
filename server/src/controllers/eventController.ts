@@ -85,6 +85,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     } = getDonationItem(donation);
 
     const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+
     if (ticketTotal + donationTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
           contactid,
@@ -101,6 +102,8 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         contactid,
         eventInstanceQueries,
         toSend.id,
+        ticketTotal+donationTotal,
+        discountAmount,
         {
           orderTicketItems,
           donationItem,
@@ -248,7 +251,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
               include: {
                 ticketitems: {
                   where: {
-                    order_ticketitem: {
+                    orderticketitem: {
                       refund: null,
                     },
                   },
@@ -1163,7 +1166,7 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         ticketrestriction: {
           eventinstanceid_fk: +instanceId,
         },
-        order_ticketitem: {
+        orderticketitem: {
           refund: null,
           order: {
             contactid_fk: +contactId,

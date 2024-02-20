@@ -3,8 +3,7 @@ import {eventInstanceRequest, instanceTicketType} from '../interfaces/Event';
 import {
   eventinstances,
   events,
-  // eslint-disable-next-line camelcase
-  order_ticketitems,
+  orderticketitems,
   seasons,
   seasontickettypepricedefault,
   ticketitems,
@@ -28,8 +27,7 @@ export interface LoadedTicketRestriction extends ticketrestrictions {
 }
 
 export interface LoadedTicketItem extends ticketitems {
-    // eslint-disable-next-line camelcase
-    order_ticketitem: order_ticketitems;
+    orderticketitem: orderticketitems;
 }
 export interface LoadedEventInstance extends eventinstances {
   ticketrestrictions: LoadedTicketRestriction[],

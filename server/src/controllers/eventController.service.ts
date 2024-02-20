@@ -110,12 +110,12 @@ export const getTicketItems = async (
         include: {
           ticketitems: {
             where: {
-              order_ticketitem: {
+              orderticketitem: {
                 refund: null,
               },
             },
             include: {
-              order_ticketitem: true,
+              orderticketitem: true,
             },
           },
         },
@@ -191,7 +191,7 @@ export const getCartRow = (name: string, description: string, unitAmount: number
       name,
       description,
     },
-    unit_amount: unitAmount,
+    unit_amount: Math.floor(unitAmount),
   },
   quantity,
 });

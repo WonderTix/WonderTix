@@ -127,7 +127,7 @@ model events {
   seasons              seasons?         @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
 }
 
-model order_ticketitems {
+model orderticketitems {
   id         Int          @id @default(autoincrement())
   orderid_fk Int
   price      Decimal      @db.Money
@@ -139,28 +139,30 @@ model order_ticketitems {
 /// supertable for sub ticket items tables (subscription, order)
 model ticketitems {
   id                     Int                @id @default(autoincrement())
-  order_ticketitemid_fk  Int                @unique
+  orderticketitemid_fk   Int                @unique
   ticketrestrictionid_fk Int
   donated                Boolean            @default(false)
   redeemed               DateTime?          @db.Timestamp(3)
   ticketrestriction      ticketrestrictions @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Restrict, onUpdate: Cascade)
-  order_ticketitem       order_ticketitems  @relation(fields: [order_ticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderticketitem        orderticketitems   @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// a customers order
 /// refund and payment intents are the uuids from stripe when a refund or payment is made
 model orders {
-  orderid           Int                 @id @default(autoincrement())
-  orderdatetime     DateTime            @default(now()) @db.Timestamp(3)
+  orderid           Int                @id @default(autoincrement())
+  orderdatetime     DateTime           @default(now()) @db.Timestamp(3)
   contactid_fk      Int
   discountid_fk     Int?
-  payment_intent    String?             @unique @db.VarChar(255)
-  checkout_sessions String?             @unique @db.VarChar(255)
-  contacts          contacts            @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
-  discounts         discounts?          @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
+  payment_intent    String?            @unique @db.VarChar(255)
+  checkout_sessions String?            @unique @db.VarChar(255)
+  ordersubtotal     Decimal            @db.Money
+  discounttotal     Decimal            @default(0) @db.Money
+  contacts          contacts           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donation          donations?
   refunds           refunds[]
-  order_ticketitems order_ticketitems[]
+  orderticketitems  orderticketitems[]
 }
 
 model refunds {
@@ -172,14 +174,14 @@ model refunds {
 }
 
 model refunditems {
-  id                    Int                @id @default(autoincrement())
-  refundid_fk           Int
-  order_ticketitemid_fk Int?               @unique
-  donationid_fk         Int?               @unique
-  amount                Decimal            @db.Money
-  refund                refunds            @relation(fields: [refundid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  donation              donations?         @relation(fields: [donationid_fk], references: [donationid], onDelete: Restrict, onUpdate: Cascade)
-  order_ticketitem      order_ticketitems? @relation(fields: [order_ticketitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  id                   Int               @id @default(autoincrement())
+  refundid_fk          Int
+  orderticketitemid_fk Int?              @unique
+  donationid_fk        Int?              @unique
+  amount               Decimal           @db.Money
+  refund               refunds           @relation(fields: [refundid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  donation             donations?        @relation(fields: [donationid_fk], references: [donationid], onDelete: Restrict, onUpdate: Cascade)
+  orderticketitem      orderticketitems? @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
 }
 
 /// provides a way to store reports
@@ -322,354 +324,4 @@ model Error {
   message   String
   stack     String
   createdAt Int
-}
-
-//  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-//    ALL MODELS BELOW WERE TAKEN FROM THE IMPORTED SALESFORCE DATA FROM PPH
-//  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-// Account information pulled from PPH
-model pphAccounts {
-  account_id                          BigInt               @id @default(autoincrement())
-  is_deleted                          Int                  @default(0)
-  name                                String?
-  type                                String?
-  shipping_street                     String?
-  shipping_city                       String?
-  shipping_state                      String?
-  shipping_postal_code                String?
-  shipping_country                    String?
-  phone                               String?
-  fax                                 String?
-  website                             String?
-  created_date                        DateTime             @default(now())
-  last_modified_date                  DateTime
-  last_modified_by_id                 BigInt?
-  last_activity_date                  DateTime?
-  do_not_call                         Int?                 @default(0)
-  do_not_mail                         Int?                 @default(0)
-  donor_recognition                   String?
-  donor_email                         String?
-  formal_salutation                   String?
-  has_opted_out_of_email              Int                  @default(0)
-  informal_address_name               String?
-  informal_salutation                 String?
-  attn                                String?
-  grant_size                          String?
-  will_give_it                        String?
-  first_donation_date                 DateTime?
-  last_donation_date                  DateTime?
-  lifetime_donation_history_amount    Decimal              @default(0.0) @db.Decimal(10, 2)
-  lifetime_donation_number            Int                  @default(0)
-  this_year_donation_history_amount   Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_donated_this_fiscal_year     Decimal              @default(0.0) @db.Decimal(10, 2)
-  last_donation_amount                Decimal              @default(0.0) @db.Decimal(10, 2)
-  lifetime_single_ticket_amount       Decimal              @default(0.0) @db.Decimal(10, 2)
-  lifetime_subscription_amount        Decimal              @default(0.0) @db.Decimal(10, 2)
-  board_member                        Int                  @default(0)
-  show_sponsor                        Int                  @default(0)
-  seating_accomodation                Int                  @default(0)
-  amount_donated_CY20                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_donated_CY18                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  sort_name                           String?
-  amount_donated_last_fiscal_year     Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_donated_CY21                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_donated_CY19                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_donated_FY20                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_donated_FY19                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_donated_FY18                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  lifetime_donations_included_pledged Decimal              @default(0.0) @db.Decimal(10, 2)
-  first_donation_date_incl_pledged    DateTime?
-  amount_donated_FY21                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  first_donation_amount               Decimal              @default(0.0) @db.Decimal(10, 2)
-  largest_donation_date               DateTime?
-  amount_donated_FY22                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_Donated_FY23                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  amount_Donated_FY24                 Decimal              @default(0.0) @db.Decimal(10, 2)
-  pphNotes                            pphNotes[]
-  pphContacts                         pphContacts[]
-  pphTicketorders                     pphTicketorders[]
-  pphTicketorderitems                 pphTicketorderitem[]
-  pphOpportunity                      pphOpportunity[]
-}
-
-/// customer information
-model pphContacts {
-  contact_id                BigInt               @id @default(autoincrement())
-  account_id                BigInt?
-  account                   pphAccounts?         @relation(fields: [account_id], references: [account_id])
-  is_deleted                Int                  @default(0)
-  salutation                String?
-  first_name                String?
-  last_name                 String?
-  other_street              String?
-  other_city                String?
-  other_state               String?
-  other_postal_code         String?
-  other_country             String?
-  mailing_street            String?
-  mailing_city              String?
-  mailing_state             String?
-  mailing_postal_code       String?
-  mailing_country           String?
-  phone                     String?
-  fax                       String?
-  mobile_phone              String?
-  home_phone                String?
-  other_phone               String?
-  email                     String?
-  title                     String?
-  department                String?
-  birth_date                DateTime?
-  description               String?
-  has_opted_out_of_email    Int                  @default(0)
-  has_opted_out_of_fax      Int                  @default(0)
-  do_not_call               Int                  @default(0)
-  created_date              DateTime?            @default(now())
-  created_by_id             BigInt?
-  last_modified_date        DateTime?
-  last_modified_by_id       BigInt?
-  system_modstamp           DateTime?
-  last_activity_date        DateTime?
-  email_bounce_reason       String?
-  email_bounce_date         DateTime?
-  pronouns                  String?
-  gender_identity           String?
-  donate_date_entered       DateTime?
-  deceased                  Int                  @default(0)
-  do_not_mail               Int                  @default(0)
-  donor_recognition         String?
-  formal_salutation         String?
-  informal_address_name     String?
-  informal_salutation       String?
-  volunteer_interests       String?
-  other_email               String?
-  company                   String?
-  middle_name               String?
-  suffix                    String?
-  contact_origin            String?
-  email_status              String?
-  current_season_subscriber Decimal?             @default(0.0) @db.Decimal(10, 2)
-  email_lists               String?
-  board_member              Decimal?             @default(0.0) @db.Decimal(10, 2)
-  seating_accomodation      Decimal?             @default(0.0) @db.Decimal(10, 2)
-  reserved_seating          Decimal?             @default(0.0) @db.Decimal(10, 2)
-  attending_next_dinner     Decimal?             @default(0.0) @db.Decimal(10, 2)
-  chocolate_and_card        Decimal?             @default(0.0) @db.Decimal(10, 2)
-  legacy_membership_circle  Decimal?             @default(0.0) @db.Decimal(10, 2)
-  email_list_notes          String?
-  pphNotes                  pphNotes[]
-  pphTicketorders           pphTicketorders[]
-  pphTicketorderitems       pphTicketorderitem[]
-  pphOpportunity            pphOpportunity[]
-}
-
-/// Owner_id in the original PPH schema pointed to the PPH employee/user 
-/// who was associated with maintaining the account. 
-model pphEvents {
-  event_id                      BigInt   @id @default(autoincrement())
-  owner_id                      BigInt?
-  name                          String?
-  create_date                   DateTime @default(now())
-  last_modified_date            DateTime
-  active_flag                   Int      @default(0)
-  description                   String?
-  detail                        String?
-  event_category                String?
-  season                        String?
-  performance_date              DateTime
-  pre_post_show_email_flag      Float?
-  pre_show_email_cutoff_minutes Float?
-  pre_show_email_minutes        Float?
-  run_time                      String?
-}
-
-// Note table taken from PPH:
-model pphNotes {
-  note_id            BigInt       @id @default(autoincrement())
-  is_deleted         Int          @default(0)
-  contact_id         BigInt?
-  contact            pphContacts? @relation(fields: [contact_id], references: [contact_id])
-  account_id         BigInt?
-  account            pphAccounts? @relation(fields: [account_id], references: [account_id])
-  title              String?
-  body               String?
-  created_date       DateTime     @default(now())
-  last_modified_date DateTime?
-}
-
-model pphTransactions {
-  transaction_id                      BigInt              @id @default(autoincrement())
-  patron_transaction_id               BigInt?
-  ticket_order_id                     BigInt?
-  ticketorders                        pphTicketorders?    @relation(fields: [ticket_order_id], references: [ticket_order_id])
-  item_id                             BigInt?
-  ticket_order_item_id                BigInt?
-  ticketorderitem                     pphTicketorderitem? @relation(fields: [ticket_order_item_id], references: [ticket_order_item_id])
-  item_type                           String?
-  item_name                           String?
-  payment_method                      String?
-  status                              String?
-  payment_processor                   String?
-  exchange_type                       String?
-  order_origin                        String?
-  entry_method                        String?
-  credit_card_entry_method            String?
-  credit_card_last_four               Int?
-  name_on_card                        String?
-  first_name                          String?
-  last_name                           String?
-  transaction_date                    DateTime
-  create_date                         DateTime            @default(now())
-  quantity                            Decimal             @default(0.0) @db.Decimal(10, 2)
-  buyer_unit_price                    Decimal             @default(0.0) @db.Decimal(10, 2)
-  gross_unit_price                    Decimal             @default(0.0) @db.Decimal(10, 2)
-  buyer_unit_fee                      Decimal             @default(0.0) @db.Decimal(10, 2)
-  patron_tech_unit_fee                Decimal             @default(0.0) @db.Decimal(10, 2)
-  unit_fee                            Decimal             @default(0.0) @db.Decimal(10, 2)
-  total_item_quantity                 Decimal             @default(0.0) @db.Decimal(10, 2)
-  buyer_fee_line_item_sub_total       Decimal             @default(0.0) @db.Decimal(10, 2)
-  patron_tech_fee_line_item_sub_total Decimal             @default(0.0) @db.Decimal(10, 2)
-  shipping_fee                        Decimal?            @default(0.0) @db.Decimal(10, 2)
-  exchange_fee                        Decimal?            @default(0.0) @db.Decimal(10, 2)
-  discount_amount                     Decimal?            @default(0.0) @db.Decimal(10, 2)
-  donation_amount                     Decimal?            @default(0.0) @db.Decimal(10, 2)
-  full_buyer_cost                     Decimal             @default(0.0) @db.Decimal(10, 2)
-  full_gross_amount                   Decimal             @default(0.0) @db.Decimal(10, 2)
-  transaction_total                   Decimal             @default(0.0) @db.Decimal(10, 2)
-  amount_tendered                     Decimal?            @default(0.0) @db.Decimal(10, 2)
-  capture_transaction_id              BigInt?
-}
-
-model pphTicketorders {
-  ticket_order_id              BigInt               @id @default(autoincrement())
-  account_id                   BigInt?
-  account                      pphAccounts?         @relation(fields: [account_id], references: [account_id])
-  contact_id                   BigInt?
-  contact                      pphContacts?         @relation(fields: [contact_id], references: [contact_id])
-  ticket_order_name            String?
-  type                         String?
-  order_status                 String?
-  subscription_status          String?
-  email                        String?
-  phone                        String?
-  other_phone                  String?
-  street_address               String?
-  city                         String?
-  state                        String?
-  postal_code                  String?
-  country                      String?
-  shipping_first_name          String?
-  shipping_last_name           String?
-  shipping_stress_address      String?
-  shipping_city                String?
-  shipping_state               String?
-  shipping_postal_code         String?
-  shipping_country             String?
-  order_origin                 String?
-  order_source                 String?
-  payment_method               String?
-  amount_paid                  Decimal?             @default(0.00) @db.Decimal(10, 2)
-  fees                         Decimal?             @default(0.00) @db.Decimal(10, 2)
-  exchange_fee                 Decimal?             @default(0.00) @db.Decimal(10, 2)
-  donation_id                  Int?
-  donation_amount              Decimal?             @default(0.00) @db.Decimal(10, 2)
-  delivery_method              String?
-  salutation                   String?
-  shipping_salutation          String?
-  email_opt_in                 Int?                 @default(0)
-  anonymous_purchase_flag      Int?
-  update_contact_record        Float?
-  send_confirmation_email_flag Float?
-  request_accommodation        String?
-  external_id                  BigInt?
-  comments                     String?
-  notes                        String?
-  create_date                  DateTime             @default(now())
-  last_modified_date           DateTime?
-  pphTicketorderitem           pphTicketorderitem[]
-  pphTransactions              pphTransactions[]
-}
-
-model pphTicketorderitem {
-  ticket_order_item_id       BigInt            @id @default(autoincrement())
-  ticket_order_id            BigInt?
-  ticketorder                pphTicketorders?  @relation(fields: [ticket_order_id], references: [ticket_order_id])
-  account_id                 BigInt?
-  account                    pphAccounts?      @relation(fields: [account_id], references: [account_id])
-  contact_id                 BigInt?
-  contact                    pphContacts?      @relation(fields: [contact_id], references: [contact_id])
-  status                     String?
-  season                     String?
-  event_id                   BigInt?
-  subscription_order_item_id BigInt?
-  price_level_id             BigInt?
-  quantity                   Float             @default(1.0)
-  ticket_price               Decimal?          @default(0.00) @db.Decimal(10, 2)
-  unit_price                 Decimal?          @default(0.00) @db.Decimal(10, 2)
-  amount_paid                Decimal?          @default(0.00) @db.Decimal(10, 2)
-  sales_tax                  Decimal?          @default(0.00) @db.Decimal(10, 2)
-  discount_code_id           BigInt?
-  discount_amount            Decimal?          @default(0.00) @db.Decimal(10, 2)
-  discount_type              String?
-  unit_fee                   Decimal?          @default(0.00) @db.Decimal(10, 2)
-  ticket_notes               String?
-  barcode                    String?
-  create_date                DateTime          @default(now())
-  last_modified_date         DateTime
-  entry_date                 DateTime?
-  pphTransactions            pphTransactions[]
-}
-
-model pphRecordtype {
-  record_type_id     BigInt           @id @default(autoincrement())
-  name               String?
-  description        String?
-  sobject_type       String?
-  is_active          Int?
-  created_date       DateTime         @default(now())
-  last_modified_date DateTime
-  system_modstamp    DateTime
-  is_deleted         Int?             @default(0)
-  pphOpportunity     pphOpportunity[]
-}
-
-/// Once again, owner_id is associated with whoever the employee is who
-/// created the account in the accounts table
-/// donor_id is also a reference to contacts based on shallow searching of mine 
-model pphOpportunity {
-  opportunity_id          BigInt         @id @default(autoincrement())
-  is_deleted              Int            @default(0)
-  account_id              BigInt?
-  account                 pphAccounts?   @relation(fields: [account_id], references: [account_id])
-  record_type_id          BigInt?
-  record_type             pphRecordtype? @relation(fields: [record_type_id], references: [record_type_id])
-  is_private              Int?           @default(0)
-  name                    String?
-  description             String?
-  amount                  Decimal?       @default(0.00) @db.Decimal(10, 2)
-  close_date              DateTime?
-  type                    String?
-  campaign_id             BigInt?
-  owner_id                BigInt?
-  created_date            DateTime       @default(now())
-  last_modified_date      DateTime?
-  fiscal_year             Int?
-  fiscal_quarter          Int?
-  contact_id              BigInt?
-  contacts                pphContacts?   @relation(fields: [contact_id], references: [contact_id])
-  is_anonymous            Int?
-  amount_paid             Decimal?       @default(0.00) @db.Decimal(10, 2)
-  dedication_honoree_name String?
-  dedication_type         String?
-  donor_id                BigInt?
-  fund_type               String?
-  grant_amount            Decimal?       @default(0.00) @db.Decimal(10, 2)
-  payment_type            String?
-  sub_type                String?
-  fiscal_year_season      String?
-  grant_ask_amount        Decimal?       @default(0.00) @db.Decimal(10, 2)
-  appeal                  String?
-  tax_deductible_amount   Decimal?       @default(0.00) @db.Decimal(10, 2)
-  acknowledged_by_letter  Float?
 }

@@ -395,11 +395,14 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       },
       include: {
         orders: {
+          where: {
+            payment_intent: {not: null},
+          },
           orderBy: {
             orderdatetime: 'desc',
           },
           include: {
-            order_ticketitems: {
+            orderticketitems: {
               include: {
                 refund: true,
                 ticketitem: {
@@ -441,46 +444,41 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
     const flattenedOrders : any[] = [];
     contact.orders.forEach((order) => {
       const orderItemsMap = new Map<string, any>();
-      const {
-        ordertotal,
-        refunded,
-      } = order
-        .order_ticketitems
-        .reduce<{ordertotal: number, refunded: boolean}>((acc, ticket) => {
-          if (!ticket.ticketitem) return acc;
-          const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
-          const item = orderItemsMap.get(key);
-          if (item) {
-            item.quantity+=1;
-          } else {
-            orderItemsMap.set(key,
-              {
-                price: ticket.price,
-                refunded: ticket.refund !== null,
-                redeemed: ticket.ticketitem.redeemed,
-                donated: ticket.ticketitem.donated,
-                description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
-                eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
-                eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
-                eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
-                detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
-                seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
-                tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
-                quantity: 1,
-              });
-          }
-          return {
-            ordertotal: acc.ordertotal + Number(ticket.price),
-            refunded: acc.refunded && ticket.refund !== null,
-          };
-        }, {ordertotal: 0, refunded: true});
+      const
+        refunded = order
+            .orderticketitems
+            .reduce<boolean>((acc, ticket) => {
+              if (!ticket.ticketitem) return acc;
+              const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
+              const item = orderItemsMap.get(key);
+              if (item) {
+                item.quantity += 1;
+              } else {
+                orderItemsMap.set(key,
+                    {
+                      price: ticket.price,
+                      refunded: ticket.refund !== null,
+                      redeemed: ticket.ticketitem.redeemed,
+                      donated: ticket.ticketitem.donated,
+                      description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+                      eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
+                      eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
+                      eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+                      detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
+                      seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
+                      tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
+                      quantity: 1,
+                    });
+              }
+              return acc && ticket.refund !== null;
+            }, true);
 
       if (!orderItemsMap.size) return;
 
       flattenedOrders.push({
         orderid: order.orderid,
         orderdatetime: order.orderdatetime,
-        ordertotal,
+        ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
         refunded,
         orderitems: [...orderItemsMap.values()],
         donation: order.donation,

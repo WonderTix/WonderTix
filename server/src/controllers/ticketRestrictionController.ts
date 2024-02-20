@@ -50,12 +50,12 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
       include: {
         ticketitems: {
           where: {
-            order_ticketitem: {
+            orderticketitem: {
               refund: null,
             },
           },
           include: {
-            order_ticketitem: true,
+            orderticketitem: true,
           },
         },
         tickettype: {
@@ -136,12 +136,12 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
       include: {
         ticketitems: {
           where: {
-            order_ticketitem: {
+            orderticketitem: {
               refund: null,
             },
           },
           include: {
-            order_ticketitem: true,
+            orderticketitem: true,
           },
         },
         tickettype: {
@@ -222,12 +222,12 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
       include: {
         ticketitems: {
           where: {
-            order_ticketitem: {
+            orderticketitem: {
               refund: null,
             },
           },
           include: {
-            order_ticketitem: true,
+            orderticketitem: true,
           },
         },
         tickettype: {
