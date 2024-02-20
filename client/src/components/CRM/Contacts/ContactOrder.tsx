@@ -6,6 +6,7 @@ import {toDollarAmount} from '../../../utils/arrays';
 interface ContactOrderProps {
   orderId: number;
   orderTotal: number;
+  discountTotal: number;
   orderDateTime: string;
   refunded: string;
   orderItems: any[];
@@ -13,14 +14,8 @@ interface ContactOrderProps {
 }
 
 const ContactOrder = (props: ContactOrderProps): ReactElement => {
-  const {
-    orderId,
-    orderTotal,
-    orderDateTime,
-    refunded,
-    orderItems,
-    donation,
-  } = props;
+  const {orderId, orderTotal, discountTotal, orderDateTime, refunded, orderItems, donation} =
+    props;
 
   const date = new Date(orderDateTime);
 
@@ -43,19 +38,19 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
           />
         </svg>
       </header>
-      <div className='grid md:grid-cols-5'>
-        <article className='col-span-2'>
-          <p className='flex flex-row gap-3 text-lg w-full'>
-            <span className='font-semibold'>Order Date:</span>
-            <span>{format(date, 'MMM dd, yyyy')}</span>
+      <div className='grid grid-cols-1 md:grid-cols-5'>
+        <article className='tab:col-span-2'>
+          <p className='flex justify-between tab:justify-start gap-3 text-lg'>
+            <span className='tab:flex-initial tab:w-28 text-zinc-600'>Order Date</span>
+            <span className='text-zinc-800'>{format(date, 'MMM dd, yyyy')}</span>
           </p>
-          <p className='flex flex-row gap-3 text-lg mt-1 w-full'>
-            <span className='font-semibold'>Order Time:</span>
-            <span>{format(date, 'h:mm a')}</span>
+          <p className='flex justify-between tab:justify-start gap-3 text-lg mt-1'>
+            <span className='tab:flex-initial tab:w-28 text-zinc-600'>Order Time</span>
+            <span className='text-zinc-800'>{format(date, 'h:mm a')}</span>
           </p>
-          <p className='flex flex-row gap-3 text-lg my-1 w-full'>
-            <span className='font-semibold'>Refunded:</span>
-            <span>{refunded ? 'Yes' : 'No'}</span>
+          <p className='flex justify-between tab:justify-start gap-3 text-lg mt-1 mb-3'>
+            <span className='tab:flex-initial tab:w-28 text-zinc-600'>Refunded</span>
+            <span className='text-zinc-800'>{refunded ? 'Yes' : 'No'}</span>
           </p>
         </article>
         <aside className='col-span-3'>
@@ -86,10 +81,16 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
           )}
         </aside>
       </div>
-      <footer>
-        <p className='flex flex-row gap-3 text-xl mt-2 w-full'>
-          <span className='font-semibold'>Order Total:</span>
-          <span>{toDollarAmount(Number(orderTotal))}</span>
+      <footer className='mt-3'>
+        {discountTotal && (
+          <p className='flex'>
+            <span className='tab:flex-initial tab:w-32 w-full text-lg'>Discount:</span>
+            <span className='font-medium text-lg text-zinc-800'>{toDollarAmount(Number(discountTotal))}</span>
+          </p>
+        )}
+        <p className='flex'>
+          <span className='tab:flex-initial tab:w-32 w-full text-lg'>Order Total:</span>
+          <span className='font-medium text-lg text-zinc-800'>{toDollarAmount(Number(orderTotal))}</span>
         </p>
       </footer>
     </section>

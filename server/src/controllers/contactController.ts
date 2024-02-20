@@ -475,13 +475,23 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 
       if (!orderItemsMap.size) return;
 
+      const flattenedDonation = {
+        donationid: order.donation?.donationid,
+        anonymous: order.donation?.anonymous,
+        amount: order.donation?.anonymous,
+        frequency: order.donation?.anonymous,
+        comments: order.donation?.anonymous,
+        refunded: order.donation?.refund !== null,
+      };
+
       flattenedOrders.push({
         orderid: order.orderid,
         orderdatetime: order.orderdatetime,
         ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
+        discounttotal: order.discounttotal,
         refunded,
         orderitems: [...orderItemsMap.values()],
-        donation: order.donation,
+        donation: order.donation ? flattenedDonation : null,
       });
     });
 
