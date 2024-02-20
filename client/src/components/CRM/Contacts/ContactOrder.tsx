@@ -2,6 +2,7 @@ import React, {ReactElement} from 'react';
 import {toDateStringFormat} from '../../Ticketing/ticketingmanager/Event/components/util/EventsUtil';
 import format from 'date-fns/format';
 import {toDollarAmount} from '../../../utils/arrays';
+import {TicketIcon} from '../../Ticketing/Icons';
 
 interface ContactOrderProps {
   orderId: number;
@@ -14,8 +15,15 @@ interface ContactOrderProps {
 }
 
 const ContactOrder = (props: ContactOrderProps): ReactElement => {
-  const {orderId, orderTotal, discountTotal, orderDateTime, refunded, orderItems, donation} =
-    props;
+  const {
+    orderId,
+    orderTotal,
+    discountTotal,
+    orderDateTime,
+    refunded,
+    orderItems,
+    donation,
+  } = props;
 
   const date = new Date(orderDateTime);
 
@@ -23,33 +31,28 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
     <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-700'>
       <header className='flex gap-2 items-start justify-between mb-4 text-zinc-800'>
         <h2 className='text-2xl font-medium'>Order #{orderId}</h2>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          className='h-7 w-7'
-          fill='none'
-          viewBox='0 0 24 24'
-          stroke='currentColor'
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z'
-          />
-        </svg>
+        <TicketIcon className='h-7 w-7' strokeWidth={2} />
       </header>
       <div className='grid grid-cols-1 md:grid-cols-5'>
         <article className='tab:col-span-2'>
           <p className='flex justify-between tab:justify-start gap-3 text-lg'>
-            <span className='tab:flex-initial tab:w-28 text-zinc-600'>Order Date</span>
-            <span className='text-zinc-800'>{format(date, 'MMM dd, yyyy')}</span>
+            <span className='tab:flex-initial tab:w-28 text-zinc-600'>
+              Order Date
+            </span>
+            <span className='text-zinc-800'>
+              {format(date, 'MMM dd, yyyy')}
+            </span>
           </p>
           <p className='flex justify-between tab:justify-start gap-3 text-lg mt-1'>
-            <span className='tab:flex-initial tab:w-28 text-zinc-600'>Order Time</span>
+            <span className='tab:flex-initial tab:w-28 text-zinc-600'>
+              Order Time
+            </span>
             <span className='text-zinc-800'>{format(date, 'h:mm a')}</span>
           </p>
           <p className='flex justify-between tab:justify-start gap-3 text-lg mt-1 mb-3'>
-            <span className='tab:flex-initial tab:w-28 text-zinc-600'>Refunded</span>
+            <span className='tab:flex-initial tab:w-28 text-zinc-600'>
+              Refunded
+            </span>
             <span className='text-zinc-800'>{refunded ? 'Yes' : 'No'}</span>
           </p>
         </article>
@@ -84,13 +87,21 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
       <footer className='mt-3'>
         {discountTotal && (
           <p className='flex'>
-            <span className='tab:flex-initial tab:w-32 w-full text-lg'>Discount:</span>
-            <span className='font-medium text-lg text-zinc-800'>{toDollarAmount(Number(discountTotal))}</span>
+            <span className='tab:flex-initial tab:w-32 w-full text-lg'>
+              Discount:
+            </span>
+            <span className='font-medium text-lg text-zinc-800'>
+              {toDollarAmount(Number(discountTotal))}
+            </span>
           </p>
         )}
         <p className='flex'>
-          <span className='tab:flex-initial tab:w-32 w-full text-lg'>Order Total:</span>
-          <span className='font-medium text-lg text-zinc-800'>{toDollarAmount(Number(orderTotal))}</span>
+          <span className='tab:flex-initial tab:w-32 w-full text-lg'>
+            Order Total:
+          </span>
+          <span className='font-medium text-lg text-zinc-800'>
+            {toDollarAmount(Number(orderTotal))}
+          </span>
         </p>
       </footer>
     </section>
