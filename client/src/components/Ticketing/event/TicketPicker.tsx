@@ -277,7 +277,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   const promptMarkup = {
     selectDate: (
       <label
-        className='text-white font-semibold text-2xl'
+        className='text-white font-semibold text-xl'
         htmlFor='date-select'
       >
         Select date below ({props.tickets.length} showings)
@@ -285,15 +285,15 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     ),
     selectTime: (
       <label
-        className='text-white'
+        className='text-white text-xl'
         htmlFor='time-select'
       >
         {selectedDate ? format(selectedDate, 'eee, MMM dd') : ''}
-        <span className='text-white font-bold text-2xl'> - Choose time:</span>
+        <span className='text-white font-bold text-xl'> - Choose time:</span>
       </label>
     ),
     showSelection: (
-      <p className='text-white text-center'>
+      <p className='text-white text-center text-xl'>
         {selectedTicket
           ? `${format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a')}${
                 (selectedTicket?.detail ?? '') !== ''
@@ -320,14 +320,14 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       <Collapse in={showClearBtn}>
         <button
           onClick={() => dispatch(resetWidget())}
-          className='bg-blue-600 px-3 py-1 rounded-xl text-white hover:bg-blue-700 mb-3'
+          className='bg-blue-600 px-3 py-1 rounded-xl text-white text-xl hover:bg-blue-700 mb-3'
         >
           Choose different date
         </button>
       </Collapse>
       {promptMarkup[prompt]}
       <Collapse in={showCalendar}>
-        <div className='text-white w-full px-20'>
+        <div className='text-white w-full px-20 text-xl'>
           <select
             id='date-select'
             value={selectedDate ? format(selectedDate, 'eee, MMM dd yyyy') : ''}
@@ -336,7 +336,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
               handleClick(new Date(ev.target.value), props.tickets)
             }
           >
-            <option className='text-zinc-300 text-xl' value='' disabled>
+            <option className='text-zinc-300' value='' disabled>
               select date
             </option>
             {uniqueDates.map((dateStr, index) => (
@@ -374,13 +374,13 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
               ),
             )
           }
-          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
+          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl text-xl'
         >
           <option className='text-zinc-300 text-xl' value={-1} disabled>
             select ticket type
           </option>
           {showingTicketTypes.map((t) => (
-            <option className='text-white' key={t.id} value={t.id}>
+            <option className='text-white text-xl' key={t.id} value={t.id}>
               {t.name}: {t.price}
             </option>
           ))}
@@ -400,14 +400,14 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           value={qty}
           disabled={selectedTicket === undefined || numAvail < 1}
           onChange={(e) => dispatch(changeQty(parseInt(e.target.value)))}
-          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl'
+          className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl text-xl'
         >
           <option className='text-zinc-300 text-xl' value={0} disabled>
             select qty
           </option>
           {range(numAvail, false).map((n) =>
             numAvail > 20 && n > 20 ? null : (
-              <option className='text-white' key={n} value={n}>
+              <option className='text-white text-xl' key={n} value={n}>
                 {n}
               </option>
             ),
@@ -462,7 +462,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           qty > selectedTicket.availableseats ||
           (selectedTicketType.name === 'Pay What You Can' && (payWhatPrice == null || payWhatPrice < 0))
         }
-        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 mt-7 bg-blue-500 text-white enabled:hover:bg-blue-600 rounded-2xl'
+        className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 mt-7 bg-blue-500 text-xl text-white enabled:hover:bg-blue-600 rounded-xl'
         onClick={handleSubmit}
       >
         Get Tickets
