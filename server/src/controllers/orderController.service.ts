@@ -72,7 +72,7 @@ export const readerWebhook = async (
       if (!order) return;
       console.log(order);
       const intent = stripe.paymentIntents.cancel(paymentIntent); // avoid double charge
-      await orderCancel(prisma, order.orderid);
+      await updateCanceledOrder(prisma, order);
       break;
     case 'payment_intent.requires_action':
       break;
