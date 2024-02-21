@@ -226,7 +226,7 @@ ticketTypeController.post('/', async (req: Request, res: Response) => {
     const {price, concessions, description} = req.body;
     if (price === undefined || +price < 0 || concessions === undefined || +concessions < 0) {
       return res.status(400).json({error: `Neither price nor concession price can be negative`});
-    } else if (!description|| description === '') {
+    } else if (!description || description === '') {
       return res.status(400).json({error: `Ticket type description is required`});
     }
 
@@ -262,7 +262,7 @@ ticketTypeController.post('/', async (req: Request, res: Response) => {
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     security:
- *       - bearerAuth: []
+ *     - bearerAuth: []
  *     requestBody:
  *       description: Updated Ticket Type information
  *       content:
@@ -360,7 +360,7 @@ ticketTypeController.put('/:id', async (req: Request, res: Response) => {
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     security:
- *       - bearerAuth: []
+ *     - bearerAuth: []
  *     responses:
  *       204:
  *         description: ticketType deleted successfully.
@@ -387,11 +387,11 @@ ticketTypeController.delete('/:id', async (req: Request, res: Response) => {
     });
 
     if (!ticketTypeExists) {
-      return res.status(400).json({error: 'ticketType not found'});
+      return res.status(400).json({error: 'Ticket type not found'});
     } else if (ticketTypeExists.tickettypeid === 0 || ticketTypeExists.tickettypeid === 1) {
-      return res.status(400). json({error: `Can not delete reserved Ticket Type: ${ticketTypeExists.description}`});
+      return res.status(400). json({error: `Cannot delete reserved ticket type: ${ticketTypeExists.description}`});
     } else if (ticketTypeExists.ticketrestrictions.length !== 0) {
-      await prisma.tickettype.update({
+      const updatedTicketType = await prisma.tickettype.update({
         where: {
           tickettypeid: Number(id),
         },
@@ -399,7 +399,7 @@ ticketTypeController.delete('/:id', async (req: Request, res: Response) => {
           deprecated: true,
         },
       });
-      return res.status(200). json();
+      return res.status(200).json(updatedTicketType);
     }
 
     await prisma.tickettype.delete({
@@ -407,7 +407,6 @@ ticketTypeController.delete('/:id', async (req: Request, res: Response) => {
         tickettypeid: Number(id),
       },
     });
-
     return res.status(204).json();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

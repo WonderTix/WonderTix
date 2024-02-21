@@ -3,24 +3,20 @@ import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
 import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 import {titleCase} from '../../../../utils/arrays';
-import {useAuth0} from '@auth0/auth0-react';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import format from 'date-fns/format';
+import {useFetchToken} from '../Event/components/ShowingUtils';
 
-/**
- * Used to check the guests in
- *
- * @param {boolean} isCheckedIn
- * @param {string} ticketID
- * @returns
- */
-const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
-  const {getAccessTokenSilently} = useAuth0();
-  try {
-    const token = await getAccessTokenSilently({
-      audience: process.env.REACT_APP_ROOT_URL,
-      scope: 'admin',
-    });
+interface RenderCheckinProps {
+  params: GridCellParams;
+  token: string,
+}
+
+const RenderCheckin = (props: RenderCheckinProps) => {
+  const {params, token} = props;
+  const [checked, setChecked] = useState(params.value as boolean);
+  const checkInGuest = async (isCheckedIn: boolean, rowId: string) => {
+    const [contactId, instanceId] = rowId.split('-');
     const res = await fetch(
       process.env.REACT_APP_API_2_URL + `/events/checkin`,
       {
@@ -30,73 +26,42 @@ const checkInGuest = async (isCheckedIn: boolean, ticketID: string) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({isCheckedIn, ticketID}),
+        body: JSON.stringify({isCheckedIn, contactId, instanceId}),
       },
     );
     if (!res.ok) {
-      throw new Error(`Failed to check in guest. HTTP status: ${res.status}`);
+      throw new Error(`Failed to update guest checkin status`);
     }
-    return res.json();
-  } catch (err) {
-    console.error(err.message);
-  }
-};
+  };
 
-const renderCheckbox = (params: GridCellParams) => (
-  <Checkbox checked={params.value as boolean} disabled color='info' />
-);
-
-/**
- * renders in the check in for guests
- *
- * @param {GridCellParams} params
- * @returns edits the checkInGuest value
- */
-const renderCheckin = (params: GridCellParams) => {
-  const isDisabled = params.getValue(params.id, 'lastname') === 'OPEN SEATS';
+  if (token === '') return null;
 
   return (
     <Checkbox
       color='primary'
-      defaultChecked={params.value as boolean}
-      disabled={isDisabled}
-      onChange={(e) => {
-        if (!isDisabled) {
-          checkInGuest(
-            e.target.checked,
-            params.getValue(params.id, 'ticketno') as string,
-          );
-        }
+      checked={checked}
+      onChange={() => {
+        checkInGuest(!checked, params.row.id)
+          .then(() => setChecked((prev) => !prev))
+          .catch((error) => console.error(error));
       }}
     />
   );
 };
 
-/**
- * columns uses first name, last name, # of tickets purchased, arrival status, vip, donorbadge, accommodations
- */
-const columns = [
-  {
-    field: 'arrived',
-    headerName: 'Arrived',
-    width: 65,
-    renderCell: renderCheckin,
-  },
-  {field: 'firstname', headerName: 'First Name', width: 120},
-  {field: 'lastname', headerName: 'Last Name', width: 120},
-  {field: 'num_tickets', headerName: 'Tickets', type: 'number', width: 65},
-  {field: 'email', headerName: 'Email', width: 150},
-  {field: 'phone', headerName: 'Phone Number', width: 130},
-  {field: 'vip', headerName: 'VIP', type: 'boolean', width: 65},
-  {
-    field: 'donorbadge',
-    headerName: 'Donor',
-    type: 'boolean',
-    width: 65,
-  },
-  {field: 'accommodations', headerName: 'Accommodations', width: 200},
-  {field: 'address', headerName: 'Address', width: 170},
-];
+const renderTicketTypes = (params: GridCellParams) => {
+  const ticketTypes = params.value?.split(',');
+  return (
+    <ul className={'w-full h-[80%] overflow-y-scroll'}>
+      {typeof ticketTypes === 'object' &&
+        ticketTypes.map((value, index) => (
+          <li key={`${params.row.id}-${index}`}>
+            {value}
+          </li>
+        ))}
+    </ul>
+  );
+};
 
 /**
  * DoorList displays information about guests for a particular showing.
@@ -104,8 +69,6 @@ const columns = [
  * @returns {ReactElement} DoorList
  */
 const DoorList = (): ReactElement => {
-  const {getAccessTokenSilently} = useAuth0();
-
   const [doorList, setDoorList] = useState([]);
   const [eventName, setEventName] = useState('');
   const [date, setDate] = useState<Date>(null);
@@ -115,8 +78,41 @@ const DoorList = (): ReactElement => {
   const [eventListFull, setEventListFull] = useState([]);
   const [eventListActive, setEventListActive] = useState([]);
   const [filterSetting, setFilterSetting] = useState('active');
+  const {token} = useFetchToken();
 
-  useEffect(() => {
+    /**
+     * columns uses first name, last name, # of tickets purchased, arrival status, vip, donorbadge, accommodations
+     */
+    const columns = [
+        {
+            field: 'arrived',
+            headerName: 'Arrived',
+            width: 60,
+            renderCell: (params: GridCellParams) => <RenderCheckin params={params} token={token}/>,
+        },
+        {field: 'firstName', headerName: 'First Name', width: 120},
+        {field: 'lastName', headerName: 'Last Name', width: 120},
+        {
+            field: 'num_tickets',
+            headerName: 'Tickets',
+            width: 220,
+            renderCell: renderTicketTypes,
+        },
+        {field: 'email', headerName: 'Email', width: 200},
+        {field: 'phone', headerName: 'Phone Number', width: 130},
+        {field: 'vip', headerName: 'VIP', width: 65, type: 'boolean'},
+        {
+            field: 'donorBadge',
+            headerName: 'Donor',
+            width: 65,
+            type: 'boolean',
+        },
+        {field: 'accommodations', headerName: 'Accommodations', width: 200},
+        {field: 'address', headerName: 'Address', width: 170},
+    ];
+
+  useEffect(
+      () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
@@ -204,12 +200,8 @@ const DoorList = (): ReactElement => {
 
   const getDoorList = async (event) => {
     try {
-      const token = await getAccessTokenSilently({
-        audience: process.env.REACT_APP_ROOT_URL,
-        scope: 'admin',
-      });
       const response = await fetch(
-        process.env.REACT_APP_API_1_URL + `/doorlist?eventinstanceid=${event}`,
+        process.env.REACT_APP_API_2_URL + `/event-instance/doorlist/${event}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -217,51 +209,15 @@ const DoorList = (): ReactElement => {
           },
         },
       );
-      const eventInstanceJson = await response.json();
       if (!response.ok) {
         throw new Error(
           `Failed to fetch door list. HTTP status: ${response.status}`,
         );
       }
-      const eventInstanceData = eventInstanceJson.data;
-      const doorListData = eventInstanceData
-        .map((item, index) => {
-          const row = item.row.slice(1, -1).split(',');
-          const firstName = row[1] || '';
-          const lastName = row[2] || 'OPEN SEATS';
-          return {
-            id: index,
-            arrived: false,
-            firstname: firstName,
-            lastname: lastName,
-            num_tickets: row[14],
-            email: row[4],
-            phone: row[3],
-            vip: row[5] === 't',
-            donorbadge: row[6] === 't',
-            accommodations: row[7],
-            address: row[8],
-          };
-          // Places open seats row at the top of the list by default
-        })
-        .filter(Boolean)
-        .sort((a, b) => {
-          if (a.lastname === 'OPEN SEATS') return -1;
-          if (b.lastname === 'OPEN SEATS') return 1;
-          return 0;
-        });
-      setDoorList(doorListData);
-
-      const rowString = eventInstanceData[0].row.slice(1, -1);
-      const rowParts = rowString.split(',');
-      setEventName(rowParts[10]);
-
-      const showingDateString = rowParts[12];
-      const showingTimeString = rowParts[13];
-      const showingDate = new Date(
-        `${toDateStringFormat(showingDateString)} ${showingTimeString.slice(0, 8)}`,
-      );
-      setDate(showingDate);
+      const eventInstance = await response.json();
+      setEventName(eventInstance.eventName);
+      setDate(new Date(`${toDateStringFormat(eventInstance.eventDate)}T${eventInstance.eventTime.split('T')[1].slice(0, 8)}`));
+      setDoorList(eventInstance.doorlist);
     } catch (error) {
       console.error(error.message);
     }
