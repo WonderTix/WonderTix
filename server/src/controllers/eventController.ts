@@ -129,7 +129,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     res.json(toSend);
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order);
+    if (order) await updateCanceledOrder(prisma, order, false);
     if (toSend.id !== 'comp') await expireCheckoutSession(toSend.id);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
@@ -231,13 +231,14 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         {
           orderTicketItems,
         },
-        undefined,
-        paymentIntentID
+        undefined, // no session with reader payments
+        discount.code != '' ? discount.discountid : null,
+        paymentIntentID // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
     );
     res.json({status: 'order sent'});
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order);
+    if (order) await updateCanceledOrder(prisma, order, true);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;

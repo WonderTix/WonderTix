@@ -38,7 +38,7 @@ export const ticketingWebhook = async (
       break;
     }
     case 'checkout.session.expired':
-      await updateCanceledOrder(prisma, order);
+      await updateCanceledOrder(prisma, order, false);
       break;
   }
 };
@@ -72,7 +72,7 @@ export const readerWebhook = async (
       if (!order) return;
       console.log(order);
       const intent = stripe.paymentIntents.cancel(paymentIntent); // avoid double charge
-      await updateCanceledOrder(prisma, order);
+      await updateCanceledOrder(prisma, order, true);
       break;
     case 'payment_intent.requires_action':
       break;
@@ -118,8 +118,11 @@ export const orderFulfillment = async (
 export const updateCanceledOrder = async (
     prisma: ExtendedPrismaClient,
     order: orders,
+    isReader: boolean,
 ) => {
-  if (order.payment_intent) {
+  // reader orders will immediately have a payment intent that could be cancelled early if not paid
+  // in this case, a payment_intent existing doesn't mean the order has been paid
+  if (!isReader && order.payment_intent) {
     throw new Error('Can not delete order that has been processed by Stripe, order must be refunded');
   }
 
@@ -269,5 +272,5 @@ export const abortPaymentIntent = async (
 
   if (!intent) throw new Error('Unable to find payment Intent!');
 
-  await updateCanceledOrder(prisma, order);
+  await updateCanceledOrder(prisma, order, true);
 }
