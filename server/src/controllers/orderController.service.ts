@@ -81,59 +81,17 @@ export const readerWebhook = async (
   }
 }
 
-export const donationCancel = async (
-    prisma: ExtendedPrismaClient,
-    paymentIntent: string,
-    refundIntent: string,
-) => {
-  const result = await prisma.donations.updateMany({
-    where: {
-      payment_intent: paymentIntent,
-    },
-    data: {
-      refund_intent: refundIntent,
-    },
-  });
-  return result.count;
-};
-
-export const createDonationRecord = async (
-    prisma: ExtendedPrismaClient,
-    paymentIntent: string,
-    donationAmount: number,
-    customerID: number,
-    userComments?: string,
-    anonymous?: boolean,
-    frequency?: freq,
-) => {
-  const contact = await prisma.contacts.findUnique({where: {contactid: +customerID}});
-  if (!contact) {
-    throw new Error('Contact does not exist');
-  }
-  await prisma.donations.create({
-    data: {
-      contactid_fk: contact.contactid,
-      isanonymous: anonymous ?? false,
-      amount: donationAmount,
-      donorname: `${contact.firstname}  ${contact.lastname}`,
-      frequency: frequency ?? 'one_time',
-      payment_intent: paymentIntent,
-      donationdate: getOrderDateAndTime().orderdate,
-      ...(userComments && {comments: userComments}),
-    }});
-};
-
 export const orderFulfillment = async (
     prisma: ExtendedPrismaClient,
     contactid: number,
     eventInstanceQueries: any[],
-    checkoutSession?: string,
     orderSubtotal: number,
     discountTotal: number,
     orderItems: {
         orderTicketItems?: any[],
         donationItem?: any,
     },
+    checkoutSession?: string,
     discountId?: number,
     paymentIntent?: string // need this for reader purchase
 ) => {
@@ -311,5 +269,5 @@ export const abortPaymentIntent = async (
 
   if (!intent) throw new Error('Unable to find payment Intent!');
 
-  await orderCancel(prisma, order.orderid);
+  await updateCanceledOrder(prisma, order);
 }

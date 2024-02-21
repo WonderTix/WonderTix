@@ -104,13 +104,13 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         prisma,
         contactid,
         eventInstanceQueries,
-        toSend.id,
         ticketTotal+donationTotal,
         discountAmount,
         {
           orderTicketItems,
           donationItem,
         },
+        toSend.id,
         discount.code != '' ? discount.discountid : null,
     );
 
@@ -145,7 +145,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     res.status(500).json(error);
   }
 });
-
 /**
  * @swagger
  * /2/events/reader-intent:
@@ -164,12 +163,16 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
     if (!cartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
     }
-    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma);
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
 
-    if (orderTotal > 0) {
+    if (ticketTotal > 0) {
       const {id, secret} = await createStripePaymentIntent(
-        orderTotal * 100
+        ticketTotal * 100
       )
       paymentIntentID = id;
       clientSecret = secret;
@@ -196,124 +199,45 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
 
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
   const {cartItems, paymentIntentID, readerID, discount} = req.body;
-  let orderID = 0;
+  let order :orders | null = null;
   let contactid = 1; //database value for anonymous
   try {
     if (!cartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
     }
-    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma);
+
+    if (discount.code != '') {
+      await validateDiscount(discount, cartItems, prisma);
+    }
+
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
 
     const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
     
+    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+
     // add order to database with prisma
-    orderID = await orderFulfillment(
+    order = await orderFulfillment(
         prisma,
-        orderItems,
         contactid,
-        orderTotal,
         eventInstanceQueries,
+        ticketTotal,
+        discountAmount,
+        {
+          orderTicketItems,
+        },
         undefined,
-        undefined, // could put in discount but they don't seem to do this in normal checkout
         paymentIntentID
     );
     res.json({status: 'order sent'});
   } catch (error) {
     console.error(error);
     if (order) await updateCanceledOrder(prisma, order);
-    if (toSend.id !== 'comp') await expireCheckoutSession(toSend.id);
-    if (error instanceof InvalidInputError) {
-      res.status(error.code).json(error.message);
-      return;
-    }
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError ||
-      error instanceof Prisma.PrismaClientValidationError
-    ) {
-      res.status(400).json(error.message);
-      return;
-    }
-    res.status(500).json(error);
-  }
-});
-
-/**
- * @swagger
- * /2/events/reader-intent:
- *   post:
- *     summary: Create Reader Payment Intent
- *     tags:
- *     - New Event API
- */
-
-eventController.post('/reader-intent', async (req: Request, res: Response) => {
-  const {cartItems} = req.body;
-  let paymentIntentID = "";
-  let clientSecret = "";
-
-  try {
-    if (!cartItems.length) {
-      return res.status(400).json({error: 'Cart is empty'});
-    }
-    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma);
-
-    if (orderTotal > 0) {
-      const {id, secret} = await createStripePaymentIntent(
-        orderTotal * 100
-      )
-      paymentIntentID = id;
-      clientSecret = secret;
-    }
-    res.json({id: paymentIntentID, secret: clientSecret});
-  } catch (error) {
-    console.error(error);
-    if (error instanceof InvalidInputError) {
-      res.status(error.code).json(error.message);
-      return;
-    }
-    res.status(500).json(error);
-  }
-});
-
-/**
- * @swagger
- * /2/events/reader-checkout:
- *   post:
- *     summary: Request Payment for intent and fulfill order
- *     tags:
- *     - New Event API
- */
-
-eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {cartItems, paymentIntentID, readerID, discount} = req.body;
-  let orderID = 0;
-  let contactid = 1; //database value for anonymous
-  try {
-    if (!cartItems.length) {
-      return res.status(400).json({error: 'Cart is empty'});
-    }
-    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma);
-
-    const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
-    
-    // add order to database with prisma
-    orderID = await orderFulfillment(
-        prisma,
-        orderItems,
-        contactid,
-        orderTotal,
-        eventInstanceQueries,
-        undefined,
-        undefined, // could put in discount but they don't seem to do this in normal checkout
-        paymentIntentID
-    );
-    res.json({status: 'order sent'});
-  } catch (error) {
-    console.error(error);
-    if (orderID) await orderCancel(prisma, orderID);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
