@@ -15,6 +15,14 @@ import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 const prisma = extendPrismaClient();
 
+import {Storage} from '@google-cloud/storage';
+const storage = new Storage({keyFilename: '../../wondertix-app-65166e13b099.json'});
+const imgBucket = storage.bucket('gcf-v2-uploads-131818279954-us-west1');
+const testFile = imgBucket.file('test1234.txt');
+console.log('\n\n\n');
+console.log(testFile);
+console.log('\n\n\n');
+
 export const eventController = Router();
 
 /**

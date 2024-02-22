@@ -11,7 +11,6 @@
     "start": "npm run prisma:init-seed-max && nodemon --exec npx ts-node ./src/server.ts",
     "test": "echo -e 'Tests are disabled temporarily'",
     "test:jest": "npx jest --config ./jest.config.js"
-
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -23,6 +22,7 @@
     "npm": ">=8.0.0"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
     "@prisma/client": "^5.5.2",
     "@types/supertest": "^2.0.12",
     "class-validator": "^0.14.0",
