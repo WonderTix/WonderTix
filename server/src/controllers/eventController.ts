@@ -16,14 +16,18 @@ import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 const prisma = extendPrismaClient();
 
+import multer from 'multer';
 import {Storage} from '@google-cloud/storage';
-const storage = new Storage({keyFilename: './wondertix-app-65166e13b099.json'});
-const imgBucket = storage.bucket('gcf-v2-uploads-131818279954-us-west1');
+
+const upload = multer();
+
+const storage = new Storage({keyFilename: './wondertix-app-65166e13b099.json'}); // env var
+const imgBucket = storage.bucket('gcf-v2-uploads-131818279954-us-west1'); // env var
 const testFile = imgBucket.file('test1234.txt');
 const testFile2 = imgBucket.file('test12345.txt');
 async function downloadFile() {
     const contents = await testFile.download();
-    console.log(contents);
+    console.log(String(contents));
 }
 /* sync function downloadFileFail() {
     const contents2 = await testFile2.download();
@@ -160,6 +164,43 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     }
     res.status(500).json(error);
   }
+});
+
+/**
+ * @swagger
+ * /2/events/image-upload:
+ *   post:
+ *     summary: Upload image to google cloud storage, make public, return link
+ *     tags:
+ *     - New Event API
+ */
+
+eventController.post('/image-upload', upload.single('file'), async (req: Request, res: Response) => {
+  if (!req.file) {
+    return res.status(400).send('No file passed to request!');
+  }
+
+  const file = imgBucket.file(req.file.originalname);
+  const stream = file.createWriteStream({
+    metadata: {
+      contentType: req.file.mimetype,
+    },
+    resumable: false,
+  });
+
+  stream.on('error', (err) => {
+    console.log(err);
+    return res.status(500).send('Upload failed!');
+  })
+
+  stream.on('finish', async () => {
+    await file.makePublic();
+    const url = `https://storage.googleapis.com/gcf-v2-uploads-131818279954-us-west1/${file.name}`; // env var for bucket name
+    console.log('image made, sending:' + url);
+    return res.status(200).send({url});
+  })
+
+  stream.end(req.file.buffer);
 });
 
 /**
