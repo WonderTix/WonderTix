@@ -207,8 +207,8 @@ const ReportingList: React.FC<ReportsProps> = ({data, DONdata}) => {
               }
               size='md'
               title='Performance Report'
-              route='/admin/reporting'
-              disabled={true}
+              route='/admin/reporting/performance-report'
+              disabled={false}
               description='Temporarily Unavailable'
             />
             <ListLink
