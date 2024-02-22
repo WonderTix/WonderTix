@@ -89,9 +89,66 @@ contactController.use(checkScopes);
  *     summary: get all contacts
  *     tags:
  *     - New Contact
+ *     parameters:
+ *     - in: query
+ *       name: firstname
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: lastname
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: email
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: address
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: city
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: state
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: country
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: postalcode
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: phone
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: seatingaccom
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: donorbadge
+ *       schema:
+ *         type: boolean
+ *     - in: query
+ *       name: vip
+ *       schema:
+ *         type: boolean
+ *     - in: query
+ *       name: volunteerlist
+ *       schema:
+ *         type: boolean
+ *     - in: query
+ *       name: newsletter
+ *       schema:
+ *         type: boolean
  *     responses:
  *       200:
- *         description: Contact updated successfully.
+ *         description: Contacts received successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -112,81 +169,119 @@ contactController.use(checkScopes);
  */
 contactController.get('/', async (req: Request, res: Response) => {
   try {
-    const filters: any = {};
-    if (req.params.firstname) {
-      filters.firstname = {
-        contains: req.params.firstname,
-      };
+    const filters: any = [];
+    if (req.query.firstname) {
+      filters.push({
+        firstname: {
+          equals: req.query.firstname,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.lastname) {
-      filters.lastname = {
-        contains: req.params.lastname,
-      };
+    if (req.query.lastname) {
+      filters.push({
+        lastname: {
+          equals: req.query.lastname,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.email) {
-      filters.email = {
-        contains: req.params.email,
-      };
+    if (req.query.email) {
+      filters.push({
+        email: {
+          equals: req.query.email,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.address) {
-      filters.address = {
-        contains: req.params.address,
-      };
+    if (req.query.address) {
+      filters.push({
+        address: {
+          equals: req.query.address,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.city) {
-      filters.city = {
-        contains: req.params.city,
-      };
+    if (req.query.city) {
+      filters.push({
+        city: {
+          equals: req.query.city,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.state) {
-      filters.state = {
-        contains: req.params.state,
-      };
+    if (req.query.state) {
+      filters.push({
+        state: {
+          equals: req.query.state,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.country) {
-      filters.country = {
-        contains: req.params.country,
-      };
+    if (req.query.country) {
+      filters.push({
+        country: {
+          equals: req.query.country,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.postalcode) {
-      filters.postalcode = {
-        contains: req.params.postalcode,
-      };
+    if (req.query.postalcode) {
+      filters.push({
+        postalcode: {
+          equals: req.query.postalcode,
+        },
+      });
     }
-    if (req.params.phone) {
-      filters.phone = {
-        contains: req.params.phone,
-      };
+    if (req.query.phone) {
+      filters.push({
+        phone: {
+          equals: req.query.phone,
+        },
+      });
     }
-    if (req.params.donorbadge) {
-      filters.donorbadge = {
-        equals: req.params.donorbadge,
-      };
+    if (req.query.seatingaccom) {
+      filters.push({
+        seatingaccom: {
+          contains: req.query.seatingaccom,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.seatingaccom) {
-      filters.seatingaccom = {
-        equals: req.params.seatingaccom,
-      };
+    if (req.query.donorbadge) {
+      filters.push({
+        donorbadge: {
+          equals: (req.query.donorbadge === 'true'),
+        },
+      });
     }
-    if (req.params.vip) {
-      filters.vip = {
-        equals: req.params.vip,
-      };
+    if (req.query.vip) {
+      filters.push({
+        vip: {
+          equals: (req.query.vip === 'true'),
+        },
+      });
     }
-    if (req.params.volunteerlist) {
-      filters.volunteerlist = {
-        equals: req.params.volunteerlist,
-      };
+    if (req.query.volunteerlist) {
+      filters.push({
+        volunteerlist: {
+          equals: (req.query.volunteerlist === 'true'),
+        },
+      });
     }
-    if (req.params.newsletter) {
-      filters.newsletter = {
-        equals: req.params.newsletter,
-      };
+    if (req.query.newsletter) {
+      filters.push({
+        newsletter: {
+          equals: (req.query.newsletter === 'true'),
+        },
+      });
     }
 
-    if (Object.keys(filters).length > 0) {
+    if (filters.length > 0) {
       const contacts = await prisma.contacts.findMany({
-        where: filters,
+        where: {
+          OR: filters,
+        },
       });
       res.status(200).json(contacts);
       return;
@@ -346,7 +441,6 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
     }
 
     const {orders, ...remainderOfContact} = contact;
-    const formattedDonations: any[] = [];
     const flattenedOrders : any[] = [];
     contact.orders.forEach((order) => {
       const orderItemsMap = new Map<string, any>();
@@ -358,7 +452,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
               const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
               const item = orderItemsMap.get(key);
               if (item) {
-                item.quantity+=1;
+                item.quantity += 1;
               } else {
                 orderItemsMap.set(key,
                     {
@@ -379,30 +473,31 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
               return acc && ticket.refund !== null;
             }, true);
 
-      if (order.donation) {
-        formattedDonations.push({
-          ...order.donation,
-          refunded: order.donation.refund !== null,
-          donationdate: order.orderdatetime,
-        });
-      }
-
       if (!orderItemsMap.size) return;
+
+      const flattenedDonation = {
+        donationid: order.donation?.donationid,
+        anonymous: order.donation?.anonymous,
+        amount: order.donation?.amount,
+        frequency: order.donation?.frequency,
+        comments: order.donation?.comments,
+        refunded: order.donation?.refund !== null,
+      };
 
       flattenedOrders.push({
         orderid: order.orderid,
         orderdatetime: order.orderdatetime,
         ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
+        discounttotal: order.discounttotal,
         refunded,
         orderitems: [...orderItemsMap.values()],
-        donationTotal: +(order.donation?.amount ?? 0),
+        donation: order.donation ? flattenedDonation : null,
       });
     });
 
     const toReturn = {
       ...remainderOfContact,
       orders: flattenedOrders,
-      donations: formattedDonations,
     };
 
     res.status(200).json(toReturn);
