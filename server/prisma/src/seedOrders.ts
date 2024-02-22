@@ -1,42 +1,53 @@
-import {PrismaClient} from '@prisma/client';
-const fs = require('fs');
-const yaml = require('js-yaml');
-
-import parseTime from './../src/parseTime';
+import {freq, PrismaClient} from '@prisma/client';
+import {updateAvailableSeats} from '../../src/controllers/orderController.service';
 
 /**
- * Import orders from YAML file to database
+ * seed orders
  * @param {PrismaClient} prisma
  */
-async function seedOrders(prisma: PrismaClient) {
+export default async function seedOrders(prisma: PrismaClient) {
   try {
-    const eventTicketsCount = await prisma.orders.count();
-    if (eventTicketsCount > 0) {
-      console.log('Orders table already seeded.');
-      return;
-    }
-
-    const yamlData = fs.readFileSync('./prisma/yaml-seeder-data/orders.yaml', 'utf8');
-    const data: any[] = yaml.load(yamlData);
-
-    const preparedData = data.map((item) => ({
-      contactid_fk: item.contactid_fk,
-      orderdate: item.orderdate,
-      ordertime: parseTime(item.ordertime),
-      discountid_fk: item.discountid_fk,
-      payment_intent: item.payment_intent,
-      refund_intent: item.refund_intent,
-      ordertotal: parseFloat(item.ordertotal.replace('$', '')),
-    }));
-
-    await prisma.orders.createMany({
-      data: preparedData,
-    });
-
-    console.log('Orders seeding completed.');
+    const contacts = await prisma.contacts.findMany();
+    const ticketRestrictions= await prisma.ticketrestrictions.findMany();
+    const orders:any[] = [];
+    contacts.forEach(
+        (contact, index) => {
+          if (!ticketRestrictions.length) return;
+          const restriction = ticketRestrictions[index%ticketRestrictions.length];
+          const orderItemCount = Math.floor((Math.random()*Math.min(5, restriction.ticketlimit)))+1;
+          restriction.ticketlimit-=orderItemCount;
+          if (!restriction.ticketlimit) ticketRestrictions.splice(ticketRestrictions.indexOf(restriction), 1);
+          orders.push(prisma.orders.create({
+            data: {
+              contactid_fk: contact.contactid,
+              payment_intent: `seeded-order-${index}`,
+              ...(!(index%4) && {
+                donation: {
+                  create: {
+                    amount: (Math.random()*150)+1,
+                    frequency: freq.one_time,
+                    comments: 'Seeded Donation',
+                  },
+                },
+              }),
+              ordersubtotal: (Number(restriction.price) * orderItemCount),
+              orderticketitems: {
+                create: Array(orderItemCount).fill({
+                  price: restriction?.price,
+                  ticketitem: {
+                    create: {
+                      ticketrestrictionid_fk: restriction?.ticketrestrictionsid,
+                    },
+                  },
+                }),
+              },
+            },
+          }));
+        });
+    await prisma.$transaction(orders);
+    await updateAvailableSeats(prisma, (await prisma.eventinstances.findMany({select: {eventinstanceid: true}})).map((event) => event.eventinstanceid));
   } catch (error) {
     console.error(error);
   }
 }
 
-module.exports = seedOrders;
