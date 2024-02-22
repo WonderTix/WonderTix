@@ -28,8 +28,14 @@ const TableRows: React.FC<TableRowsProps> = (
     sortOrder,
     active,
   } = event;
-
   return (
+    <div className='table-row hover:bg-slate-100'>
+      <div className='table-cell text-center border-x border-gray-200 p-2.5'>eventNames</div>
+    </div>
+  );
+ 
+ 
+  /*return (
     <div className='table-row hover:bg-slate-100'>
       <div className='table-cell text-center border-x border-gray-200 p-2.5'>{tableInfo.name}</div>
       <div className='table-cell p-2.5'>{tableInfo.type}</div>
@@ -39,7 +45,7 @@ const TableRows: React.FC<TableRowsProps> = (
       <div className='table-cell p-2.5'>{tableInfo.sortOrder}</div>
       <div className='table-cell p-2.5'>{tableInfo.active}</div>
     </div>
-  );
+  );*/
 };
 
 export default TableRows;

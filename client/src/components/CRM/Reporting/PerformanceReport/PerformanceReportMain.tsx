@@ -18,6 +18,27 @@ const PerformanceReportMain = () => {
     GroupedBy: 'None',
   });
 
+  // List of all events
+  // Make the fetch request
+  const tableInfo = fetch(process.env.REACT_APP_API_2_URL + '/events/listing')
+  .then((response) => {
+    // Check if the response is successful
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse the JSON response
+    return response.json();
+  })
+  .then((data) => {
+    // Access the eventname property from the parsed JSON data
+    const eventNames = data.map((event) => event.eventname);
+    console.log(eventNames);
+  })
+  .catch((error) => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
+
+
   // the 2 functions below need reworking
   const handleFilterChange = (name, value) => {
     setFilterData({
