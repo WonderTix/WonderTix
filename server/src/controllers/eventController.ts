@@ -17,11 +17,22 @@ import {isBooleanString} from 'class-validator';
 const prisma = extendPrismaClient();
 
 import {Storage} from '@google-cloud/storage';
-const storage = new Storage({keyFilename: '../../wondertix-app-65166e13b099.json'});
+const storage = new Storage({keyFilename: './wondertix-app-65166e13b099.json'});
 const imgBucket = storage.bucket('gcf-v2-uploads-131818279954-us-west1');
 const testFile = imgBucket.file('test1234.txt');
+const testFile2 = imgBucket.file('test12345.txt');
+async function downloadFile() {
+    const contents = await testFile.download();
+    console.log(contents);
+}
+/* sync function downloadFileFail() {
+    const contents2 = await testFile2.download();
+    console.log(contents2);
+} */
+downloadFile();
+// downloadFileFail();
 console.log('\n\n\n');
-console.log(testFile);
+console.log(testFile.name);
 console.log('\n\n\n');
 
 export const eventController = Router();

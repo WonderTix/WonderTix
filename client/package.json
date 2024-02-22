@@ -10,6 +10,7 @@
     "@auth0/auth0-react": "^1.10.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@google-cloud/storage": "^7.7.0",
     "@heroicons/react": "^1.0.6",
     "@mui/lab": "^5.0.0-alpha.66",
     "@mui/material": "^5.10.13",
