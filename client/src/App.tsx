@@ -7,9 +7,7 @@ import AccountsMain from './components/CRM/Accounts/AccountsMain';
 import ContactMain from './components/CRM/Contacts/ContactMain';
 import {ContactOneResult} from './components/CRM/Contacts/ContactOneResult';
 import ReportingMain from './components/CRM/Reporting/ReportingMain';
-import TasksEditMain from './components/CRM/Tasks/TasksEditMain';
 import TasksMain from './components/CRM/Tasks/TasksMain';
-import CreateTask from './components/CRM/Tasks/CreateTask';
 import ManageAccountsmain from './components/CRM/Accounts/ManageUsers/ManageAccountsmain';
 import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchmain';
 import DailySalesReportMain from './components/CRM/Reporting/DailySalesReport/DailySalesReportMain';
@@ -97,14 +95,6 @@ const App = () => {
         <Route
           path='/admin/tasks'
           element={<ProtectedRoute component={TasksMain} />}
-        />
-        <Route
-          path='/admin/tasks/create'
-          element={<ProtectedRoute component={CreateTask} />}
-        />
-        <Route
-          path='/admin/tasks/edit'
-          element={<ProtectedRoute component={TasksEditMain} />}
         />
         <Route
           path='/admin/tasks/accountInformation'
