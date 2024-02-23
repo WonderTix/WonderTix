@@ -15,10 +15,6 @@ import DonationSummaryReportMain from './components/CRM/Reporting/DonationSummar
 import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconciliationReport';
 import TransactionSummaryReport from './components/CRM/Reporting/TransactionSummaryReport/TransactionSummaryReport';
 
-/* Donor Management */
-import DmDashmain from './components/DonorManagement/DmDashmain';
-import DonorReporting from './components/DonorManagement/Reporting/DonorReporting';
-
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
 import EventShowingsmain from './components/Ticketing/event/EventShowingsmain';
@@ -99,14 +95,6 @@ const App = () => {
         <Route
           path='/admin/tasks/accountInformation'
           element={<ProtectedRoute component={TasksMain} />}
-        />
-        <Route
-          path='/admin/donor'
-          element={<ProtectedRoute component={DmDashmain} />}
-        />
-        <Route
-          path='/admin/donor/reporting'
-          element={<ProtectedRoute component={DonorReporting} />}
         />
         <Route
           path='/admin/reporting/credit-card-reconciliation'
