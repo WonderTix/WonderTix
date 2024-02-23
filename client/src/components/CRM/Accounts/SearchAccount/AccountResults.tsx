@@ -15,8 +15,8 @@ const AccountResults = ({
   data: any;
   hasSearched: boolean;
 }): ReactElement => {
-  if (!data && hasSearched) return <p>Empty</p>;
-  if (!data) return null;
+  if (data.length === 0 && hasSearched) return <p>No Results</p>;
+  if (data.length === 0) return null;
 
   return data.map((account) => (
     <div

@@ -15,7 +15,7 @@ const Accounts = (): React.ReactElement => {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const {getAccessTokenSilently} = useAuth0();
 
   useEffect(() => {
@@ -51,6 +51,8 @@ const Accounts = (): React.ReactElement => {
           console.error(error);
         }
         setIsLoading(false);
+      } else {
+        setData([]);
       }
     };
     getData();
