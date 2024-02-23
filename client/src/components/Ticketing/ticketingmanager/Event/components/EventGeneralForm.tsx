@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Field, Formik} from 'formik';
+import {Field, Formik, useFormikContext} from 'formik';
 import {InputControl} from './InputControl';
 import {eventGeneralSchema} from './event.schemas';
 import {FormSubmitButton} from './FormSubmitButton';
@@ -13,6 +13,38 @@ interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
   onLeaveEdit?: () => void;
 }
+
+const ImageUpload = () => {
+  const {setFieldValue} = useFormikContext();
+
+  const onDrop = useCallback(async (files) => {
+    const formData = new FormData();
+    formData.append('file', files[0]);
+    console.log(files[0]);
+    const response = await fetch(
+      process.env.REACT_APP_API_2_URL + '/events/image-upload',
+      {
+        method: 'POST',
+        body: formData,
+      },
+    );
+    if (!response.ok) {
+      throw response;
+    }
+    const img = await response.json();
+    setFieldValue('imageurl', img.url);
+    console.log(img.url);
+  }, [setFieldValue]);
+
+  const {getRootProps, getInputProps} = useDropzone({onDrop});
+
+  return (
+    <div {...getRootProps()}>
+      <input {...getInputProps()}></input>
+      <p>Drag and Drop or Click here to Upload</p>
+    </div>
+  );
+};
 
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onLeaveEdit} = props;
@@ -46,26 +78,6 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
   };
-
-  const onDrop = useCallback(async (files) => {
-    const formData = new FormData();
-    formData.append('file', files[0]);
-    console.log(files[0]);
-    const response = await fetch(
-      process.env.REACT_APP_API_2_URL + '/events/image-upload',
-      {
-        method: 'POST',
-        body: formData,
-      },
-    );
-    if (!response.ok) {
-      throw response;
-    }
-    const img = await response.json();
-    console.log(img.url);
-  }, []);
-
-  const {getRootProps, getInputProps} = useDropzone({onDrop});
 
   return (
     <Formik
@@ -163,10 +175,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                       </div>
                     )}
                   </Field>
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()}></input>
-                    <p>Drag and Drop files</p>
-                  </div>
+                  <ImageUpload />
                 </div>
                 {showButton && (
                   <button
