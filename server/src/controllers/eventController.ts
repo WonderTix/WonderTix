@@ -22,7 +22,7 @@ import {Storage} from '@google-cloud/storage';
 const upload = multer();
 
 const storage = new Storage({keyFilename: './wondertix-app-65166e13b099.json'}); // env var
-const imgBucket = storage.bucket('gcf-v2-uploads-131818279954-us-west1'); // env var
+const imgBucket = storage.bucket('image_upload_wondertix'); // env var
 const testFile = imgBucket.file('test1234.txt');
 const testFile2 = imgBucket.file('test12345.txt');
 async function downloadFile() {
