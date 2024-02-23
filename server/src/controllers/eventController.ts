@@ -194,8 +194,8 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
   })
 
   stream.on('finish', async () => {
-    // await file.makePublic(); // change bucket permissions or create new bucket to do this
-    const url = `https://storage.googleapis.com/gcf-v2-uploads-131818279954-us-west1/${file.name}`; // env var for bucket name
+    await file.makePublic(); // change bucket permissions or create new bucket to do this
+    const url = `https://storage.googleapis.com/image_upload_wondertix/${file.name}`; // env var for bucket name
     console.log('image made, sending:' + url);
     return res.status(200).send({url});
   })

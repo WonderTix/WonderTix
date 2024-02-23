@@ -41,7 +41,7 @@ const ImageUpload = () => {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()}></input>
-      <p>Drag and Drop or Click here to Upload</p>
+      <p>Drag & Drop File or Click Here to Upload</p>
     </div>
   );
 };
