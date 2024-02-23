@@ -238,6 +238,15 @@ eventInstanceController.get(
               },
             },
           },
+          where: {
+            deletedat: null,
+            event: {
+              deletedat: null,
+            },
+          },
+          orderBy: {
+            eventinstanceid: 'asc',
+          },
         });
 
         const toReturn = instances.map((instance) => {
