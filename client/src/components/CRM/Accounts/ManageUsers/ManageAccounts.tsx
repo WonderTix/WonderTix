@@ -15,10 +15,10 @@ import {useAuth0} from '@auth0/auth0-react';
  * @returns {ReactElement}
  */
 const ManageAccounts = (): ReactElement => {
-  /** @param {any} rows - Accounts table rows */
   const [rows, setRows] = useState([]);
   const [username, setUsername] = useState('');
   const [auth0Id, setAuth0Id] = useState('');
+
   const dispatch = useAppDispatch();
   const {getAccessTokenSilently} = useAuth0();
 
@@ -116,7 +116,7 @@ const ManageAccounts = (): ReactElement => {
         'Content-type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({id: userid, ...user}),
+      body: JSON.stringify(user),
     });
     dispatch(openSnackbar('User changed'));
   };
@@ -209,7 +209,7 @@ const ManageAccounts = (): ReactElement => {
                 disabled={!username || !auth0Id}
                 onClick={submitNewUser}
               >
-                create user
+                Create Account
               </button>
             </form>
           </div>
