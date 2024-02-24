@@ -20,10 +20,13 @@ const prisma = extendPrismaClient();
 import multer from 'multer';
 import {Storage} from '@google-cloud/storage';
 
+const keyFilePath = `${process.env.GCLOUD_KEY_PATH}`;
+const bucket = `${process.env.GCLOUD_BUCKET}`;
+
 const upload = multer();
 
-const storage = new Storage({keyFilename: './wondertix-app-65166e13b099.json'}); // env var
-const imgBucket = storage.bucket('image_upload_wondertix'); // env var
+const storage = new Storage({keyFilename: keyFilePath}); // env var
+const imgBucket = storage.bucket(bucket); // env var
 
 export const eventController = Router();
 
@@ -212,7 +215,7 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
 
   stream.on('finish', async () => {
     await file.makePublic();
-    const url = `https://storage.googleapis.com/image_upload_wondertix/${file.name}`; // env var for bucket name
+    const url = `https://storage.googleapis.com/${bucket}/${file.name}`; // env var for bucket name
     return res.status(200).send({url});
   })
 
