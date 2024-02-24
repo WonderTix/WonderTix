@@ -10,6 +10,7 @@ import {
   getDiscountAmount,
   updateContact,
   validateDiscount,
+  validateWithRegex,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -23,21 +24,6 @@ const upload = multer();
 
 const storage = new Storage({keyFilename: './wondertix-app-65166e13b099.json'}); // env var
 const imgBucket = storage.bucket('image_upload_wondertix'); // env var
-const testFile = imgBucket.file('test1234.txt');
-const testFile2 = imgBucket.file('test12345.txt');
-async function downloadFile() {
-    const contents = await testFile.download();
-    console.log(String(contents));
-}
-/* sync function downloadFileFail() {
-    const contents2 = await testFile2.download();
-    console.log(contents2);
-} */
-downloadFile();
-// downloadFileFail();
-console.log('\n\n\n');
-console.log(testFile.name);
-console.log('\n\n\n');
 
 export const eventController = Router();
 
@@ -173,11 +159,42 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
  *     summary: Upload image to google cloud storage, make public, return link
  *     tags:
  *     - New Event API
+  *     requestBody:
+ *       description: Image File
+ *     responses:
+ *       200:
+ *         description: Image successfully uploaded.
+ *         content:
+ *           application/json:
+ *             schema: {url: string}
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
  */
 
 eventController.post('/image-upload', upload.single('file'), async (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).send('No file passed to request!');
+  }
+
+  try {
+    validateWithRegex(
+      req.file.mimetype,
+      'Invalid input, not a valid image filetype!', 
+      new RegExp('^(image\/(jpe?g|png))')
+    );
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send(error);
   }
 
   const file = imgBucket.file(req.file.originalname);
@@ -194,9 +211,8 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
   })
 
   stream.on('finish', async () => {
-    await file.makePublic(); // change bucket permissions or create new bucket to do this
+    await file.makePublic();
     const url = `https://storage.googleapis.com/image_upload_wondertix/${file.name}`; // env var for bucket name
-    console.log('image made, sending:' + url);
     return res.status(200).send({url});
   })
 

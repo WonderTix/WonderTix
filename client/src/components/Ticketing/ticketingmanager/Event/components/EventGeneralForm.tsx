@@ -20,20 +20,23 @@ const ImageUpload = () => {
   const onDrop = useCallback(async (files) => {
     const formData = new FormData();
     formData.append('file', files[0]);
-    console.log(files[0]);
-    const response = await fetch(
-      process.env.REACT_APP_API_2_URL + '/events/image-upload',
-      {
-        method: 'POST',
-        body: formData,
-      },
-    );
-    if (!response.ok) {
-      throw response;
+
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_API_2_URL + '/events/image-upload',
+        {
+          method: 'POST',
+          body: formData,
+        },
+      );
+      if (!response.ok) {
+        throw response;
+      }
+      const img = await response.json();
+      setFieldValue('imageurl', img.url);
+    } catch (error) {
+      console.error(error);
     }
-    const img = await response.json();
-    setFieldValue('imageurl', img.url);
-    console.log(img.url);
   }, [setFieldValue]);
 
   const {getRootProps, getInputProps} = useDropzone({onDrop});
