@@ -1,0 +1,51 @@
+html {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root, #root>div {
+  padding: 0px !important;
+  margin: 0px !important;
+  max-height: 100vh;
+  max-width: 100vw;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.note-card {
+  height: 30vh;
+  overflow: auto;
+  border: 1px solid black; 
+}
+
+.note-text{
+  margin-top: 10px;
+  border: 1px solid black; 
+}
+
+.parent-component{
+  display: flex; 
+  flex-direction: row; 
+  height: 100%;
+  width: 100%; 
+}
+
+.create-component {
+  flex-grow: 1;
+  width: 30%;
+}
+
+.Note-component{
+  height: 40%;
+  width: 30%;
+}
+
+.filter-component{
+  height: 40%;
+  width: 30%;
+}

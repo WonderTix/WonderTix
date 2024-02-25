@@ -1,0 +1,327 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// customer information
+model contacts {
+  contactid     Int      @id @default(autoincrement())
+  firstname     String?  @db.VarChar(255)
+  lastname      String?  @db.VarChar(255)
+  email         String?  @unique @db.VarChar(100)
+  phone         String?  @db.VarChar(15)
+  address       String?  @db.VarChar(255)
+  city          String?  @db.VarChar(255)
+  state         String?  @db.VarChar(255)
+  country       String?  @db.VarChar(255)
+  postalcode    String?  @db.VarChar(255)
+  seatingaccom  String?  @db.VarChar(255)
+  comments      String?  @db.VarChar(255)
+  donorbadge    Boolean? @default(false)
+  vip           Boolean? @default(false)
+  volunteerlist Boolean? @default(false)
+  newsletter    Boolean? @default(false)
+  createddate   DateTime @default(now()) @db.Timestamptz(3)
+  orders        orders[]
+}
+
+/// date is used to store information about specific dates to simplify queries
+model date {
+  dateid                          Int              @id
+  date_actual                     DateTime         @db.Date
+  day_name                        String           @db.VarChar(9)
+  day_of_week                     Int
+  day_of_month                    Int
+  day_of_quarter                  Int
+  day_of_year                     Int
+  week_of_month                   Int
+  week_of_year                    Int
+  month_actual                    Int
+  month_name                      String           @db.VarChar(9)
+  quarter                         Int
+  year_actual                     Int
+  first_day_of_week               DateTime         @db.Date
+  last_day_of_week                DateTime         @db.Date
+  first_day_of_month              DateTime         @db.Date
+  last_day_of_month               DateTime         @db.Date
+  first_day_of_quarter            DateTime         @db.Date
+  last_day_of_quarter             DateTime         @db.Date
+  first_day_of_year               DateTime         @db.Date
+  last_day_of_year                DateTime         @db.Date
+  weekend                         Boolean
+  eventinstances                  eventinstances[]
+  seasons_seasons_enddateTodate   seasons[]        @relation("seasons_enddateTodate")
+  seasons_seasons_startdateTodate seasons[]        @relation("seasons_startdateTodate")
+  task_task_dateassignedTodate    task[]           @relation("task_dateassignedTodate")
+  task_task_datecreatedTodate     task[]           @relation("task_datecreatedTodate")
+  task_task_datedueTodate         task[]           @relation("task_datedueTodate")
+}
+
+/// discounts are applied to orders and may be limited to specific ticket types
+/// amount is a fixed amount discount, percent is a percentage discount
+/// discounts with a percent and amount value will use the percent value capped at the amount value
+model discounts {
+  discountid      Int         @id @default(autoincrement())
+  code            String      @unique @db.VarChar(32)
+  active          Boolean
+  amount          Decimal?    @db.Money
+  percent         Int?
+  tickettypeid_fk Int?
+  usagelimit      Int?
+  min_tickets     Int?
+  min_events      Int?
+  tickettype      tickettype? @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  orders          orders[]
+}
+
+/// customer or anonymous donations
+/// donations can be one time or recurring, stored in the frequency field
+/// payment_intent and refund_intent are stripe payment intent ids
+model donations {
+  donationid Int          @id @default(autoincrement())
+  orderid_fk Int          @unique
+  anonymous  Boolean      @default(false)
+  amount     Decimal      @db.Money
+  frequency  freq
+  comments   String?      @db.VarChar(255)
+  order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  refund     refunditems?
+}
+
+/// an event instance is a specific showing of an event
+/// tickets are sold for event instances only if the salesstatus is true and the event date is in the future
+/// preview events are are pre showings of an event before the event is open to the public
+model eventinstances {
+  eventinstanceid    Int                  @id @default(autoincrement())
+  eventid_fk         Int
+  eventdate          Int
+  eventtime          DateTime             @db.Timetz(6)
+  salestatus         Boolean              @default(true)
+  totalseats         Int                  @default(0)
+  availableseats     Int                  @default(0)
+  detail             String?              @db.VarChar(255)
+  purchaseuri        String?              @db.VarChar(255)
+  ispreview          Boolean              @default(false)
+  deletedat          DateTime?
+  date               date                 @relation(fields: [eventdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  event              events               @relation(fields: [eventid_fk], references: [eventid], onDelete: NoAction, onUpdate: NoAction, map: "eventinstances_eventid_fkey")
+  ticketrestrictions ticketrestrictions[]
+}
+
+/// an event is a performance, a class, a workshop, etc.
+/// the showings of an event are eventinstances
+model events {
+  eventid              Int              @id @default(autoincrement())
+  seasonid_fk          Int?
+  eventname            String           @db.VarChar(255)
+  eventdescription     String           @db.VarChar(255)
+  active               Boolean          @default(false)
+  seasonticketeligible Boolean          @default(true)
+  imageurl             String?          @db.VarChar(255)
+  deletedat            DateTime?
+  eventinstances       eventinstances[]
+  seasons              seasons?         @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
+}
+
+model orderticketitems {
+  id         Int          @id @default(autoincrement())
+  orderid_fk Int
+  price      Decimal      @db.Money
+  order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  ticketitem ticketitems?
+  refund     refunditems?
+}
+
+/// supertable for sub ticket items tables (subscription, order)
+model ticketitems {
+  id                     Int                @id @default(autoincrement())
+  orderticketitemid_fk   Int                @unique
+  ticketrestrictionid_fk Int
+  donated                Boolean            @default(false)
+  redeemed               DateTime?          @db.Timestamp(3)
+  ticketrestriction      ticketrestrictions @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Restrict, onUpdate: Cascade)
+  orderticketitem        orderticketitems   @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// a customers order
+/// refund and payment intents are the uuids from stripe when a refund or payment is made
+model orders {
+  orderid           Int                @id @default(autoincrement())
+  orderdatetime     DateTime           @default(now()) @db.Timestamp(3)
+  contactid_fk      Int
+  discountid_fk     Int?
+  payment_intent    String?            @unique @db.VarChar(255)
+  checkout_sessions String?            @unique @db.VarChar(255)
+  ordersubtotal     Decimal            @db.Money
+  discounttotal     Decimal            @default(0) @db.Money
+  contacts          contacts           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
+  donation          donations?
+  refunds           refunds[]
+  orderticketitems  orderticketitems[]
+}
+
+model refunds {
+  id            Int           @id @default(autoincrement())
+  orderid_fk    Int
+  refund_intent String        @unique @db.VarChar(255)
+  order         orders        @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
+  refunditems   refunditems[]
+}
+
+model refunditems {
+  id                   Int               @id @default(autoincrement())
+  refundid_fk          Int
+  orderticketitemid_fk Int?              @unique
+  donationid_fk        Int?              @unique
+  amount               Decimal           @db.Money
+  refund               refunds           @relation(fields: [refundid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  donation             donations?        @relation(fields: [donationid_fk], references: [donationid], onDelete: Restrict, onUpdate: Cascade)
+  orderticketitem      orderticketitems? @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+/// provides a way to store reports
+model savedreports {
+  savedreportid Int     @id @default(autoincrement())
+  tablename     String? @db.VarChar(255)
+  queryattr     String?
+}
+
+/// a season is a collection of events over a period of time (e.g. a summer season)
+model seasons {
+  seasonid                      Int                            @id @default(autoincrement())
+  name                          String                         @db.VarChar(100)
+  startdate                     Int
+  enddate                       Int
+  imageurl                      String?                        @db.VarChar(255)
+  events                        events[]
+  deletedat                     DateTime?                      @db.Timestamp()
+  date_seasons_enddateTodate    date                           @relation("seasons_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  date_seasons_startdateTodate  date                           @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  seasontickettypepricedefaults seasontickettypepricedefault[]
+}
+
+/// price of ticket type for all events in a given season
+model seasontickettypepricedefault {
+  id                 Int                  @id @default(autoincrement())
+  seasonid_fk        Int
+  tickettypeid_fk    Int
+  price              Decimal              @default(0) @db.Money
+  concessionprice    Decimal              @default(0) @db.Money
+  season             seasons              @relation(fields: [seasonid_fk], references: [seasonid], onDelete: Cascade, onUpdate: Cascade)
+  tickettype         tickettype           @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: Cascade, onUpdate: Cascade)
+  ticketrestrictions ticketrestrictions[]
+
+  @@unique([seasonid_fk, tickettypeid_fk])
+}
+
+/// used to create and assign tasks such as a todo-list, memo, investigate and issue, etc.
+/// task may relate to a contact, donation, order, user, or other task
+model task {
+  taskid                        Int         @id @default(autoincrement())
+  parentid_fk                   Int?
+  assignto_fk                   Int?
+  reportto_fk                   Int?
+  subject                       String?     @db.VarChar(255)
+  description                   String?     @db.VarChar(255)
+  status                        state?
+  datecreated                   Int?
+  dateassigned                  Int?
+  datedue                       Int?
+  ref_contact                   Int?
+  ref_donation                  Int?
+  ref_order                     Int?
+  ref_user                      Int?
+  users_task_assignto_fkTousers users?      @relation("task_assignto_fkTousers", fields: [assignto_fk], references: [userid], onDelete: NoAction, onUpdate: NoAction, map: "task_assign_to_fkey")
+  date_task_dateassignedTodate  date?       @relation("task_dateassignedTodate", fields: [dateassigned], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  date_task_datecreatedTodate   date?       @relation("task_datecreatedTodate", fields: [datecreated], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  date_task_datedueTodate       date?       @relation("task_datedueTodate", fields: [datedue], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
+  task                          task?       @relation("taskTotask", fields: [parentid_fk], references: [taskid], onDelete: NoAction, onUpdate: NoAction, map: "task_parent_id_fkey")
+  other_task                    task[]      @relation("taskTotask")
+  users_task_reportto_fkTousers users?      @relation("task_reportto_fkTousers", fields: [reportto_fk], references: [userid], onDelete: NoAction, onUpdate: NoAction)
+  tasknotes                     tasknotes[]
+}
+
+/// contains additional notes for a task that can not fit in the description field
+model tasknotes {
+  tasknoteid Int     @id @default(autoincrement())
+  taskid_fk  Int?
+  date       Int?
+  notes      String?
+  task       task?   @relation(fields: [taskid_fk], references: [taskid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// ticket restrictions for an event are used to limit the number of tickets that can be sold for a ticket type for an event instance
+model ticketrestrictions {
+  ticketrestrictionsid              Int                           @id @default(autoincrement())
+  eventinstanceid_fk                Int
+  tickettypeid_fk                   Int
+  ticketlimit                       Int
+  price                             Decimal                       @default(0) @db.Money
+  concessionprice                   Decimal                       @default(0) @db.Money
+  seasontickettypepricedefaultid_fk Int?
+  deletedat                         DateTime?                     @db.Timestamp(3)
+  eventinstance                     eventinstances                @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction)
+  tickettype                        tickettype                    @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  seasontickettypepricedefault      seasontickettypepricedefault? @relation(fields: [seasontickettypepricedefaultid_fk], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  ticketitems                       ticketitems[]
+}
+
+/// types of tickets that can be assigned to an event
+model tickettype {
+  tickettypeid                  Int                            @id @default(autoincrement())
+  description                   String                         @db.VarChar(100)
+  price                         Decimal                        @db.Money
+  concessions                   Decimal                        @db.Money
+  deprecated                    Boolean?                       @default(false)
+  discounts                     discounts[]
+  ticketrestrictions            ticketrestrictions[]
+  seasontickettypepricedefaults seasontickettypepricedefault[]
+}
+
+/// users have access to the admin area to manage events, tickets, etc
+/// only users with the is_superadmin flag can access the reports
+model users {
+  userid                       Int     @id @default(autoincrement())
+  username                     String  @db.VarChar(255)
+  is_superadmin                Boolean @default(false)
+  auth0_id                     String? @db.VarChar(255)
+  task_task_assignto_fkTousers task[]  @relation("task_assignto_fkTousers")
+  task_task_reportto_fkTousers task[]  @relation("task_reportto_fkTousers")
+}
+
+enum freq {
+  one_time @map("one-time")
+  weekly
+  monthly
+  yearly
+}
+
+enum state {
+  not_started
+  in_progress
+  completed
+}
+
+model StripeWebhook {
+  id        Int     @id @default(autoincrement())
+  eventid   String
+  event     String
+  livemode  Boolean
+  created   Int
+  data      String
+  object    String
+  requestid String
+  type      String
+}
+
+model Error {
+  id        Int    @id @default(autoincrement())
+  message   String
+  stack     String
+  createdAt Int
+}

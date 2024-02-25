@@ -1,0 +1,9 @@
+node_modules/
+npm-debug.log
+.dockerignore
+Dockerfile
+Dockerfile.local
+*.md
+.git
+.gitignore
+__tests__

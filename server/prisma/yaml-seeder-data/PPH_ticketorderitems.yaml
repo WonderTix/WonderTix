@@ -1,0 +1,7368 @@
+- ticket_order_item_id: 1866751707
+  ticket_order_id: 2948969798
+  account_id: 433763818
+  contact_id: 232808419
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000073940
+  quantity: 2
+  ticket_price: 525.34
+  unit_price: 296.6
+  amount_paid: 436.45
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.68
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-12 16:51:13'
+  last_modified_date: '2018-04-14 22:09:21'
+  entry_date: null
+- ticket_order_item_id: 25604696
+  ticket_order_id: 308231442
+  account_id: 2336262773
+  contact_id: 3095448017
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000073943
+  quantity: 1
+  ticket_price: 562.83
+  unit_price: 414.77
+  amount_paid: 1201.0
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.11
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-12 17:27:37'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 1335169563
+  ticket_order_id: 3005767155
+  account_id: 281327159
+  contact_id: 3141297769
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000073944
+  quantity: 4
+  ticket_price: 260.13
+  unit_price: 557.77
+  amount_paid: 1318.14
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.96
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-12 17:50:23'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 3164394259
+  ticket_order_id: 3005767155
+  account_id: 281327159
+  contact_id: 3141297769
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000073945
+  quantity: 8
+  ticket_price: 309.94
+  unit_price: 677.98
+  amount_paid: 628.52
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.03
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-12 17:50:23'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 3822654195
+  ticket_order_id: 3005767155
+  account_id: 281327159
+  contact_id: 3141297769
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000073946
+  quantity: 6
+  ticket_price: 243.57
+  unit_price: 573.01
+  amount_paid: 895.34
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.67
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-12 17:50:23'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 3193323949
+  ticket_order_id: 3005767155
+  account_id: 281327159
+  contact_id: 3141297769
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1825995932
+  ticket_order_item_name: ITEM-000073947
+  quantity: 4
+  ticket_price: 611.64
+  unit_price: 844.13
+  amount_paid: 1154.86
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.3
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-12 17:50:23'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 2916849307
+  ticket_order_id: 2572521970
+  account_id: 3203649108
+  contact_id: 599694816
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000073952
+  quantity: 1
+  ticket_price: 241.56
+  unit_price: 876.23
+  amount_paid: 776.59
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.6
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-12 23:04:14'
+  last_modified_date: '2021-02-20 00:21:37'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 2458606464
+  ticket_order_id: 2572521970
+  account_id: 3203649108
+  contact_id: 599694816
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000073953
+  quantity: 2
+  ticket_price: 444.83
+  unit_price: 10.73
+  amount_paid: 755.56
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.23
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-12 23:04:14'
+  last_modified_date: '2021-02-20 00:21:37'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 2682552790
+  ticket_order_id: 3592611170
+  account_id: 2909131995
+  contact_id: 788929480
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000073993
+  quantity: 9
+  ticket_price: 657.85
+  unit_price: 532.59
+  amount_paid: 71.82
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.04
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 01:23:44'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3141806681
+  ticket_order_id: 1342102912
+  account_id: 3695517960
+  contact_id: 2377045784
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000073998
+  quantity: 3
+  ticket_price: 178.52
+  unit_price: 910.16
+  amount_paid: 435.94
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.22
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 05:22:10'
+  last_modified_date: '2018-06-10 04:08:40'
+  entry_date: '2018-06-10 04:08:39'
+- ticket_order_item_id: 3093800213
+  ticket_order_id: 1342102912
+  account_id: 3695517960
+  contact_id: 2377045784
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000073999
+  quantity: 7
+  ticket_price: 56.4
+  unit_price: 164.65
+  amount_paid: 549.24
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.67
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 05:22:10'
+  last_modified_date: '2018-06-10 04:08:40'
+  entry_date: '2018-06-10 04:08:39'
+- ticket_order_item_id: 3428793151
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074003
+  quantity: 3
+  ticket_price: 566.62
+  unit_price: 801.58
+  amount_paid: 868.09
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 247.04
+  discount_type: Fixed Price
+  unit_fee: 2.04
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 2709513895
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074004
+  quantity: 8
+  ticket_price: 694.69
+  unit_price: 261.83
+  amount_paid: 240.01
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 108.25
+  discount_type: Percentage
+  unit_fee: 1.33
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 1358942974
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074005
+  quantity: 4
+  ticket_price: 464.64
+  unit_price: 922.81
+  amount_paid: 1316.44
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 224.31
+  discount_type: Flat
+  unit_fee: 0.92
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 2533919313
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074006
+  quantity: 6
+  ticket_price: 159.76
+  unit_price: 634.03
+  amount_paid: 1293.33
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 39.79
+  discount_type: Fixed Price
+  unit_fee: 0.61
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 2801360432
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074007
+  quantity: 1
+  ticket_price: 53.51
+  unit_price: 440.48
+  amount_paid: 1013.32
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 35.14
+  discount_type: Percentage
+  unit_fee: 1.86
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 3223010866
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074008
+  quantity: 6
+  ticket_price: 342.5
+  unit_price: 383.07
+  amount_paid: 539.63
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 208.4
+  discount_type: Fixed Price
+  unit_fee: 2.2
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 1675628573
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074009
+  quantity: 9
+  ticket_price: 562.06
+  unit_price: 407.24
+  amount_paid: 585.35
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: -25.61
+  discount_type: Flat
+  unit_fee: 2.3
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 1119637362
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074010
+  quantity: 4
+  ticket_price: 355.39
+  unit_price: 505.31
+  amount_paid: 923.79
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 201.43
+  discount_type: Flat
+  unit_fee: 2.94
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 2236064792
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074011
+  quantity: 1
+  ticket_price: 556.37
+  unit_price: 841.08
+  amount_paid: 416.7
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: -11.16
+  discount_type: Fixed Price
+  unit_fee: 0.48
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-06-03 02:32:37'
+  entry_date: '2018-06-03 02:32:35'
+- ticket_order_item_id: 1900077201
+  ticket_order_id: 501924785
+  account_id: 1780780306
+  contact_id: 2178589047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1907138163
+  ticket_order_item_name: ITEM-000074012
+  quantity: 7
+  ticket_price: 98.57
+  unit_price: 480.23
+  amount_paid: 777.55
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 71.96
+  discount_type: Fixed Price
+  unit_fee: 0.79
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:18:22'
+  last_modified_date: '2018-04-13 19:20:19'
+  entry_date: null
+- ticket_order_item_id: 2317195379
+  ticket_order_id: 1611882551
+  account_id: 2093682804
+  contact_id: 2180510675
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 560597697
+  ticket_order_item_name: ITEM-000074013
+  quantity: 1
+  ticket_price: 419.85
+  unit_price: 924.56
+  amount_paid: 385.69
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.61
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:51:58'
+  last_modified_date: '2018-05-26 02:22:31'
+  entry_date: '2018-05-26 02:22:31'
+- ticket_order_item_id: 107537055
+  ticket_order_id: 1611882551
+  account_id: 2093682804
+  contact_id: 2180510675
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 560597697
+  ticket_order_item_name: ITEM-000074014
+  quantity: 7
+  ticket_price: 162.02
+  unit_price: 469.95
+  amount_paid: 226.84
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.21
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 19:51:58'
+  last_modified_date: '2018-05-26 02:22:31'
+  entry_date: '2018-05-26 02:22:31'
+- ticket_order_item_id: 4054033925
+  ticket_order_id: 2341755361
+  account_id: 1116636811
+  contact_id: 532704789
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1989869791
+  ticket_order_item_name: ITEM-000074017
+  quantity: 3
+  ticket_price: 133.77
+  unit_price: 618.59
+  amount_paid: 957.18
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: -47.74
+  discount_type: null
+  unit_fee: 1.93
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:17:11'
+  last_modified_date: '2018-05-27 02:26:13'
+  entry_date: '2018-05-27 02:26:12'
+- ticket_order_item_id: 3372706464
+  ticket_order_id: 2957980329
+  account_id: 3751609107
+  contact_id: 3644875880
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 317474876
+  ticket_order_item_name: ITEM-000074028
+  quantity: 1
+  ticket_price: 150.44
+  unit_price: 549.04
+  amount_paid: 958.71
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.46
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:45:51'
+  last_modified_date: '2018-04-19 20:00:33'
+  entry_date: null
+- ticket_order_item_id: 23524798
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074029
+  quantity: 3
+  ticket_price: 741.86
+  unit_price: 792.4
+  amount_paid: 989.83
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 209.4
+  discount_type: Fixed Price
+  unit_fee: 0.85
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 3837061338
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074030
+  quantity: 2
+  ticket_price: 189.07
+  unit_price: 694.69
+  amount_paid: 439.62
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 76.92
+  discount_type: Flat
+  unit_fee: 0.79
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 1942753384
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074031
+  quantity: 1
+  ticket_price: 30.05
+  unit_price: 762.02
+  amount_paid: 442.37
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: -102.08
+  discount_type: Percentage
+  unit_fee: 0.74
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 2863426060
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074032
+  quantity: 5
+  ticket_price: 252.58
+  unit_price: 600.72
+  amount_paid: 837.46
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 298.19
+  discount_type: Flat
+  unit_fee: 0.53
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 2290860573
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074033
+  quantity: 8
+  ticket_price: 101.87
+  unit_price: 620.82
+  amount_paid: 1281.74
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 72.12
+  discount_type: Fixed Price
+  unit_fee: 2.96
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 1952385120
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074034
+  quantity: 8
+  ticket_price: 397.87
+  unit_price: 394.68
+  amount_paid: 302.79
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 38.18
+  discount_type: Fixed Price
+  unit_fee: 0.81
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 3195215022
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074035
+  quantity: 6
+  ticket_price: 69.5
+  unit_price: 859.6
+  amount_paid: 521.62
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: -28.38
+  discount_type: Percentage
+  unit_fee: 0.78
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 3262553349
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074036
+  quantity: 5
+  ticket_price: 613.4
+  unit_price: 76.07
+  amount_paid: 1060.97
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 62.44
+  discount_type: Flat
+  unit_fee: 1.43
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 2852997186
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074037
+  quantity: 4
+  ticket_price: 441.86
+  unit_price: 906.19
+  amount_paid: 620.15
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 29.14
+  discount_type: Flat
+  unit_fee: 2.9
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 1284359998
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074038
+  quantity: 3
+  ticket_price: 416.83
+  unit_price: 753.93
+  amount_paid: 962.94
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 279.88
+  discount_type: Flat
+  unit_fee: 1.73
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 2506940073
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074039
+  quantity: 8
+  ticket_price: 57.13
+  unit_price: 66.62
+  amount_paid: 550.69
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 112.12
+  discount_type: Flat
+  unit_fee: 2.95
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 2351165783
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074040
+  quantity: 5
+  ticket_price: 81.8
+  unit_price: 376.49
+  amount_paid: 970.2
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: 83.43
+  discount_type: Flat
+  unit_fee: 1.25
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 2919251654
+  ticket_order_id: 2866467982
+  account_id: 4184739342
+  contact_id: 2021679627
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074041
+  quantity: 5
+  ticket_price: 255.72
+  unit_price: 820.89
+  amount_paid: 76.78
+  sales_tax: 0.0
+  discount_code_id: 1417781449
+  discount_amount: -23.13
+  discount_type: Percentage
+  unit_fee: 0.73
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:49:43'
+  last_modified_date: '2018-04-13 20:51:11'
+  entry_date: null
+- ticket_order_item_id: 1510544819
+  ticket_order_id: 261011263
+  account_id: 109246141
+  contact_id: 2786149560
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 317474876
+  ticket_order_item_name: ITEM-000074042
+  quantity: 9
+  ticket_price: 743.91
+  unit_price: 190.45
+  amount_paid: 632.06
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.78
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 20:56:02'
+  last_modified_date: '2018-04-19 20:01:15'
+  entry_date: null
+- ticket_order_item_id: 1733814059
+  ticket_order_id: 2068274675
+  account_id: 3167079805
+  contact_id: 3414754879
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3850845492
+  ticket_order_item_name: ITEM-000074043
+  quantity: 2
+  ticket_price: 5.9
+  unit_price: 792.63
+  amount_paid: 470.02
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 28.17
+  discount_type: Fixed Price
+  unit_fee: 0.68
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 21:04:07'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 1082325681
+  ticket_order_id: 2068274675
+  account_id: 3167079805
+  contact_id: 3414754879
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3850845492
+  ticket_order_item_name: ITEM-000074044
+  quantity: 3
+  ticket_price: 91.91
+  unit_price: 960.82
+  amount_paid: 1374.85
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -86.68
+  discount_type: Flat
+  unit_fee: 0.59
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 21:04:07'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 4109097476
+  ticket_order_id: 3433407954
+  account_id: 2959690930
+  contact_id: 1214486196
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074045
+  quantity: 1
+  ticket_price: 542.24
+  unit_price: 55.58
+  amount_paid: 127.24
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.52
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 22:34:23'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 2046253551
+  ticket_order_id: 3433407954
+  account_id: 2959690930
+  contact_id: 1214486196
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074046
+  quantity: 1
+  ticket_price: 442.64
+  unit_price: 459.24
+  amount_paid: 1173.33
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.6
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 22:34:23'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 4241303951
+  ticket_order_id: 3433407954
+  account_id: 2959690930
+  contact_id: 1214486196
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074047
+  quantity: 3
+  ticket_price: 204.59
+  unit_price: 195.26
+  amount_paid: 564.49
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.23
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-13 22:50:33'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 4202175462
+  ticket_order_id: 2325033177
+  account_id: 3451908815
+  contact_id: 2934356315
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074050
+  quantity: 9
+  ticket_price: 666.41
+  unit_price: 531.99
+  amount_paid: 524.01
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.16
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 05:52:23'
+  last_modified_date: '2018-05-12 02:19:49'
+  entry_date: '2018-05-12 02:19:49'
+- ticket_order_item_id: 1633165442
+  ticket_order_id: 2325033177
+  account_id: 3451908815
+  contact_id: 2934356315
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074051
+  quantity: 3
+  ticket_price: 380.65
+  unit_price: 454.68
+  amount_paid: 833.25
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.49
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 05:52:23'
+  last_modified_date: '2018-05-12 02:19:49'
+  entry_date: '2018-05-12 02:19:49'
+- ticket_order_item_id: 1727353178
+  ticket_order_id: 2325033177
+  account_id: 3451908815
+  contact_id: 2934356315
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 97458470
+  ticket_order_item_name: ITEM-000074052
+  quantity: 1
+  ticket_price: 519.81
+  unit_price: 226.85
+  amount_paid: 1075.61
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.07
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 05:52:23'
+  last_modified_date: '2018-05-12 02:19:49'
+  entry_date: '2018-05-12 02:19:49'
+- ticket_order_item_id: 1764161833
+  ticket_order_id: 4284139338
+  account_id: 148460722
+  contact_id: 225240106
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074053
+  quantity: 6
+  ticket_price: 625.49
+  unit_price: 339.96
+  amount_paid: 64.1
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.13
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 17:41:41'
+  last_modified_date: '2018-04-17 19:15:40'
+  entry_date: null
+- ticket_order_item_id: 3309069811
+  ticket_order_id: 4284139338
+  account_id: 148460722
+  contact_id: 225240106
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074054
+  quantity: 5
+  ticket_price: 330.88
+  unit_price: 386.39
+  amount_paid: 1146.49
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.95
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 17:41:41'
+  last_modified_date: '2018-04-17 19:15:40'
+  entry_date: null
+- ticket_order_item_id: 98600513
+  ticket_order_id: 120259103
+  account_id: 4021362201
+  contact_id: 996796617
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3799245072
+  ticket_order_item_name: ITEM-000074055
+  quantity: 7
+  ticket_price: 502.99
+  unit_price: 437.89
+  amount_paid: 1237.24
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.51
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 18:19:05'
+  last_modified_date: '2018-04-14 18:23:01'
+  entry_date: null
+- ticket_order_item_id: 1313155061
+  ticket_order_id: 120259103
+  account_id: 4021362201
+  contact_id: 996796617
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3799245072
+  ticket_order_item_name: ITEM-000074056
+  quantity: 5
+  ticket_price: 517.17
+  unit_price: 211.08
+  amount_paid: 1014.62
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.27
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 18:19:05'
+  last_modified_date: '2018-04-14 18:23:01'
+  entry_date: null
+- ticket_order_item_id: 2345621757
+  ticket_order_id: 120259103
+  account_id: 4021362201
+  contact_id: 996796617
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3799245072
+  ticket_order_item_name: ITEM-000074057
+  quantity: 8
+  ticket_price: 239.07
+  unit_price: 461.29
+  amount_paid: 1078.32
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.62
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 18:19:05'
+  last_modified_date: '2018-04-14 18:23:01'
+  entry_date: null
+- ticket_order_item_id: 190517382
+  ticket_order_id: 1618829316
+  account_id: 2570796245
+  contact_id: 3557731603
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1771618274
+  ticket_order_item_name: ITEM-000074059
+  quantity: 8
+  ticket_price: 657.43
+  unit_price: 302.5
+  amount_paid: 802.38
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: -82.11
+  discount_type: null
+  unit_fee: 2.88
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 21:41:57'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3745005743
+  ticket_order_id: 1618829316
+  account_id: 2570796245
+  contact_id: 3557731603
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1771618274
+  ticket_order_item_name: ITEM-000074060
+  quantity: 5
+  ticket_price: 261.16
+  unit_price: 328.45
+  amount_paid: 931.18
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 39.03
+  discount_type: null
+  unit_fee: 1.63
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 21:41:57'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3595180609
+  ticket_order_id: 1694404607
+  account_id: 467164835
+  contact_id: 423692602
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074061
+  quantity: 2
+  ticket_price: 610.58
+  unit_price: 326.21
+  amount_paid: 21.92
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 282.21
+  discount_type: null
+  unit_fee: 0.14
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 22:00:14'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 2671721271
+  ticket_order_id: 831575434
+  account_id: 2978949640
+  contact_id: 2333967932
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074062
+  quantity: 9
+  ticket_price: 11.64
+  unit_price: 126.67
+  amount_paid: 251.86
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 290.5
+  discount_type: Flat
+  unit_fee: 0.79
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 22:10:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 547921578
+  ticket_order_id: 831575434
+  account_id: 2978949640
+  contact_id: 2333967932
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074063
+  quantity: 8
+  ticket_price: 472.56
+  unit_price: 798.18
+  amount_paid: 375.41
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -72.29
+  discount_type: Fixed Price
+  unit_fee: 1.3
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 22:10:43'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 2706828042
+  ticket_order_id: 1641640961
+  account_id: 1513240002
+  contact_id: 4238140395
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074064
+  quantity: 6
+  ticket_price: 452.42
+  unit_price: 924.87
+  amount_paid: 694.58
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.77
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 22:33:16'
+  last_modified_date: '2018-04-17 22:08:08'
+  entry_date: null
+- ticket_order_item_id: 1912827254
+  ticket_order_id: 1641640961
+  account_id: 1513240002
+  contact_id: 4238140395
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074065
+  quantity: 9
+  ticket_price: 198.52
+  unit_price: 992.58
+  amount_paid: 701.26
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.02
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 22:33:16'
+  last_modified_date: '2018-04-17 22:08:08'
+  entry_date: null
+- ticket_order_item_id: 595259104
+  ticket_order_id: 1641640961
+  account_id: 1513240002
+  contact_id: 4238140395
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074066
+  quantity: 1
+  ticket_price: 393.52
+  unit_price: 480.3
+  amount_paid: 255.55
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.02
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 22:33:16'
+  last_modified_date: '2018-04-17 22:08:08'
+  entry_date: null
+- ticket_order_item_id: 3723955267
+  ticket_order_id: 1641640961
+  account_id: 1513240002
+  contact_id: 4238140395
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074067
+  quantity: 9
+  ticket_price: 575.57
+  unit_price: 579.37
+  amount_paid: 1012.47
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.66
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-14 22:33:16'
+  last_modified_date: '2018-04-17 22:08:08'
+  entry_date: null
+- ticket_order_item_id: 2810261538
+  ticket_order_id: 159885740
+  account_id: 2066853234
+  contact_id: 574852745
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074068
+  quantity: 9
+  ticket_price: 215.21
+  unit_price: 480.17
+  amount_paid: 796.77
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.35
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-15 02:31:02'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3308524674
+  ticket_order_id: 159885740
+  account_id: 2066853234
+  contact_id: 574852745
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074069
+  quantity: 6
+  ticket_price: 322.08
+  unit_price: 579.59
+  amount_paid: 1167.21
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.9
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-15 02:31:02'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 1390563276
+  ticket_order_id: 3190820788
+  account_id: 4142631685
+  contact_id: 1177966116
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074070
+  quantity: 4
+  ticket_price: 15.49
+  unit_price: 536.81
+  amount_paid: 273.7
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.47
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-15 04:57:11'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 577167609
+  ticket_order_id: 3190820788
+  account_id: 4142631685
+  contact_id: 1177966116
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074071
+  quantity: 6
+  ticket_price: 150.56
+  unit_price: 335.26
+  amount_paid: 510.23
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.06
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-15 04:57:11'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 702152934
+  ticket_order_id: 970396209
+  account_id: 2319635451
+  contact_id: 1744096209
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074072
+  quantity: 6
+  ticket_price: 718.64
+  unit_price: 754.23
+  amount_paid: 87.76
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.25
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-15 23:02:34'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 2074736396
+  ticket_order_id: 970396209
+  account_id: 2319635451
+  contact_id: 1744096209
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074073
+  quantity: 5
+  ticket_price: 455.85
+  unit_price: 262.63
+  amount_paid: 806.9
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.85
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-15 23:02:34'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 1233831893
+  ticket_order_id: 149266261
+  account_id: 3898588281
+  contact_id: 2770835501
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2444582560
+  ticket_order_item_name: ITEM-000074085
+  quantity: 7
+  ticket_price: 417.69
+  unit_price: 545.11
+  amount_paid: 1220.04
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.69
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-16 19:49:18'
+  last_modified_date: '2018-05-28 02:01:09'
+  entry_date: '2018-05-28 02:01:07'
+- ticket_order_item_id: 909242505
+  ticket_order_id: 149266261
+  account_id: 3898588281
+  contact_id: 2770835501
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2444582560
+  ticket_order_item_name: ITEM-000074086
+  quantity: 9
+  ticket_price: 701.99
+  unit_price: 906.32
+  amount_paid: 43.92
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.74
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-16 19:49:18'
+  last_modified_date: '2018-05-28 02:01:09'
+  entry_date: '2018-05-28 02:01:07'
+- ticket_order_item_id: 933399014
+  ticket_order_id: 1808344187
+  account_id: 1388187128
+  contact_id: 1122462625
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1122956080
+  ticket_order_item_name: ITEM-000074087
+  quantity: 1
+  ticket_price: 324.77
+  unit_price: 364.48
+  amount_paid: 212.32
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.61
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-16 23:22:19'
+  last_modified_date: '2018-06-10 21:13:51'
+  entry_date: '2018-06-10 21:13:50'
+- ticket_order_item_id: 1411765808
+  ticket_order_id: 1808344187
+  account_id: 1388187128
+  contact_id: 1122462625
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1122956080
+  ticket_order_item_name: ITEM-000074088
+  quantity: 9
+  ticket_price: -1.42
+  unit_price: 18.93
+  amount_paid: 340.88
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.83
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-16 23:22:19'
+  last_modified_date: '2018-06-10 21:13:51'
+  entry_date: '2018-06-10 21:13:50'
+- ticket_order_item_id: 1779824454
+  ticket_order_id: 1808344187
+  account_id: 1388187128
+  contact_id: 1122462625
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1122956080
+  ticket_order_item_name: ITEM-000074089
+  quantity: 9
+  ticket_price: 429.31
+  unit_price: 870.27
+  amount_paid: 363.01
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.45
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-16 23:22:19'
+  last_modified_date: '2018-06-10 21:13:51'
+  entry_date: '2018-06-10 21:13:50'
+- ticket_order_item_id: 2098966155
+  ticket_order_id: 1808344187
+  account_id: 1388187128
+  contact_id: 1122462625
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1122956080
+  ticket_order_item_name: ITEM-000074090
+  quantity: 8
+  ticket_price: 283.62
+  unit_price: 447.24
+  amount_paid: 1379.23
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.49
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-16 23:22:19'
+  last_modified_date: '2018-06-10 21:13:51'
+  entry_date: '2018-06-10 21:13:50'
+- ticket_order_item_id: 849433315
+  ticket_order_id: 2107820214
+  account_id: 1403899014
+  contact_id: 2995596224
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074091
+  quantity: 4
+  ticket_price: 336.44
+  unit_price: 701.57
+  amount_paid: 1049.55
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.95
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 15:35:08'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 553792802
+  ticket_order_id: 2107820214
+  account_id: 1403899014
+  contact_id: 2995596224
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074092
+  quantity: 7
+  ticket_price: 199.54
+  unit_price: 410.0
+  amount_paid: 65.5
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.37
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 15:35:08'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3022883194
+  ticket_order_id: 634253493
+  account_id: 148460722
+  contact_id: 225240106
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074098
+  quantity: 3
+  ticket_price: 565.53
+  unit_price: 850.1
+  amount_paid: 611.51
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 16.12
+  discount_type: Flat
+  unit_fee: 2.85
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:16:11'
+  last_modified_date: '2018-06-10 04:08:40'
+  entry_date: '2018-06-10 04:08:39'
+- ticket_order_item_id: 2328920687
+  ticket_order_id: 634253493
+  account_id: 148460722
+  contact_id: 225240106
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074099
+  quantity: 3
+  ticket_price: 255.49
+  unit_price: 368.16
+  amount_paid: 253.7
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 32.56
+  discount_type: Fixed Price
+  unit_fee: 2.2
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:16:11'
+  last_modified_date: '2018-06-10 04:08:40'
+  entry_date: '2018-06-10 04:08:39'
+- ticket_order_item_id: 1027114651
+  ticket_order_id: 2289593865
+  account_id: 2908641700
+  contact_id: 720612154
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2596805432
+  ticket_order_item_name: ITEM-000074101
+  quantity: 7
+  ticket_price: 459.41
+  unit_price: 262.71
+  amount_paid: 1330.11
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 197.15
+  discount_type: Fixed Price
+  unit_fee: 1.63
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:20:39'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 3372666679
+  ticket_order_id: 3656358155
+  account_id: 3924751815
+  contact_id: 1913122099
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074102
+  quantity: 3
+  ticket_price: 654.01
+  unit_price: 832.87
+  amount_paid: 27.19
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: -55.2
+  discount_type: null
+  unit_fee: 1.05
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:30:33'
+  last_modified_date: '2018-05-01 21:49:34'
+  entry_date: null
+- ticket_order_item_id: 912708247
+  ticket_order_id: 3656358155
+  account_id: 3924751815
+  contact_id: 1913122099
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074103
+  quantity: 7
+  ticket_price: 350.93
+  unit_price: 339.03
+  amount_paid: 336.14
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 263.12
+  discount_type: null
+  unit_fee: 2.91
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:30:33'
+  last_modified_date: '2018-05-01 21:49:34'
+  entry_date: null
+- ticket_order_item_id: 1477728237
+  ticket_order_id: 1974695440
+  account_id: 142416191
+  contact_id: 426984142
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074104
+  quantity: 4
+  ticket_price: 294.39
+  unit_price: 307.16
+  amount_paid: 795.28
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 136.25
+  discount_type: null
+  unit_fee: 1.38
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:31:59'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 1906924487
+  ticket_order_id: 1974695440
+  account_id: 142416191
+  contact_id: 426984142
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074105
+  quantity: 4
+  ticket_price: 614.31
+  unit_price: 408.23
+  amount_paid: 178.99
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 101.49
+  discount_type: null
+  unit_fee: 0.08
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:31:59'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 491031421
+  ticket_order_id: 2643579841
+  account_id: 1004423832
+  contact_id: 701760088
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2596805432
+  ticket_order_item_name: ITEM-000074106
+  quantity: 3
+  ticket_price: 549.8
+  unit_price: 570.64
+  amount_paid: 152.43
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 58.28
+  discount_type: Percentage
+  unit_fee: 2.91
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:35:31'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 464342729
+  ticket_order_id: 4268614448
+  account_id: 3874921281
+  contact_id: 194662047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3799245072
+  ticket_order_item_name: ITEM-000074107
+  quantity: 8
+  ticket_price: 636.87
+  unit_price: 368.73
+  amount_paid: 884.8
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: -3.0
+  discount_type: null
+  unit_fee: 1.16
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:39:58'
+  last_modified_date: '2018-04-17 19:40:16'
+  entry_date: null
+- ticket_order_item_id: 713740567
+  ticket_order_id: 4268614448
+  account_id: 3874921281
+  contact_id: 194662047
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3799245072
+  ticket_order_item_name: ITEM-000074108
+  quantity: 9
+  ticket_price: 620.24
+  unit_price: 937.45
+  amount_paid: 1295.67
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: -0.24
+  discount_type: null
+  unit_fee: 1.19
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:39:58'
+  last_modified_date: '2018-04-17 19:40:16'
+  entry_date: null
+- ticket_order_item_id: 413351180
+  ticket_order_id: 4253400595
+  account_id: 1991282826
+  contact_id: 2260077806
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1769619775
+  ticket_order_item_name: ITEM-000074111
+  quantity: 3
+  ticket_price: 22.9
+  unit_price: 575.68
+  amount_paid: 104.22
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.85
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:43:29'
+  last_modified_date: '2018-05-19 02:30:27'
+  entry_date: '2018-05-19 02:30:26'
+- ticket_order_item_id: 2544561335
+  ticket_order_id: 4253400595
+  account_id: 1991282826
+  contact_id: 2260077806
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1769619775
+  ticket_order_item_name: ITEM-000074112
+  quantity: 6
+  ticket_price: 725.42
+  unit_price: 89.82
+  amount_paid: 744.04
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.46
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:43:29'
+  last_modified_date: '2018-05-19 02:30:27'
+  entry_date: '2018-05-19 02:30:26'
+- ticket_order_item_id: 2644478954
+  ticket_order_id: 664726204
+  account_id: 3691680802
+  contact_id: 389229307
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 120433207
+  ticket_order_item_name: ITEM-000074113
+  quantity: 4
+  ticket_price: 202.0
+  unit_price: 202.76
+  amount_paid: 1177.06
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.13
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 19:49:25'
+  last_modified_date: '2018-06-03 23:31:23'
+  entry_date: '2018-06-03 23:31:26'
+- ticket_order_item_id: 2765180285
+  ticket_order_id: 3655896749
+  account_id: 2372474524
+  contact_id: 2077769880
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2000521983
+  ticket_order_item_name: ITEM-000074114
+  quantity: 1
+  ticket_price: 106.48
+  unit_price: 843.17
+  amount_paid: 263.22
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.26
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 20:01:56'
+  last_modified_date: '2018-05-27 02:26:13'
+  entry_date: '2018-05-27 02:26:12'
+- ticket_order_item_id: 506031132
+  ticket_order_id: 3655896749
+  account_id: 2372474524
+  contact_id: 2077769880
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2000521983
+  ticket_order_item_name: ITEM-000074115
+  quantity: 8
+  ticket_price: 420.13
+  unit_price: 533.8
+  amount_paid: 1188.61
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.26
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 20:01:56'
+  last_modified_date: '2018-05-27 02:26:13'
+  entry_date: '2018-05-27 02:26:12'
+- ticket_order_item_id: 4249927404
+  ticket_order_id: 3192934219
+  account_id: 1887175735
+  contact_id: 3652916379
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074116
+  quantity: 5
+  ticket_price: 742.98
+  unit_price: 156.57
+  amount_paid: 338.51
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.48
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 20:21:09'
+  last_modified_date: '2018-06-10 04:08:40'
+  entry_date: '2018-06-10 04:08:39'
+- ticket_order_item_id: 3654366772
+  ticket_order_id: 3192934219
+  account_id: 1887175735
+  contact_id: 3652916379
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074117
+  quantity: 4
+  ticket_price: 552.65
+  unit_price: 412.02
+  amount_paid: 732.45
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.29
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 20:21:09'
+  last_modified_date: '2018-06-10 04:08:40'
+  entry_date: '2018-06-10 04:08:39'
+- ticket_order_item_id: 3074510009
+  ticket_order_id: 2215148073
+  account_id: 1566443397
+  contact_id: 3015369007
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074118
+  quantity: 7
+  ticket_price: 481.71
+  unit_price: 821.58
+  amount_paid: 1247.94
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.38
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 21:22:00'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 1989121899
+  ticket_order_id: 2215148073
+  account_id: 1566443397
+  contact_id: 3015369007
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074119
+  quantity: 9
+  ticket_price: 471.96
+  unit_price: 985.13
+  amount_paid: 1209.57
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.5
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 21:22:00'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 1449807895
+  ticket_order_id: 3391185139
+  account_id: 798565155
+  contact_id: 3575368736
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074120
+  quantity: 4
+  ticket_price: 500.77
+  unit_price: 23.78
+  amount_paid: 1174.74
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.77
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 21:45:28'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 2838634187
+  ticket_order_id: 3391185139
+  account_id: 798565155
+  contact_id: 3575368736
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074121
+  quantity: 9
+  ticket_price: 641.71
+  unit_price: 993.56
+  amount_paid: 658.86
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.33
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 21:45:28'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 2261178644
+  ticket_order_id: 3391185139
+  account_id: 798565155
+  contact_id: 3575368736
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074122
+  quantity: 8
+  ticket_price: 202.75
+  unit_price: 139.76
+  amount_paid: 458.66
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.1
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 21:45:28'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 291636138
+  ticket_order_id: 799773365
+  account_id: 763225060
+  contact_id: 3733137941
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074123
+  quantity: 8
+  ticket_price: 102.57
+  unit_price: 452.57
+  amount_paid: 145.76
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.89
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 21:47:19'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3375084507
+  ticket_order_id: 1106142932
+  account_id: 1601975542
+  contact_id: 1773836945
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074124
+  quantity: 3
+  ticket_price: 218.31
+  unit_price: 847.36
+  amount_paid: 1322.39
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.51
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 21:48:04'
+  last_modified_date: '2018-06-08 20:42:01'
+  entry_date: null
+- ticket_order_item_id: 717319319
+  ticket_order_id: 3619871026
+  account_id: 2301546881
+  contact_id: 1251948483
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1836838741
+  ticket_order_item_name: ITEM-000074129
+  quantity: 8
+  ticket_price: 388.82
+  unit_price: 653.7
+  amount_paid: 1192.61
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.37
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 22:15:05'
+  last_modified_date: '2018-05-10 22:25:50'
+  entry_date: null
+- ticket_order_item_id: 1646422102
+  ticket_order_id: 3031327783
+  account_id: 2681471779
+  contact_id: 1441156355
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3114473643
+  ticket_order_item_name: ITEM-000074130
+  quantity: 9
+  ticket_price: 529.6
+  unit_price: 403.72
+  amount_paid: 1067.03
+  sales_tax: 0.0
+  discount_code_id: 1274446735
+  discount_amount: -26.56
+  discount_type: Flat
+  unit_fee: 1.3
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 22:30:02'
+  last_modified_date: '2018-05-11 02:26:44'
+  entry_date: '2018-05-11 02:26:42'
+- ticket_order_item_id: 763306627
+  ticket_order_id: 3516402908
+  account_id: 2200343921
+  contact_id: 2350781748
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074135
+  quantity: 1
+  ticket_price: 13.29
+  unit_price: 749.69
+  amount_paid: 1036.56
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: -6.26
+  discount_type: Fixed Price
+  unit_fee: 0.92
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 23:00:52'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 1357754531
+  ticket_order_id: 3516402908
+  account_id: 2200343921
+  contact_id: 2350781748
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074136
+  quantity: 6
+  ticket_price: 606.17
+  unit_price: 523.6
+  amount_paid: 430.13
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: -54.6
+  discount_type: Percentage
+  unit_fee: 0.33
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-17 23:00:52'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 2360970125
+  ticket_order_id: 2873573135
+  account_id: 2192344185
+  contact_id: 493804824
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074137
+  quantity: 6
+  ticket_price: 583.15
+  unit_price: 267.95
+  amount_paid: 62.05
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.08
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 00:45:03'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 3484730248
+  ticket_order_id: 2873573135
+  account_id: 2192344185
+  contact_id: 493804824
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074138
+  quantity: 9
+  ticket_price: 370.66
+  unit_price: 451.27
+  amount_paid: 504.16
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.92
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 00:45:03'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 4224884520
+  ticket_order_id: 1711471951
+  account_id: 1690957858
+  contact_id: 2749162474
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3195675600
+  ticket_order_item_name: ITEM-000074139
+  quantity: 1
+  ticket_price: 718.93
+  unit_price: 440.16
+  amount_paid: 178.07
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.61
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 04:01:24'
+  last_modified_date: '2018-05-25 19:13:35'
+  entry_date: null
+- ticket_order_item_id: 2223584866
+  ticket_order_id: 1711471951
+  account_id: 1690957858
+  contact_id: 2749162474
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3195675600
+  ticket_order_item_name: ITEM-000074140
+  quantity: 7
+  ticket_price: 497.09
+  unit_price: 182.11
+  amount_paid: 565.39
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.46
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 04:01:24'
+  last_modified_date: '2018-05-25 19:13:35'
+  entry_date: null
+- ticket_order_item_id: 14914636
+  ticket_order_id: 4072514785
+  account_id: 3599830546
+  contact_id: 259376625
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074141
+  quantity: 6
+  ticket_price: 42.87
+  unit_price: 97.46
+  amount_paid: 769.25
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 225.27
+  discount_type: null
+  unit_fee: 2.75
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 19:30:54'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 4163719652
+  ticket_order_id: 4072514785
+  account_id: 3599830546
+  contact_id: 259376625
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074142
+  quantity: 7
+  ticket_price: 619.96
+  unit_price: 597.22
+  amount_paid: 330.9
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 234.14
+  discount_type: null
+  unit_fee: 2.2
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 19:30:54'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 3304637648
+  ticket_order_id: 1357118505
+  account_id: 619809273
+  contact_id: 3247312441
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1864457981
+  ticket_order_item_name: ITEM-000074143
+  quantity: 8
+  ticket_price: 541.14
+  unit_price: 466.97
+  amount_paid: 1341.93
+  sales_tax: 0.0
+  discount_code_id: 2783692886
+  discount_amount: 117.29
+  discount_type: Percentage
+  unit_fee: 2.17
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 19:45:15'
+  last_modified_date: '2018-04-18 20:25:22'
+  entry_date: null
+- ticket_order_item_id: 908841247
+  ticket_order_id: 1357118505
+  account_id: 619809273
+  contact_id: 3247312441
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1864457981
+  ticket_order_item_name: ITEM-000074144
+  quantity: 3
+  ticket_price: 339.34
+  unit_price: 38.03
+  amount_paid: 371.07
+  sales_tax: 0.0
+  discount_code_id: 2783692886
+  discount_amount: -10.33
+  discount_type: Flat
+  unit_fee: 1.06
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 19:45:15'
+  last_modified_date: '2018-04-18 20:25:22'
+  entry_date: null
+- ticket_order_item_id: 2910092327
+  ticket_order_id: 2970362536
+  account_id: 2291236024
+  contact_id: 1208437229
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074145
+  quantity: 5
+  ticket_price: 286.02
+  unit_price: 987.6
+  amount_paid: 955.18
+  sales_tax: 0.0
+  discount_code_id: 3533876535
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.45
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 19:47:10'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 3160899172
+  ticket_order_id: 2970362536
+  account_id: 2291236024
+  contact_id: 1208437229
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074146
+  quantity: 3
+  ticket_price: 462.94
+  unit_price: 679.78
+  amount_paid: 1105.59
+  sales_tax: 0.0
+  discount_code_id: 3533876535
+  discount_amount: 205.36
+  discount_type: Fixed Price
+  unit_fee: 0.37
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 19:47:10'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 56558678
+  ticket_order_id: 993505834
+  account_id: 1922409770
+  contact_id: 2680079886
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2596805432
+  ticket_order_item_name: ITEM-000074147
+  quantity: 7
+  ticket_price: 585.05
+  unit_price: 820.96
+  amount_paid: 1129.91
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.16
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 19:56:40'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 1941183667
+  ticket_order_id: 993505834
+  account_id: 1922409770
+  contact_id: 2680079886
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2596805432
+  ticket_order_item_name: ITEM-000074148
+  quantity: 9
+  ticket_price: 258.86
+  unit_price: 769.56
+  amount_paid: 507.25
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.19
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 19:56:40'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 3546834622
+  ticket_order_id: 584738171
+  account_id: 181067747
+  contact_id: 2566221841
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1864457981
+  ticket_order_item_name: ITEM-000074149
+  quantity: 3
+  ticket_price: 227.15
+  unit_price: 289.94
+  amount_paid: 1402.66
+  sales_tax: 0.0
+  discount_code_id: 1913598294
+  discount_amount: 55.37
+  discount_type: Flat
+  unit_fee: 1.23
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:04:22'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 3091079216
+  ticket_order_id: 584738171
+  account_id: 181067747
+  contact_id: 2566221841
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1864457981
+  ticket_order_item_name: ITEM-000074150
+  quantity: 3
+  ticket_price: 156.74
+  unit_price: 990.75
+  amount_paid: 644.74
+  sales_tax: 0.0
+  discount_code_id: 1913598294
+  discount_amount: 67.7
+  discount_type: Fixed Price
+  unit_fee: 0.54
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:04:22'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 2031939437
+  ticket_order_id: 584738171
+  account_id: 181067747
+  contact_id: 2566221841
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1957651415
+  ticket_order_item_name: ITEM-000074151
+  quantity: 3
+  ticket_price: 336.35
+  unit_price: 582.54
+  amount_paid: 1305.1
+  sales_tax: 0.0
+  discount_code_id: 1913598294
+  discount_amount: 27.93
+  discount_type: Flat
+  unit_fee: 2.78
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:05:17'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 1497000554
+  ticket_order_id: 584738171
+  account_id: 181067747
+  contact_id: 2566221841
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1957651415
+  ticket_order_item_name: ITEM-000074152
+  quantity: 7
+  ticket_price: 94.16
+  unit_price: 532.2
+  amount_paid: 285.38
+  sales_tax: 0.0
+  discount_code_id: 1913598294
+  discount_amount: 152.25
+  discount_type: Percentage
+  unit_fee: 1.85
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:05:17'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 883255413
+  ticket_order_id: 4191254207
+  account_id: 3067215428
+  contact_id: 558218493
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3180308629
+  ticket_order_item_name: ITEM-000074153
+  quantity: 9
+  ticket_price: 704.06
+  unit_price: 291.79
+  amount_paid: 1155.05
+  sales_tax: 0.0
+  discount_code_id: 1913598294
+  discount_amount: -103.76
+  discount_type: Percentage
+  unit_fee: 1.39
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:19:43'
+  last_modified_date: '2018-04-18 20:20:11'
+  entry_date: null
+- ticket_order_item_id: 4007112705
+  ticket_order_id: 4191254207
+  account_id: 3067215428
+  contact_id: 558218493
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3180308629
+  ticket_order_item_name: ITEM-000074154
+  quantity: 9
+  ticket_price: 313.92
+  unit_price: 355.79
+  amount_paid: 934.15
+  sales_tax: 0.0
+  discount_code_id: 1913598294
+  discount_amount: 102.04
+  discount_type: Flat
+  unit_fee: 2.08
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:19:43'
+  last_modified_date: '2018-04-18 20:20:11'
+  entry_date: null
+- ticket_order_item_id: 4279849955
+  ticket_order_id: 2740938802
+  account_id: 619809273
+  contact_id: 3247312441
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1864457981
+  ticket_order_item_name: ITEM-000074155
+  quantity: 2
+  ticket_price: 520.85
+  unit_price: 646.58
+  amount_paid: 706.84
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.1
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:25:41'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 414205355
+  ticket_order_id: 2740938802
+  account_id: 619809273
+  contact_id: 3247312441
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1864457981
+  ticket_order_item_name: ITEM-000074156
+  quantity: 5
+  ticket_price: 134.88
+  unit_price: 49.14
+  amount_paid: 948.95
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.3
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:25:41'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 3159927117
+  ticket_order_id: 2686028808
+  account_id: 840642464
+  contact_id: 1200261165
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3490045029
+  ticket_order_item_name: ITEM-000074157
+  quantity: 5
+  ticket_price: 172.48
+  unit_price: 807.13
+  amount_paid: 463.89
+  sales_tax: 0.0
+  discount_code_id: 1286141195
+  discount_amount: 228.89
+  discount_type: Percentage
+  unit_fee: 1.86
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:43:53'
+  last_modified_date: '2018-05-02 21:07:12'
+  entry_date: null
+- ticket_order_item_id: 2810591016
+  ticket_order_id: 2686028808
+  account_id: 840642464
+  contact_id: 1200261165
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3490045029
+  ticket_order_item_name: ITEM-000074158
+  quantity: 7
+  ticket_price: 33.47
+  unit_price: 745.38
+  amount_paid: 289.92
+  sales_tax: 0.0
+  discount_code_id: 1286141195
+  discount_amount: -15.2
+  discount_type: Fixed Price
+  unit_fee: 2.55
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:43:53'
+  last_modified_date: '2018-05-02 21:07:12'
+  entry_date: null
+- ticket_order_item_id: 1687702091
+  ticket_order_id: 4053427170
+  account_id: 868633764
+  contact_id: 1299482520
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2681866041
+  ticket_order_item_name: ITEM-000074159
+  quantity: 7
+  ticket_price: 148.66
+  unit_price: 605.94
+  amount_paid: 498.47
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.76
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:48:16'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 3613332959
+  ticket_order_id: 4053427170
+  account_id: 868633764
+  contact_id: 1299482520
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2681866041
+  ticket_order_item_name: ITEM-000074160
+  quantity: 1
+  ticket_price: 582.61
+  unit_price: 292.68
+  amount_paid: 742.8
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.66
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 20:48:16'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 4122192808
+  ticket_order_id: 3172768569
+  account_id: 1272795272
+  contact_id: 4237387375
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3114473643
+  ticket_order_item_name: ITEM-000074161
+  quantity: 1
+  ticket_price: 686.23
+  unit_price: 620.53
+  amount_paid: 354.39
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.98
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 21:27:14'
+  last_modified_date: '2018-05-11 02:26:44'
+  entry_date: '2018-05-11 02:26:42'
+- ticket_order_item_id: 3864051210
+  ticket_order_id: 645302490
+  account_id: 3167079805
+  contact_id: 3414754879
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1957651415
+  ticket_order_item_name: ITEM-000074164
+  quantity: 9
+  ticket_price: 419.68
+  unit_price: 737.47
+  amount_paid: 339.33
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 132.86
+  discount_type: Fixed Price
+  unit_fee: 1.26
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 22:36:44'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 2165895736
+  ticket_order_id: 2739331678
+  account_id: 1882120789
+  contact_id: 3777097307
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3297202082
+  ticket_order_item_name: ITEM-000074165
+  quantity: 3
+  ticket_price: 466.27
+  unit_price: 528.17
+  amount_paid: 272.32
+  sales_tax: 0.0
+  discount_code_id: 1286141195
+  discount_amount: 242.86
+  discount_type: Fixed Price
+  unit_fee: 0.55
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 22:50:00'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 1998809387
+  ticket_order_id: 2739331678
+  account_id: 1882120789
+  contact_id: 3777097307
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3297202082
+  ticket_order_item_name: ITEM-000074166
+  quantity: 1
+  ticket_price: 128.56
+  unit_price: 324.61
+  amount_paid: 586.69
+  sales_tax: 0.0
+  discount_code_id: 1286141195
+  discount_amount: -91.48
+  discount_type: Fixed Price
+  unit_fee: 2.19
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 22:50:00'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 116532515
+  ticket_order_id: 111875044
+  account_id: 1073025361
+  contact_id: 1542193498
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3141165663
+  ticket_order_item_name: ITEM-000074167
+  quantity: 2
+  ticket_price: 565.03
+  unit_price: 497.37
+  amount_paid: 999.64
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -11.04
+  discount_type: Fixed Price
+  unit_fee: 2.77
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 23:03:50'
+  last_modified_date: '2018-05-12 02:05:28'
+  entry_date: '2018-05-12 02:05:28'
+- ticket_order_item_id: 287390487
+  ticket_order_id: 3979772304
+  account_id: 1073025361
+  contact_id: 1542193498
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074168
+  quantity: 6
+  ticket_price: 582.17
+  unit_price: 389.92
+  amount_paid: 433.42
+  sales_tax: 0.0
+  discount_code_id: 2196397447
+  discount_amount: 259.22
+  discount_type: Percentage
+  unit_fee: 0.35
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 23:04:27'
+  last_modified_date: '2018-05-12 02:05:28'
+  entry_date: '2018-05-12 02:05:28'
+- ticket_order_item_id: 3364986299
+  ticket_order_id: 3979772304
+  account_id: 1073025361
+  contact_id: 1542193498
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074169
+  quantity: 3
+  ticket_price: 181.34
+  unit_price: 247.84
+  amount_paid: 1057.41
+  sales_tax: 0.0
+  discount_code_id: 2196397447
+  discount_amount: 150.63
+  discount_type: Flat
+  unit_fee: 1.23
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 23:04:27'
+  last_modified_date: '2018-05-12 02:05:28'
+  entry_date: '2018-05-12 02:05:28'
+- ticket_order_item_id: 2098486820
+  ticket_order_id: 3979772304
+  account_id: 1073025361
+  contact_id: 1542193498
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074170
+  quantity: 5
+  ticket_price: 270.3
+  unit_price: 243.37
+  amount_paid: 430.26
+  sales_tax: 0.0
+  discount_code_id: 2196397447
+  discount_amount: 29.27
+  discount_type: Flat
+  unit_fee: 1.98
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-18 23:04:27'
+  last_modified_date: '2018-05-12 02:05:28'
+  entry_date: '2018-05-12 02:05:28'
+- ticket_order_item_id: 4248284772
+  ticket_order_id: 3643221281
+  account_id: 1333996837
+  contact_id: 4005501124
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074171
+  quantity: 1
+  ticket_price: 330.68
+  unit_price: 710.57
+  amount_paid: 1318.11
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.55
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 00:30:26'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3149648298
+  ticket_order_id: 3643221281
+  account_id: 1333996837
+  contact_id: 4005501124
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074172
+  quantity: 8
+  ticket_price: 719.04
+  unit_price: 36.85
+  amount_paid: 255.36
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.14
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 00:30:26'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 1999617777
+  ticket_order_id: 3950656422
+  account_id: 2492928135
+  contact_id: 2488643529
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074173
+  quantity: 7
+  ticket_price: 731.35
+  unit_price: 730.9
+  amount_paid: 762.83
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.5
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 02:40:31'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 4087959374
+  ticket_order_id: 3950656422
+  account_id: 2492928135
+  contact_id: 2488643529
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074174
+  quantity: 4
+  ticket_price: 269.36
+  unit_price: 922.96
+  amount_paid: 279.69
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.64
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 02:40:31'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 632326657
+  ticket_order_id: 3950656422
+  account_id: 2492928135
+  contact_id: 2488643529
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074175
+  quantity: 4
+  ticket_price: 127.11
+  unit_price: 706.98
+  amount_paid: 38.18
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.1
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 02:40:31'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 3502098057
+  ticket_order_id: 3950656422
+  account_id: 2492928135
+  contact_id: 2488643529
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074176
+  quantity: 4
+  ticket_price: 365.47
+  unit_price: 474.36
+  amount_paid: 32.46
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.31
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 02:40:31'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 1074322601
+  ticket_order_id: 3950656422
+  account_id: 2492928135
+  contact_id: 2488643529
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074177
+  quantity: 8
+  ticket_price: 356.8
+  unit_price: 106.53
+  amount_paid: 996.87
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.87
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 02:40:31'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 1731081639
+  ticket_order_id: 3536203078
+  account_id: 2492928135
+  contact_id: 2488643529
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074178
+  quantity: 4
+  ticket_price: 287.57
+  unit_price: 754.75
+  amount_paid: 994.15
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.67
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 02:52:43'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 1265307369
+  ticket_order_id: 1267751598
+  account_id: 1768358954
+  contact_id: 2255281009
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074179
+  quantity: 6
+  ticket_price: 498.26
+  unit_price: 275.32
+  amount_paid: 90.83
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.18
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 17:54:21'
+  last_modified_date: '2018-05-30 21:06:09'
+  entry_date: null
+- ticket_order_item_id: 100545697
+  ticket_order_id: 1267751598
+  account_id: 1768358954
+  contact_id: 2255281009
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074180
+  quantity: 3
+  ticket_price: 144.09
+  unit_price: 419.86
+  amount_paid: 668.29
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.26
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 17:54:21'
+  last_modified_date: '2018-05-30 21:06:09'
+  entry_date: null
+- ticket_order_item_id: 2446619173
+  ticket_order_id: 3217631628
+  account_id: 1004931109
+  contact_id: 517635281
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1302684964
+  ticket_order_item_name: ITEM-000074181
+  quantity: 4
+  ticket_price: 79.78
+  unit_price: 876.91
+  amount_paid: 895.98
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 244.62
+  discount_type: Percentage
+  unit_fee: 2.29
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 19:07:44'
+  last_modified_date: '2018-06-07 02:47:55'
+  entry_date: '2018-06-07 02:47:54'
+- ticket_order_item_id: 2089363052
+  ticket_order_id: 3217631628
+  account_id: 1004931109
+  contact_id: 517635281
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1302684964
+  ticket_order_item_name: ITEM-000074182
+  quantity: 5
+  ticket_price: 265.66
+  unit_price: 814.12
+  amount_paid: 5.85
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 291.56
+  discount_type: Fixed Price
+  unit_fee: 1.35
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 19:07:44'
+  last_modified_date: '2018-06-07 02:47:55'
+  entry_date: '2018-06-07 02:47:54'
+- ticket_order_item_id: 2990832994
+  ticket_order_id: 2957980329
+  account_id: 3751609107
+  contact_id: 3644875880
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1342168460
+  ticket_order_item_name: ITEM-000074194
+  quantity: 5
+  ticket_price: 22.22
+  unit_price: 687.71
+  amount_paid: 1289.0
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 9.84
+  discount_type: Percentage
+  unit_fee: 2.39
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:00:26'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 2522283494
+  ticket_order_id: 261011263
+  account_id: 109246141
+  contact_id: 2786149560
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1342168460
+  ticket_order_item_name: ITEM-000074195
+  quantity: 3
+  ticket_price: 22.56
+  unit_price: 933.31
+  amount_paid: 353.69
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 135.32
+  discount_type: Percentage
+  unit_fee: 0.32
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:01:08'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 4281909089
+  ticket_order_id: 2619683061
+  account_id: 3843265006
+  contact_id: 3152727794
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074196
+  quantity: 3
+  ticket_price: 700.48
+  unit_price: 495.15
+  amount_paid: 798.27
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.15
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:04:25'
+  last_modified_date: '2018-06-08 20:41:24'
+  entry_date: null
+- ticket_order_item_id: 3380152067
+  ticket_order_id: 2619683061
+  account_id: 3843265006
+  contact_id: 3152727794
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1119048779
+  ticket_order_item_name: ITEM-000074197
+  quantity: 8
+  ticket_price: 558.56
+  unit_price: 292.44
+  amount_paid: 561.31
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.21
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:04:25'
+  last_modified_date: '2018-06-08 20:41:24'
+  entry_date: null
+- ticket_order_item_id: 2077877503
+  ticket_order_id: 2199884158
+  account_id: 2272215389
+  contact_id: 1969470252
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074198
+  quantity: 9
+  ticket_price: 130.26
+  unit_price: 833.42
+  amount_paid: 587.59
+  sales_tax: 0.0
+  discount_code_id: 600140925
+  discount_amount: 136.61
+  discount_type: Percentage
+  unit_fee: 2.88
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:11:26'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 596553993
+  ticket_order_id: 2199884158
+  account_id: 2272215389
+  contact_id: 1969470252
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074199
+  quantity: 4
+  ticket_price: 688.26
+  unit_price: 198.16
+  amount_paid: 974.74
+  sales_tax: 0.0
+  discount_code_id: 600140925
+  discount_amount: 237.54
+  discount_type: Flat
+  unit_fee: 0.58
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:11:26'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 2695517244
+  ticket_order_id: 2572342478
+  account_id: 519093355
+  contact_id: 3212673496
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2168632229
+  ticket_order_item_name: ITEM-000074200
+  quantity: 7
+  ticket_price: 615.88
+  unit_price: 413.72
+  amount_paid: 21.46
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 162.99
+  discount_type: Percentage
+  unit_fee: 2.97
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:15:38'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 339891884
+  ticket_order_id: 999068899
+  account_id: 808269519
+  contact_id: 1012334688
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2168632229
+  ticket_order_item_name: ITEM-000074202
+  quantity: 9
+  ticket_price: 254.02
+  unit_price: 349.99
+  amount_paid: 1382.2
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 188.67
+  discount_type: Percentage
+  unit_fee: 1.89
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:46:16'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 1823952848
+  ticket_order_id: 1559442342
+  account_id: 1651988123
+  contact_id: 3284982816
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074203
+  quantity: 4
+  ticket_price: 698.21
+  unit_price: 915.1
+  amount_paid: 98.43
+  sales_tax: 0.0
+  discount_code_id: 1286141195
+  discount_amount: 162.79
+  discount_type: Fixed Price
+  unit_fee: 0.69
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:55:35'
+  last_modified_date: '2018-05-08 19:30:14'
+  entry_date: null
+- ticket_order_item_id: 2397318489
+  ticket_order_id: 1559442342
+  account_id: 1651988123
+  contact_id: 3284982816
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074204
+  quantity: 2
+  ticket_price: 229.92
+  unit_price: 194.61
+  amount_paid: 1141.37
+  sales_tax: 0.0
+  discount_code_id: 1286141195
+  discount_amount: 6.68
+  discount_type: Percentage
+  unit_fee: 0.72
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 20:55:35'
+  last_modified_date: '2018-05-08 19:30:14'
+  entry_date: null
+- ticket_order_item_id: 2007967092
+  ticket_order_id: 270904734
+  account_id: 777027013
+  contact_id: 2936835896
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 938759862
+  ticket_order_item_name: ITEM-000074207
+  quantity: 4
+  ticket_price: 95.26
+  unit_price: 448.53
+  amount_paid: 1047.38
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.12
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 22:27:49'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 3380110409
+  ticket_order_id: 270904734
+  account_id: 777027013
+  contact_id: 2936835896
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 938759862
+  ticket_order_item_name: ITEM-000074208
+  quantity: 8
+  ticket_price: 592.91
+  unit_price: 853.89
+  amount_paid: 1304.27
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.41
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 22:27:49'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 1356630700
+  ticket_order_id: 1114198895
+  account_id: 2626232243
+  contact_id: 2025413152
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074211
+  quantity: 7
+  ticket_price: 358.41
+  unit_price: 226.28
+  amount_paid: 708.51
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.78
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 23:13:27'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 1957143086
+  ticket_order_id: 1114198895
+  account_id: 2626232243
+  contact_id: 2025413152
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074212
+  quantity: 5
+  ticket_price: 516.74
+  unit_price: 105.93
+  amount_paid: 367.69
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.88
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-19 23:13:27'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 3991122715
+  ticket_order_id: 3868165968
+  account_id: 3532746453
+  contact_id: 1495609989
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074213
+  quantity: 5
+  ticket_price: 534.48
+  unit_price: 767.63
+  amount_paid: 399.61
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.72
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 07:05:02'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 3973445964
+  ticket_order_id: 104615648
+  account_id: 3590896432
+  contact_id: 2590418529
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 856640997
+  ticket_order_item_name: ITEM-000074215
+  quantity: 8
+  ticket_price: 672.06
+  unit_price: 864.12
+  amount_paid: 1280.93
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -20.99
+  discount_type: Flat
+  unit_fee: 2.9
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 20:19:28'
+  last_modified_date: '2018-05-11 02:26:44'
+  entry_date: '2018-05-11 02:26:42'
+- ticket_order_item_id: 836641960
+  ticket_order_id: 104615648
+  account_id: 3590896432
+  contact_id: 2590418529
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 856640997
+  ticket_order_item_name: ITEM-000074216
+  quantity: 3
+  ticket_price: 0.82
+  unit_price: 882.41
+  amount_paid: 77.81
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 2.76
+  discount_type: Fixed Price
+  unit_fee: 0.61
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 20:19:28'
+  last_modified_date: '2018-05-11 02:26:44'
+  entry_date: '2018-05-11 02:26:42'
+- ticket_order_item_id: 3602160065
+  ticket_order_id: 1684872070
+  account_id: 544307376
+  contact_id: 735445803
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074217
+  quantity: 7
+  ticket_price: 688.57
+  unit_price: 268.96
+  amount_paid: 352.59
+  sales_tax: 0.0
+  discount_code_id: 600140925
+  discount_amount: -93.39
+  discount_type: Percentage
+  unit_fee: 2.67
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 20:22:18'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 4040230185
+  ticket_order_id: 1684872070
+  account_id: 544307376
+  contact_id: 735445803
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074218
+  quantity: 6
+  ticket_price: 170.3
+  unit_price: 687.47
+  amount_paid: 1191.95
+  sales_tax: 0.0
+  discount_code_id: 600140925
+  discount_amount: 179.12
+  discount_type: Flat
+  unit_fee: 2.79
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 20:22:18'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 2042544078
+  ticket_order_id: 3980231389
+  account_id: 2192672078
+  contact_id: 128876835
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3490045029
+  ticket_order_item_name: ITEM-000074219
+  quantity: 2
+  ticket_price: 105.66
+  unit_price: 257.67
+  amount_paid: 1436.09
+  sales_tax: 0.0
+  discount_code_id: 3493738998
+  discount_amount: 236.89
+  discount_type: Fixed Price
+  unit_fee: 2.38
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 20:25:49'
+  last_modified_date: '2018-05-06 02:59:07'
+  entry_date: '2018-05-06 02:59:07'
+- ticket_order_item_id: 3970477774
+  ticket_order_id: 378643883
+  account_id: 367590404
+  contact_id: 3811592999
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1302684964
+  ticket_order_item_name: ITEM-000074220
+  quantity: 2
+  ticket_price: 614.58
+  unit_price: 869.64
+  amount_paid: 1394.23
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.71
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 21:04:46'
+  last_modified_date: '2018-06-07 02:47:55'
+  entry_date: '2018-06-07 02:47:54'
+- ticket_order_item_id: 627999707
+  ticket_order_id: 378643883
+  account_id: 367590404
+  contact_id: 3811592999
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1302684964
+  ticket_order_item_name: ITEM-000074221
+  quantity: 9
+  ticket_price: 461.25
+  unit_price: 912.84
+  amount_paid: 828.45
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.81
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 21:04:46'
+  last_modified_date: '2018-06-07 02:47:55'
+  entry_date: '2018-06-07 02:47:54'
+- ticket_order_item_id: 1613406403
+  ticket_order_id: 3528239143
+  account_id: 1448461026
+  contact_id: 694867066
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074222
+  quantity: 7
+  ticket_price: 342.87
+  unit_price: 457.63
+  amount_paid: 31.0
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 293.25
+  discount_type: Percentage
+  unit_fee: 1.25
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 21:34:07'
+  last_modified_date: '2018-06-01 22:40:28'
+  entry_date: null
+- ticket_order_item_id: 3660852160
+  ticket_order_id: 1792152734
+  account_id: 1706198132
+  contact_id: 245475640
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074223
+  quantity: 5
+  ticket_price: 272.76
+  unit_price: 895.33
+  amount_paid: 947.94
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.53
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 21:49:25'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 2840810238
+  ticket_order_id: 4036818326
+  account_id: 1714465428
+  contact_id: 4243907747
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074224
+  quantity: 3
+  ticket_price: 4.45
+  unit_price: 247.55
+  amount_paid: 411.3
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.8
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-20 23:50:59'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 3795009752
+  ticket_order_id: 63743280
+  account_id: 3857972776
+  contact_id: 203189539
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074228
+  quantity: 6
+  ticket_price: 301.32
+  unit_price: 721.44
+  amount_paid: 664.03
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.08
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 01:52:22'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 1234584935
+  ticket_order_id: 915079862
+  account_id: 697404626
+  contact_id: 63221505
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2681866041
+  ticket_order_item_name: ITEM-000074229
+  quantity: 9
+  ticket_price: 461.14
+  unit_price: 341.2
+  amount_paid: 611.66
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.5
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 17:14:55'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 2951382470
+  ticket_order_id: 429824515
+  account_id: 1886693600
+  contact_id: 1645622426
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1769619775
+  ticket_order_item_name: ITEM-000074230
+  quantity: 4
+  ticket_price: 285.64
+  unit_price: 112.59
+  amount_paid: 46.42
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.63
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 19:45:46'
+  last_modified_date: '2018-05-19 02:30:27'
+  entry_date: '2018-05-19 02:30:26'
+- ticket_order_item_id: 2261532214
+  ticket_order_id: 429824515
+  account_id: 1886693600
+  contact_id: 1645622426
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 4192162673
+  ticket_order_item_name: ITEM-000074231
+  quantity: 9
+  ticket_price: 244.7
+  unit_price: 199.75
+  amount_paid: 1160.47
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.22
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 19:45:46'
+  last_modified_date: '2018-05-19 02:30:27'
+  entry_date: '2018-05-19 02:30:26'
+- ticket_order_item_id: 2734147074
+  ticket_order_id: 138112932
+  account_id: 724974504
+  contact_id: 753875383
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2027743966
+  ticket_order_item_name: ITEM-000074232
+  quantity: 3
+  ticket_price: 266.85
+  unit_price: 471.51
+  amount_paid: 326.52
+  sales_tax: 0.0
+  discount_code_id: 1286141195
+  discount_amount: 98.63
+  discount_type: Percentage
+  unit_fee: 1.28
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 20:23:11'
+  last_modified_date: '2018-04-21 20:24:35'
+  entry_date: null
+- ticket_order_item_id: 1525126708
+  ticket_order_id: 138112932
+  account_id: 724974504
+  contact_id: 753875383
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2027743966
+  ticket_order_item_name: ITEM-000074233
+  quantity: 1
+  ticket_price: 302.98
+  unit_price: 580.38
+  amount_paid: 167.9
+  sales_tax: 0.0
+  discount_code_id: 1286141195
+  discount_amount: 247.35
+  discount_type: Percentage
+  unit_fee: 0.24
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 20:23:11'
+  last_modified_date: '2018-04-21 20:24:35'
+  entry_date: null
+- ticket_order_item_id: 2043572200
+  ticket_order_id: 3508121614
+  account_id: 53771681
+  contact_id: 2214676945
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3850845492
+  ticket_order_item_name: ITEM-000074234
+  quantity: 6
+  ticket_price: 157.55
+  unit_price: 559.95
+  amount_paid: 1331.95
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.66
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 21:45:55'
+  last_modified_date: '2018-07-17 19:38:50'
+  entry_date: null
+- ticket_order_item_id: 878336055
+  ticket_order_id: 3508121614
+  account_id: 53771681
+  contact_id: 2214676945
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3850845492
+  ticket_order_item_name: ITEM-000074235
+  quantity: 1
+  ticket_price: 106.94
+  unit_price: 836.51
+  amount_paid: 681.37
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.0
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 21:45:55'
+  last_modified_date: '2018-07-17 19:38:50'
+  entry_date: null
+- ticket_order_item_id: 442539062
+  ticket_order_id: 2651430370
+  account_id: 1968824809
+  contact_id: 1231147741
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1342168460
+  ticket_order_item_name: ITEM-000074236
+  quantity: 5
+  ticket_price: 499.88
+  unit_price: 3.12
+  amount_paid: 568.93
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 286.76
+  discount_type: null
+  unit_fee: 2.2
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 21:57:58'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 4229306893
+  ticket_order_id: 2651430370
+  account_id: 1968824809
+  contact_id: 1231147741
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1342168460
+  ticket_order_item_name: ITEM-000074237
+  quantity: 5
+  ticket_price: 585.35
+  unit_price: 979.34
+  amount_paid: 1052.07
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 78.82
+  discount_type: null
+  unit_fee: 2.2
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 21:57:58'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 3461975812
+  ticket_order_id: 48506902
+  account_id: 2193936825
+  contact_id: 1868176140
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 4282222314
+  ticket_order_item_name: ITEM-000074238
+  quantity: 2
+  ticket_price: 437.38
+  unit_price: 293.14
+  amount_paid: 1226.67
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 263.46
+  discount_type: null
+  unit_fee: 0.9
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 22:00:09'
+  last_modified_date: '2018-06-02 04:00:47'
+  entry_date: '2018-06-02 04:00:46'
+- ticket_order_item_id: 429979830
+  ticket_order_id: 1068087830
+  account_id: 803496122
+  contact_id: 2585100974
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1771618274
+  ticket_order_item_name: ITEM-000074240
+  quantity: 8
+  ticket_price: 576.66
+  unit_price: 312.64
+  amount_paid: 864.18
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 54.04
+  discount_type: null
+  unit_fee: 2.87
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 22:38:09'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 609733709
+  ticket_order_id: 1068087830
+  account_id: 803496122
+  contact_id: 2585100974
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1771618274
+  ticket_order_item_name: ITEM-000074241
+  quantity: 9
+  ticket_price: 412.15
+  unit_price: 774.92
+  amount_paid: 101.03
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: -109.36
+  discount_type: null
+  unit_fee: 0.76
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 22:38:09'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3683515485
+  ticket_order_id: 2628066190
+  account_id: 3708746663
+  contact_id: 557138720
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2162193713
+  ticket_order_item_name: ITEM-000074242
+  quantity: 4
+  ticket_price: 537.82
+  unit_price: 80.62
+  amount_paid: 751.58
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.82
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 23:25:19'
+  last_modified_date: '2018-05-14 02:07:19'
+  entry_date: '2018-05-14 02:07:19'
+- ticket_order_item_id: 1385501174
+  ticket_order_id: 2628066190
+  account_id: 3708746663
+  contact_id: 557138720
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2162193713
+  ticket_order_item_name: ITEM-000074243
+  quantity: 2
+  ticket_price: 68.56
+  unit_price: 864.25
+  amount_paid: 918.62
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.81
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 23:25:19'
+  last_modified_date: '2018-05-14 02:07:19'
+  entry_date: '2018-05-14 02:07:19'
+- ticket_order_item_id: 2194868040
+  ticket_order_id: 2628066190
+  account_id: 3708746663
+  contact_id: 557138720
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2162193713
+  ticket_order_item_name: ITEM-000074244
+  quantity: 6
+  ticket_price: 241.96
+  unit_price: 12.15
+  amount_paid: 335.7
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.26
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 23:25:19'
+  last_modified_date: '2018-05-14 02:07:19'
+  entry_date: '2018-05-14 02:07:19'
+- ticket_order_item_id: 3288223826
+  ticket_order_id: 2628066190
+  account_id: 3708746663
+  contact_id: 557138720
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2162193713
+  ticket_order_item_name: ITEM-000074245
+  quantity: 8
+  ticket_price: 391.73
+  unit_price: 867.36
+  amount_paid: 590.43
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.87
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-21 23:25:19'
+  last_modified_date: '2018-05-14 02:07:19'
+  entry_date: '2018-05-14 02:07:19'
+- ticket_order_item_id: 2274147926
+  ticket_order_id: 2533544576
+  account_id: 980973219
+  contact_id: 2077362587
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 97458470
+  ticket_order_item_name: ITEM-000074248
+  quantity: 5
+  ticket_price: 328.79
+  unit_price: 596.97
+  amount_paid: 685.64
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.16
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-22 00:47:57'
+  last_modified_date: '2018-05-12 02:08:57'
+  entry_date: '2018-05-12 02:08:57'
+- ticket_order_item_id: 3467546784
+  ticket_order_id: 1335530211
+  account_id: 2591236425
+  contact_id: 639609840
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 755459761
+  ticket_order_item_name: ITEM-000074249
+  quantity: 3
+  ticket_price: 605.4
+  unit_price: 33.68
+  amount_paid: 1132.08
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.51
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-22 01:47:36'
+  last_modified_date: '2018-05-10 02:18:41'
+  entry_date: '2018-05-10 02:18:40'
+- ticket_order_item_id: 1403043360
+  ticket_order_id: 3761562481
+  account_id: 2649897699
+  contact_id: 451277941
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2260962304
+  ticket_order_item_name: ITEM-000074252
+  quantity: 3
+  ticket_price: 377.95
+  unit_price: 304.97
+  amount_paid: 158.31
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.36
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-22 20:43:48'
+  last_modified_date: '2018-05-21 02:24:10'
+  entry_date: '2018-05-21 02:24:09'
+- ticket_order_item_id: 2228111880
+  ticket_order_id: 3761562481
+  account_id: 2649897699
+  contact_id: 451277941
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2260962304
+  ticket_order_item_name: ITEM-000074253
+  quantity: 5
+  ticket_price: 616.25
+  unit_price: 404.92
+  amount_paid: 314.41
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.38
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-22 20:43:48'
+  last_modified_date: '2018-05-21 02:24:10'
+  entry_date: '2018-05-21 02:24:09'
+- ticket_order_item_id: 1840123438
+  ticket_order_id: 2210023937
+  account_id: 3200581055
+  contact_id: 1321150035
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074267
+  quantity: 1
+  ticket_price: 474.92
+  unit_price: 694.54
+  amount_paid: 1330.0
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.7
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-23 03:14:45'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 3206437174
+  ticket_order_id: 2210023937
+  account_id: 3200581055
+  contact_id: 1321150035
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074268
+  quantity: 8
+  ticket_price: 108.94
+  unit_price: 777.11
+  amount_paid: 632.72
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.66
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-23 03:14:45'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 1269673767
+  ticket_order_id: 837306426
+  account_id: 2414119716
+  contact_id: 3069421756
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2304053725
+  ticket_order_item_name: ITEM-000074276
+  quantity: 9
+  ticket_price: 419.63
+  unit_price: 569.4
+  amount_paid: 1063.48
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.35
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-23 15:42:45'
+  last_modified_date: '2018-05-10 02:18:41'
+  entry_date: '2018-05-10 02:18:40'
+- ticket_order_item_id: 245214413
+  ticket_order_id: 837306426
+  account_id: 2414119716
+  contact_id: 3069421756
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2304053725
+  ticket_order_item_name: ITEM-000074277
+  quantity: 4
+  ticket_price: 206.72
+  unit_price: 52.66
+  amount_paid: 116.41
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.7
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-23 15:42:45'
+  last_modified_date: '2018-05-10 02:18:41'
+  entry_date: '2018-05-10 02:18:40'
+- ticket_order_item_id: 2868137536
+  ticket_order_id: 837306426
+  account_id: 2414119716
+  contact_id: 3069421756
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2304053725
+  ticket_order_item_name: ITEM-000074278
+  quantity: 2
+  ticket_price: 563.82
+  unit_price: 347.67
+  amount_paid: 1248.45
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.18
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-23 15:42:45'
+  last_modified_date: '2018-05-10 02:18:41'
+  entry_date: '2018-05-10 02:18:40'
+- ticket_order_item_id: 3718731735
+  ticket_order_id: 3438017817
+  account_id: 281327159
+  contact_id: 3141297769
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074287
+  quantity: 7
+  ticket_price: 46.24
+  unit_price: 268.32
+  amount_paid: 1271.43
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 1.47
+  discount_type: Fixed Price
+  unit_fee: 0.63
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 14:10:40'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 795500118
+  ticket_order_id: 3438017817
+  account_id: 281327159
+  contact_id: 3141297769
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074288
+  quantity: 6
+  ticket_price: 226.1
+  unit_price: 251.95
+  amount_paid: 191.8
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 44.66
+  discount_type: Flat
+  unit_fee: 2.58
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 14:10:40'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 2488483125
+  ticket_order_id: 3438017817
+  account_id: 281327159
+  contact_id: 3141297769
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074289
+  quantity: 7
+  ticket_price: 231.61
+  unit_price: 335.57
+  amount_paid: 528.87
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 125.03
+  discount_type: Percentage
+  unit_fee: 0.8
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 14:10:40'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 2376840713
+  ticket_order_id: 3438017817
+  account_id: 281327159
+  contact_id: 3141297769
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074290
+  quantity: 8
+  ticket_price: 735.25
+  unit_price: 600.04
+  amount_paid: 1286.81
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 280.17
+  discount_type: Fixed Price
+  unit_fee: 0.42
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 14:10:40'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 4068789034
+  ticket_order_id: 399836828
+  account_id: 1062088750
+  contact_id: 3791043230
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074291
+  quantity: 3
+  ticket_price: 586.89
+  unit_price: 534.11
+  amount_paid: 458.0
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 41.51
+  discount_type: Fixed Price
+  unit_fee: 0.61
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 14:29:35'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 2483483256
+  ticket_order_id: 399836828
+  account_id: 1062088750
+  contact_id: 3791043230
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074292
+  quantity: 7
+  ticket_price: 387.76
+  unit_price: 834.83
+  amount_paid: 780.73
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 154.63
+  discount_type: Fixed Price
+  unit_fee: 2.89
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 14:29:35'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 1181626413
+  ticket_order_id: 399836828
+  account_id: 1062088750
+  contact_id: 3791043230
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074293
+  quantity: 7
+  ticket_price: 734.07
+  unit_price: 336.17
+  amount_paid: 1217.07
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: -32.55
+  discount_type: Percentage
+  unit_fee: 2.95
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 14:29:35'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 2982759120
+  ticket_order_id: 399836828
+  account_id: 1062088750
+  contact_id: 3791043230
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074294
+  quantity: 7
+  ticket_price: 474.53
+  unit_price: 714.45
+  amount_paid: 1231.69
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 123.54
+  discount_type: Fixed Price
+  unit_fee: 1.37
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 14:29:35'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 1971690145
+  ticket_order_id: 3133683830
+  account_id: 1116636811
+  contact_id: 532704789
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1989869791
+  ticket_order_item_name: ITEM-000074295
+  quantity: 3
+  ticket_price: 533.12
+  unit_price: 238.45
+  amount_paid: 513.74
+  sales_tax: 0.0
+  discount_code_id: 600140925
+  discount_amount: 175.85
+  discount_type: Percentage
+  unit_fee: 1.12
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:38:03'
+  last_modified_date: '2018-05-27 02:26:13'
+  entry_date: '2018-05-27 02:26:12'
+- ticket_order_item_id: 1869581841
+  ticket_order_id: 3133683830
+  account_id: 1116636811
+  contact_id: 532704789
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1989869791
+  ticket_order_item_name: ITEM-000074296
+  quantity: 2
+  ticket_price: 592.56
+  unit_price: 811.57
+  amount_paid: 1429.86
+  sales_tax: 0.0
+  discount_code_id: 600140925
+  discount_amount: 125.36
+  discount_type: Percentage
+  unit_fee: 1.82
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:38:03'
+  last_modified_date: '2018-05-27 02:26:13'
+  entry_date: '2018-05-27 02:26:12'
+- ticket_order_item_id: 740231875
+  ticket_order_id: 3324447675
+  account_id: 133652222
+  contact_id: 163905805
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074297
+  quantity: 6
+  ticket_price: 399.92
+  unit_price: 548.96
+  amount_paid: 1273.45
+  sales_tax: 0.0
+  discount_code_id: 1124097409
+  discount_amount: 11.64
+  discount_type: Percentage
+  unit_fee: 2.74
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:41:42'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 665646290
+  ticket_order_id: 3324447675
+  account_id: 133652222
+  contact_id: 163905805
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074298
+  quantity: 6
+  ticket_price: 424.58
+  unit_price: 196.54
+  amount_paid: 829.57
+  sales_tax: 0.0
+  discount_code_id: 1124097409
+  discount_amount: 286.85
+  discount_type: Flat
+  unit_fee: 2.36
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:41:42'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 2915724523
+  ticket_order_id: 642266174
+  account_id: 2773462553
+  contact_id: 2875411951
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 394849063
+  ticket_order_item_name: ITEM-000074299
+  quantity: 6
+  ticket_price: 539.1
+  unit_price: 72.18
+  amount_paid: 88.36
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.88
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:54:18'
+  last_modified_date: '2018-06-02 04:00:47'
+  entry_date: '2018-06-02 04:00:46'
+- ticket_order_item_id: 3922815095
+  ticket_order_id: 642266174
+  account_id: 2773462553
+  contact_id: 2875411951
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 394849063
+  ticket_order_item_name: ITEM-000074300
+  quantity: 5
+  ticket_price: 285.06
+  unit_price: 743.97
+  amount_paid: 1406.15
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.96
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:54:18'
+  last_modified_date: '2018-06-02 04:00:47'
+  entry_date: '2018-06-02 04:00:46'
+- ticket_order_item_id: 3348385739
+  ticket_order_id: 642266174
+  account_id: 2773462553
+  contact_id: 2875411951
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 394849063
+  ticket_order_item_name: ITEM-000074301
+  quantity: 5
+  ticket_price: 644.92
+  unit_price: 124.51
+  amount_paid: 163.18
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.36
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:54:18'
+  last_modified_date: '2018-06-02 04:00:47'
+  entry_date: '2018-06-02 04:00:46'
+- ticket_order_item_id: 4270382283
+  ticket_order_id: 642266174
+  account_id: 2773462553
+  contact_id: 2875411951
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 394849063
+  ticket_order_item_name: ITEM-000074302
+  quantity: 5
+  ticket_price: 364.8
+  unit_price: 246.44
+  amount_paid: 466.05
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.98
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:54:18'
+  last_modified_date: '2018-06-02 04:00:47'
+  entry_date: '2018-06-02 04:00:46'
+- ticket_order_item_id: 3737732749
+  ticket_order_id: 1905058785
+  account_id: 3048071294
+  contact_id: 962487940
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 573752489
+  ticket_order_item_name: ITEM-000074303
+  quantity: 3
+  ticket_price: 400.98
+  unit_price: 297.18
+  amount_paid: 1031.47
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.43
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:59:57'
+  last_modified_date: '2018-05-14 01:45:17'
+  entry_date: '2018-05-14 01:45:16'
+- ticket_order_item_id: 2733975619
+  ticket_order_id: 1905058785
+  account_id: 3048071294
+  contact_id: 962487940
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 573752489
+  ticket_order_item_name: ITEM-000074304
+  quantity: 3
+  ticket_price: 362.71
+  unit_price: 875.53
+  amount_paid: 156.53
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.44
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 18:59:57'
+  last_modified_date: '2018-05-14 01:45:17'
+  entry_date: '2018-05-14 01:45:16'
+- ticket_order_item_id: 2566379886
+  ticket_order_id: 2493584696
+  account_id: 1249457884
+  contact_id: 2187860271
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3850845492
+  ticket_order_item_name: ITEM-000074305
+  quantity: 4
+  ticket_price: 315.96
+  unit_price: 416.64
+  amount_paid: 188.41
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -27.5
+  discount_type: Flat
+  unit_fee: 0.11
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 19:08:01'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 3611648394
+  ticket_order_id: 2493584696
+  account_id: 1249457884
+  contact_id: 2187860271
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3850845492
+  ticket_order_item_name: ITEM-000074306
+  quantity: 2
+  ticket_price: 304.36
+  unit_price: 210.86
+  amount_paid: 968.33
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 246.98
+  discount_type: Flat
+  unit_fee: 0.81
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 19:08:01'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 1798208564
+  ticket_order_id: 3703485863
+  account_id: 2592869580
+  contact_id: 1382206764
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074307
+  quantity: 5
+  ticket_price: 37.6
+  unit_price: 471.16
+  amount_paid: 559.57
+  sales_tax: 0.0
+  discount_code_id: 2530834033
+  discount_amount: 93.53
+  discount_type: Flat
+  unit_fee: 0.92
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 19:16:31'
+  last_modified_date: '2018-05-12 02:17:08'
+  entry_date: '2018-05-12 02:17:08'
+- ticket_order_item_id: 765395975
+  ticket_order_id: 3703485863
+  account_id: 2592869580
+  contact_id: 1382206764
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074308
+  quantity: 8
+  ticket_price: 236.42
+  unit_price: 785.98
+  amount_paid: 52.88
+  sales_tax: 0.0
+  discount_code_id: 2530834033
+  discount_amount: 115.67
+  discount_type: Percentage
+  unit_fee: 1.73
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 19:16:31'
+  last_modified_date: '2018-05-12 02:17:08'
+  entry_date: '2018-05-12 02:17:08'
+- ticket_order_item_id: 3267941441
+  ticket_order_id: 3703485863
+  account_id: 2592869580
+  contact_id: 1382206764
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074309
+  quantity: 5
+  ticket_price: 540.68
+  unit_price: 990.96
+  amount_paid: 1112.69
+  sales_tax: 0.0
+  discount_code_id: 2530834033
+  discount_amount: 82.18
+  discount_type: Fixed Price
+  unit_fee: 0.71
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 19:16:31'
+  last_modified_date: '2018-05-12 02:17:08'
+  entry_date: '2018-05-12 02:17:08'
+- ticket_order_item_id: 2353764476
+  ticket_order_id: 3703485863
+  account_id: 2592869580
+  contact_id: 1382206764
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074310
+  quantity: 3
+  ticket_price: 610.01
+  unit_price: 190.94
+  amount_paid: 441.78
+  sales_tax: 0.0
+  discount_code_id: 2530834033
+  discount_amount: 194.69
+  discount_type: Percentage
+  unit_fee: 0.0
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 19:16:31'
+  last_modified_date: '2018-05-12 02:17:08'
+  entry_date: '2018-05-12 02:17:08'
+- ticket_order_item_id: 2609650598
+  ticket_order_id: 953287551
+  account_id: 3051677873
+  contact_id: 399579534
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2596805432
+  ticket_order_item_name: ITEM-000074311
+  quantity: 7
+  ticket_price: 70.59
+  unit_price: 294.1
+  amount_paid: 708.36
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.95
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-24 19:20:04'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 1242359763
+  ticket_order_id: 2703183431
+  account_id: 1780219087
+  contact_id: 1785117969
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3799245072
+  ticket_order_item_name: ITEM-000074314
+  quantity: 1
+  ticket_price: 67.35
+  unit_price: 824.98
+  amount_paid: 1356.43
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.88
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 03:04:15'
+  last_modified_date: '2018-04-25 20:24:44'
+  entry_date: null
+- ticket_order_item_id: 3413185407
+  ticket_order_id: 2703183431
+  account_id: 1780219087
+  contact_id: 1785117969
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3799245072
+  ticket_order_item_name: ITEM-000074315
+  quantity: 3
+  ticket_price: 580.17
+  unit_price: 711.8
+  amount_paid: 1415.45
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.81
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 03:04:15'
+  last_modified_date: '2018-04-25 20:24:44'
+  entry_date: null
+- ticket_order_item_id: 1732445700
+  ticket_order_id: 304653630
+  account_id: 1337269815
+  contact_id: 3638801579
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2681866041
+  ticket_order_item_name: ITEM-000074316
+  quantity: 3
+  ticket_price: 587.24
+  unit_price: 282.44
+  amount_paid: 695.12
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.99
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 04:31:44'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 3210438295
+  ticket_order_id: 304653630
+  account_id: 1337269815
+  contact_id: 3638801579
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2681866041
+  ticket_order_item_name: ITEM-000074317
+  quantity: 7
+  ticket_price: 95.7
+  unit_price: 86.99
+  amount_paid: 1066.24
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.72
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 04:31:44'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 2310870731
+  ticket_order_id: 2405373523
+  account_id: 3189663207
+  contact_id: 2460222736
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074322
+  quantity: 8
+  ticket_price: 130.77
+  unit_price: 710.38
+  amount_paid: 1192.36
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.56
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:20:13'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 533322617
+  ticket_order_id: 2405373523
+  account_id: 3189663207
+  contact_id: 2460222736
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074323
+  quantity: 8
+  ticket_price: 549.87
+  unit_price: 998.44
+  amount_paid: 896.81
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.55
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:20:13'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 2142567437
+  ticket_order_id: 3109058201
+  account_id: 3889010853
+  contact_id: 4082200055
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3155463087
+  ticket_order_item_name: ITEM-000074324
+  quantity: 2
+  ticket_price: 720.03
+  unit_price: 459.26
+  amount_paid: 1229.36
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.65
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:22:55'
+  last_modified_date: '2018-05-19 02:30:27'
+  entry_date: '2018-05-19 02:30:26'
+- ticket_order_item_id: 864378914
+  ticket_order_id: 3109058201
+  account_id: 3889010853
+  contact_id: 4082200055
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3155463087
+  ticket_order_item_name: ITEM-000074325
+  quantity: 3
+  ticket_price: 256.43
+  unit_price: 381.19
+  amount_paid: 974.08
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.71
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:22:55'
+  last_modified_date: '2018-05-19 02:30:27'
+  entry_date: '2018-05-19 02:30:26'
+- ticket_order_item_id: 3562534383
+  ticket_order_id: 2231795130
+  account_id: 565528529
+  contact_id: 2692825557
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2168632229
+  ticket_order_item_name: ITEM-000074326
+  quantity: 8
+  ticket_price: 511.95
+  unit_price: 508.23
+  amount_paid: 1017.64
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.41
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:29:51'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 1781434322
+  ticket_order_id: 2231795130
+  account_id: 565528529
+  contact_id: 2692825557
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2168632229
+  ticket_order_item_name: ITEM-000074327
+  quantity: 1
+  ticket_price: 189.39
+  unit_price: 243.34
+  amount_paid: 115.4
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.53
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:29:51'
+  last_modified_date: '2018-05-17 02:45:24'
+  entry_date: '2018-05-17 02:45:24'
+- ticket_order_item_id: 2652769213
+  ticket_order_id: 209562573
+  account_id: 2066073677
+  contact_id: 4220777432
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 317474876
+  ticket_order_item_name: ITEM-000074328
+  quantity: 8
+  ticket_price: 433.93
+  unit_price: 616.07
+  amount_paid: 420.94
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.71
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:37:46'
+  last_modified_date: '2018-04-25 19:37:59'
+  entry_date: null
+- ticket_order_item_id: 1207457418
+  ticket_order_id: 3147994306
+  account_id: 3673565600
+  contact_id: 1155715348
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3180308629
+  ticket_order_item_name: ITEM-000074329
+  quantity: 6
+  ticket_price: 64.17
+  unit_price: 430.36
+  amount_paid: 865.0
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: 117.82
+  discount_type: null
+  unit_fee: 2.48
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:45:19'
+  last_modified_date: '2018-05-09 21:20:46'
+  entry_date: null
+- ticket_order_item_id: 3706471715
+  ticket_order_id: 2067136864
+  account_id: 2135786434
+  contact_id: 2941342311
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 796522823
+  ticket_order_item_name: ITEM-000074330
+  quantity: 8
+  ticket_price: 227.63
+  unit_price: 765.53
+  amount_paid: 823.55
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.37
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:58:50'
+  last_modified_date: '2018-04-25 19:59:18'
+  entry_date: null
+- ticket_order_item_id: 2197975415
+  ticket_order_id: 2067136864
+  account_id: 2135786434
+  contact_id: 2941342311
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 796522823
+  ticket_order_item_name: ITEM-000074331
+  quantity: 6
+  ticket_price: 679.04
+  unit_price: 676.68
+  amount_paid: 881.28
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.03
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 19:58:50'
+  last_modified_date: '2018-04-25 19:59:18'
+  entry_date: null
+- ticket_order_item_id: 1970400078
+  ticket_order_id: 2580795377
+  account_id: 767178627
+  contact_id: 821437581
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074332
+  quantity: 9
+  ticket_price: 249.26
+  unit_price: 411.23
+  amount_paid: 301.43
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.38
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 20:04:48'
+  last_modified_date: '2018-05-01 20:04:29'
+  entry_date: null
+- ticket_order_item_id: 2018497014
+  ticket_order_id: 2580795377
+  account_id: 767178627
+  contact_id: 821437581
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1754476228
+  ticket_order_item_name: ITEM-000074333
+  quantity: 9
+  ticket_price: 108.57
+  unit_price: 354.44
+  amount_paid: 949.03
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.5
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 20:04:48'
+  last_modified_date: '2018-05-01 20:04:29'
+  entry_date: null
+- ticket_order_item_id: 4276809645
+  ticket_order_id: 3334084615
+  account_id: 2251493942
+  contact_id: 3349959622
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1357883736
+  ticket_order_item_name: ITEM-000074334
+  quantity: 9
+  ticket_price: 262.04
+  unit_price: 805.92
+  amount_paid: 491.9
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 129.21
+  discount_type: Percentage
+  unit_fee: 2.99
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 21:08:22'
+  last_modified_date: '2018-05-31 20:49:12'
+  entry_date: '2018-05-31 20:49:12'
+- ticket_order_item_id: 3264161878
+  ticket_order_id: 3334084615
+  account_id: 2251493942
+  contact_id: 3349959622
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1357883736
+  ticket_order_item_name: ITEM-000074335
+  quantity: 9
+  ticket_price: 702.84
+  unit_price: 246.52
+  amount_paid: 533.4
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 123.37
+  discount_type: Fixed Price
+  unit_fee: 1.34
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 21:08:22'
+  last_modified_date: '2018-05-31 20:49:12'
+  entry_date: '2018-05-31 20:49:12'
+- ticket_order_item_id: 4120926290
+  ticket_order_id: 3361643754
+  account_id: 3272761032
+  contact_id: 4286610963
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074336
+  quantity: 6
+  ticket_price: 744.72
+  unit_price: 610.31
+  amount_paid: 451.95
+  sales_tax: 0.0
+  discount_code_id: 2797529073
+  discount_amount: 4.36
+  discount_type: Percentage
+  unit_fee: 1.36
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-25 22:58:06'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 1455650557
+  ticket_order_id: 2372225179
+  account_id: 2869805056
+  contact_id: 1055336083
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074338
+  quantity: 5
+  ticket_price: 275.05
+  unit_price: 355.7
+  amount_paid: 398.58
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.06
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 00:10:31'
+  last_modified_date: '2018-04-26 19:40:34'
+  entry_date: null
+- ticket_order_item_id: 3940526198
+  ticket_order_id: 2372225179
+  account_id: 2869805056
+  contact_id: 1055336083
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074339
+  quantity: 3
+  ticket_price: 643.77
+  unit_price: 250.49
+  amount_paid: 736.07
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.47
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 00:10:31'
+  last_modified_date: '2018-04-26 19:40:34'
+  entry_date: null
+- ticket_order_item_id: 1392544429
+  ticket_order_id: 1430231479
+  account_id: 798565155
+  contact_id: 3575368736
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074340
+  quantity: 4
+  ticket_price: 372.61
+  unit_price: 267.77
+  amount_paid: 1007.73
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.88
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 04:47:49'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 4064774056
+  ticket_order_id: 500954740
+  account_id: 939320437
+  contact_id: 3155496737
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 394849063
+  ticket_order_item_name: ITEM-000074341
+  quantity: 6
+  ticket_price: 633.67
+  unit_price: 124.2
+  amount_paid: 1204.23
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.88
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 15:50:18'
+  last_modified_date: '2018-06-02 04:00:47'
+  entry_date: '2018-06-02 04:00:46'
+- ticket_order_item_id: 1800117030
+  ticket_order_id: 500954740
+  account_id: 939320437
+  contact_id: 3155496737
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 394849063
+  ticket_order_item_name: ITEM-000074342
+  quantity: 3
+  ticket_price: 593.2
+  unit_price: 978.61
+  amount_paid: 215.74
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.31
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 15:50:18'
+  last_modified_date: '2018-06-02 04:00:47'
+  entry_date: '2018-06-02 04:00:46'
+- ticket_order_item_id: 3424677216
+  ticket_order_id: 2191607918
+  account_id: 1265569017
+  contact_id: 1453165536
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074343
+  quantity: 5
+  ticket_price: 203.77
+  unit_price: 23.45
+  amount_paid: 496.38
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.96
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 16:14:49'
+  last_modified_date: '2018-05-03 19:55:41'
+  entry_date: null
+- ticket_order_item_id: 3437180003
+  ticket_order_id: 8639721
+  account_id: 4000501377
+  contact_id: 3165481772
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074353
+  quantity: 3
+  ticket_price: 465.83
+  unit_price: 791.28
+  amount_paid: 821.6
+  sales_tax: 0.0
+  discount_code_id: 3533876535
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.11
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 19:34:56'
+  last_modified_date: '2018-07-17 19:24:57'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3129009290
+  ticket_order_id: 8639721
+  account_id: 4000501377
+  contact_id: 3165481772
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074354
+  quantity: 3
+  ticket_price: 105.94
+  unit_price: 174.5
+  amount_paid: 126.24
+  sales_tax: 0.0
+  discount_code_id: 3533876535
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.53
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 19:34:56'
+  last_modified_date: '2018-07-17 19:24:57'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 4105932517
+  ticket_order_id: 8639721
+  account_id: 4000501377
+  contact_id: 3165481772
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074355
+  quantity: 5
+  ticket_price: 146.05
+  unit_price: 761.38
+  amount_paid: 437.77
+  sales_tax: 0.0
+  discount_code_id: 3533876535
+  discount_amount: 5.16
+  discount_type: Fixed Price
+  unit_fee: 2.93
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 19:34:56'
+  last_modified_date: '2018-07-17 19:24:57'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 4108088561
+  ticket_order_id: 8639721
+  account_id: 4000501377
+  contact_id: 3165481772
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074356
+  quantity: 8
+  ticket_price: 496.74
+  unit_price: 27.36
+  amount_paid: 346.65
+  sales_tax: 0.0
+  discount_code_id: 3533876535
+  discount_amount: 189.5
+  discount_type: Fixed Price
+  unit_fee: 0.31
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 19:34:56'
+  last_modified_date: '2018-07-17 19:24:57'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 1392757161
+  ticket_order_id: 3508121614
+  account_id: 53771681
+  contact_id: 2214676945
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3141165663
+  ticket_order_item_name: ITEM-000074359
+  quantity: 5
+  ticket_price: 21.09
+  unit_price: 825.73
+  amount_paid: 1231.36
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 222.9
+  discount_type: Fixed Price
+  unit_fee: 0.83
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:13:04'
+  last_modified_date: '2018-07-17 19:38:50'
+  entry_date: '2018-05-12 02:33:24'
+- ticket_order_item_id: 3073821989
+  ticket_order_id: 3508121614
+  account_id: 53771681
+  contact_id: 2214676945
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3141165663
+  ticket_order_item_name: ITEM-000074360
+  quantity: 7
+  ticket_price: 72.38
+  unit_price: 178.01
+  amount_paid: 653.35
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 255.3
+  discount_type: Fixed Price
+  unit_fee: 1.75
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:13:04'
+  last_modified_date: '2018-07-17 19:38:50'
+  entry_date: '2018-05-12 02:33:24'
+- ticket_order_item_id: 2344352020
+  ticket_order_id: 4290294462
+  account_id: 599694816
+  contact_id: 599694816
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074362
+  quantity: 5
+  ticket_price: 272.66
+  unit_price: 772.33
+  amount_paid: 238.53
+  sales_tax: 0.0
+  discount_code_id: 3637258688
+  discount_amount: 294.2
+  discount_type: Flat
+  unit_fee: 2.05
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:19:25'
+  last_modified_date: '2018-04-26 20:21:53'
+  entry_date: null
+- ticket_order_item_id: 3731269390
+  ticket_order_id: 4290294462
+  account_id: 599694816
+  contact_id: 599694816
+  status: Deleted
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074363
+  quantity: 6
+  ticket_price: 670.18
+  unit_price: 97.03
+  amount_paid: 1391.16
+  sales_tax: 0.0
+  discount_code_id: 3637258688
+  discount_amount: -68.57
+  discount_type: Flat
+  unit_fee: 1.87
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:19:25'
+  last_modified_date: '2018-04-26 20:21:53'
+  entry_date: null
+- ticket_order_item_id: 2886328857
+  ticket_order_id: 656793828
+  account_id: 1215769021
+  contact_id: 499547101
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 14796068
+  ticket_order_item_name: ITEM-000074364
+  quantity: 6
+  ticket_price: 555.14
+  unit_price: 149.17
+  amount_paid: 561.4
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -54.65
+  discount_type: Percentage
+  unit_fee: 0.94
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:28:37'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 1982007633
+  ticket_order_id: 656793828
+  account_id: 1215769021
+  contact_id: 499547101
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 14796068
+  ticket_order_item_name: ITEM-000074365
+  quantity: 9
+  ticket_price: 538.19
+  unit_price: 97.91
+  amount_paid: 1022.57
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 175.75
+  discount_type: Fixed Price
+  unit_fee: 1.77
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:28:37'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 3525971116
+  ticket_order_id: 2569748509
+  account_id: 2360572905
+  contact_id: 3819708463
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3490045029
+  ticket_order_item_name: ITEM-000074366
+  quantity: 3
+  ticket_price: 629.51
+  unit_price: 852.26
+  amount_paid: 165.94
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.11
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:31:29'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 1304253319
+  ticket_order_id: 2443679854
+  account_id: 1252139710
+  contact_id: 928421982
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 695618362
+  ticket_order_item_name: ITEM-000074367
+  quantity: 4
+  ticket_price: 360.26
+  unit_price: 948.9
+  amount_paid: 303.25
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.45
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:33:47'
+  last_modified_date: '2018-04-26 20:34:12'
+  entry_date: null
+- ticket_order_item_id: 1484405139
+  ticket_order_id: 2443679854
+  account_id: 1252139710
+  contact_id: 928421982
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 695618362
+  ticket_order_item_name: ITEM-000074368
+  quantity: 9
+  ticket_price: -0.14
+  unit_price: 797.11
+  amount_paid: 1145.48
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.79
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:33:47'
+  last_modified_date: '2018-04-26 20:34:12'
+  entry_date: null
+- ticket_order_item_id: 2884415960
+  ticket_order_id: 806671627
+  account_id: 2360572905
+  contact_id: 3819708463
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3490045029
+  ticket_order_item_name: ITEM-000074369
+  quantity: 2
+  ticket_price: 631.77
+  unit_price: 164.01
+  amount_paid: 377.21
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.64
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:35:27'
+  last_modified_date: '2018-05-06 02:44:08'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 1588656409
+  ticket_order_id: 1908685398
+  account_id: 2570188255
+  contact_id: 3087146279
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074370
+  quantity: 1
+  ticket_price: 248.75
+  unit_price: 136.26
+  amount_paid: 556.46
+  sales_tax: 0.0
+  discount_code_id: 1081524961
+  discount_amount: 208.58
+  discount_type: Flat
+  unit_fee: 0.01
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 20:56:02'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 2808749936
+  ticket_order_id: 1925197467
+  account_id: 2570188255
+  contact_id: 3087146279
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074371
+  quantity: 9
+  ticket_price: 325.51
+  unit_price: 229.09
+  amount_paid: 1295.94
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.28
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 21:00:47'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 1994927752
+  ticket_order_id: 3322648704
+  account_id: 3076547740
+  contact_id: 868558380
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074378
+  quantity: 8
+  ticket_price: 627.81
+  unit_price: 737.37
+  amount_paid: 221.86
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.1
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 23:36:21'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 361452679
+  ticket_order_id: 3322648704
+  account_id: 3076547740
+  contact_id: 868558380
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3369923714
+  ticket_order_item_name: ITEM-000074379
+  quantity: 8
+  ticket_price: 656.7
+  unit_price: 834.36
+  amount_paid: 182.98
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.22
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-26 23:36:21'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 2138830306
+  ticket_order_id: 3692075177
+  account_id: 1581003176
+  contact_id: 4016967902
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074380
+  quantity: 9
+  ticket_price: 627.76
+  unit_price: 163.59
+  amount_paid: 1232.57
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.73
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 01:05:42'
+  last_modified_date: '2018-05-01 19:35:54'
+  entry_date: null
+- ticket_order_item_id: 2309655369
+  ticket_order_id: 3692075177
+  account_id: 1581003176
+  contact_id: 4016967902
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074381
+  quantity: 1
+  ticket_price: 105.2
+  unit_price: 106.93
+  amount_paid: 992.09
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.09
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 01:05:42'
+  last_modified_date: '2018-05-01 19:35:54'
+  entry_date: null
+- ticket_order_item_id: 1834597253
+  ticket_order_id: 2237325363
+  account_id: 3281141905
+  contact_id: 1487285493
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074388
+  quantity: 6
+  ticket_price: 219.68
+  unit_price: 709.07
+  amount_paid: 206.67
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.1
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 16:13:56'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 2245312887
+  ticket_order_id: 2237325363
+  account_id: 3281141905
+  contact_id: 1487285493
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 3148144536
+  ticket_order_item_name: ITEM-000074389
+  quantity: 3
+  ticket_price: 325.77
+  unit_price: 417.83
+  amount_paid: 639.24
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.26
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 16:13:56'
+  last_modified_date: '2018-05-03 04:10:24'
+  entry_date: '2018-05-03 04:10:23'
+- ticket_order_item_id: 3716321191
+  ticket_order_id: 1339761538
+  account_id: 1532884077
+  contact_id: 2691470390
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074390
+  quantity: 5
+  ticket_price: 586.85
+  unit_price: 472.7
+  amount_paid: 427.9
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.59
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 16:25:48'
+  last_modified_date: '2018-05-12 02:14:47'
+  entry_date: '2018-05-12 02:14:46'
+- ticket_order_item_id: 495474273
+  ticket_order_id: 1339761538
+  account_id: 1532884077
+  contact_id: 2691470390
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074391
+  quantity: 6
+  ticket_price: 444.94
+  unit_price: 698.25
+  amount_paid: 774.54
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.15
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 16:25:48'
+  last_modified_date: '2018-05-12 02:14:47'
+  entry_date: '2018-05-12 02:14:46'
+- ticket_order_item_id: 4140504350
+  ticket_order_id: 3280401661
+  account_id: 827633256
+  contact_id: 3709766239
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074392
+  quantity: 5
+  ticket_price: 294.82
+  unit_price: 408.35
+  amount_paid: 255.83
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.85
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 16:33:05'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 4288493487
+  ticket_order_id: 3280401661
+  account_id: 827633256
+  contact_id: 3709766239
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1589633242
+  ticket_order_item_name: ITEM-000074393
+  quantity: 9
+  ticket_price: 298.03
+  unit_price: 821.35
+  amount_paid: 271.47
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.56
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 16:33:05'
+  last_modified_date: '2018-05-18 02:56:12'
+  entry_date: '2018-05-18 02:56:11'
+- ticket_order_item_id: 3017158326
+  ticket_order_id: 2752234884
+  account_id: 3363487863
+  contact_id: 1942236341
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2681866041
+  ticket_order_item_name: ITEM-000074396
+  quantity: 8
+  ticket_price: 79.1
+  unit_price: 43.66
+  amount_paid: 198.22
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.21
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 17:16:26'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 3283130982
+  ticket_order_id: 2752234884
+  account_id: 3363487863
+  contact_id: 1942236341
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2681866041
+  ticket_order_item_name: ITEM-000074397
+  quantity: 9
+  ticket_price: 140.46
+  unit_price: 364.57
+  amount_paid: 224.39
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.34
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 17:16:26'
+  last_modified_date: '2018-05-05 02:29:27'
+  entry_date: '2018-05-05 02:29:25'
+- ticket_order_item_id: 904789501
+  ticket_order_id: 1932208350
+  account_id: 1541215209
+  contact_id: 67058146
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074398
+  quantity: 6
+  ticket_price: 474.96
+  unit_price: 677.74
+  amount_paid: 921.24
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.93
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 17:24:52'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 209533928
+  ticket_order_id: 1932208350
+  account_id: 1541215209
+  contact_id: 67058146
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074399
+  quantity: 4
+  ticket_price: 649.12
+  unit_price: 774.74
+  amount_paid: 817.24
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.49
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 17:24:52'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 239339398
+  ticket_order_id: 1932208350
+  account_id: 1541215209
+  contact_id: 67058146
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 437111557
+  ticket_order_item_name: ITEM-000074400
+  quantity: 4
+  ticket_price: 282.5
+  unit_price: 412.48
+  amount_paid: 1095.66
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.71
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 17:24:52'
+  last_modified_date: '2018-05-13 02:18:25'
+  entry_date: '2018-05-13 02:18:24'
+- ticket_order_item_id: 918362979
+  ticket_order_id: 2299964840
+  account_id: 2663667572
+  contact_id: 2577604626
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 171879558
+  ticket_order_item_name: ITEM-000074401
+  quantity: 3
+  ticket_price: 391.08
+  unit_price: 664.58
+  amount_paid: 114.63
+  sales_tax: 0.0
+  discount_code_id: 352134406
+  discount_amount: 124.4
+  discount_type: Flat
+  unit_fee: 1.31
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 17:35:54'
+  last_modified_date: '2018-05-20 21:02:56'
+  entry_date: '2018-05-20 21:02:55'
+- ticket_order_item_id: 631710492
+  ticket_order_id: 1923205703
+  account_id: 935749910
+  contact_id: 2325642156
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074414
+  quantity: 3
+  ticket_price: 501.2
+  unit_price: 903.2
+  amount_paid: 1372.74
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.27
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 19:00:30'
+  last_modified_date: '2018-04-27 19:03:24'
+  entry_date: null
+- ticket_order_item_id: 3713300518
+  ticket_order_id: 1923205703
+  account_id: 935749910
+  contact_id: 2325642156
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1665194175
+  ticket_order_item_name: ITEM-000074415
+  quantity: 8
+  ticket_price: 384.7
+  unit_price: 217.95
+  amount_paid: 446.67
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.01
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 19:00:30'
+  last_modified_date: '2018-04-27 19:03:24'
+  entry_date: null
+- ticket_order_item_id: 3844253734
+  ticket_order_id: 4191007177
+  account_id: 1036271902
+  contact_id: 1127736425
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1957651415
+  ticket_order_item_name: ITEM-000074420
+  quantity: 9
+  ticket_price: 207.78
+  unit_price: 326.88
+  amount_paid: 457.73
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.87
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 21:16:56'
+  last_modified_date: '2018-06-06 18:51:29'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 3900090965
+  ticket_order_id: 4191007177
+  account_id: 1036271902
+  contact_id: 1127736425
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1957651415
+  ticket_order_item_name: ITEM-000074421
+  quantity: 9
+  ticket_price: 570.28
+  unit_price: 932.62
+  amount_paid: 1383.13
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.04
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 21:16:56'
+  last_modified_date: '2018-06-06 18:51:29'
+  entry_date: '2018-05-06 02:44:07'
+- ticket_order_item_id: 4262609170
+  ticket_order_id: 2864234674
+  account_id: 90256592
+  contact_id: 2222405898
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1435313146
+  ticket_order_item_name: ITEM-000074425
+  quantity: 9
+  ticket_price: 295.62
+  unit_price: 291.54
+  amount_paid: 520.71
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -105.89
+  discount_type: Percentage
+  unit_fee: 1.05
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:12:45'
+  last_modified_date: '2018-05-24 04:11:38'
+  entry_date: '2018-05-24 04:11:37'
+- ticket_order_item_id: 2395760549
+  ticket_order_id: 2864234674
+  account_id: 90256592
+  contact_id: 2222405898
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1435313146
+  ticket_order_item_name: ITEM-000074426
+  quantity: 3
+  ticket_price: 493.14
+  unit_price: 905.59
+  amount_paid: 1348.08
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -83.43
+  discount_type: Percentage
+  unit_fee: 2.4
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:12:45'
+  last_modified_date: '2018-05-24 04:11:38'
+  entry_date: '2018-05-24 04:11:37'
+- ticket_order_item_id: 3967117136
+  ticket_order_id: 2130534483
+  account_id: 515797026
+  contact_id: 243986794
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 317474876
+  ticket_order_item_name: ITEM-000074427
+  quantity: 4
+  ticket_price: 749.0
+  unit_price: 947.51
+  amount_paid: 834.44
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.65
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:14:09'
+  last_modified_date: '2018-04-27 22:14:40'
+  entry_date: null
+- ticket_order_item_id: 2744061001
+  ticket_order_id: 2130534483
+  account_id: 515797026
+  contact_id: 243986794
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 317474876
+  ticket_order_item_name: ITEM-000074428
+  quantity: 4
+  ticket_price: 691.04
+  unit_price: 760.99
+  amount_paid: 682.85
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.26
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:14:09'
+  last_modified_date: '2018-04-27 22:14:40'
+  entry_date: null
+- ticket_order_item_id: 1944382318
+  ticket_order_id: 2699040321
+  account_id: 1774044599
+  contact_id: 336945836
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2042217315
+  ticket_order_item_name: ITEM-000074429
+  quantity: 5
+  ticket_price: 316.68
+  unit_price: 277.86
+  amount_paid: 876.49
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.04
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:16:51'
+  last_modified_date: '2018-05-10 02:18:41'
+  entry_date: '2018-05-10 02:18:40'
+- ticket_order_item_id: 4114311315
+  ticket_order_id: 2699040321
+  account_id: 1774044599
+  contact_id: 336945836
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2042217315
+  ticket_order_item_name: ITEM-000074430
+  quantity: 1
+  ticket_price: 268.63
+  unit_price: 275.85
+  amount_paid: 653.05
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.93
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:16:51'
+  last_modified_date: '2018-05-10 02:18:41'
+  entry_date: '2018-05-10 02:18:40'
+- ticket_order_item_id: 1767775842
+  ticket_order_id: 63938697
+  account_id: 703531788
+  contact_id: 540369371
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2000521983
+  ticket_order_item_name: ITEM-000074431
+  quantity: 2
+  ticket_price: 413.52
+  unit_price: 719.13
+  amount_paid: 272.87
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.25
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:19:02'
+  last_modified_date: '2018-07-13 22:07:48'
+  entry_date: '2018-05-27 02:26:12'
+- ticket_order_item_id: 2422128407
+  ticket_order_id: 63938697
+  account_id: 703531788
+  contact_id: 540369371
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2000521983
+  ticket_order_item_name: ITEM-000074432
+  quantity: 1
+  ticket_price: 680.98
+  unit_price: 737.13
+  amount_paid: 570.6
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.07
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:19:02'
+  last_modified_date: '2018-07-13 22:07:48'
+  entry_date: '2018-05-27 02:26:12'
+- ticket_order_item_id: 3571816283
+  ticket_order_id: 2730399040
+  account_id: 27859874
+  contact_id: 542954636
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2042217315
+  ticket_order_item_name: ITEM-000074433
+  quantity: 9
+  ticket_price: 52.17
+  unit_price: 860.17
+  amount_paid: 12.87
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.23
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:20:39'
+  last_modified_date: '2018-05-10 02:18:41'
+  entry_date: '2018-05-10 02:18:40'
+- ticket_order_item_id: 1702720447
+  ticket_order_id: 2730399040
+  account_id: 27859874
+  contact_id: 542954636
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 2042217315
+  ticket_order_item_name: ITEM-000074434
+  quantity: 4
+  ticket_price: 235.67
+  unit_price: 745.77
+  amount_paid: 1016.82
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.2
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:20:39'
+  last_modified_date: '2018-05-10 02:18:41'
+  entry_date: '2018-05-10 02:18:40'
+- ticket_order_item_id: 3233692481
+  ticket_order_id: 2949006739
+  account_id: 2239358154
+  contact_id: 327221358
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1771618274
+  ticket_order_item_name: ITEM-000074435
+  quantity: 3
+  ticket_price: 14.03
+  unit_price: 489.93
+  amount_paid: 962.58
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: -61.84
+  discount_type: Flat
+  unit_fee: 0.38
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:23:20'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 3707428932
+  ticket_order_id: 2949006739
+  account_id: 2239358154
+  contact_id: 327221358
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 1771618274
+  ticket_order_item_name: ITEM-000074436
+  quantity: 3
+  ticket_price: 223.32
+  unit_price: 427.21
+  amount_paid: 388.37
+  sales_tax: 0.0
+  discount_code_id: 270755022
+  discount_amount: 230.58
+  discount_type: Percentage
+  unit_fee: 1.7
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:23:20'
+  last_modified_date: '2018-05-04 02:26:44'
+  entry_date: '2018-05-04 02:26:43'
+- ticket_order_item_id: 1052441601
+  ticket_order_id: 3166531165
+  account_id: 1053190655
+  contact_id: 1713668219
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074437
+  quantity: 6
+  ticket_price: 618.53
+  unit_price: 915.31
+  amount_paid: 955.02
+  sales_tax: 0.0
+  discount_code_id: 3493738998
+  discount_amount: -9.14
+  discount_type: Percentage
+  unit_fee: 0.8
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:24:57'
+  last_modified_date: '2018-05-12 02:14:47'
+  entry_date: '2018-05-12 02:14:46'
+- ticket_order_item_id: 1755626905
+  ticket_order_id: 3166531165
+  account_id: 1053190655
+  contact_id: 1713668219
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074438
+  quantity: 5
+  ticket_price: 723.42
+  unit_price: 798.05
+  amount_paid: 215.67
+  sales_tax: 0.0
+  discount_code_id: 3493738998
+  discount_amount: 263.23
+  discount_type: Percentage
+  unit_fee: 0.44
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-27 22:24:57'
+  last_modified_date: '2018-04-27 22:25:22'
+  entry_date: null
+- ticket_order_item_id: 805638110
+  ticket_order_id: 1806293824
+  account_id: 1208645638
+  contact_id: 2885953037
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 321522806
+  ticket_order_item_name: ITEM-000074439
+  quantity: 3
+  ticket_price: -2.68
+  unit_price: 242.09
+  amount_paid: 1311.91
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.94
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 00:35:25'
+  last_modified_date: '2018-06-03 23:31:23'
+  entry_date: '2018-06-03 23:31:26'
+- ticket_order_item_id: 3930719391
+  ticket_order_id: 1806293824
+  account_id: 1208645638
+  contact_id: 2885953037
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 321522806
+  ticket_order_item_name: ITEM-000074440
+  quantity: 4
+  ticket_price: 743.18
+  unit_price: 394.47
+  amount_paid: 169.68
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.77
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 00:35:25'
+  last_modified_date: '2018-06-03 23:31:23'
+  entry_date: '2018-06-03 23:31:26'
+- ticket_order_item_id: 1025435036
+  ticket_order_id: 1806293824
+  account_id: 1208645638
+  contact_id: 2885953037
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 321522806
+  ticket_order_item_name: ITEM-000074441
+  quantity: 7
+  ticket_price: 421.16
+  unit_price: 497.9
+  amount_paid: 269.52
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.86
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 00:35:25'
+  last_modified_date: '2018-06-03 23:31:23'
+  entry_date: '2018-06-03 23:31:26'
+- ticket_order_item_id: 3434956081
+  ticket_order_id: 1806293824
+  account_id: 1208645638
+  contact_id: 2885953037
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 321522806
+  ticket_order_item_name: ITEM-000074442
+  quantity: 7
+  ticket_price: 701.15
+  unit_price: 15.71
+  amount_paid: 281.87
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.02
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 00:35:25'
+  last_modified_date: '2018-06-03 23:31:23'
+  entry_date: '2018-06-03 23:31:26'
+- ticket_order_item_id: 3962637528
+  ticket_order_id: 4101753334
+  account_id: 1675254152
+  contact_id: 2654238043
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074443
+  quantity: 5
+  ticket_price: 476.05
+  unit_price: 205.33
+  amount_paid: 1414.95
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.48
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 01:47:16'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 3838518199
+  ticket_order_id: 4101753334
+  account_id: 1675254152
+  contact_id: 2654238043
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 28452989
+  ticket_order_item_name: ITEM-000074444
+  quantity: 6
+  ticket_price: 371.8
+  unit_price: 104.65
+  amount_paid: 795.49
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 2.95
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 01:47:16'
+  last_modified_date: '2018-05-27 21:08:06'
+  entry_date: '2018-05-27 21:08:05'
+- ticket_order_item_id: 346215237
+  ticket_order_id: 1821719487
+  account_id: 1277917574
+  contact_id: 2092024173
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 701599440
+  ticket_order_item_name: ITEM-000074453
+  quantity: 5
+  ticket_price: 270.46
+  unit_price: 39.2
+  amount_paid: 370.36
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 1.55
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 02:30:36'
+  last_modified_date: '2018-04-28 02:33:03'
+  entry_date: null
+- ticket_order_item_id: 1603316115
+  ticket_order_id: 1821719487
+  account_id: 1277917574
+  contact_id: 2092024173
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 97458470
+  ticket_order_item_name: ITEM-000074454
+  quantity: 6
+  ticket_price: 699.46
+  unit_price: 839.9
+  amount_paid: 75.81
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.55
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 02:30:36'
+  last_modified_date: '2018-04-28 02:33:03'
+  entry_date: null
+- ticket_order_item_id: 3497199025
+  ticket_order_id: 1821719487
+  account_id: 1277917574
+  contact_id: 2092024173
+  status: Active
+  season: null
+  event_id: 1472097728
+  subscription_order_item_id: 599694816
+  price_level_id: 97458470
+  ticket_order_item_name: ITEM-000074455
+  quantity: 9
+  ticket_price: 236.57
+  unit_price: 325.52
+  amount_paid: 26.97
+  sales_tax: 0.0
+  discount_code_id: 599694816
+  discount_amount: .nan
+  discount_type: null
+  unit_fee: 0.74
+  ticket_notes: .nan
+  barcode: null
+  create_date: '2018-04-28 02:30:36'
+  last_modified_date: '2018-04-28 02:33:03'
+  entry_date: null

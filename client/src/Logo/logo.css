@@ -1,0 +1,14 @@
+.T-style{
+    justify-content: center;
+    margin-left: 1rem;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.logo_size{
+    height: 4rem;
+    display: block;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+}
+

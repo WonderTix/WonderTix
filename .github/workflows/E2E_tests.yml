@@ -1,0 +1,131 @@
+name: Run E2E tests on client
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+
+jobs:
+  test-client:
+    name: Run E2E Tests on client
+    runs-on: ubuntu-latest
+    env:
+      CI: true # SET CI TO TRUE FOR GITHUB ACTIONS
+      PG_USER: postgres
+      PG_PASS: postgres
+      PG_DB: wondertix
+      PG_PORT: 5432
+      PG_HOST: 172.17.0.1
+      PUBLIC_STRIPE_KEY: ${{ secrets.PUBLIC_STRIPE_KEY }}
+      PRIVATE_STRIPE_KEY: ${{ secrets.PRIVATE_STRIPE_KEY }}
+      PRIVATE_STRIPE_WEBHOOK: ${{ secrets.PRIVATE_STRIPE_WEBHOOK }}
+      ROOT_URL: ${{ secrets.LOCAL_URL_ROOT_URL }}
+      FRONTEND_URL: ${{ secrets.LOCAL_FRONTEND_URL }}
+      AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      AUTH0_URL: ${{ secrets.AUTH0_URL }}
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      ENV: local
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+          cache-dependency-path: ./client/package-lock.json
+
+      - name: npm install
+        run: npm install --force
+        working-directory: ./client
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Install mkcert
+        run: |
+          sudo apt-get update
+          sudo apt-get install libnss3-tools
+          curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+          chmod +x mkcert-v*-linux-amd64
+          sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+
+      - name: Install client CA
+        run: |
+          mkcert -install
+          mkcert localhost
+        working-directory: ./client
+
+      - name: Install server CA
+        run: |
+          mkcert -install
+          mkcert localhost
+        working-directory: ./server
+
+      - name: docker setup
+        run: docker-compose up -d
+
+      - name: 30 seconds wait for client and server start, database seed
+        run: sleep 30s
+
+      - name: Check client E2E(UI) Tests
+        run: npx playwright test
+        # run: DEBUG=pw:api npx playwright test
+        working-directory: ./client
+
+      - name: Capture Logs
+        if: always()
+        run: |
+          docker-compose logs server > server.log
+          docker-compose logs client > client.log
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: |
+            server.log
+            client.log
+          retention-days: 14
+
+      - name: docker teardown
+        run: docker-compose down
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: ./client/playwright
+          retention-days: 14
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: ./client/test-results
+          retention-days: 14
+          
+  # test-server:
+  #   name: Run Tests on server
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+  #     AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+  #     AUTH0_URL: ${{ secrets.AUTH0_URL }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18.x'
+  #         cache: 'npm'
+  #         cache-dependency-path: ./client/package-lock.json
+  #     - name: npm install
+  #       run: npm install
+  #       working-directory: ./server
+
+  #     - name: Check Unit Tests
+  #       run: npm test
+  #       working-directory: ./server

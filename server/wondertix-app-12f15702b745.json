@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "wondertix-app",
+  "private_key_id": "12f15702b745a59f9ac7d44f18c8ffd5158d94d4",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC17Bd4UTJaiG4p\nO9Pk3MJnPYL3uNBXG05jEk1KMKNQLoKtiYW1nVFisKqASl1WuEXpbxLwfF08WLWB\n4Sn5CuGMFTSAv9jTF5tfq0f+6xom4HtVOTxvTJw7gnOMslCn1p8DwPymARFJJJfL\nFz+Jg31aL/k1kjUJC4gV/3sJXOKUiGXTkYhZvLu71Iu/YY0D2AEGmBOSbC6vCfF8\nEAJiCXRyLKBYh6nHzzsKzNrW2u78rGRn3YltFp8Cv5dEsjkHSSLDfvZZA7HLl6g8\nFlT9tUmw79RdQbL8GYzJXfzbrbXzhrvF9ggYsVx8Fo8lGYpLjn0KdHkbOdlz9obd\nXBsaPMk1AgMBAAECggEAAgVzr05g+64yDHrnMaRISVheyPzV3RnnEY+6/xzc5lUA\noQf6+IJydzZqS+RHoYveRFKLyH3r6pyRC7aM6QD3cj8sEarQBcG95Allp+NEgPO+\nkGWt57issGE/LRbaxuVKEq3Fa4dt1z0KWLh96BESG/tAzsO8m3NJhEu4j2k89T8t\nQrxKqEJB4QNxlBqU4yCR6hRXz+vyx5tYzYPcSwbO+rHynwhEh/J0Lb5givNjNuL+\nlDwmGYnYwujfOA7wzxuX4NQYVzoXrbfrM8V040bvRxuIyJQIdrzcenohx5x3hUOA\ndNnH42iHkAyHh2NraEEInY7roq4ZPGvCPwHYnm+FEwKBgQDZtGCeSaz6GhHXm7/j\neihOuvqyveNMqZ6OT7m3f9KvdaCkZjQPq9lsdroOeeN6sE1zDDPvByhvfMhtpAfM\ncFL5RZEbRvHxx//F7WXQZrAd3k6h6PP7daMWNl19eAUKCi5I6yN6ggie++mljgYd\nODeN4/Zn348Kaa7plnqts2NaTwKBgQDV7F8B5J1FyOfSAXkeL1kyNqohoXc7083M\nsSwc/DG6cC4BHCTDOcpJFsdJSfKmauJD9Faw8ymNxUJpWC/GC/NpvTiBIbzSL65L\niP5zkuwhycoTaw0wfJArOEI1iHye4YtoPg6WT6vbHzo+o88eNGhh9qql+DN7IDIr\nKH8AqxA3OwKBgQCiV68g+mHiUyRw+rT6RfLe2vHt7koctfQFvZAJNWl/7CBx18EE\n2qqVBmgyOVSX/faTT0s++MB/erbfg81I9434Upcllx7+pJyoFSKyaJD2hPtwI44l\nOxD1lG7dDG39kZ/4Qlg/l84j+EjAawtGKNDMn2z1ArHhGvQTPmKXO0lgYwKBgQDF\nWrzHtU52rANaVeuUMmBal93bCuhCNIO/XJBy6SNDeeynL3ym8vCw/ye5cFRAvYii\n4o77zkk+toYvQ6FHV40ntt6jGynkywJEQ01j+F6KSWx4/6D6Y2Bpzwwd8R3vQern\nr6CrgTLuA2Arm9ofZoAKKJOEbHeqFqjR8hlA15AtMwKBgC+gbjG7jaCFMe7EIlx4\ncRoL4Y2EGlWY80MC+BlMXuQZDPC1BTmC29YWc5yq0zYMjCnwtqSbrhCRq0v1ZdPl\n5phcnqY5lxS0/lr/uJQsTlZKFVH0R2FxtskcELQlr3PUafxcxpgiHhRltbCSPwDT\nZEiv5r0DEds2gzcNwOo8pfBp\n-----END PRIVATE KEY-----\n",
+  "client_email": "wondertix-app@appspot.gserviceaccount.com",
+  "client_id": "116883388533318914999",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/wondertix-app%40appspot.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -1,0 +1,15 @@
+- username: brian
+  is_superadmin: false
+  auth0_id: ""
+- username: hailey
+  is_superadmin: false
+  auth0_id: ""
+- username: aiyana
+  is_superadmin: false
+  auth0_id: ""
+- username: allen
+  is_superadmin: false
+  auth0_id: ""
+- username: wtix
+  is_superadmin: true
+  auth0_id: ""
