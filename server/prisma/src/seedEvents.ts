@@ -22,7 +22,7 @@ async function seedEvents(prisma: PrismaClient) {
       eventname: item.eventname,
       eventdescription: item.eventdescription,
       active: item.active,
-      seasonticketeligible: item.seasonticketeligible,
+      subscriptioneligible: item.seasonticketeligible,
       imageurl: item.imageurl,
     }));
 

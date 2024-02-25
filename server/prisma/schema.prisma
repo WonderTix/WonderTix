@@ -120,11 +120,54 @@ model events {
   eventname            String           @db.VarChar(255)
   eventdescription     String           @db.VarChar(255)
   active               Boolean          @default(false)
-  seasonticketeligible Boolean          @default(true)
+  subscriptioneligible Boolean          @default(true)
   imageurl             String?          @db.VarChar(255)
   deletedat            DateTime?
   eventinstances       eventinstances[]
   seasons              seasons?         @relation(fields: [seasonid_fk], references: [seasonid], onDelete: SetNull, onUpdate: Cascade, map: "events_seasonid_fkey")
+}
+
+model subscriptiontypes {
+  id                      Int                       @id @default(autoincrement())
+  name                    String                    @db.VarChar(255)
+  description             String                    @db.VarChar(255)
+  previewonly             Boolean                   @default(false)
+  price                   Decimal                   @db.Money
+  deletedat               DateTime?                 @db.Timestamp(3)
+  seasonsubscriptiontypes seasonsubscriptiontypes[]
+}
+
+model seasonsubscriptiontypes {
+  seasonid_fk           Int
+  subscriptiontypeid_fk Int
+  subscriptionlimit     Int
+  price                 Decimal           @db.Money
+  ticketlimit           Int
+  deletedat             DateTime?         @db.Timestamp(3)
+  season                seasons           @relation(fields: [seasonid_fk], references: [seasonid], onDelete: Cascade, onUpdate: Cascade)
+  subscriptiontype      subscriptiontypes @relation(fields: [subscriptiontypeid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subscriptions         subscriptions[]
+
+  @@id([seasonid_fk, subscriptiontypeid_fk])
+}
+
+model subscriptions {
+  id                      Int                       @id @default(autoincrement())
+  orderid_fk              Int
+  subscriptiontypeid_fk   Int
+  seasonid_fk             Int
+  price                   Decimal                   @db.Money
+  order                   orders                    @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  seasonsubscriptiontype  seasonsubscriptiontypes   @relation(fields: [subscriptiontypeid_fk, seasonid_fk], references: [subscriptiontypeid_fk, seasonid_fk], onDelete: Restrict, onUpdate: Cascade)
+  refund                  refunditems?
+  subscriptionticketitems subscriptionticketitems[]
+}
+
+model subscriptionticketitems {
+  id                Int           @id @default(autoincrement())
+  subscriptionid_fk Int
+  ticketitem        ticketitems?
+  subscription      subscriptions @relation(fields: [subscriptionid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model orderticketitems {
@@ -138,13 +181,15 @@ model orderticketitems {
 
 /// supertable for sub ticket items tables (subscription, order)
 model ticketitems {
-  id                     Int                @id @default(autoincrement())
-  orderticketitemid_fk   Int                @unique
-  ticketrestrictionid_fk Int
-  donated                Boolean            @default(false)
-  redeemed               DateTime?          @db.Timestamp(3)
-  ticketrestriction      ticketrestrictions @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Restrict, onUpdate: Cascade)
-  orderticketitem        orderticketitems   @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id                          Int                      @id @default(autoincrement())
+  orderticketitemid_fk        Int?                     @unique
+  subscriptionticketitemid_fk Int?                     @unique
+  ticketrestrictionid_fk      Int
+  donated                     Boolean                  @default(false)
+  redeemed                    DateTime?                @db.Timestamp(3)
+  ticketrestriction           ticketrestrictions       @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Restrict, onUpdate: Cascade)
+  orderticketitem             orderticketitems?        @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subscriptionticketitem      subscriptionticketitems? @relation(fields: [subscriptionticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// a customers order
@@ -163,6 +208,7 @@ model orders {
   donation          donations?
   refunds           refunds[]
   orderticketitems  orderticketitems[]
+  subscriptions     subscriptions[]
 }
 
 model refunds {
@@ -177,11 +223,13 @@ model refunditems {
   id                   Int               @id @default(autoincrement())
   refundid_fk          Int
   orderticketitemid_fk Int?              @unique
+  subscriptionid_fk    Int?              @unique
   donationid_fk        Int?              @unique
   amount               Decimal           @db.Money
   refund               refunds           @relation(fields: [refundid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
   donation             donations?        @relation(fields: [donationid_fk], references: [donationid], onDelete: Restrict, onUpdate: Cascade)
   orderticketitem      orderticketitems? @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  subscription         subscriptions?    @relation(fields: [subscriptionid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
 }
 
 /// provides a way to store reports
@@ -203,6 +251,7 @@ model seasons {
   date_seasons_enddateTodate    date                           @relation("seasons_enddateTodate", fields: [enddate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   date_seasons_startdateTodate  date                           @relation("seasons_startdateTodate", fields: [startdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   seasontickettypepricedefaults seasontickettypepricedefault[]
+  seasonsubscriptiontypes       seasonsubscriptiontypes[]
 }
 
 /// price of ticket type for all events in a given season
