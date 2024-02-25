@@ -167,6 +167,9 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         orderdatetime,
         ...remainderOfOrder
       } = order;
+
+      if (!contacts) return;
+
       const orderItems = new Map<string, number>();
       // eslint-disable-next-line camelcase
       const ticketTotal = orderticketitems.reduce<number>((acc, item) => {

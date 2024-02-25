@@ -405,3 +405,5 @@ ALTER TABLE "ticketrestrictions" ADD CONSTRAINT "ticketrestrictions_seasonticket
 
 -- Manually Add Refund Constraint
 ALTER TABLE "refunditems" ADD CONSTRAINT "refund_ticketitems_check" CHECK (("donationid_fk" is null AND "orderticketitemid_fk" is not null) OR ("orderticketitemid_fk" is null AND "donationid_fk" is not null));
+
+ALTER TABLE "orders" ALTER COLUMN "contactid_fk" DROP NOT NULL;

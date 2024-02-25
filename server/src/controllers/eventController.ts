@@ -102,7 +102,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 
     order = await orderFulfillment(
         prisma,
-        contactid,
         eventInstanceQueries,
         ticketTotal+donationTotal,
         discountAmount,
@@ -110,6 +109,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           orderTicketItems,
           donationItem,
         },
+        contactid,
         toSend.id,
         discount.code != '' ? discount.discountid : null,
     );
@@ -200,7 +200,6 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
   const {cartItems, paymentIntentID, readerID, discount} = req.body;
   let order :orders | null = null;
-  let contactid = 1; //database value for anonymous
   try {
     if (!cartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
@@ -224,13 +223,13 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     // add order to database with prisma
     order = await orderFulfillment(
         prisma,
-        contactid,
         eventInstanceQueries,
         ticketTotal,
         discountAmount,
         {
           orderTicketItems,
         },
+        undefined, // no contactid with reader payments
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
         paymentIntentID // reader payments are initiated with a payment intent, this doesn't mean it's been paid already

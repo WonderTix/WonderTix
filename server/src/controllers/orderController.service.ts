@@ -83,7 +83,6 @@ export const readerWebhook = async (
 
 export const orderFulfillment = async (
     prisma: ExtendedPrismaClient,
-    contactid: number,
     eventInstanceQueries: any[],
     orderSubtotal: number,
     discountTotal: number,
@@ -91,6 +90,7 @@ export const orderFulfillment = async (
         orderTicketItems?: any[],
         donationItem?: any,
     },
+    contactid?: number,
     checkoutSession?: string,
     discountId?: number,
     paymentIntent?: string // need this for reader purchase
