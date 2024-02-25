@@ -22,8 +22,8 @@ import {Storage} from '@google-cloud/storage';
 
 const upload = multer();
 
-const storage = new Storage({keyFilename: './wondertix-app-65166e13b099.json'}); // env var
-const imgBucket = storage.bucket('image_upload_wondertix'); // env var
+const storage = new Storage({keyFilename: './wondertix-app-12f15702b745.json'});
+const imgBucket = storage.bucket('image_upload_wondertix');
 
 export const eventController = Router();
 
