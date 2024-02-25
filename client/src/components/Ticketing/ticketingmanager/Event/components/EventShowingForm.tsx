@@ -19,7 +19,7 @@ interface EventShowingFormProps {
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
   const {initialValues, onSubmit, onLeaveEdit} = props;
-  const {eventID, showPopUp, ticketTypes} = useEvent();
+  const {eventID, showPopUp} = useEvent();
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,
     eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
