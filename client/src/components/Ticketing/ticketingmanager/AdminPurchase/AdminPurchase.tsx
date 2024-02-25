@@ -24,6 +24,9 @@ const AdminPurchase = () => {
     {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
   ];
   const {token} = useFetchToken();
+
+  const {token: test} = useFetchToken();
+
   const location = useLocation();
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
