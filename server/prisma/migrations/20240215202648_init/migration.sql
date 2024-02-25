@@ -106,54 +106,11 @@ CREATE TABLE "events" (
     "eventname" VARCHAR(255) NOT NULL,
     "eventdescription" VARCHAR(255) NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT false,
-    "subscriptioneligible" BOOLEAN NOT NULL DEFAULT true,
+    "seasonticketeligible" BOOLEAN NOT NULL DEFAULT true,
     "imageurl" VARCHAR(255),
     "deletedat" TIMESTAMP(3),
 
     CONSTRAINT "events_pkey" PRIMARY KEY ("eventid")
-);
-
--- CreateTable
-CREATE TABLE "subscriptiontypes" (
-    "id" SERIAL NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "description" VARCHAR(255) NOT NULL,
-    "previewonly" BOOLEAN NOT NULL DEFAULT false,
-    "price" MONEY NOT NULL,
-    "deletedat" TIMESTAMP(3),
-
-    CONSTRAINT "subscriptiontypes_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "seasonsubscriptiontypes" (
-    "seasonid_fk" INTEGER NOT NULL,
-    "subscriptiontypeid_fk" INTEGER NOT NULL,
-    "subscriptionlimit" INTEGER NOT NULL,
-    "price" MONEY NOT NULL,
-    "ticketlimit" INTEGER NOT NULL,
-    "deletedat" TIMESTAMP(3),
-
-    CONSTRAINT "seasonsubscriptiontypes_pkey" PRIMARY KEY ("seasonid_fk","subscriptiontypeid_fk")
-);
-
--- CreateTable
-CREATE TABLE "subscriptions" (
-    "id" SERIAL NOT NULL,
-    "orderid_fk" INTEGER NOT NULL,
-    "subscriptiontypeid_fk" INTEGER NOT NULL,
-    "seasonid_fk" INTEGER NOT NULL,
-    "price" MONEY NOT NULL,
-
-    CONSTRAINT "subscriptions_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "subscriptionticketitems" (
-    "id" SERIAL NOT NULL,
-    "subscriptionid_fk" INTEGER NOT NULL,
-
-    CONSTRAINT "subscriptionticketitems_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -168,8 +125,7 @@ CREATE TABLE "orderticketitems" (
 -- CreateTable
 CREATE TABLE "ticketitems" (
     "id" SERIAL NOT NULL,
-    "orderticketitemid_fk" INTEGER,
-    "subscriptionticketitemid_fk" INTEGER,
+    "orderticketitemid_fk" INTEGER NOT NULL,
     "ticketrestrictionid_fk" INTEGER NOT NULL,
     "donated" BOOLEAN NOT NULL DEFAULT false,
     "redeemed" TIMESTAMP(3),
@@ -205,7 +161,6 @@ CREATE TABLE "refunditems" (
     "id" SERIAL NOT NULL,
     "refundid_fk" INTEGER NOT NULL,
     "orderticketitemid_fk" INTEGER,
-    "subscriptionid_fk" INTEGER,
     "donationid_fk" INTEGER,
     "amount" MONEY NOT NULL,
 
@@ -347,9 +302,6 @@ CREATE UNIQUE INDEX "donations_orderid_fk_key" ON "donations"("orderid_fk");
 CREATE UNIQUE INDEX "ticketitems_orderticketitemid_fk_key" ON "ticketitems"("orderticketitemid_fk");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ticketitems_subscriptionticketitemid_fk_key" ON "ticketitems"("subscriptionticketitemid_fk");
-
--- CreateIndex
 CREATE UNIQUE INDEX "orders_payment_intent_key" ON "orders"("payment_intent");
 
 -- CreateIndex
@@ -360,9 +312,6 @@ CREATE UNIQUE INDEX "refunds_refund_intent_key" ON "refunds"("refund_intent");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "refunditems_orderticketitemid_fk_key" ON "refunditems"("orderticketitemid_fk");
-
--- CreateIndex
-CREATE UNIQUE INDEX "refunditems_subscriptionid_fk_key" ON "refunditems"("subscriptionid_fk");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "refunditems_donationid_fk_key" ON "refunditems"("donationid_fk");
@@ -386,21 +335,6 @@ ALTER TABLE "eventinstances" ADD CONSTRAINT "eventinstances_eventid_fkey" FOREIG
 ALTER TABLE "events" ADD CONSTRAINT "events_seasonid_fkey" FOREIGN KEY ("seasonid_fk") REFERENCES "seasons"("seasonid") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "seasonsubscriptiontypes" ADD CONSTRAINT "seasonsubscriptiontypes_seasonid_fk_fkey" FOREIGN KEY ("seasonid_fk") REFERENCES "seasons"("seasonid") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "seasonsubscriptiontypes" ADD CONSTRAINT "seasonsubscriptiontypes_subscriptiontypeid_fk_fkey" FOREIGN KEY ("subscriptiontypeid_fk") REFERENCES "subscriptiontypes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_subscriptiontypeid_fk_seasonid_fk_fkey" FOREIGN KEY ("subscriptiontypeid_fk", "seasonid_fk") REFERENCES "seasonsubscriptiontypes"("subscriptiontypeid_fk", "seasonid_fk") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "subscriptionticketitems" ADD CONSTRAINT "subscriptionticketitems_subscriptionid_fk_fkey" FOREIGN KEY ("subscriptionid_fk") REFERENCES "subscriptions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "orderticketitems" ADD CONSTRAINT "orderticketitems_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -408,9 +342,6 @@ ALTER TABLE "ticketitems" ADD CONSTRAINT "ticketitems_ticketrestrictionid_fk_fke
 
 -- AddForeignKey
 ALTER TABLE "ticketitems" ADD CONSTRAINT "ticketitems_orderticketitemid_fk_fkey" FOREIGN KEY ("orderticketitemid_fk") REFERENCES "orderticketitems"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ticketitems" ADD CONSTRAINT "ticketitems_subscriptionticketitemid_fk_fkey" FOREIGN KEY ("subscriptionticketitemid_fk") REFERENCES "subscriptionticketitems"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_contactid_fkey" FOREIGN KEY ("contactid_fk") REFERENCES "contacts"("contactid") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -429,9 +360,6 @@ ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_donationid_fk_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_orderticketitemid_fk_fkey" FOREIGN KEY ("orderticketitemid_fk") REFERENCES "orderticketitems"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_subscriptionid_fk_fkey" FOREIGN KEY ("subscriptionid_fk") REFERENCES "subscriptions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "seasons" ADD CONSTRAINT "seasons_enddate_fkey" FOREIGN KEY ("enddate") REFERENCES "date"("dateid") ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -476,7 +404,4 @@ ALTER TABLE "ticketrestrictions" ADD CONSTRAINT "ticketrestrictions_tickettypeid
 ALTER TABLE "ticketrestrictions" ADD CONSTRAINT "ticketrestrictions_seasontickettypepricedefaultid_fk_fkey" FOREIGN KEY ("seasontickettypepricedefaultid_fk") REFERENCES "seasontickettypepricedefault"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Manually Add Refund Constraint
-ALTER TABLE "refunditems" ADD CONSTRAINT "refund_ticketitems_check" CHECK (("donationid_fk" is null AND "subscriptionid_fk" is null AND "orderticketitemid_fk" is not null) OR ("orderticketitemid_fk" is null AND "subscriptionid_fk" is null AND "donationid_fk" is not null) or ("orderticketitemid_fk" is null AND "subscriptionid_fk" is not null AND "donationid_fk" is null));
-
--- Manually Add Ticket Item Constraint
-ALTER TABLE "ticketitems" ADD CONSTRAINT "ticketitems_check" CHECK (("orderticketitemid_fk" is null AND "subscriptionticketitemid_fk" is not null) OR ("orderticketitemid_fk" is not null AND "subscriptionticketitemid_fk" is null))
+ALTER TABLE "refunditems" ADD CONSTRAINT "refund_ticketitems_check" CHECK (("donationid_fk" is null AND "orderticketitemid_fk" is not null) OR ("orderticketitemid_fk" is null AND "donationid_fk" is not null));
