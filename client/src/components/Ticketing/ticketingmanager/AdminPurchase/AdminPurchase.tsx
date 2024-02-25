@@ -16,6 +16,7 @@ import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import {format, parse} from 'date-fns';
 import {getAllTicketRestrictions} from './utils/adminApiRequests';
 import {useFetchToken} from '../Event/components/ShowingUtils'; // modifying this to make sure its included
+console.log('useFetchToken included');
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
 import {PlusIcon, TrashCanIcon} from '../../Icons';
 
