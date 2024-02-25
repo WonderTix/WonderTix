@@ -35,7 +35,7 @@ const ImageUpload = () => {
       const img = await response.json();
       setFieldValue('imageurl', img.url);
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   }, [setFieldValue]);
 
