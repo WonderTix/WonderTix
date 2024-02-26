@@ -1,4 +1,4 @@
-import React, {useState, useEffect, ReactElement} from 'react';
+import React, {useState, useEffect, ReactElement, useRef} from 'react';
 import {MenuIcon, XIcon} from '@heroicons/react/outline';
 import {useNavigate} from 'react-router-dom';
 import bgImg from '../../../assets/pp_logo_black.png';
@@ -26,6 +26,7 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
   const {getIdTokenClaims} = useAuth0();
   const [admin, isAdmin] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   let picture: any;
   let name: any;
@@ -50,6 +51,17 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
   useEffect(() => {
     showMenu();
   }, []);
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setProfile(false); // Close the dropdown
+    }
+  };
 
   return (
     <div className='w-full h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg'>
@@ -114,7 +126,7 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
         <div className='hidden md:flex gap-4'>
           <div className='flex items-center justify-end'>
             {login ? (
-              <div className='relative'>
+              <div className='relative' ref={dropdownRef}>
                 <button
                   className='flex items-center relative cursor-pointer px-4 flex-shrink-0'
                   onClick={() => setProfile(!profile)}
