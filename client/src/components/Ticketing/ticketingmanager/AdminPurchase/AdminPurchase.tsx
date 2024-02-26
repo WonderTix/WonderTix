@@ -23,7 +23,7 @@ const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
     {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
   ];
-  
+
   const location = useLocation();
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
@@ -42,9 +42,7 @@ const AdminPurchase = () => {
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
-
   const {token} = useFetchToken();
-  
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
     setEventData([
