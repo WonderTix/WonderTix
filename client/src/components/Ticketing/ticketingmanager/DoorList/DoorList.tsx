@@ -9,7 +9,7 @@ import {useFetchToken} from '../Event/components/ShowingUtils';
 
 interface RenderCheckinProps {
   params: GridCellParams;
-  token: string,
+  token: string;
 }
 
 const RenderCheckin = (props: RenderCheckinProps) => {
@@ -55,9 +55,7 @@ const renderTicketTypes = (params: GridCellParams) => {
     <ul className={'w-full h-[80%] overflow-y-scroll'}>
       {typeof ticketTypes === 'object' &&
         ticketTypes.map((value, index) => (
-          <li key={`${params.row.id}-${index}`}>
-            {value}
-          </li>
+          <li key={`${params.row.id}-${index}`}>{value}</li>
         ))}
     </ul>
   );
@@ -80,51 +78,51 @@ const DoorList = (): ReactElement => {
   const [filterSetting, setFilterSetting] = useState('active');
   const {token} = useFetchToken();
 
-    /**
-     * columns uses first name, last name, # of tickets purchased, arrival status, vip, donorbadge, accommodations
-     */
-    const columns = [
-        {
-            field: 'arrived',
-            headerName: 'Arrived',
-            width: 60,
-            renderCell: (params: GridCellParams) => <RenderCheckin params={params} token={token}/>,
-        },
-        {field: 'firstName', headerName: 'First Name', width: 120},
-        {field: 'lastName', headerName: 'Last Name', width: 120},
-        {
-            field: 'num_tickets',
-            headerName: 'Tickets',
-            width: 220,
-            renderCell: renderTicketTypes,
-        },
-        {field: 'email', headerName: 'Email', width: 200},
-        {field: 'phone', headerName: 'Phone Number', width: 130},
-        {field: 'vip', headerName: 'VIP', width: 65, type: 'boolean'},
-        {
-            field: 'donorBadge',
-            headerName: 'Donor',
-            width: 65,
-            type: 'boolean',
-        },
-        {field: 'accommodations', headerName: 'Accommodations', width: 200},
-        {field: 'address', headerName: 'Address', width: 170},
-    ];
+  /**
+   * columns uses first name, last name, # of tickets purchased, arrival status, vip, donorbadge, accommodations
+   */
+  const columns = [
+    {
+      field: 'arrived',
+      headerName: 'Arrived',
+      width: 60,
+      renderCell: (params: GridCellParams) => (
+        <RenderCheckin params={params} token={token} />
+      ),
+    },
+    {field: 'firstName', headerName: 'First Name', width: 120},
+    {field: 'lastName', headerName: 'Last Name', width: 120},
+    {
+      field: 'num_tickets',
+      headerName: 'Tickets',
+      width: 220,
+      renderCell: renderTicketTypes,
+    },
+    {field: 'email', headerName: 'Email', width: 200},
+    {field: 'phone', headerName: 'Phone Number', width: 130},
+    {field: 'vip', headerName: 'VIP', width: 65, type: 'boolean'},
+    {
+      field: 'donorBadge',
+      headerName: 'Donor',
+      width: 65,
+      type: 'boolean',
+    },
+    {field: 'accommodations', headerName: 'Accommodations', width: 200},
+    {field: 'address', headerName: 'Address', width: 170},
+  ];
 
-  useEffect(
-      () => {
+  useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/events/list/allevents',
+          process.env.REACT_APP_API_2_URL + '/event-instance/list/allevents',
         );
         if (!response.ok) {
           throw new Error(
             `Failed to fetch events. HTTP status: ${response.status}`,
           );
         }
-        const allEventRes = await response.json();
-        const allEventResJson = allEventRes.data as any[];
+        const allEventResJson = await response.json();
 
         // Deduplicate the events based on eventid
         const uniqueEventIds = Array.from(
@@ -168,7 +166,10 @@ const DoorList = (): ReactElement => {
     const handleExport = (options: any) => {
       apiRef.current.exportDataAsCsv({
         ...options,
-        fileName: `Door List - ${eventName} - ${format(date, 'yyyyMMdd hhmma')}`,
+        fileName: `Door List - ${eventName} - ${format(
+          date,
+          'yyyyMMdd hhmma',
+        )}`,
       });
     };
 
@@ -216,7 +217,13 @@ const DoorList = (): ReactElement => {
       }
       const eventInstance = await response.json();
       setEventName(eventInstance.eventName);
-      setDate(new Date(`${toDateStringFormat(eventInstance.eventDate)}T${eventInstance.eventTime.split('T')[1].slice(0, 8)}`));
+      setDate(
+        new Date(
+          `${toDateStringFormat(
+            eventInstance.eventDate,
+          )}T${eventInstance.eventTime.split('T')[1].slice(0, 8)}`,
+        ),
+      );
       setDoorList(eventInstance.doorlist);
     } catch (error) {
       console.error(error.message);
@@ -276,9 +283,14 @@ const DoorList = (): ReactElement => {
             <option className='px-6 py-3'>Select Time</option>
             {availableTimesEvents.map((event) => {
               const showingDate = new Date(
-                `${toDateStringFormat(event.eventdate)} ${event.eventtime.slice(0, 8)}`,
+                `${toDateStringFormat(event.eventdate)}T${event.eventtime
+                  .split('T')[1]
+                  .slice(0, 8)}`,
               );
-              const formattedDate = format(showingDate, 'eee, MMM dd yyyy, h:mm a');
+              const formattedDate = format(
+                showingDate,
+                'eee, MMM dd yyyy, h:mm a',
+              );
               return (
                 <option
                   key={event.eventinstanceid}

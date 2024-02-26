@@ -387,7 +387,7 @@ const validateName = (name: string, type: string): string => {
   return name;
 };
 
-const validateWithRegex = (
+export const validateWithRegex = (
     toValidate: string,
     errorMessage: string,
     regex: RegExp,

@@ -48,6 +48,7 @@ import {seasonController} from './controllers/seasonController';
 import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
 import {seasonTicketTypePriceDefaultController} from './controllers/seasonTicketTypePriceDefaultController';
+import {subscriptionController} from './controllers/susbcriptionController';
 
 const openApiSpec = swaggerJsdoc({
   definition: {
@@ -80,6 +81,14 @@ const openApiSpec = swaggerJsdoc({
           name: 'seasonid',
           in: 'path',
           description: 'Season ID',
+          schema: {
+            type: 'integer',
+          },
+        },
+        subscriptiontypeid: {
+          name: 'subscriptiontypeid',
+          in: 'path',
+          description: 'Subscription ID',
           schema: {
             type: 'integer',
           },
@@ -196,18 +205,6 @@ const openApiSpec = swaggerJsdoc({
             detail: {type: 'string'},
           },
         },
-        EventTicket: {
-          type: 'object',
-          properties: {
-            eventticketid: {type: 'integer'},
-            eventinstanceid_fk: {type: 'integer'},
-            tickettypeid_fk: {type: 'integer'},
-            singleticket_fk: {type: 'integer'},
-            redeemed: {type: 'integer'},
-            redeemed_ts: {type: 'string'},
-            donated: {type: 'boolean'},
-          },
-        },
         Order: {
           type: 'object',
           properties: {
@@ -220,14 +217,6 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
-          },
-        },
-        OrderItem: {
-          type: 'object',
-          properties: {
-            orderitemid: {type: 'integer'},
-            orderid_fk: {type: 'integer'},
-            price: {type: 'number'},
           },
         },
         SavedReport: {
@@ -248,25 +237,6 @@ const openApiSpec = swaggerJsdoc({
             imageurl: {type: 'string'},
           },
         },
-        SeasonTicket: {
-          type: 'object',
-          properties: {
-            seasonticketid: {type: 'integer'},
-            orderitemid_fk: {type: 'integer'},
-            eventticketid_fk: {type: 'integer'},
-            eventid_fk: {type: 'integer'},
-            seasontickettypeid_fk: {type: 'integer'},
-            ticketwasswapped: {type: 'boolean'},
-          },
-        },
-        SeasonTicketType: {
-          type: 'object',
-          properties: {
-            seasontickettypeid: {type: 'integer'},
-            description: {type: 'string'},
-            price: {type: 'number'},
-          },
-        },
         SeasonTicketTypePriceDefault: {
           type: 'array',
           items: {
@@ -280,12 +250,41 @@ const openApiSpec = swaggerJsdoc({
             },
           },
         },
-        SingleTicket: {
+        SubscriptionTypes: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: {type: 'number'},
+              name: {type: 'string'},
+              description: {type: 'string'},
+              previewonly: {type: 'boolean'},
+              price: {type: 'number'},
+            },
+          },
+        },
+        SubscriptionType: {
           type: 'object',
           properties: {
-            singleticketid: {type: 'integer'},
-            orderitemid_fk: {type: 'integer'},
-            ticketwasswapped: {type: 'boolean'},
+            id: {type: 'number'},
+            name: {type: 'string'},
+            description: {type: 'string'},
+            previewonly: {type: 'boolean'},
+            price: {type: 'number'},
+          },
+        },
+        SeasonSubscriptionTypes: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              subscriptiontypeid_fk: {type: 'number'},
+              subscriptionlimit: {type: 'number'},
+              subscriptionssold: {type: 'number'},
+              price: {type: 'number'},
+              ticketlimit: {type: 'number'},
+              description: {type: 'string'},
+            },
           },
         },
         Task: {
@@ -442,17 +441,6 @@ const openApiSpec = swaggerJsdoc({
             detail: {type: 'string'},
           },
         },
-        EventTicket: {
-          type: 'object',
-          properties: {
-            eventinstanceid_fk: {type: 'integer'},
-            tickettypeid_fk: {type: 'integer'},
-            singleticket_fk: {type: 'integer'},
-            redeemed: {type: 'integer'},
-            redeemed_ts: {type: 'string'},
-            donated: {type: 'boolean'},
-          },
-        },
         Order: {
           type: 'object',
           properties: {
@@ -464,13 +452,6 @@ const openApiSpec = swaggerJsdoc({
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
             checkout_sessions: {type: 'string'},
-          },
-        },
-        OrderItem: {
-          type: 'object',
-          properties: {
-            orderid_fk: {type: 'integer'},
-            price: {type: 'number'},
           },
         },
         SavedReport: {
@@ -489,23 +470,6 @@ const openApiSpec = swaggerJsdoc({
             imageurl: {type: 'string'},
           },
         },
-        SeasonTicket: {
-          type: 'object',
-          properties: {
-            orderitemid_fk: {type: 'integer'},
-            eventticketid_fk: {type: 'integer'},
-            eventid_fk: {type: 'integer'},
-            seasontickettypeid_fk: {type: 'integer'},
-            ticketwasswapped: {type: 'boolean'},
-          },
-        },
-        SeasonTicketType: {
-          type: 'object',
-          properties: {
-            description: {type: 'string'},
-            price: {type: 'number'},
-          },
-        },
         SeasonTicketTypePriceDefault: {
           type: 'array',
           items: {
@@ -518,11 +482,38 @@ const openApiSpec = swaggerJsdoc({
             },
           },
         },
-        SingleTicket: {
+        SeasonSubscriptionTypes: {
           type: 'object',
           properties: {
-            orderitemid_fk: {type: 'integer'},
-            ticketwasswapped: {type: 'boolean'},
+            subscriptionTypes: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  subscriptiontypeid_fk: {
+                    type: 'number',
+                  },
+                  price: {
+                    type: 'number',
+                  },
+                  ticketlimit: {
+                    type: 'number',
+                  },
+                  subscriptionlimit: {
+                    type: 'number',
+                  },
+                },
+              },
+            },
+          },
+        },
+        SubscriptionType: {
+          type: 'object',
+          properties: {
+            previewonly: {type: 'boolean'},
+            price: {type: 'number'},
+            description: {type: 'string'},
+            name: {type: 'string'},
           },
         },
         Task: {
@@ -670,6 +661,7 @@ const createServer = async () => {
   app.use('/api/2/ticket-type', ticketTypeController);
   app.use('/api/2/user', userController);
   app.use('/api/2/season-ticket-type-price-default', seasonTicketTypePriceDefaultController);
+  app.use('/api/2/subscription-types/', subscriptionController);
 
   // other
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));

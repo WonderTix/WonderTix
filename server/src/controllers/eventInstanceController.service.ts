@@ -27,7 +27,7 @@ export interface LoadedTicketRestriction extends ticketrestrictions {
 }
 
 export interface LoadedTicketItem extends ticketitems {
-    orderticketitem: orderticketitems;
+    orderticketitem: orderticketitems | null;
 }
 export interface LoadedEventInstance extends eventinstances {
   ticketrestrictions: LoadedTicketRestriction[],
@@ -163,7 +163,7 @@ export const updateShowing = async (
       eventinstanceid: oldEvent.eventinstanceid,
     },
     data: {
-      ispreview: newEvent.ispreview,
+      ispreview: Boolean(newEvent.ispreview),
       purchaseuri: newEvent.purchaseuri,
       salestatus: newEvent.salestatus,
       totalseats: newTotalSeats,

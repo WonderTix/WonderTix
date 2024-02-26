@@ -1,4 +1,4 @@
-const {PrismaClient} = require('@prisma/client');
+import {extendPrismaClient} from '../src/controllers/PrismaClient/GetExtendedPrismaClient';
 const importContacts = require('./src/seedContacts');
 const importDates = require('./src/seedDates');
 const importDiscounts = require('./src/seedDiscounts');
@@ -10,7 +10,7 @@ const importTicketTypes = require('./src/seedTicketTypes');
 const importUsers = require('./src/seedUsers');
 import importOrders from './src/seedOrders';
 
-const prisma = new PrismaClient();
+const prisma = extendPrismaClient();
 
 /**
  * Seed database
