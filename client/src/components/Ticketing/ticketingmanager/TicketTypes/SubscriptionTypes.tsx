@@ -6,6 +6,7 @@ import {
   GridEditInputCell,
   GridEventListener,
   GridPreProcessEditCellProps,
+  GridRenderCellParams,
   GridRenderEditCellParams,
   GridRowEditStopReasons,
   GridRowId,
@@ -18,21 +19,20 @@ import {
 import {useFetchToken} from '../Event/components/ShowingUtils';
 import {Switch, Tooltip} from '@mui/material';
 import {FormButton} from '../Event/components/FormButton';
-import {FormDeleteButton} from '../Event/components/FormDeleteButton';
 import {formatUSD} from '../RefundOrders/RefundOrders';
 import {
   apiCall,
-  getDefaultSubscriptionType,
+  defaultSubscriptionType,
   useFetchSubscriptionTypes,
   usePopUp,
   validateSubscriptionType,
 } from './SubscriptionTypeUtils';
 import {
-  BackIcon,
   CirclePlusIcon,
   EditIcon,
   SaveIcon,
   TrashCanIcon,
+  XIcon,
 } from '../../Icons';
 
 export const SubscriptionTypes = () => {
@@ -43,6 +43,27 @@ export const SubscriptionTypes = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [editing, setEditing] = useState(false);
 
+  const SwitchInputCell = (cell: GridRenderCellParams | GridRenderEditCellParams) => {
+    const apiRef = useGridApiContext();
+    const disabled = !(rowModesModel[cell.id]?.mode === GridRowModes.Edit);
+    return (
+      <div className='w-full grid justify-center'>
+        <Switch
+          checked={cell.value}
+          onChange={() =>
+            apiRef.current.setEditCellValue({
+              id: cell.id,
+              field: cell.field,
+              value: !cell.value,
+            })
+          }
+          disabled={disabled}
+          color='primary'
+          size='small'
+        />
+      </div>
+    );
+  };
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
@@ -58,8 +79,8 @@ export const SubscriptionTypes = () => {
   const handleDeleteClick = (id: GridRowId) => {
     const {id: current, ...rest} = rowModesModel;
     setPopUpProps(
-      'Confirm Delete',
-      `Press continue to proceed with deletion`,
+      'Confirm Deletion',
+      `Press Delete to proceed with deletion`,
       false,
       `delete-subscription-row-${id}`,
       async () => {
@@ -85,6 +106,8 @@ export const SubscriptionTypes = () => {
           );
         }
       },
+      'Delete',
+      'Cancel',
     );
   };
 
@@ -173,7 +196,7 @@ export const SubscriptionTypes = () => {
   };
 
   const addRow = () => {
-    setSubscriptionTypes((types) => [...types, getDefaultSubscriptionType()]);
+    setSubscriptionTypes((types) => [...types, defaultSubscriptionType]);
     setRowModesModel({...rowModesModel, [-1]: {mode: GridRowModes.Edit}});
     setEditing(true);
   };
@@ -188,7 +211,7 @@ export const SubscriptionTypes = () => {
         ...params.props,
         error:
           !params.props.value || params.props.value.length === 0
-            ? 'Invalid Input'
+            ? 'Name Required'
             : undefined,
       }),
       renderEditCell: EditCellWithTooltip,
@@ -202,7 +225,7 @@ export const SubscriptionTypes = () => {
         ...params.props,
         error:
           !params.props.value || params.props.value.length === 0
-            ? 'Invalid Input'
+            ? 'Description Required'
             : undefined,
       }),
       renderEditCell: EditCellWithTooltip,
@@ -215,8 +238,8 @@ export const SubscriptionTypes = () => {
       preProcessEditCellProps: (params: GridPreProcessEditCellProps) => ({
         ...params.props,
         error:
-          isNaN(+params.props.value) || +params.props.value <= 0
-            ? 'Invalid Input'
+          isNaN(+params.props.value) || +params.props.value < 0
+            ? 'Price must be positive'
             : undefined,
       }),
       valueFormatter: (params: GridValueFormatterParams) =>
@@ -228,37 +251,8 @@ export const SubscriptionTypes = () => {
       headerName: 'Preview Only',
       width: 110,
       editable: true,
-      renderCell: (cell) => {
-        return (
-          <div className='w-full grid justify-center'>
-            <Switch
-              checked={cell.value}
-              color='primary'
-              size='small'
-              disabled={true}
-            />
-          </div>
-        );
-      },
-      renderEditCell: (cell) => {
-        const apiRef = useGridApiContext();
-        return (
-          <div className='w-full grid justify-center'>
-            <Switch
-              checked={cell.value}
-              onChange={() =>
-                apiRef.current.setEditCellValue({
-                  id: cell.id,
-                  field: cell.field,
-                  value: !cell.value,
-                })
-              }
-              color='primary'
-              size='small'
-            />
-          </div>
-        );
-      },
+      renderCell: SwitchInputCell,
+      renderEditCell: SwitchInputCell,
     },
     {
       field: 'actions',
@@ -266,52 +260,51 @@ export const SubscriptionTypes = () => {
       sortable: false,
       width: 100,
       renderCell: (cell) => {
-        return rowModesModel[cell.id]?.mode === GridRowModes.Edit ? (
-          <div className='w-[100%] flex flex-row justify-around'>
-            <FormButton
-              key={`${cell.id}2`}
-              onClick={() => handleLeaveEdit(cell.id)}
-              title='Leave Edit'
-              disabled={false}
-              className=''
-              testID='leave-edit'
-            >
-              <BackIcon className='h-5 w-5 stroke-5' />
-            </FormButton>
-            <FormButton
-              key={`${cell.id}1`}
-              onClick={() => handleSaveClick(cell.id)}
-              title='Save'
-              disabled={false}
-              className=''
-              testID={`save-edit`}
-            >
-              <SaveIcon className='h-5 w-5 stroke-5' />
-            </FormButton>
-          </div>
-        ) : (
-          <div className='w-[100%] flex flex-row justify-around'>
-            <FormDeleteButton
-              key={`${cell.id}1`}
-              onDelete={() => handleDeleteClick(cell.id)}
-              disabled={editing}
-              className=''
-              testID={`delete-subscription-type-${cell.id}`}
-            >
-              <TrashCanIcon className='h-5 w-5 stroke-5' />
-            </FormDeleteButton>
-            <FormButton
-              key={`${cell.id}2`}
-              onClick={() => handleEdit(cell.id)}
-              title={`Edit Row`}
-              disabled={editing}
-              className=''
-              testID={`edit-subscription-type-${cell.id}`}
-            >
-              <EditIcon className='h-5 w-5 stroke-5' />
-            </FormButton>
-          </div>
-        );
+        return rowModesModel[cell.id]?.mode === GridRowModes.Edit
+          ? [
+              <FormButton
+                key={`${cell.id}1`}
+                onClick={() => handleSaveClick(cell.id)}
+                title='Save'
+                disabled={false}
+                className='p-2 rounded-lg text-zinc-500 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:text-emerald-700 hover:bg-emerald-100 focus:ring-emerald-500'
+                testID='save-edit'
+              >
+                <SaveIcon />
+              </FormButton>,
+              <FormButton
+                key={`${cell.id}2`}
+                onClick={() => handleLeaveEdit(cell.id)}
+                title='Cancel'
+                disabled={false}
+                className='p-2 rounded-lg text-zinc-500 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:text-zinc-600 hover:bg-zinc-100 focus:ring-indigo-500'
+                testID='leave-edit'
+              >
+                <XIcon className='h-5 w-5 stroke-[2.2]' />
+              </FormButton>,
+            ]
+          : [
+              <FormButton
+                key={`${cell.id}3`}
+                onClick={() => handleEdit(cell.id)}
+                title='Edit'
+                disabled={editing}
+                className='p-2 rounded-lg text-zinc-500 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:text-zinc-600 hover:bg-zinc-100 focus:ring-indigo-500'
+                testID={`edit-subscription-type-${cell.id}`}
+              >
+                <EditIcon />
+              </FormButton>,
+              <FormButton
+                key={`${cell.id}4`}
+                onClick={() => handleDeleteClick(cell.id)}
+                title='Delete'
+                disabled={editing}
+                className='p-2 rounded-lg text-zinc-500 focus:outline-none focus:ring-2 focus:ring-offset-2 hover:text-red-600 hover:bg-red-100 focus:ring-red-500'
+                testID={`delete-subscription-type-${cell.id}`}
+              >
+                <TrashCanIcon />
+              </FormButton>,
+            ];
       },
     },
   ];
@@ -358,6 +351,10 @@ export const SubscriptionTypes = () => {
             if (popUpProps.handleProceed) await popUpProps.handleProceed();
           }}
           success={popUpProps.success}
+          primaryLabel={popUpProps.primaryLabel}
+          secondaryLabel={popUpProps.secondaryLabel}
+          showSecondary={!!popUpProps.secondaryLabel}
+          showClose={!!popUpProps.secondaryLabel}
         />
       )}
     </div>
@@ -366,9 +363,12 @@ export const SubscriptionTypes = () => {
 
 const EditCellWithTooltip = (props: GridRenderEditCellParams) => {
   const {error} = props;
+  const propsToSend = {...props, error: !!error};
   return (
     <Tooltip open={!!error} title={error}>
-      <GridEditInputCell {...props} />
+      <span>
+        <GridEditInputCell {...propsToSend} />
+      </span>
     </Tooltip>
   );
 };

@@ -1,15 +1,20 @@
 import {useEffect, useState} from 'react';
 import {getData} from '../Event/components/ShowingUtils';
+import {formatUSD} from '../RefundOrders/RefundOrders';
 
 export const validateSubscriptionType = (subscriptionType: any) => {
-  if (+subscriptionType.price <= 0) {
-    throw new Error('Invalid price');
+  if (+subscriptionType.price < 0) {
+    throw new Error(
+      `Subscription Price (${formatUSD(
+        +subscriptionType.price,
+      )}) must be positive`,
+    );
   }
-  if (subscriptionType.description.length === '') {
-    throw new Error('Invalid Description');
+  if (!subscriptionType.description.length) {
+    throw new Error('Please provide a description');
   }
-  if (subscriptionType.name.length === '') {
-    throw new Error('Invalid Name');
+  if (!subscriptionType.name.length) {
+    throw new Error('Please provide a name');
   }
   return {
     description: subscriptionType.description,
@@ -19,13 +24,13 @@ export const validateSubscriptionType = (subscriptionType: any) => {
   };
 };
 
-export const getDefaultSubscriptionType = () => ({
+export const defaultSubscriptionType = {
   id: -1,
   description: '',
   name: '',
   price: 0,
   previewonly: false,
-});
+};
 
 export const apiCall = async (
   method: string,
@@ -68,6 +73,8 @@ export const usePopUp = () => {
     success: false,
     dataTestId: undefined,
     handleProceed: undefined,
+    primaryLabel: undefined,
+    secondaryLabel: undefined,
   });
   const [showPopUp, setShowPopUp] = useState(false);
   const setPopUpProps = (
@@ -76,8 +83,18 @@ export const usePopUp = () => {
     success,
     dataTestId,
     handleProceed?,
+    primaryLabel?,
+    secondaryLabel?,
   ) => {
-    setPopUp({title, message, success, dataTestId, handleProceed});
+    setPopUp({
+      title,
+      message,
+      success,
+      dataTestId,
+      handleProceed,
+      secondaryLabel,
+      primaryLabel,
+    });
     setShowPopUp(true);
   };
   return {showPopUp, setShowPopUp, popUpProps, setPopUpProps};
