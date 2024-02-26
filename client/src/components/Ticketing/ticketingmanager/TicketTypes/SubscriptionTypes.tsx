@@ -43,7 +43,9 @@ export const SubscriptionTypes = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [editing, setEditing] = useState(false);
 
-  const SwitchInputCell = (cell: GridRenderCellParams | GridRenderEditCellParams) => {
+  const SwitchInputCell = (
+    cell: GridRenderCellParams | GridRenderEditCellParams,
+  ) => {
     const apiRef = useGridApiContext();
     const disabled = !(rowModesModel[cell.id]?.mode === GridRowModes.Edit);
     return (
@@ -119,17 +121,17 @@ export const SubscriptionTypes = () => {
       rowFocusOut,
       shiftTabKeyDown,
       escapeKeyDown,
-      enterKeyDown,
       tabKeyDown,
     } = GridRowEditStopReasons;
     if (
-      params.reason === rowFocusOut ||
-      params.reason === shiftTabKeyDown ||
-      params.reason === escapeKeyDown ||
-      params.reason === enterKeyDown ||
-      params.reason === tabKeyDown
+      [shiftTabKeyDown, tabKeyDown, rowFocusOut, escapeKeyDown].includes(
+        params.reason,
+      )
     ) {
       event.defaultMuiPrevented = true;
+    }
+    if (params.reason === escapeKeyDown) {
+      handleLeaveEdit(params.id);
     }
   };
 
