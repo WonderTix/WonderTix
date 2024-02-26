@@ -380,7 +380,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
           title: event.eventname,
           description: event.eventdescription,
           active: event.active,
-          seasonticketeligible: event.seasonticketeligible,
+          subscriptioneligible: event.subscriptioneligible,
           imageurl: event.imageurl,
           numShows: event.eventinstances.length.toString(),
         })));
@@ -942,8 +942,8 @@ eventController.post('/', async (req: Request, res: Response) => {
         seasonid_fk: req.body.seasonid_fk === null ? null : Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
-        active: req.body.active,
-        seasonticketeligible: req.body.seasonticketeligible,
+        active: Boolean(req.body.active),
+        subscriptioneligible: Boolean(req.body.subscriptioneligible),
         imageurl: req.body.imageurl,
       },
       include: {
@@ -1009,8 +1009,8 @@ eventController.put('/', async (req: Request, res: Response) => {
         seasonid_fk: !req.body.seasonid_fk? null : Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
-        active: req.body.active,
-        seasonticketeligible: req.body.seasonticketeligible,
+        subscriptioneligible: Boolean(req.body.subscriptioneligible),
+        active: Boolean(req.body.active),
         imageurl: req.body.imageurl,
       },
       include: {

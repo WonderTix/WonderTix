@@ -13,7 +13,7 @@ import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
-import {format, parse} from 'date-fns';
+import {format} from 'date-fns';
 import {getAllTicketRestrictions} from './utils/adminApiRequests';
 import {useFetchToken} from '../Event/components/ShowingUtils'; // modifying this to make sure its included
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
@@ -302,7 +302,7 @@ const AdminPurchase = () => {
     eventData.forEach((row) => {
       const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
       const showingDate = new Date(
-        `${toDateStringFormat(row.eventdate)} ${row.eventtime.slice(0, 8)}`,
+        `${toDateStringFormat(row.eventdate)}T${row.eventtime.split('T')[1].slice(0, 8)}`,
       );
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
@@ -420,13 +420,10 @@ const AdminPurchase = () => {
           >
             <option>Select Time</option>
             {availableTimesByRowId[params.row.id]?.map((event) => {
-              const dateTimeString = `${
-                event.eventdate
-              }T${event.eventtime.slice(0, 8)}`;
-              const dateTime = parse(
-                dateTimeString,
-                `yyyyMMdd'T'HH:mm:ss`,
-                new Date(),
+              const dateTime = new Date(
+                `${toDateStringFormat(event.eventdate)}T${event.eventtime
+                  .split('T')[1]
+                  .slice(0, 8)}`,
               );
               const formattedDateTime = format(
                 dateTime,
@@ -535,10 +532,9 @@ const AdminPurchase = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/events/list/allevents',
+          process.env.REACT_APP_API_2_URL + '/event-instance/list/allevents',
         );
-        const jsonRes = await response.json();
-        const jsonData = jsonRes.data as any[];
+        const jsonData = await response.json();
 
         // Deduplicate the events based on eventid
         const deduplicatedEvents = Array.from(
