@@ -16,7 +16,6 @@ import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import {format, parse} from 'date-fns';
 import {getAllTicketRestrictions} from './utils/adminApiRequests';
 import {useFetchToken} from '../Event/components/ShowingUtils'; // modifying this to make sure its included
-console.log('useFetchToken included');
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
 import {PlusIcon, TrashCanIcon} from '../../Icons';
 
@@ -24,10 +23,7 @@ const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
     {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
   ];
-  const {token} = useFetchToken();
-
-  const {token: test} = useFetchToken();
-
+  
   const location = useLocation();
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
@@ -47,6 +43,8 @@ const AdminPurchase = () => {
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
 
+  const {token} = useFetchToken();
+  
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
     setEventData([
