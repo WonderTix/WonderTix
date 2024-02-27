@@ -32,8 +32,6 @@ steps:
       - 'SERVER_MEMORY'
       - 'SERVICE_ACCOUNT'
       - 'SHOULD_SEED'
-      - 'GCLOUD_KEY_PATH'
-      - 'GCLOUD_BUCKET'
       - 'SQL_INSTANCE'
 
   # Send traffic to new revision
