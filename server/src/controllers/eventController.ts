@@ -212,7 +212,7 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
 
   stream.on('finish', async () => {
     await file.makePublic();
-    const url = `https://storage.googleapis.com/${process.env.GCLOUD_BUCKET}/${file.name}`;
+    const url = `https://storage.googleapis.com/image-upload-wondertix-local/${file.name}`;
     return res.status(200).send({url});
   })
 
