@@ -35,6 +35,8 @@ setup('authenticate', async ({page}) => {
     console.log('First Party User Consent Skipped. Logging in... ');
   }
 
+  await page.reload();
+
   // Ensuring visibility and correctness of page elements post-login.
   await expect(loginPage.loginButton).not.toBeVisible(); // Sign-in button should be gone
   await expect(loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:30000 }); // User email in its place
