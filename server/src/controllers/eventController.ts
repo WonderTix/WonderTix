@@ -22,9 +22,6 @@ import {Storage} from '@google-cloud/storage';
 
 const upload = multer();
 
-//const storage = new Storage({keyFilename: `${process.env.GCLOUD_KEY_PATH}`});
-//const imgBucket = storage.bucket(`${process.env.GCLOUD_BUCKET}`);
-
 const storage = new Storage({keyFilename: `./wondertix-app-8073f86fc7d4.json`});
 const imgBucket = storage.bucket(`image-upload-wondertix-local`);
 
