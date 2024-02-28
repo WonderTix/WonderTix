@@ -3,13 +3,15 @@ import React from 'react';
 import {Field, FieldArray, Formik} from 'formik';
 import {InputControl} from './InputControl';
 import {toDateStringFormat} from './util/EventsUtil';
-import {TicketTypeUpdateTable} from './TicketTypeUpdateTable';
+import {OptionUpdateTable} from './OptionUpdateTable';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
+import {getInstanceTicketType} from './ShowingUtils';
 import {FormButton} from './FormButton';
 import {BackIcon, SaveIcon} from '../../../Icons';
 import {FormSwitch} from '../../Season/FormSwitch';
+import {TicketTypeTableRow} from './TicketTypeTableRow';
 
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
@@ -19,7 +21,7 @@ interface EventShowingFormProps {
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
   const {initialValues, onSubmit, onLeaveEdit} = props;
-  const {eventID, showPopUp} = useEvent();
+  const {eventID, showPopUp, ticketTypes} = useEvent();
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,
     eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
@@ -116,18 +118,48 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
               />
             </div>
             <FieldArray
-              name={'instanceTicketTypes'}
+              name='instanceTicketTypes'
               render={(arrayHelpers) => {
                 return (
-                  <TicketTypeUpdateTable
-                    arrayHelpers={arrayHelpers}
-                    eventInstanceID={values.eventinstanceid}
-                  />
+                  <article
+                    className='overflow-auto col-span-12 min-[1350px]:col-span-7 shadow-xl mx-auto rounded-xl bg-white w-[100%] min-h-[100px]'
+                  >
+                    <OptionUpdateTable
+                      arrayHelpers={arrayHelpers}
+                      optionsInit={(values) =>
+                        ticketTypes.filter(
+                          (type) =>
+                            !values.some(
+                              (restriction) =>
+                                +restriction.tickettypeid_fk === +type.tickettypeid_fk,
+                            ),
+                        )
+                      }
+                      fieldName='instanceTicketTypes'
+                      sticky={showPopUp}
+                      rowComponent={TicketTypeTableRow}
+                      headings={[
+                        'Admission Type',
+                        'Ticket Price',
+                        'Concession Price',
+                        'Quantity',
+                      ]}
+                      getOption={getInstanceTicketType}
+                      styles={{
+                        headerRow:
+                          'text-left text-zinc-800 whitespace-nowrap bg-gray-300',
+                        headerItem:
+                          'px-2 py-1 border-b border-l border-r border-white',
+                        tableBody: 'text-sm whitespace-nowrap text-zinc-700',
+                      }}
+                    />
+                  </article>
                 );
               }}
             />
             <div className='flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'>
               <FormSubmitButton
+                disabled={showPopUp}
                 className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
                 testID='showing-save-button'
               >

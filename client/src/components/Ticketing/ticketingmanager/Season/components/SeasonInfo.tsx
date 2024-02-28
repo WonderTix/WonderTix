@@ -9,23 +9,11 @@ import {
   deleteSeasonInfo,
   updateEventSeason,
 } from './utils/apiRequest';
-import {
-  seasonDefaultValues,
-  SeasonProps,
-  SeasonTicketValues,
-} from './utils/seasonCommon';
+import {seasonDefaultValues, SeasonProps} from './utils/seasonCommon';
 import ViewSeasonInfo from './utils/ViewSeasonInfo';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
-import {SeasonTicketTypeUpdateTable} from './utils/SeasonTicketTypeUpdateTable';
 
-const SeasonInfo = (
-  props: SeasonProps & {
-    onUpdateSeasonTicketType: (
-      requestData: any,
-      seasonId: number,
-    ) => Promise<void>;
-  },
-) => {
+const SeasonInfo = (props: SeasonProps) => {
   const {
     seasonId,
     isFormEditing,
@@ -36,8 +24,7 @@ const SeasonInfo = (
     setPopUpMessage,
     setIsFormEditing,
     token,
-    seasonTicketTypeData,
-    onUpdateSeasonTicketType,
+    disabled,
   } = props;
   const [seasonValues, setSeasonValues] = useState(seasonDefaultValues);
   const [tempImageUrl, setTempImageUrl] = useState('');
@@ -45,9 +32,6 @@ const SeasonInfo = (
     boolean | undefined
   >();
   const [someActiveEvents, setSomeActiveEvents] = useState(false);
-  const [updatedTicketData, setUpdatedTicketData] = useState<
-    SeasonTicketValues[]
-  >([]);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const {name, startdate, enddate, imageurl} = seasonValues;
@@ -70,15 +54,8 @@ const SeasonInfo = (
     }
   };
 
-  const handleTicketTypeUpdate = (
-    updatedTicketTypeData: SeasonTicketValues[],
-  ) => {
-    setUpdatedTicketData(updatedTicketTypeData);
-  };
-
-  const handleCreateNewSeason = async (reqObject: RequestBody, ticketTypes) => {
+  const handleCreateNewSeason = async (reqObject: RequestBody) => {
     const createdSeasonId = await createNewSeason(reqObject, token);
-    await onUpdateSeasonTicketType(ticketTypes, createdSeasonId);
     if (createdSeasonId) {
       setPopUpMessage({
         title: 'Success',
@@ -86,6 +63,8 @@ const SeasonInfo = (
         success: true,
         handleClose: () => setShowPopUp(false),
         handleProceed: () => setShowPopUp(false),
+          showSecondary: false,
+          showClose: false,
       });
       setShowPopUp(true);
       setSeasonId(createdSeasonId);
@@ -107,9 +86,8 @@ const SeasonInfo = (
     });
   };
 
-  const handleUpdateSeason = async (reqObject: RequestBody, ticketTypes) => {
+  const handleUpdateSeason = async (reqObject: RequestBody) => {
     const updateSeason = await updateSeasonInfo(reqObject, seasonId, token);
-    await onUpdateSeasonTicketType(ticketTypes, seasonId);
     const {imageurl} = reqObject;
     if (updateSeason) {
       setPopUpMessage({
@@ -118,6 +96,8 @@ const SeasonInfo = (
         success: true,
         handleClose: () => setShowPopUp(false),
         handleProceed: () => setShowPopUp(false),
+        showSecondary: false,
+        showClose: false,
       });
       setShowPopUp(true);
       setTempImageUrl(imageurl === 'Default Season Image' ? '' : imageurl);
@@ -134,27 +114,6 @@ const SeasonInfo = (
   const onSubmit = async (event) => {
     event.preventDefault();
 
-    // Validate Table Data
-    const isTableDataValid = updatedTicketData.every(
-      (ticketType) =>
-        String(ticketType.price) !== '' &&
-        String(ticketType.concessionprice) !== '' &&
-        Number(ticketType.price) >= 0 &&
-        Number(ticketType.concessionprice) >= 0,
-    );
-
-    if (!isTableDataValid) {
-      handleInvalidTicketTypeValue(event);
-      return;
-    }
-
-    // Round Table Data to 2 decimal places
-    const roundedTicketData = updatedTicketData.map((ticketType) => ({
-      ...ticketType,
-      price: Number(ticketType.price).toFixed(2),
-      concessionprice: Number(ticketType.concessionprice).toFixed(2),
-    }));
-
     // formatting request body for POST and PUT request
     const reqObject = {
       ...seasonValues,
@@ -164,9 +123,9 @@ const SeasonInfo = (
     };
 
     if (seasonId === 0) {
-      await handleCreateNewSeason(reqObject, roundedTicketData);
+      await handleCreateNewSeason(reqObject);
     } else {
-      await handleUpdateSeason(reqObject, roundedTicketData);
+      await handleUpdateSeason(reqObject);
     }
     setIsFormEditing(false);
   };
@@ -231,21 +190,7 @@ const SeasonInfo = (
     }
   };
 
-  const handleInvalidTicketTypeValue = (event) => {
-    event.preventDefault();
-    setPopUpMessage({
-      title: 'Invalid Ticket Type Value',
-      message: 'Please enter a valid Ticket Price & Concession Price',
-      success: false,
-      handleClose: () => setShowPopUp(false),
-      handleProceed: () => setShowPopUp(false),
-      showSecondary: false,
-    });
-    setShowPopUp(true);
-  };
-
-  const deleteConfirmationHandler = (event) => {
-    event.preventDefault();
+  const deleteConfirmationHandler = () => {
     setPopUpMessage({
       title: 'Delete Season',
       message:
@@ -253,6 +198,8 @@ const SeasonInfo = (
       success: false,
       handleClose: () => setShowPopUp(false),
       handleProceed: () => handleDeleteSeason(seasonId),
+      showSecondary: true,
+      showClose: true,
     });
     setShowPopUp(true);
   };
@@ -296,7 +243,7 @@ const SeasonInfo = (
         </article>
       </section>
       <div className='grid grid-cols-12'>
-        <div className='flex flex-col gap-3 col-span-12 mb-5 text-center tab:text-start lg:col-span-2'>
+        <div className='flex flex-col gap-3 mb-5 text-center tab:text-start col-span-12 tab:col-span-6'>
           <label htmlFor='seasonName'>
             Season Name:
             <input
@@ -385,19 +332,13 @@ const SeasonInfo = (
             )}
           </label>
         </div>
-        <article className='col-span-12 lg:col-span-2 pl-2'>
+        <article className='col-span-12 tab:col-span-6 pl-2 grid justify-center'>
           <SeasonImage
             className='h-auto max-w-[175px] mx-auto mt-5'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
           />
         </article>
-        <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3 rounded-lg'>
-          <SeasonTicketTypeUpdateTable
-            seasonTicketTypeData={seasonTicketTypeData}
-            onUpdate={handleTicketTypeUpdate}
-          />
-        </div>
       </div>
     </form>
   ) : (
@@ -406,11 +347,11 @@ const SeasonInfo = (
       activeSeasonSwitch={activeSeasonSwitch}
       someActiveEvents={someActiveEvents}
       setIsFormEditing={setIsFormEditing}
-      seasonTicketTypeData={seasonTicketTypeData}
       setActiveSeasonSwitch={setActiveSeasonSwitch}
       setSomeActiveEvents={setSomeActiveEvents}
       handleUpdateSeasonEvents={handleUpdateSeasonEvents}
       deleteConfirmationHandler={deleteConfirmationHandler}
+      disabled={disabled}
     />
   );
 };
