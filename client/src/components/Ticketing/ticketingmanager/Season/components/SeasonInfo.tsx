@@ -63,8 +63,8 @@ const SeasonInfo = (props: SeasonProps) => {
         success: true,
         handleClose: () => setShowPopUp(false),
         handleProceed: () => setShowPopUp(false),
-          showSecondary: false,
-          showClose: false,
+        showSecondary: false,
+        showClose: false,
       });
       setShowPopUp(true);
       setSeasonId(createdSeasonId);

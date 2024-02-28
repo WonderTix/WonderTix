@@ -75,7 +75,7 @@ export const SubscriptionTypeUpdateTable = (
                     'Subscription Type',
                     'Price',
                     'Tickets Included',
-                    'Subscription Total',
+                    'Quantity',
                   ]}
                   sticky={showPopUp}
                   getOption={(type) => ({

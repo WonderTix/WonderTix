@@ -9,7 +9,7 @@ import {useParams} from 'react-router';
 import {getAllEvents} from './utils/apiRequest';
 import {seasonEventInfo} from './utils/seasonCommon';
 import {Tab, Tabs} from '@mui/material';
-import {SeasonTicketTypesContainer} from './SeasonSubscriptionAndTicketTypes/SeasonTicketTypesContainer';
+import {SeasonTicketTypeContainer} from './SeasonSubscriptionAndTicketTypes/SeasonTicketTypeContainer';
 import {SubscriptionTypeContainer} from './SeasonSubscriptionAndTicketTypes/SubscriptionTypeContainer';
 
 const defaultPopUpValues = {
@@ -88,7 +88,7 @@ const SeasonContainer = () => {
             }}
             disabled={editing}
           />
-          <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3 rounded-lg'>
+          <div className='col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3'>
             <Tabs
               value={tab}
               onChange={(e, newValue) => {
@@ -107,7 +107,7 @@ const SeasonContainer = () => {
               />
             ) : (
               <div className='flex flex-col h-[100%] gap-3'>
-                <SeasonTicketTypesContainer
+                <SeasonTicketTypeContainer
                   token={token}
                   id={seasonId}
                   disabled={editing}

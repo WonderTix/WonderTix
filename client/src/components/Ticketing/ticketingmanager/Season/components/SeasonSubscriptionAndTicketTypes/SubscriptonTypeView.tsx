@@ -51,12 +51,12 @@ export const SeasonSubscriptionTypeView = (
                 'Subscription Types',
                 'Price',
                 'Tickets Included',
-                'Subscription Total',
-                'Quantity Sold',
+                'Quantity',
+                'Sold',
               ].map((heading, index) => (
                 <th
                   key={index}
-                  className='pl-1 py-2 border-r border-zinc-300 last:border-r-0 last:justify-center'
+                  className='p-1 py-2 border-r border-zinc-300 last:border-r-0 last:justify-center'
                 >
                   {heading}
                 </th>

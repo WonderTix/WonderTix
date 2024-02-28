@@ -91,7 +91,7 @@ export const SeasonSubscriptionTypeRow = ({
           type='number'
           component={InputControl}
           hidden={true}
-          label='Subscription Total'
+          label='Quantity'
           className={{
             controlClass: '',
             inputClass: 'w-[100%] text-right',

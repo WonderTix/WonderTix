@@ -6,7 +6,7 @@ import {SeasonTicketTypeUpdateTable} from './SeasonTicketTypeUpdateTable';
 import {SeasonTicketTypeView} from './SeasonTicketTypeView';
 import {SubscriptionTypeContainerProps} from './SubscriptionTypeContainer';
 
-export const SeasonTicketTypesContainer = (
+export const SeasonTicketTypeContainer = (
   props: SubscriptionTypeContainerProps,
 ) => {
   const {id, token, disabled, setPopUpProps, showPopUp, setDisabled} = props;
