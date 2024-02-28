@@ -9,6 +9,7 @@ const importTicketRestrictions = require('./src/seedTicketRestrictions');
 const importTicketTypes = require('./src/seedTicketTypes');
 const importUsers = require('./src/seedUsers');
 import importOrders from './src/seedOrders';
+import importSubscriptionTypes from './src/seedSubscriptionTypes';
 
 const prisma = extendPrismaClient();
 
@@ -22,6 +23,7 @@ async function main() {
 
   await importDates(prisma);
   await importTicketTypes(prisma);
+  await importSubscriptionTypes(prisma);
 
   if (!shouldSeed) return;
 

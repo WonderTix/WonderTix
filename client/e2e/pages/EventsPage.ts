@@ -102,7 +102,7 @@ export class EventsPage {
     this.ticketQuantityOption = page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});
-    this.activateEventchecker = page.getByLabel('controlled');
+    this.activateEventchecker = page.locator('#active' );
     this.inactiveEventchecker = page.getByRole('button', {name: 'Inactive'});
   }
 
