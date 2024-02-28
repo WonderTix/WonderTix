@@ -38,10 +38,10 @@ const EventInstanceSelect = ({check, eventInstances, eventInstanceSelected}: Eve
     <select
       value={selectedId}
       onChange={(ev): void => handleClick(parseFloat(ev.target.value))}
-      className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl max-w-full'
+      className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl max-w-full text-xl'
       id='time-select'
     >
-      <option className='text-zinc-300' disabled value={-1}>
+      <option className='text-zinc-300 text-xl' disabled value={-1}>
         select time
       </option>
       {eventInstances.map((ticket) => (

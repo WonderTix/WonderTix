@@ -238,6 +238,15 @@ eventInstanceController.get(
               },
             },
           },
+          where: {
+            deletedat: null,
+            event: {
+              deletedat: null,
+            },
+          },
+          orderBy: {
+            eventinstanceid: 'asc',
+          },
         });
 
         const toReturn = instances.map((instance) => {
@@ -568,7 +577,7 @@ eventInstanceController.get('/doorlist/:id',
 
         eventInstance.ticketrestrictions.forEach((res) => {
           res.ticketitems.forEach((ticket) =>
-            forEachTicket(res.tickettype.description, ticket.redeemed, ticket.orderticketitem.order.contacts),
+            forEachTicket(res.tickettype.description, ticket.redeemed, ticket.orderticketitem?.order.contacts),
           );
         });
 
@@ -656,7 +665,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
         availableseats: +eventToCreate.totalseats,
         purchaseuri: eventToCreate.purchaseuri,
         detail: eventToCreate.detail,
-        ispreview: eventToCreate.ispreview,
+        ispreview: Boolean(eventToCreate.ispreview),
       },
       include: {
         event: {

@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import logoi from '../../../assets/pp_logo_white.png';
 import {useNavigate} from 'react-router-dom';
 import {useAuth0} from '@auth0/auth0-react';
@@ -21,11 +21,24 @@ import AdminNavDropdown from './AdminNavDropdown';
 const Udash_nav = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [profile, setProfile] = useState(false);
+  const dropdownRef = useRef(null);
 
   const {user} = useAuth0();
   const {picture} = user;
   const {name} = user;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setProfile(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   return (
     <div className='w-full h-full bg-gray-100'>
@@ -324,7 +337,7 @@ const Udash_nav = () => {
               <h2 className='flex items-center text-lg text-zinc-500 font-bold ml-12 mr-6'>
                 Welcome to Ticketing Manager
               </h2>
-              <div className='relative'>
+              <div className='relative' ref={dropdownRef}>
                 <button
                   className='flex items-center text-left cursor-pointer px-4'
                   onClick={() => setProfile(!profile)}

@@ -342,9 +342,7 @@ const TicketTypes = (): ReactElement => {
   return token === '' ? (
     <LoadingScreen />
   ) : (
-    <div className='w-full h-screen absolute'>
-      <main className='w-full h-screen overflow-x-hidden absolute'>
-        <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
+      <div className='p-6'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-700 mb-10 pb-4'>
             Manage Ticket Types
           </h1>
@@ -376,12 +374,10 @@ const TicketTypes = (): ReactElement => {
               processRowUpdate={handleEditTicket}
             />
           </div>
-        </div>
-      </main>
       {popUpProps && (
         <PopUp {...popUpProps} handleClose={() => setPopUpProps(null)} />
       )}
-    </div>
+      </div>
   );
 };
 

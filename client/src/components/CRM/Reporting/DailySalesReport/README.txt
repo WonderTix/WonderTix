@@ -1,1 +1,0 @@
-Daily Sales Report .tsx files goes here.

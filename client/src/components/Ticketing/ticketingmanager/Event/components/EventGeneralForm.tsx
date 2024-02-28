@@ -5,9 +5,10 @@ import {eventGeneralSchema} from './event.schemas';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
-import {BackIcon, getData, SaveIcon} from './ShowingUtils';
+import {getData} from './ShowingUtils';
 import {FormButton} from './FormButton';
 import {useDropzone} from 'react-dropzone';
+import {BackIcon, SaveIcon} from '../../../Icons';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
@@ -80,6 +81,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     imageurl: eventData && eventData.imageurl !== '' ? eventData.imageurl : 'Default Event Image',
     active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
+    subscriptioneligible: eventData?.subscriptioneligible ?? true,
   };
 
   return (

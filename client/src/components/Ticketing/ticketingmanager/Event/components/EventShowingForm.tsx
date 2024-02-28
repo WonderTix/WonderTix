@@ -7,8 +7,9 @@ import {TicketTypeUpdateTable} from './TicketTypeUpdateTable';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
-import {getInstanceTicketType, SaveIcon, BackIcon} from './ShowingUtils';
 import {FormButton} from './FormButton';
+import {BackIcon, SaveIcon} from '../../../Icons';
+import {FormSwitch} from '../../Season/FormSwitch';
 
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
@@ -18,7 +19,7 @@ interface EventShowingFormProps {
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
   const {initialValues, onSubmit, onLeaveEdit} = props;
-  const {eventID, showPopUp, ticketTypes} = useEvent();
+  const {eventID, showPopUp} = useEvent();
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,
     eventdate: initialValues ? toDateStringFormat(initialValues.eventdate) : '',
@@ -27,7 +28,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     eventtime: initialValues
       ? initialValues.eventtime.split('T')[1].slice(0, 8)
       : '',
-    ispreview: false,
+    ispreview: initialValues?.ispreview ?? false,
     defaulttickettype: 1,
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues
@@ -53,7 +54,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
       validationSchema={eventInstanceSchema}
       onSubmit={onSubmit}
     >
-      {({handleSubmit, values, setFieldValue}) => (
+      {({handleSubmit, values}) => (
         <form onSubmit={handleSubmit} className={'bg-gray-300 rounded-xl p-2'}>
           <div
             className={
@@ -65,12 +66,6 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 'flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%] shadow-xl'
               }
             >
-              {values.eventinstanceid > 0 && (
-                <div className={'grid grid-cols-2 pb-1 text-sm'}>
-                  <p className={'text-md font-bold'}>Showing Id</p>
-                  <p className={'text-md p-1'}>{values.eventinstanceid}</p>
-                </div>
-              )}
               <Field
                 name='eventdate'
                 component={InputControl}
@@ -111,6 +106,14 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                     : values.totalseats}
                 </p>
               </div>
+              <Field
+                name='ispreview'
+                component={FormSwitch}
+                className={inputControlClassName}
+                label='Preview'
+                size='small'
+                color='primary'
+              />
             </div>
             <FieldArray
               name={'instanceTicketTypes'}

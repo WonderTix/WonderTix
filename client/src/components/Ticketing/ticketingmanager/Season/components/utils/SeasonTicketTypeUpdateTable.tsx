@@ -1,10 +1,7 @@
 import {IconButton, Tooltip} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import {SeasonTicketValues} from './seasonCommon';
-import {
-  TrashCanIcon,
-  CirclePlusIcon,
-} from '../../../Event/components/ShowingUtils';
+import {CirclePlusIcon, TrashCanIcon} from '../../../../Icons';
 
 interface SeasonTicketTypeUpdateTableProps {
   seasonTicketTypeData: SeasonTicketValues[];

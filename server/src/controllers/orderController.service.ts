@@ -4,7 +4,6 @@ import {
   ticketitems,
   donations,
   ticketrestrictions,
-  PrismaClient,
   orderticketitems,
 } from '@prisma/client';
 
@@ -170,7 +169,7 @@ export const createRefundedOrder = async (
 };
 
 export const updateAvailableSeats = async (
-    prisma: ExtendedPrismaClient | PrismaClient,
+    prisma: ExtendedPrismaClient,
     instanceIds: number[],
 ) => {
   const eventInstances = await prisma.eventinstances.findMany({

@@ -4,12 +4,8 @@ import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
-import {
-  getInstanceTicketType,
-  TrashCanIcon,
-  CirclePlusIcon,
-} from './ShowingUtils';
-
+import {getInstanceTicketType} from './ShowingUtils';
+import {CirclePlusIcon, TrashCanIcon} from '../../../Icons';
 interface TicketTypeTableProps {
   arrayHelpers;
   eventInstanceID: number;

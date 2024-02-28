@@ -172,7 +172,7 @@ seasonTicketTypePriceDefaultController.use(checkScopes);
  *           schema:
  *             $ref: '#/components/requestBodies/SeasonTicketTypePriceDefault'
  *           examples:
- *             Example 1 - Create two ticket type prices to season:
+ *             Example 1 - Add two ticket type prices to season:
  *              value:
  *                - tickettypeid_fk: 1
  *                  price: 10.00
