@@ -36,8 +36,7 @@ const ReaderPurchase = () => {
   const event = 'reader';
   const paymentIntentID = useParams().id;
 
-  // const socketURL = process.env.WEBSOCKET_URL; use this once the env variable works
-  const socketURL = process.env.REACT_APP_ROOT_URL.replace('https', 'wss') + '/wss';
+  const socketURL = process.env.REACT_APP_WEBSOCKET_URL;
 
   const {getWebSocket} = useWebSocket(socketURL, {
     shouldReconnect: () => true,
