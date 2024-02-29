@@ -10,6 +10,7 @@ import {useFetchToken} from '../Event/components/ShowingUtils';
 import {toDollarAmount} from '../../../../utils/arrays';
 import {LoadingScreen} from '../../mainpage/LoadingScreen';
 import PopUp, {PopUpProps} from '../../PopUp';
+import IconButton from '../../IconButton';
 import {EditIcon, HelpIcon, TrashCanIcon} from '../../Icons';
 import DiscountPopUp, {DiscountPopUpProps} from './DiscountPopUp';
 import {
@@ -120,52 +121,47 @@ const DiscountCodes = (): ReactElement => {
       sortable: false,
       renderCell: (cell) => (
         <>
-          <Tooltip title='Edit' placement='top' enterDelay={500} arrow>
-            <button
-              className='p-2 rounded-lg text-zinc-500 hover:text-zinc-600 hover:bg-zinc-100
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-              onClick={() =>
-                setDiscountPopUpProps({
-                  onCancel: () => {
-                    setDiscountPopUpProps(null);
-                    setError(null);
-                  },
-                  title: 'Edit Discount Code',
-                  onSubmit: handleEditDiscountCode,
-                  values: {
-                    discountId: cell.row.discountid,
-                    code: cell.row.code,
-                    active: cell.row.active,
-                    amount: cell.row.amount,
-                    percent: cell.row.percent,
-                    minTickets: cell.row.min_tickets,
-                    minEvents: cell.row.min_events,
-                  },
-                })
-              }
-            >
-              <EditIcon className='h-5 w-5' strokeWidth={2} />
-            </button>
-          </Tooltip>
-          <Tooltip title='Delete' placement='top' enterDelay={500} arrow>
-            <button
-              className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-              onClick={() => {
-                setPopUpProps({
-                  title: 'Delete Discount Code',
-                  message: 'Click delete to remove this discount code',
-                  primaryLabel: 'Delete',
-                  secondaryLabel: 'Cancel',
-                  handleClose: () => setPopUpProps(null),
-                  handleProceed: () => handleDeleteClick(cell),
-                  success: false,
-                });
-              }}
-            >
-              <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
-            </button>
-          </Tooltip>
+          <IconButton
+            onClick={() =>
+              setDiscountPopUpProps({
+                onCancel: () => {
+                  setDiscountPopUpProps(null);
+                  setError(null);
+                },
+                title: 'Edit Discount Code',
+                onSubmit: handleEditDiscountCode,
+                values: {
+                  discountId: cell.row.discountid,
+                  code: cell.row.code,
+                  active: cell.row.active,
+                  amount: cell.row.amount,
+                  percent: cell.row.percent,
+                  minTickets: cell.row.min_tickets,
+                  minEvents: cell.row.min_events,
+                },
+              })
+            }
+            tooltip='Edit'
+          >
+            <EditIcon className='h-5 w-5' strokeWidth={2} />
+          </IconButton>
+          <IconButton
+            hoverColor='red'
+            onClick={() => {
+              setPopUpProps({
+                title: 'Delete Discount Code',
+                message: 'Click delete to remove this discount code',
+                primaryLabel: 'Delete',
+                secondaryLabel: 'Cancel',
+                handleClose: () => setPopUpProps(null),
+                handleProceed: () => handleDeleteClick(cell),
+                success: false,
+              });
+            }}
+            tooltip='Delete'
+          >
+            <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
+          </IconButton>
         </>
       ),
     },

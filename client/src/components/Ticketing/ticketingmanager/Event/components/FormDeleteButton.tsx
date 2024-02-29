@@ -1,23 +1,22 @@
 import React, {useState} from 'react';
-import {useEvent} from './EventProvider';
 import {FormButton} from './FormButton';
 
 interface FormDeleteButtonProps {
   className: string;
   onDelete: (event?) => void;
+  disabled: boolean;
   children?: string | JSX.Element | JSX.Element[] | (() => JSX.Element);
   testID?: string;
 }
 export const FormDeleteButton = (props: FormDeleteButtonProps) => {
-  const {onDelete, children, className, testID} = props;
+  const {onDelete, children, className, testID, disabled} = props;
   const [isDeleting, setIsDeleting] = useState(false);
-  const {showPopUp, editing} = useEvent();
 
   return (
     <FormButton
       testID={testID}
       title='Delete'
-      disabled={isDeleting || showPopUp || editing}
+      disabled={isDeleting || disabled}
       className={className}
       onClick={async () => {
         setIsDeleting(true);

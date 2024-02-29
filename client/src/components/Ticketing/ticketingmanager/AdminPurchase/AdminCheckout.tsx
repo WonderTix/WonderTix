@@ -10,6 +10,7 @@ import AdminCompleteOrderForm, {
 import {emptyDiscountCode} from './utils/adminCommon';
 import {useNavigate, useLocation} from 'react-router-dom';
 import AdminCart from './AdminCart';
+import PopUp from '../../PopUp';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -28,6 +29,8 @@ export default function AdminCheckout(): ReactElement {
 
   const eventDataFromPurchase = location.state?.eventData || [];
   const cartItems = location.state?.cartItems || [];
+
+  const [popUpMessage, setPopUpMessage] = useState('');
 
   const doCheckout = async (checkoutFormInfo: CheckoutFormInfo) => {
     try {
@@ -67,10 +70,9 @@ export default function AdminCheckout(): ReactElement {
       }
     } catch (error) {
       console.error('Error response status: ', error.status);
-      if (error.json) {
-        const errorMessage = await error.json();
-        console.error('Error message from server: ', errorMessage);
-      }
+      setPopUpMessage(
+        error.json ? (await error.json()).error : 'Checkout failed',
+      );
     }
   };
 
@@ -103,6 +105,16 @@ export default function AdminCheckout(): ReactElement {
           </div>
         </div>
       </div>
+      {popUpMessage && popUpMessage !== '' && (
+        <PopUp
+          title='Checkout Failed'
+          message={popUpMessage}
+          handleProceed={() => setPopUpMessage('')}
+          handleClose={() => setPopUpMessage('')}
+          success={false}
+          showSecondary={false}
+        />
+      )}
     </div>
   );
 }

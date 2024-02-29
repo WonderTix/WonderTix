@@ -89,9 +89,66 @@ contactController.use(checkScopes);
  *     summary: get all contacts
  *     tags:
  *     - New Contact
+ *     parameters:
+ *     - in: query
+ *       name: firstname
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: lastname
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: email
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: address
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: city
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: state
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: country
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: postalcode
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: phone
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: seatingaccom
+ *       schema:
+ *         type: string
+ *     - in: query
+ *       name: donorbadge
+ *       schema:
+ *         type: boolean
+ *     - in: query
+ *       name: vip
+ *       schema:
+ *         type: boolean
+ *     - in: query
+ *       name: volunteerlist
+ *       schema:
+ *         type: boolean
+ *     - in: query
+ *       name: newsletter
+ *       schema:
+ *         type: boolean
  *     responses:
  *       200:
- *         description: Contact updated successfully.
+ *         description: Contacts received successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -112,81 +169,119 @@ contactController.use(checkScopes);
  */
 contactController.get('/', async (req: Request, res: Response) => {
   try {
-    const filters: any = {};
-    if (req.params.firstname) {
-      filters.firstname = {
-        contains: req.params.firstname,
-      };
+    const filters: any = [];
+    if (req.query.firstname) {
+      filters.push({
+        firstname: {
+          equals: req.query.firstname,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.lastname) {
-      filters.lastname = {
-        contains: req.params.lastname,
-      };
+    if (req.query.lastname) {
+      filters.push({
+        lastname: {
+          equals: req.query.lastname,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.email) {
-      filters.email = {
-        contains: req.params.email,
-      };
+    if (req.query.email) {
+      filters.push({
+        email: {
+          equals: req.query.email,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.address) {
-      filters.address = {
-        contains: req.params.address,
-      };
+    if (req.query.address) {
+      filters.push({
+        address: {
+          equals: req.query.address,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.city) {
-      filters.city = {
-        contains: req.params.city,
-      };
+    if (req.query.city) {
+      filters.push({
+        city: {
+          equals: req.query.city,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.state) {
-      filters.state = {
-        contains: req.params.state,
-      };
+    if (req.query.state) {
+      filters.push({
+        state: {
+          equals: req.query.state,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.country) {
-      filters.country = {
-        contains: req.params.country,
-      };
+    if (req.query.country) {
+      filters.push({
+        country: {
+          equals: req.query.country,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.postalcode) {
-      filters.postalcode = {
-        contains: req.params.postalcode,
-      };
+    if (req.query.postalcode) {
+      filters.push({
+        postalcode: {
+          equals: req.query.postalcode,
+        },
+      });
     }
-    if (req.params.phone) {
-      filters.phone = {
-        contains: req.params.phone,
-      };
+    if (req.query.phone) {
+      filters.push({
+        phone: {
+          equals: req.query.phone,
+        },
+      });
     }
-    if (req.params.donorbadge) {
-      filters.donorbadge = {
-        equals: req.params.donorbadge,
-      };
+    if (req.query.seatingaccom) {
+      filters.push({
+        seatingaccom: {
+          contains: req.query.seatingaccom,
+          mode: 'insensitive',
+        },
+      });
     }
-    if (req.params.seatingaccom) {
-      filters.seatingaccom = {
-        equals: req.params.seatingaccom,
-      };
+    if (req.query.donorbadge) {
+      filters.push({
+        donorbadge: {
+          equals: (req.query.donorbadge === 'true'),
+        },
+      });
     }
-    if (req.params.vip) {
-      filters.vip = {
-        equals: req.params.vip,
-      };
+    if (req.query.vip) {
+      filters.push({
+        vip: {
+          equals: (req.query.vip === 'true'),
+        },
+      });
     }
-    if (req.params.volunteerlist) {
-      filters.volunteerlist = {
-        equals: req.params.volunteerlist,
-      };
+    if (req.query.volunteerlist) {
+      filters.push({
+        volunteerlist: {
+          equals: (req.query.volunteerlist === 'true'),
+        },
+      });
     }
-    if (req.params.newsletter) {
-      filters.newsletter = {
-        equals: req.params.newsletter,
-      };
+    if (req.query.newsletter) {
+      filters.push({
+        newsletter: {
+          equals: (req.query.newsletter === 'true'),
+        },
+      });
     }
 
-    if (Object.keys(filters).length > 0) {
+    if (filters.length > 0) {
       const contacts = await prisma.contacts.findMany({
-        where: filters,
+        where: {
+          OR: filters,
+        },
       });
       res.status(200).json(contacts);
       return;
@@ -300,47 +395,26 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       },
       include: {
         orders: {
-          orderBy: [{
-            orderdate: 'desc',
-          }, {
-            ordertime: 'desc',
-          }],
-          select: {
-            orderid: true,
-            orderdate: true,
-            ordertime: true,
-            refund_intent: true,
-            ordertotal: true,
-            orderitems: {
-              select: {
-                price: true,
-                singletickets: {
-                  select: {
-                    ticketwasswapped: true,
-                    eventtickets: {
-                      select: {
-                        ticketrestrictions: {
-                          select: {
-                            tickettype: {
-                              select: {
-                                description: true,
-                              },
-                            },
-                          },
-                        },
-                        eventinstances: {
-                          select: {
-                            eventdate: true,
-                            eventtime: true,
-                            detail: true,
-                            events: {
-                              select: {
-                                eventname: true,
-                                seasons: {
-                                  select: {
-                                    name: true,
-                                  },
-                                },
+          where: {
+            payment_intent: {not: null},
+          },
+          orderBy: {
+            orderdatetime: 'desc',
+          },
+          include: {
+            orderticketitems: {
+              include: {
+                refund: true,
+                ticketitem: {
+                  include: {
+                    ticketrestriction: {
+                      include: {
+                        tickettype: true,
+                        eventinstance: {
+                          include: {
+                            event: {
+                              include: {
+                                seasons: true,
                               },
                             },
                           },
@@ -351,18 +425,11 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 },
               },
             },
-          },
-        },
-        donations: {
-          orderBy: {
-            donationdate: 'desc',
-          },
-          select: {
-            donationid: true,
-            donationdate: true,
-            frequency: true,
-            refund_intent: true,
-            amount: true,
+            donation: {
+              include: {
+                refund: true,
+              },
+            },
           },
         },
       },
@@ -373,62 +440,64 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       return;
     }
 
-    const {orders, donations, ...remainderOfContact} = contact;
+    const {orders, ...remainderOfContact} = contact;
+    const flattenedOrders : any[] = [];
+    contact.orders.forEach((order) => {
+      const orderItemsMap = new Map<string, any>();
+      const
+        refunded = order
+            .orderticketitems
+            .reduce<boolean>((acc, ticket) => {
+              if (!ticket.ticketitem) return acc;
+              const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
+              const item = orderItemsMap.get(key);
+              if (item) {
+                item.quantity += 1;
+              } else {
+                orderItemsMap.set(key,
+                    {
+                      price: ticket.price,
+                      refunded: ticket.refund !== null,
+                      redeemed: ticket.ticketitem.redeemed,
+                      donated: ticket.ticketitem.donated,
+                      description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+                      eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
+                      eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
+                      eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+                      detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
+                      seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
+                      tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
+                      quantity: 1,
+                    });
+              }
+              return acc && ticket.refund !== null;
+            }, true);
 
-    const flattenedOrders = contact.orders.map((order) => {
-      const orderItems = order.orderitems.map((item) => {
-        const singleTickets = item.singletickets.filter((ticket) => !ticket.ticketwasswapped);
-        const quantity = singleTickets.length;
-        const ticketInfo = singleTickets.map((ticket) => {
-          if (!ticket.eventtickets.length) return null;
-          return {
-            description: ticket.eventtickets[0].eventinstances.events.eventname,
-            eventdate: ticket.eventtickets[0].eventinstances.eventdate,
-            eventtime: ticket.eventtickets[0].eventinstances.eventtime,
-            eventname: ticket.eventtickets[0].eventinstances.events.eventname,
-            detail: ticket.eventtickets[0].eventinstances.detail,
-            seasonname: ticket.eventtickets[0].eventinstances.events.seasons?.name,
-            tickettype: ticket.eventtickets[0].ticketrestrictions?.tickettype.description,
-          };
-        }).filter((ticket) => ticket !== null);
+      if (!orderItemsMap.size) return;
 
-        if (!ticketInfo[0]) return null;
-        return {
-          price: item.price,
-          quantity: quantity,
-          description: ticketInfo[0].description,
-          eventdate: ticketInfo[0].eventdate,
-          eventtime: ticketInfo[0].eventtime,
-          eventname: ticketInfo[0].eventname,
-          seasonname: ticketInfo[0].seasonname,
-          tickettype: ticketInfo[0].tickettype,
-          detail: ticketInfo[0].detail,
-        };
-      }).filter((item) => item !== null);
+      const flattenedDonation = {
+        donationid: order.donation?.donationid,
+        anonymous: order.donation?.anonymous,
+        amount: order.donation?.amount,
+        frequency: order.donation?.frequency,
+        comments: order.donation?.comments,
+        refunded: order.donation?.refund !== null,
+      };
 
-      return {
+      flattenedOrders.push({
         orderid: order.orderid,
-        orderdate: `${order.orderdate.toString().slice(0, 4)}-${order.orderdate.toString().slice(4, 6)}-${order.orderdate.toString().slice(6, 8)}`,
-        ordertime: order.ordertime,
-        refund_intent: order.refund_intent,
-        ordertotal: order.ordertotal,
-        orderitems: orderItems,
-      };
-    });
-
-    const formattedDonations = donations.map((donation) => {
-      const {donationdate, ...restOfDonation} = donation;
-      if (!donationdate) return null;
-      return {
-        donationdate: `${donationdate.toString().slice(0, 4)}-${donationdate.toString().slice(4, 6)}-${donationdate.toString().slice(6, 8)}`,
-        ...restOfDonation,
-      };
+        orderdatetime: order.orderdatetime,
+        ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
+        discounttotal: order.discounttotal,
+        refunded,
+        orderitems: [...orderItemsMap.values()],
+        donation: order.donation ? flattenedDonation : null,
+      });
     });
 
     const toReturn = {
       ...remainderOfContact,
       orders: flattenedOrders,
-      donations: formattedDonations,
     };
 
     res.status(200).json(toReturn);
@@ -480,7 +549,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const contact = await prisma.contacts.update({
+    await prisma.contacts.update({
       where: {
         contactid: Number(id),
       },
