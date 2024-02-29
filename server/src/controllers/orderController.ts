@@ -192,14 +192,14 @@ orderController.get('/refund', async (req: Request, res: Response) => {
  * @swagger
  * /2/order/refund/{id}:
  *   put:
- *     summary: refund an order based on order id (adds refund intent to any associated donations)
+ *     summary: begin refund process for an order based on order id (adds refund intent to any associated donations)
  *     tags:
  *     - New Order
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     responses:
  *       200:
- *         description: orders refunded successfully
+ *         description: refund process started
  *       400:
  *         description: bad request
  *         content:
