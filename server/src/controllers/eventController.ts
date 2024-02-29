@@ -22,19 +22,6 @@ import {Storage} from '@google-cloud/storage';
 
 const upload = multer();
 
-const keyPath = process.env.GCLOUD_KEY_PATH;
-const bucketName = process.env.GCLOUD_BUCKET;
-
-if (keyPath === undefined) {
-  console.log('bucket key path undefined');
-}
-if (bucketName === undefined) {
-  console.log('bucket name undefined');
-}
-
-const storage = new Storage({keyFilename: `${keyPath}`});
-const imgBucket = storage.bucket(`${bucketName}`);
-
 export const eventController = Router();
 
 /**
@@ -192,6 +179,19 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
  */
 
 eventController.post('/image-upload', upload.single('file'), async (req: Request, res: Response) => {
+  const keyPath = process.env.GCLOUD_KEY_PATH;
+  const bucketName = process.env.GCLOUD_BUCKET;
+
+  if (keyPath === undefined) {
+    console.log('bucket key path undefined');
+  }
+  if (bucketName === undefined) {
+    console.log('bucket name undefined');
+  }
+
+  const storage = new Storage({keyFilename: `${keyPath}`});
+  const imgBucket = storage.bucket(`${bucketName}`);
+  
   if (!req.file) {
     return res.status(400).send('No file passed to request!');
   }
