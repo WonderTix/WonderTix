@@ -66,6 +66,7 @@ gcloud run deploy "wtix-server-${ENV}" \
   ROOT_URL=${ROOT_URL},\
   SHOULD_SEED=${SHOULD_SEED}" \
   --set-secrets="\
+  WEBSOCKET_URL=WEBSOCKET_URL:${ENV},\
   DATABASE_URL=DATABASE_URL:${ENV},\
   DB_DATABASE=DB_DATABASE:${ENV},\
   DB_HOST=DB_HOST:${ENV},\
