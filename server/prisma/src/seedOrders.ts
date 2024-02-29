@@ -1,11 +1,12 @@
-import {freq, PrismaClient} from '@prisma/client';
+import {freq} from '@prisma/client';
 import {updateAvailableSeats} from '../../src/controllers/orderController.service';
+import {ExtendedPrismaClient} from '../../src/controllers/PrismaClient/GetExtendedPrismaClient';
 
 /**
  * seed orders
- * @param {PrismaClient} prisma
+ * @param {ExtendedPrismaClient} prisma
  */
-export default async function seedOrders(prisma: PrismaClient) {
+export default async function seedOrders(prisma: ExtendedPrismaClient) {
   try {
     const contacts = await prisma.contacts.findMany();
     const ticketRestrictions= await prisma.ticketrestrictions.findMany();

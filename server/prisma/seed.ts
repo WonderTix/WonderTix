@@ -1,4 +1,4 @@
-const {PrismaClient} = require('@prisma/client');
+import {extendPrismaClient} from '../src/controllers/PrismaClient/GetExtendedPrismaClient';
 const importContacts = require('./src/seedContacts');
 const importDates = require('./src/seedDates');
 const importDiscounts = require('./src/seedDiscounts');
@@ -9,8 +9,9 @@ const importTicketRestrictions = require('./src/seedTicketRestrictions');
 const importTicketTypes = require('./src/seedTicketTypes');
 const importUsers = require('./src/seedUsers');
 import importOrders from './src/seedOrders';
+import importSubscriptionTypes from './src/seedSubscriptionTypes';
 
-const prisma = new PrismaClient();
+const prisma = extendPrismaClient();
 
 /**
  * Seed database
@@ -22,6 +23,7 @@ async function main() {
 
   await importDates(prisma);
   await importTicketTypes(prisma);
+  await importSubscriptionTypes(prisma);
 
   if (!shouldSeed) return;
 
