@@ -5,6 +5,7 @@ import {Prisma} from '@prisma/client';
 import {
   createRefundedOrder,
   ticketingWebhook,
+  updateRefundStatus,
 } from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
@@ -34,6 +35,12 @@ orderController.post(
               event.type,
               object.payment_intent,
               object.id,
+          );
+        } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
+          await updateRefundStatus(
+            prisma,
+            object.payment_intent,
+            object.status,
           );
         }
 
@@ -251,9 +258,6 @@ orderController.put('/refund/:id', async (req, res) => {
       const refund = await stripe.refunds.create({
         payment_intent: order.payment_intent,
       });
-      if (refund.status !== 'succeeded') {
-        throw new Error(`Refund failed`);
-      }
       refundIntent = refund.id;
     }
     await createRefundedOrder(prisma, order, order.orderticketitems, refundIntent, order.donation);

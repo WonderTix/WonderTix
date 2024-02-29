@@ -5,6 +5,7 @@ import {
   donations,
   ticketrestrictions,
   orderticketitems,
+  state,
 } from '@prisma/client';
 
 
@@ -37,6 +38,48 @@ export const ticketingWebhook = async (
       await updateCanceledOrder(prisma, order);
       break;
   }
+};
+
+export const updateRefundStatus = async (
+  prisma: ExtendedPrismaClient,
+  paymentIntent: string,
+  refundStatus: string,
+) => {
+  let refundStatusState : state;
+  switch(refundStatus) {
+    case 'succeeded':
+      refundStatusState = state.completed;
+      break;
+    case 'pending':
+      refundStatusState = state.in_progress;
+      break;
+    default:
+      refundStatusState = state.failed;
+      break;
+  }
+  const order = await prisma.orders.findUnique({
+    where: {
+      payment_intent: paymentIntent,
+    },
+    select: {
+      orderid: true,
+    }
+  });
+
+  if (order === null) {
+    // there is no forseeable case where this should happen
+    console.error('received refund for order that does not exist')
+    return;
+  }
+
+  await prisma.refunds.updateMany({
+    where: {
+      orderid_fk: order.orderid
+    },
+    data: {
+      refund_status: refundStatusState,
+    },
+  });
 };
 
 export const orderFulfillment = async (
