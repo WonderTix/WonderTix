@@ -203,6 +203,8 @@ model orders {
   checkout_sessions String?            @unique @db.VarChar(255)
   ordersubtotal     Decimal            @db.Money
   discounttotal     Decimal            @default(0) @db.Money
+  order_source      purchase_source?    
+  order_status      state              @default(in_progress)
   contacts          contacts           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donation          donations?
@@ -354,6 +356,14 @@ enum state {
   not_started
   in_progress
   completed
+  failed
+}
+
+enum purchase_source {
+  customer_ticketing
+  admin_ticketing
+  card_reader
+  donation_page
 }
 
 model StripeWebhook {
