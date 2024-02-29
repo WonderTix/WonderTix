@@ -94,7 +94,6 @@ model donations {
   comments       String?   @db.VarChar(255)
   payment_intent String?   @db.VarChar(255)
   refund_intent  String?   @db.VarChar(255)
-  refund_status  String?   @db.VarChar(10)
   donationdate   Int?
   date           date?     @relation(fields: [donationdate], references: [dateid], onDelete: NoAction, onUpdate: NoAction)
   contacts       contacts? @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "donations_donoid_fkey")
@@ -179,7 +178,6 @@ model orders {
   payment_intent    String?      @db.VarChar(255)
   checkout_sessions String?      @db.VarChar(255)
   refund_intent     String?      @db.VarChar(255)
-  refund_status     String?      @db.VarChar(10)
   ordertotal        Decimal?     @db.Money
   orderitems        orderitems[]
   contacts          contacts     @relation(fields: [contactid_fk], references: [contactid], onDelete: NoAction, onUpdate: NoAction, map: "orders_contactid_fkey")
