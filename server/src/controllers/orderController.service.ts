@@ -1,5 +1,5 @@
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {freq, state} from '@prisma/client';
+import {freq} from '@prisma/client';
 
 export const ticketingWebhook = async (
     prisma: ExtendedPrismaClient,
@@ -30,6 +30,23 @@ export const ticketingWebhook = async (
       await orderCancel(prisma, order.orderid);
       break;
   }
+};
+
+
+export const donationCancel = async (
+    prisma: ExtendedPrismaClient,
+    paymentIntent: string,
+    refundIntent: string,
+) => {
+  const result = await prisma.donations.updateMany({
+    where: {
+      payment_intent: paymentIntent,
+    },
+    data: {
+      refund_intent: refundIntent,
+    },
+  });
+  return result.count;
 };
 
 export const createDonationRecord = async (
@@ -174,58 +191,6 @@ export const orderCancel = async (
   await updateAvailableSeats(prisma);
   return;
 };
-
-export const donationCancel = async (
-  prisma: ExtendedPrismaClient,
-  paymentIntent: string,
-  refundIntent: string,
-) => {
-  const result = await prisma.donations.updateMany({
-    where: {
-      payment_intent: paymentIntent,
-    },
-    data: {
-      refund_intent: refundIntent,
-    }
-  });
-  return result.count;
-}
-
-export const updateRefundStatus = async (
-  prisma: ExtendedPrismaClient,
-  paymentIntent: string,
-  refundStatus: string,
-) => {
-  let refundStatusState : state;
-  switch(refundStatus) {
-    case "succeeded": 
-      refundStatusState = state.completed;
-      break;
-    case "pending":
-      refundStatusState = state.in_progress;
-      break;
-    default:
-      refundStatusState = state.failed;
-      break;
-  }
-  await prisma.donations.updateMany({
-    where: {
-      payment_intent: paymentIntent,
-    },
-    data: {
-      refund_status: refundStatusState,
-    },
-  });
-  await prisma.orders.updateMany({
-    where: {
-      payment_intent: paymentIntent,
-    },
-    data: {
-      refund_status: refundStatusState,
-    },
-  });
-}
-
 const getOrderDateAndTime = () => {
   const date = new Date();
 

@@ -2,7 +2,7 @@ import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {Prisma} from '@prisma/client';
-import {createDonationRecord, orderCancel, donationCancel, ticketingWebhook, updateRefundStatus} from './orderController.service';
+import {createDonationRecord, donationCancel, orderCancel, ticketingWebhook} from './orderController.service';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -43,12 +43,6 @@ orderController.post(
               metaData.comments,
               metaData.anonymous,
               metaData.frequency,
-          );
-        } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
-          await updateRefundStatus(
-              prisma, 
-              object.payment_intent,
-              object.status,
           );
         }
         return res.send();
@@ -263,14 +257,14 @@ orderController.get('/refund', async (req: Request, res: Response) => {
  * @swagger
  * /2/order/refund/{id}:
  *   put:
- *     summary: begin refund process for an order based on order id (adds refund intent to any associated donations)
+ *     summary: refund an order based on order id (adds refund intent to any associated donations)
  *     tags:
  *     - New Order
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     responses:
  *       200:
- *         description: refund process started
+ *         description: orders refunded successfully
  *       400:
  *         description: bad request
  *         content:
@@ -299,21 +293,22 @@ orderController.put('/refund/:id', async (req, res) => {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
     if (order.refund_intent) {
-      return res.status(400).json({error: `Order ${orderID} has already begun refund process`});
+      return res.status(400).json({error: `Order ${orderID} has already been refunded`});
     }
 
     let refundIntent;
-    if (order.payment_intent.includes('comp')) {
-      refundIntent = `refund-comp-${order.orderid}`;
-      await orderCancel(prisma, order.orderid, refundIntent);
-    } else {
+    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
+    else {
       const refund = await stripe.refunds.create({
         payment_intent: order.payment_intent,
       });
+      if (refund.status !== 'succeeded') {
+        throw new Error(`Refund failed`);
+      }
       refundIntent = refund.id;
-      await orderCancel(prisma,Number(orderID),refundIntent);
-      await donationCancel(prisma,order.payment_intent,refundIntent);
     }
+    await donationCancel(prisma, order.payment_intent, refundIntent);
+    await orderCancel(prisma, order.orderid, refundIntent);
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);
