@@ -22,8 +22,18 @@ import {Storage} from '@google-cloud/storage';
 
 const upload = multer();
 
-const storage = new Storage({keyFilename: `./wondertix-app-8073f86fc7d4.json`});
-const imgBucket = storage.bucket(`image-upload-wondertix-local`);
+const keyPath = process.env.GCLOUD_KEY_PATH;
+const bucketName = process.env.GCLOUD_BUCKET;
+
+if (keyPath === undefined) {
+  console.log('bucket key path undefined');
+}
+if (bucketName === undefined) {
+  console.log('bucket name undefined');
+}
+
+const storage = new Storage({keyFilename: `${keyPath}`});
+const imgBucket = storage.bucket(`${bucketName}`);
 
 export const eventController = Router();
 
@@ -212,7 +222,7 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
 
   stream.on('finish', async () => {
     await file.makePublic();
-    const url = `https://storage.googleapis.com/image-upload-wondertix-local/${file.name}`;
+    const url = `https://storage.googleapis.com/${bucketName}/${file.name}`;
     return res.status(200).send({url});
   })
 
