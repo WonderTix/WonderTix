@@ -360,10 +360,10 @@ enum state {
 }
 
 enum purchase_source {
-  customer_ticketing
+  online_ticketing
   admin_ticketing
   card_reader
-  donation_page
+  online_donation
 }
 
 model StripeWebhook {

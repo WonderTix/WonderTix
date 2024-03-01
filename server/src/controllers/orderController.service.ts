@@ -61,14 +61,14 @@ export const orderFulfillment = async (
     case 'admin_ticketing':
       orderSource = purchase_source.admin_ticketing;
       break;
-    case 'customer_ticketing':
-      orderSource = purchase_source.customer_ticketing;
+    case 'online_ticketing':
+      orderSource = purchase_source.online_ticketing;
       break;
     case 'card_reader':
       orderSource = purchase_source.card_reader;
       break;
-    case 'donation_page':
-      orderSource = purchase_source.donation_page;
+    case 'online_donation':
+      orderSource = purchase_source.online_donation;
       break;
     default:
       break;
