@@ -1,7 +1,7 @@
 import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {Prisma} from '@prisma/client';
+import {Prisma, state} from '@prisma/client';
 import {
   createRefundedOrder,
   ticketingWebhook,
@@ -87,6 +87,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     const orders = await prisma.orders.findMany({
       where: {
         payment_intent: {not: null},
+        order_status: state.completed,
         OR: [
           {
             orderticketitems: {
@@ -237,7 +238,7 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order) {
       return res.status(400).json({error: `Order ${orderID} does not exist`});
     }
-    if (!order.payment_intent) {
+    if (!order.payment_intent || order.order_status != state.completed) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
     if (!order.donation && !order.orderticketitems.length) {
