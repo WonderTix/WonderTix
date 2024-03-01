@@ -58,6 +58,7 @@ export default function CheckoutPage(): ReactElement {
 
       const stripe = await stripePromise;
       if (!stripe) return;
+      const orderSource = 'online_ticketing';
       const response = await fetch(
         process.env.REACT_APP_API_2_URL + `/events/checkout`,
         {
@@ -66,7 +67,7 @@ export default function CheckoutPage(): ReactElement {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({cartItems, formData, donation, discount}),
+          body: JSON.stringify({cartItems, formData, donation, discount, orderSource}),
         },
       );
       if (!response.ok) {
