@@ -5,6 +5,8 @@ import {
   donations,
   ticketrestrictions,
   orderticketitems,
+  purchase_source,
+  state
 } from '@prisma/client';
 
 
@@ -29,6 +31,7 @@ export const ticketingWebhook = async (
         },
         data: {
           payment_intent: paymentIntent,
+          order_status: state.completed,
         },
       });
       break;
@@ -51,8 +54,25 @@ export const orderFulfillment = async (
         donationItem?: any,
     },
     discountId?: number,
+    orderSource?: string,
 ) => {
   const {orderTicketItems, donationItem} = orderItems;
+  switch (orderSource) {
+    case 'admin_ticketing':
+      orderSource = purchase_source.admin_ticketing;
+      break;
+    case 'customer_ticketing':
+      orderSource = purchase_source.customer_ticketing;
+      break;
+    case 'card_reader':
+      orderSource = purchase_source.card_reader;
+      break;
+    case 'donation_page':
+      orderSource = purchase_source.donation_page;
+      break;
+    default:
+      break;
+  }
   const result = await prisma.$transaction([
     prisma.orders.create({
       data: {
@@ -63,6 +83,7 @@ export const orderFulfillment = async (
         discounttotal: discountTotal,
         ...(orderTicketItems && {orderticketitems: {create: orderTicketItems}}),
         ...(donationItem && {donation: {create: donationItem}}),
+        order_source: orderSource,
       },
     }),
     ...eventInstanceQueries,

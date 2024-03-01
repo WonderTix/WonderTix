@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {orders, Prisma} from '@prisma/client';
+import {orders, Prisma, state} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
@@ -57,7 +57,7 @@ export const eventController = Router();
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
-  const {cartItems = [], formData, donation = 0, discount} = req.body;
+  const {cartItems = [], formData, donation = 0, discount, orderSource} = req.body;
   let order :orders | null = null;
   let toSend = {id: 'comp'};
   try {
@@ -109,6 +109,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           donationItem,
         },
         discount.code != '' ? discount.discountid : null,
+        orderSource,
     );
 
     if (toSend.id === 'comp') {
@@ -119,6 +120,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         data: {
           checkout_sessions: `comp-${order.orderid}`,
           payment_intent: `comp-${order.orderid}`,
+          order_status: state.completed,
         },
       });
     }
