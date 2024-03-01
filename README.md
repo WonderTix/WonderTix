@@ -58,6 +58,26 @@ Future features include managing/creating email campaigns and ticket exchanges.
 8. The swagger docs will be available at <https://localhost:8000/api/docs>
    1. To log in to swagger, login to the client and copy the value of the `access_token` from the request to `<AUTH0_URL>/oath/token`. Paste this value into the `Authorize` dialog in swagger.
 
+## Testing simulated readers
+
+To test simulated readers with virtual cards:
+
+1. Turn on the servers and ensure that the webhook is listening to Stripe events.
+2. Set up the simulated reader. It is possible to this via the Stripe CLI or through the Stripe API, but these instructions will explain how to do so through the Stripe dashboard.
+   1. Go to https://dashboard.stripe.com/test/terminal. 
+   2. Add a location if one does not already exist.
+   3. Click on the location in the location list.
+   4. Press register reader.
+   5. Use `simulated-wpe` as the registration code.
+   6. Once created, click on the reader in the list to get an info pop up to appear. Write down the Reader ID somewhere, which should have the format `tmr_xxx`.
+3. Navigate to the deployed front end (ex: `https://localhost:3000`). Log in, and go to the admin ticketing page.
+4. Create your sample purchase. Once it is ready, press the "send to reader" button. The adjacent drop down menu should display a list of possible readers to send to; the options should correspond to the Reader ID(s) of all simulated reader(s) you have created.
+6. You should be taken to the reader checkout page.
+   1. It is worth noting that here you can cancel the payment early *if a payment method has not yet been presented*. It also can directly poll the Stripe API for cases when the webhook is slow to confirm a payment, or if the webhook is not listening to events for whatever reason.
+7. Open a terminal.
+8. Run this command: `stripe test_helpers terminal readers present_payment_method tmr_xxx`, replacing `tmr_xxx` with your Reader ID.
+9. The frontend page should soon redirect you to the success page.
+
 ## Connecting to the database
 
 ### Use CLI in container
