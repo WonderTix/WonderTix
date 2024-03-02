@@ -103,6 +103,68 @@ const Dashboard = (): ReactElement => {
             route='/ticketing/seasons'
           />
           <DashboardLink
+            gradientClasses='bg-gradient-to-r from-sky-700 to-yellow-200'
+            icon={
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-12 w-12'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='white'
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z'
+                />
+              </svg>
+            }
+            title='Refund Orders'
+            route='/ticketing/refund'
+          />
+          <DashboardLink
+            gradientClasses='bg-gradient-to-r from-green-400 to-teal-700'
+            icon={
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-12 w-12'
+                viewBox='0 0 20 20'
+                fill='white'
+              >
+                <path d='M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z' />
+                <path
+                  fillRule='evenodd'
+                  d='M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z'
+                  clipRule='evenodd'
+                />
+              </svg>
+            }
+            title='Manage Ticket & Subscription Types'
+            route='/ticketing/tickettypes'
+          />
+          <DashboardLink
+            gradientClasses='bg-gradient-to-r from-teal-400 to-indigo-500'
+            icon={
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-12 w-12'
+                fill='none'
+                viewBox='0 0 24 24'
+                stroke='white'
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01'
+                />
+              </svg>
+            }
+            title='Manage Discount Codes'
+            route='/ticketing/discountcodes'
+          />
+          <DashboardLink
             gradientClasses='bg-gradient-to-r from-yellow-600 to-red-600'
             icon={
               <svg
@@ -138,26 +200,6 @@ const Dashboard = (): ReactElement => {
             route='/ticketing/seasonaltickets'
           />
           <DashboardLink
-            gradientClasses='bg-gradient-to-r from-green-400 to-teal-700'
-            icon={
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-12 w-12'
-                viewBox='0 0 20 20'
-                fill='white'
-              >
-                <path d='M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z' />
-                <path
-                  fillRule='evenodd'
-                  d='M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z'
-                  clipRule='evenodd'
-                />
-              </svg>
-            }
-            title='Manage Ticket Types'
-            route='/ticketing/tickettypes'
-          />
-          <DashboardLink
             gradientClasses='bg-gradient-to-r from-red-500 to-blue-600'
             icon={
               <svg
@@ -177,27 +219,6 @@ const Dashboard = (): ReactElement => {
             }
             title='Ticket Exchanges'
             route='/ticketing/ticketexchanges'
-          />
-          <DashboardLink
-            gradientClasses='bg-gradient-to-r from-sky-700 to-yellow-200'
-            icon={
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-12 w-12'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='white'
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z'
-                />
-              </svg>
-            }
-            title='Refund Orders'
-            route='/ticketing/refund'
           />
         </div>
       </div>

@@ -285,7 +285,9 @@ export class MainPage {
     await this.stripeCVC.fill(ccInfo.CVC);
     await this.stripeFullName.fill(customer.fullName);
     await this.stripeZIP.fill(customer.postCode);
-    await this.stripeSaveInfo.click();
+    if (await this.stripeSaveInfo.isChecked()) {
+      await this.stripeSaveInfo.click();
+    }
   }
 
   // Click to purchase ticket at stripe

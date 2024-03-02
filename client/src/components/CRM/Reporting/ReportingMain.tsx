@@ -1,4 +1,4 @@
-/* eslint-disable react/react-in-jsx-scope */
+import React, {ReactElement} from 'react';
 import ReportingList from './ReportingList';
 import Navigation from '../Navigation';
 import {DSRmarqueeData, DsrMarqueeData} from './DailySalesReport/DsrMarqData';
@@ -8,10 +8,10 @@ import {
 } from './DonationSummaryReport/DonMarqData';
 
 /**
- * @returns {object} ReportingMain - has Navigation
+ * @returns {ReactElement} ReportingMain - has Navigation
  *  and Reporting to reroute to other components
  */
-const ReportingMain = () => {
+const ReportingMain = (): ReactElement => {
   return (
     <div>
       <ReportingList data={DSRmarqueeData} DONdata={DONmarqueeData} />

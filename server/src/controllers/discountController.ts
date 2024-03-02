@@ -4,25 +4,20 @@ import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 const prisma = extendPrismaClient();
-
 export const discountController = Router();
 
 /**
  * @swagger
- * /2/discount:
- *   post:
- *     summary: Create a discount
+ * /2/discount/code/{code}:
+ *   get:
+ *     summary: get a discount
  *     tags:
  *     - New Discount
- *     requestBody:
- *       description: Updated discount information
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/requestBodies/Discount'
+ *     parameters:
+ *     - $ref: '#/components/parameters/code'
  *     responses:
- *       201:
- *         description: discount updated successfully.
+ *       200:
+ *         description: discount acquired successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -32,43 +27,42 @@ export const discountController = Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Error message from the server.
+ *               $ref: '#/components/schemas/Error'
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-discountController.post('/', async (req: Request, res: Response) => {
+discountController.get('/code/:code', async (req: Request, res: Response) => {
   try {
-    const discount = prisma.discounts.create({
-      data: {
-        code: req.body.code,
-        amount: req.body.amount,
-        percent: req.body.percent,
-        startdate: req.body.startdate,
-        enddate: req.body.enddate,
-        tickettypeid_fk: req.body.tickettype,
-        createdby_fk: req.body.createdby,
-        usagelimit: req.body.usagelimit,
-        min_events: req.body.min_events,
-        min_tickets: req.body.min_tickets,
-      },
-    });
-    res.status(201).json(discount);
+    const code = req.params.code;
+    const filters: any = {
+      code: code,
+    };
 
+    if (req.query.active) {
+      filters.active = {
+        equals: Boolean(req.query.active),
+      };
+    }
+
+    const discount = await prisma.discounts.findUnique({
+      where: filters,
+    });
+
+    if (!discount) {
+      res.status(404).json({error: 'discount not found'});
+      return;
+    }
+
+    res.status(200).json(discount);
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
@@ -86,9 +80,11 @@ discountController.use(checkScopes);
  *     summary: get all discounts
  *     tags:
  *     - New Discount
+ *     security:
+ *     - bearerAuth: []
  *     responses:
  *       200:
- *         description: discount updated successfully.
+ *         description: discounts acquired successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -110,50 +106,39 @@ discountController.use(checkScopes);
 discountController.get('/', async (req: Request, res: Response) => {
   try {
     const filters: any = {};
-    if (req.params.code) {
+
+    if (req.query.code) {
       filters.code = {
-        equals: req.params.code,
+        equals: req.query.code,
       };
     }
-    if (req.params.startdate) {
-      filters.startdate = {
-        equals: req.params.startdate,
+    if (req.query.active) {
+      filters.active = {
+        equals: Boolean(req.query.active),
       };
     }
-    if (req.params.enddate) {
-      filters.enddate = {
-        equals: req.params.enddate,
-      };
-    }
-    if (req.params.tickettype) {
+    if (req.query.tickettype) {
       filters.tickettypeid_fk = {
-        equals: req.params.tickettype,
+        equals: req.query.tickettype,
       };
     }
 
-    if (Object.keys(filters).length > 0) {
-      const discounts = await prisma.discounts.findMany({
-        where: filters,
-      });
-      res.status(200).json(discounts);
-
-      return;
-    }
-
-    const discounts = await prisma.discounts.findMany();
+    const discounts = await prisma.discounts.findMany({
+      ...(filters && {where: filters}),
+      orderBy: {
+        discountid: 'asc',
+      },
+    });
     res.status(200).json(discounts);
-
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
@@ -168,13 +153,13 @@ discountController.get('/', async (req: Request, res: Response) => {
  *     summary: get a discount
  *     tags:
  *     - New Discount
+ *     security:
+ *     - bearerAuth: []
  *     parameters:
  *     - $ref: '#/components/parameters/id'
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: discount updated successfully.
+ *         description: discount acquired successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -191,34 +176,113 @@ discountController.get('/', async (req: Request, res: Response) => {
 discountController.get('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const discountExists = await prisma.discounts.findUnique({
-      where: {
-        discountid: Number(id),
-      },
-    });
-    if (!discountExists) {
-      res.status(404).json({error: 'discount not found'});
-
-      return;
-    }
     const discount = await prisma.discounts.findUnique({
       where: {
         discountid: Number(id),
       },
     });
-    res.status(200).json(discount);
 
+    if (!discount) {
+      res.status(404).json({error: 'discount not found'});
+      return;
+    }
+
+    res.status(200).json(discount);
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
+      return;
+    }
 
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/discount:
+ *   post:
+ *     summary: Create a discount
+ *     tags:
+ *     - New Discount
+ *     security:
+ *     - bearerAuth: []
+ *     requestBody:
+ *       description: Create discount information
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/requestBodies/Discount'
+ *     responses:
+ *       201:
+ *         description: discount created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Discount'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+discountController.post('/', async (req: Request, res: Response) => {
+  try {
+    // Validations
+    const {amount, percent, usagelimit, min_events, min_tickets} = req.body;
+    if (amount && amount <= 0) {
+      return res.status(400).json({error: 'Amount cannot be 0 or less'});
+    }
+    if (percent && percent < 1 || percent > 100) {
+      return res.status(400).json({error: 'Percent cannot be less than 0 or greater than 100'});
+    }
+    if (usagelimit && usagelimit < 1) {
+      return res.status(400).json({error: 'Usage limit cannot be 0 or less'});
+    }
+    if (min_events && min_events < 1) {
+      return res.status(400).json({error: 'Min events cannot be 0 or less'});
+    }
+    if (min_tickets && min_tickets < 1) {
+      return res.status(400).json({error: 'Min tickets cannot be 0 or less'});
+    }
+
+    // Attempt to create discount
+    const discount = await prisma.discounts.create({
+      data: {
+        code: req.body.code,
+        active: req.body.active,
+        amount: amount,
+        percent: percent,
+        tickettypeid_fk: req.body.tickettype,
+        usagelimit: usagelimit,
+        min_events: min_events,
+        min_tickets: min_tickets,
+      },
+    });
+
+    res.status(201).json(discount);
+    return;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
       return;
     }
 
@@ -258,36 +322,50 @@ discountController.get('/:id', async (req: Request, res: Response) => {
 discountController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const discount = prisma.discounts.update({
+    const {amount, percent, usagelimit, min_events, min_tickets} = req.body;
+
+    if (amount && amount <= 0) {
+      return res.status(400).json({error: 'Amount cannot be 0 or less'});
+    }
+    if (percent && percent < 1 || percent > 100) {
+      return res.status(400).json({error: 'Percent cannot be less than 0 or greater than 100'});
+    }
+    if (usagelimit && usagelimit < 1) {
+      return res.status(400).json({error: 'Usage limit cannot be 0 or less'});
+    }
+    if (min_events && min_events < 1) {
+      return res.status(400).json({error: 'Min events cannot be 0 or less'});
+    }
+    if (min_tickets && min_tickets < 1) {
+      return res.status(400).json({error: 'Min tickets cannot be 0 or less'});
+    }
+
+    await prisma.discounts.update({
       where: {
         discountid: Number(id),
       },
       data: {
         code: req.body.code,
+        active: req.body.active,
         amount: req.body.amount,
         percent: req.body.percent,
-        startdate: req.body.startdate,
-        enddate: req.body.enddate,
         tickettypeid_fk: req.body.tickettype,
-        createdby_fk: req.body.createdby,
         usagelimit: req.body.usagelimit,
         min_events: req.body.min_events,
         min_tickets: req.body.min_tickets,
       },
     });
-    res.status(204).json();
 
+    res.status(204).json();
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
@@ -308,7 +386,7 @@ discountController.put('/:id', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       204:
- *         description: discount updated successfully.
+ *         description: discount deleted successfully.
  *       400:
  *         description: bad request
  *         content:
@@ -330,27 +408,24 @@ discountController.delete('/:id', async (req: Request, res: Response) => {
     });
     if (!discountExists) {
       res.status(404).json({error: 'discount not found'});
-
       return;
     }
-    const discount = prisma.discounts.delete({
+    await prisma.discounts.delete({
       where: {
         discountid: Number(id),
       },
     });
-    res.status(204).json();
 
+    res.status(204).json();
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
       res.status(400).json({error: error.message});
-
       return;
     }
 

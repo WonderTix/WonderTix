@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {TableDataType} from '../Table/TableData';
 import {useAuth0} from '@auth0/auth0-react';
-import {taskPriority} from '../TaskManager';
+import {taskPriority} from '../Tasks';
 import {
   ChevronDownIcon,
   ChevronUpIcon,

@@ -38,3 +38,12 @@ export const initialTicketTypeRestriction: ticketTypeRestriction = {
   ticketssold: 0,
   description: '',
 };
+
+export const emptyDiscountCode = {
+  discountid: -1,
+  code: '',
+  amount: 0,
+  percent: 0,
+  min_tickets: 0,
+  min_events: 0,
+};
