@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
 import {useNavigate, useParams} from 'react-router-dom';
 import {Tooltip} from '@mui/material';
 import {Contact, emptyContact} from './contactUtils';
@@ -24,51 +23,59 @@ const Contacts = (): React.ReactElement => {
   const [contactPopUpErrMsg, setContactPopUpErrMsg] = useState(null);
 
   useEffect(() => {
-    void getData();
-  }, [params.id]);
+    if (token) {
+      void getData();
+    }
+  }, [params.id, token]);
 
   const getData = async () => {
     if (params.id) {
       setContact(params.id);
-      await axios
-        .get(
-          process.env.REACT_APP_API_1_URL +
-            `/contacts/search?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL +
+          `/contact?firstname=${params.id.split(' ')[0]}&lastname=${params.id.split(' ')[1]}`,
           {
+            method: 'GET',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
           },
-        )
-        .then((res) => {
-          // Maps database values to Contact type
-          setContactList(
-            res.data.data.map((contact) => {
-              return {
-                first: contact.firstname,
-                last: contact.lastname,
-                email: contact.email,
-                phone: contact.phone,
-                address: contact.address,
-                city: contact.city,
-                state: contact.state,
-                country: contact.country,
-                postalCode: contact.postalcode,
-                donorBadge: contact.donorbadge,
-                seatingAcc: contact.seatingaccom,
-                vip: contact.vip,
-                volunteerList: contact.volunteerlist,
-                newsletter: contact.newsletter,
-                contactId: contact.contactid,
-                createdDate: contact.createddate,
-              };
-            }),
-          );
-        })
-        .catch((err) => {
-          console.error(err.message);
-        });
+        );
+        if (!response.ok) {
+          throw new Error('Cannot fetch contacts');
+        }
+
+        // Maps database values to Contact type
+        const contacts = await response.json();
+        setContactList(
+          contacts.map((contact) => {
+            return {
+              first: contact.firstname,
+              last: contact.lastname,
+              email: contact.email,
+              phone: contact.phone,
+              address: contact.address,
+              city: contact.city,
+              state: contact.state,
+              country: contact.country,
+              postalCode: contact.postalcode,
+              donorBadge: contact.donorbadge,
+              seatingAcc: contact.seatingaccom,
+              comments: contact.comments,
+              vip: contact.vip,
+              volunteerList: contact.volunteerlist,
+              newsletter: contact.newsletter,
+              contactId: contact.contactid,
+              createdDate: contact.createddate,
+            };
+          }),
+        );
+      } catch (error) {
+        console.error(error.message);
+      }
     } else {
       setContactList([]);
     }
@@ -85,7 +92,9 @@ const Contacts = (): React.ReactElement => {
   };
 
   const handleCreateContact = async (contact: Contact) => {
-    contact.seatingAcc = !contact.comments ? contact.seatingAcc : `${contact.seatingAcc} - ${contact.comments}`;
+    if (contact.seatingAcc === 'Other') {
+      contact.seatingAcc = contact.otherSeatingAcc;
+    }
 
     try {
       const response = await fetch(
@@ -107,6 +116,7 @@ const Contacts = (): React.ReactElement => {
             postalcode: contact.postalCode,
             donorbadge: contact.donorBadge,
             seatingaccom: contact.seatingAcc,
+            comments: contact.comments,
             vip: contact.vip,
             volunteerlist: contact.volunteerList,
             newsletter: contact.newsletter,

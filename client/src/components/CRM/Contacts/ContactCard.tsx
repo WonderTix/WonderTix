@@ -46,6 +46,7 @@ const ContactCard = ({
     newsletter,
     donorBadge,
     seatingAcc,
+    comments,
     vip,
     volunteerList,
     createdDate,
@@ -92,10 +93,10 @@ const ContactCard = ({
     <>
       <section
         data-testid='contact-card'
-        className='relative w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-5 p-5'
+        className='relative w-full bg-white shadow-lg border border-zinc-300 text-zinc-700 rounded-lg mb-5 p-5'
       >
-        <header className='flex justify-between border-b pb-5'>
-          <h2 className='flex gap-3 items-center text-2xl font-bold text-zinc-700'>
+        <header className='flex justify-between border-b pb-5 text-zinc-800'>
+          <h2 className='flex gap-3 items-center text-2xl font-bold'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               className='h-10 w-10'
@@ -202,6 +203,10 @@ const ContactCard = ({
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Seating Accommodation:</span>
           <span data-testid='contact-accommodation'>{seatingAcc}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>Comments:</span>
+          <span data-testid='contact-comments'>{comments}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Newsletter:</span>

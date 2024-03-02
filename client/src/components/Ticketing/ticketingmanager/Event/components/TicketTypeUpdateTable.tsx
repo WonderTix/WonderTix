@@ -4,12 +4,8 @@ import {TicketTypeSelect} from './TicketTypeSelect';
 import {InputControl} from './InputControl';
 import {IconButton} from '@mui/material';
 import {useEvent} from './EventProvider';
-import {
-  getInstanceTicketType,
-  TrashCanIcon,
-  CirclePlusIcon,
-} from './ShowingUtils';
-
+import {getInstanceTicketType} from './ShowingUtils';
+import {CirclePlusIcon, TrashCanIcon} from '../../../Icons';
 interface TicketTypeTableProps {
   arrayHelpers;
   eventInstanceID: number;
@@ -18,10 +14,6 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
   const {arrayHelpers, eventInstanceID} = props;
   const {ticketTypes, showPopUp} = useEvent();
   const [InstanceTicketTypesField] = useField('instanceTicketTypes');
-  const [defaulttickettype] = useField('defaulttickettype');
-  const defaultTypeIndex = InstanceTicketTypesField.value.findIndex(
-    (item) => item.tickettypeid_fk === defaulttickettype.value,
-  );
   const [availableTypes, setAvailableTypes] = useState(
     ticketTypes
       .filter(
@@ -61,6 +53,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                 <IconButton
                   size={'small'}
                   aria-label={'add ticket type'}
+                  data-testid='add-ticket-type-button'
                   onClick={async () => {
                     arrayHelpers.insert(
                       0,
@@ -84,50 +77,8 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
           </tr>
         </thead>
         <tbody className={'text-sm whitespace-nowrap text-zinc-800'}>
-          {defaultTypeIndex > -1 && (
-            <tr className={'bg-gray-200'}>
-              <td className={'px-2 border border-white'}>
-                {InstanceTicketTypesField.value[defaultTypeIndex].description}
-              </td>
-              <td className={'px-2 border border-white'}>
-                <Field
-                  name={`${InstanceTicketTypesField.name}[${defaultTypeIndex}].price`}
-                  type={'number'}
-                  component={InputControl}
-                  hidden={true}
-                  label={'Ticket Price'}
-                  currency={true}
-                  className={{
-                    controlClass: '',
-                    inputClass: 'w-[75px] bg-gray-200',
-                    labelClass: '',
-                  }}
-                />
-              </td>
-              <td className={'px-2 border border-white'}>
-                <Field
-                  name={`${InstanceTicketTypesField.name}[${defaultTypeIndex}].concessionprice`}
-                  type={'number'}
-                  component={InputControl}
-                  hidden={true}
-                  label={'Concession Price'}
-                  currency={true}
-                  className={{
-                    controlClass: '',
-                    inputClass: 'w-[75px] bg-gray-200',
-                    labelClass: '',
-                  }}
-                />
-              </td>
-              <td className={'px-2 border border-white'}>
-                {InstanceTicketTypesField.value[defaultTypeIndex].ticketlimit}
-              </td>
-              <td className={'border border-white'}></td>
-            </tr>
-          )}
           {InstanceTicketTypesField.value?.length > 0 &&
             InstanceTicketTypesField.value.map((type, index) => {
-              if (index === defaultTypeIndex) return undefined;
               return (
                 <tr key={eventInstanceID + index + 'ticketTypeRow'}>
                   <td
@@ -192,7 +143,7 @@ export const TicketTypeUpdateTable = (props: TicketTypeTableProps) => {
                       type={'number'}
                       component={InputControl}
                       hidden={true}
-                      label={'Ticket Quantity'}
+                      label={'Ticket Type Quantity'}
                       className={{
                         controlClass: '',
                         inputClass: 'w-[50px]',

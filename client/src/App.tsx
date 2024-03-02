@@ -7,19 +7,13 @@ import AccountsMain from './components/CRM/Accounts/AccountsMain';
 import ContactMain from './components/CRM/Contacts/ContactMain';
 import {ContactOneResult} from './components/CRM/Contacts/ContactOneResult';
 import ReportingMain from './components/CRM/Reporting/ReportingMain';
-import TasksEditMain from './components/CRM/Tasks/TasksEditMain';
 import TasksMain from './components/CRM/Tasks/TasksMain';
-import CreateTask from './components/CRM/Tasks/CreateTask';
 import ManageAccountsmain from './components/CRM/Accounts/ManageUsers/ManageAccountsmain';
 import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchmain';
 import DailySalesReportMain from './components/CRM/Reporting/DailySalesReport/DailySalesReportMain';
 import DonationSummaryReportMain from './components/CRM/Reporting/DonationSummaryReport/DonationSummaryReportMain';
 import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconciliationReport';
 import TransactionSummaryReport from './components/CRM/Reporting/TransactionSummaryReport/TransactionSummaryReport';
-
-/* Donor Management */
-import DmDashmain from './components/DonorManagement/DmDashmain';
-import DonorReporting from './components/DonorManagement/Reporting/DonorReporting';
 
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
@@ -37,6 +31,7 @@ import Eventmain from './components/Ticketing/ticketingmanager/Event/Eventmain';
 import SeasonsMain from './components/Ticketing/ticketingmanager/Season/SeasonMain';
 import SingleSeasonMain from './components/Ticketing/ticketingmanager/Season/components/SingleSeasonMain';
 import TicketTypesmain from './components/Ticketing/ticketingmanager/TicketTypes/TicketTypesmain';
+import DiscountCodesmain from './components/Ticketing/ticketingmanager/DiscountCodes/DiscountCodesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
 import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
 import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
@@ -98,24 +93,8 @@ const App = () => {
           element={<ProtectedRoute component={TasksMain} />}
         />
         <Route
-          path='/admin/tasks/create'
-          element={<ProtectedRoute component={CreateTask} />}
-        />
-        <Route
-          path='/admin/tasks/edit'
-          element={<ProtectedRoute component={TasksEditMain} />}
-        />
-        <Route
           path='/admin/tasks/accountInformation'
           element={<ProtectedRoute component={TasksMain} />}
-        />
-        <Route
-          path='/admin/donor'
-          element={<ProtectedRoute component={DmDashmain} />}
-        />
-        <Route
-          path='/admin/donor/reporting'
-          element={<ProtectedRoute component={DonorReporting} />}
         />
         <Route
           path='/admin/reporting/credit-card-reconciliation'
@@ -164,6 +143,10 @@ const App = () => {
         <Route
           path='/ticketing/tickettypes'
           element={<ProtectedRoute component={TicketTypesmain} />}
+        />
+        <Route
+          path='/ticketing/discountcodes'
+          element={<ProtectedRoute component={DiscountCodesmain} />}
         />
         <Route
           path='/ticketing/ticketexchanges'

@@ -102,7 +102,7 @@ export class EventsPage {
     this.ticketQuantityOption = page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});
-    this.activateEventchecker = page.getByLabel('controlled');
+    this.activateEventchecker = page.locator('#active' );
     this.inactiveEventchecker = page.getByRole('button', {name: 'Inactive'});
   }
 
@@ -171,6 +171,9 @@ export class EventsPage {
     await this.editEventTime.fill(showing.showingTime24hour);
     await this.editTicketQuantity.click();
     await this.editTicketQuantity.fill(showing.showingQuantity);
+    await this.page.getByTestId('add-ticket-type-button').click();
+    await this.page.getByLabel('Ticket Type Select number 0').selectOption('General Admission - Adult');
+    await this.page.getByLabel('Ticket Type Quantity').fill(showing.showingQuantity);
     await this.newShowingSave.click();
     await this.eventContinue.click();
   }
