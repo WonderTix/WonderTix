@@ -72,7 +72,7 @@ steps:
       - 'SERVER_REVISION'
       - 'SERVICE_ACCOUNT'
       - 'SHOULD_SEED'
-      - 'GCLOUD_KEY_PATH'
+      - 'GCLOUD_KEY'
       - 'GCLOUD_BUCKET'
       - 'SQL_INSTANCE'
 
@@ -183,7 +183,7 @@ steps:
       - 'SERVER_MEMORY'
       - 'SERVICE_ACCOUNT'
       - 'SHOULD_SEED'
-      - 'GCLOUD_KEY_PATH'
+      - 'GCLOUD_KEY'
       - 'GCLOUD_BUCKET'
       - 'SQL_INSTANCE'
 
@@ -341,8 +341,8 @@ availableSecrets:
     env: 'SERVICE_ACCOUNT'
   - versionName: projects/${PROJECT_ID}/secrets/SHOULD_SEED/versions/${_ENV}
     env: 'SHOULD_SEED'
-  - versionName: projects/${PROJECT_ID}/secrets/GCLOUD_KEY_PATH/versions/${_ENV}
-    env: 'GCLOUD_KEY_PATH'
+  - versionName: projects/${PROJECT_ID}/secrets/GCLOUD_KEY/versions/${_ENV}
+    env: 'GCLOUD_KEY'
   - versionName: projects/${PROJECT_ID}/secrets/GCLOUD_BUCKET/versions/${_ENV}
     env: 'GCLOUD_BUCKET'
   - versionName: projects/${PROJECT_ID}/secrets/SQL_INSTANCE/versions/${_ENV}

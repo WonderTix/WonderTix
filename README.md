@@ -45,7 +45,7 @@ Future features include managing/creating email campaigns and ticket exchanges.
    1. Navigate to `<path/to/WonderTix/server>` and `<path/to/WonderTix/client>`.
    2. Run `mkcert -install` to install the local certificate authority.
    3. Run `mkcert localhost` to create a certificate.
-4. Get the google cloud storage service account key file from your team lead and put into `<path/to/WonderTix/server>` for access to image upload.
+4. (optional) If you plan on testing image upload for event creation, get the google cloud storage service account key from your team lead and put this as your `GCLOUD_KEY` in the `.env` file.
 5. Run `docker-compose up -d` (or `docker compose up` to see live container logs in the terminal). This starts a locally running instance of Wondertix using docker containers.
 6. To test the checkout process with Stripe, make sure you have the [Stripe CLI](https://stripe.com/docs/stripe-cli) installed.
    1. Once the Stripe CLI is installed, run `stripe login` and press enter to open the browser.

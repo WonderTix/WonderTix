@@ -179,19 +179,23 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
  */
 
 eventController.post('/image-upload', upload.single('file'), async (req: Request, res: Response) => {
-  const keyPath = process.env.GCLOUD_KEY_PATH;
+  const gcloudKey = process.env.GCLOUD_KEY;
   const bucketName = process.env.GCLOUD_BUCKET;
 
-  if (keyPath === undefined) {
-    console.log('bucket key path undefined');
+  if (gcloudKey === undefined || gcloudKey === '') {
+    console.log('Bucket key undefined!');
+    return res.status(500).send('Bucket key undefined!');
   }
-  if (bucketName === undefined) {
-    console.log('bucket name undefined');
+  if (bucketName === undefined || bucketName === '') {
+    console.log('Bucket name undefined!');
+    return res.status(500).send('Bucket name undefined!');
   }
 
-  const storage = new Storage({keyFilename: `${keyPath}`});
+  const credentials = JSON.parse(gcloudKey);
+
+  const storage = new Storage({credentials: credentials});
   const imgBucket = storage.bucket(`${bucketName}`);
-  
+
   if (!req.file) {
     return res.status(400).send('No file passed to request!');
   }
