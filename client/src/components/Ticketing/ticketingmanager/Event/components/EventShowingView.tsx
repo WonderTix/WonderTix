@@ -3,16 +3,12 @@ import React from 'react';
 import format from 'date-fns/format';
 import {toDateStringFormat} from './util/EventsUtil';
 import {useEvent} from './EventProvider';
-import {
-    cloneShowing,
-    createSubmitFunction,
-    CloneIcon,
-    EditIcon,
-    TrashCanIcon,
-} from './ShowingUtils';
+import {cloneShowing, createSubmitFunction} from './ShowingUtils';
 import {LineItem} from './LineItem';
 import {FormButton} from './FormButton';
 import {FormDeleteButton} from './FormDeleteButton';
+import {CloneIcon, EditIcon, TrashCanIcon} from '../../../Icons';
+import {Switch} from '@mui/material';
 
 interface EventInstanceViewProps {
   showing: UpdatedShowing;
@@ -88,8 +84,19 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
               ) => set(current.includes('truncate') ? '' : 'truncate')}
             />
           )}
-          <LineItem label='Total Tickets' information={showing.totalseats} />
-          <LineItem label='Available Tickets' information={showing.availableseats}/>
+            <LineItem label='Total Tickets' information={showing.totalseats} />
+            <LineItem label='Available Tickets' information={showing.availableseats}/>
+          <div className='flex flex-row justify-between min-[768px]:grid min-[768px]:grid-cols-12 text-zinc-800'>
+            <p className='text-sm font-semibold whitespace-nowrap  min-[768px]:col-span-6'>
+              Preview
+            </p>
+            <Switch
+              color='primary'
+              disabled={true}
+              size='small'
+              checked={showing.ispreview}
+            />
+          </div>
         </div>
         <div className='overflow-y-auto overflow-x-auto col-span-12 min-[1350px]:col-span-7 shadow-xl border border-white rounded-xl bg-white w-[100%] min-h-[100px]'>
           <table className='table table-fixed text-sm min-w-[100%]'>
@@ -156,6 +163,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             onDelete={onDelete}
             testID={`${showing.eventinstanceid}-showing-delete-button`}
             className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
+            disabled={showPopUp || editing}
           >
             <TrashCanIcon className='h-6 w-6' />
           </FormDeleteButton>
