@@ -1,0 +1,11 @@
+- id: 0
+  name: Preview
+  description: Redeem your Preview Tickets for performances prior to Opening Night
+  price: $69.00
+  previewonly: true
+
+- id: 1
+  name: Anytime
+  description: Redeem your Anytime Tickets for any performance dates
+  price: $149.00
+  previewonly: false
