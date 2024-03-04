@@ -32,11 +32,9 @@ const ReaderPurchase = () => {
   const discount = useAppSelector(selectDiscount);
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
-  const [orderID, setOrderID] = useState('');
+  const [orderID, setOrderID] = useState('loading...');
 
   const paymentIntentID = useParams().id;
-
-  const socketURL = process.env.REACT_APP_WEBSOCKET_URL;
 
   const translateStatus = (status) => {
     switch (status) {
@@ -50,19 +48,23 @@ const ReaderPurchase = () => {
         return 'Payment Failed';
       case 'payment_intent.processing':
         return 'Payment Processing';
+      case 'payment_intent.requires_payment_method':
+        return 'Requires Payment Method';
       case 'terminal.reader.action_failed':
-        return 'Terminal Payment Failed'
+        return 'Card Reader Payment Failed';
       case 'terminal.reader.action_succeeded':
-        return 'Terminal Payment Succeeded'
+        return 'Card Reader Payment Succeeded';
       default:
         return status;
     }
-  }
+  };
 
   const setTranslatedStatus = (status) => {
     setRawStatus(status);
     setStatus(translateStatus(status));
-  }
+  };
+
+  const socketURL = process.env.REACT_APP_WEBSOCKET_URL;
 
   const {getWebSocket} = useWebSocket(socketURL, {
     shouldReconnect: () => true,

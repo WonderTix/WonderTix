@@ -670,8 +670,8 @@ const AdminPurchase = () => {
                 Proceed to Checkout
               </button>
             </div>
-            <div className="mt-4 text-center">
-            <label htmlFor='reader-select'>Select a Reader</label>
+            <div className='mt-4 text-center'>
+              <label htmlFor='reader-select' className='font-semibold'>Select a Reader</label>
               <select id='reader-select' value={selectedReader} onChange={reader_handleChange}>
                 {readerList.map((reader) => (
                   <option key={reader.id} value={reader.id}>
