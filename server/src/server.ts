@@ -690,14 +690,12 @@ const createServer = async () => {
     ws.on('error', console.error);
 
     ws.on('message', (data, isBinary) => {
-      console.log(`Message: ${data.toString()}`);
       wss.clients.forEach((client) => {
         if (client !== ws) {
           waitForOpenConnection(client).then(() => {
-            console.log('Data sent');
             client.send(data, { binary: isBinary });
           }).catch((error) => {
-            console.log(error.message);
+            console.error(error.message);
           });
         }
       });

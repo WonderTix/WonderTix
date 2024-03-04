@@ -348,6 +348,9 @@ const AdminPurchase = () => {
     if (toReader) {
       // we need to do this in this file so we can navigate to the
       // directory based on the payment intent we create here
+
+      if (!token) return;
+
       fetch( // create intent
       process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
       {
@@ -355,6 +358,7 @@ const AdminPurchase = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({cartItems}),
       },
@@ -667,8 +671,8 @@ const AdminPurchase = () => {
               </button>
             </div>
             <div className="mt-4 text-center">
-              <h1>Select a Reader</h1>
-              <select value={selectedReader} onChange={reader_handleChange}>
+            <label htmlFor='reader-select'>Select a Reader</label>
+              <select id='reader-select' value={selectedReader} onChange={reader_handleChange}>
                 {readerList.map((reader) => (
                   <option key={reader.id} value={reader.id}>
                     {reader.id}

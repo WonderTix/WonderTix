@@ -145,113 +145,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     res.status(500).json(error);
   }
 });
-/**
- * @swagger
- * /2/events/reader-intent:
- *   post:
- *     summary: Create Reader Payment Intent
- *     tags:
- *     - New Event API
- */
-
-eventController.post('/reader-intent', async (req: Request, res: Response) => {
-  const {cartItems} = req.body;
-  let paymentIntentID = "";
-  let clientSecret = "";
-
-  try {
-    if (!cartItems.length) {
-      return res.status(400).json({error: 'Cart is empty'});
-    }
-    const {
-      ticketCartRows,
-      orderTicketItems,
-      ticketTotal,
-      eventInstanceQueries,
-    } = await getTicketItems(cartItems, prisma);
-
-    if (ticketTotal > 0) {
-      const {id, secret} = await createStripePaymentIntent(
-        ticketTotal * 100
-      )
-      paymentIntentID = id;
-      clientSecret = secret;
-    }
-    res.json({id: paymentIntentID, secret: clientSecret});
-  } catch (error) {
-    console.error(error);
-    if (error instanceof InvalidInputError) {
-      res.status(error.code).json(error.message);
-      return;
-    }
-    res.status(500).json(error);
-  }
-});
-
-/**
- * @swagger
- * /2/events/reader-checkout:
- *   post:
- *     summary: Request Payment for intent and fulfill order
- *     tags:
- *     - New Event API
- */
-
-eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {cartItems, paymentIntentID, readerID, discount} = req.body;
-  let order :orders | null = null;
-  try {
-    if (!cartItems.length) {
-      return res.status(400).json({error: 'Cart is empty'});
-    }
-
-    if (discount.code != '') {
-      await validateDiscount(discount, cartItems, prisma);
-    }
-
-    const {
-      ticketCartRows,
-      orderTicketItems,
-      ticketTotal,
-      eventInstanceQueries,
-    } = await getTicketItems(cartItems, prisma);
-
-    const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
-    
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
-
-    // add order to database with prisma
-    order = await orderFulfillment(
-        prisma,
-        eventInstanceQueries,
-        ticketTotal,
-        discountAmount,
-        {
-          orderTicketItems,
-        },
-        undefined, // no contactid with reader payments
-        undefined, // no session with reader payments
-        discount.code != '' ? discount.discountid : null,
-        paymentIntentID // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
-    );
-    res.json({status: 'order sent'});
-  } catch (error) {
-    console.error(error);
-    if (order) await updateCanceledOrder(prisma, order, true);
-    if (error instanceof InvalidInputError) {
-      res.status(error.code).json(error.message);
-      return;
-    }
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError ||
-      error instanceof Prisma.PrismaClientValidationError
-    ) {
-      res.status(400).json(error.message);
-      return;
-    }
-    res.status(500).json(error);
-  }
-});
 
 /**
  * @swagger
@@ -891,6 +784,116 @@ eventController.get('/:id', async (req: Request, res: Response) => {
 // All further routes require authentication
 eventController.use(checkJwt);
 eventController.use(checkScopes);
+
+/**
+ * @swagger
+ * /2/events/reader-intent:
+ *   post:
+ *     summary: Create Reader Payment Intent
+ *     tags:
+ *     - New Event API
+ */
+
+eventController.post('/reader-intent', async (req: Request, res: Response) => {
+  const {cartItems} = req.body;
+  let paymentIntentID = "";
+  let clientSecret = "";
+
+  console.log("authenticated!"); // remove
+
+  try {
+    if (!cartItems.length) {
+      return res.status(400).json({error: 'Cart is empty'});
+    }
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
+
+    if (ticketTotal > 0) {
+      const {id, secret} = await createStripePaymentIntent(
+        ticketTotal * 100
+      )
+      paymentIntentID = id;
+      clientSecret = secret;
+    }
+    res.json({id: paymentIntentID, secret: clientSecret});
+  } catch (error) {
+    console.error(error);
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).json(error.message);
+      return;
+    }
+    res.status(500).json(error);
+  }
+});
+
+/**
+ * @swagger
+ * /2/events/reader-checkout:
+ *   post:
+ *     summary: Request Payment for intent and fulfill order
+ *     tags:
+ *     - New Event API
+ */
+
+eventController.post('/reader-checkout', async (req: Request, res: Response) => {
+  const {cartItems, paymentIntentID, readerID, discount} = req.body;
+  let order :orders | null = null;
+  try {
+    if (!cartItems.length) {
+      return res.status(400).json({error: 'Cart is empty'});
+    }
+
+    if (discount.code != '') {
+      await validateDiscount(discount, cartItems, prisma);
+    }
+
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
+
+    const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
+    
+    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+
+    // add order to database with prisma
+    order = await orderFulfillment(
+        prisma,
+        eventInstanceQueries,
+        ticketTotal,
+        discountAmount,
+        {
+          orderTicketItems,
+        },
+        undefined, // no contactid with reader payments
+        undefined, // no session with reader payments
+        discount.code != '' ? discount.discountid : null,
+        paymentIntentID // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
+    );
+    res.json({orderID: order.orderid, status: 'order sent'});
+  } catch (error) {
+    console.error(error);
+    if (order) await updateCanceledOrder(prisma, order, true);
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).json(error.message);
+      return;
+    }
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError ||
+      error instanceof Prisma.PrismaClientValidationError
+    ) {
+      res.status(400).json(error.message);
+      return;
+    }
+    res.status(500).json(error);
+  }
+});
 
 /**
  * @swagger

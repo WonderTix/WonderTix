@@ -158,16 +158,16 @@ const App = () => {
           element={<ProtectedRoute component={AdminPurchasemain} />}
         />
         <Route
+          path='/ticketing/purchaseticket/:id'
+          element={<ProtectedRoute component={ReaderPurchasePage}/>}
+        />
+        <Route
           path='/ticketing/admincheckout'
           element={<ProtectedRoute component={AdminCheckoutmain} />}
         />
         <Route
           path='/ticketing/refund'
           element={<ProtectedRoute component={RefundOrdersMain} />}
-        />
-        <Route
-          path='/ticketing/purchaseticket/:id'
-          element={<ProtectedRoute component={ReaderPurchasePage}/>}
         />
         <Route path='*' element={<PageNotFound />} />
       </Routes>

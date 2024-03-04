@@ -68,8 +68,9 @@ export const readerWebhook = async (
           payment_intent: paymentIntent,
         },
       });
+
       if (!order) return;
-      console.log(order);
+
       const intent = stripe.paymentIntents.cancel(paymentIntent); // avoid double charge
       await updateCanceledOrder(prisma, order, true);
       break;
@@ -265,8 +266,9 @@ export const abortPaymentIntent = async (
       payment_intent: paymentIntentID,
     },
   });
+
   if (!order) throw new Error('Unable to find order!');
-  console.log(order);
+
   const intent = stripe.paymentIntents.cancel(paymentIntentID); // avoid double charge
 
   if (!intent) throw new Error('Unable to find payment Intent!');

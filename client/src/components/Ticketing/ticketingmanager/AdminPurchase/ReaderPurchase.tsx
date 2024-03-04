@@ -6,12 +6,11 @@ import PopUp from '../../PopUp';
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {useAppSelector} from '../../app/hooks';
 
 import {useFetchToken} from '../Event/components/ShowingUtils';
 
 import {
-  removeAllTicketsFromCart,
   selectDiscount,
 } from '../ticketingSlice';
 
@@ -23,6 +22,7 @@ const stripePromise = loadStripe(pk);
 const ReaderPurchase = () => {
   const {token} = useFetchToken();
   const [status, setStatus] = useState('Awaiting Response...');
+  const [rawStatus, setRawStatus] = useState('Awaiting Response...');
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,11 +32,37 @@ const ReaderPurchase = () => {
   const discount = useAppSelector(selectDiscount);
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
+  const [orderID, setOrderID] = useState('');
 
-  const event = 'reader';
   const paymentIntentID = useParams().id;
 
   const socketURL = process.env.REACT_APP_WEBSOCKET_URL;
+
+  const translateStatus = (status) => {
+    switch (status) {
+      case 'payment_intent.created':
+        return 'Payment Intent Created';
+      case 'payment_intent.succeeded':
+        return 'Payment Succeeded';
+      case 'payment_intent.canceled':
+        return 'Payment Intent Canceled';
+      case 'payment_intent.payment_failed':
+        return 'Payment Failed';
+      case 'payment_intent.processing':
+        return 'Payment Processing';
+      case 'terminal.reader.action_failed':
+        return 'Terminal Payment Failed'
+      case 'terminal.reader.action_succeeded':
+        return 'Terminal Payment Succeeded'
+      default:
+        return status;
+    }
+  }
+
+  const setTranslatedStatus = (status) => {
+    setRawStatus(status);
+    setStatus(translateStatus(status));
+  }
 
   const {getWebSocket} = useWebSocket(socketURL, {
     shouldReconnect: () => true,
@@ -46,17 +72,10 @@ const ReaderPurchase = () => {
       if (data.messageType === 'reader' &&
           data.paymentIntent === paymentIntentID ||
           data.paymentIntent === readerID) { // in the case of terminal event, paymentIntent is a readerID
-        setStatus(data.eventType);
+        setTranslatedStatus(data.eventType);
         if (data.eventType === 'payment_intent.succeeded') {
           ws.close();
           navigate(`/success`);
-        } else if (data.eventType === 'payment_intent.requires_action') { // not sure if this needs to be handelled but I think this is how its done
-          stripePromise.then((stripe) => {
-            if (!stripe) return;
-            stripe.confirmCardPayment(clientSecret).then((result) => {
-              console.log(result); // should handle failure/success here
-            });
-          });
         } else if (data.eventType === 'terminal.reader.action_failed') {
           ws.close();
           setErrMsg(data.errMsg + ' Order canceled. Please Try again.');
@@ -69,13 +88,9 @@ const ReaderPurchase = () => {
   useEffect(() => {
     const processPayment = async () => {
       try {
-        const stripe = await stripePromise;
-        if (!stripe) throw new Error('Failed to initialize stripe!');
+        handleRefresh();
 
-        const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
-        if (!paymentIntent) throw new Error('Cannot find payment intent!');
-
-        if (paymentIntent.status === 'canceled') throw new Error('Payment Already Canceled!');
+        if (rawStatus === 'payment_intent.canceled') throw new Error('Payment Already Canceled!');
 
         const response = await fetch( // request payment and put order in database
           process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
@@ -84,6 +99,7 @@ const ReaderPurchase = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({cartItems, paymentIntentID, readerID, discount}),
           },
@@ -95,7 +111,7 @@ const ReaderPurchase = () => {
 
         const result = await response.json();
         if (result.status === 'order sent') {
-          console.log('order sent!');
+          setOrderID(result.orderID);
         } else {
           setErrMsg('Failure processing order, cancelling.');
           setDialog(true);
@@ -109,6 +125,7 @@ const ReaderPurchase = () => {
         handleCancel();
       }
     };
+    if (!token) return;
     processPayment();
 
     const alertUser = async (e) => {
@@ -120,7 +137,7 @@ const ReaderPurchase = () => {
     return () => {
       window.removeEventListener('beforeunload', alertUser);
     };
-  }, []);
+  }, [token]);
 
   const handleCloseDialog = () => {
     setDialog(false);
@@ -136,7 +153,7 @@ const ReaderPurchase = () => {
       if (!paymentIntent) throw new Error('Cannot find payment intent!');
 
       const newStatus = 'payment_intent.' + paymentIntent.status;
-      setStatus(newStatus);
+      setTranslatedStatus(newStatus);
 
       if (newStatus === 'payment_intent.succeeded') {
         const ws = getWebSocket();
@@ -151,24 +168,11 @@ const ReaderPurchase = () => {
   };
 
   const handleCancel = async () => {
-    let newStatus = '';
-    try {
-      const stripe = await stripePromise;
-      if (!stripe) throw new Error('Failed to initialize stripe!');
+    handleRefresh();
 
-      const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
-      if (!paymentIntent) throw new Error('Cannot find payment intent!');
-
-      newStatus = 'payment_intent.' + paymentIntent.status;
-      setStatus(newStatus);
-    } catch (error) {
-      console.error(error.message);
-      setErrMsg(error.message);
-      setDialog(true);
-    }
-    if (newStatus != 'terminal.reader.action_succeeded' && // must make sure we haven't already finished charging
-        newStatus != 'payment_intent.succeeded' &&
-        newStatus != 'charge.succeeded') {
+    if (rawStatus != 'terminal.reader.action_succeeded' && // must make sure we haven't already finished charging
+        rawStatus != 'payment_intent.succeeded' &&
+        rawStatus != 'charge.succeeded') {
       if (!token) return;
       const response = await fetch( // request payment and put order in database
         process.env.REACT_APP_API_2_URL + `/order/reader-cancel`,
@@ -203,7 +207,7 @@ const ReaderPurchase = () => {
             Reader Order Status
           </h1>
           <div className='text-3xl font-semibold'>
-            {'ID: ' + paymentIntentID}
+            {'Order # ' + orderID}
           </div>
           <div className='text-3xl font-semibold'>
             {'Status: ' + status}
