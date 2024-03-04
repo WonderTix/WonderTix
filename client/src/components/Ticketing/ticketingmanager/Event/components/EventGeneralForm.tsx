@@ -45,7 +45,15 @@ const ImageUpload = () => {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()}></input>
-      <p>Drag & Drop File or Click Here to Upload</p>
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-center w-full">
+          <div className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 mt-3">
+            <div className="flex flex-col items-center justify-center">
+              <p>Drag & Drop File or Click Here to Upload</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

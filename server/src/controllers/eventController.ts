@@ -183,11 +183,9 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
   const bucketName = process.env.GCLOUD_BUCKET;
 
   if (gcloudKey === undefined || gcloudKey === '') {
-    console.log('Bucket key undefined!');
     return res.status(500).send('Bucket key undefined!');
   }
   if (bucketName === undefined || bucketName === '') {
-    console.log('Bucket name undefined!');
     return res.status(500).send('Bucket name undefined!');
   }
 
@@ -202,12 +200,12 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
 
   try {
     validateWithRegex(
-      req.file.mimetype,
+      req.file.mimetype.toLowerCase(),
       'Invalid input, not a valid image filetype!', 
       new RegExp('^(image\/(jpe?g|png))')
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(400).send(error);
   }
 
@@ -220,7 +218,7 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
   });
 
   stream.on('error', (err) => {
-    console.log(err);
+    console.error(err);
     return res.status(500).send('Upload failed!');
   })
 

@@ -38,7 +38,6 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.11.2",
-    "react-dropzone": "^14.2.3",
     "reflect-metadata": "^0.1.13",
     "stripe": "^12.17.0",
     "swagger-jsdoc": "^6.2.8",
