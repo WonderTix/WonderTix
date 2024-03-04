@@ -311,7 +311,7 @@ const validateContact = (formData: checkoutForm) => {
           new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
       ),
     }),
-    ...(formData.visitSource && {visitSource: formData.visitSource}),
+    ...(formData.visitSource && {visitsource: formData.visitSource}),
     ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
     ...(formData.comments && {comments: formData.comments}),
     ...(formData.optIn && {newsletter: formData.optIn}),
