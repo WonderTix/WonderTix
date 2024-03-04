@@ -10,11 +10,17 @@ import {
   getDiscountAmount,
   updateContact,
   validateDiscount,
+  validateWithRegex,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 const prisma = extendPrismaClient();
+
+import multer from 'multer';
+import {Storage} from '@google-cloud/storage';
+
+const upload = multer();
 
 export const eventController = Router();
 
@@ -141,6 +147,88 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     }
     res.status(500).json(error);
   }
+});
+
+/**
+ * @swagger
+ * /2/events/image-upload:
+ *   post:
+ *     summary: Upload image to google cloud storage, make public, return link
+ *     tags:
+ *     - New Event API
+  *     requestBody:
+ *       description: Image File
+ *     responses:
+ *       200:
+ *         description: Image successfully uploaded.
+ *         content:
+ *           application/json:
+ *             schema: {url: string}
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+
+eventController.post('/image-upload', upload.single('file'), async (req: Request, res: Response) => {
+  const gcloudKey = process.env.GCLOUD_KEY;
+  const bucketName = process.env.GCLOUD_BUCKET;
+
+  if (gcloudKey === undefined || gcloudKey === '') {
+    return res.status(500).send('Bucket key undefined!');
+  }
+  if (bucketName === undefined || bucketName === '') {
+    return res.status(500).send('Bucket name undefined!');
+  }
+
+  const credentials = JSON.parse(gcloudKey);
+
+  const storage = new Storage({credentials: credentials});
+  const imgBucket = storage.bucket(`${bucketName}`);
+
+  if (!req.file) {
+    return res.status(400).send('No file passed to request!');
+  }
+
+  try {
+    validateWithRegex(
+      req.file.mimetype.toLowerCase(),
+      'Invalid input, not a valid image filetype!', 
+      new RegExp('^(image\/(jpe?g|png))')
+    );
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send(error);
+  }
+
+  const file = imgBucket.file(req.file.originalname);
+  const stream = file.createWriteStream({
+    metadata: {
+      contentType: req.file.mimetype,
+    },
+    resumable: false,
+  });
+
+  stream.on('error', (err) => {
+    console.error(err);
+    return res.status(500).send('Upload failed!');
+  })
+
+  stream.on('finish', async () => {
+    await file.makePublic();
+    const url = `https://storage.googleapis.com/${bucketName}/${file.name}`;
+    return res.status(200).send({url});
+  })
+
+  stream.end(req.file.buffer);
 });
 
 /**

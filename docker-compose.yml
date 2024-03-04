@@ -23,6 +23,8 @@ services:
       ENV: local
       CI: ${CI}
       SHOULD_SEED: ${SHOULD_SEED}
+      GCLOUD_KEY: ${GCLOUD_KEY}
+      GCLOUD_BUCKET: ${GCLOUD_BUCKET}
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules
