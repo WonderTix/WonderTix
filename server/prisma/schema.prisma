@@ -75,6 +75,7 @@ model discounts {
   min_tickets     Int?
   min_events      Int?
   tickettype      tickettype? @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  deletedat       DateTime?
   orders          orders[]
 }
 

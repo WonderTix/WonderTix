@@ -159,6 +159,7 @@ const openApiSpec = swaggerJsdoc({
             usagelimit: {type: 'integer'},
             min_tickets: {type: 'integer'},
             min_events: {type: 'integer'},
+            deletedat: {type: 'date'},
           },
         },
         Donation: {

@@ -36,6 +36,7 @@ discountController.get('/code/:code', async (req: Request, res: Response) => {
     const code = req.params.code;
     const filters: any = {
       code: code,
+      deletedat: null,
     };
 
     if (req.query.active) {
@@ -44,17 +45,16 @@ discountController.get('/code/:code', async (req: Request, res: Response) => {
       };
     }
 
-    const discount = await prisma.discounts.findUnique({
+    const discountRaw = await prisma.discounts.findUnique({
       where: filters,
     });
 
-    if (!discount) {
-      res.status(404).json({error: 'discount not found'});
-      return;
+    if (!discountRaw) {
+      return res.status(404).json({error: 'discount not found'});
     }
 
-    res.status(200).json(discount);
-    return;
+    const {deletedat, ...discount} = discountRaw;
+    return res.status(200).json(discount);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -105,7 +105,11 @@ discountController.use(checkScopes);
  */
 discountController.get('/', async (req: Request, res: Response) => {
   try {
-    const filters: any = {};
+    const filters: any = {
+      deletedat: {
+        equals: null,
+      },
+    };
 
     if (req.query.code) {
       filters.code = {
@@ -129,8 +133,11 @@ discountController.get('/', async (req: Request, res: Response) => {
         discountid: 'asc',
       },
     });
-    res.status(200).json(discounts);
-    return;
+
+    return res.status(200).json(discounts.map(({
+      deletedat,
+      ...discount
+    }) => discount));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -176,19 +183,19 @@ discountController.get('/', async (req: Request, res: Response) => {
 discountController.get('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const discount = await prisma.discounts.findUnique({
+    const discountRaw = await prisma.discounts.findUnique({
       where: {
         discountid: Number(id),
+        deletedat: null,
       },
     });
 
-    if (!discount) {
-      res.status(404).json({error: 'discount not found'});
-      return;
+    if (!discountRaw) {
+      return res.status(404).json({error: 'discount not found'});
     }
 
-    res.status(200).json(discount);
-    return;
+    const {deletedat, ...discount} = discountRaw;
+    return res.status(200).json(discount);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -273,8 +280,7 @@ discountController.post('/', async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json(discount);
-    return;
+    return res.status(201).json(discount);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -356,8 +362,7 @@ discountController.put('/:id', async (req: Request, res: Response) => {
       },
     });
 
-    res.status(204).json();
-    return;
+    return res.status(204).json();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -386,7 +391,7 @@ discountController.put('/:id', async (req: Request, res: Response) => {
  *       - bearerAuth: []
  *     responses:
  *       204:
- *         description: discount deleted successfully.
+ *         description: discount deleted or soft deleted successfully.
  *       400:
  *         description: bad request
  *         content:
@@ -400,24 +405,39 @@ discountController.put('/:id', async (req: Request, res: Response) => {
  */
 discountController.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const discountExists = await prisma.discounts.findUnique({
+    const id = Number(req.params.id);
+    const discount = await prisma.discounts.findUnique({
       where: {
-        discountid: Number(id),
+        discountid: id,
       },
-    });
-    if (!discountExists) {
-      res.status(404).json({error: 'discount not found'});
-      return;
-    }
-    await prisma.discounts.delete({
-      where: {
-        discountid: Number(id),
+      include: {
+        orders: true,
       },
     });
 
-    res.status(204).json();
-    return;
+    if (!discount) {
+      return res.status(404).json({error: 'discount not found'});
+    }
+
+    if (discount.orders.length > 0) {
+      // Soft delete if orders used discount code
+      await prisma.discounts.update({
+        where: {
+          discountid: id,
+        },
+        data: {
+          deletedat: new Date(),
+        },
+      });
+    } else {
+      await prisma.discounts.delete({
+        where: {
+          discountid: id,
+        },
+      });
+    }
+
+    return res.status(204).json();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
