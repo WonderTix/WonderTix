@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, ReactElement} from 'react';
 import {Field, Formik, useFormikContext} from 'formik';
 import {InputControl} from './InputControl';
 import {eventGeneralSchema} from './event.schemas';
@@ -15,7 +15,13 @@ interface EventGeneralFormProps {
   onLeaveEdit?: () => void;
 }
 
-const ImageUpload = () => {
+interface ImageUploadProps {
+  className?: string;
+}
+
+const ImageUpload = (props: ImageUploadProps): ReactElement => {
+  const {className} = props;
+
   const {setFieldValue} = useFormikContext();
 
   const onDrop = useCallback(async (files) => {
@@ -43,13 +49,13 @@ const ImageUpload = () => {
   const {getRootProps, getInputProps} = useDropzone({onDrop});
 
   return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()}></input>
+    <div {...getRootProps()} className={className}>
+      <input {...getInputProps()} />
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-center w-full">
-          <div className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 mt-2">
+          <div className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
             <div className="flex flex-col items-center justify-center">
-              <p>Drag & Drop File or Click Here to Upload</p>
+              <p className='text-center'>Drag & Drop File or Click Here to Upload</p>
             </div>
           </div>
         </div>
@@ -165,7 +171,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                 }}
               />
               <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
-                <div className={showButton ? 'col-span-4' : 'col-span-5'}>
+                <div className='col-span-5 mb-2'>
                   <Field name='imageurl'>
                     {({field}) => (
                       <div className='flex flex-col text-zinc-800'>
@@ -188,13 +194,13 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                       </div>
                     )}
                   </Field>
-                  <ImageUpload />
                 </div>
+                <ImageUpload className={showButton ? 'col-span-4' : 'col-span-5'} />
                 {showButton && (
                   <button
                     id={'defaultImageUrl'}
                     className={
-                      'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 ml-2 font-bold text-sm h-fit self-end whitespace-nowrap'
+                      'col-span-1 bg-blue-500 hover:bg-blue-700 text-white rounded-lg px-1 ml-2 font-bold text-sm h-full self-end whitespace-nowrap'
                     }
                     onClick={async () => {
                       await setFieldValue('imageurl', 'Default Event Image');

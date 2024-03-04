@@ -128,7 +128,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
                 htmlFor='subscriptioneligible'
                 className='text-sm text-zinc-800 font-semibold pr-2'
               >
-                Subscription Eligible
+                Subscription Eligible:
               </label>
               <Switch
                 checked={eventData.subscriptioneligible}
