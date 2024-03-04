@@ -38,6 +38,7 @@ setup('authenticate', async ({page}) => {
   await page.reload();
 
   // Ensuring visibility and correctness of page elements post-login.
+  await page.reload();
   await expect(loginPage.loginButton).not.toBeVisible(); // Sign-in button should be gone
   await expect(loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:30000 }); // User email in its place
   await expect(page.getByRole('heading', {name: 'Events'})).toBeVisible();
