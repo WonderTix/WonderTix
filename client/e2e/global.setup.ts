@@ -25,7 +25,6 @@ setup('authenticate', async ({page}) => {
 
   await loginPage.login(email, password);
 
-  await page.reload();
   // Edge case for "Wondertix App is trying to access your wtix-xxx account"
   try {
     // Wait for the Accept button to appear on the page.
