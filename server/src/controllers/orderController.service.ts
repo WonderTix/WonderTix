@@ -71,6 +71,7 @@ export const orderFulfillment = async (
       orderSource = purchase_source.online_donation;
       break;
     default:
+      orderSource = undefined;
       break;
   }
   const result = await prisma.$transaction([
