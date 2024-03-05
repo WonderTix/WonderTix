@@ -20,8 +20,6 @@ const FilterReports: React.FC<FilterReportProps> = ({
             const day = date.getDate();
             return `${month < 10 ? `0${month}` : month}/${day < 10 ? `0${day}` : day}${year}`;
         };
-        setBeginDate('');
-        setEndDate('');
     });
 
     const handleDateChange = (dateString: string, isStartDate: boolean) => {
@@ -51,8 +49,8 @@ const FilterReports: React.FC<FilterReportProps> = ({
                     Filter Settings
                 </h1>
                 <FilterRange
-                onBeginDateChange={(date) => handleDateChange(date, true)}
-                onEndDateChange={(date) => handleDateChange(date, false)}
+                    onBeginDateChange={(date) => handleDateChange(date, true)}
+                    onEndDateChange={(date) => handleDateChange(date, false)}
                 />
                 <div className='flex justify-evenly mx-auto border-t my-3 py-4'>
                     <button
