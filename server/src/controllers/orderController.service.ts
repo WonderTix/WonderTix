@@ -7,6 +7,8 @@ import {
   orderticketitems,
   state,
 } from '@prisma/client';
+const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
+const stripe = require('stripe')(stripeKey);
 
 
 export const ticketingWebhook = async (
@@ -43,20 +45,7 @@ export const ticketingWebhook = async (
 export const updateRefundStatus = async (
   prisma: ExtendedPrismaClient,
   paymentIntent: string,
-  refundStatus: string,
 ) => {
-  let refundStatusState : state;
-  switch(refundStatus) {
-    case 'succeeded':
-      refundStatusState = state.completed;
-      break;
-    case 'pending':
-      refundStatusState = state.in_progress;
-      break;
-    default:
-      refundStatusState = state.failed;
-      break;
-  }
   const order = await prisma.orders.findUnique({
     where: {
       payment_intent: paymentIntent,
@@ -68,17 +57,48 @@ export const updateRefundStatus = async (
 
   if (order === null) {
     // there is no forseeable case where this should happen
-    console.error('received refund for order that does not exist with PaymentIntent ' + paymentIntent);
+    console.error('received refund for order that does not exist with Payment Intent ' + paymentIntent);
     return;
   }
 
-  await prisma.refunds.updateMany({
+  // Not all refund webhook events come with the correspodning refund object, but they do all contain
+  // the payment intent. The WonderTix schema allows multiple partial refunds, meaning a payment intent
+  // could have multiple refund intents. Thus, all refund intents connected to the payment intent are retrieved from
+  // the database and then have their status's checked by polling Stripe.
+  let refunds = await prisma.refunds.findMany({
     where: {
-      orderid_fk: order.orderid
+      orderid_fk: order.orderid,
     },
-    data: {
-      refund_status: refundStatusState,
+    select: {
+      id: true,
+      refund_intent: true,
+      refund_status: true,
     },
+  });
+
+  refunds.forEach(async (refund) => {
+    const refundObject = await stripe.refunds.retrieve(refund.refund_intent);
+    console.log(refundObject);
+    switch(refundObject.status) {
+      case 'succeeded':
+        refund.refund_status = state.completed;
+        break;
+      case 'pending':
+        refund.refund_status = state.in_progress;
+        break;
+      default:
+        refund.refund_status = state.failed;
+        break;
+    }
+    
+    await prisma.refunds.update({
+      where: {
+        id: refund.id,
+      },
+      data: {
+        refund_status: refund.refund_status,
+      }
+    });
   });
 };
 

@@ -40,7 +40,6 @@ orderController.post(
           await updateRefundStatus(
             prisma,
             object.payment_intent,
-            object.status,
           );
         }
 
