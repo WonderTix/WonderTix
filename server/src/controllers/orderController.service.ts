@@ -68,7 +68,7 @@ export const updateRefundStatus = async (
 
   if (order === null) {
     // there is no forseeable case where this should happen
-    console.error('received refund for order that does not exist')
+    console.error('received refund for order that does not exist with PaymentIntent ' + paymentIntent);
     return;
   }
 
