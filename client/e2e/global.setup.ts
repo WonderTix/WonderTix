@@ -25,7 +25,6 @@ setup('authenticate', async ({page}) => {
 
   await loginPage.login(email, password);
 
-  await page.reload();
   // Edge case for "Wondertix App is trying to access your wtix-xxx account"
   try {
     // Wait for the Accept button to appear on the page.
@@ -37,6 +36,7 @@ setup('authenticate', async ({page}) => {
   }
 
   // Ensuring visibility and correctness of page elements post-login.
+  await page.reload();
   await expect(loginPage.loginButton).not.toBeVisible(); // Sign-in button should be gone
   await expect(loginPage.getLoggedInEmailDisplay(email)).toBeVisible({ timeout:30000 }); // User email in its place
   await expect(page.getByRole('heading', {name: 'Events'})).toBeVisible();
