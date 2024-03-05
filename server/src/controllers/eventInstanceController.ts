@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {contacts, Prisma} from '@prisma/client';
+import {contacts, state, Prisma} from '@prisma/client';
 import {eventInstanceRequest} from '../interfaces/Event';
 import {
   InvalidInputError,
@@ -527,6 +527,7 @@ eventInstanceController.get('/doorlist/:id',
                       refund: null,
                       order: {
                         payment_intent: {not: null},
+                        order_status: state.completed,
                       },
                     },
                   },

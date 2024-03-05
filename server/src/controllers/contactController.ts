@@ -1,6 +1,6 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma} from '@prisma/client';
+import {Prisma, state} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 const prisma = extendPrismaClient();
@@ -397,6 +397,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         orders: {
           where: {
             payment_intent: {not: null},
+            order_status: state.completed,
           },
           orderBy: {
             orderdatetime: 'desc',
