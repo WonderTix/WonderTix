@@ -552,7 +552,7 @@ eventInstanceController.get('/doorlist/:id',
         }
 
         const doorlist = new Map();
-        const forEachTicket = (description: string, redeemed: Date | null, contact?: contacts) => {
+        const forEachTicket = (description: string, redeemed: Date | null, contact?: contacts | null) => {
           if (!contact) return;
           let row = doorlist.get(contact.contactid);
           if (!row) {

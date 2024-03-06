@@ -16,6 +16,7 @@ import path from 'path';
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
+import WebSocket, {WebSocketServer} from 'ws';
 import 'reflect-metadata';
 import {accountsRouter} from './api/accounts/accounts.router';
 import {contactsRouter} from './api/contacts/contacts.router';
@@ -576,6 +577,30 @@ const openApiSpec = swaggerJsdoc({
   apis: ['./src/api/**/*.ts', './src/controllers/**/*.ts'],
 });
 
+
+function waitForOpenConnection(socket: any) {
+  return new Promise((resolve, reject) => {
+    const maxNumberOfAttempts = 50;
+    const intervalTime = 200; // ms
+
+    let currentAttempt = 0;
+    const interval = setInterval(() => {
+      if (currentAttempt > maxNumberOfAttempts - 1) {
+        clearInterval(interval);
+        reject(new Error('Maximum number of attempts exceeded'));
+      } else if (socket.readyState === WebSocket.OPEN) {
+        clearInterval(interval);
+        resolve('Socket Open');
+      } else if (socket.readyState === WebSocket.CLOSING) {
+        socket.close(); // force close
+        clearInterval(interval);
+        reject(new Error('Socket closing'));
+      }
+      currentAttempt++;
+    }, intervalTime);
+  });
+}
+
 const createServer = async () => {
   let envPath;
   if (process.env.ENV === 'local') {
@@ -587,7 +612,6 @@ const createServer = async () => {
   }
 
   dotenv.config({path: envPath});
-
 
   const app = express();
 
@@ -653,6 +677,30 @@ const createServer = async () => {
   } else {
     server = http.createServer(app);
   }
+
+  const wss = new WebSocketServer({server: server});
+
+  // Whenever a websocket sends a message, the server sends it to every
+  // other websocket. All messages should include a 'messageType' string field
+  // so that receiving websockets can tell whether they care about the message.
+
+  // Based on the client broadcast example from the library
+  // https://www.npmjs.com/package/ws#server-broadcast
+  wss.on('connection', (ws) => {
+    ws.on('error', console.error);
+
+    ws.on('message', (data, isBinary) => {
+      wss.clients.forEach((client) => {
+        if (client !== ws) {
+          waitForOpenConnection(client).then(() => {
+            client.send(data, { binary: isBinary });
+          }).catch((error) => {
+            console.error(error.message);
+          });
+        }
+      });
+    });
+  });
 
   return server;
 };

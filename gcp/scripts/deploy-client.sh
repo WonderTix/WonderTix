@@ -37,6 +37,7 @@ gcloud run deploy "wtix-client-${ENV}" \
   --service-account "${SERVICE_ACCOUNT}" \
   --set-env-vars="ENV=${ENV}" \
   --set-secrets="\
+  REACT_APP_WEBSOCKET_URL=WEBSOCKET_URL:${ENV},\
   REACT_APP_AUTH0_CLIENT_ID=AUTH0_CLIENT_ID:${ENV},\
   REACT_APP_PUBLIC_STRIPE_KEY=PUBLIC_STRIPE_KEY:${ENV}" \
   "${TAG_ARGS[@]}"

@@ -5,7 +5,6 @@ import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {freq} from '@prisma/client';
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
-
 export interface LineItem {
   price_data: {
     currency: string;
@@ -85,6 +84,44 @@ interface TicketItemsReturn {
   ticketCartRows: LineItem[];
   ticketTotal: number;
   eventInstanceQueries: any[];
+}
+
+export const createStripePaymentIntent = async (
+  orderTotal: number
+) => {
+  const intentObject: JsonObject = {
+    currency: 'usd',
+    payment_method_types: ['card_present'],
+    capture_method: 'automatic',
+    confirmation_method: 'automatic',
+    amount: orderTotal,
+    metadata: {
+      sessionType: '__reader',
+    },
+  }
+  const intent = await stripe.paymentIntents.create(intentObject);
+
+  return {id: intent.id, secret: intent.client_secret};
+}
+
+export const requestStripeReaderPayment = async (
+  readerID: string,
+  paymentIntentID: string
+) => {
+  const requestPay = await stripe.terminal.readers.processPaymentIntent(
+    readerID,
+    {
+        payment_intent: paymentIntentID
+    }
+  );
+  return requestPay;
+}
+
+export const testPayReader = async (
+  readerID: string
+) => {
+  const pay = await stripe.testHelpers.terminal.readers.presentPaymentMethod(readerID);
+  return pay;
 }
 
 export const getTicketItems = async (
