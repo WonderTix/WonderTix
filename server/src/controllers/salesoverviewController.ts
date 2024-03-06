@@ -2,17 +2,7 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {eventController} from './eventController';
 import {InvalidInputError} from './eventInstanceController.service';
-import {
-  createStripeCheckoutSession,
-  expireCheckoutSession,
-  getDonationItem,
-  getTicketItems,
-  getDiscountAmount,
-  updateContact,
-  validateDiscount,
-} from './eventController.service';
 
 const prisma = extendPrismaClient();
 
@@ -30,6 +20,7 @@ export const salesoverviewController = Router();
  *     responses:
  *       200:
  *         description: event fetch successful
+ *         application/json:
  *       400:
  *         description: bad request
  *         content:
