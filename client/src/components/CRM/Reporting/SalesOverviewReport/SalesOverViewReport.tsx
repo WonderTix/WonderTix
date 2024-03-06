@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import FilterReports from './FilterReports/FilterReports';
-
+import TicketEventsComponent from './Events/TicketEvents';
 const DailySalesReport = (): React.ReactElement => {
   const [showTools, setShowTools] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
@@ -27,7 +27,7 @@ const DailySalesReport = (): React.ReactElement => {
         <div className='flex flex-col bg-slate-100 border-t-4 border-black rounded-b-none rounded'>
         <div className="flex justify-between items-center p-4 border-b">
             <h1 className='text-3xl font-bold bg-slate-100'>
-              Portland Playhouse Sales Overview
+              Sales Overview Report
             </h1>
             <div className="flex flex-wrap justify-end items-center">
               <button
@@ -56,9 +56,15 @@ const DailySalesReport = (): React.ReactElement => {
               </div>
             </div>
           </div>
-          <div className='flex justify-start px-4 py-3 gap-10 text-sm'>
+          <div className='flex justify-evenly border-b px-4 py-3 gap-10'>
+            <p> <strong>Organization:</strong> Portland Playhouse</p>
             <p> <strong>Event Instance Date Range:</strong> {selectedBeginDate} - {selectedEndDate}</p>
           </div>
+          <div className='px-4'>
+            <h1 className='font-bold text-2xl py-2'>Sales Totals</h1>
+            <TicketEventsComponent />
+          </div>
+
       </>
     );
   };
