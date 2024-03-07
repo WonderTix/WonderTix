@@ -97,7 +97,7 @@ export const orderFulfillment = async (
     checkoutSession?: string,
     discountId?: number,
     orderSource?: string,
-    paymentIntent?: string // need this for reader purchase
+    paymentIntent?: string, // need this for reader purchase
 ) => {
   const {orderTicketItems, donationItem} = orderItems;
   switch (orderSource) {

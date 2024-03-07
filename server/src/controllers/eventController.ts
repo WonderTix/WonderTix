@@ -930,7 +930,7 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
  */
 
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {cartItems, paymentIntentID, readerID, discount} = req.body;
+  const {cartItems, paymentIntentID, readerID, discount, orderSource} = req.body;
   let order :orders | null = null;
   try {
     if (!cartItems.length) {
@@ -964,7 +964,8 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         undefined, // no contactid with reader payments
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
-        paymentIntentID // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
+        orderSource,
+        paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
     );
     res.json({orderID: order.orderid, status: 'order sent'});
   } catch (error) {
