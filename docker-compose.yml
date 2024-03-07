@@ -23,6 +23,10 @@ services:
       ENV: local
       CI: ${CI}
       SHOULD_SEED: ${SHOULD_SEED}
+      NODE_EXTRA_CA_CERTS: rootCA.pem
+      WEBSOCKET_URL: ${WEBSOCKET_URL}
+      GCLOUD_KEY: ${GCLOUD_KEY}
+      GCLOUD_BUCKET: ${GCLOUD_BUCKET}
     volumes:
       - ./server:/usr/app
       - /usr/app/node_modules
@@ -40,6 +44,7 @@ services:
       REACT_APP_AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
       REACT_APP_API_1_URL: ${ROOT_URL}/api/1
       REACT_APP_API_2_URL: ${ROOT_URL}/api/2
+      REACT_APP_WEBSOCKET_URL: ${WEBSOCKET_URL}
       ENV: local
     volumes:
       - ./client:/usr/app

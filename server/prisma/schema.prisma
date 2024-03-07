@@ -197,7 +197,7 @@ model ticketitems {
 model orders {
   orderid           Int                @id @default(autoincrement())
   orderdatetime     DateTime           @default(now()) @db.Timestamp(3)
-  contactid_fk      Int
+  contactid_fk      Int?
   discountid_fk     Int?
   payment_intent    String?            @unique @db.VarChar(255)
   checkout_sessions String?            @unique @db.VarChar(255)
@@ -205,7 +205,7 @@ model orders {
   discounttotal     Decimal            @default(0) @db.Money
   order_source      purchase_source?    
   order_status      state              @default(in_progress)
-  contacts          contacts           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  contacts          contacts?           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donation          donations?
   refunds           refunds[]

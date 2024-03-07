@@ -72,6 +72,8 @@ steps:
       - 'SERVER_REVISION'
       - 'SERVICE_ACCOUNT'
       - 'SHOULD_SEED'
+      - 'GCLOUD_KEY'
+      - 'GCLOUD_BUCKET'
       - 'SQL_INSTANCE'
 
   # Build client image with args for test revision
@@ -181,6 +183,9 @@ steps:
       - 'SERVER_MEMORY'
       - 'SERVICE_ACCOUNT'
       - 'SHOULD_SEED'
+      - 'WEBSOCKET_URL'
+      - 'GCLOUD_KEY'
+      - 'GCLOUD_BUCKET'
       - 'SQL_INSTANCE'
 
   # Send traffic to new server
@@ -337,6 +342,12 @@ availableSecrets:
     env: 'SERVICE_ACCOUNT'
   - versionName: projects/${PROJECT_ID}/secrets/SHOULD_SEED/versions/${_ENV}
     env: 'SHOULD_SEED'
+  - versionName: projects/${PROJECT_ID}/secrets/WEBSOCKET_URL/versions/${_ENV}
+    env: 'WEBSOCKET_URL'
+  - versionName: projects/${PROJECT_ID}/secrets/GCLOUD_KEY/versions/${_ENV}
+    env: 'GCLOUD_KEY'
+  - versionName: projects/${PROJECT_ID}/secrets/GCLOUD_BUCKET/versions/${_ENV}
+    env: 'GCLOUD_BUCKET'
   - versionName: projects/${PROJECT_ID}/secrets/SQL_INSTANCE/versions/${_ENV}
     env: 'SQL_INSTANCE'
   - versionName: projects/${PROJECT_ID}/secrets/TEST_EMAIL/versions/${_ENV}
