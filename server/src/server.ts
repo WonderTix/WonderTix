@@ -18,20 +18,6 @@ import http from 'http';
 import fs from 'fs';
 import WebSocket, {WebSocketServer} from 'ws';
 import 'reflect-metadata';
-import {accountsRouter} from './api/accounts/accounts.router';
-import {contactsRouter} from './api/contacts/contacts.router';
-import {donationsRouter} from './api/donations/donations.router';
-import {doorlistRouter} from './api/doorlist/doorlist.router';
-import {eventRouter} from './api/events/event.router';
-import {newsletterRouter} from './api/newsletter/newsletter.router';
-import {orderRouter} from './api/orders/order.router';
-import {savedReportsRouter} from './api/saved_reports/saved_reports.router';
-import {subscriptionRouter} from './api/subscriptions/subscription.router';
-import {tasksRouter} from './api/tasks/tasks.router';
-import {taskNotesRouter} from './api/task_notes/task_notes.router';
-import {discountsRouter} from './api/discounts/discounts.router';
-import {reportingRouter} from './api/reporting/reporting.router';
-import {refundsRouter} from './api/refunds/refunds.router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import {contactController} from './controllers/contactController';
@@ -628,23 +614,6 @@ const createServer = async () => {
         credentials: true,
       }),
   );
-
-
-  // api 1
-  app.use('/api/1/donations', donationsRouter);
-  app.use('/api/1/contacts', contactsRouter);
-  app.use('/api/1/accounts', accountsRouter);
-  app.use('/api/1/tasks', tasksRouter);
-  app.use('/api/1/task_notes', taskNotesRouter);
-  app.use('/api/1/saved_reports', savedReportsRouter);
-  app.use('/api/1/newsletter/', newsletterRouter);
-  app.use('/api/1/events', eventRouter);
-  app.use('/api/1/email_subscriptions', subscriptionRouter);
-  app.use('/api/1/doorlist', doorlistRouter);
-  app.use('/api/1/discounts', discountsRouter);
-  app.use('/api/1/refunds', refundsRouter);
-  app.use('/api/1/reporting', reportingRouter);
-  app.use('/api/1/order', orderRouter);
 
   // api 2
   app.use('/api/2/contact', contactController);
