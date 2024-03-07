@@ -72,14 +72,14 @@ export const anchors = [
   // { title: "Tasks", link: "/tasks" },
 ];
 
-// These fields match {ROOT_URL}/api/accounts
+// These fields match {ROOT_URL}/api/2/accounts
 export const accountHeaders = [
   {field: 'userid', headerName: 'ID', flex: 1},
   {field: 'username', headerName: 'Username', flex: 10},
   {field: 'is_superadmin', headerName: 'Admin', flex: 1},
 ];
 
-// These fields match {ROOT_URL}/api/contacts
+// These fields match {ROOT_URL}/api/2/contacts
 export const contactHeaders = [
   {field: 'contactid', headerName: 'ID', minWidth: 50},
   {field: 'lastname', headerName: 'Last Name', minWidth: 200},
@@ -94,7 +94,7 @@ export const contactHeaders = [
   {field: 'volunteerlist', headerName: 'Volunteer List', minWidth: 150},
 ];
 
-// These fields match {ROOT_URL}/api/donations
+// These fields match {ROOT_URL}/api/2/donations
 export const donationHeaders = [
   {field: 'donationid', headerName: 'ID'},
   {field: 'contactid_fk', headerName: 'Contact ID', minWidth: 150},

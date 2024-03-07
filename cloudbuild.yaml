@@ -183,6 +183,7 @@ steps:
       - 'SERVER_MEMORY'
       - 'SERVICE_ACCOUNT'
       - 'SHOULD_SEED'
+      - 'WEBSOCKET_URL'
       - 'GCLOUD_KEY'
       - 'GCLOUD_BUCKET'
       - 'SQL_INSTANCE'
@@ -341,6 +342,8 @@ availableSecrets:
     env: 'SERVICE_ACCOUNT'
   - versionName: projects/${PROJECT_ID}/secrets/SHOULD_SEED/versions/${_ENV}
     env: 'SHOULD_SEED'
+  - versionName: projects/${PROJECT_ID}/secrets/WEBSOCKET_URL/versions/${_ENV}
+    env: 'WEBSOCKET_URL'
   - versionName: projects/${PROJECT_ID}/secrets/GCLOUD_KEY/versions/${_ENV}
     env: 'GCLOUD_KEY'
   - versionName: projects/${PROJECT_ID}/secrets/GCLOUD_BUCKET/versions/${_ENV}
