@@ -1,23 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import BaseTooltip from '@mui/material/Tooltip';
 
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
 
 const TicketEventsComponent = () => {
+    const renderTooltipCell = (params) => (
+        <BaseTooltip title={params.value}>
+          <div>{params.value}</div>
+        </BaseTooltip>
+    );
+
     const header_columns: GridColDef[] = [
-        {field: 'ticketable_event', headerName: 'Ticketable Event', flex: 3, sortable: true},
-        {field: 'event_instance', headerName: 'Event Instance', flex: 3, sortable: true},
-        {field: 'quantity_reserve', headerName: 'Reservation Qty', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'amount_reserve', headerName: 'Reservation Total', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'quantity_sold', headerName: 'Sold Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'amount_sold', headerName: 'Sold Total', flex: 1, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'quantity_sub', headerName: 'Subs Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'amount_sub', headerName: 'Subs Total', flex: 1, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'quantity_comp', headerName: 'Comp Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'quantity_summ', headerName: 'Summary Qty', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'amount_summ', headerName: 'Summary Total', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true},
-        {field: 'quantity_avail', headerName: 'Available', flex: 1, align: 'right', headerAlign: 'right', sortable: true},
+        {field: 'ticketable_event', headerName: 'Ticketable Event', flex: 3, sortable: true, renderCell: renderTooltipCell},
+        {field: 'event_instance', headerName: 'Event Instance', flex: 3, sortable: true, renderCell: renderTooltipCell},
+        {field: 'quantity_reserve', headerName: 'Reservation Qty', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'amount_reserve', headerName: 'Reservation Total', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'quantity_sold', headerName: 'Sold Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'amount_sold', headerName: 'Sold Total', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'quantity_sub', headerName: 'Subs Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'amount_sub', headerName: 'Subs Total', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'quantity_comp', headerName: 'Comp Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'quantity_summ', headerName: 'Summary Qty', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'amount_summ', headerName: 'Summary Total', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'quantity_avail', headerName: 'Available', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
     ];
     // Will need to rework the rows where we would dynamically retrieve the data and put it into rows
     const rows = [
