@@ -94,7 +94,7 @@ const ReaderPurchase = () => {
 
         if (rawStatus === 'payment_intent.canceled') throw new Error('Payment Already Canceled!');
 
-        const orderSource = 'card-reader';
+        const orderSource = 'card_reader';
         const response = await fetch( // request payment and put order in database
           process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
           {
