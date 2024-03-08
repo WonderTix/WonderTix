@@ -115,6 +115,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           orderTicketItems,
           donationItem,
         },
+        state.in_progress,
         contactid,
         toSend.id,
         discount.code != '' ? discount.discountid : null,
@@ -961,6 +962,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         {
           orderTicketItems,
         },
+        state.in_progress,
         undefined, // no contactid with reader payments
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
