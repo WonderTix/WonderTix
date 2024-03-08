@@ -93,6 +93,7 @@ steps:
       - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'SERVER_REVISION'
+      - 'WEBSOCKET_URL'
 
   # Deploy client as test revision (no traffic)
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -235,6 +236,7 @@ steps:
       - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'ROOT_URL'
+      - 'WEBSOCKET_URL'
 
   # Deploy client to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
