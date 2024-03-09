@@ -43,6 +43,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "tslib": "^2.6.1",
+    "ws": "^8.16.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {

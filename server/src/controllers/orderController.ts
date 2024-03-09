@@ -5,7 +5,10 @@ import {Prisma} from '@prisma/client';
 import {
   createRefundedOrder,
   ticketingWebhook,
-} from './orderController.service';
+  readerWebhook, 
+  discoverReaders, 
+  abortPaymentIntent} from './orderController.service';
+
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
 const stripe = require('stripe')(stripeKey);
@@ -27,7 +30,21 @@ orderController.post(
 
         const object = event.data.object;
         const metaData = object.metadata;
+        const action = object.action;
 
+        // Handle in-person payments
+        if (metaData.sessionType === '__reader' || 
+            event.type === 'terminal.reader.action_failed' ||
+            event.type === 'terminal.reader.action.succeeded') { // terminal events don't carry our __reader metadata
+          await readerWebhook(
+            prisma,
+            event.type,
+            action ? action.failure_message : 'no error',
+            object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
+          );
+        }
+
+        // Handle online payments
         if (metaData.sessionType === '__ticketing') {
           await ticketingWebhook(
               prisma,
@@ -150,6 +167,9 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         orderdatetime,
         ...remainderOfOrder
       } = order;
+
+      if (!contacts) return;
+
       const orderItems = new Map<string, number>();
       const ticketTotal = orderticketitems.reduce<number>((acc, item) => {
         if (!item.ticketitem) return acc;
@@ -177,6 +197,47 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       res.status(400).json({error: error.message});
       return;
     }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/order/readers:
+ *   get:
+ *     summary: get all terminal readers
+ *     tags:
+ *     - New Order
+ *     responses:
+ *       200:
+ *         description: readers fetched successfully
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+orderController.get('/readers', async (req: Request, res: Response) => {
+  try {
+    const toReturn = await discoverReaders();
+    return res.status(200).json(toReturn);
+  } catch (error) {
+    res.status(500).json({error});
+  }
+});
+
+/**
+ * @swagger
+ * /2/order/reader-cancel:
+ *   post:
+ *     summary: Cancel payment intent and cancel order in prisma
+ *     tags:
+ *     - New Event API
+ */
+
+orderController.post('/reader-cancel', async (req: Request, res: Response) => {
+  const {paymentIntentID} = req.body;
+  try {
+    await abortPaymentIntent(prisma, paymentIntentID);
+    return res.status(200).json('Reader order successfully cancelled');
+  } catch (error) {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
