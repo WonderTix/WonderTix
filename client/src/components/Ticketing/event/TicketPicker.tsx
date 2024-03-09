@@ -3,14 +3,10 @@ import {useAppDispatch} from '../app/hooks';
 import {Collapse} from '@mui/material';
 import format from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
-import {
-  addTicketToCart,
-  Ticket,
-} from '../ticketingmanager/ticketingSlice';
+import {addTicketToCart, Ticket} from '../ticketingmanager/ticketingSlice';
 import EventInstanceSelect from './EventInstanceSelect';
 import {range} from '../../../utils/arrays';
 import {formatUSD} from '../ticketingmanager/RefundOrders/RefundOrders';
-
 
 /**
  * @module
@@ -104,61 +100,78 @@ const TicketPickerReducer = (
   action: any,
 ): TicketPickerState => {
   switch (action.type) {
-  case 'date_selected': {
-    const {tickets, date} = action.payload;
-    const sameDayShows = tickets
-      .filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)))
-      .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime()));
+    case 'date_selected': {
+      const {tickets, date} = action.payload;
+      const sameDayShows = tickets
+        .filter((t: Ticket) => isSameDay(new Date(date), new Date(t.date)))
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        );
 
-    return {
-      ...state,
-      selectedDate: date,
-      selectedTicket: undefined,
-      displayedShowings: sameDayShows,
-      showCalendar: false,
-      showTimes: true,
-      showClearBtn: true,
-      prompt: 'selectTime',
-    };
-  }
-  case 'time_selected': {
-    return {
-      ...state,
-      selectedTicket: action.payload,
-      showTimes: false,
-      prompt: 'showSelection',
-    };
-  }
-  case 'reset': {
-    return initialState;
-  }
-  case 'change_qty': {
-    return {...state, qty: action.payload};
-  }
-  case 'toggle_concession': {
-    return {...state, concessions: !state.concessions};
-  }
-  case 'change_pay_what': {
-    return {...state, payWhatPrice: action.payload};
-  }
-  case 'change_ticket_type': {
-    return {...state, selectedTicketType: action.payload.selectedTicketType};
-  }
-  default:
-    throw new Error('Received undefined action type');
+      return {
+        ...state,
+        selectedDate: date,
+        selectedTicket: undefined,
+        displayedShowings: sameDayShows,
+        showCalendar: false,
+        showTimes: true,
+        showClearBtn: true,
+        prompt: 'selectTime',
+      };
+    }
+    case 'time_selected': {
+      return {
+        ...state,
+        selectedTicket: action.payload,
+        showTimes: false,
+        prompt: 'showSelection',
+      };
+    }
+    case 'reset': {
+      return initialState;
+    }
+    case 'change_qty': {
+      return {...state, qty: action.payload};
+    }
+    case 'toggle_concession': {
+      return {...state, concessions: !state.concessions};
+    }
+    case 'change_pay_what': {
+      return {...state, payWhatPrice: action.payload};
+    }
+    case 'change_ticket_type': {
+      return {...state, selectedTicketType: action.payload.selectedTicketType};
+    }
+    default:
+      throw new Error('Received undefined action type');
   }
 };
 
-const getUniqueDates = (tickets: Ticket[]) => {
-  const dates = tickets.map((ticket) => new Date(ticket.date));
-  const sortedDates = dates.sort((a, b) => a.getTime() - b.getTime());
+const getDateOptions = (tickets: Ticket[]): {date: string, soldOut: boolean}[] => {
+  const sortedDates = tickets.map((ticket) => {
+    return {
+      date: new Date(ticket.date),
+      soldOut: ticket.availableseats === 0,
+    };
+  }).sort((a, b) => a.date.getTime() - b.date.getTime());
 
-  const uniqueDates = new Set<string>();
-  sortedDates.forEach((date) => {
-    const dateStr = format(date, 'eee, MMM dd yyyy').valueOf();
-    uniqueDates.add(dateStr);
+  const formattedDates = sortedDates.map((sortedDate) => {
+    return {
+      date: format(sortedDate.date, 'eee, MMM dd yyyy'),
+      soldOut: sortedDate.soldOut,
+    };
   });
-  return Array.from(uniqueDates);
+
+  // Reduce to unique dates and determine if all event instances are sold out
+  return formattedDates.reduce((acc, curr) => {
+    const index = acc.findIndex((date) => date.date === curr.date);
+    if (index > -1) {
+      acc[index].soldOut = acc[index].soldOut && curr.soldOut;
+    } else {
+      acc.push(curr);
+    }
+    return acc;
+  }, []);
 };
 
 interface TicketPickerProps {
@@ -173,7 +186,7 @@ interface TicketPickerProps {
  * @returns {ReactElement} and the correct ticket when picking
  */
 const TicketPicker = (props: TicketPickerProps): ReactElement => {
-  const uniqueDates = getUniqueDates(props.tickets);
+  const uniqueDates = getDateOptions(props.tickets);
 
   const [
     {
@@ -193,7 +206,9 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   ] = useReducer(TicketPickerReducer, initialState);
 
   const appDispatch = useAppDispatch();
-  const [showingTicketTypes, setShowingTicketTypes] = useState<TicketType[]>([]);
+  const [showingTicketTypes, setShowingTicketTypes] = useState<TicketType[]>(
+    [],
+  );
   const [numAvail, setNumAvail] = useState(Number);
 
   useEffect(() => {
@@ -202,7 +217,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         try {
           const response = await fetch(
             process.env.REACT_APP_API_2_URL +
-            `/ticket-restriction/${selectedTicket.event_instance_id}`,
+              `/ticket-restriction/${selectedTicket.event_instance_id}`,
           );
           if (!response.ok) {
             throw response;
@@ -229,9 +244,9 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     if (selectedTicket && selectedTicketType) {
       const fetchData = async () => {
         try {
-          const response= await fetch(
+          const response = await fetch(
             process.env.REACT_APP_API_2_URL +
-            `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketType.id}`,
+              `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketType.id}`,
           );
           if (!response.ok) {
             throw response;
@@ -276,18 +291,12 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
 
   const promptMarkup = {
     selectDate: (
-      <label
-        className='text-white font-semibold text-xl'
-        htmlFor='date-select'
-      >
+      <label className='text-white font-semibold text-xl' htmlFor='date-select'>
         Select date below ({props.tickets.length} showings)
       </label>
     ),
     selectTime: (
-      <label
-        className='text-white text-xl'
-        htmlFor='time-select'
-      >
+      <label className='text-white text-xl' htmlFor='time-select'>
         {selectedDate ? format(selectedDate, 'eee, MMM dd') : ''}
         <span className='text-white font-bold text-xl'> - Choose time:</span>
       </label>
@@ -296,7 +305,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       <p className='text-white text-center text-xl'>
         {selectedTicket
           ? `${format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a')}${
-                (selectedTicket?.detail ?? '') !== ''
+              (selectedTicket?.detail ?? '') !== ''
                 ? ` (${selectedTicket.detail})`
                 : ''
             }`
@@ -339,9 +348,10 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             <option className='text-zinc-300' value='' disabled>
               select date
             </option>
-            {uniqueDates.map((dateStr, index) => (
-              <option key={index} value={dateStr}>
-                {dateStr}
+            {uniqueDates.map((uniqueDate, index) => (
+              <option key={index} value={uniqueDate.date} disabled={uniqueDate.soldOut}>
+                {uniqueDate.soldOut && '[SOLD OUT] '}
+                {uniqueDate.date}
               </option>
             ))}
           </select>
@@ -387,13 +397,15 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         </select>
       </div>
       <div className='flex flex-col gap-2 mt-3'>
-        <label htmlFor='qty-select' className='text-center text-zinc-200 text-xl'>
+        <label
+          htmlFor='qty-select'
+          className='text-center text-zinc-200 text-xl'
+        >
           {selectedTicket
             ? numAvail > 0
               ? 'Quantity'
               : 'Can\'t add more to cart'
-            : 'Quantity (select ticket)'
-          }
+            : 'Quantity (select ticket)'}
         </label>
         <select
           id='qty-select'
@@ -460,7 +472,8 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           !qty ||
           !selectedTicket ||
           qty > selectedTicket.availableseats ||
-          (selectedTicketType.name === 'Pay What You Can' && (payWhatPrice == null || payWhatPrice < 0))
+          (selectedTicketType.name === 'Pay What You Can' &&
+            (payWhatPrice == null || payWhatPrice < 0))
         }
         className='disabled:opacity-30 disabled:cursor-not-allowed py-2 px-3 mt-7 bg-blue-500 text-xl text-white enabled:hover:bg-blue-600 rounded-xl'
         onClick={handleSubmit}

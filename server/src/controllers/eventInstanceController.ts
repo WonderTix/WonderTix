@@ -18,7 +18,7 @@ export const eventInstanceController = Router();
  * @swagger
  * /2/event-instance/tickets:
  *    get:
- *     summary: get list of instances with available seats
+ *     summary: get list of instances
  *     tags:
  *     - New event instance
  *     security:
@@ -63,7 +63,6 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
     const tickets = await prisma.eventinstances.findMany({
       where: {
         salestatus: true,
-        availableseats: {gt: 0},
         ticketrestrictions: {
           some: {
             deletedat: null,
@@ -90,7 +89,7 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
         },
       },
     });
-    const allIds:number[] = [];
+    const allIds: number[] = [];
     let byId = {};
     tickets
         .filter((ticket) => ticket.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length)
