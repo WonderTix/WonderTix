@@ -315,7 +315,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         eventinstances: {
           some: {
             deletedat: null,
-            availableseats: {gt: 0},
             salestatus: true,
             ticketrestrictions: {
               some: {
@@ -331,7 +330,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           where: {
-            availableseats: {gt: 0},
             salestatus: true,
           },
           include: {
