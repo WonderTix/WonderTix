@@ -5,7 +5,7 @@ import BaseTooltip from '@mui/material/Tooltip';
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
 
-const TicketEventsComponent = () => {
+const FakeEventsComponent = () => {
     const renderTooltipCell = (params) => (
         <BaseTooltip title={params.value}>
           <div>{params.value}</div>
@@ -98,4 +98,4 @@ const TicketEventsComponent = () => {
     );
 };
 
-export default TicketEventsComponent;
+export default FakeEventsComponent;

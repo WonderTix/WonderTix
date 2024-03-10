@@ -33,13 +33,22 @@ export const salesoverviewController = Router();
 
 salesoverviewController.get('/events', async (req: Request, res: Response) => {
     try {
-      const events = await prisma.events.findMany({
-        include: {
-          eventinstances: true,
-          _count: true
-        },
-      });
-      return res.json(events);
+        const events = await prisma.events.findMany({
+            include: {
+              eventinstances: {
+                include: {
+                  ticketrestrictions: {
+                    where: {
+                      deletedat: null,
+                    },
+                    
+                  },
+                },
+              },
+              seasons: true,
+            },
+        });
+        return res.json(events);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         res.status(400).json({error: error.message});
