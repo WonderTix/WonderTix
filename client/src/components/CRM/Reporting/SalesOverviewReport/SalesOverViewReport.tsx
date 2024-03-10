@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import FilterReports from './FilterReports/FilterReports';
-import TicketEventsComponent from './Events/TicketEvents';
+import FakeEventsComponent from './Events/FakeEvent';
+import APIEventsComponent from './Events/APIEvents';
 const DailySalesReport = (): React.ReactElement => {
   const [showTools, setShowTools] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
@@ -62,7 +63,7 @@ const DailySalesReport = (): React.ReactElement => {
           </div>
           <div className='px-4'>
             <h1 className='font-bold text-2xl py-2'>Sales Totals</h1>
-            <TicketEventsComponent />
+            <APIEventsComponent />
           </div>
 
       </>
