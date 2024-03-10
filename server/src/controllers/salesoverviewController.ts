@@ -41,7 +41,6 @@ salesoverviewController.get('/events', async (req: Request, res: Response) => {
                     where: {
                       deletedat: null,
                     },
-                    
                   },
                 },
               },

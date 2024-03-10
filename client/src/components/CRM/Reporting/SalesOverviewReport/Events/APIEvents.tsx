@@ -4,20 +4,38 @@ import BaseTooltip from '@mui/material/Tooltip';
 
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
+interface APIEventsComponentProps {
+    begin_date: string,
+    end_date: string,
+}
 
-const APIEventsComponent = () => {
+const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_date}) => {
     const renderTooltipCell = (params) => (
         <BaseTooltip title={params.value}>
           <div>{params.value}</div>
         </BaseTooltip>
     );
+    /** The purpose of this function is to check if the date is within the date range that the user inputs */
+    const isDateInRange = (begin_date: string, end_date:string, event_date: number) => {
+        const beginDateObj = new Date(begin_date);
+        const endDateObj = new Date(end_date);
+
+        const eventDateObj = new Date(
+            parseInt(event_date.toString().substring(0, 4)), // Year
+            parseInt(event_date.toString().substring(4, 6)) - 1, // Month (0-indexed)
+            parseInt(event_date.toString().substring(6, 8)), // Day
+        );
+
+        // Check if event_date falls within the range
+        return eventDateObj >= beginDateObj && eventDateObj <= endDateObj;
+    };
 
     /** The purpose of this function is to display the event instance in a certain format
      * Result: {Weekday}, {Month} {Day} at {Time}
      */
     function display_event(dateString: number, time: string) {
         const dateStringStr = dateString.toString();
-           // Parse the input string to extract year, month, and day components
+        // Parse the input string to extract year, month, and day components
         const year = parseInt(dateStringStr.substring(0, 4), 10);
         const month = parseInt(dateStringStr.substring(4, 6), 10) - 1; // Month is zero-based
         const day = parseInt(dateStringStr.substring(6, 8), 10);
@@ -51,6 +69,8 @@ const APIEventsComponent = () => {
     }
 
     const [rows, setRows] = useState<any[]>([]);
+    begin_date = begin_date.split('/').join('-');
+    end_date = end_date.split('/').join('-');
     useEffect(() => {
         fetch(process.env.REACT_APP_API_2_URL + '/salesoverview/events')
             .then((response) => {
@@ -69,13 +89,16 @@ const APIEventsComponent = () => {
                         eventinstanceid: instance.eventinstanceid,
                         price: instance.ticketrestrictions[0].price, // Might need to modify if there's season tickets or discounts
                     }));
-                    const updatedRows = eventInstances.map((instance) => {
+                    const updatedRows = eventInstances.filter((instance) =>
+                        isDateInRange(begin_date, end_date, instance.eventdate),
+                    )
+                    .map((instance) => {
                         const sold = instance.totalseats - instance.availableseats;
                         const display_eventinstance = display_event(instance.eventdate, instance.eventtime);
 
                         // Reservation (Future Implementation)
                         const reservation_quantity = 0;
-                        const reservation_amount = 0.0;
+                        const reservation_amount = 0.00;
 
 
                         // Sold Quantity and Amount
@@ -84,7 +107,7 @@ const APIEventsComponent = () => {
 
                         // Subscription (Future Implementation)
                         const sub_quantity = 0;
-                        const sub_amount = 0.0;
+                        const sub_amount = 0.00;
 
                         // Comp (Future Implementation)
                         const comp = 0;
@@ -98,26 +121,25 @@ const APIEventsComponent = () => {
                             ticketable_event: event.eventname,
                             event_instance: display_eventinstance,
                             quantity_reserve: reservation_quantity,
-                            amount_reserve: reservation_amount,
+                            amount_reserve: reservation_amount.toFixed(2),
                             quantity_sold: sold,
-                            amount_sold: total_price,
+                            amount_sold: total_price.toFixed(2),
                             quantity_sub: sub_quantity,
-                            amount_sub: sub_amount,
+                            amount_sub: sub_amount.toFixed(2),
                             quantity_comp: comp,
                             quantity_summ: summary_quantity,
-                            amount_summ: summary_amount,
+                            amount_summ: summary_amount.toFixed(2),
                             quantity_avail: instance.availableseats,
                         };
                     });
                     return updatedRows;
                 });
-                console.log('All: ', info);
                 setRows(info);
             })
             .catch((error) => {
                 console.error('There was a problem with the fetch operation:', error);
             });
-    }, []);
+    }, [begin_date, end_date]);
 
     const header_columns: GridColDef[] = [
         // Define your columns here
