@@ -18,10 +18,6 @@ const DailySalesReport = (): React.ReactElement => {
     setShowFilter(false);
   };
 
-  const toggleScheduledReports = () => {
-    setShowScheduledReports(!showScheduledReports);
-  };
-
   const tools = (): React.ReactElement => {
     return (
       <>
@@ -63,9 +59,8 @@ const DailySalesReport = (): React.ReactElement => {
           </div>
           <div className='px-4'>
             <h1 className='font-bold text-2xl py-2'>Sales Totals</h1>
-            <APIEventsComponent />
+            <APIEventsComponent begin_date={selectedBeginDate} end_date={selectedEndDate}/>
           </div>
-
       </>
     );
   };
