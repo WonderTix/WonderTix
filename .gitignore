@@ -742,3 +742,6 @@ test-results
 */playwright/.auth/
 client/playwright/index.html
 client/playwright/*
+
+# image-upload service account key
+server/wondertix-app*.json

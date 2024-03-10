@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {Field, Formik} from 'formik';
+import React, {useState, useEffect, useCallback} from 'react';
+import {Field, Formik, useFormikContext} from 'formik';
 import {InputControl} from './InputControl';
 import {eventGeneralSchema} from './event.schemas';
 import {FormSubmitButton} from './FormSubmitButton';
@@ -7,12 +7,56 @@ import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
 import {getData} from './ShowingUtils';
 import {FormButton} from './FormButton';
+import {useDropzone} from 'react-dropzone';
 import {BackIcon, SaveIcon} from '../../../Icons';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
   onLeaveEdit?: () => void;
 }
+
+const ImageUpload = () => {
+  const {setFieldValue} = useFormikContext();
+
+  const onDrop = useCallback(async (files) => {
+    const formData = new FormData();
+    formData.append('file', files[0]);
+
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_API_2_URL + '/events/image-upload',
+        {
+          method: 'POST',
+          body: formData,
+        },
+      );
+      if (!response.ok) {
+        throw response;
+      }
+      const img = await response.json();
+      setFieldValue('imageurl', img.url);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, [setFieldValue]);
+
+  const {getRootProps, getInputProps} = useDropzone({onDrop});
+
+  return (
+    <div {...getRootProps()}>
+      <input {...getInputProps()}></input>
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-center w-full">
+          <div className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 mt-2">
+            <div className="flex flex-col items-center justify-center">
+              <p>Drag & Drop File or Click Here to Upload</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onLeaveEdit} = props;
@@ -145,6 +189,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                       </div>
                     )}
                   </Field>
+                  <ImageUpload />
                 </div>
                 {showButton && (
                   <button
