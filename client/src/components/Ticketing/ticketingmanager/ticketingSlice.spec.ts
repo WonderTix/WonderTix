@@ -182,6 +182,7 @@ describe('Ticketing slice', () => {
           title: 'Event 1',
           description: 'lorem ipsum donor',
           imageurl: 'https://test.com/image.jpg',
+          soldOut: false,
           tickets: [{
             event_instance_id: 1,
             eventid: eventid,

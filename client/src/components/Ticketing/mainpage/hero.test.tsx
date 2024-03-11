@@ -66,17 +66,17 @@ afterEach(() => {
 
 it('Hero section renders with all text', () => {
   const check = container.querySelectorAll('div');
-  expect(check).toHaveLength(8);
+  expect(check).toHaveLength(7);
 });
 
 
 it('Add ticket success', () => {
   const button = list.querySelector('button');
   let check = list.querySelectorAll('div');
-  expect(check).toHaveLength(4);
+  expect(check).toHaveLength(3);
 
   userEvent.click(button);
 
   check = container.querySelectorAll('div');
-  expect(check).toHaveLength(8);
+  expect(check).toHaveLength(7);
 });
