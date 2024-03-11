@@ -186,7 +186,7 @@ interface TicketPickerProps {
  * @returns {ReactElement} and the correct ticket when picking
  */
 const TicketPicker = (props: TicketPickerProps): ReactElement => {
-  const uniqueDates = getDateOptions(props.tickets);
+  const dateOptions = getDateOptions(props.tickets);
 
   const [
     {
@@ -348,10 +348,10 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             <option className='text-zinc-300' value='' disabled>
               select date
             </option>
-            {uniqueDates.map((uniqueDate, index) => (
-              <option key={index} value={uniqueDate.date} disabled={uniqueDate.soldOut}>
-                {uniqueDate.soldOut && '[SOLD OUT] '}
-                {uniqueDate.date}
+            {dateOptions.map((option, index) => (
+              <option key={index} value={option.date} disabled={option.soldOut}>
+                {option.soldOut && '[SOLD OUT] '}
+                {option.date}
               </option>
             ))}
           </select>
