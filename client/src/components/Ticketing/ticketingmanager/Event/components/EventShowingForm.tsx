@@ -10,7 +10,7 @@ import {useEvent} from './EventProvider';
 import {getInstanceTicketType} from './ShowingUtils';
 import {FormButton} from './FormButton';
 import {BackIcon, SaveIcon} from '../../../Icons';
-import {FormSwitch} from '../../Season/FormSwitch';
+import {FormSwitch} from '../../Season/components/SeasonSubscriptionAndTicketTypes/FormSwitch';
 import {TicketTypeTableRow} from './TicketTypeTableRow';
 
 interface EventShowingFormProps {

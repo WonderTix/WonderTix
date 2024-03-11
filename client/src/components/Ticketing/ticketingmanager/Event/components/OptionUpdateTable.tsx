@@ -1,6 +1,6 @@
-import {Field, useField} from 'formik';
+import {Field, FieldArrayRenderProps, useField} from 'formik';
 import React, {ReactElement, useState} from 'react';
-import {FieldType} from '../../Season/FormSwitch';
+import {FieldType} from '../../Season/components/SeasonSubscriptionAndTicketTypes/FormSwitch';
 import {CirclePlusIcon} from '../../../Icons';
 import {FormButton} from './FormButton';
 
@@ -12,7 +12,7 @@ export interface OptionRowProps {
 }
 
 interface OptionTableProps {
-  arrayHelpers;
+  arrayHelpers: FieldArrayRenderProps;
   optionsInit: (value: any[]) => any[];
   getOption: any;
   fieldName: string;

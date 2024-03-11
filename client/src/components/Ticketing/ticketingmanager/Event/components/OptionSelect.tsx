@@ -1,5 +1,5 @@
 import React from 'react';
-import {FieldType} from '../../Season/FormSwitch';
+import {FieldType} from '../../Season/components/SeasonSubscriptionAndTicketTypes/FormSwitch';
 
 interface OptionSelectProps {
   field: FieldType;

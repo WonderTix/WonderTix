@@ -60,6 +60,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         handleRemoveEvent(eventId);
         setShowPopUp(false);
       },
+      showSecondary: true,
+      showClose: true,
     });
   };
 
@@ -87,6 +89,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         success: true,
         handleClose: () => setShowPopUp(false),
         handleProceed: () => setShowPopUp(false),
+        showSecondary: false,
+        showClose: false,
       });
     } else {
       setPopUpMessage({
@@ -96,6 +100,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         success: false,
         handleClose: () => setShowPopUp(false),
         handleProceed: () => setShowPopUp(false),
+        showSecondary: false,
+        showClose: false,
       });
     }
   };
