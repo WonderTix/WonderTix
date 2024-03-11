@@ -214,3 +214,15 @@
   active: true
   seasonticketeligible: true
   imageurl: https://assets.playbill.com/playbill-covers/566eed1749fdc5b4801381801a49391f-guys-and-dolls-playbill-1992-04-web.jpg
+- seasonid_fk: 7
+  eventname: Death of a Salesman
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: true
+  seasonticketeligible: true
+  imageurl: https://upload.wikimedia.org/wikipedia/en/2/20/DeathOfASalesman.jpg
+- seasonid_fk: 7
+  eventname: What I Learned In Paris
+  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  active: true
+  seasonticketeligible: true
+  imageurl: https://www.theatreinchicago.com/images/play/what-i-learned-8132.jpg
