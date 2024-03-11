@@ -44,7 +44,6 @@ salesoverviewController.get('/events', async (req: Request, res: Response) => {
                   },
                 },
               },
-              seasons: true,
             },
         });
         return res.json(events);
