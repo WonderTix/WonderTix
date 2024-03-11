@@ -92,7 +92,6 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
     const allIds: number[] = [];
     let byId = {};
     tickets
-        .filter((ticket) => ticket.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length)
         .forEach((ticket) => {
           allIds.push(ticket.eventinstanceid);
           byId = {...byId, [ticket.eventinstanceid]: {

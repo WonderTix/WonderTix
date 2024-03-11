@@ -352,7 +352,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       },
     });
     return res.json(events
-        .filter((event) => event.eventinstances.filter((instance) => instance.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length).length)
         .map((event) => ({
           id: event.eventid,
           seasonid: event.seasonid_fk,
