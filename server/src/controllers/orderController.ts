@@ -229,9 +229,13 @@ orderController.get('/readers', async (req: Request, res: Response) => {
  *   post:
  *     summary: Cancel payment intent and cancel order in prisma
  *     tags:
- *     - New Event API
+ *     - New Order
+ *     responses:
+ *       200:
+ *         description: readers order successfully cancelled
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
  */
-
 orderController.post('/reader-cancel', async (req: Request, res: Response) => {
   const {paymentIntentID} = req.body;
   try {

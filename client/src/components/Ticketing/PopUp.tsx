@@ -100,8 +100,8 @@ const PopUp = ({
     >
       <div
         id='popup-modal'
-        className='relative z-10 bg-white rounded-lg overflow-hidden
-          mx-2 tab:mx-auto my-2 tab:max-w-lg w-full shadow-xl transform transition-all'
+        className='relative z-10 bg-white rounded-lg overflow-y-auto
+          mx-2 tab:mx-auto my-2 tab:max-w-lg w-full max-h-full shadow-xl transform transition-all'
       >
         {showClose && (
           <button
@@ -135,7 +135,7 @@ const PopUp = ({
             </p>
           </div>
         </div>
-        <footer className='bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end'>
+        <footer className='sticky bottom-0 bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end'>
           {showSecondary && (
             <button
               onClick={handleClose}
