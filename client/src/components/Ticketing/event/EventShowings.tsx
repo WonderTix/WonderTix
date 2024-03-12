@@ -12,6 +12,7 @@ import {useNavigate} from 'react-router-dom';
 import {EventImage, getImageDefault} from '../../../utils/imageURLValidation';
 import {SmallBackIcon} from '../Icons';
 import Label from '../Label';
+import {LoadingScreen} from '../mainpage/LoadingScreen';
 
 /**
  * EventPageProps - Used to hold data (uses url params rather than props)
@@ -27,12 +28,25 @@ const EventShowings = (): ReactElement => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [show, setShow] = useState(false);
+  const {eventid} = useParams<EventPageProps>();
+  const eventData = useAppSelector((state) =>
+    selectEventData(state, Number(eventid)),
+  );
+
+  const [showPopUp, setShowPopUp] = useState(false);
   const [popUpMessage, setPopUpMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    void dispatch(fetchTicketingData());
+    dispatch(fetchTicketingData()).finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    // If event cannot be found, go to 404 page
+    if (!loading && eventData === undefined) {
+      navigate('not-found');
+    }
+  }, [loading]);
 
   const handleSubmit = (ticketInfo: any) => {
     const date = ticketInfo.selectedDate;
@@ -44,14 +58,14 @@ const EventShowings = (): ReactElement => {
     setPopUpMessage(
       `You added ${ticketInfo.qty} ticket${
         ticketInfo.qty === 1 ? '' : 's'
-      } to ${title} on ${dateString} to the cart.`,
+      } to ${eventData.title} on ${dateString} to the cart.`,
     );
-    setShow(!show);
+    setShowPopUp(!showPopUp);
     document.body.style.overflow = 'hidden';
   };
 
   const handleClose = () => {
-    setShow(false);
+    setShowPopUp(false);
     document.body.style.overflow = '';
   };
 
@@ -60,20 +74,15 @@ const EventShowings = (): ReactElement => {
     document.body.style.overflow = '';
   };
 
-  const {eventid} = useParams<EventPageProps>();
-  const eventData = useAppSelector((state) =>
-    selectEventData(state, Number(eventid)),
-  );
-  if (eventData === undefined) return <p>Whoops! Event not found</p>;
-  const {title, description, soldOut, tickets, imageurl: imageUrl} = eventData;
-
-  return (
+  return !eventData ? (
+    <LoadingScreen />
+  ) : (
     <>
       <main
         className='bg-fixed bg-cover'
         style={{
           backgroundImage: `url(${getImageDefault(
-            imageUrl,
+            eventData.imageurl,
           )}),url(${getImageDefault()})`,
         }}
       >
@@ -88,38 +97,41 @@ const EventShowings = (): ReactElement => {
           </button>
           <div className='flex flex-col md:gap-12 md:flex-row bg-zinc-700/30 p-9 rounded-xl'>
             <EventImage
-              src={imageUrl}
+              src={eventData.imageurl}
               className='w-[75%] tab:w-[55%] md:w-[35%] lg:w-[25%] self-center h-auto rounded-xl'
-              title={title}
+              title={eventData.title}
             />
             <div className='my-3'>
               <h1
                 data-testid='event-title'
                 className='flex gap-3 items-baseline text-white text-4xl font-bold'
               >
-                {soldOut && (
+                {eventData.soldOut && (
                   <Label className='text-3xl' color='slate'>
                     SOLD OUT
                   </Label>
                 )}
-                {titleCase(title)}
+                {titleCase(eventData.title)}
               </h1>
               <p className='text-zinc-200 font-semibold text-2xl mt-6'>
                 Event description
               </p>
               <p className='text-zinc-100 text-xl pr-7'>
-                {description ? description : ''}
+                {eventData.description ? eventData.description : ''}
               </p>
             </div>
           </div>
-          {!soldOut && (
+          {!eventData.soldOut && (
             <div className='bg-zinc-700/30 p-9 flex flex-col items-center rounded-xl w-full'>
-              <TicketPicker onSubmit={handleSubmit} tickets={tickets} />
+              <TicketPicker
+                onSubmit={handleSubmit}
+                tickets={eventData.tickets}
+              />
             </div>
           )}
         </div>
       </main>
-      {show && (
+      {showPopUp && (
         <PopUp
           title='Success!'
           message={popUpMessage}
