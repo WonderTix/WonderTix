@@ -128,7 +128,7 @@ discountController.get('/', async (req: Request, res: Response) => {
     }
 
     const discounts = await prisma.discounts.findMany({
-      ...(filters && {where: filters}),
+      where: filters,
       orderBy: {
         discountid: 'asc',
       },
