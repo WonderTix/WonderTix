@@ -52,12 +52,13 @@ export const InputControl = (props: InputControlProps) => {
         {`${label}: `}
       </label>
       <div className={className?.inputGroupClass}>
-        {currency && <span>$</span>}
-        {type === 'textarea' ? (
-          <textarea {...inputProps} />
-        ) : (
-          <input {...inputProps} />
-        )}
+        <span className={`${currency ? `before:content-['$']` : ''} flex flex-row`}>
+          {type === 'textarea' ? (
+            <textarea {...inputProps} />
+          ) : (
+            <input {...inputProps} />
+          )}
+        </span>
         <ErrorMessage
           name={field.name}
           render={(message) => (

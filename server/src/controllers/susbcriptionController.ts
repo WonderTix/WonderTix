@@ -426,14 +426,33 @@ const validateSubscriptionType = (subscriptionType: any) => {
 subscriptionController.put('/:subscriptiontypeid', async (req: Request, res: Response) => {
   try {
     const subscriptionTypeId = +req.params.subscriptiontypeid;
-    const subscriptionType = req.body;
+    const subscriptionType = validateSubscriptionType(req.body);
+
+    const originalType = await prisma.subscriptiontypes.findUnique({
+      where: {
+        id: subscriptionTypeId,
+        deletedat: null,
+      },
+    });
+
+    if (!originalType) {
+      return res.status(400).json({error: `Subscription Type does not exist`});
+    }
 
     const type = await prisma.subscriptiontypes.update({
       where: {
         id: subscriptionTypeId,
       },
       data: {
-        ...validateSubscriptionType(subscriptionType),
+        ...subscriptionType,
+        seasonsubscriptiontypes: {
+          updateMany: {
+            where: {},
+            data: {
+              ...(Number(originalType.price) !== subscriptionType.price && {price: subscriptionType.price}),
+            },
+          },
+        },
       },
     });
     const {deletedat, price, ...toReturn} = type;

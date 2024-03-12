@@ -216,7 +216,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
   try {
     const {seasonid} = req.params;
     const toUpdate: Map<number, SeasonTicketTypePriceDefaultRequestItem> = new Map(
-        req.body?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk,
+        req.body.ticketTypes?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk,
           {
             ...item,
             price: +item.price,

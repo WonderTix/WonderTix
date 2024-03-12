@@ -117,6 +117,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
               }
             >
               <FormSubmitButton
+                disabled={showPopUp}
                 className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl h-fit shadow-xl'
                 testID='event-save-button'
               >
