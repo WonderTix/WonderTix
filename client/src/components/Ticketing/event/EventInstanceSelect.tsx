@@ -56,7 +56,7 @@ const EventInstanceSelect = ({
           <option key={ticket.event_instance_id} value={ticket.event_instance_id} disabled={soldOut}>
             {soldOut && '[SOLD OUT] '}
             {format(new Date(ticket.date), 'h:mm a')}
-            {(ticket.detail ?? '') !== '' ? ticket.detail : ''}
+            {(ticket.detail ?? '') !== '' ? ` ${ticket.detail}` : ''}
           </option>
         );
       })}
