@@ -72,23 +72,15 @@ const DiscountCodes = (): ReactElement => {
       headerName: 'Amount Off',
       type: 'number',
       width: 100,
-      valueFormatter: (params: GridValueFormatterParams<number>) => {
-        if (params.value == null) {
-          return '';
-        }
-        return toDollarAmount(params.value);
-      },
+      valueFormatter: (params: GridValueFormatterParams<number>) =>
+        params.value == null ? '—' : toDollarAmount(params.value),
     },
     {
       field: 'percent',
       type: 'number',
       width: 130,
-      valueFormatter: (params: GridValueFormatterParams<number>) => {
-        if (params.value == null) {
-          return '';
-        }
-        return `${params.value}%`;
-      },
+      valueFormatter: (params: GridValueFormatterParams<number>) =>
+        params.value == null ? '—' : `${params.value}%`,
       renderHeader: () => (
         <Tooltip
           title='Discounts with a percent and amount value will use the percent capped at the amount off'
@@ -107,12 +99,16 @@ const DiscountCodes = (): ReactElement => {
       headerName: 'Minimum Tickets',
       type: 'number',
       width: 130,
+      valueFormatter: (params: GridValueFormatterParams<number>) =>
+        params.value == null ? '—' : params.value,
     },
     {
       field: 'min_events',
       headerName: 'Minimum Events',
       type: 'number',
       width: 130,
+      valueFormatter: (params: GridValueFormatterParams<number>) =>
+        params.value == null ? '—' : params.value,
     },
     {
       field: 'toolbar',
@@ -225,7 +221,7 @@ const DiscountCodes = (): ReactElement => {
     } else {
       setPopUpProps({
         title: 'Failure',
-        message: 'Cannot delete a discount code that has been used',
+        message: 'Unable to delete this discount code',
         handleProceed: () => setPopUpProps(null),
         success: false,
         showSecondary: false,
@@ -251,7 +247,7 @@ const DiscountCodes = (): ReactElement => {
       <div className='w-full h-screen absolute'>
         <main className='w-full h-screen overflow-x-hidden absolute'>
           <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-            <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-indigo-500 mb-10 pb-4'>
+            <h1 className='font-bold text-4xl tab:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-indigo-500 mb-10 pb-4'>
               Manage Discount Codes
             </h1>
             <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>

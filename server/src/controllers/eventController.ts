@@ -203,9 +203,9 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
 
   try {
     validateWithRegex(
-      req.file.mimetype.toLowerCase(),
-      'Invalid input, not a valid image filetype!', 
-      new RegExp('^(image\/(jpe?g|png))')
+        req.file.mimetype.toLowerCase(),
+        'Invalid input, not a valid image filetype!',
+        new RegExp('^(image\/(jpe?g|png))'),
     );
   } catch (error) {
     console.error(error);
@@ -223,13 +223,13 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
   stream.on('error', (err) => {
     console.error(err);
     return res.status(500).send('Upload failed!');
-  })
+  });
 
   stream.on('finish', async () => {
     await file.makePublic();
     const url = `https://storage.googleapis.com/${bucketName}/${file.name}`;
     return res.status(200).send({url});
-  })
+  });
 
   stream.end(req.file.buffer);
 });
@@ -881,10 +881,8 @@ eventController.use(checkScopes);
 
 eventController.post('/reader-intent', async (req: Request, res: Response) => {
   const {cartItems} = req.body;
-  let paymentIntentID = "";
-  let clientSecret = "";
-
-  console.log("authenticated!"); // remove
+  let paymentIntentID = '';
+  let clientSecret = '';
 
   try {
     if (!cartItems.length) {
@@ -898,9 +896,7 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
     } = await getTicketItems(cartItems, prisma);
 
     if (ticketTotal > 0) {
-      const {id, secret} = await createStripePaymentIntent(
-        ticketTotal * 100
-      )
+      const {id, secret} = await createStripePaymentIntent(ticketTotal * 100);
       paymentIntentID = id;
       clientSecret = secret;
     }
@@ -944,7 +940,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     } = await getTicketItems(cartItems, prisma);
 
     const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
-    
+
     const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
 
     // add order to database with prisma
@@ -959,7 +955,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         undefined, // no contactid with reader payments
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
-        paymentIntentID // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
+        paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
     );
     res.json({orderID: order.orderid, status: 'order sent'});
   } catch (error) {

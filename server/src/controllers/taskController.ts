@@ -13,7 +13,7 @@ export const taskController = Router();
  *   post:
  *     summary: Create a task
  *     tags:
- *     - New task
+ *     - New Task
  *     requestBody:
  *       description: Updated task information
  *       content:
