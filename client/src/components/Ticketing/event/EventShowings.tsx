@@ -1,14 +1,10 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {useAppSelector, useAppDispatch} from '../app/hooks';
-import {useParams} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../app/hooks';
+import {useNavigate, useParams} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
-import {
-  selectEventData,
-  fetchTicketingData,
-} from '../ticketingmanager/ticketingSlice';
+import {fetchTicketingData, selectEventData} from '../ticketingmanager/ticketingSlice';
 import TicketPicker from './TicketPicker';
 import PopUp from '../PopUp';
-import {useNavigate} from 'react-router-dom';
 import {EventImage, getImageDefault} from '../../../utils/imageURLValidation';
 import {SmallBackIcon} from '../Icons';
 import Label from '../Label';
@@ -20,9 +16,9 @@ import {LoadingScreen} from '../mainpage/LoadingScreen';
 type EventPageProps = {eventid: string};
 
 /**
- * Data Handler
+ * Page for an individual event.
  *
- * @returns {ReactElement} and returns dispatch(fetchTicketingData())
+ * @returns {ReactElement} EventShowings
  */
 const EventShowings = (): ReactElement => {
   const dispatch = useAppDispatch();
@@ -121,14 +117,11 @@ const EventShowings = (): ReactElement => {
               </p>
             </div>
           </div>
-          {!eventData.soldOut && (
-            <div className='bg-zinc-700/30 p-9 flex flex-col items-center rounded-xl w-full'>
-              <TicketPicker
-                onSubmit={handleSubmit}
-                tickets={eventData.tickets}
-              />
-            </div>
-          )}
+          <TicketPicker
+            isEventSoldOut={eventData.soldOut}
+            onSubmit={handleSubmit}
+            tickets={eventData.tickets}
+          />
         </div>
       </main>
       {showPopUp && (
