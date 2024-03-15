@@ -1,4 +1,6 @@
-import {formatSeasonDate, getSeasonImage} from '../../seasonUtils';
+import {formatSeasonDate} from '../../seasonUtils';
+import {useEffect, useState} from 'react';
+import {getData} from '../../../Event/components/ShowingUtils';
 
 export interface RequestBody {
   seasonid: number;
@@ -14,7 +16,7 @@ export interface EventRequestBody {
   eventname: string;
   eventdescription: string;
   active: boolean;
-  seasonticketeligible: boolean;
+  subscriptioneligible: boolean;
   imageurl: string;
 }
 
@@ -192,4 +194,44 @@ export const updateEventSeason = async (
     console.error(error);
     return null;
   }
+};
+
+export const useFetchSeasonTicketTypes = (Id: number) => {
+  const [seasonTicketTypes, setSeasonTicketTypes] = useState(undefined);
+  const [ticketTypes, setTicketTypes] = useState(undefined);
+  const [reload, setReload] = useState(false);
+  useEffect(() => {
+    const controller = new AbortController();
+    getData(
+      `${process.env.REACT_APP_API_2_URL}/season-ticket-type-price-default/${Id}`,
+      setSeasonTicketTypes,
+      controller.signal,
+    ).catch(() => console.error('Error fetching season ticket types'));
+    getData(
+      `${process.env.REACT_APP_API_2_URL}/ticket-type/valid`,
+      setTicketTypes,
+      controller.signal,
+    ).catch((error) => console.error(error, 'Error fetching ticket types'));
+    return () => controller.abort();
+  }, [reload]);
+
+  return {seasonTicketTypes, setSeasonTicketTypes, setReload, ticketTypes, setTicketTypes};
+};
+
+export const useFetchSeasonSubscriptionTypes = (Id: number) => {
+  const [seasonSubscriptionTypes, setSeasonSubscriptionTypes] =
+    useState(undefined);
+  const [reload, setReload] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getData(
+      `${process.env.REACT_APP_API_2_URL}/subscription-types/season/${Id}`,
+      setSeasonSubscriptionTypes,
+      controller.signal,
+    ).catch(() => console.error('Error fetching season subscription types'));
+    return () => controller.abort();
+  }, [reload]);
+
+  return {seasonSubscriptionTypes, setSeasonSubscriptionTypes, setReload};
 };

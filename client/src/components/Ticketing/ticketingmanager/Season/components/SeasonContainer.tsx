@@ -7,14 +7,19 @@ import {useFetchToken} from '../../Event/components/ShowingUtils';
 import PopUp from '../../../PopUp';
 import {useParams} from 'react-router';
 import {getAllEvents} from './utils/apiRequest';
-import {seasonEventInfo, SeasonTicketValues} from './utils/seasonCommon';
+import {seasonEventInfo} from './utils/seasonCommon';
+import {Tab, Tabs} from '@mui/material';
+import {SeasonTicketTypeContainer} from './SeasonSubscriptionAndTicketTypes/SeasonTicketTypeContainer';
+import {SubscriptionTypeContainer} from './SeasonSubscriptionAndTicketTypes/SubscriptionTypeContainer';
 
 const defaultPopUpValues = {
   title: '',
   message: '',
   success: false,
   handleClose: () => undefined,
-  handleProcess: () => undefined,
+  handleProceed: () => undefined,
+  showSecondary: false,
+  showClose: false,
 };
 
 const SeasonContainer = () => {
@@ -30,8 +35,9 @@ const SeasonContainer = () => {
     handleClose: () => setShowPopUp(false),
     handleProceed: () => setShowPopUp(false),
   });
-  const [seasonTicketTypeData, setSeasonTicketTypeData] = useState<SeasonTicketValues[]>();
   const {token} = useFetchToken();
+  const [tab, setTab] = useState(0);
+    const [editing, setEditing] = useState(!seasonId);
 
   const commonSeasonPageProps = {
     seasonId: seasonId,
@@ -58,61 +64,8 @@ const SeasonContainer = () => {
     }
   };
 
-  const handleGetSeasonTicketType = async () => {
-    try {
-      const seasonTicketTypeTableRes = await fetch(
-        process.env.REACT_APP_API_2_URL +
-          `/season-ticket-type-price-default/${seasonId}`,
-        {
-          credentials: 'omit',
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      if (!seasonTicketTypeTableRes.ok) {
-        throw new Error('Failed to get ticket type information');
-      }
-
-      const seasonTicketTypeData = await seasonTicketTypeTableRes.json();
-      setSeasonTicketTypeData(seasonTicketTypeData.sort((a, b) => a.tickettypeid_fk - b.tickettypeid_fk));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleUpdateSeasonTicketType = async (requestData, seasonId) => {
-    try {
-      const seasonUpdateTicketTypeRes = await fetch(
-        process.env.REACT_APP_API_2_URL +
-          `/season-ticket-type-price-default/${seasonId}`,
-        {
-          credentials: 'include',
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(requestData),
-        },
-      );
-
-      if (!seasonUpdateTicketTypeRes.ok) {
-        throw new Error('Failed to update season ticket type');
-      }
-      const seasonUpdatedTicketTypeData = await seasonUpdateTicketTypeRes.json();
-
-      setSeasonTicketTypeData(seasonUpdatedTicketTypeData.sort((a, b) => a.tickettypeid_fk - b.tickettypeid_fk));
-    } catch (error) {
-      console.error('Error updating season ticket type', error);
-    }
-  };
-
   useEffect(() => {
     void handleGetAllEvents();
-    void handleGetSeasonTicketType();
   }, []);
 
   if (token === '' || seasonId === undefined || eventsInSeason === undefined) {
@@ -129,15 +82,56 @@ const SeasonContainer = () => {
           <SeasonInfo
             {...commonSeasonPageProps}
             setSeasonId={setSeasonId}
-            setIsFormEditing={setIsFormEditing}
-            seasonTicketTypeData={seasonTicketTypeData}
-            onUpdateSeasonTicketType={handleUpdateSeasonTicketType}
+            setIsFormEditing={(value: boolean) => {
+              setEditing(value);
+              setIsFormEditing(value);
+            }}
+            disabled={editing}
           />
-          <SeasonEvents
-            {...commonSeasonPageProps}
-            eventsNotInAnySeason={eventsNotInAnySeason}
-            setEventsNotInAnySeason={setEventsNotInAnySeason}
-          />
+          <div className='col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3'>
+            <Tabs
+              value={tab}
+              onChange={(e, newValue) => {
+                setTab(newValue);
+                if (!isFormEditing) setEditing(false);
+              }}
+            >
+              <Tab label='Events' />
+              <Tab label='Ticket & Subscription Types' />
+            </Tabs>
+            {!tab ? (
+              <SeasonEvents
+                {...commonSeasonPageProps}
+                eventsNotInAnySeason={eventsNotInAnySeason}
+                setEventsNotInAnySeason={setEventsNotInAnySeason}
+              />
+            ) : (
+              <div className='flex flex-col h-[100%] gap-3'>
+                <SeasonTicketTypeContainer
+                  token={token}
+                  id={seasonId}
+                  disabled={editing}
+                  setDisabled={setEditing}
+                  setPopUpProps={(value) => {
+                    setPopUpMessage(value);
+                    setShowPopUp(true);
+                  }}
+                  showPopUp={showPopUp}
+                />
+                <SubscriptionTypeContainer
+                  token={token}
+                  id={seasonId}
+                  disabled={editing}
+                  setDisabled={setEditing}
+                  setPopUpProps={(value) => {
+                    setPopUpMessage(value);
+                    setShowPopUp(true);
+                  }}
+                  showPopUp={showPopUp}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

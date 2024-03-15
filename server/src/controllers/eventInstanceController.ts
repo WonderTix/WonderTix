@@ -3,23 +3,16 @@ import {checkJwt, checkScopes} from '../auth';
 import {contacts, Prisma} from '@prisma/client';
 import {eventInstanceRequest} from '../interfaces/Event';
 import {
+  getDate,
   InvalidInputError,
-  validateDateAndTime,
   updateShowing,
+  validateDateAndTime,
 } from './eventInstanceController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {parseIntToDate} from '../api/db';
 
 const prisma = extendPrismaClient();
 
 export const eventInstanceController = Router();
-
-const getDate = (time: string, date: number) => {
-  const [hour, min] = time.split('T')[1].split(':');
-  const newDate = parseIntToDate(date);
-  newDate.setHours(+hour, +min);
-  return newDate.toJSON();
-};
 
 /**
  * @swagger
@@ -552,7 +545,7 @@ eventInstanceController.get('/doorlist/:id',
         }
 
         const doorlist = new Map();
-        const forEachTicket = (description: string, redeemed: Date | null, contact?: contacts) => {
+        const forEachTicket = (description: string, redeemed: Date | null, contact?: contacts | null) => {
           if (!contact) return;
           let row = doorlist.get(contact.contactid);
           if (!row) {

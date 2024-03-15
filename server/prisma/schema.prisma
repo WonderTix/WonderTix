@@ -9,11 +9,13 @@ datasource db {
 
 /// customer information
 model contacts {
+
   contactid     Int      @id @default(autoincrement())
   firstname     String?  @db.VarChar(255)
   lastname      String?  @db.VarChar(255)
   email         String?  @unique @db.VarChar(100)
   phone         String?  @db.VarChar(15)
+  visitsource   String?  @db.VarChar(255)
   address       String?  @db.VarChar(255)
   city          String?  @db.VarChar(255)
   state         String?  @db.VarChar(255)
@@ -75,6 +77,7 @@ model discounts {
   min_tickets     Int?
   min_events      Int?
   tickettype      tickettype? @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  deletedat       DateTime?
   orders          orders[]
 }
 
@@ -197,13 +200,13 @@ model ticketitems {
 model orders {
   orderid           Int                @id @default(autoincrement())
   orderdatetime     DateTime           @default(now()) @db.Timestamp(3)
-  contactid_fk      Int
+  contactid_fk      Int?
   discountid_fk     Int?
   payment_intent    String?            @unique @db.VarChar(255)
   checkout_sessions String?            @unique @db.VarChar(255)
   ordersubtotal     Decimal            @db.Money
   discounttotal     Decimal            @default(0) @db.Money
-  contacts          contacts           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  contacts          contacts?           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donation          donations?
   refunds           refunds[]

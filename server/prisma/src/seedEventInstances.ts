@@ -34,7 +34,7 @@ async function seedEventInstances(prisma: PrismaClient) {
       data: preparedData,
     });
 
-    console.log('Events instances seeding completed.');
+    console.log('Event Instances seeding completed.');
   } catch (error) {
     console.error(error);
   }

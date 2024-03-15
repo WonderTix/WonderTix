@@ -1,9 +1,10 @@
 import React from 'react';
-import {SeasonInfo, SeasonTicketValues} from './seasonCommon';
+import {SeasonInfo} from './seasonCommon';
 import {SeasonImage} from '../../seasonUtils';
 import {FormControlLabel, Switch} from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
-import {SeasonTicketViewTable} from '../SeasonTicketViewTable';
+import {FormButton} from '../../../Event/components/FormButton';
+import {EditIcon, TrashCanIcon} from '../../../../Icons';
 
 const MONTHS = [
   'January',
@@ -27,8 +28,8 @@ interface ViewSeasonInfoProps extends SeasonInfo {
   handleUpdateSeasonEvents: (value) => void;
   setActiveSeasonSwitch: (value) => void;
   setSomeActiveEvents: (value) => void;
-  deleteConfirmationHandler: (event) => void;
-  seasonTicketTypeData: SeasonTicketValues[];
+  deleteConfirmationHandler: () => void;
+  disabled: boolean;
 }
 
 const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
@@ -44,7 +45,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
     setActiveSeasonSwitch,
     setSomeActiveEvents,
     deleteConfirmationHandler,
-    seasonTicketTypeData,
+    disabled,
   } = props;
 
   const getLongDateFormat = (date: string) => {
@@ -59,7 +60,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
     <header className='rounded-xl bg-white p-7 text-lg shadow-xl'>
       <section className='flex flex-col gap-3 text-center mb-5 justify-between min-[750px]:flex-row min-[750px]:flex-wrap'>
         <h1 className='text-4xl font-semibold'>Season Information</h1>
-        <div className='flex flex-col gap-2 min-[750px]:flex-row'>
+        <div className='flex flex-row gap-1 max-[750px]:justify-center'>
           <p
             className={`${
               activeSeasonSwitch ? 'bg-green-100' : 'bg-red-100'
@@ -67,54 +68,30 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           >
             {activeSeasonSwitch ? 'ACTIVE' : 'INACTIVE'}
           </p>
-          <Tooltip title='Edit' placement='top' arrow>
-            <button
-              data-testid='season-edit'
-              className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+          <div className='flex flex-row justify-end gap-2'>
+            <FormButton
               onClick={() => setIsFormEditing(true)}
+              title='Edit'
+              disabled={disabled}
+              className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-300 text-white font-bold px-2 py-2 rounded-xl'
+              testID='season-edit'
             >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-6 w-6'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
-                />
-              </svg>
-            </button>
-          </Tooltip>
-          <Tooltip title='Delete' placement='top' arrow>
-            <button
-              data-testid='season-delete'
-              className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
+              <EditIcon className='h-6 w-6' />
+            </FormButton>
+            <FormButton
               onClick={deleteConfirmationHandler}
+              title='Delete'
+              disabled={disabled}
+              className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white font-bold px-2 py-2 rounded-xl'
+              testID='season-delete'
             >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-6 w-6'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                />
-              </svg>
-            </button>
-          </Tooltip>
+              <TrashCanIcon className='h-6 w-6' />
+            </FormButton>
+          </div>
         </div>
       </section>
       <div className='grid grid-cols-12'>
-        <article className='flex flex-col col-span-6 mb-5 text-center sm:text-start lg:col-span-2'>
+        <article className='flex flex-col mb-5 text-center sm:text-start col-span-12 sm:col-span-6'>
           <h3 className='font-semibold'>Season Name</h3>
           <p className='mb-3 text-base'>{name}</p>
 
@@ -124,7 +101,7 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
           <h3 className='font-semibold'>End Date</h3>
           <p className='mb-3 text-base'>{getLongDateFormat(enddate)}</p>
 
-          <div className='flex items-center'>
+          <div className='flex items-center max-sm:justify-center'>
             <FormControlLabel
               control={<Switch checked={activeSeasonSwitch} />}
               onChange={() => {
@@ -162,16 +139,11 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
             )}
           </div>
         </article>
-        <div className='col-span-6 lg:col-span-2'>
+        <div className='col-span-12 sm:col-span-6 grid justify-center'>
           <SeasonImage
             className='h-auto max-w-[150px] object-cover mx-1 mt-3'
             src={imageurl}
             alt={`Cover photo for ${name} season`}
-          />
-        </div>
-        <div className='lg:ml-2 col-span-12 lg:col-span-8 h-[100%] w-[100%] pt-3 md:p-3 rounded-lg'>
-          <SeasonTicketViewTable
-            seasonTicketTypeData={seasonTicketTypeData}
           />
         </div>
       </div>
