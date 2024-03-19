@@ -1,7 +1,7 @@
-import { Request, Response, Router } from "express";
-import { checkJwt, checkScopes } from "../auth";
-import { Prisma } from "@prisma/client";
-import { extendPrismaClient } from "./PrismaClient/GetExtendedPrismaClient";
+import {Router, Request, Response} from 'express';
+import {checkJwt, checkScopes} from '../auth';
+import {Prisma} from '@prisma/client';
+import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 const prisma = extendPrismaClient();
 
