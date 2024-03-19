@@ -663,7 +663,7 @@ const createServer = async () => {
       wss.clients.forEach((client) => {
         if (client !== ws) {
           waitForOpenConnection(client).then(() => {
-            client.send(data, { binary: isBinary });
+            client.send(data, {binary: isBinary});
           }).catch((error) => {
             console.error(error.message);
           });

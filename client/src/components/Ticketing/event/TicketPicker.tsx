@@ -19,7 +19,6 @@ import {formatUSD} from '../ticketingmanager/RefundOrders/RefundOrders';
  * @param {Ticket} selectedTicket
  * @param {number} qty
  * @param {payWhatPrice?} payWhatPrice
- * @param {boolean} concessions
  * @param {TicketType} selectedTicketType
  * @param {boolean} showCalendar
  * @param {boolean} showTimes
@@ -32,7 +31,6 @@ interface TicketPickerState {
   selectedTicket?: Ticket;
   qty: number;
   payWhatPrice?: number;
-  concessions: boolean;
   selectedTicketType?: TicketType;
   showCalendar: boolean;
   showTimes: boolean;
@@ -44,7 +42,7 @@ export interface TicketType {
   id: number;
   name: string;
   price: string;
-  concessions: string;
+  fee: string;
 }
 
 /**
@@ -56,12 +54,11 @@ const initialState: TicketPickerState = {
   selectedTicket: undefined,
   qty: 0,
   payWhatPrice: null,
-  concessions: false,
   selectedTicketType: {
     id: -1,
     name: '',
     price: '',
-    concessions: '',
+    fee: '',
   },
   showCalendar: true,
   showTimes: false,
@@ -135,9 +132,6 @@ const TicketPickerReducer = (
   case 'change_qty': {
     return {...state, qty: action.payload};
   }
-  case 'toggle_concession': {
-    return {...state, concessions: !state.concessions};
-  }
   case 'change_pay_what': {
     return {...state, payWhatPrice: action.payload};
   }
@@ -178,7 +172,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   const [
     {
       qty,
-      concessions,
       prompt,
       payWhatPrice,
       selectedDate,
@@ -212,7 +205,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             id: type.tickettypeid_fk,
             name: type.description,
             price: formatUSD(type.price),
-            concessions: formatUSD(type.concessionprice),
+            fee: formatUSD(type.fee),
           }));
 
           setShowingTicketTypes(showingTypes);
@@ -266,7 +259,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           id: selectedTicket.event_instance_id,
           tickettype: selectedTicketType,
           qty,
-          concessions,
           payWhatPrice,
         }),
       );
