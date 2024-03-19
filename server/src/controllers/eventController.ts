@@ -315,7 +315,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         eventinstances: {
           some: {
             deletedat: null,
-            availableseats: {gt: 0},
             salestatus: true,
             ticketrestrictions: {
               some: {
@@ -331,7 +330,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           where: {
-            availableseats: {gt: 0},
             salestatus: true,
           },
           include: {
@@ -354,7 +352,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       },
     });
     return res.json(events
-        .filter((event) => event.eventinstances.filter((instance) => instance.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length).length)
         .map((event) => ({
           id: event.eventid,
           seasonid: event.seasonid_fk,
