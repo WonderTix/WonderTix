@@ -40,5 +40,5 @@ export interface TicketType {
   id: number,
   name: string,
   price: number,
-  concessions: number,
+  fee: number,
 }

@@ -1,14 +1,14 @@
-import {Request, Response, Router} from 'express';
-import {checkJwt, checkScopes} from '../auth';
-import {contacts, Prisma} from '@prisma/client';
-import {eventInstanceRequest} from '../interfaces/Event';
+import { Request, Response, Router } from "express";
+import { checkJwt, checkScopes } from "../auth";
+import { contacts, Prisma } from "@prisma/client";
+import { eventInstanceRequest } from "../interfaces/Event";
 import {
   getDate,
   InvalidInputError,
   updateShowing,
   validateDateAndTime,
-} from './eventInstanceController.service';
-import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+} from "./eventInstanceController.service";
+import { extendPrismaClient } from "./PrismaClient/GetExtendedPrismaClient";
 
 const prisma = extendPrismaClient();
 
@@ -381,7 +381,7 @@ eventInstanceController.get(
             tickettypeid_fk: restriction.tickettypeid_fk,
             seasontickettypepricedefaultid_fk: restriction.seasontickettypepricedefaultid_fk ?? -1,
             price: restriction.price,
-            concessionprice: restriction.concessionprice,
+            fee: restriction.fee,
             ticketlimit: restriction.ticketlimit,
             ticketssold: restriction.ticketitems.length,
             description: restriction.tickettype.description,
@@ -499,7 +499,7 @@ eventInstanceController.get('/doorlist/:id',
         const id = req.params.id;
 
         if (isNaN(Number(id))) {
-          return res.status(400).send({error: `Invalid Showing Id`});
+          return res.status(400).send({error: 'Invalid Showing Id'});
         }
 
         const eventInstance = await prisma.eventinstances.findUnique({
@@ -681,7 +681,7 @@ eventInstanceController.post('/', async (req: Request, res: Response) => {
           tickettypeid_fk: +type.tickettypeid_fk,
           ticketlimit: Math.min(eventInstance.totalseats, type.ticketlimit),
           price: type.tickettypeid_fk === 0? 0: +type.price,
-          concessionprice: +type.concessionprice,
+          fee: +type.fee,
           seasontickettypepricedefaultid_fk: seasonTicketTypePriceDefaults.get(+type.tickettypeid_fk),
         },
       });

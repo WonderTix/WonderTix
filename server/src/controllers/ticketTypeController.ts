@@ -1,7 +1,7 @@
-import {Router, Request, Response} from 'express';
-import {checkJwt, checkScopes} from '../auth';
-import {Prisma} from '@prisma/client';
-import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import { Request, Response, Router } from "express";
+import { checkJwt, checkScopes } from "../auth";
+import { Prisma } from "@prisma/client";
+import { extendPrismaClient } from "./PrismaClient/GetExtendedPrismaClient";
 
 const prisma = extendPrismaClient();
 
@@ -223,18 +223,18 @@ ticketTypeController.use(checkScopes);
  */
 ticketTypeController.post('/', async (req: Request, res: Response) => {
   try {
-    const {price, concessions, description} = req.body;
-    if (price === undefined || +price < 0 || concessions === undefined || +concessions < 0) {
-      return res.status(400).json({error: `Neither price nor concession price can be negative`});
+    const {price, fee, description} = req.body;
+    if (price === undefined || +price < 0 || fee === undefined || +fee < 0) {
+      return res.status(400).json({error: 'Neither price nor fee can be negative'});
     } else if (!description || description === '') {
-      return res.status(400).json({error: `Ticket type description is required`});
+      return res.status(400).json({error: 'Ticket type description is required'});
     }
 
     const ticketType = await prisma.tickettype.create({
       data: {
         description,
         price: +price,
-        concessions: +concessions,
+        fee: +fee,
         deprecated: false,
       },
     });
@@ -288,12 +288,12 @@ ticketTypeController.post('/', async (req: Request, res: Response) => {
 ticketTypeController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const {description, price, concessions} = req.body;
+    const {description, price, fee} = req.body;
 
-    if (price === undefined || +price < 0 || concessions === undefined || +concessions < 0) {
-      return res.status(400).json({error: `Neither price nor concession price can be negative`});
+    if (price === undefined || +price < 0 || fee === undefined || +fee < 0) {
+      return res.status(400).json({error: 'Neither price nor fee can be negative'});
     } else if (!description|| description === '') {
-      return res.status(400).json({error: `Ticket type description is required`});
+      return res.status(400).json({error: 'Ticket type description is required'});
     }
 
     const ticketType = await prisma.tickettype.findUnique({
@@ -303,7 +303,7 @@ ticketTypeController.put('/:id', async (req: Request, res: Response) => {
     });
 
     if (!ticketType) {
-      return res.status(400).json({error: `Ticket type does not exist`});
+      return res.status(400).json({error: 'Ticket type does not exist'});
     }
 
     const updatedType = await prisma.tickettype.update({
@@ -313,7 +313,7 @@ ticketTypeController.put('/:id', async (req: Request, res: Response) => {
       data: {
         description,
         price: !id? 0: +price,
-        concessions: +concessions,
+        fee: +fee,
         ticketrestrictions: {
           updateMany: {
             where: {
@@ -321,7 +321,7 @@ ticketTypeController.put('/:id', async (req: Request, res: Response) => {
             },
             data: {
               ...(ticketType.tickettypeid && +ticketType.price !== +price && {price: +price}),
-              ...(+ticketType.concessions !== +concessions && {concessionprice: +concessions}),
+              ...(+ticketType.fee !== +fee && {fee: +fee}),
             },
           },
         },
@@ -332,7 +332,7 @@ ticketTypeController.put('/:id', async (req: Request, res: Response) => {
             },
             data: {
               ...(ticketType.tickettypeid && +ticketType.price !== +price && {price: +price}),
-              ...(+ticketType.concessions !== +concessions && {concessionprice: +concessions}),
+              ...(+ticketType.fee !== +fee && {fee: +fee}),
             },
           },
         },

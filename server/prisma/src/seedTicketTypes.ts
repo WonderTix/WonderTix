@@ -1,5 +1,6 @@
-import {PrismaClient} from '@prisma/client';
-const fs = require('fs');
+import { PrismaClient } from "@prisma/client";
+
+const fs = require("fs");
 const yaml = require('js-yaml');
 
 /**
@@ -21,7 +22,7 @@ async function seedTicketTypes(prisma: PrismaClient) {
       tickettypeid: item.tickettypeid,
       description: item.description,
       price: parseFloat(item.price.replace('$', '')),
-      concessions: parseFloat(item.concessions.replace('$', '')),
+      fee: parseFloat(item.fee.replace('$', '')),
       deprecated: item.deprecated,
     }));
 

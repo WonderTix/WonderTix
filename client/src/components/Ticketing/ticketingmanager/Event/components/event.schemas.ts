@@ -7,7 +7,10 @@ export const eventInstanceSchema = yup.object().shape({
   totalseats: yup.number().integer().positive().required('Required'),
   instanceTicketTypes: yup.array().of(
     yup.object().shape({
-      tickettypeid_fk: yup.number().integer('Must be an integer').required('Required'),
+      tickettypeid_fk: yup
+        .number()
+        .integer('Must be an integer')
+        .required('Required'),
       ticketlimit: yup
         .number()
         .integer('Must be an integer')
@@ -20,8 +23,8 @@ export const eventInstanceSchema = yup.object().shape({
             return value <= this.options.context.totalseats;
           },
         ),
-        concessionprice: yup.number().min(0, 'Must be greater than 0').required('Required'),
-        price: yup.number().min(0, 'Must be greater than 0').required('Required'),
+      fee: yup.number().min(0, 'Must be greater than 0').required('Required'),
+      price: yup.number().min(0, 'Must be greater than 0').required('Required'),
     }),
   ),
 });

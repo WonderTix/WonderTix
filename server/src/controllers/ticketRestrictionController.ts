@@ -1,7 +1,7 @@
-import {Router, Request, Response} from 'express';
-import {checkJwt, checkScopes} from '../auth';
-import {Prisma} from '@prisma/client';
-import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import { Request, Response, Router } from "express";
+import { checkJwt, checkScopes } from "../auth";
+import { Prisma } from "@prisma/client";
+import { extendPrismaClient } from "./PrismaClient/GetExtendedPrismaClient";
 
 const prisma = extendPrismaClient();
 
@@ -73,7 +73,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
               eventinstanceid: restriction.eventinstanceid_fk,
               tickettypeid: restriction.tickettypeid_fk,
               description: restriction.tickettype.description,
-              concessionprice: +restriction.concessionprice,
+              fee: +restriction.fee,
               price: +restriction.price,
               ticketlimit: restriction.ticketlimit,
               ticketssold: restriction.ticketitems.length,

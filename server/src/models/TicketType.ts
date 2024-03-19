@@ -9,7 +9,7 @@ export default class TicketType {
   private _id: number = 0;
   private _description: string = '';
   private _price: number = 0;
-  private _concessions: number = 0;
+  private _fee: number = 0;
   private _deprecated: boolean = false;
 
   /**
@@ -69,19 +69,19 @@ export default class TicketType {
   }
 
   /**
-   * Get the concessions of the ticket type
+   * Get the fee of the ticket type
    * @return {number}
    */
-  get concessions(): number {
-    return this._concessions;
+  get fee(): number {
+    return this._fee;
   }
 
   /**
-   * Set the concessions of the ticket type
+   * Set the fee of the ticket type
    * @param {number} value
    */
-  set concessions(value: number) {
-    this._concessions = value;
+  set fee(value: number) {
+    this._fee = value;
   }
 
   /**
@@ -108,7 +108,7 @@ export default class TicketType {
    */
   static async find(pool: Pool, id: number): Promise<boolean|TicketType> {
     const result = await pool.query(
-        `SELECT tickettypeid, description, price, concessions, deprecated 
+        `SELECT tickettypeid, description, price, fee, deprecated 
         FROM tickettype 
         WHERE tickettypeid = $1`,
         [id],
@@ -122,7 +122,7 @@ export default class TicketType {
     ticketType.id = result.rows[0].tickettypeid;
     ticketType.description = result.rows[0].description;
     ticketType.price = result.rows[0].price;
-    ticketType.concessions = result.rows[0].concessions;
+    ticketType.fee = result.rows[0].fee;
     ticketType.deprecated = result.rows[0].deprecated;
 
     return ticketType;
@@ -138,7 +138,7 @@ export default class TicketType {
       SET
         description = $2,
         price = $3,
-        concessions = $4,
+        fee = $4,
         deprecated = $5
       WHERE 
         tickettypeid = $1;`,
@@ -146,7 +146,7 @@ export default class TicketType {
           this.id,
           this.description,
           this.price,
-          this.concessions,
+          this.fee,
           this.deprecated,
         ]);
 

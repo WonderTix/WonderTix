@@ -1,5 +1,6 @@
-import {PrismaClient} from '@prisma/client';
-const fs = require('fs');
+import { PrismaClient } from "@prisma/client";
+
+const fs = require("fs");
 const yaml = require('js-yaml');
 
 /**
@@ -33,7 +34,7 @@ async function seedTicketRestrictions(prisma: PrismaClient) {
           tickettypeid_fk: type.tickettypeid,
           ticketlimit: instance.totalseats ?? 100,
           price: type.price,
-          concessionprice: type.concessions,
+          fee: type.fee,
         },
       }));
     });
@@ -47,7 +48,7 @@ async function seedTicketRestrictions(prisma: PrismaClient) {
           tickettypeid_fk: item.tickettypeid_fk,
           ticketlimit: Math.min(item.ticketlimit, instance.totalseats),
           price: type.price,
-          concessionprice: type.concessions,
+          fee: type.fee,
         },
       }));
     });
