@@ -3,6 +3,7 @@ import {toDateStringFormat} from '../../Ticketing/ticketingmanager/Event/compone
 import format from 'date-fns/format';
 import {toDollarAmount} from '../../../utils/arrays';
 import {TicketIcon} from '../../Ticketing/Icons';
+import Label from '../../Ticketing/Label';
 
 interface ContactOrderProps {
   orderId: number;
@@ -148,9 +149,9 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
         </span>
         <span className='flex items-center gap-2'>
           {refunded && (
-            <span className='py-1 px-2 text-xs text-green-800 bg-green-200 shadow-sm rounded-md'>
+            <Label className='text-xs' color='green'>
               REFUNDED
-            </span>
+            </Label>
           )}
           {toDollarAmount(Number(price))}
         </span>
@@ -177,9 +178,9 @@ const DonationOrderItem = (props: DonationOrderItem): ReactElement => {
         <span>Donation</span>
         <span className='flex items-center gap-2'>
           {refunded && (
-            <span className='py-1 px-2 text-xs text-green-800 bg-green-200 shadow-sm rounded-md'>
+            <Label className='text-xs' color='green'>
               REFUNDED
-            </span>
+            </Label>
           )}
           {toDollarAmount(Number(amount))}
         </span>

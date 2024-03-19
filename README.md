@@ -1,6 +1,6 @@
 # WonderTix
 
-Main branch is the latest stable release. Develop branch is the latest development release.
+Main branch is the latest development release.
 
 ## Overview
 
