@@ -118,7 +118,6 @@ export const updateRefundStatus = async (
 
   refunds.forEach(async (refund) => {
     const refundObject = await stripe.refunds.retrieve(refund.refund_intent);
-    console.log(refundObject);
     switch(refundObject.status) {
       case 'succeeded':
         refund.refund_status = state.completed;
