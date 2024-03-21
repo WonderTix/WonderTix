@@ -116,7 +116,7 @@ export const updateRefundStatus = async (
     },
   });
 
-  refunds.forEach(async (refund) => {
+  await Promise.allSettled(refunds.map(async (refund) => {
     const refundObject = await stripe.refunds.retrieve(refund.refund_intent);
     switch(refundObject.status) {
       case 'succeeded':
@@ -138,7 +138,7 @@ export const updateRefundStatus = async (
         refund_status: refund.refund_status,
       }
     });
-  });
+  }));
 };
 
 export const orderFulfillment = async (
