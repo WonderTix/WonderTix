@@ -141,7 +141,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
         </div>
         <div className={'col-span-12 min-[450px]:col-span-6'}>
           <EventImage
-            className={'block mx-auto w-[50%] h-auto'}
+            className={'block mx-auto w-auto h-auto max-h-[175px]'}
             src={eventData.imageurl}
             title={'Event Image'}
           />

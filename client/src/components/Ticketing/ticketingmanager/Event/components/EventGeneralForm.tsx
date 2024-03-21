@@ -257,7 +257,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
             </div>
             <div className={'col-span-12 min-[450px]:col-span-6'}>
               <EventImage
-                className={'mx-auto w-[50%] h-auto'}
+                className={'mx-auto w-auto h-auto max-h-[175px]'}
                 src={values.imageurl}
                 title='Supplied By User for Event'
               />
