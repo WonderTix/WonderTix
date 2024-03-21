@@ -960,7 +960,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
         orderSource,
-        paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
+        paymentIntentID,
     );
     res.json({orderID: order.orderid, status: 'order sent'});
   } catch (error) {
