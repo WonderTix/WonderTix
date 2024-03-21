@@ -48,6 +48,7 @@ contactController.post('/', async (req: Request, res: Response) => {
         lastname: req.body.lastname,
         email: req.body.email,
         phone: req.body.phone,
+        visitsource: req.body.visitsource,
         address: req.body.address,
         city: req.body.city,
         state: req.body.state,
@@ -240,6 +241,15 @@ contactController.get('/', async (req: Request, res: Response) => {
         },
       });
     }
+
+    if (req.query.visitSource) {
+      filters.push({
+        visitSource: {
+          equals: req.query.visitSource,
+        },
+      });
+    }
+
     if (req.query.seatingaccom) {
       filters.push({
         seatingaccom: {
@@ -247,6 +257,7 @@ contactController.get('/', async (req: Request, res: Response) => {
           mode: 'insensitive',
         },
       });
+
     }
     if (req.query.donorbadge) {
       filters.push({
@@ -560,6 +571,7 @@ contactController.put('/:id', async (req: Request, res: Response) => {
         email: req.body.email,
         phone: req.body.phone,
         address: req.body.address,
+        visitsource: req.body.visitsource,
         city: req.body.city,
         state: req.body.state,
         postalcode: req.body.postalcode,

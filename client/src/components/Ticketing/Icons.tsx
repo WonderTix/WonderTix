@@ -213,6 +213,26 @@ const SearchIcon = (props: IconProps) => {
   );
 };
 
+const SmallBackIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M11 17l-5-5m0 0l5-5m-5 5h12'
+      />
+    </svg>
+  );
+};
+
 const TicketIcon = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
   return (
@@ -287,6 +307,7 @@ export {
   PlusIcon,
   SaveIcon,
   SearchIcon,
+  SmallBackIcon,
   TicketIcon,
   TrashCanIcon,
   XIcon,

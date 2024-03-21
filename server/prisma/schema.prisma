@@ -9,11 +9,13 @@ datasource db {
 
 /// customer information
 model contacts {
+
   contactid     Int      @id @default(autoincrement())
   firstname     String?  @db.VarChar(255)
   lastname      String?  @db.VarChar(255)
   email         String?  @unique @db.VarChar(100)
   phone         String?  @db.VarChar(15)
+  visitsource   String?  @db.VarChar(255)
   address       String?  @db.VarChar(255)
   city          String?  @db.VarChar(255)
   state         String?  @db.VarChar(255)
@@ -75,6 +77,7 @@ model discounts {
   min_tickets     Int?
   min_events      Int?
   tickettype      tickettype? @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: NoAction, onUpdate: NoAction)
+  deletedat       DateTime?
   orders          orders[]
 }
 

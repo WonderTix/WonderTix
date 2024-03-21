@@ -114,12 +114,14 @@ export interface TicketType {
  * @param {string} title - title of event showing
  * @param {string} description
  * @param {string} imageurl
+ * @param {boolean} soldOut
  */
 export interface Event {
   id: number;
   title: string;
   description: string;
   imageurl: string;
+  soldOut: boolean;
 }
 
 /**
@@ -215,7 +217,6 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
   'ticketing/fetch',
   async () => {
-    const events: Event[] = await fetchData(process.env.REACT_APP_API_2_URL + '/events/slice');
     const ticketRestrictions: TicketRestriction[] = await fetchData(process.env.REACT_APP_API_2_URL + '/ticket-restriction');
 
     const ticketState: TicketsState = await fetchData(process.env.REACT_APP_API_2_URL + '/event-instance/tickets');
@@ -226,6 +227,19 @@ export const fetchTicketingData = createAsyncThunk(
       }),
       {},
     );
+
+    const eventData: Event[] = await fetchData(process.env.REACT_APP_API_2_URL + '/events/slice');
+    const events = eventData.map((event) => {
+      const tickets = ticketState.data.allIds.reduce(
+        filterTicketsReducer(ticketState.data.byId, event.id),
+        [] as Ticket[],
+      );
+      const soldOut = tickets.reduce((soldOutAcc, currTicket) => {
+        return soldOutAcc && currTicket.availableseats === 0;
+      }, true);
+
+      return {...event, soldOut};
+    });
 
     return {
       events,
@@ -700,7 +714,7 @@ export const selectDiscount = (state: RootState): DiscountItem =>
   state.ticketing.discount;
 
 /**
- * filterTicketsReducer - self-explanatory
+ * filterTicketsReducer
  *
  * @param ticketsById
  * @param {number} eventid
@@ -717,26 +731,28 @@ const filterTicketsReducer =
  * Interface for EventPageData
  *
  * @module
+ * @param {number} id
  * @param {string} title
  * @param {string} description
  * @param {string} imageurl
- * @param {Array} tickets
+ * @param {boolean} soldOut
+ * @param {Ticket[]} tickets
  */
 export interface EventPageData {
+  id: number;
   title: string;
   description: string;
   imageurl: string;
+  soldOut: boolean;
   tickets: Ticket[];
 }
 
 /**
- * Name says it all
+ * Get all event data and its tickets.
  *
  * @module
  * @param {RootState} state - different types of state of selectEventData
  * @param {number} eventid
- * @param ticketData - uses state.ticketing.tickets
- * @param event - uses state.ticketing.events.find(byId(eventid))
  * @returns playData, Tickets | undefined
  */
 export const selectEventData = (
@@ -751,10 +767,11 @@ export const selectEventData = (
       filterTicketsReducer(ticketData.data.byId, eventid),
       [] as Ticket[],
     );
+
     return {...playData, tickets};
-  } else {
-    return undefined;
   }
+
+  return undefined;
 };
 
 export const {
