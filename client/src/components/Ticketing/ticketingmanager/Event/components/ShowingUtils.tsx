@@ -179,16 +179,17 @@ export const getData = async (
   set(await res.json());
 };
 
-export const getTicketTypeKeyValue = (
+export const getKeyValue = (
   id: number,
-  key: string,
-  ticketTypes: any[],
+  keyToReturn: string,
+  objArray: any[],
+  keyToCompare = 'tickettypeid_fk',
 ) => {
-  const foundType = ticketTypes?.find((type) => +type.tickettypeid_fk === id);
-  if (!foundType) return 0;
-  return typeof foundType[key] === 'string'
-    ? foundType[key].replace('$', '')
-    : foundType[key];
+  const foundObj = objArray?.find((obj) => +obj[keyToCompare] === id);
+  if (!foundObj) return 0;
+  return typeof foundObj[keyToReturn] === 'string'
+    ? foundObj[keyToReturn].replace('$', '')
+    : foundObj[keyToReturn];
 };
 
 export const getInstanceTicketType = (ticketType) => {

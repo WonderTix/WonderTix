@@ -7,6 +7,9 @@ import {
   expireCheckoutSession,
   getDonationItem,
   getTicketItems,
+  createStripePaymentIntent,
+  requestStripeReaderPayment,
+  testPayReader,
   getDiscountAmount,
   updateContact,
   validateDiscount,
@@ -105,15 +108,15 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 
     order = await orderFulfillment(
         prisma,
-        contactid,
         eventInstanceQueries,
-        toSend.id,
         ticketTotal+donationTotal,
         discountAmount,
         {
           orderTicketItems,
           donationItem,
         },
+        contactid,
+        toSend.id,
         discount.code != '' ? discount.discountid : null,
     );
 
@@ -132,7 +135,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     res.json(toSend);
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order);
+    if (order) await updateCanceledOrder(prisma, order, false);
     if (toSend.id !== 'comp') await expireCheckoutSession(toSend.id);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
@@ -200,9 +203,9 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
 
   try {
     validateWithRegex(
-      req.file.mimetype.toLowerCase(),
-      'Invalid input, not a valid image filetype!', 
-      new RegExp('^(image\/(jpe?g|png))')
+        req.file.mimetype.toLowerCase(),
+        'Invalid input, not a valid image filetype!',
+        new RegExp('^(image\/(jpe?g|png))'),
     );
   } catch (error) {
     console.error(error);
@@ -220,13 +223,13 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
   stream.on('error', (err) => {
     console.error(err);
     return res.status(500).send('Upload failed!');
-  })
+  });
 
   stream.on('finish', async () => {
     await file.makePublic();
     const url = `https://storage.googleapis.com/${bucketName}/${file.name}`;
     return res.status(200).send({url});
-  })
+  });
 
   stream.end(req.file.buffer);
 });
@@ -312,7 +315,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         eventinstances: {
           some: {
             deletedat: null,
-            availableseats: {gt: 0},
             salestatus: true,
             ticketrestrictions: {
               some: {
@@ -328,7 +330,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           where: {
-            availableseats: {gt: 0},
             salestatus: true,
           },
           include: {
@@ -351,7 +352,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       },
     });
     return res.json(events
-        .filter((event) => event.eventinstances.filter((instance) => instance.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length).length)
         .map((event) => ({
           id: event.eventid,
           seasonid: event.seasonid_fk,
@@ -869,6 +869,112 @@ eventController.get('/:id', async (req: Request, res: Response) => {
 // All further routes require authentication
 eventController.use(checkJwt);
 eventController.use(checkScopes);
+
+/**
+ * @swagger
+ * /2/events/reader-intent:
+ *   post:
+ *     summary: Create Reader Payment Intent
+ *     tags:
+ *     - New Event API
+ */
+
+eventController.post('/reader-intent', async (req: Request, res: Response) => {
+  const {cartItems} = req.body;
+  let paymentIntentID = '';
+  let clientSecret = '';
+
+  try {
+    if (!cartItems.length) {
+      return res.status(400).json({error: 'Cart is empty'});
+    }
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
+
+    if (ticketTotal > 0) {
+      const {id, secret} = await createStripePaymentIntent(ticketTotal * 100);
+      paymentIntentID = id;
+      clientSecret = secret;
+    }
+    res.json({id: paymentIntentID, secret: clientSecret});
+  } catch (error) {
+    console.error(error);
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).json(error.message);
+      return;
+    }
+    res.status(500).json(error);
+  }
+});
+
+/**
+ * @swagger
+ * /2/events/reader-checkout:
+ *   post:
+ *     summary: Request Payment for intent and fulfill order
+ *     tags:
+ *     - New Event API
+ */
+
+eventController.post('/reader-checkout', async (req: Request, res: Response) => {
+  const {cartItems, paymentIntentID, readerID, discount} = req.body;
+  let order :orders | null = null;
+  try {
+    if (!cartItems.length) {
+      return res.status(400).json({error: 'Cart is empty'});
+    }
+
+    if (discount.code != '') {
+      await validateDiscount(discount, cartItems, prisma);
+    }
+
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
+
+    const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
+
+    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+
+    // add order to database with prisma
+    order = await orderFulfillment(
+        prisma,
+        eventInstanceQueries,
+        ticketTotal,
+        discountAmount,
+        {
+          orderTicketItems,
+        },
+        undefined, // no contactid with reader payments
+        undefined, // no session with reader payments
+        discount.code != '' ? discount.discountid : null,
+        paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
+    );
+    res.json({orderID: order.orderid, status: 'order sent'});
+  } catch (error) {
+    console.error(error);
+    if (order) await updateCanceledOrder(prisma, order, true);
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).json(error.message);
+      return;
+    }
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError ||
+      error instanceof Prisma.PrismaClientValidationError
+    ) {
+      res.status(400).json(error.message);
+      return;
+    }
+    res.status(500).json(error);
+  }
+});
 
 /**
  * @swagger

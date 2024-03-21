@@ -3,29 +3,22 @@ import {checkJwt, checkScopes} from '../auth';
 import {contacts, Prisma} from '@prisma/client';
 import {eventInstanceRequest} from '../interfaces/Event';
 import {
+  getDate,
   InvalidInputError,
-  validateDateAndTime,
   updateShowing,
+  validateDateAndTime,
 } from './eventInstanceController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {parseIntToDate} from '../api/db';
 
 const prisma = extendPrismaClient();
 
 export const eventInstanceController = Router();
 
-const getDate = (time: string, date: number) => {
-  const [hour, min] = time.split('T')[1].split(':');
-  const newDate = parseIntToDate(date);
-  newDate.setHours(+hour, +min);
-  return newDate.toJSON();
-};
-
 /**
  * @swagger
  * /2/event-instance/tickets:
  *    get:
- *     summary: get list of instances with available seats
+ *     summary: get list of instances
  *     tags:
  *     - New event instance
  *     security:
@@ -70,7 +63,6 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
     const tickets = await prisma.eventinstances.findMany({
       where: {
         salestatus: true,
-        availableseats: {gt: 0},
         ticketrestrictions: {
           some: {
             deletedat: null,
@@ -97,10 +89,9 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
         },
       },
     });
-    const allIds:number[] = [];
+    const allIds: number[] = [];
     let byId = {};
     tickets
-        .filter((ticket) => ticket.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length)
         .forEach((ticket) => {
           allIds.push(ticket.eventinstanceid);
           byId = {...byId, [ticket.eventinstanceid]: {
@@ -552,7 +543,7 @@ eventInstanceController.get('/doorlist/:id',
         }
 
         const doorlist = new Map();
-        const forEachTicket = (description: string, redeemed: Date | null, contact?: contacts) => {
+        const forEachTicket = (description: string, redeemed: Date | null, contact?: contacts | null) => {
           if (!contact) return;
           let row = doorlist.get(contact.contactid);
           if (!row) {

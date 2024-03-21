@@ -86,12 +86,8 @@ const TicketTypes = (): ReactElement => {
       width: 150,
       editable: true,
       type: 'number',
-      valueFormatter: (params: GridValueFormatterParams<number>) => {
-        if (params.value == null) {
-          return '';
-        }
-        return toDollarAmount(Number(params.value));
-      },
+      valueFormatter: (params: GridValueFormatterParams<number>) =>
+        params.value == null ? '—' : toDollarAmount(Number(params.value)),
     },
     {
       field: 'concessions',
@@ -99,12 +95,8 @@ const TicketTypes = (): ReactElement => {
       width: 150,
       editable: true,
       type: 'number',
-      valueFormatter: (params: GridValueFormatterParams<number>) => {
-        if (params.value == null) {
-          return '';
-        }
-        return toDollarAmount(Number(params.value));
-      },
+      valueFormatter: (params: GridValueFormatterParams<number>) =>
+        params.value == null ? '—' : toDollarAmount(Number(params.value)),
     },
     {
       field: 'actions',
@@ -343,7 +335,7 @@ const TicketTypes = (): ReactElement => {
     <LoadingScreen />
   ) : (
       <div className='p-6'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-700 mb-10 pb-4'>
+          <h1 className='font-bold text-4xl tab:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-700 mb-10 pb-4'>
             Manage Ticket Types
           </h1>
           <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>

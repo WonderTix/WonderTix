@@ -15,7 +15,6 @@
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
   },
-  "author": "",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0",
@@ -43,6 +42,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "tslib": "^2.6.1",
+    "ws": "^8.16.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
@@ -60,7 +60,6 @@
     "@types/yamljs": "^0.2.31",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
-    "axios": "^1.4.0",
     "eslint": "^8.46.0",
     "eslint-config-google": "^0.14.0",
     "nodemon": "^3.0.1",

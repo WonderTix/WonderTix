@@ -16,6 +16,7 @@ steps:
       - 'KANIKO_CACHE'
       - 'PUBLIC_STRIPE_KEY'
       - 'ROOT_URL'
+      - 'WEBSOCKET_URL'
 
   # Deploy new client to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -73,5 +74,7 @@ availableSecrets:
     env: 'REGION'
   - versionName: projects/${PROJECT_ID}/secrets/ROOT_URL/versions/${_ENV}
     env: 'ROOT_URL'
+  - versionName: projects/${PROJECT_ID}/secrets/WEBSOCKET_URL/versions/${_ENV}
+    env: 'WEBSOCKET_URL'
   - versionName: projects/${PROJECT_ID}/secrets/SERVICE_ACCOUNT/versions/${_ENV}
     env: 'SERVICE_ACCOUNT'

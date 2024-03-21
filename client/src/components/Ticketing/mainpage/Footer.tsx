@@ -53,7 +53,7 @@ const Footer = (): ReactElement => {
         </button>
       </form>
       <p className='text-center text-gray-700 p-4'>
-        &#169; 2023 Copyright:{' '}
+        &#169; 2024 Copyright:{' '}
         <a className='text-gray-800' href='https://portlandplayhouse.org/'>
           Portland Playhouse
         </a>
