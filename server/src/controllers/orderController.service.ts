@@ -250,6 +250,7 @@ export const createRefundedOrder = async (
     data: {
       orderid_fk: order.orderid,
       refund_intent: refundIntent,
+      refund_status: state.in_progress,
       refunditems: {
         create: [
           ...ticketRefundItems,
