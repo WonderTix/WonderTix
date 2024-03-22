@@ -218,7 +218,7 @@ model refunds {
   id            Int           @id @default(autoincrement())
   orderid_fk    Int
   refund_intent String        @unique @db.VarChar(255)
-  refund_status state         @default(in_progress)
+  refund_status state?
   order         orders        @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
   refunditems   refunditems[]
 }
