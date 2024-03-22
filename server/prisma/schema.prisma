@@ -207,7 +207,7 @@ model orders {
   ordersubtotal     Decimal            @db.Money
   discounttotal     Decimal            @default(0) @db.Money
   order_source      purchase_source?
-  order_status      state
+  order_status      state?
   contacts          contacts?           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donation          donations?
