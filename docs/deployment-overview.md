@@ -1,5 +1,7 @@
 ## How your code gets deployed
 
+Created by Jacob Bentley (jacobpbentley@gmail.com)
+
 ### Purpose
 
 Some of our developers have expressed interest in getting a better idea of how the WonderTix deployment works. This document is intended to give a high-level overview of that process.
