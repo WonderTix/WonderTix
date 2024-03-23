@@ -50,7 +50,6 @@ export interface CartItem {
  * @param {number?} payWhatYouCan
  * @param {Date} date - date format
  * @param {number} ticket_price - A number for the ticket price
- * @param {number} fee
  * @param {number?} totalseats - the total amount of seats available
  * @param {number} availableseats - amount of leftover seats, gets subtracted when people buy
  */
@@ -61,7 +60,6 @@ export interface Ticket {
   payWhatYouCan?: number;
   date: Date;
   ticket_price: number;
-  fee: number;
   totalseats?: number;
   availableseats: number;
   detail: string;
@@ -75,8 +73,8 @@ export interface Ticket {
  * @param {number} eventinstanceid
  * @param {number} tickettypeid
  * @param {string} description
- * @param {string} fee
- * @param {string} price
+ * @param {number} price
+ * @param {number} fee
  * @param {number} ticketlimit
  * @param {number?} ticketssold
  */
@@ -85,8 +83,8 @@ export interface TicketRestriction {
   eventinstanceid: number;
   tickettypeid: number;
   description: string;
-  fee: string;
-  price: string;
+  price: number;
+  fee: number;
   ticketlimit: number;
   ticketssold?: number;
 }
@@ -218,7 +216,9 @@ const fetchData = async (url: string) => {
 export const fetchTicketingData = createAsyncThunk(
   'ticketing/fetch',
   async () => {
-    const ticketRestrictions: TicketRestriction[] = await fetchData(process.env.REACT_APP_API_2_URL + '/ticket-restriction');
+    const ticketRestrictions: TicketRestriction[] = await fetchData(
+      process.env.REACT_APP_API_2_URL + '/ticket-restriction',
+    );
 
     const ticketState: TicketsState = await fetchData(
       process.env.REACT_APP_API_2_URL + '/event-instance/tickets',
@@ -231,7 +231,9 @@ export const fetchTicketingData = createAsyncThunk(
       {},
     );
 
-    const eventData: Event[] = await fetchData(process.env.REACT_APP_API_2_URL + '/events/slice');
+    const eventData: Event[] = await fetchData(
+      process.env.REACT_APP_API_2_URL + '/events/slice',
+    );
     const events = eventData.map((event) => {
       const tickets = ticketState.data.allIds.reduce(
         filterTicketsReducer(ticketState.data.byId, event.id),
@@ -313,7 +315,7 @@ export const createCartItem = (data: {
       product_img_url: event.imageurl,
       payWhatPrice: payWhatPrice,
       payWhatCan: tickettype.name === 'Pay What You Can',
-      fee: ticket.fee * qty,
+      fee: parseFloat(tickettype.fee.replace(/[^0-9.-]+/g, '')) * qty,
     };
 
     if (cartItem.payWhatCan) {
@@ -366,14 +368,13 @@ const byId =
  * @param id
  * @param tickettypeId
  * @param qty
- * @param fee
  * @param payWhatPrice
  */
 interface ItemData {
   id: number;
   tickettypeId: number;
   qty: number;
-  fee?: number;
+  fee: number;
   payWhatPrice?: number;
 }
 
@@ -396,7 +397,7 @@ const isValidDiscount = (discount: DiscountItem, state: ticketingState) => {
 };
 
 /**
- * updateCartItem edits the cart items like qty, id, and concessions
+ * updateCartItem edits the cart items like qty and fees
  *
  * @param cart
  * @param root0
@@ -412,11 +413,9 @@ const updateCartItem = (
 ) =>
   cart.map((item) => {
     if (item.product_id === id && item.typeID === tickettypeId) {
-      const updatedItem =
-        payWhatPrice && item.payWhatCan
-          ? {...item, qty, payWhatPrice}
-          : {...item, qty};
-      return {...updatedItem, fee: fee * qty};
+      return payWhatPrice && item.payWhatCan
+        ? {...item, qty, fee: fee * qty, payWhatPrice}
+        : {...item, qty, fee: fee * qty};
     } else {
       return item;
     }
@@ -484,7 +483,7 @@ const addTicketReducer: CaseReducer<
         id,
         tickettypeId: tickettype.id,
         qty: ticketQuantity,
-        fee: ticket.fee,
+        fee: parseFloat(tickettype.fee.replace(/[^0-9.-]+/g, '')),
         payWhatPrice,
       }),
     };
@@ -526,6 +525,9 @@ const editQtyReducer: CaseReducer<
 
   const ticket = state.tickets.data.byId[id];
   const validRange = getTicketQuantityRange(state, id, tickettypeId, ticket);
+  const ticketRestriction = state.ticketrestrictions.find(
+    byId(ticket.event_instance_id, tickettypeId),
+  );
 
   const updatedState = {
     ...state,
@@ -533,6 +535,7 @@ const editQtyReducer: CaseReducer<
       id,
       tickettypeId,
       qty: validRange(qty),
+      fee: ticketRestriction.fee,
     }),
   };
 

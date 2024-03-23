@@ -43,7 +43,6 @@ const Cart = (): ReactElement => {
 
   const dispatch = useAppDispatch();
   const items = useAppSelector(selectCartContents);
-  console.log(items);
   const subtotal = useAppSelector(selectCartSubtotal);
   const total = useAppSelector(selectCartTotal);
   const discount = useAppSelector(selectDiscount);

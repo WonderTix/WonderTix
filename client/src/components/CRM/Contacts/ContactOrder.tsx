@@ -86,7 +86,7 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
         </aside>
       </div>
       <footer className='mt-3'>
-        {discountTotal && (
+        {discountTotal !== 0 && (
           <p className='flex'>
             <span className='tab:flex-initial tab:w-32 w-full text-lg'>
               Discount:

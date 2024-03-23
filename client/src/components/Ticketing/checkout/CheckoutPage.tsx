@@ -133,14 +133,14 @@ export default function CheckoutPage(): ReactElement {
           </button>
         </div>
         <div className='flex flex-row items-center mt-2 text-zinc-800'>
-          <div className='text-4xl font-bold'>Checkout</div>
+          <h1 className='text-4xl font-bold'>Checkout</h1>
         </div>
         <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
           <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 pt-4 md:p-9 flex flex-col gap-5 items-start rounded-xl overflow-auto'>
             <div className='flex flex-col items-center h-auto w-full'>
-              <div className='text-2xl lg:text-5xl font-bold mb-5'>
+              <h2 className='text-2xl lg:text-5xl font-bold mb-5'>
                 Complete Order
-              </div>
+              </h2>
               {checkoutStep === 'donation' && (
                 <DonationPage onNext={() => setCheckoutStep('form')} />
               )}

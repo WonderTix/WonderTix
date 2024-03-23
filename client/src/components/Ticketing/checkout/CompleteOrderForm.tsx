@@ -133,7 +133,7 @@ export default function CompleteOrderForm({
 
   return (
     <div className='w-full h-full flex flex-col items-center'>
-      <h2 className='text-2xl font-bold mb-5'>Contact</h2>
+      <h3 className='text-2xl font-bold mb-5'>Contact</h3>
       <div className='min-w-414 sm:w-full h-full'>
         <Form
           onSubmit={onSubmit}

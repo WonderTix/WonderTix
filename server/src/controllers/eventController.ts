@@ -6,6 +6,7 @@ import {
   createStripeCheckoutSession,
   expireCheckoutSession,
   getDonationItem,
+  getFeeItem,
   getTicketItems,
   createStripePaymentIntent,
   requestStripeReaderPayment,
@@ -86,6 +87,8 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       ticketTotal,
       eventInstanceQueries,
     } = await getTicketItems(cartItems, prisma);
+    console.log(ticketCartRows);
+    console.log(orderTicketItems);
 
     const {
       donationItem,
@@ -93,13 +96,23 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       donationTotal,
     } = getDonationItem(donation);
 
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+    const feeRow = await getFeeItem(cartItems, prisma);
+
+    let cartRows = ticketCartRows;
+    if (donationCartRow) {
+      cartRows = cartRows.concat([donationCartRow]);
+    }
+    if (feeRow) {
+      cartRows = cartRows.concat([feeRow]);
+    }
+
+    const discountAmount = discount.code != '' ? getDiscountAmount(discount, ticketTotal) : 0;
 
     if (ticketTotal + donationTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
           contactid,
           formData.email,
-          donationCartRow? ticketCartRows.concat([donationCartRow]): ticketCartRows,
+          cartRows,
           {...discount, amountOff: discountAmount},
       );
     } else if (ticketTotal + donationTotal - discountAmount > 0) {

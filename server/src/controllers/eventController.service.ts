@@ -79,6 +79,38 @@ export const getDonationItem = (donationCartItem: number) => {
   };
 };
 
+export const getFeeItem = async (cartRows: any[], prisma: ExtendedPrismaClient,
+) => {
+  const eventInstanceIds = cartRows.map((row) => Number(row.product_id));
+
+  // Find the feeableTotal
+  const ticketRestrictions = await prisma.ticketrestrictions.findMany({
+    where: {
+      eventinstanceid_fk: {
+        in: eventInstanceIds,
+      },
+    },
+    select: {
+      eventinstanceid_fk: true,
+      tickettypeid_fk: true,
+      fee: true,
+    },
+  });
+
+  // Run calculation
+
+  const feeTotal = ticketRestrictions.reduce((acc, restriction) => {
+    const row = cartRows.find((row) => row.product_id === restriction.eventinstanceid_fk && row.typeID === restriction.tickettypeid_fk);
+    if (row) {
+      return acc + Number(restriction.fee) * row.qty;
+    } else {
+      return acc;
+    }
+  }, 0);
+
+  return feeTotal > 0 ? getCartRow('Fee', 'Processing fee to cover the cost of our online payment processor', feeTotal * 100, 1) : undefined;
+};
+
 interface TicketItemsReturn {
   orderTicketItems: any[];
   ticketCartRows: LineItem[];
@@ -167,7 +199,7 @@ export const getTicketItems = async (
             ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => {
               return [res.tickettypeid_fk, {
                 ...res,
-                availabletickets: res.ticketlimit- res.ticketitems.length,
+                availabletickets: res.ticketlimit - res.ticketitems.length,
               }];
             })),
           },
@@ -277,6 +309,7 @@ interface checkoutForm {
   city: string,
   state: string;
   country: string;
+  billingState: string;
   phone: string;
   email: string;
   visitSource: string;
@@ -333,6 +366,7 @@ const validateContact = (formData: checkoutForm) => {
         `Email: ${formData.email} is invalid`,
         new RegExp('.+@.+\\..+'),
     ),
+    billingstate: validateBillingState(formData.billingState),
     // Only include or validate the following if provided
     ...(formData.streetAddress && {address: formData.streetAddress}),
     ...(formData.city && {city: formData.city}),
@@ -385,6 +419,10 @@ const validateName = (name: string, type: string): string => {
     throw new InvalidInputError(422, `A valid ${type} must be provided`);
   }
   return name;
+};
+
+const validateBillingState = (billingState: string): string => {
+  if
 };
 
 export const validateWithRegex = (

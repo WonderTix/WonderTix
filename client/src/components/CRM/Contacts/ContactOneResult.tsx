@@ -126,7 +126,7 @@ export const ContactOneResult = (): ReactElement => {
                     key={order.orderid}
                     orderId={order.orderid}
                     orderTotal={order.ordertotal}
-                    discountTotal={order.discounttotal}
+                    discountTotal={Number(order.discounttotal)}
                     orderDateTime={order.orderdatetime}
                     refunded={order.refunded}
                     orderItems={order.orderitems}
