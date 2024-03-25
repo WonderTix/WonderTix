@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {orders, Prisma} from '@prisma/client';
+import {orders, Prisma, state} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
@@ -66,7 +66,7 @@ export const eventController = Router();
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
-  const {cartItems = [], formData, donation = 0, discount} = req.body;
+  const {cartItems = [], formData, donation = 0, discount, orderSource} = req.body;
   let order :orders | null = null;
   let toSend = {id: 'comp'};
   try {
@@ -115,9 +115,11 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           orderTicketItems,
           donationItem,
         },
+        state.in_progress,
         contactid,
         toSend.id,
         discount.code != '' ? discount.discountid : null,
+        orderSource,
     );
 
     if (toSend.id === 'comp') {
@@ -128,6 +130,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         data: {
           checkout_sessions: `comp-${order.orderid}`,
           payment_intent: `comp-${order.orderid}`,
+          order_status: state.completed,
         },
       });
     }
@@ -921,7 +924,7 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
  */
 
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {cartItems, paymentIntentID, readerID, discount} = req.body;
+  const {cartItems, paymentIntentID, readerID, discount, orderSource} = req.body;
   let order :orders | null = null;
   try {
     if (!cartItems.length) {
@@ -952,10 +955,12 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         {
           orderTicketItems,
         },
+        state.in_progress,
         undefined, // no contactid with reader payments
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
-        paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
+        orderSource,
+        paymentIntentID,
     );
     res.json({orderID: order.orderid, status: 'order sent'});
   } catch (error) {

@@ -1,4 +1,4 @@
-import {freq} from '@prisma/client';
+import {freq, state} from '@prisma/client';
 import {updateAvailableSeats} from '../../src/controllers/orderController.service';
 import {ExtendedPrismaClient} from '../../src/controllers/PrismaClient/GetExtendedPrismaClient';
 
@@ -20,6 +20,7 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
           if (!restriction.ticketlimit) ticketRestrictions.splice(ticketRestrictions.indexOf(restriction), 1);
           orders.push(prisma.orders.create({
             data: {
+              order_status: state.completed,
               contactid_fk: contact.contactid,
               payment_intent: `seeded-order-${index}`,
               ...(!(index%4) && {

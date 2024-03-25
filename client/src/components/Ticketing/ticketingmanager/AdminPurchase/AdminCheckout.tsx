@@ -45,6 +45,7 @@ export default function AdminCheckout(): ReactElement {
       const stripe = await stripePromise;
       if (!stripe) return;
 
+      const orderSource = 'admin_ticketing';
       const response = await fetch(
         process.env.REACT_APP_API_2_URL + `/events/checkout`,
         {
@@ -53,7 +54,7 @@ export default function AdminCheckout(): ReactElement {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({cartItems, formData, donation, discount}),
+          body: JSON.stringify({cartItems, formData, donation, discount, orderSource}),
         },
       );
       if (!response.ok) {
