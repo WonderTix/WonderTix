@@ -134,11 +134,11 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
 
 /**
  * @swagger
- * /2/season/subscriptions/available:
+ * /2/subscription-types/season/subscriptions/available:
  *   get:
  *     summary: get list of current seasons with available subscriptions
  *     tags:
- *     - New season
+ *     - Subscription API
  *     responses:
  *       200:
  *         description: seasons successfully fetched
@@ -195,11 +195,11 @@ subscriptionController.get('/season/subscriptions/available', async (_, res: Res
 
 /**
  * @swagger
- * /2/season/active-subscriptions/{seasonid}:
+ * /2/subscription-types/active-subscriptions/{seasonid}:
  *   get:
  *     summary: get season including all events and available subscriptions
  *     tags:
- *     - New season
+ *     - Subscription API
  *     parameters:
  *     - $ref: '#/components/parameters/seasonid'
  *     responses:
