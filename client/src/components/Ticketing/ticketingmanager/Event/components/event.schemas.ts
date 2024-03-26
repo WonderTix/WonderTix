@@ -23,8 +23,8 @@ export const eventInstanceSchema = yup.object().shape({
             return value <= this.options.context.totalseats;
           },
         ),
-      fee: yup.number().min(0, 'Must be greater than 0').required('Required'),
-      price: yup.number().min(0, 'Must be greater than 0').required('Required'),
+      fee: yup.number().min(0, 'Must be 0 or greater').required('Required'),
+      price: yup.number().min(0, 'Must be 0 or greater').required('Required'),
     }),
   ),
 });

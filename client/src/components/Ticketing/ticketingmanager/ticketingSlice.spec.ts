@@ -120,13 +120,6 @@ describe('Ticketing slice', () => {
     typeID: 1,
   };
 
-  // const concessionsItem = {
-  //   ...newCartItem,
-  //   name: 'Event 1 Tickets + Concessions',
-  //   price: newCartItem.price + ticket1.concession_price,
-  //   desc: newCartItem.desc + ' with concessions ticket',
-  // };
-
   describe('selectors', () => {
     const item1: CartItem = {
       product_id: 1,
@@ -189,7 +182,6 @@ describe('Ticketing slice', () => {
             eventid: eventid,
             admission_type: 'General Admission - Adult',
             ticket_price: 15.99,
-            concession_price: 4.99,
             availableseats: 34,
             date: new Date('2021-07-31T19:00:00'),
             detail: '',
@@ -198,7 +190,6 @@ describe('Ticketing slice', () => {
             eventid: eventid,
             admission_type: 'General Admission - Adult',
             ticket_price: 19.99,
-            concession_price: 9.99,
             availableseats: 20,
             date: new Date('2021-08-07T16:00:00'),
             detail: '',
