@@ -1,7 +1,7 @@
 import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {Prisma} from '@prisma/client';
+import {Prisma, state} from '@prisma/client';
 import {
   createRefundedOrder,
   ticketingWebhook,
@@ -39,8 +39,8 @@ orderController.post(
             event.type === 'terminal.reader.action_failed' ||
             event.type === 'terminal.reader.action.succeeded') { // terminal events don't carry our __reader metadata
           await readerWebhook(
-            prisma,
-            event.type,
+              prisma,
+              event.type,
             action ? action.failure_message : 'no error',
             object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
           );
@@ -56,8 +56,8 @@ orderController.post(
           );
         } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
           await updateRefundStatus(
-            prisma,
-            object.payment_intent,
+              prisma,
+              object.payment_intent,
           );
         }
 
@@ -345,7 +345,15 @@ orderController.put('/refund/:id', async (req, res) => {
       });
       refundIntent = refund.id;
     }
-    await createRefundedOrder(prisma, order, order.orderticketitems, refundIntent, order.subscriptions, order.donation);
+    await createRefundedOrder(
+        prisma,
+        order,
+        order.orderticketitems,
+        refundIntent,
+        order.subscriptions,
+        order.payment_intent.includes('comp') || order.payment_intent.includes('seeded-order') ? state.completed : state.in_progress,
+        order.donation,
+    );
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);

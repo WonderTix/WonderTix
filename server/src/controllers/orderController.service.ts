@@ -263,6 +263,7 @@ export const createRefundedOrder = async (
     orderTicketItems: LoadedOrderTicketItem[],
     refundIntent: string,
     subscriptions: LoadedSubscription[],
+    state: state,
     donations?: donations | null,
 ) => {
   const eventInstances = new Set<number>();
@@ -302,7 +303,7 @@ export const createRefundedOrder = async (
         refunds: {
           create: {
             refund_intent: refundIntent,
-            refund_status: state.in_progress,
+            refund_status: state,
             refunditems: {
               create: [
                 ...ticketRefundItems,
