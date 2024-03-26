@@ -1,14 +1,14 @@
-import { Request, Response, Router } from "express";
-import { checkJwt, checkScopes } from "../auth";
-import { contacts, Prisma } from "@prisma/client";
-import { eventInstanceRequest } from "../interfaces/Event";
+import {Request, Response, Router} from 'express';
+import {checkJwt, checkScopes} from '../auth';
+import {contacts, Prisma} from '@prisma/client';
+import {eventInstanceRequest} from '../interfaces/Event';
 import {
   getDate,
   InvalidInputError,
   updateShowing,
   validateDateAndTime,
-} from "./eventInstanceController.service";
-import { extendPrismaClient } from "./PrismaClient/GetExtendedPrismaClient";
+} from './eventInstanceController.service';
+import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 const prisma = extendPrismaClient();
 
