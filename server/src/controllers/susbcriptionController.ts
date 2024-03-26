@@ -7,7 +7,7 @@ import {validateWithRegex} from './eventController.service';
 import {checkJwt, checkScopes} from '../auth';
 
 const prisma = extendPrismaClient();
-export const subscriptionController= Router();
+export const subscriptionController = Router();
 
 
 /**
@@ -96,7 +96,11 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
       },
       include: {
         subscriptiontype: true,
-        subscriptions: true,
+        subscriptions: {
+          where: {
+            refund: null,
+          },
+        },
       },
     });
 
@@ -128,6 +132,177 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /2/season/subscriptions/available:
+ *   get:
+ *     summary: get list of current seasons with available subscriptions
+ *     tags:
+ *     - New season
+ *     responses:
+ *       200:
+ *         description: seasons successfully fetched
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               $ref: '#/components/schemas/Season'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+subscriptionController.get('/season/subscriptions/available', async (_, res: Response) => {
+  try {
+    const today = new Date();
+    const formattedDate = today.getFullYear()*(today.getMonth()<9?10000:100000)+(today.getMonth()+1)*100+today.getDate();
+    const seasons = await prisma.seasons.findMany({
+      where: {
+        deletedat: null,
+        seasonsubscriptiontypes: {
+          some: {
+            deletedat: null,
+          },
+        },
+        enddate: {gte: formattedDate},
+        events: {
+          some: {
+            subscriptioneligible: true,
+            deletedat: null,
+          },
+        },
+      },
+    });
+    return res.json(seasons);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).json({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).json({error: error.message});
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+/**
+ * @swagger
+ * /2/season/active-subscriptions/{seasonid}:
+ *   get:
+ *     summary: get season including all events and available subscriptions
+ *     tags:
+ *     - New season
+ *     parameters:
+ *     - $ref: '#/components/parameters/seasonid'
+ *     responses:
+ *       200:
+ *         description: season successfully fetched
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               $ref: '#/components/schemas/Season'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+subscriptionController.get('/active-subscriptions/:seasonid', async (req: Request, res: Response) => {
+  try {
+    const seasonid = +req.params.seasonid;
+
+    const season = await prisma.seasons.findUnique({
+      where: {
+        seasonid: seasonid,
+        deletedat: null,
+      },
+      include: {
+        seasonsubscriptiontypes: {
+          where: {
+            deletedat: null,
+          },
+          include: {
+            subscriptiontype: true,
+            subscriptions: {
+              where: {
+                refund: null,
+              },
+            },
+          },
+        },
+        events: {
+          where: {
+            deletedat: null,
+          },
+          include: {
+            eventinstances: {
+              where: {
+                deletedat: null,
+              },
+              orderBy: {
+                eventdate: 'asc',
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!season) {
+      return res.status(400).json({error: 'Season does not exist'});
+    }
+
+    const {deletedat, ...toReturn} = season;
+    return res.json({
+      ...toReturn,
+      events: toReturn.events
+          .map(({eventinstances, deletedat, ...rest}) => ({
+            ...rest,
+            eventinstances,
+            startdate: eventinstances[0]?.eventdate,
+            enddate: eventinstances[eventinstances.length-1>=0?eventinstances.length-1: 0]?.eventdate,
+          })),
+      seasonsubscriptiontypes: season
+          .seasonsubscriptiontypes
+          .map(({
+            deletedat,
+            subscriptions,
+            subscriptiontype
+            , ...rest
+          }) => ({
+            ...rest,
+            price: Number(subscriptiontype.price),
+            description: subscriptiontype.description,
+            name: subscriptiontype.name,
+            subscriptionssold: subscriptions.length,
+          })),
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).json({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).json({error: error.message});
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
+  }
+});
 
 // All further routes require appropriate authentication
 subscriptionController.use(checkJwt);
@@ -215,6 +390,7 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
         subscriptions: {
           include: {
             subscriptionticketitems: true,
+            refund: true,
           },
         },
       },
@@ -234,7 +410,7 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
               },
             },
           });
-        } else if (!update) {
+        } else if (!update && !type.subscriptions.some((sub) => !sub.refund)) {
           return prisma.seasonsubscriptiontypes.update({
             where: {
               seasonid_fk_subscriptiontypeid_fk: {
@@ -246,6 +422,11 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
               deletedat: new Date(),
             },
           });
+        } else if (!update) {
+          throw new InvalidInputError(
+              422,
+              `Can not delete subscription type for switch subscriptions have been sold`,
+          );
         }
 
 
@@ -262,8 +443,18 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
         });
       }),
       ...[...toUpdate.values()].map((newType) => {
-        return prisma.seasonsubscriptiontypes.create({
-          data: {
+        return prisma.seasonsubscriptiontypes.upsert({
+          where: {
+            seasonid_fk_subscriptiontypeid_fk: {
+              seasonid_fk: seasonId,
+              subscriptiontypeid_fk: newType.subscriptiontypeid_fk,
+            },
+          },
+          update: {
+            ...validateSeasonSubscriptionType(newType),
+            deletedat: null,
+          },
+          create: {
             seasonid_fk: seasonId,
             subscriptiontypeid_fk: newType.subscriptiontypeid_fk,
             ...validateSeasonSubscriptionType(newType),
@@ -278,7 +469,11 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
       },
       include: {
         subscriptiontype: true,
-        subscriptions: true,
+        subscriptions: {
+          where: {
+            refund: null,
+          },
+        },
       },
     })).map(({
       subscriptiontype,

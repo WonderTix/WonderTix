@@ -6,6 +6,74 @@ import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 const prisma = extendPrismaClient();
 
 export const seasonController = Router();
+/**
+ * @swagger
+ * /2/season:
+ *   get:
+ *     summary: get all seasons
+ *     tags:
+ *     - New season
+ *     responses:
+ *       200:
+ *         description: seasons successfully fetched
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               $ref: '#/components/schemas/Season'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+seasonController.get('/', async (req: Request, res: Response) => {
+  try {
+    const filters: any = {
+      deletedat: null,
+    };
+    if (req.query.current) {
+      const today = new Date();
+      const formattedDate =
+        today.getFullYear() * (today.getMonth() < 9 ? 10000 : 100000) +
+        (today.getMonth() + 1) * 100 +
+        today.getDate();
+      filters.enddate = {
+        gte: formattedDate,
+      };
+    }
+    if (req.query.name) {
+      filters.name = {
+        contains: req.query.name,
+      };
+    }
+    const seasons = await prisma.seasons.findMany({
+      where: filters,
+    });
+    return res.status(200).json(seasons);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+
+      return;
+    }
+
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
 
 /**
  * @swagger
@@ -72,78 +140,6 @@ seasonController.post('/', async (req: Request, res: Response) => {
 
 seasonController.use(checkJwt);
 seasonController.use(checkScopes);
-
-/**
- * @swagger
- * /2/season:
- *   get:
- *     summary: get all seasons
- *     tags:
- *     - New season
- *     responses:
- *       200:
- *         description: season updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               $ref: '#/components/schemas/Season'
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Error message from the server.
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-seasonController.get('/', async (req: Request, res: Response) => {
-  try {
-    const filters: any = {};
-    if (req.params.seasonname) {
-      filters.seasonname = {
-        contains: req.params.seasonname,
-      };
-    }
-    if (req.params.auth0_id) {
-      filters.auth0_id = {
-        contains: req.params.auth0_id,
-      };
-    }
-
-    if (Object.keys(filters).length > 0) {
-      const seasons = await prisma.seasons.findMany({
-        where: filters,
-      });
-      res.status(200).json(seasons);
-
-      return;
-    }
-
-    const seasons = await prisma.seasons.findMany();
-    res.status(200).json(seasons);
-
-    return;
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
 
 /**
  * Retrieves a list of seasons with their associated events.

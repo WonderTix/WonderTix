@@ -11,33 +11,33 @@ export const createSubmitFunction = (
   onError?,
 ) => {
   return async (event, actions?) => {
-      actions?.setStatus('Submitting...');
-      try {
-        const submitRes = await fetch(url, {
-          credentials: 'include',
-          method: method,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(event),
-        });
+    actions?.setStatus('Submitting...');
+    try {
+      const submitRes = await fetch(url, {
+        credentials: 'include',
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(event),
+      });
 
-        actions?.setSubmitting(false);
+      actions?.setSubmitting(false);
 
-        if (!submitRes.ok) {
-          throw submitRes;
-        }
-        if (onSuccess) {
-          await onSuccess(submitRes);
-        }
-      } catch (error) {
-        actions?.setSubmitting(false);
-        if (onError) {
-          await onError(error);
-        }
+      if (!submitRes.ok) {
+        throw submitRes;
       }
-    };
+      if (onSuccess) {
+        await onSuccess(submitRes);
+      }
+    } catch (error) {
+      actions?.setSubmitting(false);
+      if (onError) {
+        await onError(error);
+      }
+    }
+  };
 };
 
 export const createDeleteFunction = (
@@ -210,5 +210,17 @@ export const cloneShowing = (showing) => {
   toReturn['eventdate'] = toDateStringFormat(showing.eventdate);
   toReturn['eventtime'] = showing.eventtime.split('T')[1].slice(0, 8);
   toReturn['availableseats'] = toReturn['totalseats'];
+  return toReturn;
+};
+
+export const getDate = (date: number, IsoTime?: string): Date => {
+  const year = date / 10000;
+  const month = Math.floor(date / 100) % 100;
+  const day = date % 100;
+  const toReturn = new Date(year, month - 1, day);
+  if (IsoTime) {
+    const time = new Date(IsoTime);
+    toReturn.setHours(time.getHours(), time.getMinutes());
+  }
   return toReturn;
 };

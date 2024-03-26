@@ -103,7 +103,7 @@ const ReaderPurchase = () => {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({cartItems, paymentIntentID, readerID, discount}),
+            body: JSON.stringify({ticketCartItems: cartItems, paymentIntentID, readerID, discount}),
           },
         );
 
@@ -193,7 +193,6 @@ const ReaderPurchase = () => {
         throw response;
       }
 
-      console.log('order cancelled!');
       navigate('/ticketing/purchaseticket');
     } else {
       setErrMsg('Order completed before cancelation could occur.');

@@ -7,35 +7,58 @@ import {
 import {RootState} from '../app/store';
 import format from 'date-fns/format';
 import {bound, titleCase} from '../../../utils/arrays';
+import {SeasonInfo} from './Season/components/utils/seasonCommon';
 
 /**
- * Amount of tickets in the cart
+ * Base Cart Item
+ *
+ * @module
+ * @param {number} qty -  product quantity
+ * @param {string} name - name of cart item
+ * @param {string} desc - description of cart item
+ * @param {string} product_img_url - product image URL
+ * @param {number} price - Per-unit price
+ */
+export interface CartItem {
+  name: string;
+  desc: string;
+  qty: number;
+  price: number;
+  product_img_url: string;
+}
+
+/**
+ * Amount of tickets in the ticketCart
  *
  * @module
  * @param {number} product_id - references state.tickets.event_instance_id
  * @param {number} eventId - the id of the event
- * @param {number} qty - amount of that product (tickets)
  * @param {Date} date
- * @param {string} name - name of the event/ticket for the event
- * @param {string} desc - description of the event
- * @param {string} product_img_url - URL to what the ticket looks like
- * @param {number} price - listed in dollars, like 60
  * @param {boolean} payWhatCan
  * @param {number?} payWhatPrice
  * @param {number} typeID - the id of the tickettype
  */
-export interface CartItem {
+export interface TicketCartItem extends CartItem {
   product_id: number; // references state.tickets.event_instance_id
   eventId: number;
-  qty: number;
   date: Date;
-  name: string;
-  desc: string;
-  product_img_url: string;
-  price: number;
   payWhatCan: boolean;
   payWhatPrice?: number;
   typeID: number;
+}
+
+/**
+ * Subscription Cart Item
+ *
+ * @module
+ * @param {number} qtyAvailable - quantity being purchased
+ * @param {number} seasonid_fk -  subscription season id
+ * @param {number} subscriptiontypeid_fk - subscription type id
+ */
+export interface SubscriptionCartItem extends CartItem {
+  seasonid_fk: number;
+  subscriptiontypeid_fk: number;
+  qtyAvailable: number;
 }
 
 /**
@@ -170,7 +193,8 @@ export type DiscountItem = {
  * Used to manage the ticketing states
  *
  * @module
- * @param {Array} cart - CartItem array
+ * @param {Array} ticketCart - TicketCartItem array
+ * @param {Array} subscriptionCart - SubscriptionCartItem array
  * @param {TicketsState} tickets - TicketsState has a key(string), byId(ticket), allIds is a number array
  * @param {Array} ticketrestrictions - TicketRestriction array
  * @param {TicketType} tickettype - The ticket type
@@ -179,7 +203,8 @@ export type DiscountItem = {
  * @param {DiscountItem} discount - Discount has a code(string), amount(number), percent(number)
  */
 export interface ticketingState {
-  cart: CartItem[];
+  ticketCart: TicketCartItem[];
+  subscriptionCart: SubscriptionCartItem[];
   tickets: TicketsState;
   ticketrestrictions: TicketRestriction[];
   tickettype: TicketType;
@@ -275,7 +300,7 @@ export const fetchDiscountData = createAsyncThunk(
 );
 
 /**
- * Creates a CartItem based on incomplete data
+ * Creates a TicketCartItem based on incomplete data
  *
  * @module
  * @param data.ticket
@@ -283,27 +308,27 @@ export const fetchDiscountData = createAsyncThunk(
  * @param data.event
  * @param data.qty
  * @param data.payWhatPrice
- * @param {CartItem} data ticket, tickettype, event, qty, payWhatPrice?
+ * @param {TicketCartItem} data ticket, tickettype, event, qty, payWhatPrice?
  * @returns full CartItem
  */
-export const createCartItem = (data: {
+export const createTicketCartItem = (data: {
   ticket: Ticket;
   tickettype: TicketType;
   event: Event;
   qty: number;
   payWhatPrice?: number;
-}): CartItem => {
+}): TicketCartItem => {
   const {ticket, tickettype, event, qty, payWhatPrice} = data;
 
   if (ticket && tickettype && event && qty) {
-    const cartItem: CartItem = {
+    const ticketCartItem: TicketCartItem = {
       product_id: ticket.event_instance_id,
       eventId: event.id,
       price: parseFloat(tickettype.price.replace(/[^0-9.-]+/g, '')),
       desc: `${tickettype.name} - ${format(
         new Date(ticket.date),
         'eee, MMM dd - h:mm a',
-      )}${(ticket.detail ?? '')=== ''?'':` (${ticket.detail})`}`,
+      )}${(ticket.detail ?? '') === '' ? '' : ` (${ticket.detail})`}`,
       typeID: tickettype.id,
       date: ticket.date,
       name: `${titleCase(event.title)} Ticket${qty > 1 ? 's' : ''}`,
@@ -313,12 +338,54 @@ export const createCartItem = (data: {
       payWhatCan: tickettype.name === 'Pay What You Can',
     };
 
-    if (cartItem.payWhatCan) {
-      cartItem.price = payWhatPrice;
+    if (ticketCartItem.payWhatCan) {
+      ticketCartItem.price = payWhatPrice;
     }
 
-    return cartItem;
+    return ticketCartItem;
   }
+};
+
+export interface SeasonSubscriptionType {
+    seasonid_fk: number;
+    subscriptiontypeid_fk: number;
+    subscriptionlimit: number;
+    subscriptionssold: number;
+    price: number;
+    name: string;
+    ticketlimit: number;
+    season: SeasonInfo;
+}
+
+export const createSubscriptionCartItem = (
+  type: SeasonSubscriptionType,
+): SubscriptionCartItem | undefined => {
+  const {
+    seasonid_fk,
+    subscriptiontypeid_fk,
+    subscriptionlimit,
+    subscriptionssold,
+    name,
+    ticketlimit,
+    season,
+    price,
+  } = type;
+  if (
+    !seasonid_fk ||
+    !subscriptiontypeid_fk
+  ) {
+    return;
+  }
+  return {
+    seasonid_fk,
+    subscriptiontypeid_fk,
+    qtyAvailable: subscriptionlimit - subscriptionssold,
+    name: `${name} Subscription`,
+    desc: `${ticketlimit} shows for ${season.name}`,
+    qty: 0,
+    price: Number(price),
+    product_img_url: season.imageurl,
+  };
 };
 
 /**
@@ -332,8 +399,14 @@ const isTicket = (obj: any): obj is Ticket =>
  * @param obj
  * @returns {boolean} checks if cart object matches product_id
  */
-const isCartItem = (obj: any): obj is CartItem =>
+export const isTicketCartItem = (obj: any): obj is TicketCartItem =>
   Object.keys(obj).some((key) => key === 'product_id');
+
+export const isSubscriptionCartItem = (obj: any): obj is SubscriptionCartItem => {
+  return (
+    obj.subscriptiontypeid_fk !== undefined && obj.seasonid_fk !== undefined && obj.qty !== undefined
+  );
+};
 
 /**
  * @param obj
@@ -343,28 +416,28 @@ const isTicketRestriction = (obj: any): obj is TicketRestriction =>
   Object.keys(obj).some((key) => key === 'ticketlimit');
 
 /**
- * byId does checks by ID. If a cart item, checks both product_id and typeID
+ * byId does checks by ID. If a ticketCartItem, checks both product_id and typeID
  *
  * @param id
  * @param tickettypeId
  */
 const byId =
   (id: number, tickettypeId?: number) =>
-    (obj: Ticket | Event | CartItem | TicketRestriction) =>
-      isTicket(obj)
-        ? obj.event_instance_id === id
-        : isCartItem(obj)
-          ? obj.product_id === id && obj.typeID === tickettypeId
-          : isTicketRestriction(obj)
-            ? obj.eventinstanceid === id && obj.tickettypeid === tickettypeId
-            : obj.id === id;
+  (obj: Ticket | Event | TicketCartItem | TicketRestriction) =>
+    isTicket(obj)
+      ? obj.event_instance_id === id
+      : isTicketCartItem(obj)
+      ? obj.product_id === id && obj.typeID === tickettypeId
+      : isTicketRestriction(obj)
+      ? obj.eventinstanceid === id && obj.tickettypeid === tickettypeId
+      : obj.id === id;
 
 /**
  * hasConcessions checks if CartItem includes Concessions
  *
  * @param item
  */
-const hasConcessions = (item: CartItem) => item.name.includes('Concessions');
+const hasConcessions = (item: TicketCartItem) => item.name.includes('Concessions');
 
 /**
  * applyConcession appends and adds that it's a ticket with concessions
@@ -372,7 +445,7 @@ const hasConcessions = (item: CartItem) => item.name.includes('Concessions');
  * @param c_price
  * @param item
  */
-const applyConcession = (c_price: number, item: CartItem) =>
+const applyConcession = (c_price: number, item: TicketCartItem) =>
   hasConcessions(item) ? item : {
     ...item,
     name: item.name + ' + Concessions',
@@ -396,13 +469,13 @@ interface ItemData {
 }
 
 export const totalCartTicketCount = (state: ticketingState) =>
-  state.cart.reduce((tot, item) => {
+  state.ticketCart.reduce((tot, item) => {
     return tot + item.qty;
   }, 0);
 
 export const totalCartEventCount = (state: ticketingState) => {
   const eventIds = new Set<number>();
-  state.cart.forEach((item) => eventIds.add(item.eventId));
+  state.ticketCart.forEach((item) => eventIds.add(item.eventId));
   return eventIds.size;
 };
 
@@ -412,9 +485,9 @@ const isValidDiscount = (discount: DiscountItem, state: ticketingState) => {
 };
 
 /**
- * updateCartItem edits the cart items like qty, id, and concessions
+ * updateTicketCartItem edits the ticketCart items like qty, id, and concessions
  *
- * @param cart
+ * @param ticketCartItems
  * @param root0
  * @param root0.id
  * @param root0.tickettypeId
@@ -422,11 +495,11 @@ const isValidDiscount = (discount: DiscountItem, state: ticketingState) => {
  * @param root0.concessions
  * @param root0.payWhatPrice
  */
-const updateCartItem = (
-  cart: CartItem[],
+const updateTicketCartItem = (
+  ticketCartItems: TicketCartItem[],
   {id, tickettypeId, qty, concessions, payWhatPrice}: ItemData,
 ) =>
-  cart.map((item) => {
+  ticketCartItems.map((item) => {
     if (item.product_id === id && item.typeID === tickettypeId) {
       const updatedItem = payWhatPrice && item.payWhatCan ? {...item, qty, payWhatPrice} : {...item, qty};
       if (concessions) {
@@ -438,6 +511,22 @@ const updateCartItem = (
       return item;
     }
   });
+
+const updateSubscriptionCartItem = (
+  subscriptionCart: SubscriptionCartItem[],
+  toUpdate: SubscriptionCartItem,
+) => {
+  if (toUpdate.qty > toUpdate.qtyAvailable || toUpdate.qty < 0) {
+    return subscriptionCart;
+  }
+  const filteredCart = subscriptionCart.filter(
+    (item) =>
+      item.subscriptiontypeid_fk !== toUpdate.subscriptiontypeid_fk ||
+      item.seasonid_fk !== toUpdate.seasonid_fk,
+  );
+  if (!toUpdate.qty) return filteredCart;
+  return filteredCart.concat(toUpdate);
+};
 
 /**
  * Gets a bounded range for how many tickets are available to purchase for a ticket
@@ -480,16 +569,16 @@ const addTicketReducer: CaseReducer<
   const ticket = tickets.data.byId[id];
   const validRange = getTicketQuantityRange(state, id, tickettype.id, ticket);
 
-  const cartItem = state.cart.find(byId(id, tickettype.id));
+  const ticketCartItem = state.ticketCart.find(byId(id, tickettype.id));
   let updatedState: ticketingState;
 
-  if (cartItem) {
+  if (ticketCartItem) {
     updatedState = {
       ...state,
-      cart: updateCartItem(state.cart, {
+      ticketCart: updateTicketCartItem(state.ticketCart, {
         id,
         tickettypeId: tickettype.id,
-        qty: validRange(qty + cartItem.qty),
+        qty: validRange(qty + ticketCartItem.qty),
         concessions: concessions ? ticket.concession_price : undefined,
         payWhatPrice,
       }),
@@ -498,18 +587,37 @@ const addTicketReducer: CaseReducer<
     const event = state.events.find(byId(ticket.eventid));
 
     const newCartItem = event
-      ? createCartItem({ticket, tickettype, event, qty, payWhatPrice})
+      ? createTicketCartItem({ticket, tickettype, event, qty, payWhatPrice})
       : null;
 
     updatedState = newCartItem ? {
       ...state,
-      cart: concessions
+      ticketCart: concessions
         ? [
-          ...state.cart,
+          ...state.ticketCart,
           applyConcession(ticket.concession_price, newCartItem),
-        ] : [...state.cart, newCartItem],
+        ] : [...state.ticketCart, newCartItem],
     } : {...state};
   }
+
+  if (!isValidDiscount(state.discount, updatedState)) {
+    updatedState.discount = INITIAL_STATE.discount;
+  }
+
+  return updatedState;
+};
+
+const addSubscriptionReducer: CaseReducer<
+  ticketingState,
+  PayloadAction<SubscriptionCartItem>
+> = (state, action) => {
+  const updatedState = {
+    ...state,
+    subscriptionCart: updateSubscriptionCartItem(
+      state.subscriptionCart,
+      action.payload,
+    ),
+  };
 
   if (!isValidDiscount(state.discount, updatedState)) {
     updatedState.discount = INITIAL_STATE.discount;
@@ -537,7 +645,7 @@ const editQtyReducer: CaseReducer<
 
   const updatedState = {
     ...state,
-    cart: updateCartItem(state.cart, {
+    ticketCart: updateTicketCartItem(state.ticketCart, {
       id,
       tickettypeId,
       qty: validRange(qty),
@@ -551,8 +659,33 @@ const editQtyReducer: CaseReducer<
   return updatedState;
 };
 
+const editSubscriptionQtyReducer: CaseReducer<
+  ticketingState,
+  PayloadAction<{
+    seasonid_fk: number;
+    subscriptiontypeid_fk: number;
+    qty: number;
+  }>
+> = (state, action) => {
+  const {seasonid_fk, subscriptiontypeid_fk, qty} = action.payload;
+  const updatedState = {
+    ...state,
+    subscriptionCart: state.subscriptionCart.map((item) =>
+      item.subscriptiontypeid_fk === subscriptiontypeid_fk &&
+      item.seasonid_fk === seasonid_fk
+        ? {...item, qty: bound(0, item.qtyAvailable)(qty)}
+        : item,
+    ),
+  };
+
+  if (!isValidDiscount(state.discount, updatedState)) {
+    updatedState.discount = INITIAL_STATE.discount;
+  }
+  return updatedState;
+};
+
 /**
- * removeTicketFromCartReducer removes a cart item from cart based on product_id and tickettypeId
+ * removeTicketFromCartReducer removes a ticketCartItem from ticketCart based on product_id and tickettypeId
  *
  * @param state
  * @param action
@@ -564,7 +697,9 @@ const removeTicketFromCartReducer: CaseReducer<
   const {id, tickettypeId} = action.payload;
   const updatedState = {
     ...state,
-    cart: state.cart.filter((item) => item.product_id !== id || item.typeID !== tickettypeId),
+    ticketCart: state.ticketCart.filter(
+      (item) => item.product_id !== id || item.typeID !== tickettypeId,
+    ),
   };
 
   if (!isValidDiscount(state.discount, updatedState)) {
@@ -574,10 +709,63 @@ const removeTicketFromCartReducer: CaseReducer<
   return updatedState;
 };
 
-const removeAllTicketsFromCartReducer: CaseReducer<ticketingState> = (state) => {
+const removeSubscriptionFromCartReducer: CaseReducer<
+  ticketingState,
+  PayloadAction<{seasonid_fk: number; subscriptiontypeid_fk: number}>
+> = (state, action) => {
+  const {seasonid_fk, subscriptiontypeid_fk} = action.payload;
   const updatedState = {
     ...state,
-    cart: [],
+    subscriptionCart: state.subscriptionCart.filter(
+      (item) =>
+        item.seasonid_fk !== seasonid_fk ||
+        item.subscriptiontypeid_fk !== subscriptiontypeid_fk,
+    ),
+  };
+  if (!isValidDiscount(state.discount, updatedState)) {
+    updatedState.discount = INITIAL_STATE.discount;
+  }
+
+  return updatedState;
+};
+
+const removeAllTicketsFromCartReducer: CaseReducer<ticketingState> = (
+  state,
+) => {
+  const updatedState = {
+    ...state,
+    ticketCart: [],
+  };
+
+  if (!isValidDiscount(state.discount, updatedState)) {
+    updatedState.discount = INITIAL_STATE.discount;
+  }
+
+  return updatedState;
+};
+
+const removeAllSubscriptionsFromCartReducer: CaseReducer<ticketingState> = (
+  state,
+) => {
+  const updatedState = {
+    ...state,
+    subscriptionCart: [],
+  };
+
+  if (!isValidDiscount(state.discount, updatedState)) {
+    updatedState.discount = INITIAL_STATE.discount;
+  }
+
+  return updatedState;
+};
+
+const removeAllItemsFromCartReducer: CaseReducer<ticketingState> = (
+  state,
+) => {
+  const updatedState = {
+    ...state,
+    ticketCart: [],
+    subscriptionCart: [],
   };
 
   if (!isValidDiscount(state.discount, updatedState)) {
@@ -591,7 +779,8 @@ const removeAllTicketsFromCartReducer: CaseReducer<ticketingState> = (state) => 
  * Makes an initial state for ticketing
  *
  * @module
- * @param {Array} cart - []
+ * @param {Array} ticketCart - []
+ * @param {Array} subscriptionCart - []
  * @param {Array} tickets - byId: {}, allIds: []
  * @param {TicketRestriction} - []
  * @param {TicketType} tickettype - {-1, '', '', ''}
@@ -600,7 +789,8 @@ const removeAllTicketsFromCartReducer: CaseReducer<ticketingState> = (state) => 
  * @param {DiscountItem} discount - {-1, '', 0, 0, 0, 0}
  */
 export const INITIAL_STATE: ticketingState = {
-  cart: [],
+  ticketCart: [],
+  subscriptionCart: [],
   tickets: {data: {byId: {}, allIds: []}},
   ticketrestrictions: [],
   tickettype: {id: -1, name: '', price: '', concessions: ''},
@@ -615,13 +805,18 @@ const ticketingSlice = createSlice({
   initialState: INITIAL_STATE,
   reducers: {
     addTicketToCart: addTicketReducer,
+    addSubscription: addSubscriptionReducer,
     editItemQty: editQtyReducer,
+    editSubscriptionQty: editSubscriptionQtyReducer,
     removeDiscountFromCart: (state) => ({
       ...state,
       discount: INITIAL_STATE.discount,
     }),
     removeTicketFromCart: removeTicketFromCartReducer,
+    removeSubscriptionFromCart: removeSubscriptionFromCartReducer,
     removeAllTicketsFromCart: removeAllTicketsFromCartReducer,
+    removeAllSubscriptionsFromCart: removeAllSubscriptionsFromCartReducer,
+    removeAllItemsFromCart: removeAllItemsFromCartReducer,
   },
   extraReducers: (builder) => {
     builder
@@ -673,13 +868,17 @@ export const selectDiscountValue = (state: RootState): number => {
   }
 };
 export const selectCartSubtotal = (state: RootState): number =>
-  state.ticketing.cart.reduce((tot, item) => {
+  state.ticketing.ticketCart.reduce((tot, item) => {
     if (!item.payWhatCan) {
       return tot + item.price * item.qty;
     } else {
       return tot + item.payWhatPrice;
     }
-  }, 0);
+  }, 0) +
+  state.ticketing.subscriptionCart.reduce<number>(
+    (acc, item) => acc + item.price * item.qty,
+    0,
+  );
 export const selectCartTotal = (state: RootState): number => {
   const subtotal = selectCartSubtotal(state);
   if (state.ticketing.discount.amount || state.ticketing.discount.percent) {
@@ -688,17 +887,31 @@ export const selectCartTotal = (state: RootState): number => {
     return subtotal;
   }
 };
-export const selectCartItem = (
+export const selectTicketCartItem = (
   state: RootState,
   event_instance_id: number,
   tickettypeId: number,
-): CartItem | undefined =>
-  state.ticketing.cart.find((item) => item.product_id === event_instance_id && item.typeID === tickettypeId);
+): TicketCartItem | undefined =>
+  state.ticketing.ticketCart.find(
+    (item) =>
+      item.product_id === event_instance_id && item.typeID === tickettypeId,
+  );
+
+export const selectSubscriptionCartItem = (
+  state: RootState,
+  seasonid_fk: number,
+  subscriptionid_fk: number,
+): SubscriptionCartItem | undefined =>
+  state.ticketing.subscriptionCart.find(
+    (item) =>
+      item.subscriptiontypeid_fk === subscriptionid_fk &&
+      item.seasonid_fk === seasonid_fk,
+  );
 
 export const selectCartTicketCount = (
   state: RootState,
 ): {[key: number]: number} =>
-  state.ticketing.cart.reduce((acc, item) => {
+  state.ticketing.ticketCart.reduce((acc, item) => {
     const key = item.product_id;
     if (key in acc) {
       return acc;
@@ -707,8 +920,15 @@ export const selectCartTicketCount = (
     }
   }, {});
 
-export const selectCartContents = (state: RootState): CartItem[] =>
-  state.ticketing.cart;
+export const selectTicketCartContents = (state: RootState): TicketCartItem[] =>
+  state.ticketing.ticketCart;
+
+export const selectSubscriptionCartContents = (
+  state: RootState,
+): SubscriptionCartItem[] => state.ticketing.subscriptionCart;
+
+export const selectCartContents = (state: RootState): (TicketCartItem | SubscriptionCartItem)[] =>
+  [...state.ticketing.ticketCart, ...state.ticketing.subscriptionCart];
 
 export const selectDiscount = (state: RootState): DiscountItem =>
   state.ticketing.discount;
@@ -776,10 +996,15 @@ export const selectEventData = (
 
 export const {
   addTicketToCart,
+  addSubscription,
   editItemQty,
+  editSubscriptionQty,
   removeDiscountFromCart,
   removeTicketFromCart,
+  removeSubscriptionFromCart,
   removeAllTicketsFromCart,
+  removeAllSubscriptionsFromCart,
+  removeAllItemsFromCart,
 } = ticketingSlice.actions;
 
 export default ticketingSlice.reducer;
