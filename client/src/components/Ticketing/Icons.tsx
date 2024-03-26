@@ -25,6 +25,52 @@ const BackIcon = (props: IconProps) => {
   );
 };
 
+const ChevronDown = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        fillRule='evenodd'
+        clipRule='evenodd'
+        d='M19 9l-7 7-7-7'
+      />
+    </svg>
+  );
+};
+
+const ChevronUp = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        fillRule='evenodd'
+        clipRule='evenodd'
+        d='M5 15l7-7 7 7'
+      />
+    </svg>
+  );
+};
+
 const CirclePlusIcon = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
 
@@ -61,6 +107,29 @@ const CloneIcon = (props: IconProps) => {
         strokeLinecap='round'
         strokeLinejoin='round'
         d='M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2'
+      />
+    </svg>
+  );
+};
+
+const DecrementIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        fillRule='evenodd'
+        d='M18 12H6'
+        clipRule='evenodd'
       />
     </svg>
   );
@@ -129,6 +198,27 @@ const ExclamationIcon = (props: IconProps) => {
   );
 };
 
+const ForwardArrow = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M14 5l7 7m0 0l-7 7m7-7H3'
+      />
+    </svg>
+  );
+};
+
 const HelpIcon = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
   return (
@@ -145,6 +235,29 @@ const HelpIcon = (props: IconProps) => {
         strokeLinecap='round'
         strokeLinejoin='round'
         d='M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+      />
+    </svg>
+  );
+};
+
+const IncrementIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        fillRule='evenodd'
+        clipRule='evenodd'
+        d='M12 6v6m0 0v6m0-6h6m-6 0H6'
       />
     </svg>
   );
@@ -298,12 +411,17 @@ const XIcon = (props: IconProps) => {
 
 export {
   BackIcon,
+  ChevronDown,
+  ChevronUp,
   CirclePlusIcon,
   CloneIcon,
+  DecrementIcon,
   EditIcon,
   ExclamationCircleIcon,
   ExclamationIcon,
+  ForwardArrow,
   HelpIcon,
+  IncrementIcon,
   PlusIcon,
   SaveIcon,
   SearchIcon,

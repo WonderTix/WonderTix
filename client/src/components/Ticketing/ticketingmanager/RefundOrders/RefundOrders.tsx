@@ -185,23 +185,23 @@ const RefundOrders = () => {
           </form>
           <table className={'w-full min-w-min'}>
             <thead>
-              <tr className='grid grid-cols-6 gap-2 bg-gray-200 h-18 rounded-lg shadow-md px-2 mb-2 font-bold'>
-                <td className='row-start-1 justify-self-start py-2 col-span-1'>
+              <tr className='grid grid-cols-12 gap-2 bg-gray-200 h-18 rounded-lg shadow-md px-2 mb-2 font-bold whitespace-nowrap'>
+                <th className='row-start-1 justify-self-start p-2 col-span-2'>
                   Name
-                </td>
-                <td className='row-start-1 justify-self-start py-2 col-span-1'>
-                  Order Date & Time
-                </td>
-                <td className='row-start-1 justify-self-start py-2 col-span-1'>
-                    Ticket(s)
-                </td>
-                <td className='row-start-1 justify-self-start py-2 col-span-1'>
-                  Donation Total
-                </td>
-                <td className='row-start-1 justify-self-start py-2 col-span-1'>
+                </th>
+                <th className='row-start-1 justify-self-start p-2 col-span-1'>
+                  Order Date
+                </th>
+                <th className='row-start-1 justify-self-start pl-4 p-2 col-span-4'>
+                    Order Item(s)
+                </th>
+                <th className='row-start-1 justify-self-start p-2 col-span-2'>
+                  Donation
+                </th>
+                <th className='row-start-1 justify-self-start p-2 col-span-2'>
                   Order Total
-                </td>
-                <td className='row-start-1 justify-self-center py-2 col-span-1'></td>
+                </th>
+                <th className='row-start-1 justify-self-center py-2 col-span-1'></th>
               </tr>
             </thead>
             <tbody>
@@ -215,26 +215,30 @@ const RefundOrders = () => {
                 orders.map((instance, index) => (
                   <tr
                     key={index}
-                    className='grid grid-cols-6 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'
+                    className='grid grid-cols-12 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'
                   >
-                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-2'>
                       {instance.name}
                     </td>
                     <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {format(new Date(
-                          instance.orderdate,
-                      ), 'MM/dd/yyyy, h:mm a')}
+                      {format(
+                        new Date(instance.orderdate),
+                        'MM/dd/yyyy',
+                      )}
                     </td>
-                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {instance.items.length ?
-                          instance.items.map((showing, showingIndex) => (<p key={showingIndex}>{showing}</p>)):
-                          <p>No Tickets in order</p>
-                      }
+                    <td className='row-start-1 justify-self-start pl-4 py-2 col-span-4'>
+                      {instance.orderitems.length ? (
+                        instance.orderitems.map((item, index) => (
+                          <p key={index}>{item.quantity} x {item.type} - <span className='italic'>{item.description}</span></p>
+                        ))
+                      ) : (
+                        <p>No Refundable Order Items</p>
+                      )}
                     </td>
-                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-2'>
                       {formatUSD(instance.donation ?? 0)}
                     </td>
-                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
+                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-2'>
                       {formatUSD(instance.price)}
                     </td>
                     <td className='row-start-1 justify-self-start py-2 col-span-1'>
@@ -258,7 +262,7 @@ const RefundOrders = () => {
                         type='button'
                         className='bg-red-600 hover:bg-red-700 focus:ring-red-500
                           w-full inline-flex justify-center rounded-md border border-transparent
-                          shadow-sm px-4 py-2 text-base font-medium text-white
+                          shadow-sm px-1 py-2 text-base font-medium text-white
                           focus:outline-none focus:ring-2 focus:ring-offset-2
                           tab:ml-3 tab:w-auto tab:text-sm disabled:bg-gray-500'
                       >

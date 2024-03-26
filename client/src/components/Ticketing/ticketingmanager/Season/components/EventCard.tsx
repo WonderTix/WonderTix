@@ -1,5 +1,5 @@
 import React from 'react';
-import {getImageDefault} from '../../../../../utils/imageURLValidation';
+import {getEventImageDefault} from '../../../../../utils/imageURLValidation';
 import {useNavigate} from 'react-router';
 import {EventImage} from '../../../../../utils/imageURLValidation';
 
@@ -37,7 +37,7 @@ const EventCard = (props: EventCardProps) => {
           <EventImage
             className='h-auto'
             src={
-              imageurl === 'Default Event Image' ? getImageDefault() : imageurl
+              imageurl === 'Default Event Image' ? getEventImageDefault() : imageurl
             }
             title={`${name}`}
           />

@@ -5,7 +5,7 @@ import {titleCase} from '../../../utils/arrays';
 import {fetchTicketingData, selectEventData} from '../ticketingmanager/ticketingSlice';
 import TicketPicker from './TicketPicker';
 import PopUp from '../PopUp';
-import {EventImage, getImageDefault} from '../../../utils/imageURLValidation';
+import {EventImage, getEventImageDefault} from '../../../utils/imageURLValidation';
 import {SmallBackIcon} from '../Icons';
 import Label from '../Label';
 import {LoadingScreen} from '../mainpage/LoadingScreen';
@@ -77,9 +77,9 @@ const EventShowings = (): ReactElement => {
       <main
         className='bg-fixed bg-cover'
         style={{
-          backgroundImage: `url(${getImageDefault(
+          backgroundImage: `url(${getEventImageDefault(
             eventData.imageurl,
-          )}),url(${getImageDefault()})`,
+          )}),url(${getEventImageDefault()})`,
         }}
       >
         <div className='flex flex-col gap-9 min-h-[calc(100vh-233px)] md:min-h-[calc(100vh-142px)] items-center backdrop-blur-sm bg-zinc-900/80 px-[1rem] py-[5rem] tab:px-[5rem] md:px-[8rem]'>

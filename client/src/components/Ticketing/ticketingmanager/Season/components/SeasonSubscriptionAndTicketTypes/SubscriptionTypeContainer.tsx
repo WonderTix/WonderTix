@@ -47,7 +47,7 @@ export const SubscriptionTypeContainer = (
 
   const onSubmitError = async (event) => {
     const message = event.json
-      ? (await event.json).error
+      ? (await event.json()).error
       : 'Error saving updates';
     setPopUpProps((prev) => ({
       ...prev,
@@ -58,6 +58,8 @@ export const SubscriptionTypeContainer = (
       showSecondary: false,
       showClose: false,
     }));
+    setDisabled(false);
+    setEdit(false);
   };
 
   if (!subscriptionTypes || !seasonSubscriptionTypes) return null;

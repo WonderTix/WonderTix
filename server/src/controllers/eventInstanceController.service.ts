@@ -3,7 +3,6 @@ import {eventInstanceRequest, instanceTicketType} from '../interfaces/Event';
 import {
   eventinstances,
   events,
-  orderticketitems,
   seasons,
   seasontickettypepricedefault,
   ticketitems,
@@ -22,13 +21,10 @@ export class InvalidInputError extends Error {
 }
 
 export interface LoadedTicketRestriction extends ticketrestrictions {
-    ticketitems: LoadedTicketItem[];
+    ticketitems: ticketitems[];
     availabletickets: number,
 }
 
-export interface LoadedTicketItem extends ticketitems {
-    orderticketitem: orderticketitems | null;
-}
 export interface LoadedEventInstance extends eventinstances {
   ticketrestrictions: LoadedTicketRestriction[],
   event: LoadedEvent,

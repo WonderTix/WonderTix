@@ -1,52 +1,88 @@
 import React, {useState, useEffect, ReactElement} from 'react';
 import {
   editItemQty,
-  CartItem,
+  editSubscriptionQty,
+  isTicketCartItem,
+  SubscriptionCartItem,
+  TicketCartItem,
 } from '../ticketingmanager/ticketingSlice';
 import {useAppDispatch} from '../app/hooks';
-import {toDollarAmount} from '../../../utils/arrays';
-import {getImageDefault} from '../../../utils/imageURLValidation';
+import {
+  getEventImageDefault,
+  getSeasonImageDefault,
+} from '../../../utils/imageURLValidation';
+import {formatUSD} from '../ticketingmanager/RefundOrders/RefundOrders';
 
 interface CartRowProps {
-  item: CartItem;
-  removeHandler: (eventInstanceId: number, ticketTypeId: number) => void;
+  item: TicketCartItem | SubscriptionCartItem;
+  removeHandler: () => void;
 }
 
 /**
  * Entire thing is meant to handle increments and decrements in prices and item qty
  *
- * @param {CartItem} item
+ * @param {TicketCartItem | SubscriptionCartItem} item
  * @param {func} removeHandler
  * @returns {ReactElement}
  */
 const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
   const dispatch = useAppDispatch();
-  const [cost, setCost] = useState(item.price * item.qty);
+  const [cost, setCost] = useState(
+    isTicketCartItem(item) && item.payWhatPrice
+      ? item.payWhatPrice
+      : item.price * item.qty,
+  );
+  const isTicketItem = isTicketCartItem(item);
 
-  useEffect(() => setCost(item.qty * item.price), [item.qty]);
+  useEffect(
+    () =>
+      setCost(
+        isTicketItem && item.payWhatPrice
+          ? item.payWhatPrice
+          : item.price * item.qty,
+      ),
+    [item.qty],
+  );
 
-  const handleDecrement = () => {
-    if (item.qty > 1) {
-      dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty - 1}));
+  const getImage = isTicketItem
+    ? getEventImageDefault
+    : getSeasonImageDefault;
+
+  const handleUpdateQuantity = (update: 'increment' | 'decrement') => {
+    const updatedQty = update === 'increment'? item.qty+1: item.qty-1;
+    if (updatedQty < 1) {
+      removeHandler();
+    } else if (isTicketItem) {
+      dispatch(
+        editItemQty({
+          id: item.product_id,
+          tickettypeId: item.typeID,
+          qty: updatedQty,
+        }),
+      );
     } else {
-      removeHandler(item.product_id, item.typeID);
+      dispatch(
+        editSubscriptionQty({
+          ...item,
+          qty: updatedQty,
+        }),
+      );
     }
-  };
-
-  const handleIncrement = () => {
-    dispatch(editItemQty({id: item.product_id, tickettypeId: item.typeID, qty: item.qty + 1}));
   };
 
   return (
     <div
       className='w-full h-40 rounded-xl bg-cover'
       style={{
-        backgroundImage: `url(${getImageDefault(
+        backgroundImage: `url(${getImage(
           item.product_img_url,
-        )}),url(${getImageDefault()})`,
+        )}),url(${getImage()})`,
       }}
     >
-      <div data-testid='cart-ticket-card' className='flex flex-col md:flex-row justify-center md:justify-between items-center gap-5 p-5 h-full rounded-xl text-white bg-zinc-900/90'>
+      <div
+        data-testid='cart-item-card'
+        className='flex flex-col md:flex-row justify-center md:justify-between items-center gap-5 p-5 h-full rounded-xl text-white bg-zinc-900/90'
+      >
         <div>
           <p className='font-semibold'>{item.name}</p>
           <p className='text-zinc-200'>{item.desc}</p>
@@ -55,9 +91,9 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
           <div className='flex items-center gap-2'>
             <button
               className='enabled:hover:text-gray-300'
-              data-testid='decrement-ticket'
+              data-testid='decrement-item'
               aria-label={`Remove one ${item.name} from cart`}
-              onClick={handleDecrement}
+              onClick={() => handleUpdateQuantity('decrement')}
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -72,12 +108,12 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
                 />
               </svg>
             </button>
-            <p data-testid='ticket-quantity'>{item.qty}</p>
+            <p data-testid='item-quantity'>{item.qty}</p>
             <button
               className='enabled:hover:text-gray-300'
-              data-testid='increment-ticket'
+              data-testid='increment-item'
               aria-label={`Add one ${item.name} to cart`}
-              onClick={handleIncrement}
+              onClick={() => handleUpdateQuantity('increment')}
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -93,16 +129,14 @@ const CartRow = ({item, removeHandler}: CartRowProps): ReactElement => {
               </svg>
             </button>
           </div>
-          <p data-testid='card-ticket-subtotal' className='font-semibold'>
-            {item.payWhatCan
-              ? toDollarAmount(item.payWhatPrice)
-              : toDollarAmount(cost)}
+          <p data-testid='card-item-subtotal' className='font-semibold'>
+            {formatUSD(cost)}
           </p>
           <button
             className='enabled:hover:text-gray-300'
-            data-testid='remove-ticket'
+            data-testid='remove-item'
             aria-label={`Remove ${item.name} from cart`}
-            onClick={() => removeHandler(item.product_id, item.typeID)}
+            onClick={removeHandler}
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
