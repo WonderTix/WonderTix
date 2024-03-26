@@ -79,42 +79,24 @@ export const getDonationItem = (donationCartItem: number) => {
   };
 };
 
-export const getFeeItem = async (cartRows: any[], prisma: ExtendedPrismaClient,
-) => {
-  const eventInstanceIds = cartRows.map((row) => Number(row.product_id));
+export const getFeeItem = (feeTotal: number) => {
+  const feeCartRow = feeTotal > 0 ? getCartRow(
+      'Processing Fee',
+      'Covers the cost of our online payment processor',
+      feeTotal * 100,
+      1,
+  ) : undefined;
 
-  // Find the feeableTotal
-  const ticketRestrictions = await prisma.ticketrestrictions.findMany({
-    where: {
-      eventinstanceid_fk: {
-        in: eventInstanceIds,
-      },
-    },
-    select: {
-      eventinstanceid_fk: true,
-      tickettypeid_fk: true,
-      fee: true,
-    },
-  });
-
-  // Run calculation
-
-  const feeTotal = ticketRestrictions.reduce((acc, restriction) => {
-    const row = cartRows.find((row) => row.product_id === restriction.eventinstanceid_fk && row.typeID === restriction.tickettypeid_fk);
-    if (row) {
-      return acc + Number(restriction.fee) * row.qty;
-    } else {
-      return acc;
-    }
-  }, 0);
-
-  return feeTotal > 0 ? getCartRow('Fee', 'Processing fee to cover the cost of our online payment processor', feeTotal * 100, 1) : undefined;
+  return {
+    feeCartRow: feeCartRow,
+  };
 };
 
 interface TicketItemsReturn {
   orderTicketItems: any[];
   ticketCartRows: LineItem[];
   ticketTotal: number;
+  feeTotal: number;
   eventInstanceQueries: any[];
 }
 
@@ -163,6 +145,7 @@ export const getTicketItems = async (
     ticketCartRows: [],
     eventInstanceQueries: [],
     ticketTotal: 0,
+    feeTotal: 0,
   };
 
   const eventInstances = await prisma.eventinstances.findMany({
@@ -214,6 +197,11 @@ export const getTicketItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
+    const ticketRestriction = eventInstance.ticketRestrictionMap.get(item.typeID);
+    if (!ticketRestriction) {
+      throw new InvalidInputError(422, 'Requested tickets no longer available');
+    }
+
     if (item.payWhatCan && (item.payWhatPrice ?? -1) < 0 || item.price < 0) {
       throw new InvalidInputError(
           422,
@@ -222,7 +210,7 @@ export const getTicketItems = async (
     }
     toReturn.orderTicketItems.push(
         ...getTickets(
-            eventInstance.ticketRestrictionMap.get(item.typeID),
+            ticketRestriction,
             eventInstance,
             item.qty,
             item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
@@ -237,6 +225,10 @@ export const getTicketItems = async (
         ));
 
     toReturn.ticketTotal += item.payWhatCan && item.payWhatPrice? item.payWhatPrice: item.price * item.qty;
+    if ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) {
+      // Only add a fee if the item's price is not 0
+      toReturn.feeTotal += Number(ticketRestriction.fee) * item.qty;
+    }
   }
 
   eventInstanceMap.forEach(({eventinstanceid, availableseats}) =>
@@ -309,7 +301,6 @@ interface checkoutForm {
   city: string,
   state: string;
   country: string;
-  billingState: string;
   phone: string;
   email: string;
   visitSource: string;
@@ -366,7 +357,6 @@ const validateContact = (formData: checkoutForm) => {
         `Email: ${formData.email} is invalid`,
         new RegExp('.+@.+\\..+'),
     ),
-    billingstate: validateBillingState(formData.billingState),
     // Only include or validate the following if provided
     ...(formData.streetAddress && {address: formData.streetAddress}),
     ...(formData.city && {city: formData.city}),
@@ -419,10 +409,6 @@ const validateName = (name: string, type: string): string => {
     throw new InvalidInputError(422, `A valid ${type} must be provided`);
   }
   return name;
-};
-
-const validateBillingState = (billingState: string): string => {
-  if
 };
 
 export const validateWithRegex = (

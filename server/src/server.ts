@@ -204,6 +204,7 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
+            feetotal: {type: 'number'},
           },
         },
         SavedReport: {
@@ -438,6 +439,7 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
+            feetotal: {type: 'number'},
             checkout_sessions: {type: 'string'},
           },
         },

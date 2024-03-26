@@ -9,6 +9,7 @@ export type EventRow = {
   ticketTypes?: string;
   ticketRestrictionInfo?: ticketTypeRestriction[];
   price?: number;
+  fee?: number;
   complimentary?: boolean;
   availableseats?: number;
   seatsForType?: number;

@@ -43,6 +43,7 @@ const AdminPurchase = () => {
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
   const {token} = useFetchToken();
+
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
     setEventData([
@@ -171,6 +172,7 @@ const AdminPurchase = () => {
       (restriction) => ticketTypeId === restriction.tickettypeid,
     );
     const price = parseFloat(currentTicketRestriction.price);
+    const fee = parseFloat(currentTicketRestriction.fee);
 
     // determine how many seats for current event instance
     const {ticketlimit, ticketssold} = currentTicketRestriction;
@@ -182,6 +184,7 @@ const AdminPurchase = () => {
           ...r,
           ticketTypes: currentTicketRestriction.description,
           price: row.complimentary ? 0 : price,
+          fee: row.complimentary ? 0 : fee,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
         };
@@ -237,6 +240,7 @@ const AdminPurchase = () => {
           ...row,
           complimentary: isChecked,
           price: isChecked ? 0 : row.price,
+          fee: isChecked ? 0 : row.fee,
         };
       }
       return r;
@@ -313,6 +317,7 @@ const AdminPurchase = () => {
           product_id: row.eventinstanceid,
           eventId: row.eventid,
           price: row.price,
+          fee: row.fee,
           desc: row.ticketTypes,
           typeID: row.typeID,
           date: showingDate,
@@ -352,7 +357,7 @@ const AdminPurchase = () => {
       if (!token) return;
 
       fetch( // create intent
-      process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
+      `${process.env.REACT_APP_API_2_URL}/events/reader-intent`,
       {
         credentials: 'include',
         method: 'POST',

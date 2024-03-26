@@ -1,12 +1,3 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 import React, {ReactElement} from 'react';
 import {useAppSelector} from '../app/hooks';
 import {
@@ -45,6 +36,7 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
   const subtotal = useAppSelector(selectCartSubtotal);
   const total = useAppSelector(selectCartTotal);
   const discount = useAppSelector(selectDiscount);
+
   const lineItems = cartItems.map((item) => (
     <LineItem
       key={`${item.product_id}-${item.typeID}`}
@@ -53,7 +45,12 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
       className='bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'
     />
   ));
-  const fee = cartItems.reduce((acc, item) => acc + item.fee, 0);
+
+  // Add a fee for each non-zero priced item
+  const feeTotal = cartItems.reduce((acc, item) =>
+    acc + ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0 ? item.fee : 0),
+    0,
+  );
 
   return (
     <aside className='flex flex-col justify-between h-full w-full'>
@@ -105,12 +102,12 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
               <HelpIcon className='h-4 w-4' strokeWidth={2} />
             </span>
           </Tooltip>
-          <span className='text-white text-lg font-bold'>{toDollar(fee)}</span>
+          <span className='text-white text-lg font-bold'>{toDollar(feeTotal)}</span>
         </p>
         <p className='flex flex-row items-center gap-2 justify-between w-full'>
           <span className='text-zinc-100 text-sm'>Total</span>
           <span className='text-white text-lg font-bold'>
-            {toDollar(donation + fee + total)}
+            {toDollar(donation + feeTotal + total)}
           </span>
         </p>
       </div>

@@ -498,7 +498,8 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       flattenedOrders.push({
         orderid: order.orderid,
         orderdatetime: order.orderdatetime,
-        ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
+        ordertotal: Number(order.ordersubtotal) + Number(order.feetotal) - Number(order.discounttotal),
+        feetotal: order.feetotal,
         discounttotal: order.discounttotal,
         refunded,
         orderitems: [...orderItemsMap.values()],

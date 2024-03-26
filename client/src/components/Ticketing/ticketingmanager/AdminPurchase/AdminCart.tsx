@@ -2,7 +2,8 @@ import React, {ReactElement, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router';
 import {EventRow} from './utils/adminCommon';
 import {getDiscountCode} from './utils/adminApiRequests';
-import {SearchIcon, XIcon} from '../../Icons';
+import {HelpIcon, SearchIcon, XIcon} from '../../Icons';
+import {Tooltip} from '@mui/material';
 
 /**
  * Math to dollar - `$${(Math.round(x * 100) / 100).toFixed(2)}`
@@ -74,25 +75,32 @@ const AdminCart = ({
     return total + ticketPrice;
   }, 0);
 
-  const getTotal = () => {
+  const fee = cartItems.reduce((acc, item) => acc + item.fee, 0);
+
+  const getDiscountTotal = () => {
     if (appliedDiscount) {
       if (appliedDiscount.amount && appliedDiscount.percent) {
-        return Math.max(
+        return subtotal - Math.max(
           subtotal -
-            Math.min(
-              (+appliedDiscount.percent / 100) * subtotal,
-              appliedDiscount.amount,
-            ),
+          Math.min(
+            (+appliedDiscount.percent / 100) * subtotal,
+            appliedDiscount.amount,
+          ),
           0,
         );
       } else if (appliedDiscount.amount) {
-        return Math.max(subtotal - appliedDiscount.amount, 0);
+        return subtotal - Math.max(subtotal - appliedDiscount.amount, 0);
       } else {
-        return (1 - +appliedDiscount.percent / 100) * subtotal;
+        return subtotal - ((1 - +appliedDiscount.percent / 100) * subtotal);
       }
     } else {
-      return subtotal;
+      return 0;
     }
+  };
+
+  const getTotal = () => {
+    const discount = getDiscountTotal();
+    return subtotal - discount + fee;
   };
 
   const validateDiscountCode = (discount) => {
@@ -159,8 +167,8 @@ const AdminCart = ({
               discountText
                 ? discountText
                 : appliedDiscount
-                ? appliedDiscount.code
-                : ''
+                  ? appliedDiscount.code
+                  : ''
             }
             onChange={(e) => {
               setDiscountText(e.target.value);
@@ -192,19 +200,32 @@ const AdminCart = ({
               Invalid Discount Code
             </p>
           ) : (
-            <aside className='flex items-center gap-2 justify-between w-full'>
-              <h2 className='text-zinc-100 text-sm'>Discount</h2>
-              <strong className='text-amber-300 text-lg font-bold'>
-                {toDollar(subtotal - getTotal())}
-              </strong>
-            </aside>
+            <p className='flex items-center gap-2 justify-between w-full'>
+              <span className='text-zinc-100 text-sm'>Discount</span>
+              <span className='text-amber-300 text-lg font-bold'>
+                {toDollar(getDiscountTotal())}
+              </span>
+            </p>
           ))}
-        <aside className='flex items-center gap-2 justify-between w-full'>
-          <h2 className='text-zinc-100 text-sm'>Total</h2>
-          <strong className='text-white text-lg font-bold'>
+        <p className='flex flex-row items-center gap-2 justify-between w-full'>
+          <Tooltip
+            title='We have to charge a processing fee to cover our costs to our online payment processor'
+            placement='top'
+            arrow
+          >
+            <span className='flex items-center gap-1 text-zinc-100 text-sm'>
+              Fee
+              <HelpIcon className='h-4 w-4' strokeWidth={2} />
+            </span>
+          </Tooltip>
+          <span className='text-white text-lg font-bold'>{toDollar(fee)}</span>
+        </p>
+        <p className='flex items-center gap-2 justify-between w-full'>
+          <span className='text-zinc-100 text-sm'>Total</span>
+          <span className='text-white text-lg font-bold'>
             {toDollar(getTotal())}
-          </strong>
-        </aside>
+          </span>
+        </p>
       </section>
     </div>
   );

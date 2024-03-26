@@ -75,11 +75,11 @@ To test simulated readers with virtual cards:
    6. Once created, click on the reader in the list to get an info pop up to appear. Write down the Reader ID somewhere, which should have the format `tmr_xxx`.
 3. Navigate to the deployed front end (ex: `https://localhost:3000`). Log in, and go to the ticketing dashboard, and select purchase tickets.
 4. Create your sample purchase. Once it is ready, press the "send to reader" button. The adjacent drop down menu should display a list of possible readers to send to; the options should correspond to the Reader ID(s) of all simulated reader(s) you have created.
-6. You should be taken to the reader checkout page.
+5. You should be taken to the reader checkout page.
    1. It is worth noting that here you can cancel the payment early *if a payment method has not yet been presented*. It also can directly poll the Stripe API for cases when the webhook is slow to confirm a payment, or if the webhook is not listening to events for whatever reason.
-7. Open a terminal.
-8. Run this command: `stripe test_helpers terminal readers present_payment_method tmr_xxx`, replacing `tmr_xxx` with your Reader ID.
-9. The frontend page should soon redirect you to the success page.
+6. Open a terminal.
+7. Run this command: `stripe test_helpers terminal readers present_payment_method tmr_xxx`, replacing `tmr_xxx` with your Reader ID.
+8. The frontend page should soon redirect you to the success page.
 
 ## Connecting to the database
 
