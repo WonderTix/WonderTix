@@ -120,6 +120,13 @@ describe('Ticketing slice', () => {
     typeID: 1,
   };
 
+  // const concessionsItem = {
+  //   ...newCartItem,
+  //   name: 'Event 1 Tickets + Concessions',
+  //   price: newCartItem.price + ticket1.concession_price,
+  //   desc: newCartItem.desc + ' with concessions ticket',
+  // };
+
   describe('selectors', () => {
     const item1: CartItem = {
       product_id: 1,
@@ -228,44 +235,32 @@ describe('Ticketing slice', () => {
         });
     });
 
-    // it('addTicketReducer: in cart & add concessions', () => {
-    //   const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: ticketType, qty: 1}));
-    //   expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 3}]});
-    //   init = res;
-    // });
-    //
-    // it('addTicketReducer: in cart (w/ concession) & add w/o concessions', () => {
-    //   const res = ticketReducer(init, addTicketToCart({id: 1, tickettype: ticketType, qty: 1}));
-    //   expect(res).toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
-    //   init = res;
-    // });
-    //
-    // // ticket 1 currently in cart
-    // it('editItemQty: can set qty = available', () => {
-    //   expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket1.availableseats})))
-    //     .toEqual({...init, cart: [{...concessionsItem, qty: ticket1.availableseats}]});
-    // });
-    //
-    // it('editItemQty: can\'t set qty > available', () => {
-    //   expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket1.availableseats + 1})))
-    //     .toEqual({...init, cart: [{...concessionsItem, qty: ticket1.availableseats}]});
-    // });
-    //
-    // it('editItemQty: item exists in cart', () => {
-    //   const res = ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: 4}));
-    //   expect(res)
-    //     .toEqual({...init, cart: [{...concessionsItem, qty: 4}]});
-    //   init = res;
-    // });
-    //
-    // it('editItemQty: item not in cart', () => {
-    //   expect(ticketReducer(init, editItemQty({id: 2, tickettypeId: 1, qty: 4})))
-    //     .toEqual({...init});
-    // });
-    //
-    // it('editItemQty: can\'t set negative qty', () => {
-    //   expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: -1})))
-    //     .toEqual({...init, cart: [{...concessionsItem, qty: 0}]});
-    // });
+    // ticket 1 currently in cart
+    it('editItemQty: can set qty = available', () => {
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket1.availableseats})))
+        .toEqual({...init, cart: [{...newCartItem, qty: ticket1.availableseats}]});
+    });
+
+    it('editItemQty: can\'t set qty > available', () => {
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket1.availableseats + 1})))
+        .toEqual({...init, cart: [{...newCartItem, qty: ticket1.availableseats}]});
+    });
+
+    it('editItemQty: item exists in cart', () => {
+      const res = ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: 4}));
+      expect(res)
+        .toEqual({...init, cart: [{...newCartItem, qty: 4}]});
+      init = res;
+    });
+
+    it('editItemQty: item not in cart', () => {
+      expect(ticketReducer(init, editItemQty({id: 2, tickettypeId: 1, qty: 4})))
+        .toEqual({...init});
+    });
+
+    it('editItemQty: can\'t set negative qty', () => {
+      expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: -1})))
+        .toEqual({...init, cart: [{...newCartItem, qty: 0}]});
+    });
   });
 });
