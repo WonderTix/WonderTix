@@ -234,7 +234,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
         return acc+Number(subscription.price);
       }, 0);
       return {
-        price: ticketTotal+subscriptionTotal,
+        price: ticketTotal+subscriptionTotal - Number(order.discounttotal ?? 0),
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
         orderdate: orderdatetime,
