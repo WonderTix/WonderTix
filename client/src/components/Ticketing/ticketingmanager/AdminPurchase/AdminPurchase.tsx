@@ -184,7 +184,7 @@ const AdminPurchase = () => {
           ...r,
           ticketTypes: currentTicketRestriction.description,
           price: row.complimentary ? 0 : price,
-          fee: row.complimentary ? 0 : fee,
+          fee: row.complimentary || price === 0 ? 0 : fee,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
         };
@@ -240,7 +240,7 @@ const AdminPurchase = () => {
           ...row,
           complimentary: isChecked,
           price: isChecked ? 0 : row.price,
-          fee: isChecked ? 0 : row.fee,
+          fee: isChecked || row.price === 0 ? 0 : row.fee,
         };
       }
       return r;

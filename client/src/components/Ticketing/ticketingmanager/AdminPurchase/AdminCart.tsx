@@ -75,23 +75,29 @@ const AdminCart = ({
     return total + ticketPrice;
   }, 0);
 
-  const fee = cartItems.reduce((acc, item) => acc + item.fee, 0);
+  const fee = cartItems.reduce((acc, item) => {
+    console.log(item);
+    return acc + item.fee;
+  }, 0);
 
   const getDiscountTotal = () => {
     if (appliedDiscount) {
       if (appliedDiscount.amount && appliedDiscount.percent) {
-        return subtotal - Math.max(
+        return (
           subtotal -
-          Math.min(
-            (+appliedDiscount.percent / 100) * subtotal,
-            appliedDiscount.amount,
-          ),
-          0,
+          Math.max(
+            subtotal -
+              Math.min(
+                (+appliedDiscount.percent / 100) * subtotal,
+                appliedDiscount.amount,
+              ),
+            0,
+          )
         );
       } else if (appliedDiscount.amount) {
         return subtotal - Math.max(subtotal - appliedDiscount.amount, 0);
       } else {
-        return subtotal - ((1 - +appliedDiscount.percent / 100) * subtotal);
+        return subtotal - (1 - +appliedDiscount.percent / 100) * subtotal;
       }
     } else {
       return 0;
@@ -154,10 +160,10 @@ const AdminCart = ({
         </button>
       </section>
       <section className='flex flex-col items-center gap-2 bg-zinc-800 rounded-xl px-5 py-3'>
-        <div className={
-          `bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md w-full
-          ${appliedDiscount && 'bg-zinc-800 border-2 border-zinc-900'}`
-        }>
+        <div
+          className={`bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md w-full
+          ${appliedDiscount && 'bg-zinc-800 border-2 border-zinc-900'}`}
+        >
           <input
             type='text'
             placeholder='Discount code...'
@@ -167,8 +173,8 @@ const AdminCart = ({
               discountText
                 ? discountText
                 : appliedDiscount
-                  ? appliedDiscount.code
-                  : ''
+                ? appliedDiscount.code
+                : ''
             }
             onChange={(e) => {
               setDiscountText(e.target.value);
@@ -208,16 +214,9 @@ const AdminCart = ({
             </p>
           ))}
         <p className='flex flex-row items-center gap-2 justify-between w-full'>
-          <Tooltip
-            title='We have to charge a processing fee to cover our costs to our online payment processor'
-            placement='top'
-            arrow
-          >
-            <span className='flex items-center gap-1 text-zinc-100 text-sm'>
-              Fee
-              <HelpIcon className='h-4 w-4' strokeWidth={2} />
-            </span>
-          </Tooltip>
+          <span className='flex items-center gap-1 text-zinc-100 text-sm'>
+            Fee
+          </span>
           <span className='text-white text-lg font-bold'>{toDollar(fee)}</span>
         </p>
         <p className='flex items-center gap-2 justify-between w-full'>

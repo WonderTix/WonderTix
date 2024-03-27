@@ -396,14 +396,13 @@ const isValidDiscount = (discount: DiscountItem, state: ticketingState) => {
 };
 
 /**
- * updateCartItem edits the cart items like qty and fees
+ * updateCartItem edits the cart items like qty and payWhatPrice
  *
  * @param cart
  * @param root0
  * @param root0.id
  * @param root0.tickettypeId
  * @param root0.qty
- * @param root0.fee
  * @param root0.payWhatPrice
  */
 const updateCartItem = (
@@ -475,13 +474,12 @@ const addTicketReducer: CaseReducer<
   let updatedState: ticketingState;
 
   if (cartItem) {
-    const ticketQuantity = validRange(qty + cartItem.qty);
     updatedState = {
       ...state,
       cart: updateCartItem(state.cart, {
         id,
         tickettypeId: tickettype.id,
-        qty: ticketQuantity,
+        qty: validRange(qty + cartItem.qty),
         payWhatPrice,
       }),
     };
