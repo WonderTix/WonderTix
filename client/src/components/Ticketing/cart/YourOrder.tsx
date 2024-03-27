@@ -6,6 +6,7 @@ import {
   selectCartSubtotal,
   selectCartTotal,
   selectDiscount,
+  selectCartFeeTotal,
 } from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router';
 import {selectDonation} from '../ticketingmanager/donationSlice';
@@ -35,6 +36,7 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
   const donation = useAppSelector(selectDonation);
   const subtotal = useAppSelector(selectCartSubtotal);
   const total = useAppSelector(selectCartTotal);
+  const feeTotal = useAppSelector(selectCartFeeTotal);
   const discount = useAppSelector(selectDiscount);
 
   const lineItems = cartItems.map((item) => (
@@ -45,12 +47,6 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
       className='bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'
     />
   ));
-
-  // Add a fee for each non-zero priced item
-  const feeTotal = cartItems.reduce((acc, item) =>
-    acc + ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0 ? item.fee : 0),
-    0,
-  );
 
   return (
     <aside className='flex flex-col justify-between h-full w-full'>

@@ -315,7 +315,7 @@ export const createCartItem = (data: {
       product_img_url: event.imageurl,
       payWhatPrice: payWhatPrice,
       payWhatCan: tickettype.name === 'Pay What You Can',
-      fee: parseFloat(tickettype.fee.replace(/[^0-9.-]+/g, '')) * qty,
+      fee: parseFloat(tickettype.fee.replace(/[^0-9.-]+/g, '')),
     };
 
     if (cartItem.payWhatCan) {
@@ -374,7 +374,6 @@ interface ItemData {
   id: number;
   tickettypeId: number;
   qty: number;
-  fee: number;
   payWhatPrice?: number;
 }
 
@@ -409,13 +408,13 @@ const isValidDiscount = (discount: DiscountItem, state: ticketingState) => {
  */
 const updateCartItem = (
   cart: CartItem[],
-  {id, tickettypeId, qty, fee, payWhatPrice}: ItemData,
+  {id, tickettypeId, qty, payWhatPrice}: ItemData,
 ) =>
   cart.map((item) => {
     if (item.product_id === id && item.typeID === tickettypeId) {
       return payWhatPrice && item.payWhatCan
-        ? {...item, qty, fee: fee * qty, payWhatPrice}
-        : {...item, qty, fee: fee * qty};
+        ? {...item, qty, payWhatPrice}
+        : {...item, qty};
     } else {
       return item;
     }
@@ -483,7 +482,6 @@ const addTicketReducer: CaseReducer<
         id,
         tickettypeId: tickettype.id,
         qty: ticketQuantity,
-        fee: parseFloat(tickettype.fee.replace(/[^0-9.-]+/g, '')),
         payWhatPrice,
       }),
     };
@@ -525,9 +523,6 @@ const editQtyReducer: CaseReducer<
 
   const ticket = state.tickets.data.byId[id];
   const validRange = getTicketQuantityRange(state, id, tickettypeId, ticket);
-  const ticketRestriction = state.ticketrestrictions.find(
-    byId(ticket.event_instance_id, tickettypeId),
-  );
 
   const updatedState = {
     ...state,
@@ -535,7 +530,6 @@ const editQtyReducer: CaseReducer<
       id,
       tickettypeId,
       qty: validRange(qty),
-      fee: ticketRestriction.fee,
     }),
   };
 
@@ -697,6 +691,15 @@ export const selectCartTotal = (state: RootState): number => {
     return subtotal;
   }
 };
+export const selectCartFeeTotal = (state: RootState): number =>
+  state.ticketing.cart.reduce((feeTot, item) => {
+    const effectivePrice = item.payWhatCan ? item.payWhatPrice : item.price;
+    if (effectivePrice !== 0) {
+      return feeTot + item.fee * item.qty;
+    } else {
+      return feeTot;
+    }
+  }, 0);
 export const selectCartItem = (
   state: RootState,
   event_instance_id: number,
