@@ -207,7 +207,7 @@ describe('Ticketing slice', () => {
   describe('reducers', () => {
     let init = ticketingInitState;
     it('addTicketReducer: new ticket', () => {
-      const payload = {id: 1, tickettype: ticketType, qty: 2, concessions: false};
+      const payload = {id: 1, tickettype: ticketType, qty: 2};
       const res = ticketReducer(init, addTicketToCart(payload));
       expect(res)
         .toEqual({
@@ -218,7 +218,7 @@ describe('Ticketing slice', () => {
     });
 
     it('addTicketReducer: exists in cart', () => {
-      const payload = {id: 1, tickettype: ticketType, qty: 1, concessions: false};
+      const payload = {id: 1, tickettype: ticketType, qty: 1};
       expect(ticketReducer(init, addTicketToCart(payload)))
         .toEqual({
           ...init,
