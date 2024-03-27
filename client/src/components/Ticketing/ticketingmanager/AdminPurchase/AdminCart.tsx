@@ -75,29 +75,19 @@ const AdminCart = ({
     return total + ticketPrice;
   }, 0);
 
-  const fee = cartItems.reduce((acc, item) => {
-    console.log(item);
-    return acc + item.fee;
-  }, 0);
+  const fee = cartItems.reduce((acc, item) => acc + item.fee, 0);
 
   const getDiscountTotal = () => {
     if (appliedDiscount) {
       if (appliedDiscount.amount && appliedDiscount.percent) {
-        return (
-          subtotal -
-          Math.max(
-            subtotal -
-              Math.min(
-                (+appliedDiscount.percent / 100) * subtotal,
-                appliedDiscount.amount,
-              ),
-            0,
-          )
+        return Math.min(
+          (+appliedDiscount.percent / 100) * subtotal,
+          appliedDiscount.amount,
         );
       } else if (appliedDiscount.amount) {
-        return subtotal - Math.max(subtotal - appliedDiscount.amount, 0);
+        return Math.min(subtotal, appliedDiscount.amount);
       } else {
-        return subtotal - (1 - +appliedDiscount.percent / 100) * subtotal;
+        return (+appliedDiscount.percent / 100) * subtotal;
       }
     } else {
       return 0;
