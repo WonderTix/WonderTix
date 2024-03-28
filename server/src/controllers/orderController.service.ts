@@ -80,7 +80,7 @@ export const readerWebhook = async (
     case 'payment_intent.succeeded':
       break;
   }
-}
+};
 
 export const updateRefundStatus = async (
   prisma: ExtendedPrismaClient,
@@ -129,7 +129,7 @@ export const updateRefundStatus = async (
         refund.refund_status = state.failed;
         break;
     }
-    
+
     await prisma.refunds.update({
       where: {
         id: refund.id,
@@ -146,6 +146,7 @@ export const orderFulfillment = async (
     eventInstanceQueries: any[],
     orderSubtotal: number,
     discountTotal: number,
+    feeTotal: number,
     orderItems: {
         orderTicketItems?: any[],
         donationItem?: any,
@@ -153,7 +154,7 @@ export const orderFulfillment = async (
     contactid?: number,
     checkoutSession?: string,
     discountId?: number,
-    paymentIntent?: string // need this for reader purchase
+    paymentIntent?: string, // need this for reader purchase
 ) => {
   const {orderTicketItems, donationItem} = orderItems;
   const result = await prisma.$transaction([
@@ -164,6 +165,7 @@ export const orderFulfillment = async (
         discountid_fk: discountId,
         ordersubtotal: orderSubtotal,
         discounttotal: discountTotal,
+        feetotal: feeTotal,
         ...(orderTicketItems && {orderticketitems: {create: orderTicketItems}}),
         ...(donationItem && {donation: {create: donationItem}}),
         payment_intent: paymentIntent,
@@ -214,7 +216,6 @@ export const updateCanceledOrder = async (
   );
 };
 
-
 interface LoadedOrderTicketItem extends orderticketitems {
     ticketitem: LoadedTicketItem | null;
 }
@@ -222,7 +223,6 @@ interface LoadedOrderTicketItem extends orderticketitems {
 interface LoadedTicketItem extends ticketitems {
     ticketrestriction: ticketrestrictions;
 }
-
 
 export const createRefundedOrder = async (
     prisma: ExtendedPrismaClient,
@@ -244,7 +244,6 @@ export const createRefundedOrder = async (
     amount: donations.amount,
     donationid_fk: donations.donationid,
   }]: [];
-
 
   await prisma.refunds.create({
     data: {
@@ -310,17 +309,14 @@ export const updateAvailableSeats = async (
   );
 };
 
-
-
 export const discoverReaders = async () => {
   const discoverResult = await stripe.terminal.readers.list();
-
   return discoverResult;
-}
+};
 
 export const abortPaymentIntent = async (
   prisma: ExtendedPrismaClient,
-  paymentIntentID: string
+  paymentIntentID: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
@@ -335,4 +331,4 @@ export const abortPaymentIntent = async (
   if (!intent) throw new Error('Unable to find payment Intent!');
 
   await updateCanceledOrder(prisma, order, true);
-}
+};

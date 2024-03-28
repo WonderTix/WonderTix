@@ -15,7 +15,6 @@ import {formatUSD} from '../ticketingmanager/RefundOrders/RefundOrders';
  * @param {Ticket} selectedTicket
  * @param {number} qty
  * @param {payWhatPrice?} payWhatPrice
- * @param {boolean} concessions
  * @param {TicketType} selectedTicketType
  * @param {boolean} showCalendar
  * @param {boolean} showTimes
@@ -28,7 +27,6 @@ interface TicketPickerState {
   selectedTicket?: Ticket;
   qty: number;
   payWhatPrice?: number;
-  concessions: boolean;
   selectedTicketType?: TicketType;
   showCalendar: boolean;
   showTimes: boolean;
@@ -45,7 +43,7 @@ export interface TicketType {
   id: number;
   name: string;
   price: string;
-  concessions: string;
+  fee: string;
 }
 
 /**
@@ -57,12 +55,11 @@ const initialState: TicketPickerState = {
   selectedTicket: undefined,
   qty: 0,
   payWhatPrice: null,
-  concessions: false,
   selectedTicketType: {
     id: -1,
     name: '',
     price: '',
-    concessions: '',
+    fee: '',
   },
   showCalendar: true,
   showTimes: false,
@@ -138,9 +135,6 @@ const TicketPickerReducer = (
     case 'change_qty': {
       return {...state, qty: action.payload};
     }
-    case 'toggle_concession': {
-      return {...state, concessions: !state.concessions};
-    }
     case 'change_pay_what': {
       return {...state, payWhatPrice: action.payload};
     }
@@ -211,7 +205,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   const [
     {
       qty,
-      concessions,
       prompt,
       payWhatPrice,
       selectedDate,
@@ -247,7 +240,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             id: type.tickettypeid_fk,
             name: type.description,
             price: formatUSD(type.price),
-            concessions: formatUSD(type.concessionprice),
+            fee: formatUSD(type.fee),
           }));
 
           setShowingTicketTypes(showingTypes);
@@ -301,7 +294,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           id: selectedTicket.event_instance_id,
           tickettype: selectedTicketType,
           qty,
-          concessions,
           payWhatPrice,
         }),
       );
@@ -454,24 +446,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
               )}
             </select>
           </div>
-          {/* FIXME: This was removed per #563 in prep for the initial site launch*/}
-          {/* <div className='flex gap-2 mt-3'>*/}
-          {/*  <input*/}
-          {/*    id='add-concessions-ticket'*/}
-          {/*    type='checkbox'*/}
-          {/*    disabled={!selectedTicket}*/}
-          {/*    checked={concessions}*/}
-          {/*    className='bg-zinc-800/50 disabled:opacity-30 disabled:cursor-not-allowed'*/}
-          {/*    onChange={() => dispatch({type: 'toggle_concession'})}*/}
-          {/*    name='concessions'*/}
-          {/*  />*/}
-          {/*  <label*/}
-          {/*    htmlFor='add-concessions-ticket'*/}
-          {/*    className='text-zinc-200 text-sm disabled:opacity-30 disabled:cursor-not-allowed'*/}
-          {/*  >*/}
-          {/*    Add concessions ticket*/}
-          {/*  </label>*/}
-          {/* </div>*/}
           <div
             className={
               selectedTicketType &&

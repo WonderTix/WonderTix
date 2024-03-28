@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {createSubmitFunction} from '../../../Event/components/ShowingUtils';
 import {useFetchSeasonTicketTypes} from '../utils/apiRequest';
-import {useState} from 'react';
 import {SeasonTicketTypeUpdateTable} from './SeasonTicketTypeUpdateTable';
 import {SeasonTicketTypeView} from './SeasonTicketTypeView';
 import {SubscriptionTypeContainerProps} from './SubscriptionTypeContainer';
@@ -57,9 +56,9 @@ export const SeasonTicketTypeContainer = (
       {edit ? (
         <SeasonTicketTypeUpdateTable
           options={ticketTypes.map(
-            ({id, tickettypeid, concessions, deprecated, ...rest}) => ({
+            ({id, tickettypeid, fee, deprecated, ...rest}) => ({
               ...rest,
-              concessionprice: concessions,
+              fee: fee,
               tickettypeid_fk: tickettypeid,
             }),
           )}
@@ -84,9 +83,9 @@ export const SeasonTicketTypeContainer = (
           seasonTicketTypes={seasonTicketTypes}
           sticky={showPopUp}
           ticketTypes={ticketTypes.map(
-            ({tickettypeid, concessions, deprecated, ...rest}) => ({
+            ({tickettypeid, fee, deprecated, ...rest}) => ({
               ...rest,
-              concessionprice: concessions,
+              fee: fee,
               tickettypeid_fk: tickettypeid,
             }),
           )}

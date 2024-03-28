@@ -3,6 +3,7 @@ import {getKeyValue} from '../../../Event/components/ShowingUtils';
 import {formatUSD} from '../../../RefundOrders/RefundOrders';
 import {FormButton} from '../../../Event/components/FormButton';
 import {EditIcon} from '../../../../Icons';
+
 interface SeasonTicketTypeViewProps {
   seasonTicketTypes: any[];
   sticky: boolean;
@@ -42,7 +43,7 @@ export const SeasonTicketTypeView = (props: SeasonTicketTypeViewProps) => {
                 Ticket Price
               </th>
               <th className='pl-1 py-2 border-r border-zinc-300 last:border-r-0 last:justify-center'>
-                Concession Price
+                Fee
               </th>
             </tr>
           </thead>
@@ -58,7 +59,7 @@ export const SeasonTicketTypeView = (props: SeasonTicketTypeViewProps) => {
                 </td>
                 <td className='px-2 text-right'>{formatUSD(+type.price)}</td>
                 <td className='px-2 text-right'>
-                  {formatUSD(+type.concessionprice)}
+                  {formatUSD(+type.fee)}
                 </td>
               </tr>
             ))}

@@ -71,9 +71,12 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
         data-testid='showing-card'
       >
         <div className='flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%] shadow-xl'>
-          <LineItem label='Showing ID' information={showing.eventinstanceid}/>
-          <LineItem label='Date' information={format(showingDate, 'eee, MMM dd yyyy')}/>
-          <LineItem label='Time' information={format(showingDate, 'h:mm a')}/>
+          <LineItem label='Showing ID' information={showing.eventinstanceid} />
+          <LineItem
+            label='Date'
+            information={format(showingDate, 'eee, MMM dd yyyy')}
+          />
+          <LineItem label='Time' information={format(showingDate, 'h:mm a')} />
           {showing.detail && showing.detail !== '' && (
             <LineItem
               label='Detail'
@@ -84,8 +87,11 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
               ) => set(current.includes('truncate') ? '' : 'truncate')}
             />
           )}
-            <LineItem label='Total Tickets' information={showing.totalseats} />
-            <LineItem label='Available Tickets' information={showing.availableseats}/>
+          <LineItem label='Total Tickets' information={showing.totalseats} />
+          <LineItem
+            label='Available Tickets'
+            information={showing.availableseats}
+          />
           <div className='flex flex-row justify-between min-[768px]:grid min-[768px]:grid-cols-12 text-zinc-800'>
             <p className='text-sm font-semibold whitespace-nowrap  min-[768px]:col-span-6'>
               Preview
@@ -110,9 +116,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
                   Admission Type
                 </th>
                 <th className='px-2 py-1 border border-white'>Ticket Price</th>
-                <th className='px-2 py-1 border border-white'>
-                  Concession Price
-                </th>
+                <th className='px-2 py-1 border border-white'>Fee</th>
                 <th className='px-2 py-1 border border-white'>Quantity</th>
                 <th className='px-2 py-1 border border-white'>Sold</th>
               </tr>
@@ -127,9 +131,7 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
                     >
                       <td className='px-2'>{type.description}</td>
                       <td className='px-2'>{formatUSD.format(type.price)}</td>
-                      <td className='px-2'>
-                        {formatUSD.format(type.concessionprice)}
-                      </td>
+                      <td className='px-2'>{formatUSD.format(type.fee)}</td>
                       <td className='px-2'>{type.ticketlimit}</td>
                       <td className='px-2'>{type.ticketssold}</td>
                     </tr>
@@ -148,16 +150,18 @@ export const EventShowingView = (props: EventInstanceViewProps) => {
             <EditIcon className='h-6 w-6' />
           </FormButton>
           <FormButton
-              title='Clone'
-              testID={`${showing.eventinstanceid}-showing-clone-button`}
-              className='flex justify-center items-center bg-white hover:bg-gray-50 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
-              disabled={editing || showPopUp}
-              onClick={() => {
-                setEditing((editing) => !editing);
-                return submitClone(cloneShowing(showing));
-              }}
+            title='Clone'
+            testID={`${showing.eventinstanceid}-showing-clone-button`}
+            className='flex justify-center items-center bg-white hover:bg-gray-50 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
+            disabled={editing || showPopUp}
+            onClick={() => {
+              setEditing((editing) => !editing);
+              return submitClone(cloneShowing(showing));
+            }}
           >
-            <CloneIcon className={`h-6 w-6 ${!editing?'fill-blue-500':''}`}/>
+            <CloneIcon
+              className={`h-6 w-6 ${!editing ? 'fill-blue-500' : ''}`}
+            />
           </FormButton>
           <FormDeleteButton
             onDelete={onDelete}

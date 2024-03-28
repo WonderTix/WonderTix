@@ -12,7 +12,7 @@
  *
  * @param {number} ticket_price - price of 1 ticket for the show
  *
- * @param {number} concession_price -
+ * @param {number} fee -
  *
  * @param {number} totalseats - total seats for the show
  *
@@ -26,7 +26,7 @@ export default interface Ticket {
   payWhatYouCan?: number;
   date: Date;
   ticket_price: number;
-  concession_price: number;
+  fee: number;
   totalseats?: number;
   availableseats: number;
 }

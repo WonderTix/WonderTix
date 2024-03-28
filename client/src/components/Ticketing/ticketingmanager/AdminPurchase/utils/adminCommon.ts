@@ -9,6 +9,7 @@ export type EventRow = {
   ticketTypes?: string;
   ticketRestrictionInfo?: ticketTypeRestriction[];
   price?: number;
+  fee?: number;
   complimentary?: boolean;
   availableseats?: number;
   seatsForType?: number;
@@ -21,7 +22,7 @@ export interface ticketTypeRestriction {
   id: number;
   eventinstanceid: number;
   tickettypeid: number;
-  concessionprice: number;
+  fee: number;
   price: string;
   ticketlimit: number;
   ticketssold: number;
@@ -32,7 +33,7 @@ export const initialTicketTypeRestriction: ticketTypeRestriction = {
   id: 0,
   eventinstanceid: 0,
   tickettypeid: 0,
-  concessionprice: 0,
+  fee: 0,
   price: '',
   ticketlimit: 0,
   ticketssold: 0,

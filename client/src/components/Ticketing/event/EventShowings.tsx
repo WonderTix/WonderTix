@@ -100,7 +100,7 @@ const EventShowings = (): ReactElement => {
             <div className='my-3'>
               <h1
                 data-testid='event-title'
-                className='flex gap-3 items-baseline text-white text-4xl font-bold'
+                className='flex flex-col-reverse tab:flex-row gap-3 items-baseline text-white text-4xl font-bold'
               >
                 {eventData.soldOut && (
                   <Label className='text-3xl' color='slate'>

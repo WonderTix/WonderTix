@@ -141,7 +141,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                       headings={[
                         'Admission Type',
                         'Ticket Price',
-                        'Concession Price',
+                        'Fee',
                         'Quantity',
                       ]}
                       getOption={getInstanceTicketType}

@@ -2,13 +2,13 @@ export type TicketType = {
   id?: number;
   description: string;
   price: number;
-  concessions: number;
+  fee: number;
 };
 
 export const emptyTicketType: TicketType = {
   description: '',
   price: 0,
-  concessions: 0,
+  fee: 0,
 };
 
 export const createTicketType = async (
@@ -28,7 +28,7 @@ export const createTicketType = async (
         body: JSON.stringify({
           description: ticketType.description,
           price: ticketType.price,
-          concessions: ticketType.concessions,
+          fee: ticketType.fee,
         }),
       },
     );
@@ -75,7 +75,7 @@ export const editTicketType = async (
         body: JSON.stringify({
           description: ticketType.description,
           price: ticketType.price,
-          concessions: ticketType.concessions,
+          fee: ticketType.fee,
         }),
       },
     );

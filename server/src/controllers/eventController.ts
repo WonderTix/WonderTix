@@ -6,6 +6,7 @@ import {
   createStripeCheckoutSession,
   expireCheckoutSession,
   getDonationItem,
+  getFeeItem,
   getTicketItems,
   createStripePaymentIntent,
   requestStripeReaderPayment,
@@ -84,6 +85,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
     } = await getTicketItems(cartItems, prisma);
 
@@ -93,24 +95,35 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       donationTotal,
     } = getDonationItem(donation);
 
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+    const {feeCartRow} = getFeeItem(feeTotal);
 
-    if (ticketTotal + donationTotal - discountAmount > .49) {
+    let cartRows = ticketCartRows;
+    if (donationCartRow) {
+      cartRows = cartRows.concat([donationCartRow]);
+    }
+    if (feeCartRow) {
+      cartRows = cartRows.concat([feeCartRow]);
+    }
+
+    const discountAmount = discount.code != '' ? getDiscountAmount(discount, ticketTotal) : 0;
+
+    if (ticketTotal + feeTotal + donationTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
           contactid,
           formData.email,
-          donationCartRow? ticketCartRows.concat([donationCartRow]): ticketCartRows,
+          cartRows,
           {...discount, amountOff: discountAmount},
       );
-    } else if (ticketTotal + donationTotal - discountAmount > 0) {
+    } else if (ticketTotal + feeTotal + donationTotal - discountAmount > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
     order = await orderFulfillment(
         prisma,
         eventInstanceQueries,
-        ticketTotal+donationTotal,
+        ticketTotal + donationTotal,
         discountAmount,
+        feeTotal,
         {
           orderTicketItems,
           donationItem,
@@ -878,7 +891,6 @@ eventController.use(checkScopes);
  *     tags:
  *     - New Event API
  */
-
 eventController.post('/reader-intent', async (req: Request, res: Response) => {
   const {cartItems} = req.body;
   let paymentIntentID = '';
@@ -892,11 +904,12 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
       ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
     } = await getTicketItems(cartItems, prisma);
 
     if (ticketTotal > 0) {
-      const {id, secret} = await createStripePaymentIntent(ticketTotal * 100);
+      const {id, secret} = await createStripePaymentIntent((ticketTotal + feeTotal) * 100);
       paymentIntentID = id;
       clientSecret = secret;
     }
@@ -922,7 +935,7 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
 
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
   const {cartItems, paymentIntentID, readerID, discount} = req.body;
-  let order :orders | null = null;
+  let order: orders | null = null;
   try {
     if (!cartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
@@ -936,6 +949,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
     } = await getTicketItems(cartItems, prisma);
 
@@ -949,6 +963,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         eventInstanceQueries,
         ticketTotal,
         discountAmount,
+        feeTotal,
         {
           orderTicketItems,
         },
