@@ -13,10 +13,10 @@ const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
 
 export const ticketingWebhook = async (
-    prisma: ExtendedPrismaClient,
-    eventType: string,
-    paymentIntent: string,
-    sessionID: string,
+  prisma: ExtendedPrismaClient,
+  eventType: string,
+  paymentIntent: string,
+  sessionID: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
@@ -129,7 +129,7 @@ export const updateRefundStatus = async (
         refund.refund_status = state.failed;
         break;
     }
-    
+
     await prisma.refunds.update({
       where: {
         id: refund.id,
@@ -315,8 +315,8 @@ export const discoverReaders = async () => {
 };
 
 export const abortPaymentIntent = async (
-    prisma: ExtendedPrismaClient,
-    paymentIntentID: string,
+  prisma: ExtendedPrismaClient,
+  paymentIntentID: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
