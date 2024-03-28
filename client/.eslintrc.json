@@ -27,7 +27,6 @@
     "valid-jsdoc": "off",
     "operator-linebreak": "off",
     "indent": "off",
-    "quotes": [2, "single", {"avoidEscape": true}],
 
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/ban-ts-comment": "off",
