@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {orders, Prisma} from '@prisma/client';
-import {InvalidInputError} from './eventInstanceController.service';
+import {InvalidInputError, soldTicketItemsFilter} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
   expireCheckoutSession,
@@ -18,11 +18,10 @@ import {
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
-const prisma = extendPrismaClient();
-
 import multer from 'multer';
 import {Storage} from '@google-cloud/storage';
 
+const prisma = extendPrismaClient();
 const upload = multer();
 
 export const eventController = Router();
@@ -78,8 +77,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       await validateDiscount(discount, ticketCartItems, prisma);
     }
 
-    const {contactid} = await updateContact(formData, prisma);
-
     const {
       ticketCartRows,
       orderTicketItems,
@@ -104,7 +101,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 
     if (orderSubTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
-          contactid,
           formData.email,
           ticketCartRows.concat((donationCartRow? [donationCartRow]: []).concat(subscriptionCartRows)),
           {...discount, amountOff: discountAmount},
@@ -112,6 +108,8 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     } else if (orderSubTotal - discountAmount > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
+
+    const {contactid} = await updateContact(formData, prisma);
 
     order = await orderFulfillment(
         prisma,
@@ -347,11 +345,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
               },
               include: {
                 ticketitems: {
-                  where: {
-                    orderticketitem: {
-                      refund: null,
-                    },
-                  },
+                  ...soldTicketItemsFilter,
                 },
               },
             },
@@ -359,6 +353,7 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         },
       },
     });
+
     return res.json(events
         .map((event) => ({
           id: event.eventid,
@@ -1369,15 +1364,29 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         ticketrestriction: {
           eventinstanceid_fk: +instanceId,
         },
-        orderticketitem: {
-          refund: null,
-          order: {
-            contactid_fk: +contactId,
+        OR: [
+          {
+            orderticketitem: {
+              refund: null,
+              order: {
+                contactid_fk: +contactId,
+              },
+            },
           },
-        },
+          {
+            subscriptionticketitem: {
+              subscription: {
+                refund: null,
+                order: {
+                  contactid_fk: +contactId,
+                },
+              },
+            },
+          },
+        ],
       },
       data: {
-        redeemed: isCheckedIn? new Date(): null,
+        redeemed: isCheckedIn ? new Date() : null,
       },
     });
 

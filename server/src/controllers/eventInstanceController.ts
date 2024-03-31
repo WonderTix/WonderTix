@@ -5,6 +5,7 @@ import {eventInstanceRequest} from '../interfaces/Event';
 import {
   getDate,
   InvalidInputError,
+  soldTicketItemsFilter,
   updateShowing,
   validateDateAndTime,
 } from './eventInstanceController.service';
@@ -79,11 +80,7 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
           },
           include: {
             ticketitems: {
-              where: {
-                orderticketitem: {
-                  refund: null,
-                },
-              },
+              ...soldTicketItemsFilter,
             },
           },
         },
@@ -363,16 +360,13 @@ eventInstanceController.get(
               include: {
                 tickettype: true,
                 ticketitems: {
-                  where: {
-                    orderticketitem: {
-                      refund: null,
-                    },
-                  },
+                  ...soldTicketItemsFilter,
                 },
               },
             },
           },
         });
+
         return res.send(eventInstances.map((instance) => ({
           ...instance,
           ticketrestrictions: instance.ticketrestrictions.map((restriction) => ({
@@ -513,20 +507,26 @@ eventInstanceController.get('/doorlist/:id',
               include: {
                 tickettype: true,
                 ticketitems: {
-                  where: {
-                    orderticketitem: {
-                      refund: null,
-                      order: {
-                        payment_intent: {not: null},
-                      },
-                    },
-                  },
+                  ...soldTicketItemsFilter,
                   include: {
                     orderticketitem: {
                       include: {
                         order: {
                           include: {
                             contacts: true,
+                          },
+                        },
+                      },
+                    },
+                    subscriptionticketitem: {
+                      include: {
+                        subscription: {
+                          include: {
+                            order: {
+                              include: {
+                                contacts: true,
+                              },
+                            },
                           },
                         },
                       },
@@ -545,9 +545,9 @@ eventInstanceController.get('/doorlist/:id',
         const doorlist = new Map();
         const forEachTicket = (description: string, redeemed: Date | null, contact?: contacts | null) => {
           if (!contact) return;
-          let row = doorlist.get(contact.contactid);
+          const row = doorlist.get(contact.contactid);
           if (!row) {
-            row = {
+            doorlist.set(contact.contactid, {
               firstName: contact.firstname,
               lastName: contact.lastname,
               email: contact.email,
@@ -556,19 +556,24 @@ eventInstanceController.get('/doorlist/:id',
               donorBadge: contact.donorbadge,
               accommodations: contact.seatingaccom,
               address: contact.address,
-              arrived: true,
-              num_tickets: {},
-            };
-            doorlist.set(contact.contactid, row);
+              arrived: redeemed !== null,
+              num_tickets: {
+                [description]: 1,
+              },
+            });
+          } else {
+            row.arrived = row.arrived && (redeemed !== null);
+            row.num_tickets[description] = (row.num_tickets[description] ?? 0) + 1;
           }
-          row.arrived = row.arrived && (redeemed !== null);
-
-          row.num_tickets[description]=(row.num_tickets[description] ?? 0)+1;
         };
 
         eventInstance.ticketrestrictions.forEach((res) => {
           res.ticketitems.forEach((ticket) =>
-            forEachTicket(res.tickettype.description, ticket.redeemed, ticket.orderticketitem?.order.contacts),
+            forEachTicket(
+                res.tickettype.description,
+                ticket.redeemed,
+                ticket.orderticketitem?.order.contacts ?? ticket.subscriptionticketitem?.subscription.order.contacts,
+            ),
           );
         });
 
@@ -788,9 +793,13 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
           ...eventInstanceToUpdate,
           ticketrestrictions: eventInstanceToUpdate
               .ticketrestrictions
-              .map((res) => ({...res, availabletickets: res.ticketlimit - res.ticketitems.filter((ticket) => !ticket.orderticketitem?.refund).length}))},
+              .map((res) => ({
+                ...res,
+                availabletickets: res.ticketlimit - res.ticketitems.filter((ticket) => ticket.subscriptionticketitemid_fk || !ticket.orderticketitem?.refund).length,
+              }))},
         requestEventInstance,
     );
+
     return res.status(204).send('Showing successfully updated');
   } catch (error) {
     console.error(error);

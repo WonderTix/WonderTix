@@ -193,3 +193,20 @@ export const updateShowing = async (
     },
   });
 };
+
+export const soldTicketItemsFilter = {
+  where: {
+    OR: [
+      {
+        orderticketitem: {
+          refund: null,
+        },
+      },
+      {
+        subscriptionticketitemid_fk: {
+          not: null,
+        },
+      },
+    ],
+  },
+};

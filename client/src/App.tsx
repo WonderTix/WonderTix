@@ -40,6 +40,7 @@ import {EventProvider} from './components/Ticketing/ticketingmanager/Event/compo
 import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
 import ReaderPurchasePage from './components/Ticketing/ticketingmanager/AdminPurchase/ReaderPurchasePage';
 import {SubscriptionMain} from './components/Ticketing/mainpage/SubscriptionPurchasing/SubscriptionMain';
+import {SubscriptionRedemptionMain} from './components/Ticketing/ticketingmanager/SubscriptionRedemption/SubscriptionRedemptionMain';
 
 const App = () => {
   return (
@@ -170,6 +171,10 @@ const App = () => {
         <Route
           path='/ticketing/refund'
           element={<ProtectedRoute component={RefundOrdersMain} />}
+        />
+        <Route
+          path='/ticketing/subscription/redemption'
+          element={<ProtectedRoute component={SubscriptionRedemptionMain} />}
         />
         <Route path='*' element={<PageNotFound />} />
       </Routes>

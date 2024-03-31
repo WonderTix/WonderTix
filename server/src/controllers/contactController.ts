@@ -445,11 +445,6 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                     season: true,
                   },
                 },
-                subscriptionticketitems: {
-                  include: {
-                    ticketitem: true,
-                  },
-                },
               },
             },
             donation: {
