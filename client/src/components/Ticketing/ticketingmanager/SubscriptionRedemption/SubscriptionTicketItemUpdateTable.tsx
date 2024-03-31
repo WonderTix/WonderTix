@@ -145,7 +145,7 @@ export const SubscriptionTicketItemUpdateTable = (
                             ),
                       )
                     }
-                    optionsInit={(values) =>
+                    optionsInit={() =>
                       events.map((event) => ({...event}))
                     }
                     fieldName='subscriptionticketitems'

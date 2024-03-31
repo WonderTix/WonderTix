@@ -170,7 +170,7 @@ export const getSubscriptionTicketItemRow = (eventRestriction: boolean, currentE
   // eslint-disable-next-line react/display-name
   return (props: OptionRowProps) => {
     const {options, setOptions, removeOption, field} = props;
-    const {setFieldValue, values} = useFormikContext();
+    const {setFieldValue} = useFormikContext();
 
     const event = options.find(
       (event) => event.eventid === field.value.eventid,
