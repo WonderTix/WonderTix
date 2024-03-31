@@ -219,7 +219,7 @@ export const getDate = (date: number, IsoTime?: string): Date => {
   const day = date % 100;
   const toReturn = new Date(year, month - 1, day);
   if (IsoTime) {
-    const time = new Date(IsoTime);
+    const time = new Date(IsoTime.split('.')[0]);
     toReturn.setHours(time.getHours(), time.getMinutes());
   }
   return toReturn;

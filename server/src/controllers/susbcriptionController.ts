@@ -425,7 +425,7 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
         } else if (!update) {
           throw new InvalidInputError(
               422,
-              `Can not delete subscription type for switch subscriptions have been sold`,
+              `Can not delete a subscription type for which subscriptions have already been sold`,
           );
         }
 
