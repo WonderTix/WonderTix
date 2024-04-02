@@ -1,13 +1,10 @@
 /* eslint-disable require-jsdoc */
 import {test, expect} from '@playwright/test';
-import {MainPage} from '../pages/mainPage';
 import {EventsPage} from '../pages/EventsPage';
 import {AdminPurchasePage} from '../pages/AdminPurchasePage';
 import {EVENT_INFO_1} from '../testData/EventInfo';
 import {SHOWING_INFO_2} from '../testData/ShowingInfo';
 import {JANE_DOE} from '../testData/CustomerInfo';
-
-const testEmail = 'test987661234@wondertix.com';
 
 test('Open admin purchase page', async ({page}) => {
   const adminPage = new AdminPurchasePage(page);
@@ -40,5 +37,5 @@ test('Purchase ticket for customer as admin', async ({page}) => {
 });
 
 function delay(ms: number) {
-  return new Promise( (resolve) => setTimeout(resolve, ms) );
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

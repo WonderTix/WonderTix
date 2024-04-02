@@ -82,9 +82,9 @@ export const JANE_DOE: CustomerInfo = {
   getConcession: false,
   donationAmount: '0',
   getNewsletter: false,
-  heardAboutFrom: 'Referral',
+  heardAboutFrom: '',
   accommodations: Accommodations.Wheelchair,
-  comments: 'I look forward to this show',
+  comments: '',
 };
 
 export const JOHN_DOE: CustomerInfo = {
