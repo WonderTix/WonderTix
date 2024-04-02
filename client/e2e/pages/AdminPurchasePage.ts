@@ -1,5 +1,6 @@
 /* eslint-disable require-jsdoc */
 import test, {type Locator, type Page, expect} from '@playwright/test';
+import {CustomerInfo} from '../testData/CustomerInfo';
 
 /*
  Since many locators' names are created while a specific test is being written, some names are ill-considered,
@@ -145,7 +146,6 @@ export class AdminPurchasePage {
 
   async dynamicDropDownSelectorTime(eventName: string) {
     const comboboxSelector = 'select';
-
     const comboboxes = await this.page.$$(comboboxSelector);
 
     if (comboboxes.length > 0) {
@@ -177,13 +177,13 @@ export class AdminPurchasePage {
    *
    * @param {string} eventName
    * @param {string} eventTime
-   * @param {string} testEmail
+   * @param {CustomerInfo} customer
    * @returns {Promise<void>}
    */
   async purchaseTicket(
     eventName: string,
     eventTime: string,
-    testEmail: string,
+    customer: CustomerInfo,
   ): Promise<void> {
     await this.gotoTicketing(); // ticketing url
     await this.purchaseTicketButton.click();
@@ -195,33 +195,13 @@ export class AdminPurchasePage {
     await delay(500);
     await this.checkoutButton.click();
 
-    await this.firstName.click();
-    await this.firstName.fill('Betty');
-    await this.lastName.click();
-    await this.lastName.fill('Wilson');
-    await this.email.click();
-    await this.email.fill('test@wondertix.com');
-    await this.streetAddress.click();
-    await this.streetAddress.fill('1111 42nd St');
-    await this.postalCode.click();
-    await this.postalCode.fill('97200');
-    await this.country.click();
-    await this.country.fill('United States');
-    await this.phone.click();
-    await this.phone.fill('5031112222');
-    await this.howFoundOut.click();
-    await this.howFoundOut.fill('Referral');
-    await this.seatingAccomodations.selectOption('Wheel Chair');
-    await this.comments.click();
-    await this.comments.fill('I look forward to this movie.');
-    await this.donationAmount.click();
-    await this.donationAmount.fill('5.00');
+    await this.fillCustomerInfo(customer);
     await this.backNext.click();
     await this.nextPageButton.click();
 
     await delay(2000);
     await this.email2.click();
-    await this.email2.fill(testEmail);
+    await this.email2.fill(customer.email);
     await delay(3000);
     if (await this.popupWindow.isVisible()) {
       // Scenario for verification pop-up
@@ -244,16 +224,31 @@ export class AdminPurchasePage {
       await this.creditCardCVC.click();
       await this.creditCardCVC.fill('487');
       await this.creditCardName.click();
-      await this.creditCardName.fill('Betty Smith Wilson');
+      await this.creditCardName.fill(customer.fullName);
       await this.creditCardZip.click();
-      await this.creditCardZip.fill('97200');
+      await this.creditCardZip.fill(customer.postCode);
       await this.secureSave.check();
       await this.payPhoneNum.click();
-      await this.payPhoneNum.fill('(503) 424-2424');
+      await this.payPhoneNum.fill(customer.phoneNumber);
       await this.paySubmit.click();
       await this.page.goto('https://localhost:3000/success');
       expect(await this.purchaseSuccessful.isVisible());
     }
+  }
+  async fillCustomerInfo(
+    customer: CustomerInfo,
+  ): Promise<void> {
+    await this.firstName.click();
+    await this.firstName.fill(customer.firstName);
+    await this.lastName.click();
+    await this.lastName.fill(customer.lastName);
+    await this.email.click();
+    await this.email.fill(customer.email);
+    await this.phone.click();
+    await this.phone.fill(customer.phoneNumber);
+    await this.seatingAccomodations.selectOption(customer.accommodations);
+    await this.donationAmount.click();
+    await this.donationAmount.fill(customer.donationAmount);
   }
 }
 
