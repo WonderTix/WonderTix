@@ -172,7 +172,7 @@ seasonTicketTypePriceDefaultController.use(checkScopes);
  *           schema:
  *             $ref: '#/components/requestBodies/SeasonTicketTypePriceDefault'
  *           examples:
- *             Example 1 - Create two ticket type prices to season:
+ *             Example 1 - Add two ticket type prices to season:
  *              value:
  *                - tickettypeid_fk: 1
  *                  price: 10.00
@@ -216,7 +216,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
   try {
     const {seasonid} = req.params;
     const toUpdate: Map<number, SeasonTicketTypePriceDefaultRequestItem> = new Map(
-        req.body?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk,
+        req.body.ticketTypes?.map((item: SeasonTicketTypePriceDefaultRequestItem) => [+item.tickettypeid_fk,
           {
             ...item,
             price: +item.price,
@@ -225,8 +225,8 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
     );
     const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
-        eventinstances: {
-          events: {
+        eventinstance: {
+          event: {
             seasonid_fk: +seasonid,
           },
         },
@@ -305,8 +305,8 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           }), prisma.ticketrestrictions.updateMany({
             where: {
               tickettypeid_fk: +tickettypeid_fk,
-              eventinstances: {
-                events: {
+              eventinstance: {
+                event: {
                   seasonid_fk: +seasonid,
                 },
               },

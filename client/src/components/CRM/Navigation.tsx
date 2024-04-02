@@ -1,5 +1,5 @@
 /* eslint-disable operator-linebreak */
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import logo from '../../Logo/2011_Logo_white.png';
 import '../../Logo/logo.css';
 import {useAuth0} from '@auth0/auth0-react';
@@ -20,6 +20,21 @@ const Navigation = (): React.ReactElement => {
   const {picture} = user;
   const {name} = user;
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
+
+  const useOutsideClick = (ref, callback) => {
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (ref.current && !ref.current.contains(event.target)) {
+          callback();
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [ref, callback]);
+  };
+
+  useOutsideClick(dropdownRef, () => setProfile(false));
   return (
     <div className="w-full h-full bg-gray-100">
       <div className="flex flex-no-wrap">
@@ -429,7 +444,7 @@ const Navigation = (): React.ReactElement => {
               <h2 className="flex items-center text-lg text-zinc-500 font-bold ml-12 mr-6">
                 Welcome to WonderTix CRM
               </h2>
-              <div className='relative'>
+              <div className='relative' ref={dropdownRef}>
                 <button
                   className="flex items-center text-left cursor-pointer px-4"
                   onClick={() => setProfile(!profile)}

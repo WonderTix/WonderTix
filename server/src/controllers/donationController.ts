@@ -2,10 +2,7 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {JsonObject} from "swagger-ui-express";
-
 const stripe = require('stripe')(process.env.PRIVATE_STRIPE_KEY);
-const endpointSecret = process.env.PRIVATE_STRIPE_WEBHOOK;
 const prisma = extendPrismaClient();
 
 export const donationController = Router();
@@ -14,79 +11,79 @@ export const donationController = Router();
  * Donation checkout through Stripe
  */
 donationController.post('/checkout', async (req: Request, res: Response) => {
-    const customer = await prisma.contacts.findFirst({
-        where: {
-            email: req.body.formData.email,
-        },
+  const customer = await prisma.contacts.findFirst({
+    where: {
+      email: req.body.formData.email,
+    },
+  });
+  let customerID: number;
+  if (!customer) {
+    const newCustomer = await prisma.contacts.create({
+      data: {
+        firstname: req.body.formData.firstName,
+        lastname: req.body.formData.lastName,
+        email: req.body.formData.email,
+        address: req.body.formData.streetAddress + ' ' + req.body.formData.postalCode,
+        phone: req.body.formData.phone,
+        seatingaccom: req.body.formData.seatingAcc,
+        newsletter: req.body.formData.newsletter,
+      },
+      select: {
+        contactid: true,
+      },
     });
-    let customerID: number;
-    if (!customer) {
-        const newCustomer = await prisma.contacts.create({
-            data: {
-                firstname: req.body.formData.firstName,
-                lastname: req.body.formData.lastName,
-                email: req.body.formData.email,
-                address: req.body.formData.streetAddress + ' ' + req.body.formData.postalCode,
-                phone: req.body.formData.phone,
-                seatingaccom: req.body.formData.seatingAcc,
-                newsletter: req.body.formData.newsletter,
-            },
-            select: {
-                contactid: true,
-            },
-        });
-        customerID = newCustomer.contactid;
-    } else {
-        const updatedCustomer = await prisma.contacts.update({
-            where: {
-                contactid: customer.contactid,
-            },
-            data: {
-                firstname: req.body.formData.firstName,
-                lastname: req.body.formData.lastName,
-                email: req.body.formData.email,
-                address: req.body.formData.streetAddress + ' ' + req.body.formData.postalCode,
-                phone: req.body.formData.phone,
-                seatingaccom: req.body.formData.seatingAcc,
-                newsletter: req.body.formData.newsletter,
-            },
-            select: {
-                contactid: true,
-            },
-        });
-        customerID = updatedCustomer.contactid;
-    }
-    const lineItems = [
-        {
-            price_data: {
-                unit_amount: req.body.donation * 100,
-                currency: 'usd',
-                product_data: {
-                    name: 'Donation',
-                },
-            },
-            quantity: 1,
-        },
-    ]
-    const expire = Math.round((new Date().getTime() + 1799990) / 1000);
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        expires_at: expire,
-        line_items: lineItems,
-        mode: 'payment',
-        success_url: `${process.env.FRONTEND_URL}/success`,
-        cancel_url: `${process.env.FRONTEND_URL}`,
-        metadata: {
-            sessionType: '__donation',
-            contactID: Number(customerID),
-            donation: req.body.donation,
-            anonymous: req.body.formData.anonymous,
-            comments: req.body.formData.comments,
-            firstName: req.body.formData.firstName,
-            lastName: req.body.formData.lastName,
-        },
+    customerID = newCustomer.contactid;
+  } else {
+    const updatedCustomer = await prisma.contacts.update({
+      where: {
+        contactid: customer.contactid,
+      },
+      data: {
+        firstname: req.body.formData.firstName,
+        lastname: req.body.formData.lastName,
+        email: req.body.formData.email,
+        address: req.body.formData.streetAddress + ' ' + req.body.formData.postalCode,
+        phone: req.body.formData.phone,
+        seatingaccom: req.body.formData.seatingAcc,
+        newsletter: req.body.formData.newsletter,
+      },
+      select: {
+        contactid: true,
+      },
     });
-    res.status(200).json({id: session.id});
+    customerID = updatedCustomer.contactid;
+  }
+  const lineItems = [
+    {
+      price_data: {
+        unit_amount: req.body.donation * 100,
+        currency: 'usd',
+        product_data: {
+          name: 'Donation',
+        },
+      },
+      quantity: 1,
+    },
+  ];
+  const expire = Math.round((new Date().getTime() + 1799990) / 1000);
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    expires_at: expire,
+    line_items: lineItems,
+    mode: 'payment',
+    success_url: `${process.env.FRONTEND_URL}/success`,
+    cancel_url: `${process.env.FRONTEND_URL}`,
+    metadata: {
+      sessionType: '__donation',
+      contactID: Number(customerID),
+      donation: req.body.donation,
+      anonymous: req.body.formData.anonymous,
+      comments: req.body.formData.comments,
+      firstName: req.body.formData.firstName,
+      lastName: req.body.formData.lastName,
+    },
+  });
+  res.status(200).json({id: session.id});
 });
 
 donationController.use(checkJwt);
@@ -269,27 +266,25 @@ donationController.get('/search', async (req: Request, res: Response) => {
     contactId,
     isAnonymous,
     amount,
-    name,
     // frequency,
     comments,
     // paymentIntent,
     // refundIntent,
-    donationDate,
   } = req.query;
 
   try {
     const donations = await prisma.donations.findMany({
       where: {
         donationid: donationId ? parseInt(donationId as string) : undefined,
-        contactid_fk: contactId ? parseInt(contactId as string) : undefined,
-        isanonymous: isAnonymous ? isAnonymous === 'true' : undefined,
+        order: {
+          contactid_fk: contactId? Number(contactId): undefined,
+        },
+        anonymous: isAnonymous ? isAnonymous === 'true' : undefined,
         amount: amount ? parseFloat(amount as string) : undefined,
-        donorname: name ? name as string : undefined,
         // frequency: frequency ? frequency as string : undefined,
         comments: comments ? comments as string : undefined,
         // payment_intent: paymentIntent ? paymentIntent as string : undefined,
         // refund_intent: refundIntent ? refundIntent as string : undefined,
-        donationdate: donationDate ? parseInt(donationDate as string) : undefined,
       },
     });
 
@@ -364,184 +359,4 @@ donationController.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-/**
- * @swagger
- *   delete:
- *     summary: delete a donation by ID
- *     description: delete a single donation based on the provided id
- *     parameters:
- *       - in: path
- *         name: donationId
- *         schema:
- *           type: integer
- *         required: true
- *         description: The donation id
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: The donation was deleted
- *       404:
- *         description: The donation was not found
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- *     tags:
- *     - Donation
- */
-donationController.delete('/:id', async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const donationExists = await prisma.donations.findUnique({
-      where: {
-        donationid: Number(id),
-      },
-    });
-    if (!donationExists) {
-      res.status(404).json({error: 'donation not found'});
-
-      return;
-    }
-    await prisma.donations.delete({
-      where: {
-        donationid: Number(id),
-      },
-    });
-    res.status(200).json({success: 'donation deleted'});
-
-    return;
-  } catch (error) {
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
-
-/**
- * @swagger
- * /2/donation/{id}:
- *   put:
- *     summary: update a donation
- *     tags:
- *     - Donation
- *     parameters:
- *     - $ref: '#/components/parameters/id'
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       description: Updated donation information
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/requestBodies/Donation'
- *     responses:
- *       204:
- *         description: donation updated successfully.
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-donationController.put('/:id', async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const donation = prisma.donations.update({
-      where: {
-        donationid: Number(id),
-      },
-      data: {
-        contactid_fk: req.body.contact,
-        isanonymous: req.body.isanonymous,
-        amount: req.body.amount,
-        donorname: req.body.donorname,
-        frequency: req.body.frequency,
-        comments: req.body.comments,
-        payment_intent: req.body.payment_intent,
-        refund_intent: req.body.refund_intent,
-        donationdate: req.body.donationdate,
-      },
-    });
-    res.status(204).json();
-
-    return;
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
-
-/**
- * @swagger
- * /2/donation/{id}:
- *   delete:
- *     summary: delete a donation
- *     tags:
- *     - Donation
- *     parameters:
- *     - $ref: '#/components/parameters/id'
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       204:
- *         description: donation updated successfully.
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *       404:
- *         description: donation not found
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-donationController.delete('/:id', async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const donationExists = await prisma.donations.findUnique({
-      where: {
-        donationid: Number(id),
-      },
-    });
-    if (!donationExists) {
-      res.status(404).json({error: 'donation not found'});
-
-      return;
-    }
-    const donation = prisma.donations.delete({
-      where: {
-        donationid: Number(id),
-      },
-    });
-    res.status(204).json();
-
-    return;
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
 

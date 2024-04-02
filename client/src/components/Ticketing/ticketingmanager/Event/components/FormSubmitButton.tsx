@@ -1,27 +1,27 @@
 import {useFormikContext} from 'formik';
 import React from 'react';
-import {useEvent} from './EventProvider';
+import {FormButton} from './FormButton';
 
-export const FormSubmitButton = () => {
-  const {isSubmitting, isValid, isValidating} = useFormikContext();
-  const {showPopUp} = useEvent();
-  const disabled = isSubmitting || !isValid || isValidating || showPopUp;
-  const getButtonText = () => {
-    if (isSubmitting) {
-      return 'Saving';
-    }
-    return 'Save';
-  };
+interface FormSubmitButton {
+  className: string;
+  testID: string;
+  children: JSX.Element | JSX.Element[] | string | (() => JSX.Element);
+  disabled?: boolean;
+}
+export const FormSubmitButton = (props: FormSubmitButton) => {
+  const {className, children, testID, disabled= false} = props;
+  const {isSubmitting, isValid, isValidating, submitForm} = useFormikContext();
+
   return (
-    <button
+    <FormButton
+      testID={testID}
+      onClick={submitForm}
+      title='Save'
+      disabled={isSubmitting || !isValid || isValidating || disabled}
+      className={className}
       type='submit'
-      disabled={disabled}
-      className={
-        'bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold py-2 px-4 rounded-xl h-fit'
-      }
-      aria-label={'Save'}
     >
-      {getButtonText()}
-    </button>
+      {children}
+    </FormButton>
   );
 };

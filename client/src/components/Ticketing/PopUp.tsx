@@ -1,11 +1,12 @@
 import React, {ReactElement, useEffect, useRef} from 'react';
+import {ExclamationIcon, XIcon} from './Icons';
 
 /**
  * Interface for PopUp Component.
  * Describes the title and the message that is sent to the component.
  * Contains call back to parent component to close the PopUp windows.
  */
-interface popUpProps {
+export interface PopUpProps {
   dataTestId?: string;
   title: string;
   message: string;
@@ -44,7 +45,7 @@ const PopUp = ({
   success,
   showSecondary = true,
   showClose = true,
-}: popUpProps): ReactElement => {
+}: PopUpProps): ReactElement => {
   const popUpRef = useRef(null);
 
   useEffect(() => {
@@ -99,8 +100,8 @@ const PopUp = ({
     >
       <div
         id='popup-modal'
-        className='relative z-10 bg-white rounded-lg overflow-hidden
-          mx-2 tab:mx-auto my-2 tab:max-w-lg w-full shadow-xl transform transition-all'
+        className='relative z-10 bg-white rounded-lg overflow-y-auto
+          mx-2 tab:mx-auto my-2 tab:max-w-lg w-full max-h-full shadow-xl transform transition-all'
       >
         {showClose && (
           <button
@@ -113,43 +114,13 @@ const PopUp = ({
             data-modal-toggle='popup-modal'
             aria-label='Close modal'
           >
-            <svg
-              aria-hidden='true'
-              className='w-5 h-5'
-              fill='currentColor'
-              viewBox='0 0 20 20'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                fillRule='evenodd'
-                d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414
-                  1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293
-                  4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
-                clipRule='evenodd'
-              />
-            </svg>
+            <XIcon className='w-5 h-5' strokeWidth={2.5} />
           </button>
         )}
         <div className='flex flex-col tab:flex-row gap-3 p-4 pt-5 tab:p-6 tab:pb-4'>
           {!success && (
-            <div className='mx-auto tab:mx-0 flex-shrink-0 flex items-center justify-center h-12 w-12 tab:h-10 tab:w-10 rounded-full bg-red-100'>
-              <svg
-                className='h-6 w-6 text-red-600'
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth='2'
-                stroke='currentColor'
-                aria-hidden='true'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667
-                    1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77
-                    1.333.192 3 1.732 3z'
-                />
-              </svg>
+            <div className='mx-auto tab:mx-0 flex-shrink-0 flex items-center justify-center h-12 w-12 tab:h-10 tab:w-10 rounded-full bg-red-100 text-red-600'>
+              <ExclamationIcon className='h-6 w-6' strokeWidth={2} />
             </div>
           )}
           <div className='text-center tab:text-start'>
@@ -164,7 +135,7 @@ const PopUp = ({
             </p>
           </div>
         </div>
-        <footer className='bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end'>
+        <footer className='sticky bottom-0 bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end'>
           {showSecondary && (
             <button
               onClick={handleClose}

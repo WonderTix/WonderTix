@@ -1,22 +1,81 @@
-import React, {useState, useEffect} from 'react';
-import {Field, Formik} from 'formik';
+import React, {useState, useEffect, useCallback, ReactElement} from 'react';
+import {Field, Formik, useFormikContext} from 'formik';
 import {InputControl} from './InputControl';
 import {eventGeneralSchema} from './event.schemas';
 import {FormSubmitButton} from './FormSubmitButton';
 import {useEvent} from './EventProvider';
 import {EventImage} from '../../../../../utils/imageURLValidation';
 import {getData} from './ShowingUtils';
+import {FormButton} from './FormButton';
+import {useDropzone} from 'react-dropzone';
+import {BackIcon, SaveIcon} from '../../../Icons';
 
 interface EventGeneralFormProps {
   onSubmit: (event, actions) => void;
   onLeaveEdit?: () => void;
 }
 
+interface ImageUploadProps {
+  className?: string;
+}
+
+const ImageUpload = (props: ImageUploadProps): ReactElement => {
+  const {className} = props;
+
+  const {setFieldValue} = useFormikContext();
+
+  const onDrop = useCallback(
+    async (files) => {
+      const formData = new FormData();
+      formData.append('file', files[0]);
+
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL + '/events/image-upload',
+          {
+            method: 'POST',
+            body: formData,
+          },
+        );
+        if (!response.ok) {
+          throw response;
+        }
+        const img = await response.json();
+        setFieldValue('imageurl', img.url);
+      } catch (error) {
+        console.error(error.message);
+      }
+    },
+    [setFieldValue],
+  );
+
+  const {getRootProps, getInputProps} = useDropzone({onDrop});
+
+  return (
+    <div {...getRootProps()} className={className}>
+      <input {...getInputProps()} />
+      <div className='max-w-2xl mx-auto'>
+        <div className='flex items-center justify-center w-full'>
+          <div className='flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 mt-2'>
+            <div className='flex flex-col items-center justify-center'>
+              <p className='text-center text-sm py-1'>
+                Drag & Drop File or Click Here to Upload
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const EventGeneralForm = (props: EventGeneralFormProps) => {
   const {onSubmit, onLeaveEdit} = props;
   const {eventData, showPopUp, token} = useEvent();
   const [seasons, setSeasons] = useState([]);
-  const [showButton, setShowButton] = useState(eventData && eventData.imageurl !== 'Default Event Image');
+  const [showButton, setShowButton] = useState(
+    eventData && eventData.imageurl !== 'Default Event Image',
+  );
 
   const handleInputChange = (event) => {
     setShowButton(event.target.value !== 'Default Event Image');
@@ -40,9 +99,13 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
     eventname: eventData ? eventData.eventname : '',
     eventid: eventData ? eventData.eventid : 0,
     eventdescription: eventData ? eventData.eventdescription : '',
-    imageurl: eventData && eventData.imageurl !== '' ? eventData.imageurl : 'Default Event Image',
+    imageurl:
+      eventData && eventData.imageurl !== ''
+        ? eventData.imageurl
+        : 'Default Event Image',
     active: eventData ? eventData.active : false,
     seasonid_fk: eventData?.seasonid_fk ? eventData.seasonid_fk : undefined,
+    subscriptioneligible: eventData?.subscriptioneligible ?? true,
   };
 
   return (
@@ -51,7 +114,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
       onSubmit={onSubmit}
       validationSchema={eventGeneralSchema}
     >
-      {({handleSubmit, values, setFieldValue}) => (
+      {({handleSubmit, values, setFieldValue, isSubmitting}) => (
         <form
           className={'bg-white flex flex-col  p-6 rounded-xl shadow-xl'}
           onSubmit={handleSubmit}
@@ -66,21 +129,26 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
             </h2>
             <div
               className={
-                'col-span-12 min-[650px]:col-span-6 flex flex-row gap-4 flex-wrap justify-center min-[650px]:justify-end'
+                'col-span-12 min-[650px]:col-span-6 flex flex-row gap-2 flex-wrap justify-center min-[650px]:justify-end'
               }
             >
-              <FormSubmitButton />
+              <FormSubmitButton
+                disabled={showPopUp}
+                className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl h-fit shadow-xl'
+                testID='event-save-button'
+              >
+                <SaveIcon className='h-6 w-6' />
+              </FormSubmitButton>
               {onLeaveEdit && eventData && (
-                <button
-                  className={
-                    'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold h-fit'
-                  }
+                <FormButton
+                  title='Back'
+                  testID='event-leave-edit'
+                  disabled={isSubmitting || showPopUp}
                   onClick={onLeaveEdit}
-                  disabled={showPopUp}
-                  type={'button'}
+                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
                 >
-                  Cancel
-                </button>
+                  <BackIcon className='h-6 w-6' />
+                </FormButton>
               )}
             </div>
           </div>
@@ -113,37 +181,33 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                   controlClass: 'flex flex-col mb-2 text-zinc-800',
                 }}
               />
-              <div className={'grid grid-cols-5 mb-2 items-end text-zinc-800'}>
-                <div className={showButton ? 'col-span-4' : 'col-span-5'}>
-                  <Field name='imageurl'>
-                    {({field}) => (
-                      <div className='flex flex-col text-zinc-800'>
-                        <label
-                          className='text-sm font-semibold'
-                          htmlFor='imageurl'
-                        >
-                          Image URL:
-                        </label>
-                        <input
-                          type='text'
-                          className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200'
-                          {...field}
-                          onChange={(event) => {
-                            field.onChange(event);
-                            handleInputChange(event);
-                          }}
-                          id='imageurl'
-                        />
-                      </div>
-                    )}
-                  </Field>
-                </div>
+              <div className='grid grid-cols-5 mb-2 items-end text-zinc-800'>
+                <Field name='imageurl'>
+                  {({field}) => (
+                    <div className={`flex flex-col text-zinc-800 ${showButton ? 'col-span-4' : 'col-span-5'}`}>
+                      <label
+                        className='text-sm font-semibold'
+                        htmlFor='imageurl'
+                      >
+                        Image URL:
+                      </label>
+                      <input
+                        type='text'
+                        className='text-sm w-full rounded-lg p-1 border border-zinc-400 disabled:bg-zinc-200 disabled:text-zinc-200'
+                        {...field}
+                        onChange={(event) => {
+                          field.onChange(event);
+                          handleInputChange(event);
+                        }}
+                        id='imageurl'
+                      />
+                    </div>
+                  )}
+                </Field>
                 {showButton && (
                   <button
-                    id={'defaultImageUrl'}
-                    className={
-                      'bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 ml-2 font-bold text-sm h-fit self-end whitespace-nowrap'
-                    }
+                    id='defaultImageUrl'
+                    className='col-span-1 bg-blue-500 hover:bg-blue-700 text-white rounded-lg py-1.5 px-1 ml-2 font-bold text-sm h-fit self-end whitespace-nowrap'
                     onClick={async () => {
                       await setFieldValue('imageurl', 'Default Event Image');
                       setShowButton(false);
@@ -153,6 +217,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
                     Default
                   </button>
                 )}
+                <ImageUpload className='col-span-5' />
               </div>
 
               <div className={'flex flex-col mb-2 text-zinc-800'}>
@@ -192,7 +257,7 @@ export const EventGeneralForm = (props: EventGeneralFormProps) => {
             </div>
             <div className={'col-span-12 min-[450px]:col-span-6'}>
               <EventImage
-                className={'mx-auto w-[50%] h-auto max-w-[150px]'}
+                className={'mx-auto w-auto h-auto max-h-[175px]'}
                 src={values.imageurl}
                 title='Supplied By User for Event'
               />

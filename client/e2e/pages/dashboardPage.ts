@@ -26,7 +26,7 @@ export class DashboardPage {
     this.page = page;
 
     // HOMEPAGE
-    this.EmailButton = page.locator('svg[class*=\'icon-tabler-chevron-down\']');
+    this.EmailButton = page.getByText(process.env.TEST_EMAIL as string);
     this.ManageTicketing = page.getByText('Manage Ticketing').first();
 
     // ..//ticketing

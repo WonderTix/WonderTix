@@ -43,7 +43,7 @@ export const SHOWING_INFO_4: ShowingInfo = {
 export const SHOWING_INFO_5: ShowingInfo = {
   showingDate: '2021-09-17',
   showingTime24hour: '09:15',
-  showingTime12hour: '09:15 AM',
+  showingTime12hour: '9:15 AM',
   showingQuantity: '10',
   showingWholeDate: 'Fri, Sep 17 2021',
 };

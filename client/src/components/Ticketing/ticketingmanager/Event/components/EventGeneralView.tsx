@@ -3,7 +3,9 @@ import React, {useEffect, useState} from 'react';
 import {EventImage} from '../../../../../utils/imageURLValidation';
 import {LineItem} from './LineItem';
 import Switch from '@mui/material/Switch';
-import Tooltip from '@mui/material/Tooltip';
+import {FormButton} from './FormButton';
+import {FormDeleteButton} from './FormDeleteButton';
+import {EditIcon, TrashCanIcon} from '../../../Icons';
 
 interface EventGeneralViewProps {
   setEdit: (value) => void;
@@ -31,6 +33,14 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
     return onSubmitActiveOnly(updatedEventData);
   };
 
+  const handleSubscriptionChange = () => {
+    const updatedEventData = {
+      ...eventData,
+      subscriptioneligible: !eventData.subscriptioneligible,
+    };
+    return onSubmitActiveOnly(updatedEventData);
+  };
+
   if (!eventData) {
     return null;
   }
@@ -45,71 +55,34 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
         <h2 className={'text-3xl font-semibold text-zinc-800'}>
           Event Information
         </h2>
-        <div className='flex flex-col gap-2 min-[650px]:flex-row'>
+        <div className='flex flex-row gap-2 flex-wrap justify-center min-[650px]:justify-end'>
           <p
             className={`${
               eventData.active ? 'bg-green-100' : 'bg-red-100'
-            } py-2 tab:px-2 md:px-7 rounded-lg font-medium`}
+            } py-2 px-2 md:px-7 rounded-lg font-medium`}
           >
             {eventData.active ? 'ACTIVE' : 'INACTIVE'}
           </p>
-
-          <Tooltip title='Edit' placement='top' arrow>
-            <span className='flex flex-col'>
-              <button
-                data-testid='event-edit-button'
-                className='flex justify-center items-center bg-gray-400 hover:bg-gray-500 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
-                onClick={() => {
-                  setEdit((edit) => !edit);
-                  setEditing((edit) => !edit);
-                }}
-                disabled={editing || showPopUp}
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-6 w-6'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
-                  />
-                </svg>
-              </button>
-            </span>
-          </Tooltip>
-
-          <Tooltip title='Delete' placement='top' arrow>
-            <span className='flex flex-col'>
-              <button
-                data-testid='event-delete-button'
-                className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold px-2 py-2 rounded-xl'
-                onClick={() => {
-                  onDelete(eventData);
-                }}
-                disabled={editing || showPopUp}
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='h-6 w-6'
-                  fill={editing || showPopUp ? '' : `#EF4444`}
-                  viewBox='0 0 24 24'
-                  stroke='white'
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                  />
-                </svg>
-              </button>
-            </span>
-          </Tooltip>
+          <FormButton
+            onClick={() => {
+              setEdit((edit) => !edit);
+              setEditing((edit) => !edit);
+            }}
+            title='Edit'
+            disabled={editing || showPopUp}
+            className='flex justify-center items-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
+            testID='event-edit-button'
+          >
+            <EditIcon className='h-6 w-6' />
+          </FormButton>
+          <FormDeleteButton
+            className='flex justify-center items-center bg-red-500 hover:bg-red-600 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
+            onDelete={onDelete}
+            disabled={showPopUp || editing}
+            testID='event-delete-button'
+          >
+            <TrashCanIcon className='h-6 w-6' />
+          </FormDeleteButton>
         </div>
       </div>
       <div className={'grid grid-cols-12'}>
@@ -133,24 +106,42 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
               event
             />
           )}
-          <div className={'flex flex-row items-center col-span-6'}>
-            <label
-              htmlFor={'active'}
-              className={'text-sm text-zinc-800 font-semibold pr-2'}
-            >
-              Active:
-            </label>
-            <Switch
-              checked={isActive}
-              onChange={handleActiveChange}
-              inputProps={{'aria-label': 'controlled'}}
-              id='active'
-            />
+          <div
+            className='flex flex-row gap-3 items-center col-span-12 min-[450px]:col-span-6 grid min-[450px]:grid-cols-2'
+          >
+            <div className='flex flex-row items-center'>
+              <label
+                htmlFor='active'
+                className='text-sm text-zinc-800 font-semibold pr-2'
+              >
+                Active:
+              </label>
+              <Switch
+                checked={isActive}
+                onChange={handleActiveChange}
+                inputProps={{'aria-label': 'controlled'}}
+                id='active'
+              />
+            </div>
+            <div className='flex flex-row items-center'>
+              <label
+                htmlFor='subscriptioneligible'
+                className='text-sm text-zinc-800 font-semibold pr-2'
+              >
+                Subscription Eligible:
+              </label>
+              <Switch
+                checked={eventData.subscriptioneligible}
+                onChange={handleSubscriptionChange}
+                inputProps={{'aria-label': 'controlled'}}
+                id='subscriptioneligible'
+              />
+            </div>
           </div>
         </div>
         <div className={'col-span-12 min-[450px]:col-span-6'}>
           <EventImage
-            className={'block mx-auto w-[50%] h-auto max-w-[125px]'}
+            className={'block mx-auto w-auto h-auto max-h-[175px]'}
             src={eventData.imageurl}
             title={'Event Image'}
           />

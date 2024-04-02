@@ -1,17 +1,29 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma} from '@prisma/client';
+import {orders, Prisma} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
-  getOrderItems,
-  LineItem,
+  expireCheckoutSession,
+  getDonationItem,
+  getTicketItems,
+  createStripePaymentIntent,
+  requestStripeReaderPayment,
+  testPayReader,
+  getDiscountAmount,
   updateContact,
+  validateDiscount,
+  validateWithRegex,
 } from './eventController.service';
-import {orderCancel, orderFulfillment} from './orderController.service';
+import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 const prisma = extendPrismaClient();
+
+import multer from 'multer';
+import {Storage} from '@google-cloud/storage';
+
+const upload = multer();
 
 export const eventController = Router();
 
@@ -54,61 +66,77 @@ export const eventController = Router();
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
-  const {cartItems, formData, donation = 0, discount} = req.body;
-  let orderID = 0;
+  const {cartItems = [], formData, donation = 0, discount} = req.body;
+  let order :orders | null = null;
   let toSend = {id: 'comp'};
   try {
-    if (!cartItems.length && donation === 0) {
+    if (!cartItems.length && !donation) {
       return res.status(400).json({error: 'Cart is empty'});
-    } else if (donation && donation < 0) {
-      return res.status(422).json({error: 'Amount of donation can not be negative'});
-    }
-    const {contactid} = await updateContact(formData, prisma);
-    const {cartRows, orderItems, orderTotal, eventInstanceQueries} =
-      await getOrderItems(cartItems, prisma);
-    const donationItem: LineItem = {
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          name: 'Donation',
-          description: 'A generous donation',
-        },
-        unit_amount: donation * 100,
-      },
-      quantity: 1,
-    };
-    if (donation + orderTotal > 0) {
-      toSend = await createStripeCheckoutSession(
-          contactid,
-          donation,
-        donation ? cartRows.concat(donationItem) : cartRows,
-        discount,
-      );
     }
 
-    orderID = await orderFulfillment(
+    if (discount.code != '') {
+      await validateDiscount(discount, cartItems, prisma);
+    }
+
+    const {contactid} = await updateContact(formData, prisma);
+
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
+
+    const {
+      donationItem,
+      donationCartRow,
+      donationTotal,
+    } = getDonationItem(donation);
+
+    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+
+    if (ticketTotal + donationTotal - discountAmount > .49) {
+      toSend = await createStripeCheckoutSession(
+          contactid,
+          formData.email,
+          donationCartRow? ticketCartRows.concat([donationCartRow]): ticketCartRows,
+          {...discount, amountOff: discountAmount},
+      );
+    } else if (ticketTotal + donationTotal - discountAmount > 0) {
+      return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
+    }
+
+    order = await orderFulfillment(
         prisma,
-        orderItems,
-        contactid,
-        orderTotal,
         eventInstanceQueries,
+        ticketTotal+donationTotal,
+        discountAmount,
+        {
+          orderTicketItems,
+          donationItem,
+        },
+        contactid,
         toSend.id,
+        discount.code != '' ? discount.discountid : null,
     );
+
     if (toSend.id === 'comp') {
       await prisma.orders.update({
         where: {
-          orderid: orderID,
+          orderid: order.orderid,
         },
         data: {
-          checkout_sessions: `comp-${orderID}`,
-          payment_intent: `comp-${orderID}`,
+          checkout_sessions: `comp-${order.orderid}`,
+          payment_intent: `comp-${order.orderid}`,
         },
       });
     }
+
     res.json(toSend);
   } catch (error) {
     console.error(error);
-    if (orderID) await orderCancel(prisma, orderID);
+    if (order) await updateCanceledOrder(prisma, order, false);
+    if (toSend.id !== 'comp') await expireCheckoutSession(toSend.id);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
@@ -122,6 +150,88 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     }
     res.status(500).json(error);
   }
+});
+
+/**
+ * @swagger
+ * /2/events/image-upload:
+ *   post:
+ *     summary: Upload image to google cloud storage, make public, return link
+ *     tags:
+ *     - New Event API
+  *     requestBody:
+ *       description: Image File
+ *     responses:
+ *       200:
+ *         description: Image successfully uploaded.
+ *         content:
+ *           application/json:
+ *             schema: {url: string}
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+
+eventController.post('/image-upload', upload.single('file'), async (req: Request, res: Response) => {
+  const gcloudKey = process.env.GCLOUD_KEY;
+  const bucketName = process.env.GCLOUD_BUCKET;
+
+  if (gcloudKey === undefined || gcloudKey === '') {
+    return res.status(500).send('Bucket key undefined!');
+  }
+  if (bucketName === undefined || bucketName === '') {
+    return res.status(500).send('Bucket name undefined!');
+  }
+
+  const credentials = JSON.parse(gcloudKey);
+
+  const storage = new Storage({credentials: credentials});
+  const imgBucket = storage.bucket(`${bucketName}`);
+
+  if (!req.file) {
+    return res.status(400).send('No file passed to request!');
+  }
+
+  try {
+    validateWithRegex(
+        req.file.mimetype.toLowerCase(),
+        'Invalid input, not a valid image filetype!',
+        new RegExp('^(image\/(jpe?g|png))'),
+    );
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send(error);
+  }
+
+  const file = imgBucket.file(req.file.originalname);
+  const stream = file.createWriteStream({
+    metadata: {
+      contentType: req.file.mimetype,
+    },
+    resumable: false,
+  });
+
+  stream.on('error', (err) => {
+    console.error(err);
+    return res.status(500).send('Upload failed!');
+  });
+
+  stream.on('finish', async () => {
+    await file.makePublic();
+    const url = `https://storage.googleapis.com/${bucketName}/${file.name}`;
+    return res.status(200).send({url});
+  });
+
+  stream.end(req.file.buffer);
 });
 
 /**
@@ -148,11 +258,14 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 eventController.get('/showings', async (req: Request, res: Response) => {
   try {
     const events = await prisma.events.findMany({
-      where: {},
       include: {
         eventinstances: {
           include: {
-            ticketrestrictions: true,
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+            },
           },
         },
         seasons: true,
@@ -202,8 +315,12 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         eventinstances: {
           some: {
             deletedat: null,
-            availableseats: {gt: 0},
             salestatus: true,
+            ticketrestrictions: {
+              some: {
+                deletedat: null,
+              },
+            },
           },
         },
       },
@@ -213,22 +330,38 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           where: {
-            availableseats: {gt: 0},
             salestatus: true,
+          },
+          include: {
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+              include: {
+                ticketitems: {
+                  where: {
+                    orderticketitem: {
+                      refund: null,
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
     });
-    return res.json(events.map((event) => ({
-      id: event.eventid.toString(),
-      seasonid: event.seasonid_fk,
-      title: event.eventname,
-      description: event.eventdescription,
-      active: event.active,
-      seasonticketeligible: event.seasonticketeligible,
-      imageurl: event.imageurl,
-      numShows: event.eventinstances.length.toString(),
-    })));
+    return res.json(events
+        .map((event) => ({
+          id: event.eventid,
+          seasonid: event.seasonid_fk,
+          title: event.eventname,
+          description: event.eventdescription,
+          active: event.active,
+          subscriptioneligible: event.subscriptioneligible,
+          imageurl: event.imageurl,
+          numShows: event.eventinstances.length.toString(),
+        })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -322,7 +455,11 @@ eventController.get('/showings/:id', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           include: {
-            ticketrestrictions: true,
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+            },
           },
         },
         seasons: true,
@@ -434,7 +571,11 @@ eventController.get('/active/showings', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           include: {
-            ticketrestrictions: true,
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+            },
           },
         },
         seasons: true,
@@ -540,7 +681,11 @@ eventController.get(
           include: {
             eventinstances: {
               include: {
-                ticketrestrictions: true,
+                ticketrestrictions: {
+                  where: {
+                    deletedat: null,
+                  },
+                },
               },
             },
             seasons: true,
@@ -727,6 +872,112 @@ eventController.use(checkScopes);
 
 /**
  * @swagger
+ * /2/events/reader-intent:
+ *   post:
+ *     summary: Create Reader Payment Intent
+ *     tags:
+ *     - New Event API
+ */
+
+eventController.post('/reader-intent', async (req: Request, res: Response) => {
+  const {cartItems} = req.body;
+  let paymentIntentID = '';
+  let clientSecret = '';
+
+  try {
+    if (!cartItems.length) {
+      return res.status(400).json({error: 'Cart is empty'});
+    }
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
+
+    if (ticketTotal > 0) {
+      const {id, secret} = await createStripePaymentIntent(ticketTotal * 100);
+      paymentIntentID = id;
+      clientSecret = secret;
+    }
+    res.json({id: paymentIntentID, secret: clientSecret});
+  } catch (error) {
+    console.error(error);
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).json(error.message);
+      return;
+    }
+    res.status(500).json(error);
+  }
+});
+
+/**
+ * @swagger
+ * /2/events/reader-checkout:
+ *   post:
+ *     summary: Request Payment for intent and fulfill order
+ *     tags:
+ *     - New Event API
+ */
+
+eventController.post('/reader-checkout', async (req: Request, res: Response) => {
+  const {cartItems, paymentIntentID, readerID, discount} = req.body;
+  let order :orders | null = null;
+  try {
+    if (!cartItems.length) {
+      return res.status(400).json({error: 'Cart is empty'});
+    }
+
+    if (discount.code != '') {
+      await validateDiscount(discount, cartItems, prisma);
+    }
+
+    const {
+      ticketCartRows,
+      orderTicketItems,
+      ticketTotal,
+      eventInstanceQueries,
+    } = await getTicketItems(cartItems, prisma);
+
+    const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
+
+    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+
+    // add order to database with prisma
+    order = await orderFulfillment(
+        prisma,
+        eventInstanceQueries,
+        ticketTotal,
+        discountAmount,
+        {
+          orderTicketItems,
+        },
+        undefined, // no contactid with reader payments
+        undefined, // no session with reader payments
+        discount.code != '' ? discount.discountid : null,
+        paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
+    );
+    res.json({orderID: order.orderid, status: 'order sent'});
+  } catch (error) {
+    console.error(error);
+    if (order) await updateCanceledOrder(prisma, order, true);
+    if (error instanceof InvalidInputError) {
+      res.status(error.code).json(error.message);
+      return;
+    }
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError ||
+      error instanceof Prisma.PrismaClientValidationError
+    ) {
+      res.status(400).json(error.message);
+      return;
+    }
+    res.status(500).json(error);
+  }
+});
+
+/**
+ * @swagger
  * /2/events:
  *   post:
  *     summary: Create an event
@@ -775,8 +1026,8 @@ eventController.post('/', async (req: Request, res: Response) => {
         seasonid_fk: req.body.seasonid_fk === null ? null : Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
-        active: req.body.active,
-        seasonticketeligible: req.body.seasonticketeligible,
+        active: Boolean(req.body.active),
+        subscriptioneligible: Boolean(req.body.subscriptioneligible),
         imageurl: req.body.imageurl,
       },
       include: {
@@ -842,8 +1093,8 @@ eventController.put('/', async (req: Request, res: Response) => {
         seasonid_fk: !req.body.seasonid_fk? null : Number(req.body.seasonid_fk),
         eventname: req.body.eventname,
         eventdescription: req.body.eventdescription,
-        active: req.body.active,
-        seasonticketeligible: req.body.seasonticketeligible,
+        subscriptioneligible: Boolean(req.body.subscriptioneligible),
+        active: Boolean(req.body.active),
         imageurl: req.body.imageurl,
       },
       include: {
@@ -868,7 +1119,7 @@ eventController.put('/', async (req: Request, res: Response) => {
       prisma.ticketrestrictions.updateMany({
         where: {
           tickettypeid_fk: defaultP.tickettypeid_fk,
-          eventinstances: {
+          eventinstance: {
             eventid_fk: +req.body.eventid,
           },
         },
@@ -879,7 +1130,7 @@ eventController.put('/', async (req: Request, res: Response) => {
     ) ?? []).concat([prisma.ticketrestrictions.updateMany({
       where: {
         tickettypeid_fk: {notIn: event.seasons?.seasontickettypepricedefaults.map((res) => res.tickettypeid_fk)},
-        eventinstances: {
+        eventinstance: {
           eventid_fk: +req.body.eventid,
         },
       },
@@ -1099,19 +1350,29 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
  */
 eventController.put('/checkin', async (req: Request, res: Response) => {
   try {
-    const {ticketID, isCheckedIn} = req.body;
-    if (!ticketID) {
-      return res.status(400).send('No Ticket ID provided');
+    const {instanceId, isCheckedIn, contactId} = req.body;
+    if (!instanceId || !contactId) {
+      return res.status(400).send('Invalid request');
     }
-    await prisma.eventtickets.update({
+
+    await prisma.ticketitems.updateMany({
       where: {
-        eventticketid: Number(ticketID),
+        ticketrestriction: {
+          eventinstanceid_fk: +instanceId,
+        },
+        orderticketitem: {
+          refund: null,
+          order: {
+            contactid_fk: +contactId,
+          },
+        },
       },
       data: {
-        redeemed: isCheckedIn,
+        redeemed: isCheckedIn? new Date(): null,
       },
     });
-    return res.send(`Ticket ${ticketID} successfully ${isCheckedIn?'redeemed':'un-redeemed'}`);
+
+    return res.send();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});

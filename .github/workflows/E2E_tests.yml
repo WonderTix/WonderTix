@@ -21,7 +21,6 @@ jobs:
       FRONTEND_URL: ${{ secrets.LOCAL_FRONTEND_URL }}
       AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
       AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
       AUTH0_URL: ${{ secrets.AUTH0_URL }}
       TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
@@ -114,7 +113,6 @@ jobs:
   #   env:
   #     AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
   #     AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-  #     AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
   #     AUTH0_URL: ${{ secrets.AUTH0_URL }}
   #   steps:
   #     - uses: actions/checkout@v3

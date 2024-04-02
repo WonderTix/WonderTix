@@ -1,272 +1,196 @@
-/* eslint-disable require-jsdoc */
-
 import React, {ReactElement, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
-import {useAuth0} from '@auth0/auth0-react';
 import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
+import format from 'date-fns/format';
+import {Tabs, Tab} from '@mui/material';
 import Navigation from '../Navigation';
+import {useFetchToken} from '../../Ticketing/ticketingmanager/Event/components/ShowingUtils';
+import {LoadingScreen} from '../../Ticketing/mainpage/LoadingScreen';
+import {toDollarAmount} from '../../../utils/arrays';
+import ContactCard from './ContactCard';
+import ContactOrder from './ContactOrder';
+import {Contact, toReadableDonationFrequency} from './contactUtils';
+
 /**
- * @returns {object} ContactOneResult - has Navigation
- *  and Contacts to reroute to other components
+ * The page that displays order and donation history for a contact.
+ *
+ * @returns {ReactElement} ContactOneResult
  */
-
-export const ContactOneResult = () => {
+export const ContactOneResult = (): ReactElement => {
+  const {token} = useFetchToken();
   const params = useParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState([]);
-  const {getAccessTokenSilently} = useAuth0();
+  const navigate = useNavigate();
 
-  const getData = async () => {
+  const [contact, setContact] = useState(null);
+  const [tabValue, setTabValue] = useState(0);
+
+  useEffect(() => {
+    if (token !== '') {
+      void getContact();
+    }
+  }, [token]);
+
+  const getContact = async () => {
     if (params.contactid) {
-      setIsLoading(true);
-      const token = await getAccessTokenSilently({
-        audience: process.env.REACT_APP_ROOT_URL,
-        scope: 'admin',
-      });
-      await axios
-        .get(
-          process.env.REACT_APP_API_1_URL + `/contacts/show/${params.contactid}`,
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL + `/contact/orders/${params.contactid}`,
           {
+            method: 'GET',
+            credentials: 'include',
             headers: {
+              'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
           },
-        )
-        .then((res) => {
-          setData(res.data.data);
-          console.log(res);
-        })
-        .catch((err) => {
-          setError(err.message);
-          console.log(error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  };
-  useEffect(() => {
-    getData();
-  }, []);
-  return (
-    <div className='flex flex-row'>
-      <Navigation/>
-      <div className='w-full h-screen overflow-x-hidden absolute'>
-        <div className='flex flex-col  md:ml-[18rem] md:mt-40 sm:mt-[11rem] sm:ml-[5rem] sm:mr-[5rem] sm:mb-[11rem] '>
-          <div>
-            { data.length > 0 &&
-              <div>
-                <div className='mt-9 text-zinc-600 w-full '>
-                  {isLoading ? <div className="radial-progress"/> :
-                    <ContactDisplayForm data={data[0]} />}
-                </div>
-              </div>
-            }
-            { data.length > 0 &&
-            <div>
-              <br/>
-              {data.map(
-                (Cust) =>
-                  <ContactDisplayTicket
-                    data={Cust}
-                    key={Cust.orderid}
-                    {...Cust}
-                  />,
-              )}
-            </div>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+        );
 
-export const ContactDisplayForm = ({
-  data,
-}:{
-  data:any
-}):ReactElement =>{
-  const navigate = useNavigate();
-  if (!data) return <div>Nothing in contactForm</div>;
-  const {
-    firstname,
-    lastname,
-    contactid,
-    email,
-    phone,
-    address,
-    newsletter,
-    donorbadge,
-    seatingaccom,
-    vip,
-    volunteerlist,
-  } = data;
-  return (
-    <div>
-      <button className='bg-blue-600 disabled:opacity-40
-             mt-4 text-white px-5 py-2 mb-3
-             rounded-xl justify-end
-             ' onClick={() => navigate(`/admin/contacts`)}>Back to search
-      </button>
-      <div className='flec flex-row w-full bg-white
-        shadow-lg border border-zinc-300 rounded-lg'>
-        <div className='flex flex-col mt-2 p-5 '>
-          <div className='flex flex-row gap-3 text-3xl items-center border-b pb-5 font-bold text-zinc-700'>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
-            </svg>
-            <div>Customer Information</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-5 w-full'>
-            <div className='font-semibold'>
-             Customer Name:
-            </div>
-            <div data-testid = 'customer-name'>{firstname + ' ' + lastname}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               ID:
-            </div>
-            <div data-testid = 'customer-id'>{contactid}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               Email:
-            </div>
-            <div data-testid = 'customer-email'>{email}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               Phone:
-            </div>
-            <div data-testid = 'customer-phone'>{phone}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               Customer Address:
-            </div>
-            <div data-testid = 'customer-address'>{address}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               Newsletter:
-            </div>
-            <div data-testid = 'customer-newsletter'>{'' + newsletter}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               Donorbadge:
-            </div>
-            <div data-testid = 'customer-donorbadge'>{'' + donorbadge}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               Seating Accommodation:
-            </div>
-            <div data-testid = 'customer-accommodation'>{seatingaccom}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               VIP:
-            </div>
-            <div data-testid = 'customer-vip'>{'' + vip}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>
-               Volunteer List:
-            </div>
-            <div data-testid = 'customer-volunteer'>{'' + volunteerlist}</div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export const ContactDisplayTicket = ({
-  data,
-}:{
-    data:any
-  }):ReactElement =>{
-  const {getAccessTokenSilently} = useAuth0();
-
-  const handleRefund = async (orderid, amount) => {
-    const token = await getAccessTokenSilently({
-      audience: process.env.REACT_APP_ROOT_URL,
-      scope: 'admin',
-    });
-
-    try {
-      const id = orderid;
-      // refund order
-      amount = 0.0;
-      const refMode = 1;
-
-      const response = await fetch(
-        process.env.REACT_APP_API_1_URL + '/refunds', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({refMode, id, amount}),
-        });
-
-      const responseData = await response.json();
-      console.log(responseData);
-    } catch (error) {
-      console.log(error);
+        if (!response.ok) {
+          throw new Error('Failed to get contact');
+        }
+        const contactData = await response.json();
+        const contact: Contact = {
+          first: contactData.firstname,
+          last: contactData.lastname,
+          email: contactData.email,
+          phone: contactData.phone,
+          address: contactData.address,
+          city: contactData.city,
+          state: contactData.state,
+          country: contactData.country,
+          postalCode: contactData.postalcode,
+          seatingAcc: contactData.seatingaccom,
+          comments: contactData.comments,
+          newsletter: contactData.newsletter,
+          vip: contactData.vip,
+          donorBadge: contactData.donorbadge,
+          volunteerList: contactData.volunteerlist,
+          contactId: contactData.contactid,
+          orders: contactData.orders,
+          createdDate: contactData.createddate,
+        };
+        setContact(contact);
+      } catch (err) {
+        console.error(err.message);
+      }
+    } else {
+      setContact(null);
     }
   };
 
-  if (!data) return <div>Nothing in contactForm</div>;
-  const {
-    orderdate,
-    orderid,
-    ordertime,
-    ordertotal,
-    refund_intent,
-  } = data;
-  if (orderid != null) {
+  const handleTabChange = (e, newTabValue) => {
+    setTabValue(newTabValue);
+  };
+
+  if (token === '' || !contact) {
     return (
-      <div className='flec flex-row w-full bg-white
-            shadow-lg border border-zinc-300 rounded-lg'>
-        <div className='flex flex-col mt-2 p-5 '>
-          <div className='flex flex-row gap-3 text-lg mt-5 w-full'>
-            <div className='font-semibold'>OrderId:</div>
-            <div>{orderid}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>Order Date:</div>
-            <div>{orderdate}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>Order Time:</div>
-            <div>{ordertime}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>Order Total:</div>
-            <div>{ordertotal}</div>
-          </div>
-          <div className='flex flex-row gap-3 text-lg mt-2 w-full'>
-            <div className='font-semibold'>Refunded:</div>
-            <div>{refund_intent ? 'True' : 'False'}</div>
-          </div>
-          <button
-            className='px-2 py-1 bg-blue-500 disabled:opacity-30
-              mt-6 mb-4 text-white rounded-lg text-sm'
-            onClick={() => handleRefund(orderid, ordertotal)}
-          >
-            Refund (this does not work)
-          </button>
-        </div>
+      <div className='absolute w-screen z-10'>
+        <LoadingScreen />
       </div>
     );
   } else {
-    return <div>Nothing in contactForm</div>;
+    return (
+      <div className='flex flex-row'>
+        <Navigation />
+        <main className='w-full h-screen overflow-x-hidden absolute'>
+          <div className='md:ml-[18rem] md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] mt-[6rem] mb-[9rem]'>
+            <div className='mt-9 text-zinc-600 w-full'>
+              <button
+                className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 mt-4 mb-3 shadow-md px-4 py-2 text-base
+                  font-medium text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2
+                  focus:ring-indigo-500'
+                onClick={() => navigate(`/admin/contacts`)}
+              >
+                Back to search
+              </button>
+              <ContactCard
+                contact={contact}
+                onRefresh={() => getContact()}
+                onRemove={() => navigate('/admin/contacts')}
+                showMoreButton={false}
+                token={token}
+              />
+            </div>
+            <Tabs value={tabValue} onChange={handleTabChange} centered>
+              <Tab label='Orders' />
+              <Tab label='Donations' />
+            </Tabs>
+            {tabValue === 0 &&
+              (contact.orders.length === 0 ? (
+                <p className='text-center text-zinc-400 font-medium mt-4'>
+                  No orders
+                </p>
+              ) : (
+                contact.orders.map((order) => (
+                  <ContactOrder
+                    key={order.orderid}
+                    orderId={order.orderid}
+                    orderTotal={order.ordertotal}
+                    discountTotal={order.discounttotal}
+                    orderDateTime={order.orderdatetime}
+                    refunded={order.refunded}
+                    orderItems={order.orderitems}
+                    donation={order.donation}
+                  />
+                ))
+              ))}
+            {tabValue === 1 && (
+              <p className='text-center text-zinc-400 font-medium mt-4'>
+                This tab is currently inactive
+              </p>
+            )}
+          </div>
+        </main>
+      </div>
+    );
   }
+};
+
+// FIXME: No standalone donations yet
+export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
+  const {donationid, donationdate, frequency, refunded, amount} = donation;
+
+  const date = new Date(donationdate);
+
+  return (
+    <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
+      <header className='flex gap-2 items-start justify-between mb-4'>
+        <h2 className='text-2xl font-semibold'>Donation {donationid}</h2>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          className='h-7 w-7'
+          fill='none'
+          viewBox='0 0 24 24'
+          stroke='currentColor'
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z'
+          />
+        </svg>
+      </header>
+      <article>
+        <p className='flex flex-row gap-3 text-lg w-full'>
+          <span className='font-semibold'>Donation Date:</span>
+          <span>{format(date, 'MMM dd, yyyy')}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-1 w-full'>
+          <span className='font-semibold'>Frequency:</span>
+          <span>{toReadableDonationFrequency(frequency)}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg my-1 w-full'>
+          <span className='font-semibold'>Refunded:</span>
+          <span>{refunded ? 'Yes' : 'No'}</span>
+        </p>
+      </article>
+      <footer>
+        <p className='flex flex-row gap-3 text-xl mt-2 w-full'>
+          <span className='font-semibold'>Amount:</span>
+          <span>{toDollarAmount(Number(amount))}</span>
+        </p>
+      </footer>
+    </section>
+  );
 };

@@ -3,22 +3,24 @@ import React from 'react';
 import {Field, FieldArray, Formik} from 'formik';
 import {InputControl} from './InputControl';
 import {toDateStringFormat} from './util/EventsUtil';
-import {TicketTypeUpdateTable} from './TicketTypeUpdateTable';
-import {FormDeleteButton} from './FormDeleteButton';
+import {OptionUpdateTable} from './OptionUpdateTable';
 import {FormSubmitButton} from './FormSubmitButton';
 import {eventInstanceSchema} from './event.schemas';
 import {useEvent} from './EventProvider';
 import {getInstanceTicketType} from './ShowingUtils';
+import {FormButton} from './FormButton';
+import {BackIcon, SaveIcon} from '../../../Icons';
+import {FormSwitch} from '../../Season/components/SeasonSubscriptionAndTicketTypes/FormSwitch';
+import {TicketTypeTableRow} from './TicketTypeTableRow';
 
 interface EventShowingFormProps {
   initialValues?: UpdatedShowing;
   onSubmit: (event, action) => Promise<void>;
-  onDelete?: (event?) => void;
   onLeaveEdit?: () => void;
 }
 
 export const EventShowingForm = (props: EventShowingFormProps) => {
-  const {initialValues, onSubmit, onDelete, onLeaveEdit} = props;
+  const {initialValues, onSubmit, onLeaveEdit} = props;
   const {eventID, showPopUp, ticketTypes} = useEvent();
   const baseValues = {
     availableseats: initialValues ? initialValues.availableseats : 0,
@@ -28,14 +30,18 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
     eventtime: initialValues
       ? initialValues.eventtime.split('T')[1].slice(0, 8)
       : '',
-    ispreview: false,
+    ispreview: initialValues?.ispreview ?? false,
     defaulttickettype: 1,
     purchaseuri: 'http://null.com',
     instanceTicketTypes: initialValues
-      ? initialValues.ticketrestrictions
-      : [getInstanceTicketType(ticketTypes.find((type) => type.tickettypeid_fk === 1))],
+      ? initialValues.ticketrestrictions.map((restriction) => {
+        // Remove ticketssold from restriction so it isn't passed to PUT API
+        const {ticketssold, ...restOfRestriction} = restriction;
+        return restOfRestriction;
+      }): [],
     salestatus: true,
     totalseats: initialValues ? initialValues.totalseats : 0,
+    detail: initialValues?.detail ? initialValues.detail : '',
   };
 
   const inputControlClassName = {
@@ -50,11 +56,11 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
       validationSchema={eventInstanceSchema}
       onSubmit={onSubmit}
     >
-      {({handleSubmit, values, setFieldValue}) => (
+      {({handleSubmit, values}) => (
         <form onSubmit={handleSubmit} className={'bg-gray-300 rounded-xl p-2'}>
           <div
             className={
-              'bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[250px] gap-2'
+              'bg-gray-200 grid grid-cols-12 p-4 rounded-lg min-[1350px]:h-[280px] gap-2'
             }
           >
             <div
@@ -62,12 +68,6 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 'flex flex-col justify-center bg-white m-auto col-span-12 min-[1350px]:col-span-4 rounded-lg p-3 w-[100%] h-[100%] shadow-xl'
               }
             >
-              {values.eventinstanceid > 0 && (
-                <div className={'grid grid-cols-2 pb-1 text-sm'}>
-                  <p className={'text-md font-bold'}>Showing Id</p>
-                  <p className={'text-md p-1'}>{values.eventinstanceid}</p>
-                </div>
-              )}
               <Field
                 name='eventdate'
                 component={InputControl}
@@ -85,23 +85,20 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 className={inputControlClassName}
               />
               <Field
+                name='detail'
+                component={InputControl}
+                label='Detail'
+                type='text'
+                id={values.eventinstanceid}
+                className={inputControlClassName}
+              />
+              <Field
                 name='totalseats'
                 component={InputControl}
                 label='Ticket Quantity'
                 type='number'
                 id={values.eventinstanceid}
                 className={inputControlClassName}
-                onChange={async (event) => {
-                  const defaultType = values.instanceTicketTypes.findIndex(
-                    (type) =>
-                      type.tickettypeid_fk === +values.defaulttickettype,
-                  );
-                  await setFieldValue('totalseats', event.target.value);
-                  await setFieldValue(
-                    `instanceTicketTypes[${defaultType}].ticketlimit`,
-                    event.target.value,
-                  );
-                }}
               />
               <div className={'grid grid-cols-2 text-zinc-800'}>
                 <p className={'text-sm font-bold'}>Available Seats</p>
@@ -111,41 +108,73 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                     : values.totalseats}
                 </p>
               </div>
+              <Field
+                name='ispreview'
+                component={FormSwitch}
+                className={inputControlClassName}
+                label='Preview'
+                size='small'
+                color='primary'
+              />
             </div>
             <FieldArray
-              name={'instanceTicketTypes'}
+              name='instanceTicketTypes'
               render={(arrayHelpers) => {
                 return (
-                  <TicketTypeUpdateTable
-                    arrayHelpers={arrayHelpers}
-                    eventInstanceID={values.eventinstanceid}
-                  />
+                  <article
+                    className='overflow-auto col-span-12 min-[1350px]:col-span-7 shadow-xl mx-auto rounded-xl bg-white w-[100%] min-h-[100px]'
+                  >
+                    <OptionUpdateTable
+                      arrayHelpers={arrayHelpers}
+                      optionsInit={(values) =>
+                        ticketTypes.filter(
+                          (type) =>
+                            !values.some(
+                              (restriction) =>
+                                +restriction.tickettypeid_fk === +type.tickettypeid_fk,
+                            ),
+                        )
+                      }
+                      fieldName='instanceTicketTypes'
+                      sticky={showPopUp}
+                      rowComponent={TicketTypeTableRow}
+                      headings={[
+                        'Admission Type',
+                        'Ticket Price',
+                        'Concession Price',
+                        'Quantity',
+                      ]}
+                      getOption={getInstanceTicketType}
+                      styles={{
+                        headerRow:
+                          'text-left text-zinc-800 whitespace-nowrap bg-gray-300',
+                        headerItem:
+                          'px-2 py-1 border-b border-l border-r border-white',
+                        tableBody: 'text-sm whitespace-nowrap text-zinc-700',
+                      }}
+                    />
+                  </article>
                 );
               }}
             />
-            <div
-              className={
-                'flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'
-              }
-            >
-              <FormSubmitButton />
-              {onDelete && (
-                <FormDeleteButton
-                  onDelete={onDelete}
-                  label={`Delete Showing ${values.eventinstanceid}`}
-                />
-              )}
+            <div className='flex flex-row min-[1350px]:grid content-center min-[1350px]:grid-cols-1 gap-3 mx-auto col-span-12 min-[1350px]:col-span-1'>
+              <FormSubmitButton
+                disabled={showPopUp}
+                className='flex items-center justify-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white font-bold p-2 rounded-xl shadow-xl'
+                testID='showing-save-button'
+              >
+                <SaveIcon className='h-7 w-7' />
+              </FormSubmitButton>
               {onLeaveEdit && (
-                <button
-                  className={
-                    'bg-blue-500 hover:bg-blue-700 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold'
-                  }
-                  onClick={onLeaveEdit}
+                <FormButton
+                  title='Back'
+                  testID='showing-leave-edit'
                   disabled={showPopUp}
-                  type={'button'}
+                  onClick={onLeaveEdit}
+                  className='flex items-center justify-center bg-blue-500 hover:bg-blue-600 disabled:bg-gray-500 text-white rounded-xl p-2 font-bold shadow-xl'
                 >
-                  Cancel
-                </button>
+                  <BackIcon className='h-7 w-7' />
+                </FormButton>
               )}
             </div>
           </div>
