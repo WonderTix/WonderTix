@@ -10,6 +10,11 @@ const prisma = extendPrismaClient();
 export const subscriptionController = Router();
 
 
+export const getFormattedDate = (date: Date): number =>
+  date.getFullYear() * (date.getMonth() < 9 ? 10000 : 100000) +
+  (date.getMonth() + 1) * 100 +
+  date.getDate();
+
 /**
  * @swagger
  * /2/subscription-types/:
@@ -162,8 +167,6 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
  */
 subscriptionController.get('/season/subscriptions/available', async (_, res: Response) => {
   try {
-    const today = new Date();
-    const formattedDate = today.getFullYear()*(today.getMonth()<9?10000:100000)+(today.getMonth()+1)*100+today.getDate();
     const seasons = await prisma.seasons.findMany({
       where: {
         deletedat: null,
@@ -172,7 +175,7 @@ subscriptionController.get('/season/subscriptions/available', async (_, res: Res
             deletedat: null,
           },
         },
-        enddate: {gte: formattedDate},
+        enddate: {gte: getFormattedDate(new Date())},
         events: {
           some: {
             subscriptioneligible: true,
@@ -212,6 +215,16 @@ subscriptionController.get('/season/subscriptions/available', async (_, res: Res
  *               $ref: '#/components/schemas/Season'
  *       400:
  *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       404:
+ *         description: season not found
  *         content:
  *           application/json:
  *             schema:
@@ -265,7 +278,7 @@ subscriptionController.get('/active-subscriptions/:seasonid', async (req: Reques
     });
 
     if (!season) {
-      return res.status(400).json({error: 'Season does not exist'});
+      return res.status(404).json({error: 'Season does not exist'});
     }
 
     const {deletedat, ...toReturn} = season;

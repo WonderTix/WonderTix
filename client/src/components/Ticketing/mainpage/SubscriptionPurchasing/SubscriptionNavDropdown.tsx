@@ -26,16 +26,18 @@ export const SubscriptionNavDropdown = ({
     return () => controler.abort();
   }, []);
 
-  if (!seasons.length) return null;
-
   return (
     <>
       <button
         className='flex flex-row gap-1 justify-between px-4 py-2 items-center'
         onClick={() => setShowDropDown(!showDropDown)}
       >
-        <span>Subscriptions</span>
-        {showDropDown ? <ChevronUp className='h-4 w-4'/> : <ChevronDown className='h-4 w-4'/>}
+        Subscriptions
+        {showDropDown ? (
+          <ChevronUp className='h-4 w-4' />
+        ) : (
+          <ChevronDown className='h-4 w-4' />
+        )}
       </button>
       {showDropDown && (
         <div className={mobile ? '' : 'relative'}>
@@ -46,22 +48,32 @@ export const SubscriptionNavDropdown = ({
                 : `py-2 w-full border-r bg-zinc-200 absolute rounded left-0 shadow ${marginClass}`
             }
           >
-            {seasons.map((season, index) => (
-              <li
-                key={index}
-                className='text-gray-600 hover:text-indigo-700 cursor-pointer'
-              >
-                <a
-                  onClick={() => {
-                    setShowDropDown(!showDropDown);
-                    navigate(`/subscriptions/${season.seasonid}`);
-                  }}
-                  className={`flex w-full p-4 items-center gap-x-2 text-sm ${mobile?'justify-center':'justify-start'}`}
+            {seasons.length ? (
+              seasons.map((season, index) => (
+                <li
+                  key={index}
+                  className='text-gray-600 hover:text-indigo-700 cursor-pointer'
                 >
-                  {season.name}
-                </a>
+                  <a
+                    onClick={() => {
+                      setShowDropDown(!showDropDown);
+                      navigate(`/subscriptions/${season.seasonid}`);
+                    }}
+                    className={`flex w-full p-4 items-center gap-x-2 text-sm ${
+                      mobile ? 'justify-center' : 'justify-start'
+                    }`}
+                  >
+                    {season.name}
+                  </a>
+                </li>
+              ))
+            ) : (
+              <li className={`text-gray-600 flex w-full p-4 items-center gap-x-2 text-sm ${
+                mobile ? 'justify-center' : 'justify-start'
+              }`}>
+                No Subscriptions Available
               </li>
-            ))}
+            )}
           </ul>
         </div>
       )}

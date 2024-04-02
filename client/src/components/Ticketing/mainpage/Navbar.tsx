@@ -99,6 +99,10 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
             <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
               <SubscriptionNavDropdown />
             </li>
+            {/* FIXME: These were removed per #563 in prep for the initial site launch*/}
+            {/* <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>*/}
+            {/*   <button onClick={() => navigate('/donate')} className='px-4 py-2'>Donate</button>*/}
+            {/* </li>*/}
           </ul>
         </div>
 

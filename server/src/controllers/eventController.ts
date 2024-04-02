@@ -99,7 +99,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       donationTotal,
     } = getDonationItem(donation);
 
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal+subscriptionTotal): 0;
+    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
     const orderSubTotal = ticketTotal+subscriptionTotal+donationTotal;
 
     if (orderSubTotal - discountAmount > .49) {

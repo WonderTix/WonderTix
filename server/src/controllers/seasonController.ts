@@ -1,7 +1,8 @@
-import {Router, Request, Response} from 'express';
+import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {getFormattedDate} from './susbcriptionController';
 
 const prisma = extendPrismaClient();
 
@@ -40,13 +41,8 @@ seasonController.get('/', async (req: Request, res: Response) => {
       deletedat: null,
     };
     if (req.query.current) {
-      const today = new Date();
-      const formattedDate =
-        today.getFullYear() * (today.getMonth() < 9 ? 10000 : 100000) +
-        (today.getMonth() + 1) * 100 +
-        today.getDate();
       filters.enddate = {
-        gte: formattedDate,
+        gte: getFormattedDate(new Date()),
       };
     }
     if (req.query.name) {
@@ -347,8 +343,6 @@ seasonController.put('/:id', async (req: Request, res: Response) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *       404:
- *         description: season not found
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */

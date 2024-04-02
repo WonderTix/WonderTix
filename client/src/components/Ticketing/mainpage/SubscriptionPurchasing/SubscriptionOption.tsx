@@ -85,7 +85,7 @@ export const SubscriptionOption = (props: SubscriptionOption) => {
             </h2>
             <p className='text-sm mb-1'>{option.description}</p>
             <p className='font-bold text-md'>
-              {option.ticketlimit} shows for {formatUSD(values.price)}
+              {option.ticketlimit} show{option.ticketlimit > 1 && 's'} for {formatUSD(values.price)}
             </p>
           </header>
           <div className='flex flex-row col-span-12 md:col-span-4 min-[1300px]:col-span-6 justify-center md:justify-end items-center gap-2'>

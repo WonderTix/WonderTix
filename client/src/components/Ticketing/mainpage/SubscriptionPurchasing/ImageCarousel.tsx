@@ -4,12 +4,12 @@ import {MobileStepper} from '@mui/material';
 import {FormButton} from '../../ticketingmanager/Event/components/FormButton';
 import {BackIcon, ForwardArrow} from '../../Icons';
 
-interface ImageCarousal {
+interface ImageCarouselProps {
   children: JSX.Element[];
   setAnchor: (value) => void;
 }
 
-export const ImageCarousal = (props: ImageCarousal): ReactElement => {
+export const ImageCarousel = (props: ImageCarouselProps): ReactElement => {
   const {children, setAnchor} = props;
   const [activeStep, setActiveStep] = useState(0);
   const maxSteps = children.length;
@@ -38,9 +38,9 @@ export const ImageCarousal = (props: ImageCarousal): ReactElement => {
         }}
         backButton={
           <FormButton
-            className='pr-2 disabled:hidden'
+            className='pr-2 disabled:text-gray-300 disabled:opacity-50 transition-all ease-in-out duration-300'
             disabled={activeStep === 0}
-            testID='carousal-back-button'
+            testID='carousel-back-button'
             title='back'
             onClick={() => setActiveStepAndAnchor(activeStep - 1)}
           >
@@ -49,9 +49,9 @@ export const ImageCarousal = (props: ImageCarousal): ReactElement => {
         }
         nextButton={
           <FormButton
-            className='pl-2 disabled:hidden'
+            className='pl-2 disabled:text-gray-300 disabled:opacity-50 transition-all ease-in-out duration-300'
             disabled={activeStep === maxSteps - 1}
-            testID='carousal-next-button'
+            testID='carousel-next-button'
             title='next'
             onClick={() => setActiveStepAndAnchor(activeStep + 1)}
           >

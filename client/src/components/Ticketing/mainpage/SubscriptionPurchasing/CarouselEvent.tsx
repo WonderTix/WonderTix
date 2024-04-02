@@ -6,7 +6,7 @@ import format from 'date-fns/format';
 import Label from '../../Label';
 import {SubscriptionEvent} from './SubscriptionPurchaseUtils';
 
-export const CarousalEvent = (props: {
+export const CarouselEvent = (props: {
   event: SubscriptionEvent;
   anchor: HTMLElement | null;
   setAnchor: (value) => void;
@@ -59,7 +59,7 @@ export const CarousalEvent = (props: {
               <li key={instance.eventinstanceid}>
                 {format(
                   getDate(instance.eventdate, instance.eventtime),
-                  'MM/dd/yyyy hh:mm aa',
+                  'MM/dd/yyyy h:mm aa',
                 )}
               </li>
             ))}

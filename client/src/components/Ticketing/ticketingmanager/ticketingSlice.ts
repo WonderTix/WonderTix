@@ -381,7 +381,7 @@ export const createSubscriptionCartItem = (
     subscriptiontypeid_fk,
     qtyAvailable: subscriptionlimit - subscriptionssold,
     name: `${name} Subscription`,
-    desc: `${ticketlimit} shows for ${season.name}`,
+    desc: `${ticketlimit} show${ticketlimit > 1? 's': ''} for ${season.name}`,
     qty: 0,
     price: Number(price),
     product_img_url: season.imageurl,
@@ -857,7 +857,7 @@ const ticketingSlice = createSlice({
  * @param state
  */
 export const selectDiscountValue = (state: RootState): number => {
-  const subtotal = selectCartSubtotal(state);
+  const subtotal = selectTicketCartSubtotal(state);
   const percentAmountDifference = (+state.ticketing.discount.percent / 100) * subtotal;
   if (state.ticketing.discount.amount && state.ticketing.discount.percent) {
     return Math.min(percentAmountDifference, state.ticketing.discount.amount);
@@ -867,18 +867,25 @@ export const selectDiscountValue = (state: RootState): number => {
     return percentAmountDifference;
   }
 };
+
 export const selectCartSubtotal = (state: RootState): number =>
+  selectTicketCartSubtotal(state) + selectSubscriptionCartSubtotal(state);
+
+export const selectTicketCartSubtotal = (state: RootState): number =>
   state.ticketing.ticketCart.reduce((tot, item) => {
     if (!item.payWhatCan) {
       return tot + item.price * item.qty;
     } else {
       return tot + item.payWhatPrice;
     }
-  }, 0) +
+  }, 0);
+
+export const selectSubscriptionCartSubtotal = (state: RootState): number =>
   state.ticketing.subscriptionCart.reduce<number>(
     (acc, item) => acc + item.price * item.qty,
     0,
   );
+
 export const selectCartTotal = (state: RootState): number => {
   const subtotal = selectCartSubtotal(state);
   if (state.ticketing.discount.amount || state.ticketing.discount.percent) {
