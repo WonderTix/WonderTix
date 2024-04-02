@@ -1,19 +1,22 @@
 /* eslint-disable require-jsdoc */
 import test, {type Locator, type Page, expect} from '@playwright/test';
-/*
-Since many locators' names are created while a specific test is being written, some names are ill-considered,
-of course we could optimize them later in the process to create as few locators as possible and to share
-the same locator with multiple tests.
-*/
 
-export class AdminPage {
+/*
+ Since many locators' names are created while a specific test is being written, some names are ill-considered,
+ of course we could optimize them later in the process to create as few locators as possible and to share
+ the same locator with multiple tests.
+ */
+
+export class AdminPurchasePage {
   readonly page: Page;
 
   readonly purchaseTicketButton: Locator;
-  readonly eventDropDown: Locator;
-  readonly eventTime: Locator;
-  readonly admissionType: Locator;
+
+  readonly eventDropdown: Locator;
+  readonly eventTimeDropdown: Locator;
+  readonly ticketTypeDropdown: Locator;
   readonly checkoutButton: Locator;
+
   readonly firstName: Locator;
   readonly lastName: Locator;
   readonly streetAddress: Locator;
@@ -27,10 +30,15 @@ export class AdminPage {
   readonly donationAmount: Locator;
   readonly backNext: Locator;
   readonly nextPageButton: Locator;
+
   readonly email2: Locator;
   readonly popupWindow: Locator;
-  readonly sms0: Locator; readonly sms1: Locator; readonly sms2: Locator;
-  readonly sms3: Locator; readonly sms4: Locator; readonly sms5: Locator;
+  readonly sms0: Locator;
+  readonly sms1: Locator;
+  readonly sms2: Locator;
+  readonly sms3: Locator;
+  readonly sms4: Locator;
+  readonly sms5: Locator;
   readonly submitPopup: Locator;
   readonly creditCardNum: Locator;
   readonly creditCardDate: Locator;
@@ -45,13 +53,19 @@ export class AdminPage {
   constructor(page: Page) {
     this.page = page;
 
-    this.purchaseTicketButton = page.getByRole('button', {name: 'Purchase Tickets'}); // for "EventInfo2" / "ShowingInfo2"
-    this.eventDropDown = page.getByRole('combobox');
-    // this.eventTime = page.locator('div').filter({hasText: /^Select TimeTue, Oct 17 - 10:20 AM$/}).getByRole('combobox');
-    this.eventTime = page.getByRole('combobox').nth(1);
-    // this.admissionType = page.locator('div').filter({hasText: /^Select TypeGeneral Admission - AdultGeneral Admission - ChildVIP$/});
-    this.admissionType = page.getByRole('combobox').nth(2);
-    this.checkoutButton = page.getByRole('button', {name: 'Proceed to Checkout'});
+    this.purchaseTicketButton = page.getByRole('button', {
+      name: 'Purchase Tickets',
+    });
+
+    // Admin Purchase Page locators
+    this.eventDropdown = page.getByRole('combobox');
+    this.eventTimeDropdown = page.getByRole('combobox').nth(1);
+    this.ticketTypeDropdown = page.getByRole('combobox').nth(2);
+    this.checkoutButton = page.getByRole('button', {
+      name: 'Proceed to Checkout',
+    });
+
+    // Admin Checkout Page locators
     this.firstName = page.getByPlaceholder('First Name');
     this.lastName = page.getByPlaceholder('Last Name');
     this.streetAddress = page.getByPlaceholder('Street Address');
@@ -65,6 +79,8 @@ export class AdminPage {
     this.donationAmount = page.getByPlaceholder('Enter donation amount');
     this.backNext = page.getByText('BackNext');
     this.nextPageButton = page.getByRole('button', {name: 'Next'});
+
+    // Stripe Page locators
     this.email2 = page.getByLabel('Email');
     this.popupWindow = page.getByText('Use your saved information');
     this.sms0 = page.getByTestId('sms-code-input-0');
@@ -80,7 +96,9 @@ export class AdminPage {
     this.creditCardCVC = page.getByPlaceholder('CVC');
     this.creditCardName = page.getByPlaceholder('Full name on card');
     this.creditCardZip = page.getByPlaceholder('ZIP');
-    this.secureSave = page.getByLabel(/Securely save my information for 1-click checkout/);
+    this.secureSave = page.getByLabel(
+      /Securely save my information for 1-click checkout/,
+    );
     this.payPhoneNum = page.getByPlaceholder('(201) 555-0123');
     this.paySubmit = page.getByTestId('hosted-payment-submit-button');
   }
@@ -97,101 +115,86 @@ export class AdminPage {
     await this.page.goto('/', {timeout: 30000});
   }
 
-  // ADD THIS FUNCTION TO YOUR CODE
   async dynamicDropDownSelector(eventName: string) {
-    // Replace 'your-combobox-selector' with the selector for combobox elements
     const comboboxSelector = 'select';
-
-    // Find all combobox elements on the page
     const comboboxes = await this.page.$$(comboboxSelector);
 
     if (comboboxes.length > 0) {
       const firstCombobox = comboboxes[0];
-
-      // Get options within the first combobox
       const options = await firstCombobox.$$('option');
 
-      // Define your regex pattern
-      const regexPattern = /Test_event/i; // Replace 'YourRegexPatternHere' with your regex pattern
-
-      // Function to find and select the option that matches the regex pattern
-      /**
-       *
-       * @param dropdown
-       * @param regex
-       */
-      async function selectOptionByTextRegex(dropdown, regex) {
-        for (const option of options) {
-          const optionText = await option.innerText();
-          if (regex.test(optionText)) {
-            await dropdown.selectOption(optionText);
-            console.log(`Selected option: ${optionText}`);
-            return;
-          }
-        }
-        console.log('No matching option found.');
-      }
-
-      // Call the function with your regex pattern and the first combobox element
-      await selectOptionByTextRegex(firstCombobox, regexPattern);
-    } else {
-      console.log('No combobox elements found.');
+      await this.selectOptionByTextRegex(firstCombobox, options, /Test_event/i);
     }
   }
-  // END FUNCTION
-  // ADD THIS FUNCTION TO YOUR CODE
+
+  /**
+   *
+   * @param dropdown
+   * @param options
+   * @param regex
+   */
+  async selectOptionByTextRegex(dropdown, options, regex: RegExp) {
+    for (const option of options) {
+      const optionText = await option.innerText();
+      if (regex.test(optionText)) {
+        await dropdown.selectOption(optionText);
+        return;
+      }
+    }
+  }
+
   async dynamicDropDownSelectorTime(eventName: string) {
-    // Replace 'your-combobox-selector' with the selector for combobox elements
     const comboboxSelector = 'select';
 
-    // Find all combobox elements on the page
     const comboboxes = await this.page.$$(comboboxSelector);
 
     if (comboboxes.length > 0) {
       const secondCombobox = comboboxes[1];
-
-      // Get options within the first combobox
       const options = await secondCombobox.$$('option');
 
-      // Define your regex pattern
-      const regexPattern = /Tue/i; // Replace 'YourRegexPatternHere' with your regex pattern
-
-      // Function to find and select the option that matches the regex pattern
-      /**
-       *
-       * @param dropdown
-       * @param regex
-       */
-      async function selectOptionByTextRegexTime(dropdown, regex) {
-        for (const option of options) {
-          const optionText = await option.innerText();
-          if (regex.test(optionText)) {
-            await dropdown.selectOption(optionText);
-            console.log(`Selected option: ${optionText}`);
-            return;
-          }
-        }
-        console.log('No matching option found.');
-      }
-
-      // Call the function with your regex pattern and the first combobox element
-      await selectOptionByTextRegexTime(secondCombobox, regexPattern);
-    } else {
-      console.log('No combobox elements found.');
+      await this.selectOptionByTextRegexTime(secondCombobox, options, /Tue/i);
     }
   }
-  // END FUNCTION
 
-  async purchaseTicket(eventName: string, eventTime: string, testEmail: string) {
+  /**
+   *
+   * @param dropdown
+   * @param options
+   * @param regex
+   */
+  async selectOptionByTextRegexTime(dropdown, options, regex: RegExp) {
+    for (const option of options) {
+      const optionText = await option.innerText();
+      if (regex.test(optionText)) {
+        await dropdown.selectOption(optionText);
+        return;
+      }
+    }
+  }
+
+  /**
+   * Purchase a ticket via admin purchase including the Stripe panels.
+   *
+   * @param {string} eventName
+   * @param {string} eventTime
+   * @param {string} testEmail
+   * @returns {Promise<void>}
+   */
+  async purchaseTicket(
+    eventName: string,
+    eventTime: string,
+    testEmail: string,
+  ): Promise<void> {
     await this.gotoTicketing(); // ticketing url
     await this.purchaseTicketButton.click();
     await delay(500);
     await this.dynamicDropDownSelector(eventName);
     await delay(500);
     await this.dynamicDropDownSelectorTime(eventTime);
-    await this.admissionType.selectOption('1');
+    await this.ticketTypeDropdown.selectOption('1');
     await delay(500);
     await this.checkoutButton.click();
+
     await this.firstName.click();
     await this.firstName.fill('Betty');
     await this.lastName.click();
@@ -215,11 +218,13 @@ export class AdminPage {
     await this.donationAmount.fill('5.00');
     await this.backNext.click();
     await this.nextPageButton.click();
+
     await delay(2000);
     await this.email2.click();
     await this.email2.fill(testEmail);
     await delay(3000);
-    if (await this.popupWindow.isVisible()) { // Scenario for verification pop-up
+    if (await this.popupWindow.isVisible()) {
+      // Scenario for verification pop-up
       await this.sms0.click();
       await this.sms0.fill('4');
       await this.sms1.fill('2');
@@ -230,7 +235,8 @@ export class AdminPage {
       await this.submitPopup.click();
       await this.page.goto('https://localhost:3000/success');
       expect(await this.purchaseSuccessful.isVisible());
-    } else { // Scenario for new/unregistered e-mail
+    } else {
+      // Scenario for new/unregistered e-mail
       await this.creditCardNum.click();
       await this.creditCardNum.fill('4242 4242 4242 4242');
       await this.creditCardDate.click();
@@ -256,5 +262,5 @@ export class AdminPage {
  * @param ms
  */
 function delay(ms: number) {
-  return new Promise( (resolve) => setTimeout(resolve, ms) );
+  return new Promise( (resolve) => setTimeout(resolve, ms));
 }

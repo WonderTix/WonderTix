@@ -2,19 +2,19 @@
 import {test, expect} from '@playwright/test';
 import {MainPage} from '../pages/mainPage';
 import {EventsPage} from '../pages/EventsPage';
-import {AdminPage} from '../pages/AdminPage';
+import {AdminPurchasePage} from '../pages/AdminPurchasePage';
 import {EVENT_INFO_1} from '../testData/EventInfo';
 import {SHOWING_INFO_2} from '../testData/ShowingInfo';
 
 const testEmail = 'test987661234@wondertix.com';
 
 test('Open admin page', async ({page}) => {
-  const adminPage = new AdminPage(page);
+  const adminPage = new AdminPurchasePage(page);
   await adminPage.goto();
 });
 
 test('Open ticketing page', async ({page}) => {
-  const adminPage = new AdminPage(page);
+  const adminPage = new AdminPurchasePage(page);
   await adminPage.gotoTicketing();
 });
 
@@ -27,7 +27,7 @@ test('Purchase ticket for customer as admin', async ({page}) => {
   await delay(500);
   await events.addNewShowing(SHOWING_INFO_2);
   try {
-    const adminPage = new AdminPage(page);
+    const adminPage = new AdminPurchasePage(page);
     await adminPage.purchaseTicket(EVENT_INFO_1.eventName, SHOWING_INFO_2.showingWholeDate, testEmail);
   } finally {
     // await page.goto('/', { timeout: 5000 });
