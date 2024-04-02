@@ -5,6 +5,7 @@ import {AdminPurchasePage} from '../pages/AdminPurchasePage';
 import {EVENT_INFO_1} from '../testData/EventInfo';
 import {SHOWING_INFO_2} from '../testData/ShowingInfo';
 import {JANE_DOE} from '../testData/CustomerInfo';
+import {VALID_VISA_CREDIT} from '../testData/CreditCard';
 
 test('Open admin purchase page', async ({page}) => {
   const adminPage = new AdminPurchasePage(page);
@@ -28,7 +29,7 @@ test('Purchase ticket for customer as admin', async ({page}, testInfo) => {
   await events.addNewShowing(SHOWING_INFO_2);
 
   try {
-    await adminPage.purchaseTicket(EVENT_INFO_1.eventName, SHOWING_INFO_2.showingWholeDate, JANE_DOE);
+    await adminPage.purchaseTicket(EVENT_INFO_1.eventName, SHOWING_INFO_2.showingWholeDate, VALID_VISA_CREDIT, JANE_DOE);
     await expect(adminPage.purchaseSuccessful).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
     await adminPage.goToHome();

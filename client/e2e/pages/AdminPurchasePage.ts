@@ -1,6 +1,7 @@
 /* eslint-disable require-jsdoc */
 import test, {type Locator, type Page, expect} from '@playwright/test';
 import {CustomerInfo} from '../testData/CustomerInfo';
+import {CreditCardInfo} from '../testData/CreditCard';
 
 /*
  Since many locators' names are created while a specific test is being written, some names are ill-considered,
@@ -36,13 +37,6 @@ export class AdminPurchasePage {
 
   readonly email2: Locator;
   readonly popupWindow: Locator;
-  readonly sms0: Locator;
-  readonly sms1: Locator;
-  readonly sms2: Locator;
-  readonly sms3: Locator;
-  readonly sms4: Locator;
-  readonly sms5: Locator;
-  readonly submitPopup: Locator;
   readonly creditCardNum: Locator;
   readonly creditCardDate: Locator;
   readonly creditCardCVC: Locator;
@@ -88,21 +82,13 @@ export class AdminPurchasePage {
     // Stripe Page locators
     this.email2 = page.getByLabel('Email');
     this.popupWindow = page.getByText('Use your saved information');
-    this.sms0 = page.getByTestId('sms-code-input-0');
-    this.sms1 = page.getByTestId('sms-code-input-1');
-    this.sms2 = page.getByTestId('sms-code-input-2');
-    this.sms3 = page.getByTestId('sms-code-input-3');
-    this.sms4 = page.getByTestId('sms-code-input-4');
-    this.sms5 = page.getByTestId('sms-code-input-5');
     this.purchaseSuccessful = page.getByText('Thank you for your purchase!');
     this.creditCardNum = page.getByPlaceholder('1234 1234 1234 1234');
     this.creditCardDate = page.getByPlaceholder('MM / YY');
     this.creditCardCVC = page.getByPlaceholder('CVC');
     this.creditCardName = page.getByPlaceholder('Full name on card');
     this.creditCardZip = page.getByPlaceholder('ZIP');
-    this.secureSave = page.getByLabel(
-      /Securely save my information for 1-click checkout/,
-    );
+    this.secureSave = page.locator('#enableStripePass');
     this.payPhoneNum = page.getByPlaceholder('(201) 555-0123');
     this.paySubmit = page.getByTestId('hosted-payment-submit-button');
   }
@@ -118,7 +104,8 @@ export class AdminPurchasePage {
   }
 
   async goToHome() {
-    await this.homePage.click();
+    await this.page.goto('/', {timeout: 30000});
+    await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 
   async dynamicDropDownSelector(eventName: string) {
@@ -144,7 +131,6 @@ export class AdminPurchasePage {
       const optionText = await option.innerText();
       if (regex.test(optionText)) {
         await dropdown.selectOption(optionText);
-        return;
       }
     }
   }
@@ -172,7 +158,6 @@ export class AdminPurchasePage {
       const optionText = await option.innerText();
       if (regex.test(optionText)) {
         await dropdown.selectOption(optionText);
-        return;
       }
     }
   }
@@ -182,59 +167,31 @@ export class AdminPurchasePage {
    *
    * @param {string} eventName
    * @param {string} eventTime
+   * @param {CreditCardInfo} creditCard
    * @param {CustomerInfo} customer
    * @returns {Promise<void>}
    */
   async purchaseTicket(
     eventName: string,
     eventTime: string,
+    creditCard: CreditCardInfo,
     customer: CustomerInfo,
   ): Promise<void> {
     await this.goToTicketing();
     await this.purchaseTicketButton.click();
-    await delay(500);
+    await this.page.waitForTimeout(600);
     await this.dynamicDropDownSelector(eventName);
-    await delay(500);
     await this.dynamicDropDownSelectorTime(eventTime);
     await this.ticketTypeDropdown.selectOption('1');
-    await delay(500);
     await this.checkoutButton.click();
 
     await this.fillCustomerInfo(customer);
     await this.backNext.click();
     await this.nextPageButton.click();
 
-    await delay(2000);
-    await this.email2.click();
-    await this.email2.fill(customer.email);
-    await delay(3000);
-    if (await this.popupWindow.isVisible()) {
-      // Scenario for verification pop-up
-      await this.sms0.click();
-      await this.sms0.fill('4');
-      await this.sms1.fill('2');
-      await this.sms2.fill('4');
-      await this.sms3.fill('2');
-      await this.sms4.fill('4');
-      await this.sms5.fill('2');
-      await this.paySubmit.click();
-    } else {
-      // Scenario for new/unregistered e-mail
-      await this.creditCardNum.click();
-      await this.creditCardNum.fill('4242 4242 4242 4242');
-      await this.creditCardDate.click();
-      await this.creditCardDate.fill('12 / 34');
-      await this.creditCardCVC.click();
-      await this.creditCardCVC.fill('487');
-      await this.creditCardName.click();
-      await this.creditCardName.fill(customer.fullName);
-      await this.creditCardZip.click();
-      await this.creditCardZip.fill(customer.postCode);
-      await this.secureSave.check();
-      await this.payPhoneNum.click();
-      await this.payPhoneNum.fill(customer.phoneNumber);
-      await this.paySubmit.click();
-    }
+    await this.page.waitForTimeout(10000);
+    await this.fillStripeInfo(customer, creditCard);
+    await this.paySubmit.click();
   }
 
   /**
@@ -258,6 +215,32 @@ export class AdminPurchasePage {
     await this.seatingAccomodations.selectOption(customer.accommodations);
     await this.donationAmount.click();
     await this.donationAmount.fill(customer.donationAmount);
+  }
+
+  /**
+   * Fill in information to the Stripe checkout page.
+   *
+   * @param {CustomerInfo} customer
+   * @param {CreditCardInfo} creditCard
+   * @returns {Promise<void>}
+   */
+  async fillStripeInfo(
+    customer: CustomerInfo,
+    creditCard: CreditCardInfo,
+  ): Promise<void> {
+    if (await this.popupWindow.isVisible()) {
+      await this.page.getByRole('button', {name: 'Cancel'}).click();
+    }
+    await this.creditCardNum.fill(creditCard.cardNumber);
+    await this.creditCardDate.click();
+    await this.page.waitForTimeout(500);
+    await this.creditCardDate.fill(creditCard.date);
+    await this.creditCardCVC.fill(creditCard.CVC);
+    await this.creditCardName.fill(customer.fullName);
+    await this.creditCardZip.fill(customer.postCode);
+    if (await this.secureSave.isChecked()) {
+      await this.secureSave.click();
+    }
   }
 }
 
