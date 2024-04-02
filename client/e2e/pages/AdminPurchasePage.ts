@@ -185,7 +185,7 @@ export class AdminPurchasePage {
     eventTime: string,
     customer: CustomerInfo,
   ): Promise<void> {
-    await this.gotoTicketing(); // ticketing url
+    await this.gotoTicketing();
     await this.purchaseTicketButton.click();
     await delay(500);
     await this.dynamicDropDownSelector(eventName);
@@ -235,6 +235,14 @@ export class AdminPurchasePage {
       expect(await this.purchaseSuccessful.isVisible());
     }
   }
+
+  /**
+   * Fills in Contact form with small amount of information required by
+   * admin purchase.
+   *
+   * @param {CustomerInfo} customer
+   * @returns {Promise<void>}
+   */
   async fillCustomerInfo(
     customer: CustomerInfo,
   ): Promise<void> {
