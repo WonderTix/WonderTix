@@ -11,6 +11,8 @@ import {CustomerInfo} from '../testData/CustomerInfo';
 export class AdminPurchasePage {
   readonly page: Page;
 
+  readonly homePage: Locator;
+  readonly loadingScreen: Locator;
   readonly purchaseTicketButton: Locator;
 
   readonly eventDropdown: Locator;
@@ -54,6 +56,8 @@ export class AdminPurchasePage {
   constructor(page: Page) {
     this.page = page;
 
+    this.homePage = page.getByRole('button', {name: '/'});
+    this.loadingScreen = page.getByTestId('loading-screen');
     this.purchaseTicketButton = page.getByRole('button', {
       name: 'Purchase Tickets',
     });
@@ -90,7 +94,6 @@ export class AdminPurchasePage {
     this.sms3 = page.getByTestId('sms-code-input-3');
     this.sms4 = page.getByTestId('sms-code-input-4');
     this.sms5 = page.getByTestId('sms-code-input-5');
-    this.submitPopup = page.getByTestId('hosted-payment-submit-button');
     this.purchaseSuccessful = page.getByText('Thank you for your purchase!');
     this.creditCardNum = page.getByPlaceholder('1234 1234 1234 1234');
     this.creditCardDate = page.getByPlaceholder('MM / YY');
@@ -104,16 +107,18 @@ export class AdminPurchasePage {
     this.paySubmit = page.getByTestId('hosted-payment-submit-button');
   }
 
-  async goto() {
+  async goTo() {
     await this.page.goto('/admin', {timeout: 30000});
+    await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 
-  async gotoTicketing() {
+  async goToTicketing() {
     await this.page.goto('/ticketing', {timeout: 30000});
+    await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 
-  async gotoHome() {
-    await this.page.goto('/', {timeout: 30000});
+  async goToHome() {
+    await this.homePage.click();
   }
 
   async dynamicDropDownSelector(eventName: string) {
@@ -185,7 +190,7 @@ export class AdminPurchasePage {
     eventTime: string,
     customer: CustomerInfo,
   ): Promise<void> {
-    await this.gotoTicketing();
+    await this.goToTicketing();
     await this.purchaseTicketButton.click();
     await delay(500);
     await this.dynamicDropDownSelector(eventName);
@@ -212,9 +217,7 @@ export class AdminPurchasePage {
       await this.sms3.fill('2');
       await this.sms4.fill('4');
       await this.sms5.fill('2');
-      await this.submitPopup.click();
-      await this.page.goto('https://localhost:3000/success');
-      expect(await this.purchaseSuccessful.isVisible());
+      await this.paySubmit.click();
     } else {
       // Scenario for new/unregistered e-mail
       await this.creditCardNum.click();
@@ -231,8 +234,6 @@ export class AdminPurchasePage {
       await this.payPhoneNum.click();
       await this.payPhoneNum.fill(customer.phoneNumber);
       await this.paySubmit.click();
-      await this.page.goto('https://localhost:3000/success');
-      expect(await this.purchaseSuccessful.isVisible());
     }
   }
 

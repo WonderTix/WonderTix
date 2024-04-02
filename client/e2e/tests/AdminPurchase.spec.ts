@@ -8,34 +8,31 @@ import {JANE_DOE} from '../testData/CustomerInfo';
 
 test('Open admin purchase page', async ({page}) => {
   const adminPage = new AdminPurchasePage(page);
-  await adminPage.goto();
+  await adminPage.goTo();
 });
 
 test('Open ticketing page', async ({page}) => {
   const adminPage = new AdminPurchasePage(page);
-  await adminPage.gotoTicketing();
+  await adminPage.goToTicketing();
 });
 
-test('Purchase ticket for customer as admin', async ({page}) => {
-  test.setTimeout(100000);
+test('Purchase ticket for customer as admin', async ({page}, testInfo) => {
+  const timeoutAdd = testInfo.retry * 5000;
+  test.setTimeout(80000 + (timeoutAdd * 2));
+
+  const adminPage = new AdminPurchasePage(page);
   const events = new EventsPage(page);
   await events.goto();
   await events.addnewevent(EVENT_INFO_1);
   await events.activateEvent();
-  await delay(500);
   await events.addNewShowing(SHOWING_INFO_2);
+
   try {
-    const adminPage = new AdminPurchasePage(page);
     await adminPage.purchaseTicket(EVENT_INFO_1.eventName, SHOWING_INFO_2.showingWholeDate, JANE_DOE);
+    await expect(adminPage.purchaseSuccessful).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
-    await delay(1000);
-    await events.goto();
+    await adminPage.goToHome();
     await events.goToEventFromManage(EVENT_INFO_1);
-    await delay(500);
     await events.deleteTheEvent(EVENT_INFO_1);
   }
 });
-
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
