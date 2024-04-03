@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {FormikProps, FormikValues} from 'formik';
-import {Switch} from '@mui/material';
+import {Switch, Tooltip} from '@mui/material';
 import {SubscriptionTicketItemUpdateTable} from './SubscriptionTicketItemUpdateTable';
 import {Subscription, useIsMounted} from './SubscriptionRedemptionUtils';
 import {FormButton} from '../Event/components/FormButton';
 import {createSubmitFunction} from '../Event/components/ShowingUtils';
-import {LoadingIcon, SaveIcon, TicketIcon, XIcon} from '../../Icons';
+import {HelpIcon, LoadingIcon, SaveIcon, TicketIcon, XIcon} from '../../Icons';
 import Label from '../../Label';
 
 interface SubscriptionContainerProps {
@@ -39,7 +39,8 @@ export const SubscriptionRedemptionContainer = (
     'invalid' | 'submitting' | 'nothing'
   >('nothing');
   const [eventRestriction, setEventRestriction] = useState(true);
-  const [eventRestrictionIsViolated, setEventRestrictionIsViolated] = useState(false);
+  const [eventRestrictionIsViolated, setEventRestrictionIsViolated] =
+    useState(false);
   const formRef = useRef<FormikProps<FormikValues>>(null);
   const timeoutId = useRef(null);
   const isMounted = useIsMounted();
@@ -113,7 +114,9 @@ export const SubscriptionRedemptionContainer = (
           >
             {subscription.ticketsredeemed >= subscription.ticketlimit
               ? 'FULLY REDEEMED'
-              : `${subscription.ticketsredeemed} of ${subscription.ticketlimit} Ticket${subscription.ticketlimit>1?'s':''} Redeemed`}
+              : `${subscription.ticketsredeemed} of ${
+                  subscription.ticketlimit
+                } Ticket${subscription.ticketlimit > 1 ? 's' : ''} Redeemed`}
           </Label>
         </h2>
         <div className='flex flex-row justify-center items-center min-[768px]:justify-end gap-2'>
@@ -123,12 +126,19 @@ export const SubscriptionRedemptionContainer = (
                   key={0}
                   className='flex flex-col items-center min-[1300px]:flex-row pr-1'
                 >
-                  <label
-                    htmlFor='event-restriction-switch'
-                    className='text-center text-zinc-800'
+                  <Tooltip
+                    title='Turn off to allow for redemption of multiple tickets to the same event'
+                    placement='top'
+                    arrow
                   >
-                    Event Restriction:
-                  </label>
+                    <label
+                      htmlFor='event-restriction-switch'
+                      className='text-zinc-800 flex flex-row items-center justify-center gap-1'
+                    >
+                      Event Restriction
+                      <HelpIcon className='h-4 w-4' strokeWidth={2} />
+                    </label>
+                  </Tooltip>
                   <Switch
                     id='event-restriction-switch'
                     color='primary'

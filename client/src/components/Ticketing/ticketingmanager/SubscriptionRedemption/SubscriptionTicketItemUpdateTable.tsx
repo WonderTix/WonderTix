@@ -92,7 +92,7 @@ export const SubscriptionTicketItemUpdateTable = (
     }
   }, [subscription]);
 
-  if (!subscription) return null;
+  if (!subscription || !events.length) return null;
 
   return (
     <Formik
