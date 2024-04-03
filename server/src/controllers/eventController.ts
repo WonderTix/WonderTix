@@ -116,29 +116,29 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 
     if (orderSubTotal + feeTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
-          contactid,
-          formData.email,
-          cartRows,
-          {...discount, amountOff: discountAmount},
+        contactid,
+        formData.email,
+        cartRows,
+        {...discount, amountOff: discountAmount},
       );
     } else if (orderSubTotal + feeTotal - discountAmount > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
     order = await orderFulfillment(
-        prisma,
-        eventInstanceQueries,
-        orderSubTotal,
-        discountAmount,
-        feeTotal,
-        {
-          orderTicketItems,
-          donationItem,
-          orderSubscriptionItems,
-        },
-        contactid,
-        toSend.id,
-        discount.code != '' ? discount.discountid : null,
+      prisma,
+      eventInstanceQueries,
+      orderSubTotal,
+      discountAmount,
+      feeTotal,
+      {
+        orderTicketItems,
+        donationItem,
+        orderSubscriptionItems,
+      },
+      contactid,
+      toSend.id,
+      discount.code != '' ? discount.discountid : null,
     );
 
     if (toSend.id === 'comp') {

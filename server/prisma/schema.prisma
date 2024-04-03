@@ -329,7 +329,7 @@ model tickettype {
   tickettypeid                  Int                            @id @default(autoincrement())
   description                   String                         @db.VarChar(100)
   price                         Decimal                        @db.Money
-  fee                           Decimal                        @db.Money
+  fee                           Decimal                        @default(0) @db.Money
   deprecated                    Boolean?                       @default(false)
   discounts                     discounts[]
   ticketrestrictions            ticketrestrictions[]

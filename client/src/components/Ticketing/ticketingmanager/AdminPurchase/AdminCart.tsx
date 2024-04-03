@@ -2,8 +2,7 @@ import React, {ReactElement, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router';
 import {EventRow} from './utils/adminCommon';
 import {getDiscountCode} from './utils/adminApiRequests';
-import {HelpIcon, SearchIcon, XIcon} from '../../Icons';
-import {Tooltip} from '@mui/material';
+import {SearchIcon, XIcon} from '../../Icons';
 
 /**
  * Math to dollar - `$${(Math.round(x * 100) / 100).toFixed(2)}`

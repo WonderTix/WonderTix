@@ -313,15 +313,11 @@ export const getCartRow = (name: string, description: string, unitAmount: number
 });
 
 const getTickets = (
-    ticketRestriction: LoadedTicketRestriction | undefined,
+    ticketRestriction: LoadedTicketRestriction,
     eventInstance: any,
     quantity: number,
     price: number,
 ) => {
-  if (!ticketRestriction) {
-    throw new InvalidInputError(422, `Requested tickets no longer available`);
-  }
-
   if ((ticketRestriction.availabletickets-=quantity) < 0 || (eventInstance.availableseats-=quantity) < 0) {
     throw new InvalidInputError(422, `Requested tickets no longer available`);
   }
