@@ -38,6 +38,7 @@ Analogies can be helpful here, and considering our client, it seems appropriate 
 *Analogy*: Think of prd as the main performance where the audience is right in front of you and the show must go on. If an actor forgets his lines or the trombonist hits a wrong note, the audience is going to notice. If things get bad enough, people might walk out or want their money back.
 
 ### General principles
+
 There are different motivations for using multiple environments, but I think we can cover a lot of ground by talking about three basic principles:
 
 1. Isolation
@@ -88,12 +89,15 @@ Risk management, then, is about anticipating and hedging against the kinds of th
 This section is a work in progress and might be moved to a separate document at some point. For now, it will indicate some of our plans for the WonderTix project’s various environments.
 
 ##### dev (development)
+
 We are currently investigating how to run our automated tests locally by expanding our existing docker-compose setup. This would allow us to reduce build costs on GCP, among other things. Promotion to stg would take place upon successful merge of a PR. To start, though, we’ll prioritize staging and production before improving our local configuration.
 
 ##### stg (staging)
+
 Our stg deployment will look a lot like our current MVP deployment. To begin, we will simply migrate the MVP deployment to our new WonderTix project on GCP. From there, we’ll verify that our automated tests run as expected, determine what changes need to be made to the environment, and clarify how our triggers will promote code from stg to prd. Staging should have robust database testing: that is probably the main difference between staging and whatever development environment we set up.
 
 ##### prd (production)
+
 Again, to get started, we’ll reproduce the stg deployment and then identify necessary changes to the environment. These should be minimal and will likely pertain to access and security. We will need to configure DNS so that end users can access the PPH site using a proper domain name. We will likely need some kind of load balancing to interface with a backup deployment (bak), which we can use to minimize downtime in the event of a catastrophic failure in prd. It’s possible, however, that there are different mechanisms within GCP that can do something similar. We’re going to look into that.
 
 ### Conclusion

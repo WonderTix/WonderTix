@@ -41,6 +41,7 @@ For our purposes, it’s sufficient to say that our Dockerfiles provide instruct
 It’s also worth noting that we have two sets of Dockerfiles for WonderTix: the `Dockerfile.dev` files are for deploying to GCP, and the regular old Dockerfiles are for running locally via Docker Compose.
 
 ### cloudbuild.yaml
+
 With our Dockerfiles providing instructions, we’re still faced with the task of actually building images from them. More than that, we have to move those images so they’re accessible to whatever service is then launching containers from them. This is where our cloudbuild.yaml files come in.
 
 A YAML file is a set of static instructions called a declarative manifest. A manifest is distinct from, say, a script in that it specifies some desired state without saying exactly how to achieve that state. An imperative script, on the other hand, will proceed step by step and give detailed instructions for achieving a given state. Scripts are more flexible and open-ended, but they’re also more error-prone; manifests are simple, unambiguous, and less susceptible to things like runtime or programmer errors.

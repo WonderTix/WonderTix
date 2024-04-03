@@ -1,17 +1,21 @@
 ## Wondertix Playwright Guide
 
 ### Introduction
+
 Playwright is our platform for conducting end-to-end (E2E) testing of the Wondertix website.  Our implementations are written in Typescript.  For the basics of how to install, beginning tutorials, and other setup instructions see the onboarding guide: WonderTix Onboarding Guide for the FW23 Team
 
 ### Architecture
+
 There are three primary components to test creation: the page object, test data, and the test scripts.
 
 #### Page Objects
+
 Page objects are located in the e2e/pages folder.  The purpose of a page object is to contain the logic needed for manipulating a web page.  This consists of all the locators needed for testing and the functions needed to interact with them.  
 Examples of such functions might include finding a clicking on a specific event in a page.  Another might be to fill out a form with user info.  Depending on the workflow needs, these functions may be aggregated as well.  As another example, mainPage.ts contains separate functions to navigate individual sections to purchase a ticket - these functions would be used for conducting tests within the purchasing workflow.  However, there is also a function that simply executes the entire workflow from finding an event through purchasing a ticket - this is useful for tests that require a ticket to be purchased, but do not need to check any states within the purchase process itself.
 In general, whenever some form of user data is required, use Test Data objects.  Even if only one or two members of the object are required, pass the entire object.  Simple string and number parameters should be limited to cases where it does not make sense to include the data inside of a test data object.
 
 #### Test Scripts
+
 The actual test scripts are located in the e2e/tests folder.  Each test acts as a user workflow on the web page.  Utilizing the page object model, these tests rarely interact with a page directly.  Instead, they set up the page objects needed, any test data objects required, and then execute the functions contained by the page objects to execute the intended workflow.
 Except for the case of using expect statements, test scripts do not need to access page locators or test data elements directly.  Any missing page functionality should be added to the page object and then called from the test script.
 Expect statements may use locators directly, but even these should be from the page object.  This allows for easier maintenance - in the case of an update to the codebase, only the page object would need modification instead of an indeterminate number of tests.  Likewise, expects may need to access members of a test data object as the single source of truth.
@@ -50,6 +54,7 @@ const eventLocator = page.getByTestID('event-card').filter({hasText: ‘Event Na
 Note that even the filtered array may contain multiple locators - the filter must be specific enough to select only one locator.  This is one of the reasons we use randomizing elements in our test data objects, as it makes it easier to perform this kind of filtering.
 
 #### Find a dropdown selection
+
 Dropdowns can be tricky.  If an option value or text is known directly, you can simply select that option.  However, some dropdowns in Wondertix hold data elements not accessible by the test - for example, in some admin pages the event selection includes a show ID that is determined by the database and is otherwise unknown to the test.
 The trick is each dropdown option is a locator in its own right.  Nesting locator selections and filters can help identify the desired dropdown when a full text value is unknown:
 
@@ -68,6 +73,7 @@ eventDropdown.selectOption(desiredEventOptions.textContent());
 ```
 
 #### Starting a new page object
+
 Beginning a new page object can be intimidating.  It can be tempting to open a page and start reaching for all the locators you can.  Don’t do this!
 Instead, begin by recording your intended workflow in Playwright.  Then use the locators in the recorded test for your starting point, only adding more as you discover you need them.
 There is one thing to mind when using Playwright’s recorded locators.  The methods Playwright uses are not always ideal.  In particular, watch for cases where it uses the .first() method, and when it selects a locator by text content.  In the first case, if Playwright is looking at a dynamic element of the page (say, a particular event or customer) there is never a guarantee that the first locator will be the desired locator.  The second case may fail for similar reasons - if it’s looking for dynamic content, then the text being searched for may be changed and a static locator may not be the right answer.

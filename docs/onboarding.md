@@ -2,6 +2,7 @@
 Compiled by Jaeger Tang. Modified by Eben Weisman for the Winter/Spring Team. Last updated 3/20/2024. 
 
 #### Contents
+
 ```
 Part 1: Setting up the Local Environment
     Wondertix Setup:
@@ -46,6 +47,7 @@ Follow the setup instructions outlined in the README to clone the repository and
 The README in the GitHub repository provides crucial information and should be your first reference for setting up Wondertix.
 
 ##### Notes on Setup:
+
 - Local build uses docker to spin up client, server, and database locally. 
   - Your client endpoint is https://localhost:3000
   - Your backend api endpoint is https://localhost:8000/api/docs
@@ -67,10 +69,12 @@ Whenever you change your `.env` variables, make sure to completely rebuild your 
 Engaging with a shared codebase might be a new experience for some team members. Thus, understanding GitHub and its operations is vital for smooth collaboration and integration.
 
 #### GitHub Basics
+
 - Ensure you have a GitHub account and are added to the Wondertix repository.
 - Understand the GitHub interface, issues, pull requests, and other essential features. Refer to the guide: Git/PR Conventions
 
 #### Git Operations
+
 - **Branch Operations:** Get used to creating, checking out, and switching between branches. This ensures you always work on the appropriate section of the code without affecting others.
 - **Pull Requests:** Learn how to create a pull request. This allows others to review your changes before they get merged into the main branch.
 Rebase and Merge: Familiarize yourself with updating your local branch. You can use either `rebase` or `merge` operations to align with the latest changes in the main branch. Refer to the guide: Updating Your Branch.
@@ -107,12 +111,15 @@ Before diving into writing tests, it's crucial to familiarize yourself with the 
 Make sure to watch them to gain a clear understanding of working with Playwright. **Install the official Playwright VSCode Extension** to leverage the convenient tools provided. 
 
 #### Setting Up Playwright:
+
 To run Playwright locally, make sure you've executed the command `npm install` to install all necessary packages. For further insights and resources, explore the official [Playwright documentation](https://playwright.dev/) on their website.
 
 ### Part 4: Writing Playwright Tests
+
 Now that you're equipped with knowledge about Playwright and have set up your local environment, it's time to delve deeper. The SF23 Deployment team is in the early stages of drafting tests. By weeks 2 and 3, we'll offer more specific guidance on the tests you'll be contributing to Wondertix. For the time being, focus on exploring the Wondertix website and getting familiar with Playwright.
 
 #### Utilizing the Page Object Model:
+
 For Wondertix, we will be utilizing the Page Object Model. Refer to the documentation here:
 [https://playwright.dev/docs/pom](https://playwright.dev/docs/pom.)
 
@@ -121,6 +128,7 @@ Note: You can reference the Login Page Object `LoginPage.ts` used by the `./clie
 
 
 #### Authentication:
+
 For handling user authentication, we followed the steps outlined here:
 [https://playwright.dev/docs/auth](https://playwright.dev/docs/auth)
 
@@ -129,6 +137,7 @@ For handling user authentication, we followed the steps outlined here:
 Work closely with your team, and don't hesitate to ask questions or seek clarification. Feel free and encouraged to post in the SW need-help channel on discord.
 
 #### Additional Support:
+
 Keep in touch with your team lead for any additional assistance or resources needed during your onboarding process.
 
 ### Part 5: Supplemental Reading
@@ -147,6 +156,7 @@ We encourage you to review these resources to gain a comprehensive understanding
 **Please be aware:** These documents are dynamic and may evolve over time.
 
 ### Part 6: Feedback and Collaboration
+
 We value your feedback and collaboration:
 
 Share your insights, suggestions, and feedback with the team. Utilize Slack, including the `#wtix-testing` and the `#playwright` channels.

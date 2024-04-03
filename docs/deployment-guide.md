@@ -18,7 +18,7 @@ The three most important services in our GCP architecture are Cloud Build, Cloud
 
 Cloud Build is the link between our GitHub repo and the rest of GCP. It’s how our code gets packaged up into a deployable form and sent over to Cloud Run, which does the actual deploying. It does this primarily through the use of triggers (pictured below).
 
-![alt text](doc-images/doc-images/image-12.png)
+![alt text](doc-images/image-12.png)
 
 Each of our triggers is pointed at a given workflow. The conventional name for these workflow files is cloudbuild.yaml. You’ll find several of these workflows sprinkled around the GitHub repo, but the most important three are located at the root level, in the client directory, and in the server directory.
 
@@ -28,7 +28,7 @@ Each of our triggers is pointed at a given workflow. The conventional name for t
 
 When you run any of the triggers pictured above, you run the corresponding workflow in the Build configuration column. It’s important to note that these triggers and workflows aren’t necessarily limited to building: they can be used to do any number of tasks depending on context. The main thing is that each trigger is used to run a particular workflow, but we’ll get more into workflows in a bit. First let’s talk about the actual building.
 
-![alt text](doc-images/doc-images/image-13.png)
+![alt text](doc-images/image-13.png)
 
 #### Building Docker images
 

@@ -69,6 +69,7 @@
    - Click the Stop button to shut down the VM.
 
 #### Important Notes:
+
 - Always confirm with your team before proceeding with database reset operations.
 - Make sure to back up any important data before performing destructive actions.
 - Ensure you are using the correct credentials and have the necessary permissions for each step.

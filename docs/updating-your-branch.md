@@ -127,7 +127,9 @@ After aborting a rebase or merge, always double-check your branch's state using 
 
 
 #### Rebase vs. Merge: Advantages and Use Cases
+
 ##### Rebase
+
 Advantages:
 1. Linear History: Rebasing creates a linear commit history, which can make it easier to understand the sequence of changes when looking at the commit log.
 2. Cleaner History: By moving the entire branch to the tip of the `main` branch, it appears as if the changes were made in a sequential manner, eliminating the interleaved commits that can occur with merges.
@@ -139,6 +141,7 @@ Use Cases:
 3. Before Pull/Merge Requests: Rebasing your branch before submitting a pull or merge request can make the integration process smoother for the maintainers.
 
 ##### Merge
+
 Advantages:
 1. Preserves History: Merging keeps the branch history intact, preserving the context in which changes were made.
 2. Non-destructive: Merging is a non-destructive operation, ensuring that the commit history of your branch remains unchanged.

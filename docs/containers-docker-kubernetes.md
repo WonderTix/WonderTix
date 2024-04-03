@@ -191,6 +191,7 @@ I’d say we should look more into Docker Swarm so that we can automate scaling 
 ### Resources
 
 ##### Videos
+
 Containerization Explained: https://www.youtube.com/watch?v=0qotVMX-J5s
 Docker in 100 seconds: https://www.youtube.com/watch?v=Gjnup-PuquQ
 Kubernetes in 100 seconds: https://www.youtube.com/watch?v=PziYflu8cB8
