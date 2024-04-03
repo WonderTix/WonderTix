@@ -48,7 +48,6 @@ contactController.post('/', async (req: Request, res: Response) => {
         lastname: req.body.lastname,
         email: req.body.email,
         phone: req.body.phone,
-        visitsource: req.body.visitsource,
         address: req.body.address,
         city: req.body.city,
         state: req.body.state,
@@ -57,6 +56,7 @@ contactController.post('/', async (req: Request, res: Response) => {
         donorbadge: req.body.donorbadge,
         seatingaccom: req.body.seatingaccom,
         comments: req.body.comments,
+        visitsource: req.body.visitsource,
         vip: req.body.vip,
         volunteerlist: req.body.volunteerlist,
         newsletter: req.body.newsletter,
@@ -242,10 +242,10 @@ contactController.get('/', async (req: Request, res: Response) => {
       });
     }
 
-    if (req.query.visitSource) {
+    if (req.query.visitsource) {
       filters.push({
-        visitSource: {
-          equals: req.query.visitSource,
+        visitsource: {
+          equals: req.query.visitsource,
         },
       });
     }
@@ -570,7 +570,6 @@ contactController.put('/:id', async (req: Request, res: Response) => {
         email: req.body.email,
         phone: req.body.phone,
         address: req.body.address,
-        visitsource: req.body.visitsource,
         city: req.body.city,
         state: req.body.state,
         postalcode: req.body.postalcode,
@@ -578,6 +577,7 @@ contactController.put('/:id', async (req: Request, res: Response) => {
         donorbadge: req.body.donorbadge,
         seatingaccom: req.body.seatingaccom,
         comments: req.body.comments,
+        visitsource: req.body.visitsource,
         vip: req.body.vip,
         volunteerlist: req.body.volunteerlist,
         newsletter: req.body.newsletter,

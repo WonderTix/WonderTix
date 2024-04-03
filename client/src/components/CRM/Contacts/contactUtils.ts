@@ -12,6 +12,7 @@ export type Contact = {
   country: string;
   postalCode: string;
   comments: string;
+  visitSource: string;
   seatingAcc: string;
   otherSeatingAcc?: string;
   newsletter: boolean;
@@ -35,6 +36,7 @@ export const emptyContact: Contact = {
   country: '',
   postalCode: '',
   comments: '',
+  visitSource: '',
   seatingAcc: 'None',
   newsletter: false,
   vip: false,
@@ -104,6 +106,7 @@ export const editContact = async (
           donorbadge: contact.donorBadge,
           seatingaccom: contact.seatingAcc,
           comments: contact.comments,
+          visitsource: contact.visitSource,
           vip: contact.vip,
           volunteerlist: contact.volunteerList,
           newsletter: contact.newsletter,

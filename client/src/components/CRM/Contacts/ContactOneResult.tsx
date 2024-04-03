@@ -61,6 +61,7 @@ export const ContactOneResult = (): ReactElement => {
           postalCode: contactData.postalcode,
           seatingAcc: contactData.seatingaccom,
           comments: contactData.comments,
+          visitSource: contactData.visitSource,
           newsletter: contactData.newsletter,
           vip: contactData.vip,
           donorBadge: contactData.donorbadge,

@@ -309,6 +309,16 @@ const ContactPopUp = (props: ContactPopUpProps): ReactElement => {
                 labelClassName='block text-sm font-medium text-slate-700 ml-1'
                 inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
               />
+               <Field
+                component={FormInput}
+                name='visitSource'
+                type='text'
+                placeholder='Visit Source'
+                id='visit-source'
+                label='Visit Source'
+                labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+              />
               <div className='grid gap-x-3 gap-y-2 tab:grid-cols-2 ml-2 mt-1'>
                 <div className='flex gap-4 text-sm text-zinc-700'>
                   <Field
