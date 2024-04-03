@@ -46,14 +46,15 @@ export const SeasonSubscriptionTypeRow = ({
             setFieldValue,
             field.value,
           )}
-          options={options.map((option) => ({
-            id: +option.subscriptiontypeid_fk,
-            description: option.name,
-          }))}
-          currentValue={{
-            id: +field.value.subscriptiontypeid_fk,
-            description: field.value.name,
-          }}
+          options={options
+            .map((option) => ({
+              id: +option.subscriptiontypeid_fk,
+              description: option.name,
+            }))
+            .concat({
+              id: +field.value.subscriptiontypeid_fk,
+              description: field.value.name,
+            })}
         />
       </td>
       <td className='px-2 py-1'>
@@ -105,10 +106,7 @@ export const SeasonSubscriptionTypeRow = ({
           title='Remove Row'
           className='grid justify-center text-red-500 focus:text-red-800'
           disabled={false}
-          onClick={() => {
-              const {subscriptionlimit, ticketlimit, ...toRemove} = field.value;
-            removeOption(toRemove);
-          }}
+          onClick={removeOption}
         >
           <TrashCanIcon className='w-5 h-5' />
         </FormButton>

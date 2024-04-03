@@ -1,4 +1,4 @@
-import {Field, FieldArrayRenderProps, useField} from 'formik';
+import {Field, useField} from 'formik';
 import React, {ReactElement, useState} from 'react';
 import {FieldType} from '../../Season/components/SeasonSubscriptionAndTicketTypes/FormSwitch';
 import {CirclePlusIcon} from '../../../Icons';
@@ -12,9 +12,10 @@ export interface OptionRowProps {
 }
 
 interface OptionTableProps {
-  arrayHelpers: FieldArrayRenderProps;
+  removeRow: (index: number, setOptions: (value) => void) => void;
+  addRow: (options: any[], setOptions: (value) => void) => void;
+  disabled: (options: any[]) => boolean;
   optionsInit: (value: any[]) => any[];
-  getOption: any;
   fieldName: string;
   rowComponent: (props: OptionRowProps) => ReactElement;
   headings: string[];
@@ -28,14 +29,15 @@ interface OptionTableProps {
 
 export const OptionUpdateTable = (props: OptionTableProps) => {
   const {
-    arrayHelpers,
     optionsInit,
     fieldName,
     rowComponent,
     sticky,
     headings,
-    getOption,
     styles,
+    addRow,
+    removeRow,
+    disabled,
   } = props;
   const [field] = useField(fieldName);
   const [options, setOptions] = useState(optionsInit(field.value));
@@ -56,13 +58,10 @@ export const OptionUpdateTable = (props: OptionTableProps) => {
             {options && (
               <FormButton
                 title='Add Row'
-                className='text-green-500 disabled:text-gray-300'
+                className='text-green-500 hover:text-green-600 disabled:text-gray-300'
                 testID='add-row-button'
-                onClick={() => {
-                  arrayHelpers.insert(0, getOption(options[0]));
-                  setOptions(options.slice(1, options.length));
-                }}
-                disabled={options.length === 0}
+                onClick={() => addRow(options, setOptions)}
+                disabled={disabled(options)}
               >
                 <CirclePlusIcon className='h-[1.75rem] w-[1.75rem]' />
               </FormButton>
@@ -79,10 +78,7 @@ export const OptionUpdateTable = (props: OptionTableProps) => {
               component={rowComponent}
               options={options}
               setOptions={setOptions}
-              removeOption={(toRemove) => {
-                setOptions([...options, toRemove]);
-                arrayHelpers.remove(index);
-              }}
+              removeOption={() => removeRow(index, setOptions)}
             />
           ))}
       </tbody>

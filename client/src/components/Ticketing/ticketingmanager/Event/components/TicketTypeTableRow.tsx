@@ -51,14 +51,15 @@ export const TicketTypeTableRow = ({
             setFieldValue,
             field.value,
           )}
-          options={options.map((option) => ({
-            id: +option.tickettypeid_fk,
-            description: option.description,
-          }))}
-          currentValue={{
-            id: +field.value.tickettypeid_fk,
-            description: field.value.description,
-          }}
+          options={options
+            .map((option) => ({
+              id: +option.tickettypeid_fk,
+              description: option.description,
+            }))
+            .concat({
+              id: +field.value.tickettypeid_fk,
+              description: field.value.description,
+            })}
         />
       </td>
       <td
@@ -117,10 +118,7 @@ export const TicketTypeTableRow = ({
           testID={`delete-ticket-type-${field.name}`}
           title='Remove Row'
           className='grid justify-center text-red-500 focus:text-red-800'
-          onClick={() => {
-            const {ticketlimit, ...current} = field.value;
-            removeOption(current);
-          }}
+          onClick={removeOption}
           disabled={false}
         >
           <TrashCanIcon className='w-5 h-5' />
