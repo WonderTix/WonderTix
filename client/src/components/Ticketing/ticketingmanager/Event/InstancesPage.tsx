@@ -14,7 +14,7 @@ import {titleCase} from '../../../../utils/arrays';
 import {useNavigate} from 'react-router-dom';
 import {
   EventImage,
-  getImageDefault,
+  getEventImageDefault,
 } from '../../../../utils/imageURLValidation';
 import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 
@@ -93,9 +93,9 @@ const InstancesPage = (): ReactElement => {
                 onClick={() => navigate(`/ticketing/events/${event.eventid}`)}
                 className='shadow-xl rounded-xl hover:scale-105  transition duration-300 ease-in-out w-full'
                 style={{
-                  backgroundImage: `url(${getImageDefault(
+                  backgroundImage: `url(${getEventImageDefault(
                     event.imageurl,
-                  )}),url(${getImageDefault()})`,
+                  )}),url(${getEventImageDefault()})`,
                 }}
               >
                 <div

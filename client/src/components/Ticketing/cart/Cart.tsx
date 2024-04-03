@@ -5,7 +5,6 @@ import PopUp from '../PopUp';
 import {toDollarAmount} from '../../../utils/arrays';
 import {
   removeTicketFromCart,
-  removeAllTicketsFromCart,
   selectCartContents,
   selectDiscount,
   fetchDiscountData,
@@ -14,18 +13,28 @@ import {
   selectCartTotal,
   selectDiscountValue,
   selectCartSubtotal,
+  removeSubscriptionFromCart,
+  isTicketCartItem,
+  removeAllItemsFromCart,
 } from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
 
+type TargetItem = TicketTargetItem | SubscriptionTargetItem;
+
 /**
- * TargetItem is the type that can uniquely identify a cartItem
+ * TicketTargetItem is the type that can uniquely identify a TicketCartItem
  *
  * @param {number} eventInstanceId is the id of the showing
  * @param {number} ticketTypeId is the id of the ticket's ticket type
  */
-type TargetItem = {
+type TicketTargetItem = {
   eventInstanceId: number;
   ticketTypeId: number;
+};
+
+type SubscriptionTargetItem = {
+  seasonid_fk: number;
+  subscriptiontypeid_fk: number;
 };
 
 /**
@@ -74,21 +83,30 @@ const Cart = (): ReactElement => {
     document.body.style.overflow = '';
   };
 
+  const isSubscription = (obj: any): obj is SubscriptionTargetItem =>
+    obj.seasonid_fk !== undefined && obj.subscriptiontypeid_fk !== undefined;
+
+  const isTicket = (obj: any): obj is TicketTargetItem =>
+    obj.eventInstanceId !== undefined && obj.ticketTypeId !== undefined;
+
   const handleRemove = () => {
-    if (removeContext === RemoveContext.single) {
-      if (targetItem) {
-        dispatch(
-          removeTicketFromCart({
-            id: targetItem.eventInstanceId,
-            tickettypeId: targetItem.ticketTypeId,
-          }),
-        );
-        resetModal();
-      }
-    } else if (removeContext === RemoveContext.all) {
-      dispatch(removeAllTicketsFromCart());
-      resetModal();
+    if (removeContext === RemoveContext.all) {
+      dispatch(removeAllItemsFromCart());
+    } else if (targetItem && isTicket(targetItem)) {
+      dispatch(
+        removeTicketFromCart({
+          id: targetItem.eventInstanceId,
+          tickettypeId: targetItem.ticketTypeId,
+        }),
+      );
+    } else if (targetItem && isSubscription(targetItem)) {
+      dispatch(
+        removeSubscriptionFromCart({
+          ...targetItem,
+        }),
+      );
     }
+    resetModal();
   };
 
   const removeAllCartItems = () => {
@@ -122,13 +140,12 @@ const Cart = (): ReactElement => {
     dispatch(removeDiscountFromCart());
   };
 
-  const displayModal = (eventInstanceId: number, ticketTypeId: number) => {
+  const displayModal = (
+    targetItem: TicketTargetItem | SubscriptionTargetItem,
+  ) => {
     setRemoveContext(RemoveContext.single);
     setRemoveContextMessage('this');
-    setTargetItem({
-      eventInstanceId: eventInstanceId,
-      ticketTypeId: ticketTypeId,
-    });
+    setTargetItem({...targetItem});
     openModal();
   };
 
@@ -177,16 +194,22 @@ const Cart = (): ReactElement => {
       </h1>
       <div className='flex flex-col md:flex-row gap-10 md:gap-5 mt-14 md:mt-20 items-center w-full'>
         <div className='flex flex-col w-full p-5 tab:p-9 gap-5 rounded-xl bg-zinc-300'>
-          {items.length > 0 ? (
-            items.map((cartItem) => (
-              <CartRow
-                key={`${cartItem.product_id}-${cartItem.typeID}`}
-                item={cartItem}
-                removeHandler={displayModal}
-              />
-            ))
-          ) : (
+          {!items.length? (
             <p className='text-zinc-500'>There&apos;s nothing in your cart</p>
+          ) : (
+            items
+              .map((cartItem) => (
+                <CartRow
+                  key={isTicketCartItem(cartItem)?`${cartItem.product_id}-${cartItem.typeID}`:`${cartItem.subscriptiontypeid_fk}-${cartItem.seasonid_fk}`}
+                  item={cartItem}
+                  removeHandler={() => displayModal(
+                    isTicketCartItem(cartItem)
+                    ? {eventInstanceId: cartItem.product_id, ticketTypeId: cartItem.typeID}
+                      : {...cartItem},
+                  )
+                }
+                />
+              ))
           )}
         </div>
         <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-800'>
