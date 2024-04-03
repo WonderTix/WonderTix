@@ -1,4 +1,3 @@
-/* eslint-disable require-jsdoc */
 import {test, expect} from '@playwright/test';
 import {EventsPage} from '../pages/EventsPage';
 import {AdminPurchasePage} from '../pages/AdminPurchasePage';
@@ -30,7 +29,7 @@ test('Purchase ticket for customer as admin', async ({page}, testInfo) => {
 
   try {
     await adminPage.purchaseTicket(EVENT_INFO_1.eventName, SHOWING_INFO_2.showingWholeDate, VALID_VISA_CREDIT, JANE_DOE);
-    await expect(adminPage.purchaseSuccessful).toBeVisible({timeout: 15000 + timeoutAdd});
+    await expect(adminPage.purchaseSuccessfulScreen).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
     await adminPage.goToHome();
     await events.goToEventFromManage(EVENT_INFO_1);
