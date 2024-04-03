@@ -597,6 +597,7 @@ const openApiSpec = swaggerJsdoc({
 });
 
 
+// eslint-disable-next-line require-jsdoc
 function waitForOpenConnection(socket: any) {
   return new Promise((resolve, reject) => {
     const maxNumberOfAttempts = 50;
@@ -695,7 +696,7 @@ const createServer = async () => {
       wss.clients.forEach((client) => {
         if (client !== ws) {
           waitForOpenConnection(client).then(() => {
-            client.send(data, { binary: isBinary });
+            client.send(data, {binary: isBinary});
           }).catch((error) => {
             console.error(error.message);
           });

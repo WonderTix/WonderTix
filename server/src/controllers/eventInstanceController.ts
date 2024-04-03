@@ -5,10 +5,11 @@ import {eventInstanceRequest} from '../interfaces/Event';
 import {
   getDate,
   InvalidInputError,
-  reservedTicketItemsFilter, soldTicketItemsFilter,
+  reservedTicketItemsFilter,
+  soldTicketItemsFilter,
   updateShowing,
   validateDateAndTime,
-} from './eventInstanceController.service'
+} from './eventInstanceController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 
 const prisma = extendPrismaClient();

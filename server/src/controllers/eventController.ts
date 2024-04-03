@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {orders, Prisma} from '@prisma/client';
-import {InvalidInputError, reservedTicketItemsFilter} from './eventInstanceController.service';
+import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
   expireCheckoutSession,
