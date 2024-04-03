@@ -65,20 +65,24 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
               No order items or donation
             </p>
           )}
-          {orderItems.map((item, index) => (
-            <TicketOrderItem
-              key={index}
-              price={item.price}
-              refunded={item.refunded}
-              ticketType={item.tickettype}
-              quantity={item.quantity}
-              eventName={item.eventname}
-              seasonName={item.seasonname}
-              detail={item.detail}
-              eventDate={item.eventdate}
-              eventTime={item.eventtime}
-            />
-          ))}
+          {orderItems.map((item, index) =>
+            item.tickettype ? (
+              <TicketOrderItem
+                key={index}
+                price={item.price}
+                refunded={item.refunded}
+                ticketType={item.tickettype}
+                quantity={item.quantity}
+                eventName={item.eventname}
+                seasonName={item.seasonname}
+                detail={item.detail}
+                eventDate={item.eventdate}
+                eventTime={item.eventtime}
+              />
+            ) : (
+              <SubscriptionOrderItem key={index} {...item} />
+            ),
+          )}
           {donation && (
             <DonationOrderItem
               amount={donation.amount}
@@ -171,6 +175,40 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
       <p className='text-xs'>
         {ticketType} • {format(time, 'MMM dd, yyyy')} • {format(time, 'h:mm a')}
         {detail && <span> ({detail})</span>}
+      </p>
+    </article>
+  );
+};
+
+interface SubscriptionOrderItemProps {
+  price: number;
+  refunded: boolean;
+  subscriptionType: string;
+  seasonName: string;
+  ticketlimit: number;
+  quantity: number;
+}
+const SubscriptionOrderItem = (props: SubscriptionOrderItemProps): ReactElement => {
+  const {price, refunded, seasonName, ticketlimit, quantity, subscriptionType} =
+    props;
+
+  return (
+    <article className='border border-zinc-300 px-4 pt-3 pb-4 rounded-xl mb-2'>
+      <p className='flex justify-between font-bold gap-2'>
+        <span>
+          {quantity} x {subscriptionType} Subscription
+        </span>
+        <span className='flex items-center gap-2'>
+          {refunded && (
+            <Label className='text-xs' color='green'>
+              REFUNDED
+            </Label>
+          )}
+          {toDollarAmount(Number(price))}
+        </span>
+      </p>
+      <p className='text-xs'>
+        {ticketlimit} tickets for {seasonName}
       </p>
     </article>
   );

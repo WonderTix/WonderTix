@@ -1,7 +1,8 @@
 import React, {ReactElement} from 'react';
 import {useAppSelector} from '../app/hooks';
 import {
-  selectCartItem,
+  CartItem,
+  isTicketCartItem,
   selectCartContents,
   selectCartSubtotal,
   selectCartTotal,
@@ -40,13 +41,17 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
   const discount = useAppSelector(selectDiscount);
 
   const lineItems = cartItems.map((item) => (
-    <LineItem
-      key={`${item.product_id}-${item.typeID}`}
-      eventInstanceId={item.product_id}
-      ticketTypeId={item.typeID}
-      className='bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'
-    />
-  ));
+      <LineItem
+        key={isTicketCartItem(item)?`${item.product_id}-${item.typeID}`: `${item.seasonid_fk}-${item.subscriptiontypeid_fk}`}
+        cartItem={{
+          ...item,
+          price: isTicketCartItem(item) && item.payWhatCan
+            ? Number(item.payWhatPrice)
+            : item.price * item.qty,
+        }}
+        className='bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'
+      />
+    ));
 
   return (
     <aside className='flex flex-col justify-between h-full w-full'>
@@ -111,32 +116,22 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
   );
 };
 
-const LineItem = (props: {
+const LineItem = ({
+  className,
+  cartItem,
+}: {
   className: string;
-  eventInstanceId: number;
-  ticketTypeId: number;
-}) => {
-  const cartItem = useAppSelector((state) =>
-    selectCartItem(state, props.eventInstanceId, props.ticketTypeId),
-  );
-
-  return cartItem ? (
-    <p className={`${props.className} flex flex-col`}>
-      <span className='flex justify-between'>
-        <span className='text-left font-bold'>
-          {cartItem.qty} x {cartItem.name}
-        </span>
-        <span className='text-right font-bold'>
-          {cartItem.payWhatCan
-            ? toDollar(cartItem.payWhatPrice)
-            : toDollar(cartItem.qty * cartItem.price)}
-        </span>
+  cartItem: CartItem;
+}) => (
+  <p className={`${className} flex flex-col`}>
+    <span className='flex justify-between'>
+      <span className='text-left font-bold'>
+        {cartItem.qty} x {cartItem.name}
       </span>
-      <span className='text-left text-xs'>{cartItem.desc}</span>
-    </p>
-  ) : (
-    <></>
-  );
-};
+      <span className='text-right font-bold'>{toDollar(cartItem.price)}</span>
+    </span>
+    <span className='text-left text-xs'>{cartItem.desc}</span>
+  </p>
+);
 
 export default YourOrder;

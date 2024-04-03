@@ -71,10 +71,18 @@ const openApiSpec = swaggerJsdoc({
             type: 'integer',
           },
         },
+        subscriptionid: {
+          name: 'subscriptionid',
+          in: 'path',
+          description: 'Subscription ID',
+          schema: {
+            type: 'integer',
+          },
+        },
         subscriptiontypeid: {
           name: 'subscriptiontypeid',
           in: 'path',
-          description: 'Subscription ID',
+          description: 'Subscription Type ID',
           schema: {
             type: 'integer',
           },

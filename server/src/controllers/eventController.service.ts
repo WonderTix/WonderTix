@@ -1,5 +1,5 @@
 import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceController.service';
-import CartItem from '../interfaces/CartItem';
+import TicketCartItem, {SubscriptionCartItem} from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {freq} from '@prisma/client';
@@ -79,12 +79,69 @@ export const getDonationItem = (donationCartItem: number) => {
   };
 };
 
+
+interface SubscriptionItemsReturn {
+    orderSubscriptionItems: any[];
+    subscriptionCartRows: LineItem[];
+    subscriptionTotal: number;
+}
+
+export const getSubscriptionItems = async (
+    prisma: ExtendedPrismaClient,
+    subscriptionCartItems: SubscriptionCartItem[]) => {
+  const seasonSubscriptionTypes = await prisma.seasonsubscriptiontypes.findMany({
+    where: {
+      seasonid_fk: {in: subscriptionCartItems.map((item) => item.seasonid_fk)},
+      subscriptiontypeid_fk: {in: subscriptionCartItems.map((item) => item.subscriptiontypeid_fk)},
+      deletedat: null,
+    },
+    include: {
+      subscriptiontype: true,
+      subscriptions: {
+        where: {
+          refund: null,
+        },
+      },
+    },
+  });
+
+  const seasonSubscriptionTypeMap = new Map(seasonSubscriptionTypes.map((item) => [`${item.seasonid_fk}-${item.subscriptiontypeid_fk}`,
+    {
+      ...item,
+      available: item.subscriptionlimit - item.subscriptions.length,
+    }]));
+
+  return subscriptionCartItems.reduce<SubscriptionItemsReturn>((acc, item) => {
+    const type = seasonSubscriptionTypeMap.get(`${item.seasonid_fk}-${item.subscriptiontypeid_fk}`);
+    if (!type) {
+      throw new InvalidInputError(422, `${item.name} (${item.desc}) does not exist`);
+    } else if (+item.price !== +type.price) {
+      throw new InvalidInputError(422, `${item.name} (${item.desc}) price ($${item.price}) is invalid`);
+    } else if ((type.available-=item.qty) < 0) {
+      throw new InvalidInputError(422, `${item.name} (${item.desc}) quantity exceeds available`);
+    }
+    acc.subscriptionCartRows = acc.subscriptionCartRows.concat(getCartRow(
+        item.name,
+        item.desc,
+        item.price*100,
+        item.qty,
+    ));
+    acc.orderSubscriptionItems = acc.orderSubscriptionItems.concat(Array(item.qty).fill({
+      subscriptiontypeid_fk: type.subscriptiontypeid_fk,
+      seasonid_fk: type.seasonid_fk,
+      price: item.price,
+    }));
+    acc.subscriptionTotal += +type.price * +item.qty;
+    return acc;
+  }, {subscriptionCartRows: [], orderSubscriptionItems: [], subscriptionTotal: 0});
+};
+
 export const getFeeItem = (feeTotal: number) => {
   const feeCartRow = feeTotal > 0 ? getCartRow(
-      'Processing Fee',
-      'Covers the cost of our online payment processor',
-      feeTotal * 100,
-      1,
+    'Processing Fee',
+    'Covers the cost of our online payment processor',
+    feeTotal * 100,
+    1,
   ) : undefined;
 
   return {
@@ -137,7 +194,7 @@ export const testPayReader = async (
 };
 
 export const getTicketItems = async (
-    cartItems: CartItem[],
+    cartItems: TicketCartItem[],
     prisma: ExtendedPrismaClient,
 ): Promise<TicketItemsReturn> => {
   const toReturn: TicketItemsReturn = {
@@ -377,7 +434,7 @@ const validateContact = (formData: checkoutForm) => {
   };
 };
 
-export const validateDiscount = async (discount: any, cartItems: CartItem[], prisma: ExtendedPrismaClient) => {
+export const validateDiscount = async (discount: any, cartItems: TicketCartItem[], prisma: ExtendedPrismaClient) => {
   const eventIds = new Set<number>();
   cartItems.forEach((item) => eventIds.add(item.eventId));
   const numEventsInCart = eventIds.size;

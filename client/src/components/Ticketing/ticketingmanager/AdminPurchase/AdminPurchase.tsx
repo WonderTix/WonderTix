@@ -365,7 +365,7 @@ const AdminPurchase = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({cartItems}),
+        body: JSON.stringify({ticketCartItems: cartItems}),
       },
       ).then((response) => {
         if (!response.ok) {
