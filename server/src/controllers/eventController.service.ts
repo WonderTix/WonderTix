@@ -18,8 +18,7 @@ export interface LineItem {
 }
 
 export const createStripeCheckoutSession = async (
-    contactID: number,
-    contactEmail: string,
+    contact: ValidatedContact,
     lineItems: LineItem[],
     discount: any,
 ) => {
@@ -32,11 +31,10 @@ export const createStripeCheckoutSession = async (
     success_url: `${process.env.FRONTEND_URL}/success`,
     cancel_url: `${process.env.FRONTEND_URL}`,
     customer_creation: 'always',
-    customer_email: contactEmail,
+    customer_email: contact.email,
     metadata: {
       sessionType: '__ticketing',
-      contactID,
-      discountCode: null,
+      contact: JSON.stringify(contact),
     },
     ...(discount.code != '' && discount.amountOff && {discounts: [{coupon: (await createStripeCoupon(discount)).id}]}),
   };
@@ -343,45 +341,48 @@ interface checkoutForm {
 }
 
 export const updateContact = async (
-    formData: checkoutForm,
     prisma: ExtendedPrismaClient,
+    contact: ValidatedContact,
 ) => {
-  const existingContact = await prisma.contacts.findFirst({
+  const existingContact = await prisma.contacts.findUnique({
     where: {
-      email: formData.email,
-    },
-    select: {
-      contactid: true,
+      email: contact.email,
     },
   });
 
-  let updatedContact: { contactid: number } | null;
-  if (!existingContact) {
-    updatedContact = await prisma.contacts.create({
-      data: {
-        ...validateContact(formData),
-      },
-      select: {
-        contactid: true,
-      },
-    });
-  } else {
-    updatedContact = await prisma.contacts.update({
-      where: {
-        contactid: existingContact.contactid,
-      },
-      data: {
-        ...validateContact(formData),
-      },
-      select: {
-        contactid: true,
-      },
-    });
-  }
-  return updatedContact;
+  return prisma.contacts.upsert({
+    where: {
+      email: contact.email,
+    },
+    create: {
+      ...contact,
+      newsletter: contact.newsletter? new Date(): undefined,
+    },
+    update: {
+      ...contact,
+      newsletter: !contact.newsletter? null: !existingContact?.newsletter? new Date(): existingContact.newsletter,
+    },
+  });
 };
 
-const validateContact = (formData: checkoutForm) => {
+
+export interface ValidatedContact {
+   firstname: string;
+   lastname: string;
+   email: string;
+   address?: string;
+   city?: string;
+   state?: string;
+   postalcode?: string;
+   country?: string;
+   phone?: string;
+   visitsource?: string;
+   seatingaccom?: string;
+   comments?: string;
+   newsletter?: boolean;
+}
+
+export const validateContact = (formData: checkoutForm): ValidatedContact => {
   return {
     firstname: validateName(formData.firstName, 'First Name'),
     lastname: validateName(formData.lastName, 'Last Name'),

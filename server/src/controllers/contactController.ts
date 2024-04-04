@@ -2,10 +2,15 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {validateContact} from './eventController.service';
 
 const prisma = extendPrismaClient();
 
 export const contactController = Router();
+
+
+contactController.use(checkJwt);
+contactController.use(checkScopes);
 
 /**
  * @swagger
@@ -42,28 +47,28 @@ export const contactController = Router();
  */
 contactController.post('/', async (req: Request, res: Response) => {
   try {
+    const validatedContact= validateContact({
+      ...req.body,
+      firstName: req.body.firstname,
+      lastName: req.body.lastname,
+      visitSource: req.body.visitsource,
+      streetAddress: req.body.address,
+      postalCode: req.body.postalcode,
+      seatingAcc: req.body.seatingaccom,
+      optIn: !!req.body.newsletter,
+    });
+
     const contact = await prisma.contacts.create({
       data: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        visitsource: req.body.visitsource,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        country: req.body.country,
-        postalcode: req.body.postalcode,
-        donorbadge: req.body.donorbadge,
-        seatingaccom: req.body.seatingaccom,
-        comments: req.body.comments,
-        vip: req.body.vip,
-        volunteerlist: req.body.volunteerlist,
-        newsletter: req.body.newsletter,
+        ...validatedContact,
+        newsletter: validatedContact.newsletter? new Date(): null,
+        donorbadge: !!req.body.donorbadge,
+        vip: !!req.body.vip,
+        volunteerlist: !!req.body.volunteerlist,
       },
     });
-    res.status(201).json(contact);
-    return;
+
+    return res.status(201).json({...contact, newsletter: !!contact.newsletter});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -79,9 +84,6 @@ contactController.post('/', async (req: Request, res: Response) => {
     return;
   }
 });
-
-contactController.use(checkJwt);
-contactController.use(checkScopes);
 
 /**
  * @swagger
@@ -257,7 +259,6 @@ contactController.get('/', async (req: Request, res: Response) => {
           mode: 'insensitive',
         },
       });
-
     }
     if (req.query.donorbadge) {
       filters.push({
@@ -283,35 +284,24 @@ contactController.get('/', async (req: Request, res: Response) => {
     if (req.query.newsletter) {
       filters.push({
         newsletter: {
-          equals: (req.query.newsletter === 'true'),
+          not: null,
         },
       });
     }
 
-    if (filters.length > 0) {
-      const contacts = await prisma.contacts.findMany({
-        where: {
-          OR: filters,
-        },
-      });
-      res.status(200).json(contacts);
-      return;
-    }
-
-    const contacts = await prisma.contacts.findMany();
-    res.status(200).json(contacts);
-    return;
+    const contacts = await prisma.contacts.findMany({
+      where: {
+        ...(filters.length && {OR: filters}),
+      },
+    });
+    return res.status(200).json(contacts.map((contact) => ({...contact, newsletter: !!contact.newsletter})));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
@@ -357,7 +347,7 @@ contactController.get('/:id', async (req: Request, res: Response) => {
       return;
     }
 
-    res.status(200).json(contact);
+    res.status(200).json({...contact, newsletter: !!contact.newsletter});
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -544,6 +534,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 
     const toReturn = {
       ...remainderOfContact,
+      newsletter: !!remainderOfContact.newsletter,
       orders: flattenedOrders,
     };
 
@@ -596,44 +587,44 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
+    const validatedContact= validateContact({
+      ...req.body,
+      firstName: req.body.firstname,
+      lastName: req.body.lastname,
+      visitSource: req.body.visitsource,
+      streetAddress: req.body.address,
+      postalCode: req.body.postalcode,
+      seatingAcc: req.body.seatingaccom,
+      optIn: !!req.body.newsletter,
+    });
+    const existingContact = await prisma.contacts.findUnique({where: {contactid: +id}});
+
+    if (!existingContact) {
+      return res.status(400).json({error: `Contact does not exist`});
+    }
+
     await prisma.contacts.update({
       where: {
         contactid: Number(id),
       },
       data: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        visitsource: req.body.visitsource,
-        city: req.body.city,
-        state: req.body.state,
-        postalcode: req.body.postalcode,
-        country: req.body.country,
-        donorbadge: req.body.donorbadge,
-        seatingaccom: req.body.seatingaccom,
-        comments: req.body.comments,
-        vip: req.body.vip,
-        volunteerlist: req.body.volunteerlist,
-        newsletter: req.body.newsletter,
+        ...validatedContact,
+        donorbadge: !!req.body.donorbadge,
+        vip: !!req.body.vip,
+        volunteerlist: !!req.body.volunteerlist,
+        newsletter: !validatedContact.newsletter? null: existingContact.newsletter? existingContact.newsletter: new Date(),
       },
     });
 
-    res.status(204).json();
-    return;
+    return res.status(204).json();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
-    res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
@@ -680,20 +671,14 @@ contactController.delete('/:id', async (req: Request, res: Response) => {
         contactid: Number(id),
       },
     });
-    res.status(204).json();
-
-    return;
+    return res.status(204).json();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
-    res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });

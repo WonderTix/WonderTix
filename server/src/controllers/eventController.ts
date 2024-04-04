@@ -10,10 +10,10 @@ import {
   createStripePaymentIntent,
   requestStripeReaderPayment,
   getDiscountAmount,
-  updateContact,
   validateDiscount,
   getSubscriptionItems,
   validateWithRegex,
+  validateContact,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -78,7 +78,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       await validateDiscount(discount, ticketCartItems, prisma);
     }
 
-    const {contactid} = await updateContact(formData, prisma);
+    const updatedContact= validateContact(formData);
 
     const {
       ticketCartRows,
@@ -104,8 +104,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 
     if (orderSubTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
-          contactid,
-          formData.email,
+          updatedContact,
           ticketCartRows.concat((donationCartRow? [donationCartRow]: []).concat(subscriptionCartRows)),
           {...discount, amountOff: discountAmount},
       );
@@ -123,7 +122,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
           donationItem,
           orderSubscriptionItems,
         },
-        contactid,
         toSend.id,
         discount.code != '' ? discount.discountid : null,
     );
@@ -961,7 +959,6 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         {
           orderTicketItems,
         },
-        undefined, // no contactid with reader payments
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
         paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
