@@ -25,7 +25,7 @@ model contacts {
   donorbadge    Boolean?  @default(false)
   vip           Boolean?  @default(false)
   volunteerlist Boolean?  @default(false)
-  newsletter    DateTime?
+  newsletter    DateTime? @db.Timestamp(3)
   createddate   DateTime  @default(now()) @db.Timestamptz(3)
   orders        orders[]
 }
