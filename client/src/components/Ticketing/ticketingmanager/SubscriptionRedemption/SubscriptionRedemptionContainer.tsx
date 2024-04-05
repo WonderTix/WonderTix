@@ -2,7 +2,11 @@ import React, {useEffect, useRef, useState} from 'react';
 import {FormikProps, FormikValues} from 'formik';
 import {Switch, Tooltip} from '@mui/material';
 import {SubscriptionTicketItemUpdateTable} from './SubscriptionTicketItemUpdateTable';
-import {Subscription, useIsMounted} from './SubscriptionRedemptionUtils';
+import {
+  Subscription,
+  useIsMounted,
+  useTimeout,
+} from './SubscriptionRedemptionUtils';
 import {FormButton} from '../Event/components/FormButton';
 import {createSubmitFunction} from '../Event/components/ShowingUtils';
 import {HelpIcon, LoadingIcon, SaveIcon, TicketIcon, XIcon} from '../../Icons';
@@ -41,19 +45,24 @@ export const SubscriptionRedemptionContainer = (
   const [eventRestriction, setEventRestriction] = useState(true);
   const [eventRestrictionIsViolated, setEventRestrictionIsViolated] =
     useState(false);
+  const [delay, setDelay] = useState(null);
   const formRef = useRef<FormikProps<FormikValues>>(null);
-  const timeoutId = useRef(null);
+  const stateRef = useRef(formStatus);
   const isMounted = useIsMounted();
+  stateRef.current = formStatus;
 
-  useEffect(() => {
-    if (formStatus !== 'loading' && timeoutId.current) {
-      clearTimeout(timeoutId.current);
-      timeoutId.current = null;
-    }
-    return () => {
-      if (timeoutId.current) clearTimeout(timeoutId.current);
-    };
-  }, [formStatus]);
+  useTimeout(() => {
+    setDelay(null);
+    if (stateRef.current !== 'loading') return;
+    setFormStatus('nothing');
+    setDisabled(false);
+    setPopUpProps(
+      'Failed to Load Subscription',
+      'Error loading subscription please try again',
+      false,
+      'subscription-loading-error-pop-up',
+    );
+  }, delay);
 
   const onSubmitSuccess = async (event) => {
     try {
@@ -184,16 +193,7 @@ export const SubscriptionRedemptionContainer = (
                   onClick={() => {
                     setDisabled(true);
                     setFormStatus('loading');
-                    timeoutId.current = setTimeout(() => {
-                      setFormStatus('nothing');
-                      setDisabled(false);
-                      setPopUpProps(
-                        'Failed to Load Subscription',
-                        'Error loading subscription please try again',
-                        false,
-                        'subscription-loading-error-pop-up',
-                      );
-                    }, 10000);
+                    setDelay(5000);
                   }}
                 >
                   {formStatus !== 'loading' ? (

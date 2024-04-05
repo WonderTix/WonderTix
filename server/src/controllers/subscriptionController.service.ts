@@ -41,12 +41,14 @@ export const getUpdatedSubscription = (
       if (!ticketitem) return acc;
       const count = subscriptionTicketItemMap.get(ticketitem.ticketrestrictionid_fk);
 
-      if (count) {
+      if (count && count > 1) {
         subscriptionTicketItemMap.set(ticketitem.ticketrestrictionid_fk, count - 1);
+        return acc;
+      } else if (count === 1) {
+        subscriptionTicketItemMap.delete(ticketitem.ticketrestrictionid_fk);
         return acc;
       }
 
-      subscriptionTicketItemMap.delete(ticketitem.ticketrestrictionid_fk);
       acc.push({id});
 
       const eventInstance = eventInstanceMap.get(ticketitem.ticketrestriction.eventinstanceid_fk);

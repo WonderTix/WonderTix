@@ -166,3 +166,18 @@ export const useIsMounted = () => {
 
   return useCallback(() => ref.current, []);
 };
+
+export const useTimeout = (callback, delay) => {
+  const callbackRef = useRef(callback);
+  const timeoutId = useRef(null);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  useEffect(() => {
+    if (!delay) return;
+    timeoutId.current = setTimeout(() => callbackRef.current(), delay);
+    return () => clearTimeout(timeoutId.current);
+  }, [delay]);
+};
