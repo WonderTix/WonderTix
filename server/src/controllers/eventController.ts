@@ -14,6 +14,7 @@ import {
   getSubscriptionItems,
   validateWithRegex,
   validateContact,
+  updateContact,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -127,11 +128,13 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     );
 
     if (toSend.id === 'comp') {
+      const {contactid} = await updateContact(prisma, updatedContact);
       await prisma.orders.update({
         where: {
           orderid: order.orderid,
         },
         data: {
+          contactid_fk: contactid,
           checkout_sessions: `comp-${order.orderid}`,
           payment_intent: `comp-${order.orderid}`,
         },
