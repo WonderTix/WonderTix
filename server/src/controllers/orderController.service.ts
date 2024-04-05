@@ -1,3 +1,4 @@
+/* eslint camelcase: 0 */
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {
   orders,
@@ -35,7 +36,6 @@ export const ticketingWebhook = async (
           orderid: order.orderid,
         },
         data: {
-          payment_intent: paymentIntent,
           order_status: state.completed,
         },
       });
@@ -60,7 +60,7 @@ export const readerWebhook = async (
   });
 
   if (!order) {
-    console.error("Received card reader event for non-existant order with Payment Intent: " + paymentIntent);
+    console.error(`Received card reader event for non-existent order with Payment Intent: ${paymentIntent}`);
   }
 
   switch (eventType) {
@@ -83,7 +83,7 @@ export const readerWebhook = async (
           },
           data: {
             order_status: state.completed,
-          }
+          },
         });
       }
       break;
@@ -137,34 +137,54 @@ export const updateRefundStatus = async (
     },
   });
 
-  await Promise.allSettled(refunds.map(async (refund) => {
+  const queries = await Promise.allSettled(refunds.map(async (refund) => {
     const refundObject = await stripe.refunds.retrieve(refund.refund_intent);
-    switch(refundObject.status) {
-      case 'succeeded':
-        refund.refund_status = state.completed;
-        break;
-      case 'pending':
-        refund.refund_status = state.in_progress;
-        break;
-      default:
-        refund.refund_status = state.failed;
-        break;
-    }
-
-    await prisma.refunds.update({
+    return {
       where: {
         id: refund.id,
       },
       data: {
-        refund_status: refund.refund_status,
-      }
-    });
+        refund_status: getRefundStatus(refundObject.status),
+      },
+    };
   }));
+
+  await prisma.$transaction(queries
+    .filter((query): query is PromiseFulfilledResult<any> => query.status === 'fulfilled')
+    .map((query) => query.value));
+
+};
+
+export const getRefundStatus = (refundStatus?: string) => {
+  switch (refundStatus) {
+    case 'succeeded':
+      return state.completed;
+    case 'pending':
+      return state.in_progress;
+    default:
+      return state.failed;
+  }
+};
+
+export const getOrderSource = (orderSource?: string) => {
+  switch (orderSource) {
+    case 'admin_ticketing':
+      return purchase_source.admin_ticketing;
+    case 'online_ticketing':
+      return purchase_source.online_ticketing;
+    case 'card_reader':
+      return purchase_source.card_reader;
+    case 'online_donation':
+      return purchase_source.online_donation;
+    default:
+      return;
+  }
 };
 
 export const orderFulfillment = async (
     prisma: ExtendedPrismaClient,
-    eventInstanceQueries: any[],
+    paymentIntent: string,
+    orderStatus: state,
     orderSubtotal: number,
     discountTotal: number,
     orderItems: {
@@ -172,32 +192,13 @@ export const orderFulfillment = async (
         donationItem?: any,
         orderSubscriptionItems?: any[],
     },
-    orderStatus: state,
+    eventInstanceQueries: any[],
     contactid?: number,
     checkoutSession?: string,
     discountId?: number,
     orderSource?: string,
-    paymentIntent?: string, // need this for reader purchase
 ) => {
   const {orderTicketItems, donationItem, orderSubscriptionItems} = orderItems;
-  const {orderTicketItems, donationItem} = orderItems;
-  switch (orderSource) {
-    case 'admin_ticketing':
-      orderSource = purchase_source.admin_ticketing;
-      break;
-    case 'online_ticketing':
-      orderSource = purchase_source.online_ticketing;
-      break;
-    case 'card_reader':
-      orderSource = purchase_source.card_reader;
-      break;
-    case 'online_donation':
-      orderSource = purchase_source.online_donation;
-      break;
-    default:
-      orderSource = undefined;
-      break;
-  }
   const result = await prisma.$transaction([
     prisma.orders.create({
       data: {
@@ -210,7 +211,7 @@ export const orderFulfillment = async (
         ...(donationItem && {donation: {create: donationItem}}),
         ...(orderSubscriptionItems && {subscriptions: {create: orderSubscriptionItems}}),
         order_status: orderStatus,
-        order_source: orderSource,
+        order_source: getOrderSource(orderSource),
         payment_intent: paymentIntent,
       },
     }),

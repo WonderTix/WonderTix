@@ -407,7 +407,6 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       include: {
         orders: {
           where: {
-            payment_intent: {not: null},
             order_status: state.completed,
           },
           orderBy: {

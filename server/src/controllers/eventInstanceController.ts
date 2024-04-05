@@ -517,7 +517,6 @@ eventInstanceController.get('/doorlist/:id',
                     orderticketitem: {
                       refund: null,
                       order: {
-                        payment_intent: {not: null},
                         order_status: state.completed,
                       },
                     },
