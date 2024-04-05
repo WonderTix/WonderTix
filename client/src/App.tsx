@@ -39,6 +39,7 @@ import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/Event/components/EventProvider';
 import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
 import ReaderPurchasePage from './components/Ticketing/ticketingmanager/AdminPurchase/ReaderPurchasePage';
+import {SubscriptionMain} from './components/Ticketing/mainpage/SubscriptionPurchasing/SubscriptionMain';
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Mainpage />} />
         <Route path='/events/:eventid' element={<EventShowingsmain />} />
+        <Route path='/subscriptions/:seasonid' element={<SubscriptionMain />} />
         <Route path='/cart' element={<Cartmain />} />
         <Route path='/completeorder' element={<Checkoutmain />} />
         <Route path='/success' element={<CheckoutSuccess />} />

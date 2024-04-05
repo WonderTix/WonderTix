@@ -437,6 +437,22 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 },
               },
             },
+            subscriptions: {
+              include: {
+                refund: true,
+                seasonsubscriptiontype: {
+                  include: {
+                    subscriptiontype: true,
+                    season: true,
+                  },
+                },
+                subscriptionticketitems: {
+                  include: {
+                    ticketitem: true,
+                  },
+                },
+              },
+            },
             donation: {
               include: {
                 refund: true,
@@ -457,7 +473,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
     contact.orders.forEach((order) => {
       const orderItemsMap = new Map<string, any>();
       const
-        refunded = order
+        ticketItemsRefunded = order
             .orderticketitems
             .reduce<boolean>((acc, ticket) => {
               if (!ticket.ticketitem) return acc;
@@ -485,7 +501,27 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
               return acc && ticket.refund !== null;
             }, true);
 
-      if (!orderItemsMap.size) return;
+      const subscriptionItemsRefunded = order.subscriptions.reduce<boolean>(
+          (acc, sub) => {
+            const key = `${sub.price}S${sub.subscriptiontypeid_fk}S${sub.seasonid_fk}`;
+            const item = orderItemsMap.get(key);
+            if (item) {
+              item.quantity += 1;
+            } else {
+              orderItemsMap.set(key, {
+                id: sub.id,
+                price: sub.price,
+                refunded: sub.refund !== null,
+                subscriptionType: sub.seasonsubscriptiontype.subscriptiontype.name,
+                seasonName: sub.seasonsubscriptiontype.season.name,
+                ticketlimit: sub.seasonsubscriptiontype.ticketlimit,
+                quantity: 1,
+              });
+            }
+            return acc && sub.refund !== null;
+          },
+          true,
+      );
 
       const flattenedDonation = {
         donationid: order.donation?.donationid,
@@ -501,7 +537,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         orderdatetime: order.orderdatetime,
         ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
         discounttotal: order.discounttotal,
-        refunded,
+        refunded: ticketItemsRefunded && subscriptionItemsRefunded,
         orderitems: [...orderItemsMap.values()],
         donation: order.donation ? flattenedDonation : null,
       });

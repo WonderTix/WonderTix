@@ -6,8 +6,8 @@ import {
   createRefundedOrder,
   ticketingWebhook,
   updateRefundStatus,
-  readerWebhook, 
-  discoverReaders, 
+  readerWebhook,
+  discoverReaders,
   abortPaymentIntent,
 } from './orderController.service';
 
@@ -35,12 +35,12 @@ orderController.post(
         const action = object.action;
 
         // Handle in-person payments
-        if (metaData.sessionType === '__reader' || 
+        if (metaData.sessionType === '__reader' ||
             event.type === 'terminal.reader.action_failed' ||
             event.type === 'terminal.reader.action.succeeded') { // terminal events don't carry our __reader metadata
           await readerWebhook(
-            prisma,
-            event.type,
+              prisma,
+              event.type,
             action ? action.failure_message : 'no error',
             object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
           );
@@ -56,8 +56,8 @@ orderController.post(
           );
         } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
           await updateRefundStatus(
-            prisma,
-            object.payment_intent,
+              prisma,
+              object.payment_intent,
           );
         }
 
@@ -125,6 +125,13 @@ orderController.get('/refund', async (req: Request, res: Response) => {
               refund: null,
             },
           },
+          {
+            subscriptions: {
+              some: {
+                refund: null,
+              },
+            },
+          },
         ],
         contacts: {
           email: {contains: email},
@@ -159,6 +166,19 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             },
           },
         },
+        subscriptions: {
+          where: {
+            refund: null,
+          },
+          include: {
+            seasonsubscriptiontype: {
+              include: {
+                season: true,
+                subscriptiontype: true,
+              },
+            },
+          },
+        },
         donation: {
           where: {
             refund: null,
@@ -171,6 +191,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       const {
         contacts,
         orderticketitems,
+        subscriptions,
         donation,
         orderdatetime,
         ...remainderOfOrder
@@ -178,20 +199,48 @@ orderController.get('/refund', async (req: Request, res: Response) => {
 
       if (!contacts) return;
 
-      const orderItems = new Map<string, number>();
-      const ticketTotal = orderticketitems.reduce<number>((acc, item) => {
-        if (!item.ticketitem) return acc;
-        const key = `${item.ticketitem.ticketrestriction.eventinstance.event.eventname}`;
-        orderItems.set(key, (orderItems.get(key) ?? 0)+1);
-        return acc+Number(item.price);
+      const orderItems = new Map<string, any>();
+      const ticketTotal = orderticketitems.reduce<number>((acc, ticket) => {
+        if (!ticket.ticketitem) return acc;
+        const key = `T${ticket.ticketitem.ticketrestriction.ticketrestrictionsid}`;
+        const item = orderItems.get(key);
+        if (item) {
+          item.quantity+=1;
+          item.price+=Number(ticket.price);
+        } else {
+          orderItems.set(key, {
+            type: ticket.ticketitem.ticketrestriction.tickettype.description,
+            description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+            quantity: 1,
+            price: +ticket.price,
+          });
+        }
+        return acc+Number(ticket.price);
+      }, 0);
+
+      const subscriptionTotal = subscriptions.reduce<number>((acc, subscription) => {
+        const key = `S${subscription.seasonsubscriptiontype.season.seasonid}-${subscription.seasonsubscriptiontype.season.seasonid}`;
+        const item = orderItems.get(key);
+        if (item) {
+          item.quantity+=1;
+          item.price+=Number(subscription.price);
+        } else {
+          orderItems.set(key, {
+            type: `${subscription.seasonsubscriptiontype.subscriptiontype.name} Subscription`,
+            description: subscription.seasonsubscriptiontype.season.name,
+            quantity: 1,
+            price: +subscription.price,
+          });
+        }
+        return acc+Number(subscription.price);
       }, 0);
       return {
-        price: ticketTotal,
+        price: ticketTotal+subscriptionTotal - Number(order.discounttotal ?? 0),
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
         orderdate: orderdatetime,
         ...remainderOfOrder,
-        items: [...orderItems.entries()].map(([key, value]) => `${value} x ${key}`),
+        orderitems: [...orderItems.entries()].map(([_, value]) => value),
         donation: +(donation?.amount ?? 0),
       };
     });
@@ -254,6 +303,22 @@ orderController.put('/refund/:id', async (req, res) => {
             },
           },
         },
+        subscriptions: {
+          where: {
+            refund: null,
+          },
+          include: {
+            subscriptionticketitems: {
+              include: {
+                ticketitem: {
+                  include: {
+                    ticketrestriction: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         donation: {
           where: {
             refund: null,
@@ -268,7 +333,7 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order.payment_intent || order.order_status != state.completed) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
-    if (!order.donation && !order.orderticketitems.length) {
+    if (!order.donation && !order.orderticketitems.length && !order.subscriptions.length) {
       return res.status(400).json({error: `Order ${orderID} has already been fully refunded`});
     }
 
@@ -281,7 +346,15 @@ orderController.put('/refund/:id', async (req, res) => {
       });
       refundIntent = refund.id;
     }
-    await createRefundedOrder(prisma, order, order.orderticketitems, refundIntent, order.donation);
+    await createRefundedOrder(
+        prisma,
+        order,
+        order.orderticketitems,
+        refundIntent,
+        order.subscriptions,
+        order.payment_intent.includes('comp') || order.payment_intent.includes('seeded-order') ? state.completed : state.in_progress,
+        order.donation,
+    );
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);

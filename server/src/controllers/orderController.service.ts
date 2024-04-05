@@ -5,8 +5,10 @@ import {
   donations,
   ticketrestrictions,
   orderticketitems,
+  subscriptions,
+  subscriptionticketitems,
+  state,
   purchase_source,
-  state
 } from '@prisma/client';
 import WebSocket from 'ws';
 
@@ -148,7 +150,7 @@ export const updateRefundStatus = async (
         refund.refund_status = state.failed;
         break;
     }
-    
+
     await prisma.refunds.update({
       where: {
         id: refund.id,
@@ -168,6 +170,7 @@ export const orderFulfillment = async (
     orderItems: {
         orderTicketItems?: any[],
         donationItem?: any,
+        orderSubscriptionItems?: any[],
     },
     orderStatus: state,
     contactid?: number,
@@ -176,6 +179,7 @@ export const orderFulfillment = async (
     orderSource?: string,
     paymentIntent?: string, // need this for reader purchase
 ) => {
+  const {orderTicketItems, donationItem, orderSubscriptionItems} = orderItems;
   const {orderTicketItems, donationItem} = orderItems;
   switch (orderSource) {
     case 'admin_ticketing':
@@ -204,6 +208,7 @@ export const orderFulfillment = async (
         discounttotal: discountTotal,
         ...(orderTicketItems && {orderticketitems: {create: orderTicketItems}}),
         ...(donationItem && {donation: {create: donationItem}}),
+        ...(orderSubscriptionItems && {subscriptions: {create: orderSubscriptionItems}}),
         order_status: orderStatus,
         order_source: orderSource,
         payment_intent: paymentIntent,
@@ -240,13 +245,35 @@ export const updateCanceledOrder = async (
           },
         },
       },
+      subscriptions: {
+        include: {
+          subscriptionticketitems: {
+            include: {
+              ticketitem: {
+                include: {
+                  ticketrestriction: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 
   const eventInstances = new Set(
-      deletedOrder
-          .orderticketitems
-          .map((item) => item.ticketitem?.ticketrestriction.eventinstanceid_fk));
+      deletedOrder.orderticketitems
+          .map((item) => item.ticketitem?.ticketrestriction.eventinstanceid_fk)
+          .concat(
+              deletedOrder.subscriptions
+                  .flatMap((sub) =>
+                    sub.subscriptionticketitems.map(
+                        (ticket) => ticket.ticketitem?.ticketrestriction.eventinstanceid_fk,
+                    ),
+                  ),
+          ),
+  );
+
   await updateAvailableSeats(
       prisma,
       // @ts-ignore
@@ -263,12 +290,21 @@ interface LoadedTicketItem extends ticketitems {
     ticketrestriction: ticketrestrictions;
 }
 
+interface LoadedSubscription extends subscriptions {
+  subscriptionticketitems: LoadedSubscriptionTicketItem[];
+}
+
+interface LoadedSubscriptionTicketItem extends subscriptionticketitems {
+    ticketitem: LoadedTicketItem | null;
+}
 
 export const createRefundedOrder = async (
     prisma: ExtendedPrismaClient,
     order: orders,
     orderTicketItems: LoadedOrderTicketItem[],
     refundIntent: string,
+    subscriptions: LoadedSubscription[],
+    state: state,
     donations?: donations | null,
 ) => {
   const eventInstances = new Set<number>();
@@ -280,34 +316,52 @@ export const createRefundedOrder = async (
     };
   });
 
+  const subscriptionRefundItems = subscriptions.map((item) => {
+    item.subscriptionticketitems.forEach((item) => {
+      if (item.ticketitem) {
+        eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
+      }
+    });
+    return {
+      amount: item.price,
+      subscriptionid_fk: item.id,
+    };
+  });
+
   const donationRefundItems = donations? [{
     amount: donations.amount,
     donationid_fk: donations.donationid,
   }]: [];
 
 
-  await prisma.refunds.create({
-    data: {
-      orderid_fk: order.orderid,
-      refund_intent: refundIntent,
-      refund_status: state.in_progress,
-      refunditems: {
-        create: [
-          ...ticketRefundItems,
-          ...donationRefundItems,
-        ],
+  await prisma.$transaction([
+    prisma.orders.update({
+      where: {
+        orderid: order.orderid,
       },
-    },
-  });
-
-  await prisma.orders.update({
-    where: {
-      orderid: order.orderid,
-    },
-    data: {
-      discountid_fk: null,
-    },
-  });
+      data: {
+        discountid_fk: null,
+        refunds: {
+          create: {
+            refund_intent: refundIntent,
+            refund_status: state,
+            refunditems: {
+              create: [
+                ...ticketRefundItems,
+                ...donationRefundItems,
+                ...subscriptionRefundItems,
+              ],
+            },
+          },
+        },
+      },
+    }),
+    prisma.subscriptionticketitems.deleteMany({
+      where: {
+        subscriptionid_fk: {in: subscriptions.map((sub) => sub.id)},
+      },
+    }),
+  ]);
 
   await updateAvailableSeats(
       prisma,
