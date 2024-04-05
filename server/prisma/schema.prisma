@@ -176,6 +176,7 @@ model orderticketitems {
   id         Int          @id @default(autoincrement())
   orderid_fk Int
   price      Decimal      @db.Money
+  fee        Decimal      @db.Money
   order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
   ticketitem ticketitems?
   refund     refunditems?

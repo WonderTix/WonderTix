@@ -270,6 +270,7 @@ export const getTicketItems = async (
             ticketRestriction,
             eventInstance,
             item.qty,
+            ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(ticketRestriction.fee) : 0,
             item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
         ),
     );
@@ -313,18 +314,20 @@ export const getCartRow = (name: string, description: string, unitAmount: number
 });
 
 const getTickets = (
-    ticketRestriction: LoadedTicketRestriction,
-    eventInstance: any,
-    quantity: number,
-    price: number,
+  ticketRestriction: LoadedTicketRestriction,
+  eventInstance: any,
+  quantity: number,
+  fee: number,
+  price: number,
 ) => {
   if ((ticketRestriction.availabletickets-=quantity) < 0 || (eventInstance.availableseats-=quantity) < 0) {
-    throw new InvalidInputError(422, `Requested tickets no longer available`);
+    throw new InvalidInputError(422, 'Requested tickets no longer available');
   }
 
   return Array(quantity)
       .fill({
         price: price,
+        fee: fee,
         ticketitem: {
           create: {
             ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,

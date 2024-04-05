@@ -887,6 +887,7 @@ eventController.get('/:id', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
+
 // All further routes require authentication
 eventController.use(checkJwt);
 eventController.use(checkScopes);
@@ -941,7 +942,6 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
  *     tags:
  *     - New Event API
  */
-
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
   const {ticketCartItems = [], paymentIntentID, readerID, discount} = req.body;
   let order: orders | null = null;
@@ -1337,7 +1337,6 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
-
 
 /**
  * @swagger

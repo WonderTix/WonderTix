@@ -484,6 +484,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 orderItemsMap.set(key,
                     {
                       price: ticket.price,
+                      fee: ticket.fee,
                       refunded: ticket.refund !== null,
                       redeemed: ticket.ticketitem.redeemed,
                       donated: ticket.ticketitem.donated,
