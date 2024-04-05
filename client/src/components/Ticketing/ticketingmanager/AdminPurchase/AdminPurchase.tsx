@@ -213,6 +213,9 @@ const AdminPurchase = () => {
 
   const handlePriceBlur = (event, row) => {
     const newPrice = parseFloat(event.target.value);
+    const currentTicketRestriction = row.ticketRestrictionInfo.find(
+      (restriction) => row.typeID === restriction.tickettypeid,
+    );
 
     // Format the value once the user moves out of the input
     setPriceByRowId((prevState) => ({
@@ -225,6 +228,7 @@ const AdminPurchase = () => {
         return {
           ...r,
           price: isNaN(newPrice) ? 0 : newPrice,
+          fee: isNaN(newPrice) || newPrice === 0 ? 0 : currentTicketRestriction.fee,
         };
       }
       return r;
