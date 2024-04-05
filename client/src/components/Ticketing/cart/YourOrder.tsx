@@ -94,7 +94,7 @@ const YourOrder = ({backButtonRoute}: YourOrderProps): ReactElement => {
         </p>
         <p className='flex flex-row items-center gap-2 justify-between w-full'>
           <Tooltip
-            title='We have to charge a processing fee to cover our costs to our online payment processor'
+            title='We charge this processing fee to cover our costs to our online payment processor'
             placement='top'
             arrow
           >
