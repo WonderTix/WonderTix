@@ -338,21 +338,41 @@ interface checkoutForm {
   seatingAcc: string;
   comments: string;
   optIn: boolean;
+  donorbadge?: boolean;
+  vip?: boolean;
+  volunteerlist?: boolean;
 }
 
 export const updateContact = async (
     prisma: ExtendedPrismaClient,
     contact: ValidatedContact,
+    check = 0,
+    contactid?: number,
 ) => {
+  const filter = contactid !== undefined ?
+    {contactid: contactid} :
+    {email: contact.email};
+
   const existingContact = await prisma.contacts.findUnique({
     where: {
-      email: contact.email,
+      ...filter,
     },
   });
 
+  if (check == 1 && !existingContact) {
+    throw new Error(`Contact(${contactid || contact.email}) does not exist`);
+  } else if (check === 2 && existingContact) {
+    throw new Error(`Contact(${contactid || contact.email}) already exists`);
+  } else if (contactid !== undefined && existingContact && contact.email !== existingContact.email) {
+    const currentContact = await prisma.contacts.findUnique({where: {email: contact.email}});
+    if (currentContact) {
+      throw new Error(`Contact with email ${contact.email} already exists`);
+    }
+  }
+
   return prisma.contacts.upsert({
     where: {
-      email: contact.email,
+      ...filter,
     },
     create: {
       ...contact,
@@ -360,7 +380,13 @@ export const updateContact = async (
     },
     update: {
       ...contact,
-      newsletter: !contact.newsletter? null: !existingContact?.newsletter? new Date(): existingContact.newsletter,
+      newsletter: contact.newsletter === undefined?
+        existingContact?.newsletter:
+        !contact.newsletter?
+          null:
+          !existingContact?.newsletter?
+            new Date():
+            existingContact.newsletter,
     },
   });
 };
@@ -380,6 +406,9 @@ export interface ValidatedContact {
    seatingaccom?: string;
    comments?: string;
    newsletter?: boolean;
+   donorbadge?: boolean;
+   vip?: boolean;
+   volunteerlist?: boolean;
 }
 
 export const validateContact = (formData: checkoutForm): ValidatedContact => {
@@ -407,7 +436,10 @@ export const validateContact = (formData: checkoutForm): ValidatedContact => {
     ...(formData.visitSource && {visitsource: formData.visitSource}),
     ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
     ...(formData.comments && {comments: formData.comments}),
-    ...(formData.optIn && {newsletter: formData.optIn}),
+    ...(formData.optIn !== undefined && {newsletter: formData.optIn}),
+    ...(formData.donorbadge !== undefined && {donorbadge: formData.donorbadge}),
+    ...(formData.vip !== undefined && {vip: formData.vip}),
+    ...(formData.volunteerlist !== undefined && {volunteerlist: formData.volunteerlist}),
   };
 };
 

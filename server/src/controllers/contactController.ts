@@ -2,7 +2,7 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {validateContact} from './eventController.service';
+import {updateContact, validateContact} from './eventController.service';
 
 const prisma = extendPrismaClient();
 
@@ -19,15 +19,17 @@ contactController.use(checkScopes);
  *     summary: Create a contact
  *     tags:
  *     - New Contact
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
- *       description: Updated contact information
+ *       description: Create contact
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/requestBodies/Contact'
  *     responses:
  *       201:
- *         description: Contact updated successfully.
+ *         description: Contact created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -47,7 +49,7 @@ contactController.use(checkScopes);
  */
 contactController.post('/', async (req: Request, res: Response) => {
   try {
-    const validatedContact= validateContact({
+    const validatedContact = validateContact({
       ...req.body,
       firstName: req.body.firstname,
       lastName: req.body.lastname,
@@ -58,15 +60,7 @@ contactController.post('/', async (req: Request, res: Response) => {
       optIn: !!req.body.newsletter,
     });
 
-    const contact = await prisma.contacts.create({
-      data: {
-        ...validatedContact,
-        newsletter: validatedContact.newsletter? new Date(): null,
-        donorbadge: !!req.body.donorbadge,
-        vip: !!req.body.vip,
-        volunteerlist: !!req.body.volunteerlist,
-      },
-    });
+    const contact = await updateContact(prisma, validatedContact, 2);
 
     return res.status(201).json({...contact, newsletter: !!contact.newsletter});
   } catch (error) {
@@ -149,6 +143,8 @@ contactController.post('/', async (req: Request, res: Response) => {
  *       name: newsletter
  *       schema:
  *         type: boolean
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Contacts received successfully.
@@ -293,7 +289,16 @@ contactController.get('/', async (req: Request, res: Response) => {
       where: {
         ...(filters.length && {OR: filters}),
       },
+      orderBy: [
+        {
+          firstname: 'asc',
+        },
+        {
+          lastname: 'asc',
+        },
+      ],
     });
+
     return res.status(200).json(contacts.map((contact) => ({...contact, newsletter: !!contact.newsletter})));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -597,24 +602,8 @@ contactController.put('/:id', async (req: Request, res: Response) => {
       seatingAcc: req.body.seatingaccom,
       optIn: !!req.body.newsletter,
     });
-    const existingContact = await prisma.contacts.findUnique({where: {contactid: +id}});
 
-    if (!existingContact) {
-      return res.status(400).json({error: `Contact does not exist`});
-    }
-
-    await prisma.contacts.update({
-      where: {
-        contactid: Number(id),
-      },
-      data: {
-        ...validatedContact,
-        donorbadge: !!req.body.donorbadge,
-        vip: !!req.body.vip,
-        volunteerlist: !!req.body.volunteerlist,
-        newsletter: !validatedContact.newsletter? null: existingContact.newsletter? existingContact.newsletter: new Date(),
-      },
-    });
+    await updateContact(prisma, validatedContact, 1, +id);
 
     return res.status(204).json();
   } catch (error) {
@@ -671,14 +660,20 @@ contactController.delete('/:id', async (req: Request, res: Response) => {
         contactid: Number(id),
       },
     });
-    return res.status(204).json();
+    res.status(204).json();
+
+    return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      return res.status(400).json({error: error.message});
+      res.status(400).json({error: error.message});
+      return;
     }
+
     if (error instanceof Prisma.PrismaClientValidationError) {
-      return res.status(400).json({error: error.message});
+      res.status(400).json({error: error.message});
+      return;
     }
-    return res.status(500).json({error: 'Internal Server Error'});
+
+    res.status(500).json({error: 'Internal Server Error'});
   }
 });

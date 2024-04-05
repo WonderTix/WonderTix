@@ -39,9 +39,7 @@ export const ticketingWebhook = async (
         },
         data: {
           payment_intent: paymentIntent,
-          contacts: {
-            connect: {contactid: contactid},
-          },
+          contactid_fk: contactid,
         },
       });
       break;
