@@ -53,6 +53,7 @@ export class ContactPage {
     }
 
     async checkCustomer(customer: CustomerInfo) {
+        await this.page.reload();
         const currentCard = this.customerCard.filter({hasText: customer.fullName});
         expect(await currentCard.getByTestId('contact-name').textContent()).toBe(customer.fullName);
         expect(await currentCard.getByTestId('contact-email').textContent()).toBe(customer.email);
