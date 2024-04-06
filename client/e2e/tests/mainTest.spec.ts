@@ -126,9 +126,7 @@ test('check contact is added after order', async ({page}, testInfo) => {
   await events.addNewShowing(currentShowing);
   try {
     await main.goto();
-    console.log('purchasing ticket');
     await main.purchaseTicket(currentPatron, currentCard, currentEvent, {timeoutAdd: timeoutAdd});
-    console.log('purchased ticket');
     await contacts.goto();
     await contacts.searchCustomer(currentPatron);
     await contacts.checkCustomer(currentPatron);
