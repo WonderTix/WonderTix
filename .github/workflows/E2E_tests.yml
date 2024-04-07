@@ -64,10 +64,9 @@ jobs:
         working-directory: ./server
 
       - name: Install & Start Stripe Listen
-        run: docker run --rm -d stripe/stripe-cli:latest listen --api-key $PRIVATE_STRIPE_KEY
-
-      - name: Update Stripe Webhook
-        run: echo "PRIVATE_STRIPE_WEBHOOK=$(stripe listen --print-secret)" >> "$GITHUB_ENV"
+        run: |
+          docker run --rm -d stripe/stripe-cli:latest listen --api-key $PRIVATE_STRIPE_KEY
+          echo "PRIVATE_STRIPE_WEBHOOK=$(stripe listen --print-secret)" >> "$GITHUB_ENV"
 
       - name: docker setup
         run: docker-compose up -d
@@ -97,7 +96,9 @@ jobs:
           retention-days: 14
 
       - name: docker teardown
-        run: docker-compose down
+        run: | 
+          docker-compose down
+          docker rm $(docker ps -a -q)
 
       - uses: actions/upload-artifact@v3
         if: always()
