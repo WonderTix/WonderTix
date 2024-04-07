@@ -63,6 +63,12 @@ jobs:
           mkcert localhost
         working-directory: ./server
 
+      - name: Install & Start Stripe Listen
+        run: docker run --rm -it stripe/stripe-cli:latest listen --api-key $PRIVATE_STRIPE_KEY
+
+      - name: Update Stripe Webhook
+        run: export PRIVATE_STRIPE_WEBHOOK="$(stripe listen --print-secret)"
+
       - name: docker setup
         run: docker-compose up -d
 
