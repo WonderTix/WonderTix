@@ -65,15 +65,11 @@ jobs:
 
       - name: Install & Start Stripe Listen
         run: |
-          docker run --rm -d stripe/stripe-cli:latest listen --api-key $PRIVATE_STRIPE_KEY --forward-to "$ROOT_URL"/api/2/order/webhook
-          echo stripe listen --print-secret 
-          echo "PRIVATE_STRIPE_WEBHOOK=$(stripe listen --print-secret)" >> "$GITHUB_ENV"
+          docker run --rm -d stripe/stripe-cli:latest listen --api-key $PRIVATE_STRIPE_KEY --forward-to $ROOT_URL/api/2/order/webhook
+          echo "PRIVATE_STRIPE_WEBHOOK=$(docker run --rm stripe/stripe-cli:latest listen --print-secret --api-key $PRIVATE_STRIPE_KEY)" >> "$GITHUB_ENV"
 
       - name: docker setup
-        run: |
-          echo $PRIVATE_STRIPE_WEBHOOK 
-          echo "$ROOT_URL"/api/test
-          docker-compose up -d
+        run: docker-compose up -d
 
       - name: 30 seconds wait for client and server start, database seed
         run: sleep 30s
