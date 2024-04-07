@@ -71,7 +71,6 @@ jobs:
           sudo apt install stripe
           stripe listen --api-key $PRIVATE_STRIPE_KEY --forward-to $ROOT_URL/api/2/order/webhook > stripe.log &
           echo "PRIVATE_STRIPE_WEBHOOK=$(stripe listen --api-key $PRIVATE_STRIPE_KEY --print-secret)" >> "$GITHUB_ENV"
-          echo "TEST_STRIPE_WEBHOOK=$(stripe listen --api-key $PRIVATE_STRIPE_KEY --print-secret)" >> "$GITHUB_ENV"
 
       - name: docker setup
         run: docker-compose up -d
@@ -101,9 +100,7 @@ jobs:
           retention-days: 14
 
       - name: docker teardown
-        run: | 
-          docker-compose down
-          docker rm $(docker ps -a -q)
+        run: docker-compose down
 
       - uses: actions/upload-artifact@v3
         if: always()
