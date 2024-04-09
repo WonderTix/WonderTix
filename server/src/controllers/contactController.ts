@@ -479,6 +479,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 orderItemsMap.set(key,
                     {
                       price: ticket.price,
+                      fee: ticket.fee,
                       refunded: ticket.refund !== null,
                       redeemed: ticket.ticketitem.redeemed,
                       donated: ticket.ticketitem.donated,
@@ -529,7 +530,8 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       flattenedOrders.push({
         orderid: order.orderid,
         orderdatetime: order.orderdatetime,
-        ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
+        ordertotal: Number(order.ordersubtotal) + Number(order.feetotal) - Number(order.discounttotal),
+        feetotal: order.feetotal,
         discounttotal: order.discounttotal,
         refunded: ticketItemsRefunded && subscriptionItemsRefunded,
         orderitems: [...orderItemsMap.values()],

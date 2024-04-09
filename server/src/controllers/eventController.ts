@@ -6,6 +6,7 @@ import {
   createStripeCheckoutSession,
   expireCheckoutSession,
   getDonationItem,
+  getFeeItem,
   getTicketItems,
   createStripePaymentIntent,
   requestStripeReaderPayment,
@@ -85,6 +86,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
     } = await getTicketItems(ticketCartItems, prisma);
 
@@ -100,16 +102,26 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       donationTotal,
     } = getDonationItem(donation);
 
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
-    const orderSubTotal = ticketTotal+subscriptionTotal+donationTotal;
+    const {feeCartRow} = getFeeItem(feeTotal);
 
-    if (orderSubTotal - discountAmount > .49) {
+    let cartRows = ticketCartRows.concat(subscriptionCartRows);
+    if (donationCartRow) {
+      cartRows = cartRows.concat([donationCartRow]);
+    }
+    if (feeCartRow) {
+      cartRows = cartRows.concat([feeCartRow]);
+    }
+
+    const discountAmount = discount.code != '' ? getDiscountAmount(discount, ticketTotal) : 0;
+    const orderSubTotal = ticketTotal + subscriptionTotal + donationTotal;
+
+    if (orderSubTotal + feeTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
           updatedContact,
           ticketCartRows.concat((donationCartRow? [donationCartRow]: []).concat(subscriptionCartRows)),
           {...discount, amountOff: discountAmount},
       );
-    } else if (orderSubTotal - discountAmount > 0) {
+    } else if (orderSubTotal + feeTotal - discountAmount > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
@@ -118,6 +130,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         eventInstanceQueries,
         orderSubTotal,
         discountAmount,
+        feeTotal,
         {
           orderTicketItems,
           donationItem,
@@ -875,6 +888,7 @@ eventController.get('/:id', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
+
 // All further routes require authentication
 eventController.use(checkJwt);
 eventController.use(checkScopes);
@@ -887,7 +901,6 @@ eventController.use(checkScopes);
  *     tags:
  *     - New Event API
  */
-
 eventController.post('/reader-intent', async (req: Request, res: Response) => {
   const {ticketCartItems} = req.body;
   let paymentIntentID = '';
@@ -902,11 +915,12 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
       ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
     } = await getTicketItems(ticketCartItems, prisma);
 
     if (ticketTotal > 0) {
-      const {id, secret} = await createStripePaymentIntent(ticketTotal * 100);
+      const {id, secret} = await createStripePaymentIntent((ticketTotal + feeTotal) * 100);
       paymentIntentID = id;
       clientSecret = secret;
     }
@@ -929,10 +943,9 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
  *     tags:
  *     - New Event API
  */
-
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
   const {ticketCartItems = [], paymentIntentID, readerID, discount} = req.body;
-  let order :orders | null = null;
+  let order: orders | null = null;
   try {
     if (!ticketCartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
@@ -946,6 +959,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
     } = await getTicketItems(ticketCartItems, prisma);
 
@@ -959,6 +973,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         eventInstanceQueries,
         ticketTotal,
         discountAmount,
+        feeTotal,
         {
           orderTicketItems,
         },
@@ -1322,7 +1337,6 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
-
 
 /**
  * @swagger
