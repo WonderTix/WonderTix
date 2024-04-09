@@ -80,7 +80,7 @@ export const SeasonTicketTypeUpdateTable = (
                   headings={[
                     'Admission Type',
                     'Ticket Price',
-                    'Concession Price',
+                    'Fee',
                   ]}
                   sticky={showPopUp}
                   styles={{

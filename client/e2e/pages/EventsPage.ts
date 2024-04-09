@@ -41,7 +41,6 @@ export class EventsPage {
   readonly takeMeThere: Locator;
   readonly getTickets: Locator;
   readonly backToEvents: Locator;
-  readonly concessionTicket: Locator;
   readonly editShowingButton: Locator;
   readonly emailButton: Locator;
   readonly manageTicketingButton: Locator;
@@ -95,7 +94,6 @@ export class EventsPage {
     this.getTickets = page.getByRole('button', {name: 'Get Tickets'});
     this.takeMeThere = page.getByRole('button', {name: 'Take me there!'});
     this.backToEvents = page.getByRole('button', {name: 'back to Events'});
-    this.concessionTicket = page.getByRole('checkbox');
     this.editShowingButton = page
         .locator('button')
         .filter({hasText: /^Edit$/});
@@ -194,7 +192,7 @@ export class EventsPage {
           ' ' +
           aShowing.showingTime12hour,
       });
-    const showingID = await showingCardLocator.locator(":text('Showing ID: ') + p").textContent();
+    const showingID = await showingCardLocator.locator(':text(\'Showing ID: \') + p').textContent();
     const deleteButton = this.page.getByTestId(`${showingID}-showing-delete-button`);
     const disabled = await deleteButton.isDisabled();
     if (disabled) {

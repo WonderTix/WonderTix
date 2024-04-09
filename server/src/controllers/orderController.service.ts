@@ -149,6 +149,7 @@ export const orderFulfillment = async (
     eventInstanceQueries: any[],
     orderSubtotal: number,
     discountTotal: number,
+    feeTotal: number,
     orderItems: {
         orderTicketItems?: any[],
         donationItem?: any,
@@ -168,6 +169,7 @@ export const orderFulfillment = async (
         discountid_fk: discountId,
         ordersubtotal: orderSubtotal,
         discounttotal: discountTotal,
+        feetotal: feeTotal,
         ...(orderTicketItems && {orderticketitems: {create: orderTicketItems}}),
         ...(donationItem && {donation: {create: donationItem}}),
         ...(orderSubscriptionItems && {subscriptions: {create: orderSubscriptionItems}}),
@@ -241,7 +243,6 @@ export const updateCanceledOrder = async (
   );
 };
 
-
 interface LoadedOrderTicketItem extends orderticketitems {
     ticketitem: LoadedTicketItem | null;
 }
@@ -292,7 +293,6 @@ export const createRefundedOrder = async (
     amount: donations.amount,
     donationid_fk: donations.donationid,
   }]: [];
-
 
   await prisma.$transaction([
     prisma.orders.update({
@@ -364,13 +364,12 @@ export const updateAvailableSeats = async (
 
 export const discoverReaders = async () => {
   const discoverResult = await stripe.terminal.readers.list();
-
   return discoverResult;
 };
 
 export const abortPaymentIntent = async (
-    prisma: ExtendedPrismaClient,
-    paymentIntentID: string,
+  prisma: ExtendedPrismaClient,
+  paymentIntentID: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {

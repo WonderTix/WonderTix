@@ -18,8 +18,8 @@ export const getHandleTicketTypeChange =
       getKeyValue(+value, 'price', options),
     );
     await setFieldValue(
-      `${parentFieldName}.concessionprice`,
-      getKeyValue(+value, 'concessionprice', options),
+      `${parentFieldName}.fee`,
+      getKeyValue(+value, 'fee', options),
     );
     await setFieldValue(
       `${parentFieldName}.description`,
@@ -84,11 +84,11 @@ export const TicketTypeTableRow = ({
       </td>
       <td className='px-2 py-1'>
         <Field
-          name={`${field.name}.concessionprice`}
+          name={`${field.name}.fee`}
           type='number'
           component={InputControl}
           hidden={true}
-          label='Concession Price'
+          label='Fee'
           currency={true}
           className={{
             controlClass: '',

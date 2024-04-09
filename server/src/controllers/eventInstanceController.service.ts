@@ -61,7 +61,7 @@ export const validateTicketRestrictionsOnUpdate = (
     return {
       ...newRestriction,
       price: newRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
-      concessionprice: +newRestriction.concessionprice,
+      fee: +newRestriction.fee,
       ticketlimit: tickets,
       seasontickettypepricedefaultid_fk: seasonTicketTypePriceDefaults.get(+newRestriction.tickettypeid_fk),
     };
@@ -96,17 +96,17 @@ const getTicketRestrictionUpdate = (
   } else if (!newRestriction || !newRestriction.ticketlimit) {
     throw new InvalidInputError(
         422,
-        `Can not remove restriction for which tickets have been sold`,
+        'Can not remove restriction for which tickets have been sold',
     );
   } else if (newRestriction.ticketlimit > totalseats) {
     throw new InvalidInputError(
         422,
-        `Restriction ticket limit can not exceed total seats for showing`,
+        'Restriction ticket limit can not exceed total seats for showing',
     );
   } else if (soldTickets > newRestriction.ticketlimit) {
     throw new InvalidInputError(
         422,
-        `Can not reduce individual ticket type quantity below quantity sold to date`,
+        'Can not reduce individual ticket type quantity below quantity sold to date',
     );
   }
 
@@ -118,7 +118,7 @@ const getTicketRestrictionUpdate = (
       data: {
         ticketlimit: newRestriction.ticketlimit,
         price: oldRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
-        concessionprice: +newRestriction.concessionprice,
+        fee: +newRestriction.fee,
       },
     },
   };
@@ -128,7 +128,7 @@ export const validateDateAndTime = (date: string, time: string) => {
   const dateSplit = date.split('-');
   const timeSplit = time.split(':');
   if (dateSplit.length < 3 || timeSplit.length < 2) {
-    throw new InvalidInputError(422, `Invalid Event Date and time`);
+    throw new InvalidInputError(422, 'Invalid Event Date and time');
   }
 
   const toReturn = new Date(
@@ -136,7 +136,7 @@ export const validateDateAndTime = (date: string, time: string) => {
   );
 
   if (isNaN(toReturn.getTime())) {
-    throw new InvalidInputError(422, `Invalid Event Date and time`);
+    throw new InvalidInputError(422, 'Invalid Event Date and time');
   }
   return {
     eventdate:
