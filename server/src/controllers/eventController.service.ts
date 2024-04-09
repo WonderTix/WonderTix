@@ -136,10 +136,24 @@ export const getSubscriptionItems = async (
   }, {subscriptionCartRows: [], orderSubscriptionItems: [], subscriptionTotal: 0});
 };
 
+export const getFeeItem = (feeTotal: number) => {
+  const feeCartRow = feeTotal > 0 ? getCartRow(
+    'Processing Fee',
+    'Covers the cost of our online payment processor',
+    feeTotal * 100,
+    1,
+  ) : undefined;
+
+  return {
+    feeCartRow: feeCartRow,
+  };
+};
+
 interface TicketItemsReturn {
   orderTicketItems: any[];
   ticketCartRows: LineItem[];
   ticketTotal: number;
+  feeTotal: number;
   eventInstanceQueries: any[];
 }
 
@@ -188,6 +202,7 @@ export const getTicketItems = async (
     ticketCartRows: [],
     eventInstanceQueries: [],
     ticketTotal: 0,
+    feeTotal: 0,
   };
 
   const eventInstances = await prisma.eventinstances.findMany({
@@ -224,7 +239,7 @@ export const getTicketItems = async (
             ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => {
               return [res.tickettypeid_fk, {
                 ...res,
-                availabletickets: res.ticketlimit- res.ticketitems.length,
+                availabletickets: res.ticketlimit - res.ticketitems.length,
               }];
             })),
           },
@@ -239,6 +254,11 @@ export const getTicketItems = async (
           `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
+    const ticketRestriction = eventInstance.ticketRestrictionMap.get(item.typeID);
+    if (!ticketRestriction) {
+      throw new InvalidInputError(422, 'Requested tickets no longer available');
+    }
+
     if (item.payWhatCan && (item.payWhatPrice ?? -1) < 0 || item.price < 0) {
       throw new InvalidInputError(
           422,
@@ -247,9 +267,10 @@ export const getTicketItems = async (
     }
     toReturn.orderTicketItems.push(
         ...getTickets(
-            eventInstance.ticketRestrictionMap.get(item.typeID),
+            ticketRestriction,
             eventInstance,
             item.qty,
+            ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(ticketRestriction.fee) : 0,
             item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
         ),
     );
@@ -262,6 +283,10 @@ export const getTicketItems = async (
         ));
 
     toReturn.ticketTotal += item.payWhatCan && item.payWhatPrice? item.payWhatPrice: item.price * item.qty;
+    if ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) {
+      // Only add a fee if the item's price is not 0
+      toReturn.feeTotal += Number(ticketRestriction.fee) * item.qty;
+    }
   }
 
   eventInstanceMap.forEach(({eventinstanceid, availableseats}) =>
@@ -289,22 +314,20 @@ export const getCartRow = (name: string, description: string, unitAmount: number
 });
 
 const getTickets = (
-    ticketRestriction: LoadedTicketRestriction | undefined,
-    eventInstance: any,
-    quantity: number,
-    price: number,
+  ticketRestriction: LoadedTicketRestriction,
+  eventInstance: any,
+  quantity: number,
+  fee: number,
+  price: number,
 ) => {
-  if (!ticketRestriction) {
-    throw new InvalidInputError(422, `Requested tickets no longer available`);
-  }
-
   if ((ticketRestriction.availabletickets-=quantity) < 0 || (eventInstance.availableseats-=quantity) < 0) {
-    throw new InvalidInputError(422, `Requested tickets no longer available`);
+    throw new InvalidInputError(422, 'Requested tickets no longer available');
   }
 
   return Array(quantity)
       .fill({
         price: price,
+        fee: fee,
         ticketitem: {
           create: {
             ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,

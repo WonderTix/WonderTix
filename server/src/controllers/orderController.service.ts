@@ -82,7 +82,7 @@ export const readerWebhook = async (
     case 'payment_intent.succeeded':
       break;
   }
-}
+};
 
 export const updateRefundStatus = async (
   prisma: ExtendedPrismaClient,
@@ -138,7 +138,7 @@ export const updateRefundStatus = async (
       },
       data: {
         refund_status: refund.refund_status,
-      }
+      },
     });
   }));
 };
@@ -148,6 +148,7 @@ export const orderFulfillment = async (
     eventInstanceQueries: any[],
     orderSubtotal: number,
     discountTotal: number,
+    feeTotal: number,
     orderItems: {
         orderTicketItems?: any[],
         donationItem?: any,
@@ -156,7 +157,7 @@ export const orderFulfillment = async (
     contactid?: number,
     checkoutSession?: string,
     discountId?: number,
-    paymentIntent?: string // need this for reader purchase
+    paymentIntent?: string, // need this for reader purchase
 ) => {
   const {orderTicketItems, donationItem, orderSubscriptionItems} = orderItems;
   const result = await prisma.$transaction([
@@ -167,6 +168,7 @@ export const orderFulfillment = async (
         discountid_fk: discountId,
         ordersubtotal: orderSubtotal,
         discounttotal: discountTotal,
+        feetotal: feeTotal,
         ...(orderTicketItems && {orderticketitems: {create: orderTicketItems}}),
         ...(donationItem && {donation: {create: donationItem}}),
         ...(orderSubscriptionItems && {subscriptions: {create: orderSubscriptionItems}}),
@@ -240,7 +242,6 @@ export const updateCanceledOrder = async (
   );
 };
 
-
 interface LoadedOrderTicketItem extends orderticketitems {
     ticketitem: LoadedTicketItem | null;
 }
@@ -291,7 +292,6 @@ export const createRefundedOrder = async (
     amount: donations.amount,
     donationid_fk: donations.donationid,
   }]: [];
-
 
   await prisma.$transaction([
     prisma.orders.update({
@@ -363,17 +363,14 @@ export const updateAvailableSeats = async (
   );
 };
 
-
-
 export const discoverReaders = async () => {
   const discoverResult = await stripe.terminal.readers.list();
-
   return discoverResult;
-}
+};
 
 export const abortPaymentIntent = async (
   prisma: ExtendedPrismaClient,
-  paymentIntentID: string
+  paymentIntentID: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
@@ -388,4 +385,4 @@ export const abortPaymentIntent = async (
   if (!intent) throw new Error('Unable to find payment Intent!');
 
   await updateCanceledOrder(prisma, order, true);
-}
+};

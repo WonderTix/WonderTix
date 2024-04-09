@@ -212,6 +212,7 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
+            feetotal: {type: 'number'},
           },
         },
         SavedReport: {
@@ -241,7 +242,7 @@ const openApiSpec = swaggerJsdoc({
               seasonid_fk: {type: 'number'},
               tickettypeid_fk: {type: 'number'},
               price: {type: 'number'},
-              concessionprice: {type: 'number'},
+              fee: {type: 'number'},
             },
           },
         },
@@ -313,11 +314,11 @@ const openApiSpec = swaggerJsdoc({
         TicketRestriction: {
           type: 'object',
           properties: {
-            concessionprice: {type: 'string'},
+            fee: {type: 'string'},
             description: {type: 'string'},
             eventinstanceid_fk: {type: 'integer'},
-            price: {type: 'string'},
-            seasontickettypepricedefaultid_fk: {type: 'integer'},
+            price: {type: 'number'},
+            seasontickettypepricedefaultid_fk: {type: 'number'},
             ticketlimit: {type: 'integer'},
             ticketrestrictionsid: {type: 'integer'},
             ticketssold: {type: 'integer'},
@@ -330,7 +331,7 @@ const openApiSpec = swaggerJsdoc({
             tickettypeid: {type: 'integer'},
             description: {type: 'string'},
             price: {type: 'number'},
-            concessions: {type: 'number'},
+            fee: {type: 'number'},
             deprecated: {type: 'boolean'},
           },
         },
@@ -446,6 +447,7 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
+            feetotal: {type: 'number'},
             checkout_sessions: {type: 'string'},
           },
         },
@@ -473,7 +475,7 @@ const openApiSpec = swaggerJsdoc({
               tickettypeid_fk: {type: 'number'},
               description: {type: 'string'},
               price: {type: 'number'},
-              concessionprice: {type: 'number'},
+              fee: {type: 'number'},
             },
           },
         },
@@ -551,7 +553,7 @@ const openApiSpec = swaggerJsdoc({
           properties: {
             description: {type: 'string'},
             price: {type: 'number'},
-            concessions: {type: 'number'},
+            fee: {type: 'number'},
           },
         },
         User: {
@@ -671,7 +673,7 @@ const createServer = async () => {
       wss.clients.forEach((client) => {
         if (client !== ws) {
           waitForOpenConnection(client).then(() => {
-            client.send(data, { binary: isBinary });
+            client.send(data, {binary: isBinary});
           }).catch((error) => {
             console.error(error.message);
           });

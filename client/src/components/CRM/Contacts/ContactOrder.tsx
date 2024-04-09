@@ -8,6 +8,7 @@ import Label from '../../Ticketing/Label';
 interface ContactOrderProps {
   orderId: number;
   orderTotal: number;
+  feeTotal: number;
   discountTotal: number;
   orderDateTime: string;
   refunded: string;
@@ -19,6 +20,7 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
   const {
     orderId,
     orderTotal,
+    feeTotal,
     discountTotal,
     orderDateTime,
     refunded,
@@ -90,13 +92,23 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
         </aside>
       </div>
       <footer className='mt-3'>
-        {discountTotal && (
+        {discountTotal !== 0 && (
           <p className='flex'>
             <span className='tab:flex-initial tab:w-32 w-full text-lg'>
               Discount:
             </span>
             <span className='font-medium text-lg text-zinc-800'>
               {toDollarAmount(Number(discountTotal))}
+            </span>
+          </p>
+        )}
+        {feeTotal !== 0 && (
+          <p className='flex'>
+            <span className='tab:flex-initial tab:w-32 w-full text-lg'>
+              Fee:
+            </span>
+            <span className='font-medium text-lg text-zinc-800'>
+              {toDollarAmount(Number(feeTotal))}
             </span>
           </p>
         )}
