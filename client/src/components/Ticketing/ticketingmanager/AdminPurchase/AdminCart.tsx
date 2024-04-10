@@ -74,25 +74,28 @@ const AdminCart = ({
     return total + ticketPrice;
   }, 0);
 
-  const getTotal = () => {
+  const fee = cartItems.reduce((acc, item) => acc + item.fee, 0);
+
+  const getDiscountTotal = () => {
     if (appliedDiscount) {
       if (appliedDiscount.amount && appliedDiscount.percent) {
-        return Math.max(
-          subtotal -
-            Math.min(
-              (+appliedDiscount.percent / 100) * subtotal,
-              appliedDiscount.amount,
-            ),
-          0,
+        return Math.min(
+          (+appliedDiscount.percent / 100) * subtotal,
+          appliedDiscount.amount,
         );
       } else if (appliedDiscount.amount) {
-        return Math.max(subtotal - appliedDiscount.amount, 0);
+        return Math.min(subtotal, appliedDiscount.amount);
       } else {
-        return (1 - +appliedDiscount.percent / 100) * subtotal;
+        return (+appliedDiscount.percent / 100) * subtotal;
       }
     } else {
-      return subtotal;
+      return 0;
     }
+  };
+
+  const getTotal = () => {
+    const discount = getDiscountTotal();
+    return subtotal - discount + fee;
   };
 
   const validateDiscountCode = (discount) => {
@@ -146,10 +149,10 @@ const AdminCart = ({
         </button>
       </section>
       <section className='flex flex-col items-center gap-2 bg-zinc-800 rounded-xl px-5 py-3'>
-        <div className={
-          `bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md w-full
-          ${appliedDiscount && 'bg-zinc-800 border-2 border-zinc-900'}`
-        }>
+        <div
+          className={`bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md w-full
+          ${appliedDiscount && 'bg-zinc-800 border-2 border-zinc-900'}`}
+        >
           <input
             type='text'
             placeholder='Discount code...'
@@ -192,19 +195,25 @@ const AdminCart = ({
               Invalid Discount Code
             </p>
           ) : (
-            <aside className='flex items-center gap-2 justify-between w-full'>
-              <h2 className='text-zinc-100 text-sm'>Discount</h2>
-              <strong className='text-amber-300 text-lg font-bold'>
-                {toDollar(subtotal - getTotal())}
-              </strong>
-            </aside>
+            <p className='flex items-center gap-2 justify-between w-full'>
+              <span className='text-zinc-100 text-sm'>Discount</span>
+              <span className='text-amber-300 text-lg font-bold'>
+                {toDollar(getDiscountTotal())}
+              </span>
+            </p>
           ))}
-        <aside className='flex items-center gap-2 justify-between w-full'>
-          <h2 className='text-zinc-100 text-sm'>Total</h2>
-          <strong className='text-white text-lg font-bold'>
+        <p className='flex flex-row items-center gap-2 justify-between w-full'>
+          <span className='flex items-center gap-1 text-zinc-100 text-sm'>
+            Fee
+          </span>
+          <span className='text-white text-lg font-bold'>{toDollar(fee)}</span>
+        </p>
+        <p className='flex items-center gap-2 justify-between w-full'>
+          <span className='text-zinc-100 text-sm'>Total</span>
+          <span className='text-white text-lg font-bold'>
             {toDollar(getTotal())}
-          </strong>
-        </aside>
+          </span>
+        </p>
       </section>
     </div>
   );

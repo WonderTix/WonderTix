@@ -10,9 +10,10 @@
  */
 import YourOrder from '../cart/YourOrder';
 import {
-  removeAllTicketsFromCart,
-  selectCartContents,
+  selectTicketCartContents,
   selectDiscount,
+  selectSubscriptionCartContents,
+  removeAllItemsFromCart,
 } from '../ticketingmanager/ticketingSlice';
 import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
@@ -33,7 +34,8 @@ const stripePromise = loadStripe(pk);
  */
 export default function CheckoutPage(): ReactElement {
   const navigate = useNavigate();
-  const cartItems = useAppSelector(selectCartContents);
+  const ticketCartItems = useAppSelector(selectTicketCartContents);
+  const subscriptionCartItems = useAppSelector(selectSubscriptionCartContents);
   const discount = useAppSelector(selectDiscount);
   const donation = useAppSelector(selectDonation);
   const [checkoutStep, setCheckoutStep] = useState<'donation' | 'form'>(
@@ -66,7 +68,7 @@ export default function CheckoutPage(): ReactElement {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({cartItems, formData, donation, discount}),
+          body: JSON.stringify({ticketCartItems, subscriptionCartItems, formData, donation, discount}),
         },
       );
       if (!response.ok) {
@@ -74,7 +76,7 @@ export default function CheckoutPage(): ReactElement {
       }
       const session = await response.json();
       if (session.id === 'comp') {
-        dispatch(removeAllTicketsFromCart());
+        dispatch(removeAllItemsFromCart());
         navigate(`/success`);
       }
       const result = await stripe.redirectToCheckout({sessionId: session.id});
@@ -133,20 +135,20 @@ export default function CheckoutPage(): ReactElement {
           </button>
         </div>
         <div className='flex flex-row items-center mt-2 text-zinc-800'>
-          <div className='text-4xl font-bold'>Checkout</div>
+          <h1 className='text-4xl font-bold'>Checkout</h1>
         </div>
         <div className='flex flex-col items-center md:flex-row md:items-stretch sm:flex-col w-full h-full'>
           <div className='min-w-414 sm:w-full h-full md:mt-10 sm:mt-10 bg-zinc-100 p-2 pt-4 md:p-9 flex flex-col gap-5 items-start rounded-xl overflow-auto'>
             <div className='flex flex-col items-center h-auto w-full'>
-              <div className='text-2xl lg:text-5xl font-bold mb-5'>
+              <h2 className='text-2xl lg:text-5xl font-bold mb-5'>
                 Complete Order
-              </div>
+              </h2>
               {checkoutStep === 'donation' && (
                 <DonationPage onNext={() => setCheckoutStep('form')} />
               )}
               {checkoutStep === 'form' && (
                 <CompleteOrderForm
-                  disabled={cartItems.length === 0}
+                  disabled={!ticketCartItems.length && !subscriptionCartItems.length}
                   onSubmit={doCheckout}
                   onBack={() => setCheckoutStep('donation')}
                 />

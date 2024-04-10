@@ -35,6 +35,7 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
               orderticketitems: {
                 create: Array(orderItemCount).fill({
                   price: restriction?.price,
+                  fee: restriction?.fee,
                   ticketitem: {
                     create: {
                       ticketrestrictionid_fk: restriction?.ticketrestrictionsid,

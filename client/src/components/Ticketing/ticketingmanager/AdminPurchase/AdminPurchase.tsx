@@ -43,6 +43,7 @@ const AdminPurchase = () => {
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
   const {token} = useFetchToken();
+
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
     setEventData([
@@ -171,6 +172,7 @@ const AdminPurchase = () => {
       (restriction) => ticketTypeId === restriction.tickettypeid,
     );
     const price = parseFloat(currentTicketRestriction.price);
+    const fee = parseFloat(currentTicketRestriction.fee);
 
     // determine how many seats for current event instance
     const {ticketlimit, ticketssold} = currentTicketRestriction;
@@ -182,6 +184,7 @@ const AdminPurchase = () => {
           ...r,
           ticketTypes: currentTicketRestriction.description,
           price: row.complimentary ? 0 : price,
+          fee: row.complimentary || price === 0 ? 0 : fee,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
         };
@@ -210,6 +213,9 @@ const AdminPurchase = () => {
 
   const handlePriceBlur = (event, row) => {
     const newPrice = parseFloat(event.target.value);
+    const currentTicketRestriction = row.ticketRestrictionInfo.find(
+      (restriction) => row.typeID === restriction.tickettypeid,
+    );
 
     // Format the value once the user moves out of the input
     setPriceByRowId((prevState) => ({
@@ -222,6 +228,7 @@ const AdminPurchase = () => {
         return {
           ...r,
           price: isNaN(newPrice) ? 0 : newPrice,
+          fee: isNaN(newPrice) || newPrice === 0 ? 0 : currentTicketRestriction.fee,
         };
       }
       return r;
@@ -237,6 +244,7 @@ const AdminPurchase = () => {
           ...row,
           complimentary: isChecked,
           price: isChecked ? 0 : row.price,
+          fee: isChecked || row.price === 0 ? 0 : row.fee,
         };
       }
       return r;
@@ -313,6 +321,7 @@ const AdminPurchase = () => {
           product_id: row.eventinstanceid,
           eventId: row.eventid,
           price: row.price,
+          fee: row.fee,
           desc: row.ticketTypes,
           typeID: row.typeID,
           date: showingDate,
@@ -352,7 +361,7 @@ const AdminPurchase = () => {
       if (!token) return;
 
       fetch( // create intent
-      process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
+      `${process.env.REACT_APP_API_2_URL}/events/reader-intent`,
       {
         credentials: 'include',
         method: 'POST',
@@ -360,7 +369,7 @@ const AdminPurchase = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({cartItems}),
+        body: JSON.stringify({ticketCartItems: cartItems}),
       },
       ).then((response) => {
         if (!response.ok) {

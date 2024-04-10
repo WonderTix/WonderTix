@@ -73,7 +73,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
               eventinstanceid: restriction.eventinstanceid_fk,
               tickettypeid: restriction.tickettypeid_fk,
               description: restriction.tickettype.description,
-              concessionprice: +restriction.concessionprice,
+              fee: +restriction.fee,
               price: +restriction.price,
               ticketlimit: restriction.ticketlimit,
               ticketssold: restriction.ticketitems.length,

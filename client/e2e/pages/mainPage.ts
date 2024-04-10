@@ -71,7 +71,7 @@ export class MainPage {
       name: 'Proceed To Checkout',
     });
 
-    this.cartTicketCard = page.getByTestId('cart-ticket-card');
+    this.cartTicketCard = page.getByTestId('cart-item-card');
     this.cartSubtotal = page.getByTestId('subtotal-display');
     this.cartContinue = page.getByRole('button', {name: 'Continue'});
     this.cartFirstName = page.locator('#first-name');
@@ -325,26 +325,26 @@ export class MainPage {
   // Uses the event parameter to find the event to increment.
   async incrementEventTicket(event: EventInfo) {
     const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
-    await cartCard.getByTestId('increment-ticket').click();
+    await cartCard.getByTestId('increment-item').click();
   }
 
   // Decrease number of tickets for an event by one.
   // Uses the event parameter to find the event to decrement.
   async decrementEventTicket(event: EventInfo) {
     const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
-    await cartCard.getByTestId('decrement-ticket').click();
+    await cartCard.getByTestId('decrement-item').click();
   }
 
   // Checks the quantity and total of the chosen ticket is correct.
   // Currently assumes ticket cost is $20, and does not check the overall subtotal.
   async checkEventTicket(event: EventInfo, qty: number) {
     const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
-    expect(await cartCard.getByTestId('ticket-quantity').textContent()).toBe(
+    expect(await cartCard.getByTestId('item-quantity').textContent()).toBe(
       qty.toString(),
     );
     const price = '$' + (qty * 20).toString() + '.00';
     expect(
-      await cartCard.getByTestId('card-ticket-subtotal').textContent(),
+      await cartCard.getByTestId('card-item-subtotal').textContent(),
     ).toBe(price);
   }
 }

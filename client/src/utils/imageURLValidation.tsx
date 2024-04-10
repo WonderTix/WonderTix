@@ -1,11 +1,19 @@
 import React from 'react';
 import defaultEventImage from '../assets/default_event_image.png';
+import defaultSeasonImage from '../assets/default_season_image.png';
 
-export const getImageDefault = (url?: string) => {
+export const getEventImageDefault = (url?: string) => {
   if (url && url !== '' && url !== 'Default Event Image') {
     return url;
   }
   return defaultEventImage;
+};
+
+export const getSeasonImageDefault = (url?: string) => {
+    if (url && url !== '' && url !== 'Default Season Image') {
+        return url;
+    }
+    return defaultSeasonImage;
 };
 
 export const imageOnError = (event) => {
@@ -23,7 +31,7 @@ export const EventImage = (props: EventImageProps) => {
   return (
     <img
       className={className}
-      src={getImageDefault(src)}
+      src={getEventImageDefault(src)}
       alt={`${title} Playbill`}
       onError={imageOnError}
     />

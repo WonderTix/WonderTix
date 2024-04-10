@@ -53,7 +53,7 @@ export default function AdminCheckout(): ReactElement {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({cartItems, formData, donation, discount}),
+          body: JSON.stringify({ticketCartItems: cartItems, formData, donation, discount}),
         },
       );
       if (!response.ok) {
