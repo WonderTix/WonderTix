@@ -1,12 +1,3 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 import {DataGrid} from '@mui/x-data-grid';
 import {Checkbox, FormControlLabel} from '@mui/material';
 import React, {useEffect, useState} from 'react';
@@ -15,13 +6,18 @@ import PopUp from '../../PopUp';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import {format} from 'date-fns';
 import {getAllTicketRestrictions} from './utils/adminApiRequests';
-import {useFetchToken} from '../Event/components/ShowingUtils'; // modifying this to make sure its included
-import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
+import {useFetchToken} from '../Event/components/ShowingUtils';
+import {
+  initialTicketTypeRestriction,
+  EventRow,
+  departmentOptions,
+} from './utils/adminCommon';
 import {PlusIcon, TrashCanIcon} from '../../Icons';
+import IconButton from '../../IconButton';
 
 const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
-    {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
+    {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction], department: ''},
   ];
 
   const location = useLocation();
@@ -52,6 +48,7 @@ const AdminPurchase = () => {
         id: maxId,
         desc: '',
         ticketRestrictionInfo: [initialTicketTypeRestriction],
+        department: '',
       },
     ]);
 
@@ -112,7 +109,7 @@ const AdminPurchase = () => {
           eventtime: null,
           eventinstanceid: null,
           ticketRestrictionInfo: [initialTicketTypeRestriction],
-          department: null,
+          department: '',
         };
       }
       return r;
@@ -229,7 +226,10 @@ const AdminPurchase = () => {
         return {
           ...r,
           price: isNaN(newPrice) ? 0 : newPrice,
-          fee: isNaN(newPrice) || newPrice === 0 ? 0 : currentTicketRestriction.fee,
+          fee:
+            isNaN(newPrice) || newPrice === 0
+              ? 0
+              : currentTicketRestriction.fee,
         };
       }
       return r;
@@ -244,6 +244,7 @@ const AdminPurchase = () => {
         return {
           ...row,
           complimentary: isChecked,
+          department: isChecked ? row.department : '',
           price: isChecked ? 0 : row.price,
           fee: isChecked || row.price === 0 ? 0 : row.fee,
         };
@@ -320,9 +321,11 @@ const AdminPurchase = () => {
 
     const aggregatedCartItems = {};
     eventData.forEach((row) => {
-      const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
+      const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}-Department ${row.department}`;
       const showingDate = new Date(
-        `${toDateStringFormat(row.eventdate)}T${row.eventtime.split('T')[1].slice(0, 8)}`,
+        `${toDateStringFormat(row.eventdate)}T${row.eventtime
+          .split('T')[1]
+          .slice(0, 8)}`,
       );
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
@@ -373,32 +376,40 @@ const AdminPurchase = () => {
 
       if (!token) return;
 
-      fetch( // create intent
-      `${process.env.REACT_APP_API_2_URL}/events/reader-intent`,
-      {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+      fetch(
+        // create intent
+        `${process.env.REACT_APP_API_2_URL}/events/reader-intent`,
+        {
+          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ticketCartItems: cartItems}),
         },
-        body: JSON.stringify({ticketCartItems: cartItems}),
-      },
-      ).then((response) => {
-        if (!response.ok) {
-          throw response;
-        }
-        response.json().then((result) => {
-          const readerID = selectedReader;
-          const paymentIntentID = result.id;
-          const clientSecret = result.secret;
-          navigate(paymentIntentID, {state: {cartItems, paymentIntentID, clientSecret, readerID}});
-        }).catch((error) => {
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw response;
+          }
+          response
+            .json()
+            .then((result) => {
+              const readerID = selectedReader;
+              const paymentIntentID = result.id;
+              const clientSecret = result.secret;
+              navigate(paymentIntentID, {
+                state: {cartItems, paymentIntentID, clientSecret, readerID},
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        })
+        .catch((error) => {
           console.error(error);
         });
-      }).catch((error) => {
-        console.error(error);
-      });
     } else {
       navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
     }
@@ -520,17 +531,30 @@ const AdminPurchase = () => {
     {
       field: 'complimentary',
       headerName: 'Comp',
-      width: 60,
+      width: 220,
       renderCell: (params) => (
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={params.row.complimentary || false}
-              onChange={(e) => handleComplimentaryChange(e, params.row)}
-            />
-          }
-          label=''
-        />
+        <>
+          <Checkbox
+            checked={params.row.complimentary || false}
+            onChange={(e) => handleComplimentaryChange(e, params.row)}
+            aria-label={
+              params.row.complimentary ? 'Uncheck comp' : 'Check comp'
+            }
+          />
+          <select
+            className='w-full'
+            value={params.row.department || ''}
+            disabled={!params.row.complimentary}
+            onChange={(e) => handleDepartmentChange(e, params.row)}
+          >
+            <option value=''>Select Department</option>
+            {Object.keys(departmentOptions).map((value, index) => (
+              <option key={index} value={value}>
+                {departmentOptions[value]}
+              </option>
+            ))}
+          </select>
+        </>
       ),
     },
     {
@@ -538,42 +562,13 @@ const AdminPurchase = () => {
       headerName: '',
       width: 150,
       renderCell: (params) => (
-        !params.row.complimentary ? (
-          <button
-          className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
-          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+        <IconButton
           onClick={() => removeRow(params.row.id)}
-          aria-label='Delete ticket'
-          >
-            <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
-          </button>
-        ) : <select
-        className='w-full'
-        value={params.row.department || ''}
-        onChange={(e) => handleDepartmentChange(e, params.row)}
-      >
-        <option value=''>Select Department</option>
-        <option value='backHouse'>Back House</option>
-        <option value='frontHouse'>Front House</option>
-        <option value='inHouse'>In House</option>
-      </select>
-      ),
-    },
-    {
-      field: 'compAction',
-      headerName: '',
-      width: 150,
-      renderCell: (params) => (
-        params.row.complimentary ? (
-          <button
-            className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
-            onClick={() => removeRow(params.row.id)}
-            aria-label='Delete ticket'
-          >
-            <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
-          </button>
-        ) : null // Render null if Comp is checked
+          hoverColor='red'
+          tooltip='Remove ticket'
+        >
+          <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
+        </IconButton>
       ),
     },
   ];
@@ -662,7 +657,8 @@ const AdminPurchase = () => {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
-          });
+          },
+        );
 
         if (!response.ok) throw response;
 
@@ -721,8 +717,14 @@ const AdminPurchase = () => {
               </button>
             </div>
             <div className='mt-4 text-center'>
-              <label htmlFor='reader-select' className='font-semibold'>Select a Reader</label>
-              <select id='reader-select' value={selectedReader} onChange={reader_handleChange}>
+              <label htmlFor='reader-select' className='font-semibold'>
+                Select a Reader
+              </label>
+              <select
+                id='reader-select'
+                value={selectedReader}
+                onChange={reader_handleChange}
+              >
                 {readerList.map((reader) => (
                   <option key={reader.id} value={reader.id}>
                     {reader.id}

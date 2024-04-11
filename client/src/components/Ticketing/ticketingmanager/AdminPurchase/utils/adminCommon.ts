@@ -16,7 +16,7 @@ export type EventRow = {
   imageurl?: string;
   qty?: number;
   typeID?: number;
-  department?: string;
+  department: string;
 };
 
 export interface ticketTypeRestriction {
@@ -48,4 +48,10 @@ export const emptyDiscountCode = {
   percent: 0,
   min_tickets: 0,
   min_events: 0,
+};
+
+export const departmentOptions = {
+  backHouse: 'Back House',
+  frontHouse: 'Front House',
+  inHouse: 'In House',
 };
