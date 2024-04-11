@@ -60,6 +60,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         handleRemoveEvent(eventId);
         setShowPopUp(false);
       },
+      showSecondary: true,
+      showClose: true,
     });
   };
 
@@ -87,6 +89,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         success: true,
         handleClose: () => setShowPopUp(false),
         handleProceed: () => setShowPopUp(false),
+        showSecondary: false,
+        showClose: false,
       });
     } else {
       setPopUpMessage({
@@ -96,6 +100,8 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         success: false,
         handleClose: () => setShowPopUp(false),
         handleProceed: () => setShowPopUp(false),
+        showSecondary: false,
+        showClose: false,
       });
     }
   };
@@ -112,7 +118,7 @@ const SeasonEvents = (props: SeasonEventsProps) => {
         <article className='flex flex-wrap gap-2'>
           <h1 className='text-3xl'>Season Events </h1>
           <button
-            className='flex gap-1 items-center bg-green-500 hover:bg-green-700 disabled:bg-gray-500 text-white p-2 rounded-xl'
+            className='flex gap-1 items-center bg-green-500 hover:bg-green-700 disabled:bg-gray-300 text-white p-2 rounded-xl'
             disabled={isFormEditing || isAddEventActive}
             onClick={() => setIsAddEventActive(true)}
           >

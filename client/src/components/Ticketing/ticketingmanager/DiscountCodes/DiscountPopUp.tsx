@@ -91,7 +91,10 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
     if (formValues.amount && formValues.amount <= 0) {
       errors['amount'] = 'Must be greater than 0';
     }
-    if (formValues.percent && formValues.percent < 1 || formValues.percent > 100) {
+    if (
+      (formValues.percent && formValues.percent < 1) ||
+      formValues.percent > 100
+    ) {
       errors['percent'] = 'Must be between 1 and 100';
     }
     if (formValues.minTickets && formValues.minTickets < 1) {
@@ -102,8 +105,10 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
     }
 
     Object.keys(values).forEach((key) => {
-      if (['code'].includes(key) &&
-        (!formValues[key] || formValues[key] === '')) {
+      if (
+        ['code'].includes(key) &&
+        (!formValues[key] || formValues[key] === '')
+      ) {
         errors[key] = 'Required';
       }
     });
@@ -118,121 +123,128 @@ const DiscountPopUp = (props: DiscountPopUpProps): ReactElement => {
       aria-modal='true'
       ref={discountCodePopUpRef}
     >
-      <div className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-scroll shadow-xl'>
-        <button
-          type='button'
-          onClick={onCancel}
-          className='absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200
-            hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center'
-          data-modal-toggle='popup-modal'
-          aria-label='Close modal'
-        >
-          <XIcon className='w-5 h-5' strokeWidth={2.5} />
-        </button>
-        <Form
-          onSubmit={onSubmit}
-          validate={validate}
-          initialValues={values}
-          render={({handleSubmit, submitting}) => (
-            <form onSubmit={handleSubmit} noValidate>
+      <Form
+        onSubmit={onSubmit}
+        validate={validate}
+        initialValues={values}
+        render={({handleSubmit, submitting}) => (
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            className='relative z-10 bg-white rounded-lg tab:mx-auto w-full tab:max-w-lg max-h-full overflow-y-auto shadow-xl'
+          >
+            <header className='sticky top-0 bg-white w-full'>
               <h3
-                className='text-lg leading-6 font-medium text-gray-900 p-4 pt-5 tab:p-6'
+                className='text-lg leading-6 font-medium text-center tab:text-start text-gray-900 p-4 pt-5 tab:p-6'
                 id='contact-popup-title'
               >
                 {title}
               </h3>
               {errorMessage && (
                 <p className='rounded-md bg-red-200 text-red-800 font-semibold flex items-center justify-center gap-2 px-2 py-1 mx-4 tab:mx-6 mb-4'>
-                  <ExclamationCircleIcon className='h-5 w-5' strokeWidth={2.5} />
+                  <ExclamationCircleIcon
+                    className='h-5 w-5'
+                    strokeWidth={2.5}
+                  />
                   {errorMessage}
                 </p>
               )}
-              <article className='flex flex-col gap-y-3 px-4 pb-4 tab:px-6 tab:pb-6'>
+              <button
+                type='button'
+                onClick={onCancel}
+                className='absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200
+                    hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center'
+                data-modal-toggle='popup-modal'
+                aria-label='Close modal'
+              >
+                <XIcon className='w-5 h-5' strokeWidth={2.5} />
+              </button>
+            </header>
+            <article className='flex flex-col gap-y-3 px-4 pb-4 tab:px-6 tab:pb-6'>
+              <Field
+                required
+                component={FormInput}
+                name='code'
+                label='Code'
+                placeholder='Code'
+                type='text'
+                id='code'
+                labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1'
+                inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+              />
+              <div className='grid gap-3 tab:grid-cols-2'>
                 <Field
                   required
                   component={FormInput}
-                  name='code'
-                  label='Code'
-                  placeholder='Code'
-                  type='text'
-                  id='code'
-                  labelClassName='after:content-["*"] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700 ml-1'
+                  name='amount'
+                  label='Amount Off'
+                  placeholder='Amount Off'
+                  type='number'
+                  id='amount'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
                   inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
                 />
-                <div className='grid gap-3 tab:grid-cols-2'>
-                  <Field
-                    required
-                    component={FormInput}
-                    name='amount'
-                    label='Amount Off'
-                    placeholder='Amount Off'
-                    type='number'
-                    id='amount'
-                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
-                  />
-                  <Field
-                    required
-                    component={FormInput}
-                    name='percent'
-                    label='Percent Off'
-                    placeholder='Percent Off'
-                    type='number'
-                    id='percent'
-                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
-                  />
-                </div>
-                <div className='grid gap-3 tab:grid-cols-2'>
-                  <Field
-                    component={FormInput}
-                    name='minTickets'
-                    label='Minimum Tickets'
-                    placeholder='Minimum Tickets'
-                    type='number'
-                    id='minTickets'
-                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
-                  />
-                  <Field
-                    component={FormInput}
-                    name='minEvents'
-                    label='Minimum Events'
-                    placeholder='Minimum Events'
-                    type='number'
-                    id='minEvents'
-                    labelClassName='block text-sm font-medium text-slate-700 ml-1'
-                    inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
-                  />
-                </div>
-              </article>
-              <footer className='bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end gap-3'>
-                <button
-                  data-modal-toggle='discount-popup-modal'
-                  disabled={submitting}
-                  type='button'
-                  onClick={onCancel}
-                  className='w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white
+                <Field
+                  required
+                  component={FormInput}
+                  name='percent'
+                  label='Percent Off'
+                  placeholder='Percent Off'
+                  type='number'
+                  id='percent'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                />
+              </div>
+              <div className='grid gap-3 tab:grid-cols-2'>
+                <Field
+                  component={FormInput}
+                  name='minTickets'
+                  label='Minimum Tickets'
+                  placeholder='Minimum Tickets'
+                  type='number'
+                  id='minTickets'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                />
+                <Field
+                  component={FormInput}
+                  name='minEvents'
+                  label='Minimum Events'
+                  placeholder='Minimum Events'
+                  type='number'
+                  id='minEvents'
+                  labelClassName='block text-sm font-medium text-slate-700 ml-1'
+                  inputClassName='w-full border border-zinc-300 p-3 rounded-lg'
+                />
+              </div>
+            </article>
+            <footer className='sticky bottom-0 bg-gray-50 px-4 py-3 tab:px-6 flex flex-col-reverse tab:flex-row tab:justify-end gap-3'>
+              <button
+                data-modal-toggle='discount-popup-modal'
+                disabled={submitting}
+                type='button'
+                onClick={onCancel}
+                className='w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white
                     font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2
                     focus:ring-offset-2 focus:ring-indigo-500 tab:w-auto text-base tab:text-sm'
-                >
-                  Cancel
-                </button>
-                <button
-                  data-modal-toggle='discount-popup-modal'
-                  disabled={submitting}
-                  type='submit'
-                  className='bg-green-600 hover:bg-green-800 focus:ring-green-300 cursor-pointer
+              >
+                Cancel
+              </button>
+              <button
+                data-modal-toggle='discount-popup-modal'
+                disabled={submitting}
+                type='submit'
+                className='bg-green-600 hover:bg-green-800 focus:ring-green-300 cursor-pointer
                     w-full rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium
                     text-white focus:outline-none focus:ring-2 focus:ring-offset-2 tab:w-auto tab:text-sm'
-                >
-                  {primaryLabel}
-                </button>
-              </footer>
-            </form>
-          )}
-        />
-      </div>
+              >
+                {primaryLabel}
+              </button>
+            </footer>
+          </form>
+        )}
+      />
     </dialog>
   );
 };

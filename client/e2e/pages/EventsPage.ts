@@ -41,7 +41,6 @@ export class EventsPage {
   readonly takeMeThere: Locator;
   readonly getTickets: Locator;
   readonly backToEvents: Locator;
-  readonly concessionTicket: Locator;
   readonly editShowingButton: Locator;
   readonly emailButton: Locator;
   readonly manageTicketingButton: Locator;
@@ -95,14 +94,13 @@ export class EventsPage {
     this.getTickets = page.getByRole('button', {name: 'Get Tickets'});
     this.takeMeThere = page.getByRole('button', {name: 'Take me there!'});
     this.backToEvents = page.getByRole('button', {name: 'back to Events'});
-    this.concessionTicket = page.getByRole('checkbox');
     this.editShowingButton = page
         .locator('button')
         .filter({hasText: /^Edit$/});
     this.ticketQuantityOption = page.getByLabel('Ticket Quantity:');
     this.showingCard = page.getByTestId('showing-card');
     this.deleteShowingButton = page.getByRole('button', {name: 'Delete'});
-    this.activateEventchecker = page.getByLabel('controlled');
+    this.activateEventchecker = page.locator('#active' );
     this.inactiveEventchecker = page.getByRole('button', {name: 'Inactive'});
   }
 
@@ -171,6 +169,9 @@ export class EventsPage {
     await this.editEventTime.fill(showing.showingTime24hour);
     await this.editTicketQuantity.click();
     await this.editTicketQuantity.fill(showing.showingQuantity);
+    await this.page.getByTestId('add-row-button').click();
+    await this.page.locator('tr select').selectOption('General Admission - Adult');
+    await this.page.getByLabel('Ticket Type Quantity').fill(showing.showingQuantity);
     await this.newShowingSave.click();
     await this.eventContinue.click();
   }
@@ -191,7 +192,7 @@ export class EventsPage {
           ' ' +
           aShowing.showingTime12hour,
       });
-    const showingID = await showingCardLocator.locator(":text('Showing ID: ') + p").textContent();
+    const showingID = await showingCardLocator.locator(':text(\'Showing ID: \') + p').textContent();
     const deleteButton = this.page.getByTestId(`${showingID}-showing-delete-button`);
     const disabled = await deleteButton.isDisabled();
     if (disabled) {

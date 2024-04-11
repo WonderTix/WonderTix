@@ -58,18 +58,18 @@ export const seatingAccInOptions = (value: string) => {
 };
 
 export const toReadableDonationFrequency = (key: string): string => {
-  switch (key) {
-    case 'one_time':
-      return 'One-time';
-    case 'weekly':
-      return 'Weekly';
-    case 'monthly':
-      return 'Monthly';
-    case 'yearly':
-      return 'Yearly';
-    default:
-      return key;
-  }
+   switch (key) {
+     case 'one_time':
+       return 'One-time';
+     case 'weekly':
+       return 'Weekly';
+     case 'monthly':
+       return 'Monthly';
+     case 'yearly':
+       return 'Yearly';
+     default:
+       return key;
+   }
 };
 
 export const editContact = async (

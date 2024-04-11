@@ -28,14 +28,13 @@ async function seedEventInstances(prisma: PrismaClient) {
       availableseats: item.totalseats ?? 100,
       purchaseuri: item.purchaseuri,
       ispreview: item.ispreview,
-      defaulttickettype: item.defaulttickettype,
     }));
 
     await prisma.eventinstances.createMany({
       data: preparedData,
     });
 
-    console.log('Events instances seeding completed.');
+    console.log('Event Instances seeding completed.');
   } catch (error) {
     console.error(error);
   }

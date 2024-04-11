@@ -8,6 +8,7 @@ required=(
   "AUTH0_CLIENT_ID"
   "AUTH0_URL"
   "PUBLIC_STRIPE_KEY"
+  "WEBSOCKET_URL"
 )
 source ${CHECK_ARGS} "${required[@]}"
 
@@ -24,10 +25,10 @@ URL=${ROOT_URL:-$SERVER_REVISION}
   --destination=${ARTIFACTS}/client-img-${ENV}:${SHORT_SHA} \
   --cache=true \
   --cache-repo=${KANIKO_CACHE} \
-  --build-arg REACT_APP_API_1_URL=${URL}/api/1 \
   --build-arg REACT_APP_API_2_URL=${URL}/api/2 \
   --build-arg REACT_APP_AUTH0_AUDIENCE=${URL} \
   --build-arg REACT_APP_AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID} \
   --build-arg REACT_APP_AUTH0_URL=${AUTH0_URL} \
   --build-arg REACT_APP_PUBLIC_STRIPE_KEY=${PUBLIC_STRIPE_KEY} \
-  --build-arg REACT_APP_ROOT_URL=${URL}
+  --build-arg REACT_APP_ROOT_URL=${URL} \
+  --build-arg REACT_APP_WEBSOCKET_URL=${WEBSOCKET_URL}

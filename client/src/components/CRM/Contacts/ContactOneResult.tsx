@@ -1,19 +1,20 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
 import format from 'date-fns/format';
 import {Tabs, Tab} from '@mui/material';
 import Navigation from '../Navigation';
 import {useFetchToken} from '../../Ticketing/ticketingmanager/Event/components/ShowingUtils';
 import {LoadingScreen} from '../../Ticketing/mainpage/LoadingScreen';
-import {toDateStringFormat} from '../../Ticketing/ticketingmanager/Event/components/util/EventsUtil';
 import {toDollarAmount} from '../../../utils/arrays';
 import ContactCard from './ContactCard';
+import ContactOrder from './ContactOrder';
 import {Contact, toReadableDonationFrequency} from './contactUtils';
 
 /**
- * @returns {ReactElement} ContactOneResult - order and donation history for a contact
+ * The page that displays order and donation history for a contact.
+ *
+ * @returns {ReactElement} ContactOneResult
  */
 export const ContactOneResult = (): ReactElement => {
   const {token} = useFetchToken();
@@ -31,45 +32,47 @@ export const ContactOneResult = (): ReactElement => {
 
   const getContact = async () => {
     if (params.contactid) {
-      await axios
-        .get(
-          process.env.REACT_APP_API_2_URL +
-            `/contact/orders/${params.contactid}`,
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL + `/contact/orders/${params.contactid}`,
           {
-            withCredentials: true,
+            method: 'GET',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
           },
-        )
-        .then((res) => {
-          const contact: Contact = {
-            first: res.data.firstname,
-            last: res.data.lastname,
-            email: res.data.email,
-            phone: res.data.phone,
-            address: res.data.address,
-            city: res.data.city,
-            state: res.data.state,
-            country: res.data.country,
-            postalCode: res.data.postalcode,
-            seatingAcc: res.data.seatingaccom,
-            comments: res.data.comments,
-            newsletter: res.data.newsletter,
-            vip: res.data.vip,
-            donorBadge: res.data.donorbadge,
-            volunteerList: res.data.volunteerlist,
-            contactId: res.data.contactid,
-            orders: res.data.orders,
-            donations: res.data.donations,
-            createdDate: res.data.createddate,
-          };
-          setContact(contact);
-        })
-        .catch((err) => {
-          console.error(err.message);
-        });
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to get contact');
+        }
+        const contactData = await response.json();
+        const contact: Contact = {
+          first: contactData.firstname,
+          last: contactData.lastname,
+          email: contactData.email,
+          phone: contactData.phone,
+          address: contactData.address,
+          city: contactData.city,
+          state: contactData.state,
+          country: contactData.country,
+          postalCode: contactData.postalcode,
+          seatingAcc: contactData.seatingaccom,
+          comments: contactData.comments,
+          newsletter: contactData.newsletter,
+          vip: contactData.vip,
+          donorBadge: contactData.donorbadge,
+          volunteerList: contactData.volunteerlist,
+          contactId: contactData.contactid,
+          orders: contactData.orders,
+          createdDate: contactData.createddate,
+        };
+        setContact(contact);
+      } catch (err) {
+        console.error(err.message);
+      }
     } else {
       setContact(null);
     }
@@ -119,22 +122,24 @@ export const ContactOneResult = (): ReactElement => {
                 </p>
               ) : (
                 contact.orders.map((order) => (
-                  <ContactOrder order={order} key={order.orderid} />
-                ))
-              ))}
-            {tabValue === 1 &&
-              (contact.donations.length === 0 ? (
-                <p className='text-center text-zinc-400 font-medium mt-4'>
-                  No donations
-                </p>
-              ) : (
-                contact.donations.map((donation) => (
-                  <ContactDonation
-                    donation={donation}
-                    key={donation.donationid}
+                  <ContactOrder
+                    key={order.orderid}
+                    orderId={order.orderid}
+                    orderTotal={order.ordertotal}
+                    feeTotal={Number(order.feetotal)}
+                    discountTotal={Number(order.discounttotal)}
+                    orderDateTime={order.orderdatetime}
+                    refunded={order.refunded}
+                    orderItems={order.orderitems}
+                    donation={order.donation}
                   />
                 ))
               ))}
+            {tabValue === 1 && (
+              <p className='text-center text-zinc-400 font-medium mt-4'>
+                This tab is currently inactive
+              </p>
+            )}
           </div>
         </main>
       </div>
@@ -142,103 +147,11 @@ export const ContactOneResult = (): ReactElement => {
   }
 };
 
-export const ContactOrder = ({order}: {order: any}): ReactElement => {
-  const {orderdate, orderid, ordertime, ordertotal, refund_intent, orderitems} =
-    order;
-
-  const date = new Date(
-    `${toDateStringFormat(orderdate)}T${ordertime.split('T')[1].slice(0, 8)}`,
-  );
-
-  return (
-    <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
-      <header className='flex gap-2 items-start justify-between mb-4'>
-        <h2 className='text-2xl font-semibold'>Order {orderid}</h2>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          className='h-7 w-7'
-          fill='none'
-          viewBox='0 0 24 24'
-          stroke='currentColor'
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z'
-          />
-        </svg>
-      </header>
-      <div className='grid md:grid-cols-2'>
-        <article>
-          <p className='flex flex-row gap-3 text-lg w-full'>
-            <span className='font-semibold'>Order Date:</span>
-            <span>{format(date, 'MMM dd, yyyy')}</span>
-          </p>
-          <p className='flex flex-row gap-3 text-lg mt-1 w-full'>
-            <span className='font-semibold'>Order Time:</span>
-            <span>{format(date, 'h:mm a')}</span>
-          </p>
-          <p className='flex flex-row gap-3 text-lg my-1 w-full'>
-            <span className='font-semibold'>Refunded:</span>
-            <span>{refund_intent ? 'Yes' : 'No'}</span>
-          </p>
-        </article>
-        <aside>
-          {orderitems.length === 0 && (
-            <p className='text-center text-md mt-1 w-full text-zinc-400 font-medium'>
-              No order items
-            </p>
-          )}
-          {orderitems.map((item, index) => {
-            const eventDate = new Date(
-              `${toDateStringFormat(item.eventdate)}T${item.eventtime
-                .split('T')[1]
-                .slice(0, 8)}`,
-            );
-            return (
-              <article
-                key={index}
-                className='border border-zinc-300 px-4 pt-3 pb-4 rounded-xl mb-2'
-              >
-                <p className='flex justify-between'>
-                  <span className='font-bold'>
-                    {item.quantity} x {item.description}
-                    {item.seasonname && (
-                      <span className='font-normal italic'>
-                        {' '}
-                        - {item.seasonname}
-                      </span>
-                    )}
-                  </span>
-                  <span className='font-bold'>
-                    {toDollarAmount(Number(item.price))}
-                  </span>
-                </p>
-                <p className='text-xs'>
-                  {item.tickettype} • {format(eventDate, 'MMM dd, yyyy')} •{' '}
-                  {format(eventDate, 'h:mm a')}
-                  {item.detail && <span> ({item.detail})</span>}
-                </p>
-              </article>
-            );
-          })}
-        </aside>
-      </div>
-      <footer>
-        <p className='flex flex-row gap-3 text-xl mt-2 w-full'>
-          <span className='font-semibold'>Order Total:</span>
-          <span>{toDollarAmount(Number(ordertotal))}</span>
-        </p>
-      </footer>
-    </section>
-  );
-};
-
+// FIXME: No standalone donations yet
 export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
-  const {donationid, donationdate, frequency, refund_intent, amount} = donation;
+  const {donationid, donationdate, frequency, refunded, amount} = donation;
 
-  const date = new Date(`${toDateStringFormat(donationdate)}T00:00:00`);
+  const date = new Date(donationdate);
 
   return (
     <section className='w-full bg-white shadow-lg border border-zinc-300 rounded-lg mb-4 p-5 text-zinc-600'>
@@ -270,7 +183,7 @@ export const ContactDonation = ({donation}: {donation: any}): ReactElement => {
         </p>
         <p className='flex flex-row gap-3 text-lg my-1 w-full'>
           <span className='font-semibold'>Refunded:</span>
-          <span>{refund_intent ? 'Yes' : 'No'}</span>
+          <span>{refunded ? 'Yes' : 'No'}</span>
         </p>
       </article>
       <footer>

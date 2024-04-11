@@ -16,13 +16,7 @@ import PopUp, {PopUpProps} from '../../PopUp';
 import IconButton from '../../IconButton';
 import {EditIcon, SaveIcon, TrashCanIcon, XIcon} from '../../Icons';
 import {toDollarAmount} from '../../../../utils/arrays';
-import {
-  createTicketType,
-  deleteTicketType,
-  editTicketType,
-  emptyTicketType,
-  getTicketTypes,
-} from './ticketTypeUtils';
+import {createTicketType, deleteTicketType, editTicketType, emptyTicketType, getTicketTypes} from './ticketTypeUtils';
 
 /**
  * The page that manages WonderTix ticket types.
@@ -86,25 +80,17 @@ const TicketTypes = (): ReactElement => {
       width: 150,
       editable: true,
       type: 'number',
-      valueFormatter: (params: GridValueFormatterParams<number>) => {
-        if (params.value == null) {
-          return '';
-        }
-        return toDollarAmount(Number(params.value));
-      },
+      valueFormatter: (params: GridValueFormatterParams<number>) =>
+        params.value == null ? '—' : toDollarAmount(Number(params.value)),
     },
     {
-      field: 'concessions',
-      headerName: 'Concessions',
+      field: 'fee',
+      headerName: 'Fee',
       width: 150,
       editable: true,
       type: 'number',
-      valueFormatter: (params: GridValueFormatterParams<number>) => {
-        if (params.value == null) {
-          return '';
-        }
-        return toDollarAmount(Number(params.value));
-      },
+      valueFormatter: (params: GridValueFormatterParams<number>) =>
+        params.value == null ? '—' : toDollarAmount(Number(params.value)),
     },
     {
       field: 'actions',
@@ -203,13 +189,13 @@ const TicketTypes = (): ReactElement => {
       if (
         newRow.description !== prevRow.description ||
         newRow.price !== prevRow.price ||
-        newRow.concessions !== prevRow.concessions
+        newRow.fee !== prevRow.fee
       ) {
         const ticketType = {
           id: newRow.id,
           description: newRow.description,
           price: newRow.price,
-          concessions: newRow.concessions,
+          fee: newRow.fee,
         };
 
         const response = await editTicketType(ticketType, token);
@@ -217,7 +203,7 @@ const TicketTypes = (): ReactElement => {
           return {
             ...newRow,
             price: response.price,
-            concessions: response.concessions,
+            fee: response.fee,
           };
         } else {
           setPopUpProps({
@@ -261,8 +247,8 @@ const TicketTypes = (): ReactElement => {
       case 'price':
         setNewTicketType({...newTicketType, price: event.target.value});
         break;
-      case 'concessions':
-        setNewTicketType({...newTicketType, concessions: event.target.value});
+      case 'fee':
+        setNewTicketType({...newTicketType, fee: event.target.value});
         break;
     }
   };
@@ -302,16 +288,16 @@ const TicketTypes = (): ReactElement => {
               />
             </div>
             <div>
-              <label className='text-white' htmlFor='concessions'>
-                Concessions
+              <label className='text-white' htmlFor='fee'>
+                Fee
               </label>
               <input
                 className='rounded-lg p-2 bg-blue-100 w-full mt-1'
-                placeholder='Concessions price'
+                placeholder='Fee'
                 type='number'
                 min='0'
-                id='concessions'
-                name='concessions'
+                id='fee'
+                name='fee'
                 onChange={handleNewTicketTypeChange}
               />
             </div>
@@ -342,42 +328,38 @@ const TicketTypes = (): ReactElement => {
   return token === '' ? (
     <LoadingScreen />
   ) : (
-    <div className='w-full h-screen absolute'>
-      <main className='w-full h-screen overflow-x-hidden absolute'>
-        <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-700 mb-10 pb-4'>
-            Manage Ticket Types
-          </h1>
-          <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
-            <button
-              className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 mb-3 shadow-md px-4 py-2 text-sm
-                font-medium text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2
-                focus:ring-indigo-500'
-              type='submit'
-              onClick={() => {
-                setNewTicketType(emptyTicketType);
-                setAddTicketClicked(!addTicketClicked);
-              }}
-            >
-              Add New Ticket Type
-            </button>
-            {addTicketClicked && showAddTicketView()}
-            <DataGrid
-              className='bg-white'
-              editMode='row'
-              autoHeight
-              rows={ticketTypes}
-              columns={columns}
-              rowModesModel={rowModesModel}
-              onRowModesModelChange={handleRowModesModelChange}
-              onRowEditStop={handleRowEditStop}
-              pageSize={10}
-              experimentalFeatures={{newEditingApi: true}}
-              processRowUpdate={handleEditTicket}
-            />
-          </div>
-        </div>
-      </main>
+    <div className='p-6'>
+      <h1 className='font-bold text-4xl tab:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-teal-700 mb-10 pb-4'>
+        Manage Ticket Types
+      </h1>
+      <div className='bg-white p-5 rounded-xl mt-2 shadow-xl'>
+        <button
+          className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 mb-3 shadow-md px-4 py-2 text-sm
+            font-medium text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2
+            focus:ring-indigo-500'
+          type='submit'
+          onClick={() => {
+            setNewTicketType(emptyTicketType);
+            setAddTicketClicked(!addTicketClicked);
+          }}
+        >
+          Add New Ticket Type
+        </button>
+        {addTicketClicked && showAddTicketView()}
+        <DataGrid
+          className='bg-white'
+          editMode='row'
+          autoHeight
+          rows={ticketTypes}
+          columns={columns}
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
+          pageSize={10}
+          experimentalFeatures={{newEditingApi: true}}
+          processRowUpdate={handleEditTicket}
+        />
+      </div>
       {popUpProps && (
         <PopUp {...popUpProps} handleClose={() => setPopUpProps(null)} />
       )}

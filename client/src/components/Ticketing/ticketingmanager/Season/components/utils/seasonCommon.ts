@@ -5,7 +5,7 @@ export interface seasonEventInfo {
   eventname: string;
   imageurl: string;
   seasonid_fk: number | null;
-  seasonticketeligible: boolean;
+  subscriptioneligible: boolean;
   deletedat?: string | null;
 }
 
@@ -16,7 +16,7 @@ export const initialSeasonEventInfo: seasonEventInfo = {
   eventname: '',
   imageurl: '',
   seasonid_fk: null,
-  seasonticketeligible: false,
+  subscriptioneligible: false,
   deletedat: null,
 };
 
@@ -30,7 +30,7 @@ export interface SeasonProps {
   setShowPopUp: (value) => void;
   setPopUpMessage: (value) => void;
   setSeasonId: (value) => void;
-  seasonTicketTypeData: SeasonTicketValues[];
+  disabled: boolean;
 }
 
 export interface SeasonInfo {
@@ -53,5 +53,5 @@ export interface SeasonTicketValues {
   tickettypeid_fk: number,
   description: string,
   price: number,
-  concessionprice: number,
+  fee: number,
 }

@@ -38,23 +38,24 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
   try {
     const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
-        eventinstances: {
+        deletedat: null,
+        eventinstance: {
           deletedat: null,
           availableseats: {gt: 0},
-          events: {
+          event: {
             active: true,
-          },
-        },
-        eventtickets: {
-          some: {
-            singleticket_fk: null,
           },
         },
       },
       include: {
-        eventtickets: {
+        ticketitems: {
           where: {
-            singleticket_fk: {not: null},
+            orderticketitem: {
+              refund: null,
+            },
+          },
+          include: {
+            orderticketitem: true,
           },
         },
         tickettype: {
@@ -66,15 +67,16 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
     });
     return res.json(
         ticketRestrictions
+            .filter((res) => res.ticketlimit > res.ticketitems.length)
             .map((restriction) => ({
               id: restriction.ticketrestrictionsid,
               eventinstanceid: restriction.eventinstanceid_fk,
               tickettypeid: restriction.tickettypeid_fk,
               description: restriction.tickettype.description,
-              concessionprice: +restriction.concessionprice,
+              fee: +restriction.fee,
               price: +restriction.price,
               ticketlimit: restriction.ticketlimit,
-              ticketssold: restriction.eventtickets.length,
+              ticketssold: restriction.ticketitems.length,
             })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -125,20 +127,21 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
 
     const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
-        eventinstances: {
+        deletedat: null,
+        eventinstance: {
           eventinstanceid: +id,
           availableseats: {gt: 0},
         },
-        eventtickets: {
-          some: {
-            singleticket_fk: null,
-          },
-        },
       },
       include: {
-        eventtickets: {
+        ticketitems: {
           where: {
-            singleticket_fk: {not: null},
+            orderticketitem: {
+              refund: null,
+            },
+          },
+          include: {
+            orderticketitem: true,
           },
         },
         tickettype: {
@@ -149,14 +152,17 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
       },
     });
     return res.json(
-        ticketRestrictions.map((restriction) => {
-          const {eventtickets, tickettype, ...restrictionData} = restriction;
-          return {
-            ...restrictionData,
-            description: tickettype.description,
-            ticketssold: eventtickets.length,
-          };
-        }));
+        ticketRestrictions
+            .filter((res) => res.ticketlimit > res.ticketitems.length)
+            .map((restriction) => {
+              const {ticketitems, tickettype, ...restrictionData} = restriction;
+              return {
+                ...restrictionData,
+                description: tickettype.description,
+                ticketssold: ticketitems.length,
+              };
+            }),
+    );
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -206,21 +212,22 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
 
     const ticketRestriction = await prisma.ticketrestrictions.findFirst({
       where: {
+        deletedat: null,
         tickettypeid_fk: +tickettypeid,
-        eventinstances: {
+        eventinstance: {
           eventinstanceid: +id,
           availableseats: {gt: 0},
         },
-        eventtickets: {
-          some: {
-            singleticket_fk: null,
-          },
-        },
       },
       include: {
-        eventtickets: {
+        ticketitems: {
           where: {
-            singleticket_fk: {not: null},
+            orderticketitem: {
+              refund: null,
+            },
+          },
+          include: {
+            orderticketitem: true,
           },
         },
         tickettype: {
@@ -233,11 +240,11 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
     if (!ticketRestriction) {
       return res.status(400).json({error: `Ticket type ${tickettypeid} not available for showing ${id}`});
     }
-    const {eventtickets, tickettype, ...restrictionData} = ticketRestriction;
+    const {ticketitems, tickettype, ...restrictionData} = ticketRestriction;
     return res.status(200).json({
       ...restrictionData,
       description: tickettype.description,
-      ticketssold: eventtickets.length,
+      ticketssold: ticketitems.length,
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

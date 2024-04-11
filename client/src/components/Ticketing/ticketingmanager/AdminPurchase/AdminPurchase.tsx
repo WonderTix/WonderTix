@@ -13,9 +13,9 @@ import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
-import {format, parse} from 'date-fns';
+import {format} from 'date-fns';
 import {getAllTicketRestrictions} from './utils/adminApiRequests';
-import {useFetchToken} from '../Event/components/ShowingUtils';
+import {useFetchToken} from '../Event/components/ShowingUtils'; // modifying this to make sure its included
 import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
 import {PlusIcon, TrashCanIcon} from '../../Icons';
 
@@ -23,18 +23,26 @@ const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
     {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
   ];
+
   const location = useLocation();
   const initialEventData = location.state?.eventDataFromPurchase || emptyRows;
   const [eventData, setEventData] = useState<EventRow[]>(initialEventData);
+
   const [availableTimesByRowId, setAvailableTimesByRowId] = useState({});
   const [eventList, setEventList] = useState([]);
+
+  const [readerList, setReaderList] = useState([]);
+  const [selectedReader, setSelectedReader] = useState('Select Reader');
+
   const [eventListFull, setEventListFull] = useState([]);
   const [priceByRowId, setPriceByRowId] = useState({});
   const [isEventsLoading, setIsEventsLoading] = useState(true);
+  const [isReadersLoading, setIsReadersLoading] = useState(true);
   const [allTicketRestrictions, setAllTicketRestrictions] = useState([]);
   const [openDialog, setDialog] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
+  const {token} = useFetchToken();
 
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
@@ -105,7 +113,6 @@ const AdminPurchase = () => {
           eventinstanceid: null,
           ticketRestrictionInfo: [initialTicketTypeRestriction],
           department: null,
-
         };
       }
       return r;
@@ -166,6 +173,7 @@ const AdminPurchase = () => {
       (restriction) => ticketTypeId === restriction.tickettypeid,
     );
     const price = parseFloat(currentTicketRestriction.price);
+    const fee = parseFloat(currentTicketRestriction.fee);
 
     // determine how many seats for current event instance
     const {ticketlimit, ticketssold} = currentTicketRestriction;
@@ -177,6 +185,7 @@ const AdminPurchase = () => {
           ...r,
           ticketTypes: currentTicketRestriction.description,
           price: row.complimentary ? 0 : price,
+          fee: row.complimentary || price === 0 ? 0 : fee,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
         };
@@ -205,6 +214,9 @@ const AdminPurchase = () => {
 
   const handlePriceBlur = (event, row) => {
     const newPrice = parseFloat(event.target.value);
+    const currentTicketRestriction = row.ticketRestrictionInfo.find(
+      (restriction) => row.typeID === restriction.tickettypeid,
+    );
 
     // Format the value once the user moves out of the input
     setPriceByRowId((prevState) => ({
@@ -217,6 +229,7 @@ const AdminPurchase = () => {
         return {
           ...r,
           price: isNaN(newPrice) ? 0 : newPrice,
+          fee: isNaN(newPrice) || newPrice === 0 ? 0 : currentTicketRestriction.fee,
         };
       }
       return r;
@@ -232,6 +245,7 @@ const AdminPurchase = () => {
           ...row,
           complimentary: isChecked,
           price: isChecked ? 0 : row.price,
+          fee: isChecked || row.price === 0 ? 0 : row.fee,
         };
       }
       return r;
@@ -256,7 +270,7 @@ const AdminPurchase = () => {
     setEventData(updatedRows);
   };
 
-  const handlePurchase = () => {
+  const handlePurchase = (toReader: boolean) => {
     if (eventData.length === 0) {
       setErrMsg('Cart is empty.');
       setDialog(true);
@@ -308,7 +322,7 @@ const AdminPurchase = () => {
     eventData.forEach((row) => {
       const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
       const showingDate = new Date(
-        `${toDateStringFormat(row.eventdate)} ${row.eventtime.slice(0, 8)}`,
+        `${toDateStringFormat(row.eventdate)}T${row.eventtime.split('T')[1].slice(0, 8)}`,
       );
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
@@ -319,6 +333,7 @@ const AdminPurchase = () => {
           product_id: row.eventinstanceid,
           eventId: row.eventid,
           price: row.price,
+          fee: row.fee,
           desc: row.ticketTypes,
           typeID: row.typeID,
           date: showingDate,
@@ -352,7 +367,41 @@ const AdminPurchase = () => {
     }
 
     const cartItems = Object.values(aggregatedCartItems);
-    navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
+    if (toReader) {
+      // we need to do this in this file so we can navigate to the
+      // directory based on the payment intent we create here
+
+      if (!token) return;
+
+      fetch( // create intent
+      `${process.env.REACT_APP_API_2_URL}/events/reader-intent`,
+      {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ticketCartItems: cartItems}),
+      },
+      ).then((response) => {
+        if (!response.ok) {
+          throw response;
+        }
+        response.json().then((result) => {
+          const readerID = selectedReader;
+          const paymentIntentID = result.id;
+          const clientSecret = result.secret;
+          navigate(paymentIntentID, {state: {cartItems, paymentIntentID, clientSecret, readerID}});
+        }).catch((error) => {
+          console.error(error);
+        });
+      }).catch((error) => {
+        console.error(error);
+      });
+    } else {
+      navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
+    }
   };
 
   // TABLE COLUMN DEFINITION
@@ -397,13 +446,10 @@ const AdminPurchase = () => {
           >
             <option>Select Time</option>
             {availableTimesByRowId[params.row.id]?.map((event) => {
-              const dateTimeString = `${
-                event.eventdate
-              }T${event.eventtime.slice(0, 8)}`;
-              const dateTime = parse(
-                dateTimeString,
-                `yyyyMMdd'T'HH:mm:ss`,
-                new Date(),
+              const dateTime = new Date(
+                `${toDateStringFormat(event.eventdate)}T${event.eventtime
+                  .split('T')[1]
+                  .slice(0, 8)}`,
               );
               const formattedDateTime = format(
                 dateTime,
@@ -532,14 +578,17 @@ const AdminPurchase = () => {
     },
   ];
 
+  const reader_handleChange = (event) => {
+    setSelectedReader(event.target.value);
+  };
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
-          process.env.REACT_APP_API_1_URL + '/events/list/allevents',
+          process.env.REACT_APP_API_2_URL + '/event-instance/list/allevents',
         );
-        const jsonRes = await response.json();
-        const jsonData = jsonRes.data as any[];
+        const jsonData = await response.json();
 
         // Deduplicate the events based on eventid
         const deduplicatedEvents = Array.from(
@@ -600,6 +649,41 @@ const AdminPurchase = () => {
     void fetchAllTicketRestrictions();
   }, []);
 
+  useEffect(() => {
+    const fetchReaders = async () => {
+      try {
+        if (!token) return;
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL + `/order/readers`,
+          {
+            credentials: 'include',
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+
+        if (!response.ok) throw response;
+
+        const readers = await response.json();
+        setReaderList(readers.data);
+      } catch (error) {
+        console.error(error.message);
+        setErrMsg(error.message);
+        setDialog(true);
+        setIsReadersLoading(false);
+      }
+    };
+    fetchReaders();
+  }, [token]);
+
+  useEffect(() => {
+    if (readerList.length > 0) {
+      setSelectedReader(readerList[0].id); // Default to first reader found
+    }
+  }, [readerList]);
+
   return (
     <div className='w-full h-screen absolute'>
       <div className='w-full h-screen overflow-x-hidden absolute '>
@@ -630,10 +714,28 @@ const AdminPurchase = () => {
             </button>
             <div className='mt-4 text-center'>
               <button
-                className='bg-green-600 px-7 py-2 text-sm font-medium text-white rounded-lg hover:bg-green-700 disabled:opacity-40 m-2'
-                onClick={handlePurchase}
+                className='bg-green-600 px-8 py-1 text-white rounded-xl hover:bg-green-700 disabled:opacity-40 m-2'
+                onClick={() => handlePurchase(false)}
               >
                 Proceed to Checkout
+              </button>
+            </div>
+            <div className='mt-4 text-center'>
+              <label htmlFor='reader-select' className='font-semibold'>Select a Reader</label>
+              <select id='reader-select' value={selectedReader} onChange={reader_handleChange}>
+                {readerList.map((reader) => (
+                  <option key={reader.id} value={reader.id}>
+                    {reader.id}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className='mt-4 text-center'>
+              <button
+                className='bg-green-600 px-8 py-1 text-white rounded-xl hover:bg-green-700 disabled:opacity-40 m-2'
+                onClick={() => handlePurchase(true)}
+              >
+                Send to Reader
               </button>
             </div>
           </div>

@@ -140,7 +140,7 @@ const Dashboard = (): ReactElement => {
                 />
               </svg>
             }
-            title='Manage Ticket Types'
+            title='Manage Ticket & Subscription Types'
             route='/ticketing/tickettypes'
           />
           <DashboardLink
