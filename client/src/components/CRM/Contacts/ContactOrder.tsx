@@ -1,5 +1,6 @@
 import React, {ReactElement} from 'react';
 import {toDateStringFormat} from '../../Ticketing/ticketingmanager/Event/components/util/EventsUtil';
+import {departmentOptions} from '../../Ticketing/ticketingmanager/AdminPurchase/utils/adminCommon';
 import format from 'date-fns/format';
 import {toDollarAmount} from '../../../utils/arrays';
 import {TicketIcon} from '../../Ticketing/Icons';
@@ -78,6 +79,7 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
                 detail={item.detail}
                 eventDate={item.eventdate}
                 eventTime={item.eventtime}
+                department={item.department}
               />
             ) : (
               <SubscriptionOrderItem key={index} {...item} />
@@ -135,6 +137,7 @@ interface TicketOrderItem {
   detail?: string;
   eventDate: string;
   eventTime: string;
+  department?: string;
 }
 
 const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
@@ -148,6 +151,7 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
     detail,
     eventDate,
     eventTime,
+    department,
   } = props;
 
   const time = new Date(
@@ -169,7 +173,13 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
               REFUNDED
             </Label>
           )}
-          {toDollarAmount(Number(price))}
+          {department ? (
+            <Label className='text-xs' color='slate'>
+              {departmentOptions[department].toUpperCase() + ' COMP'}
+            </Label>
+          ) : (
+            toDollarAmount(Number(price))
+          )}
         </span>
       </p>
       <p className='text-xs'>
@@ -188,7 +198,9 @@ interface SubscriptionOrderItemProps {
   ticketlimit: number;
   quantity: number;
 }
-const SubscriptionOrderItem = (props: SubscriptionOrderItemProps): ReactElement => {
+const SubscriptionOrderItem = (
+  props: SubscriptionOrderItemProps,
+): ReactElement => {
   const {price, refunded, seasonName, ticketlimit, quantity, subscriptionType} =
     props;
 
