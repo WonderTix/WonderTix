@@ -166,7 +166,7 @@ const AdminCart = ({
                 : ''
             }
             onChange={(e) => {
-              setDiscountText(e.target.value);
+              setDiscountText(e.target.value.toUpperCase());
               setDiscountClicked(false);
             }}
             disabled={appliedDiscount}
