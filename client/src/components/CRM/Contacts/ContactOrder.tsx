@@ -164,7 +164,10 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
         <span>
           {quantity} x {eventName}
           {seasonName && (
-            <span className='font-normal italic text-sm'> • {seasonName}</span>
+            <>
+              {' '}
+              • <span className='font-normal italic text-sm'>{seasonName}</span>
+            </>
           )}
         </span>
         <span className='flex items-center gap-2'>
@@ -175,7 +178,7 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
           )}
           {department ? (
             <Label className='text-[0.7rem]' color='slate'>
-              {departmentOptions[department].toUpperCase() + ' COMP'}
+              {`${departmentOptions[department].toUpperCase()} COMP`}
             </Label>
           ) : (
             toDollarAmount(Number(price))
@@ -183,8 +186,8 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
         </span>
       </p>
       <p className='text-xs'>
-        {ticketType} • {format(time, 'MMM dd, yyyy')} • {format(time, 'h:mm a')}
-        {detail && <span> ({detail})</span>}
+        {ticketType} • {format(time, 'MMM dd, yyyy • h:mm a')}
+        {detail && <> ({detail})</>}
       </p>
     </article>
   );
