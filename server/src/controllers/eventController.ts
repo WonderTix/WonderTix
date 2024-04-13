@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {orders, Prisma, state} from '@prisma/client';
+import {orders, Prisma, purchase_source, state} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
@@ -11,11 +11,10 @@ import {
   requestStripeReaderPayment,
   getDiscountAmount,
   updateContact,
-  validateDiscount,
   getSubscriptionItems,
   validateWithRegex,
 } from './eventController.service';
-import {updateCanceledOrder, orderFulfillment} from './orderController.service';
+import { updateCanceledOrder, orderFulfillment, abortPaymentIntent } from './orderController.service'
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 const prisma = extendPrismaClient();
@@ -67,17 +66,12 @@ export const eventController = Router();
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
   const {ticketCartItems = [], subscriptionCartItems = [], formData, donation = 0, discount, orderSource} = req.body;
-  let order :orders | null = null;
-  let toSend = {id: 'comp'};
+  let checkoutSessionId: string | undefined;
+  let order: orders | undefined;
   try {
     if (!ticketCartItems.length && !donation && !subscriptionCartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
     }
-
-    if (discount.code != '') {
-      await validateDiscount(discount, ticketCartItems, prisma);
-    }
-
     const {contactid} = await updateContact(formData, prisma);
 
     const {
@@ -99,55 +93,41 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       donationTotal,
     } = getDonationItem(donation);
 
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
-    const orderSubTotal = ticketTotal+subscriptionTotal+donationTotal;
+    const {discountTotal, discountId}= await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
+    const orderSubtotal = ticketTotal+subscriptionTotal+donationTotal;
 
-    if (orderSubTotal - discountAmount > .49) {
-      toSend = await createStripeCheckoutSession(
+    if (orderSubtotal - discountTotal > .49) {
+      checkoutSessionId = await createStripeCheckoutSession(
           contactid,
           formData.email,
           ticketCartRows.concat((donationCartRow? [donationCartRow]: []).concat(subscriptionCartRows)),
-          {...discount, amountOff: discountAmount},
+          {...discount, amountOff: discountTotal},
       );
-    } else if (orderSubTotal - discountAmount > 0) {
+    } else if (orderSubtotal - discountTotal > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
     order = await orderFulfillment(
         prisma,
-        eventInstanceQueries,
-        orderSubTotal,
-        discountAmount,
         {
+          orderStatus: checkoutSessionId? state.in_progress: state.completed,
+          orderSource: purchase_source[orderSource as keyof typeof purchase_source],
+          checkoutSession: checkoutSessionId,
+          discountId,
+          orderSubtotal,
+          discountTotal,
           orderTicketItems,
           donationItem,
           orderSubscriptionItems,
+          eventInstanceQueries,
+          contactid,
         },
-        state.in_progress,
-        contactid,
-        toSend.id,
-        discount.code != '' ? discount.discountid : null,
-        orderSource,
     );
-
-    if (toSend.id === 'comp') {
-      await prisma.orders.update({
-        where: {
-          orderid: order.orderid,
-        },
-        data: {
-          checkout_sessions: `comp-${order.orderid}`,
-          payment_intent: `comp-${order.orderid}`,
-          order_status: state.completed,
-        },
-      });
-    }
-
-    res.json(toSend);
+    res.json({id: checkoutSessionId ?? 'comp'});
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order, false);
-    if (toSend.id !== 'comp') await expireCheckoutSession(toSend.id);
+    if (order) await updateCanceledOrder(prisma, order);
+    if (checkoutSessionId) await expireCheckoutSession(checkoutSessionId);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
@@ -892,8 +872,6 @@ eventController.use(checkScopes);
 
 eventController.post('/reader-intent', async (req: Request, res: Response) => {
   const {ticketCartItems} = req.body;
-  let paymentIntentID = '';
-  let clientSecret = '';
 
   try {
     if (!ticketCartItems.length) {
@@ -901,25 +879,22 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
     }
 
     const {
-      ticketCartRows,
-      orderTicketItems,
       ticketTotal,
-      eventInstanceQueries,
     } = await getTicketItems(ticketCartItems, prisma);
 
-    if (ticketTotal > 0) {
-      const {id, secret} = await createStripePaymentIntent(ticketTotal * 100);
-      paymentIntentID = id;
-      clientSecret = secret;
+    if (ticketTotal < .50) {
+      return res.status(400).json({error: 'Reader checkout can not be used for an order below .50 USD'});
     }
-    res.json({id: paymentIntentID, secret: clientSecret});
+
+    const response = await createStripePaymentIntent(ticketTotal * 100);
+    return res.json(response);
   } catch (error) {
     console.error(error);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
     }
-    res.status(500).json(error);
+    res.status(500).json('Internal Server Error');
   }
 });
 
@@ -940,12 +915,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       return res.status(400).json({error: 'Cart is empty'});
     }
 
-    if (discount.code != '') {
-      await validateDiscount(discount, ticketCartItems, prisma);
-    }
-
     const {
-      ticketCartRows,
       orderTicketItems,
       ticketTotal,
       eventInstanceQueries,
@@ -953,28 +923,27 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
 
     const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
 
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+    const {discountTotal, discountId} = await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
 
-    // add order to database with prisma
     order = await orderFulfillment(
         prisma,
-        eventInstanceQueries,
-        ticketTotal,
-        discountAmount,
         {
+          orderStatus: state.in_progress,
+          orderSource: purchase_source[orderSource as keyof typeof purchase_source],
+          orderSubtotal: ticketTotal,
+          discountTotal,
           orderTicketItems,
+          eventInstanceQueries,
+          paymentIntent: paymentIntentID,
+          discountId,
         },
-        state.in_progress,
-        undefined, // no contactid with reader payments
-        undefined, // no session with reader payments
-        discount.code != '' ? discount.discountid : null,
-        orderSource,
-        paymentIntentID,
     );
+
     res.json({orderID: order.orderid, status: 'order sent'});
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order, true);
+    await abortPaymentIntent(prisma, paymentIntentID);
+    if (order) await updateCanceledOrder(prisma, order);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
@@ -1377,6 +1346,7 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         orderticketitem: {
           refund: null,
           order: {
+            order_status: state.completed,
             contactid_fk: +contactId,
           },
         },

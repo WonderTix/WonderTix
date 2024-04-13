@@ -110,7 +110,6 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     }
     const orders = await prisma.orders.findMany({
       where: {
-        payment_intent: {not: null},
         order_status: state.completed,
         OR: [
           {
@@ -289,6 +288,7 @@ orderController.put('/refund/:id', async (req, res) => {
     const order = await prisma.orders.findUnique({
       where: {
         orderid: Number(orderID),
+        order_status: state.completed,
       },
       include: {
         orderticketitems: {
@@ -338,9 +338,9 @@ orderController.put('/refund/:id', async (req, res) => {
     }
 
     let refundIntent;
-    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
-    else if (order.payment_intent.includes('seeded-order')) refundIntent = `refund-seeded-order-${order.orderid}`;
-    else {
+    if (order.payment_intent.includes('comp') || order.payment_intent.includes('seeded-order')) {
+      refundIntent = `refund-${order.payment_intent}`;
+    } else {
       const refund = await stripe.refunds.create({
         payment_intent: order.payment_intent,
       });
@@ -348,11 +348,11 @@ orderController.put('/refund/:id', async (req, res) => {
     }
     await createRefundedOrder(
         prisma,
+        refundIntent,
         order,
         order.orderticketitems,
-        refundIntent,
         order.subscriptions,
-        order.payment_intent.includes('comp') || order.payment_intent.includes('seeded-order') ? state.completed : state.in_progress,
+        refundIntent.includes('refund')? state.completed : state.in_progress,
         order.donation,
     );
     return res.send(refundIntent);

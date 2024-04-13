@@ -42,7 +42,7 @@ export const createStripeCheckoutSession = async (
   };
 
   const session = await stripe.checkout.sessions.create(checkoutObject);
-  return {id: session.id};
+  return session.id;
 };
 
 export const expireCheckoutSession = async (
@@ -164,13 +164,10 @@ export const createStripePaymentIntent = async (
 export const requestStripeReaderPayment = async (
     readerID: string,
     paymentIntentID: string,
-) => {
-  const requestPay = await stripe.terminal.readers.processPaymentIntent(
-      readerID,
-      {payment_intent: paymentIntentID},
-  );
-  return requestPay;
-};
+) => stripe.terminal.readers.processPaymentIntent(
+    readerID,
+    {payment_intent: paymentIntentID},
+);
 
 export const testPayReader = async (
     readerID: string,
@@ -313,16 +310,19 @@ const getTickets = (
       });
 };
 
-export const getDiscountAmount = (discount: any, orderTotal: number) => {
-  if (discount.amount && discount.percent) {
-    return Math.min((+discount.percent / 100) * orderTotal, discount.amount);
+export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: any, orderTotal: number, ticketItems: TicketCartItem[]) => {
+  await validateDiscount(discount, ticketItems, prisma);
+
+  if (!discount || discount.code == '') {
+    return {discountTotal: 0};
+  } else if (discount.amount && discount.percent) {
+    return {discountTotal: Math.min((+discount.percent / 100) * orderTotal, discount.amount), discountId: discount.code};
+  } else if (discount.amount) {
+    return {discountTotal: Math.min(discount.amount, orderTotal), discountId: discount.code};
+  } else if (discount.percent) {
+    return {discountTotal: orderTotal*(+discount.percent)/100, discountId: discount.code};
   }
-  if (discount.amount) {
-    return Math.min(discount.amount, orderTotal);
-  }
-  if (discount.percent) {
-    return orderTotal*(+discount.percent)/100;
-  }
+
   throw new Error('Invalid discount');
 };
 
