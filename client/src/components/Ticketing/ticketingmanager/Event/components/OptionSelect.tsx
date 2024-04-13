@@ -22,7 +22,7 @@ export const OptionSelect = (props: OptionSelectProps) => {
     >
       {options &&
         options.map((option, index) => (
-          <option key={`${field.name}-${option.id}-${index}`} value={option.id}>
+          <option key={index} value={option.id}>
             {option.description}
           </option>
         ))}

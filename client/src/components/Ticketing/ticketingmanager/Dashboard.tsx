@@ -196,7 +196,7 @@ const Dashboard = (): ReactElement => {
                 />
               </svg>
             }
-            title='Manage Subscription Redemption'
+            title='Subscription Redemption'
             route='/ticketing/subscription/redemption'
           />
           <DashboardLink

@@ -1,7 +1,10 @@
 import React, {MutableRefObject, useEffect} from 'react';
 import {FieldArray, Formik, FormikProps, FormikValues} from 'formik';
 import {getSubscriptionTicketItemRow} from './SubscriptionTicketItemRow';
-import {useFetchSubscription} from './SubscriptionRedemptionUtils';
+import {
+  getUpdatedEvent,
+  useFetchSubscription,
+} from './SubscriptionRedemptionUtils';
 import {subscriptionTicketItemSchema} from './subscription.schemas';
 import {OptionUpdateTable} from '../Event/components/OptionUpdateTable';
 
@@ -23,33 +26,12 @@ const removeRow = (
     options.map((option) =>
       option.eventid !== eventid
         ? option
-        : {
-            ...option,
-            eventinstances:
-              eventinstanceid === -1
-                ? option.eventinstances
-                : option.eventinstances.map((instance) =>
-                    instance.eventinstanceid !== eventinstanceid
-                      ? instance
-                      : {
-                          ...instance,
-                          availableseats: instance.availableseats + 1,
-                          ticketrestrictions:
-                            ticketrestrictionid === -1
-                              ? instance.ticketrestrictions
-                              : instance.ticketrestrictions.map((res) =>
-                                  res.ticketrestrictionsid !==
-                                  ticketrestrictionid
-                                    ? res
-                                    : {
-                                        ...res,
-                                        availabletickets:
-                                          res.availabletickets + 1,
-                                      },
-                                ),
-                        },
-                  ),
-          },
+        : getUpdatedEvent(
+            (value: number) => value + 1,
+            option,
+            eventinstanceid,
+            ticketrestrictionid,
+          ),
     ),
   );
 };
@@ -122,7 +104,7 @@ export const SubscriptionTicketItemUpdateTable = (
                 <div className='overflow-scroll mx-auto rounded-xl border border-zinc-300 w-[100%] min-h-[100px]'>
                   <OptionUpdateTable
                     addRow={() => {
-                      arrayHelpers.insert(0, {
+                      arrayHelpers.unshift({
                         eventid: -1,
                         eventinstanceid: -1,
                         ticketrestrictionid: -1,
@@ -131,7 +113,7 @@ export const SubscriptionTicketItemUpdateTable = (
                     removeRow={(index, setOptions) => {
                       removeRow(arrayHelpers.remove(index), setOptions);
                     }}
-                    disabled={(options) =>
+                    getDisabled={(options) =>
                       values.subscriptionticketitems.length >=
                         subscription.ticketlimit ||
                       currentEvents.has(-1) ||
@@ -149,6 +131,7 @@ export const SubscriptionTicketItemUpdateTable = (
                     }
                     optionsInit={() => events.map((event) => ({...event}))}
                     fieldName='subscriptionticketitems'
+                    rowType='Ticket'
                     rowComponent={getSubscriptionTicketItemRow(
                       eventRestriction,
                       currentEvents,

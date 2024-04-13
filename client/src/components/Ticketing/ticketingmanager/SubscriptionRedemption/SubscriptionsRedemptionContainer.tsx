@@ -35,8 +35,8 @@ export const SubscriptionsRedemptionContainer = (
     email: '',
   });
   const [filters, setFilters] = useState({
-    filter: 3,
-    sort: 3,
+    filter: 'all',
+    sort: 'type',
   });
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState(false);
@@ -44,25 +44,25 @@ export const SubscriptionsRedemptionContainer = (
   useEffect(() => {
     const controller = new AbortController();
     if (token) {
-      const queriesFormatted = queries.seasons.map(
+      const seasonQueries = queries.seasons.map(
         (season) => `seasonid=${season.id}`,
       );
 
-      if (queries.name) {
-        queriesFormatted.concat(
-          queries.name
-            .trim()
-            .split(' ')
-            .map((name) => `name=${name}`),
-        );
-      }
+      const nameQueries = queries.name
+        .trim()
+        .split(' ')
+        .map((name) => `name=${name}`);
 
       getData(
         `${
           process.env.REACT_APP_API_2_URL
-        }/subscription-types/subscriptions/search?${queriesFormatted.join(
-          '&',
-        )}${queries.email ? `&email=${queries.email.trim()}` : ''}`,
+        }/subscription-types/subscriptions/search?${
+          seasonQueries.join('&')
+        }&${
+          nameQueries.join('&')
+        }&${
+          queries.email ? `email=${queries.email.trim()}` : ''
+        }`,
         setSubscriptions,
         controller.signal,
         token,
@@ -75,10 +75,10 @@ export const SubscriptionsRedemptionContainer = (
     <main className='grid grid-cols-12 gap-2 min-[2000px]:w-[70%]'>
       <header className='col-span-12'>
         <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigo-500 mb-14'>
-          Subscriptions
+          Subscription Redemption
         </h1>
       </header>
-      <div className='col-span-12 mb-4 min-[1200px]:mb-0 min-[1200px]:col-span-4 min-[1440px]:col-span-3'>
+      <div className='col-span-12 mb-4 min-[1200px]:mb-0 min-[1200px]:col-span-4 lg:col-span-3'>
         <aside className='bg-white flex flex-col rounded-xl shadow-xl gap-3 p-4 min-[1200px]:sticky min-[1200px]:top-20'>
           <h2 className='text-zinc-500 font-semibold text-xl flex flex-row justify-between'>
             Search
@@ -143,14 +143,14 @@ export const SubscriptionsRedemptionContainer = (
                 onChange={(event) =>
                   setFilters((prev) => ({
                     ...prev,
-                    sort: +event.target.value,
+                    sort: event.target.value,
                   }))
                 }
               >
-                <MenuItem value={0}>Customer Name</MenuItem>
-                <MenuItem value={1}>Customer Email</MenuItem>
-                <MenuItem value={2}>Season</MenuItem>
-                <MenuItem value={3}>Subscription Type</MenuItem>
+                <MenuItem value='name'>Customer Name</MenuItem>
+                <MenuItem value='email'>Customer Email</MenuItem>
+                <MenuItem value='season'>Season</MenuItem>
+                <MenuItem value='type'>Subscription Type</MenuItem>
               </Select>
             </FormControl>
             <FormControl>
@@ -163,20 +163,20 @@ export const SubscriptionsRedemptionContainer = (
                 onChange={(event) => {
                   setFilters((prev) => ({
                     ...prev,
-                    filter: +event.target.value,
+                    filter: event.target.value,
                   }));
                   setEditing(false);
                 }}
               >
-                <MenuItem value={0}>Fully Redeemed</MenuItem>
-                <MenuItem value={1}>Partially Redeemed</MenuItem>
-                <MenuItem value={3}>All Subscriptions</MenuItem>
+                <MenuItem value='fully'>Fully Redeemed</MenuItem>
+                <MenuItem value='partially'>Partially Redeemed</MenuItem>
+                <MenuItem value='all'>All Subscriptions</MenuItem>
               </Select>
             </FormControl>
           </div>
         </aside>
       </div>
-      <section className='col-span-12 min-[1200px]:col-span-8 min-[1440px]:col-span-9 flex flex-col items-center gap-3'>
+      <section className='col-span-12 min-[1200px]:col-span-8 lg:col-span-9 flex flex-col items-center gap-3'>
         {subscriptions
           .filter(getSubscriptionFilterFunction(filters.filter))
           .sort(getSubscriptionSortFunction(filters.sort))

@@ -4,7 +4,12 @@ import {OptionRowProps} from '../Event/components/OptionUpdateTable';
 import {OptionSelect} from '../Event/components/OptionSelect';
 import {FormButton} from '../Event/components/FormButton';
 import {TrashCanIcon} from '../../Icons';
-import {Event} from './SubscriptionRedemptionUtils';
+import {
+  Event,
+  getUpdatedEvent,
+  getUpdatedEventInstance,
+  getUpdatedTicketRestriction,
+} from './SubscriptionRedemptionUtils';
 import {getDate} from '../Event/components/ShowingUtils';
 import format from 'date-fns/format';
 import {SubscriptionRedemptionFormRow} from './SubscriptionTicketItemUpdateTable';
@@ -26,33 +31,12 @@ const getHandleEventChangeAdmin =
       options.map((option) =>
         option.eventid !== currentValue.eventid
           ? option
-          :{
-              ...option,
-              eventinstances:
-                currentValue.eventinstanceid === -1
-                  ? option.eventinstances
-                  : option.eventinstances.map((instance) =>
-                      instance.eventinstanceid !== currentValue.eventinstanceid
-                        ? instance
-                        : {
-                            ...instance,
-                            availableseats: instance.availableseats + 1,
-                            ticketrestrictions:
-                              currentValue.ticketrestrictionid === -1
-                                ? instance.ticketrestrictions
-                                : instance.ticketrestrictions.map((res) =>
-                                    res.ticketrestrictionsid !==
-                                    currentValue.ticketrestrictionid
-                                      ? res
-                                      : {
-                                          ...res,
-                                          availabletickets:
-                                            res.availabletickets + 1,
-                                        },
-                                  ),
-                          },
-                    ),
-            },
+          : getUpdatedEvent(
+              (value: number) => value + 1,
+              option,
+              currentValue.eventinstanceid,
+              currentValue.ticketrestrictionid,
+            ),
       ),
     );
 
@@ -84,27 +68,17 @@ const getHandleEventInstanceChange =
               ...option,
               eventinstances: option.eventinstances.map((instance) =>
                 instance.eventinstanceid === currentValue.eventinstanceid
-                  ? {
-                      ...instance,
-                      availableseats: instance.availableseats + 1,
-                      ticketrestrictions:
-                        currentValue.ticketrestrictionid === -1
-                          ? instance.ticketrestrictions
-                          : instance.ticketrestrictions.map((res) =>
-                              res.ticketrestrictionsid !==
-                              currentValue.ticketrestrictionid
-                                ? res
-                                : {
-                                    ...res,
-                                    availabletickets: res.availabletickets + 1,
-                                  },
-                            ),
-                    }
+                  ? getUpdatedEventInstance(
+                      (value: number) => value + 1,
+                      instance,
+                      currentValue.ticketrestrictionid,
+                    )
                   : instance.eventinstanceid === newEventInstanceId
-                  ? {
-                      ...instance,
-                      availableseats: instance.availableseats - 1,
-                    }
+                  ? getUpdatedEventInstance(
+                      (value: number) => value - 1,
+                      instance,
+                      -1,
+                    )
                   : instance,
               ),
             },
@@ -143,17 +117,20 @@ const getHandleTicketRestrictionChange =
                   : {
                       ...instance,
                       ticketrestrictions: instance.ticketrestrictions.map(
-                        (res) => ({
-                          ...res,
-                          availabletickets:
-                            res.ticketrestrictionsid ===
-                            currentValue.ticketrestrictionid
-                              ? res.availabletickets + 1
-                              : res.ticketrestrictionsid ===
-                                newTicketRestrictionId
-                              ? res.availabletickets - 1
-                              : res.availabletickets,
-                        }),
+                        (res) =>
+                          res.ticketrestrictionsid ===
+                          currentValue.ticketrestrictionid
+                            ? getUpdatedTicketRestriction(
+                                (value: number) => value + 1,
+                                res,
+                              )
+                            : res.ticketrestrictionsid ===
+                              newTicketRestrictionId
+                            ? getUpdatedTicketRestriction(
+                                (value: number) => value - 1,
+                                res,
+                              )
+                            : res,
                       ),
                     },
               ),
@@ -240,7 +217,7 @@ export const getSubscriptionTicketItemRow = (eventRestriction: boolean, currentE
                   description: `${format(
                     getDate(instance.eventdate, instance.eventtime),
                     'MM/dd/yyyy hh:mm aa',
-                  )} ${instance.ispreview? '(preview)': ''}`,
+                  )} ${instance.ispreview ? '(preview)' : ''}`,
                 })) ?? [],
             )}
           />
@@ -275,7 +252,7 @@ export const getSubscriptionTicketItemRow = (eventRestriction: boolean, currentE
         <td>
           <FormButton
             testID='remove-subscription-row-button'
-            title='remove row'
+            title='Remove Ticket'
             className='flex justify-center'
             disabled={false}
             onClick={() => removeOption()}

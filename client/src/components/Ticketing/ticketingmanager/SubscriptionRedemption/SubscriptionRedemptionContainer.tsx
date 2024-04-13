@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {FormikProps, FormikValues} from 'formik';
 import {Switch, Tooltip} from '@mui/material';
 import {SubscriptionTicketItemUpdateTable} from './SubscriptionTicketItemUpdateTable';
@@ -98,7 +98,7 @@ export const SubscriptionRedemptionContainer = (
   };
 
   return (
-    <article className='bg-white rounded-xl p-4 shadow-xl w-[100%] min-[1440px]:w-[80%]'>
+    <article className='bg-white rounded-xl p-4 shadow-xl w-[100%] lg:w-[80%]'>
       <header className='text-zinc-800 text-center flex flex-col min-[768px]:flex-row min-[768px]:justify-between'>
         <h2 className='flex flex-col mb-2 min-[768px]:mb-0'>
           <span className='flex flex-col min-[375px]:flex-row max-[767px]:justify-center'>

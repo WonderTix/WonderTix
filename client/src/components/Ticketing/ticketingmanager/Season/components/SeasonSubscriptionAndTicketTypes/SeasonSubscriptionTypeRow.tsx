@@ -103,7 +103,7 @@ export const SeasonSubscriptionTypeRow = ({
       <td className='px-2 py-1'>
         <FormButton
           testID={`delete-subscription-type-${field.name}`}
-          title='Remove Row'
+          title='Remove Subscription Type'
           className='grid justify-center text-red-500 focus:text-red-800'
           disabled={false}
           onClick={removeOption}

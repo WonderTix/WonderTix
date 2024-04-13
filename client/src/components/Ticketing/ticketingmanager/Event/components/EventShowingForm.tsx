@@ -126,14 +126,14 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                   >
                     <OptionUpdateTable
                       addRow={(options, setOptions) => {
-                        arrayHelpers.insert(0, getInstanceTicketType(options[0]));
+                        arrayHelpers.unshift(getInstanceTicketType(options[0]));
                         setOptions(options.slice(1));
                       }}
                       removeRow={(index, setOptions) => {
                         const {ticketlimit, ...removed} = arrayHelpers.remove(index);
                         setOptions((prev) => [...prev, removed]);
                       }}
-                      disabled={(options) => !options.length}
+                      getDisabled={(options) => !options.length}
                       optionsInit={(values) =>
                         ticketTypes.filter(
                           (type) =>
@@ -144,6 +144,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                         )
                       }
                       fieldName='instanceTicketTypes'
+                      rowType='Ticket Type'
                       sticky={showPopUp}
                       rowComponent={TicketTypeTableRow}
                       headings={[

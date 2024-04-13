@@ -59,7 +59,7 @@ export const SubscriptionTypeUpdateTable = (
               <article className='overflow-auto border border-zinc-300 shadow-xl rounded-md mx-auto bg-white w-[100%] min-[900px]:w-[90%] lg:w-[80%] min-h-[175px]'>
                 <OptionUpdateTable
                   addRow={(options, setOptions) => {
-                    arrayHelpers.insert(0, {
+                    arrayHelpers.unshift({
                       ...options[0],
                       ticketlimit: 0,
                       subscriptionlimit: 0,
@@ -70,7 +70,7 @@ export const SubscriptionTypeUpdateTable = (
                     const {ticketlimit, subscriptionlimit, ...removed} = arrayHelpers.remove(index);
                     setOptions((prev) => [...prev, removed]);
                   }}
-                  disabled={(options) => !options.length}
+                  getDisabled={(options) => !options.length}
                   optionsInit={(values) =>
                     options.filter(
                       (option) =>
@@ -82,6 +82,7 @@ export const SubscriptionTypeUpdateTable = (
                     )
                   }
                   fieldName='subscriptionTypes'
+                  rowType='Subscription Type'
                   rowComponent={SeasonSubscriptionTypeRow}
                   headings={[
                     'Subscription Type',

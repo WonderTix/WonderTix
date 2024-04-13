@@ -121,9 +121,9 @@ export const useFetchSeasons = (query = '') => {
   return {seasons};
 };
 
-export const getSubscriptionSortFunction = (id: number) => {
+export const getSubscriptionSortFunction = (id: string) => {
   switch (id) {
-    case 0:
+    case 'name':
       return (a, b) =>
         a.firstname < b.firstname
           ? -1
@@ -134,20 +134,20 @@ export const getSubscriptionSortFunction = (id: number) => {
           : a.lastname === b.lastname
           ? 0
           : 1;
-    case 1:
+    case 'email':
       return (a, b) => (a.email < b.email ? -1 : a.email === b.email ? 0 : 1);
-    case 2:
+    case 'season':
       return (a, b) => a.seasonid_fk - b.seasonid_fk;
     default:
       return (a, b) => a.subscriptiontypeid_fk - b.subscriptiontypeid_fk;
   }
 };
 
-export const getSubscriptionFilterFunction = (id: number) => {
+export const getSubscriptionFilterFunction = (id: string) => {
   switch (id) {
-    case 0:
+    case 'fully':
       return (a) => a.ticketsredeemed >= a.ticketlimit;
-    case 1:
+    case 'partially':
       return (a) => a.ticketsredeemed < a.ticketlimit;
     default:
       return () => true;
@@ -181,3 +181,45 @@ export const useTimeout = (callback, delay) => {
     return () => clearTimeout(timeoutId.current);
   }, [delay]);
 };
+
+export const getUpdatedEvent = (
+  method: (value: number) => number,
+  event: Event,
+  eventInstanceId: number,
+  ticketRestrictionId: number,
+) => ({
+  ...event,
+  eventinstances:
+    eventInstanceId === -1
+      ? event.eventinstances
+      : event.eventinstances.map((instance) =>
+          instance.eventinstanceid !== eventInstanceId
+            ? instance
+            : getUpdatedEventInstance(method, instance, ticketRestrictionId),
+        ),
+});
+
+export const getUpdatedEventInstance = (
+  method: (value: number) => number,
+  eventInstance: EventInstance,
+  ticketRestrictionId: number,
+) => ({
+  ...eventInstance,
+  availableseats: method(eventInstance.availableseats),
+  ticketrestrictions:
+    ticketRestrictionId === -1
+      ? eventInstance.ticketrestrictions
+      : eventInstance.ticketrestrictions.map((res) =>
+          res.ticketrestrictionsid !== ticketRestrictionId
+            ? res
+            : getUpdatedTicketRestriction(method, res),
+        ),
+});
+
+export const getUpdatedTicketRestriction = (
+  method: (value: number) => number,
+  ticketRestriction: TicketRestriction,
+) => ({
+  ...ticketRestriction,
+  availabletickets: method(ticketRestriction.availabletickets),
+});

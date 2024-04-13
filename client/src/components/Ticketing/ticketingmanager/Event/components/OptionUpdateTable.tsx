@@ -14,9 +14,10 @@ export interface OptionRowProps {
 interface OptionTableProps {
   removeRow: (index: number, setOptions: (value) => void) => void;
   addRow: (options: any[], setOptions: (value) => void) => void;
-  disabled: (options: any[]) => boolean;
+  getDisabled: (options: any[]) => boolean;
   optionsInit: (value: any[]) => any[];
   fieldName: string;
+  rowType: string,
   rowComponent: (props: OptionRowProps) => ReactElement;
   headings: string[];
   sticky: boolean;
@@ -31,13 +32,14 @@ export const OptionUpdateTable = (props: OptionTableProps) => {
   const {
     optionsInit,
     fieldName,
+    rowType,
     rowComponent,
     sticky,
     headings,
     styles,
     addRow,
     removeRow,
-    disabled,
+    getDisabled,
   } = props;
   const [field] = useField(fieldName);
   const [options, setOptions] = useState(optionsInit(field.value));
@@ -57,11 +59,11 @@ export const OptionUpdateTable = (props: OptionTableProps) => {
           <th className={`${styles.headerItem} grid justify-center`}>
             {options && (
               <FormButton
-                title='Add Row'
+                title={`Add ${rowType}`}
                 className='text-green-500 hover:text-green-600 disabled:text-gray-300'
                 testID='add-row-button'
                 onClick={() => addRow(options, setOptions)}
-                disabled={disabled(options)}
+                disabled={getDisabled(options)}
               >
                 <CirclePlusIcon className='h-[1.75rem] w-[1.75rem]' />
               </FormButton>
