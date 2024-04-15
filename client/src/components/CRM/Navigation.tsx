@@ -38,6 +38,10 @@ const Navigation = (): React.ReactElement => {
   return (
     <div className="w-full h-full bg-gray-100">
       <div className="flex flex-no-wrap">
+
+
+
+
         <div className="absolute md:relative w-[14rem] h-screen  bg-zinc-900 hidden md:block z-10 overflow-auto">
           <div className="h-12 w-full flex flex-col items-center">
             <button
@@ -75,114 +79,14 @@ const Navigation = (): React.ReactElement => {
                 </div>
               </a>
             </li>
-            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <a
-                onClick={() => navigate('/admin/accounts')}
-                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
-              >
-                <div className="flex flex-col gap-2 items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-10 w-10"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-
-                  <span className="">Accounts</span>
-                </div>
-              </a>
-            </li>
-            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <a
-                onClick={() => navigate('/admin/contacts')}
-                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
-              >
-                <div className="flex flex-col gap-2 items-center">
-                  <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-10 w-10"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
-                      />
-                    </svg>
-                  </div>
-
-                  <span className="">Contacts</span>
-                </div>
-              </a>
-            </li>
-            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <a
-                onClick={() => navigate('/admin/reporting')}
-                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
-              >
-                <div className="flex flex-col gap-2 items-center">
-                  <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-10 w-10"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                  </div>
-
-                  <span>Reporting</span>
-                </div>
-              </a>
-            </li>
-            <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-              <a
-                onClick={() => navigate('/admin/tasks')}
-                className="bg-transparent border-none rounded-none hover:scale-110 transition duration-300 ease-in-out"
-              >
-                <div className="flex flex-col gap-2 items-center">
-                  <div>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-10 w-10"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                      />
-                    </svg>
-                  </div>
-
-                  <span>Task</span>
-                </div>
-              </a>
-            </li>
           </ul>
         </div>
+
+
+
+
+
+
         <div
           className={
             showMobileMenu
@@ -436,6 +340,10 @@ const Navigation = (): React.ReactElement => {
             </div>
           </div>
         </div>
+
+
+
+
 
         {/* Navigation starts */}
         <div className="w-full">
