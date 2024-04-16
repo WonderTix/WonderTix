@@ -51,16 +51,10 @@ contactController.post('/', async (req: Request, res: Response) => {
   try {
     const validatedContact = validateContact({
       ...req.body,
-      firstName: req.body.firstname,
-      lastName: req.body.lastname,
-      visitSource: req.body.visitsource,
-      streetAddress: req.body.address,
-      postalCode: req.body.postalcode,
-      seatingAcc: req.body.seatingaccom,
-      optIn: !!req.body.newsletter,
+      newsletter: !!req.body.newsletter,
     });
 
-    const contact = await updateContact(prisma, validatedContact, 2);
+    const contact = await updateContact(prisma, validatedContact, 'does_not_exist');
 
     return res.status(201).json({...contact, newsletter: !!contact.newsletter});
   } catch (error) {
@@ -299,7 +293,7 @@ contactController.get('/', async (req: Request, res: Response) => {
       ],
     });
 
-    return res.status(200).json(contacts.map((contact) => ({...contact, newsletter: !!contact.newsletter})));
+    return res.status(200).json(contacts);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return res.status(400).json({error: error.message});
@@ -352,7 +346,7 @@ contactController.get('/:id', async (req: Request, res: Response) => {
       return;
     }
 
-    res.status(200).json({...contact, newsletter: !!contact.newsletter});
+    res.status(200).json(contact);
     return;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -541,7 +535,6 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 
     const toReturn = {
       ...remainderOfContact,
-      newsletter: !!remainderOfContact.newsletter,
       orders: flattenedOrders,
     };
 
@@ -596,16 +589,10 @@ contactController.put('/:id', async (req: Request, res: Response) => {
     const id = req.params.id;
     const validatedContact= validateContact({
       ...req.body,
-      firstName: req.body.firstname,
-      lastName: req.body.lastname,
-      visitSource: req.body.visitsource,
-      streetAddress: req.body.address,
-      postalCode: req.body.postalcode,
-      seatingAcc: req.body.seatingaccom,
-      optIn: !!req.body.newsletter,
+      newsletter: !!req.body.newsletter,
     });
 
-    await updateContact(prisma, validatedContact, 1, +id);
+    await updateContact(prisma, validatedContact, 'exists', +id);
 
     return res.status(204).json();
   } catch (error) {

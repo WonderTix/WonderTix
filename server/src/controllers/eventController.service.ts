@@ -18,9 +18,9 @@ export interface LineItem {
 }
 
 export const createStripeCheckoutSession = async (
-    contact: ValidatedContact,
-    lineItems: LineItem[],
-    discount: any,
+  contact: ContactInput,
+  lineItems: LineItem[],
+  discount: any,
 ) => {
   const expire = Math.round((new Date().getTime() + 1799990) / 1000);
   const checkoutObject: JsonObject = {
@@ -347,30 +347,11 @@ export const getDiscountAmount = (discount: any, orderTotal: number) => {
   throw new Error('Invalid discount');
 };
 
-interface checkoutForm {
-  firstName: string;
-  lastName: string;
-  streetAddress: string;
-  postalCode: string;
-  city: string,
-  state: string;
-  country: string;
-  phone: string;
-  email: string;
-  visitSource: string;
-  seatingAcc: string;
-  comments: string;
-  optIn: boolean;
-  donorbadge?: boolean;
-  vip?: boolean;
-  volunteerlist?: boolean;
-}
-
 export const updateContact = async (
-    prisma: ExtendedPrismaClient,
-    contact: ValidatedContact,
-    check = 0,
-    contactid?: number,
+  prisma: ExtendedPrismaClient,
+  contact: ContactInput,
+  check?: 'exists' | 'does_not_exist',
+  contactid?: number,
 ) => {
   const filter = contactid !== undefined ?
     {contactid: contactid} :
@@ -382,9 +363,9 @@ export const updateContact = async (
     },
   });
 
-  if (check == 1 && !existingContact) {
+  if (check === 'exists' && !existingContact) {
     throw new Error(`Contact(${contactid || contact.email}) does not exist`);
-  } else if (check === 2 && existingContact) {
+  } else if (check === 'does_not_exist' && existingContact) {
     throw new Error(`Contact(${contactid || contact.email}) already exists`);
   } else if (contactid !== undefined && existingContact && contact.email !== existingContact.email) {
     const currentContact = await prisma.contacts.findUnique({where: {email: contact.email}});
@@ -407,15 +388,15 @@ export const updateContact = async (
         existingContact?.newsletter:
         !contact.newsletter?
           null:
-          !existingContact?.newsletter?
-            new Date():
-            existingContact.newsletter,
+          existingContact?.newsletter?
+            undefined:
+            new Date(),
     },
   });
 };
 
 
-export interface ValidatedContact {
+export interface ContactInput {
    firstname: string;
    lastname: string;
    email: string;
@@ -434,32 +415,32 @@ export interface ValidatedContact {
    volunteerlist?: boolean;
 }
 
-export const validateContact = (formData: checkoutForm): ValidatedContact => {
+export const validateContact = (formData: ContactInput): ContactInput => {
   return {
-    firstname: validateName(formData.firstName, 'First Name'),
-    lastname: validateName(formData.lastName, 'Last Name'),
+    firstname: validateName(formData.firstname, 'First Name'),
+    lastname: validateName(formData.lastname, 'Last Name'),
     email: validateWithRegex(
-        formData.email,
-        `Email: ${formData.email} is invalid`,
-        new RegExp('.+@.+\\..+'),
+      formData.email,
+      `Email: ${formData.email} is invalid`,
+      new RegExp('.+@.+\\..+'),
     ),
     // Only include or validate the following if provided
-    ...(formData.streetAddress && {address: formData.streetAddress}),
+    ...(formData.address && {address: formData.address}),
     ...(formData.city && {city: formData.city}),
     ...(formData.state && {state: formData.state}),
-    ...(formData.postalCode && {postalcode: formData.postalCode}),
+    ...(formData.postalcode && {postalcode: formData.postalcode}),
     ...(formData.country && {country: formData.country}),
     ...(formData.phone && {
       phone: validateWithRegex(
-          formData.phone,
-          `Phone Number: ${formData.phone} is invalid`,
-          new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
+        formData.phone,
+        `Phone Number: ${formData.phone} is invalid`,
+        new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
       ),
     }),
-    ...(formData.visitSource && {visitsource: formData.visitSource}),
-    ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
+    ...(formData.visitsource && {visitsource: formData.visitsource}),
+    ...(formData.seatingaccom && {seatingaccom: formData.seatingaccom}),
     ...(formData.comments && {comments: formData.comments}),
-    ...(formData.optIn !== undefined && {newsletter: formData.optIn}),
+    ...(formData.newsletter !== undefined && {newsletter: formData.newsletter}),
     ...(formData.donorbadge !== undefined && {donorbadge: formData.donorbadge}),
     ...(formData.vip !== undefined && {vip: formData.vip}),
     ...(formData.volunteerlist !== undefined && {volunteerlist: formData.volunteerlist}),

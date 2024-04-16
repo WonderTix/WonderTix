@@ -80,7 +80,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       await validateDiscount(discount, ticketCartItems, prisma);
     }
 
-    const updatedContact= validateContact(formData);
+    const validatedContact= validateContact(formData);
 
     const {
       ticketCartRows,
@@ -117,9 +117,9 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 
     if (orderSubTotal + feeTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
-          updatedContact,
-          ticketCartRows.concat((donationCartRow? [donationCartRow]: []).concat(subscriptionCartRows)),
-          {...discount, amountOff: discountAmount},
+        validatedContact,
+        cartRows,
+        {...discount, amountOff: discountAmount},
       );
     } else if (orderSubTotal + feeTotal - discountAmount > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
@@ -141,7 +141,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     );
 
     if (toSend.id === 'comp') {
-      const {contactid} = await updateContact(prisma, updatedContact);
+      const {contactid} = await updateContact(prisma, validatedContact);
       await prisma.orders.update({
         where: {
           orderid: order.orderid,

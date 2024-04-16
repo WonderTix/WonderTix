@@ -56,7 +56,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
       validationSchema={eventInstanceSchema}
       onSubmit={onSubmit}
     >
-      {({handleSubmit, values}) => (
+      {({handleSubmit, values, setFieldValue}) => (
         <form onSubmit={handleSubmit} className={'bg-gray-300 rounded-xl p-2'}>
           <div
             className={
@@ -109,12 +109,13 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 </p>
               </div>
               <Field
-                name='ispreview'
+                name='ispreview: '
                 component={FormSwitch}
                 className={inputControlClassName}
                 label='Preview'
                 size='small'
                 color='primary'
+                onChange={(value) => setFieldValue('ispreview', value)}
               />
             </div>
             <FieldArray

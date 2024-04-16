@@ -19,10 +19,12 @@ import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
 import DonationPage from '../donation/DonationPage';
-import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
+import CompleteOrderForm from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../PopUp';
+import {useAuth0} from '@auth0/auth0-react';
+import {baseContact, CheckoutContact, validateContactInput} from './CheckoutUtils';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -34,6 +36,7 @@ const stripePromise = loadStripe(pk);
  */
 export default function CheckoutPage(): ReactElement {
   const navigate = useNavigate();
+  const {isAuthenticated, user} = useAuth0();
   const ticketCartItems = useAppSelector(selectTicketCartContents);
   const subscriptionCartItems = useAppSelector(selectSubscriptionCartContents);
   const discount = useAppSelector(selectDiscount);
@@ -51,11 +54,11 @@ export default function CheckoutPage(): ReactElement {
     showSecondary: false,
   });
   const dispatch = useAppDispatch();
-  const doCheckout = async (checkoutFormInfo: CheckoutFormInfo) => {
+  const doCheckout = async (checkoutFormInfo: CheckoutContact) => {
     try {
       const formData = {...checkoutFormInfo};
-      if (formData.seatingAcc === 'Other') {
-        formData.seatingAcc = formData.otherSeatingAcc;
+      if (formData.seatingaccom === 'Other') {
+        formData.seatingaccom = formData.otherSeatingAcc;
       }
 
       const stripe = await stripePromise;
@@ -148,7 +151,28 @@ export default function CheckoutPage(): ReactElement {
               )}
               {checkoutStep === 'form' && (
                 <CompleteOrderForm
-                  disabled={!ticketCartItems.length && !subscriptionCartItems.length}
+                  mode='customer'
+                  baseValues={{
+                    ...baseContact,
+                    ...(isAuthenticated && {
+                      email: user.email ?? '',
+                      confirmEmail: user.email ?? '',
+                      firstname: user.given_name ?? '',
+                      lastname: user.family_name ?? '',
+                      phone: user.phone_number ?? '',
+                    }),
+                  }}
+                  disabled={
+                    !ticketCartItems.length && !subscriptionCartItems.length
+                  }
+                  requiredFields={[
+                    'firstname',
+                    'lastname',
+                    'email',
+                    'address',
+                    'postalcode',
+                  ]}
+                  validateInput={validateContactInput}
                   onSubmit={doCheckout}
                   onBack={() => setCheckoutStep('donation')}
                 />
