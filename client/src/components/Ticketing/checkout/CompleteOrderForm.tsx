@@ -29,9 +29,9 @@ type CompleteOrderFormProps = {
  * @param {Function} onBack onBack callback function
  * @param {CheckoutContact} baseValues base form information
  * @param {Function} validateInput form validation function
- * @param {String[]} requiredFields array of required fields
- * @param {Boolean} disabled boolean used to disable next button
- * @param {String} mode used to distinguish between customer or admin facing component
+ * @param {string[]} requiredFields array of required fields
+ * @param {boolean} disabled boolean used to disable next button
+ * @param {string} mode used to distinguish between customer or admin facing component
  * @returns {ReactElement}
  */
 export default function CompleteOrderForm({

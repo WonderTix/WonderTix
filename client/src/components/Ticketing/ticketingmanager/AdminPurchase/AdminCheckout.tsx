@@ -23,7 +23,6 @@ const stripePromise = loadStripe(pk);
 export default function AdminCheckout(): ReactElement {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const [appliedDiscount, setAppliedDiscount] = useState(null);
 
