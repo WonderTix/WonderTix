@@ -31,10 +31,10 @@ export interface LoadedTicketRestriction extends ticketrestrictions {
   availabletickets: number;
 }
 export const getUpdatedSubscription = (
-    subscription: LoadedSubscription,
-    ticketRestrictionMap: Map<number, LoadedTicketRestriction>,
-    eventInstanceMap: Map<number, eventinstances>,
-    subscriptionTicketItemMap: Map<number, number>,
+  subscription: LoadedSubscription,
+  ticketRestrictionMap: Map<number, LoadedTicketRestriction>,
+  eventInstanceMap: Map<number, eventinstances>,
+  subscriptionTicketItemMap: Map<number, number>,
 ) => {
   const subscriptionTicketItemsToDelete =
     subscription.subscriptionticketitems.reduce<{id: number}[]>((acc, {id, ticketitem}) => {
@@ -58,46 +58,46 @@ export const getUpdatedSubscription = (
     }, []);
 
   const subscriptionTicketItemsToCreate = [...subscriptionTicketItemMap.entries()]
-      .flatMap(([ticketRestrictionId, ticketQuantity]) => {
-        const ticketRestriction = ticketRestrictionMap.get(ticketRestrictionId);
-        if (!ticketRestriction) {
-          throw new InvalidInputError(
-              422,
-              `Requested tickets no longer available`,
-          );
-        }
+    .flatMap(([ticketRestrictionId, ticketQuantity]) => {
+      const ticketRestriction = ticketRestrictionMap.get(ticketRestrictionId);
+      if (!ticketRestriction) {
+        throw new InvalidInputError(
+          422,
+          'Requested tickets no longer available',
+        );
+      }
 
-        const eventInstance = eventInstanceMap.get(ticketRestriction?.eventinstanceid_fk);
+      const eventInstance = eventInstanceMap.get(ticketRestriction?.eventinstanceid_fk);
 
-        if (!eventInstance) {
-          throw new InvalidInputError(
-              422,
-              'Requested tickets no longer available',
-          );
-        } else if ((ticketRestriction.availabletickets -= ticketQuantity) < 0 ||
+      if (!eventInstance) {
+        throw new InvalidInputError(
+          422,
+          'Requested tickets no longer available',
+        );
+      } else if ((ticketRestriction.availabletickets -= ticketQuantity) < 0 ||
         (eventInstance.availableseats -= ticketQuantity) < 0) {
-          throw new InvalidInputError(
-              422,
-              'Requested tickets no longer available',
-          );
-        } else if (
-          subscription.seasonsubscriptiontype.subscriptiontype.previewonly &&
+        throw new InvalidInputError(
+          422,
+          'Requested tickets no longer available',
+        );
+      } else if (
+        subscription.seasonsubscriptiontype.subscriptiontype.previewonly &&
         !eventInstance.ispreview
-        ) {
-          throw new InvalidInputError(
-              422,
-              'Can not redeem preview only subscription ticket for non preview showing',
-          );
-        }
+      ) {
+        throw new InvalidInputError(
+          422,
+          'Can not redeem preview only subscription ticket for non preview showing',
+        );
+      }
 
-        return Array(ticketQuantity).fill({
-          ticketitem: {
-            create: {
-              ticketrestrictionid_fk: ticketRestrictionId,
-            },
+      return Array(ticketQuantity).fill({
+        ticketitem: {
+          create: {
+            ticketrestrictionid_fk: ticketRestrictionId,
           },
-        });
+        },
       });
+    });
 
   return {
     subscriptionTicketItemsToDelete,
@@ -123,7 +123,7 @@ export const validateSeasonSubscriptionType = ({
   } else if (isNaN(ticketlimit) || ticketlimit < 0) {
     throw new InvalidInputError(422, `Invalid Ticket Limit (${ticketlimit})`);
   } else if (subscriptionsSold && ticketlimit < currentTicketLimit) {
-    throw new InvalidInputError(422, `Can not reduce ticket limit if any outstanding subscriptions exist`);
+    throw new InvalidInputError(422, 'Can not reduce ticket limit if any outstanding subscriptions exist');
   } else if (isNaN(subscriptionlimit) || subscriptionlimit < subscriptionsSold) {
     throw new InvalidInputError(422, `Invalid Subscription Limit (${+subscriptionlimit})`);
   }
@@ -136,8 +136,8 @@ export const validateSubscriptionType = (subscriptionType: any) => {
     throw new InvalidInputError(422, `Invalid Price (${subscriptionType.price})`);
   }
   return {
-    name: validateWithRegex(subscriptionType.name, 'Invalid Name', new RegExp('^.{1,255}$')),
-    description: validateWithRegex(subscriptionType.description, `Invalid Description`, new RegExp('^.{1,255}$')),
+    name: validateWithRegex(subscriptionType.name, 'Invalid Name: Description must be 255 characters or less', new RegExp('^.{1,255}$')),
+    description: validateWithRegex(subscriptionType.description, 'Invalid Description: Description must be 255 characters or less', new RegExp('^.{1,255}$')),
     price: +subscriptionType.price,
     previewonly: Boolean(subscriptionType.previewonly),
   };

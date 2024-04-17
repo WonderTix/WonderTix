@@ -86,6 +86,10 @@ export const SubscriptionTicketItemUpdateTable = (
       innerRef={formRef}
     >
       {({values, handleSubmit, isSubmitting, isValid, isValidating}) => {
+        const unselectedTickets = values.subscriptionticketitems.reduce(
+          (acc, ticket) => ticket.eventid === -1 ? acc + 1 : acc,
+          0,
+        );
         const currentEvents = new Set<number>(
           values.subscriptionticketitems.map((item) => item.eventid),
         );
@@ -93,7 +97,8 @@ export const SubscriptionTicketItemUpdateTable = (
         useEffect(() => {
           setSubmitting(isSubmitting, isValid, isValidating);
           setViolatesRestriction(
-            currentEvents.size < values.subscriptionticketitems.length,
+            currentEvents.size <
+              values.subscriptionticketitems.length - unselectedTickets,
           );
         }, [values, isValid, isValidating, isSubmitting]);
 
@@ -116,8 +121,7 @@ export const SubscriptionTicketItemUpdateTable = (
                     getDisabled={(options) =>
                       values.subscriptionticketitems.length >=
                         subscription.ticketlimit ||
-                      currentEvents.has(-1) ||
-                      !options.some((option) =>
+                      options.filter((option) =>
                         eventRestriction && currentEvents.has(option.eventid)
                           ? false
                           : option.eventinstances.some(
@@ -127,7 +131,7 @@ export const SubscriptionTicketItemUpdateTable = (
                                   (res) => res.availabletickets > 0,
                                 ),
                             ),
-                      )
+                      ).length <= unselectedTickets
                     }
                     optionsInit={() => events.map((event) => ({...event}))}
                     fieldName='subscriptionticketitems'

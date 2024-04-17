@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {
+  getSeasonFilterFunction,
   getSubscriptionFilterFunction,
   getSubscriptionSortFunction,
   Subscription,
@@ -26,7 +27,7 @@ export const SubscriptionsRedemptionContainer = (
   props: SubscriptionsRedemptionProps,
 ) => {
   const {token, showPopUp, setPopUpProps} = props;
-  const {seasons} = useFetchSeasons('?current=true');
+  const {seasons} = useFetchSeasons();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const [queries, setQueries] = useState({
@@ -35,7 +36,8 @@ export const SubscriptionsRedemptionContainer = (
     email: '',
   });
   const [filters, setFilters] = useState({
-    filter: 'all',
+    subscriptionFilter: 'all',
+    seasonFilter: 'present',
     sort: 'type',
   });
   const [editing, setEditing] = useState(false);
@@ -56,11 +58,9 @@ export const SubscriptionsRedemptionContainer = (
       getData(
         `${
           process.env.REACT_APP_API_2_URL
-        }/subscription-types/subscriptions/search?${
-          seasonQueries.join('&')
-        }&${
-          nameQueries.join('&')
-        }&${
+        }/subscription-types/subscriptions/search?${seasonQueries.join(
+          '&',
+        )}&${nameQueries.join('&')}&${
           queries.email ? `email=${queries.email.trim()}` : ''
         }`,
         setSubscriptions,
@@ -154,16 +154,18 @@ export const SubscriptionsRedemptionContainer = (
               </Select>
             </FormControl>
             <FormControl>
-              <InputLabel id='filter-label'>Filter</InputLabel>
+              <InputLabel id='subscription-filter-label'>
+                Subscription Filter
+              </InputLabel>
               <Select
-                labelId='filter-label'
-                id='filter-select'
-                value={filters.filter}
-                label='Filter'
+                labelId='subscription-filter-label'
+                id='subscription-filter-select'
+                value={filters.subscriptionFilter}
+                label='Subscription Filter'
                 onChange={(event) => {
                   setFilters((prev) => ({
                     ...prev,
-                    filter: event.target.value,
+                    subscriptionFilter: event.target.value,
                   }));
                   setEditing(false);
                 }}
@@ -173,16 +175,40 @@ export const SubscriptionsRedemptionContainer = (
                 <MenuItem value='all'>All Subscriptions</MenuItem>
               </Select>
             </FormControl>
+            <FormControl>
+              <InputLabel id='season-filter-label'>Season Filter</InputLabel>
+              <Select
+                labelId='season-filter-label'
+                id='season-filter-select'
+                value={filters.seasonFilter}
+                label='Season Filter'
+                onChange={(event) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    seasonFilter: event.target.value,
+                  }));
+                  setEditing(false);
+                }}
+              >
+                <MenuItem value='present'>Present Seasons</MenuItem>
+                <MenuItem value='past'>Past Seasons</MenuItem>
+                <MenuItem value='all'>All Seasons</MenuItem>
+              </Select>
+            </FormControl>
           </div>
         </aside>
       </div>
       <section className='col-span-12 min-[1200px]:col-span-8 lg:col-span-9 flex flex-col items-center gap-3'>
         {subscriptions
-          .filter(getSubscriptionFilterFunction(filters.filter))
+          .filter(
+            (sub) =>
+              getSubscriptionFilterFunction(filters.subscriptionFilter)(sub) &&
+              getSeasonFilterFunction(filters.seasonFilter)(sub),
+          )
           .sort(getSubscriptionSortFunction(filters.sort))
           .map((subscription) => (
             <SubscriptionRedemptionContainer
-              key={`${subscription.id}-${subscription.ticketsredeemed}-${search}-${filters.filter}`}
+              key={`${subscription.id}-${subscription.ticketsredeemed}-${search}-${filters.subscriptionFilter}-${filters.seasonFilter}`}
               subscription={subscription}
               setReload={setSearch}
               setSubscriptions={setSubscriptions}

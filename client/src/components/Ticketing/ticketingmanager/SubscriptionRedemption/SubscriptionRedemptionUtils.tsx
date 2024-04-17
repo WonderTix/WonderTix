@@ -154,6 +154,17 @@ export const getSubscriptionFilterFunction = (id: string) => {
   }
 };
 
+export const getSeasonFilterFunction = (id: string) => {
+  switch (id) {
+    case 'past':
+      return (a) => !a.current;
+    case 'present':
+      return (a) => a.current;
+    default:
+      return () => true;
+  }
+};
+
 export const useIsMounted = () => {
   const ref = useRef(false);
 

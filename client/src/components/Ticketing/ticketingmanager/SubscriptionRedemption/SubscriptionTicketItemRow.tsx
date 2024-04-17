@@ -252,7 +252,7 @@ export const getSubscriptionTicketItemRow = (eventRestriction: boolean, currentE
         <td>
           <FormButton
             testID='remove-subscription-row-button'
-            title='Remove Ticket'
+            title='Remove'
             className='flex justify-center'
             disabled={false}
             onClick={() => removeOption()}

@@ -117,20 +117,20 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
     });
 
     return res
-        .json(
-            toSend
-                .map(
-                    ({subscriptiontype,
-                      seasonid_fk,
-                      deletedat,
-                      subscriptions,
-                      ...rest}) =>
-                      ({
-                        ...rest,
-                        price: Number(rest.price),
-                        name: subscriptiontype.name,
-                        subscriptionssold: subscriptions.length,
-                      })));
+      .json(
+        toSend
+          .map(
+            ({subscriptiontype,
+              seasonid_fk,
+              deletedat,
+              subscriptions,
+              ...rest}) =>
+              ({
+                ...rest,
+                price: Number(rest.price),
+                name: subscriptiontype.name,
+                subscriptionssold: subscriptions.length,
+              })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -292,26 +292,26 @@ subscriptionController.get('/active-subscriptions/:seasonid', async (req: Reques
     return res.json({
       ...toReturn,
       events: toReturn.events
-          .map(({eventinstances, deletedat, ...rest}) => ({
-            ...rest,
-            eventinstances,
-            startdate: eventinstances[0]?.eventdate,
-            enddate: eventinstances[Math.max(eventinstances.length-1, 0)]?.eventdate,
-          })),
+        .map(({eventinstances, deletedat, ...rest}) => ({
+          ...rest,
+          eventinstances,
+          startdate: eventinstances[0]?.eventdate,
+          enddate: eventinstances.slice(-1)[0]?.eventdate,
+        })),
       seasonsubscriptiontypes: season
-          .seasonsubscriptiontypes
-          .map(({
-            deletedat,
-            subscriptions,
-            subscriptiontype
-            , ...rest
-          }) => ({
-            ...rest,
-            price: Number(subscriptiontype.price),
-            description: subscriptiontype.description,
-            name: subscriptiontype.name,
-            subscriptionssold: subscriptions.length,
-          })),
+        .seasonsubscriptiontypes
+        .map(({
+          deletedat,
+          subscriptions,
+          subscriptiontype
+          , ...rest
+        }) => ({
+          ...rest,
+          price: Number(subscriptiontype.price),
+          description: subscriptiontype.description,
+          name: subscriptiontype.name,
+          subscriptionssold: subscriptions.length,
+        })),
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -425,8 +425,8 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
           });
         } else if (!update) {
           throw new InvalidInputError(
-              422,
-              `Can not delete a subscription type for which subscriptions have already been sold`,
+            422,
+            'Can not delete a subscription type for which subscriptions have already been sold',
           );
         }
 
@@ -622,7 +622,7 @@ subscriptionController.put('/:subscriptiontypeid', async (req: Request, res: Res
     });
 
     if (!originalType) {
-      return res.status(400).json({error: `Subscription Type does not exist`});
+      return res.status(400).json({error: 'Subscription Type does not exist'});
     }
 
     const type = await prisma.subscriptiontypes.update({
@@ -701,7 +701,7 @@ subscriptionController.delete('/:subscriptiontypeid', async (req: Request, res: 
     });
 
     if (!type) {
-      return res.status(400).json({error: `Subscription Type does not exist`});
+      return res.status(400).json({error: 'Subscription Type does not exist'});
     }
 
     if (type.seasonsubscriptiontypes.find((season) => season.subscriptions.length)) {
@@ -772,74 +772,76 @@ subscriptionController.delete('/:subscriptiontypeid', async (req: Request, res: 
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 subscriptionController.get(
-    '/subscriptions/search',
-    async (req: Request, res: Response) => {
-      try {
-        const {seasonid= [], name = [], email} = req.query;
-        const seasonIdsFormatted= (Array.isArray(seasonid) ? seasonid: [seasonid]).map((id) => +id);
-        const nameFormatted = (Array.isArray(name) ? name: [name]
-        ).flatMap((name) =>
-          ['firstname', 'lastname'].map((key) => ({
-            [key]: {contains: String(name), mode: 'insensitive'},
-          })));
+  '/subscriptions/search',
+  async (req: Request, res: Response) => {
+    try {
+      const {seasonid= [], name = [], email} = req.query;
+      const seasonIdsFormatted= (Array.isArray(seasonid) ? seasonid: [seasonid]).map((id) => +id);
+      const nameFormatted = (Array.isArray(name) ? name: [name]
+      ).flatMap((name) =>
+        ['firstname', 'lastname'].map((key) => ({
+          [key]: {contains: String(name), mode: 'insensitive'},
+        })));
 
-        const contactFilter = [
-          ...nameFormatted,
-          ...(email? [{email: {contains: String(email), mode: 'insensitive'}}]: []),
-        ];
+      const contactFilter = [
+        ...nameFormatted,
+        ...(email? [{email: {contains: String(email), mode: 'insensitive'}}]: []),
+      ];
 
-        const toReturn = await prisma.subscriptions.findMany({
-          where: {
-            seasonid_fk: {in: seasonIdsFormatted},
-            order: {
-              payment_intent: {not: null},
-              ...(contactFilter.length && {
-                contacts: {
-                  OR: contactFilter,
-                },
-              }),
-            },
-            refund: null,
-          },
-          include: {
-            seasonsubscriptiontype: {
-              include: {
-                subscriptiontype: true,
-                season: true,
+      const toReturn = await prisma.subscriptions.findMany({
+        where: {
+          ...(seasonIdsFormatted.length && {seasonid_fk: {in: seasonIdsFormatted}}),
+          order: {
+            payment_intent: {not: null},
+            ...(contactFilter.length && {
+              contacts: {
+                OR: contactFilter,
               },
-            },
-            order: {
-              include: {
-                contacts: true,
-              },
-            },
-            subscriptionticketitems: true,
+            }),
           },
-        });
+          refund: null,
+        },
+        include: {
+          seasonsubscriptiontype: {
+            include: {
+              subscriptiontype: true,
+              season: true,
+            },
+          },
+          order: {
+            include: {
+              contacts: true,
+            },
+          },
+          subscriptionticketitems: true,
+        },
+      });
 
-        return res.json(
-            toReturn.map(({order, seasonsubscriptiontype, subscriptionticketitems, ...sub}) => ({
-              ...sub,
-              previewonly: seasonsubscriptiontype.subscriptiontype.previewonly,
-              firstname: order.contacts?.firstname,
-              lastname: order.contacts?.lastname,
-              email: order.contacts?.email,
-              name: seasonsubscriptiontype.subscriptiontype.name,
-              ticketlimit: seasonsubscriptiontype.ticketlimit,
-              seasonName: seasonsubscriptiontype.season.name,
-              ticketsredeemed: subscriptionticketitems.length,
-            })),
-        );
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          return res.status(400).json({error: error.message});
-        }
-        if (error instanceof Prisma.PrismaClientValidationError) {
-          return res.status(400).json({error: error.message});
-        }
-        return res.status(500).json({error: 'Internal Server Error'});
+      const formatterdDate = getFormattedDate(new Date());
+      return res.json(
+        toReturn.map(({order, seasonsubscriptiontype, subscriptionticketitems, ...sub}) => ({
+          ...sub,
+          previewonly: seasonsubscriptiontype.subscriptiontype.previewonly,
+          firstname: order.contacts?.firstname,
+          lastname: order.contacts?.lastname,
+          email: order.contacts?.email,
+          name: seasonsubscriptiontype.subscriptiontype.name,
+          ticketlimit: seasonsubscriptiontype.ticketlimit,
+          seasonName: seasonsubscriptiontype.season.name,
+          ticketsredeemed: subscriptionticketitems.length,
+          current: seasonsubscriptiontype.season.enddate >= formatterdDate,
+        })),
+      );
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return res.status(400).json({error: error.message});
       }
-    },
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        return res.status(400).json({error: error.message});
+      }
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+  },
 );
 
 /**
@@ -866,34 +868,33 @@ subscriptionController.get(
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 subscriptionController.get(
-    '/subscriptions/redemption/:subscriptionid',
-    async (req: Request, res: Response) => {
-      try {
-        const subscriptionId = +req.params.subscriptionid;
-        const subscription = await prisma.subscriptions.findUnique({
-          where: {
-            id: subscriptionId,
-            order: {
-              payment_intent: {not: null},
-            },
-            refund: null,
+  '/subscriptions/redemption/:subscriptionid',
+  async (req: Request, res: Response) => {
+    try {
+      const subscriptionId = +req.params.subscriptionid;
+      const subscription = await prisma.subscriptions.findUnique({
+        where: {
+          id: subscriptionId,
+          order: {
+            payment_intent: {not: null},
           },
-          include: {
-            seasonsubscriptiontype: {
-              include: {
-                subscriptiontype: true,
-              },
+          refund: null,
+        },
+        include: {
+          seasonsubscriptiontype: {
+            include: {
+              subscriptiontype: true,
             },
-            subscriptionticketitems: {
-              include: {
-                ticketitem: {
-                  include: {
-                    ticketrestriction: {
-                      include: {
-                        eventinstance: {
-                          include: {
-                            event: true,
-                          },
+          },
+          subscriptionticketitems: {
+            include: {
+              ticketitem: {
+                include: {
+                  ticketrestriction: {
+                    include: {
+                      eventinstance: {
+                        include: {
+                          event: true,
                         },
                       },
                     },
@@ -902,126 +903,127 @@ subscriptionController.get(
               },
             },
           },
-        });
+        },
+      });
 
-        if (!subscription) {
-          return res
-              .status(400)
-              .json({error: `Subscription Id (${subscriptionId}) is invalid`});
-        }
+      if (!subscription) {
+        return res
+          .status(400)
+          .json({error: `Subscription Id (${subscriptionId}) is invalid`});
+      }
 
-        const {
-          seasonsubscriptiontype,
-          subscriptionticketitems,
-          ...rest
-        } = subscription;
+      const {
+        seasonsubscriptiontype,
+        subscriptionticketitems,
+        ...rest
+      } = subscription;
 
-        const eventInstanceSet = new Set<number>();
-        const ticketRestrictionSet = new Set<number>();
+      const eventInstanceSet = new Set<number>();
+      const ticketRestrictionSet = new Set<number>();
 
-        const formattedSubscription = {
-          ...rest,
-          previewonly: seasonsubscriptiontype.subscriptiontype.previewonly,
-          ticketlimit: seasonsubscriptiontype.ticketlimit,
-          subscriptionticketitems: subscriptionticketitems.map(
-              ({ticketitem, id}) => {
-                if (ticketitem) {
-                  eventInstanceSet.add(
-                      ticketitem.ticketrestriction.eventinstanceid_fk,
-                  );
-                  ticketRestrictionSet.add(
-                      ticketitem.ticketrestriction.ticketrestrictionsid,
-                  );
-                }
-                return {
-                  id,
-                  donated: ticketitem?.donated,
-                  redeemed: ticketitem?.redeemed,
-                  ticketrestrictionid: ticketitem?.ticketrestrictionid_fk,
-                  eventinstanceid: ticketitem?.ticketrestriction.eventinstanceid_fk,
-                  eventid: ticketitem?.ticketrestriction.eventinstance.eventid_fk,
-                };
-              },
-          ),
-        };
-
-        const events = await prisma.events.findMany({
-          where: {
-            seasons: {
-              seasonid: subscription.seasonid_fk,
-            },
-            subscriptioneligible: true,
+      const formattedSubscription = {
+        ...rest,
+        previewonly: seasonsubscriptiontype.subscriptiontype.previewonly,
+        ticketlimit: seasonsubscriptiontype.ticketlimit,
+        subscriptionticketitems: subscriptionticketitems.map(
+          ({ticketitem, id}) => {
+            if (ticketitem) {
+              eventInstanceSet.add(
+                ticketitem.ticketrestriction.eventinstanceid_fk,
+              );
+              ticketRestrictionSet.add(
+                ticketitem.ticketrestriction.ticketrestrictionsid,
+              );
+            }
+            return {
+              id,
+              donated: ticketitem?.donated,
+              redeemed: ticketitem?.redeemed,
+              ticketrestrictionid: ticketitem?.ticketrestrictionid_fk,
+              eventinstanceid: ticketitem?.ticketrestriction.eventinstanceid_fk,
+              eventid: ticketitem?.ticketrestriction.eventinstance.eventid_fk,
+            };
           },
-          include: {
-            eventinstances: {
-              where: {
-                OR: [
-                  {
-                    ...(formattedSubscription.previewonly && {ispreview: true}),
-                    availableseats: {gt: 0},
-                    deletedat: null,
-                  },
-                  {
-                    eventinstanceid: {in: Array.from(eventInstanceSet)},
-                  },
-                ],
-              },
-              include: {
-                ticketrestrictions: {
-                  where: {
-                    deletedat: null,
-                  },
-                  include: {
-                    tickettype: true,
-                    ticketitems: {
-                      ...reservedTicketItemsFilter,
-                    },
+        ),
+      };
+
+      const events = await prisma.events.findMany({
+        where: {
+          seasons: {
+            seasonid: subscription.seasonid_fk,
+          },
+          subscriptioneligible: true,
+        },
+        include: {
+          eventinstances: {
+            where: {
+              OR: [
+                {
+                  ...(formattedSubscription.previewonly && {ispreview: true}),
+                  availableseats: {gt: 0},
+                  deletedat: null,
+                },
+                {
+                  eventinstanceid: {in: Array.from(eventInstanceSet)},
+                },
+              ],
+            },
+            include: {
+              ticketrestrictions: {
+                where: {
+                  deletedat: null,
+                },
+                include: {
+                  tickettype: true,
+                  ticketitems: {
+                    ...reservedTicketItemsFilter,
                   },
                 },
               },
-              orderBy: {
-                eventdate: 'asc',
-              },
+            },
+            orderBy: {
+              eventdate: 'asc',
             },
           },
-        });
+        },
+      });
 
-        const formattedEvents = events
-            .map(({eventinstances, deletedat, ...event}) => ({
-              ...event,
-              eventinstances: eventinstances
-                  .map(({ticketrestrictions, deletedat, ...instance}) => ({
-                    ...instance,
-                    ticketrestrictions: ticketrestrictions
-                        .map(({ticketitems, deletedat, tickettype, ...res}) => ({
-                          ...res,
-                          description: tickettype.description,
-                          availabletickets: res.ticketlimit - ticketitems.length,
-                        }))
-                        .filter(
-                            (res) => res.availabletickets > 0 || ticketRestrictionSet.has(res.ticketrestrictionsid),
-                        ),
-                  }))
-                  .filter(
-                      (instance) => instance.ticketrestrictions.length,
-                  ),
+      const formattedEvents = events
+        .map(({eventinstances, deletedat, ...event}) => ({
+          ...event,
+          eventinstances: eventinstances
+            .map(({ticketrestrictions, deletedat, ...instance}) => ({
+              ...instance,
+              ticketrestrictions: ticketrestrictions
+                .map(({ticketitems, deletedat, tickettype, ...res}) => ({
+                  ...res,
+                  description: tickettype.description,
+                  availabletickets: res.ticketlimit - ticketitems.length,
+                }))
+                .filter(
+                  (res) => res.availabletickets > 0 || ticketRestrictionSet.has(res.ticketrestrictionsid),
+                ),
             }))
-            .filter((event) => event.eventinstances.length);
+            .filter(
+              (instance) => instance.ticketrestrictions.length,
+            ),
+        }))
+        .filter((event) => event.eventinstances.length);
 
-        return res.json({
-          events: formattedEvents,
-          subscription: formattedSubscription,
-        });
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          return res.status(400).json({error: error.message});
-        }
-        if (error instanceof Prisma.PrismaClientValidationError) {
-          return res.status(400).json({error: error.message});
-        }
-        return res.status(500).json({error: 'Internal Server Error'});
+      return res.json({
+        events: formattedEvents,
+        subscription: formattedSubscription,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return res.status(400).json({error: error.message});
       }
-    },
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        return res.status(400).json({error: error.message});
+      }
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+  },
 );
 
 
@@ -1057,154 +1059,154 @@ interface SubscriptionTicketItemRequest {
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 subscriptionController.put(
-    '/subscriptions/redemption/:subscriptionid',
-    async (req: Request<{subscriptionid: number}, {}, SubscriptionTicketItemRequest>, res: Response) => {
-      try {
-        const subscriptionId = +req.params.subscriptionid;
-        const subscriptionTicketItemMap =
+  '/subscriptions/redemption/:subscriptionid',
+  async (req: Request<{subscriptionid: number}, object, SubscriptionTicketItemRequest>, res: Response) => {
+    try {
+      const subscriptionId = +req.params.subscriptionid;
+      const subscriptionTicketItemMap =
         req.body.subscriptionticketitems?.reduce<Map<number, number>>(
-            (acc, item) =>
-              acc.set(
-                  +item.ticketrestrictionid,
-                  1 + (acc.get(+item.ticketrestrictionid) ?? 0),
-              ),
-            new Map(),
+          (acc, item) =>
+            acc.set(
+              +item.ticketrestrictionid,
+              1 + (acc.get(+item.ticketrestrictionid) ?? 0),
+            ),
+          new Map(),
         );
 
-        const subscription = await prisma.subscriptions.findUnique({
-          where: {
-            id: subscriptionId,
-            order: {
-              payment_intent: {not: null},
-            },
-            refund: null,
+      const subscription = await prisma.subscriptions.findUnique({
+        where: {
+          id: subscriptionId,
+          order: {
+            payment_intent: {not: null},
           },
-          include: {
-            seasonsubscriptiontype: {
-              include: {
-                subscriptiontype: true,
-              },
+          refund: null,
+        },
+        include: {
+          seasonsubscriptiontype: {
+            include: {
+              subscriptiontype: true,
             },
-            subscriptionticketitems: {
-              include: {
-                ticketitem: {
-                  include: {
-                    ticketrestriction: true,
-                  },
+          },
+          subscriptionticketitems: {
+            include: {
+              ticketitem: {
+                include: {
+                  ticketrestriction: true,
                 },
               },
             },
           },
+        },
+      });
+
+      if (!subscription) {
+        return res.status(422).json({error: `Subscription (${subscriptionId}) does not exist`});
+      } else if (req.body.subscriptionticketitems.length > subscription.seasonsubscriptiontype.ticketlimit) {
+        return res.status(422).json({
+          error: 'Can not redeem more tickets than included in subscription',
         });
+      }
 
-        if (!subscription) {
-          return res.status(422).json({error: `Subscription (${subscriptionId}) does not exist`});
-        } else if (req.body.subscriptionticketitems.length > subscription.seasonsubscriptiontype.ticketlimit) {
-          return res.status(422).json({
-            error: 'Can not redeem more tickets than included in subscription',
-          });
-        }
-
-        const eventInstances = await prisma.eventinstances.findMany({
-          where: {
-            event: {
-              seasons: {
-                seasonid: subscription.seasonid_fk,
+      const eventInstances = await prisma.eventinstances.findMany({
+        where: {
+          event: {
+            seasons: {
+              seasonid: subscription.seasonid_fk,
+            },
+            subscriptioneligible: true,
+          },
+        },
+        include: {
+          ticketrestrictions: {
+            where: {
+              deletedat: null,
+            },
+            include: {
+              ticketitems: {
+                ...reservedTicketItemsFilter,
               },
-              subscriptioneligible: true,
             },
           },
-          include: {
-            ticketrestrictions: {
-              where: {
-                deletedat: null,
-              },
-              include: {
-                ticketitems: {
-                  ...reservedTicketItemsFilter,
-                },
-              },
-            },
-          }});
+        }});
 
-        const [ticketRestrictionsMap, eventInstanceMap] =
+      const [ticketRestrictionsMap, eventInstanceMap] =
           eventInstances.reduce<[Map<number, LoadedTicketRestriction>, Map<number, eventinstances>]>(
-              (acc, instance) => {
-                return [
-                  instance
-                      .ticketrestrictions
-                      .reduce<Map<number, LoadedTicketRestriction>>((acc, res) =>
-                        acc.set(res.ticketrestrictionsid, {
-                          ...res,
-                          availabletickets: res.ticketlimit - res.ticketitems.length,
-                        }),
-                      acc[0],
-                      ),
-                  acc[1].set(instance.eventinstanceid, instance),
-                ];
-              },
-              [new Map(), new Map()],
+            (acc, instance) => {
+              return [
+                instance
+                  .ticketrestrictions
+                  .reduce<Map<number, LoadedTicketRestriction>>((acc, res) =>
+                    acc.set(res.ticketrestrictionsid, {
+                      ...res,
+                      availabletickets: res.ticketlimit - res.ticketitems.length,
+                    }),
+                  acc[0],
+                  ),
+                acc[1].set(instance.eventinstanceid, instance),
+              ];
+            },
+            [new Map(), new Map()],
           );
 
-        const {
-          eventInstanceIds,
-          subscriptionTicketItemsToDelete,
-          subscriptionTicketItemsToCreate,
-        } = getUpdatedSubscription(subscription, ticketRestrictionsMap, eventInstanceMap, subscriptionTicketItemMap);
+      const {
+        eventInstanceIds,
+        subscriptionTicketItemsToDelete,
+        subscriptionTicketItemsToCreate,
+      } = getUpdatedSubscription(subscription, ticketRestrictionsMap, eventInstanceMap, subscriptionTicketItemMap);
 
-        const updatedSubscription = await prisma.subscriptions.update({
-          where: {
-            id: subscriptionId,
+      const updatedSubscription = await prisma.subscriptions.update({
+        where: {
+          id: subscriptionId,
+        },
+        data: {
+          subscriptionticketitems: {
+            delete: subscriptionTicketItemsToDelete,
+            create: subscriptionTicketItemsToCreate,
           },
-          data: {
-            subscriptionticketitems: {
-              delete: subscriptionTicketItemsToDelete,
-              create: subscriptionTicketItemsToCreate,
+        },
+        include: {
+          seasonsubscriptiontype: {
+            include: {
+              subscriptiontype: true,
+              season: true,
             },
           },
-          include: {
-            seasonsubscriptiontype: {
-              include: {
-                subscriptiontype: true,
-                season: true,
-              },
+          order: {
+            include: {
+              contacts: true,
             },
-            order: {
-              include: {
-                contacts: true,
-              },
-            },
-            subscriptionticketitems: true,
           },
-        });
+          subscriptionticketitems: true,
+        },
+      });
 
-        await updateAvailableSeats(prisma, eventInstanceIds);
+      await updateAvailableSeats(prisma, eventInstanceIds);
 
-        const {order, seasonsubscriptiontype, subscriptionticketitems, ...rest} =
+      const {order, seasonsubscriptiontype, subscriptionticketitems, ...rest} =
         updatedSubscription;
 
-        return res.json({
-          ...rest,
-          previewonly: seasonsubscriptiontype.subscriptiontype.previewonly,
-          firstname: order.contacts?.firstname,
-          lastname: order.contacts?.lastname,
-          email: order.contacts?.email,
-          name: seasonsubscriptiontype.subscriptiontype.name,
-          ticketlimit: seasonsubscriptiontype.ticketlimit,
-          seasonName: seasonsubscriptiontype.season.name,
-          ticketsredeemed: subscriptionticketitems.length,
-        });
-      } catch (error) {
-        if (error instanceof InvalidInputError) {
-          return res.status(error.code).json({error: error.message});
-        }
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          return res.status(400).json({error: error.message});
-        }
-        if (error instanceof Prisma.PrismaClientValidationError) {
-          return res.status(400).json({error: error.message});
-        }
-        return res.status(500).json({error: 'Internal Server Error'});
+      return res.json({
+        ...rest,
+        previewonly: seasonsubscriptiontype.subscriptiontype.previewonly,
+        firstname: order.contacts?.firstname,
+        lastname: order.contacts?.lastname,
+        email: order.contacts?.email,
+        name: seasonsubscriptiontype.subscriptiontype.name,
+        ticketlimit: seasonsubscriptiontype.ticketlimit,
+        seasonName: seasonsubscriptiontype.season.name,
+        ticketsredeemed: subscriptionticketitems.length,
+      });
+    } catch (error) {
+      if (error instanceof InvalidInputError) {
+        return res.status(error.code).json({error: error.message});
       }
-    },
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        return res.status(400).json({error: error.message});
+      }
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        return res.status(400).json({error: error.message});
+      }
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+  },
 );

@@ -116,7 +116,7 @@ export const TicketTypeTableRow = ({
       <td className='px-2 py-1'>
         <FormButton
           testID={`delete-ticket-type-${field.name}`}
-          title='Remove Ticket Type'
+          title='Remove'
           className='grid justify-center text-red-500 focus:text-red-800'
           onClick={removeOption}
           disabled={false}
