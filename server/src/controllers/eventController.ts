@@ -11,10 +11,11 @@ import {
   createStripePaymentIntent,
   requestStripeReaderPayment,
   getDiscountAmount,
-  updateContact,
   validateDiscount,
   getSubscriptionItems,
   validateWithRegex,
+  validateContact,
+  updateContact,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -78,7 +79,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       await validateDiscount(discount, ticketCartItems, prisma);
     }
 
-    const {contactid} = await updateContact(formData, prisma);
+    const validatedContact= validateContact(formData);
 
     const {
       ticketCartRows,
@@ -115,8 +116,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 
     if (orderSubTotal + feeTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
-        contactid,
-        formData.email,
+        validatedContact,
         cartRows,
         {...discount, amountOff: discountAmount},
       );
@@ -125,27 +125,28 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     }
 
     order = await orderFulfillment(
-      prisma,
-      eventInstanceQueries,
-      orderSubTotal,
-      discountAmount,
-      feeTotal,
-      {
-        orderTicketItems,
-        donationItem,
-        orderSubscriptionItems,
-      },
-      contactid,
-      toSend.id,
-      discount.code != '' ? discount.discountid : null,
+        prisma,
+        eventInstanceQueries,
+        orderSubTotal,
+        discountAmount,
+        feeTotal,
+        {
+          orderTicketItems,
+          donationItem,
+          orderSubscriptionItems,
+        },
+        toSend.id,
+        discount.code != '' ? discount.discountid : null,
     );
 
     if (toSend.id === 'comp') {
+      const {contactid} = await updateContact(prisma, validatedContact);
       await prisma.orders.update({
         where: {
           orderid: order.orderid,
         },
         data: {
+          contactid_fk: contactid,
           checkout_sessions: `comp-${order.orderid}`,
           payment_intent: `comp-${order.orderid}`,
         },
@@ -961,7 +962,6 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         {
           orderTicketItems,
         },
-        undefined, // no contactid with reader payments
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
         paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already

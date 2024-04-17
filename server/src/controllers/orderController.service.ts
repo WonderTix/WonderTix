@@ -11,6 +11,7 @@ import {
 } from '@prisma/client';
 import WebSocket from 'ws';
 import {reservedTicketItemsFilter} from './eventInstanceController.service';
+import {updateContact} from './eventController.service';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
@@ -20,26 +21,29 @@ export const ticketingWebhook = async (
     eventType: string,
     paymentIntent: string,
     sessionID: string,
+    contact: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
       checkout_sessions: sessionID,
     },
   });
+
   if (!order) return;
 
   switch (eventType) {
-    case 'checkout.session.completed': {
+    case 'checkout.session.completed':
+      const {contactid} = await updateContact(prisma, JSON.parse(contact));
       await prisma.orders.update({
         where: {
           orderid: order.orderid,
         },
         data: {
           payment_intent: paymentIntent,
+          contactid_fk: contactid,
         },
       });
       break;
-    }
     case 'checkout.session.expired':
       await updateCanceledOrder(prisma, order, false);
       break;
@@ -155,7 +159,6 @@ export const orderFulfillment = async (
         donationItem?: any,
         orderSubscriptionItems?: any[],
     },
-    contactid?: number,
     checkoutSession?: string,
     discountId?: number,
     paymentIntent?: string,
@@ -164,7 +167,6 @@ export const orderFulfillment = async (
   const result = await prisma.$transaction([
     prisma.orders.create({
       data: {
-        contactid_fk: contactid,
         checkout_sessions: checkoutSession,
         discountid_fk: discountId,
         ordersubtotal: orderSubtotal,
@@ -361,6 +363,7 @@ export const updateAvailableSeats = async (
   })),
   );
 };
+
 
 export const discoverReaders = async () => {
   const discoverResult = await stripe.terminal.readers.list();
