@@ -37,37 +37,41 @@ export const SubscriptionsRedemptionContainer = (
   });
   const [filters, setFilters] = useState({
     subscriptionFilter: 'all',
-    seasonFilter: 'present',
+    seasonFilter: 'all',
     sort: 'type',
   });
   const [editing, setEditing] = useState(false);
   const [search, setSearch] = useState(false);
 
   useEffect(() => {
+    if (!token) return;
     const controller = new AbortController();
-    if (token) {
-      const seasonQueries = queries.seasons.map(
-        (season) => `seasonid=${season.id}`,
+    const formattedQueries = queries.seasons.map(
+      (season) => `seasonid=${season.id}`,
+    );
+
+    if (queries.name) {
+      formattedQueries.push(
+        ...queries.name
+          .trim()
+          .split(' ')
+          .map((name) => `name=${name}`),
       );
-
-      const nameQueries = queries.name
-        .trim()
-        .split(' ')
-        .map((name) => `name=${name}`);
-
-      getData(
-        `${
-          process.env.REACT_APP_API_2_URL
-        }/subscription-types/subscriptions/search?${seasonQueries.join(
-          '&',
-        )}&${nameQueries.join('&')}&${
-          queries.email ? `email=${queries.email.trim()}` : ''
-        }`,
-        setSubscriptions,
-        controller.signal,
-        token,
-      ).catch((error) => console.error(error, 'Error Fetching Subscriptions'));
     }
+
+    if (queries.email) {
+      formattedQueries.push(`email=${queries.email.trim()}`);
+    }
+
+    getData(
+      `${
+        process.env.REACT_APP_API_2_URL
+      }/subscription-types/subscriptions/search?${formattedQueries.join('&')}`,
+      setSubscriptions,
+      controller.signal,
+      token,
+    ).catch((error) => console.error(error, 'Error Fetching Subscriptions'));
+
     return () => controller.abort();
   }, [search]);
 

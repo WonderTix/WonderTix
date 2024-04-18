@@ -1195,6 +1195,7 @@ subscriptionController.put(
         ticketlimit: seasonsubscriptiontype.ticketlimit,
         seasonName: seasonsubscriptiontype.season.name,
         ticketsredeemed: subscriptionticketitems.length,
+        current: seasonsubscriptiontype.season.enddate >= getFormattedDate(new Date()),
       });
     } catch (error) {
       if (error instanceof InvalidInputError) {
