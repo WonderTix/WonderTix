@@ -80,7 +80,7 @@ export const JANE_DOE: CustomerInfo = {
   donationAmount: '0',
   getNewsletter: false,
   heardAboutFrom: '',
-  accommodations: Accommodations.ASL,
+  accommodations: Accommodations.Wheelchair,
   comments: '',
 };
 

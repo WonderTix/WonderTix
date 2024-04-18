@@ -267,7 +267,7 @@ export class MainPage {
     await this.cartNext.click();
   }
 
-  // Fill out data on Stripe page.  Currently uses both a Customer and CreditCard.
+  // Fill out data on Stripe page. Currently uses both a Customer and CreditCard.
   // Stripe is slow and sometimes has an account popup after email entry.
   // This function waits to see if it will pop up and handle it appropriately.
   async fillStripeInfo(customer: CustomerInfo, ccInfo: CreditCardInfo, timeoutAdd = 0) {
@@ -276,12 +276,10 @@ export class MainPage {
       this.page.getByRole('button', {name: 'Cancel'}).click();
     }
     await this.stripeCardNumber.fill(ccInfo.cardNumber);
-
     await this.stripeDate.click();
     await this.page.waitForTimeout(500); // Small delay to ensure the field retains focus
     await this.stripeDate.fill(ccInfo.date);
 
-    await this.stripeDate.fill(ccInfo.date);
     await this.stripeCVC.fill(ccInfo.CVC);
     await this.stripeFullName.fill(customer.fullName);
     await this.stripeZIP.fill(customer.postCode);
