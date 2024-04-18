@@ -8,8 +8,8 @@ export class AdminPurchasePage {
 
   readonly loadingScreen: Locator;
   readonly purchaseSuccessfulScreen: Locator;
-  readonly purchaseTicketButton: Locator;
 
+  readonly pageHeader: Locator;
   readonly eventDropdown: Locator;
   readonly eventTimeDropdown: Locator;
   readonly ticketTypeDropdown: Locator;
@@ -19,6 +19,7 @@ export class AdminPurchasePage {
   readonly lastName: Locator;
   readonly phone: Locator;
   readonly email: Locator;
+  readonly emailConfirmation: Locator;
   readonly seatingAccomodations: Locator;
   readonly donationAmount: Locator;
   readonly backNext: Locator;
@@ -38,11 +39,9 @@ export class AdminPurchasePage {
 
     this.loadingScreen = page.getByTestId('loading-screen');
     this.purchaseSuccessfulScreen = page.getByText('Thank you for your purchase!');
-    this.purchaseTicketButton = page.getByRole('button', {
-      name: 'Purchase Tickets',
-    });
 
     // Admin Purchase Page locators
+    this.pageHeader = page.getByRole('heading', {name: 'Purchase Tickets'});
     this.eventDropdown = page.getByRole('combobox').nth(0);
     this.eventTimeDropdown = page.getByRole('combobox').nth(1);
     this.ticketTypeDropdown = page.getByRole('combobox').nth(2);
@@ -54,7 +53,8 @@ export class AdminPurchasePage {
     this.firstName = page.getByPlaceholder('First Name');
     this.lastName = page.getByPlaceholder('Last Name');
     this.phone = page.getByPlaceholder('Phone');
-    this.email = page.getByPlaceholder('Email');
+    this.email = page.getByPlaceholder('Email', {exact: true});
+    this.emailConfirmation = page.getByPlaceholder('Confirm Email');
     this.seatingAccomodations = page.getByLabel('Seating Accommodations');
     this.donationAmount = page.getByPlaceholder('Enter donation amount');
     this.backNext = page.getByText('BackNext');
@@ -72,18 +72,17 @@ export class AdminPurchasePage {
   }
 
   async goTo() {
-    await this.page.goto('/admin', {timeout: 30000});
-    await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
-  }
-
-  async goToTicketing() {
-    await this.page.goto('/ticketing', {timeout: 30000});
+    await this.page.goto('/ticketing/purchaseticket', {timeout: 30000});
     await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 
   async goToHome() {
     await this.page.goto('/', {timeout: 30000});
     await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
+  }
+
+  async getHeader() {
+    return this.pageHeader.textContent();
   }
 
   /**
@@ -140,9 +139,6 @@ export class AdminPurchasePage {
     creditCard: CreditCardInfo,
     customer: CustomerInfo,
   ): Promise<void> {
-    await this.goToTicketing();
-    await this.purchaseTicketButton.click();
-    await this.page.waitForTimeout(600);
     await this.dynamicDropDownSelector(this.eventDropdown, eventName);
     await this.dynamicDropDownSelector(this.eventTimeDropdown, eventTime);
     await this.ticketTypeDropdown.selectOption('1');
@@ -171,6 +167,8 @@ export class AdminPurchasePage {
     await this.lastName.fill(customer.lastName);
     await this.email.click();
     await this.email.fill(customer.email);
+    await this.emailConfirmation.click();
+    await this.emailConfirmation.fill(customer.email);
     await this.phone.click();
     await this.phone.fill(customer.phoneNumber);
     await this.seatingAccomodations.selectOption(customer.accommodations);
