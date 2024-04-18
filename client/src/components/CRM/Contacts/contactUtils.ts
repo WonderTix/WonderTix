@@ -14,7 +14,7 @@ export type Contact = {
   comments: string;
   seatingAcc: string;
   otherSeatingAcc?: string;
-  newsletter: boolean;
+  newsletter: Date | null;
   vip: boolean;
   donorBadge: boolean;
   volunteerList: boolean;
@@ -36,7 +36,7 @@ export const emptyContact: Contact = {
   postalCode: '',
   comments: '',
   seatingAcc: 'None',
-  newsletter: false,
+  newsletter: null,
   vip: false,
   donorBadge: false,
   volunteerList: false,

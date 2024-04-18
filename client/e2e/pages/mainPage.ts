@@ -319,6 +319,7 @@ export class MainPage {
     await this.clickCartNext();
     await this.fillStripeInfo(customer, creditCard, options.timeoutAdd);
     await this.clickStripeCheckout();
+    await expect(this.page.getByText('Thank you for your purchase!')).toBeVisible({timeout: 10000});
   }
 
   // Increase number of tickets for an event by one
