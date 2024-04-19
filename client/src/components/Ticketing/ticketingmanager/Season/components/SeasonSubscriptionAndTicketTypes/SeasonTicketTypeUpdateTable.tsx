@@ -57,7 +57,15 @@ export const SeasonTicketTypeUpdateTable = (
             {(arrayHelpers) => (
               <article className='overflow-auto border border-zinc-300 shadow-xl rounded-md mx-auto bg-white w-[100%] min-[900px]:w-[90%] lg:w-[80%] min-h-[175px]'>
                 <OptionUpdateTable
-                  arrayHelpers={arrayHelpers}
+                  addRow={(options, setOptions) => {
+                    arrayHelpers.unshift({...options[0]});
+                    setOptions(options.slice(1));
+                  }}
+                  removeRow={(index, setOptions) => {
+                    const removed = arrayHelpers.remove(index);
+                    setOptions((prev) => [...prev, removed]);
+                  }}
+                  getDisabled={(options) => !options.length}
                   optionsInit={(values) =>
                     options.filter(
                       (option) =>
@@ -67,13 +75,13 @@ export const SeasonTicketTypeUpdateTable = (
                         ),
                     )
                   }
-                  getOption={(toAdd) => ({...toAdd})}
                   fieldName='ticketTypes'
+                  rowType='Ticket Type'
                   rowComponent={TicketTypeTableRow}
                   headings={[
                     'Admission Type',
                     'Ticket Price',
-                    'Concession Price',
+                    'Fee',
                   ]}
                   sticky={showPopUp}
                   styles={{

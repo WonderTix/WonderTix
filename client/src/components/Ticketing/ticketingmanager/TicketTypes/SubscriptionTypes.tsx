@@ -340,7 +340,7 @@ export const SubscriptionTypes = () => {
           columns={columns}
           experimentalFeatures={{newEditingApi: true}}
           processRowUpdate={handleEditRow}
-          onProcessRowUpdateError={(err) => console.log(err)}
+          onProcessRowUpdateError={(err) => console.error(err)}
         />
       </div>
       {showPopUp && (

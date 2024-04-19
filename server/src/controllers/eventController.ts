@@ -6,22 +6,24 @@ import {
   createStripeCheckoutSession,
   expireCheckoutSession,
   getDonationItem,
+  getFeeItem,
   getTicketItems,
   createStripePaymentIntent,
   requestStripeReaderPayment,
   getDiscountAmount,
-  updateContact,
   getSubscriptionItems,
   validateWithRegex,
+  validateContact,
+  updateContact,
 } from './eventController.service';
 import { updateCanceledOrder, orderFulfillment, abortPaymentIntent } from './orderController.service'
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
-const prisma = extendPrismaClient();
 
 import multer from 'multer';
 import {Storage} from '@google-cloud/storage';
 
+const prisma = extendPrismaClient();
 const upload = multer();
 
 export const eventController = Router();
@@ -72,12 +74,14 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     if (!ticketCartItems.length && !donation && !subscriptionCartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
     }
-    const {contactid} = await updateContact(formData, prisma);
+
+    const validatedContact = validateContact(formData);
 
     const {
       ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
     } = await getTicketItems(ticketCartItems, prisma);
 
@@ -93,36 +97,47 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       donationTotal,
     } = getDonationItem(donation);
 
-    const {discountTotal, discountId}= await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
-    const orderSubtotal = ticketTotal+subscriptionTotal+donationTotal;
+    const {feeCartRow} = getFeeItem(feeTotal);
 
-    if (orderSubtotal - discountTotal > .49) {
+    let cartRows = ticketCartRows.concat(subscriptionCartRows);
+    if (donationCartRow) {
+      cartRows = cartRows.concat([donationCartRow]);
+    }
+    if (feeCartRow) {
+      cartRows = cartRows.concat([feeCartRow]);
+    }
+
+    const {discountTotal, discountId}= await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
+    const orderSubtotal = ticketTotal + subscriptionTotal+ donationTotal;
+
+    if (orderSubtotal + feeTotal - discountTotal > .49) {
       checkoutSessionId = await createStripeCheckoutSession(
-          contactid,
-          formData.email,
-          ticketCartRows.concat((donationCartRow? [donationCartRow]: []).concat(subscriptionCartRows)),
+        validatedContact,
+        cartRows,
           {...discount, amountOff: discountTotal},
       );
-    } else if (orderSubtotal - discountTotal > 0) {
+    } else if (orderSubtotal + feeTotal - discountTotal > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
     order = await orderFulfillment(
         prisma,
-        {
-          orderStatus: checkoutSessionId? state.in_progress: state.completed,
-          orderSource: purchase_source[orderSource as keyof typeof purchase_source],
-          checkoutSession: checkoutSessionId,
-          discountId,
-          orderSubtotal,
-          discountTotal,
-          orderTicketItems,
-          donationItem,
-          orderSubscriptionItems,
-          eventInstanceQueries,
-          contactid,
-        },
+      {
+        orderStatus: checkoutSessionId ? state.in_progress : state.completed,
+        orderSource: purchase_source[orderSource as keyof typeof purchase_source],
+        checkoutSession: checkoutSessionId,
+        discountId,
+        orderSubtotal,
+        discountTotal,
+        feeTotal,
+        orderTicketItems,
+        donationItem,
+        orderSubscriptionItems,
+        eventInstanceQueries,
+      ...(!checkoutSessionId && await updateContact(prisma, validatedContact)),
+      },
     );
+
     res.json({id: checkoutSessionId ?? 'comp'});
   } catch (error) {
     console.error(error);
@@ -151,6 +166,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
  *     tags:
  *     - New Event API
   *     requestBody:
+
  *       description: Image File
  *     responses:
  *       200:
@@ -321,27 +337,13 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           where: {
+            deletedat: null,
             salestatus: true,
-          },
-          include: {
-            ticketrestrictions: {
-              where: {
-                deletedat: null,
-              },
-              include: {
-                ticketitems: {
-                  where: {
-                    orderticketitem: {
-                      refund: null,
-                    },
-                  },
-                },
-              },
-            },
           },
         },
       },
     });
+
     return res.json(events
         .map((event) => ({
           id: event.eventid,
@@ -857,6 +859,7 @@ eventController.get('/:id', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
+
 // All further routes require authentication
 eventController.use(checkJwt);
 eventController.use(checkScopes);
@@ -869,7 +872,6 @@ eventController.use(checkScopes);
  *     tags:
  *     - New Event API
  */
-
 eventController.post('/reader-intent', async (req: Request, res: Response) => {
   const {ticketCartItems} = req.body;
 
@@ -880,13 +882,15 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
 
     const {
       ticketTotal,
+      feeTotal,
     } = await getTicketItems(ticketCartItems, prisma);
 
     if (ticketTotal < .50) {
       return res.status(400).json({error: 'Reader checkout can not be used for an order below .50 USD'});
     }
 
-    const response = await createStripePaymentIntent(ticketTotal * 100);
+
+    const response = await createStripePaymentIntent((ticketTotal + feeTotal) * 100);
     return res.json(response);
   } catch (error) {
     console.error(error);
@@ -906,7 +910,6 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
  *     tags:
  *     - New Event API
  */
-
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
   const {ticketCartItems = [], paymentIntentID, readerID, discount, orderSource} = req.body;
   let order :orders | null = null;
@@ -918,6 +921,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     const {
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
     } = await getTicketItems(ticketCartItems, prisma);
 
@@ -932,6 +936,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
           orderSource: purchase_source[orderSource as keyof typeof purchase_source],
           orderSubtotal: ticketTotal,
           discountTotal,
+          feeTotal,
           orderTicketItems,
           eventInstanceQueries,
           paymentIntent: paymentIntentID,
@@ -1297,7 +1302,6 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
-
 /**
  * @swagger
  * /2/events/checkin:
@@ -1343,16 +1347,30 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         ticketrestriction: {
           eventinstanceid_fk: +instanceId,
         },
-        orderticketitem: {
-          refund: null,
-          order: {
-            order_status: state.completed,
-            contactid_fk: +contactId,
+        OR: [
+          {
+            orderticketitem: {
+              refund: null,
+              order: {
+                order_status: state.completed,
+                contactid_fk: +contactId,
+              },
+            },
           },
-        },
+          {
+            subscriptionticketitem: {
+              subscription: {
+                refund: null,
+                order: {
+                  contactid_fk: +contactId,
+                },
+              },
+            },
+          },
+        ],
       },
       data: {
-        redeemed: isCheckedIn? new Date(): null,
+        redeemed: isCheckedIn ? new Date() : null,
       },
     });
 

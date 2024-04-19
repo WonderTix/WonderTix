@@ -12,6 +12,8 @@ import {
   purchase_source,
 } from '@prisma/client';
 import WebSocket from 'ws';
+import {reservedTicketItemsFilter} from './eventInstanceController.service';
+import {updateContact} from './eventController.service';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
@@ -21,26 +23,30 @@ export const ticketingWebhook = async (
     eventType: string,
     paymentIntent: string,
     sessionID: string,
+    contact: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
       checkout_sessions: sessionID,
     },
   });
+
   if (!order) return;
 
   switch (eventType) {
-    case 'checkout.session.completed': {
+    case 'checkout.session.completed':
+      const {contactid} = await updateContact(prisma, JSON.parse(contact));
       await prisma.orders.update({
         where: {
           orderid: order.orderid,
         },
         data: {
+          payment_intent: paymentIntent,
+          contactid_fk: contactid,
           order_status: state.completed,
         },
       });
       break;
-    }
     case 'checkout.session.expired':
       await updateCanceledOrder(prisma, order);
       break;
@@ -53,42 +59,6 @@ export const readerWebhook = async (
     errMsg: string,
     paymentIntent: string,
 ) => {
-  const order = await prisma.orders.findFirst({
-    where: {
-      payment_intent: paymentIntent,
-    },
-  });
-
-  if (!order) {
-    console.error(`Received card reader event for non-existent order with Payment Intent: ${paymentIntent}`);
-  }
-
-  switch (eventType) {
-    case 'payment_intent.payment_failed':
-      if (order) {
-        await stripe.paymentIntents.cancel(paymentIntent); // avoid double charge
-        await updateCanceledOrder(prisma, order);
-        break;
-      }
-    case 'payment_intent.requires_action':
-      // this should not happen for in-person/card reader payments, but if it does, it
-      // requires the customer to approve the purchase with their bank before a 'succeeded'
-      // event can come through.
-      break;
-    case 'payment_intent.succeeded':
-      if (order) {
-        await prisma.orders.update({
-          where: {
-            orderid: order.orderid,
-          },
-          data: {
-            order_status: state.completed,
-          },
-        });
-      }
-      break;
-  }
-
   const socketURL = process.env.WEBSOCKET_URL;
   if (socketURL === undefined) {
     console.error('websocket url undefined');
@@ -100,6 +70,32 @@ export const readerWebhook = async (
     const messageType = 'reader';
     ws.send(JSON.stringify({messageType, paymentIntent, eventType, errMsg}));
     ws.close();
+  });
+
+  switch (eventType) {
+    case 'payment_intent.payment_failed':
+      await abortPaymentIntent(prisma, paymentIntent);
+      break;
+    case 'payment_intent.requires_action':
+      // Need to determine how to handle stripe event failures
+      break;
+    case 'payment_intent.succeeded':
+      await updateOrderStatus(prisma, state.completed, {payment_intent: paymentIntent});
+      break;
+  }
+};
+
+
+export const updateOrderStatus = async (
+  prisma: ExtendedPrismaClient,
+  status: state,
+  details: {payment_intent: string } | {orderid: number},
+) => {
+  return prisma.orders.update({
+    where: details,
+    data: {
+      order_status: status,
+    },
   });
 };
 
@@ -149,19 +145,21 @@ export const getRefundStatus = (refundStatus?: string) => {
 
 
 export interface OrderFulfillmentData {
-  orderStatus: state,
-  orderSource: purchase_source | undefined,
-  orderSubtotal: number,
-  discountTotal: number,
-  orderTicketItems?: any[],
-  donationItem?: any,
-  orderSubscriptionItems?: any[],
-  eventInstanceQueries?: any[],
-  paymentIntent?: string,
-  checkoutSession?: string,
-  discountId?: number,
-  contactid?: number,
+  orderStatus: state;
+  orderSource: purchase_source | undefined;
+  orderSubtotal: number;
+  discountTotal: number;
+  feeTotal: number;
+  orderTicketItems?: any[];
+  donationItem?: any;
+  orderSubscriptionItems?: any[];
+  eventInstanceQueries?: any[];
+  paymentIntent?: string;
+  checkoutSession?: string;
+  discountId?: number;
+  contactid?: number;
 }
+
 export const orderFulfillment = async (
     prisma: ExtendedPrismaClient,
     {
@@ -169,6 +167,7 @@ export const orderFulfillment = async (
       orderSource,
       orderSubtotal,
       discountTotal,
+      feeTotal,
       donationItem,
       orderTicketItems = [],
       orderSubscriptionItems = [],
@@ -271,7 +270,6 @@ export const updateCanceledOrder = async (
   );
 };
 
-
 interface LoadedOrderTicketItem extends orderticketitems {
     ticketitem: LoadedTicketItem | null;
 }
@@ -326,7 +324,6 @@ export const createRefundedOrder = async (
     donationid_fk: donations.donationid,
   }]: [];
 
-
   await prisma.$transaction([
     prisma.orders.update({
       where: {
@@ -378,9 +375,7 @@ export const updateAvailableSeats = async (
         },
         include: {
           ticketitems: {
-            where: {
-              orderticketitem: {refund: null},
-            },
+            ...reservedTicketItemsFilter,
           },
         },
       },
@@ -398,16 +393,14 @@ export const updateAvailableSeats = async (
 };
 
 
-
 export const discoverReaders = async () => {
   const discoverResult = await stripe.terminal.readers.list();
-
   return discoverResult;
-}
+};
 
 export const abortPaymentIntent = async (
   prisma: ExtendedPrismaClient,
-  paymentIntentID: string
+  paymentIntentID: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
@@ -421,5 +414,5 @@ export const abortPaymentIntent = async (
 
   if (!intent) throw new Error('Unable to find payment Intent!');
 
-  await updateCanceledOrder(prisma, order, true);
-}
+  await updateCanceledOrder(prisma, order);
+};

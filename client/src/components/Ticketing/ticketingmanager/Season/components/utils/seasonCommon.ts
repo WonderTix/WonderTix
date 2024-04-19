@@ -53,5 +53,5 @@ export interface SeasonTicketValues {
   tickettypeid_fk: number,
   description: string,
   price: number,
-  concessionprice: number,
+  fee: number,
 }

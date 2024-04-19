@@ -58,7 +58,19 @@ export const SubscriptionTypeUpdateTable = (
             {(arrayHelpers) => (
               <article className='overflow-auto border border-zinc-300 shadow-xl rounded-md mx-auto bg-white w-[100%] min-[900px]:w-[90%] lg:w-[80%] min-h-[175px]'>
                 <OptionUpdateTable
-                  arrayHelpers={arrayHelpers}
+                  addRow={(options, setOptions) => {
+                    arrayHelpers.unshift({
+                      ...options[0],
+                      ticketlimit: 0,
+                      subscriptionlimit: 0,
+                    });
+                    setOptions(options.slice(1));
+                  }}
+                  removeRow={(index, setOptions) => {
+                    const {ticketlimit, subscriptionlimit, ...removed} = arrayHelpers.remove(index);
+                    setOptions((prev) => [...prev, removed]);
+                  }}
+                  getDisabled={(options) => !options.length}
                   optionsInit={(values) =>
                     options.filter(
                       (option) =>
@@ -70,6 +82,7 @@ export const SubscriptionTypeUpdateTable = (
                     )
                   }
                   fieldName='subscriptionTypes'
+                  rowType='Subscription Type'
                   rowComponent={SeasonSubscriptionTypeRow}
                   headings={[
                     'Subscription Type',
@@ -78,11 +91,6 @@ export const SubscriptionTypeUpdateTable = (
                     'Quantity',
                   ]}
                   sticky={showPopUp}
-                  getOption={(type) => ({
-                    ...type,
-                    ticketlimit: 0,
-                    subscriptionlimit: 0,
-                  })}
                   styles={{
                     headerItem:
                       'px-2 py-1 border-r border-zinc-300 last:border-r-0 last:justify-center',

@@ -53,6 +53,7 @@ orderController.post(
               event.type,
               object.payment_intent,
               object.id,
+              metaData.contact,
           );
         } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
           await updateRefundStatus(
