@@ -126,7 +126,15 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                     className='overflow-auto col-span-12 min-[1350px]:col-span-7 shadow-xl mx-auto rounded-xl bg-white w-[100%] min-h-[100px]'
                   >
                     <OptionUpdateTable
-                      arrayHelpers={arrayHelpers}
+                      addRow={(options, setOptions) => {
+                        arrayHelpers.unshift(getInstanceTicketType(options[0]));
+                        setOptions(options.slice(1));
+                      }}
+                      removeRow={(index, setOptions) => {
+                        const {ticketlimit, ...removed} = arrayHelpers.remove(index);
+                        setOptions((prev) => [...prev, removed]);
+                      }}
+                      getDisabled={(options) => !options.length}
                       optionsInit={(values) =>
                         ticketTypes.filter(
                           (type) =>
@@ -137,6 +145,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                         )
                       }
                       fieldName='instanceTicketTypes'
+                      rowType='Ticket Type'
                       sticky={showPopUp}
                       rowComponent={TicketTypeTableRow}
                       headings={[
@@ -145,7 +154,6 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                         'Fee',
                         'Quantity',
                       ]}
-                      getOption={getInstanceTicketType}
                       styles={{
                         headerRow:
                           'text-left text-zinc-800 whitespace-nowrap bg-gray-300',

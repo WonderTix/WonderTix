@@ -10,6 +10,7 @@ import {
   state,
 } from '@prisma/client';
 import WebSocket from 'ws';
+import {reservedTicketItemsFilter} from './eventInstanceController.service';
 import {updateContact} from './eventController.service';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
@@ -107,7 +108,7 @@ export const updateRefundStatus = async (
     return;
   }
 
-  // Not all refund webhook events come with the correspodning refund object, but they do all contain
+  // Not all refund webhook events come with the corresponding refund object, but they do all contain
   // the payment intent. The WonderTix schema allows multiple partial refunds, meaning a payment intent
   // could have multiple refund intents. Thus, all refund intents connected to the payment intent are retrieved from
   // the database and then have their status's checked by polling Stripe.
@@ -346,9 +347,7 @@ export const updateAvailableSeats = async (
         },
         include: {
           ticketitems: {
-            where: {
-              orderticketitem: {refund: null},
-            },
+            ...reservedTicketItemsFilter,
           },
         },
       },

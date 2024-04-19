@@ -119,6 +119,30 @@ const openApiSpec = swaggerJsdoc({
             type: 'string',
           },
         },
+        customername: {
+          name: 'name',
+          in: 'path',
+          description: 'Customer Name',
+          schema: {
+            type: 'string',
+          },
+        },
+        email: {
+          name: 'email',
+          in: 'query',
+          description: 'Customer Email',
+          schema: {
+            type: 'string',
+          },
+        },
+        queryseasonid: {
+          name: 'seasonid',
+          in: 'query',
+          description: 'Season Id',
+          schema: {
+            type: 'integer',
+          },
+        },
       },
       schemas: {
         Contact: {
@@ -575,6 +599,7 @@ const openApiSpec = swaggerJsdoc({
 });
 
 
+// eslint-disable-next-line require-jsdoc
 function waitForOpenConnection(socket: any) {
   return new Promise((resolve, reject) => {
     const maxNumberOfAttempts = 50;

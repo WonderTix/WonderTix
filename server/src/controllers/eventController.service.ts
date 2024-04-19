@@ -1,4 +1,4 @@
-import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceController.service';
+import {InvalidInputError, LoadedTicketRestriction, reservedTicketItemsFilter} from './eventInstanceController.service';
 import TicketCartItem, {SubscriptionCartItem} from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -214,14 +214,7 @@ export const getTicketItems = async (
         },
         include: {
           ticketitems: {
-            where: {
-              orderticketitem: {
-                refund: null,
-              },
-            },
-            include: {
-              orderticketitem: true,
-            },
+            ...reservedTicketItemsFilter,
           },
         },
       },

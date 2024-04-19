@@ -52,6 +52,13 @@ seasonController.get('/', async (req: Request, res: Response) => {
     }
     const seasons = await prisma.seasons.findMany({
       where: filters,
+      orderBy: [{
+        enddate: 'desc',
+      },
+      {
+        startdate: 'desc',
+      },
+      ],
     });
     return res.status(200).json(seasons);
   } catch (error) {
@@ -369,8 +376,8 @@ seasonController.delete('/:id', async (req: Request, res: Response) => {
 
     if (
       season.seasonsubscriptiontypes.reduce<number>(
-          (acc, sub) => acc + sub.subscriptions.length,
-          0,
+        (acc, sub) => acc + sub.subscriptions.length,
+        0,
       )
     ) {
       await prisma.seasons.update({
