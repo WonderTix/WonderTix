@@ -19,55 +19,55 @@ const prisma = extendPrismaClient();
 export const orderController = Router();
 
 orderController.post(
-    '/webhook',
-    express.raw({type: 'application/json'}),
-    async (req: Request, res: Response) => {
-      const sig = req.headers['stripe-signature'];
-      try {
-        const event = await stripe.webhooks.constructEvent(
-            req.body,
-            sig,
-            webhookKey,
-        );
+  '/webhook',
+  express.raw({type: 'application/json'}),
+  async (req: Request, res: Response) => {
+    const sig = req.headers['stripe-signature'];
+    try {
+      const event = await stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        webhookKey,
+      );
 
-        const object = event.data.object;
-        const metaData = object.metadata;
-        const action = object.action;
+      const object = event.data.object;
+      const metaData = object.metadata;
+      const action = object.action;
 
-        // Handle in-person payments
-        if (metaData.sessionType === '__reader' ||
+      // Handle in-person payments
+      if (metaData.sessionType === '__reader' ||
             event.type === 'terminal.reader.action_failed' ||
             event.type === 'terminal.reader.action.succeeded') { // terminal events don't carry our __reader metadata
-          await readerWebhook(
-              prisma,
-              event.type,
-            action ? action.failure_message : 'no error',
-            object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
-          );
-        }
-
-        // Handle online payments
-        if (metaData.sessionType === '__ticketing') {
-          await ticketingWebhook(
-              prisma,
-              event.type,
-              object.payment_intent,
-              object.id,
-              metaData.contact,
-          );
-        } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
-          await updateRefundStatus(
-              prisma,
-              object.payment_intent,
-          );
-        }
-
-        return res.send();
-      } catch (error) {
-        console.error(error);
-        return res.status(400).send();
+        await readerWebhook(
+          prisma,
+          event.type,
+          action ? action.failure_message : 'no error',
+          object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
+        );
       }
-    },
+
+      // Handle online payments
+      if (metaData.sessionType === '__ticketing') {
+        await ticketingWebhook(
+          prisma,
+          event.type,
+          object.payment_intent,
+          object.id,
+          metaData.contact,
+        );
+      } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
+        await updateRefundStatus(
+          prisma,
+          object.payment_intent,
+        );
+      }
+
+      return res.send();
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send();
+    }
+  },
 );
 
 orderController.use(express.json());
@@ -348,13 +348,13 @@ orderController.put('/refund/:id', async (req, res) => {
       refundIntent = refund.id;
     }
     await createRefundedOrder(
-        prisma,
-        refundIntent,
-        order,
-        order.orderticketitems,
-        order.subscriptions,
-        refundIntent.includes('refund')? state.completed : state.in_progress,
-        order.donation,
+      prisma,
+      refundIntent,
+      order,
+      order.orderticketitems,
+      order.subscriptions,
+      refundIntent.includes('refund')? state.completed : state.in_progress,
+      order.donation,
     );
     return res.send(refundIntent);
   } catch (error) {

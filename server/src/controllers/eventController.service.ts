@@ -44,7 +44,7 @@ export const createStripeCheckoutSession = async (
 };
 
 export const expireCheckoutSession = async (
-    id: string,
+  id: string,
 ) => stripe.checkout.sessions.expire(id);
 
 export const createStripeCoupon = async (discount: any) => {
@@ -85,8 +85,8 @@ interface SubscriptionItemsReturn {
 }
 
 export const getSubscriptionItems = async (
-    prisma: ExtendedPrismaClient,
-    subscriptionCartItems: SubscriptionCartItem[]) => {
+  prisma: ExtendedPrismaClient,
+  subscriptionCartItems: SubscriptionCartItem[]) => {
   const seasonSubscriptionTypes = await prisma.seasonsubscriptiontypes.findMany({
     where: {
       seasonid_fk: {in: subscriptionCartItems.map((item) => item.seasonid_fk)},
@@ -119,10 +119,10 @@ export const getSubscriptionItems = async (
       throw new InvalidInputError(422, `${item.name} (${item.desc}) quantity exceeds available`);
     }
     acc.subscriptionCartRows = acc.subscriptionCartRows.concat(getCartRow(
-        item.name,
-        item.desc,
-        item.price*100,
-        item.qty,
+      item.name,
+      item.desc,
+      item.price*100,
+      item.qty,
     ));
     acc.orderSubscriptionItems = acc.orderSubscriptionItems.concat(Array(item.qty).fill({
       subscriptiontypeid_fk: type.subscriptiontypeid_fk,
@@ -156,7 +156,7 @@ interface TicketItemsReturn {
 }
 
 export const createStripePaymentIntent = async (
-    orderTotal: number,
+  orderTotal: number,
 ) => {
   const intentObject: JsonObject = {
     currency: 'usd',
@@ -174,23 +174,23 @@ export const createStripePaymentIntent = async (
 };
 
 export const requestStripeReaderPayment = async (
-    readerID: string,
-    paymentIntentID: string,
+  readerID: string,
+  paymentIntentID: string,
 ) => stripe.terminal.readers.processPaymentIntent(
-    readerID,
-    {payment_intent: paymentIntentID},
+  readerID,
+  {payment_intent: paymentIntentID},
 );
 
 export const testPayReader = async (
-    readerID: string,
+  readerID: string,
 ) => {
   const pay = await stripe.testHelpers.terminal.readers.presentPaymentMethod(readerID);
   return pay;
 };
 
 export const getTicketItems = async (
-    cartItems: TicketCartItem[],
-    prisma: ExtendedPrismaClient,
+  cartItems: TicketCartItem[],
+  prisma: ExtendedPrismaClient,
 ): Promise<TicketItemsReturn> => {
   const toReturn: TicketItemsReturn = {
     orderTicketItems: [],
@@ -219,27 +219,27 @@ export const getTicketItems = async (
     },
   });
   const eventInstanceMap = new Map(
-      eventInstances.map((instance) => {
-        return [
-          instance.eventinstanceid,
-          {
-            ...instance,
-            ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => {
-              return [res.tickettypeid_fk, {
-                ...res,
-                availabletickets: res.ticketlimit - res.ticketitems.length,
-              }];
-            })),
-          },
-        ];
-      }));
+    eventInstances.map((instance) => {
+      return [
+        instance.eventinstanceid,
+        {
+          ...instance,
+          ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => {
+            return [res.tickettypeid_fk, {
+              ...res,
+              availabletickets: res.ticketlimit - res.ticketitems.length,
+            }];
+          })),
+        },
+      ];
+    }));
 
   for (const item of cartItems) {
     const eventInstance = eventInstanceMap.get(item.product_id);
     if (!eventInstance) {
       throw new InvalidInputError(
-          422,
-          `Showing ${item.product_id} for ${item.name} does not exist`,
+        422,
+        `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
     const ticketRestriction = eventInstance.ticketRestrictionMap.get(item.typeID);
@@ -249,26 +249,26 @@ export const getTicketItems = async (
 
     if (item.payWhatCan && (item.payWhatPrice ?? -1) < 0 || item.price < 0) {
       throw new InvalidInputError(
-          422,
-          `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+        422,
+        `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
       );
     }
     toReturn.orderTicketItems.push(
-        ...getTickets(
-            ticketRestriction,
-            eventInstance,
-            item.qty,
-            ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(ticketRestriction.fee) : 0,
-            item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
-        ),
+      ...getTickets(
+        ticketRestriction,
+        eventInstance,
+        item.qty,
+        ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(ticketRestriction.fee) : 0,
+        item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
+      ),
     );
     toReturn.ticketCartRows.push(
-        getCartRow(
-            eventInstance.event.eventname,
+      getCartRow(
+        eventInstance.event.eventname,
         item.payWhatCan && item.qty !== 1 ? `${item.desc}, Qty ${item.qty}`: item.desc,
         (item.payWhatPrice? item.payWhatPrice: item.price) * 100,
         item.payWhatPrice? 1: item.qty,
-        ));
+      ));
 
     toReturn.ticketTotal += item.payWhatCan && item.payWhatPrice? item.payWhatPrice: item.price * item.qty;
     if ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) {
@@ -313,15 +313,15 @@ const getTickets = (
   }
 
   return Array(quantity)
-      .fill({
-        price: price,
-        fee: fee,
-        ticketitem: {
-          create: {
-            ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
-          },
+    .fill({
+      price: price,
+      fee: fee,
+      ticketitem: {
+        create: {
+          ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
         },
-      });
+      },
+    });
 };
 
 export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: any, orderTotal: number, ticketItems: TicketCartItem[]) => {
@@ -475,9 +475,9 @@ const validateName = (name: string, type: string): string => {
 };
 
 export const validateWithRegex = (
-    toValidate: string,
-    errorMessage: string,
-    regex: RegExp,
+  toValidate: string,
+  errorMessage: string,
+  regex: RegExp,
 ): string => {
   if (!toValidate.trim().match(regex)) {
     throw new InvalidInputError(422, errorMessage);

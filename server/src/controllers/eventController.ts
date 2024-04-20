@@ -16,7 +16,7 @@ import {
   validateContact,
   updateContact,
 } from './eventController.service';
-import { updateCanceledOrder, orderFulfillment, abortPaymentIntent } from './orderController.service'
+import {updateCanceledOrder, orderFulfillment, abortPaymentIntent} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 
@@ -114,14 +114,14 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       checkoutSessionId = await createStripeCheckoutSession(
         validatedContact,
         cartRows,
-          {...discount, amountOff: discountTotal},
+        {...discount, amountOff: discountTotal},
       );
     } else if (orderSubtotal + feeTotal - discountTotal > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
     order = await orderFulfillment(
-        prisma,
+      prisma,
       {
         orderStatus: checkoutSessionId ? state.in_progress : state.completed,
         orderSource: purchase_source[orderSource as keyof typeof purchase_source],
@@ -134,7 +134,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
         donationItem,
         orderSubscriptionItems,
         eventInstanceQueries,
-      ...(!checkoutSessionId && await updateContact(prisma, validatedContact)),
+        ...(!checkoutSessionId && await updateContact(prisma, validatedContact)),
       },
     );
 
@@ -210,9 +210,9 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
 
   try {
     validateWithRegex(
-        req.file.mimetype.toLowerCase(),
-        'Invalid input, not a valid image filetype!',
-        new RegExp('^(image\/(jpe?g|png))'),
+      req.file.mimetype.toLowerCase(),
+      'Invalid input, not a valid image filetype!',
+      new RegExp('^(image\/(jpe?g|png))'),
     );
   } catch (error) {
     console.error(error);
@@ -345,16 +345,16 @@ eventController.get('/slice', async (req: Request, res: Response) => {
     });
 
     return res.json(events
-        .map((event) => ({
-          id: event.eventid,
-          seasonid: event.seasonid_fk,
-          title: event.eventname,
-          description: event.eventdescription,
-          active: event.active,
-          subscriptioneligible: event.subscriptioneligible,
-          imageurl: event.imageurl,
-          numShows: event.eventinstances.length.toString(),
-        })));
+      .map((event) => ({
+        id: event.eventid,
+        seasonid: event.seasonid_fk,
+        title: event.eventname,
+        description: event.eventdescription,
+        active: event.active,
+        subscriptioneligible: event.subscriptioneligible,
+        imageurl: event.imageurl,
+        numShows: event.eventinstances.length.toString(),
+      })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -664,39 +664,39 @@ eventController.get('/inactive', async (req: Request, res: Response) => {
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.get(
-    '/inactive/showings',
-    async (req: Request, res: Response) => {
-      try {
-        const inactiveEvents = await prisma.events.findMany({
-          where: {
-            active: false,
-          },
-          include: {
-            eventinstances: {
-              include: {
-                ticketrestrictions: {
-                  where: {
-                    deletedat: null,
-                  },
+  '/inactive/showings',
+  async (req: Request, res: Response) => {
+    try {
+      const inactiveEvents = await prisma.events.findMany({
+        where: {
+          active: false,
+        },
+        include: {
+          eventinstances: {
+            include: {
+              ticketrestrictions: {
+                where: {
+                  deletedat: null,
                 },
               },
             },
-            seasons: true,
           },
-        });
-        return res.json(inactiveEvents);
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        if (error instanceof Prisma.PrismaClientValidationError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        return res.status(500).json({error: 'Internal Server Error'});
+          seasons: true,
+        },
+      });
+      return res.json(inactiveEvents);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        res.status(400).json({error: error.message});
+        return;
       }
-    },
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        res.status(400).json({error: error.message});
+        return;
+      }
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+  },
 );
 
 /**
@@ -930,18 +930,18 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     const {discountTotal, discountId} = await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
 
     order = await orderFulfillment(
-        prisma,
-        {
-          orderStatus: state.in_progress,
-          orderSource: purchase_source[orderSource as keyof typeof purchase_source],
-          orderSubtotal: ticketTotal,
-          discountTotal,
-          feeTotal,
-          orderTicketItems,
-          eventInstanceQueries,
-          paymentIntent: paymentIntentID,
-          discountId,
-        },
+      prisma,
+      {
+        orderStatus: state.in_progress,
+        orderSource: purchase_source[orderSource as keyof typeof purchase_source],
+        orderSubtotal: ticketTotal,
+        discountTotal,
+        feeTotal,
+        orderTicketItems,
+        eventInstanceQueries,
+        paymentIntent: paymentIntentID,
+        discountId,
+      },
     );
 
     res.json({orderID: order.orderid, status: 'order sent'});
@@ -1218,44 +1218,44 @@ eventController.put('/recover/:id', async (req: Request, res: Response) => {
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.put(
-    '/active/:id/:updatedStatus',
-    async (req: Request, res: Response) => {
-      try {
-        const {id, updatedStatus} = req.params;
+  '/active/:id/:updatedStatus',
+  async (req: Request, res: Response) => {
+    try {
+      const {id, updatedStatus} = req.params;
 
-        if (!isBooleanString(updatedStatus)) {
-          return res
-              .status(422)
-              .json({error: `Invalid status: ${updatedStatus}`});
-        }
-
-        const updatedEvent = await prisma.events.update({
-          where: {
-            eventid: Number(id),
-          },
-          data: {
-            active: updatedStatus === 'true',
-          },
-          include: {
-            seasons: true,
-          },
-        });
-        if (!updatedEvent) {
-          return res.status(400).json({error: `Event ${id} not found`});
-        }
-        return res.json(updatedEvent);
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        if (error instanceof Prisma.PrismaClientValidationError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        res.status(500).json({error: 'Internal Server Error'});
+      if (!isBooleanString(updatedStatus)) {
+        return res
+          .status(422)
+          .json({error: `Invalid status: ${updatedStatus}`});
       }
-    },
+
+      const updatedEvent = await prisma.events.update({
+        where: {
+          eventid: Number(id),
+        },
+        data: {
+          active: updatedStatus === 'true',
+        },
+        include: {
+          seasons: true,
+        },
+      });
+      if (!updatedEvent) {
+        return res.status(400).json({error: `Event ${id} not found`});
+      }
+      return res.json(updatedEvent);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        res.status(400).json({error: error.message});
+        return;
+      }
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        res.status(400).json({error: error.message});
+        return;
+      }
+      res.status(500).json({error: 'Internal Server Error'});
+    }
+  },
 );
 
 /**
