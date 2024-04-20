@@ -192,7 +192,7 @@ const AdminPurchase = () => {
           ...r,
           ticketTypes: currentTicketRestriction.description,
           price: row.complimentary ? 0 : price,
-          fee: row.complimentary || price === 0 ? 0 : fee,
+          fee: row.complimentary ? 0 : fee,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
         };
