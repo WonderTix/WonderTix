@@ -1,4 +1,3 @@
-import {useAppDispatch} from '../../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import React, {ReactElement, useState} from 'react';
 import {emptyDiscountCode} from './utils/adminCommon';

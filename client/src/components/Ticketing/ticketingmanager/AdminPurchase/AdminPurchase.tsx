@@ -191,16 +191,13 @@ const AdminPurchase = () => {
     });
     setEventData(updatedRows);
 
-    if (!row.complimentary) {
-      setPriceByRowId((prevState) => ({
-        ...prevState,
-        [row.id]: price.toFixed(2),
-      }));
-    }
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: !row.complimentary ? price.toFixed(2) : '0.00',
+    }));
   };
 
   const handlePriceChange = (event, row) => {
-    if (row.complimentary) return; // If complimentary, no changes allowed
     const newPriceString = event.target.value;
 
     setPriceByRowId((prevState) => ({
@@ -215,21 +212,28 @@ const AdminPurchase = () => {
       (restriction) => row.typeID === restriction.tickettypeid,
     );
 
+    const priceIsZero = isNaN(newPrice) || newPrice === 0;
+
     // Format the value once the user moves out of the input
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: isNaN(newPrice) ? '0.00' : newPrice.toFixed(2),
+      [row.id]: priceIsZero ? '0.00' : newPrice.toFixed(2),
     }));
 
     const updatedEventData = eventData.map((r) => {
       if (r.id === row.id) {
         return {
           ...r,
-          price: isNaN(newPrice) ? 0 : newPrice,
+          price: priceIsZero ? 0 : newPrice,
           fee:
-            isNaN(newPrice) || newPrice === 0
+            priceIsZero
               ? 0
               : currentTicketRestriction.fee,
+          ...(priceIsZero && {complimentary: true}),
+          ...(!priceIsZero && {
+            department: '',
+            complimentary: false,
+          }),
         };
       }
       return r;
@@ -286,6 +290,12 @@ const AdminPurchase = () => {
         typeof row.price === 'undefined'
       ) {
         setErrMsg('Missing selection.');
+        setDialog(true);
+        return;
+      }
+
+      if (row.price < 0) {
+        setErrMsg('All prices must be $0.00 or greater');
         setDialog(true);
         return;
       }
@@ -522,7 +532,7 @@ const AdminPurchase = () => {
             value={priceByRowId[params.row.id] || ''}
             onChange={(e) => handlePriceChange(e, params.row)}
             onBlur={(e) => handlePriceBlur(e, params.row)}
-            disabled={params.row.complimentary || !params.row.ticketTypes}
+            disabled={!params.row.ticketTypes}
             className='w-16'
           />
         </div>
@@ -547,7 +557,7 @@ const AdminPurchase = () => {
             disabled={!params.row.complimentary}
             onChange={(e) => handleDepartmentChange(e, params.row)}
           >
-            <option value=''>Select Department</option>
+            <option value=''>No Department</option>
             {Object.keys(departmentOptions).map((value, index) => (
               <option key={index} value={value}>
                 {departmentOptions[value]}
