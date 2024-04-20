@@ -1,5 +1,5 @@
 import {DataGrid} from '@mui/x-data-grid';
-import {Checkbox, FormControlLabel} from '@mui/material';
+import {Checkbox} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
@@ -82,7 +82,13 @@ const AdminPurchase = () => {
     if (isNaN(eventId)) {
       const updatedRows = eventData.map((r) => {
         if (r.id === row.id) {
-          return {...row, eventid: null, eventname: null};
+          return {
+            ...row,
+            eventid: null,
+            eventname: null,
+            eventtime: null,
+            ticketRestrictionInfo: [initialTicketTypeRestriction],
+          };
         }
         return r;
       });
@@ -109,14 +115,13 @@ const AdminPurchase = () => {
           eventtime: null,
           eventinstanceid: null,
           ticketRestrictionInfo: [initialTicketTypeRestriction],
-          department: '',
         };
       }
       return r;
     });
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: 0,
+      [row.id]: '',
     }));
     setEventData(updatedRows);
   };
