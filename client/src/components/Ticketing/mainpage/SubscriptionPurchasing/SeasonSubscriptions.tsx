@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {getSeasonImageDefault} from '../../../../utils/imageURLValidation';
 import {ImageCarousel} from './ImageCarousel';
 import {CarouselEvent} from './CarouselEvent';
@@ -15,6 +15,17 @@ export const SeasonSubscriptions = (props: SeasonSubscriptionsProps) => {
   const [anchors, setAnchors] = useState(
     Array(season.events.length).fill(null),
   );
+
+  const handleEscape = (event) => {
+    if (event.key === 'Escape') {
+      setAnchors((prev) => prev.map(() => null));
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscape, false);
+    return () => document.removeEventListener('keydown', handleEscape, false);
+  }, []);
 
   return (
     <main
@@ -40,9 +51,7 @@ export const SeasonSubscriptions = (props: SeasonSubscriptionsProps) => {
                 {' Subscriptions'}
               </span>
               <hr className='h-[2px] my-4 bg-white' />
-              <span className='text-3xl md:text-4xl'>
-                {season.name}
-              </span>
+              <span className='text-3xl md:text-4xl'>{season.name}</span>
             </h1>
           </header>
           <div className='col-span-12 min-[1300px]:col-span-6 flex flex-col pb-2 justify-center'>
@@ -68,7 +77,11 @@ export const SeasonSubscriptions = (props: SeasonSubscriptionsProps) => {
           </div>
           <div
             className={`col-span-12 min-[1300px]:col-span-6 flex flex-col gap-3 overflow-y-scroll
-                        ${season.seasonsubscriptiontypes.length > 3?'pt-4 max-[1300px]':''}justify-center max-lg:mb-4 items-center min-[1300px]:max-h-[400px]`}
+                        ${
+                          season.seasonsubscriptiontypes.length > 3
+                            ? 'pt-4 max-[1300px]'
+                            : ''
+                        }justify-center max-lg:mb-4 items-center min-[1300px]:max-h-[400px]`}
           >
             {season.seasonsubscriptiontypes.map((option) => (
               <SubscriptionOption

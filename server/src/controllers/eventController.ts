@@ -11,19 +11,19 @@ import {
   createStripePaymentIntent,
   requestStripeReaderPayment,
   getDiscountAmount,
-  updateContact,
   validateDiscount,
   getSubscriptionItems,
   validateWithRegex,
+  validateContact,
+  updateContact,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
-const prisma = extendPrismaClient();
-
 import multer from 'multer';
 import {Storage} from '@google-cloud/storage';
 
+const prisma = extendPrismaClient();
 const upload = multer();
 
 export const eventController = Router();
@@ -79,7 +79,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       await validateDiscount(discount, ticketCartItems, prisma);
     }
 
-    const {contactid} = await updateContact(formData, prisma);
+    const validatedContact= validateContact(formData);
 
     const {
       ticketCartRows,
@@ -116,8 +116,7 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
 
     if (orderSubTotal + feeTotal - discountAmount > .49) {
       toSend = await createStripeCheckoutSession(
-        contactid,
-        formData.email,
+        validatedContact,
         cartRows,
         {...discount, amountOff: discountAmount},
       );
@@ -126,27 +125,28 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
     }
 
     order = await orderFulfillment(
-      prisma,
-      eventInstanceQueries,
-      orderSubTotal,
-      discountAmount,
-      feeTotal,
-      {
-        orderTicketItems,
-        donationItem,
-        orderSubscriptionItems,
-      },
-      contactid,
-      toSend.id,
-      discount.code != '' ? discount.discountid : null,
+        prisma,
+        eventInstanceQueries,
+        orderSubTotal,
+        discountAmount,
+        feeTotal,
+        {
+          orderTicketItems,
+          donationItem,
+          orderSubscriptionItems,
+        },
+        toSend.id,
+        discount.code != '' ? discount.discountid : null,
     );
 
     if (toSend.id === 'comp') {
+      const {contactid} = await updateContact(prisma, validatedContact);
       await prisma.orders.update({
         where: {
           orderid: order.orderid,
         },
         data: {
+          contactid_fk: contactid,
           checkout_sessions: `comp-${order.orderid}`,
           payment_intent: `comp-${order.orderid}`,
         },
@@ -351,27 +351,13 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           where: {
+            deletedat: null,
             salestatus: true,
-          },
-          include: {
-            ticketrestrictions: {
-              where: {
-                deletedat: null,
-              },
-              include: {
-                ticketitems: {
-                  where: {
-                    orderticketitem: {
-                      refund: null,
-                    },
-                  },
-                },
-              },
-            },
           },
         },
       },
     });
+
     return res.json(events
         .map((event) => ({
           id: event.eventid,
@@ -976,7 +962,6 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
         {
           orderTicketItems,
         },
-        undefined, // no contactid with reader payments
         undefined, // no session with reader payments
         discount.code != '' ? discount.discountid : null,
         paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
@@ -1383,15 +1368,30 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         ticketrestriction: {
           eventinstanceid_fk: +instanceId,
         },
-        orderticketitem: {
-          refund: null,
-          order: {
-            contactid_fk: +contactId,
+        OR: [
+          {
+            orderticketitem: {
+              refund: null,
+              order: {
+                payment_intent: {not: null},
+                contactid_fk: +contactId,
+              },
+            },
           },
-        },
+          {
+            subscriptionticketitem: {
+              subscription: {
+                refund: null,
+                order: {
+                  contactid_fk: +contactId,
+                },
+              },
+            },
+          },
+        ],
       },
       data: {
-        redeemed: isCheckedIn? new Date(): null,
+        redeemed: isCheckedIn ? new Date() : null,
       },
     });
 

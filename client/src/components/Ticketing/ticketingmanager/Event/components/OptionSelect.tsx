@@ -5,11 +5,11 @@ interface OptionSelectProps {
   field: FieldType;
   options: any[];
   handleChange: any;
-  currentValue: any;
+  disabled?: boolean;
 }
 
 export const OptionSelect = (props: OptionSelectProps) => {
-  const {field, currentValue, handleChange, options} = props;
+  const {field, handleChange, options, disabled = false} = props;
 
   return (
     <select
@@ -18,13 +18,11 @@ export const OptionSelect = (props: OptionSelectProps) => {
       onChange={handleChange}
       value={field.value}
       className='w-full'
+      disabled={disabled}
     >
-      <option value={Number.parseInt(field.value)}>
-        {currentValue.description}
-      </option>
       {options &&
-        options.map((option) => (
-          <option key={option.id} value={option.id}>
+        options.map((option, index) => (
+          <option key={index} value={option.id}>
             {option.description}
           </option>
         ))}

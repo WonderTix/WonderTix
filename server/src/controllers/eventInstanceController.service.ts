@@ -193,3 +193,41 @@ export const updateShowing = async (
     },
   });
 };
+
+export const reservedTicketItemsFilter = {
+  where: {
+    OR: [
+      {
+        orderticketitem: {
+          refund: null,
+        },
+      },
+      {
+        subscriptionticketitemid_fk: {
+          not: null,
+        },
+      },
+    ],
+  },
+};
+
+
+export const soldTicketItemsFilter = {
+  where: {
+    OR: [
+      {
+        orderticketitem: {
+          order: {
+            payment_intent: {not: null},
+          },
+          refund: null,
+        },
+      },
+      {
+        subscriptionticketitemid_fk: {
+          not: null,
+        },
+      },
+    ],
+  },
+};

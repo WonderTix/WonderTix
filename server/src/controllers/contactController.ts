@@ -2,10 +2,15 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {updateContact, validateContact} from './eventController.service';
 
 const prisma = extendPrismaClient();
 
 export const contactController = Router();
+
+
+contactController.use(checkJwt);
+contactController.use(checkScopes);
 
 /**
  * @swagger
@@ -14,15 +19,17 @@ export const contactController = Router();
  *     summary: Create a contact
  *     tags:
  *     - New Contact
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
- *       description: Updated contact information
+ *       description: Create contact
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/requestBodies/Contact'
  *     responses:
  *       201:
- *         description: Contact updated successfully.
+ *         description: Contact created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -42,28 +49,14 @@ export const contactController = Router();
  */
 contactController.post('/', async (req: Request, res: Response) => {
   try {
-    const contact = await prisma.contacts.create({
-      data: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        visitsource: req.body.visitsource,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        country: req.body.country,
-        postalcode: req.body.postalcode,
-        donorbadge: req.body.donorbadge,
-        seatingaccom: req.body.seatingaccom,
-        comments: req.body.comments,
-        vip: req.body.vip,
-        volunteerlist: req.body.volunteerlist,
-        newsletter: req.body.newsletter,
-      },
+    const validatedContact = validateContact({
+      ...req.body,
+      newsletter: !!req.body.newsletter,
     });
-    res.status(201).json(contact);
-    return;
+
+    const contact = await updateContact(prisma, validatedContact, 'does_not_exist');
+
+    return res.status(201).json({...contact, newsletter: !!contact.newsletter});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -79,9 +72,6 @@ contactController.post('/', async (req: Request, res: Response) => {
     return;
   }
 });
-
-contactController.use(checkJwt);
-contactController.use(checkScopes);
 
 /**
  * @swagger
@@ -147,6 +137,8 @@ contactController.use(checkScopes);
  *       name: newsletter
  *       schema:
  *         type: boolean
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Contacts received successfully.
@@ -282,35 +274,33 @@ contactController.get('/', async (req: Request, res: Response) => {
     if (req.query.newsletter) {
       filters.push({
         newsletter: {
-          equals: (req.query.newsletter === 'true'),
+          not: null,
         },
       });
     }
 
-    if (filters.length > 0) {
-      const contacts = await prisma.contacts.findMany({
-        where: {
-          OR: filters,
+    const contacts = await prisma.contacts.findMany({
+      where: {
+        ...(filters.length && {OR: filters}),
+      },
+      orderBy: [
+        {
+          firstname: 'asc',
         },
-      });
-      res.status(200).json(contacts);
-      return;
-    }
+        {
+          lastname: 'asc',
+        },
+      ],
+    });
 
-    const contacts = await prisma.contacts.findMany();
-    res.status(200).json(contacts);
-    return;
+    return res.status(200).json(contacts);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
@@ -598,44 +588,22 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    await prisma.contacts.update({
-      where: {
-        contactid: Number(id),
-      },
-      data: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        visitsource: req.body.visitsource,
-        city: req.body.city,
-        state: req.body.state,
-        postalcode: req.body.postalcode,
-        country: req.body.country,
-        donorbadge: req.body.donorbadge,
-        seatingaccom: req.body.seatingaccom,
-        comments: req.body.comments,
-        vip: req.body.vip,
-        volunteerlist: req.body.volunteerlist,
-        newsletter: req.body.newsletter,
-      },
+    const validatedContact= validateContact({
+      ...req.body,
+      newsletter: !!req.body.newsletter,
     });
 
-    res.status(204).json();
-    return;
+    await updateContact(prisma, validatedContact, 'exists', +id);
+
+    return res.status(204).json();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
-    res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
