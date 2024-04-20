@@ -17,7 +17,12 @@ import IconButton from '../../IconButton';
 
 const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
-    {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction], department: ''},
+    {
+      id: 0,
+      desc: '',
+      ticketRestrictionInfo: [initialTicketTypeRestriction],
+      department: '',
+    },
   ];
 
   const location = useLocation();
@@ -230,10 +235,7 @@ const AdminPurchase = () => {
         return {
           ...r,
           price: priceIsZero ? 0 : newPrice,
-          fee:
-            priceIsZero
-              ? 0
-              : currentTicketRestriction.fee,
+          fee: priceIsZero ? 0 : currentTicketRestriction.fee,
           ...(priceIsZero && {complimentary: true}),
           ...(!priceIsZero && {
             department: '',
@@ -248,14 +250,17 @@ const AdminPurchase = () => {
 
   const handleComplimentaryChange = (event, row) => {
     const isChecked = event.target.checked;
+    const currentTicketRestriction = row.ticketRestrictionInfo.find(
+      (restriction) => row.typeID === restriction.tickettypeid,
+    );
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {
           ...row,
           complimentary: isChecked,
           department: isChecked ? row.department : '',
-          price: isChecked ? 0 : row.price,
-          fee: isChecked || row.price === 0 ? 0 : row.fee,
+          price: isChecked ? 0 : currentTicketRestriction.price,
+          fee: isChecked ? 0 : currentTicketRestriction.fee,
         };
       }
       return r;
@@ -265,7 +270,9 @@ const AdminPurchase = () => {
     // Update the priceByRowId to reflect the change in the price
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: isChecked ? '0.00' : (row.price || 0).toFixed(2), // Set to $0 if complimentary
+      [row.id]: isChecked
+        ? '0.00'
+        : (currentTicketRestriction.price || 0).toFixed(2),
     }));
   };
 
