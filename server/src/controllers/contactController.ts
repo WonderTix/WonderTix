@@ -465,7 +465,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
           .orderticketitems
           .reduce<boolean>((acc, ticket) => {
             if (!ticket.ticketitem) return acc;
-            const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
+            const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}T${ticket.department}`;
             const item = orderItemsMap.get(key);
             if (item) {
               item.quantity += 1;
@@ -478,6 +478,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                   redeemed: ticket.ticketitem.redeemed,
                   donated: ticket.ticketitem.donated,
                   description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+                  department: ticket.department,
                   eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
                   eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
                   eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,

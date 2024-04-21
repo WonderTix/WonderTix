@@ -260,6 +260,7 @@ export const getTicketItems = async (
         item.qty,
         ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(ticketRestriction.fee) : 0,
         item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
+        item.department ? item.department : undefined,
       ),
     );
     toReturn.ticketCartRows.push(
@@ -307,6 +308,7 @@ const getTickets = (
   quantity: number,
   fee: number,
   price: number,
+  department?: string,
 ) => {
   if ((ticketRestriction.availabletickets-=quantity) < 0 || (eventInstance.availableseats-=quantity) < 0) {
     throw new InvalidInputError(422, 'Requested tickets no longer available');
@@ -316,6 +318,7 @@ const getTickets = (
     .fill({
       price: price,
       fee: fee,
+      department: department,
       ticketitem: {
         create: {
           ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
@@ -325,18 +328,17 @@ const getTickets = (
 };
 
 export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: any, orderTotal: number, ticketItems: TicketCartItem[]) => {
-  await validateDiscount(discount, ticketItems, prisma);
-
   if (!discount || discount.code == '') {
     return {discountTotal: 0};
-  } else if (discount.amount && discount.percent) {
+  }
+  await validateDiscount(discount, ticketItems, prisma);
+  if (discount.amount && discount.percent) {
     return {discountTotal: Math.min((+discount.percent / 100) * orderTotal, discount.amount), discountId: discount.code};
   } else if (discount.amount) {
     return {discountTotal: Math.min(discount.amount, orderTotal), discountId: discount.code};
   } else if (discount.percent) {
     return {discountTotal: orderTotal*(+discount.percent)/100, discountId: discount.code};
   }
-
   throw new Error('Invalid discount');
 };
 
