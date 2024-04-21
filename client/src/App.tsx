@@ -33,12 +33,12 @@ import SingleSeasonMain from './components/Ticketing/ticketingmanager/Season/com
 import TicketTypesmain from './components/Ticketing/ticketingmanager/TicketTypes/TicketTypesmain';
 import DiscountCodesmain from './components/Ticketing/ticketingmanager/DiscountCodes/DiscountCodesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
-import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
-import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
+import AdminPurchaseMain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchaseMain';
+import AdminCheckoutMain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutMain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/Event/components/EventProvider';
 import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
-import ReaderPurchasePage from './components/Ticketing/ticketingmanager/AdminPurchase/ReaderPurchasePage';
+import ReaderPurchaseMain from './components/Ticketing/ticketingmanager/AdminPurchase/ReaderPurchaseMain';
 import {SubscriptionMain} from './components/Ticketing/mainpage/SubscriptionPurchasing/SubscriptionMain';
 import {SubscriptionRedemptionMain} from './components/Ticketing/ticketingmanager/SubscriptionRedemption/SubscriptionRedemptionMain';
 
@@ -158,15 +158,15 @@ const App = () => {
         />
         <Route
           path='/ticketing/purchaseticket'
-          element={<ProtectedRoute component={AdminPurchasemain} />}
+          element={<ProtectedRoute component={AdminPurchaseMain} />}
         />
         <Route
           path='/ticketing/purchaseticket/:id'
-          element={<ProtectedRoute component={ReaderPurchasePage}/>}
+          element={<ProtectedRoute component={ReaderPurchaseMain} />}
         />
         <Route
           path='/ticketing/admincheckout'
-          element={<ProtectedRoute component={AdminCheckoutmain} />}
+          element={<ProtectedRoute component={AdminCheckoutMain} />}
         />
         <Route
           path='/ticketing/refund'

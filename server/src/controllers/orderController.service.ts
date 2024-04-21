@@ -34,7 +34,7 @@ export const ticketingWebhook = async (
   if (!order) return;
 
   switch (eventType) {
-  case 'checkout.session.completed':
+  case 'checkout.session.completed': {
     const {contactid} = await updateContact(prisma, JSON.parse(contact));
     await prisma.orders.update({
       where: {
@@ -47,6 +47,7 @@ export const ticketingWebhook = async (
       },
     });
     break;
+  }
   case 'checkout.session.expired':
     await updateCanceledOrder(prisma, order);
     break;
@@ -77,7 +78,6 @@ export const readerWebhook = async (
     await abortPaymentIntent(prisma, paymentIntent);
     break;
   case 'payment_intent.requires_action':
-    // Need to determine how to handle stripe event failures
     break;
   case 'payment_intent.succeeded':
     await updateOrderStatus(prisma, state.completed, {payment_intent: paymentIntent});
@@ -166,8 +166,8 @@ export const orderFulfillment = async (
     orderStatus,
     orderSource,
     orderSubtotal,
-    discountTotal,
-    feeTotal,
+    discountTotal = 0,
+    feeTotal = 0,
     donationItem,
     orderTicketItems = [],
     orderSubscriptionItems = [],
@@ -185,6 +185,7 @@ export const orderFulfillment = async (
         discountid_fk: discountId,
         ordersubtotal: orderSubtotal,
         discounttotal: discountTotal,
+        feetotal: feeTotal,
         orderticketitems: {create: orderTicketItems},
         donation: {create: donationItem},
         subscriptions: {create: orderSubscriptionItems},
@@ -298,7 +299,7 @@ export const createRefundedOrder = async (
   const eventInstances = new Set<number>();
 
   if (order.order_status !== state.completed) {
-    throw new Error('Can not refund an order that has not completed');
+    throw new Error('Can not refund an order that has not been completely processed');
   }
 
   const ticketRefundItems = orderTicketItems.map((item) => {
@@ -393,10 +394,7 @@ export const updateAvailableSeats = async (
 };
 
 
-export const discoverReaders = async () => {
-  const discoverResult = await stripe.terminal.readers.list();
-  return discoverResult;
-};
+export const discoverReaders = async () => stripe.terminal.readers.list();
 
 export const abortPaymentIntent = async (
   prisma: ExtendedPrismaClient,

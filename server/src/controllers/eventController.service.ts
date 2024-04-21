@@ -331,13 +331,15 @@ export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: 
   if (!discount || discount.code == '') {
     return {discountTotal: 0};
   }
+
   await validateDiscount(discount, ticketItems, prisma);
+
   if (discount.amount && discount.percent) {
-    return {discountTotal: Math.min((+discount.percent / 100) * orderTotal, discount.amount), discountId: discount.code};
+    return {discountTotal: Math.min((+discount.percent / 100) * orderTotal, discount.amount), discountId: discount.discountid};
   } else if (discount.amount) {
-    return {discountTotal: Math.min(discount.amount, orderTotal), discountId: discount.code};
+    return {discountTotal: Math.min(discount.amount, orderTotal), discountId: discount.discountid};
   } else if (discount.percent) {
-    return {discountTotal: orderTotal*(+discount.percent)/100, discountId: discount.code};
+    return {discountTotal: orderTotal*(+discount.percent)/100, discountId: discount.discountid};
   }
   throw new Error('Invalid discount');
 };

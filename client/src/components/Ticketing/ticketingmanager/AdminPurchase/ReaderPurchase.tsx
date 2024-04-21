@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Button,
-} from '@mui/material';
+import {Button} from '@mui/material';
 import PopUp from '../../PopUp';
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
@@ -10,11 +8,10 @@ import {useAppSelector} from '../../app/hooks';
 
 import {useFetchToken} from '../Event/components/ShowingUtils';
 
-import {
-  selectDiscount,
-} from '../ticketingSlice';
+import {selectDiscount} from '../ticketingSlice';
 
 import {loadStripe} from '@stripe/stripe-js';
+import {orderSource} from '../../checkout/CheckoutUtils';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -90,11 +87,14 @@ const ReaderPurchase = () => {
   useEffect(() => {
     const processPayment = async () => {
       try {
-        handleRefresh();
+        await handleRefresh();
 
-        if (rawStatus === 'payment_intent.canceled') throw new Error('Payment Already Canceled!');
+        if (rawStatus === 'payment_intent.canceled') {
+          throw new Error('Payment Already Canceled!');
+        }
 
-        const response = await fetch( // request payment and put order in database
+        const response = await fetch(
+          // request payment and put order in database
           process.env.REACT_APP_API_2_URL + `/events/reader-checkout`,
           {
             credentials: 'include',
@@ -103,11 +103,18 @@ const ReaderPurchase = () => {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ticketCartItems: cartItems, paymentIntentID, readerID, discount, orderSource: 'card_reader'}),
+            body: JSON.stringify({
+              ticketCartItems: cartItems,
+              paymentIntentID,
+              readerID,
+              discount,
+              orderSource: orderSource.card_reader,
+            }),
           },
         );
 
-        if (!response.ok) { // order has already been cancelled at this point
+        if (!response.ok) {
+          // order has already been cancelled at this point
           throw response;
         }
 
@@ -117,28 +124,25 @@ const ReaderPurchase = () => {
         } else {
           setErrMsg('Failure processing order, cancelling.');
           setDialog(true);
-          handleCancel();
-          console.log(result);
+          await handleCancel();
         }
       } catch (error) {
         console.error(error.message);
         setErrMsg('Failure processing order, cancelling.');
         setDialog(true);
-        handleCancel();
+       await handleCancel();
       }
     };
     if (!token) return;
-    processPayment();
+    void processPayment();
 
     const alertUser = async (e) => {
       e.preventDefault();
-      handleCancel();
+      await handleCancel();
     };
 
     window.addEventListener('beforeunload', alertUser);
-    return () => {
-      window.removeEventListener('beforeunload', alertUser);
-    };
+    return () => window.removeEventListener('beforeunload', alertUser);
   }, [token]);
 
   const handleCloseDialog = () => {
@@ -170,7 +174,7 @@ const ReaderPurchase = () => {
   };
 
   const handleCancel = async () => {
-    handleRefresh();
+    await handleRefresh();
 
     if (rawStatus != 'terminal.reader.action_succeeded' && // must make sure we haven't already finished charging
         rawStatus != 'payment_intent.succeeded' &&
@@ -195,7 +199,7 @@ const ReaderPurchase = () => {
 
       navigate('/ticketing/purchaseticket');
     } else {
-      setErrMsg('Order completed before cancelation could occur.');
+      setErrMsg('Order completed before cancellation could occur.');
       setDialog(true);
     }
   };
@@ -207,12 +211,8 @@ const ReaderPurchase = () => {
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-zinc-500 mb-14'>
             Reader Order Status
           </h1>
-          <div className='text-3xl font-semibold'>
-            {'Order # ' + orderID}
-          </div>
-          <div className='text-3xl font-semibold'>
-            {'Status: ' + status}
-          </div>
+          <div className='text-3xl font-semibold'>{'Order # ' + orderID}</div>
+          <div className='text-3xl font-semibold'>{'Status: ' + status}</div>
           <div className='flex mt-10 gap-4'>
             <Button variant='contained' color='primary' onClick={handleRefresh}>
               Refresh Status

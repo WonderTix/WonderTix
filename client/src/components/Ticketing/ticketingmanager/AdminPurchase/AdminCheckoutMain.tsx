@@ -1,6 +1,6 @@
 import React from 'react';
 import Udash_nav from '../udash_navbar';
-import AdminPurchase from './AdminPurchase';
+import AdminCheckout from './AdminCheckout';
 
 /**
  * Main page to host door list
@@ -8,13 +8,13 @@ import AdminPurchase from './AdminPurchase';
  * @module
  * @returns {Udash_nav, AdminPurchase}
  */
-const AdminPurchasemain = () => {
+const AdminCheckoutMain = () => {
   return (
     <div className='flex flex-row'>
       <Udash_nav />
-      <AdminPurchase />
+      <AdminCheckout />
     </div>
   );
 };
 
-export default AdminPurchasemain;
+export default AdminCheckoutMain;

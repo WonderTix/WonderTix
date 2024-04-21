@@ -4,7 +4,8 @@ import {
   eventinstances,
   events,
   seasons,
-  seasontickettypepricedefault, state,
+  seasontickettypepricedefault,
+  state,
   ticketitems,
   ticketrestrictions,
 } from '@prisma/client';
@@ -74,7 +75,7 @@ const getTicketRestrictionUpdate = (
   newRestriction: instanceTicketType | undefined,
   oldRestriction: LoadedTicketRestriction,
   totalseats: number,
-): {remove?: {}, update?: {}} => {
+): {remove?: object, update?: object} => {
   const soldTickets = oldRestriction.ticketlimit - oldRestriction.availabletickets;
   if ((!newRestriction || !newRestriction.ticketlimit) && !oldRestriction.ticketitems.length) {
     return {

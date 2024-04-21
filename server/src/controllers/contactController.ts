@@ -525,6 +525,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       flattenedOrders.push({
         orderid: order.orderid,
         orderdatetime: order.orderdatetime,
+        order_source: order.order_source,
         ordertotal: Number(order.ordersubtotal) + Number(order.feetotal) - Number(order.discounttotal),
         feetotal: order.feetotal,
         discounttotal: order.discounttotal,

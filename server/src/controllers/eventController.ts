@@ -1,3 +1,4 @@
+/* eslint-disable camelcase*/
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {orders, Prisma, purchase_source, state} from '@prisma/client';
@@ -16,10 +17,9 @@ import {
   validateContact,
   updateContact,
 } from './eventController.service';
-import {updateCanceledOrder, orderFulfillment, abortPaymentIntent} from './orderController.service';
+import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
-
 import multer from 'multer';
 import {Storage} from '@google-cloud/storage';
 
@@ -166,7 +166,6 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
  *     tags:
  *     - New Event API
   *     requestBody:
-
  *       description: Image File
  *     responses:
  *       200:
@@ -885,10 +884,9 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
       feeTotal,
     } = await getTicketItems(ticketCartItems, prisma);
 
-    if (ticketTotal < .50) {
+    if (ticketTotal + feeTotal < .50) {
       return res.status(400).json({error: 'Reader checkout can not be used for an order below .50 USD'});
     }
-
 
     const response = await createStripePaymentIntent((ticketTotal + feeTotal) * 100);
     return res.json(response);
@@ -925,7 +923,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       eventInstanceQueries,
     } = await getTicketItems(ticketCartItems, prisma);
 
-    const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
+    await requestStripeReaderPayment(readerID, paymentIntentID);
 
     const {discountTotal, discountId} = await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
 
@@ -947,7 +945,6 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
     res.json({orderID: order.orderid, status: 'order sent'});
   } catch (error) {
     console.error(error);
-    await abortPaymentIntent(prisma, paymentIntentID);
     if (order) await updateCanceledOrder(prisma, order);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
