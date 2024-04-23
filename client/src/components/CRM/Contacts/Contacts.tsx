@@ -102,8 +102,10 @@ const Contacts = (): React.ReactElement => {
         process.env.REACT_APP_API_2_URL + '/contact',
         {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({
             firstname: contact.first,

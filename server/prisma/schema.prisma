@@ -9,25 +9,24 @@ datasource db {
 
 /// customer information
 model contacts {
-
-  contactid     Int      @id @default(autoincrement())
-  firstname     String?  @db.VarChar(255)
-  lastname      String?  @db.VarChar(255)
-  email         String?  @unique @db.VarChar(100)
-  phone         String?  @db.VarChar(15)
-  visitsource   String?  @db.VarChar(255)
-  address       String?  @db.VarChar(255)
-  city          String?  @db.VarChar(255)
-  state         String?  @db.VarChar(255)
-  country       String?  @db.VarChar(255)
-  postalcode    String?  @db.VarChar(255)
-  seatingaccom  String?  @db.VarChar(255)
-  comments      String?  @db.VarChar(255)
-  donorbadge    Boolean? @default(false)
-  vip           Boolean? @default(false)
-  volunteerlist Boolean? @default(false)
-  newsletter    Boolean? @default(false)
-  createddate   DateTime @default(now()) @db.Timestamptz(3)
+  contactid     Int       @id @default(autoincrement())
+  firstname     String?   @db.VarChar(255)
+  lastname      String?   @db.VarChar(255)
+  email         String?   @unique @db.VarChar(100)
+  phone         String?   @db.VarChar(15)
+  visitsource   String?   @db.VarChar(255)
+  address       String?   @db.VarChar(255)
+  city          String?   @db.VarChar(255)
+  state         String?   @db.VarChar(255)
+  country       String?   @db.VarChar(255)
+  postalcode    String?   @db.VarChar(255)
+  seatingaccom  String?   @db.VarChar(255)
+  comments      String?   @db.VarChar(255)
+  donorbadge    Boolean?  @default(false)
+  vip           Boolean?  @default(false)
+  volunteerlist Boolean?  @default(false)
+  newsletter    DateTime? @db.Timestamp(3)
+  createddate   DateTime  @default(now()) @db.Timestamptz(3)
   orders        orders[]
 }
 
@@ -177,6 +176,8 @@ model orderticketitems {
   id         Int          @id @default(autoincrement())
   orderid_fk Int
   price      Decimal      @db.Money
+  fee        Decimal      @db.Money
+  department String?      @db.VarChar(255)
   order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
   ticketitem ticketitems?
   refund     refunditems?
@@ -206,7 +207,8 @@ model orders {
   checkout_sessions String?            @unique @db.VarChar(255)
   ordersubtotal     Decimal            @db.Money
   discounttotal     Decimal            @default(0) @db.Money
-  contacts          contacts?           @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  feetotal          Decimal            @default(0) @db.Money
+  contacts          contacts?          @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donation          donations?
   refunds           refunds[]
@@ -264,7 +266,7 @@ model seasontickettypepricedefault {
   seasonid_fk        Int
   tickettypeid_fk    Int
   price              Decimal              @default(0) @db.Money
-  concessionprice    Decimal              @default(0) @db.Money
+  fee                Decimal              @default(0) @db.Money
   season             seasons              @relation(fields: [seasonid_fk], references: [seasonid], onDelete: Cascade, onUpdate: Cascade)
   tickettype         tickettype           @relation(fields: [tickettypeid_fk], references: [tickettypeid], onDelete: Cascade, onUpdate: Cascade)
   ticketrestrictions ticketrestrictions[]
@@ -315,7 +317,7 @@ model ticketrestrictions {
   tickettypeid_fk                   Int
   ticketlimit                       Int
   price                             Decimal                       @default(0) @db.Money
-  concessionprice                   Decimal                       @default(0) @db.Money
+  fee                               Decimal                       @default(0) @db.Money
   seasontickettypepricedefaultid_fk Int?
   deletedat                         DateTime?                     @db.Timestamp(3)
   eventinstance                     eventinstances                @relation(fields: [eventinstanceid_fk], references: [eventinstanceid], onDelete: NoAction, onUpdate: NoAction)
@@ -329,7 +331,7 @@ model tickettype {
   tickettypeid                  Int                            @id @default(autoincrement())
   description                   String                         @db.VarChar(100)
   price                         Decimal                        @db.Money
-  concessions                   Decimal                        @db.Money
+  fee                           Decimal                        @default(0) @db.Money
   deprecated                    Boolean?                       @default(false)
   discounts                     discounts[]
   ticketrestrictions            ticketrestrictions[]

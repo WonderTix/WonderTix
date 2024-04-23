@@ -216,7 +216,7 @@ const ContactCard = ({
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Newsletter:</span>
           <span data-testid='contact-newsletter'>
-            {newsletter ? 'Yes' : 'No'}
+            {newsletter? `Since ${format(new Date(newsletter), 'Pp')}`: 'No'}
           </span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>

@@ -1,27 +1,28 @@
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 import {DataGrid} from '@mui/x-data-grid';
-import {Checkbox, FormControlLabel} from '@mui/material';
+import {Checkbox} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import {format} from 'date-fns';
 import {getAllTicketRestrictions} from './utils/adminApiRequests';
-import {useFetchToken} from '../Event/components/ShowingUtils'; // modifying this to make sure its included
-import {initialTicketTypeRestriction, EventRow} from './utils/adminCommon';
+import {useFetchToken} from '../Event/components/ShowingUtils';
+import {
+  initialTicketTypeRestriction,
+  EventRow,
+  departmentOptions,
+} from './utils/adminCommon';
 import {PlusIcon, TrashCanIcon} from '../../Icons';
+import IconButton from '../../IconButton';
 
 const AdminPurchase = () => {
   const emptyRows: EventRow[] = [
-    {id: 0, desc: '', ticketRestrictionInfo: [initialTicketTypeRestriction]},
+    {
+      id: 0,
+      desc: '',
+      ticketRestrictionInfo: [initialTicketTypeRestriction],
+      department: '',
+    },
   ];
 
   const location = useLocation();
@@ -43,6 +44,7 @@ const AdminPurchase = () => {
   const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
   const {token} = useFetchToken();
+
   const addNewRow = () => {
     const maxId = Math.max(-1, ...eventData.map((r) => r.id)) + 1;
     setEventData([
@@ -51,6 +53,7 @@ const AdminPurchase = () => {
         id: maxId,
         desc: '',
         ticketRestrictionInfo: [initialTicketTypeRestriction],
+        department: '',
       },
     ]);
 
@@ -84,7 +87,13 @@ const AdminPurchase = () => {
     if (isNaN(eventId)) {
       const updatedRows = eventData.map((r) => {
         if (r.id === row.id) {
-          return {...row, eventid: null, eventname: null};
+          return {
+            ...row,
+            eventid: null,
+            eventname: null,
+            eventtime: null,
+            ticketRestrictionInfo: [initialTicketTypeRestriction],
+          };
         }
         return r;
       });
@@ -117,7 +126,7 @@ const AdminPurchase = () => {
     });
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: 0,
+      [row.id]: '',
     }));
     setEventData(updatedRows);
   };
@@ -171,6 +180,7 @@ const AdminPurchase = () => {
       (restriction) => ticketTypeId === restriction.tickettypeid,
     );
     const price = parseFloat(currentTicketRestriction.price);
+    const fee = parseFloat(currentTicketRestriction.fee);
 
     // determine how many seats for current event instance
     const {ticketlimit, ticketssold} = currentTicketRestriction;
@@ -182,6 +192,7 @@ const AdminPurchase = () => {
           ...r,
           ticketTypes: currentTicketRestriction.description,
           price: row.complimentary ? 0 : price,
+          fee: row.complimentary ? 0 : fee,
           typeID: ticketTypeId,
           seatsForType: seatsForType,
         };
@@ -190,16 +201,13 @@ const AdminPurchase = () => {
     });
     setEventData(updatedRows);
 
-    if (!row.complimentary) {
-      setPriceByRowId((prevState) => ({
-        ...prevState,
-        [row.id]: price.toFixed(2),
-      }));
-    }
+    setPriceByRowId((prevState) => ({
+      ...prevState,
+      [row.id]: !row.complimentary ? price.toFixed(2) : '0.00',
+    }));
   };
 
   const handlePriceChange = (event, row) => {
-    if (row.complimentary) return; // If complimentary, no changes allowed
     const newPriceString = event.target.value;
 
     setPriceByRowId((prevState) => ({
@@ -210,18 +218,29 @@ const AdminPurchase = () => {
 
   const handlePriceBlur = (event, row) => {
     const newPrice = parseFloat(event.target.value);
+    const currentTicketRestriction = row.ticketRestrictionInfo.find(
+      (restriction) => row.typeID === restriction.tickettypeid,
+    );
+
+    const priceIsZero = isNaN(newPrice) || newPrice === 0;
 
     // Format the value once the user moves out of the input
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: isNaN(newPrice) ? '0.00' : newPrice.toFixed(2),
+      [row.id]: priceIsZero ? '0.00' : newPrice.toFixed(2),
     }));
 
     const updatedEventData = eventData.map((r) => {
       if (r.id === row.id) {
         return {
           ...r,
-          price: isNaN(newPrice) ? 0 : newPrice,
+          price: priceIsZero ? 0 : newPrice,
+          fee: priceIsZero ? 0 : currentTicketRestriction.fee,
+          ...(priceIsZero && {complimentary: true}),
+          ...(!priceIsZero && {
+            department: '',
+            complimentary: false,
+          }),
         };
       }
       return r;
@@ -231,12 +250,17 @@ const AdminPurchase = () => {
 
   const handleComplimentaryChange = (event, row) => {
     const isChecked = event.target.checked;
+    const currentTicketRestriction = row.ticketRestrictionInfo.find(
+      (restriction) => row.typeID === restriction.tickettypeid,
+    );
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
         return {
           ...row,
           complimentary: isChecked,
-          price: isChecked ? 0 : row.price,
+          department: isChecked ? row.department : '',
+          price: isChecked ? 0 : currentTicketRestriction.price,
+          fee: isChecked ? 0 : currentTicketRestriction.fee,
         };
       }
       return r;
@@ -246,8 +270,21 @@ const AdminPurchase = () => {
     // Update the priceByRowId to reflect the change in the price
     setPriceByRowId((prevState) => ({
       ...prevState,
-      [row.id]: isChecked ? '0.00' : (row.price || 0).toFixed(2), // Set to $0 if complimentary
+      [row.id]: isChecked
+        ? '0.00'
+        : (currentTicketRestriction.price || 0).toFixed(2),
     }));
+  };
+
+  const handleDepartmentChange = (event, row) => {
+    const newDepartment = event.target.value;
+    const updatedRows = eventData.map((r) => {
+      if (r.id === row.id) {
+        return {...r, department: newDepartment};
+      }
+      return r;
+    });
+    setEventData(updatedRows);
   };
 
   const handlePurchase = (toReader: boolean) => {
@@ -265,6 +302,12 @@ const AdminPurchase = () => {
         typeof row.price === 'undefined'
       ) {
         setErrMsg('Missing selection.');
+        setDialog(true);
+        return;
+      }
+
+      if (row.price < 0) {
+        setErrMsg('All prices must be $0.00 or greater');
         setDialog(true);
         return;
       }
@@ -300,9 +343,11 @@ const AdminPurchase = () => {
 
     const aggregatedCartItems = {};
     eventData.forEach((row) => {
-      const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}`;
+      const key = `${row.eventinstanceid}-${row.ticketTypes}-${row.price}-${row.eventtime}-Department ${row.department}`;
       const showingDate = new Date(
-        `${toDateStringFormat(row.eventdate)}T${row.eventtime.split('T')[1].slice(0, 8)}`,
+        `${toDateStringFormat(row.eventdate)}T${row.eventtime
+          .split('T')[1]
+          .slice(0, 8)}`,
       );
       if (aggregatedCartItems[key]) {
         // If this item already exists in the cart, qty++
@@ -313,6 +358,7 @@ const AdminPurchase = () => {
           product_id: row.eventinstanceid,
           eventId: row.eventid,
           price: row.price,
+          fee: row.fee,
           desc: row.ticketTypes,
           typeID: row.typeID,
           date: showingDate,
@@ -320,6 +366,7 @@ const AdminPurchase = () => {
           product_img_url: row.imageurl,
           qty: 1, // default 1
           payWhatCan: false,
+          department: row.department,
         };
       }
     });
@@ -351,32 +398,40 @@ const AdminPurchase = () => {
 
       if (!token) return;
 
-      fetch( // create intent
-      process.env.REACT_APP_API_2_URL + `/events/reader-intent`,
-      {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+      fetch(
+        // create intent
+        `${process.env.REACT_APP_API_2_URL}/events/reader-intent`,
+        {
+          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ticketCartItems: cartItems}),
         },
-        body: JSON.stringify({cartItems}),
-      },
-      ).then((response) => {
-        if (!response.ok) {
-          throw response;
-        }
-        response.json().then((result) => {
-          const readerID = selectedReader;
-          const paymentIntentID = result.id;
-          const clientSecret = result.secret;
-          navigate(paymentIntentID, {state: {cartItems, paymentIntentID, clientSecret, readerID}});
-        }).catch((error) => {
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw response;
+          }
+          response
+            .json()
+            .then((result) => {
+              const readerID = selectedReader;
+              const paymentIntentID = result.id;
+              const clientSecret = result.secret;
+              navigate(paymentIntentID, {
+                state: {cartItems, paymentIntentID, clientSecret, readerID},
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        })
+        .catch((error) => {
           console.error(error);
         });
-      }).catch((error) => {
-        console.error(error);
-      });
     } else {
       navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
     }
@@ -489,7 +544,7 @@ const AdminPurchase = () => {
             value={priceByRowId[params.row.id] || ''}
             onChange={(e) => handlePriceChange(e, params.row)}
             onBlur={(e) => handlePriceBlur(e, params.row)}
-            disabled={params.row.complimentary || !params.row.ticketTypes}
+            disabled={!params.row.ticketTypes}
             className='w-16'
           />
         </div>
@@ -498,17 +553,30 @@ const AdminPurchase = () => {
     {
       field: 'complimentary',
       headerName: 'Comp',
-      width: 60,
+      width: 220,
       renderCell: (params) => (
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={params.row.complimentary || false}
-              onChange={(e) => handleComplimentaryChange(e, params.row)}
-            />
-          }
-          label=''
-        />
+        <>
+          <Checkbox
+            checked={params.row.complimentary || false}
+            onChange={(e) => handleComplimentaryChange(e, params.row)}
+            aria-label={
+              params.row.complimentary ? 'Uncheck comp' : 'Check comp'
+            }
+          />
+          <select
+            className='w-full'
+            value={params.row.department || ''}
+            disabled={!params.row.complimentary}
+            onChange={(e) => handleDepartmentChange(e, params.row)}
+          >
+            <option value=''>No Department</option>
+            {Object.keys(departmentOptions).map((value, index) => (
+              <option key={index} value={value}>
+                {departmentOptions[value]}
+              </option>
+            ))}
+          </select>
+        </>
       ),
     },
     {
@@ -516,14 +584,13 @@ const AdminPurchase = () => {
       headerName: '',
       width: 150,
       renderCell: (params) => (
-        <button
-          className='p-2 rounded-lg text-zinc-500 hover:text-red-600 hover:bg-red-100
-            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+        <IconButton
           onClick={() => removeRow(params.row.id)}
-          aria-label='Delete ticket'
+          hoverColor='red'
+          tooltip='Remove ticket'
         >
           <TrashCanIcon className='h-5 w-5' strokeWidth={2} />
-        </button>
+        </IconButton>
       ),
     },
   ];
@@ -612,7 +679,8 @@ const AdminPurchase = () => {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
-          });
+          },
+        );
 
         if (!response.ok) throw response;
 
@@ -671,8 +739,14 @@ const AdminPurchase = () => {
               </button>
             </div>
             <div className='mt-4 text-center'>
-              <label htmlFor='reader-select' className='font-semibold'>Select a Reader</label>
-              <select id='reader-select' value={selectedReader} onChange={reader_handleChange}>
+              <label htmlFor='reader-select' className='font-semibold'>
+                Select a Reader
+              </label>
+              <select
+                id='reader-select'
+                value={selectedReader}
+                onChange={reader_handleChange}
+              >
                 {readerList.map((reader) => (
                   <option key={reader.id} value={reader.id}>
                     {reader.id}

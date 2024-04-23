@@ -18,8 +18,8 @@ export const getHandleTicketTypeChange =
       getKeyValue(+value, 'price', options),
     );
     await setFieldValue(
-      `${parentFieldName}.concessionprice`,
-      getKeyValue(+value, 'concessionprice', options),
+      `${parentFieldName}.fee`,
+      getKeyValue(+value, 'fee', options),
     );
     await setFieldValue(
       `${parentFieldName}.description`,
@@ -51,14 +51,15 @@ export const TicketTypeTableRow = ({
             setFieldValue,
             field.value,
           )}
-          options={options.map((option) => ({
-            id: +option.tickettypeid_fk,
-            description: option.description,
-          }))}
-          currentValue={{
-            id: +field.value.tickettypeid_fk,
-            description: field.value.description,
-          }}
+          options={options
+            .map((option) => ({
+              id: +option.tickettypeid_fk,
+              description: option.description,
+            }))
+            .concat({
+              id: +field.value.tickettypeid_fk,
+              description: field.value.description,
+            })}
         />
       </td>
       <td
@@ -83,11 +84,11 @@ export const TicketTypeTableRow = ({
       </td>
       <td className='px-2 py-1'>
         <Field
-          name={`${field.name}.concessionprice`}
+          name={`${field.name}.fee`}
           type='number'
           component={InputControl}
           hidden={true}
-          label='Concession Price'
+          label='Fee'
           currency={true}
           className={{
             controlClass: '',
@@ -115,12 +116,9 @@ export const TicketTypeTableRow = ({
       <td className='px-2 py-1'>
         <FormButton
           testID={`delete-ticket-type-${field.name}`}
-          title='Remove Row'
+          title='Remove'
           className='grid justify-center text-red-500 focus:text-red-800'
-          onClick={() => {
-            const {ticketlimit, ...current} = field.value;
-            removeOption(current);
-          }}
+          onClick={removeOption}
           disabled={false}
         >
           <TrashCanIcon className='w-5 h-5' />

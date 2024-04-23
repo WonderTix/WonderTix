@@ -71,10 +71,18 @@ const openApiSpec = swaggerJsdoc({
             type: 'integer',
           },
         },
+        subscriptionid: {
+          name: 'subscriptionid',
+          in: 'path',
+          description: 'Subscription ID',
+          schema: {
+            type: 'integer',
+          },
+        },
         subscriptiontypeid: {
           name: 'subscriptiontypeid',
           in: 'path',
-          description: 'Subscription ID',
+          description: 'Subscription Type ID',
           schema: {
             type: 'integer',
           },
@@ -109,6 +117,30 @@ const openApiSpec = swaggerJsdoc({
           description: 'Discount Code',
           schema: {
             type: 'string',
+          },
+        },
+        customername: {
+          name: 'name',
+          in: 'path',
+          description: 'Customer Name',
+          schema: {
+            type: 'string',
+          },
+        },
+        email: {
+          name: 'email',
+          in: 'query',
+          description: 'Customer Email',
+          schema: {
+            type: 'string',
+          },
+        },
+        queryseasonid: {
+          name: 'seasonid',
+          in: 'query',
+          description: 'Season Id',
+          schema: {
+            type: 'integer',
           },
         },
       },
@@ -204,6 +236,7 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
+            feetotal: {type: 'number'},
           },
         },
         SavedReport: {
@@ -233,7 +266,7 @@ const openApiSpec = swaggerJsdoc({
               seasonid_fk: {type: 'number'},
               tickettypeid_fk: {type: 'number'},
               price: {type: 'number'},
-              concessionprice: {type: 'number'},
+              fee: {type: 'number'},
             },
           },
         },
@@ -305,11 +338,11 @@ const openApiSpec = swaggerJsdoc({
         TicketRestriction: {
           type: 'object',
           properties: {
-            concessionprice: {type: 'string'},
+            fee: {type: 'string'},
             description: {type: 'string'},
             eventinstanceid_fk: {type: 'integer'},
-            price: {type: 'string'},
-            seasontickettypepricedefaultid_fk: {type: 'integer'},
+            price: {type: 'number'},
+            seasontickettypepricedefaultid_fk: {type: 'number'},
             ticketlimit: {type: 'integer'},
             ticketrestrictionsid: {type: 'integer'},
             ticketssold: {type: 'integer'},
@@ -322,7 +355,7 @@ const openApiSpec = swaggerJsdoc({
             tickettypeid: {type: 'integer'},
             description: {type: 'string'},
             price: {type: 'number'},
-            concessions: {type: 'number'},
+            fee: {type: 'number'},
             deprecated: {type: 'boolean'},
           },
         },
@@ -438,6 +471,7 @@ const openApiSpec = swaggerJsdoc({
             payment_intent: {type: 'string'},
             refund_intent: {type: 'string'},
             ordertotal: {type: 'number'},
+            feetotal: {type: 'number'},
             checkout_sessions: {type: 'string'},
           },
         },
@@ -465,7 +499,7 @@ const openApiSpec = swaggerJsdoc({
               tickettypeid_fk: {type: 'number'},
               description: {type: 'string'},
               price: {type: 'number'},
-              concessionprice: {type: 'number'},
+              fee: {type: 'number'},
             },
           },
         },
@@ -543,7 +577,7 @@ const openApiSpec = swaggerJsdoc({
           properties: {
             description: {type: 'string'},
             price: {type: 'number'},
-            concessions: {type: 'number'},
+            fee: {type: 'number'},
           },
         },
         User: {
@@ -565,6 +599,7 @@ const openApiSpec = swaggerJsdoc({
 });
 
 
+// eslint-disable-next-line require-jsdoc
 function waitForOpenConnection(socket: any) {
   return new Promise((resolve, reject) => {
     const maxNumberOfAttempts = 50;
@@ -663,7 +698,7 @@ const createServer = async () => {
       wss.clients.forEach((client) => {
         if (client !== ws) {
           waitForOpenConnection(client).then(() => {
-            client.send(data, { binary: isBinary });
+            client.send(data, {binary: isBinary});
           }).catch((error) => {
             console.error(error.message);
           });

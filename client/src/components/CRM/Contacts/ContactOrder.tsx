@@ -1,5 +1,6 @@
 import React, {ReactElement} from 'react';
 import {toDateStringFormat} from '../../Ticketing/ticketingmanager/Event/components/util/EventsUtil';
+import {departmentOptions} from '../../Ticketing/ticketingmanager/AdminPurchase/utils/adminCommon';
 import format from 'date-fns/format';
 import {toDollarAmount} from '../../../utils/arrays';
 import {TicketIcon} from '../../Ticketing/Icons';
@@ -8,6 +9,7 @@ import Label from '../../Ticketing/Label';
 interface ContactOrderProps {
   orderId: number;
   orderTotal: number;
+  feeTotal: number;
   discountTotal: number;
   orderDateTime: string;
   refunded: string;
@@ -19,6 +21,7 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
   const {
     orderId,
     orderTotal,
+    feeTotal,
     discountTotal,
     orderDateTime,
     refunded,
@@ -34,7 +37,7 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
         <h2 className='text-2xl font-medium'>Order #{orderId}</h2>
         <TicketIcon className='h-7 w-7' strokeWidth={2} />
       </header>
-      <div className='grid grid-cols-1 md:grid-cols-5'>
+      <div className='grid grid-cols-1 md:grid-cols-5 gap-4'>
         <article className='tab:col-span-2'>
           <p className='flex justify-between tab:justify-start gap-3 text-lg'>
             <span className='tab:flex-initial tab:w-28 text-zinc-600'>
@@ -63,20 +66,25 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
               No order items or donation
             </p>
           )}
-          {orderItems.map((item, index) => (
-            <TicketOrderItem
-              key={index}
-              price={item.price}
-              refunded={item.refunded}
-              ticketType={item.tickettype}
-              quantity={item.quantity}
-              eventName={item.eventname}
-              seasonName={item.seasonname}
-              detail={item.detail}
-              eventDate={item.eventdate}
-              eventTime={item.eventtime}
-            />
-          ))}
+          {orderItems.map((item, index) =>
+            item.tickettype ? (
+              <TicketOrderItem
+                key={index}
+                price={item.price}
+                refunded={item.refunded}
+                ticketType={item.tickettype}
+                quantity={item.quantity}
+                eventName={item.eventname}
+                seasonName={item.seasonname}
+                detail={item.detail}
+                eventDate={item.eventdate}
+                eventTime={item.eventtime}
+                department={item.department}
+              />
+            ) : (
+              <SubscriptionOrderItem key={index} {...item} />
+            ),
+          )}
           {donation && (
             <DonationOrderItem
               amount={donation.amount}
@@ -86,13 +94,23 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
         </aside>
       </div>
       <footer className='mt-3'>
-        {discountTotal && (
+        {discountTotal !== 0 && (
           <p className='flex'>
             <span className='tab:flex-initial tab:w-32 w-full text-lg'>
               Discount:
             </span>
             <span className='font-medium text-lg text-zinc-800'>
               {toDollarAmount(Number(discountTotal))}
+            </span>
+          </p>
+        )}
+        {feeTotal !== 0 && (
+          <p className='flex'>
+            <span className='tab:flex-initial tab:w-32 w-full text-lg'>
+              Fee:
+            </span>
+            <span className='font-medium text-lg text-zinc-800'>
+              {toDollarAmount(Number(feeTotal))}
             </span>
           </p>
         )}
@@ -119,6 +137,7 @@ interface TicketOrderItem {
   detail?: string;
   eventDate: string;
   eventTime: string;
+  department?: string;
 }
 
 const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
@@ -132,6 +151,7 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
     detail,
     eventDate,
     eventTime,
+    department,
   } = props;
 
   const time = new Date(
@@ -140,16 +160,62 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
 
   return (
     <article className='border border-zinc-300 px-4 pt-3 pb-4 rounded-xl mb-2'>
-      <p className='flex justify-between font-bold gap-2'>
+      <p className='flex justify-between items-start font-bold gap-2 leading-none mt-0.5 mb-1'>
         <span>
           {quantity} x {eventName}
           {seasonName && (
-            <span className='font-normal italic'> - {seasonName}</span>
+            <>
+              {' '}
+              • <span className='font-normal italic text-sm'>{seasonName}</span>
+            </>
           )}
         </span>
         <span className='flex items-center gap-2'>
           {refunded && (
-            <Label className='text-xs' color='green'>
+            <Label className='text-[0.7rem]' color='green'>
+              REFUNDED
+            </Label>
+          )}
+          {department ? (
+            <Label className='text-[0.7rem]' color='slate'>
+              {`${departmentOptions[department].toUpperCase()} COMP`}
+            </Label>
+          ) : (
+            toDollarAmount(Number(price))
+          )}
+        </span>
+      </p>
+      <p className='text-xs'>
+        {ticketType} • {format(time, 'MMM dd, yyyy • h:mm a')}
+        {detail && <> ({detail})</>}
+      </p>
+    </article>
+  );
+};
+
+interface SubscriptionOrderItemProps {
+  price: number;
+  refunded: boolean;
+  subscriptionType: string;
+  seasonName: string;
+  ticketlimit: number;
+  quantity: number;
+}
+const SubscriptionOrderItem = (
+  props: SubscriptionOrderItemProps,
+): ReactElement => {
+  const {price, refunded, seasonName, ticketlimit, quantity, subscriptionType} =
+    props;
+
+  return (
+    <article className='border border-zinc-300 px-4 pt-3 pb-4 rounded-xl mb-2'>
+      <p className='flex justify-between items-start font-bold gap-2 leading-none mt-0.5 mb-1'>
+        <span>
+          {quantity} x {subscriptionType} Subscription
+        </span>
+        <span className='flex items-center gap-2'>
+          {refunded && (
+            <Label className='text-[0.7rem]' color='green'>
               REFUNDED
             </Label>
           )}
@@ -157,8 +223,7 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
         </span>
       </p>
       <p className='text-xs'>
-        {ticketType} • {format(time, 'MMM dd, yyyy')} • {format(time, 'h:mm a')}
-        {detail && <span> ({detail})</span>}
+        {ticketlimit} tickets for {seasonName}
       </p>
     </article>
   );
@@ -174,11 +239,11 @@ const DonationOrderItem = (props: DonationOrderItem): ReactElement => {
 
   return (
     <article className='border border-zinc-300 px-4 py-3 rounded-xl mb-2'>
-      <p className='flex justify-between font-bold'>
+      <p className='flex justify-between items-start font-bold gap-2 leading-none mt-0.5 mb-1'>
         <span>Donation</span>
         <span className='flex items-center gap-2'>
           {refunded && (
-            <Label className='text-xs' color='green'>
+            <Label className='text-[0.7rem]' color='green'>
               REFUNDED
             </Label>
           )}

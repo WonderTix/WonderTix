@@ -1,4 +1,3 @@
-import {useFormikContext} from 'formik';
 import {Switch} from '@mui/material';
 import React from 'react';
 
@@ -11,6 +10,7 @@ export interface FieldType {
 
 interface FormSwitchProps {
   field: FieldType;
+  onChange: (value) => void;
   label: string;
   className: {
     labelClass: string;
@@ -29,14 +29,13 @@ interface FormSwitchProps {
 }
 
 export const FormSwitch = (props: FormSwitchProps) => {
-  const {field, size = 'small', color, label, className, hidden= false} = props;
-  const {setFieldValue} = useFormikContext();
+  const {field, onChange, size = 'small', color, label, className, hidden= false} = props;
   return (
     <div className={className.controlClass}>
-      <label hidden={hidden} className={className.labelClass}>{label}: </label>
+      <label hidden={hidden} className={className.labelClass}>{label}</label>
         <Switch
           checked={field.value}
-          onChange={() => setFieldValue(field.name, !field.value)}
+          onChange={() => onChange(!field.value)}
           color={color}
           size={size}
         />

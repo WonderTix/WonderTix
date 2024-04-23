@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import {Router, Request, Response} from 'express';
+import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -9,9 +9,9 @@ const prisma = extendPrismaClient();
 export const seasonTicketTypePriceDefaultController = Router();
 
 interface SeasonTicketTypePriceDefaultRequestItem {
-    tickettypeid_fk: number;
-    price: number;
-    concessionprice: number;
+  tickettypeid_fk: number;
+  price: number;
+  fee: number;
 }
 
 /**
@@ -61,7 +61,7 @@ seasonTicketTypePriceDefaultController.get('/:seasonid', async (req: Request, re
               seasonid_fk: defaultTicketType.seasonid_fk,
               tickettypeid_fk: defaultTicketType.tickettypeid_fk,
               price: defaultTicketType.price,
-              concessionprice: defaultTicketType.concessionprice,
+              fee: defaultTicketType.fee,
               description: defaultTicketType.tickettype.description,
             })),
     );
@@ -126,13 +126,13 @@ seasonTicketTypePriceDefaultController.get('/events/:seasonid', async (req: Requ
       });
     }
     const toSend = ticketResult.map((type) => ({
-      concessionprice: type.concessions,
+      fee: type.fee,
       price: type.price,
       tickettypeid_fk: type.tickettypeid,
       description: type.description,
     })).concat(seasonResult.map((type) => {
       return {
-        concessionprice: type.concessionprice,
+        fee: type.fee,
         price: type.price,
         tickettypeid_fk: type.tickettypeid_fk,
         description: type.tickettype.description,
@@ -176,20 +176,20 @@ seasonTicketTypePriceDefaultController.use(checkScopes);
  *              value:
  *                - tickettypeid_fk: 1
  *                  price: 10.00
- *                  concessionprice: 10.00
+ *                  fee: 10.00
  *                - tickettypeid_fk: 2
  *                  price: 10.00
- *                  concessionprice: 11.92
+ *                  fee: 11.92
  *             Example 2 - Delete ticket type 1 price from season:
  *              value:
  *                - tickettypeid_fk: 2
  *                  price: 10.00
- *                  concessionprice: 11.92
+ *                  fee: 11.92
  *             Example 3 - Update ticket type 2 prices for season:
  *              value:
  *                - tickettypeid_fk: 2
  *                  price: 0
- *                  concessionprice: 0
+ *                  fee: 0
  *     responses:
  *       200:
  *         description: array of updated season ticket type prices
@@ -220,11 +220,12 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
           {
             ...item,
             price: +item.price,
-            concessionprice: +item.concessionprice,
+            fee: +item.fee,
           }]),
     );
     const ticketRestrictions = await prisma.ticketrestrictions.findMany({
       where: {
+        deletedat: null,
         eventinstance: {
           event: {
             seasonid_fk: +seasonid,
@@ -258,8 +259,8 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
             id: item.id,
           },
         });
-      } else if (update.price < 0 || update.concessionprice < 0 ) {
-        throw new InvalidInputError(422, `Price can not be negative`);
+      } else if (update.price < 0 || update.fee < 0 ) {
+        throw new InvalidInputError(422, 'Price can not be negative');
       }
       return prisma.seasontickettypepricedefault.update({
         where: {
@@ -267,7 +268,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
         },
         data: {
           price: !item.tickettypeid_fk? 0: update.price,
-          concessionprice: update.concessionprice,
+          fee: update.fee,
           ticketrestrictions: {
             updateMany: {
               where: {
@@ -275,7 +276,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
               },
               data: {
                 ...(item.tickettypeid_fk && +item.price !== update.price && {price: update.price}),
-                ...(+item.concessionprice !== update.concessionprice && {concessionprice: update.concessionprice}),
+                ...(+item.fee !== update.fee && {fee: update.fee}),
               },
             },
           },
@@ -285,9 +286,9 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
         ({
           tickettypeid_fk,
           price,
-          concessionprice,
+          fee,
         }) : any[] => {
-          if (price < 0 || concessionprice < 0) {
+          if (price < 0 || fee < 0) {
             throw new InvalidInputError(422, `Price can not be negative`);
           }
           return [prisma.seasontickettypepricedefault.create({
@@ -295,7 +296,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
               seasonid_fk: +seasonid,
               tickettypeid_fk: +tickettypeid_fk,
               price: +tickettypeid_fk === 0 ? 0 : +price,
-              concessionprice: +concessionprice,
+              fee: +fee,
               ticketrestrictions: {
                 connect: ticketResMap.get(+tickettypeid_fk)?.map((id) => ({
                   ticketrestrictionsid: id,
@@ -313,7 +314,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
             },
             data: {
               price: +tickettypeid_fk === 0 ? 0 : +price,
-              concessionprice: +concessionprice,
+              fee: +fee,
             },
           })];
         })
@@ -338,7 +339,7 @@ seasonTicketTypePriceDefaultController.put('/:seasonid', async (req: Request, re
               seasonid_fk: defaultTicketType.seasonid_fk,
               tickettypeid_fk: defaultTicketType.tickettypeid_fk,
               price: defaultTicketType.price,
-              concessionprice: defaultTicketType.concessionprice,
+              fee: defaultTicketType.fee,
               description: defaultTicketType.tickettype.description,
             })),
     );
