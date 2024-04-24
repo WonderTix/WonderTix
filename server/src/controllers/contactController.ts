@@ -49,7 +49,6 @@ contactController.use(checkScopes);
  */
 contactController.post('/', async (req: Request, res: Response) => {
   try {
-WT-633
     const contact = await prisma.contacts.create({
       data: {
         firstname: req.body.firstname,
