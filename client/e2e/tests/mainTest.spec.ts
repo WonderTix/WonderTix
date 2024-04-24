@@ -229,7 +229,7 @@ test('check order on door list', async ({page}, testInfo) => {
   try {
     await main.goto();
     await main.purchaseTicket(currentPatron, currentCard, currentEvent, {qty: quantity, timeoutAdd: timeoutAdd});
-    await doorList.goto();
+    await doorList.goTo();
     await doorList.searchShowing(currentEvent, currentShowing);
     await doorList.checkOrder(currentPatron, quantity);
   } finally {

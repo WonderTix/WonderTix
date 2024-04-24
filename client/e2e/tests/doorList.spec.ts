@@ -8,9 +8,10 @@ import {CustomerInfo, JANE_DOE} from '../testData/CustomerInfo';
 import {VALID_VISA_CREDIT} from '../testData/CreditCard';
 
 
-test('Check Home', async ({page}) => {
+test('Open Door List Page', async ({page}) => {
   const doorList = new DoorListPage(page);
-  await doorList.goto();
+
+  await doorList.goTo();
   expect(doorList.getHeader, 'Door List');
 });
 
@@ -20,19 +21,22 @@ test('Select Active Showing in Doorlist', async ({page}) => {
   const doorList = new DoorListPage(page);
 
   try {
-    // Add event and showing to check for in the door list
+    // Add event and showing to check from within the door list
     await eventsPage.goto();
     await eventsPage.addnewevent(currentEvent);
     await eventsPage.activateEvent();
     await eventsPage.addNewShowing(SHOWING_INFO_1);
 
     // Check door list
-    await doorList.goto();
+    await doorList.goTo();
     await doorList.searchShowing(currentEvent, SHOWING_INFO_1);
+
+    await expect(doorList.showingTitle).toHaveText(`Showing: ${currentEvent.eventName}`);
+    await expect(doorList.showingTime).toHaveText(`${SHOWING_INFO_1.showingWholeDate}, ${SHOWING_INFO_1.showingTime12hour}`);
   } finally {
     // Remove the added event
-    await eventsPage.goto();
-    await page.locator(':text("' + currentEvent.eventName + '")').click();
+    await doorList.goHome();
+    await eventsPage.goToEventFromManage(currentEvent);
     await eventsPage.deleteTheEvent(currentEvent);
   }
 });
@@ -49,75 +53,51 @@ test('Select Inactive Showing in Doorlist', async ({page}) => {
     await eventsPage.addNewShowing(SHOWING_INFO_1);
 
     // Check door list
-    await doorList.goto();
+    await doorList.goTo();
     await doorList.setAllView();
     await doorList.searchShowing(currentEvent, SHOWING_INFO_1);
+
+    await expect(doorList.showingTitle).toHaveText(`Showing: ${currentEvent.eventName}`);
+    await expect(doorList.showingTime).toHaveText(`${SHOWING_INFO_1.showingWholeDate}, ${SHOWING_INFO_1.showingTime12hour}`);
   } finally {
     // Remove the added event
-    await eventsPage.goto();
-    await eventsPage.setInactiveView();
-    await page.locator(':text("' + currentEvent.eventName + '")').click();
+    await doorList.goHome();
+    await eventsPage.goToInactiveEventFromManage(currentEvent);
     await eventsPage.deleteTheEvent(currentEvent);
   }
 });
 
-test('Open Seats in Doorlist', async ({page}) => {
-  const currentEvent = new EventInfo(EVENT_INFO_1);
-  const currentShowing = SHOWING_INFO_1;
-  const eventsPage = new EventsPage(page);
-  const doorList = new DoorListPage(page);
-  try {
-    // Add event and showing to check for in the door list
-    await eventsPage.goto();
-    await eventsPage.addnewevent(currentEvent);
-    await eventsPage.activateEvent();
-    await eventsPage.addNewShowing(currentShowing);
-
-    // Check door list
-    await doorList.goto();
-    await doorList.searchShowing(currentEvent, currentShowing);
-    await doorList.customerRow.filter({hasText: 'OPEN SEATS'})
-      .filter({hasText: currentShowing.showingQuantity.toString()});
-  } finally {
-    // Remove the added event
-    await eventsPage.goto();
-    await page.locator(':text("' + currentEvent.eventName + '")').click();
-    await eventsPage.deleteTheEvent(currentEvent);
-  }
-});
-
-test('Purchased Seats in Doorlist', async ({page}, testInfo) => {
+test('See Purchased Seats in Doorlist', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + timeoutAdd);
-  const currentEvent = new EventInfo(EVENT_INFO_1);
-  const currentShowing = SHOWING_INFO_1;
-  const currentPatron = new CustomerInfo(JANE_DOE);
-  const currentCard = VALID_VISA_CREDIT;
-  const ticketQuantity = 3;
+
   const eventsPage = new EventsPage(page);
+  const mainPage = new MainPage(page);
   const doorList = new DoorListPage(page);
-  const main = new MainPage(page);
+
+  const currentEvent = new EventInfo(EVENT_INFO_1);
+  const currentPatron = new CustomerInfo(JANE_DOE);
+  const ticketQuantity = 3;
+
   try {
     // Add event and showing to check for in the door list
     await eventsPage.goto();
     await eventsPage.addnewevent(currentEvent);
     await eventsPage.activateEvent();
-    await eventsPage.addNewShowing(currentShowing);
+    await eventsPage.addNewShowing(SHOWING_INFO_1);
 
     // Purchase tickets
-    await main.goto();
-    await main.purchaseTicket(currentPatron, currentCard, currentEvent, {timeoutAdd: timeoutAdd, qty: ticketQuantity});
+    await mainPage.goto();
+    await mainPage.purchaseTicket(currentPatron, VALID_VISA_CREDIT, currentEvent, {timeoutAdd: timeoutAdd, qty: ticketQuantity});
 
     // Check door list
-    await doorList.goto();
-    await doorList.searchShowing(currentEvent, currentShowing);
-    await doorList.customerRow.filter({hasText: 'OPEN SEATS'})
-      .filter({hasText: (parseInt(currentShowing.showingQuantity) - ticketQuantity).toString()});
-    await doorList.checkOrder(currentPatron, ticketQuantity);
+    await doorList.goTo();
+    await doorList.searchShowing(currentEvent, SHOWING_INFO_1);
+    await expect(doorList.getCustomerRow(currentPatron, ticketQuantity)).toBeVisible();
   } finally {
     // Remove the added event
-    await eventsPage.goto();
-    await page.locator(':text("' + currentEvent.eventName + '")').click();
+    await doorList.goHome();
+    await eventsPage.goToEventFromManage(currentEvent);
     await eventsPage.deleteTheEvent(currentEvent);
   }
 });

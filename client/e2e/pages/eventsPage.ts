@@ -218,6 +218,14 @@ export class EventsPage {
     await this.page.getByRole('button', {name: anEvent.eventName+' '+'Playbill'+' '+anEvent.eventName+' '+'Description'+' '+anEvent.eventDescription}).first().click();
   }
 
+  async goToInactiveEventFromManage(anEvent: EventInfo) {
+    await this.emailButton.click();
+    await this.manageTicketingButton.click();
+    await this.leftBarEvent.click();
+    await this.setInactiveView();
+    await this.page.getByRole('button', {name: anEvent.eventName+' '+'Playbill'+' '+anEvent.eventName+' '+'Description'+' '+anEvent.eventDescription}).first().click();
+  }
+
  /**
   * Asynchronously deletes an existing event based on provided event details.
   *
