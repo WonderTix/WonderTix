@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 import {MainPage} from '../pages/mainPage';
-import {EventsPage} from '../pages/EventsPage';
+import {EventsPage} from '../pages/eventsPage';
 import {ContactPage} from '../pages/contactPage';
 import {DoorListPage} from '../pages/doorListPage';
 import {CustomerInfo, JOHN_DOE, JANE_DOE} from '../testData/CustomerInfo';

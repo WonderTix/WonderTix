@@ -1,6 +1,6 @@
 import {test} from '@playwright/test';
 import {SeasonsPage} from '../pages/seasonsPage';
-import {EventsPage} from '../pages/EventsPage';
+import {EventsPage} from '../pages/eventsPage';
 import {EventInfo, EVENT_INFO_1} from '../testData/EventInfo';
 import {SeasonInfo, SEASON_INFO_1} from '../testData/SeasonInfo';
 

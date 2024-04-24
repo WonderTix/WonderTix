@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import test, {ElementHandle, type Locator, type Page} from '@playwright/test';
+import {ElementHandle, type Locator, type Page} from '@playwright/test';
 import {CustomerInfo} from '../testData/CustomerInfo';
 import {CreditCardInfo} from '../testData/CreditCard';
 
