@@ -1,12 +1,23 @@
-/* eslint-disable require-jsdoc */
-import {test} from '@playwright/test';
+import {test, expect} from '@playwright/test';
 import {EventsPage} from '../pages/eventsPage';
-import {EventInfo, EVENT_INFO_1, EVENT_INFO_2, EVENT_INFO_3} from '../testData/EventInfo';
-import {SHOWING_INFO_1, SHOWING_INFO_2, SHOWING_INFO_3, SHOWING_INFO_4} from '../testData/ShowingInfo';
+import {
+  EventInfo,
+  EVENT_INFO_1,
+  EVENT_INFO_2,
+  EVENT_INFO_3, EVENT_INFO_4,
+} from '../testData/EventInfo';
+import {
+  SHOWING_INFO_1,
+  SHOWING_INFO_2,
+  SHOWING_INFO_3,
+  SHOWING_INFO_4,
+} from '../testData/ShowingInfo';
 
 test('Homepage->Events', async ({page}) => {
   const eventsPage = new EventsPage(page);
-  await eventsPage.goto();
+
+  await eventsPage.goTo();
+  await expect(eventsPage.pageHeader).toHaveText('Select Event');
 });
 
 /**
@@ -15,80 +26,95 @@ test('Homepage->Events', async ({page}) => {
  * Go to the newly created event from the manage ticketing page.
  * Add one more showing for it.
  * Search for two corresponding showing by their date and delete them.
- * Delete the newly created event at last.
+ * Delete the newly created event at last and check that it doesn't appear.
  */
-test('addDeleteEvents', async ({page})=>{
+test('Add and Delete Event and Showings', async ({page}) => {
   const eventsPage = new EventsPage(page);
   const currentEvent = new EventInfo(EVENT_INFO_1);
-  await eventsPage.goto();
-  await eventsPage.addnewevent(currentEvent);
+
+  // Add event and showing
+  await eventsPage.goTo();
+  await eventsPage.addNewEvent(currentEvent);
   await eventsPage.activateEvent();
   await eventsPage.addNewShowing(SHOWING_INFO_1);
-  await eventsPage.checkNewEventOnHomePage(currentEvent);
+  await eventsPage.goToHome();
+  await expect(eventsPage.getEventOnHomePage(currentEvent)).toBeVisible();
+
+  // Add second showing
   await eventsPage.goToEventFromManage(currentEvent);
   await eventsPage.addNewShowing(SHOWING_INFO_2);
+
+  // Delete both showings and event
   await eventsPage.searchDeleteShowing(SHOWING_INFO_1);
   await eventsPage.searchDeleteShowing(SHOWING_INFO_2);
-  await eventsPage.deleteTheEvent(currentEvent);
+  await eventsPage.deleteTheEvent();
+  await expect(eventsPage.getEventOnEventsPage(currentEvent)).not.toBeVisible();
 });
 
-// Test is looking for a seeded event.  It is then being reset via a template from ConstsPackage
-// Need to refactor so that it's adding and looking at its own event, not a seeded event.
-test.skip('editEvents', async ({page})=>{
-  test.setTimeout(45000);
-  const currentEvent3 = new EventInfo(EVENT_INFO_2);
-  const currentEvent4 = new EventInfo(EVENT_INFO_3);
+test('Edit Event', async ({page}) => {
   const eventsPage = new EventsPage(page);
   const currentEvent = new EventInfo(EVENT_INFO_3);
   const currentEvent1 = new EventInfo(EVENT_INFO_2);
-  await eventsPage.goto();
+  const currentEvent2 = new EventInfo(EVENT_INFO_4);
+
   // Go to the event information page first
-  await eventsPage.addnewevent(currentEvent);
+  await eventsPage.goTo();
+  await eventsPage.addNewEvent(currentEvent);
   await eventsPage.activateEvent();
   await eventsPage.addNewShowing(SHOWING_INFO_4);
-  // Change the event's information a little bit
   try {
-  await eventsPage.editTheEventInfo(currentEvent1);
-  // Search for the event by its new name
-  await eventsPage.searchForEventByName(currentEvent1);
-  // Search for the event by its new description
-  await eventsPage.editTheEventInfo(currentEvent1);
-  await eventsPage.searchForEventByDes(currentEvent1);
-  // Now let's change everything back
-  await eventsPage.editTheEventInfo(currentEvent);
+    // Change the event's information
+    await eventsPage.editTheEventInfo(currentEvent1);
+
+    // See the changes persist
+    await expect(eventsPage.eventName).toHaveText(currentEvent1.eventName);
+    await expect(eventsPage.eventDesc).toHaveText(currentEvent1.eventDescription);
+
+    // Change the event's information again
+    await eventsPage.editTheEventInfo(currentEvent2);
+
+    // See the changes persist
+    await expect(eventsPage.eventName).toHaveText(currentEvent2.eventName);
+    await expect(eventsPage.eventDesc).toHaveText(currentEvent2.eventDescription);
   } finally {
-    await eventsPage.searchDeleteShowing(SHOWING_INFO_4);
-    await eventsPage.deleteTheEvent(currentEvent);
+    await eventsPage.deleteTheEvent();
   }
 });
 
-
-test('editShowing', async ({page})=>{
+test('Edit Showing', async ({page}) => {
   const eventsPage = new EventsPage(page);
   const currentEvent = new EventInfo(EVENT_INFO_3);
-  await eventsPage.goto();
-  try {
+
   // Go to the event page first
-    await eventsPage.addnewevent(currentEvent);
-    await eventsPage.activateEvent();
-    await eventsPage.addNewShowing(SHOWING_INFO_4);
-  // Now we change some showing's information a little bit
+  await eventsPage.goTo();
+  await eventsPage.addNewEvent(currentEvent);
+  await eventsPage.activateEvent();
+  await eventsPage.addNewShowing(SHOWING_INFO_4);
+  try {
+    // Now we change the showing information
     await eventsPage.editShowingInfo(SHOWING_INFO_3);
-  // Then we change that back
+    await expect(eventsPage.getShowingOnEventPage(SHOWING_INFO_3)).toBeVisible();
+
+    // Then we change it back
     await eventsPage.editShowingInfo(SHOWING_INFO_4);
+    await expect(eventsPage.getShowingOnEventPage(SHOWING_INFO_4)).toBeVisible();
   } finally {
-    await eventsPage.searchDeleteShowing(SHOWING_INFO_4);
-    await eventsPage.deleteTheEvent(currentEvent);
-   }
+    await eventsPage.deleteTheEvent();
+  }
 });
 
 /**
  * Check if the default image works.
  */
-test('checkDefaultImage', async ({page})=>{
+test('Add event with default image', async ({page}) => {
   const eventsPage = new EventsPage(page);
   const currentEvent = new EventInfo(EVENT_INFO_3);
-  await eventsPage.goto();
-  await eventsPage.addDefaultIMGevent(currentEvent);
-  await eventsPage.deleteTheEvent(currentEvent);
+
+  await eventsPage.goTo();
+  try {
+    await eventsPage.addNewDefaultImageEvent(currentEvent);
+    await expect(eventsPage.eventImage).toBeVisible();
+  } finally {
+    await eventsPage.deleteTheEvent();
+  }
 });

@@ -27,7 +27,7 @@ export const SHOWING_INFO_2: ShowingInfo = {
 export const SHOWING_INFO_3: ShowingInfo = {
   showingDate: '2021-09-16',
   showingTime24hour: '12:31',
-  showingTime12hour: '12:31 AM',
+  showingTime12hour: '12:31 PM',
   showingQuantity: '101',
   showingWholeDate: 'Thu, Sep 16 2021',
 };

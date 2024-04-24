@@ -35,8 +35,8 @@ test('check cart after ticket add', async ({page}) => {
   const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
 
-  await events.goto();
-  await events.addnewevent(currentEvent);
+  await events.goTo();
+  await events.addNewEvent(currentEvent);
   await events.activateEvent();
   await events.addNewShowing(currentShowing);
 
@@ -70,7 +70,7 @@ test('check cart after ticket add', async ({page}) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent);
-    await events.deleteTheEvent(currentEvent);
+    await events.deleteTheEvent();
   }
 });
 
@@ -88,8 +88,8 @@ test('check stripe purchase', async ({page}, testInfo) => {
   const currentCard = VALID_VISA_CREDIT;
   const currentShowing = SHOWING_INFO_2;
 
-  await events.goto();
-  await events.addnewevent(currentEvent);
+  await events.goTo();
+  await events.addNewEvent(currentEvent);
   await events.activateEvent();
   await events.addNewShowing(currentShowing);
 
@@ -99,8 +99,8 @@ test('check stripe purchase', async ({page}, testInfo) => {
     await expect(main.stripeOrderConfirmation).toBeVisible({timeout: 15000 + timeoutAdd});
   } finally {
     await main.goto();
-     await events.goToEventFromManage(currentEvent);
-    await events.deleteTheEvent(currentEvent);
+    await events.goToEventFromManage(currentEvent);
+    await events.deleteTheEvent();
   }
 });
 
@@ -120,8 +120,8 @@ test('check contact is added after order', async ({page}, testInfo) => {
   const currentPatron = new CustomerInfo(JOHN_DOE);
   const currentCard = VALID_VISA_CREDIT;
 
-  await events.goto();
-  await events.addnewevent(currentEvent);
+  await events.goTo();
+  await events.addNewEvent(currentEvent);
   await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
@@ -133,7 +133,7 @@ test('check contact is added after order', async ({page}, testInfo) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent);
-    await events.deleteTheEvent(currentEvent);
+    await events.deleteTheEvent();
   }
 });
 
@@ -152,8 +152,8 @@ test('check order accommodations', async ({page}, testInfo) => {
   const currentPatron = new CustomerInfo(JANE_DOE);
   const currentCard = VALID_VISA_CREDIT;
 
-  await events.goto();
-  await events.addnewevent(currentEvent);
+  await events.goTo();
+  await events.addNewEvent(currentEvent);
   await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
@@ -165,7 +165,7 @@ test('check order accommodations', async ({page}, testInfo) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent);
-    await events.deleteTheEvent(currentEvent);
+    await events.deleteTheEvent();
   }
 });
 
@@ -181,8 +181,8 @@ test('check ticket inc/dec in cart', async ({page}) => {
 
   const quantity = 2;
 
-  await events.goto();
-  await events.addnewevent(currentEvent);
+  await events.goTo();
+  await events.addNewEvent(currentEvent);
   await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
@@ -201,8 +201,8 @@ test('check ticket inc/dec in cart', async ({page}) => {
     await main.checkEventTicket(currentEvent, quantity);
   } finally {
     await main.goto();
-     await events.goToEventFromManage(currentEvent);
-    await events.deleteTheEvent(currentEvent);
+    await events.goToEventFromManage(currentEvent);
+    await events.deleteTheEvent();
   }
 });
 
@@ -222,8 +222,8 @@ test('check order on door list', async ({page}, testInfo) => {
   const currentCard = VALID_VISA_CREDIT;
   const quantity = 2;
 
-  await events.goto();
-  await events.addnewevent(currentEvent);
+  await events.goTo();
+  await events.addNewEvent(currentEvent);
   await events.activateEvent();
   await events.addNewShowing(currentShowing);
   try {
@@ -235,6 +235,6 @@ test('check order on door list', async ({page}, testInfo) => {
   } finally {
     await main.goto();
     await events.goToEventFromManage(currentEvent);
-    await events.deleteTheEvent(currentEvent);
+    await events.deleteTheEvent();
   }
 });

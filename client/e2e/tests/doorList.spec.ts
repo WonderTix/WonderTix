@@ -22,8 +22,8 @@ test('Select Active Showing in Doorlist', async ({page}) => {
 
   try {
     // Add event and showing to check from within the door list
-    await eventsPage.goto();
-    await eventsPage.addnewevent(currentEvent);
+    await eventsPage.goTo();
+    await eventsPage.addNewEvent(currentEvent);
     await eventsPage.activateEvent();
     await eventsPage.addNewShowing(SHOWING_INFO_1);
 
@@ -37,7 +37,7 @@ test('Select Active Showing in Doorlist', async ({page}) => {
     // Remove the added event
     await doorList.goHome();
     await eventsPage.goToEventFromManage(currentEvent);
-    await eventsPage.deleteTheEvent(currentEvent);
+    await eventsPage.deleteTheEvent();
   }
 });
 
@@ -48,8 +48,8 @@ test('Select Inactive Showing in Doorlist', async ({page}) => {
 
   try {
     // Add event and showing to check for in the door list
-    await eventsPage.goto();
-    await eventsPage.addnewevent(currentEvent);
+    await eventsPage.goTo();
+    await eventsPage.addNewEvent(currentEvent);
     await eventsPage.addNewShowing(SHOWING_INFO_1);
 
     // Check door list
@@ -63,7 +63,7 @@ test('Select Inactive Showing in Doorlist', async ({page}) => {
     // Remove the added event
     await doorList.goHome();
     await eventsPage.goToInactiveEventFromManage(currentEvent);
-    await eventsPage.deleteTheEvent(currentEvent);
+    await eventsPage.deleteTheEvent();
   }
 });
 
@@ -81,8 +81,8 @@ test('See Purchased Seats in Doorlist', async ({page}, testInfo) => {
 
   try {
     // Add event and showing to check for in the door list
-    await eventsPage.goto();
-    await eventsPage.addnewevent(currentEvent);
+    await eventsPage.goTo();
+    await eventsPage.addNewEvent(currentEvent);
     await eventsPage.activateEvent();
     await eventsPage.addNewShowing(SHOWING_INFO_1);
 
@@ -98,6 +98,6 @@ test('See Purchased Seats in Doorlist', async ({page}, testInfo) => {
     // Remove the added event
     await doorList.goHome();
     await eventsPage.goToEventFromManage(currentEvent);
-    await eventsPage.deleteTheEvent(currentEvent);
+    await eventsPage.deleteTheEvent();
   }
 });

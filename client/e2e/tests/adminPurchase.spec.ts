@@ -21,8 +21,8 @@ test('Purchase ticket for customer as admin', async ({page}, testInfo) => {
   const events = new EventsPage(page);
   try {
     // Add event and showing
-    await events.goto();
-    await events.addnewevent(EVENT_INFO_1);
+    await events.goTo();
+    await events.addNewEvent(EVENT_INFO_1);
     await events.activateEvent();
     await events.addNewShowing(SHOWING_INFO_2);
 
@@ -34,6 +34,6 @@ test('Purchase ticket for customer as admin', async ({page}, testInfo) => {
     // Remove added event
     await adminPage.goToHome();
     await events.goToEventFromManage(EVENT_INFO_1);
-    await events.deleteTheEvent(EVENT_INFO_1);
+    await events.deleteTheEvent();
   }
 });

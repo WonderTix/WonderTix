@@ -17,8 +17,8 @@ test('addNewSeasonWithEvent', async ({page}) => {
   const uniqueSeason = new SeasonInfo(SEASON_INFO_1);
 
   try {
-    await eventsPage.goto();
-    await eventsPage.addnewevent(uniqueEvent);
+    await eventsPage.goTo();
+    await eventsPage.addNewEvent(uniqueEvent);
     await eventsPage.activateEvent();
 
     await seasonsPage.goto();
@@ -40,9 +40,9 @@ test('addNewSeasonWithEvent', async ({page}) => {
 
     // cleanup
     const eventsPage2 = new EventsPage(page);
-    await eventsPage2.goto();
+    await eventsPage2.goTo();
     await page.locator(':text("' + uniqueEvent.eventName + '")').click();
-    await eventsPage2.deleteTheEvent(uniqueEvent);
+    await eventsPage2.deleteTheEvent();
   }
 });
 
@@ -83,8 +83,8 @@ test('removeEventFromSeason', async ({page}) => {
 
   try {
     // setup
-    await eventsPage.goto();
-    await eventsPage.addnewevent(uniqueEvent);
+    await eventsPage.goTo();
+    await eventsPage.addNewEvent(uniqueEvent);
     await eventsPage.activateEvent();
 
     // setup
@@ -112,9 +112,9 @@ test('removeEventFromSeason', async ({page}) => {
 
     // cleanup
     const eventsPage2 = new EventsPage(page);
-    await eventsPage2.goto();
+    await eventsPage2.goTo();
     await page.locator(':text("' + uniqueEvent.eventName + '")').click();
-    await eventsPage2.deleteTheEvent(uniqueEvent);
+    await eventsPage2.deleteTheEvent();
   }
 });
 
