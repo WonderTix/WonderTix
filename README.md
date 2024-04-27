@@ -213,7 +213,7 @@ provider "google" {
 
 3. Usage Guide
 
-For more details on how to use Terraform and its CLI to manage project infrastructure, see the [README.md](./iac/terraform/README.md) in the `WonderTix/iac` directory.
+For more details on how to use Terraform and its CLI to manage project infrastructure, see the `README.md` in the `WonderTix/iac` directory.
 
 ## CI/CD
 
