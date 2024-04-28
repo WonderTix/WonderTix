@@ -166,31 +166,6 @@ Source: `./terraform/`
 
 <br>
 
-## Version Control Integration
-- **Repository Setup:** Ensure Terraform configurations are stored in a version-controlled repository to track changes and collaborate effectively.
-- **Branching Strategy:** Use feature branches for new changes, merge them into main/master through pull requests.
-- **Commit Guidelines:** Write clear, concise commit messages that explain why and what changes were made.
-
-<br>
-
-## Dependency Management
-- **Using Modules:** Utilize Terraform modules to reuse code for similar infrastructure setups. Specify the module source and version in your configuration files.
-- **Updating Modules:** Regularly update your modules to the latest versions to incorporate improvements and security patches.
-
-<br>
-
-## Performance Optimization
-- **State Locking:** Use remote state with state locking to prevent conflicts during concurrent operations.
-- **Parallelism:** Adjust the parallelism level of Terraform operations to speed up execution without overloading your systems.
-
-<br>
-
-## Testing and Validation
-- **Static Code Analysis:** Use tools like `terraform validate` and `tflint` to catch errors and enforce best practices.
-- **Integration Testing:** Implement automated testing that applies changes to a test environment before production.
-
-<br>
-
 ## Managing Variables with `.tfvars` Files
 
 - **Creating `.tfvars` Files:**
