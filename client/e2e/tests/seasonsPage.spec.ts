@@ -75,7 +75,7 @@ test('Remove event from season', async ({page}) => {
 
     // test
     await expect(seasonsPage.seasonEventCard.filter({hasText: uniqueEvent.eventName})).toBeVisible();
-    await seasonsPage.removeEventFromSeason(uniqueSeason, uniqueEvent);
+    await seasonsPage.removeEventFromSeason(uniqueEvent);
     await expect(seasonsPage.seasonEventCard.filter({hasText: uniqueEvent.eventName})).not.toBeVisible();
   } finally {
     await seasonsPage.goTo();

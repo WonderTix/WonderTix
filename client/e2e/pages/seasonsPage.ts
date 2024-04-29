@@ -93,7 +93,7 @@ export class SeasonsPage {
     await this.page.getByRole('button', {name: 'Continue'}).click();
   }
 
-  async removeEventFromSeason(season: SeasonInfo, event: EventInfo) {
+  async removeEventFromSeason(event: EventInfo) {
     const eventLocator = this.seasonEventCard.filter({
       hasText: event.eventName,
     });
