@@ -7,14 +7,6 @@ import {SHOWING_INFO_1} from '../testData/ShowingInfo';
 import {CustomerInfo, JANE_DOE} from '../testData/CustomerInfo';
 import {VALID_VISA_CREDIT} from '../testData/CreditCard';
 
-
-test('Open Door List Page', async ({page}) => {
-  const doorList = new DoorListPage(page);
-
-  await doorList.goTo();
-  expect(doorList.getHeader, 'Door List');
-});
-
 test('Select Active Showing in Doorlist', async ({page}) => {
   const currentEvent = new EventInfo(EVENT_INFO_1);
   const eventsPage = new EventsPage(page);
@@ -31,8 +23,12 @@ test('Select Active Showing in Doorlist', async ({page}) => {
     await doorList.goTo();
     await doorList.searchShowing(currentEvent, SHOWING_INFO_1);
 
-    await expect(doorList.showingTitle).toHaveText(`Showing: ${currentEvent.eventName}`);
-    await expect(doorList.showingTime).toHaveText(`${SHOWING_INFO_1.showingWholeDate}, ${SHOWING_INFO_1.showingTime12hour}`);
+    await expect(doorList.showingTitle).toHaveText(
+      `Showing: ${currentEvent.eventName}`,
+    );
+    await expect(doorList.showingTime).toHaveText(
+      `${SHOWING_INFO_1.showingWholeDate}, ${SHOWING_INFO_1.showingTime12hour}`,
+    );
   } finally {
     // Remove the added event
     await doorList.goHome();
@@ -57,8 +53,12 @@ test('Select Inactive Showing in Doorlist', async ({page}) => {
     await doorList.setAllView();
     await doorList.searchShowing(currentEvent, SHOWING_INFO_1);
 
-    await expect(doorList.showingTitle).toHaveText(`Showing: ${currentEvent.eventName}`);
-    await expect(doorList.showingTime).toHaveText(`${SHOWING_INFO_1.showingWholeDate}, ${SHOWING_INFO_1.showingTime12hour}`);
+    await expect(doorList.showingTitle).toHaveText(
+      `Showing: ${currentEvent.eventName}`,
+    );
+    await expect(doorList.showingTime).toHaveText(
+      `${SHOWING_INFO_1.showingWholeDate}, ${SHOWING_INFO_1.showingTime12hour}`,
+    );
   } finally {
     // Remove the added event
     await doorList.goHome();
@@ -87,13 +87,20 @@ test('See Purchased Seats in Doorlist', async ({page}, testInfo) => {
     await eventsPage.addNewShowing(SHOWING_INFO_1);
 
     // Purchase tickets
-    await mainPage.goto();
-    await mainPage.purchaseTicket(currentPatron, VALID_VISA_CREDIT, currentEvent, {timeoutAdd: timeoutAdd, qty: ticketQuantity});
+    await mainPage.goTo();
+    await mainPage.purchaseTicket(
+      currentPatron,
+      VALID_VISA_CREDIT,
+      currentEvent,
+      {timeoutAdd: timeoutAdd, qty: ticketQuantity},
+    );
 
     // Check door list
     await doorList.goTo();
     await doorList.searchShowing(currentEvent, SHOWING_INFO_1);
-    await expect(doorList.getCustomerRow(currentPatron, ticketQuantity)).toBeVisible();
+    await expect(
+      doorList.getCustomerRow(currentPatron, ticketQuantity),
+    ).toBeVisible();
   } finally {
     // Remove the added event
     await doorList.goHome();

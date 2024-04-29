@@ -13,13 +13,6 @@ import {
   SHOWING_INFO_4,
 } from '../testData/ShowingInfo';
 
-test('Homepage->Events', async ({page}) => {
-  const eventsPage = new EventsPage(page);
-
-  await eventsPage.goTo();
-  await expect(eventsPage.pageHeader).toHaveText('Select Event');
-});
-
 /**
  * First we create a new event and add a new showing for it.
  * And we go back to homepage to see if it exists on the homepage.

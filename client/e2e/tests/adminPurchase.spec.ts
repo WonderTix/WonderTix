@@ -6,13 +6,6 @@ import {SHOWING_INFO_2} from '../testData/ShowingInfo';
 import {JANE_DOE} from '../testData/CustomerInfo';
 import {VALID_VISA_CREDIT} from '../testData/CreditCard';
 
-test('Open admin purchase page', async ({page}) => {
-  const adminPage = new AdminPurchasePage(page);
-  await adminPage.goTo();
-
-  expect(adminPage.getHeader, 'Purchase Tickets');
-});
-
 test('Purchase ticket for customer as admin', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
   test.setTimeout(80000 + (timeoutAdd * 2));

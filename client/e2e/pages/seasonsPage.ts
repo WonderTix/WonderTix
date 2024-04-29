@@ -6,23 +6,22 @@ import {SeasonInfo} from '../testData/SeasonInfo';
 export class SeasonsPage {
   readonly page: Page;
 
-  // Homepage
-  readonly emailButton: Locator;
-  readonly manageTicketingButton: Locator;
-  readonly dashboardSeasonsButton: Locator;
-
-  // ../ticketing
-  readonly SeasonHeading: Locator;
+  // Season Select Page
+  readonly loadingScreen: Locator;
   readonly addSeasonButton: Locator;
 
-  readonly pageHeader: Locator;
-  readonly seasonNameBlank: Locator;
+  // Individual Season
+  readonly seasonNameInput: Locator;
+  readonly seasonStartDateInput: Locator;
+  readonly seasonEndDateInput: Locator;
+  readonly imageURLInput: Locator;
+
+  readonly seasonName: Locator;
   readonly seasonStartDate: Locator;
   readonly seasonEndDate: Locator;
-  readonly imageURL: Locator;
 
-  readonly seasonOption1: Locator;
-  readonly seasonOption2: Locator;
+  readonly seasonImageButton: Locator;
+  readonly seasonActiveSwitch: Locator;
 
   readonly seasonEdit: Locator;
   readonly seasonSave: Locator;
@@ -30,29 +29,27 @@ export class SeasonsPage {
 
   readonly seasonContinue: Locator;
 
-  readonly DashboardButton: Locator;
-
+  readonly closeAddEventsButton: Locator;
+  readonly seasonEventCard: Locator;
   readonly addEvent: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    this.emailButton = page.getByText(process.env.TEST_EMAIL as string);
-
-    this.manageTicketingButton = page.getByText('Manage Ticketing').first();
-    this.dashboardSeasonsButton = page.getByRole('button', {name: 'Seasons'});
-
-    this.pageHeader = page.getByRole('heading', {name: 'Select Season'});
-
+    this.loadingScreen = page.getByTestId('loading-screen');
     this.addSeasonButton = page.getByRole('button', {name: 'Add Season'});
 
-    this.seasonNameBlank = page.getByLabel('Season Name:');
-    this.seasonStartDate = page.getByLabel('Start Date:');
-    this.seasonEndDate = page.getByLabel('End Date:');
-    this.imageURL = page.getByLabel('Image URL:');
+    this.seasonNameInput = page.getByLabel('Season Name:');
+    this.seasonStartDateInput = page.getByLabel('Start Date:');
+    this.seasonEndDateInput = page.getByLabel('End Date:');
+    this.imageURLInput = page.getByLabel('Image URL:');
 
-    this.seasonOption1 = page.getByLabel('Use Default Image');
-    this.seasonOption2 = page.getByLabel('Active');
+    this.seasonName = page.getByTestId('season-name');
+    this.seasonStartDate = page.getByTestId('season-startdate');
+    this.seasonEndDate = page.getByTestId('season-enddate');
+
+    this.seasonImageButton = page.getByLabel('Use Default Image');
+    this.seasonActiveSwitch = page.getByLabel('Active');
 
     this.seasonEdit = page.getByTestId('season-edit');
     this.seasonSave = page.getByRole('button', {name: 'Save'});
@@ -60,81 +57,66 @@ export class SeasonsPage {
 
     this.seasonContinue = page.getByRole('button', {name: 'Continue'});
 
+    this.closeAddEventsButton = page.getByRole('button', {name: 'Close'});
+    this.seasonEventCard = page.getByTestId('season-event-card');
     this.addEvent = page.getByRole('button', {name: 'Add event'});
   }
 
   async addNewSeason(season: SeasonInfo) {
     await this.addSeasonButton.click();
-    await this.seasonNameBlank.fill(season.seasonName);
-    await this.seasonStartDate.fill(season.seasonStart);
-    await this.seasonEndDate.fill(season.seasonEnd);
-    await this.imageURL.fill(season.seasonImgURL);
+    await this.seasonNameInput.fill(season.seasonName);
+    await this.seasonStartDateInput.fill(season.seasonStart);
+    await this.seasonEndDateInput.fill(season.seasonEnd);
+    await this.imageURLInput.fill(season.seasonImgURL);
     await this.seasonSave.click();
     await this.seasonContinue.click();
-
-    await expect(
-      this.page.locator(':text("' + season.seasonName + '")'),
-    ).toBeVisible();
   }
 
   async addEventToSeason(event: EventInfo) {
-    const seasonLocator = this.page
-      .getByTestId('season-event-card')
-      .filter({hasText: event.eventName});
     await this.addEvent.click();
-    seasonLocator.getByTestId('event-add-to-season').click();
-    await this.page.getByRole('button', {name: 'Continue'}).click();
-
-    await expect(
-      this.page.locator(':text("' + event.eventName + '")'),
-    ).toBeVisible();
+    const eventLocator = this.seasonEventCard.filter({
+      hasText: event.eventName,
+    });
+    await eventLocator.getByTestId('event-add-to-season').click();
+    await this.seasonContinue.click();
+    await this.closeAddEventsButton.click();
   }
 
-  async editSeason(old_season: SeasonInfo, new_season: SeasonInfo) {
-    await this.page.locator(':text("' + old_season.seasonName + '")').click();
+  async editSeason(oldSeason: SeasonInfo, newSeason: SeasonInfo) {
+    await this.page.getByText(oldSeason.seasonName).click();
     await this.seasonEdit.click();
-    await this.seasonNameBlank.fill(new_season.seasonName);
-    await this.seasonStartDate.fill(new_season.seasonStart);
-    await this.seasonEndDate.fill(new_season.seasonEnd);
-    await this.imageURL.fill(new_season.seasonImgURL);
+    await this.seasonNameInput.fill(newSeason.seasonName);
+    await this.seasonStartDateInput.fill(newSeason.seasonStart);
+    await this.seasonEndDateInput.fill(newSeason.seasonEnd);
+    await this.imageURLInput.fill(newSeason.seasonImgURL);
     await this.seasonSave.click();
     await this.page.getByRole('button', {name: 'Continue'}).click();
-
-    await expect(
-      this.page.locator(':text("' + new_season.seasonName + '")'),
-    ).toBeVisible();
   }
 
   async removeEventFromSeason(season: SeasonInfo, event: EventInfo) {
-    await this.page.locator(':text("' + season.seasonName + '")').click();
+    const eventLocator = this.seasonEventCard.filter({
+      hasText: event.eventName,
+    });
+    await eventLocator.getByTestId('event-remove').click();
 
-    const seasonLocator = this.page
-      .getByTestId('season-event-card')
-      .filter({hasText: event.eventName});
-    seasonLocator.getByTestId('event-remove').click();
-
-    await this.page.getByRole('button', {name: 'Continue'}).click();
-
-    await expect(
-      this.page.locator(':text("' + event.eventName + '")'),
-    ).not.toBeVisible();
+    await this.seasonContinue.click();
   }
 
-  async removeSeason(season: SeasonInfo) {
-    await this.page.locator(':text("' + season.seasonName + '")').click();
+  async clickSeasonCard(season: SeasonInfo) {
+    await this.page.getByText(season.seasonName).click();
+  }
+
+  getSeasonCard(season: SeasonInfo) {
+    return this.page.getByText(season.seasonName);
+  }
+
+  async removeSeason() {
     await this.seasonDelete.click();
-    await this.page.getByRole('button', {name: 'Continue'}).click();
-
-    await expect(
-      this.page.locator(':text("' + season.seasonName + '")'),
-    ).not.toBeVisible();
+    await this.seasonContinue.click();
   }
 
-  async goto() {
-    await this.page.goto('/', {timeout: 90000});
-    await this.emailButton.click();
-    await this.manageTicketingButton.click();
-    await this.dashboardSeasonsButton.click();
-    await expect(this.pageHeader).toBeVisible();
+  async goTo() {
+    await this.page.goto('/ticketing/seasons', {timeout: 30000});
+    await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 }
