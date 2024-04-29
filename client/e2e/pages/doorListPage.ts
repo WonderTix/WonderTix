@@ -98,7 +98,7 @@ export class DoorListPage {
     return this.customerRow
       .filter({hasText: customer.firstName})
       .filter({hasText: customer.lastName})
-      .filter({hasText: `${qty} x General Admission`})
+      .filter({hasText: `${qty} x General Admission - Adult`})
       .filter({hasText: customer.accommodations});
   }
 
