@@ -462,54 +462,55 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       const orderItemsMap = new Map<string, any>();
       const
         ticketItemsRefunded = order
-            .orderticketitems
-            .reduce<boolean>((acc, ticket) => {
-              if (!ticket.ticketitem) return acc;
-              const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
-              const item = orderItemsMap.get(key);
-              if (item) {
-                item.quantity += 1;
-              } else {
-                orderItemsMap.set(key,
-                    {
-                      price: ticket.price,
-                      fee: ticket.fee,
-                      refunded: ticket.refund !== null,
-                      redeemed: ticket.ticketitem.redeemed,
-                      donated: ticket.ticketitem.donated,
-                      description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
-                      eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
-                      eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
-                      eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
-                      detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
-                      seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
-                      tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
-                      quantity: 1,
-                    });
-              }
-              return acc && ticket.refund !== null;
-            }, true);
-
-      const subscriptionItemsRefunded = order.subscriptions.reduce<boolean>(
-          (acc, sub) => {
-            const key = `${sub.price}S${sub.subscriptiontypeid_fk}S${sub.seasonid_fk}`;
+          .orderticketitems
+          .reduce<boolean>((acc, ticket) => {
+            if (!ticket.ticketitem) return acc;
+            const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}T${ticket.department}`;
             const item = orderItemsMap.get(key);
             if (item) {
               item.quantity += 1;
             } else {
-              orderItemsMap.set(key, {
-                id: sub.id,
-                price: sub.price,
-                refunded: sub.refund !== null,
-                subscriptionType: sub.seasonsubscriptiontype.subscriptiontype.name,
-                seasonName: sub.seasonsubscriptiontype.season.name,
-                ticketlimit: sub.seasonsubscriptiontype.ticketlimit,
-                quantity: 1,
-              });
+              orderItemsMap.set(key,
+                {
+                  price: ticket.price,
+                  fee: ticket.fee,
+                  refunded: ticket.refund !== null,
+                  redeemed: ticket.ticketitem.redeemed,
+                  donated: ticket.ticketitem.donated,
+                  description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+                  department: ticket.department,
+                  eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
+                  eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
+                  eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+                  detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
+                  seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
+                  tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
+                  quantity: 1,
+                });
             }
-            return acc && sub.refund !== null;
-          },
-          true,
+            return acc && ticket.refund !== null;
+          }, true);
+
+      const subscriptionItemsRefunded = order.subscriptions.reduce<boolean>(
+        (acc, sub) => {
+          const key = `${sub.price}S${sub.subscriptiontypeid_fk}S${sub.seasonid_fk}`;
+          const item = orderItemsMap.get(key);
+          if (item) {
+            item.quantity += 1;
+          } else {
+            orderItemsMap.set(key, {
+              id: sub.id,
+              price: sub.price,
+              refunded: sub.refund !== null,
+              subscriptionType: sub.seasonsubscriptiontype.subscriptiontype.name,
+              seasonName: sub.seasonsubscriptiontype.season.name,
+              ticketlimit: sub.seasonsubscriptiontype.ticketlimit,
+              quantity: 1,
+            });
+          }
+          return acc && sub.refund !== null;
+        },
+        true,
       );
 
       const flattenedDonation = {

@@ -177,6 +177,7 @@ model orderticketitems {
   orderid_fk Int
   price      Decimal      @db.Money
   fee        Decimal      @db.Money
+  department String?      @db.VarChar(255)
   order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
   ticketitem ticketitems?
   refund     refunditems?

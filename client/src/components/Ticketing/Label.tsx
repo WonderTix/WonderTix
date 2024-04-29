@@ -17,7 +17,7 @@ export interface LabelProps {
  */
 const Label = ({className, color = 'slate', children}: LabelProps): ReactElement => {
   return (
-    <span className={`py-1 px-2 font-bold rounded-md shadow-md ${colorClasses[color]} ${className}`}>
+    <span className={`py-1 px-2 font-bold text-center rounded-md shadow whitespace-nowrap ${colorClasses[color]} ${className}`}>
       {children}
     </span>
   );
