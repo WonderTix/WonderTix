@@ -306,7 +306,7 @@ export class MainPage {
     await this.clickCartNext();
     await this.fillStripeInfo(customer, creditCard, options.timeoutAdd);
     await this.clickStripeCheckout();
-    await this.stripeOrderConfirmation.waitFor({state: 'visible', timeout: 10000});
+    await this.stripeOrderConfirmation.waitFor({state: 'visible', timeout: 30000});
   }
 
   // Increase number of tickets for an event by one

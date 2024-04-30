@@ -137,7 +137,7 @@ export class AdminPurchasePage {
   ): Promise<void> {
     await this.dynamicDropDownSelector(this.eventDropdown, eventName);
     await this.dynamicDropDownSelector(this.eventTimeDropdown, eventTime);
-    await this.ticketTypeDropdown.selectOption('1');
+    await this.dynamicDropDownSelector(this.ticketTypeDropdown, 'General Admission');
     await this.checkoutButton.click();
 
     await this.fillCustomerInfo(customer);
