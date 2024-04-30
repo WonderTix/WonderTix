@@ -1,3 +1,4 @@
+/* eslint-disable camelcase*/
 import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
