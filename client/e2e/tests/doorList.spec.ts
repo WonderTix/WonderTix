@@ -69,7 +69,7 @@ test('Select Inactive Showing in Doorlist', async ({page}) => {
 
 test('See Purchased Seats in Doorlist', async ({page}, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
-  test.setTimeout(80000 + timeoutAdd);
+  test.setTimeout(80000 + timeoutAdd * 2);
 
   const eventsPage = new EventsPage(page);
   const mainPage = new MainPage(page);

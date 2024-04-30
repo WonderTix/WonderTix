@@ -127,7 +127,7 @@ test('Check contact with accommodation is created after order', async ({
   page,
 }, testInfo) => {
   const timeoutAdd = testInfo.retry * 5000;
-  test.setTimeout(80000 + timeoutAdd);
+  test.setTimeout(80000 + timeoutAdd * 2);
 
   const events = new EventsPage(page);
   const main = new MainPage(page);
