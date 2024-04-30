@@ -1,12 +1,7 @@
 /* eslint-disable require-jsdoc */
-import {type Locator, type Page, expect} from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
 import {EventInfo} from '../testData/EventInfo';
 import {ShowingInfo} from '../testData/ShowingInfo';
-/*
-Since many locators' names are created while a specific test is being written, some names are ill-considered,
-of course we could optimize them later in the process to create as few locators as possible and to share
-the same locator with multiple tests.
-*/
 
 export class EventsPage {
   readonly page: Page;
@@ -229,10 +224,6 @@ export class EventsPage {
 
   /**
    * Asynchronously deletes an existing event based on provided event details.
-   *
-   * @param {EventInfo} anEvent - Object with event details to be deleted, the data needed:
-   *    - `eventName`: Name of the event.
-   *    - `eventDescription`: Description of the event.
    */
   async deleteTheEvent() {
     await this.deleteButton.click();

@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import {type Locator, type Page, expect} from '@playwright/test';
+import {type Locator, type Page} from '@playwright/test';
 import {EventInfo} from '../testData/EventInfo';
 import {SeasonInfo} from '../testData/SeasonInfo';
 

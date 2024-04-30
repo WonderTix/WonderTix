@@ -135,7 +135,7 @@ export class MainPage {
    * The first option is typically discarded as a placeholder or non-valid choice.
    *
    * @param {Locator} optionBox - The Playwright Locator object for the dropdown.
-   * @returns {Promise<string>} - The text of the randomly selected option.
+   * @returns The text of the randomly selected option.
    *
    * Note: A brief pause between checks is included to avoid rapid polling.
    */

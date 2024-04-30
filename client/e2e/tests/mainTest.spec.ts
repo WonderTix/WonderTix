@@ -2,10 +2,9 @@ import {test, expect} from '@playwright/test';
 import {MainPage} from '../pages/mainPage';
 import {EventsPage} from '../pages/eventsPage';
 import {ContactPage} from '../pages/contactPage';
-import {DoorListPage} from '../pages/doorListPage';
 import {CustomerInfo, JOHN_DOE, JANE_DOE} from '../testData/CustomerInfo';
-import {EventInfo, EVENT_INFO_4, EVENT_INFO_5} from '../testData/EventInfo';
-import {SHOWING_INFO_2, SHOWING_INFO_5} from '../testData/ShowingInfo';
+import {EventInfo, EVENT_INFO_4} from '../testData/EventInfo';
+import {SHOWING_INFO_2} from '../testData/ShowingInfo';
 import {VALID_VISA_CREDIT} from '../testData/CreditCard';
 
 // Verify we can get to the main page and the event header is visible
@@ -122,7 +121,7 @@ test('Check stripe purchase', async ({page}, testInfo) => {
 });
 
 // Order a ticket through Stripe and ensure the contact appears on the Contact page.
-// Select an accommodation during order and make sure it appears on the contact page with the associated person
+// Select accommodation during order and make sure it appears on the contact page with the associated person
 test('Check contact with accommodation is created after order', async ({
   page,
 }, testInfo) => {

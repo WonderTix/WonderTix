@@ -81,10 +81,6 @@ export class AdminPurchasePage {
     await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 
-  async getHeader() {
-    return this.pageHeader.textContent();
-  }
-
   /**
    * Selects an element of a dropdown based on selector and search string.
    *

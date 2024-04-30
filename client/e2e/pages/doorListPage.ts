@@ -52,11 +52,6 @@ export class DoorListPage {
     await this.chooseShowing.selectOption({label: time});
   }
 
-  // Fetch the page header as a string
-  async getHeader() {
-    return this.pageHeader.textContent();
-  }
-
   // Pick a random show to look at and return its name
   async selectRandomShow() {
     const showsUnit = await this.chooseEvent.allInnerTexts();
