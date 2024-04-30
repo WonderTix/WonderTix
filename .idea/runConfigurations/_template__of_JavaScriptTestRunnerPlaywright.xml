@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="JavaScriptTestRunnerPlaywright">
+    <config value="$PROJECT_DIR$/client/playwright.config.ts" />
+    <node-interpreter value="project" />
+    <playwright-package value="$PROJECT_DIR$/client/node_modules/@playwright/test" />
+    <working-dir value="$PROJECT_DIR$/client" />
+    <cli-options value="--headed --project=chromium" />
+    <envs />
+    <scope-kind value="DIRECTORY" />
+    <test-directory value="$PROJECT_DIR$/client/e2e" />
+    <method v="2" />
+  </configuration>
+</component>
