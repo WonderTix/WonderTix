@@ -260,7 +260,7 @@ export class MainPage {
   ) {
     await this.page.waitForTimeout(10000 + timeoutAdd);
     if (await this.page.getByText('Use your saved information').isVisible()) {
-      this.page.getByRole('button', {name: 'Cancel'}).click();
+      await this.page.getByRole('button', {name: 'Cancel'}).click();
     }
     await this.stripeCardNumber.fill(ccInfo.cardNumber);
     await this.stripeDate.click();
@@ -306,6 +306,7 @@ export class MainPage {
     await this.clickCartNext();
     await this.fillStripeInfo(customer, creditCard, options.timeoutAdd);
     await this.clickStripeCheckout();
+    await this.stripeOrderConfirmation.waitFor({state: 'visible', timeout: 10000});
   }
 
   // Increase number of tickets for an event by one
