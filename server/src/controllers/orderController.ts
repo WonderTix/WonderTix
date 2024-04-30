@@ -289,7 +289,6 @@ orderController.put('/refund/:id', async (req, res) => {
     const order = await prisma.orders.findUnique({
       where: {
         orderid: Number(orderID),
-        order_status: state.completed,
       },
       include: {
         orderticketitems: {
@@ -331,7 +330,7 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order) {
       return res.status(400).json({error: `Order ${orderID} does not exist`});
     }
-    if (!order.payment_intent || order.order_status != state.completed) {
+    if (!order.payment_intent || order.order_status !== state.completed) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
     if (!order.donation && !order.orderticketitems.length && !order.subscriptions.length) {
@@ -339,11 +338,13 @@ orderController.put('/refund/:id', async (req, res) => {
     }
 
     let refundIntent;
-    if (order.payment_intent.includes('comp') || order.payment_intent.includes('seeded-order')) {
-      refundIntent = `refund-${order.payment_intent}`;
+    // eslint-disable-next-line camelcase
+    const {payment_intent} = order;
+    if (payment_intent.includes('comp') || payment_intent.includes('seeded-order')) {
+      refundIntent = `refund-${payment_intent}`;
     } else {
       const refund = await stripe.refunds.create({
-        payment_intent: order.payment_intent,
+        payment_intent,
       });
       refundIntent = refund.id;
     }

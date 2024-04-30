@@ -312,7 +312,9 @@ export const createRefundedOrder = async (
 
   const subscriptionRefundItems = subscriptions.map((item) => {
     item.subscriptionticketitems.forEach((item) => {
-      if (item.ticketitem) eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
+      if (item.ticketitem) {
+        eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
+      }
     });
     return {
       amount: item.price,

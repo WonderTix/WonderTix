@@ -8,7 +8,7 @@ import AdminPurchase from './AdminPurchase';
  * @module
  * @returns {Udash_nav, AdminPurchase}
  */
-const AdminPurchaseMain = () => {
+const AdminPurchasemain = () => {
   return (
     <div className='flex flex-row'>
       <Udash_nav />
@@ -17,4 +17,4 @@ const AdminPurchaseMain = () => {
   );
 };
 
-export default AdminPurchaseMain;
+export default AdminPurchasemain;

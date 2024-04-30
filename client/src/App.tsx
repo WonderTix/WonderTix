@@ -33,8 +33,8 @@ import SingleSeasonMain from './components/Ticketing/ticketingmanager/Season/com
 import TicketTypesmain from './components/Ticketing/ticketingmanager/TicketTypes/TicketTypesmain';
 import DiscountCodesmain from './components/Ticketing/ticketingmanager/DiscountCodes/DiscountCodesmain';
 import TicketExchangesmain from './components/Ticketing/ticketingmanager/TicketExchanges/TicketExchangesmain';
-import AdminPurchaseMain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchaseMain';
-import AdminCheckoutMain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutMain';
+import AdminPurchasemain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminPurchasemain';
+import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurchase/AdminCheckoutmain';
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/Event/components/EventProvider';
 import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
@@ -158,7 +158,7 @@ const App = () => {
         />
         <Route
           path='/ticketing/purchaseticket'
-          element={<ProtectedRoute component={AdminPurchaseMain} />}
+          element={<ProtectedRoute component={AdminPurchasemain} />}
         />
         <Route
           path='/ticketing/purchaseticket/:id'
@@ -166,7 +166,7 @@ const App = () => {
         />
         <Route
           path='/ticketing/admincheckout'
-          element={<ProtectedRoute component={AdminCheckoutMain} />}
+          element={<ProtectedRoute component={AdminCheckoutmain} />}
         />
         <Route
           path='/ticketing/refund'

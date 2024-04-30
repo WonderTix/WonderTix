@@ -328,7 +328,7 @@ const getTickets = (
 };
 
 export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: any, orderTotal: number, ticketItems: TicketCartItem[]) => {
-  if (!discount || discount.code == '') {
+  if (!discount || discount.code === '') {
     return {discountTotal: 0};
   }
 
