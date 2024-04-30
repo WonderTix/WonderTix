@@ -7,17 +7,6 @@ export class DashboardPage {
   readonly TicketingDashboardHeading: Locator;
   readonly PageHeading: Locator;
 
-  readonly DoorListButton: Locator;
-  readonly EventsButton: Locator;
-  readonly PurchaseTicketsButton: Locator;
-  readonly SeasonsButton: Locator;
-  readonly RefundOrdersButton: Locator;
-  readonly ManageTicketTypesButton: Locator;
-  readonly ManageDiscountCodesButton: Locator;
-  readonly CreateNewsletterButton: Locator;
-  readonly SubscriptionRedemptionButton: Locator;
-  readonly TicketExchangesButton: Locator;
-
   constructor(page: Page) {
     this.page = page;
 
@@ -25,31 +14,6 @@ export class DashboardPage {
       name: 'Ticketing Dashboard',
     });
     this.PageHeading = page.locator('h1');
-
-    this.DoorListButton = page.getByRole('button', {name: 'Door List'});
-    this.EventsButton = page.getByRole('button', {name: 'Events'});
-    this.PurchaseTicketsButton = page.getByRole('button', {
-      name: 'Purchase Tickets',
-    });
-    this.SeasonsButton = page.getByRole('button', {name: 'Seasons'});
-    this.RefundOrdersButton = page.getByRole('button', {
-      name: 'Refund Orders',
-    });
-    this.ManageTicketTypesButton = page.getByRole('button', {
-      name: 'Manage Ticket & Subscription Types',
-    });
-    this.ManageDiscountCodesButton = page.getByRole('button', {
-      name: 'Manage Discount Codes',
-    });
-    this.CreateNewsletterButton = page.getByRole('button', {
-      name: 'Create Newsletter',
-    });
-    this.SubscriptionRedemptionButton = page.getByRole('button', {
-      name: 'Subscription Redemption',
-    });
-    this.TicketExchangesButton = page.getByRole('button', {
-      name: 'Ticket Exchanges',
-    });
   }
 
   async goTo() {
