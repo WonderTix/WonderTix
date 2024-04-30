@@ -20,7 +20,7 @@ export class DashboardPage {
     await this.page.goto('/ticketing', {timeout: 60000});
   }
 
-  async clickDashboardButton(buttonTitle: string) {
+  async clickDashboardButton(buttonTitle: DashboardButtons) {
     await this.page.getByRole('button', {name: buttonTitle}).click();
   }
 
@@ -29,15 +29,15 @@ export class DashboardPage {
   }
 }
 
-export const DashboardButtons = {
-  DoorList: 'Door List',
-  Events: 'Events',
-  PurchaseTickets: 'Purchase Tickets',
-  Seasons: 'Seasons',
-  RefundOrders: 'Refund Orders',
-  TicketTypes: 'Manage Ticket & Subscription Types',
-  DiscountCodes: 'Manage Discount Codes',
-  Newsletters: 'Create Newsletter',
-  SubscriptionRedemption: 'Subscription Redemption',
-  TicketExchanges: 'Ticket Exchanges',
-};
+export enum DashboardButtons {
+  DoorList = 'Door List',
+  Events = 'Events',
+  PurchaseTickets = 'Purchase Tickets',
+  Seasons = 'Seasons',
+  RefundOrders = 'Refund Orders',
+  TicketTypes = 'Manage Ticket & Subscription Types',
+  DiscountCodes = 'Manage Discount Codes',
+  Newsletters = 'Create Newsletter',
+  SubscriptionRedemption = 'Subscription Redemption',
+  TicketExchanges = 'Ticket Exchanges',
+}
