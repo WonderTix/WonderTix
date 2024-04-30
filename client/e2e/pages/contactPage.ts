@@ -22,6 +22,8 @@ export class ContactPage {
   readonly customerVIP: Locator;
   readonly customerVolunteer: Locator;
 
+  readonly removeButton: Locator;
+
   constructor(page: Page) {
     this.page = page;
 
@@ -41,6 +43,8 @@ export class ContactPage {
     this.customerComments = page.getByTestId('contact-comments');
     this.customerVIP = page.getByTestId('contact-vip');
     this.customerVolunteer = page.getByTestId('contact-volunteer');
+
+    this.removeButton = page.getByRole('button', {name: 'Remove'});
   }
 
   async goTo() {
@@ -86,12 +90,12 @@ export class ContactPage {
     ).toBe(customer.comments);
   }
 
-  // Incomplete, page functionality not implemented
   async deleteCustomer(customer: CustomerInfo) {
     await this.searchCustomer(customer);
     await this.customerCard
-      .filter({hasText: customer.email})
+      .filter({hasText: customer.fullName})
       .getByRole('button', {name: 'Remove Contact'})
       .click();
+    await this.removeButton.click();
   }
 }
