@@ -1,11 +1,11 @@
 import React, {ReactElement} from 'react';
 import DailySalesReports from './DailySalesReport';
-import Navigation from '../../Navigation';
+import AdminNavBar from '../../AdminNavBar';
 
 const DailySalesReportMain = (): ReactElement => {
   return (
     <div className='flex flex-row'>
-      <Navigation />
+      <AdminNavBar />
       <DailySalesReports />
     </div>
   );

@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import format from 'date-fns/format';
 import {Tabs, Tab} from '@mui/material';
-import Navigation from '../Navigation';
+import AdminNavBar from '../AdminNavBar';
 import {useFetchToken} from '../../Ticketing/ticketingmanager/Event/components/ShowingUtils';
 import {LoadingScreen} from '../../Ticketing/mainpage/LoadingScreen';
 import {toDollarAmount} from '../../../utils/arrays';
@@ -91,7 +91,7 @@ export const ContactOneResult = (): ReactElement => {
   } else {
     return (
       <div className='flex flex-row'>
-        <Navigation />
+        <AdminNavBar />
         <main className='w-full h-screen overflow-x-hidden absolute'>
           <div className='md:ml-[18rem] md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] mt-[6rem] mb-[9rem]'>
             <div className='mt-9 text-zinc-600 w-full'>
