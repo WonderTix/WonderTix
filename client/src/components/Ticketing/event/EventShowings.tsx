@@ -12,10 +12,8 @@ import {
   EventImage,
   getEventImageDefault,
 } from '../../../utils/imageURLValidation';
-import {SmallBackIcon} from '../Icons';
 import Label from '../Label';
 import {LoadingScreen} from '../mainpage/LoadingScreen';
-import {bool} from 'yup';
 
 /**
  * EventPageProps - Used to hold data (uses url params rather than props)
