@@ -22,7 +22,7 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
           data: {
             order_status: state.completed,
             contactid_fk: contact.contactid,
-            payment_intent: `seeded-order-${index}`,
+            payment_intent: `comp-order-${index}`,
             ...(!(index%4) && {
               donation: {
                 create: {

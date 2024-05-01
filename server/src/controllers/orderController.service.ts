@@ -198,7 +198,7 @@ export const orderFulfillment = async (
     ...eventInstanceQueries,
   ]);
 
-  if (orderSubtotal - discountTotal === 0) {
+  if (orderSubtotal + feeTotal - discountTotal === 0) {
     await prisma.orders.update({
       where: {
         orderid: result[0].orderid,

@@ -341,7 +341,7 @@ orderController.put('/refund/:id', async (req, res) => {
     let refundIntent;
     // eslint-disable-next-line camelcase
     const {payment_intent} = order;
-    if (payment_intent.includes('comp') || payment_intent.includes('seeded-order')) {
+    if (payment_intent.includes('comp')) {
       refundIntent = `refund-${payment_intent}`;
     } else {
       const refund = await stripe.refunds.create({
