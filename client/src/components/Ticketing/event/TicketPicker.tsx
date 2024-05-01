@@ -344,8 +344,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   };
 
   return (
-    <div className='bg-zinc-700/30 p-9 flex flex-col items-center rounded-xl w-full'>
-
+    <div className='bg-zinc-300/20 shadow-md backdrop-blur-md p-9 flex flex-col items-center rounded-xl w-full'>
       <Collapse in={showClearBtn}>
         <button
           onClick={() => dispatch(resetWidget())}
