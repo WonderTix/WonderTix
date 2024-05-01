@@ -7,6 +7,7 @@ import PopUp from '../../PopUp';
 import {
   baseContact,
   CheckoutContact,
+  orderSource,
   validateContactInputAdmin,
 } from '../../checkout/CheckoutUtils';
 import CompleteOrderForm from '../../checkout/CompleteOrderForm';
@@ -51,7 +52,13 @@ export default function AdminCheckout(): ReactElement {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ticketCartItems: cartItems, formData, donation, discount}),
+          body: JSON.stringify({
+            ticketCartItems: cartItems,
+            formData,
+            donation,
+            discount,
+            orderSource: orderSource.admin_ticketing,
+          }),
         },
       );
       if (!response.ok) {

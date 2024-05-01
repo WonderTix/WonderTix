@@ -209,6 +209,8 @@ model orders {
   discounttotal     Decimal            @default(0) @db.Money
   feetotal          Decimal            @default(0) @db.Money
   contacts          contacts?          @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  order_source      purchase_source?
+  order_status      state
   discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donation          donations?
   refunds           refunds[]
@@ -220,7 +222,7 @@ model refunds {
   id            Int           @id @default(autoincrement())
   orderid_fk    Int
   refund_intent String        @unique @db.VarChar(255)
-  refund_status state?
+  refund_status state
   order         orders        @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
   refunditems   refunditems[]
 }
@@ -361,6 +363,13 @@ enum state {
   in_progress
   completed
   failed
+}
+
+enum purchase_source {
+  online_ticketing
+  admin_ticketing
+  card_reader
+  online_donation
 }
 
 model StripeWebhook {

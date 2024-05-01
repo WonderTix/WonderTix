@@ -5,6 +5,7 @@ import format from 'date-fns/format';
 import {toDollarAmount} from '../../../utils/arrays';
 import {TicketIcon} from '../../Ticketing/Icons';
 import Label from '../../Ticketing/Label';
+import {readableOrderSource} from '../../Ticketing/checkout/CheckoutUtils';
 
 interface ContactOrderProps {
   orderId: number;
@@ -15,6 +16,7 @@ interface ContactOrderProps {
   refunded: string;
   orderItems: any[];
   donation: any;
+  orderSource?: string;
 }
 
 const ContactOrder = (props: ContactOrderProps): ReactElement => {
@@ -27,6 +29,7 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
     refunded,
     orderItems,
     donation,
+    orderSource,
   } = props;
 
   const date = new Date(orderDateTime);
@@ -53,6 +56,16 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
             </span>
             <span className='text-zinc-800'>{format(date, 'h:mm a')}</span>
           </p>
+          {orderSource && (
+            <p className='flex justify-between tab:justify-start gap-3 text-lg mt-1'>
+              <span className='tab:flex-initial tab:w-28 text-zinc-600'>
+                Order Source
+              </span>
+              <span className='text-zinc-800'>
+                {readableOrderSource[orderSource]}
+              </span>
+            </p>
+          )}
           <p className='flex justify-between tab:justify-start gap-3 text-lg mt-1 mb-3'>
             <span className='tab:flex-initial tab:w-28 text-zinc-600'>
               Refunded
