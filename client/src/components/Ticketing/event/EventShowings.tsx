@@ -15,6 +15,7 @@ import {
 import {SmallBackIcon} from '../Icons';
 import Label from '../Label';
 import {LoadingScreen} from '../mainpage/LoadingScreen';
+import {bool} from 'yup';
 
 /**
  * EventPageProps - Used to hold data (uses url params rather than props)
@@ -78,6 +79,21 @@ const EventShowings = (): ReactElement => {
     document.body.style.overflow = '';
   };
 
+  const EventDescription = ({
+    description,
+    className,
+  }: {
+    description: string | undefined;
+    className: string;
+  }) => (
+    <p className={`flex flex-col max-w-2xl ${className}`}>
+      <span className='text-zinc-300 font-semibold text-md tracking-wider'>
+        DESCRIPTION
+      </span>
+      <span className='text-zinc-100 text-xl'>{description}</span>
+    </p>
+  );
+
   return !eventData ? (
     <LoadingScreen />
   ) : (
@@ -92,39 +108,37 @@ const EventShowings = (): ReactElement => {
       >
         <div
           className='flex flex-col gap-9 min-h-[calc(100vh-233px)] md:min-h-[calc(100vh-142px)]
-          items-center bg-zinc-900/80 px-[1rem] py-[5rem] tab:px-[3rem] md:px-[8rem]'
+          items-center bg-gradient-to-r from-black to-zinc-900/70 px-[1rem] py-[5rem] tab:px-[3rem] md:px-[8rem]'
         >
-          <section
-            className='grid grid-cols-6 tab:grid-cols-12 grid-flow-row grid-rows-1 tab:grid-rows-6
-            gap-x-7 gap-y-6 tab:gap-y-0 md:gap-x-12
-            bg-zinc-300/20 shadow-md p-9 mt-9 rounded-xl backdrop-blur-md w-full'
-          >
-            <EventImage
-              src={eventData.imageurl}
-              className='self-center h-auto rounded-md col-span-2 tab:col-span-3 lg:col-span-2 row-span-full'
-              title={eventData.title}
+          <section className='bg-zinc-200/20 shadow-md p-8 mt-9 rounded-xl backdrop-blur-md w-full flex flex-col gap-8'>
+            {eventData.soldOut && (
+              <Label className='text-2xl' color='slate'>
+                SOLD OUT
+              </Label>
+            )}
+            <div className='flex gap-6 tab:gap-8 md:gap-12 items-center'>
+              <EventImage
+                src={eventData.imageurl}
+                className='self-center w-auto max-h-44 tab:max-h-56 max-w-[7rem] tab:max-w-[13rem] rounded-md'
+                title={eventData.title}
+              />
+              <div className='flex flex-col gap-5'>
+                <h1
+                  data-testid='event-title'
+                  className='text-white font-extrabold text-4xl md:text-5xl'
+                >
+                  {titleCase(eventData.title)}
+                </h1>
+                <EventDescription
+                  description={eventData.description}
+                  className='hidden tab:flex'
+                />
+              </div>
+            </div>
+            <EventDescription
+              description={eventData.description}
+              className='tab:hidden'
             />
-            <h1
-              data-testid='event-title'
-              className='flex flex-col-reverse tab:flex-row gap-3 items-baseline text-white
-              text-4xl tab:text-5xl md:text-4xl lg:text-5xl font-extrabold my-3 self-center
-              col-span-4 tab:col-span-9 tab:self-end row-span-1 tab:row-span-2'
-            >
-              {eventData.soldOut && (
-                <Label className='text-3xl' color='slate'>
-                  SOLD OUT
-                </Label>
-              )}
-              {titleCase(eventData.title)}
-            </h1>
-            <p className='flex flex-col col-span-full tab:col-span-9 md:col-span-8 lg:col-span-6 tab:row-span-4'>
-              <span className='text-zinc-300 font-semibold text-md tracking-wider mt-2'>
-                DESCRIPTION
-              </span>
-              <span className='text-zinc-100 text-xl'>
-                {eventData.description ?? ''}
-              </span>
-            </p>
           </section>
           <TicketPicker
             isEventSoldOut={eventData.soldOut}
