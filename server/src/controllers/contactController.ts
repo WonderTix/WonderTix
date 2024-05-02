@@ -307,6 +307,90 @@ contactController.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /emails:
+ *   get:
+ *     summary: Get emails of contacts subscribed to the newsletter
+ *     tags:
+ *       - Contact Emails
+ *     responses:
+ *       200:
+ *         description: Emails of contacts subscribed to the newsletter received successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: The unique identifier of the contact.
+ *                   email:
+ *                     type: string
+ *                     description: The email address of the contact.
+ *       400:
+ *         description: Bad request. An error occurred while processing the request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+contactController.get('/emails', async (req: Request, res: Response) => {
+  try {
+    const filters: any = [];
+    // Add filter for newsletter property set to true
+    filters.push({
+      newsletter: {
+        equals: true,
+      },
+    });
+
+    if (filters.length > 0) {
+      const contacts = await prisma.contacts.findMany({
+        where: {
+          OR: filters,
+        },
+        select: {
+          id: true,
+          email: true,
+        },
+      });
+      res.status(200).json(contacts);
+      return;
+    }
+
+    const contacts = await prisma.contacts.findMany({
+      select: {
+        id: true,
+        email: true,
+      },
+    });
+    res.status(200).json(contacts);
+    return;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+
+/**
+ * @swagger
  * /2/contact/{id}:
  *   get:
  *     summary: get a contact
