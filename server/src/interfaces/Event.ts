@@ -22,7 +22,7 @@ export interface instanceTicketType {
   tickettypeid_fk: number;
   seasontickettypepricedefaultid_fk: number;
   price: number;
-  concessionprice: number;
+  fee: number;
   ticketlimit: number;
   description: string;
 }

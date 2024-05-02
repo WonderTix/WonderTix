@@ -126,11 +126,13 @@ export const ContactOneResult = (): ReactElement => {
                     key={order.orderid}
                     orderId={order.orderid}
                     orderTotal={order.ordertotal}
-                    discountTotal={order.discounttotal}
+                    feeTotal={Number(order.feetotal)}
+                    discountTotal={Number(order.discounttotal)}
                     orderDateTime={order.orderdatetime}
                     refunded={order.refunded}
                     orderItems={order.orderitems}
                     donation={order.donation}
+                    orderSource={order.order_source}
                   />
                 ))
               ))}

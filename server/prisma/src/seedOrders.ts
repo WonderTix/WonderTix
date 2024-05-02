@@ -1,4 +1,4 @@
-import {freq} from '@prisma/client';
+import {freq, state} from '@prisma/client';
 import {updateAvailableSeats} from '../../src/controllers/orderController.service';
 import {ExtendedPrismaClient} from '../../src/controllers/PrismaClient/GetExtendedPrismaClient';
 
@@ -12,39 +12,41 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
     const ticketRestrictions= await prisma.ticketrestrictions.findMany();
     const orders:any[] = [];
     contacts.forEach(
-        (contact, index) => {
-          if (!ticketRestrictions.length) return;
-          const restriction = ticketRestrictions[index%ticketRestrictions.length];
-          const orderItemCount = Math.floor((Math.random()*Math.min(5, restriction.ticketlimit)))+1;
-          restriction.ticketlimit-=orderItemCount;
-          if (!restriction.ticketlimit) ticketRestrictions.splice(ticketRestrictions.indexOf(restriction), 1);
-          orders.push(prisma.orders.create({
-            data: {
-              contactid_fk: contact.contactid,
-              payment_intent: `seeded-order-${index}`,
-              ...(!(index%4) && {
-                donation: {
+      (contact, index) => {
+        if (!ticketRestrictions.length) return;
+        const restriction = ticketRestrictions[index%ticketRestrictions.length];
+        const orderItemCount = Math.floor((Math.random()*Math.min(5, restriction.ticketlimit)))+1;
+        restriction.ticketlimit-=orderItemCount;
+        if (!restriction.ticketlimit) ticketRestrictions.splice(ticketRestrictions.indexOf(restriction), 1);
+        orders.push(prisma.orders.create({
+          data: {
+            order_status: state.completed,
+            contactid_fk: contact.contactid,
+            payment_intent: `comp-order-${index}`,
+            ...(!(index%4) && {
+              donation: {
+                create: {
+                  amount: (Math.random()*150)+1,
+                  frequency: freq.one_time,
+                  comments: 'Seeded Donation',
+                },
+              },
+            }),
+            ordersubtotal: (Number(restriction.price) * orderItemCount),
+            orderticketitems: {
+              create: Array(orderItemCount).fill({
+                price: restriction?.price,
+                fee: restriction?.fee,
+                ticketitem: {
                   create: {
-                    amount: (Math.random()*150)+1,
-                    frequency: freq.one_time,
-                    comments: 'Seeded Donation',
+                    ticketrestrictionid_fk: restriction?.ticketrestrictionsid,
                   },
                 },
               }),
-              ordersubtotal: (Number(restriction.price) * orderItemCount),
-              orderticketitems: {
-                create: Array(orderItemCount).fill({
-                  price: restriction?.price,
-                  ticketitem: {
-                    create: {
-                      ticketrestrictionid_fk: restriction?.ticketrestrictionsid,
-                    },
-                  },
-                }),
-              },
             },
-          }));
-        });
+          },
+        }));
+      });
     await prisma.$transaction(orders);
     await updateAvailableSeats(prisma, (await prisma.eventinstances.findMany({select: {eventinstanceid: true}})).map((event) => event.eventinstanceid));
   } catch (error) {

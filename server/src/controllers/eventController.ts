@@ -1,28 +1,29 @@
+/* eslint-disable camelcase*/
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {orders, Prisma} from '@prisma/client';
+import {orders, Prisma, purchase_source, state} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
   expireCheckoutSession,
   getDonationItem,
+  getFeeItem,
   getTicketItems,
   createStripePaymentIntent,
   requestStripeReaderPayment,
-  testPayReader,
   getDiscountAmount,
-  updateContact,
-  validateDiscount,
+  getSubscriptionItems,
   validateWithRegex,
+  validateContact,
+  updateContact,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
-const prisma = extendPrismaClient();
-
 import multer from 'multer';
 import {Storage} from '@google-cloud/storage';
 
+const prisma = extendPrismaClient();
 const upload = multer();
 
 export const eventController = Router();
@@ -66,26 +67,29 @@ export const eventController = Router();
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
-  const {cartItems = [], formData, donation = 0, discount} = req.body;
-  let order :orders | null = null;
-  let toSend = {id: 'comp'};
+  const {ticketCartItems = [], subscriptionCartItems = [], formData, donation = 0, discount, orderSource} = req.body;
+  let checkoutSessionId: string | undefined;
+  let order: orders | undefined;
   try {
-    if (!cartItems.length && !donation) {
+    if (!ticketCartItems.length && !donation && !subscriptionCartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
     }
 
-    if (discount.code != '') {
-      await validateDiscount(discount, cartItems, prisma);
-    }
-
-    const {contactid} = await updateContact(formData, prisma);
+    const validatedContact = validateContact(formData);
 
     const {
       ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
-    } = await getTicketItems(cartItems, prisma);
+    } = await getTicketItems(ticketCartItems, prisma);
+
+    const {
+      subscriptionCartRows,
+      orderSubscriptionItems,
+      subscriptionTotal,
+    } = await getSubscriptionItems(prisma, subscriptionCartItems);
 
     const {
       donationItem,
@@ -93,50 +97,52 @@ eventController.post('/checkout', async (req: Request, res: Response) => {
       donationTotal,
     } = getDonationItem(donation);
 
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+    const {feeCartRow} = getFeeItem(feeTotal);
 
-    if (ticketTotal + donationTotal - discountAmount > .49) {
-      toSend = await createStripeCheckoutSession(
-          contactid,
-          formData.email,
-          donationCartRow? ticketCartRows.concat([donationCartRow]): ticketCartRows,
-          {...discount, amountOff: discountAmount},
+    let cartRows = ticketCartRows.concat(subscriptionCartRows);
+    if (donationCartRow) {
+      cartRows = cartRows.concat([donationCartRow]);
+    }
+    if (feeCartRow) {
+      cartRows = cartRows.concat([feeCartRow]);
+    }
+
+    const {discountTotal, discountId}= await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
+    const orderSubtotal = ticketTotal + subscriptionTotal+ donationTotal;
+
+    if (orderSubtotal + feeTotal - discountTotal > .49) {
+      checkoutSessionId = await createStripeCheckoutSession(
+        validatedContact,
+        cartRows,
+        {...discount, amountOff: discountTotal},
       );
-    } else if (ticketTotal + donationTotal - discountAmount > 0) {
+    } else if (orderSubtotal + feeTotal - discountTotal > 0) {
       return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
     order = await orderFulfillment(
-        prisma,
+      prisma,
+      {
+        orderStatus: checkoutSessionId ? state.in_progress : state.completed,
+        orderSource: purchase_source[orderSource as keyof typeof purchase_source],
+        checkoutSession: checkoutSessionId,
+        discountId,
+        orderSubtotal,
+        discountTotal,
+        feeTotal,
+        orderTicketItems,
+        donationItem,
+        orderSubscriptionItems,
         eventInstanceQueries,
-        ticketTotal+donationTotal,
-        discountAmount,
-        {
-          orderTicketItems,
-          donationItem,
-        },
-        contactid,
-        toSend.id,
-        discount.code != '' ? discount.discountid : null,
+        ...(!checkoutSessionId && await updateContact(prisma, validatedContact)),
+      },
     );
 
-    if (toSend.id === 'comp') {
-      await prisma.orders.update({
-        where: {
-          orderid: order.orderid,
-        },
-        data: {
-          checkout_sessions: `comp-${order.orderid}`,
-          payment_intent: `comp-${order.orderid}`,
-        },
-      });
-    }
-
-    res.json(toSend);
+    res.json({id: checkoutSessionId ?? 'comp'});
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order, false);
-    if (toSend.id !== 'comp') await expireCheckoutSession(toSend.id);
+    if (order) await updateCanceledOrder(prisma, order);
+    if (checkoutSessionId) await expireCheckoutSession(checkoutSessionId);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
@@ -203,9 +209,9 @@ eventController.post('/image-upload', upload.single('file'), async (req: Request
 
   try {
     validateWithRegex(
-        req.file.mimetype.toLowerCase(),
-        'Invalid input, not a valid image filetype!',
-        new RegExp('^(image\/(jpe?g|png))'),
+      req.file.mimetype.toLowerCase(),
+      'Invalid input, not a valid image filetype!',
+      new RegExp('^(image\/(jpe?g|png))'),
     );
   } catch (error) {
     console.error(error);
@@ -315,7 +321,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         eventinstances: {
           some: {
             deletedat: null,
-            availableseats: {gt: 0},
             salestatus: true,
             ticketrestrictions: {
               some: {
@@ -331,40 +336,24 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       include: {
         eventinstances: {
           where: {
-            availableseats: {gt: 0},
+            deletedat: null,
             salestatus: true,
-          },
-          include: {
-            ticketrestrictions: {
-              where: {
-                deletedat: null,
-              },
-              include: {
-                ticketitems: {
-                  where: {
-                    orderticketitem: {
-                      refund: null,
-                    },
-                  },
-                },
-              },
-            },
           },
         },
       },
     });
+
     return res.json(events
-        .filter((event) => event.eventinstances.filter((instance) => instance.ticketrestrictions.filter((res) => res.ticketlimit > res.ticketitems.length).length).length)
-        .map((event) => ({
-          id: event.eventid,
-          seasonid: event.seasonid_fk,
-          title: event.eventname,
-          description: event.eventdescription,
-          active: event.active,
-          subscriptioneligible: event.subscriptioneligible,
-          imageurl: event.imageurl,
-          numShows: event.eventinstances.length.toString(),
-        })));
+      .map((event) => ({
+        id: event.eventid,
+        seasonid: event.seasonid_fk,
+        title: event.eventname,
+        description: event.eventdescription,
+        active: event.active,
+        subscriptioneligible: event.subscriptioneligible,
+        imageurl: event.imageurl,
+        numShows: event.eventinstances.length.toString(),
+      })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -674,39 +663,39 @@ eventController.get('/inactive', async (req: Request, res: Response) => {
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.get(
-    '/inactive/showings',
-    async (req: Request, res: Response) => {
-      try {
-        const inactiveEvents = await prisma.events.findMany({
-          where: {
-            active: false,
-          },
-          include: {
-            eventinstances: {
-              include: {
-                ticketrestrictions: {
-                  where: {
-                    deletedat: null,
-                  },
+  '/inactive/showings',
+  async (req: Request, res: Response) => {
+    try {
+      const inactiveEvents = await prisma.events.findMany({
+        where: {
+          active: false,
+        },
+        include: {
+          eventinstances: {
+            include: {
+              ticketrestrictions: {
+                where: {
+                  deletedat: null,
                 },
               },
             },
-            seasons: true,
           },
-        });
-        return res.json(inactiveEvents);
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        if (error instanceof Prisma.PrismaClientValidationError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        return res.status(500).json({error: 'Internal Server Error'});
+          seasons: true,
+        },
+      });
+      return res.json(inactiveEvents);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        res.status(400).json({error: error.message});
+        return;
       }
-    },
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        res.status(400).json({error: error.message});
+        return;
+      }
+      return res.status(500).json({error: 'Internal Server Error'});
+    }
+  },
 );
 
 /**
@@ -869,6 +858,7 @@ eventController.get('/:id', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
+
 // All further routes require authentication
 eventController.use(checkJwt);
 eventController.use(checkScopes);
@@ -881,36 +871,32 @@ eventController.use(checkScopes);
  *     tags:
  *     - New Event API
  */
-
 eventController.post('/reader-intent', async (req: Request, res: Response) => {
-  const {cartItems} = req.body;
-  let paymentIntentID = '';
-  let clientSecret = '';
+  const {ticketCartItems} = req.body;
 
   try {
-    if (!cartItems.length) {
+    if (!ticketCartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
     }
-    const {
-      ticketCartRows,
-      orderTicketItems,
-      ticketTotal,
-      eventInstanceQueries,
-    } = await getTicketItems(cartItems, prisma);
 
-    if (ticketTotal > 0) {
-      const {id, secret} = await createStripePaymentIntent(ticketTotal * 100);
-      paymentIntentID = id;
-      clientSecret = secret;
+    const {
+      ticketTotal,
+      feeTotal,
+    } = await getTicketItems(ticketCartItems, prisma);
+
+    if (ticketTotal + feeTotal < .50) {
+      return res.status(400).json({error: 'Reader checkout can not be used for an order below .50 USD'});
     }
-    res.json({id: paymentIntentID, secret: clientSecret});
+
+    const response = await createStripePaymentIntent((ticketTotal + feeTotal) * 100);
+    return res.json(response);
   } catch (error) {
     console.error(error);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
     }
-    res.status(500).json(error);
+    res.status(500).json('Internal Server Error');
   }
 });
 
@@ -922,48 +908,44 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
  *     tags:
  *     - New Event API
  */
-
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {cartItems, paymentIntentID, readerID, discount} = req.body;
+  const {ticketCartItems = [], paymentIntentID, readerID, discount, orderSource} = req.body;
   let order :orders | null = null;
   try {
-    if (!cartItems.length) {
+    if (!ticketCartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
     }
 
-    if (discount.code != '') {
-      await validateDiscount(discount, cartItems, prisma);
-    }
-
     const {
-      ticketCartRows,
       orderTicketItems,
       ticketTotal,
+      feeTotal,
       eventInstanceQueries,
-    } = await getTicketItems(cartItems, prisma);
+    } = await getTicketItems(ticketCartItems, prisma);
 
-    const requestPay = await requestStripeReaderPayment(readerID, paymentIntentID);
+    await requestStripeReaderPayment(readerID, paymentIntentID);
 
-    const discountAmount = discount.code != ''? getDiscountAmount(discount, ticketTotal): 0;
+    const {discountTotal, discountId} = await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
 
-    // add order to database with prisma
     order = await orderFulfillment(
-        prisma,
+      prisma,
+      {
+        orderStatus: state.in_progress,
+        orderSource: purchase_source[orderSource as keyof typeof purchase_source],
+        orderSubtotal: ticketTotal,
+        discountTotal,
+        feeTotal,
+        orderTicketItems,
         eventInstanceQueries,
-        ticketTotal,
-        discountAmount,
-        {
-          orderTicketItems,
-        },
-        undefined, // no contactid with reader payments
-        undefined, // no session with reader payments
-        discount.code != '' ? discount.discountid : null,
-        paymentIntentID, // reader payments are initiated with a payment intent, this doesn't mean it's been paid already
+        paymentIntent: paymentIntentID,
+        discountId,
+      },
     );
+
     res.json({orderID: order.orderid, status: 'order sent'});
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order, true);
+    if (order) await updateCanceledOrder(prisma, order);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
@@ -1233,44 +1215,44 @@ eventController.put('/recover/:id', async (req: Request, res: Response) => {
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.put(
-    '/active/:id/:updatedStatus',
-    async (req: Request, res: Response) => {
-      try {
-        const {id, updatedStatus} = req.params;
+  '/active/:id/:updatedStatus',
+  async (req: Request, res: Response) => {
+    try {
+      const {id, updatedStatus} = req.params;
 
-        if (!isBooleanString(updatedStatus)) {
-          return res
-              .status(422)
-              .json({error: `Invalid status: ${updatedStatus}`});
-        }
-
-        const updatedEvent = await prisma.events.update({
-          where: {
-            eventid: Number(id),
-          },
-          data: {
-            active: updatedStatus === 'true',
-          },
-          include: {
-            seasons: true,
-          },
-        });
-        if (!updatedEvent) {
-          return res.status(400).json({error: `Event ${id} not found`});
-        }
-        return res.json(updatedEvent);
-      } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        if (error instanceof Prisma.PrismaClientValidationError) {
-          res.status(400).json({error: error.message});
-          return;
-        }
-        res.status(500).json({error: 'Internal Server Error'});
+      if (!isBooleanString(updatedStatus)) {
+        return res
+          .status(422)
+          .json({error: `Invalid status: ${updatedStatus}`});
       }
-    },
+
+      const updatedEvent = await prisma.events.update({
+        where: {
+          eventid: Number(id),
+        },
+        data: {
+          active: updatedStatus === 'true',
+        },
+        include: {
+          seasons: true,
+        },
+      });
+      if (!updatedEvent) {
+        return res.status(400).json({error: `Event ${id} not found`});
+      }
+      return res.json(updatedEvent);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        res.status(400).json({error: error.message});
+        return;
+      }
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        res.status(400).json({error: error.message});
+        return;
+      }
+      res.status(500).json({error: 'Internal Server Error'});
+    }
+  },
 );
 
 /**
@@ -1317,7 +1299,6 @@ eventController.delete('/:id', async (req: Request, res: Response) => {
   }
 });
 
-
 /**
  * @swagger
  * /2/events/checkin:
@@ -1363,15 +1344,30 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         ticketrestriction: {
           eventinstanceid_fk: +instanceId,
         },
-        orderticketitem: {
-          refund: null,
-          order: {
-            contactid_fk: +contactId,
+        OR: [
+          {
+            orderticketitem: {
+              refund: null,
+              order: {
+                order_status: state.completed,
+                contactid_fk: +contactId,
+              },
+            },
           },
-        },
+          {
+            subscriptionticketitem: {
+              subscription: {
+                refund: null,
+                order: {
+                  contactid_fk: +contactId,
+                },
+              },
+            },
+          },
+        ],
       },
       data: {
-        redeemed: isCheckedIn? new Date(): null,
+        redeemed: isCheckedIn ? new Date() : null,
       },
     });
 

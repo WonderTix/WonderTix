@@ -40,6 +40,7 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "^5.0.1",
     "react-scroll": "^1.8.7",
+    "react-swipeable-views": "^0.14.0",
     "react-use-websocket": "^3.0.0",
     "redux-mock-store": "^1.5.4",
     "redux-thunk": "^2.4.1",
@@ -77,8 +78,9 @@
     ]
   },
   "devDependencies": {
-    "@playwright/test": "^1.42.0",
+    "@playwright/test": "^1.43.0",
     "@types/node": "^20.4.5",
+    "@types/react-swipeable-views": "^0.13.5",
     "@types/redux-mock-store": "^1.0.3",
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^5.29.0",

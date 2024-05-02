@@ -31,12 +31,9 @@ export const FormInput = (props: FormInputProps) => {
         {label}
       </label>
       <input
+        {...input}
         className={inputClassName}
-        onChange={input.onChange}
         placeholder={placeholder}
-        value={input.value}
-        type={input.type}
-        name={input.name}
         id={id}
         style={meta.touched && meta.error ? {border: '1px solid red'} : {}}
         spellCheck={spellCheck}
