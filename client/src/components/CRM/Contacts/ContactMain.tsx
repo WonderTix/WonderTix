@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import Navigation from '../Navigation';
-import Contacts from './Contacts';
+import Contacts from './ContactGrid';
 
 /**
  * @returns {ReactElement} ContactMain - has Navigation

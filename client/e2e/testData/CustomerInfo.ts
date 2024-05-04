@@ -74,7 +74,7 @@ export const JANE_DOE: CustomerInfo = {
   city: 'Portland',
   state: 'OR',
   country: 'USA',
-  phoneNumber: '(207)283-8797',
+  phoneNumber: '(207) 283-8797',
   email: 'jane.doe@wondertix.com',
   newsletterSignup: false,
   donationAmount: '0',
