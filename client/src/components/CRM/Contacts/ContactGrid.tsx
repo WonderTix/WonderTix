@@ -122,7 +122,7 @@ const ContactGrid = () => {
           <SearchBox
             onSearch={() => {
               setLoading(true);
-              setReload(true);
+              setReload((prev) => !prev);
             }}
             queries={queries}
             defaultParameters={defaultQueryOptions}
@@ -134,7 +134,7 @@ const ContactGrid = () => {
               type === 'parameter'
                 ? updateParameters(indexToRemove, value)
                 : setQueries((prev) => {
-                    if (!value) {
+                    if (!value && prev.length != 1) {
                       prev.splice(indexToRemove, 1);
                       return [...prev];
                     }
