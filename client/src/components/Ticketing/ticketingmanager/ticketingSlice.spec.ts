@@ -30,6 +30,7 @@ const ticket1: Ticket = {
   date: new Date('2021-07-31T19:00:00'),
   ticket_price: 15.99,
   availableseats: 34,
+  remainingtickets: 34,
   detail: '',
 };
 
@@ -40,6 +41,7 @@ const ticket2: Ticket = {
   date: new Date('2021-08-07T16:00:00'),
   ticket_price: 19.99,
   availableseats: 20,
+  remainingtickets: 20,
   detail: '',
 };
 
