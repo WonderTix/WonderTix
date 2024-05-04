@@ -20,9 +20,7 @@ interface SearchBoxProps {
 
 const SearchBox = (props: SearchBoxProps) => {
   const {onSearch, queries, defaultParameters, updateQueries, addQuery} = props;
-  const [parameters, setParameters] = useState([
-    ...Object.keys(defaultParameters),
-  ]);
+  const parameters = [...Object.keys(defaultParameters)];
 
   return (
     <aside className='text-md bg-white p-3 mb-4 rounded-xl grid'>
