@@ -28,8 +28,8 @@ export const SubscriptionMain = (): ReactElement => {
           success={popUpProps.success}
           dataTestId={popUpProps.dataTestId}
           handleProceed={async () => {
-            if (popUpProps.handleProceed) await popUpProps.handleProceed();
             setShowPopUp(false);
+            if (popUpProps.handleProceed) await popUpProps.handleProceed();
           }}
           primaryLabel={popUpProps.primaryLabel}
           secondaryLabel={popUpProps.secondaryLabel}

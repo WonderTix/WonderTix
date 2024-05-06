@@ -9,24 +9,24 @@ datasource db {
 
 /// customer information
 model contacts {
-  contactid     Int      @id @default(autoincrement())
-  firstname     String?  @db.VarChar(255)
-  lastname      String?  @db.VarChar(255)
-  email         String?  @unique @db.VarChar(100)
-  phone         String?  @db.VarChar(15)
-  visitsource   String?  @db.VarChar(255)
-  address       String?  @db.VarChar(255)
-  city          String?  @db.VarChar(255)
-  state         String?  @db.VarChar(255)
-  country       String?  @db.VarChar(255)
-  postalcode    String?  @db.VarChar(255)
-  seatingaccom  String?  @db.VarChar(255)
-  comments      String?  @db.VarChar(255)
-  donorbadge    Boolean? @default(false)
-  vip           Boolean? @default(false)
-  volunteerlist Boolean? @default(false)
-  newsletter    Boolean? @default(false)
-  createddate   DateTime @default(now()) @db.Timestamptz(3)
+  contactid     Int       @id @default(autoincrement())
+  firstname     String?   @db.VarChar(255)
+  lastname      String?   @db.VarChar(255)
+  email         String?   @unique @db.VarChar(100)
+  phone         String?   @db.VarChar(15)
+  visitsource   String?   @db.VarChar(255)
+  address       String?   @db.VarChar(255)
+  city          String?   @db.VarChar(255)
+  state         String?   @db.VarChar(255)
+  country       String?   @db.VarChar(255)
+  postalcode    String?   @db.VarChar(255)
+  seatingaccom  String?   @db.VarChar(255)
+  comments      String?   @db.VarChar(255)
+  donorbadge    Boolean?  @default(false)
+  vip           Boolean?  @default(false)
+  volunteerlist Boolean?  @default(false)
+  newsletter    DateTime? @db.Timestamp(3)
+  createddate   DateTime  @default(now()) @db.Timestamptz(3)
   orders        orders[]
 }
 
@@ -177,6 +177,7 @@ model orderticketitems {
   orderid_fk Int
   price      Decimal      @db.Money
   fee        Decimal      @db.Money
+  department String?      @db.VarChar(255)
   order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
   ticketitem ticketitems?
   refund     refunditems?
@@ -208,6 +209,8 @@ model orders {
   discounttotal     Decimal            @default(0) @db.Money
   feetotal          Decimal            @default(0) @db.Money
   contacts          contacts?          @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  order_source      purchase_source?
+  order_status      state
   discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   donation          donations?
   refunds           refunds[]
@@ -219,7 +222,7 @@ model refunds {
   id            Int           @id @default(autoincrement())
   orderid_fk    Int
   refund_intent String        @unique @db.VarChar(255)
-  refund_status state?
+  refund_status state
   order         orders        @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
   refunditems   refunditems[]
 }
@@ -360,6 +363,13 @@ enum state {
   in_progress
   completed
   failed
+}
+
+enum purchase_source {
+  online_ticketing
+  admin_ticketing
+  card_reader
+  online_donation
 }
 
 model StripeWebhook {

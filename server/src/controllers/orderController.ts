@@ -1,3 +1,4 @@
+/* eslint-disable camelcase*/
 import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -19,54 +20,55 @@ const prisma = extendPrismaClient();
 export const orderController = Router();
 
 orderController.post(
-    '/webhook',
-    express.raw({type: 'application/json'}),
-    async (req: Request, res: Response) => {
-      const sig = req.headers['stripe-signature'];
-      try {
-        const event = await stripe.webhooks.constructEvent(
-            req.body,
-            sig,
-            webhookKey,
-        );
+  '/webhook',
+  express.raw({type: 'application/json'}),
+  async (req: Request, res: Response) => {
+    const sig = req.headers['stripe-signature'];
+    try {
+      const event = await stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        webhookKey,
+      );
 
-        const object = event.data.object;
-        const metaData = object.metadata;
-        const action = object.action;
+      const object = event.data.object;
+      const metaData = object.metadata;
+      const action = object.action;
 
-        // Handle in-person payments
-        if (metaData.sessionType === '__reader' ||
+      // Handle in-person payments
+      if (metaData.sessionType === '__reader' ||
             event.type === 'terminal.reader.action_failed' ||
             event.type === 'terminal.reader.action.succeeded') { // terminal events don't carry our __reader metadata
-          await readerWebhook(
-              prisma,
-              event.type,
-            action ? action.failure_message : 'no error',
-            object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
-          );
-        }
-
-        // Handle online payments
-        if (metaData.sessionType === '__ticketing') {
-          await ticketingWebhook(
-              prisma,
-              event.type,
-              object.payment_intent,
-              object.id,
-          );
-        } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
-          await updateRefundStatus(
-              prisma,
-              object.payment_intent,
-          );
-        }
-
-        return res.send();
-      } catch (error) {
-        console.error(error);
-        return res.status(400).send();
+        await readerWebhook(
+          prisma,
+          event.type,
+          action ? action.failure_message : 'no error',
+          object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
+        );
       }
-    },
+
+      // Handle online payments
+      if (metaData.sessionType === '__ticketing') {
+        await ticketingWebhook(
+          prisma,
+          event.type,
+          object.payment_intent,
+          object.id,
+          metaData.contact,
+        );
+      } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
+        await updateRefundStatus(
+          prisma,
+          object.payment_intent,
+        );
+      }
+
+      return res.send();
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send();
+    }
+  },
 );
 
 orderController.use(express.json());
@@ -110,7 +112,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     }
     const orders = await prisma.orders.findMany({
       where: {
-        payment_intent: {not: null},
+        order_status: state.completed,
         OR: [
           {
             orderticketitems: {
@@ -329,7 +331,7 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order) {
       return res.status(400).json({error: `Order ${orderID} does not exist`});
     }
-    if (!order.payment_intent) {
+    if (!order.payment_intent || order.order_status !== state.completed) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
     if (!order.donation && !order.orderticketitems.length && !order.subscriptions.length) {
@@ -337,22 +339,24 @@ orderController.put('/refund/:id', async (req, res) => {
     }
 
     let refundIntent;
-    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
-    else if (order.payment_intent.includes('seeded-order')) refundIntent = `refund-seeded-order-${order.orderid}`;
-    else {
+    // eslint-disable-next-line camelcase
+    const {payment_intent} = order;
+    if (payment_intent.includes('comp')) {
+      refundIntent = `refund-${payment_intent}`;
+    } else {
       const refund = await stripe.refunds.create({
-        payment_intent: order.payment_intent,
+        payment_intent,
       });
       refundIntent = refund.id;
     }
     await createRefundedOrder(
-        prisma,
-        order,
-        order.orderticketitems,
-        refundIntent,
-        order.subscriptions,
-        order.payment_intent.includes('comp') || order.payment_intent.includes('seeded-order') ? state.completed : state.in_progress,
-        order.donation,
+      prisma,
+      refundIntent,
+      order,
+      order.orderticketitems,
+      order.subscriptions,
+      refundIntent.includes('refund')? state.completed : state.in_progress,
+      order.donation,
     );
     return res.send(refundIntent);
   } catch (error) {

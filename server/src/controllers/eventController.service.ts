@@ -1,4 +1,4 @@
-import {InvalidInputError, LoadedTicketRestriction} from './eventInstanceController.service';
+import {InvalidInputError, LoadedTicketRestriction, reservedTicketItemsFilter} from './eventInstanceController.service';
 import TicketCartItem, {SubscriptionCartItem} from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
@@ -18,10 +18,9 @@ export interface LineItem {
 }
 
 export const createStripeCheckoutSession = async (
-    contactID: number,
-    contactEmail: string,
-    lineItems: LineItem[],
-    discount: any,
+  contact: ContactInput,
+  lineItems: LineItem[],
+  discount: any,
 ) => {
   const expire = Math.round((new Date().getTime() + 1799990) / 1000);
   const checkoutObject: JsonObject = {
@@ -32,21 +31,20 @@ export const createStripeCheckoutSession = async (
     success_url: `${process.env.FRONTEND_URL}/success`,
     cancel_url: `${process.env.FRONTEND_URL}`,
     customer_creation: 'always',
-    customer_email: contactEmail,
+    customer_email: contact.email,
     metadata: {
       sessionType: '__ticketing',
-      contactID,
-      discountCode: null,
+      contact: JSON.stringify(contact),
     },
     ...(discount.code != '' && discount.amountOff && {discounts: [{coupon: (await createStripeCoupon(discount)).id}]}),
   };
 
   const session = await stripe.checkout.sessions.create(checkoutObject);
-  return {id: session.id};
+  return session.id;
 };
 
 export const expireCheckoutSession = async (
-    id: string,
+  id: string,
 ) => stripe.checkout.sessions.expire(id);
 
 export const createStripeCoupon = async (discount: any) => {
@@ -87,8 +85,8 @@ interface SubscriptionItemsReturn {
 }
 
 export const getSubscriptionItems = async (
-    prisma: ExtendedPrismaClient,
-    subscriptionCartItems: SubscriptionCartItem[]) => {
+  prisma: ExtendedPrismaClient,
+  subscriptionCartItems: SubscriptionCartItem[]) => {
   const seasonSubscriptionTypes = await prisma.seasonsubscriptiontypes.findMany({
     where: {
       seasonid_fk: {in: subscriptionCartItems.map((item) => item.seasonid_fk)},
@@ -121,10 +119,10 @@ export const getSubscriptionItems = async (
       throw new InvalidInputError(422, `${item.name} (${item.desc}) quantity exceeds available`);
     }
     acc.subscriptionCartRows = acc.subscriptionCartRows.concat(getCartRow(
-        item.name,
-        item.desc,
-        item.price*100,
-        item.qty,
+      item.name,
+      item.desc,
+      item.price*100,
+      item.qty,
     ));
     acc.orderSubscriptionItems = acc.orderSubscriptionItems.concat(Array(item.qty).fill({
       subscriptiontypeid_fk: type.subscriptiontypeid_fk,
@@ -158,7 +156,7 @@ interface TicketItemsReturn {
 }
 
 export const createStripePaymentIntent = async (
-    orderTotal: number,
+  orderTotal: number,
 ) => {
   const intentObject: JsonObject = {
     currency: 'usd',
@@ -176,26 +174,23 @@ export const createStripePaymentIntent = async (
 };
 
 export const requestStripeReaderPayment = async (
-    readerID: string,
-    paymentIntentID: string,
-) => {
-  const requestPay = await stripe.terminal.readers.processPaymentIntent(
-      readerID,
-      {payment_intent: paymentIntentID},
-  );
-  return requestPay;
-};
+  readerID: string,
+  paymentIntentID: string,
+) => stripe.terminal.readers.processPaymentIntent(
+  readerID,
+  {payment_intent: paymentIntentID},
+);
 
 export const testPayReader = async (
-    readerID: string,
+  readerID: string,
 ) => {
   const pay = await stripe.testHelpers.terminal.readers.presentPaymentMethod(readerID);
   return pay;
 };
 
 export const getTicketItems = async (
-    cartItems: TicketCartItem[],
-    prisma: ExtendedPrismaClient,
+  cartItems: TicketCartItem[],
+  prisma: ExtendedPrismaClient,
 ): Promise<TicketItemsReturn> => {
   const toReturn: TicketItemsReturn = {
     orderTicketItems: [],
@@ -216,14 +211,7 @@ export const getTicketItems = async (
         },
         include: {
           ticketitems: {
-            where: {
-              orderticketitem: {
-                refund: null,
-              },
-            },
-            include: {
-              orderticketitem: true,
-            },
+            ...reservedTicketItemsFilter,
           },
         },
       },
@@ -231,27 +219,27 @@ export const getTicketItems = async (
     },
   });
   const eventInstanceMap = new Map(
-      eventInstances.map((instance) => {
-        return [
-          instance.eventinstanceid,
-          {
-            ...instance,
-            ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => {
-              return [res.tickettypeid_fk, {
-                ...res,
-                availabletickets: res.ticketlimit - res.ticketitems.length,
-              }];
-            })),
-          },
-        ];
-      }));
+    eventInstances.map((instance) => {
+      return [
+        instance.eventinstanceid,
+        {
+          ...instance,
+          ticketRestrictionMap: new Map(instance.ticketrestrictions.map((res) => {
+            return [res.tickettypeid_fk, {
+              ...res,
+              availabletickets: res.ticketlimit - res.ticketitems.length,
+            }];
+          })),
+        },
+      ];
+    }));
 
   for (const item of cartItems) {
     const eventInstance = eventInstanceMap.get(item.product_id);
     if (!eventInstance) {
       throw new InvalidInputError(
-          422,
-          `Showing ${item.product_id} for ${item.name} does not exist`,
+        422,
+        `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
     const ticketRestriction = eventInstance.ticketRestrictionMap.get(item.typeID);
@@ -261,26 +249,27 @@ export const getTicketItems = async (
 
     if (item.payWhatCan && (item.payWhatPrice ?? -1) < 0 || item.price < 0) {
       throw new InvalidInputError(
-          422,
-          `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+        422,
+        `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
       );
     }
     toReturn.orderTicketItems.push(
-        ...getTickets(
-            ticketRestriction,
-            eventInstance,
-            item.qty,
-            ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(ticketRestriction.fee) : 0,
-            item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
-        ),
+      ...getTickets(
+        ticketRestriction,
+        eventInstance,
+        item.qty,
+        ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(ticketRestriction.fee) : 0,
+        item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
+        item.department ? item.department : undefined,
+      ),
     );
     toReturn.ticketCartRows.push(
-        getCartRow(
-            eventInstance.event.eventname,
+      getCartRow(
+        eventInstance.event.eventname,
         item.payWhatCan && item.qty !== 1 ? `${item.desc}, Qty ${item.qty}`: item.desc,
         (item.payWhatPrice? item.payWhatPrice: item.price) * 100,
         item.payWhatPrice? 1: item.qty,
-        ));
+      ));
 
     toReturn.ticketTotal += item.payWhatCan && item.payWhatPrice? item.payWhatPrice: item.price * item.qty;
     if ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) {
@@ -319,117 +308,139 @@ const getTickets = (
   quantity: number,
   fee: number,
   price: number,
+  department?: string,
 ) => {
   if ((ticketRestriction.availabletickets-=quantity) < 0 || (eventInstance.availableseats-=quantity) < 0) {
     throw new InvalidInputError(422, 'Requested tickets no longer available');
   }
 
   return Array(quantity)
-      .fill({
-        price: price,
-        fee: fee,
-        ticketitem: {
-          create: {
-            ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
-          },
+    .fill({
+      price: price,
+      fee: fee,
+      department: department,
+      ticketitem: {
+        create: {
+          ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
         },
-      });
+      },
+    });
 };
 
-export const getDiscountAmount = (discount: any, orderTotal: number) => {
+export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: any, orderTotal: number, ticketItems: TicketCartItem[]) => {
+  if (!discount || discount.code === '') {
+    return {discountTotal: 0};
+  }
+
+  await validateDiscount(discount, ticketItems, prisma);
+
   if (discount.amount && discount.percent) {
-    return Math.min((+discount.percent / 100) * orderTotal, discount.amount);
-  }
-  if (discount.amount) {
-    return Math.min(discount.amount, orderTotal);
-  }
-  if (discount.percent) {
-    return orderTotal*(+discount.percent)/100;
+    return {discountTotal: Math.min((+discount.percent / 100) * orderTotal, discount.amount), discountId: discount.discountid};
+  } else if (discount.amount) {
+    return {discountTotal: Math.min(discount.amount, orderTotal), discountId: discount.discountid};
+  } else if (discount.percent) {
+    return {discountTotal: orderTotal*(+discount.percent)/100, discountId: discount.discountid};
   }
   throw new Error('Invalid discount');
 };
 
-interface checkoutForm {
-  firstName: string;
-  lastName: string;
-  streetAddress: string;
-  postalCode: string;
-  city: string,
-  state: string;
-  country: string;
-  phone: string;
-  email: string;
-  visitSource: string;
-  seatingAcc: string;
-  comments: string;
-  optIn: boolean;
-}
-
 export const updateContact = async (
-    formData: checkoutForm,
-    prisma: ExtendedPrismaClient,
+  prisma: ExtendedPrismaClient,
+  contact: ContactInput,
+  check?: 'exists' | 'does_not_exist',
+  contactid?: number,
 ) => {
-  const existingContact = await prisma.contacts.findFirst({
+  const filter = contactid !== undefined ?
+    {contactid: contactid} :
+    {email: contact.email};
+
+  const existingContact = await prisma.contacts.findUnique({
     where: {
-      email: formData.email,
-    },
-    select: {
-      contactid: true,
+      ...filter,
     },
   });
 
-  let updatedContact: { contactid: number } | null;
-  if (!existingContact) {
-    updatedContact = await prisma.contacts.create({
-      data: {
-        ...validateContact(formData),
-      },
-      select: {
-        contactid: true,
-      },
-    });
-  } else {
-    updatedContact = await prisma.contacts.update({
-      where: {
-        contactid: existingContact.contactid,
-      },
-      data: {
-        ...validateContact(formData),
-      },
-      select: {
-        contactid: true,
-      },
-    });
+  if (check === 'exists' && !existingContact) {
+    throw new Error(`Contact(${contactid || contact.email}) does not exist`);
+  } else if (check === 'does_not_exist' && existingContact) {
+    throw new Error(`Contact(${contactid || contact.email}) already exists`);
+  } else if (contactid !== undefined && existingContact && contact.email !== existingContact.email) {
+    const currentContact = await prisma.contacts.findUnique({where: {email: contact.email}});
+    if (currentContact) {
+      throw new Error(`Contact with email ${contact.email} already exists`);
+    }
   }
-  return updatedContact;
+
+  return prisma.contacts.upsert({
+    where: {
+      ...filter,
+    },
+    create: {
+      ...contact,
+      newsletter: contact.newsletter? new Date(): undefined,
+    },
+    update: {
+      ...contact,
+      newsletter: contact.newsletter === undefined?
+        existingContact?.newsletter:
+        !contact.newsletter?
+          null:
+          existingContact?.newsletter?
+            undefined:
+            new Date(),
+    },
+  });
 };
 
-const validateContact = (formData: checkoutForm) => {
+
+export interface ContactInput {
+   firstname: string;
+   lastname: string;
+   email: string;
+   address?: string;
+   city?: string;
+   state?: string;
+   postalcode?: string;
+   country?: string;
+   phone?: string;
+   visitsource?: string;
+   seatingaccom?: string;
+   comments?: string;
+   newsletter?: boolean;
+   donorbadge?: boolean;
+   vip?: boolean;
+   volunteerlist?: boolean;
+}
+
+export const validateContact = (formData: ContactInput): ContactInput => {
   return {
-    firstname: validateName(formData.firstName, 'First Name'),
-    lastname: validateName(formData.lastName, 'Last Name'),
+    firstname: validateName(formData.firstname, 'First Name'),
+    lastname: validateName(formData.lastname, 'Last Name'),
     email: validateWithRegex(
-        formData.email,
-        `Email: ${formData.email} is invalid`,
-        new RegExp('.+@.+\\..+'),
+      formData.email,
+      `Email: ${formData.email} is invalid`,
+      new RegExp('.+@.+\\..+'),
     ),
     // Only include or validate the following if provided
-    ...(formData.streetAddress && {address: formData.streetAddress}),
+    ...(formData.address && {address: formData.address}),
     ...(formData.city && {city: formData.city}),
     ...(formData.state && {state: formData.state}),
-    ...(formData.postalCode && {postalcode: formData.postalCode}),
+    ...(formData.postalcode && {postalcode: formData.postalcode}),
     ...(formData.country && {country: formData.country}),
     ...(formData.phone && {
       phone: validateWithRegex(
-          formData.phone,
-          `Phone Number: ${formData.phone} is invalid`,
-          new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
+        formData.phone,
+        `Phone Number: ${formData.phone} is invalid`,
+        new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
       ),
     }),
-    ...(formData.visitSource && {visitsource: formData.visitSource}),
-    ...(formData.seatingAcc && {seatingaccom: formData.seatingAcc}),
+    ...(formData.visitsource && {visitsource: formData.visitsource}),
+    ...(formData.seatingaccom && {seatingaccom: formData.seatingaccom}),
     ...(formData.comments && {comments: formData.comments}),
-    ...(formData.optIn && {newsletter: formData.optIn}),
+    ...(formData.newsletter !== undefined && {newsletter: formData.newsletter}),
+    ...(formData.donorbadge !== undefined && {donorbadge: formData.donorbadge}),
+    ...(formData.vip !== undefined && {vip: formData.vip}),
+    ...(formData.volunteerlist !== undefined && {volunteerlist: formData.volunteerlist}),
   };
 };
 
@@ -468,9 +479,9 @@ const validateName = (name: string, type: string): string => {
 };
 
 export const validateWithRegex = (
-    toValidate: string,
-    errorMessage: string,
-    regex: RegExp,
+  toValidate: string,
+  errorMessage: string,
+  regex: RegExp,
 ): string => {
   if (!toValidate.trim().match(regex)) {
     throw new InvalidInputError(422, errorMessage);

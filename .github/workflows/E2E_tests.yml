@@ -63,6 +63,15 @@ jobs:
           mkcert localhost
         working-directory: ./server
 
+      - name: Install & Start Stripe Listen
+        run: |
+          curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | sudo tee /usr/share/keyrings/stripe.gpg
+          echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | sudo tee -a /etc/apt/sources.list.d/stripe.list
+          sudo apt update
+          sudo apt install stripe
+          stripe listen --api-key $PRIVATE_STRIPE_KEY --forward-to $ROOT_URL/api/2/order/webhook > stripe.log &
+          echo "PRIVATE_STRIPE_WEBHOOK=$(stripe listen --api-key $PRIVATE_STRIPE_KEY --print-secret)" >> "$GITHUB_ENV"
+
       - name: docker setup
         run: docker-compose up -d
 

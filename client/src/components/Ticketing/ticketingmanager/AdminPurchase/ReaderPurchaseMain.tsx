@@ -2,7 +2,7 @@ import React from 'react';
 import Udash_nav from '../udash_navbar';
 import ReaderPurchase from './ReaderPurchase';
 
-const ReaderPurchasePage = () => {
+const ReaderPurchaseMain = () => {
   return (
     <div className='flex flex-row'>
       <Udash_nav />
@@ -11,4 +11,4 @@ const ReaderPurchasePage = () => {
   );
 };
 
-export default ReaderPurchasePage;
+export default ReaderPurchaseMain;

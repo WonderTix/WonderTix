@@ -1,13 +1,4 @@
 /* eslint-disable react/react-in-jsx-scope */
-/**
- * Copyright © 2021 Aditya Sharoff, Gregory Hairfeld, Jesse Coyle, Francis Phan, William Papsco, Jack Sherman, Geoffrey Corvera
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 import YourOrder from '../cart/YourOrder';
 import {
   selectTicketCartContents,
@@ -19,10 +10,17 @@ import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {loadStripe} from '@stripe/stripe-js';
 import {ReactElement, useState} from 'react';
 import DonationPage from '../donation/DonationPage';
-import CompleteOrderForm, {CheckoutFormInfo} from './CompleteOrderForm';
+import CompleteOrderForm from './CompleteOrderForm';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../PopUp';
+import {useAuth0} from '@auth0/auth0-react';
+import {
+  baseContact,
+  CheckoutContact,
+  orderSource,
+  validateContactInput,
+} from './CheckoutUtils';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -34,6 +32,7 @@ const stripePromise = loadStripe(pk);
  */
 export default function CheckoutPage(): ReactElement {
   const navigate = useNavigate();
+  const {isAuthenticated, user} = useAuth0();
   const ticketCartItems = useAppSelector(selectTicketCartContents);
   const subscriptionCartItems = useAppSelector(selectSubscriptionCartContents);
   const discount = useAppSelector(selectDiscount);
@@ -51,11 +50,11 @@ export default function CheckoutPage(): ReactElement {
     showSecondary: false,
   });
   const dispatch = useAppDispatch();
-  const doCheckout = async (checkoutFormInfo: CheckoutFormInfo) => {
+  const doCheckout = async (checkoutFormInfo: CheckoutContact) => {
     try {
       const formData = {...checkoutFormInfo};
-      if (formData.seatingAcc === 'Other') {
-        formData.seatingAcc = formData.otherSeatingAcc;
+      if (formData.seatingaccom === 'Other') {
+        formData.seatingaccom = formData.otherSeatingAcc;
       }
 
       const stripe = await stripePromise;
@@ -68,7 +67,14 @@ export default function CheckoutPage(): ReactElement {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ticketCartItems, subscriptionCartItems, formData, donation, discount}),
+          body: JSON.stringify({
+            ticketCartItems,
+            subscriptionCartItems,
+            formData,
+            donation,
+            discount,
+            orderSource: orderSource.online_ticketing,
+          }),
         },
       );
       if (!response.ok) {
@@ -99,17 +105,16 @@ export default function CheckoutPage(): ReactElement {
 
   return (
     <>
-      {
-        popUp.show &&
-          <PopUp
-            title={popUp.title}
-            message={popUp.message}
-            handleProceed={popUp.handleProceed}
-            handleClose={popUp.handleClose}
-            showSecondary={popUp.showSecondary}
-            success={popUp.success}
-          />
-      }
+      {popUp.show && (
+        <PopUp
+          title={popUp.title}
+          message={popUp.message}
+          handleProceed={popUp.handleProceed}
+          handleClose={popUp.handleClose}
+          showSecondary={popUp.showSecondary}
+          success={popUp.success}
+        />
+      )}
       <div
         className='bg-zinc-200 flex flex-col md:flex-col sm:flex-col
          max-md:items-center w-full h-full p-4 pt-20 md:p-20'
@@ -148,7 +153,28 @@ export default function CheckoutPage(): ReactElement {
               )}
               {checkoutStep === 'form' && (
                 <CompleteOrderForm
-                  disabled={!ticketCartItems.length && !subscriptionCartItems.length}
+                  mode='customer'
+                  baseValues={{
+                    ...baseContact,
+                    ...(isAuthenticated && {
+                      email: user.email ?? '',
+                      confirmEmail: user.email ?? '',
+                      firstname: user.given_name ?? '',
+                      lastname: user.family_name ?? '',
+                      phone: user.phone_number ?? '',
+                    }),
+                  }}
+                  disabled={
+                    !ticketCartItems.length && !subscriptionCartItems.length
+                  }
+                  requiredFields={[
+                    'firstname',
+                    'lastname',
+                    'email',
+                    'address',
+                    'postalcode',
+                  ]}
+                  validateInput={validateContactInput}
                   onSubmit={doCheckout}
                   onBack={() => setCheckoutStep('donation')}
                 />

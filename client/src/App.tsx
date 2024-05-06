@@ -38,8 +38,9 @@ import AdminCheckoutmain from './components/Ticketing/ticketingmanager/AdminPurc
 import PageNotFound from './components/Ticketing/mainpage/PageNotFound';
 import {EventProvider} from './components/Ticketing/ticketingmanager/Event/components/EventProvider';
 import RefundOrdersMain from './components/Ticketing/ticketingmanager/RefundOrders/RefundOrdersMain';
-import ReaderPurchasePage from './components/Ticketing/ticketingmanager/AdminPurchase/ReaderPurchasePage';
+import ReaderPurchaseMain from './components/Ticketing/ticketingmanager/AdminPurchase/ReaderPurchaseMain';
 import {SubscriptionMain} from './components/Ticketing/mainpage/SubscriptionPurchasing/SubscriptionMain';
+import {SubscriptionRedemptionMain} from './components/Ticketing/ticketingmanager/SubscriptionRedemption/SubscriptionRedemptionMain';
 
 const App = () => {
   return (
@@ -161,7 +162,7 @@ const App = () => {
         />
         <Route
           path='/ticketing/purchaseticket/:id'
-          element={<ProtectedRoute component={ReaderPurchasePage}/>}
+          element={<ProtectedRoute component={ReaderPurchaseMain} />}
         />
         <Route
           path='/ticketing/admincheckout'
@@ -170,6 +171,10 @@ const App = () => {
         <Route
           path='/ticketing/refund'
           element={<ProtectedRoute component={RefundOrdersMain} />}
+        />
+        <Route
+          path='/ticketing/subscription/redemption'
+          element={<ProtectedRoute component={SubscriptionRedemptionMain} />}
         />
         <Route path='*' element={<PageNotFound />} />
       </Routes>

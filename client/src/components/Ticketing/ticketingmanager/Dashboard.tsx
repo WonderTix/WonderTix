@@ -196,8 +196,8 @@ const Dashboard = (): ReactElement => {
                 />
               </svg>
             }
-            title='Manage Seasonal Tickets'
-            route='/ticketing/seasonaltickets'
+            title='Subscription Redemption'
+            route='/ticketing/subscription/redemption'
           />
           <DashboardLink
             gradientClasses='bg-gradient-to-r from-red-500 to-blue-600'
