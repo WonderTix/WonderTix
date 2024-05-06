@@ -34,7 +34,7 @@ export const discountController = Router();
  */
 discountController.get('/code/:code', async (req: Request, res: Response) => {
   try {
-    const code = req.params.code.toUpperCase();
+    const code = req.params.code;
     const filters: any = {
       code: code,
       deletedat: null,
@@ -270,7 +270,7 @@ discountController.post('/', async (req: Request, res: Response) => {
     // Attempt to create discount
     const discount = await prisma.discounts.create({
       data: {
-        code: req.body.code.toUpperCase(),
+        code: req.body.code,
         active: req.body.active,
         amount: amount,
         percent: percent,
@@ -352,7 +352,7 @@ discountController.put('/:id', async (req: Request, res: Response) => {
         discountid: Number(id),
       },
       data: {
-        code: req.body.code.toUpperCase(),
+        code: req.body.code,
         active: req.body.active,
         amount: req.body.amount,
         percent: req.body.percent,
