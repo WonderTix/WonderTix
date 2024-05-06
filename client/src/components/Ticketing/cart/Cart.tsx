@@ -62,16 +62,15 @@ const Cart = (): ReactElement => {
   const discountValue = useAppSelector(selectDiscountValue);
 
   const [targetItem, setTargetItem] = useState<TargetItem | null>(null);
-  const [removeContext, setRemoveContext] = useState(RemoveContext.single);
   const [discountText, setDiscountText] = useState<string | null>(null);
   const [validDiscount, setValidDiscount] = useState(false);
   const [discountClicked, setDiscountClicked] = useState(false);
-  const [itemsNoLongerAvailable, setItemsNoLongerAvailable] = useState(false);
+  const [itemsUpdated, setItemsUpdated] = useState(false);
   const {popUpProps, setPopUpProps, setShowPopUp, showPopUp} = usePopUp();
   const [loading, setLoading] = useState(true);
   const [availability, setAvailability] = useState<Map<string, number>>();
 
-  useTimeout(() => setLoading(false), 10000);
+  useTimeout(() => setLoading(false), 5000);
 
   useEffect(() => {
     if (discount.code !== '') {
@@ -103,7 +102,7 @@ const Cart = (): ReactElement => {
   }, []);
 
   useEffect(() => {
-    if (itemsNoLongerAvailable) {
+    if (itemsUpdated) {
       setPopUpProps(
         'Item(s) No Longer Available',
         'One or more items are no longer available and have been removed from your cart',
@@ -112,9 +111,9 @@ const Cart = (): ReactElement => {
         () => resetModal(),
       );
     }
-  }, [itemsNoLongerAvailable]);
+  }, [itemsUpdated]);
 
-  const openModal = () => {
+  const openModal = (removeContext: RemoveContext) => {
     document.body.style.overflow = 'hidden';
     setPopUpProps(
       'Confirm removal',
@@ -123,7 +122,7 @@ const Cart = (): ReactElement => {
       } from your cart?`,
       false,
       'optional-removal-pop-up',
-      handleRemove,
+      () => handleRemove(removeContext),
       'Yes',
       'Cancel',
     );
@@ -132,7 +131,7 @@ const Cart = (): ReactElement => {
   const resetModal = () => {
     setTargetItem(null);
     setShowPopUp(false);
-    setItemsNoLongerAvailable(false);
+    setItemsUpdated(false);
     document.body.style.overflow = '';
   };
 
@@ -142,7 +141,7 @@ const Cart = (): ReactElement => {
   const isTicket = (obj: any): obj is TicketTargetItem =>
     obj.eventInstanceId !== undefined && obj.ticketTypeId !== undefined;
 
-  const handleRemove = () => {
+  const handleRemove = (removeContext: RemoveContext) => {
     if (removeContext === RemoveContext.all) {
       dispatch(removeAllItemsFromCart());
     } else if (targetItem && isTicket(targetItem)) {
@@ -163,8 +162,7 @@ const Cart = (): ReactElement => {
   };
 
   const removeAllCartItems = () => {
-    setRemoveContext(RemoveContext.all);
-    openModal();
+    openModal(RemoveContext.all);
   };
 
   const printDiscountText = (disc: DiscountItem) => {
@@ -195,9 +193,8 @@ const Cart = (): ReactElement => {
   const displayModal = (
     targetItem: TicketTargetItem | SubscriptionTargetItem,
   ) => {
-    setRemoveContext(RemoveContext.single);
     setTargetItem({...targetItem});
-    openModal();
+    openModal(RemoveContext.single);
   };
 
   const navigateToCompleteOrder = () => {
@@ -260,8 +257,8 @@ const Cart = (): ReactElement => {
                 <CartRow
                   key={key}
                   item={cartItem}
-                  availability={availability?.get(key) ?? cartItem.qty}
-                  setPopUp={setItemsNoLongerAvailable}
+                  availability={!availability? cartItem.qty: availability.get(key) ?? 0}
+                  setPopUp={setItemsUpdated}
                   removeHandler={() => displayModal(
                       isTicketCartItem(cartItem)
                         ? {eventInstanceId: cartItem.product_id, ticketTypeId: cartItem.typeID}
