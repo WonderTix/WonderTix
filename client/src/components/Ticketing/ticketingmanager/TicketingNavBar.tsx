@@ -1,9 +1,9 @@
 import React, {ReactElement} from 'react';
-import Navigation from '../Navigation';
+import Navigation from '../../Navigation';
 
 /**
- * @returns {ReactElement} Dashmain - has Navigation
- *  and Dashboard to reroute to other components
+ * @returns {ReactElement} TicketingNavBar - has Navbar
+ * for ticketing
  */
 const TicketingNavBar = (): ReactElement => {
     const navButtons = [

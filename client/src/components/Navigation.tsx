@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import {useNavigate} from 'react-router-dom';
 import AdminNavDropdown from './Ticketing/ticketingmanager/AdminNavDropdown';
 /**
- * CRM Navigation bar
+ * Base Navigation bar
  *
  * @returns {React.ReactElement}
  */

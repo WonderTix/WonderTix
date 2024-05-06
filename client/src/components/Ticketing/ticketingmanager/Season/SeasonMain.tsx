@@ -1,5 +1,5 @@
 import React from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import SeasonInstancesPage from './SeasonInstancesPage';
 import {useFetchToken} from '../Event/components/ShowingUtils';
 import {LoadingScreen} from '../../mainpage/LoadingScreen';
@@ -19,7 +19,7 @@ const SeasonsMain = () => {
   } else {
     return (
       <div className='flex'>
-        <Udash_nav />
+        <TicketingNavBar />
         <SeasonInstancesPage token={token} />
       </div>
     );

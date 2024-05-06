@@ -1,5 +1,5 @@
 import React from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import NewsletterCreate from './NewsletterCreate';
 
 /**
@@ -10,7 +10,7 @@ import NewsletterCreate from './NewsletterCreate';
 const NewsletterCreatemain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav/>
+      <TicketingNavBar/>
       <NewsletterCreate/>
     </div>
   );
