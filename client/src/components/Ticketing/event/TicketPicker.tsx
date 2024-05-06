@@ -153,7 +153,7 @@ const getDateOptions = (
     .map((ticket) => {
       return {
         date: new Date(ticket.date),
-        soldOut: ticket.availableseats === 0,
+        soldOut: ticket.remainingtickets === 0,
       };
     })
     .sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -265,7 +265,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             throw response;
           }
           const data = await response.json();
-          setNumAvail(data.ticketlimit - data.ticketssold);
+          setNumAvail(Math.min(data.ticketlimit - data.ticketssold, selectedTicket.availableseats));
         } catch (error) {
           console.error(error);
         }
@@ -474,7 +474,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             disabled={
               !qty ||
               !selectedTicket ||
-              qty > selectedTicket.availableseats ||
+              qty > numAvail ||
               (selectedTicketType.name === 'Pay What You Can' &&
                 (payWhatPrice == null || payWhatPrice < 0))
             }

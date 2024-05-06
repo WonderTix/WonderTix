@@ -85,6 +85,7 @@ export interface Ticket {
   ticket_price: number;
   totalseats?: number;
   availableseats: number;
+  remainingtickets: number;
   detail: string;
 }
 
@@ -265,7 +266,7 @@ export const fetchTicketingData = createAsyncThunk(
         [] as Ticket[],
       );
       const soldOut = tickets.reduce((soldOutAcc, currTicket) => {
-        return soldOutAcc && currTicket.availableseats === 0;
+        return soldOutAcc && currTicket.remainingtickets === 0;
       }, true);
 
       return {...event, soldOut};
