@@ -11,6 +11,7 @@ import {
   discoverReaders,
   abortPaymentIntent,
 } from './orderController.service';
+import {reservedTicketItemsFilter} from './eventInstanceController.service';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
@@ -70,6 +71,109 @@ orderController.post(
     }
   },
 );
+
+/**
+ * @swagger
+ * /2/order/refund:
+ *   get:
+ *     summary: gets a list of queried ticket restriction and subscription availability
+ *     tags:
+ *     - New Order
+ *     parameters:
+ *     - in: query
+ *       name: subscriptions
+ *       description: a list of subscriptions
+ *       schema:
+ *         type: array
+ *         items:
+ *            type: string
+ *       name: tickets
+ *       description: a list of ticket restrictions
+ *       schema:
+ *         type: array
+ *         items:
+ *            type: string
+ *     responses:
+ *       200:
+ *         description: fetch successful
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+orderController.get('/availability', async (req: Request, res: Response) => {
+  try {
+    const {subscriptions, tickets} = req.query;
+    const subscriptionItems = subscriptions ?
+      Array.isArray(subscriptions) ?
+        subscriptions.map((sub) => sub.toString().split('-')) :
+        [subscriptions.toString().split('-')] :
+      [];
+
+    const ticketItems = tickets ?
+      Array.isArray(tickets) ?
+        tickets.map((ticket) => ticket.toString().split('-')) :
+        [tickets.toString().split('-')] :
+      [];
+
+    const subscriptionAvailability = await prisma.seasonsubscriptiontypes.findMany({
+      where: {
+        seasonid_fk: {in: subscriptionItems.map((item) => +item[0])},
+        subscriptiontypeid_fk: {in: subscriptionItems.map((item) => +item[1])},
+        deletedat: null,
+      },
+      include: {
+        subscriptions: {
+          where: {
+            refund: null,
+          },
+        },
+      },
+    });
+
+    const ticketAvailability = await prisma.ticketrestrictions.findMany({
+      where: {
+        eventinstanceid_fk: {in: ticketItems.map((item) => +item[0])},
+        tickettypeid_fk: {in: ticketItems.map((item) => +item[1])},
+      },
+      include: {
+        ticketitems: {
+          ...reservedTicketItemsFilter,
+        },
+        eventinstance: true,
+      },
+    });
+    return res.json(ticketAvailability
+      .map((ticket) => [
+        `${ticket.eventinstanceid_fk}T${ticket.tickettypeid_fk}`,
+        Math.min(ticket.eventinstance.availableseats, ticket.ticketlimit - ticket.ticketitems.length)])
+      .concat(
+        subscriptionAvailability
+          .map((sub) => [
+            `${sub.seasonid_fk}S${sub.subscriptiontypeid_fk}`,
+            sub.subscriptionlimit - sub.subscriptions.length,
+          ]),
+      ));
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
 
 orderController.use(express.json());
 orderController.use(checkJwt);

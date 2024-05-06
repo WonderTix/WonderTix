@@ -450,6 +450,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             className={
               selectedTicketType &&
               selectedTicketType.name === 'Pay What You Can'
+                && numAvail > 0
                 ? 'flex flex-col gap-2 mt-3 justify-center'
                 : 'hidden'
             }

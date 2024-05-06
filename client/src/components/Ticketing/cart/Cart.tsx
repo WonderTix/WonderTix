@@ -18,6 +18,10 @@ import {
   removeAllItemsFromCart,
 } from '../ticketingmanager/ticketingSlice';
 import {useNavigate} from 'react-router-dom';
+import {LoadingScreen} from '../mainpage/LoadingScreen';
+import {usePopUp} from '../ticketingmanager/TicketTypes/SubscriptionTypeUtils';
+import {getData} from '../ticketingmanager/Event/components/ShowingUtils';
+import {useTimeout} from '../ticketingmanager/SubscriptionRedemption/SubscriptionRedemptionUtils';
 
 type TargetItem = TicketTargetItem | SubscriptionTargetItem;
 
@@ -57,13 +61,17 @@ const Cart = (): ReactElement => {
   const discount = useAppSelector(selectDiscount);
   const discountValue = useAppSelector(selectDiscountValue);
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<TargetItem | null>(null);
   const [removeContext, setRemoveContext] = useState(RemoveContext.single);
-  const [removeContextMessage, setRemoveContextMessage] = useState('');
   const [discountText, setDiscountText] = useState<string | null>(null);
   const [validDiscount, setValidDiscount] = useState(false);
   const [discountClicked, setDiscountClicked] = useState(false);
+  const [itemsNoLongerAvailable, setItemsNoLongerAvailable] = useState(false);
+  const {popUpProps, setPopUpProps, setShowPopUp, showPopUp} = usePopUp();
+  const [loading, setLoading] = useState(true);
+  const [availability, setAvailability] = useState<Map<string, number>>();
+
+  useTimeout(() => setLoading(false), 10000);
 
   useEffect(() => {
     if (discount.code !== '') {
@@ -72,14 +80,59 @@ const Cart = (): ReactElement => {
     } else setValidDiscount(false);
   });
 
+  useEffect(() => {
+    const controller = new AbortController();
+    if (items.length) {
+      getData(
+        `${process.env.REACT_APP_API_2_URL}/order/availability?${items
+          .map((cartItem) =>
+            isTicketCartItem(cartItem)
+              ? `tickets=${cartItem.product_id}-${cartItem.typeID}`
+              : `subscriptions=${cartItem.seasonid_fk}-${cartItem.subscriptiontypeid_fk}`,
+          )
+          .join('&')}`,
+        (data) => {
+          setAvailability(new Map(data));
+          setLoading(false);
+        },
+        controller.signal,
+      ).catch(() => console.error('error fetching subscription availability'));
+    } else {
+        setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (itemsNoLongerAvailable) {
+      setPopUpProps(
+        'Item(s) No Longer Available',
+        'One or more items are no longer available and have been removed from your cart',
+        false,
+        'item-no-longer-available-pop-up',
+        () => resetModal(),
+      );
+    }
+  }, [itemsNoLongerAvailable]);
+
   const openModal = () => {
     document.body.style.overflow = 'hidden';
-    setModalOpen(true);
+    setPopUpProps(
+      'Confirm removal',
+      `Do you want to remove ${
+        removeContext === RemoveContext.single ? 'this item' : 'all items'
+      } from your cart?`,
+      false,
+      'optional-removal-pop-up',
+      handleRemove,
+      'Yes',
+      'Cancel',
+    );
   };
 
   const resetModal = () => {
     setTargetItem(null);
-    setModalOpen(false);
+    setShowPopUp(false);
+    setItemsNoLongerAvailable(false);
     document.body.style.overflow = '';
   };
 
@@ -111,7 +164,6 @@ const Cart = (): ReactElement => {
 
   const removeAllCartItems = () => {
     setRemoveContext(RemoveContext.all);
-    setRemoveContextMessage('all items');
     openModal();
   };
 
@@ -144,7 +196,6 @@ const Cart = (): ReactElement => {
     targetItem: TicketTargetItem | SubscriptionTargetItem,
   ) => {
     setRemoveContext(RemoveContext.single);
-    setRemoveContextMessage('this');
     setTargetItem({...targetItem});
     openModal();
   };
@@ -152,6 +203,10 @@ const Cart = (): ReactElement => {
   const navigateToCompleteOrder = () => {
     navigate('/completeorder');
   };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <main className='flex flex-col items-center min-h-[calc(100vh-233px)] md:min-h-[calc(100vh-142px)] h-full py-[5rem] px-[1rem] tab:px-[5rem] bg-zinc-200'>
@@ -197,19 +252,24 @@ const Cart = (): ReactElement => {
           {!items.length? (
             <p className='text-zinc-500'>There&apos;s nothing in your cart</p>
           ) : (
-            items
-              .map((cartItem) => (
+            items.map((cartItem) => {
+              const key = isTicketCartItem(cartItem)
+                ? `${cartItem.product_id}T${cartItem.typeID}`
+                : `${cartItem.seasonid_fk}S${cartItem.subscriptiontypeid_fk}`;
+              return (
                 <CartRow
-                  key={isTicketCartItem(cartItem)?`${cartItem.product_id}-${cartItem.typeID}`:`${cartItem.subscriptiontypeid_fk}-${cartItem.seasonid_fk}`}
+                  key={key}
                   item={cartItem}
+                  availability={availability?.get(key) ?? cartItem.qty}
+                  setPopUp={setItemsNoLongerAvailable}
                   removeHandler={() => displayModal(
-                    isTicketCartItem(cartItem)
-                    ? {eventInstanceId: cartItem.product_id, ticketTypeId: cartItem.typeID}
-                      : {...cartItem},
-                  )
-                }
+                      isTicketCartItem(cartItem)
+                        ? {eventInstanceId: cartItem.product_id, ticketTypeId: cartItem.typeID}
+                        : {...cartItem},
+                    )}
                 />
-              ))
+              );
+            })
           )}
         </div>
         <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-800'>
@@ -329,16 +389,12 @@ const Cart = (): ReactElement => {
               Proceed To Checkout
             </button>
           </div>
-          {modalOpen && (
+          {showPopUp && (
             <PopUp
-              title='Confirm removal'
-              message={`Do you want to remove ${removeContextMessage} from your cart?`}
-              primaryLabel='Yes'
-              secondaryLabel='Cancel'
-              handleProceed={handleRemove}
+              { ...popUpProps }
               handleClose={resetModal}
               showClose={false}
-              success={false}
+              showSecondary={!!popUpProps.secondaryLabel}
             />
           )}
         </section>
