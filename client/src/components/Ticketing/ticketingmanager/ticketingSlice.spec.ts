@@ -214,6 +214,18 @@ describe('Ticketing slice', () => {
       expect(res)
         .toEqual({
           ...ticketingInitState,
+          tickets: {
+            data: {
+              ...ticketingInitState.tickets.data,
+              byId: {
+                ...ticketingInitState.tickets.data.byId,
+                [1]: {
+                  ...ticketingInitState.tickets.data.byId[1],
+                  availableseats: ticketingInitState.tickets.data.byId[1].availableseats - 2,
+                },
+              },
+            },
+          },
           ticketCart: [newCartItem],
         });
       init = res;
@@ -224,6 +236,18 @@ describe('Ticketing slice', () => {
       expect(ticketReducer(init, addTicketToCart(payload)))
         .toEqual({
           ...init,
+          tickets: {
+            data: {
+              ...init.tickets.data,
+              byId: {
+                ...init.tickets.data.byId,
+                [1]: {
+                  ...init.tickets.data.byId[1],
+                  availableseats: init.tickets.data.byId[1].availableseats - 1,
+                },
+              },
+            },
+          },
           ticketCart: [{...newCartItem, qty: 3}],
         });
     });
@@ -231,18 +255,63 @@ describe('Ticketing slice', () => {
     // ticket 1 currently in cart
     it('editItemQty: can set qty = available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket1.availableseats})))
-        .toEqual({...init, ticketCart: [{...newCartItem, qty: ticket1.availableseats}]});
+        .toEqual({
+          ...init,
+          tickets: {
+            data: {
+              ...init.tickets.data,
+              byId: {
+                ...init.tickets.data.byId,
+                [1]: {
+                  ...init.tickets.data.byId[1],
+                  availableseats: 0,
+                },
+              },
+            },
+          },
+          ticketCart: [{...newCartItem, qty: ticket1.availableseats}],
+        });
     });
 
     it('editItemQty: can\'t set qty > available', () => {
       expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: ticket1.availableseats + 1})))
-        .toEqual({...init, ticketCart: [{...newCartItem, qty: ticket1.availableseats}]});
+        .toEqual({
+          ...init,
+          tickets: {
+            data: {
+              ...init.tickets.data,
+              byId: {
+                ...init.tickets.data.byId,
+                [1]: {
+                  ...init.tickets.data.byId[1],
+                  availableseats: 0,
+                },
+              },
+            },
+          },
+          ticketCart: [{...newCartItem, qty: ticket1.availableseats}],
+        });
     });
 
     it('editItemQty: item exists in cart', () => {
       const res = ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: 4}));
       expect(res)
-        .toEqual({...init, ticketCart: [{...newCartItem, qty: 4}]});
+        .toEqual({
+          ...init,
+          tickets: {
+            data: {
+              ...init.tickets.data,
+              byId: {
+                ...init.tickets.data.byId,
+                [1]: {
+                  ...init.tickets.data.byId[1],
+                  availableseats: ticket1.availableseats-4,
+                },
+              },
+            },
+          },
+          ticketCart: [{...newCartItem, qty: 4}],
+        });
       init = res;
     });
 
@@ -253,7 +322,22 @@ describe('Ticketing slice', () => {
 
     it('editItemQty: can\'t set negative qty', () => {
       expect(ticketReducer(init, editItemQty({id: 1, tickettypeId: 1, qty: -1})))
-        .toEqual({...init, ticketCart: [{...newCartItem, qty: 0}]});
+        .toEqual({
+          ...init,
+          tickets: {
+            data: {
+              ...init.tickets.data,
+              byId: {
+                ...init.tickets.data.byId,
+                [1]: {
+                  ...init.tickets.data.byId[1],
+                  availableseats: ticket1.availableseats,
+                },
+              },
+            },
+          },
+          ticketCart: [{...newCartItem, qty: 0}],
+        });
     });
   });
 });
