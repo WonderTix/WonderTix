@@ -1,5 +1,5 @@
 import React from 'react';
-import Udash_nav from '../../udash_navbar';
+import TicketingNavBar from '../../TicketingNavBar';
 import SeasonContainer from './SeasonContainer';
 
 /**
@@ -12,7 +12,7 @@ import SeasonContainer from './SeasonContainer';
 const SingleSeasonMain = () => {
   return (
     <div className='flex'>
-      <Udash_nav />
+      <TicketingNavBar />
       <SeasonContainer />
     </div>
   );

@@ -2,8 +2,8 @@ import React, {ReactElement} from 'react';
 import Navigation from '../Navigation';
 
 /**
- * @returns {ReactElement} Dashmain - has Navigation
- *  and Dashboard to reroute to other components
+ * @returns {ReactElement} AdminNavBar - has Navbar
+ * for admin
  */
 const AdminNavBar = (): ReactElement => {
     const navButtons = [

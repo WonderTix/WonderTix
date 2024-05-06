@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import TicketTypes from './TicketTypes';
 import {Tab, Tabs} from '@mui/material';
 import {SubscriptionTypes} from './SubscriptionTypes';
@@ -18,7 +18,7 @@ const TicketTypesmain = () => {
 
   return (
     <div className='flex flex-row'>
-      <Udash_nav />
+      <TicketingNavBar />
       <div className='w-full h-screen absolute'>
         <main className='w-full h-screen overflow-x-hidden absolute '>
           <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
