@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import {Request, Response, Router} from 'express';
-import {eventinstances, Prisma} from '@prisma/client';
+import {eventinstances, Prisma, state} from '@prisma/client';
 import {
   getUpdatedSubscription,
   LoadedTicketRestriction,
@@ -792,7 +792,7 @@ subscriptionController.get(
         where: {
           ...(seasonIdsFormatted.length && {seasonid_fk: {in: seasonIdsFormatted}}),
           order: {
-            payment_intent: {not: null},
+            order_status: state.completed,
             ...(contactFilter.length && {
               contacts: {
                 OR: contactFilter,
@@ -876,7 +876,7 @@ subscriptionController.get(
         where: {
           id: subscriptionId,
           order: {
-            payment_intent: {not: null},
+            order_status: state.completed,
           },
           refund: null,
         },
@@ -1077,7 +1077,7 @@ subscriptionController.put(
         where: {
           id: subscriptionId,
           order: {
-            payment_intent: {not: null},
+            order_status: state.completed,
           },
           refund: null,
         },

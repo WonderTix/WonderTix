@@ -40,11 +40,11 @@ export const createStripeCheckoutSession = async (
   };
 
   const session = await stripe.checkout.sessions.create(checkoutObject);
-  return {id: session.id};
+  return session.id;
 };
 
 export const expireCheckoutSession = async (
-    id: string,
+  id: string,
 ) => stripe.checkout.sessions.expire(id);
 
 export const createStripeCoupon = async (discount: any) => {
@@ -85,8 +85,8 @@ interface SubscriptionItemsReturn {
 }
 
 export const getSubscriptionItems = async (
-    prisma: ExtendedPrismaClient,
-    subscriptionCartItems: SubscriptionCartItem[]) => {
+  prisma: ExtendedPrismaClient,
+  subscriptionCartItems: SubscriptionCartItem[]) => {
   const seasonSubscriptionTypes = await prisma.seasonsubscriptiontypes.findMany({
     where: {
       seasonid_fk: {in: subscriptionCartItems.map((item) => item.seasonid_fk)},
@@ -119,10 +119,10 @@ export const getSubscriptionItems = async (
       throw new InvalidInputError(422, `${item.name} (${item.desc}) quantity exceeds available`);
     }
     acc.subscriptionCartRows = acc.subscriptionCartRows.concat(getCartRow(
-        item.name,
-        item.desc,
-        item.price*100,
-        item.qty,
+      item.name,
+      item.desc,
+      item.price*100,
+      item.qty,
     ));
     acc.orderSubscriptionItems = acc.orderSubscriptionItems.concat(Array(item.qty).fill({
       subscriptiontypeid_fk: type.subscriptiontypeid_fk,
@@ -156,7 +156,7 @@ interface TicketItemsReturn {
 }
 
 export const createStripePaymentIntent = async (
-    orderTotal: number,
+  orderTotal: number,
 ) => {
   const intentObject: JsonObject = {
     currency: 'usd',
@@ -174,18 +174,15 @@ export const createStripePaymentIntent = async (
 };
 
 export const requestStripeReaderPayment = async (
-    readerID: string,
-    paymentIntentID: string,
-) => {
-  const requestPay = await stripe.terminal.readers.processPaymentIntent(
-      readerID,
-      {payment_intent: paymentIntentID},
-  );
-  return requestPay;
-};
+  readerID: string,
+  paymentIntentID: string,
+) => stripe.terminal.readers.processPaymentIntent(
+  readerID,
+  {payment_intent: paymentIntentID},
+);
 
 export const testPayReader = async (
-    readerID: string,
+  readerID: string,
 ) => {
   const pay = await stripe.testHelpers.terminal.readers.presentPaymentMethod(readerID);
   return pay;
@@ -330,15 +327,19 @@ const getTickets = (
     });
 };
 
-export const getDiscountAmount = (discount: any, orderTotal: number) => {
+export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: any, orderTotal: number, ticketItems: TicketCartItem[]) => {
+  if (!discount || discount.code === '') {
+    return {discountTotal: 0};
+  }
+
+  await validateDiscount(discount, ticketItems, prisma);
+
   if (discount.amount && discount.percent) {
-    return Math.min((+discount.percent / 100) * orderTotal, discount.amount);
-  }
-  if (discount.amount) {
-    return Math.min(discount.amount, orderTotal);
-  }
-  if (discount.percent) {
-    return orderTotal*(+discount.percent)/100;
+    return {discountTotal: Math.min((+discount.percent / 100) * orderTotal, discount.amount), discountId: discount.discountid};
+  } else if (discount.amount) {
+    return {discountTotal: Math.min(discount.amount, orderTotal), discountId: discount.discountid};
+  } else if (discount.percent) {
+    return {discountTotal: orderTotal*(+discount.percent)/100, discountId: discount.discountid};
   }
   throw new Error('Invalid discount');
 };
@@ -478,9 +479,9 @@ const validateName = (name: string, type: string): string => {
 };
 
 export const validateWithRegex = (
-    toValidate: string,
-    errorMessage: string,
-    regex: RegExp,
+  toValidate: string,
+  errorMessage: string,
+  regex: RegExp,
 ): string => {
   if (!toValidate.trim().match(regex)) {
     throw new InvalidInputError(422, errorMessage);
