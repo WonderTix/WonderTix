@@ -206,7 +206,7 @@ export const useFetchContacts = (
   return {loading, contacts, setReload, setLoading};
 };
 
-export const defaultQueryOptions = {
+export const defaultParameters = {
   contactid: 'Contact ID',
   firstname: 'First Name',
   lastname: 'Last Name',

@@ -13,7 +13,7 @@ import ContactPopUp from './ContactPopUp';
 import {
   columns,
   Contact,
-  defaultQueryOptions,
+  defaultParameters,
   emptyContact,
   useFetchContacts,
 } from './contactUtils';
@@ -95,10 +95,10 @@ const ContactGrid = () => {
       setContactPopUpErrMsg(error.message);
       console.error(error);
     }
-  }, []);
+  }, [token]);
 
   const updateParameters = useCallback(
-    (index, newValue: string) => {
+    (index: number, newValue: string) => {
       setQueries((prev) => {
         if (newValue) {
           return prev.map((value, cur) =>
@@ -108,9 +108,15 @@ const ContactGrid = () => {
         prev.splice(index, 1);
         return Array.from(prev);
       });
-    },
-    [queries],
-  );
+    }, []);
+
+  const updateQueries = useCallback(
+    (index: number, value:string) =>
+    setQueries((prev) =>
+      prev.map((query, cur) =>
+        index === cur ? {...query, value} : query,
+      ),
+    ), []);
 
   return (
     <main className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
@@ -125,7 +131,7 @@ const ContactGrid = () => {
               setReload((prev) => !prev);
             }}
             queries={queries}
-            defaultParameters={defaultQueryOptions}
+            defaultParameters={defaultParameters}
             updateQueries={(
               indexToRemove: number,
               type: string,
@@ -133,11 +139,7 @@ const ContactGrid = () => {
             ) =>
               type === 'parameter'
                 ? updateParameters(indexToRemove, value)
-                : setQueries((prev) =>
-                    prev.map((query, index) =>
-                      index === indexToRemove ? {...query, value} : query,
-                    ),
-                  )
+                : updateQueries(indexToRemove, value)
             }
             addQuery={(parameter: string) =>
               setQueries((prev) => [{parameter, value: ''}, ...prev])
@@ -189,7 +191,7 @@ const ContactGrid = () => {
   );
 };
 
-export const CustomContactToolBar = ({
+const CustomContactToolBar = ({
   setShowPopUp,
   ...props
 }: GridToolbarProps) => {
@@ -220,9 +222,8 @@ export const CustomContactToolBar = ({
         />
       </div>
       <button
-        className='bg-blue-500 px-4 py-2 disabled:gray-500 hover:bg-blue-600 hover:ring hover:ring-blue-300 hover:ring-offset-1 rounded-2xl m-1 shadow-xl text-white text-base'
+        className='bg-blue-500 px-4 py-2 disabled:gray-500 hover:bg-blue-600 hover:ring hover:ring-blue-300 hover:ring-offset-1 rounded-xl m-1 shadow-xl text-white text-base'
         data-test-id='create-contact-button'
-        disabled={false}
         onClick={() => setShowPopUp((prev) => !prev)}
       >
         Create Contact

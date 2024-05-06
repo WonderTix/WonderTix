@@ -1,3 +1,4 @@
+import React from 'react';
 import {FormButton} from '../../Ticketing/ticketingmanager/Event/components/FormButton';
 import {PlusIcon, SearchIcon} from '../../Ticketing/Icons';
 import {
@@ -7,14 +8,12 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import {defaultQueryOptions} from './contactUtils';
-import React, {useState} from 'react';
 
 interface SearchBoxProps {
   onSearch: () => void;
   queries: {parameter: string; value: string}[];
-  defaultParameters: object;
-  updateQueries: (index, type: string, value: string) => void;
+  defaultParameters: {[key: string]: string};
+  updateQueries: (index: number, type: string, value: string) => void;
   addQuery: (parameter: string) => void;
 }
 
@@ -67,7 +66,7 @@ const SearchBox = (props: SearchBoxProps) => {
                 {queries.length > 1 && <MenuItem value=''>Remove</MenuItem>}
                 {parameters.map((cur, index) => (
                   <MenuItem key={index} value={cur}>
-                    {defaultQueryOptions[cur]}
+                    {defaultParameters[cur]}
                   </MenuItem>
                 ))}
               </Select>

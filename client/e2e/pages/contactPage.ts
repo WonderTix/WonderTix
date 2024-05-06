@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import {type Locator, type Page, expect} from '@playwright/test';
-import {CustomerInfo} from '../testData/CustomerInfo';
+import {CustomerInfo, seatingAccOptions} from '../testData/CustomerInfo';
 
 export class ContactPage {
   readonly page: Page;
@@ -50,6 +50,9 @@ export class ContactPage {
     await expect(this.page.getByText(address, {exact: true})).toBeVisible();
     await expect(
       this.page.getByText(customer.phoneNumber, {exact: true}),
+    ).toBeVisible();
+    await expect(
+      this.page.getByText(seatingAccOptions[customer.accommodations], {exact: true}),
     ).toBeVisible();
   }
 
