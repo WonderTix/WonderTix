@@ -116,7 +116,7 @@ const ContactGrid = () => {
     <main className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
       <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
         <header className='flex flex-col min-[1080px]:flex-row justify-between mb-10'>
-          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-2'>
+          <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-indigo-500 mb-3'>
             Contacts
           </h1>
           <SearchBox
@@ -133,15 +133,11 @@ const ContactGrid = () => {
             ) =>
               type === 'parameter'
                 ? updateParameters(indexToRemove, value)
-                : setQueries((prev) => {
-                    if (!value && prev.length != 1) {
-                      prev.splice(indexToRemove, 1);
-                      return [...prev];
-                    }
-                    return prev.map((query, index) =>
+                : setQueries((prev) =>
+                    prev.map((query, index) =>
                       index === indexToRemove ? {...query, value} : query,
-                    );
-                  })
+                    ),
+                  )
             }
             addQuery={(parameter: string) =>
               setQueries((prev) => [{parameter, value: ''}, ...prev])
@@ -224,7 +220,7 @@ export const CustomContactToolBar = ({
         />
       </div>
       <button
-        className='bg-blue-500 px-4 py-2 disabled:gray-500 hover:bg-blue-600 hover:ring hover:ring-blue-300 hover:ring-offset-1 rounded-2xl m-1 shadow-xl text-white text-md'
+        className='bg-blue-500 px-4 py-2 disabled:gray-500 hover:bg-blue-600 hover:ring hover:ring-blue-300 hover:ring-offset-1 rounded-2xl m-1 shadow-xl text-white text-base'
         data-test-id='create-contact-button'
         disabled={false}
         onClick={() => setShowPopUp((prev) => !prev)}

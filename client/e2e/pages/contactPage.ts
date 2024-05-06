@@ -12,10 +12,8 @@ export class ContactPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.searchContactButton = page.locator(
-      '[data-test-id="contact-search-button"]',
-    );
-    this.searchValue = page.getByLabel('Value');
+    this.searchContactButton = page.getByTestId('contact-search-button');
+    this.searchValue = page.getByLabel('Search Value');
     this.searchParameterSelect = page.locator('#search-parameter-select-0');
     this.searchParameterSelectOption = page.getByRole('option', {
       name: 'Email',

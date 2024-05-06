@@ -1,5 +1,5 @@
 import {FormButton} from '../../Ticketing/ticketingmanager/Event/components/FormButton';
-import {PlusIcon} from '../../Ticketing/Icons';
+import {PlusIcon, SearchIcon} from '../../Ticketing/Icons';
 import {
   FormControl,
   InputLabel,
@@ -24,37 +24,42 @@ const SearchBox = (props: SearchBoxProps) => {
 
   return (
     <aside className='text-md bg-white p-3 mb-4 rounded-xl grid'>
-      <div className='flex flex-row justify-between mb-2 text-white'>
-        <button
-          data-test-id='contact-search-button'
-          onClick={() => onSearch()}
-          className='text-white bg-blue-500 hover:bg-blue-600 rounded-2xl py-1 px-4 shadow-xl hover:ring hover:ring-blue-300 hover:ring-offset-1'
-        >
-          Search
-        </button>
+      <div className='grid grid-cols-2 mb-2 text-white'>
+        <h2 className='text-zinc-500 font-semibold text-xl flex items-center'>Search Contacts</h2>
+        <div className='flex flex-row justify-end gap-2'>
         <FormButton
-          className='text-white bg-green-500 hover:bg-green-600 disabled:bg-gray-300 rounded-2xl shadow-xl hover:ring hover:ring-green-300 hover:ring-offset-1'
+          testID='contact-search-button'
+          title='Search'
+          disabled={false}
+          onClick={() => onSearch()}
+          className='text-white bg-blue-500 hover:bg-blue-600 rounded-xl p-1 shadow-xl hover:ring hover:ring-blue-300 hover:ring-offset-1 justify-self-end'
+        >
+          <SearchIcon className='h-8 w-8'/>
+        </FormButton>
+        <FormButton
+          className='text-white bg-green-500 hover:bg-green-600 disabled:bg-gray-300 rounded-xl p-1 shadow-xl hover:ring hover:ring-green-300 hover:ring-offset-1 justify-self-end'
           disabled={!parameters.length}
           testID='add-search-parameter-button'
-          title='Add search parameter'
+          title='Add Search Field'
           onClick={() => addQuery(parameters[0])}
         >
           <PlusIcon className='h-8 w-8' />
         </FormButton>
+        </div>
       </div>
       <div className='border border-zinc-300 p-3 grid gap-2 rounded-xl max-h-[150px] overflow-y-scroll'>
         {queries.map(({parameter, value}, index) => (
           <div key={index} className='grid min-[425px]:grid-cols-2 gap-2'>
             <FormControl>
               <InputLabel id={`search-parameter-select-label-${index}`}>
-                Search
+                Search Field
               </InputLabel>
               <Select
                 labelId={`search-parameter-select-label-${index}`}
                 id={`search-parameter-select-${index}`}
                 value={parameter}
                 size='small'
-                label='Search'
+                label='Search Field'
                 onChange={(event) =>
                   updateQueries(index, 'parameter', event.target.value)
                 }
@@ -70,7 +75,7 @@ const SearchBox = (props: SearchBoxProps) => {
             <TextField
               id={`search-value-${index}`}
               size='small'
-              label='Value'
+              label='Search Value'
               onChange={(event) =>
                 updateQueries(index, 'value', event.target.value)
               }
@@ -84,4 +89,3 @@ const SearchBox = (props: SearchBoxProps) => {
 };
 
 export default SearchBox;
-

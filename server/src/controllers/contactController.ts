@@ -171,7 +171,7 @@ contactController.get('/', async (req: Request, res: Response) => {
     if (req.query.contactid) {
       // @ts-ignore
       req.query.contactid = Array.isArray(req.query.contactid) ?
-        req.query.contactid.map((id) => Number.parseInt(id.toString())):
+        req.query.contactid.map((id) => parseInt(id.toString())):
         [Number.parseInt(req.query.contactid.toString())];
     }
 

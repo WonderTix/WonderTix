@@ -1,11 +1,17 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridCellParams,
+  GridValueGetterParams,
+  useGridApiContext,
+} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
 import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 import {titleCase} from '../../../../utils/arrays';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import format from 'date-fns/format';
 import {useFetchToken} from '../Event/components/ShowingUtils';
+import {getFormattedPhoneNumber} from '../../../CRM/Contacts/contactUtils';
 
 interface RenderCheckinProps {
   params: GridCellParams;
@@ -99,7 +105,13 @@ const DoorList = (): ReactElement => {
       renderCell: renderTicketTypes,
     },
     {field: 'email', headerName: 'Email', width: 200},
-    {field: 'phone', headerName: 'Phone Number', width: 130},
+    {
+      field: 'phone',
+      headerName: 'Phone Number',
+      valueGetter: (params: GridValueGetterParams) =>
+        getFormattedPhoneNumber(params.value),
+      width: 130,
+    },
     {field: 'vip', headerName: 'VIP', width: 65, type: 'boolean'},
     {
       field: 'donorBadge',
