@@ -518,24 +518,58 @@ const updateSubscriptionCartItem = (
  * @param eventInstanceId
  * @param ticketTypeId
  * @param ticket
+ * @param currentQty
  */
 const getTicketQuantityRange = (
   state: ticketingState,
   eventInstanceId: number,
   ticketTypeId: number,
   ticket: Ticket,
+  currentQty: number,
 ) => {
   const eventInstanceAvailableSeats = ticket.availableseats;
   const ticketRestriction = state.ticketrestrictions.find(
     byId(eventInstanceId, ticketTypeId),
   );
+  if (!ticketRestriction) {
+    return bound(0, 0);
+  }
   const ticketRestrictionAvailableSeats =
     ticketRestriction.ticketlimit - ticketRestriction.ticketssold;
   return bound(
     0,
-    Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats),
+    Math.min(eventInstanceAvailableSeats, ticketRestrictionAvailableSeats)+currentQty,
   );
 };
+
+/**
+ * Updates available seats for the given id based on the qty provided
+ *
+ *
+ * @param currentTickets
+ * @param currentTickets.data
+ * @param toUpdate
+ * @param currentTickets.data.byId
+ * @param currentTickets.data.allIds
+ */
+const updateByIdObject = (
+  currentTickets: {data: {byId: {[key: string]: Ticket}; allIds: number[]}},
+  toUpdate: {id: number; qty: number}[],
+) => ({
+  data: {
+    ...currentTickets.data,
+    byId: toUpdate.reduce(
+      (acc, {id, qty}) => ({
+        ...acc,
+        [id]: {
+          ...acc[id],
+          availableseats: Math.max(acc[id].availableseats + qty, 0),
+        },
+      }),
+      {...currentTickets.data.byId},
+    ),
+  },
+});
 
 /**
  * addTicketReducer adds a ticketReducer to the payload and checks the id similar to qtyReducer
@@ -558,18 +592,28 @@ const addTicketReducer: CaseReducer<
   if (!tickets.data.allIds.includes(id)) return state;
 
   const ticket = tickets.data.byId[id];
-  const validRange = getTicketQuantityRange(state, id, tickettype.id, ticket);
 
   const ticketCartItem = state.ticketCart.find(byId(id, tickettype.id));
   let updatedState: ticketingState;
 
   if (ticketCartItem) {
+    const updatedQty = getTicketQuantityRange(
+      state,
+      id,
+      tickettype.id,
+      ticket,
+      ticketCartItem.qty,
+    )(qty + ticketCartItem.qty);
+
     updatedState = {
       ...state,
+      tickets: updateByIdObject(state.tickets, [
+        {id, qty: ticketCartItem.qty - updatedQty},
+      ]),
       ticketCart: updateTicketCartItem(state.ticketCart, {
         id,
         tickettypeId: tickettype.id,
-        qty: validRange(qty + ticketCartItem.qty),
+        qty: updatedQty,
         payWhatPrice,
       }),
     };
@@ -583,6 +627,9 @@ const addTicketReducer: CaseReducer<
     updatedState = newCartItem
       ? {
           ...state,
+          tickets: updateByIdObject(state.tickets, [
+            {id, qty: -newCartItem.qty},
+          ]),
           ticketCart: [...state.ticketCart, newCartItem],
         }
       : {...state};
@@ -629,14 +676,18 @@ const editQtyReducer: CaseReducer<
   if (!state.tickets.data.allIds.includes(id)) return state;
 
   const ticket = state.tickets.data.byId[id];
-  const validRange = getTicketQuantityRange(state, id, tickettypeId, ticket);
+  const ticketItem = state.ticketCart.find(byId(id, tickettypeId));
+  const updatedQty = getTicketQuantityRange(state, id, tickettypeId, ticket, ticketItem?.qty ?? 0)(qty);
 
   const updatedState = {
     ...state,
+    tickets: ticketItem
+      ? updateByIdObject(state.tickets, [{id, qty: ticketItem.qty - updatedQty}])
+      : state.tickets,
     ticketCart: updateTicketCartItem(state.ticketCart, {
       id,
       tickettypeId,
-      qty: validRange(qty),
+      qty: updatedQty,
     }),
   };
 
@@ -683,11 +734,17 @@ const removeTicketFromCartReducer: CaseReducer<
   PayloadAction<{id: number; tickettypeId: number}>
 > = (state, action) => {
   const {id, tickettypeId} = action.payload;
+  const {qty, ticketCart} = state.ticketCart.reduce(
+    (acc, ticket) =>
+      ticket.product_id === id && ticket.typeID === tickettypeId
+        ? {...acc, qty: ticket.qty}
+        : {...acc, ticketCart: [...acc.ticketCart, ticket]},
+    {qty: 0, ticketCart: []},
+  );
   const updatedState = {
     ...state,
-    ticketCart: state.ticketCart.filter(
-      (item) => item.product_id !== id || item.typeID !== tickettypeId,
-    ),
+    tickets: updateByIdObject(state.tickets, [{id, qty: qty}]),
+    ticketCart: ticketCart,
   };
 
   if (!isValidDiscount(state.discount, updatedState)) {
@@ -722,6 +779,13 @@ const removeAllTicketsFromCartReducer: CaseReducer<ticketingState> = (
 ) => {
   const updatedState = {
     ...state,
+    tickets: updateByIdObject(
+      state.tickets,
+      state.ticketCart.map((ticket) => ({
+        id: ticket.product_id,
+        qty: ticket.qty,
+      })),
+    ),
     ticketCart: [],
   };
 
@@ -747,11 +811,16 @@ const removeAllSubscriptionsFromCartReducer: CaseReducer<ticketingState> = (
   return updatedState;
 };
 
-const removeAllItemsFromCartReducer: CaseReducer<ticketingState> = (
-  state,
-) => {
+const removeAllItemsFromCartReducer: CaseReducer<ticketingState> = (state) => {
   const updatedState = {
     ...state,
+    tickets: updateByIdObject(
+      state.tickets,
+      state.ticketCart.map((ticket) => ({
+        id: ticket.product_id,
+        qty: ticket.qty,
+      })),
+    ),
     ticketCart: [],
     subscriptionCart: [],
   };
@@ -839,7 +908,13 @@ const ticketingSlice = createSlice({
           ? action.payload.ticketRestrictions
           : [];
         state.tickets = action.payload.tickets
-          ? action.payload.tickets
+          ? updateByIdObject(
+              action.payload.tickets,
+              state.ticketCart.map((ticket) => ({
+                id: ticket.product_id,
+                qty: -ticket.qty,
+              })),
+            )
           : {data: {byId: {}, allIds: []}};
       })
       .addCase(fetchTicketingData.rejected, (state) => {
