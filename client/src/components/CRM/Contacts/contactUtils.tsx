@@ -166,6 +166,7 @@ export const useFetchContacts = (
   const [contacts, setContacts] = useState([]);
   const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!token) return;
@@ -185,6 +186,10 @@ export const useFetchContacts = (
             newsletter: contact.newsletter
               ? new Date(contact.newsletter)
               : contact.newsletter,
+            navigate: () =>
+              navigate(`/admin/contacts/show/${contact.contactid}`, {
+                state: queries,
+              }),
           })),
         );
         setLoading(false);
@@ -321,20 +326,11 @@ export const columns: GridColDef[] = [
     headerName: '',
     flex: 1,
     minWidth: 50,
-    renderCell: (params: GridRenderCellParams) => {
-      const NavigateButton = () => {
-        const navigate = useNavigate();
-        return (
-          <IconButton
-            onClick={() => navigate(`/admin/contacts/show/${params.id}`)}
-            tooltip='Show more information'
-          >
-            <VerticalDotsIcon />
-          </IconButton>
-        );
-      };
-      return <NavigateButton />;
-    },
+    renderCell: (params: GridRenderCellParams) => (
+      <IconButton onClick={params.row.navigate} tooltip='Show more information'>
+        <VerticalDotsIcon />
+      </IconButton>
+    ),
   },
 ];
 

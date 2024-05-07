@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {
   DataGrid,
   GridToolbarColumnsButton,
@@ -17,7 +17,7 @@ import {
   emptyContact,
   useFetchContacts,
 } from './contactUtils';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import PopUp from '../../Ticketing/PopUp';
 import {usePopUp} from '../../Ticketing/ticketingmanager/TicketTypes/SubscriptionTypeUtils';
 import format from 'date-fns/format';
@@ -29,12 +29,18 @@ const ContactGrid = () => {
   const {popUpProps, showPopUp, setShowPopUp, setPopUpProps} = usePopUp();
   const [contactPopUpIsOpen, setContactPopUpIsOpen] = useState(false);
   const [contactPopUpErrMsg, setContactPopUpErrMsg] = useState(null);
-  const [queries, setQueries] = useState<{parameter: string; value: string}[]>([
-    {
-      parameter: 'firstname',
-      value: '',
-    },
-  ]);
+  const location = useLocation();
+  const [queries, setQueries] = useState<{parameter: string; value: string}[]>(
+    location.state?.length
+      ? location.state
+      : [
+          {
+            parameter: 'firstname',
+            value: '',
+          },
+        ],
+  );
+
   const {contacts, loading, setLoading, setReload} = useFetchContacts(
     token,
     queries,
@@ -97,18 +103,17 @@ const ContactGrid = () => {
     }
   }, [token]);
 
-  const updateParameters = useCallback(
-    (index: number, newValue: string) => {
-      setQueries((prev) => {
-        if (newValue) {
-          return prev.map((value, cur) =>
-            index === cur ? {...value, parameter: newValue} : value,
-          );
-        }
-        prev.splice(index, 1);
-        return Array.from(prev);
-      });
-    }, []);
+  const updateParameters = useCallback((index: number, newValue: string) => {
+    setQueries((prev) => {
+      if (newValue) {
+        return prev.map((value, cur) =>
+          index === cur ? {...value, parameter: newValue} : value,
+        );
+      }
+      prev.splice(index, 1);
+      return Array.from(prev);
+    });
+  }, []);
 
   const updateQueries = useCallback(
     (index: number, value:string) =>
@@ -159,11 +164,14 @@ const ContactGrid = () => {
             getRowId={(row) => row.contactid}
             autoHeight
             rowsPerPageOptions={[10, 25, 50, 100]}
-            pageSize={10}
             components={{Toolbar: CustomContactToolBar}}
             componentsProps={{
               toolbar: {
                 setShowPopUp: setContactPopUpIsOpen,
+              }}}
+            initialState={{
+              pagination: {
+                pageSize: 10,
               },
             }}
           />
@@ -191,10 +199,7 @@ const ContactGrid = () => {
   );
 };
 
-const CustomContactToolBar = ({
-  setShowPopUp,
-  ...props
-}: GridToolbarProps) => {
+const CustomContactToolBar = ({setShowPopUp, ...props}: GridToolbarProps) => {
   return (
     <GridToolbarContainer
       {...props}

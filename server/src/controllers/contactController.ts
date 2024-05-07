@@ -183,8 +183,10 @@ contactController.get('/', async (req: Request, res: Response) => {
       return currentParameter
         .map((param) => ({
           [key]: {
-            equals: param,
-            ...(typeof param === 'string' && {mode: 'insensitive'}),
+            ...(typeof param === 'string'?
+              {contains: param, mode: 'insensitive'}:
+              {equals: param}
+            ),
           }}));
     });
 
