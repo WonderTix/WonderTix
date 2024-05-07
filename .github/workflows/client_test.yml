@@ -21,6 +21,10 @@ jobs:
         run: npm install --force
         working-directory: ./client
           
+      - name: npx playwright install
+        run: npx playwright install
+        working-directory: ./client
+
       - name: Check client unit Tests
         run: npm run  test
         working-directory: ./client
