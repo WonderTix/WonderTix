@@ -352,25 +352,12 @@ contactController.get('/emails', async (req: Request, res: Response) => {
     });
 
     if (filters.length > 0) {
-      const contacts = await prisma.contacts.findMany({
-        where: {
-          OR: filters,
-        },
-        select: {
-          id: true,
-          email: true,
-        },
-      });
+      const contacts = await prisma.contacts.findMany();
       res.status(200).json(contacts);
       return;
     }
 
-    const contacts = await prisma.contacts.findMany({
-      select: {
-        id: true,
-        email: true,
-      },
-    });
+    const contacts = await prisma.contacts.findMany();
     res.status(200).json(contacts);
     return;
   } catch (error) {
