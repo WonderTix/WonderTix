@@ -1,7 +1,7 @@
 /* eslint-disable operator-linebreak */
 import React, {useState, useRef, useEffect} from 'react';
-import logo from '../../Logo/2011_Logo_white.png';
-import '../../Logo/logo.css';
+import logo from '../Logo/2011_Logo_white.png';
+import '../Logo/logo.css';
 import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from './Authentication/auth-nav';
 import PropTypes from 'prop-types';
