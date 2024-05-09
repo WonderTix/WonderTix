@@ -19,10 +19,6 @@ resource "google_cloud_run_service" "slack_notifs" {
     namespace   = var.namespace
   }
 
-  lifecycle {
-    ignore_changes = [traffic[0]]
-  }
-
   template {
     metadata {
       annotations = {
@@ -98,10 +94,6 @@ resource "google_cloud_run_service" "wtix_client_dev" {
   name                       = "wtix-client-dev"
   project                    = var.project
 
-  lifecycle {
-    ignore_changes = [traffic[0]]
-  }
-
   metadata {
     annotations = {}
     labels      = {}
@@ -120,7 +112,7 @@ resource "google_cloud_run_service" "wtix_client_dev" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name = "wtix-client-dev-9c3723f"
+      name = "wtix-client-dev-${random_string.revision_suffix.result}"
     }
     spec {
       container_concurrency = var.container_concurrency
@@ -202,7 +194,6 @@ resource "google_cloud_run_service" "wtix_client_dev" {
   traffic {
     latest_revision = false
     percent         = 100
-    revision_name   = "wtix-client-dev-9c3723f"
     tag             = null
     url             = null
   }
@@ -220,10 +211,6 @@ resource "google_cloud_run_service" "wtix_client_prd" {
     namespace   = var.namespace
   }
 
-  lifecycle {
-    ignore_changes = [traffic[0]]
-  }
-
   template {
     metadata {
       annotations = {
@@ -236,7 +223,7 @@ resource "google_cloud_run_service" "wtix_client_prd" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name = "wtix-client-prd-4b99c98"
+      name = "wtix-client-prd-${random_string.revision_suffix.result}"
     }
     spec {
       container_concurrency = var.container_concurrency
@@ -307,7 +294,6 @@ resource "google_cloud_run_service" "wtix_client_prd" {
   traffic {
     latest_revision = false
     percent         = 100
-    revision_name   = "wtix-client-prd-4b99c98"
     tag             = null
     url             = null
   }
@@ -325,10 +311,6 @@ resource "google_cloud_run_service" "wtix_client_stg" {
     namespace   = var.namespace
   }
 
-  lifecycle {
-    ignore_changes = [traffic[0]]
-  }
-
   template {
     metadata {
       annotations = {
@@ -341,7 +323,7 @@ resource "google_cloud_run_service" "wtix_client_stg" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name = "wtix-client-stg-9c3723f"
+      name = "wtix-client-stg-${random_string.revision_suffix.result}"
     }
     spec {
       container_concurrency = var.container_concurrency
@@ -423,7 +405,6 @@ resource "google_cloud_run_service" "wtix_client_stg" {
   traffic {
     latest_revision = false
     percent         = 100
-    revision_name   = "wtix-client-stg-9c3723f"
     tag             = null
     url             = null
   }
@@ -441,10 +422,6 @@ resource "google_cloud_run_service" "wtix_server_dev" {
     namespace   = var.namespace
   }
 
-  lifecycle {
-    ignore_changes = [traffic[0]]
-  }
-
   template {
     metadata {
       annotations = {
@@ -460,7 +437,7 @@ resource "google_cloud_run_service" "wtix_server_dev" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name = "wtix-server-dev-9c3723f"
+      name = "wtix-server-dev-${random_string.revision_suffix.result}"
     }
     spec {
       container_concurrency = var.container_concurrency
@@ -650,7 +627,6 @@ resource "google_cloud_run_service" "wtix_server_dev" {
   traffic {
     latest_revision = false
     percent         = 100
-    revision_name   = "wtix-server-dev-9c3723f"
     tag             = null
     url             = null
   }
@@ -687,7 +663,7 @@ resource "google_cloud_run_service" "wtix_server_prd" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name = "wtix-server-prd-f0cfa4a"
+      name = "wtix-server-prd-${random_string.revision_suffix.result}"
     }
     spec {
       container_concurrency = var.container_concurrency
@@ -878,7 +854,6 @@ resource "google_cloud_run_service" "wtix_server_prd" {
   traffic {
     latest_revision = false
     percent         = 100
-    revision_name   = "wtix-server-prd-f0cfa4a"
     tag             = null
     url             = null
   }
@@ -896,10 +871,6 @@ resource "google_cloud_run_service" "wtix_server_stg" {
     namespace   = var.namespace
   }
 
-  lifecycle {
-    ignore_changes = [traffic[0]]
-  }
-
   template {
     metadata {
       annotations = {
@@ -915,7 +886,7 @@ resource "google_cloud_run_service" "wtix_server_stg" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name = "wtix-server-stg-9c3723f"
+      name = "wtix-server-stg-${random_string.revision_suffix.result}"
     }
     spec {
       container_concurrency = var.container_concurrency
@@ -1105,7 +1076,6 @@ resource "google_cloud_run_service" "wtix_server_stg" {
   traffic {
     latest_revision = false
     percent         = 100
-    revision_name   = "wtix-server-stg-9c3723f"
     tag             = null
     url             = null
   }
