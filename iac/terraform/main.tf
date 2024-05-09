@@ -12,7 +12,6 @@ terraform {
       version = "3.6.1"
     }
   }
-
   backend "gcs" {
     bucket      = "runapps_default-tomuod"
     prefix      = "terraform/tfstate/"
