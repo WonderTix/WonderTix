@@ -1,13 +1,16 @@
+/* eslint-disable camelcase*/
 import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {Prisma} from '@prisma/client';
+import {Prisma, state} from '@prisma/client';
 import {
   createRefundedOrder,
   ticketingWebhook,
-  readerWebhook, 
-  discoverReaders, 
-  abortPaymentIntent} from './orderController.service';
+  updateRefundStatus,
+  readerWebhook,
+  discoverReaders,
+  abortPaymentIntent,
+} from './orderController.service';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const webhookKey = `${process.env.PRIVATE_STRIPE_WEBHOOK}`;
@@ -17,49 +20,55 @@ const prisma = extendPrismaClient();
 export const orderController = Router();
 
 orderController.post(
-    '/webhook',
-    express.raw({type: 'application/json'}),
-    async (req: Request, res: Response) => {
-      const sig = req.headers['stripe-signature'];
-      try {
-        const event = await stripe.webhooks.constructEvent(
-            req.body,
-            sig,
-            webhookKey,
-        );
+  '/webhook',
+  express.raw({type: 'application/json'}),
+  async (req: Request, res: Response) => {
+    const sig = req.headers['stripe-signature'];
+    try {
+      const event = await stripe.webhooks.constructEvent(
+        req.body,
+        sig,
+        webhookKey,
+      );
 
-        const object = event.data.object;
-        const metaData = object.metadata;
-        const action = object.action;
+      const object = event.data.object;
+      const metaData = object.metadata;
+      const action = object.action;
 
-        // Handle in-person payments
-        if (metaData.sessionType === '__reader' || 
+      // Handle in-person payments
+      if (metaData.sessionType === '__reader' ||
             event.type === 'terminal.reader.action_failed' ||
             event.type === 'terminal.reader.action.succeeded') { // terminal events don't carry our __reader metadata
-          await readerWebhook(
-            prisma,
-            event.type,
-            action ? action.failure_message : 'no error',
-            object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
-          );
-        }
-
-        // Handle online payments
-        if (metaData.sessionType === '__ticketing') {
-          await ticketingWebhook(
-              prisma,
-              event.type,
-              object.payment_intent,
-              object.id,
-          );
-        }
-
-        return res.send();
-      } catch (error) {
-        console.error(error);
-        return res.status(400).send();
+        await readerWebhook(
+          prisma,
+          event.type,
+          action ? action.failure_message : 'no error',
+          object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
+        );
       }
-    },
+
+      // Handle online payments
+      if (metaData.sessionType === '__ticketing') {
+        await ticketingWebhook(
+          prisma,
+          event.type,
+          object.payment_intent,
+          object.id,
+          metaData.contact,
+        );
+      } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
+        await updateRefundStatus(
+          prisma,
+          object.payment_intent,
+        );
+      }
+
+      return res.send();
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send();
+    }
+  },
 );
 
 orderController.use(express.json());
@@ -103,7 +112,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     }
     const orders = await prisma.orders.findMany({
       where: {
-        payment_intent: {not: null},
+        order_status: state.completed,
         OR: [
           {
             orderticketitems: {
@@ -115,6 +124,13 @@ orderController.get('/refund', async (req: Request, res: Response) => {
           {
             donation: {
               refund: null,
+            },
+          },
+          {
+            subscriptions: {
+              some: {
+                refund: null,
+              },
             },
           },
         ],
@@ -151,6 +167,19 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             },
           },
         },
+        subscriptions: {
+          where: {
+            refund: null,
+          },
+          include: {
+            seasonsubscriptiontype: {
+              include: {
+                season: true,
+                subscriptiontype: true,
+              },
+            },
+          },
+        },
         donation: {
           where: {
             refund: null,
@@ -163,6 +192,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       const {
         contacts,
         orderticketitems,
+        subscriptions,
         donation,
         orderdatetime,
         ...remainderOfOrder
@@ -170,20 +200,48 @@ orderController.get('/refund', async (req: Request, res: Response) => {
 
       if (!contacts) return;
 
-      const orderItems = new Map<string, number>();
-      const ticketTotal = orderticketitems.reduce<number>((acc, item) => {
-        if (!item.ticketitem) return acc;
-        const key = `${item.ticketitem.ticketrestriction.eventinstance.event.eventname}`;
-        orderItems.set(key, (orderItems.get(key) ?? 0)+1);
-        return acc+Number(item.price);
+      const orderItems = new Map<string, any>();
+      const ticketTotal = orderticketitems.reduce<number>((acc, ticket) => {
+        if (!ticket.ticketitem) return acc;
+        const key = `T${ticket.ticketitem.ticketrestriction.ticketrestrictionsid}`;
+        const item = orderItems.get(key);
+        if (item) {
+          item.quantity+=1;
+          item.price+=Number(ticket.price);
+        } else {
+          orderItems.set(key, {
+            type: ticket.ticketitem.ticketrestriction.tickettype.description,
+            description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+            quantity: 1,
+            price: +ticket.price,
+          });
+        }
+        return acc+Number(ticket.price);
+      }, 0);
+
+      const subscriptionTotal = subscriptions.reduce<number>((acc, subscription) => {
+        const key = `S${subscription.seasonsubscriptiontype.season.seasonid}-${subscription.seasonsubscriptiontype.season.seasonid}`;
+        const item = orderItems.get(key);
+        if (item) {
+          item.quantity+=1;
+          item.price+=Number(subscription.price);
+        } else {
+          orderItems.set(key, {
+            type: `${subscription.seasonsubscriptiontype.subscriptiontype.name} Subscription`,
+            description: subscription.seasonsubscriptiontype.season.name,
+            quantity: 1,
+            price: +subscription.price,
+          });
+        }
+        return acc+Number(subscription.price);
       }, 0);
       return {
-        price: ticketTotal,
+        price: ticketTotal+subscriptionTotal - Number(order.discounttotal ?? 0),
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
         orderdate: orderdatetime,
         ...remainderOfOrder,
-        items: [...orderItems.entries()].map(([key, value]) => `${value} x ${key}`),
+        orderitems: [...orderItems.entries()].map(([_, value]) => value),
         donation: +(donation?.amount ?? 0),
       };
     });
@@ -203,57 +261,16 @@ orderController.get('/refund', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /2/order/readers:
- *   get:
- *     summary: get all terminal readers
- *     tags:
- *     - New Order
- *     responses:
- *       200:
- *         description: readers fetched successfully
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-orderController.get('/readers', async (req: Request, res: Response) => {
-  try {
-    const toReturn = await discoverReaders();
-    return res.status(200).json(toReturn);
-  } catch (error) {
-    res.status(500).json({error});
-  }
-});
-
-/**
- * @swagger
- * /2/order/reader-cancel:
- *   post:
- *     summary: Cancel payment intent and cancel order in prisma
- *     tags:
- *     - New Event API
- */
-
-orderController.post('/reader-cancel', async (req: Request, res: Response) => {
-  const {paymentIntentID} = req.body;
-  try {
-    await abortPaymentIntent(prisma, paymentIntentID);
-    return res.status(200).json('Reader order successfully cancelled');
-  } catch (error) {
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
-
-/**
- * @swagger
  * /2/order/refund/{id}:
  *   put:
- *     summary: refund an order based on order id (adds refund intent to any associated donations)
+ *     summary: begin refund process for an order based on order id (adds refund intent to any associated donations)
  *     tags:
  *     - New Order
  *     parameters:
  *     - $ref: '#/components/parameters/id'
  *     responses:
  *       200:
- *         description: orders refunded successfully
+ *         description: refund process started
  *       400:
  *         description: bad request
  *         content:
@@ -287,6 +304,22 @@ orderController.put('/refund/:id', async (req, res) => {
             },
           },
         },
+        subscriptions: {
+          where: {
+            refund: null,
+          },
+          include: {
+            subscriptionticketitems: {
+              include: {
+                ticketitem: {
+                  include: {
+                    ticketrestriction: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         donation: {
           where: {
             refund: null,
@@ -298,31 +331,84 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order) {
       return res.status(400).json({error: `Order ${orderID} does not exist`});
     }
-    if (!order.payment_intent) {
+    if (!order.payment_intent || order.order_status !== state.completed) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
-    if (!order.donation && !order.orderticketitems.length) {
+    if (!order.donation && !order.orderticketitems.length && !order.subscriptions.length) {
       return res.status(400).json({error: `Order ${orderID} has already been fully refunded`});
     }
 
     let refundIntent;
-    if (order.payment_intent.includes('comp')) refundIntent = `refund-comp-${order.orderid}`;
-    else if (order.payment_intent.includes('seeded-order')) refundIntent = `refund-seeded-order-${order.orderid}`;
-    else {
+    // eslint-disable-next-line camelcase
+    const {payment_intent} = order;
+    if (payment_intent.includes('comp')) {
+      refundIntent = `refund-${payment_intent}`;
+    } else {
       const refund = await stripe.refunds.create({
-        payment_intent: order.payment_intent,
+        payment_intent,
       });
-      if (refund.status !== 'succeeded') {
-        throw new Error(`Refund failed`);
-      }
       refundIntent = refund.id;
     }
-    await createRefundedOrder(prisma, order, order.orderticketitems, refundIntent, order.donation);
+    await createRefundedOrder(
+      prisma,
+      refundIntent,
+      order,
+      order.orderticketitems,
+      order.subscriptions,
+      refundIntent.includes('refund')? state.completed : state.in_progress,
+      order.donation,
+    );
     return res.send(refundIntent);
   } catch (error) {
     return res.status(500).json(error);
   }
 });
+
+/**
+ * @swagger
+ * /2/order/readers:
+ *   get:
+ *     summary: get all terminal readers
+ *     tags:
+ *     - New Order
+ *     responses:
+ *       200:
+ *         description: readers fetched successfully
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+orderController.get('/readers', async (req: Request, res: Response) => {
+  try {
+    const toReturn = await discoverReaders();
+    return res.status(200).json(toReturn);
+  } catch (error) {
+    res.status(500).json({error});
+  }
+});
+
+/**
+ * @swagger
+ * /2/order/reader-cancel:
+ *   post:
+ *     summary: Cancel payment intent and cancel order in prisma
+ *     tags:
+ *     - New Order
+ *     responses:
+ *       200:
+ *         description: readers order successfully cancelled
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+orderController.post('/reader-cancel', async (req: Request, res: Response) => {
+  const {paymentIntentID} = req.body;
+  try {
+    await abortPaymentIntent(prisma, paymentIntentID);
+    return res.status(200).json('Reader order successfully cancelled');
+  } catch (error) {
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
 /**
  * @swagger
  * /2/order/{id}:

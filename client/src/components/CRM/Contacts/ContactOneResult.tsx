@@ -1,7 +1,6 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
 import format from 'date-fns/format';
 import {Tabs, Tab} from '@mui/material';
 import Navigation from '../Navigation';
@@ -33,44 +32,47 @@ export const ContactOneResult = (): ReactElement => {
 
   const getContact = async () => {
     if (params.contactid) {
-      await axios
-        .get(
-          process.env.REACT_APP_API_2_URL +
-            `/contact/orders/${params.contactid}`,
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL + `/contact/orders/${params.contactid}`,
           {
-            withCredentials: true,
+            method: 'GET',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
           },
-        )
-        .then((res) => {
-          const contact: Contact = {
-            first: res.data.firstname,
-            last: res.data.lastname,
-            email: res.data.email,
-            phone: res.data.phone,
-            address: res.data.address,
-            city: res.data.city,
-            state: res.data.state,
-            country: res.data.country,
-            postalCode: res.data.postalcode,
-            seatingAcc: res.data.seatingaccom,
-            comments: res.data.comments,
-            newsletter: res.data.newsletter,
-            vip: res.data.vip,
-            donorBadge: res.data.donorbadge,
-            volunteerList: res.data.volunteerlist,
-            contactId: res.data.contactid,
-            orders: res.data.orders,
-            createdDate: res.data.createddate,
-          };
-          setContact(contact);
-        })
-        .catch((err) => {
-          console.error(err.message);
-        });
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to get contact');
+        }
+        const contactData = await response.json();
+        const contact: Contact = {
+          first: contactData.firstname,
+          last: contactData.lastname,
+          email: contactData.email,
+          phone: contactData.phone,
+          address: contactData.address,
+          city: contactData.city,
+          state: contactData.state,
+          country: contactData.country,
+          postalCode: contactData.postalcode,
+          seatingAcc: contactData.seatingaccom,
+          comments: contactData.comments,
+          newsletter: contactData.newsletter,
+          vip: contactData.vip,
+          donorBadge: contactData.donorbadge,
+          volunteerList: contactData.volunteerlist,
+          contactId: contactData.contactid,
+          orders: contactData.orders,
+          createdDate: contactData.createddate,
+        };
+        setContact(contact);
+      } catch (err) {
+        console.error(err.message);
+      }
     } else {
       setContact(null);
     }
@@ -124,11 +126,13 @@ export const ContactOneResult = (): ReactElement => {
                     key={order.orderid}
                     orderId={order.orderid}
                     orderTotal={order.ordertotal}
-                    discountTotal={order.discounttotal}
+                    feeTotal={Number(order.feetotal)}
+                    discountTotal={Number(order.discounttotal)}
                     orderDateTime={order.orderdatetime}
                     refunded={order.refunded}
                     orderItems={order.orderitems}
                     donation={order.donation}
+                    orderSource={order.order_source}
                   />
                 ))
               ))}

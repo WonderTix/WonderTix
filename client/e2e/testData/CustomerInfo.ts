@@ -14,7 +14,6 @@ export interface CustomerInfo {
   phoneNumber: string;
   email: string;
   newsletterSignup: boolean;
-  getConcession: boolean;
   donationAmount: string;
   getNewsletter: boolean;
   heardAboutFrom: string;
@@ -58,7 +57,6 @@ export class CustomerInfo {
       this.email = customer.email;
     }
     this.newsletterSignup = customer.newsletterSignup;
-    this.getConcession = customer.getConcession;
     this.donationAmount = customer.donationAmount;
     this.getNewsletter = customer.getNewsletter;
     this.heardAboutFrom = customer.heardAboutFrom;
@@ -79,11 +77,10 @@ export const JANE_DOE: CustomerInfo = {
   phoneNumber: '(207)283-8797',
   email: 'jane.doe@wondertix.com',
   newsletterSignup: false,
-  getConcession: false,
   donationAmount: '0',
   getNewsletter: false,
   heardAboutFrom: '',
-  accommodations: Accommodations.ASL,
+  accommodations: Accommodations.Wheelchair,
   comments: '',
 };
 
@@ -99,7 +96,6 @@ export const JOHN_DOE: CustomerInfo = {
   phoneNumber: '',
   email: '',
   newsletterSignup: false,
-  getConcession: false,
   donationAmount: '0',
   getNewsletter: false,
   heardAboutFrom: '',

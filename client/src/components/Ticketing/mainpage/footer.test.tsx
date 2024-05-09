@@ -22,7 +22,7 @@ it('Footer section renders with all text', () => {
   const copyright = container.querySelector('p');
   const signUpMessage = container.querySelector('label');
   const subscribeButton = container.querySelector('button');
-  expect(copyright.textContent).toBe('© 2023 Copyright: Portland Playhouse');
+  expect(copyright.textContent).toBe('© 2024 Copyright: Portland Playhouse');
   expect(signUpMessage.textContent).toBe('Sign up for our newsletter');
   expect(subscribeButton.textContent).toBe('Subscribe');
 });

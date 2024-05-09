@@ -2,6 +2,7 @@ import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {reservedTicketItemsFilter} from './eventInstanceController.service';
 
 const prisma = extendPrismaClient();
 
@@ -49,14 +50,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
       },
       include: {
         ticketitems: {
-          where: {
-            orderticketitem: {
-              refund: null,
-            },
-          },
-          include: {
-            orderticketitem: true,
-          },
+          ...reservedTicketItemsFilter,
         },
         tickettype: {
           select: {
@@ -73,7 +67,7 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
               eventinstanceid: restriction.eventinstanceid_fk,
               tickettypeid: restriction.tickettypeid_fk,
               description: restriction.tickettype.description,
-              concessionprice: +restriction.concessionprice,
+              fee: +restriction.fee,
               price: +restriction.price,
               ticketlimit: restriction.ticketlimit,
               ticketssold: restriction.ticketitems.length,
@@ -135,14 +129,7 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
       },
       include: {
         ticketitems: {
-          where: {
-            orderticketitem: {
-              refund: null,
-            },
-          },
-          include: {
-            orderticketitem: true,
-          },
+          ...reservedTicketItemsFilter,
         },
         tickettype: {
           select: {
@@ -221,14 +208,7 @@ ticketRestrictionController.get('/:id/:tickettypeid', async (req: Request, res: 
       },
       include: {
         ticketitems: {
-          where: {
-            orderticketitem: {
-              refund: null,
-            },
-          },
-          include: {
-            orderticketitem: true,
-          },
+          ...reservedTicketItemsFilter,
         },
         tickettype: {
           select: {

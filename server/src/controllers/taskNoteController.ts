@@ -78,7 +78,7 @@ taskNoteController.use(checkScopes);
  *   get:
  *     summary: get all Task Notes
  *     tags:
- *     - New Task Notes
+ *     - New Task Note
  *     responses:
  *       200:
  *         description: task note updated successfully.

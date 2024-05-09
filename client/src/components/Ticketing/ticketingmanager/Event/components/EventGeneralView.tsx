@@ -59,7 +59,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
           <p
             className={`${
               eventData.active ? 'bg-green-100' : 'bg-red-100'
-            } py-2 tab:px-2 md:px-7 rounded-lg font-medium`}
+            } py-2 px-2 md:px-7 rounded-lg font-medium`}
           >
             {eventData.active ? 'ACTIVE' : 'INACTIVE'}
           </p>
@@ -128,7 +128,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
                 htmlFor='subscriptioneligible'
                 className='text-sm text-zinc-800 font-semibold pr-2'
               >
-                Subscription Eligible
+                Subscription Eligible:
               </label>
               <Switch
                 checked={eventData.subscriptioneligible}
@@ -141,7 +141,7 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
         </div>
         <div className={'col-span-12 min-[450px]:col-span-6'}>
           <EventImage
-            className={'block mx-auto w-[50%] h-auto max-w-[125px]'}
+            className={'block mx-auto w-auto h-auto max-h-[175px]'}
             src={eventData.imageurl}
             title={'Event Image'}
           />
