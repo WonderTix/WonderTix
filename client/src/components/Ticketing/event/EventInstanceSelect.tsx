@@ -51,7 +51,7 @@ const EventInstanceSelect = ({
         select time
       </option>
       {eventInstances.map((ticket) => {
-        const soldOut = ticket.availableseats === 0;
+        const soldOut = ticket.remainingtickets === 0;
         return (
           <option key={ticket.event_instance_id} value={ticket.event_instance_id} disabled={soldOut}>
             {soldOut && '[SOLD OUT] '}

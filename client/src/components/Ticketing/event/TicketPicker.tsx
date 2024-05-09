@@ -153,7 +153,7 @@ const getDateOptions = (
     .map((ticket) => {
       return {
         date: new Date(ticket.date),
-        soldOut: ticket.availableseats === 0,
+        soldOut: ticket.remainingtickets === 0,
       };
     })
     .sort((a, b) => a.date.getTime() - b.date.getTime());
