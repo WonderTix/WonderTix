@@ -1,11 +1,82 @@
-import {Router, Request, Response} from 'express';
+import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {PrismaClient, Prisma} from '@prisma/client';
+import {Prisma} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {getFormattedDate} from './susbcriptionController';
 
 const prisma = extendPrismaClient();
 
 export const seasonController = Router();
+/**
+ * @swagger
+ * /2/season:
+ *   get:
+ *     summary: get all seasons
+ *     tags:
+ *     - New season
+ *     responses:
+ *       200:
+ *         description: seasons successfully fetched
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               $ref: '#/components/schemas/Season'
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+seasonController.get('/', async (req: Request, res: Response) => {
+  try {
+    const filters: any = {
+      deletedat: null,
+    };
+    if (req.query.current) {
+      filters.enddate = {
+        gte: getFormattedDate(new Date()),
+      };
+    }
+    if (req.query.name) {
+      filters.name = {
+        contains: req.query.name,
+      };
+    }
+    const seasons = await prisma.seasons.findMany({
+      where: filters,
+      orderBy: [{
+        enddate: 'desc',
+      },
+      {
+        startdate: 'desc',
+      },
+      ],
+    });
+    return res.status(200).json(seasons);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+
+      return;
+    }
+
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+
+      return;
+    }
+
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
 
 /**
  * @swagger
@@ -74,78 +145,6 @@ seasonController.use(checkJwt);
 seasonController.use(checkScopes);
 
 /**
- * @swagger
- * /2/season:
- *   get:
- *     summary: get all seasons
- *     tags:
- *     - New season
- *     responses:
- *       200:
- *         description: season updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               $ref: '#/components/schemas/Season'
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Error message from the server.
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-seasonController.get('/', async (req: Request, res: Response) => {
-  try {
-    const filters: any = {};
-    if (req.params.seasonname) {
-      filters.seasonname = {
-        contains: req.params.seasonname,
-      };
-    }
-    if (req.params.auth0_id) {
-      filters.auth0_id = {
-        contains: req.params.auth0_id,
-      };
-    }
-
-    if (Object.keys(filters).length > 0) {
-      const seasons = await prisma.seasons.findMany({
-        where: filters,
-      });
-      res.status(200).json(seasons);
-
-      return;
-    }
-
-    const seasons = await prisma.seasons.findMany();
-    res.status(200).json(seasons);
-
-    return;
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-
-      return;
-    }
-
-    res.status(500).json({error: 'Internal Server Error'});
-  }
-});
-
-/**
  * Retrieves a list of seasons with their associated events.
  *
  * @swagger
@@ -183,6 +182,9 @@ seasonController.get('/', async (req: Request, res: Response) => {
 seasonController.get('/list', async (req: Request, res: Response) => {
   try {
     const events = await prisma.seasons.findMany({
+      where: {
+        deletedat: null,
+      },
       include: {
         events: true,
       },
@@ -231,6 +233,7 @@ seasonController.get('/:id', async (req: Request, res: Response) => {
     const seasonExists = await prisma.seasons.findUnique({
       where: {
         seasonid: Number(id),
+        deletedat: null,
       },
     });
     if (!seasonExists) {
@@ -298,6 +301,7 @@ seasonController.put('/:id', async (req: Request, res: Response) => {
     const season = await prisma.seasons.update({
       where: {
         seasonid: Number(id),
+        deletedat: null,
       },
       data: {
         name: req.body.name,
@@ -346,45 +350,65 @@ seasonController.put('/:id', async (req: Request, res: Response) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- *       404:
- *         description: season not found
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 seasonController.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const seasonExists = await prisma.seasons.findUnique({
+    const id = +req.params.id;
+    const season = await prisma.seasons.findUnique({
       where: {
-        seasonid: Number(id),
+        seasonid: id,
+        deletedat: null,
+      },
+      include: {
+        seasonsubscriptiontypes: {
+          include: {
+            subscriptions: true,
+          },
+        },
       },
     });
-    if (!seasonExists) {
-      res.status(404).json({error: 'season not found'});
 
-      return;
+    if (!season) {
+      return res.status(400).json({error: 'season not found'});
     }
-    const season = await prisma.seasons.delete({
-      where: {
-        seasonid: Number(id),
-      },
-    });
-    res.status(204).json();
 
-    return;
+    if (
+      season.seasonsubscriptiontypes.reduce<number>(
+        (acc, sub) => acc + sub.subscriptions.length,
+        0,
+      )
+    ) {
+      await prisma.seasons.update({
+        where: {
+          seasonid: season.seasonid,
+        },
+        data: {
+          deletedat: new Date(),
+          events: {
+            set: [],
+          },
+          seasontickettypepricedefaults: {
+            deleteMany: {},
+          },
+        },
+      });
+    } else {
+      await prisma.seasons.delete({
+        where: {
+          seasonid: season.seasonid,
+        },
+      });
+    }
+    return res.status(204).json();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });

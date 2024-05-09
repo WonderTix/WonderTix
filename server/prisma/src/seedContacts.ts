@@ -31,7 +31,7 @@ async function seedContacts(prisma: PrismaClient) {
       seatingaccom: item.seatingaccom,
       vip: item.vip,
       volunteerlist: item.volunteerlist,
-      newsletter: item.newsletter,
+      newsletter: item.newsletter? new Date(): null,
     }));
 
     await prisma.contacts.createMany({

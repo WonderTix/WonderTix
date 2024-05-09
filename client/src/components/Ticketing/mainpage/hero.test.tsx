@@ -7,7 +7,7 @@ import {Provider} from 'react-redux';
 import configureStore from 'redux-mock-store';
 
 import Hero from './Hero';
-import {ListComponent} from './EventCard';
+import {EventCard} from './EventCard';
 import thunk from 'redux-thunk';
 
 let container : HTMLDivElement;
@@ -16,10 +16,11 @@ let list : HTMLDivElement;
 const mockStore = configureStore([thunk]);
 
 const event = {
+  id: 0,
   title: 'Test Title',
   description: 'Test description',
   imageurl: 'https://test.com/image.jpg',
-  id: 0,
+  soldOut: false,
 };
 
 let store: any;
@@ -50,7 +51,7 @@ beforeEach(() => {
   ReactDOM.render(
     <BrowserRouter>
       <Routes>
-        <Route path="*" element={<ListComponent key={0} {...event} />} />
+        <Route path="*" element={<EventCard key={0} {...event} />} />
       </Routes>
     </BrowserRouter>,
     list,
@@ -65,17 +66,17 @@ afterEach(() => {
 
 it('Hero section renders with all text', () => {
   const check = container.querySelectorAll('div');
-  expect(check).toHaveLength(8);
+  expect(check).toHaveLength(7);
 });
 
 
 it('Add ticket success', () => {
   const button = list.querySelector('button');
   let check = list.querySelectorAll('div');
-  expect(check).toHaveLength(4);
+  expect(check).toHaveLength(3);
 
   userEvent.click(button);
 
   check = container.querySelectorAll('div');
-  expect(check).toHaveLength(8);
+  expect(check).toHaveLength(7);
 });

@@ -1,11 +1,16 @@
 import {Router, Request, Response} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma} from '@prisma/client';
+import {Prisma, state} from '@prisma/client';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
+import {updateContact, validateContact} from './eventController.service';
 
 const prisma = extendPrismaClient();
 
 export const contactController = Router();
+
+
+contactController.use(checkJwt);
+contactController.use(checkScopes);
 
 /**
  * @swagger
@@ -14,15 +19,17 @@ export const contactController = Router();
  *     summary: Create a contact
  *     tags:
  *     - New Contact
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
- *       description: Updated contact information
+ *       description: Create contact
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/requestBodies/Contact'
  *     responses:
  *       201:
- *         description: Contact updated successfully.
+ *         description: Contact created successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -42,27 +49,14 @@ export const contactController = Router();
  */
 contactController.post('/', async (req: Request, res: Response) => {
   try {
-    const contact = await prisma.contacts.create({
-      data: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        country: req.body.country,
-        postalcode: req.body.postalcode,
-        donorbadge: req.body.donorbadge,
-        seatingaccom: req.body.seatingaccom,
-        comments: req.body.comments,
-        vip: req.body.vip,
-        volunteerlist: req.body.volunteerlist,
-        newsletter: req.body.newsletter,
-      },
+    const validatedContact = validateContact({
+      ...req.body,
+      newsletter: !!req.body.newsletter,
     });
-    res.status(201).json(contact);
-    return;
+
+    const contact = await updateContact(prisma, validatedContact, 'does_not_exist');
+
+    return res.status(201).json({...contact, newsletter: !!contact.newsletter});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -78,9 +72,6 @@ contactController.post('/', async (req: Request, res: Response) => {
     return;
   }
 });
-
-contactController.use(checkJwt);
-contactController.use(checkScopes);
 
 /**
  * @swagger
@@ -146,6 +137,8 @@ contactController.use(checkScopes);
  *       name: newsletter
  *       schema:
  *         type: boolean
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Contacts received successfully.
@@ -240,6 +233,15 @@ contactController.get('/', async (req: Request, res: Response) => {
         },
       });
     }
+
+    if (req.query.visitSource) {
+      filters.push({
+        visitSource: {
+          equals: req.query.visitSource,
+        },
+      });
+    }
+
     if (req.query.seatingaccom) {
       filters.push({
         seatingaccom: {
@@ -272,35 +274,33 @@ contactController.get('/', async (req: Request, res: Response) => {
     if (req.query.newsletter) {
       filters.push({
         newsletter: {
-          equals: (req.query.newsletter === 'true'),
+          not: null,
         },
       });
     }
 
-    if (filters.length > 0) {
-      const contacts = await prisma.contacts.findMany({
-        where: {
-          OR: filters,
+    const contacts = await prisma.contacts.findMany({
+      where: {
+        ...(filters.length && {OR: filters}),
+      },
+      orderBy: [
+        {
+          firstname: 'asc',
         },
-      });
-      res.status(200).json(contacts);
-      return;
-    }
+        {
+          lastname: 'asc',
+        },
+      ],
+    });
 
-    const contacts = await prisma.contacts.findMany();
-    res.status(200).json(contacts);
-    return;
+    return res.status(200).json(contacts);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
@@ -396,7 +396,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       include: {
         orders: {
           where: {
-            payment_intent: {not: null},
+            order_status: state.completed,
           },
           orderBy: {
             orderdatetime: 'desc',
@@ -425,6 +425,22 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                 },
               },
             },
+            subscriptions: {
+              include: {
+                refund: true,
+                seasonsubscriptiontype: {
+                  include: {
+                    subscriptiontype: true,
+                    season: true,
+                  },
+                },
+                subscriptionticketitems: {
+                  include: {
+                    ticketitem: true,
+                  },
+                },
+              },
+            },
             donation: {
               include: {
                 refund: true,
@@ -445,35 +461,57 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
     contact.orders.forEach((order) => {
       const orderItemsMap = new Map<string, any>();
       const
-        refunded = order
-            .orderticketitems
-            .reduce<boolean>((acc, ticket) => {
-              if (!ticket.ticketitem) return acc;
-              const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}`;
-              const item = orderItemsMap.get(key);
-              if (item) {
-                item.quantity += 1;
-              } else {
-                orderItemsMap.set(key,
-                    {
-                      price: ticket.price,
-                      refunded: ticket.refund !== null,
-                      redeemed: ticket.ticketitem.redeemed,
-                      donated: ticket.ticketitem.donated,
-                      description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
-                      eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
-                      eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
-                      eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
-                      detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
-                      seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
-                      tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
-                      quantity: 1,
-                    });
-              }
-              return acc && ticket.refund !== null;
-            }, true);
+        ticketItemsRefunded = order
+          .orderticketitems
+          .reduce<boolean>((acc, ticket) => {
+            if (!ticket.ticketitem) return acc;
+            const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}T${ticket.department}`;
+            const item = orderItemsMap.get(key);
+            if (item) {
+              item.quantity += 1;
+            } else {
+              orderItemsMap.set(key,
+                {
+                  price: ticket.price,
+                  fee: ticket.fee,
+                  refunded: ticket.refund !== null,
+                  redeemed: ticket.ticketitem.redeemed,
+                  donated: ticket.ticketitem.donated,
+                  description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+                  department: ticket.department,
+                  eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
+                  eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
+                  eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+                  detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
+                  seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
+                  tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
+                  quantity: 1,
+                });
+            }
+            return acc && ticket.refund !== null;
+          }, true);
 
-      if (!orderItemsMap.size) return;
+      const subscriptionItemsRefunded = order.subscriptions.reduce<boolean>(
+        (acc, sub) => {
+          const key = `${sub.price}S${sub.subscriptiontypeid_fk}S${sub.seasonid_fk}`;
+          const item = orderItemsMap.get(key);
+          if (item) {
+            item.quantity += 1;
+          } else {
+            orderItemsMap.set(key, {
+              id: sub.id,
+              price: sub.price,
+              refunded: sub.refund !== null,
+              subscriptionType: sub.seasonsubscriptiontype.subscriptiontype.name,
+              seasonName: sub.seasonsubscriptiontype.season.name,
+              ticketlimit: sub.seasonsubscriptiontype.ticketlimit,
+              quantity: 1,
+            });
+          }
+          return acc && sub.refund !== null;
+        },
+        true,
+      );
 
       const flattenedDonation = {
         donationid: order.donation?.donationid,
@@ -487,9 +525,11 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       flattenedOrders.push({
         orderid: order.orderid,
         orderdatetime: order.orderdatetime,
-        ordertotal: Number(order.ordersubtotal) - Number(order.discounttotal),
+        order_source: order.order_source,
+        ordertotal: Number(order.ordersubtotal) + Number(order.feetotal) - Number(order.discounttotal),
+        feetotal: order.feetotal,
         discounttotal: order.discounttotal,
-        refunded,
+        refunded: ticketItemsRefunded && subscriptionItemsRefunded,
         orderitems: [...orderItemsMap.values()],
         donation: order.donation ? flattenedDonation : null,
       });
@@ -549,43 +589,22 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    await prisma.contacts.update({
-      where: {
-        contactid: Number(id),
-      },
-      data: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        postalcode: req.body.postalcode,
-        country: req.body.country,
-        donorbadge: req.body.donorbadge,
-        seatingaccom: req.body.seatingaccom,
-        comments: req.body.comments,
-        vip: req.body.vip,
-        volunteerlist: req.body.volunteerlist,
-        newsletter: req.body.newsletter,
-      },
+    const validatedContact= validateContact({
+      ...req.body,
+      newsletter: !!req.body.newsletter,
     });
 
-    res.status(204).json();
-    return;
+    await updateContact(prisma, validatedContact, 'exists', +id);
+
+    return res.status(204).json();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
-    res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 

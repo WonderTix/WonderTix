@@ -3,9 +3,9 @@ import {eventInstanceRequest, instanceTicketType} from '../interfaces/Event';
 import {
   eventinstances,
   events,
-  orderticketitems,
   seasons,
   seasontickettypepricedefault,
+  state,
   ticketitems,
   ticketrestrictions,
 } from '@prisma/client';
@@ -22,13 +22,10 @@ export class InvalidInputError extends Error {
 }
 
 export interface LoadedTicketRestriction extends ticketrestrictions {
-    ticketitems: LoadedTicketItem[];
+    ticketitems: ticketitems[];
     availabletickets: number,
 }
 
-export interface LoadedTicketItem extends ticketitems {
-    orderticketitem: orderticketitems | null;
-}
 export interface LoadedEventInstance extends eventinstances {
   ticketrestrictions: LoadedTicketRestriction[],
   event: LoadedEvent,
@@ -42,30 +39,30 @@ export interface LoadedSeason extends seasons {
 }
 
 export const validateTicketRestrictionsOnUpdate = (
-    eventInstance: LoadedEventInstance,
-    newRestrictions: Map<number, instanceTicketType>,
+  eventInstance: LoadedEventInstance,
+  newRestrictions: Map<number, instanceTicketType>,
 ) : {create: any[], update:any[], delete: any[]} => {
   const updates=
       eventInstance
-          .ticketrestrictions
-          .reduce<{update: any[], remove:any[]}>(({update, remove}, oldRestriction: LoadedTicketRestriction) => {
-            const newRestriction = newRestrictions.get(oldRestriction.tickettypeid_fk);
-            newRestrictions.delete(oldRestriction.tickettypeid_fk);
-            const updatedRestriction = getTicketRestrictionUpdate(
-                newRestriction,
-                oldRestriction,
-                eventInstance.totalseats,
-            );
-    updatedRestriction.update? update.push(updatedRestriction.update): remove.push(updatedRestriction.remove);
-    return {update, remove};
-          }, {update: [], remove: []});
+        .ticketrestrictions
+        .reduce<{update: any[], remove:any[]}>(({update, remove}, oldRestriction: LoadedTicketRestriction) => {
+          const newRestriction = newRestrictions.get(oldRestriction.tickettypeid_fk);
+          newRestrictions.delete(oldRestriction.tickettypeid_fk);
+          const updatedRestriction = getTicketRestrictionUpdate(
+            newRestriction,
+            oldRestriction,
+            eventInstance.totalseats,
+          );
+          updatedRestriction.update? update.push(updatedRestriction.update): remove.push(updatedRestriction.remove);
+          return {update, remove};
+        }, {update: [], remove: []});
   const seasonTicketTypePriceDefaults = new Map(eventInstance.event.seasons?.seasontickettypepricedefaults.map((def) => [def.tickettypeid_fk, def.id]));
   const create = [...newRestrictions.values()].map(({description, ...newRestriction}) => {
     const tickets: number = Math.min(eventInstance.totalseats, newRestriction.ticketlimit);
     return {
       ...newRestriction,
       price: newRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
-      concessionprice: +newRestriction.concessionprice,
+      fee: +newRestriction.fee,
       ticketlimit: tickets,
       seasontickettypepricedefaultid_fk: seasonTicketTypePriceDefaults.get(+newRestriction.tickettypeid_fk),
     };
@@ -75,10 +72,10 @@ export const validateTicketRestrictionsOnUpdate = (
 };
 
 const getTicketRestrictionUpdate = (
-    newRestriction: instanceTicketType | undefined,
-    oldRestriction: LoadedTicketRestriction,
-    totalseats: number,
-): {remove?: {}, update?: {}} => {
+  newRestriction: instanceTicketType | undefined,
+  oldRestriction: LoadedTicketRestriction,
+  totalseats: number,
+): {remove?: object, update?: object} => {
   const soldTickets = oldRestriction.ticketlimit - oldRestriction.availabletickets;
   if ((!newRestriction || !newRestriction.ticketlimit) && !oldRestriction.ticketitems.length) {
     return {
@@ -99,18 +96,18 @@ const getTicketRestrictionUpdate = (
     };
   } else if (!newRestriction || !newRestriction.ticketlimit) {
     throw new InvalidInputError(
-        422,
-        `Can not remove restriction for which tickets have been sold`,
+      422,
+      'Can not remove restriction for which tickets have been sold',
     );
   } else if (newRestriction.ticketlimit > totalseats) {
     throw new InvalidInputError(
-        422,
-        `Restriction ticket limit can not exceed total seats for showing`,
+      422,
+      'Restriction ticket limit can not exceed total seats for showing',
     );
   } else if (soldTickets > newRestriction.ticketlimit) {
     throw new InvalidInputError(
-        422,
-        `Can not reduce individual ticket type quantity below quantity sold to date`,
+      422,
+      'Can not reduce individual ticket type quantity below quantity sold to date',
     );
   }
 
@@ -122,7 +119,7 @@ const getTicketRestrictionUpdate = (
       data: {
         ticketlimit: newRestriction.ticketlimit,
         price: oldRestriction.tickettypeid_fk === 0? 0: +newRestriction.price,
-        concessionprice: +newRestriction.concessionprice,
+        fee: +newRestriction.fee,
       },
     },
   };
@@ -132,15 +129,15 @@ export const validateDateAndTime = (date: string, time: string) => {
   const dateSplit = date.split('-');
   const timeSplit = time.split(':');
   if (dateSplit.length < 3 || timeSplit.length < 2) {
-    throw new InvalidInputError(422, `Invalid Event Date and time`);
+    throw new InvalidInputError(422, 'Invalid Event Date and time');
   }
 
   const toReturn = new Date(
-      `${dateSplit[0]}-${dateSplit[1]}-${dateSplit[2]}T${timeSplit[0]}:${timeSplit[1]}:00.000Z`,
+    `${dateSplit[0]}-${dateSplit[1]}-${dateSplit[2]}T${timeSplit[0]}:${timeSplit[1]}:00.000Z`,
   );
 
   if (isNaN(toReturn.getTime())) {
-    throw new InvalidInputError(422, `Invalid Event Date and time`);
+    throw new InvalidInputError(422, 'Invalid Event Date and time');
   }
   return {
     eventdate:
@@ -170,9 +167,9 @@ export const getDate = (time: string, date: number) => {
 };
 
 export const updateShowing = async (
-    prisma: ExtendedPrismaClient,
-    oldEvent: LoadedEventInstance,
-    newEvent: eventInstanceRequest,
+  prisma: ExtendedPrismaClient,
+  oldEvent: LoadedEventInstance,
+  newEvent: eventInstanceRequest,
 ) => {
   const soldTickets = oldEvent.totalseats - oldEvent.availableseats;
   const newTotalSeats = Math.max(soldTickets, +newEvent.totalseats);
@@ -190,10 +187,48 @@ export const updateShowing = async (
       ...validateDateAndTime(newEvent.eventdate, newEvent.eventtime),
       ticketrestrictions: {
         ...validateTicketRestrictionsOnUpdate(
-            {...oldEvent, totalseats: newTotalSeats},
-            new Map(newEvent.instanceTicketTypes.map((type) => [type.tickettypeid_fk, type])),
+          {...oldEvent, totalseats: newTotalSeats},
+          new Map(newEvent.instanceTicketTypes.map((type) => [type.tickettypeid_fk, type])),
         ),
       },
     },
   });
+};
+
+export const reservedTicketItemsFilter = {
+  where: {
+    OR: [
+      {
+        orderticketitem: {
+          refund: null,
+        },
+      },
+      {
+        subscriptionticketitemid_fk: {
+          not: null,
+        },
+      },
+    ],
+  },
+};
+
+
+export const soldTicketItemsFilter = {
+  where: {
+    OR: [
+      {
+        orderticketitem: {
+          order: {
+            order_status: state.completed,
+          },
+          refund: null,
+        },
+      },
+      {
+        subscriptionticketitemid_fk: {
+          not: null,
+        },
+      },
+    ],
+  },
 };

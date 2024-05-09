@@ -7,7 +7,10 @@ export const subscriptionTypesSchema = yup.object().shape({
         .number()
         .integer('Must be an integer')
         .required('Required'),
-      price: yup.number().min(0, 'Positive Price Required').required('Required'),
+      price: yup
+        .number()
+        .min(0, 'Positive Price Required')
+        .required('Required'),
       ticketlimit: yup
         .number()
         .integer('Must be an integer')
@@ -27,11 +30,11 @@ export const ticketTypeSchema = yup.object().shape({
         .number()
         .integer('Must be an integer')
         .required('Required'),
-      concessionprice: yup
+      fee: yup.number().min(0, 'Positive Fee Required').required('Required'),
+      price: yup
         .number()
         .min(0, 'Positive Price Required')
         .required('Required'),
-      price: yup.number().min(0, 'Positive Price Required').required('Required'),
     }),
   ),
 });

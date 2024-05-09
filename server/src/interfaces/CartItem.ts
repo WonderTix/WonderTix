@@ -1,3 +1,11 @@
+export interface CartItem {
+  name: string;
+  desc: string;
+  qty: number;
+  price: number;
+  product_img_url: string;
+}
+
 /**
  * Interface for the tickets (eventually subscriptions) to events
  *
@@ -11,16 +19,18 @@
  * @param {boolean} payWhatCan
  * @param {number?} payWhatPrice
  * @param {number} typeID - id of ticket type
- * **/
-export default interface CartItem {
+ */
+export default interface TicketCartItem extends CartItem {
   product_id: number; // references state.tickets.event_instance_id
   eventId: number;
-  qty: number;
-  name: string;
-  desc: string;
-  product_img_url: string;
-  price: number;
   payWhatCan: boolean;
   payWhatPrice?: number;
   typeID: number;
+  department?: string;
+}
+
+export interface SubscriptionCartItem extends CartItem {
+  seasonid_fk: number;
+  subscriptiontypeid_fk: number;
+  qtyAvailable: number;
 }

@@ -1,3 +1,4 @@
+/* eslint camelcase: 0 */
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {
   orders,
@@ -5,40 +6,51 @@ import {
   donations,
   ticketrestrictions,
   orderticketitems,
+  subscriptions,
+  subscriptionticketitems,
+  state,
+  purchase_source,
 } from '@prisma/client';
+import WebSocket from 'ws';
+import {reservedTicketItemsFilter} from './eventInstanceController.service';
+import {updateContact} from './eventController.service';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
-import WebSocket from 'ws';
 
 export const ticketingWebhook = async (
-    prisma: ExtendedPrismaClient,
-    eventType: string,
-    paymentIntent: string,
-    sessionID: string,
+  prisma: ExtendedPrismaClient,
+  eventType: string,
+  paymentIntent: string,
+  sessionID: string,
+  contact: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
       checkout_sessions: sessionID,
     },
   });
+
   if (!order) return;
 
   switch (eventType) {
-    case 'checkout.session.completed': {
-      await prisma.orders.update({
-        where: {
-          orderid: order.orderid,
-        },
-        data: {
-          payment_intent: paymentIntent,
-        },
-      });
-      break;
-    }
-    case 'checkout.session.expired':
-      await updateCanceledOrder(prisma, order, false);
-      break;
+  case 'checkout.session.completed': {
+    const {contactid} = await updateContact(prisma, JSON.parse(contact));
+    await prisma.orders.update({
+      where: {
+        orderid: order.orderid,
+      },
+      data: {
+        payment_intent: paymentIntent,
+        contactid_fk: contactid,
+        order_status: state.completed,
+      },
+    });
+    break;
+  }
+  case 'checkout.session.expired':
+    await updateCanceledOrder(prisma, order);
+    break;
   }
 };
 
@@ -62,68 +74,151 @@ export const readerWebhook = async (
   });
 
   switch (eventType) {
-    case 'payment_intent.payment_failed':
-      const order = await prisma.orders.findFirst({
-        where: {
-          payment_intent: paymentIntent,
-        },
-      });
-
-      if (!order) return;
-
-      const intent = stripe.paymentIntents.cancel(paymentIntent); // avoid double charge
-      await updateCanceledOrder(prisma, order, true);
-      break;
-    case 'payment_intent.requires_action':
-      break;
-    case 'payment_intent.succeeded':
-      break;
+  case 'payment_intent.payment_failed':
+    await abortPaymentIntent(prisma, paymentIntent);
+    break;
+  case 'payment_intent.requires_action':
+    break;
+  case 'payment_intent.succeeded':
+    await updateOrderStatus(prisma, state.completed, {payment_intent: paymentIntent});
+    break;
   }
+};
+
+
+export const updateOrderStatus = async (
+  prisma: ExtendedPrismaClient,
+  status: state,
+  details: {payment_intent: string } | {orderid: number},
+) => {
+  return prisma.orders.update({
+    where: details,
+    data: {
+      order_status: status,
+    },
+  });
+};
+
+export const updateRefundStatus = async (
+  prisma: ExtendedPrismaClient,
+  paymentIntent: string,
+) => {
+  const refunds = await prisma.refunds.findMany({
+    where: {
+      order: {
+        payment_intent: paymentIntent,
+      },
+    },
+    select: {
+      id: true,
+      refund_intent: true,
+    },
+  });
+
+  const queries = await Promise.allSettled(refunds.map(async (refund) => {
+    const refundObject = await stripe.refunds.retrieve(refund.refund_intent);
+    return {
+      where: {
+        id: refund.id,
+      },
+      data: {
+        refund_status: getRefundStatus(refundObject.status),
+      },
+    };
+  }));
+
+  await prisma.$transaction(queries
+    .filter((query): query is PromiseFulfilledResult<any> => query.status === 'fulfilled')
+    .map((query) => prisma.refunds.update(query.value)));
+};
+
+export const getRefundStatus = (refundStatus?: string) => {
+  switch (refundStatus) {
+  case 'succeeded':
+    return state.completed;
+  case 'pending':
+    return state.in_progress;
+  default:
+    return state.failed;
+  }
+};
+
+
+export interface OrderFulfillmentData {
+  orderStatus: state;
+  orderSource: purchase_source | undefined;
+  orderSubtotal: number;
+  discountTotal: number;
+  feeTotal: number;
+  orderTicketItems?: any[];
+  donationItem?: any;
+  orderSubscriptionItems?: any[];
+  eventInstanceQueries?: any[];
+  paymentIntent?: string;
+  checkoutSession?: string;
+  discountId?: number;
+  contactid?: number;
 }
 
 export const orderFulfillment = async (
-    prisma: ExtendedPrismaClient,
-    eventInstanceQueries: any[],
-    orderSubtotal: number,
-    discountTotal: number,
-    orderItems: {
-        orderTicketItems?: any[],
-        donationItem?: any,
-    },
-    contactid?: number,
-    checkoutSession?: string,
-    discountId?: number,
-    paymentIntent?: string // need this for reader purchase
+  prisma: ExtendedPrismaClient,
+  {
+    orderStatus,
+    orderSource,
+    orderSubtotal,
+    discountTotal = 0,
+    feeTotal = 0,
+    donationItem,
+    orderTicketItems = [],
+    orderSubscriptionItems = [],
+    eventInstanceQueries = [],
+    paymentIntent,
+    checkoutSession,
+    discountId,
+    contactid,
+  }: OrderFulfillmentData,
 ) => {
-  const {orderTicketItems, donationItem} = orderItems;
   const result = await prisma.$transaction([
     prisma.orders.create({
       data: {
         contactid_fk: contactid,
-        checkout_sessions: checkoutSession,
         discountid_fk: discountId,
         ordersubtotal: orderSubtotal,
         discounttotal: discountTotal,
-        ...(orderTicketItems && {orderticketitems: {create: orderTicketItems}}),
-        ...(donationItem && {donation: {create: donationItem}}),
+        feetotal: feeTotal,
+        orderticketitems: {create: orderTicketItems},
+        donation: {create: donationItem},
+        subscriptions: {create: orderSubscriptionItems},
+        order_status: orderStatus,
+        order_source: orderSource,
+        checkout_sessions: checkoutSession,
         payment_intent: paymentIntent,
       },
     }),
     ...eventInstanceQueries,
   ]);
+
+  if (orderSubtotal + feeTotal - discountTotal === 0) {
+    await prisma.orders.update({
+      where: {
+        orderid: result[0].orderid,
+      },
+      data: {
+        payment_intent: `comp-${result[0].orderid}`,
+        checkout_sessions: `comp-${result[0].orderid}`,
+      },
+    });
+  }
   return result[0];
 };
 
 
 export const updateCanceledOrder = async (
-    prisma: ExtendedPrismaClient,
-    order: orders,
-    isReader: boolean,
+  prisma: ExtendedPrismaClient,
+  order: orders,
 ) => {
-  // reader orders will immediately have a payment intent that could be cancelled early if not paid
-  // in this case, a payment_intent existing doesn't mean the order has been paid
-  if (!isReader && order.payment_intent) {
-    throw new Error('Can not delete order that has been processed by Stripe, order must be refunded');
+  if (order.order_status === state.completed) {
+    throw new Error('Can not delete an order that has been processed by Stripe, order must be refunded');
   }
 
   const deletedOrder = await prisma.orders.delete({
@@ -140,20 +235,41 @@ export const updateCanceledOrder = async (
           },
         },
       },
+      subscriptions: {
+        include: {
+          subscriptionticketitems: {
+            include: {
+              ticketitem: {
+                include: {
+                  ticketrestriction: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 
   const eventInstances = new Set(
-      deletedOrder
-          .orderticketitems
-          .map((item) => item.ticketitem?.ticketrestriction.eventinstanceid_fk));
+    deletedOrder.orderticketitems
+      .map((item) => item.ticketitem?.ticketrestriction.eventinstanceid_fk)
+      .concat(
+        deletedOrder.subscriptions
+          .flatMap((sub) =>
+            sub.subscriptionticketitems.map(
+              (ticket) => ticket.ticketitem?.ticketrestriction.eventinstanceid_fk,
+            ),
+          ),
+      ),
+  );
+
   await updateAvailableSeats(
-      prisma,
-      // @ts-ignore
-      Array.from(eventInstances),
+    prisma,
+    // @ts-ignore
+    Array.from(eventInstances),
   );
 };
-
 
 interface LoadedOrderTicketItem extends orderticketitems {
     ticketitem: LoadedTicketItem | null;
@@ -163,15 +279,29 @@ interface LoadedTicketItem extends ticketitems {
     ticketrestriction: ticketrestrictions;
 }
 
+interface LoadedSubscription extends subscriptions {
+  subscriptionticketitems: LoadedSubscriptionTicketItem[];
+}
+
+interface LoadedSubscriptionTicketItem extends subscriptionticketitems {
+    ticketitem: LoadedTicketItem | null;
+}
 
 export const createRefundedOrder = async (
-    prisma: ExtendedPrismaClient,
-    order: orders,
-    orderTicketItems: LoadedOrderTicketItem[],
-    refundIntent: string,
-    donations?: donations | null,
+  prisma: ExtendedPrismaClient,
+  refundIntent: string,
+  order: orders,
+  orderTicketItems: LoadedOrderTicketItem[],
+  subscriptions: LoadedSubscription[],
+  refundState: state,
+  donations?: donations | null,
 ) => {
   const eventInstances = new Set<number>();
+
+  if (order.order_status !== state.completed) {
+    throw new Error('Can not refund an order that has not been completely processed');
+  }
+
   const ticketRefundItems = orderTicketItems.map((item) => {
     if (item.ticketitem) eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
     return {
@@ -180,44 +310,62 @@ export const createRefundedOrder = async (
     };
   });
 
+  const subscriptionRefundItems = subscriptions.map((item) => {
+    item.subscriptionticketitems.forEach((item) => {
+      if (item.ticketitem) {
+        eventInstances.add(item.ticketitem.ticketrestriction.eventinstanceid_fk);
+      }
+    });
+    return {
+      amount: item.price,
+      subscriptionid_fk: item.id,
+    };
+  });
+
   const donationRefundItems = donations? [{
     amount: donations.amount,
     donationid_fk: donations.donationid,
   }]: [];
 
-
-  await prisma.refunds.create({
-    data: {
-      orderid_fk: order.orderid,
-      refund_intent: refundIntent,
-      refunditems: {
-        create: [
-          ...ticketRefundItems,
-          ...donationRefundItems,
-        ],
+  await prisma.$transaction([
+    prisma.orders.update({
+      where: {
+        orderid: order.orderid,
       },
-    },
-  });
-
-  await prisma.orders.update({
-    where: {
-      orderid: order.orderid,
-    },
-    data: {
-      discountid_fk: null,
-    },
-  });
+      data: {
+        discountid_fk: null,
+        refunds: {
+          create: {
+            refund_intent: refundIntent,
+            refund_status: refundState,
+            refunditems: {
+              create: [
+                ...ticketRefundItems,
+                ...donationRefundItems,
+                ...subscriptionRefundItems,
+              ],
+            },
+          },
+        },
+      },
+    }),
+    prisma.subscriptionticketitems.deleteMany({
+      where: {
+        subscriptionid_fk: {in: subscriptions.map((sub) => sub.id)},
+      },
+    }),
+  ]);
 
   await updateAvailableSeats(
-      prisma,
-      // @ts-ignore
-      Array.from(eventInstances),
+    prisma,
+    // @ts-ignore
+    Array.from(eventInstances),
   );
 };
 
 export const updateAvailableSeats = async (
-    prisma: ExtendedPrismaClient,
-    instanceIds: number[],
+  prisma: ExtendedPrismaClient,
+  instanceIds: number[],
 ) => {
   const eventInstances = await prisma.eventinstances.findMany({
     where: {
@@ -230,9 +378,7 @@ export const updateAvailableSeats = async (
         },
         include: {
           ticketitems: {
-            where: {
-              orderticketitem: {refund: null},
-            },
+            ...reservedTicketItemsFilter,
           },
         },
       },
@@ -250,16 +396,11 @@ export const updateAvailableSeats = async (
 };
 
 
-
-export const discoverReaders = async () => {
-  const discoverResult = await stripe.terminal.readers.list();
-
-  return discoverResult;
-}
+export const discoverReaders = async () => stripe.terminal.readers.list();
 
 export const abortPaymentIntent = async (
   prisma: ExtendedPrismaClient,
-  paymentIntentID: string
+  paymentIntentID: string,
 ) => {
   const order = await prisma.orders.findFirst({
     where: {
@@ -273,5 +414,5 @@ export const abortPaymentIntent = async (
 
   if (!intent) throw new Error('Unable to find payment Intent!');
 
-  await updateCanceledOrder(prisma, order, true);
-}
+  await updateCanceledOrder(prisma, order);
+};

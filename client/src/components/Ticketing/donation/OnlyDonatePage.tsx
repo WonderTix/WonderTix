@@ -10,14 +10,18 @@
 import {useAppSelector} from '../app/hooks';
 import {selectDonation} from '../ticketingmanager/donationSlice';
 import React, {ReactElement, useState} from 'react';
-import CompleteOrderForm, {
-  CheckoutFormInfo,
-} from '../checkout/CompleteOrderForm';
+import CompleteOrderForm from '../checkout/CompleteOrderForm';
 import DonationImage from '../../../assets/donation_page_image.png';
 import DonationButton from './DonationButton';
 import DonationIntro from './DonationIntro';
 import {useNavigate} from 'react-router';
 import {loadStripe} from '@stripe/stripe-js';
+import {
+  baseContact,
+  CheckoutContact,
+  validateContactInput,
+} from '../checkout/CheckoutUtils';
+import {useAuth0} from '@auth0/auth0-react';
 
 /**
  * Renders the Donations page without checkout
@@ -26,6 +30,7 @@ import {loadStripe} from '@stripe/stripe-js';
  */
 export default function OnlyDonationPage(): ReactElement {
   const donation = useAppSelector(selectDonation);
+  const {user, isAuthenticated} = useAuth0();
   const [amount, setAmount] = useState(donation);
   const [anonymous, setAnonymous] = useState(false);
   // Determines the donation period that the user chooses
@@ -40,7 +45,7 @@ export default function OnlyDonationPage(): ReactElement {
 
   const stripePromise = loadStripe(process.env.REACT_APP_PUBLIC_STRIPE_KEY);
 
-  const doCheckout = async (formData: CheckoutFormInfo) => {
+  const doCheckout = async (formData: CheckoutContact) => {
     const stripe = await stripePromise;
     if (!stripe) return;
     const response = await fetch(
@@ -216,6 +221,24 @@ export default function OnlyDonationPage(): ReactElement {
         </label>
       </div>
       <CompleteOrderForm
+        mode='customer'
+        baseValues={{
+          ...baseContact,
+          ...(isAuthenticated && {
+            email: user.email,
+            firstname: user.given_name ?? '',
+            lastname: user.family_name ?? '',
+            phone: user.phone_number ?? '',
+          }),
+        }}
+        requiredFields={[
+          'firstname',
+          'lastname',
+          'email',
+          'address',
+          'postalcode',
+        ]}
+        validateInput={validateContactInput}
         onSubmit={doCheckout}
         onBack={() => history(-1)}
         disabled={amount < 1}

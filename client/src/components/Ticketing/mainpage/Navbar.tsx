@@ -6,6 +6,7 @@ import {Link} from 'react-scroll';
 import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../../Authentication/auth-nav';
 import AdminNavDropdown from '../ticketingmanager/AdminNavDropdown';
+import {SubscriptionNavDropdown} from './SubscriptionPurchasing/SubscriptionNavDropdown';
 interface NavbarProps {
   bMode?: boolean;
 }
@@ -95,20 +96,10 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
                 <button onClick={() => navigate('/')} className="px-4 py-2">Events</button>
               )}
             </li>
+            <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
+              <SubscriptionNavDropdown />
+            </li>
             {/* FIXME: These were removed per #563 in prep for the initial site launch*/}
-            {/* {!bMode && (*/}
-            {/*   <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>*/}
-            {/*     <Link*/}
-            {/*       to='seasontickets'*/}
-            {/*       smooth={true}*/}
-            {/*       duration={600}*/}
-            {/*       className='cursor-pointer px-4 py-2 inline-block'*/}
-            {/*       tabIndex={0}*/}
-            {/*     >*/}
-            {/*       Subscriptions*/}
-            {/*     </Link>*/}
-            {/*   </li>*/}
-            {/* )}*/}
             {/* <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>*/}
             {/*   <button onClick={() => navigate('/donate')} className='px-4 py-2'>Donate</button>*/}
             {/* </li>*/}
@@ -261,14 +252,10 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
             </button>
           )}
         </li>
+        <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300 text-black font-semibold'>
+          <SubscriptionNavDropdown mobile={true} />
+        </li>
         {/* FIXME: These were removed per #563 in prep for the initial site launch*/}
-        {/* {!bMode && (*/}
-        {/*   <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center hover:scale-105 duration-300 text-black font-semibold'>*/}
-        {/*     <Link to='seasontickets' smooth={true} duration={500} className='cursor-pointer p-3'>*/}
-        {/*       Subscriptions*/}
-        {/*     </Link>*/}
-        {/*   </li>*/}
-        {/* )}*/}
         {/* <li className='border-b-2 border-zinc-300 w-full flex flex-col items-center text-black font-semibold hover:scale-105 duration-300'>*/}
         {/*   <button*/}
         {/*     onClick={() => navigate('/donate')}*/}
