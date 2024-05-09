@@ -11,5 +11,5 @@ terraform {
 
 provider "google" {
   credentials = file("../service-account-key.json")
-  project     = "wondertix-app"
+  project     = var.project
 }

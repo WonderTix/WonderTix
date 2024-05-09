@@ -16,7 +16,11 @@ resource "google_cloud_run_service" "slack_notifs" {
   metadata {
     annotations = {}
     labels      = {}
-    namespace   = "wondertix-app"
+    namespace   = var.namespace
+  }
+
+  lifecycle {
+    ignore_changes = [traffic[0]]
   }
 
   template {
@@ -30,17 +34,11 @@ resource "google_cloud_run_service" "slack_notifs" {
         "client.knative.dev/nonce"            = "ad9c2c22-018b-4140-8c1e-33379f4264da"
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name             = null
-      namespace        = null
-      resource_version = null
-      self_link        = null
-      uid              = null
     }
     spec {
-      container_concurrency = 80
-      service_account_name  = "131818279954-compute@developer.gserviceaccount.com"
-      timeout_seconds       = 300
-
+      container_concurrency = var.container_concurrency
+      service_account_name  = var.service_account_name
+      timeout_seconds       = var.timeout_seconds
       containers {
         args    = []
         command = []
@@ -71,13 +69,13 @@ resource "google_cloud_run_service" "slack_notifs" {
         }
 
         startup_probe {
-          failure_threshold     = 1
-          initial_delay_seconds = 0
-          period_seconds        = 240
-          timeout_seconds       = 240
+          failure_threshold     = var.startup_probe_config.failure_threshold
+          initial_delay_seconds = var.startup_probe_config.initial_delay_seconds
+          period_seconds        = var.startup_probe_config.period_seconds
+          timeout_seconds       = var.startup_probe_config.timeout_seconds
 
           tcp_socket {
-            port = 8080
+            port = var.tcp_socket_config.port
           }
         }
       }
@@ -100,10 +98,14 @@ resource "google_cloud_run_service" "wtix_client_dev" {
   name                       = "wtix-client-dev"
   project                    = var.project
 
+  lifecycle {
+    ignore_changes = [traffic[0]]
+  }
+
   metadata {
     annotations = {}
     labels      = {}
-    namespace   = "wondertix-app"
+    namespace   = var.namespace
   }
 
   template {
@@ -118,16 +120,12 @@ resource "google_cloud_run_service" "wtix_client_dev" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name             = "wtix-client-dev-9c3723f"
-      namespace        = null
-      resource_version = null
-      self_link        = null
-      uid              = null
+      name = "wtix-client-dev-9c3723f"
     }
     spec {
-      container_concurrency = 80
-      service_account_name  = "131818279954-compute@developer.gserviceaccount.com"
-      timeout_seconds       = 300
+      container_concurrency = var.container_concurrency
+      service_account_name  = var.service_account_name
+      timeout_seconds       = var.timeout_seconds
 
       containers {
         args    = []
@@ -188,13 +186,13 @@ resource "google_cloud_run_service" "wtix_client_dev" {
         }
 
         startup_probe {
-          failure_threshold     = 1
-          initial_delay_seconds = 0
-          period_seconds        = 240
-          timeout_seconds       = 240
+          failure_threshold     = var.startup_probe_config.failure_threshold
+          initial_delay_seconds = var.startup_probe_config.initial_delay_seconds
+          period_seconds        = var.startup_probe_config.period_seconds
+          timeout_seconds       = var.startup_probe_config.timeout_seconds
 
           tcp_socket {
-            port = 8080
+            port = var.tcp_socket_config.port
           }
         }
       }
@@ -219,7 +217,11 @@ resource "google_cloud_run_service" "wtix_client_prd" {
   metadata {
     annotations = {}
     labels      = {}
-    namespace   = "wondertix-app"
+    namespace   = var.namespace
+  }
+
+  lifecycle {
+    ignore_changes = [traffic[0]]
   }
 
   template {
@@ -234,16 +236,12 @@ resource "google_cloud_run_service" "wtix_client_prd" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name             = "wtix-client-prd-4b99c98"
-      namespace        = null
-      resource_version = null
-      self_link        = null
-      uid              = null
+      name = "wtix-client-prd-4b99c98"
     }
     spec {
-      container_concurrency = 80
-      service_account_name  = "131818279954-compute@developer.gserviceaccount.com"
-      timeout_seconds       = 300
+      container_concurrency = var.container_concurrency
+      service_account_name  = var.service_account_name
+      timeout_seconds       = var.timeout_seconds
 
       containers {
         args    = []
@@ -293,13 +291,13 @@ resource "google_cloud_run_service" "wtix_client_prd" {
         }
 
         startup_probe {
-          failure_threshold     = 1
-          initial_delay_seconds = 0
-          period_seconds        = 240
-          timeout_seconds       = 240
+          failure_threshold     = var.startup_probe_config.failure_threshold
+          initial_delay_seconds = var.startup_probe_config.initial_delay_seconds
+          period_seconds        = var.startup_probe_config.period_seconds
+          timeout_seconds       = var.startup_probe_config.timeout_seconds
 
           tcp_socket {
-            port = 8080
+            port = var.tcp_socket_config.port
           }
         }
       }
@@ -320,11 +318,15 @@ resource "google_cloud_run_service" "wtix_client_stg" {
   autogenerate_revision_name = false
   location                   = "us-west1"
   name                       = "wtix-client-stg"
-  project                    = "wondertix-app"
+  project                    = var.project
   metadata {
     annotations = {}
     labels      = {}
-    namespace   = "wondertix-app"
+    namespace   = var.namespace
+  }
+
+  lifecycle {
+    ignore_changes = [traffic[0]]
   }
 
   template {
@@ -339,16 +341,12 @@ resource "google_cloud_run_service" "wtix_client_stg" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name             = "wtix-client-stg-9c3723f"
-      namespace        = null
-      resource_version = null
-      self_link        = null
-      uid              = null
+      name = "wtix-client-stg-9c3723f"
     }
     spec {
-      container_concurrency = 80
-      service_account_name  = "131818279954-compute@developer.gserviceaccount.com"
-      timeout_seconds       = 300
+      container_concurrency = var.container_concurrency
+      service_account_name  = var.service_account_name
+      timeout_seconds       = var.timeout_seconds
 
       containers {
         args    = []
@@ -409,13 +407,13 @@ resource "google_cloud_run_service" "wtix_client_stg" {
         }
 
         startup_probe {
-          failure_threshold     = 1
-          initial_delay_seconds = 0
-          period_seconds        = 240
-          timeout_seconds       = 240
+          failure_threshold     = var.startup_probe_config.failure_threshold
+          initial_delay_seconds = var.startup_probe_config.initial_delay_seconds
+          period_seconds        = var.startup_probe_config.period_seconds
+          timeout_seconds       = var.startup_probe_config.timeout_seconds
 
           tcp_socket {
-            port = 8080
+            port = var.tcp_socket_config.port
           }
         }
       }
@@ -440,7 +438,11 @@ resource "google_cloud_run_service" "wtix_server_dev" {
   metadata {
     annotations = {}
     labels      = {}
-    namespace   = "wondertix-app"
+    namespace   = var.namespace
+  }
+
+  lifecycle {
+    ignore_changes = [traffic[0]]
   }
 
   template {
@@ -458,16 +460,12 @@ resource "google_cloud_run_service" "wtix_server_dev" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name             = "wtix-server-dev-9c3723f"
-      namespace        = null
-      resource_version = null
-      self_link        = null
-      uid              = null
+      name = "wtix-server-dev-9c3723f"
     }
     spec {
-      container_concurrency = 80
-      service_account_name  = "131818279954-compute@developer.gserviceaccount.com"
-      timeout_seconds       = 300
+      container_concurrency = var.container_concurrency
+      service_account_name  = var.service_account_name
+      timeout_seconds       = var.timeout_seconds
 
       containers {
         args    = []
@@ -636,13 +634,13 @@ resource "google_cloud_run_service" "wtix_server_dev" {
         }
 
         startup_probe {
-          failure_threshold     = 1
-          initial_delay_seconds = 0
-          period_seconds        = 240
-          timeout_seconds       = 240
+          failure_threshold     = var.startup_probe_config.failure_threshold
+          initial_delay_seconds = var.startup_probe_config.initial_delay_seconds
+          period_seconds        = var.startup_probe_config.period_seconds
+          timeout_seconds       = var.startup_probe_config.timeout_seconds
 
           tcp_socket {
-            port = 8080
+            port = var.tcp_socket_config.port
           }
         }
       }
@@ -667,7 +665,11 @@ resource "google_cloud_run_service" "wtix_server_prd" {
   metadata {
     annotations = {}
     labels      = {}
-    namespace   = "wondertix-app"
+    namespace   = var.namespace
+  }
+
+  lifecycle {
+    ignore_changes = [traffic[0]]
   }
 
   template {
@@ -685,16 +687,12 @@ resource "google_cloud_run_service" "wtix_server_prd" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name             = "wtix-server-prd-f0cfa4a"
-      namespace        = null
-      resource_version = null
-      self_link        = null
-      uid              = null
+      name = "wtix-server-prd-f0cfa4a"
     }
     spec {
-      container_concurrency = 80
-      service_account_name  = "131818279954-compute@developer.gserviceaccount.com"
-      timeout_seconds       = 300
+      container_concurrency = var.container_concurrency
+      service_account_name  = var.service_account_name
+      timeout_seconds       = var.timeout_seconds
 
       containers {
         args    = []
@@ -863,15 +861,16 @@ resource "google_cloud_run_service" "wtix_server_prd" {
         }
 
         startup_probe {
-          failure_threshold     = 1
-          initial_delay_seconds = 0
-          period_seconds        = 240
-          timeout_seconds       = 240
+          failure_threshold     = var.startup_probe_config.failure_threshold
+          initial_delay_seconds = var.startup_probe_config.initial_delay_seconds
+          period_seconds        = var.startup_probe_config.period_seconds
+          timeout_seconds       = var.startup_probe_config.timeout_seconds
 
           tcp_socket {
-            port = 8080
+            port = var.tcp_socket_config.port
           }
         }
+
       }
     }
   }
@@ -890,11 +889,15 @@ resource "google_cloud_run_service" "wtix_server_stg" {
   autogenerate_revision_name = false
   location                   = "us-west1"
   name                       = "wtix-server-stg"
-  project                    = "wondertix-app"
+  project                    = var.project
   metadata {
     annotations = {}
     labels      = {}
-    namespace   = "wondertix-app"
+    namespace   = var.namespace
+  }
+
+  lifecycle {
+    ignore_changes = [traffic[0]]
   }
 
   template {
@@ -912,16 +915,12 @@ resource "google_cloud_run_service" "wtix_server_stg" {
       labels = {
         "run.googleapis.com/startupProbeType" = "Default"
       }
-      name             = "wtix-server-stg-9c3723f"
-      namespace        = null
-      resource_version = null
-      self_link        = null
-      uid              = null
+      name = "wtix-server-stg-9c3723f"
     }
     spec {
-      container_concurrency = 80
-      service_account_name  = "131818279954-compute@developer.gserviceaccount.com"
-      timeout_seconds       = 300
+      container_concurrency = var.container_concurrency
+      service_account_name  = var.service_account_name
+      timeout_seconds       = var.timeout_seconds
 
       containers {
         args    = []
@@ -1090,13 +1089,13 @@ resource "google_cloud_run_service" "wtix_server_stg" {
         }
 
         startup_probe {
-          failure_threshold     = 1
-          initial_delay_seconds = 0
-          period_seconds        = 240
-          timeout_seconds       = 240
+          failure_threshold     = var.startup_probe_config.failure_threshold
+          initial_delay_seconds = var.startup_probe_config.initial_delay_seconds
+          period_seconds        = var.startup_probe_config.period_seconds
+          timeout_seconds       = var.startup_probe_config.timeout_seconds
 
           tcp_socket {
-            port = 8080
+            port = var.tcp_socket_config.port
           }
         }
       }

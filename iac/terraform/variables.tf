@@ -188,3 +188,51 @@ variable "maintenance_window_hour" {
   description = "The hour of the day when maintenance should occur."
   type        = number
 }
+
+
+###################### CLOUD RUN ##########################
+variable "service_account_name" {
+  description = "The service account used by the Cloud Run services."
+  type        = string
+}
+
+variable "container_concurrency" {
+  description = "The number of requests that can be processed simultaneously by a single container instance."
+  type        = number
+}
+
+variable "timeout_seconds" {
+  description = "The maximum duration in seconds that a request can take before being terminated by Cloud Run."
+  type        = number
+}
+
+variable "namespace" {
+  description = "The namespace in which the services are deployed."
+  type        = string
+}
+
+variable "startup_probe_config" {
+  description = "Default configuration for startup probes."
+  type = object({
+    failure_threshold     = number
+    initial_delay_seconds = number
+    period_seconds        = number
+    timeout_seconds       = number
+  })
+  default = {
+    failure_threshold     = 1
+    initial_delay_seconds = 0
+    period_seconds        = 240
+    timeout_seconds       = 240
+  }
+}
+
+variable "tcp_socket_config" {
+  description = "Configuration for TCP socket in startup probes"
+  type = object({
+    port = number
+  })
+  default = {
+    port = 8080
+  }
+}

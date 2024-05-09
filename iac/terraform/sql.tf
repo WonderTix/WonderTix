@@ -223,7 +223,7 @@ resource "google_sql_database_instance" "prd" {
     }
 
     maintenance_window {
-      hour         = var.maintenance_window_hour
+      hour = var.maintenance_window_hour
     }
   }
 }

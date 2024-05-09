@@ -47,3 +47,19 @@ private_network                               = "projects/wondertix-app/global/n
 require_ssl                                   = false
 # Maintenance Window
 maintenance_window_hour = 0
+
+
+###################### CLOUD RUN ##########################
+service_account_name  = "131818279954-compute@developer.gserviceaccount.com"
+container_concurrency = 80
+timeout_seconds       = 300
+namespace             = "wondertix-app"
+startup_probe_config = {
+  failure_threshold     = 1
+  initial_delay_seconds = 0
+  period_seconds        = 240
+  timeout_seconds       = 240
+}
+tcp_socket_config = {
+  port = 8080
+}
