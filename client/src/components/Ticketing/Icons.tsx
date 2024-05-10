@@ -48,6 +48,23 @@ const ChevronDown = (props: IconProps) => {
   );
 };
 
+const ChevronRight = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path strokeLinecap='round' strokeLinejoin='round' d='M9 5l7 7-7 7' />
+    </svg>
+  );
+};
+
 const ChevronUp = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
   return (
@@ -373,6 +390,22 @@ const SmallBackIcon = (props: IconProps) => {
   );
 };
 
+const SmallMinusIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+    >
+      <path strokeLinecap='round' strokeLinejoin='round' d='M18 12H6' />
+    </svg>
+  );
+};
+
 const TicketIcon = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
   return (
@@ -439,6 +472,7 @@ const XIcon = (props: IconProps) => {
 export {
   BackIcon,
   ChevronDown,
+  ChevronRight,
   ChevronUp,
   CirclePlusIcon,
   CloneIcon,
@@ -454,6 +488,7 @@ export {
   SaveIcon,
   SearchIcon,
   SmallBackIcon,
+  SmallMinusIcon,
   TicketIcon,
   TrashCanIcon,
   XIcon,

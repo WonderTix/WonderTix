@@ -32,6 +32,7 @@ const ticket1: Ticket = {
   availableseats: 34,
   remainingtickets: 34,
   detail: '',
+  ispreview: false,
 };
 
 const ticket2: Ticket = {
@@ -43,6 +44,7 @@ const ticket2: Ticket = {
   availableseats: 20,
   remainingtickets: 20,
   detail: '',
+  ispreview: false,
 };
 
 const ticketType: TicketType = {
