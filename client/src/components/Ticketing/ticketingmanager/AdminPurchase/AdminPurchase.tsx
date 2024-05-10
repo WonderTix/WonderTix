@@ -184,7 +184,7 @@ const AdminPurchase = () => {
 
     // determine how many seats for current event instance
     const {ticketlimit, ticketssold} = currentTicketRestriction;
-    const seatsForType = ticketlimit - ticketssold;
+    const seatsForType = Math.min(ticketlimit - ticketssold, row.availableseats);
 
     const updatedRows = eventData.map((r) => {
       if (r.id === row.id) {
