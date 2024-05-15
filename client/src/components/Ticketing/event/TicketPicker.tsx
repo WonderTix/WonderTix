@@ -41,6 +41,7 @@ export interface TicketType {
   name: string;
   price: string;
   fee: string;
+  numAvail: number;
 }
 
 /**
@@ -70,7 +71,7 @@ const changeQty = (n: number) => ({type: 'change_qty', payload: n});
 const changePayWhat = (n: number) => ({type: 'change_pay_what', payload: n});
 const changeTicketTypes = (t: TicketTypeInput[]) => ({
   type: 'change_ticket_types',
-  payload: {selectedTicketType: t},
+  payload: {selectedTicketTypes: t},
 });
 
 /**
@@ -97,7 +98,9 @@ const TicketPickerReducer = (
     case 'date_selected': {
       const {tickets, dateOption} = action.payload;
       const sameDayShows = tickets
-        .filter((t: Ticket) => isSameDay(new Date(dateOption.date), new Date(t.date)))
+        .filter((t: Ticket) =>
+          isSameDay(new Date(dateOption.date), new Date(t.date)),
+        )
         .sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
@@ -131,16 +134,17 @@ const TicketPickerReducer = (
       return {...state, payWhatPrice: action.payload};
     }
     case 'change_ticket_types': {
-      return {...state, selectedTicketTypes: action.payload.selectedTicketTypes};
+      return {
+        ...state,
+        selectedTicketTypes: action.payload.selectedTicketTypes,
+      };
     }
     default:
       throw new Error('Received undefined action type');
   }
 };
 
-const getDateOptions = (
-  tickets: Ticket[],
-): DateOption[] => {
+const getDateOptions = (tickets: Ticket[]): DateOption[] => {
   const sortedDates = tickets
     .map((ticket) => {
       return {
@@ -233,6 +237,10 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
             name: type.description,
             price: formatUSD(type.price),
             fee: formatUSD(type.fee),
+            numAvail: Math.min(
+              type.ticketlimit - type.ticketssold,
+              selectedTicket.availableseats,
+            ),
           }));
 
           setShowingTicketTypes(showingTypes);
@@ -245,52 +253,62 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     }
   }, [selectedTicket]);
 
-  useEffect(() => {
-    if (selectedTicket && selectedTicketTypes.length) {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            process.env.REACT_APP_API_2_URL +
-              `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketTypes[0].type.id}`,
-          );
-          if (!response.ok) {
-            throw response;
-          }
-          const data = await response.json();
-          setNumAvail(Math.min(data.ticketlimit - data.ticketssold, selectedTicket.availableseats));
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      void fetchData();
-    }
-  }, [selectedTicketTypes]);
+  // useEffect(() => {
+  //   if (selectedTicket && selectedTicketTypes.length) {
+  //     const fetchData = async () => {
+  //       try {
+  //         const response = await fetch(
+  //           process.env.REACT_APP_API_2_URL +
+  //             `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketTypes[0].type.id}`,
+  //         );
+  //         if (!response.ok) {
+  //           throw response;
+  //         }
+  //         const data = await response.json();
+  //         setNumAvail(
+  //           Math.min(
+  //             data.ticketlimit - data.ticketssold,
+  //             selectedTicket.availableseats,
+  //           ),
+  //         );
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     };
+  //     void fetchData();
+  //   }
+  // }, [selectedTicketTypes]);
 
   const handleClick = (date: DateOption, tickets: Ticket[]) => {
-    dispatch(dateSelected(date, tickets));
+    if (date.date !== selectedDate?.date) {
+      dispatch(dateSelected(date, tickets));
+      setShowingTicketTypes([]);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const ticketInfo = {
-      qty: qty,
+      qty: selectedTicketTypes.reduce((sum, type) => sum + type.qty, 0),
       selectedDate: new Date(selectedDate.date),
     };
 
     // send ticket info to parent to display
     onSubmit(ticketInfo);
-    if (selectedTicket && qty) {
+    selectedTicketTypes.forEach((ticketInput) => {
       appDispatch(
         addTicketToCart({
           id: selectedTicket.event_instance_id,
-          tickettype: selectedTicketTypes[0].type,
-          qty: selectedTicketTypes[0].qty,
-          payWhatPrice: selectedTicketTypes[0].payWhatCanPrice,
+          tickettype: ticketInput.type,
+          qty: ticketInput.qty,
+          payWhatPrice: ticketInput.payWhatCanPrice,
         }),
       );
-      dispatch(resetWidget());
-    }
+    });
+
+    // TODO: This is not resetting
+    dispatch(resetWidget());
   };
 
   const promptMarkup = {
@@ -335,16 +353,40 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
     }
   };
 
+  const validTicketTypeSelection = (ticketTypesInputs: TicketTypeInput[]) => {
+    // At least one must have a qty > 0
+    const hasSomeValidQuantity = ticketTypesInputs.some(
+      (typeInput) => typeInput.qty > 0,
+    );
+
+    // The pay what price type if existing must have a >=0 value if it has a qty > 0
+    const payWhatType = ticketTypesInputs.find(
+      (typeInput) => typeInput.type.name === 'Pay What You Can',
+    );
+    let isValidPayWhatType = true;
+    if (payWhatType && payWhatType.qty > 0 && payWhatType.payWhatCanPrice < 0) {
+      isValidPayWhatType = false;
+    }
+
+    return hasSomeValidQuantity && isValidPayWhatType;
+  };
+
   return (
     <div className='bg-zinc-200/20 shadow-md backdrop-blur-md p-9 flex flex-col items-center rounded-xl w-full'>
-      <ShowingDateSelect dateOptions={dateOptions} onSelectDate={(date) => handleClick(date, tickets)} />
+      <ShowingDateSelect
+        dateOptions={dateOptions}
+        onSelectDate={(date) => handleClick(date, tickets)}
+      />
       <div className='flex w-full gap-12'>
         <ShowingTimeSelect
           check={prompt}
           showings={displayedShowings}
           onSelectShowingTime={(t) => dispatch(timeSelected(t))}
         />
-        <TicketOptions ticketTypes={showingTicketTypes} onChange={(typeInputs) => dispatch(changeTicketTypes(typeInputs))}/>
+        <TicketOptions
+          ticketTypes={showingTicketTypes}
+          onChange={(typeInputs) => dispatch(changeTicketTypes(typeInputs))}
+        />
       </div>
       {/* {!isEventSoldOut && false && ( */}
       {/*   <> */}
@@ -455,11 +497,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       <button
         data-testid='get-tickets'
         disabled={
-          !qty ||
-          !selectedTicket ||
-          qty > numAvail
-          // (selectedTicketType.name === 'Pay What You Can' &&
-          //   (payWhatPrice == null || payWhatPrice < 0))
+          !selectedTicketTypes || !validTicketTypeSelection(selectedTicketTypes)
         }
         className='disabled:opacity-30 disabled:cursor-not-allowed px-4 py-2
             mt-7 bg-green-600 text-base font-medium text-white enabled:hover:bg-green-700 rounded-lg

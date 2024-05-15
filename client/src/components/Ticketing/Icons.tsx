@@ -88,6 +88,48 @@ const ChevronUp = (props: IconProps) => {
   );
 };
 
+const CircleCheckIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      className={className}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+      />
+    </svg>
+  );
+};
+
+const CircleIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      className={className}
+    >
+      <path
+        fillRule='evenodd'
+        d='m 21 12 a 9 9 0 1 1 -18 0 a 9 9 0 0 1 18 0 z'
+        clipRule='evenodd'
+      />
+    </svg>
+  );
+};
+
 const CirclePlusIcon = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
 
@@ -474,6 +516,8 @@ export {
   ChevronDown,
   ChevronRight,
   ChevronUp,
+  CircleCheckIcon,
+  CircleIcon,
   CirclePlusIcon,
   CloneIcon,
   DecrementIcon,

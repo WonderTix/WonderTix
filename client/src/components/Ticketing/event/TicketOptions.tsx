@@ -16,12 +16,14 @@ interface TicketOptionsProps {
 export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   const {ticketTypes, onChange} = props;
 
+  const [totalTicketQty, setTotalTicketQty] = useState(0);
+
   const [ticketTypeInputs, setTicketTypeInputs] = useState<TicketTypeInput[]>(
     ticketTypes.map((type): TicketTypeInput => {
       return {
         type: type,
         qty: 0,
-        payWhatCanPrice: type.name === 'Pay What You Can' ? 0 : null,
+        payWhatCanPrice: null,
       };
     }),
   );
@@ -32,30 +34,38 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
         return {
           type: type,
           qty: 0,
-          payWhatCanPrice: type.name === 'Pay What You Can' ? 0 : null,
+          payWhatCanPrice: null,
         };
       }),
     );
   }, [ticketTypes]);
 
-  const handleQtyChange = (incrementValue: number, ticketTypeId: number) => {
+  const handleQtyChange = (incrementValue: number, ticketType: TicketType) => {
     const editedTicketTypeInputs = ticketTypeInputs.map((typeInput) => {
-      if (typeInput.type.id === ticketTypeId) {
-        typeInput.qty = Math.max(typeInput.qty + incrementValue, 0);
+      if (typeInput.type.id === ticketType.id) {
+        let newIncrementValue = typeInput.qty + incrementValue < 0 ? -typeInput.qty : incrementValue;
+        newIncrementValue = totalTicketQty + incrementValue < 0 ? -totalTicketQty : newIncrementValue;
+        newIncrementValue = typeInput.qty + newIncrementValue > ticketType.numAvail ? ticketType.numAvail - typeInput.qty : newIncrementValue;
+        newIncrementValue = totalTicketQty + newIncrementValue > 20 ? 20 - totalTicketQty : newIncrementValue;
+
+        setTotalTicketQty(totalTicketQty + newIncrementValue);
+        typeInput.qty += newIncrementValue;
       }
       return typeInput;
     });
     setTicketTypeInputs(editedTicketTypeInputs);
   };
 
-  const handlePayWhatCanPriceChange = (price: string) => {
-    const numberPrice = parseFloat(price);
-    if (isNaN(numberPrice)) {
-      return;
-    }
+  const handlePayWhatCanPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
     const editedTicketTypeInputs = ticketTypeInputs.map((typeInput) => {
       if (typeInput.type.name === 'Pay What You Can') {
-        typeInput.payWhatCanPrice = Math.max(numberPrice, 0);
+        const payWhatNumber = parseFloat(event.currentTarget.value);
+        if (isNaN(payWhatNumber)) {
+          typeInput.payWhatCanPrice = null;
+        } else {
+          typeInput.payWhatCanPrice = Math.max(parseFloat(payWhatNumber.toFixed(2)), 0);
+        }
       }
       return typeInput;
     });
@@ -76,11 +86,11 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
           >
             {ticketTypeInput.type.name}
           </p>
-          {ticketTypeInput.payWhatCanPrice === null ? (
+          {ticketTypeInput.type.name !== 'Pay What You Can' ? (
             <>
               <button
                 className='inline-block p-0.5 rounded-full bg-white text-zinc-900'
-                onClick={() => handleQtyChange(1, ticketTypeInput.type.id)}
+                onClick={() => handleQtyChange(1, ticketTypeInput.type)}
               >
                 <PlusIcon strokeWidth={2} />
               </button>
@@ -89,7 +99,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
               </p>
               <button
                 className='inline-block p-0.5 rounded-full bg-white text-zinc-900'
-                onClick={() => handleQtyChange(-1, ticketTypeInput.type.id)}
+                onClick={() => handleQtyChange(-1, ticketTypeInput.type)}
               >
                 <SmallMinusIcon strokeWidth={2} />
               </button>{' '}
@@ -99,7 +109,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
             <>
               <button
                 className='inline-block p-0.5 rounded-full bg-white text-zinc-900'
-                onClick={() => handleQtyChange(1, ticketTypeInput.type.id)}
+                onClick={() => handleQtyChange(1, ticketTypeInput.type)}
               >
                 <PlusIcon strokeWidth={2} />
               </button>
@@ -108,7 +118,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
               </p>
               <button
                 className='inline-block p-0.5 rounded-full bg-white text-zinc-900'
-                onClick={() => handleQtyChange(-1, ticketTypeInput.type.id)}
+                onClick={() => handleQtyChange(-1, ticketTypeInput.type)}
               >
                 <SmallMinusIcon strokeWidth={2} />
               </button>
@@ -117,10 +127,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
                 type='number'
                 value={ticketTypeInput.payWhatCanPrice}
                 className='rounded text-black'
-                onChange={(event) => {
-                  console.log('here');
-                  handlePayWhatCanPriceChange(event.target.value);
-                }}
+                onChange={handlePayWhatCanPriceChange}
               />
             </>
           )}

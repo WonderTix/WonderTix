@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import format from 'date-fns/format';
 import {Ticket} from '../ticketingmanager/ticketingSlice';
-import {ChevronRight} from '../Icons';
+import {ChevronRight, CircleCheckIcon, CircleIcon} from '../Icons';
 
 /**
  * ShowingTimeSelectProps holds tickets, showings and such
@@ -23,37 +23,48 @@ const ShowingTimeSelect = ({
   showings,
   onSelectShowingTime,
 }: ShowingTimeSelectProps) => {
-  const [selectedId, setSelectedId] = useState(-1);
+  const [selectedShowingId, setSelectedShowingId] = useState(-1);
 
   useEffect(() => {
     if (check === 'selectTime') {
-      setSelectedId(-1);
+      setSelectedShowingId(-1);
     }
   }, [check]);
 
-  const handleClick = (id: number) => {
-    setSelectedId(id);
-    const eventInstance = showings.find(
-      (obj) => obj.event_instance_id === id,
-    );
+  const handleClick = (showing: Ticket) => {
+    setSelectedShowingId(showing.event_instance_id);
     if (onSelectShowingTime) {
-      onSelectShowingTime(eventInstance);
+      onSelectShowingTime(showing);
     }
   };
 
-  // TODO: Get the preview attribute in each showing
   return (
     <ul className='w-96 relative after:content=[""] after:h-full after:absolute after:w-[1px] after:bg-white after:inline-block after:right-[-1.5em] after:top-0'>
       {showings.map((showing, index) => (
         <li key={index} className='w-full'>
-          <button className='bg-white rounded-md px-3 py-2 w-full text-left flex items-center justify-between' onClick={() => onSelectShowingTime(showing)}>
+          <button
+            className='bg-white rounded-md px-3 py-2 w-full text-left flex items-center justify-between'
+            onClick={() => handleClick(showing)}
+          >
             <p>
-              <span className='text-xl block font-medium'>{format(new Date(showing.date), 'h:mm a')}</span>
-              {showing.detail || showing.ispreview && (
-                <span>{showing.detail} {showing.detail && showing.ispreview && ('|')} Preview</span>
-              )}
+              <span className='text-xl block font-medium'>
+                {format(new Date(showing.date), 'h:mm a')}
+              </span>
+              {showing.detail ||
+                (showing.ispreview && (
+                  <span>
+                    {showing.detail}{' '}
+                    {showing.detail && showing.ispreview && '|'} Preview
+                  </span>
+                ))}
             </p>
-            <span><ChevronRight /></span>
+            <span>
+              {selectedShowingId === showing.event_instance_id ? (
+                <CircleCheckIcon />
+              ) : (
+                <CircleIcon />
+              )}
+            </span>
           </button>
         </li>
       ))}
