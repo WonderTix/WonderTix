@@ -36,10 +36,7 @@ const Navigation = ({buttons}): React.ReactElement => {
 
   useOutsideClick(dropdownRef, () => setProfile(false));
 
-  const NavButton = (props) => {
-    const [name] = useState(props.name);
-    const [url] = useState(props.url);
-    const [symbol] = useState(props.symbol);
+  const NavButton = ({name, url, symbol, strokeWidth}) => {
     return (
       <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
         <a
@@ -54,7 +51,7 @@ const Navigation = ({buttons}): React.ReactElement => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth={2}
+                strokeWidth={strokeWidth}
               >
                 <path
                   strokeLinecap="round"
@@ -75,6 +72,7 @@ const Navigation = ({buttons}): React.ReactElement => {
     name: PropTypes.string,
     url: PropTypes.string,
     symbol: PropTypes.string,
+    strokeWidth: PropTypes.number,
   };
 
   const NavSymbols = ({navButtons}) => {
@@ -86,6 +84,7 @@ const Navigation = ({buttons}): React.ReactElement => {
                   name: values.name,
                   url: values.url,
                   symbol: values.symbol,
+                  strokeWidth: values.strokeWidth,
                 },
               );
             },
