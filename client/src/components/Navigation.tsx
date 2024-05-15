@@ -36,7 +36,7 @@ const Navigation = ({buttons}): React.ReactElement => {
 
   useOutsideClick(dropdownRef, () => setProfile(false));
 
-  const NavButton = ({name, url, symbol, strokeWidth}) => {
+  const NavButton = ({name, url, symbol, strokeWidth, viewBox = '0 0 24 24'}) => {
     return (
       <li className="cursor-pointer mt-[12rem] text-zinc-200 font-semibold  text-md leading-3 tracking-normal  py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
         <a
@@ -49,7 +49,7 @@ const Navigation = ({buttons}): React.ReactElement => {
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-10 w-10"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewBox={viewBox}
                 stroke="currentColor"
                 strokeWidth={strokeWidth}
               >
@@ -73,6 +73,7 @@ const Navigation = ({buttons}): React.ReactElement => {
     url: PropTypes.string,
     symbol: PropTypes.string,
     strokeWidth: PropTypes.number,
+    viewBox: PropTypes.string,
   };
 
   const NavSymbols = ({navButtons}) => {
@@ -85,6 +86,7 @@ const Navigation = ({buttons}): React.ReactElement => {
                   url: values.url,
                   symbol: values.symbol,
                   strokeWidth: values.strokeWidth,
+                  viewBox: values.viewBox,
                 },
               );
             },
