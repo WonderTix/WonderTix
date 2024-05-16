@@ -12,13 +12,12 @@ import AdminNavDropdown from './Ticketing/ticketingmanager/AdminNavDropdown';
  *
  * @returns {React.ReactElement}
  */
-const Navigation = ({buttons}): React.ReactElement => {
+const Navigation = ({buttons, navTitle}): React.ReactElement => {
   const [profile, setProfile] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const {user} = useAuth0();
-  const {picture} = user;
-  const {name} = user;
+  const {picture, name} = user;
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
@@ -80,18 +79,16 @@ const Navigation = ({buttons}): React.ReactElement => {
     return (
       <ul className="space-y-7 mt-30 ml-[rem] flex flex-col items-center mb-7">
         {
-            navButtons.map((values) => {
-              return React.createElement(NavButton, {
-                  name: values.name,
-                  url: values.url,
-                  symbol: values.symbol,
-                  strokeWidth: values.strokeWidth,
-                  viewBox: values.viewBox,
-                },
-              );
-            },
-          )
-        }
+          navButtons.map((values, index) => (
+            <NavButton key = {index}
+                name={values.name}
+                url={values.url}
+                symbol={values.symbol}
+                strokeWidth={values.strokeWidth}
+                viewBox={values.viewBox}
+              />
+          ))
+        },
       </ul>
     );
   };
@@ -241,7 +238,7 @@ const Navigation = ({buttons}): React.ReactElement => {
           <header className="h-16 flex items-center md:items-stretch justify-end md:justify-between bg-white shadow relative z-10">
             <div className="hidden md:flex md:justify-between md:items-center w-full pr-2">
               <h2 className="flex items-center text-lg text-zinc-500 font-bold ml-12 mr-6">
-                Welcome to WonderTix CRM
+                {navTitle}
               </h2>
               <div className='relative' ref={dropdownRef}>
                 <button
@@ -308,6 +305,7 @@ const Navigation = ({buttons}): React.ReactElement => {
 
 Navigation.propTypes = {
   buttons: PropTypes.array,
+  navTitle: PropTypes.string,
 };
 
 export default Navigation;

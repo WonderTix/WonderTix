@@ -40,7 +40,7 @@ const AdminNavBar = (): ReactElement => {
     ];
 
     return (
-        <Navigation buttons={navButtons}/>
+        <Navigation buttons={navButtons} navTitle='Welcome to WonderTix CRM'/>
     );
   };
 

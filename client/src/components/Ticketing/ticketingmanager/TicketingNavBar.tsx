@@ -28,7 +28,7 @@ const TicketingNavBar = (): ReactElement => {
     ];
 
     return (
-        <Navigation buttons={navButtons}/>
+        <Navigation buttons={navButtons} navTitle='Welcome to the Ticketing Manager'/>
     );
   };
 
