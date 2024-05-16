@@ -134,7 +134,8 @@ const Navigation = ({buttons, navTitle}): React.ReactElement => {
                 <div className="flex items-center justify-between px-6">
                   <div className="h-12  w-full flex flex-col ml-6 items-center">
                     <button className="flex flex-col  bg-transparent border-transparent justify-center items-center">
-                      <img src={logo} className="mt-[5rem] w-[6rem]" alt="/" />
+                      <img src={logo} className="mt-[5rem] w-[6rem]" alt="/"
+                        onClick={() => navigate('/')}/>
                     </button>
                   </div>
                   <button
