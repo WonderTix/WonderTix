@@ -249,6 +249,7 @@ const DoorList = (): ReactElement => {
             Choose Event
           </label>
           <select
+            data-testid='event-select'
             id='event-select'
             className='select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600'
             onChange={handleEventChange}
@@ -269,13 +270,14 @@ const DoorList = (): ReactElement => {
         </div>
         <div className='mb-6'>
           <label
-            htmlFor='time-select'
+            htmlFor='showing-select'
             className='text-sm text-zinc-500 ml-1 mb-2 block'
           >
             Choose Date & Time
           </label>
           <select
-            data-testid='time-select-test'
+            data-testid='showing-select'
+            id='showing-select'
             className='select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600'
             onChange={handleTimeChange}
             disabled={!selectedEventId}
@@ -305,7 +307,7 @@ const DoorList = (): ReactElement => {
         </div>
         <h2 className='text-3xl font-bold'>Showing: {titleCase(eventName)}</h2>
         {date && (
-          <h3 className='text-xl font-bold text-zinc-700'>
+          <h3 className='text-xl font-bold text-zinc-700' data-testid='showing-time'>
             {format(date, 'eee, MMM dd yyyy, h:mm a')}
           </h3>
         )}
