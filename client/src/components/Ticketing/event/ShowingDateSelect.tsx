@@ -57,7 +57,7 @@ export const ShowingDateSelect = (
         <ChevronLeft className='absolute left-[0.45em] top-2 h-6 w-6' strokeWidth={4} />
       </button>
       <ul
-        className='flex gap-3 scroll-smooth overflow-hidden pb-8 pt-2 px-2'
+        className='flex gap-3 scroll-smooth overflow-x-auto md:overflow-hidden pb-8 pt-2 px-2'
         ref={ref}
       >
         {dateOptions.map((date, index) => (

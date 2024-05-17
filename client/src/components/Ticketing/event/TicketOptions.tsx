@@ -15,6 +15,7 @@ interface TicketOptionsProps {
 
 export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   const {ticketTypes, onChange} = props;
+  console.log(ticketTypes);
 
   const [totalTicketQty, setTotalTicketQty] = useState(0);
 
@@ -23,7 +24,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
       return {
         type: type,
         qty: 0,
-        payWhatCanPrice: null,
+        payWhatCanPrice: undefined,
       };
     }),
   );
@@ -35,7 +36,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
         return {
           type: type,
           qty: 0,
-          payWhatCanPrice: null,
+          payWhatCanPrice: undefined,
         };
       }),
     );
@@ -75,7 +76,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
       if (typeInput.type.name === 'Pay What You Can') {
         const payWhatNumber = parseFloat(event.currentTarget.value);
         if (isNaN(payWhatNumber)) {
-          typeInput.payWhatCanPrice = null;
+          typeInput.payWhatCanPrice = undefined;
         } else {
           typeInput.payWhatCanPrice = Math.max(
             parseFloat(payWhatNumber.toFixed(2)),
@@ -94,7 +95,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
 
   return (
     <article className='flex flex-col gap-8 justify-center text-white max-w-[30em] w-full mx-auto'>
-      {ticketTypeInputs.map((ticketTypeInput, index) => (
+      {ticketTypeInputs.length ? ticketTypeInputs.map((ticketTypeInput, index) => (
         <div key={index} className='flex justify-between'>
           <span className='flex flex-col'>
             <p className='relative text-xl font-bold'>
@@ -132,7 +133,9 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
             </button>
           </span>
         </div>
-      ))}
+      )) : (
+        <p className='text-zinc-300 font-bold text-center mx-auto'>Select a Time</p>
+      )}
     </article>
   );
 };

@@ -173,13 +173,6 @@ const getDateOptions = (tickets: Ticket[]): DateOption[] => {
   }, []);
 };
 
-const findDateOption = (dateOptions: DateOption[], date: string) => {
-  const dateOption = dateOptions.find((option) => option.date === date);
-  return {
-    date: dateOption.date,
-    soldOut: dateOption.soldOut,
-  };
-};
 
 interface TicketPickerProps {
   isEventSoldOut: boolean;
@@ -218,7 +211,6 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   const [showingTicketTypes, setShowingTicketTypes] = useState<TicketType[]>(
     [],
   );
-  const [numAvail, setNumAvail] = useState(Number);
 
   useEffect(() => {
     if (selectedTicket) {
@@ -250,34 +242,10 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
       };
 
       void fetchData();
+    } else {
+      setShowingTicketTypes([]);
     }
   }, [selectedTicket]);
-
-  // useEffect(() => {
-  //   if (selectedTicket && selectedTicketTypes.length) {
-  //     const fetchData = async () => {
-  //       try {
-  //         const response = await fetch(
-  //           process.env.REACT_APP_API_2_URL +
-  //             `/ticket-restriction/${selectedTicket.event_instance_id}/${selectedTicketTypes[0].type.id}`,
-  //         );
-  //         if (!response.ok) {
-  //           throw response;
-  //         }
-  //         const data = await response.json();
-  //         setNumAvail(
-  //           Math.min(
-  //             data.ticketlimit - data.ticketssold,
-  //             selectedTicket.availableseats,
-  //           ),
-  //         );
-  //       } catch (error) {
-  //         console.error(error);
-  //       }
-  //     };
-  //     void fetchData();
-  //   }
-  // }, [selectedTicketTypes]);
 
   const handleClick = (date: DateOption, tickets: Ticket[]) => {
     if (date.date !== selectedDate?.date) {
@@ -309,48 +277,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
 
     // TODO: This is not resetting
     dispatch(resetWidget());
-  };
-
-  const promptMarkup = {
-    selectDate: (
-      <label className='text-white font-semibold text-xl' htmlFor='date-select'>
-        {!isEventSoldOut ? 'Select date below' : 'View dates & times'} (
-        {tickets.length} showings)
-      </label>
-    ),
-    selectTime: (
-      <>
-        {selectedDate && (
-          <label className='text-white text-xl' htmlFor='time-select'>
-            {format(new Date(selectedDate.date), 'eee, MMM dd')}
-            <span className='text-white font-bold text-xl'>
-              {!selectedDate.soldOut ? ' - Choose time:' : ' - Times:'}
-            </span>
-          </label>
-        )}
-      </>
-    ),
-    showSelection: (
-      <p className='text-white text-center text-xl'>
-        {selectedTicket
-          ? `${format(new Date(selectedTicket.date), 'eee, MMM dd - h:mm a')}${
-              (selectedTicket?.detail ?? '') !== ''
-                ? ` (${selectedTicket.detail})`
-                : ''
-            }`
-          : ''}
-      </p>
-    ),
-  };
-
-  const payWhatFunc = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    const tempPay = parseFloat(event.currentTarget.value);
-    if (isNaN(tempPay)) {
-      dispatch(changePayWhat(null));
-    } else {
-      dispatch(changePayWhat(parseFloat(tempPay.toFixed(2))));
-    }
+    setShowingTicketTypes([]);
   };
 
   const validTicketTypeSelection = (ticketTypesInputs: TicketTypeInput[]) => {
@@ -377,123 +304,17 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
         dateOptions={dateOptions}
         onSelectDate={(date) => handleClick(date, tickets)}
       />
-      <div className='flex w-full gap-12'>
+      <div className='flex flex-col md:flex-row items-center w-full gap-12'>
         <ShowingTimeSelect
           check={prompt}
           showings={displayedShowings}
-          onSelectShowingTime={(t) => dispatch(timeSelected(t))}
+          onSelectShowingTime={(showing) => dispatch(timeSelected(showing))}
         />
         <TicketOptions
           ticketTypes={showingTicketTypes}
           onChange={(typeInputs) => dispatch(changeTicketTypes(typeInputs))}
         />
       </div>
-      {/* {!isEventSoldOut && false && ( */}
-      {/*   <> */}
-      {/*     <div className='flex flex-col gap-2 mt-7'> */}
-      {/*       <label */}
-      {/*         htmlFor='ticket-type-select' */}
-      {/*         className='text-center text-zinc-200 text-xl' */}
-      {/*       > */}
-      {/*         Ticket Type */}
-      {/*       </label> */}
-      {/*       <select */}
-      {/*         id='ticket-type-select' */}
-      {/*         value={selectedTicketType.id} */}
-      {/*         disabled={selectedTicket === undefined} */}
-      {/*         onChange={(e) => */}
-      {/*           dispatch( */}
-      {/*             changeTicketType( */}
-      {/*               showingTicketTypes.find( */}
-      {/*                 (type) => type.id === Number(e.target.value), */}
-      {/*               ), */}
-      {/*             ), */}
-      {/*           ) */}
-      {/*         } */}
-      {/*         className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl text-xl' */}
-      {/*       > */}
-      {/*         <option className='text-zinc-300 text-xl' value={-1} disabled> */}
-      {/*           select ticket type */}
-      {/*         </option> */}
-      {/*         {showingTicketTypes.map((t) => ( */}
-      {/*           <option className='text-white text-xl' key={t.id} value={t.id}> */}
-      {/*             {t.name}: {t.price} */}
-      {/*           </option> */}
-      {/*         ))} */}
-      {/*       </select> */}
-      {/*     </div> */}
-      {/*     <div className='flex flex-col gap-2 mt-3'> */}
-      {/*       <label */}
-      {/*         htmlFor='qty-select' */}
-      {/*         className='text-center text-zinc-200 text-xl' */}
-      {/*       > */}
-      {/*         {selectedTicket */}
-      {/*           ? numAvail > 0 */}
-      {/*             ? 'Quantity' */}
-      {/*             : 'Can\'t add more to cart' */}
-      {/*           : 'Quantity (select ticket)'} */}
-      {/*       </label> */}
-      {/*       <select */}
-      {/*         id='qty-select' */}
-      {/*         value={qty} */}
-      {/*         disabled={selectedTicket === undefined || numAvail < 1} */}
-      {/*         onChange={(e) => dispatch(changeQty(parseInt(e.target.value)))} */}
-      {/*         className='disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-800/50 p-5 text-white rounded-xl text-xl' */}
-      {/*       > */}
-      {/*         <option className='text-zinc-300 text-xl' value={0} disabled> */}
-      {/*           select qty */}
-      {/*         </option> */}
-      {/*         {range(numAvail, false).map((n) => */}
-      {/*           numAvail > 20 && n > 20 ? null : ( */}
-      {/*             <option className='text-white text-xl' key={n} value={n}> */}
-      {/*               {n} */}
-      {/*             </option> */}
-      {/*           ), */}
-      {/*         )} */}
-      {/*       </select> */}
-      {/*     </div> */}
-      {/*     <div */}
-      {/*       className={ */}
-      {/*         selectedTicketType && */}
-      {/*         selectedTicketType.name === 'Pay What You Can' */}
-      {/*           ? 'flex flex-col gap-2 mt-3 justify-center' */}
-      {/*           : 'hidden' */}
-      {/*       } */}
-      {/*     > */}
-      {/*       <label */}
-      {/*         className='text-center text-zinc-200' */}
-      {/*         htmlFor='pay-what-can-input' */}
-      {/*       > */}
-      {/*         Pay What You Can */}
-      {/*       </label> */}
-      {/*       <input */}
-      {/*         id='pay-what-can-input' */}
-      {/*         disabled={!selectedTicket} */}
-      {/*         onChange={(e) => payWhatFunc(e)} */}
-      {/*         type='number' */}
-      {/*         placeholder='Enter Amount' */}
-      {/*         className='disabled:opacity-30 disabled:cursor-not-allowed input border p-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500' */}
-      {/*       /> */}
-      {/*     </div> */}
-      {/*     <button */}
-      {/*       data-testid='get-tickets' */}
-      {/*       disabled={ */}
-      {/*         !qty || */}
-      {/*         !selectedTicket || */}
-      {/*         qty > numAvail || */}
-      {/*         (selectedTicketType.name === 'Pay What You Can' && */}
-      {/*           (payWhatPrice == null || payWhatPrice < 0)) */}
-      {/*       } */}
-      {/*       className='disabled:opacity-30 disabled:cursor-not-allowed px-4 py-2 */}
-      {/*       mt-7 bg-green-600 text-base font-medium text-white enabled:hover:bg-green-700 rounded-lg */}
-      {/*       enabled:focus:ring-green-300 border border-transparent */}
-      {/*       shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2' */}
-      {/*       onClick={handleSubmit} */}
-      {/*     > */}
-      {/*       Add to Cart */}
-      {/*     </button> */}
-      {/*   </> */}
-      {/* )} */}
       <button
         data-testid='get-tickets'
         disabled={

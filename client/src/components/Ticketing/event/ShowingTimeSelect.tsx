@@ -1,7 +1,7 @@
 import React, {ReactElement, useEffect, useState} from 'react';
 import format from 'date-fns/format';
 import {Ticket} from '../ticketingmanager/ticketingSlice';
-import {ChevronRight, CircleCheckIcon, CircleIcon} from '../Icons';
+import {CircleCheckIcon, CircleIcon} from '../Icons';
 import Label from '../Label';
 
 /**
@@ -56,7 +56,7 @@ const ShowingTimeSelect = ({
   };
 
   return (
-    <ul className='w-96 relative after:content=[""] after:h-full after:absolute after:w-[1px] after:bg-white after:inline-block after:right-[-1.5em] after:top-0'>
+    <ul className='max-w-[30em] w-full md:w-96 relative after:content=[""] after:h-[1px] md:after:h-full after:absolute after:w-full md:after:w-[1px] after:bg-white after:inline-block md:after:right-[-1.5em] after:bottom-[-1em] md:after:bottom-auto md:after:top-0'>
       {showings.length ? (
         showings.map((showing, index) => (
           <li key={index} className='w-full mb-3'>
@@ -87,29 +87,9 @@ const ShowingTimeSelect = ({
           </li>
         ))
       ) : (
-        <p className='text-zinc-300 font-bold text-center'>Select a Date</p>
+        <p className='text-zinc-300 font-bold text-center my-auto'>Select a Date</p>
       )}
     </ul>
-    // <select
-    //   value={selectedId}
-    //   onChange={(ev): void => handleClick(parseFloat(ev.target.value))}
-    //   className='bg-zinc-800/50 text-white p-5 mt-5 mb-3 rounded-xl max-w-full text-xl'
-    //   id='time-select'
-    // >
-    //   <option className='text-zinc-300 text-xl' disabled value={-1}>
-    //     select time
-    //   </option>
-    //   {showings.map((ticket) => {
-    //     const soldOut = ticket.remainingtickets === 0;
-    //     return (
-    //       <option key={ticket.event_instance_id} value={ticket.event_instance_id} disabled={soldOut}>
-    //         {soldOut && '[SOLD OUT] '}
-    //         {format(new Date(ticket.date), 'h:mm a')}
-    //         {(ticket.detail ?? '') !== '' ? ` (${ticket.detail})` : ''}
-    //       </option>
-    //     );
-    //   })}
-    // </select>
   );
 };
 
