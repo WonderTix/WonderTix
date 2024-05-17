@@ -29,6 +29,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   );
 
   useEffect(() => {
+    setTotalTicketQty(0);
     setTicketTypeInputs(
       ticketTypes.map((type): TicketTypeInput => {
         return {
@@ -43,10 +44,20 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   const handleQtyChange = (incrementValue: number, ticketType: TicketType) => {
     const editedTicketTypeInputs = ticketTypeInputs.map((typeInput) => {
       if (typeInput.type.id === ticketType.id) {
-        let newIncrementValue = typeInput.qty + incrementValue < 0 ? -typeInput.qty : incrementValue;
-        newIncrementValue = totalTicketQty + incrementValue < 0 ? -totalTicketQty : newIncrementValue;
-        newIncrementValue = typeInput.qty + newIncrementValue > ticketType.numAvail ? ticketType.numAvail - typeInput.qty : newIncrementValue;
-        newIncrementValue = totalTicketQty + newIncrementValue > 20 ? 20 - totalTicketQty : newIncrementValue;
+        let newIncrementValue =
+          typeInput.qty + incrementValue < 0 ? -typeInput.qty : incrementValue;
+        newIncrementValue =
+          totalTicketQty + incrementValue < 0
+            ? -totalTicketQty
+            : newIncrementValue;
+        newIncrementValue =
+          typeInput.qty + newIncrementValue > ticketType.numAvail
+            ? ticketType.numAvail - typeInput.qty
+            : newIncrementValue;
+        newIncrementValue =
+          totalTicketQty + newIncrementValue > 20
+            ? 20 - totalTicketQty
+            : newIncrementValue;
 
         setTotalTicketQty(totalTicketQty + newIncrementValue);
         typeInput.qty += newIncrementValue;
@@ -56,7 +67,9 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
     setTicketTypeInputs(editedTicketTypeInputs);
   };
 
-  const handlePayWhatCanPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePayWhatCanPriceChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     event.preventDefault();
     const editedTicketTypeInputs = ticketTypeInputs.map((typeInput) => {
       if (typeInput.type.name === 'Pay What You Can') {
@@ -64,7 +77,10 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
         if (isNaN(payWhatNumber)) {
           typeInput.payWhatCanPrice = null;
         } else {
-          typeInput.payWhatCanPrice = Math.max(parseFloat(payWhatNumber.toFixed(2)), 0);
+          typeInput.payWhatCanPrice = Math.max(
+            parseFloat(payWhatNumber.toFixed(2)),
+            0,
+          );
         }
       }
       return typeInput;
@@ -77,60 +93,44 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   }, [ticketTypeInputs]);
 
   return (
-    <article className='flex flex-col gap-8 w-full overflow-x-auto justify-center text-white'>
+    <article className='flex flex-col gap-8 justify-center text-white max-w-[30em] w-full mx-auto'>
       {ticketTypeInputs.map((ticketTypeInput, index) => (
-        <div key={index}>
-          <p
-            className='relative mb-2
-            after:content-[""] after:absolute after:bottom-0 after:left-0 after:w-52 after:h-[1px] after:inline-block after:bg-white'
-          >
-            {ticketTypeInput.type.name}
-          </p>
-          {ticketTypeInput.type.name !== 'Pay What You Can' ? (
-            <>
-              <button
-                className='inline-block p-0.5 rounded-full bg-white text-zinc-900'
-                onClick={() => handleQtyChange(1, ticketTypeInput.type)}
-              >
-                <PlusIcon strokeWidth={2} />
-              </button>
-              <p className='inline-block w-8 text-center'>
-                {ticketTypeInput.qty}
+        <div key={index} className='flex justify-between'>
+          <span className='flex flex-col'>
+            <p className='relative text-xl font-bold'>
+              {ticketTypeInput.type.name}
+            </p>
+            {ticketTypeInput.type.name !== 'Pay What You Can' ? (
+              <p className='font-medium text-md text-zinc-200'>
+                {ticketTypeInput.type.price}
               </p>
-              <button
-                className='inline-block p-0.5 rounded-full bg-white text-zinc-900'
-                onClick={() => handleQtyChange(-1, ticketTypeInput.type)}
-              >
-                <SmallMinusIcon strokeWidth={2} />
-              </button>{' '}
-              @ {ticketTypeInput.type.price}
-            </>
-          ) : (
-            <>
-              <button
-                className='inline-block p-0.5 rounded-full bg-white text-zinc-900'
-                onClick={() => handleQtyChange(1, ticketTypeInput.type)}
-              >
-                <PlusIcon strokeWidth={2} />
-              </button>
-              <p className='inline-block w-8 text-center'>
-                {ticketTypeInput.qty}
-              </p>
-              <button
-                className='inline-block p-0.5 rounded-full bg-white text-zinc-900'
-                onClick={() => handleQtyChange(-1, ticketTypeInput.type)}
-              >
-                <SmallMinusIcon strokeWidth={2} />
-              </button>
-              @{' '}
+            ) : (
               <input
                 type='number'
+                placeholder='Price'
                 value={ticketTypeInput.payWhatCanPrice}
-                className='rounded text-black'
+                className='rounded text-white px-2 py-1 bg-zinc-900/50 w-[10em] mt-1'
                 onChange={handlePayWhatCanPriceChange}
               />
-            </>
-          )}
+            )}
+          </span>
+          <span className='flex items-center gap-2'>
+            <button
+              className='inline-block p-0.5 rounded-full bg-transparent text-white border-2 border-white hover:text-zinc-400 hover:border-zinc-400 transition-all'
+              onClick={() => handleQtyChange(1, ticketTypeInput.type)}
+            >
+              <PlusIcon strokeWidth={2.3} />
+            </button>
+            <p className='inline-block w-8 text-center font-bold text-lg'>
+              {ticketTypeInput.qty}
+            </p>
+            <button
+              className='inline-block p-0.5 rounded-full bg-transparent text-white border-2 border-white hover:text-zinc-400 hover:border-zinc-400 transition-all'
+              onClick={() => handleQtyChange(-1, ticketTypeInput.type)}
+            >
+              <SmallMinusIcon strokeWidth={2.3} />
+            </button>
+          </span>
         </div>
       ))}
     </article>

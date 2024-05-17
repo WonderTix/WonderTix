@@ -500,7 +500,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
           !selectedTicketTypes || !validTicketTypeSelection(selectedTicketTypes)
         }
         className='disabled:opacity-30 disabled:cursor-not-allowed px-4 py-2
-            mt-7 bg-green-600 text-base font-medium text-white enabled:hover:bg-green-700 rounded-lg
+            mt-12 bg-green-600 text-base font-medium text-white enabled:hover:bg-green-700 rounded-lg
             enabled:focus:ring-green-300 border border-transparent
             shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2'
         onClick={handleSubmit}

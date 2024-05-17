@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {ReactElement, useEffect, useState} from 'react';
 import format from 'date-fns/format';
 import {Ticket} from '../ticketingmanager/ticketingSlice';
 import {ChevronRight, CircleCheckIcon, CircleIcon} from '../Icons';
+import Label from '../Label';
 
 /**
  * ShowingTimeSelectProps holds tickets, showings and such
@@ -38,36 +39,56 @@ const ShowingTimeSelect = ({
     }
   };
 
+  const getTimeCardIcon = (showing: Ticket): ReactElement => {
+    if (showing.remainingtickets === 0) {
+      return (
+        <Label className='' color='slate'>
+          SOLD OUT
+        </Label>
+      );
+    } else {
+      return showing.event_instance_id === selectedShowingId ? (
+        <CircleCheckIcon className='h-8 w-8 text-blue-500' strokeWidth={2.3} />
+      ) : (
+        <CircleIcon className='h-8 w-8 text-zinc-600' strokeWidth={2.3} />
+      );
+    }
+  };
+
   return (
     <ul className='w-96 relative after:content=[""] after:h-full after:absolute after:w-[1px] after:bg-white after:inline-block after:right-[-1.5em] after:top-0'>
-      {showings.map((showing, index) => (
-        <li key={index} className='w-full'>
-          <button
-            className='bg-white rounded-md px-3 py-2 w-full text-left flex items-center justify-between'
-            onClick={() => handleClick(showing)}
-          >
-            <p>
-              <span className='text-xl block font-medium'>
-                {format(new Date(showing.date), 'h:mm a')}
-              </span>
-              {showing.detail ||
-                (showing.ispreview && (
+      {showings.length ? (
+        showings.map((showing, index) => (
+          <li key={index} className='w-full mb-3'>
+            <button
+              className={`${
+                selectedShowingId === showing.event_instance_id
+                  ? 'ring-blue-500 ring-4'
+                  : ''
+              }
+                ${showing.remainingtickets === 0 ? 'bg-zinc-400' : ''}
+                bg-white rounded-md px-3 py-2 w-full text-left flex items-center justify-between border-transparent transition-all`}
+              onClick={() => handleClick(showing)}
+              disabled={showing.remainingtickets === 0}
+            >
+              <p>
+                <span className='text-xl block font-medium'>
+                  {format(new Date(showing.date), 'h:mm a')}
+                </span>
+                {(showing.detail || showing.ispreview) && (
                   <span>
                     {showing.detail}{' '}
                     {showing.detail && showing.ispreview && '|'} Preview
                   </span>
-                ))}
-            </p>
-            <span>
-              {selectedShowingId === showing.event_instance_id ? (
-                <CircleCheckIcon />
-              ) : (
-                <CircleIcon />
-              )}
-            </span>
-          </button>
-        </li>
-      ))}
+                )}
+              </p>
+              <span>{getTimeCardIcon(showing)}</span>
+            </button>
+          </li>
+        ))
+      ) : (
+        <p className='text-zinc-300 font-bold text-center'>Select a Date</p>
+      )}
     </ul>
     // <select
     //   value={selectedId}

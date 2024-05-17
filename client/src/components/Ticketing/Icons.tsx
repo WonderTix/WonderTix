@@ -48,6 +48,23 @@ const ChevronDown = (props: IconProps) => {
   );
 };
 
+const ChevronLeft = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path strokeLinecap='round' strokeLinejoin='round' d='M15 19l-7-7 7-7' />
+    </svg>
+  );
+};
+
 const ChevronRight = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
   return (
@@ -514,6 +531,7 @@ const XIcon = (props: IconProps) => {
 export {
   BackIcon,
   ChevronDown,
+  ChevronLeft,
   ChevronRight,
   ChevronUp,
   CircleCheckIcon,

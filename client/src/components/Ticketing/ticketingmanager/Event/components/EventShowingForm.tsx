@@ -109,7 +109,7 @@ export const EventShowingForm = (props: EventShowingFormProps) => {
                 </p>
               </div>
               <Field
-                name='ispreview: '
+                name='ispreview'
                 component={FormSwitch}
                 className={inputControlClassName}
                 label='Preview'
