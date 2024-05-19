@@ -249,13 +249,13 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   };
 
   return (
-    <div className='bg-zinc-200/20 shadow-md backdrop-blur-md p-9 pb-24 flex flex-col items-center rounded-xl w-full'>
+    <div className='bg-zinc-200/20 shadow-md backdrop-blur-md p-9 pb-28 flex flex-col items-center rounded-xl w-full'>
       <ShowingDateSelect
         dateOptions={dateOptions}
         selectedDate={selectedDate}
         onSelectDate={(date) => handleSelectDate(date, tickets)}
       />
-      <div className='flex flex-col md:flex-row items-center md:items-stretch w-full gap-12 md:min-h-[19em]'>
+      <div className='flex flex-col md:flex-row items-center md:items-stretch w-full gap-12 md:min-h-[13.8em]'>
         <ShowingTimeSelect
           showings={displayedShowings}
           selectedTime={selectedTime}

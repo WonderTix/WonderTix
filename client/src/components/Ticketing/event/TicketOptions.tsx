@@ -144,7 +144,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
           </div>
         ))
       ) : (
-        <p className='text-zinc-300 font-bold text-center mx-auto'>
+        <p className='text-zinc-300 font-bold text-center mx-auto md:mt-3'>
           Select a Time
         </p>
       )}

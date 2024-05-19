@@ -41,7 +41,7 @@ const ShowingTimeSelect = ({
   return (
     <ul
       className='max-w-[30em] w-full md:w-96 relative
-      after:content=[""] after:h-[1px] md:after:h-full md:after:min-h-[17em] after:absolute after:w-full md:after:w-[1px] after:bg-white after:inline-block md:after:right-[-1.5em] after:bottom-[-1em] md:after:bottom-auto md:after:top-0'
+      after:content=[""] after:h-[1px] md:after:h-full after:absolute after:w-full md:after:w-[1px] after:bg-white after:inline-block md:after:right-[-1.5em] after:bottom-[-1.7em] md:after:bottom-auto md:after:top-0'
     >
       {showings.length ? (
         showings.map((showing, index) => (
@@ -58,7 +58,7 @@ const ShowingTimeSelect = ({
               onClick={() => handleSelectTime(showing)}
               disabled={showing.remainingtickets === 0}
             >
-              <p>
+              <p className='leading-tight'>
                 <span className='text-xl block font-medium'>
                   {format(new Date(showing.date), 'h:mm a')}
                 </span>
@@ -75,7 +75,7 @@ const ShowingTimeSelect = ({
           </li>
         ))
       ) : (
-        <p className='text-zinc-300 font-bold text-center my-auto'>
+        <p className='text-zinc-300 font-bold text-center my-auto md:mt-3'>
           Select a Date
         </p>
       )}
