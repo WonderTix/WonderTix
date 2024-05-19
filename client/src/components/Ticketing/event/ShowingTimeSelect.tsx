@@ -1,39 +1,26 @@
-import React, {ReactElement, useEffect, useState} from 'react';
+import React, {ReactElement} from 'react';
 import format from 'date-fns/format';
 import {Ticket} from '../ticketingmanager/ticketingSlice';
 import {CircleCheckIcon, CircleIcon} from '../Icons';
 import Label from '../Label';
 
-/**
- * ShowingTimeSelectProps holds tickets, showings and such
- */
 interface ShowingTimeSelectProps {
-  check: string;
   showings: Ticket[];
+  selectedTime?: Ticket;
   onSelectShowingTime?: (dateShowing: Ticket) => void;
 }
 
 /**
- * This is the handler
+ * The Time Selection area of the Ticket Picker.
  *
  * @param {ShowingTimeSelectProps} props
- * @returns the selection of date and others once clicked
  */
 const ShowingTimeSelect = ({
-  check,
   showings,
+  selectedTime,
   onSelectShowingTime,
 }: ShowingTimeSelectProps) => {
-  const [selectedShowingId, setSelectedShowingId] = useState(-1);
-
-  useEffect(() => {
-    if (check === 'selectTime') {
-      setSelectedShowingId(-1);
-    }
-  }, [check]);
-
-  const handleClick = (showing: Ticket) => {
-    setSelectedShowingId(showing.event_instance_id);
+  const handleSelectTime = (showing: Ticket) => {
     if (onSelectShowingTime) {
       onSelectShowingTime(showing);
     }
@@ -41,13 +28,9 @@ const ShowingTimeSelect = ({
 
   const getTimeCardIcon = (showing: Ticket): ReactElement => {
     if (showing.remainingtickets === 0) {
-      return (
-        <Label className='' color='slate'>
-          SOLD OUT
-        </Label>
-      );
+      return <Label color='slate'>SOLD OUT</Label>;
     } else {
-      return showing.event_instance_id === selectedShowingId ? (
+      return showing.event_instance_id === selectedTime?.event_instance_id ? (
         <CircleCheckIcon className='h-8 w-8 text-blue-500' strokeWidth={2.3} />
       ) : (
         <CircleIcon className='h-8 w-8 text-zinc-600' strokeWidth={2.3} />
@@ -56,19 +39,23 @@ const ShowingTimeSelect = ({
   };
 
   return (
-    <ul className='max-w-[30em] w-full md:w-96 relative after:content=[""] after:h-[1px] md:after:h-full after:absolute after:w-full md:after:w-[1px] after:bg-white after:inline-block md:after:right-[-1.5em] after:bottom-[-1em] md:after:bottom-auto md:after:top-0'>
+    <ul
+      className='max-w-[30em] w-full md:w-96 relative
+      after:content=[""] after:h-[1px] md:after:h-full md:after:min-h-[17em] after:absolute after:w-full md:after:w-[1px] after:bg-white after:inline-block md:after:right-[-1.5em] after:bottom-[-1em] md:after:bottom-auto md:after:top-0'
+    >
       {showings.length ? (
         showings.map((showing, index) => (
-          <li key={index} className='w-full mb-3'>
+          <li key={index} className='w-full mb-3 last-of-type:mb-0'>
             <button
               className={`${
-                selectedShowingId === showing.event_instance_id
+                selectedTime?.event_instance_id === showing.event_instance_id
                   ? 'ring-blue-500 ring-4'
-                  : ''
+                  : 'hover:enabled:bg-zinc-200'
               }
                 ${showing.remainingtickets === 0 ? 'bg-zinc-400' : ''}
-                bg-white rounded-md px-3 py-2 w-full text-left flex items-center justify-between border-transparent transition-all`}
-              onClick={() => handleClick(showing)}
+                bg-white rounded-md px-3 py-2 w-full text-left flex items-center
+                justify-between border-transparent transition-all`}
+              onClick={() => handleSelectTime(showing)}
               disabled={showing.remainingtickets === 0}
             >
               <p>
@@ -78,7 +65,8 @@ const ShowingTimeSelect = ({
                 {(showing.detail || showing.ispreview) && (
                   <span>
                     {showing.detail}{' '}
-                    {showing.detail && showing.ispreview && '|'} Preview
+                    {showing.detail && showing.ispreview && '| '}
+                    {showing.ispreview && 'Preview'}
                   </span>
                 )}
               </p>
@@ -87,7 +75,9 @@ const ShowingTimeSelect = ({
           </li>
         ))
       ) : (
-        <p className='text-zinc-300 font-bold text-center my-auto'>Select a Date</p>
+        <p className='text-zinc-300 font-bold text-center my-auto'>
+          Select a Date
+        </p>
       )}
     </ul>
   );
