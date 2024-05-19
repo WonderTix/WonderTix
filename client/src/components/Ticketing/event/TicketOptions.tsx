@@ -99,7 +99,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   };
 
   return (
-    <article className='flex flex-col gap-8 justify-center text-white max-w-[30em] w-full mx-auto'>
+    <article className='flex flex-col gap-8 text-white max-w-[30em] w-full mx-auto'>
       {ticketTypeInputs.length ? (
         ticketTypeInputs.map((ticketTypeInput, index) => (
           <div key={index} className='flex justify-between'>
