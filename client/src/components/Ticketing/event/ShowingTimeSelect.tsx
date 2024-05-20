@@ -31,9 +31,9 @@ const ShowingTimeSelect = ({
       return <Label color='slate'>SOLD OUT</Label>;
     } else {
       return showing.event_instance_id === selectedTime?.event_instance_id ? (
-        <CircleCheckIcon className='h-8 w-8 text-blue-500' strokeWidth={2.3} />
+        <CircleCheckIcon className='h-7 w-7 text-blue-500' strokeWidth={2.3} />
       ) : (
-        <CircleIcon className='h-8 w-8 text-zinc-600' strokeWidth={2.3} />
+        <CircleIcon className='h-7 w-7 text-zinc-600' strokeWidth={2.3} />
       );
     }
   };
@@ -54,7 +54,7 @@ const ShowingTimeSelect = ({
                   : 'hover:enabled:bg-zinc-200'
               }
                 ${showing.remainingtickets === 0 ? 'bg-zinc-400' : ''}
-                bg-white rounded-md px-3 py-2 w-full text-left flex items-center
+                bg-white rounded-md px-3 py-2 min-h-[4em] w-full text-left flex items-center
                 justify-between border-transparent transition-all`}
               onClick={() => handleSelectTime(showing)}
               disabled={showing.remainingtickets === 0}

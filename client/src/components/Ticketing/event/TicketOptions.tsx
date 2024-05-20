@@ -60,9 +60,9 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   const handleQtyChange = (incrementValue: number, ticketType: TicketType) => {
     const editedTicketInputs = ticketInputs.map((ticketInput) => {
       if (ticketInput.type.id === ticketType.id) {
-        // This cryptic code requires the total quantity of all tickets on screen to be
-        // less than 20 total tickets, less than their respective ticket restrictions
-        // available quantity, and all greater than 0, for any integer incrementValue.
+        // This cryptic code requires the total quantity of all tickets on-screen to be
+        // less than 20 total tickets, each less than their respective ticket restrictions
+        // available quantity, and each greater than 0, for any integer incrementValue.
         let newIncrementValue =
           ticketInput.qty + incrementValue < 0
             ? -ticketInput.qty
@@ -135,11 +135,11 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
             </span>
             <span className='flex items-center gap-2'>
               <button
-                aria-label='Add one ticket'
+                aria-label='Remove one ticket'
                 className='inline-block p-0.5 rounded-full bg-transparent text-white border-2 border-white hover:text-zinc-400 hover:border-zinc-400 transition-all'
-                onClick={() => handleQtyChange(1, ticketInput.type)}
+                onClick={() => handleQtyChange(-1, ticketInput.type)}
               >
-                <PlusIcon strokeWidth={2.3} />
+                <SmallMinusIcon strokeWidth={2.3} />
               </button>
               <p
                 className='inline-block w-8 text-center font-bold text-lg'
@@ -148,11 +148,11 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
                 {ticketInput.qty}
               </p>
               <button
-                aria-label='Remove one ticket'
+                aria-label='Add one ticket'
                 className='inline-block p-0.5 rounded-full bg-transparent text-white border-2 border-white hover:text-zinc-400 hover:border-zinc-400 transition-all'
-                onClick={() => handleQtyChange(-1, ticketInput.type)}
+                onClick={() => handleQtyChange(1, ticketInput.type)}
               >
-                <SmallMinusIcon strokeWidth={2.3} />
+                <PlusIcon strokeWidth={2.3} />
               </button>
             </span>
           </div>
