@@ -15,6 +15,15 @@ interface ShowingDateSelectProps {
   onSelectDate: (dateOption: DateOption) => void;
 }
 
+/**
+ * The selector to choose a date to view showings for.
+ *
+ * @param {ShowingDateSelectProps} props
+ * @param {DateOption[]} props.dateOptions
+ * @param {DateOption?} props.selectedDate
+ * @param {func} props.onSelectDate
+ * @returns {React.ReactElement} ShowingDateSelect
+ */
 export const ShowingDateSelect = (
   props: ShowingDateSelectProps,
 ): ReactElement => {
@@ -58,12 +67,12 @@ export const ShowingDateSelect = (
         {dateOptions.map((date, index) => (
           <li key={index}>
             <button
+              data-testid='date-option'
               className={`${
                 selectedDate?.date === date.date
                   ? 'bg-blue-500 text-white'
                   : date.soldOut ? 'bg-zinc-400' : 'bg-white'
-              }
-              rounded-md p-3 flex flex-col items-center w-20 shadow-md hover:shadow-lg hover:scale-105 transition-all`}
+              } rounded-md p-3 flex flex-col items-center w-20 shadow-md hover:shadow-lg hover:scale-105 transition-all`}
               onClick={() => onSelectDate(date)}
             >
               <span className='font-medium'>

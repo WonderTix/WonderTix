@@ -192,6 +192,7 @@ describe('Ticketing slice', () => {
             remainingtickets: 34,
             date: new Date('2021-07-31T19:00:00'),
             detail: '',
+            ispreview: false,
           }, {
             event_instance_id: 2,
             eventid: eventid,
@@ -201,6 +202,7 @@ describe('Ticketing slice', () => {
             remainingtickets: 20,
             date: new Date('2021-08-07T16:00:00'),
             detail: '',
+            ispreview: false,
           }],
         });
     });

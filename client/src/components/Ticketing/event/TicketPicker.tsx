@@ -61,8 +61,8 @@ const updateTicketInputs = (t: TicketInput[]) => ({
  * TicketPickerReducer is meant to be used to lower ticket numbers
  * Default:
  *      ...state,
- *      displayedShowings: sameDayShows,
  *      selectedDate: undefined,
+ *      displayedShowings: sameDayShows,
  *      selectedTime: undefined,
  *      showingTicketTypes: [],
  *      showingTicketInputs: [],
@@ -213,14 +213,16 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
 
     // Add tickets to cart
     showingTicketInputs.forEach((ticketInput) => {
-      appDispatch(
-        addTicketToCart({
-          id: selectedTime.event_instance_id,
-          tickettype: ticketInput.type,
-          qty: ticketInput.qty,
-          payWhatPrice: ticketInput.payWhatCanPrice ?? 0,
-        }),
-      );
+      if (ticketInput.qty > 0) {
+        appDispatch(
+          addTicketToCart({
+            id: selectedTime.event_instance_id,
+            tickettype: ticketInput.type,
+            qty: ticketInput.qty,
+            payWhatPrice: ticketInput.payWhatCanPrice ?? 0,
+          }),
+        );
+      }
     });
 
     // Reset page to defaults

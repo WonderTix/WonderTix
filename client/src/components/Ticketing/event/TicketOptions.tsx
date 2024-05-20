@@ -17,11 +17,19 @@ interface TicketOptionsProps {
   onChange: (ticketTypeInputs: TicketInput[]) => void;
 }
 
+/**
+ * The list of ticket inputs that the user can modify.
+ *
+ * @param {TicketOptionsProps} props
+ * @param {TicketType[]} props.ticketTypes
+ * @param {func} props.onChange
+ * @returns {React.ReactElement} TicketOptions
+ */
 export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   const {ticketTypes, onChange} = props;
 
   const [totalTicketQty, setTotalTicketQty] = useState(0);
-  const [ticketTypeInputs, setTicketTypeInputs] = useState<TicketInput[]>(
+  const [ticketInputs, setTicketInputs] = useState<TicketInput[]>(
     ticketTypes.map((type): TicketInput => {
       return {
         type: type,
@@ -32,8 +40,9 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   );
 
   useEffect(() => {
+    // Reset ticket inputs if they are changing from the props
     setTotalTicketQty(0);
-    setTicketTypeInputs(
+    setTicketInputs(
       ticketTypes.map((type): TicketInput => {
         return {
           type: type,
@@ -45,24 +54,26 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
   }, [ticketTypes]);
 
   useEffect(() => {
-    onChange(ticketTypeInputs);
-  }, [ticketTypeInputs]);
+    onChange(ticketInputs);
+  }, [ticketInputs]);
 
   const handleQtyChange = (incrementValue: number, ticketType: TicketType) => {
-    const editedTicketTypeInputs = ticketTypeInputs.map((typeInput) => {
-      if (typeInput.type.id === ticketType.id) {
+    const editedTicketInputs = ticketInputs.map((ticketInput) => {
+      if (ticketInput.type.id === ticketType.id) {
         // This cryptic code requires the total quantity of all tickets on screen to be
         // less than 20 total tickets, less than their respective ticket restrictions
         // available quantity, and all greater than 0, for any integer incrementValue.
         let newIncrementValue =
-          typeInput.qty + incrementValue < 0 ? -typeInput.qty : incrementValue;
+          ticketInput.qty + incrementValue < 0
+            ? -ticketInput.qty
+            : incrementValue;
         newIncrementValue =
           totalTicketQty + incrementValue < 0
             ? -totalTicketQty
             : newIncrementValue;
         newIncrementValue =
-          typeInput.qty + newIncrementValue > ticketType.numAvail
-            ? ticketType.numAvail - typeInput.qty
+          ticketInput.qty + newIncrementValue > ticketType.numAvail
+            ? ticketType.numAvail - ticketInput.qty
             : newIncrementValue;
         newIncrementValue =
           totalTicketQty + newIncrementValue > 20
@@ -70,53 +81,53 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
             : newIncrementValue;
 
         setTotalTicketQty(totalTicketQty + newIncrementValue);
-        typeInput.qty += newIncrementValue;
+        ticketInput.qty += newIncrementValue;
       }
-      return typeInput;
+      return ticketInput;
     });
-    setTicketTypeInputs(editedTicketTypeInputs);
+    setTicketInputs(editedTicketInputs);
   };
 
   const handlePayWhatCanPriceChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     event.preventDefault();
-    const editedTicketTypeInputs = ticketTypeInputs.map((typeInput) => {
-      if (typeInput.type.name === 'Pay What You Can') {
+    const editedTicketInputs = ticketInputs.map((ticketInput) => {
+      if (ticketInput.type.name === 'Pay What You Can') {
         const payWhatNumber = parseFloat(event.currentTarget.value);
         if (isNaN(payWhatNumber)) {
-          typeInput.payWhatCanPrice = undefined;
+          ticketInput.payWhatCanPrice = undefined;
         } else {
-          typeInput.payWhatCanPrice = Math.max(
+          ticketInput.payWhatCanPrice = Math.max(
             parseFloat(payWhatNumber.toFixed(2)),
             0,
           );
         }
       }
-      return typeInput;
+      return ticketInput;
     });
-    setTicketTypeInputs(editedTicketTypeInputs);
+    setTicketInputs(editedTicketInputs);
   };
 
   return (
     <article className='flex flex-col gap-8 text-white max-w-[30em] w-full mx-auto'>
-      {ticketTypeInputs.length ? (
-        ticketTypeInputs.map((ticketTypeInput, index) => (
-          <div key={index} className='flex justify-between'>
+      {ticketInputs.length ? (
+        ticketInputs.map((ticketInput, index) => (
+          <div key={index} className='flex justify-between' data-testid='ticket-input'>
             <span className='flex flex-col'>
-              <p className='relative text-xl font-bold'>
-                {ticketTypeInput.type.name}
+              <p className='relative text-xl font-bold' data-testid='ticket-type-name'>
+                {ticketInput.type.name}
               </p>
-              {ticketTypeInput.type.name !== 'Pay What You Can' ? (
+              {ticketInput.type.name !== 'Pay What You Can' ? (
                 <p className='font-medium text-md text-zinc-200'>
-                  {ticketTypeInput.type.price}
+                  {ticketInput.type.price}
                 </p>
               ) : (
                 <input
                   aria-label='Pay what you can ticket price'
                   type='number'
                   placeholder='0.00'
-                  value={ticketTypeInput.payWhatCanPrice}
+                  value={ticketInput.payWhatCanPrice}
                   className='rounded text-white px-2 py-1 bg-zinc-900/50 w-[10em] mt-1'
                   onChange={handlePayWhatCanPriceChange}
                 />
@@ -126,17 +137,20 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
               <button
                 aria-label='Add one ticket'
                 className='inline-block p-0.5 rounded-full bg-transparent text-white border-2 border-white hover:text-zinc-400 hover:border-zinc-400 transition-all'
-                onClick={() => handleQtyChange(1, ticketTypeInput.type)}
+                onClick={() => handleQtyChange(1, ticketInput.type)}
               >
                 <PlusIcon strokeWidth={2.3} />
               </button>
-              <p className='inline-block w-8 text-center font-bold text-lg' aria-label={`${ticketTypeInput.qty} tickets`}>
-                {ticketTypeInput.qty}
+              <p
+                className='inline-block w-8 text-center font-bold text-lg'
+                aria-label={`${ticketInput.qty} tickets`}
+              >
+                {ticketInput.qty}
               </p>
               <button
                 aria-label='Remove one ticket'
                 className='inline-block p-0.5 rounded-full bg-transparent text-white border-2 border-white hover:text-zinc-400 hover:border-zinc-400 transition-all'
-                onClick={() => handleQtyChange(-1, ticketTypeInput.type)}
+                onClick={() => handleQtyChange(-1, ticketInput.type)}
               >
                 <SmallMinusIcon strokeWidth={2.3} />
               </button>

@@ -47,6 +47,7 @@ const ShowingTimeSelect = ({
         showings.map((showing, index) => (
           <li key={index} className='w-full mb-3 last-of-type:mb-0'>
             <button
+              data-testid='time-option'
               className={`${
                 selectedTime?.event_instance_id === showing.event_instance_id
                   ? 'ring-blue-500 ring-4'
@@ -59,7 +60,7 @@ const ShowingTimeSelect = ({
               disabled={showing.remainingtickets === 0}
             >
               <p className='leading-tight'>
-                <span className='text-xl block font-medium'>
+                <span className='text-xl block font-medium' data-testid='time-option-value'>
                   {format(new Date(showing.date), 'h:mm a')}
                 </span>
                 {(showing.detail || showing.ispreview) && (
