@@ -3,24 +3,25 @@ import {type Locator, type Page, expect} from '@playwright/test';
 import {CustomerInfo, seatingAccOptions} from '../testData/CustomerInfo';
 
 export class ContactPage {
-    readonly page: Page;
+  readonly page: Page;
 
   readonly searchContactButton: Locator;
   readonly searchParameterSelect: Locator;
   readonly searchValue: Locator;
   readonly searchParameterSelectOption: Locator;
-
+  readonly contactRows: Locator;
   readonly removeButton: Locator;
 
   constructor(page: Page) {
-      this.page = page;
-      this.searchContactButton = page.getByTestId('contact-search-button');
-      this.searchValue = page.getByLabel('Search Value');
-      this.searchParameterSelect = page.locator('#search-parameter-select-0');
-      this.searchParameterSelectOption = page.getByRole('option', {
-        name: 'Email',
-      });
+    this.page = page;
+    this.searchContactButton = page.getByTestId('contact-search-button');
+    this.searchValue = page.getByLabel('Search Value');
+    this.searchParameterSelect = page.locator('#search-parameter-select-0');
+    this.searchParameterSelectOption = page.getByRole('option', {
+      name: 'Email',
+    });
     this.removeButton = page.getByRole('button', {name: 'Remove'});
+    this.contactRows = page.locator('.MuiDataGrid-row');
   }
 
   async goTo() {
@@ -34,28 +35,19 @@ export class ContactPage {
     await this.searchContactButton.click();
   }
 
-  async checkCustomer(customer: CustomerInfo) {
+  getContactRow(customer: CustomerInfo) {
     const address = `${customer.streetAddress ?? ''} ${customer.city ?? ''}${
       customer.streetAddress || customer.city ? ',' : ''
     }${customer.state ?? ''} ${customer.postCode ?? ''} ${
       customer.country ?? ''
     }`;
-    await this.searchValue.clear();
-    await expect(
-      this.page.getByText(customer.email, {exact: true}),
-    ).toBeVisible();
-    await expect(
-      this.page.getByText(customer.firstName, {exact: true}),
-    ).toBeVisible();
-    await expect(
-      this.page.getByText(customer.lastName, {exact: true}),
-    ).toBeVisible();
-    await expect(this.page.getByText(address, {exact: true})).toBeVisible();
-    await expect(
-      this.page.getByText(customer.phoneNumber, {exact: true}),
-    ).toBeVisible();
-    await expect(
-      this.page.getByText(seatingAccOptions[customer.accommodations], {exact: true}),
-    ).toBeVisible();
+
+    return this.contactRows
+      .filter({hasText: customer.firstName})
+      .filter({hasText: customer.lastName})
+      .filter({hasText: customer.email})
+      .filter({hasText: address})
+      .filter({hasText: customer.phoneNumber})
+      .filter({hasText: seatingAccOptions[customer.accommodations]});
   }
 }
