@@ -75,6 +75,7 @@ export interface SubscriptionCartItem extends CartItem {
  * @param {number} ticket_price - A number for the ticket price
  * @param {number?} totalseats - the total amount of seats available
  * @param {number} availableseats - amount of leftover seats, gets subtracted when people buy
+ * @param {boolean} ispreview - whether the ticket belongs to a preview showing
  */
 export interface Ticket {
   event_instance_id: number;
@@ -87,6 +88,7 @@ export interface Ticket {
   availableseats: number;
   remainingtickets: number;
   detail: string;
+  ispreview: boolean;
 }
 
 /**

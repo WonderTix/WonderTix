@@ -14,10 +14,9 @@ export class MainPage {
 
   // Below elements are actually on the event template
   // Should event template be its own page object?
-  readonly selectDate: Locator;
-  readonly selectTime: Locator;
-  readonly selectTicketType: Locator;
-  readonly selectQuantity: Locator;
+  readonly dateOption: Locator;
+  readonly timeOption: Locator;
+  readonly ticketInput: Locator;
   readonly getTickets: Locator;
   readonly titleEvent: Locator;
   readonly successHeader: Locator;
@@ -59,10 +58,10 @@ export class MainPage {
       .getByRole('button', {name: 'Select Date & Time'})
       .first();
     this.heading = page.getByRole('heading', {name: 'Events'});
-    this.selectDate = page.locator('#date-select');
-    this.selectTime = page.locator('#time-select');
-    this.selectTicketType = page.locator('#ticket-type-select');
-    this.selectQuantity = page.locator('#qty-select');
+
+    this.dateOption = page.getByTestId('date-option');
+    this.timeOption = page.getByTestId('time-option');
+    this.ticketInput = page.getByTestId('ticket-input');
     this.getTickets = page.getByTestId('get-tickets');
     this.titleEvent = page.getByTestId('event-title');
     this.successHeader = page.getByRole('heading', {name: 'Success!'});
@@ -126,74 +125,51 @@ export class MainPage {
   }
 
   /**
-   * Selects a random option from a dropdown box.
+   * Selects a random option from a list of options.
    *
-   * This function addresses compatibility issues with 'allInnerTexts' in Firefox and WebKit.
-   * It utilizes 'evaluate' to create a string array of dropdown option texts.
-   * The function waits up to 5000ms to ensure the dropdown has at least two options.
-   * If fewer than two options are available after the wait, it throws an error.
-   * The first option is typically discarded as a placeholder or non-valid choice.
-   *
-   * @param {Locator} optionBox - The Playwright Locator object for the dropdown.
-   * @returns The text of the randomly selected option.
-   *
-   * Note: A brief pause between checks is included to avoid rapid polling.
+   * @param {Locator} option - The Playwright Locator object that matches multiple options.
+   * @returns The locator of the randomly selected option.
    */
-  private async selectRandomOption(optionBox: Locator) {
-    let allOptions: string[] = [];
-    const startTime = Date.now();
-    const timeout = 5000; // 5000ms timeout
-
-    // Wait for the options to populate
-    while (Date.now() - startTime < timeout) {
-      allOptions = (
-        await optionBox.evaluate((sel: HTMLSelectElement) => {
-          let list = '';
-          for (let i = 0; i < sel.options.length; i++) {
-            list += sel.options[i].text + '\n';
-          }
-          return list.slice(0, -1);
-        })
-      ).split('\n');
-
-      if (allOptions.length >= 2) {
-        break;
-      }
-
-      await this.page.waitForTimeout(100); // Wait for a short period before checking again
-    }
-
-    // Check if the number of options is sufficient
-    if (allOptions.length < 2) {
-      throw new Error('Not enough options in the dropdown');
-    }
-    allOptions.shift();
-    const randomOption =
-      allOptions[Math.floor(Math.random() * allOptions.length)];
-    await optionBox.selectOption(randomOption);
-    return randomOption;
+  private async getRandomOption(option: Locator) {
+    const numberOfOptions = await option.count();
+    const randomIndex = Math.floor(Math.random() * numberOfOptions);
+    return option.locator(`nth=${randomIndex}`);
   }
 
-  // The below selectXX functions simply pass the option locator into the helper above and
-  // return the selected text
   async selectRandomDate() {
-    return this.selectRandomOption(this.selectDate);
+    const dateOption = await this.getRandomOption(this.dateOption);
+    await dateOption.click();
+    return dateOption.textContent();
   }
 
   async selectRandomTime() {
-    return await this.selectRandomOption(this.selectTime);
+    const timeOption = await this.getRandomOption(this.timeOption);
+    await timeOption.click();
+    return timeOption.getByTestId('time-option-value').textContent();
   }
 
-  async selectRandomTicketType() {
-    return this.selectRandomOption(this.selectTicketType);
-  }
+  async selectQuantityForRandomTicketType(
+    maxQty?: number,
+    qty?: number,
+  ) {
+    let quantity: number;
+    if (maxQty !== undefined) quantity = Math.max(Math.floor(Math.random() * maxQty), 1);
+    else if (qty !== undefined) quantity = qty;
+    else quantity = 2;
 
-  async selectRandomQuantity() {
-    return this.selectRandomOption(this.selectQuantity);
-  }
+    const numberOfOptions = await this.ticketInput.count();
+    const randomIndex = Math.floor(Math.random() * numberOfOptions);
+    const ticketType = await this.ticketInput
+      .getByTestId('ticket-type-name')
+      .textContent();
 
-  async selectTicketQuantity(qty: number) {
-    await this.selectQuantity.selectOption(qty.toString());
+    for (let i = 0; i < quantity; i++) {
+      await this.ticketInput
+        .locator(`nth=${randomIndex}`)
+        .getByLabel('Add one ticket')
+        .click();
+    }
+    return {ticketType, quantity};
   }
 
   // Click the Get Tickets button on the event page
@@ -294,11 +270,9 @@ export class MainPage {
     if (options.qty == undefined) options.qty = 2;
     if (options.timeoutAdd == undefined) options.timeoutAdd = 0;
     await this.goSelectEvent(event);
-    // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
     await this.selectRandomDate();
     await this.selectRandomTime();
-    await this.selectRandomTicketType();
-    await this.selectTicketQuantity(options.qty);
+    await this.selectQuantityForRandomTicketType(undefined, options.qty);
     await this.clickGetTickets();
     await this.clickTakeMeThere();
     await this.clickCartCheckout();
@@ -306,7 +280,10 @@ export class MainPage {
     await this.clickCartNext();
     await this.fillStripeInfo(customer, creditCard, options.timeoutAdd);
     await this.clickStripeCheckout();
-    await this.stripeOrderConfirmation.waitFor({state: 'visible', timeout: 30000});
+    await this.stripeOrderConfirmation.waitFor({
+      state: 'visible',
+      timeout: 30000,
+    });
   }
 
   // Increase number of tickets for an event by one

@@ -48,6 +48,40 @@ const ChevronDown = (props: IconProps) => {
   );
 };
 
+const ChevronLeft = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path strokeLinecap='round' strokeLinejoin='round' d='M15 19l-7-7 7-7' />
+    </svg>
+  );
+};
+
+const ChevronRight = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path strokeLinecap='round' strokeLinejoin='round' d='M9 5l7 7-7 7' />
+    </svg>
+  );
+};
+
 const ChevronUp = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
   return (
@@ -66,6 +100,48 @@ const ChevronUp = (props: IconProps) => {
         fillRule='evenodd'
         clipRule='evenodd'
         d='M5 15l7-7 7 7'
+      />
+    </svg>
+  );
+};
+
+const CircleCheckIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      className={className}
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+      />
+    </svg>
+  );
+};
+
+const CircleIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      className={className}
+    >
+      <path
+        fillRule='evenodd'
+        d='m 21 12 a 9 9 0 1 1 -18 0 a 9 9 0 0 1 18 0 z'
+        clipRule='evenodd'
       />
     </svg>
   );
@@ -373,6 +449,22 @@ const SmallBackIcon = (props: IconProps) => {
   );
 };
 
+const SmallMinusIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+    >
+      <path strokeLinecap='round' strokeLinejoin='round' d='M18 12H6' />
+    </svg>
+  );
+};
+
 const TicketIcon = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
   return (
@@ -439,7 +531,11 @@ const XIcon = (props: IconProps) => {
 export {
   BackIcon,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
+  CircleCheckIcon,
+  CircleIcon,
   CirclePlusIcon,
   CloneIcon,
   DecrementIcon,
@@ -454,6 +550,7 @@ export {
   SaveIcon,
   SearchIcon,
   SmallBackIcon,
+  SmallMinusIcon,
   TicketIcon,
   TrashCanIcon,
   XIcon,
