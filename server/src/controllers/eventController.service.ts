@@ -432,7 +432,7 @@ export const validateContact = (formData: ContactInput): ContactInput => {
         formData.phone,
         `Phone Number: ${formData.phone} is invalid`,
         new RegExp('^(\\+?\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'),
-      ),
+      ).replace(/\D/g, ''),
     }),
     ...(formData.visitsource && {visitsource: formData.visitsource}),
     ...(formData.seatingaccom && {seatingaccom: formData.seatingaccom}),

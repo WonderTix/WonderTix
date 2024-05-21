@@ -43,6 +43,7 @@ test('Check cart after ticket add', async ({page}) => {
 
   const currentEvent = new EventInfo(EVENT_INFO_4);
   const currentShowing = SHOWING_INFO_2;
+  const maxTicketQuantity = Math.min(parseInt(currentShowing.showingQuantity), 20);
 
   await events.goTo();
   await events.addNewEvent(currentEvent);
@@ -51,21 +52,20 @@ test('Check cart after ticket add', async ({page}) => {
 
   try {
     await main.goTo();
+
     const eventTitle = await main.goSelectEvent(currentEvent);
-    // Rebuild randoms to use a fixed selection using the EventInfo and ShowingInfo
     expect(eventTitle).toEqual(currentEvent.eventName);
 
     const date = await main.selectRandomDate();
-    expect(date).toEqual(currentShowing.showingWholeDate);
+    expect(date).toEqual(currentShowing.showingDatePickerFormat);
 
     const time = await main.selectRandomTime();
-    const ticketType = await main.selectRandomTicketType();
-    const quantity = await main.selectRandomQuantity();
-    const dateParts = date.split(' ');
+    const {ticketType, quantity} = await main.selectQuantityForRandomTicketType(maxTicketQuantity);
 
+    const dateParts = currentShowing.showingWholeDate.split(' ');
     let confirmMessage: string;
     confirmMessage = `You added ${quantity} ticket`;
-    if (parseInt(quantity) > 1) {
+    if (quantity > 1) {
       confirmMessage += 's';
     }
     confirmMessage += ` to ${eventTitle} on ${dateParts[1]} ${dateParts[2]} to the cart.`;
@@ -78,7 +78,7 @@ test('Check cart after ticket add', async ({page}) => {
     const cartInfo = `${ticketType.split(':')[0]} - ${dateParts[0]} ${
       dateParts[1]
     } ${dateParts[2]} - ${time}`;
-    await main.checkCart(currentEvent, cartInfo, quantity);
+    await main.checkCart(currentEvent, cartInfo, quantity.toString());
   } finally {
     await main.goTo();
     await events.goToEventFromManage(currentEvent);
@@ -149,7 +149,7 @@ test('Check contact with accommodation is created after order', async ({
     });
     await contacts.goTo();
     await contacts.searchCustomer(currentPatron);
-    await contacts.checkCustomer(currentPatron);
+    await expect(contacts.getContactRow(currentPatron)).toBeVisible();
   } finally {
     await main.goTo();
     await events.goToEventFromManage(currentEvent);
@@ -176,8 +176,7 @@ test('Check ticket inc/dec in cart', async ({page}) => {
     await main.goSelectEvent(currentEvent);
     await main.selectRandomDate();
     await main.selectRandomTime();
-    await main.selectRandomTicketType();
-    await main.selectTicketQuantity(quantity);
+    await main.selectQuantityForRandomTicketType(undefined, quantity);
     await main.clickGetTickets();
     await main.clickTakeMeThere();
 
