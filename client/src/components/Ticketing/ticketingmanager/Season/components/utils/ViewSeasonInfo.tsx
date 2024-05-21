@@ -93,13 +93,13 @@ const ViewSeasonInfo = (props: ViewSeasonInfoProps) => {
       <div className='grid grid-cols-12'>
         <article className='flex flex-col mb-5 text-center sm:text-start col-span-12 sm:col-span-6'>
           <h3 className='font-semibold'>Season Name</h3>
-          <p className='mb-3 text-base'>{name}</p>
+          <p className='mb-3 text-base' data-testid='season-name'>{name}</p>
 
           <h3 className='font-semibold'>Start Date</h3>
-          <p className='mb-3 text-base'>{getLongDateFormat(startdate)}</p>
+          <p className='mb-3 text-base' data-testid='season-startdate'>{getLongDateFormat(startdate)}</p>
 
           <h3 className='font-semibold'>End Date</h3>
-          <p className='mb-3 text-base'>{getLongDateFormat(enddate)}</p>
+          <p className='mb-3 text-base' data-testid='season-enddate'>{getLongDateFormat(enddate)}</p>
 
           <div className='flex items-center max-sm:justify-center'>
             <FormControlLabel

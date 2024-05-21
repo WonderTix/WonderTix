@@ -5,6 +5,7 @@ interface itemProps {
   information: number | string;
   description?: boolean;
   event?: boolean;
+  dataTestId?: string;
   onClickMethod?: (
     set: React.Dispatch<React.SetStateAction<string>>,
     current: string,
@@ -12,7 +13,7 @@ interface itemProps {
 }
 
 export const LineItem = (props: itemProps) => {
-  const {label, information, event, description, onClickMethod} = props;
+  const {label, information, event, description, dataTestId, onClickMethod} = props;
   const [additionalClass, setAdditionalClass] = useState(!event? 'truncate' : '');
 
   const divClass = !event
@@ -34,6 +35,7 @@ export const LineItem = (props: itemProps) => {
       <p className={labelClass}>{label}: </p>
       <p
         className={`${informationClass} ${additionalClass}`}
+        data-testid={dataTestId}
         {...(onClickMethod && {onClick: () => onClickMethod(setAdditionalClass, additionalClass)})}
       >
         {information}
