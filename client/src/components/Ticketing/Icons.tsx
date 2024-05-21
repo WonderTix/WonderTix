@@ -507,6 +507,29 @@ const TrashCanIcon = (props: IconProps) => {
   );
 };
 
+const VerticalDotsIcon = (props: IconProps) => {
+  const {className = 'h-5 w-5', strokeWidth = 2} = props;
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      className={className}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      aria-hidden='true'
+    >
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        fillRule='evenodd'
+        d='M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z'
+        clipRule='evenodd'
+      />
+    </svg>
+  );
+};
+
 const XIcon = (props: IconProps) => {
   const {className = 'h-5 w-5', strokeWidth = 2} = props;
   return (
@@ -553,5 +576,6 @@ export {
   SmallMinusIcon,
   TicketIcon,
   TrashCanIcon,
+  VerticalDotsIcon,
   XIcon,
 };

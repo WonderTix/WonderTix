@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import Navigation from '../Navigation';
-import Contacts from './Contacts';
+import ContactGrid from './ContactGrid';
 
 /**
  * @returns {ReactElement} ContactMain - has Navigation
@@ -10,7 +10,7 @@ const ContactMain = (): ReactElement => {
   return (
     <div className='flex flex-row'>
       <Navigation />
-      <Contacts />
+      <ContactGrid />
     </div>
   );
 };

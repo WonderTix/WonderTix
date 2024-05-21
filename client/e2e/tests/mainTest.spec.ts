@@ -149,7 +149,7 @@ test('Check contact with accommodation is created after order', async ({
     });
     await contacts.goTo();
     await contacts.searchCustomer(currentPatron);
-    await contacts.checkCustomer(currentPatron);
+    await expect(contacts.getContactRow(currentPatron)).toBeVisible();
   } finally {
     await main.goTo();
     await events.goToEventFromManage(currentEvent);
