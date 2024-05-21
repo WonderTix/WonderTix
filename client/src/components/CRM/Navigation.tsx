@@ -1,6 +1,6 @@
 /* eslint-disable operator-linebreak */
 import React, {useState, useRef, useEffect} from 'react';
-import logo from '../../Logo/WTix logo light.png';
+import logo from '../../Logo/WTix_logo_light.png';
 import '../../Logo/logo.css';
 import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../Authentication/auth-nav';

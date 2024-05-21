@@ -1,7 +1,7 @@
 import React, {useState, useEffect, ReactElement, useRef} from 'react';
 import {MenuIcon, XIcon} from '@heroicons/react/outline';
 import {useNavigate} from 'react-router-dom';
-import bgImg from '../../../assets/WTix logo dark.png';
+import bgImg from '../../../assets/WTix_logo_dark.png';
 import {Link} from 'react-scroll';
 import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../../Authentication/auth-nav';
@@ -70,7 +70,7 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
         <div className='w-full md:w-auto flex items-center justify-center md:justify-left gap-4'>
           {/* <a
             href='https://portlandplayhouse.org/'
-            aria-label='Portland Playhouse site'
+            aria-label='WonderTix Homepage'
             className='ml-6 md:m-0'
           > */}
           <img

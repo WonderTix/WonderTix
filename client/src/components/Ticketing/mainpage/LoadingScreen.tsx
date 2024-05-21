@@ -1,4 +1,4 @@
-import bgImg from '../../../assets/WTix logo light.png';
+import bgImg from '../../../assets/WTix_logo_light.png';
 import React from 'react';
 
 export const LoadingScreen = () => {
