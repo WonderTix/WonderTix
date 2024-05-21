@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import test, {ElementHandle, type Locator, type Page} from '@playwright/test';
+import {ElementHandle, type Locator, type Page} from '@playwright/test';
 import {CustomerInfo} from '../testData/CustomerInfo';
 import {CreditCardInfo} from '../testData/CreditCard';
 
@@ -81,10 +81,6 @@ export class AdminPurchasePage {
     await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 
-  async getHeader() {
-    return this.pageHeader.textContent();
-  }
-
   /**
    * Selects an element of a dropdown based on selector and search string.
    *
@@ -141,7 +137,7 @@ export class AdminPurchasePage {
   ): Promise<void> {
     await this.dynamicDropDownSelector(this.eventDropdown, eventName);
     await this.dynamicDropDownSelector(this.eventTimeDropdown, eventTime);
-    await this.ticketTypeDropdown.selectOption('1');
+    await this.dynamicDropDownSelector(this.ticketTypeDropdown, 'General Admission');
     await this.checkoutButton.click();
 
     await this.fillCustomerInfo(customer);

@@ -31,7 +31,7 @@ setup('authenticate', async ({page}) => {
     // If the Post-first-login Auth0 Accept button is found, click it.
     await loginPage.postLoginAuthAcceptButton.click();
   } catch (error) {
-    console.log('First Party User Consent Skipped. Logging in... ');
+    console.log('First Party User Consent Skipped. Logging in...');
   }
   // Ensuring visibility and correctness of page elements post-login.
   await page.reload();

@@ -8,7 +8,7 @@ export class MainPage {
   readonly page: Page;
 
   readonly firstShowing: Locator;
-  readonly headingEvent: Locator;
+  readonly heading: Locator;
 
   readonly loadingScreen: Locator;
 
@@ -58,7 +58,7 @@ export class MainPage {
     this.firstShowing = page
       .getByRole('button', {name: 'Select Date & Time'})
       .first();
-    this.headingEvent = page.getByRole('heading', {name: 'Events'});
+    this.heading = page.getByRole('heading', {name: 'Events'});
     this.selectDate = page.locator('#date-select');
     this.selectTime = page.locator('#time-select');
     this.selectTicketType = page.locator('#ticket-type-select');
@@ -105,33 +105,24 @@ export class MainPage {
 
   // Initial page navigation - sends browser session to the root address
   // Sets long timeout to account for various delays while testing in dev
-  async goto() {
+  async goTo() {
     await this.page.goto('/', {timeout: 60000});
     // Wait for the loading screen to be hidden
     await this.loadingScreen.waitFor({state: 'hidden', timeout: 30000});
   }
 
-  async getShowingLocator(showingName: string) {
-    return this.page.getByText(showingName).first();
-  }
-
-  // Click the 'See Showings' button of the first event on the main page
-  // Return the name of that showing
-  async goFirstShowing() {
-    await this.firstShowing.click();
-    const title = await this.titleEvent.textContent();
-    return title;
+  async getEventLocator(eventName: string) {
+    return this.page.getByText(eventName).first();
   }
 
   // Find and go to the showing associated with the EventInfo parameter
   // Return the name of that showing
-  async goSelectShowing(eventInfo: EventInfo) {
-    const eventCard = await this.getShowingLocator(
+  async goSelectEvent(eventInfo: EventInfo) {
+    const eventCard = await this.getEventLocator(
       eventInfo.eventName + eventInfo.eventDescription + 'Select Date & Time',
     );
     await eventCard.getByRole('button', {name: 'Select Date & Time'}).click();
-    const title = await this.titleEvent.textContent();
-    return title;
+    return this.titleEvent.textContent();
   }
 
   /**
@@ -144,7 +135,7 @@ export class MainPage {
    * The first option is typically discarded as a placeholder or non-valid choice.
    *
    * @param {Locator} optionBox - The Playwright Locator object for the dropdown.
-   * @returns {Promise<string>} - The text of the randomly selected option.
+   * @returns The text of the randomly selected option.
    *
    * Note: A brief pause between checks is included to avoid rapid polling.
    */
@@ -186,25 +177,19 @@ export class MainPage {
   // The below selectXX functions simply pass the option locator into the helper above and
   // return the selected text
   async selectRandomDate() {
-    const randomDate = await this.selectRandomOption(this.selectDate);
-    return randomDate;
+    return this.selectRandomOption(this.selectDate);
   }
 
   async selectRandomTime() {
-    const randomTime = await this.selectRandomOption(this.selectTime);
-    return randomTime;
+    return await this.selectRandomOption(this.selectTime);
   }
 
   async selectRandomTicketType() {
-    const randomTicketType = await this.selectRandomOption(
-      this.selectTicketType,
-    );
-    return randomTicketType;
+    return this.selectRandomOption(this.selectTicketType);
   }
 
   async selectRandomQuantity() {
-    const randomQuantity = await this.selectRandomOption(this.selectQuantity);
-    return randomQuantity;
+    return this.selectRandomOption(this.selectQuantity);
   }
 
   async selectTicketQuantity(qty: number) {
@@ -216,12 +201,8 @@ export class MainPage {
     await this.getTickets.click();
   }
 
-  // Verify specified elements are on the popup after clicking the Get Tickets button
-  // Verifies the 'Success!' header is visible and the event details text is correct
-  // Event details message must be composed in the calling test and passed into this function
-  async checkAddTicketSuccess(message: string) {
-    expect(await this.successHeader).toBeVisible();
-    expect(await this.page.getByText(message)).toBeVisible();
+  getConfirmMessage(msg: string) {
+    return this.page.getByText(msg);
   }
 
   // Clicks to go to cart on success popup for ticket add
@@ -231,9 +212,11 @@ export class MainPage {
 
   // Checks cart info against the chosen event, date/time/ticket type, and quantity
   async checkCart(event: EventInfo, info: string, quantity: string) {
-    await this.page.getByText(event.eventName).isVisible();
-    await this.page.getByText(info).isVisible();
-    await this.page.getByText(quantity, {exact: true}).isVisible();
+    await expect(this.cartTicketCard.getByText(event.eventName)).toBeVisible();
+    await expect(this.page.getByText(info)).toBeVisible();
+    await expect(this.cartTicketCard.getByTestId('item-quantity')).toHaveText(
+      quantity,
+    );
   }
 
   // Click checkout button from cart and clear the continue button
@@ -270,10 +253,14 @@ export class MainPage {
   // Fill out data on Stripe page. Currently uses both a Customer and CreditCard.
   // Stripe is slow and sometimes has an account popup after email entry.
   // This function waits to see if it will pop up and handle it appropriately.
-  async fillStripeInfo(customer: CustomerInfo, ccInfo: CreditCardInfo, timeoutAdd = 0) {
+  async fillStripeInfo(
+    customer: CustomerInfo,
+    ccInfo: CreditCardInfo,
+    timeoutAdd = 0,
+  ) {
     await this.page.waitForTimeout(10000 + timeoutAdd);
     if (await this.page.getByText('Use your saved information').isVisible()) {
-      this.page.getByRole('button', {name: 'Cancel'}).click();
+      await this.page.getByRole('button', {name: 'Cancel'}).click();
     }
     await this.stripeCardNumber.fill(ccInfo.cardNumber);
     await this.stripeDate.click();
@@ -306,7 +293,7 @@ export class MainPage {
     if (options == undefined) options = {qty: 2, timeoutAdd: 0};
     if (options.qty == undefined) options.qty = 2;
     if (options.timeoutAdd == undefined) options.timeoutAdd = 0;
-    await this.goSelectShowing(event);
+    await this.goSelectEvent(event);
     // Rebuild randoms to use a fixed selection using the EventsInfo and ShowingsInfo
     await this.selectRandomDate();
     await this.selectRandomTime();
@@ -319,7 +306,7 @@ export class MainPage {
     await this.clickCartNext();
     await this.fillStripeInfo(customer, creditCard, options.timeoutAdd);
     await this.clickStripeCheckout();
-    await expect(this.page.getByText('Thank you for your purchase!')).toBeVisible({timeout: 10000});
+    await this.stripeOrderConfirmation.waitFor({state: 'visible', timeout: 30000});
   }
 
   // Increase number of tickets for an event by one
@@ -340,12 +327,10 @@ export class MainPage {
   // Currently assumes ticket cost is $20, and does not check the overall subtotal.
   async checkEventTicket(event: EventInfo, qty: number) {
     const cartCard = this.cartTicketCard.filter({hasText: event.eventName});
-    expect(await cartCard.getByTestId('item-quantity').textContent()).toBe(
+    await expect(cartCard.getByTestId('item-quantity')).toHaveText(
       qty.toString(),
     );
     const price = '$' + (qty * 20).toString() + '.00';
-    expect(
-      await cartCard.getByTestId('card-item-subtotal').textContent(),
-    ).toBe(price);
+    await expect(cartCard.getByTestId('card-item-subtotal')).toHaveText(price);
   }
 }

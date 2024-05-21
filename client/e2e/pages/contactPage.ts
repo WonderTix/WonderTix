@@ -3,24 +3,27 @@ import {type Locator, type Page, expect} from '@playwright/test';
 import {CustomerInfo, seatingAccOptions} from '../testData/CustomerInfo';
 
 export class ContactPage {
-  readonly page: Page;
+    readonly page: Page;
 
   readonly searchContactButton: Locator;
   readonly searchParameterSelect: Locator;
   readonly searchValue: Locator;
   readonly searchParameterSelectOption: Locator;
 
+  readonly removeButton: Locator;
+
   constructor(page: Page) {
-    this.page = page;
-    this.searchContactButton = page.getByTestId('contact-search-button');
-    this.searchValue = page.getByLabel('Search Value');
-    this.searchParameterSelect = page.locator('#search-parameter-select-0');
-    this.searchParameterSelectOption = page.getByRole('option', {
-      name: 'Email',
-    });
+      this.page = page;
+      this.searchContactButton = page.getByTestId('contact-search-button');
+      this.searchValue = page.getByLabel('Search Value');
+      this.searchParameterSelect = page.locator('#search-parameter-select-0');
+      this.searchParameterSelectOption = page.getByRole('option', {
+        name: 'Email',
+      });
+    this.removeButton = page.getByRole('button', {name: 'Remove'});
   }
 
-  async goto() {
+  async goTo() {
     await this.page.goto('/admin/contacts');
   }
 
@@ -54,10 +57,5 @@ export class ContactPage {
     await expect(
       this.page.getByText(seatingAccOptions[customer.accommodations], {exact: true}),
     ).toBeVisible();
-  }
-
-  // Incomplete, page functionality not implemented
-  async deleteCustomer(customer: CustomerInfo) {
-    await this.searchCustomer(customer);
   }
 }
