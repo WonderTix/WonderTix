@@ -49,14 +49,14 @@ export const ShowingDateSelect = (
   };
 
   return (
-    <div className='relative w-full mb-9'>
+    <div className='relative w-full mb-6 tab:mb-9'>
       <button
         aria-label='Scroll list of dates to left'
-        className='absolute left-[-1.25em] top-[2.5em] bg-zinc-600 shadow-md text-white rounded-full h-10 w-10 hover:bg-zinc-500 transition-all'
+        className='absolute left-[-1.25em] top-[2em] tab:top-[2.55em] bg-zinc-600 shadow-md text-white rounded-full h-9 w-9 tab:h-10 tab:w-10 hover:bg-zinc-500 transition-all'
         onClick={() => handleScrollClick('right')}
       >
         <ChevronLeft
-          className='absolute left-[0.45em] top-2 h-6 w-6'
+          className='absolute left-[0.45em] top-2 h-5 w-5 tab:h-6 tab:w-6'
           strokeWidth={4}
         />
       </button>
@@ -71,15 +71,17 @@ export const ShowingDateSelect = (
               className={`${
                 selectedDate?.date === date.date
                   ? 'bg-blue-500 text-white'
-                  : date.soldOut ? 'bg-zinc-400' : 'bg-white'
-              } rounded-md p-3 flex flex-col items-center w-20 shadow-md hover:shadow-lg hover:scale-105 transition-all`}
+                  : date.soldOut
+                  ? 'bg-zinc-400'
+                  : 'bg-white'
+              } rounded-md p-2 tab:p-3 flex flex-col items-center w-[4.2rem] tab:w-20 text-sm tab:text-base shadow-md hover:shadow-lg hover:scale-105 transition-all`}
               onClick={() => onSelectDate(date)}
             >
-              <span className='font-medium'>
+              <span className='font-semibold'>
                 {date.date.slice(0, 3).toUpperCase()}
               </span>
               <span>{date.date.slice(5, 8).toUpperCase()}</span>
-              <span className='text-2xl font-bold'>
+              <span className='text-xl tab:text-2xl font-black'>
                 {date.date.slice(9, 11)}
               </span>
             </button>
@@ -88,11 +90,11 @@ export const ShowingDateSelect = (
       </ul>
       <button
         aria-label='Scroll list of dates to right'
-        className='absolute right-[-1.25em] top-[2.5em] bg-zinc-600 shadow-md text-white rounded-full h-10 w-10 hover:bg-zinc-500 transition-all'
+        className='absolute right-[-1.25em] top-[2em] tab:top-[2.55em] bg-zinc-600 shadow-md text-white rounded-full h-9 w-9 tab:h-10 tab:w-10 hover:bg-zinc-500 transition-all'
         onClick={() => handleScrollClick('left')}
       >
         <ChevronRight
-          className='absolute left-[0.55em] top-2 h-6 w-6'
+          className='absolute left-[0.55em] top-2 h-5 w-5 tab:h-6 tab:w-6'
           strokeWidth={4}
         />
       </button>
