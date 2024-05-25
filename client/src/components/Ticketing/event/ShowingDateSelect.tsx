@@ -50,16 +50,6 @@ export const ShowingDateSelect = (
 
   return (
     <div className='relative w-full mb-6 tab:mb-9'>
-      <button
-        aria-label='Scroll list of dates to left'
-        className='absolute left-[-1.25em] top-[2em] tab:top-[2.55em] bg-zinc-600 shadow-md text-white rounded-full h-9 w-9 tab:h-10 tab:w-10 hover:bg-zinc-500 transition-all'
-        onClick={() => handleScrollClick('right')}
-      >
-        <ChevronLeft
-          className='absolute left-[0.45em] top-2 h-5 w-5 tab:h-6 tab:w-6'
-          strokeWidth={4}
-        />
-      </button>
       <ul
         className='flex gap-3 scroll-smooth overflow-x-auto md:overflow-hidden pb-8 pt-2 px-2'
         ref={ref}
@@ -72,8 +62,8 @@ export const ShowingDateSelect = (
                 selectedDate?.date === date.date
                   ? 'bg-blue-500 text-white'
                   : date.soldOut
-                  ? 'bg-zinc-400'
-                  : 'bg-white'
+                    ? 'bg-zinc-400'
+                    : 'bg-white text-zinc-900'
               } rounded-md p-2 tab:p-3 flex flex-col items-center w-[4.2rem] tab:w-20 text-sm tab:text-base shadow-md hover:shadow-lg hover:scale-105 transition-all`}
               onClick={() => onSelectDate(date)}
             >
@@ -88,6 +78,17 @@ export const ShowingDateSelect = (
           </li>
         ))}
       </ul>
+      {/* Scroll Left and Right Buttons */}
+      <button
+        aria-label='Scroll list of dates to left'
+        className='absolute left-[-1.25em] top-[2em] tab:top-[2.55em] bg-zinc-600 shadow-md text-white rounded-full h-9 w-9 tab:h-10 tab:w-10 hover:bg-zinc-500 transition-all'
+        onClick={() => handleScrollClick('right')}
+      >
+        <ChevronLeft
+          className='absolute left-[0.45em] top-2 h-5 w-5 tab:h-6 tab:w-6'
+          strokeWidth={4}
+        />
+      </button>
       <button
         aria-label='Scroll list of dates to right'
         className='absolute right-[-1.25em] top-[2em] tab:top-[2.55em] bg-zinc-600 shadow-md text-white rounded-full h-9 w-9 tab:h-10 tab:w-10 hover:bg-zinc-500 transition-all'

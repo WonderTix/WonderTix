@@ -54,17 +54,17 @@ const ShowingTimeSelect = ({
                   : 'hover:enabled:bg-zinc-200'
               }
                 ${showing.remainingtickets === 0 ? 'bg-zinc-400' : ''}
-                bg-white rounded-md px-3 py-2 min-h-[3.7em] tab:min-h-[4em] w-full text-left flex items-center
+                bg-white rounded-md px-3 py-2 min-h-[3.75em] tab:min-h-[4em] w-full text-left flex items-center
                 justify-between border-transparent transition-all`}
               onClick={() => handleSelectTime(showing)}
               disabled={showing.remainingtickets === 0}
             >
-              <p className='leading-tight'>
-                <span className='text-lg/[1.5rem] tab:text-xl block font-semibold text-zinc-800' data-testid='time-option-value'>
+              <p className='leading-tight text-zinc-800'>
+                <span className='text-lg/[1.5rem] tab:text-xl block font-semibold' data-testid='time-option-value'>
                   {format(new Date(showing.date), 'h:mm a')}
                 </span>
                 {(showing.detail || showing.ispreview) && (
-                  <span>
+                  <span className='text-zinc-700'>
                     {showing.detail}{' '}
                     {showing.detail && showing.ispreview && '| '}
                     {showing.ispreview && 'Preview'}
