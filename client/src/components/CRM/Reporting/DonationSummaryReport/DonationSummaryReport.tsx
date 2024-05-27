@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 
 import FilterComponent from './FilterComponent';
 import ReportComponent from './ReportComponent';
+import APIEventsComponent from './Events/APIEvents';
 import Navigation from '../../Navigation';
 
 import {Box, Grid} from '@mui/material';
@@ -81,7 +82,8 @@ const DonationSummaryReport = () => {
                   height: '100%',
                 }}
               >
-                {displayReport && <ReportComponent filterData={filterData} />}
+                {displayReport && <APIEventsComponent begin_date={filterData.startDate.toString()} end_date={filterData.endDate.toString()}/>}
+                {/*displayReport && <ReportComponent filterData={filterData} />*/}
               </Box>
             </Grid>
           </Grid>
