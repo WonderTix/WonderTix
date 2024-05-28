@@ -3,7 +3,7 @@ import {EventShowingsContainer} from './EventShowingsContainer';
 import {EventGeneralContainer} from './EventGeneralContainer';
 import {useEvent} from './EventProvider';
 import {LoadingScreen} from '../../../mainpage/LoadingScreen';
-import Udash_nav from '../../udash_navbar';
+import TicketingNavBar from '../../TicketingNavBar';
 import PopUp from '../../../PopUp';
 
 export const EventPage = () => {
@@ -27,7 +27,7 @@ export const EventPage = () => {
   } else {
     return (
       <div className={'flex flex-row'}>
-        <Udash_nav />
+        <TicketingNavBar />
         <div className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
           {showPopUp && (
             <PopUp

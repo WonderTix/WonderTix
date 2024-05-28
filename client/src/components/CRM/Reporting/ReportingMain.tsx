@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import ReportingList from './ReportingList';
-import Navigation from '../Navigation';
+import AdminNavBar from '../AdminNavBar';
 import {DSRmarqueeData, DsrMarqueeData} from './DailySalesReport/DsrMarqData';
 import {
   DONmarqueeData,
@@ -15,7 +15,7 @@ const ReportingMain = (): ReactElement => {
   return (
     <div>
       <ReportingList data={DSRmarqueeData} DONdata={DONmarqueeData} />
-      <Navigation />
+      <AdminNavBar />
     </div>
   );
 };

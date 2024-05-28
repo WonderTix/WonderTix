@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import Navigation from '../Navigation';
+import AdminNavBar from '../AdminNavBar';
 import ContactGrid from './ContactGrid';
 
 /**
@@ -9,7 +9,7 @@ import ContactGrid from './ContactGrid';
 const ContactMain = (): ReactElement => {
   return (
     <div className='flex flex-row'>
-      <Navigation />
+      <AdminNavBar />
       <ContactGrid />
     </div>
   );

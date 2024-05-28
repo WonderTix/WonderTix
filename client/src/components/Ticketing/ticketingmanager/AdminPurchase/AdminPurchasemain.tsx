@@ -1,5 +1,5 @@
 import React from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import AdminPurchase from './AdminPurchase';
 
 /**
@@ -11,7 +11,7 @@ import AdminPurchase from './AdminPurchase';
 const AdminPurchasemain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav />
+      <TicketingNavBar />
       <AdminPurchase />
     </div>
   );

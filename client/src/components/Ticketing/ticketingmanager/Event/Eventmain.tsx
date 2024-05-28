@@ -1,5 +1,5 @@
 import React from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import InstancesPage from './InstancesPage';
 
 /**
@@ -9,7 +9,7 @@ import InstancesPage from './InstancesPage';
 const Eventmain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav/>
+      <TicketingNavBar/>
       <InstancesPage/>
     </div>
   );

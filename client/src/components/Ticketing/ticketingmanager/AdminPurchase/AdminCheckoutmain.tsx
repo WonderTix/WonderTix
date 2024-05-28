@@ -1,5 +1,5 @@
 import React from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import AdminCheckout from './AdminCheckout';
 
 /**
@@ -11,7 +11,7 @@ import AdminCheckout from './AdminCheckout';
 const AdminCheckoutmain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav />
+      <TicketingNavBar />
       <AdminCheckout />
     </div>
   );
