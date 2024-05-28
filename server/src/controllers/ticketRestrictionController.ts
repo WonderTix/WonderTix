@@ -60,18 +60,18 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
       },
     });
     return res.json(
-        ticketRestrictions
-            .filter((res) => res.ticketlimit > res.ticketitems.length)
-            .map((restriction) => ({
-              id: restriction.ticketrestrictionsid,
-              eventinstanceid: restriction.eventinstanceid_fk,
-              tickettypeid: restriction.tickettypeid_fk,
-              description: restriction.tickettype.description,
-              fee: +restriction.fee,
-              price: +restriction.price,
-              ticketlimit: restriction.ticketlimit,
-              ticketssold: restriction.ticketitems.length,
-            })));
+      ticketRestrictions
+        .filter((res) => res.ticketlimit > res.ticketitems.length)
+        .map((restriction) => ({
+          id: restriction.ticketrestrictionsid,
+          eventinstanceid: restriction.eventinstanceid_fk,
+          tickettypeid: restriction.tickettypeid_fk,
+          description: restriction.tickettype.description,
+          fee: +restriction.fee,
+          price: +restriction.price,
+          ticketlimit: restriction.ticketlimit,
+          ticketssold: restriction.ticketitems.length,
+        })));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -139,16 +139,16 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
       },
     });
     return res.json(
-        ticketRestrictions
-            .filter((res) => res.ticketlimit > res.ticketitems.length)
-            .map((restriction) => {
-              const {ticketitems, tickettype, ...restrictionData} = restriction;
-              return {
-                ...restrictionData,
-                description: tickettype.description,
-                ticketssold: ticketitems.length,
-              };
-            }),
+      ticketRestrictions
+        .filter((res) => res.ticketlimit > res.ticketitems.length)
+        .map((restriction) => {
+          const {ticketitems, tickettype, ...restrictionData} = restriction;
+          return {
+            ...restrictionData,
+            description: tickettype.description,
+            ticketssold: ticketitems.length,
+          };
+        }),
     );
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

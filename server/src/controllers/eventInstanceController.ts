@@ -50,6 +50,7 @@ export const eventInstanceController = Router();
  *                               availableseats: {type: integer}
  *                               date: {type: string}
  *                               detail: {type: string}
+ *                               ispreview: {type: boolean}
  *                       allIds: {type: array, items: {type: integer}}
  *       400:
  *        description: bad request
@@ -103,6 +104,7 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
             ticket.ticketrestrictions.reduce<number>((acc, res) => res.ticketlimit - res.ticketitems.length + acc, 0),
           ),
           detail: ticket.detail,
+          ispreview: ticket.ispreview,
         }};
       });
     res.send({data: {allIds, byId}});

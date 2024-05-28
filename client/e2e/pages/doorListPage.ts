@@ -7,9 +7,13 @@ import {CustomerInfo} from '../testData/CustomerInfo';
 export class DoorListPage {
   readonly page: Page;
 
+  readonly homePageButton: Locator;
+
   readonly pageHeader: Locator;
   readonly chooseEvent: Locator;
-  readonly chooseTime: Locator;
+  readonly chooseShowing: Locator;
+  readonly showingTitle: Locator;
+  readonly showingTime: Locator;
   readonly customerRow: Locator;
   readonly activeViewOption: Locator;
   readonly allViewOption: Locator;
@@ -17,17 +21,25 @@ export class DoorListPage {
   constructor(page: Page) {
     this.page = page;
 
+    this.homePageButton = page.getByRole('button', {name: '/'});
+
     this.pageHeader = page.getByRole('heading', {name: 'Door List'});
-    this.chooseEvent = page.locator('#event-select');
-    this.chooseTime = page.getByTestId('time-select-test');
+    this.chooseEvent = page.getByTestId('event-select');
+    this.chooseShowing = page.getByTestId('showing-select');
+    this.showingTitle = page.getByRole('heading', {name: 'Showing'});
+    this.showingTime = page.getByTestId('showing-time');
     this.customerRow = page.locator('.MuiDataGrid-row');
     this.activeViewOption = page.getByTestId('active-button');
     this.allViewOption = page.getByTestId('all-button');
   }
 
   // Go to the door list
-  async goto() {
-    await this.page.goto('/ticketing/doorlist', {timeout: 90000});
+  async goTo() {
+    await this.page.goto('/ticketing/doorlist', {timeout: 60000});
+  }
+
+  async goHome() {
+    await this.homePageButton.click();
   }
 
   // Pick event by option label
@@ -37,45 +49,52 @@ export class DoorListPage {
 
   // Pick time by option label
   async setTimeByLabel(time: string) {
-    await this.chooseTime.selectOption({label: time});
-  }
-
-  // Fetch the page header as a string
-  async getHeader() {
-    return this.pageHeader.textContent();
+    await this.chooseShowing.selectOption({label: time});
   }
 
   // Pick a random show to look at and return its name
   async selectRandomShow() {
     const showsUnit = await this.chooseEvent.allInnerTexts();
     const shows = showsUnit[0].split('\n');
-    const randShow = shows[Math.floor(Math.random() * (shows).length)];
+    const randShow = shows[Math.floor(Math.random() * shows.length)];
     await this.setEventByLabel(randShow);
     return randShow;
   }
 
   // Pick a random date/time and return it as a string
   async selectRandomTime() {
-    const timesUnit = await this.chooseTime.allInnerTexts();
+    const timesUnit = await this.chooseShowing.allInnerTexts();
     const times = timesUnit[0].split('\n');
-    const randTime = times[Math.floor(Math.random() * (times).length)];
+    const randTime = times[Math.floor(Math.random() * times.length)];
     await this.setTimeByLabel(randTime);
     return randTime;
   }
 
   // Find a specific showing using the EventInfo object for the name, and the ShowingInfo object
   // for the correct show date/time
-  // Door list searches automatically once the options are set, requiring no further interation
   async searchShowing(event: EventInfo, showing: ShowingInfo) {
-    const eventOption = await this.chooseEvent.getByRole('option').filter({hasText: event.eventName}).textContent();
+    const eventOption = await this.chooseEvent
+      .getByRole('option')
+      .filter({hasText: event.eventName})
+      .textContent();
     await this.chooseEvent.selectOption(eventOption);
-    const eventTime = await this.chooseTime.getByRole('option').filter({hasText: showing.showingWholeDate + ', ' + showing.showingTime12hour}).textContent();
-    await this.chooseTime.selectOption(eventTime);
+
+    const showingOption = await this.chooseShowing
+      .getByRole('option')
+      .filter({
+        hasText: `${showing.showingWholeDate}, ${showing.showingTime12hour}`,
+      })
+      .textContent();
+    await this.chooseShowing.selectOption(showingOption);
   }
 
-  // Verify a specific order exists by customer name, quantity, and accomodation.
-  async checkOrder(customer: CustomerInfo, qty: number) {
-    await this.customerRow.filter({hasText: customer.firstName}).filter({hasText: customer.lastName}).filter({hasText: qty.toString()}).filter({hasText: customer.accommodations}).isVisible();
+  // Verify a specific order exists by customer name, quantity, and accommodation.
+  getCustomerRow(customer: CustomerInfo, qty: number) {
+    return this.customerRow
+      .filter({hasText: customer.firstName})
+      .filter({hasText: customer.lastName})
+      .filter({hasText: `${qty} x General Admission - Adult`})
+      .filter({hasText: customer.accommodations});
   }
 
   // Sets viewable list of events to active events.

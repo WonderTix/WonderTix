@@ -14,7 +14,7 @@
     },
     {
       "name": "WonderTix Deploy",
-      "path": "terraform"
+      "path": "iac/terraform"
     }
   ],
   "settings": {
