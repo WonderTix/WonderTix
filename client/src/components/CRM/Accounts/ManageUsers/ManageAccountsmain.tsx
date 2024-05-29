@@ -1,6 +1,6 @@
 import React from 'react';
 import ManageAccounts from './ManageAccounts';
-import Navigation from '../../Navigation';
+import AdminNavBar from '../../AdminNavBar';
 
 /**
  * @returns {object} ManageAccountsmain - has Navigation
@@ -9,7 +9,7 @@ import Navigation from '../../Navigation';
 const ManageAccountsmain = () => {
   return (
     <div className='flex flex-row'>
-      <Navigation/>
+      <AdminNavBar/>
       <ManageAccounts/>
     </div>
   );

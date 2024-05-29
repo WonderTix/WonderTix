@@ -1,5 +1,5 @@
 import React from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import RefundOrders from './RefundOrders';
 
 /**
@@ -10,7 +10,7 @@ import RefundOrders from './RefundOrders';
 const RefundOrdersMain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav />
+      <TicketingNavBar />
       <RefundOrders />
     </div>
   );

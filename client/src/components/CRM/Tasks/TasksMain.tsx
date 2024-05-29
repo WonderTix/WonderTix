@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import Navigation from '../Navigation';
+import AdminNavBar from '../AdminNavBar';
 import Tasks from './Tasks';
 
 /**
@@ -10,7 +10,7 @@ const TasksMain = (): ReactElement =>{
   return (
     <div className='flex flex-row'>
       <Tasks />
-      <Navigation />
+      <AdminNavBar />
     </div>
   );
 };

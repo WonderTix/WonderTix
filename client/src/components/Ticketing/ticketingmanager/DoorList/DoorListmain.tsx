@@ -1,5 +1,5 @@
 import React from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import DoorList from './DoorList';
 
 /**
@@ -11,7 +11,7 @@ import DoorList from './DoorList';
 const DoorListmain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav />
+      <TicketingNavBar />
       <DoorList />
     </div>
   );

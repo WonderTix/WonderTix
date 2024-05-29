@@ -151,6 +151,70 @@ Once tests have been written, they can be organized in various ways. Possibly cr
 
 Expect a much more detailed Playwright tutorial and how-to in the very near future. Currently, I recommend visiting the [Playwright](https://playwright.dev/docs/intro).
 
+## Using Terraform
+
+Terraform is used to manage infrastructure as code, especially useful for provisioning and managing the Google Cloud Platform resources involved with WonderTix.
+
+### Requirements
+
+- [Terraform](https://www.terraform.io/downloads.html)
+- [Google Cloud Platform SDK](https://cloud.google.com/sdk/docs/install)
+
+### Installation
+
+1. Download Terraform from the official [downloads page](https://www.terraform.io/downloads.html).
+2. Download the GCP-SDK from the official [downloads page](https://cloud.google.com/sdk/docs/install).
+2. Follow the installation instructions for your operating system.
+
+### Setup
+
+1. Navigate to the `WonderTix Deploy` workspace folder where the Terraform configuration files are located:
+
+- Alternatively, if you don't wish to use the workspace setup, you can simply access all configuration files from:
+   ```bash
+   cd /WonderTix/iac/terraform
+
+2. Google Cloud Platform Authentication
+
+To interact with Google Cloud Platform resources, you need to authenticate using a service account key. Below are the steps to generate a key for an existing service account, `wondertix-app@appspot.gserviceaccount.com`.
+
+Generating a Key File for an Existing Service Account
+
+- **Log in to the Google Cloud Console**:
+   Go to [Google Cloud Console](https://console.cloud.google.com/).
+
+- **Select the Project**:
+   Choose the 'wondertix-app' project from the top of the dashboard.
+
+- **Navigate to IAM & Admin > Service Accounts**:
+   You can find this option in the navigation menu or search for "Service     Accounts" in the cloud console search bar.
+
+- **Identify the Service Account**:
+   Locate `wondertix-app@appspot.gserviceaccount.com` in the list of service accounts.
+
+- **Generate a Key File**:
+   - Click on the service account to open its details.
+   - Go to the `Keys` tab.
+   - Click `Add Key`, then select `Create new key`.
+   - Choose `JSON` as the key type and click `Create`.
+   - The JSON key file will be downloaded automatically to your computer.
+   - Rename the file to `service-account-key.json` and place the file into the `/iac` directory.
+
+Finally, verify that the service account key is correctly referenced in your Terraform GCP provider block:
+
+`WonderTix/iac/terraform/main.tf`
+
+```hcl
+provider "google" {
+  credentials = file("../service-account-key.json")
+  project     = "wondertix-app"
+}
+```
+
+3. Usage Guide
+
+For more details on how to use Terraform and its CLI to manage project infrastructure, see the `README.md` in the `WonderTix/iac` directory.
+
 ## CI/CD
 
 Broadly speaking, we use GitHub Actions for continuous integration and Google Cloud Platform for continuous deployment.
