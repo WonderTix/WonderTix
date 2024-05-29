@@ -68,18 +68,14 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
     <div className='w-full h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg'>
       <div className='px-6 flex justify-between items-center w-full h-full'>
         <div className='w-full md:w-auto flex items-center justify-center md:justify-left gap-4'>
-          {/* <a
-            href='https://portlandplayhouse.org/'
-            aria-label='WonderTix Homepage'
-            className='ml-6 md:m-0'
-          > */}
+
           <img
             className='w-12 h-full object-cover'
             src={bgImg}
             aria-hidden='true'
             alt=''
           />
-          {/* </a> */}
+
           <ul className='hidden md:flex'>
             <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
               {!bMode ? (

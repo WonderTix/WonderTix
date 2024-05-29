@@ -4,7 +4,7 @@ Main branch is the latest development release.
 
 ## Overview
 
-WonderTix is a full-featured ticket sales platform and CRM built for Portland Playhouse.
+WonderTix is a full-featured ticket sales platform and CRM built for Portland Playhouse and other event groups.
 It consists of a user ticketing system as well as both ticketing and CRM administrative panels.
 This project serves a variety of purposes including managing task assignments, performing financial reporting, and handling ticket sales.
 Future features include managing/creating email campaigns and ticket exchanges.
