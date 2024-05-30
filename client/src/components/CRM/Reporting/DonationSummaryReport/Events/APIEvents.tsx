@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import BaseTooltip from '@mui/material/Tooltip';
+import {useAuth0} from '@auth0/auth0-react';
 
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid';
 
@@ -10,6 +11,7 @@ interface APIEventsComponentProps {
 }
 
 const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_date}) => {
+    const {getAccessTokenSilently} = useAuth0();
     const renderTooltipCell = (params) => (
         <BaseTooltip title={params.value}>
           <div>{params.value}</div>
@@ -68,11 +70,19 @@ const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_
         return `${formattedDate}${day_suffix} at ${display_hours}:${minutes} ${ampm}`;
     }
 
-    const [rows, setRows] = useState<any[]>([]);
-    begin_date = begin_date.split('/').join('-');
-    end_date = end_date.split('/').join('-');
-    useEffect(() => {
-        fetch(process.env.REACT_APP_API_2_URL + '/salesoverview/events')
+    const getDonations = async () => {
+        try {
+            const token = await getAccessTokenSilently({
+              audience: process.env.REACT_APP_ROOT_URL,
+              scope: 'admin',
+            });
+            fetch(process.env.REACT_APP_API_2_URL + '/donation', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+            })
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -80,81 +90,41 @@ const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_
                 return response.json();
             })
             .then((data) => {
-                const info = data.flatMap((event, index) => {
-                    const eventInstances = event.eventinstances.map((instance) => ({
-                        eventdate: instance.eventdate,
-                        eventtime: instance.eventtime,
-                        totalseats: instance.totalseats,
-                        availableseats: instance.availableseats,
-                        eventinstanceid: instance.eventinstanceid,
-                        price: instance.ticketrestrictions[0].price, // Might need to modify if there's season tickets or discounts
-                    }));
-                    const updatedRows = eventInstances.filter((instance) =>
-                        isDateInRange(begin_date, end_date, instance.eventdate),
-                    )
-                    .map((instance) => {
-                        const sold = instance.totalseats - instance.availableseats;
-                        const display_eventinstance = display_event(instance.eventdate, instance.eventtime);
-
-                        // Reservation (Future Implementation)
-                        const reservation_quantity = 0;
-                        const reservation_amount = 0.00;
-
-
-                        // Sold Quantity and Amount
-                        const price = +instance.price;
-                        const total_price = price * sold;
-
-                        // Subscription (Future Implementation)
-                        const sub_quantity = 0;
-                        const sub_amount = 0.00;
-
-                        // Comp (Future Implementation)
-                        const comp = 0;
-
-                        // Summary
-                        const summary_quantity = reservation_quantity + sub_quantity + comp + sold;
-                        const summary_amount = reservation_amount + sub_amount + total_price;
-
-                        return {
-                            id: instance.eventinstanceid, // Assuming eventinstanceid is unique
-                            ticketable_event: event.eventname,
-                            event_instance: display_eventinstance,
-                            quantity_reserve: reservation_quantity,
-                            amount_reserve: reservation_amount.toFixed(2),
-                            quantity_sold: sold,
-                            amount_sold: total_price.toFixed(2),
-                            quantity_sub: sub_quantity,
-                            amount_sub: sub_amount.toFixed(2),
-                            quantity_comp: comp,
-                            quantity_summ: summary_quantity,
-                            amount_summ: summary_amount.toFixed(2),
-                            quantity_avail: instance.availableseats,
-                        };
-                    });
-                    return updatedRows;
+                const info = data.flatMap((donation, index) => {
+                    // console.log(donation);
+                    const donationInstance = {
+                        id: index,
+                        donationid: donation.donationid,
+                        orderid: donation.orderid_fk,
+                        amount: donation.amount,
+                        anonymous: donation.anonymous,
+                        frequency: donation.frequency,
+                        comments: donation.comments,
+                    };
+                    return donationInstance;
                 });
                 setRows(info);
-            })
-            .catch((error) => {
-                console.error('There was a problem with the fetch operation:', error);
             });
-    }, [begin_date, end_date]);
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+        }
+    };
+
+    const [rows, setRows] = useState<any[]>([]);
+    begin_date = begin_date.split('/').join('-');
+    end_date = end_date.split('/').join('-');
+    useEffect(() => {
+        getDonations();
+    });
 
     const header_columns: GridColDef[] = [
         // Define your columns here
-        {field: 'ticketable_event', headerName: 'Ticketable Event', flex: 3, sortable: true, renderCell: renderTooltipCell},
-        {field: 'event_instance', headerName: 'Event Instance', flex: 3, sortable: true, renderCell: renderTooltipCell},
-        {field: 'quantity_reserve', headerName: 'Reservation Qty', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'amount_reserve', headerName: 'Reservation Total', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'quantity_sold', headerName: 'Sold Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'amount_sold', headerName: 'Sold Total', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'quantity_sub', headerName: 'Subs Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'amount_sub', headerName: 'Subs Total', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'quantity_comp', headerName: 'Comp Qty', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'quantity_summ', headerName: 'Summary Qty', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'amount_summ', headerName: 'Summary Total', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
-        {field: 'quantity_avail', headerName: 'Available', flex: 1, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'donationid', headerName: 'Donation', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'orderid', headerName: 'Order', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'amount', headerName: 'Amount', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'anonymous', headerName: 'Anonymous', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'frequency', headerName: 'Frequency', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
+        {field: 'comments', headerName: 'Comments', flex: 3, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
     ];
 
     return (
