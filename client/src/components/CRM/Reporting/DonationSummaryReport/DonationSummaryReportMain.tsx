@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import FilterComponent from './FilterComponent';
 import ReportComponent from './ReportComponent';
 import APIEventsComponent from './Events/APIEvents';
-import Navigation from '../../Navigation';
+import AdminNavBar from '../../AdminNavBar';
 
 import {Box, Grid} from '@mui/material';
 
@@ -90,7 +90,7 @@ const DonationSummaryReportMain = () => {
           </Grid>
         </Box>
       </Box>
-      <Navigation />
+      <AdminNavBar />
     </div>
   );
 };
