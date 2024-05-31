@@ -45,12 +45,19 @@ const Hero = (): ReactElement => {
       <div className='w-full bg-zinc-100 overflow-y-hidden overflow-x-hidden bg-fixed justify-between bg-cover bg-hero bg-brightness-50'>
         <div className='w-full bg-gradient-to-r from-black'>
           <div className='max-w-[450px] md:max-w-[1200px] py-[12em] mx-auto flex flex-col gap-16'>
-            <h1 className='font-black text-zinc-100 text-6xl md:text-8xl mx-auto drop-shadow-lg py-12'>Events</h1>
+            <h1 className='font-black text-zinc-100 text-6xl md:text-8xl mx-auto drop-shadow-lg py-12'>
+              Events
+            </h1>
             {nowPlayingEvents.length && (
               <EventSection title='Now Playing' events={nowPlayingEvents} />
             )}
             {comingSoonEvents.length && (
               <EventSection title='Coming Soon' events={comingSoonEvents} />
+            )}
+            {!nowPlayingEvents.length && !comingSoonEvents.length && (
+              <p className='text-zinc-200 text-xl mx-auto text-center font-semibold rounded-xl bg-zinc-800/70 backdrop-blur-md shadow-lg py-3 px-5'>
+                No upcoming events.<br />Check back soon
+              </p>
             )}
           </div>
         </div>
