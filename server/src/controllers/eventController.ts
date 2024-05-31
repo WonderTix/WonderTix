@@ -2,7 +2,7 @@
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {orders, Prisma, purchase_source, state} from '@prisma/client';
-import {InvalidInputError} from './eventInstanceController.service';
+import {getDate, InvalidInputError} from './eventInstanceController.service';
 import {
   createStripeCheckoutSession,
   expireCheckoutSession,
@@ -343,8 +343,22 @@ eventController.get('/slice', async (req: Request, res: Response) => {
       },
     });
 
-    return res.json(events
-      .map((event) => ({
+    const eventsResp = events.map((event) => {
+      let startDate: string | null = null;
+      let endDate: string | null = null;
+
+      if (event.eventinstances.length) {
+        startDate = getDate(event.eventinstances[0].eventtime.toISOString(), event.eventinstances[0].eventdate);
+        endDate = getDate(event.eventinstances[0].eventtime.toISOString(), event.eventinstances[0].eventdate);
+
+        event.eventinstances.forEach((showing) => {
+          const currDate = getDate(showing.eventtime.toISOString(), showing.eventdate);
+          startDate = startDate && startDate > currDate ? currDate : startDate;
+          endDate = endDate && endDate < currDate ? currDate : endDate;
+        });
+      }
+
+      return ({
         id: event.eventid,
         seasonid: event.seasonid_fk,
         title: event.eventname,
@@ -353,7 +367,18 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         subscriptioneligible: event.subscriptioneligible,
         imageurl: event.imageurl,
         numShows: event.eventinstances.length.toString(),
-      })));
+        ...(startDate && {startDate: startDate}),
+        ...(endDate && {endDate: endDate}),
+      });
+    }).sort((a, b) => {
+      if (a.startDate && b.startDate) {
+        return b.startDate.localeCompare(a.startDate);
+      } else {
+        return 1;
+      }
+    });
+
+    return res.json(eventsResp);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});

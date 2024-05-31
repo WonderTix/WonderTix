@@ -1,7 +1,8 @@
-import React, {ReactElement, useEffect, useRef} from 'react';
-import {EventCard} from './EventCard';
+import React, {ReactElement, useEffect, useState} from 'react';
 import {useAppSelector, useAppDispatch} from '../app/hooks';
 import {fetchTicketingData} from '../ticketingmanager/ticketingSlice';
+import EventSection from './EventSection';
+import {Event} from '../ticketingmanager/ticketingSlice';
 
 /**
  * Events page
@@ -9,88 +10,49 @@ import {fetchTicketingData} from '../ticketingmanager/ticketingSlice';
  * @returns {ReactElement} state.event.ticketing also returned
  */
 const Hero = (): ReactElement => {
+  const [nowPlayingEvents, setNowPlayingEvents] = useState<Event[]>([]);
+  const [comingSoonEvents, setComingSoonEvents] = useState<Event[]>([]);
+
+  const dispatch = useAppDispatch();
+
   const allEvents = useAppSelector((state) => {
     return state.ticketing.events;
   });
-  const dispatch = useAppDispatch();
-  const ref = useRef(null);
 
   useEffect(() => {
     void dispatch(fetchTicketingData());
   }, []);
 
-  const handlePrevious = () => {
-    if (ref.current) {
-      ref.current.scrollBy({
-        left: -640,
-      });
-    }
-  };
+  useEffect(() => {
+    const todaysDate = new Date();
+    const tempNowPlayingEvents: Event[] = [];
+    const tempComingSoonEvents: Event[] = [];
 
-  const handleNext = () => {
-    if (ref.current) {
-      ref.current.scrollBy({
-        left: 640,
-      });
-    }
-  };
+    allEvents.forEach((event) => {
+      if (new Date(event.startDate) < todaysDate) {
+        tempNowPlayingEvents.unshift(event);
+      } else {
+        tempComingSoonEvents.unshift(event);
+      }
+    });
+
+    setNowPlayingEvents(tempNowPlayingEvents);
+    setComingSoonEvents(tempComingSoonEvents);
+  }, [allEvents]);
 
   return (
-    <div className='w-full h-screen'>
-      <div className='w-full h-screen bg-zinc-100 overflow-y-hidden overflow-x-hidden bg-scroll justify-between md:bg-fixed bg-cover bg-hero bg-brightness-50'>
-        <div className='flex flex-col md:flex-row items-center w-full h-full bg-gradient-to-r from-black'>
-          <div className='max-w-[1240px] md:pl-40 flex flex-row text-center text-white m-auto'>
-            <div className='flex flex-col justify-center md:items-center w-full px-2 py8 md:mr-40 md:mt-auto mt-40 mb-10'>
-              <h1 className='text-5xl md:text-7xl font-bold'>Events</h1>
-              <p className='text-zinc-200/60 px-10 my-3'>Pick an Event</p>
-            </div>
+    <div className='w-full'>
+      <div className='w-full bg-zinc-100 overflow-y-hidden overflow-x-hidden bg-fixed justify-between bg-cover bg-hero bg-brightness-50'>
+        <div className='w-full bg-gradient-to-r from-black'>
+          <div className='max-w-[450px] md:max-w-[1200px] py-[12em] mx-auto flex flex-col gap-16'>
+            <h1 className='font-black text-zinc-100 text-6xl md:text-8xl mx-auto drop-shadow-lg py-12'>Events</h1>
+            {nowPlayingEvents.length && (
+              <EventSection title='Now Playing' events={nowPlayingEvents} />
+            )}
+            {comingSoonEvents.length && (
+              <EventSection title='Coming Soon' events={comingSoonEvents} />
+            )}
           </div>
-          <button
-            aria-hidden={true}
-            onClick={handlePrevious}
-            className='mx-4 hidden md:inline-block text-white/80 hover:text-white hover:scale-125 transition-all'
-          >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-12 w-12'
-              viewBox='0 0 20 20'
-              fill='currentColor'
-            >
-              <path
-                fillRule='evenodd'
-                d='M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z'
-                clipRule='evenodd'
-              />
-            </svg>
-          </button>
-          <div
-            className='m-auto rounded-xl overflow-x-auto overflow-y-auto scroll-smooth'
-            ref={ref}
-          >
-            <div className='flex flex-col md:flex-row gap-7 py-6'>
-              {allEvents.map((event) => (
-                <EventCard key={event.id} {...event} />
-              ))}
-            </div>
-          </div>
-          <button
-            aria-hidden={true}
-            onClick={handleNext}
-            className='mx-4 hidden md:inline-block text-white/80 hover:text-white hover:scale-125 transition-all'
-          >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-12 w-12'
-              viewBox='0 0 20 20'
-              fill='currentColor'
-            >
-              <path
-                fillRule='evenodd'
-                d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z'
-                clipRule='evenodd'
-              />
-            </svg>
-          </button>
         </div>
       </div>
     </div>

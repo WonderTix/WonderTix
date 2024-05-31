@@ -21,6 +21,8 @@ const event = {
   description: 'Test description',
   imageurl: 'https://test.com/image.jpg',
   soldOut: false,
+  startDate: 'FIXME',
+  endDate: 'FIXME',
 };
 
 let store: any;

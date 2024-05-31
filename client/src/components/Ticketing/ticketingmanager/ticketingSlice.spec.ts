@@ -21,6 +21,8 @@ const event: Event = {
   description: 'lorem ipsum donor',
   imageurl: 'https://test.com/image.jpg',
   soldOut: false,
+  startDate: 'FIXME',
+  endDate: 'FIXME',
 };
 
 const ticket1: Ticket = {

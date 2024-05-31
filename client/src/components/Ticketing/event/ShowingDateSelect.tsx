@@ -71,7 +71,7 @@ export const ShowingDateSelect = (
                 {date.date.slice(0, 3).toUpperCase()}
               </span>
               <span>{date.date.slice(5, 8).toUpperCase()}</span>
-              <span className='text-xl tab:text-2xl font-black'>
+              <span className='text-xl tab:text-2xl font-bold'>
                 {date.date.slice(9, 11)}
               </span>
             </button>
