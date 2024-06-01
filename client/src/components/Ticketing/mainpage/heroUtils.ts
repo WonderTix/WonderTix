@@ -9,7 +9,6 @@
  */
 export const trimDescription = (desc: string | null, maxLength: number): string => {
   const defaultDescription = 'No description available.';
-  const charsToStopAt = [' ', '.', '!', '?', ',', ';'];
 
   if (!desc) {
     return defaultDescription;
@@ -17,21 +16,21 @@ export const trimDescription = (desc: string | null, maxLength: number): string 
 
   const trimmedDesc = desc.trimStart().trimEnd();
   if (trimmedDesc.length <= maxLength) {
-    // If length of description is already 200 chars or fewer, that is ok
+    // If length of description is already fewer than max length, we're good
     return trimmedDesc;
   }
 
   const shorterDesc = trimmedDesc.substring(0, maxLength - 3);
-  if (charsToStopAt.includes(trimmedDesc[maxLength - 3])) {
-    // If we trimmed the description at a good stopping point, return it
+  if (!isAlpha(trimmedDesc[maxLength - 3])) {
+    // If we trimmed the description at the end of a word, return it
     return `${shorterDesc.trimEnd()}...`;
   }
 
-  // Otherwise find the next start to a word to break the description at
-  // This avoids stopping the description in the middle of a word, or at punctuation
-  const spaceIndex = lastIndexOfLastFullWord(shorterDesc);
-  if (spaceIndex > 0) {
-    return `${shorterDesc.substring(0, spaceIndex + 1)}...`;
+  // Otherwise find the next start to a word to break the description at.
+  // This avoids stopping the description in the middle of a word, or at punctuation/spaces
+  const nonAlphaIndex = lastIndexOfLastFullWord(shorterDesc);
+  if (nonAlphaIndex >= 0) {
+    return `${shorterDesc.substring(0, nonAlphaIndex + 1)}...`;
   } else {
     return 'No description available.';
   }
