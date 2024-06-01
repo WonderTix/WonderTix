@@ -5,19 +5,20 @@ import EventSection from './EventSection';
 import {Event} from '../ticketingmanager/ticketingSlice';
 
 /**
- * Events page
+ * The section of the home page that contains events for which tickets are
+ * purchaseable.
  *
- * @returns {ReactElement} state.event.ticketing also returned
+ * @returns {ReactElement} Hero
  */
 const Hero = (): ReactElement => {
   const [nowPlayingEvents, setNowPlayingEvents] = useState<Event[]>([]);
   const [comingSoonEvents, setComingSoonEvents] = useState<Event[]>([]);
 
-  const dispatch = useAppDispatch();
-
   const allEvents = useAppSelector((state) => {
     return state.ticketing.events;
   });
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     void dispatch(fetchTicketingData());
@@ -41,28 +42,28 @@ const Hero = (): ReactElement => {
   }, [allEvents]);
 
   return (
-    <div className='w-full'>
-      <div className='w-full bg-zinc-100 overflow-y-hidden overflow-x-hidden bg-fixed justify-between bg-cover bg-hero bg-brightness-50'>
-        <div className='w-full bg-gradient-to-r from-black'>
-          <div className='max-w-[450px] md:max-w-[1200px] py-[12em] mx-auto flex flex-col gap-16'>
-            <h1 className='font-black text-zinc-100 text-6xl md:text-8xl mx-auto drop-shadow-lg py-12'>
-              Events
-            </h1>
-            {nowPlayingEvents.length && (
-              <EventSection title='Now Playing' events={nowPlayingEvents} />
-            )}
-            {comingSoonEvents.length && (
-              <EventSection title='Coming Soon' events={comingSoonEvents} />
-            )}
-            {!nowPlayingEvents.length && !comingSoonEvents.length && (
-              <p className='text-zinc-200 text-xl mx-auto text-center font-semibold rounded-xl bg-zinc-800/70 backdrop-blur-md shadow-lg py-3 px-5'>
-                No upcoming events.<br />Check back soon
-              </p>
-            )}
-          </div>
-        </div>
+    <main className='w-full bg-fixed bg-cover bg-hero'>
+      <div className='w-full bg-gradient-to-r from-black'>
+        <section className='flex flex-col gap-16 max-w-[450px] md:max-w-[1200px] py-[12em] mx-auto'>
+          <h1 className='font-black text-zinc-100 text-6xl md:text-8xl mx-auto drop-shadow-lg py-12'>
+            Events
+          </h1>
+          {nowPlayingEvents.length && (
+            <EventSection title='Now Playing' events={nowPlayingEvents} />
+          )}
+          {comingSoonEvents.length && (
+            <EventSection title='Coming Soon' events={comingSoonEvents} />
+          )}
+          {!nowPlayingEvents.length && !comingSoonEvents.length && (
+            <p className='text-zinc-200 text-xl mx-auto text-center font-semibold rounded-xl bg-zinc-800/70 backdrop-blur-md shadow-lg py-3 px-5'>
+              No upcoming events.
+              <br />
+              Check back soon
+            </p>
+          )}
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 

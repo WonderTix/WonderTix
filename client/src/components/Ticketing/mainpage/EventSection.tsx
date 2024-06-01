@@ -7,6 +7,15 @@ interface EventSectionProps {
   events: Event[];
 }
 
+/**
+ * An EventSection is a section of the Hero that contains events under a
+ * particular category.
+ *
+ * @param {EventSectionProps} props
+ * @param {string} props.title - title of the section
+ * @param {Event[]} props.events - events in the section
+ * @returns {ReactElement} EventSection
+ */
 const EventSection = (props: EventSectionProps): ReactElement => {
   const {title, events} = props;
 
