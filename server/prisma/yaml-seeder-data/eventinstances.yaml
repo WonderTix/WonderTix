@@ -3185,7 +3185,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 30
-  eventdate: 20210101
+  eventdate: 20250101
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3194,7 +3194,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210117
+  eventdate: 20250117
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3203,7 +3203,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210119
+  eventdate: 20250119
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3212,7 +3212,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210121
+  eventdate: 20250121
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3221,7 +3221,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210123
+  eventdate: 20250123
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3230,7 +3230,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210125
+  eventdate: 20250125
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3239,7 +3239,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210127
+  eventdate: 20250127
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3248,7 +3248,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210129
+  eventdate: 20250129
   eventtime: 16:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3257,7 +3257,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210131
+  eventdate: 20250131
   eventtime: 20:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3266,7 +3266,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210202
+  eventdate: 20250202
   eventtime: 18:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3275,7 +3275,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210204
+  eventdate: 20250204
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3284,7 +3284,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210206
+  eventdate: 20250206
   eventtime: 12:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3293,7 +3293,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210208
+  eventdate: 20250208
   eventtime: 14:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3302,7 +3302,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210210
+  eventdate: 20250210
   eventtime: 11:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3311,7 +3311,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210212
+  eventdate: 20250212
   eventtime: 13:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3320,7 +3320,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210214
+  eventdate: 20250214
   eventtime: 19:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3329,7 +3329,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 31
-  eventdate: 20210216
+  eventdate: 20250216
   eventtime: 15:00:00.000000 -08:00
   salestatus: false
   totalseats: 100
@@ -3338,7 +3338,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20210915
+  eventdate: 20250915
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3347,7 +3347,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20210917
+  eventdate: 20250917
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3356,7 +3356,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20210919
+  eventdate: 20250919
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3365,7 +3365,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20210921
+  eventdate: 20250921
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3374,7 +3374,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20210923
+  eventdate: 20250923
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3383,7 +3383,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20210925
+  eventdate: 20250925
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3392,7 +3392,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20210927
+  eventdate: 20250927
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3401,7 +3401,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20210929
+  eventdate: 20250929
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3410,7 +3410,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20211001
+  eventdate: 20251001
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3419,7 +3419,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20211003
+  eventdate: 20251003
   eventtime: 21:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3428,7 +3428,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20211005
+  eventdate: 20251005
   eventtime: 21:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3437,7 +3437,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20211007
+  eventdate: 20251007
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3446,7 +3446,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20211009
+  eventdate: 20251009
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3455,7 +3455,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20211011
+  eventdate: 20251011
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3464,7 +3464,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20211013
+  eventdate: 20251013
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3473,7 +3473,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 32
-  eventdate: 20211015
+  eventdate: 20251015
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3482,7 +3482,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211031
+  eventdate: 20251031
   eventtime: 21:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3491,7 +3491,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211102
+  eventdate: 20251102
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3500,7 +3500,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211104
+  eventdate: 20251104
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3509,7 +3509,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211106
+  eventdate: 20251106
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3518,7 +3518,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211108
+  eventdate: 20251108
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3527,7 +3527,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211110
+  eventdate: 20251110
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3536,7 +3536,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211112
+  eventdate: 20251112
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3545,7 +3545,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211114
+  eventdate: 20251114
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3554,7 +3554,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211116
+  eventdate: 20251116
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3563,7 +3563,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211118
+  eventdate: 20251118
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3572,7 +3572,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211120
+  eventdate: 20251120
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3581,7 +3581,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211122
+  eventdate: 20251122
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3590,7 +3590,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211124
+  eventdate: 20251124
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3599,7 +3599,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211126
+  eventdate: 20251126
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3608,7 +3608,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211128
+  eventdate: 20251128
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3617,7 +3617,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 33
-  eventdate: 20211130
+  eventdate: 20251130
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3626,7 +3626,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20211216
+  eventdate: 20251216
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3635,7 +3635,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20211218
+  eventdate: 20251218
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3644,7 +3644,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20211220
+  eventdate: 20251220
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3653,7 +3653,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20211222
+  eventdate: 20251222
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3662,7 +3662,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20211224
+  eventdate: 20251224
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3671,7 +3671,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20211226
+  eventdate: 20251226
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3680,7 +3680,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20211228
+  eventdate: 20251228
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3689,7 +3689,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20211230
+  eventdate: 20251230
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3698,7 +3698,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20220101
+  eventdate: 20250101
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3707,7 +3707,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20220103
+  eventdate: 20250103
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3716,7 +3716,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20220105
+  eventdate: 20250105
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3725,7 +3725,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20220107
+  eventdate: 20250107
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3734,7 +3734,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20220109
+  eventdate: 20250109
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3743,7 +3743,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20220111
+  eventdate: 20250111
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3752,7 +3752,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20220113
+  eventdate: 20250113
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3761,7 +3761,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 34
-  eventdate: 20220115
+  eventdate: 20250115
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3770,7 +3770,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220131
+  eventdate: 20250131
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3779,7 +3779,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220202
+  eventdate: 20250202
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3788,7 +3788,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220204
+  eventdate: 20250204
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3797,7 +3797,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220206
+  eventdate: 20250206
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3806,7 +3806,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220208
+  eventdate: 20250208
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3815,7 +3815,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220210
+  eventdate: 20250210
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3824,7 +3824,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220212
+  eventdate: 20250212
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3833,7 +3833,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220214
+  eventdate: 20250214
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3842,7 +3842,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220216
+  eventdate: 20250216
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3851,7 +3851,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220218
+  eventdate: 20250218
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3860,7 +3860,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220220
+  eventdate: 20250220
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3869,7 +3869,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220222
+  eventdate: 20250222
   eventtime: 11:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3878,7 +3878,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220224
+  eventdate: 20250224
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3887,7 +3887,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220226
+  eventdate: 20250226
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3896,7 +3896,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220228
+  eventdate: 20250228
   eventtime: 15:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3905,7 +3905,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 35
-  eventdate: 20220302
+  eventdate: 20250302
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3914,7 +3914,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220318
+  eventdate: 20250318
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3923,7 +3923,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220320
+  eventdate: 20250320
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3932,7 +3932,7 @@
   ispreview: true
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220322
+  eventdate: 20250322
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3941,7 +3941,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220324
+  eventdate: 20250324
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3950,7 +3950,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220326
+  eventdate: 20250326
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3959,7 +3959,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220328
+  eventdate: 20250328
   eventtime: 17:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3968,7 +3968,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220330
+  eventdate: 20250330
   eventtime: 19:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3977,7 +3977,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220401
+  eventdate: 20250401
   eventtime: 18:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3986,7 +3986,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220403
+  eventdate: 20250403
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -3995,7 +3995,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220405
+  eventdate: 20250405
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -4004,7 +4004,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220407
+  eventdate: 20250407
   eventtime: 13:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -4013,7 +4013,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220409
+  eventdate: 20250409
   eventtime: 16:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -4022,7 +4022,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220411
+  eventdate: 20250411
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -4031,7 +4031,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220413
+  eventdate: 20250413
   eventtime: 12:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -4040,7 +4040,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220415
+  eventdate: 20250415
   eventtime: 20:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
@@ -4049,7 +4049,7 @@
   ispreview: false
   defaulttickettype: 1
 - eventid_fk: 36
-  eventdate: 20220417
+  eventdate: 20250417
   eventtime: 14:00:00.000000 -08:00
   salestatus: true
   totalseats: 100
