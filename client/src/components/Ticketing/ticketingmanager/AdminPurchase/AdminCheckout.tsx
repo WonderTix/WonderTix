@@ -7,10 +7,10 @@ import PopUp from '../../PopUp';
 import {
   baseContact,
   CheckoutContact,
-  orderSource,
   validateContactInputAdmin,
 } from '../../checkout/CheckoutUtils';
 import CompleteOrderForm from '../../checkout/CompleteOrderForm';
+import {useFetchToken} from '../Event/components/ShowingUtils';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -24,6 +24,8 @@ export default function AdminCheckout(): ReactElement {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const {token} = useFetchToken();
+
   const [appliedDiscount, setAppliedDiscount] = useState(null);
 
   const eventDataFromPurchase = location.state?.eventData || [];
@@ -32,51 +34,53 @@ export default function AdminCheckout(): ReactElement {
   const [popUpMessage, setPopUpMessage] = useState('');
 
   const doCheckout = async (checkoutFormInfo: CheckoutContact) => {
-    try {
-      const formData = {...checkoutFormInfo};
-      if (formData.seatingaccom === 'Other') {
-        formData.seatingaccom = formData.otherSeatingAcc;
-      }
+    if (token) {
+      try {
+        const formData = {...checkoutFormInfo};
+        if (formData.seatingaccom === 'Other') {
+          formData.seatingaccom = formData.otherSeatingAcc;
+        }
 
-      const donation = formData.donation ? +formData.donation : 0;
-      const discount = appliedDiscount ? appliedDiscount : emptyDiscountCode;
+        const donation = formData.donation ? +formData.donation : 0;
+        const discount = appliedDiscount ? appliedDiscount : emptyDiscountCode;
 
-      const stripe = await stripePromise;
-      if (!stripe) return;
+        const stripe = await stripePromise;
+        if (!stripe) return;
 
-      const response = await fetch(
-        process.env.REACT_APP_API_2_URL + `/events/checkout`,
-        {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL + `/events/admin-checkout`,
+          {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              ticketCartItems: cartItems,
+              formData,
+              donation,
+              discount,
+            }),
           },
-          body: JSON.stringify({
-            ticketCartItems: cartItems,
-            formData,
-            donation,
-            discount,
-            orderSource: orderSource.admin_ticketing,
-          }),
-        },
-      );
-      if (!response.ok) {
-        throw response;
+        );
+        if (!response.ok) {
+          throw response;
+        }
+        const session = await response.json();
+        if (session.id === 'comp') {
+          navigate(`/success`);
+        }
+        const result = await stripe.redirectToCheckout({sessionId: session.id});
+        if (result.error) {
+          console.error(result.error.message);
+        }
+      } catch (error) {
+        console.error('Error response status: ', error.status);
+        setPopUpMessage(
+          error.json ? (await error.json()).error : 'Checkout failed',
+        );
       }
-      const session = await response.json();
-      if (session.id === 'comp') {
-        navigate(`/success`);
-      }
-      const result = await stripe.redirectToCheckout({sessionId: session.id});
-      if (result.error) {
-        console.error(result.error.message);
-      }
-    } catch (error) {
-      console.error('Error response status: ', error.status);
-      setPopUpMessage(
-        error.json ? (await error.json()).error : 'Checkout failed',
-      );
     }
   };
 

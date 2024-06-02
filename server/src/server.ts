@@ -645,10 +645,10 @@ const createServer = async () => {
   app.use(morgan('dev'));
   app.use(helmet());
   app.use(
-      cors({
-        origin: process.env.FRONTEND_URL,
-        credentials: true,
-      }),
+    cors({
+      origin: process.env.FRONTEND_URL,
+      credentials: true,
+    }),
   );
 
   // api 2
@@ -715,6 +715,6 @@ createServer().then((server) => {
   server.listen(port);
   console.log(`Listening on port ${port}`);
 })
-    .catch((err) => {
-      console.log(err.stack);
-    });
+  .catch((err) => {
+    console.log(err.stack);
+  });

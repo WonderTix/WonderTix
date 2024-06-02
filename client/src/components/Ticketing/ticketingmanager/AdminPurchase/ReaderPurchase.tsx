@@ -3,15 +3,10 @@ import {Button} from '@mui/material';
 import PopUp from '../../PopUp';
 import {useNavigate, useParams, useLocation} from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
-
 import {useAppSelector} from '../../app/hooks';
-
 import {useFetchToken} from '../Event/components/ShowingUtils';
-
 import {selectDiscount} from '../ticketingSlice';
-
 import {loadStripe} from '@stripe/stripe-js';
-import {orderSource} from '../../checkout/CheckoutUtils';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -108,7 +103,6 @@ const ReaderPurchase = () => {
               paymentIntentID,
               readerID,
               discount,
-              orderSource: orderSource.card_reader,
             }),
           },
         );

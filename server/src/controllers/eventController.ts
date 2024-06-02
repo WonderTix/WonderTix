@@ -4,24 +4,19 @@ import {checkJwt, checkScopes} from '../auth';
 import {orders, Prisma, purchase_source, state} from '@prisma/client';
 import {InvalidInputError} from './eventInstanceController.service';
 import {
-  createStripeCheckoutSession,
-  expireCheckoutSession,
-  getDonationItem,
-  getFeeItem,
   getTicketItems,
   createStripePaymentIntent,
   requestStripeReaderPayment,
   getDiscountAmount,
-  getSubscriptionItems,
   validateWithRegex,
-  validateContact,
-  updateContact,
+  checkout,
 } from './eventController.service';
 import {updateCanceledOrder, orderFulfillment} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 import multer from 'multer';
 import {Storage} from '@google-cloud/storage';
+import {PurchaseSource} from '../interfaces/PurchaseSource';
 
 const prisma = extendPrismaClient();
 const upload = multer();
@@ -67,95 +62,7 @@ export const eventController = Router();
  *         description: Internal Server Error. An error occurred while processing the request.
  */
 eventController.post('/checkout', async (req: Request, res: Response) => {
-  const {ticketCartItems = [], subscriptionCartItems = [], formData, donation = 0, discount, orderSource} = req.body;
-  let checkoutSessionId: string | undefined;
-  let order: orders | undefined;
-  try {
-    if (!ticketCartItems.length && !donation && !subscriptionCartItems.length) {
-      return res.status(400).json({error: 'Cart is empty'});
-    }
-
-    const validatedContact = validateContact(formData);
-
-    const {
-      ticketCartRows,
-      orderTicketItems,
-      ticketTotal,
-      feeTotal,
-      eventInstanceQueries,
-    } = await getTicketItems(ticketCartItems, prisma);
-
-    const {
-      subscriptionCartRows,
-      orderSubscriptionItems,
-      subscriptionTotal,
-    } = await getSubscriptionItems(prisma, subscriptionCartItems);
-
-    const {
-      donationItem,
-      donationCartRow,
-      donationTotal,
-    } = getDonationItem(donation);
-
-    const {feeCartRow} = getFeeItem(feeTotal);
-
-    let cartRows = ticketCartRows.concat(subscriptionCartRows);
-    if (donationCartRow) {
-      cartRows = cartRows.concat([donationCartRow]);
-    }
-    if (feeCartRow) {
-      cartRows = cartRows.concat([feeCartRow]);
-    }
-
-    const {discountTotal, discountId}= await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
-    const orderSubtotal = ticketTotal + subscriptionTotal+ donationTotal;
-
-    if (orderSubtotal + feeTotal - discountTotal > .49) {
-      checkoutSessionId = await createStripeCheckoutSession(
-        validatedContact,
-        cartRows,
-        {...discount, amountOff: discountTotal},
-      );
-    } else if (orderSubtotal + feeTotal - discountTotal > 0) {
-      return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
-    }
-
-    order = await orderFulfillment(
-      prisma,
-      {
-        orderStatus: checkoutSessionId ? state.in_progress : state.completed,
-        orderSource: purchase_source[orderSource as keyof typeof purchase_source],
-        checkoutSession: checkoutSessionId,
-        discountId,
-        orderSubtotal,
-        discountTotal,
-        feeTotal,
-        orderTicketItems,
-        donationItem,
-        orderSubscriptionItems,
-        eventInstanceQueries,
-        ...(!checkoutSessionId && await updateContact(prisma, validatedContact)),
-      },
-    );
-
-    res.json({id: checkoutSessionId ?? 'comp'});
-  } catch (error) {
-    console.error(error);
-    if (order) await updateCanceledOrder(prisma, order);
-    if (checkoutSessionId) await expireCheckoutSession(checkoutSessionId);
-    if (error instanceof InvalidInputError) {
-      res.status(error.code).json(error.message);
-      return;
-    }
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError ||
-      error instanceof Prisma.PrismaClientValidationError
-    ) {
-      res.status(400).json(error.message);
-      return;
-    }
-    res.status(500).json(error);
-  }
+  return checkout(req, res, PurchaseSource.online_ticketing, prisma);
 });
 
 /**
@@ -865,6 +772,48 @@ eventController.use(checkScopes);
 
 /**
  * @swagger
+ * /2/events/admin-checkout:
+ *   post:
+ *     summary: Update contact information, create order, create Stripe checkout session for admin purchase
+ *     tags:
+ *     - New Event API
+ *     requestBody:
+ *       description: Checkout information
+ *     responses:
+ *       200:
+ *         description: Contact, order, and Stripe session successfully created.
+ *         content:
+ *           application/json:
+ *             schema: {id: number}
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       422:
+ *          description: invalid input
+ *          content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventController.post('/admin-checkout', async (req: Request, res: Response) => {
+  return checkout(req, res, PurchaseSource.admin_ticketing, prisma);
+});
+
+/**
+ * @swagger
  * /2/events/reader-intent:
  *   post:
  *     summary: Create Reader Payment Intent
@@ -882,7 +831,7 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
     const {
       ticketTotal,
       feeTotal,
-    } = await getTicketItems(ticketCartItems, prisma);
+    } = await getTicketItems(ticketCartItems, PurchaseSource.card_reader, prisma);
 
     if (ticketTotal + feeTotal < .50) {
       return res.status(400).json({error: 'Reader checkout can not be used for an order below .50 USD'});
@@ -909,8 +858,10 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
  *     - New Event API
  */
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {ticketCartItems = [], paymentIntentID, readerID, discount, orderSource} = req.body;
-  let order :orders | null = null;
+  const {ticketCartItems = [], paymentIntentID, readerID, discount} = req.body;
+  const orderSource = PurchaseSource.card_reader;
+  let order: orders | null = null;
+
   try {
     if (!ticketCartItems.length) {
       return res.status(400).json({error: 'Cart is empty'});
@@ -921,7 +872,7 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       ticketTotal,
       feeTotal,
       eventInstanceQueries,
-    } = await getTicketItems(ticketCartItems, prisma);
+    } = await getTicketItems(ticketCartItems, orderSource, prisma);
 
     await requestStripeReaderPayment(readerID, paymentIntentID);
 
