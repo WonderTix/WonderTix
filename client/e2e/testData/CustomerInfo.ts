@@ -31,6 +31,16 @@ export enum Accommodations {
   Other = 'Other',
 }
 
+export const seatingAccOptions = {
+  'None': 'Not at this time',
+  'Wheel Chair': 'Wheelchair seat(s)',
+  'Aisle Seat': 'Aisle seat(s)',
+  'First/Ground floor': 'Seat(s) on the ground or the first level',
+  'ASL Interpreter': 'Seat(s) in the ASL interpreters section',
+  'Wide Seats': 'Wide seat(s)',
+  'Other': 'Other',
+};
+
 function generatePhoneNumber() {
   // Generates a random 10-digit phone number
   const randomDigits = () => Math.floor(Math.random() * 9000000000) + 1000000000;
@@ -74,7 +84,7 @@ export const JANE_DOE: CustomerInfo = {
   city: 'Portland',
   state: 'OR',
   country: 'USA',
-  phoneNumber: '(207)283-8797',
+  phoneNumber: '(207) 283-8797',
   email: 'jane.doe@wondertix.com',
   newsletterSignup: false,
   donationAmount: '0',

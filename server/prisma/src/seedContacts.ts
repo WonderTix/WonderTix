@@ -26,7 +26,7 @@ async function seedContacts(prisma: PrismaClient) {
       country: item.country,
       postalcode: item.postalcode,
       email: item.email,
-      phone: item.phone,
+      phone: item.phone?.replace(/\D/g, ''),
       donorbadge: item.donorbadge,
       seatingaccom: item.seatingaccom,
       vip: item.vip,

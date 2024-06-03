@@ -60,7 +60,7 @@
   imageurl: https://m.media-amazon.com/images/M/MV5BYjNkYWU0ODctNjM3OC00ODEwLWI3ZjEtZDBlOGFhMWViOGJmXkEyXkFqcGdeQXVyNjI2OTgxNzY@._V1_.jpg
 - seasonid_fk: 2
   eventname: Angels In America
-  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  eventdescription: Angels in America is Tony Kushner's groundbreaking play set in the 1980s AIDS crisis. With intertwining narratives, it delves into identity, politics, and spirituality, following characters navigating love, loss, and hope in a changing America.
   active: false
   seasonticketeligible: true
   imageurl: https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg
@@ -186,7 +186,7 @@
   imageurl: http://mphsaplit.weebly.com/uploads/8/8/7/6/88769472/antigone-2-jpg.jpg?296
 - seasonid_fk: 7
   eventname: Angels In America
-  eventdescription: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  eventdescription: "\"Angels in America\" is Tony Kushner's groundbreaking play set in the 1980s AIDS crisis. With intertwining narratives, it delves into identity, politics, and spirituality, following characters navigating love, loss, and hope in a changing America."
   active: true
   seasonticketeligible: true
   imageurl: https://cdn11.bigcommerce.com/s-i6magi2txm/images/stencil/500x659/products/431/1691/angelsinamericamay1993cover__89575.1498568353.jpg

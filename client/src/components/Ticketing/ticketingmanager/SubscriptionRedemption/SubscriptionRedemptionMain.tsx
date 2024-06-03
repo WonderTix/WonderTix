@@ -1,7 +1,7 @@
 import React from 'react';
 import {SubscriptionsRedemptionContainer} from './SubscriptionsRedemptionContainer';
 import {useFetchToken} from '../Event/components/ShowingUtils';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import {usePopUp} from '../TicketTypes/SubscriptionTypeUtils';
 import {LoadingScreen} from '../../mainpage/LoadingScreen';
 import PopUp from '../../PopUp';
@@ -14,7 +14,7 @@ export const SubscriptionRedemptionMain = () => {
 
   return (
     <div className='flex flex-row'>
-      <Udash_nav />
+      <TicketingNavBar />
       <div className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem] min-[2000px]:flex justify-center'>
           <SubscriptionsRedemptionContainer

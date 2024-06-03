@@ -1,9 +1,9 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
 import format from 'date-fns/format';
 import {Tabs, Tab} from '@mui/material';
-import Navigation from '../Navigation';
+import AdminNavBar from '../AdminNavBar';
 import {useFetchToken} from '../../Ticketing/ticketingmanager/Event/components/ShowingUtils';
 import {LoadingScreen} from '../../Ticketing/mainpage/LoadingScreen';
 import {toDollarAmount} from '../../../utils/arrays';
@@ -20,7 +20,7 @@ export const ContactOneResult = (): ReactElement => {
   const {token} = useFetchToken();
   const params = useParams();
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [contact, setContact] = useState(null);
   const [tabValue, setTabValue] = useState(0);
 
@@ -91,7 +91,7 @@ export const ContactOneResult = (): ReactElement => {
   } else {
     return (
       <div className='flex flex-row'>
-        <Navigation />
+        <AdminNavBar />
         <main className='w-full h-screen overflow-x-hidden absolute'>
           <div className='md:ml-[18rem] md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] mt-[6rem] mb-[9rem]'>
             <div className='mt-9 text-zinc-600 w-full'>
@@ -99,7 +99,9 @@ export const ContactOneResult = (): ReactElement => {
                 className='bg-blue-500 hover:bg-blue-600 disabled:opacity-40 mt-4 mb-3 shadow-md px-4 py-2 text-base
                   font-medium text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2
                   focus:ring-indigo-500'
-                onClick={() => navigate(`/admin/contacts`)}
+                onClick={() =>
+                  navigate(`/admin/contacts`, {state: location.state})
+                }
               >
                 Back to search
               </button>

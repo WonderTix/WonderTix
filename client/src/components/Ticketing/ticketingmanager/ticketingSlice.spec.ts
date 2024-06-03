@@ -32,6 +32,7 @@ const ticket1: Ticket = {
   availableseats: 34,
   remainingtickets: 34,
   detail: '',
+  ispreview: false,
 };
 
 const ticket2: Ticket = {
@@ -43,6 +44,7 @@ const ticket2: Ticket = {
   availableseats: 20,
   remainingtickets: 20,
   detail: '',
+  ispreview: false,
 };
 
 const ticketType: TicketType = {
@@ -190,6 +192,7 @@ describe('Ticketing slice', () => {
             remainingtickets: 34,
             date: new Date('2021-07-31T19:00:00'),
             detail: '',
+            ispreview: false,
           }, {
             event_instance_id: 2,
             eventid: eventid,
@@ -199,6 +202,7 @@ describe('Ticketing slice', () => {
             remainingtickets: 20,
             date: new Date('2021-08-07T16:00:00'),
             detail: '',
+            ispreview: false,
           }],
         });
     });

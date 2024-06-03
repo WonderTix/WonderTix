@@ -89,12 +89,14 @@ export const EventGeneralView = (props: EventGeneralViewProps) => {
         <div className={'flex flex-col col-span-12 min-[450px]:col-span-6'}>
           <LineItem
             label={'Event Name'}
+            dataTestId='event-name'
             information={eventData.eventname}
             event
           />
           <LineItem
             description
             label={'Event Description'}
+            dataTestId='event-description'
             information={eventData.eventdescription}
             event
           />
