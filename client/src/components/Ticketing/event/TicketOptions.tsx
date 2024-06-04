@@ -113,9 +113,9 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
     <article className='flex flex-col gap-8 text-white max-w-[30em] w-full mx-auto'>
       {ticketInputs.length ? (
         ticketInputs.map((ticketInput, index) => (
-          <div key={index} className='flex justify-between' data-testid='ticket-input'>
+          <div key={index} className='flex justify-between gap-3' data-testid='ticket-input'>
             <span className='flex flex-col'>
-              <p className='relative text-xl font-bold' data-testid='ticket-type-name'>
+              <p className='relative text-base tab:text-xl font-bold' data-testid='ticket-type-name'>
                 {ticketInput.type.name}
               </p>
               {ticketInput.type.name !== 'Pay What You Can' ? (

@@ -251,7 +251,7 @@ const TicketPicker = (props: TicketPickerProps): ReactElement => {
   };
 
   return (
-    <div className='bg-zinc-200/20 shadow-md backdrop-blur-md p-9 pb-28 flex flex-col items-center rounded-xl w-full'>
+    <div className='bg-zinc-200/20 shadow-md backdrop-blur-md p-8 pb-28 flex flex-col items-center rounded-xl w-full'>
       <ShowingDateSelect
         dateOptions={dateOptions}
         selectedDate={selectedDate}

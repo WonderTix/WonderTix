@@ -111,14 +111,14 @@ export class MainPage {
   }
 
   async getEventLocator(eventName: string) {
-    return this.page.getByText(eventName).first();
+    return this.page.getByTestId(`hero-event-card-${eventName}`).first();
   }
 
   // Find and go to the showing associated with the EventInfo parameter
   // Return the name of that showing
   async goSelectEvent(eventInfo: EventInfo) {
     const eventCard = await this.getEventLocator(
-      eventInfo.eventName + eventInfo.eventDescription + 'Select Date & Time',
+      eventInfo.eventName,
     );
     await eventCard.getByRole('button', {name: 'Select Date & Time'}).click();
     return this.titleEvent.textContent();
