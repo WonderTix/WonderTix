@@ -22,7 +22,7 @@ const EventSection = (props: EventSectionProps): ReactElement => {
   return (
     <section className='mx-8'>
       <h2
-        className='text-4xl text-zinc-100 font-bold mb-10 drop-shadow-lg relative
+        className='text-2xl md:text-4xl text-zinc-100 font-bold mb-10 drop-shadow-lg relative
         after:content=[""] after:h-[1px] after:absolute after:w-full after:bg-zinc-200 after:inline-block after:left-0 after:bottom-[-0.45em]'
       >
         {title}

@@ -348,7 +348,7 @@ export const getTicketItems = async (
       const now = new Date().toISOString();
       const eventInstanceDateTime = getDate(eventInstance.eventtime.toISOString(), eventInstance.eventdate);
 
-      if (now > eventInstanceDateTime) {
+      if (now >= eventInstanceDateTime) {
         throw new InvalidInputError(422, 'Showing is no longer on sale');
       }
     }

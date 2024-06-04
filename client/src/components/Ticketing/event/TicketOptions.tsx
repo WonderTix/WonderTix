@@ -115,7 +115,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
         ticketInputs.map((ticketInput, index) => (
           <div key={index} className='flex justify-between gap-3' data-testid='ticket-input'>
             <span className='flex flex-col'>
-              <p className='relative text-base tab:text-xl font-bold' data-testid='ticket-type-name'>
+              <p className='relative text-base tab:text-xl font-semibold md:font-bold' data-testid='ticket-type-name'>
                 {ticketInput.type.name}
               </p>
               {ticketInput.type.name !== 'Pay What You Can' ? (
@@ -133,13 +133,13 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
                 />
               )}
             </span>
-            <span className='flex items-center gap-2'>
+            <span className='flex items-center gap-1 md:gap-2'>
               <button
                 aria-label='Remove one ticket'
                 className='inline-block p-0.5 rounded-full bg-transparent text-white border-2 border-white hover:text-zinc-400 hover:border-zinc-400 transition-all'
                 onClick={() => handleQtyChange(-1, ticketInput.type)}
               >
-                <SmallMinusIcon strokeWidth={2.3} />
+                <SmallMinusIcon className='h-4 w-4 md:h-5 md:w-5' strokeWidth={2.3} />
               </button>
               <p
                 className='inline-block w-8 text-center font-bold text-lg'
@@ -152,7 +152,7 @@ export const TicketOptions = (props: TicketOptionsProps): ReactElement => {
                 className='inline-block p-0.5 rounded-full bg-transparent text-white border-2 border-white hover:text-zinc-400 hover:border-zinc-400 transition-all'
                 onClick={() => handleQtyChange(1, ticketInput.type)}
               >
-                <PlusIcon strokeWidth={2.3} />
+                <PlusIcon className='h-4 w-4 md:h-5 md:w-5' strokeWidth={2.3} />
               </button>
             </span>
           </div>

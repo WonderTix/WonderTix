@@ -241,9 +241,6 @@ eventController.get('/slice', async (req: Request, res: Response) => {
           },
         },
       },
-      orderBy: {
-        eventid: 'asc',
-      },
       include: {
         eventinstances: {
           where: {
@@ -253,6 +250,8 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         },
       },
     });
+
+    const now = new Date().toISOString();
 
     const eventsResp: any[] = [];
     events.forEach((event) => {
@@ -274,29 +273,29 @@ eventController.get('/slice', async (req: Request, res: Response) => {
         endDate = endDate < currDate ? currDate : endDate;
       });
 
-      eventsResp.unshift({
-        id: event.eventid,
-        seasonid: event.seasonid_fk,
-        title: event.eventname,
-        description: event.eventdescription,
-        active: event.active,
-        subscriptioneligible: event.subscriptioneligible,
-        imageurl: event.imageurl,
-        numShows: event.eventinstances.length.toString(),
-        startDate,
-        endDate,
-      });
+      if (now < endDate) {
+        eventsResp.unshift({
+          id: event.eventid,
+          seasonid: event.seasonid_fk,
+          title: event.eventname,
+          description: event.eventdescription,
+          active: event.active,
+          subscriptioneligible: event.subscriptioneligible,
+          imageurl: event.imageurl,
+          numShows: event.eventinstances.length.toString(),
+          startDate,
+          endDate,
+        });
+      }
     });
 
     return res.json(eventsResp.sort((a, b) => b.startDate.localeCompare(a.startDate)));
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
     return res.status(500).json({error: 'Internal Server Error'});
   }
@@ -853,10 +852,11 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
       return res.status(400).json({error: 'Cart is empty'});
     }
 
-    const {
-      ticketTotal,
-      feeTotal,
-    } = await getTicketItems(ticketCartItems, PurchaseSource.card_reader, prisma);
+    const {ticketTotal, feeTotal} = await getTicketItems(
+      ticketCartItems,
+      PurchaseSource.card_reader,
+      prisma,
+    );
 
     if (ticketTotal + feeTotal < 0.5) {
       return res
@@ -894,12 +894,11 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
       return res.status(400).json({error: 'Cart is empty'});
     }
 
-    const {
-      orderTicketItems,
-      ticketTotal,
-      feeTotal,
-      eventInstanceQueries,
-    } = await getTicketItems(ticketCartItems, orderSource, prisma);
+    const {orderTicketItems, ticketTotal, feeTotal, eventInstanceQueries} = await getTicketItems(
+      ticketCartItems,
+      orderSource,
+      prisma,
+    );
 
     await requestStripeReaderPayment(readerID, paymentIntentID);
 

@@ -17,7 +17,9 @@ const Hero = (): ReactElement => {
   const allEvents = useAppSelector((state) => {
     return state.ticketing.events;
   });
-
+  const loadStatus = useAppSelector((state) => {
+    return state.ticketing.status;
+  });
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -44,17 +46,17 @@ const Hero = (): ReactElement => {
   return (
     <main className='w-full bg-fixed bg-cover bg-hero'>
       <div className='w-full bg-gradient-to-r from-black'>
-        <section className='flex flex-col gap-16 max-w-[450px] md:max-w-[1200px] py-[12em] mx-auto'>
-          <h1 className='font-black text-zinc-100 text-6xl md:text-8xl mx-auto drop-shadow-lg py-12'>
+        <section className='flex flex-col gap-16 max-w-[450px] md:max-w-[1200px] py-[11em] md:py-[12em] mx-auto'>
+          <h1 className='font-black text-zinc-100 text-6xl md:text-8xl mx-auto drop-shadow-lg pb-4 md:py-12'>
             Events
           </h1>
-          {nowPlayingEvents.length && (
+          {nowPlayingEvents.length !== 0 && (
             <EventSection title='Now Playing' events={nowPlayingEvents} />
           )}
-          {comingSoonEvents.length && (
+          {comingSoonEvents.length !== 0 && (
             <EventSection title='Coming Soon' events={comingSoonEvents} />
           )}
-          {!nowPlayingEvents.length && !comingSoonEvents.length && (
+          {!['idle', 'loading'].includes(loadStatus) && allEvents.length === 0 && (
             <p className='text-zinc-200 text-xl mx-auto text-center font-semibold rounded-xl bg-zinc-800/70 backdrop-blur-md shadow-lg py-3 px-5'>
               No upcoming events.
               <br />
