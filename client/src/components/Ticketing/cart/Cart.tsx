@@ -69,7 +69,9 @@ const Cart = (): ReactElement => {
     if (discount.code !== '') {
       setValidDiscount(true);
       setDiscountClicked(false);
-    } else setValidDiscount(false);
+    } else {
+      setValidDiscount(false);
+    }
   });
 
   const openModal = () => {
@@ -127,17 +129,20 @@ const Cart = (): ReactElement => {
 
   /**
    * Searches for (and applies if found) discount code based on user input
+   *
+   * @param event
    */
-  async function applyDiscount() {
+  async function applyDiscount(event) {
+    event.preventDefault();
     await dispatch(fetchDiscountData(discountText));
     setDiscountClicked(true);
   }
 
   const removeDiscount = () => {
+    dispatch(removeDiscountFromCart());
     setValidDiscount(false);
     setDiscountClicked(false);
     setDiscountText(null);
-    dispatch(removeDiscountFromCart());
   };
 
   const displayModal = (
@@ -194,22 +199,29 @@ const Cart = (): ReactElement => {
       </h1>
       <div className='flex flex-col md:flex-row gap-10 md:gap-5 mt-14 md:mt-20 items-center w-full'>
         <div className='flex flex-col w-full p-5 tab:p-9 gap-5 rounded-xl bg-zinc-300'>
-          {!items.length? (
+          {!items.length ? (
             <p className='text-zinc-500'>There&apos;s nothing in your cart</p>
           ) : (
-            items
-              .map((cartItem) => (
-                <CartRow
-                  key={isTicketCartItem(cartItem)?`${cartItem.product_id}-${cartItem.typeID}`:`${cartItem.subscriptiontypeid_fk}-${cartItem.seasonid_fk}`}
-                  item={cartItem}
-                  removeHandler={() => displayModal(
+            items.map((cartItem) => (
+              <CartRow
+                key={
+                  isTicketCartItem(cartItem)
+                    ? `${cartItem.product_id}-${cartItem.typeID}`
+                    : `${cartItem.subscriptiontypeid_fk}-${cartItem.seasonid_fk}`
+                }
+                item={cartItem}
+                removeHandler={() =>
+                  displayModal(
                     isTicketCartItem(cartItem)
-                    ? {eventInstanceId: cartItem.product_id, ticketTypeId: cartItem.typeID}
+                      ? {
+                          eventInstanceId: cartItem.product_id,
+                          ticketTypeId: cartItem.typeID,
+                        }
                       : {...cartItem},
                   )
                 }
-                />
-              ))
+              />
+            ))
           )}
         </div>
         <section className='flex flex-col items-center w-full md:w-[30rem] p-9 rounded-xl text-center bg-zinc-800'>
@@ -225,7 +237,10 @@ const Cart = (): ReactElement => {
               {!validDiscount && discountClicked && (
                 <p className='text-amber-300 italic'>Invalid discount code</p>
               )}
-              <div className='flex items-center justify-center gap-1 px-2 py-1 rounded-xl shadow-md ml-auto bg-zinc-600'>
+              <form
+                className='flex items-center justify-center gap-1 px-2 py-1 rounded-xl shadow-md ml-auto bg-zinc-600'
+                onSubmit={applyDiscount}
+              >
                 <input
                   type='text'
                   placeholder='Discount code...'
@@ -242,6 +257,7 @@ const Cart = (): ReactElement => {
                   <button
                     className='p-2 text-zinc-300 hover:bg-zinc-700 hover:text-zinc-100 justify-end rounded-full'
                     onClick={applyDiscount}
+                    type='submit'
                     aria-label='Apply discount code'
                   >
                     <svg
@@ -262,8 +278,10 @@ const Cart = (): ReactElement => {
                   </button>
                 ) : (
                   <button
+                    key='remove-discount-button' // This is so it doesn't trigger the form's onSubmit
                     className='p-2 text-zinc-300 hover:bg-zinc-700 hover:text-zinc-100 justify-end rounded-full'
                     onClick={removeDiscount}
+                    type='button'
                     aria-label='Remove discount code'
                   >
                     <svg
@@ -283,7 +301,7 @@ const Cart = (): ReactElement => {
                     </svg>
                   </button>
                 )}
-              </div>
+              </form>
             </div>
             <button
               className='bg-red-600 enabled:hover:bg-red-700 shadow-sm shadow-red-800 flex items-center justify-center gap-1 p-3 text-white rounded-xl disabled:opacity-50'

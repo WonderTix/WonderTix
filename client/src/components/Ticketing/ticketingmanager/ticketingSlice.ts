@@ -147,6 +147,8 @@ export interface Event {
   description: string;
   imageurl: string;
   soldOut: boolean;
+  startDate: string;
+  endDate: string;
 }
 
 /**
@@ -979,6 +981,7 @@ export const selectCartFeeTotal = (state: RootState): number =>
       return feeTot;
     }
   }, 0);
+
 export const selectTicketCartItem = (
   state: RootState,
   event_instance_id: number,

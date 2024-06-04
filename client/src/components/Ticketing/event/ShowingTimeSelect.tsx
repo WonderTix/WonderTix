@@ -41,7 +41,7 @@ const ShowingTimeSelect = ({
   return (
     <ul
       className='max-w-[30em] w-full md:w-96 relative
-      after:content=[""] after:h-[1px] md:after:h-full after:absolute after:w-full md:after:w-[1px] after:bg-white after:inline-block md:after:right-[-1.5em] after:bottom-[-1.7em] md:after:bottom-auto md:after:top-0'
+      after:content=[""] after:h-[1px] md:after:h-full after:absolute after:w-full md:after:w-[1px] after:bg-zinc-400 after:inline-block md:after:right-[-1.5em] after:bottom-[-1.7em] md:after:bottom-auto md:after:top-0'
     >
       {showings.length ? (
         showings.map((showing, index) => (
@@ -54,17 +54,17 @@ const ShowingTimeSelect = ({
                   : 'hover:enabled:bg-zinc-200'
               }
                 ${showing.remainingtickets === 0 ? 'bg-zinc-400' : ''}
-                bg-white rounded-md px-3 py-2 min-h-[4em] w-full text-left flex items-center
+                bg-white rounded-md px-3 py-2 min-h-[3.75em] tab:min-h-[4em] w-full text-left flex items-center
                 justify-between border-transparent transition-all`}
               onClick={() => handleSelectTime(showing)}
               disabled={showing.remainingtickets === 0}
             >
-              <p className='leading-tight'>
-                <span className='text-xl block font-medium' data-testid='time-option-value'>
+              <p className='leading-tight text-zinc-800'>
+                <span className='text-lg/[1.5rem] tab:text-xl block font-semibold' data-testid='time-option-value'>
                   {format(new Date(showing.date), 'h:mm a')}
                 </span>
                 {(showing.detail || showing.ispreview) && (
-                  <span>
+                  <span className='text-zinc-700'>
                     {showing.detail}{' '}
                     {showing.detail && showing.ispreview && '| '}
                     {showing.ispreview && 'Preview'}
