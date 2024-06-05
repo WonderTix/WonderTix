@@ -50,11 +50,11 @@ const ReportComponent = ({filterData}) => {
         <h1 className='font-bold text-2xl py-2'>
           Transaction Totals
         </h1>
-        <TransactionTotalsComponent />
+        <TransactionTotalsComponent begin_date={start} end_date={end} />
       </div>
       <div className='px-4'>
         <h1 className='font-bold text-2xl py-2'>Event Totals</h1>
-        <EventTotalsComponent />
+        <EventTotalsComponent begin_date={start} end_date={end} />
       </div>
       <div className='px-4'>
         <h1 className='font-bold text-2xl py-2'>

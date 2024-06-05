@@ -21,7 +21,7 @@
   },
   "include": [
     "src/**/*.ts",
-		"prisma/**/*.ts",
+		"prisma/**/*.ts", "src/reportHandlers/APIEvents.tsx",
   ],
 	"exclude": [
 		"node_modules",

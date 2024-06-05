@@ -35,6 +35,7 @@ import {taskController} from './controllers/taskController';
 import {ticketRestrictionController} from './controllers/ticketRestrictionController';
 import {seasonTicketTypePriceDefaultController} from './controllers/seasonTicketTypePriceDefaultController';
 import {subscriptionController} from './controllers/susbcriptionController';
+import {transactionSummaryController} from './controllers/transactionSummaryController';
 
 const openApiSpec = swaggerJsdoc({
   definition: {
@@ -667,6 +668,7 @@ const createServer = async () => {
   app.use('/api/2/user', userController);
   app.use('/api/2/season-ticket-type-price-default', seasonTicketTypePriceDefaultController);
   app.use('/api/2/subscription-types/', subscriptionController);
+  app.use('/api/2/transactionSummary/', transactionSummaryController);
 
   // other
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
