@@ -17,14 +17,14 @@ const TransactionTotalsComponent: React.FC<APIEventsComponentProps> = ({begin_da
     );
 
     /** The purpose of this function is to check if the date is within the date range that the user inputs */
-    const isDateInRange = (begin_date: string, end_date:string, event_date: number) => {
+    const isDateInRange = (begin_date: string, end_date:string, date: number) => {
         const beginDateObj = new Date(begin_date);
         const endDateObj = new Date(end_date);
 
         const eventDateObj = new Date(
-            parseInt(event_date.toString().substring(0, 4)), // Year
-            parseInt(event_date.toString().substring(4, 6)) - 1, // Month (0-indexed)
-            parseInt(event_date.toString().substring(6, 8)), // Day
+            parseInt(date.toString().substring(0, 4)), // Year
+            parseInt(date.toString().substring(4, 6)) - 1, // Month (0-indexed)
+            parseInt(date.toString().substring(6, 8)), // Day
         );
 
         // Check if event_date falls within the range
@@ -53,6 +53,7 @@ const TransactionTotalsComponent: React.FC<APIEventsComponentProps> = ({begin_da
     end_date = end_date.split('/').join('-');
 
     useEffect(() => {
+        // Fetch events data
         fetch(process.env.REACT_APP_API_2_URL + '/transactionSummary/events')
             .then((response) => {
                 if (!response.ok) {
@@ -60,80 +61,112 @@ const TransactionTotalsComponent: React.FC<APIEventsComponentProps> = ({begin_da
                 }
                 return response.json();
             })
-            .then((data) => {
-                const aggregatedTotals = {...initialTotals};
+            .then((eventsData) => {
+                // Fetch donations data
+                fetch(process.env.REACT_APP_API_2_URL + '/transactionSummary/donations')
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then((donationsData) => {
+                        // Combine events and donations data
+                        const aggregatedTotals = combineEventDataWithDonations(eventsData, donationsData);
 
-                data.forEach((event) => {
-                event.eventinstances.forEach((instance) => {
-                    if (!isDateInRange(begin_date, end_date, instance.eventdate)) {
-                        return;
-                    }
-
-                    const qty_sold = instance.totalseats - instance.availableseats;
-                    // Sold Quantity and Amount
-                    const buyer_price = parseFloat(instance.ticketrestrictions[0]?.price) || 0;
-                    // fee_fee should be changed to the total of all fees in the future
-                    const fee_fee = parseFloat(instance.ticketrestrictions?.[0]?.fee) || 0 * qty_sold;
-                    const donations = parseFloat(instance.donations?.[0]?.amount) || 0;
-                    // Statically Allocated Values, update when database is updated to support them
-                    const item_fee = 0.00;
-                    const stf_fee = 0.00;
-                    const order_fee = 0.00;
-                    const deliv_fee = 0.00;
-                    const exch_fee = 0.00;
-                    // Adenum: These ones should be negative, as they should subtract from profit
-                    // If these are not negative in the database, negate the value of the fetched data
-                    const dono_fulfil_ticket = 0.00;
-                    const patron_tech = 0.00;
-                    // Calculating some totals
-                    const ticket_total = (buyer_price * qty_sold) + fee_fee + order_fee + deliv_fee + exch_fee;
-                    const total_price = ticket_total + donations;
-                    const net_total = total_price - dono_fulfil_ticket - patron_tech;
-
-                    aggregatedTotals.total_price += total_price;
-                    aggregatedTotals.total_ticket += ticket_total;
-                    aggregatedTotals.price += buyer_price * qty_sold;
-                    aggregatedTotals.item_fees += item_fee;
-                    aggregatedTotals.total_fees += fee_fee;
-                    aggregatedTotals.stf_fee += stf_fee;
-                    aggregatedTotals.order_fee += order_fee;
-                    aggregatedTotals.delivery_fee += deliv_fee;
-                    aggregatedTotals.exchange_fee += exch_fee;
-                    aggregatedTotals.dono_fulfil_ticket += dono_fulfil_ticket;
-                    aggregatedTotals.total_donations += donations;
-                    aggregatedTotals.tech_fee += patron_tech;
-                    aggregatedTotals.net_total += net_total;
+                        // Set the totals state
+                        setTotals(aggregatedTotals);
+                    })
+                    .catch((error) => {
+                        console.error('There was a problem with the donations fetch operation:', error);
                     });
-                });
-
-                setTotals(aggregatedTotals);
             })
             .catch((error) => {
-                console.error('There was a problem with the fetch operation:', error);
+                console.error('There was a problem with the events fetch operation:', error);
             });
     }, [begin_date, end_date]);
 
+    const combineEventDataWithDonations = (eventsData, donationsData) => {
+        const combinedData = {...initialTotals};
+
+        eventsData.forEach((event) => {
+            event.eventinstances.forEach((instance) => {
+                if (!isDateInRange(begin_date, end_date, instance.eventdate)) {
+                    return;
+                }
+
+                const qty_sold = instance.totalseats - instance.availableseats;
+                // Sold Quantity and Amount
+                const buyer_price = parseFloat(instance.ticketrestrictions[0]?.price) || 0;
+                // fee_fee should be changed to the total of all fees in the future
+                const fee_fee = parseFloat(instance.ticketrestrictions?.[0]?.fee) || 0 * qty_sold;
+                // Statically Allocated Values, update when database is updated to support them
+                const item_fee = 0.00;
+                const stf_fee = 0.00;
+                const order_fee = 0.00;
+                const deliv_fee = 0.00;
+                const exch_fee = 0.00;
+                // Adenum: These ones should be negative, as they should subtract from profit
+                // If these are not negative in the database, negate the value of the fetched data
+                const dono_fulfil_ticket = 0.00;
+                const patron_tech = 0.00;
+                // Calculating some totals
+                const ticket_total = (buyer_price * qty_sold) + fee_fee + order_fee + deliv_fee + exch_fee;
+                const total_price = ticket_total; // + donations;
+                const net_total = total_price - dono_fulfil_ticket - patron_tech;
+
+                combinedData.total_price += total_price;
+                combinedData.total_ticket += ticket_total;
+                combinedData.price += buyer_price * qty_sold;
+                combinedData.item_fees += item_fee;
+                combinedData.total_fees += fee_fee;
+                combinedData.stf_fee += stf_fee;
+                combinedData.order_fee += order_fee;
+                combinedData.delivery_fee += deliv_fee;
+                combinedData.exchange_fee += exch_fee;
+                combinedData.dono_fulfil_ticket += dono_fulfil_ticket;
+                combinedData.tech_fee += patron_tech;
+                combinedData.net_total += net_total;
+                });
+            });
+
+        donationsData.forEach((donation) => {
+            // Haven't yet figured out a method for sorting donations by date, so currently it does all
+            /*
+            if (!isDateInRange(begin_date, end_date, instance.donationdate)) {
+                return;
+            }
+            */
+
+            const dono = parseFloat(donation?.amount);
+            combinedData.total_donations += dono;
+            combinedData.total_price += dono;
+            combinedData.net_total += dono;
+        });
+
+        return combinedData;
+    };
 
     const columns: GridColDef[] = [
         {field: 'title', headerName: 'Type', flex: 1, renderCell: renderTooltipCell},
         {field: 'cost', headerName: 'Total $', flex: 1, renderCell: renderTooltipCell},
     ];
 
-    // The names of these rows should never change, so they can be hard-coded in for now
+    // There should only be these rows in the report so we'll be keeping this here
     const rows = [
-        {id: 1, title: 'Transaction Gross', cost: totals.total_price},
-        {id: 2, title: 'Ticket Total', cost: totals.total_ticket},
-        {id: 3, title: 'Buyer Price', cost: totals.price},
-        {id: 4, title: 'Item Fees', cost: totals.item_fees},
-        {id: 5, title: 'Single Ticket Fee', cost: totals.stf_fee},
-        {id: 6, title: 'Order Fees', cost: totals.order_fee},
-        {id: 7, title: 'Delivery Fees', cost: totals.delivery_fee},
-        {id: 8, title: 'Exchange Fees', cost: totals.exchange_fee},
-        {id: 9, title: 'Fees', cost: totals.total_fees},
-        {id: 10, title: 'Donated Fulfillment Tickets', cost: totals.dono_fulfil_ticket},
-        {id: 11, title: 'Donations', cost: totals.total_donations},
-        {id: 12, title: 'Patron Tech Fee', cost: totals.tech_fee},
-        {id: 13, title: 'Net Total', cost: totals.net_total},
+        {id: 1, title: 'Transaction Gross', cost: totals.total_price.toFixed(2)},
+        {id: 2, title: 'Ticket Total', cost: totals.total_ticket.toFixed(2)},
+        {id: 3, title: 'Buyer Price', cost: totals.price.toFixed(2)},
+        {id: 4, title: 'Item Fees', cost: totals.item_fees.toFixed(2)},
+        {id: 5, title: 'Single Ticket Fee', cost: totals.stf_fee.toFixed(2)},
+        {id: 6, title: 'Order Fees', cost: totals.order_fee.toFixed(2)},
+        {id: 7, title: 'Delivery Fees', cost: totals.delivery_fee.toFixed(2)},
+        {id: 8, title: 'Exchange Fees', cost: totals.exchange_fee.toFixed(2)},
+        {id: 9, title: 'Fees', cost: totals.total_fees.toFixed(2)},
+        {id: 10, title: 'Donated Fulfillment Tickets', cost: totals.dono_fulfil_ticket.toFixed(2)},
+        {id: 11, title: 'Donations', cost: totals.total_donations.toFixed(2)},
+        {id: 12, title: 'Patron Tech Fee', cost: totals.tech_fee.toFixed(2)},
+        {id: 13, title: 'Net Total', cost: totals.net_total.toFixed(2)},
     ];
 
     return (

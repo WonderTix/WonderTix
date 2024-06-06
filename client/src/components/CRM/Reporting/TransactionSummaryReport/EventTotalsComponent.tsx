@@ -97,7 +97,6 @@ const EventTotalsComponent: React.FC<APIEventsComponentProps> = ({begin_date, en
             });
     }, [begin_date, end_date]);
 
-
     // column definition
     const columns: GridColDef[] = [
         {field: 'title', headerName: 'Event Type', flex: 4, renderCell: renderTooltipCell},
