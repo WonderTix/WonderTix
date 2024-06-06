@@ -14,8 +14,8 @@ export const SHOWING_INFO_1: ShowingInfo = {
   showingTime24hour: '00:10',
   showingTime12hour: '12:10 AM',
   showingQuantity: '10',
-  showingWholeDate: 'Wed, Oct 11 2032',
-  showingDatePickerFormat: 'WEDOCT11',
+  showingWholeDate: 'Mon, Oct 11 2032',
+  showingDatePickerFormat: 'MONOCT11',
 };
 
 export const SHOWING_INFO_2: ShowingInfo = {
@@ -23,8 +23,8 @@ export const SHOWING_INFO_2: ShowingInfo = {
   showingTime24hour: '10:20',
   showingTime12hour: '10:20 AM',
   showingQuantity: '10',
-  showingWholeDate: 'Tue, Oct 17 2032',
-  showingDatePickerFormat: 'TUEOCT17',
+  showingWholeDate: 'Sun, Oct 17 2032',
+  showingDatePickerFormat: 'SUNOCT17',
 };
 
 export const SHOWING_INFO_3: ShowingInfo = {
@@ -32,8 +32,8 @@ export const SHOWING_INFO_3: ShowingInfo = {
   showingTime24hour: '12:31',
   showingTime12hour: '12:31 PM',
   showingQuantity: '101',
-  showingWholeDate: 'Thu, Sep 16 2030',
-  showingDatePickerFormat: 'THUSEP16',
+  showingWholeDate: 'Mon, Sep 16 2030',
+  showingDatePickerFormat: 'MONSEP16',
 };
 
 export const SHOWING_INFO_4: ShowingInfo = {
@@ -41,8 +41,8 @@ export const SHOWING_INFO_4: ShowingInfo = {
   showingTime24hour: '12:30',
   showingTime12hour: '12:30 PM',
   showingQuantity: '100',
-  showingWholeDate: 'Wed, Sep 15 2030',
-  showingDatePickerFormat: 'WEDSEP15',
+  showingWholeDate: 'Sun, Sep 15 2030',
+  showingDatePickerFormat: 'SUNSEP15',
 };
 
 export const SHOWING_INFO_5: ShowingInfo = {
@@ -50,6 +50,6 @@ export const SHOWING_INFO_5: ShowingInfo = {
   showingTime24hour: '09:15',
   showingTime12hour: '9:15 AM',
   showingQuantity: '10',
-  showingWholeDate: 'Fri, Sep 17 2030',
-  showingDatePickerFormat: 'FRISEP17',
+  showingWholeDate: 'Tue, Sep 17 2030',
+  showingDatePickerFormat: 'TUESEP17',
 };

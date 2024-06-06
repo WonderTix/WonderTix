@@ -119,7 +119,7 @@ describe('Ticketing slice', () => {
     qty: 2,
     name: 'Event 1 Tickets',
     date: new Date('2030-07-31T19:00:00'),
-    desc: 'General Admission - Adult - Sat, Jul 31 - 7:00 PM',
+    desc: 'General Admission - Adult - Wed, Jul 31 - 7:00 PM',
     product_img_url: 'https://test.com/image.jpg',
     price: 20,
     fee: 0,
