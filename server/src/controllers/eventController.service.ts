@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
   getDate,
   InvalidInputError,
@@ -27,8 +28,28 @@ export interface LineItem {
   quantity: number;
 }
 
-export const checkout = async (req: Request, res: Response, purchaseSource: PurchaseSource, prisma: ExtendedPrismaClient) => {
-  const {ticketCartItems = [], subscriptionCartItems = [], formData, donation = 0, discount} = req.body;
+/**
+ * The primary logic that handles the checkout process.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {PurchaseSource} purchaseSource - Where the order is coming from (eg. online_ticketing)
+ * @param {ExtendedPrismaClient} prisma
+ * @return {Promise<Response>} - The response for the API to immediately return
+ */
+export const checkout = async (
+  req: Request,
+  res: Response,
+  purchaseSource: PurchaseSource,
+  prisma: ExtendedPrismaClient,
+): Promise<Response> => {
+  const {
+    ticketCartItems = [],
+    subscriptionCartItems = [],
+    formData,
+    donation = 0,
+    discount,
+  } = req.body;
   let checkoutSessionId: string | undefined;
   let order: orders | undefined;
   try {
@@ -38,25 +59,13 @@ export const checkout = async (req: Request, res: Response, purchaseSource: Purc
 
     const validatedContact = validateContact(formData);
 
-    const {
-      ticketCartRows,
-      orderTicketItems,
-      ticketTotal,
-      feeTotal,
-      eventInstanceQueries,
-    } = await getTicketItems(ticketCartItems, purchaseSource, prisma);
+    const {ticketCartRows, orderTicketItems, ticketTotal, feeTotal, eventInstanceQueries} =
+      await getTicketItems(ticketCartItems, purchaseSource, prisma);
 
-    const {
-      subscriptionCartRows,
-      orderSubscriptionItems,
-      subscriptionTotal,
-    } = await getSubscriptionItems(prisma, subscriptionCartItems);
+    const {subscriptionCartRows, orderSubscriptionItems, subscriptionTotal} =
+      await getSubscriptionItems(prisma, subscriptionCartItems);
 
-    const {
-      donationItem,
-      donationCartRow,
-      donationTotal,
-    } = getDonationItem(donation);
+    const {donationItem, donationCartRow, donationTotal} = getDonationItem(donation);
 
     const {feeCartRow} = getFeeItem(feeTotal);
 
@@ -68,36 +77,39 @@ export const checkout = async (req: Request, res: Response, purchaseSource: Purc
       cartRows = cartRows.concat([feeCartRow]);
     }
 
-    const {discountTotal, discountId}= await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
-    const orderSubtotal = ticketTotal + subscriptionTotal+ donationTotal;
+    const {discountTotal, discountId} = await getDiscountAmount(
+      prisma,
+      discount,
+      ticketTotal,
+      ticketCartItems,
+    );
+    const orderSubtotal = ticketTotal + subscriptionTotal + donationTotal;
 
-    if (orderSubtotal + feeTotal - discountTotal > .49) {
-      checkoutSessionId = await createStripeCheckoutSession(
-        validatedContact,
-        cartRows,
-        {...discount, amountOff: discountTotal},
-      );
+    if (orderSubtotal + feeTotal - discountTotal > 0.49) {
+      checkoutSessionId = await createStripeCheckoutSession(validatedContact, cartRows, {
+        ...discount,
+        amountOff: discountTotal,
+      });
     } else if (orderSubtotal + feeTotal - discountTotal > 0) {
-      return res.status(400).json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
+      return res
+        .status(400)
+        .json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
     }
 
-    order = await orderFulfillment(
-      prisma,
-      {
-        orderStatus: checkoutSessionId ? state.in_progress : state.completed,
-        orderSource: purchase_source[purchaseSource as keyof typeof purchase_source],
-        checkoutSession: checkoutSessionId,
-        discountId,
-        orderSubtotal,
-        discountTotal,
-        feeTotal,
-        orderTicketItems,
-        donationItem,
-        orderSubscriptionItems,
-        eventInstanceQueries,
-        ...(!checkoutSessionId && await updateContact(prisma, validatedContact)),
-      },
-    );
+    order = await orderFulfillment(prisma, {
+      orderStatus: checkoutSessionId ? state.in_progress : state.completed,
+      orderSource: purchase_source[purchaseSource as keyof typeof purchase_source],
+      checkoutSession: checkoutSessionId,
+      discountId,
+      orderSubtotal,
+      discountTotal,
+      feeTotal,
+      orderTicketItems,
+      donationItem,
+      orderSubscriptionItems,
+      eventInstanceQueries,
+      ...(!checkoutSessionId && (await updateContact(prisma, validatedContact))),
+    });
 
     return res.json({id: checkoutSessionId ?? 'comp'});
   } catch (error) {

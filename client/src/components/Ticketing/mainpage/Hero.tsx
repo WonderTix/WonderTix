@@ -46,7 +46,7 @@ const Hero = (): ReactElement => {
   return (
     <main className='w-full bg-fixed bg-cover bg-hero'>
       <div className='w-full bg-gradient-to-r from-black'>
-        <section className='flex flex-col gap-16 max-w-[450px] md:max-w-[1200px] py-[11em] md:py-[12em] mx-auto'>
+        <section className='flex flex-col gap-16 max-w-[450px] md:max-w-[1200px] min-h-screen py-[11em] md:py-[12em] mx-auto'>
           <h1 className='font-black text-zinc-100 text-6xl md:text-8xl mx-auto drop-shadow-lg pb-4 md:py-12'>
             Events
           </h1>

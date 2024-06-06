@@ -120,17 +120,16 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
         };
       }
     });
-    res.send({data: {allIds, byId}});
+
+    return res.send({data: {allIds, byId}});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).send({error: error.message});
-      return;
+      return res.status(400).send({error: error.message});
     }
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).send({error: error.message});
-      return;
+      return res.status(400).send({error: error.message});
     }
-    res.status(500).send({error: 'Internal Server Error'});
+    return res.status(500).send({error: 'Internal Server Error'});
   }
 });
 

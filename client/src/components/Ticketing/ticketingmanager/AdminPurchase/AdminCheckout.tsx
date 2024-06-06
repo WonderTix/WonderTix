@@ -10,7 +10,6 @@ import {
   validateContactInputAdmin,
 } from '../../checkout/CheckoutUtils';
 import CompleteOrderForm from '../../checkout/CompleteOrderForm';
-import {useFetchToken} from '../Event/components/ShowingUtils';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -24,14 +23,12 @@ export default function AdminCheckout(): ReactElement {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const {token} = useFetchToken();
-
   const [appliedDiscount, setAppliedDiscount] = useState(null);
+  const [popUpMessage, setPopUpMessage] = useState('');
 
   const eventDataFromPurchase = location.state?.eventData || [];
   const cartItems = location.state?.cartItems || [];
-
-  const [popUpMessage, setPopUpMessage] = useState('');
+  const token = location.state?.token || null;
 
   const doCheckout = async (checkoutFormInfo: CheckoutContact) => {
     if (token) {
@@ -81,6 +78,8 @@ export default function AdminCheckout(): ReactElement {
           error.json ? (await error.json()).error : 'Checkout failed',
         );
       }
+    } else {
+      setPopUpMessage('Failed to authenticate. Please try again.');
     }
   };
 

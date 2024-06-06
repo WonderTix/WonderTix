@@ -146,14 +146,6 @@ export const baseContact: CheckoutContact = {
   newsletter: true,
 };
 
-// This type mirrors the /server PurchaseSource version in PurchaseSource.ts
-export enum orderSource {
-  online_ticketing = 'online_ticketing',
-  online_donation = 'online_donation',
-  admin_ticketing = 'admin_ticketing',
-  card_reader = 'card_reader',
-}
-
 export const readableOrderSource = {
   online_ticketing: 'Standard Purchase',
   online_donation: 'Standard Donation',

@@ -89,14 +89,12 @@ ticketRestrictionController.get('/', async (req: Request, res: Response) => {
     );
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-    res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
@@ -260,14 +258,12 @@ ticketRestrictionController.get('/:id', async (req: Request, res: Response) => {
     );
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-    res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 

@@ -433,7 +433,7 @@ const AdminPurchase = () => {
           console.error(error);
         });
     } else {
-      navigate('/ticketing/admincheckout', {state: {cartItems, eventData}});
+      navigate('/ticketing/admincheckout', {state: {cartItems, eventData, token}});
     }
   };
 
