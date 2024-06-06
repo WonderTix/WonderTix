@@ -112,7 +112,7 @@ const TransactionTotalsComponent: React.FC<APIEventsComponentProps> = ({begin_da
                 const patron_tech = 0.00;
                 // Calculating some totals
                 const ticket_total = (buyer_price * qty_sold) + fee_fee + order_fee + deliv_fee + exch_fee;
-                const total_price = ticket_total; // + donations;
+                const total_price = ticket_total;
                 const net_total = total_price - dono_fulfil_ticket - patron_tech;
 
                 combinedData.total_price += total_price;
