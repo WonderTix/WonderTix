@@ -88,7 +88,6 @@ transactionSummaryController.get('/events', async (req: Request, res: Response) 
         const donations = await prisma.donations.findMany({
             include: {
                 order: true,  // Assuming you want to include related order details
-                donationdatetime: true
             },
         });
         return res.json(donations);

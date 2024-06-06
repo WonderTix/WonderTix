@@ -162,10 +162,10 @@ const TransactionTotalsComponent: React.FC<APIEventsComponentProps> = ({begin_da
         {id: 6, title: 'Order Fees', cost: totals.order_fee.toFixed(2)},
         {id: 7, title: 'Delivery Fees', cost: totals.delivery_fee.toFixed(2)},
         {id: 8, title: 'Exchange Fees', cost: totals.exchange_fee.toFixed(2)},
-        {id: 9, title: 'Fees', cost: totals.total_fees.toFixed(2)},
-        {id: 10, title: 'Donated Fulfillment Tickets', cost: totals.dono_fulfil_ticket.toFixed(2)},
-        {id: 11, title: 'Donations', cost: totals.total_donations.toFixed(2)},
-        {id: 12, title: 'Patron Tech Fee', cost: totals.tech_fee.toFixed(2)},
+        {id: 9, title: 'Patron Tech Fee', cost: totals.tech_fee.toFixed(2)},
+        {id: 10, title: 'Fees', cost: totals.total_fees.toFixed(2)},
+        {id: 11, title: 'Donated Fulfillment Tickets', cost: totals.dono_fulfil_ticket.toFixed(2)},
+        {id: 12, title: 'Donations', cost: totals.total_donations.toFixed(2)},
         {id: 13, title: 'Net Total', cost: totals.net_total.toFixed(2)},
     ];
 

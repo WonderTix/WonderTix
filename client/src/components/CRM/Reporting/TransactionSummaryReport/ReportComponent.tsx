@@ -61,28 +61,28 @@ const ReportComponent = ({filterData}) => {
           {' '}
           Event Totals by Payment Method
         </h1>
-        <EventTotalsByPaymentComponent />
+        <EventTotalsByPaymentComponent begin_date={start} end_date={end} />
       </div>
       <div className='px-4'>
         <h1 className='font-bold text-2xl py-2'>
           {' '}
           Order-Level Fees by Payment Method
         </h1>
-        <OrderLevelFeesByPaymentComponent />
+        <OrderLevelFeesByPaymentComponent begin_date={start} end_date={end} />
       </div>
       <div className='px-4'>
         <h1 className='font-bold text-2xl py-2'>
           {' '}
           Donations by Payment Type
         </h1>
-        <DonationsByPaymentComponent />
+        <DonationsByPaymentComponent begin_date={start} end_date={end} />
       </div>
       <div className='px-4'>
         <h1 className='font-bold text-2xl py-2'>
           {' '}
           Donations by Record Type & Payment Type
         </h1>
-        <DonationsByRecordAndPaymentComponent />
+        <DonationsByRecordAndPaymentComponent begin_date={start} end_date={end} />
       </div>
       <Divider sx={{backgroundColor: 'darkgrey'}} />
     </div>
