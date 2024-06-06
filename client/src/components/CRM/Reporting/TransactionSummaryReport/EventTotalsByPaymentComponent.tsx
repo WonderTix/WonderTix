@@ -139,7 +139,7 @@ const EventTotalsByPaymentComponent: React.FC<APIEventsComponentProps> = ({begin
                     disableColumnFilter={true}
                     hideFooter={true}
                     autoHeight={true}
-                    pageSize={6}
+                    pageSize={36}
                     sx={{
                         'border': 'none',
                         '& .MuiDataGrid-cell': {
@@ -163,7 +163,7 @@ const EventTotalsByPaymentComponent: React.FC<APIEventsComponentProps> = ({begin
                     disableColumnFilter={true}
                     hideFooter={true}
                     autoHeight={true}
-                    pageSize={3}
+                    pageSize={36}
                     sx={{
                         'border': 'none',
                         '& .MuiDataGrid-cell': {

@@ -107,7 +107,9 @@ const TransactionTotalsComponent: React.FC<APIEventsComponentProps> = ({begin_da
                 const deliv_fee = 0.00;
                 const exch_fee = 0.00;
                 // Adenum: These ones should be negative, as they should subtract from profit
-                // If these are not negative in the database, negate the value of the fetched data
+                // I'm basing these off of what I saw in the statically allocated example data
+                // If these specific fees are not supposed to be negative, make the appropriate
+                // Changes at 116 and 118
                 const dono_fulfil_ticket = 0.00;
                 const patron_tech = 0.00;
                 // Calculating some totals

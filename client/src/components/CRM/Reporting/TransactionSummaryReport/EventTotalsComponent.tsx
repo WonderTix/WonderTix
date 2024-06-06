@@ -116,7 +116,7 @@ const EventTotalsComponent: React.FC<APIEventsComponentProps> = ({begin_date, en
                 disableColumnFilter={true}
                 hideFooter={true}
                 autoHeight={true}
-                pageSize={11}
+                pageSize={36}
                 style={{borderRadius: 0}}
                 sx={{
                     '& .MuiDataGrid-cell': {
