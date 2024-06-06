@@ -27,7 +27,7 @@ const EventCard = (props: Event): ReactElement => {
   const navigate = useNavigate();
 
   const startEndDates =
-    startDate.substring(0, 10) === endDate.substring(0, 10)
+    new Date(startDate).toDateString() === new Date(endDate).toDateString()
       ? format(new Date(startDate), 'MMM d')
       : `${format(new Date(startDate), 'MMM d')} - ${format(
           new Date(endDate),
