@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 
 import FilterComponent from './FilterComponent';
 import ReportComponent from './ReportComponent';
-import APIEventsComponent from './Events/APIEvents';
 import AdminNavBar from '../../AdminNavBar';
 
 import {Box, Grid} from '@mui/material';
