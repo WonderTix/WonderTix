@@ -56,14 +56,14 @@ const ReportComponent = ({filterData}) => {
           <strong>Batch Date Range: </strong>
           {start} - {end}
         </h3>
-        <h3>
-          <strong>Grouped By Record Type: </strong>
+        {/*<h3>
+         <strong>Grouped By Record Type: </strong>
           {groupByRecordType}
         </h3>
         <h3>
           <strong>Grouped By: </strong>
           {primGrouping}, {secGrouping}
-        </h3>
+        </h3>*/}
       </div>
       <div className='px-4'>
         <APIEventsComponent begin_date={filterData.startDate.toDateString()} end_date={filterData.endDate.toDateString()}/>
