@@ -6,6 +6,7 @@ import {Divider, Button} from '@mui/material';
 
 import TableData from './Table/TableData';
 import TableHeader from './Table/TableHeader';
+import APIEventsComponent from './Events/APIEvents';
 
 const ReportComponent = ({filterData}) => {
   const header = {
@@ -65,11 +66,7 @@ const ReportComponent = ({filterData}) => {
         </h3>
       </div>
       <div className='px-4'>
-        <TableData
-          primGrouping={primGrouping}
-          secGrouping={secGrouping}
-          groupByRecordType={groupByRecordType}
-        />
+        <APIEventsComponent begin_date={filterData.startDate.toDateString()} end_date={filterData.endDate.toDateString()}/>
       </div>
       <Divider sx={{backgroundColor: 'darkgrey'}} />
     </div>

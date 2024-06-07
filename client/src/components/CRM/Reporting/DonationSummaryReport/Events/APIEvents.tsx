@@ -12,24 +12,17 @@ interface APIEventsComponentProps {
 
 const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_date}) => {
     const {getAccessTokenSilently} = useAuth0();
+    const beginDate = new Date(begin_date);
+    const endDate = new Date(end_date);
     const renderTooltipCell = (params) => (
         <BaseTooltip title={params.value}>
           <div>{params.value}</div>
         </BaseTooltip>
     );
     /** The purpose of this function is to check if the date is within the date range that the user inputs */
-    const isDateInRange = (begin_date: string, end_date:string, event_date: number) => {
-        const beginDateObj = new Date(begin_date);
-        const endDateObj = new Date(end_date);
-
-        const eventDateObj = new Date(
-            parseInt(event_date.toString().substring(0, 4)), // Year
-            parseInt(event_date.toString().substring(4, 6)) - 1, // Month (0-indexed)
-            parseInt(event_date.toString().substring(6, 8)), // Day
-        );
-
+    const isDateInRange = (begin_date: Date, end_date:Date, event_date: Date) => {
         // Check if event_date falls within the range
-        return eventDateObj >= beginDateObj && eventDateObj <= endDateObj;
+        return event_date >= begin_date && event_date <= end_date;
     };
 
     /** The purpose of this function is to display the event instance in a certain format
@@ -70,13 +63,20 @@ const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_
         return `${formattedDate}${day_suffix} at ${display_hours}:${minutes} ${ampm}`;
     }
 
+    /*
+    ?'. + new URLSearchParams({
+                begindate: begin_date,
+                enddate: end_date,
+            }),
+    */
+
     const getDonations = async () => {
         try {
             const token = await getAccessTokenSilently({
               audience: process.env.REACT_APP_ROOT_URL,
               scope: 'admin',
             });
-            fetch(process.env.REACT_APP_API_2_URL + '/donation', {
+            fetch(process.env.REACT_APP_API_2_URL + '/donation-overview', {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -90,10 +90,18 @@ const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_
                 return response.json();
             })
             .then((data) => {
+                // Filter dates
+                const info = data.filter((donation) =>
+                    isDateInRange(beginDate, endDate, new Date(donation.order.orderdatetime)),
+                );
+                return info;
+            })
+            .then((data) => {
                 const info = data.flatMap((donation, index) => {
-                    // console.log(donation);
+                    const date = new Date(donation.order.orderdatetime);
                     const donationInstance = {
                         id: index,
+                        donationdate: date.toDateString(),
                         donationid: donation.donationid,
                         orderid: donation.orderid_fk,
                         amount: donation.amount,
@@ -115,10 +123,11 @@ const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_
     end_date = end_date.split('/').join('-');
     useEffect(() => {
         getDonations();
-    });
+    }, [begin_date, end_date]);
 
     const header_columns: GridColDef[] = [
         // Define your columns here
+        {field: 'donationdate', headerName: 'Date', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
         {field: 'donationid', headerName: 'Donation', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
         {field: 'orderid', headerName: 'Order', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
         {field: 'amount', headerName: 'Amount', flex: 1.5, align: 'right', headerAlign: 'right', sortable: true, renderCell: renderTooltipCell},
