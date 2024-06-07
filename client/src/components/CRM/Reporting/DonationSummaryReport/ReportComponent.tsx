@@ -56,7 +56,7 @@ const ReportComponent = ({filterData}) => {
           <strong>Batch Date Range: </strong>
           {start} - {end}
         </h3>
-        {/*<h3>
+        {/* <h3>
          <strong>Grouped By Record Type: </strong>
           {groupByRecordType}
         </h3>

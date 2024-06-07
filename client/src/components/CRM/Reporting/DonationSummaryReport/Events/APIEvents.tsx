@@ -63,13 +63,6 @@ const APIEventsComponent: React.FC<APIEventsComponentProps> = ({begin_date, end_
         return `${formattedDate}${day_suffix} at ${display_hours}:${minutes} ${ampm}`;
     }
 
-    /*
-    ?'. + new URLSearchParams({
-                begindate: begin_date,
-                enddate: end_date,
-            }),
-    */
-
     const getDonations = async () => {
         try {
             const token = await getAccessTokenSilently({

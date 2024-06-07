@@ -82,7 +82,7 @@ const FilterComponent = ({filterData, onFilterChange, onFilterSubmit}) => {
             onStartDateChange={handleStartDateChange}
             onEndDateChange={handleEndDateChange}
           />
-          {/*<Divider
+          {/* <Divider
             sx={{
               backgroundColor: 'slate-100',
             }}

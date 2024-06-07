@@ -83,7 +83,6 @@ const DonationSummaryReportMain = () => {
                   height: '100%',
                 }}
               >
-                {/* displayReport && <APIEventsComponent begin_date={filterData.startDate.toDateString()} end_date={filterData.endDate.toDateString()}/>*/}
                 {displayReport && <ReportComponent filterData={filterData} />}
               </Box>
             </Grid>
