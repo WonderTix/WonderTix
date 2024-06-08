@@ -7,6 +7,7 @@ import AccountsMain from './components/CRM/Accounts/AccountsMain';
 import ContactMain from './components/CRM/Contacts/ContactMain';
 import {ContactOneResult} from './components/CRM/Contacts/ContactOneResult';
 import ReportingMain from './components/CRM/Reporting/ReportingMain';
+
 import TasksMain from './components/CRM/Tasks/TasksMain';
 import ManageAccountsmain from './components/CRM/Accounts/ManageUsers/ManageAccountsmain';
 import userSearchmain from './components/CRM/Accounts/SearchAccount/userSearchmain';
@@ -14,6 +15,11 @@ import DailySalesReportMain from './components/CRM/Reporting/DailySalesReport/Da
 import DonationSummaryReportMain from './components/CRM/Reporting/DonationSummaryReport/DonationSummaryReportMain';
 import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconciliationReport';
 import TransactionSummaryReport from './components/CRM/Reporting/TransactionSummaryReport/TransactionSummaryReport';
+
+/* Email */
+import EmailsMain from './components/CRM/Emails/EmailsMain';
+import {ParseShowing} from './components/CRM/Emails/ParseShowings';
+import SendEmail from './components/CRM/Emails/SendEmail';
 
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
@@ -48,6 +54,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Mainpage />} />
         <Route path='/events/:eventid' element={<EventShowingsmain />} />
+        <Route path='/admin/emails/:eventid' element={<ParseShowing />} />
         <Route path='/subscriptions/:seasonid' element={<SubscriptionMain />} />
         <Route path='/cart' element={<Cartmain />} />
         <Route path='/completeorder' element={<Checkoutmain />} />
@@ -91,6 +98,14 @@ const App = () => {
         <Route
           path='/admin/reporting'
           element={<ProtectedRoute component={ReportingMain} />}
+        />
+        <Route
+          path='/admin/emails'
+          element={<ProtectedRoute component={EmailsMain} />}
+        />
+        <Route
+          path='/admin/emails/send/:eventInfo'
+          element={<ProtectedRoute component={SendEmail} />}
         />
         <Route
           path='/admin/tasks'

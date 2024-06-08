@@ -8,7 +8,6 @@ const prisma = extendPrismaClient();
 
 export const contactController = Router();
 
-
 contactController.use(checkJwt);
 contactController.use(checkScopes);
 
@@ -253,21 +252,21 @@ contactController.get('/', async (req: Request, res: Response) => {
     if (req.query.donorbadge) {
       filters.push({
         donorbadge: {
-          equals: (req.query.donorbadge === 'true'),
+          equals: req.query.donorbadge === 'true',
         },
       });
     }
     if (req.query.vip) {
       filters.push({
         vip: {
-          equals: (req.query.vip === 'true'),
+          equals: req.query.vip === 'true',
         },
       });
     }
     if (req.query.volunteerlist) {
       filters.push({
         volunteerlist: {
-          equals: (req.query.volunteerlist === 'true'),
+          equals: req.query.volunteerlist === 'true',
         },
       });
     }
@@ -307,7 +306,7 @@ contactController.get('/', async (req: Request, res: Response) => {
 
 /**
  * @swagger
- * /emails:
+ * /2/contact/emails:
  *   get:
  *     summary: Get emails of contacts subscribed to the newsletter
  *     tags:
@@ -374,7 +373,6 @@ contactController.get('/emails', async (req: Request, res: Response) => {
     res.status(500).json({error: 'Internal Server Error'});
   }
 });
-
 
 /**
  * @swagger
@@ -528,61 +526,54 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
     }
 
     const {orders, ...remainderOfContact} = contact;
-    const flattenedOrders : any[] = [];
+    const flattenedOrders: any[] = [];
     contact.orders.forEach((order) => {
       const orderItemsMap = new Map<string, any>();
-      const
-        ticketItemsRefunded = order
-          .orderticketitems
-          .reduce<boolean>((acc, ticket) => {
-            if (!ticket.ticketitem) return acc;
-            const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}T${ticket.department}`;
-            const item = orderItemsMap.get(key);
-            if (item) {
-              item.quantity += 1;
-            } else {
-              orderItemsMap.set(key,
-                {
-                  price: ticket.price,
-                  fee: ticket.fee,
-                  refunded: ticket.refund !== null,
-                  redeemed: ticket.ticketitem.redeemed,
-                  donated: ticket.ticketitem.donated,
-                  description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
-                  department: ticket.department,
-                  eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
-                  eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
-                  eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
-                  detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
-                  seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
-                  tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
-                  quantity: 1,
-                });
-            }
-            return acc && ticket.refund !== null;
-          }, true);
+      const ticketItemsRefunded = order.orderticketitems.reduce<boolean>((acc, ticket) => {
+        if (!ticket.ticketitem) return acc;
+        const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}T${ticket.department}`;
+        const item = orderItemsMap.get(key);
+        if (item) {
+          item.quantity += 1;
+        } else {
+          orderItemsMap.set(key, {
+            price: ticket.price,
+            fee: ticket.fee,
+            refunded: ticket.refund !== null,
+            redeemed: ticket.ticketitem.redeemed,
+            donated: ticket.ticketitem.donated,
+            description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+            department: ticket.department,
+            eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
+            eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
+            eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
+            detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
+            seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
+            tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
+            quantity: 1,
+          });
+        }
+        return acc && ticket.refund !== null;
+      }, true);
 
-      const subscriptionItemsRefunded = order.subscriptions.reduce<boolean>(
-        (acc, sub) => {
-          const key = `${sub.price}S${sub.subscriptiontypeid_fk}S${sub.seasonid_fk}`;
-          const item = orderItemsMap.get(key);
-          if (item) {
-            item.quantity += 1;
-          } else {
-            orderItemsMap.set(key, {
-              id: sub.id,
-              price: sub.price,
-              refunded: sub.refund !== null,
-              subscriptionType: sub.seasonsubscriptiontype.subscriptiontype.name,
-              seasonName: sub.seasonsubscriptiontype.season.name,
-              ticketlimit: sub.seasonsubscriptiontype.ticketlimit,
-              quantity: 1,
-            });
-          }
-          return acc && sub.refund !== null;
-        },
-        true,
-      );
+      const subscriptionItemsRefunded = order.subscriptions.reduce<boolean>((acc, sub) => {
+        const key = `${sub.price}S${sub.subscriptiontypeid_fk}S${sub.seasonid_fk}`;
+        const item = orderItemsMap.get(key);
+        if (item) {
+          item.quantity += 1;
+        } else {
+          orderItemsMap.set(key, {
+            id: sub.id,
+            price: sub.price,
+            refunded: sub.refund !== null,
+            subscriptionType: sub.seasonsubscriptiontype.subscriptiontype.name,
+            seasonName: sub.seasonsubscriptiontype.season.name,
+            ticketlimit: sub.seasonsubscriptiontype.ticketlimit,
+            quantity: 1,
+          });
+        }
+        return acc && sub.refund !== null;
+      }, true);
 
       const flattenedDonation = {
         donationid: order.donation?.donationid,
@@ -597,7 +588,8 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         orderid: order.orderid,
         orderdatetime: order.orderdatetime,
         order_source: order.order_source,
-        ordertotal: Number(order.ordersubtotal) + Number(order.feetotal) - Number(order.discounttotal),
+        ordertotal:
+          Number(order.ordersubtotal) + Number(order.feetotal) - Number(order.discounttotal),
         feetotal: order.feetotal,
         discounttotal: order.discounttotal,
         refunded: ticketItemsRefunded && subscriptionItemsRefunded,
@@ -660,7 +652,7 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const validatedContact= validateContact({
+    const validatedContact = validateContact({
       ...req.body,
       newsletter: !!req.body.newsletter,
     });
