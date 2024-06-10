@@ -1,6 +1,6 @@
 import React from 'react';
-import defaultEventImage from '../assets/default_event_image.png';
-import defaultSeasonImage from '../assets/default_season_image.png';
+import defaultEventImage from '../assets/WTix_default_event.png';
+import defaultSeasonImage from '../assets/WTix_default_season.png';
 
 export const getEventImageDefault = (url?: string) => {
   if (url && url !== '' && url !== 'Default Event Image') {

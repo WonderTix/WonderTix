@@ -35,7 +35,7 @@ const DailySalesReport = (): React.ReactElement => {
         <div className='flex flex-col bg-slate-100 border-t-4 border-black rounded-b-none rounded'>
           <div className="flex justify-between items-center p-4 border-b">
             <h1 className='text-3xl font-bold bg-slate-100'>
-              Portland Playhouse Sales Reports
+              Sales Reports
             </h1>
             <div className="flex flex-wrap justify-end items-center">
               <button

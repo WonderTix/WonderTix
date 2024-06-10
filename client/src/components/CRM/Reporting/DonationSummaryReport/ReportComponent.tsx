@@ -9,7 +9,7 @@ import TableHeader from './Table/TableHeader';
 
 const ReportComponent = ({filterData}) => {
   const header = {
-    org: 'Portland Playhouse',
+    org: 'Your Business',
     range: 'Temp',
     groupByRecordType: 'No',
     primGrouping: 'None',

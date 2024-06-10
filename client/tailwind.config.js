@@ -18,7 +18,7 @@ module.exports = {
 
     extend: {
       backgroundImage: {
-        'hero': 'url(../src/assets/portland_playhouse_cover.jpg)',
+        'hero': 'url(../src/assets/Lights.jpg)',
       },
     },
   },

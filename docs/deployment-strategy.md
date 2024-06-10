@@ -33,7 +33,7 @@ Analogies can be helpful here, and considering our client, it seems appropriate 
 *Analogy*: Think of stg as a dress rehearsal where you can still pause the action if you need to. At this point you’ll be practicing on stage, bringing together costumes, sets, music, etc. You’ll put people in the audience to simulate giving a live performance. That errant trombonist will be in the pit, taking direction from the conductor and playing along with everyone else.
 
 **prd (production) environment**
-*Description*: The production environment is where our code is running and live, freely accessible by end users. This is where Portland Playhouse customers access the website and use the WonderTix application.
+*Description*: The production environment is where our code is running and live, freely accessible by end users. This is where customers access the website and use the WonderTix application.
 
 *Analogy*: Think of prd as the main performance where the audience is right in front of you and the show must go on. If an actor forgets his lines or the trombonist hits a wrong note, the audience is going to notice. If things get bad enough, people might walk out or want their money back.
 
