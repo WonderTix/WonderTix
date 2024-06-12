@@ -7,6 +7,7 @@ import {useAuth0} from '@auth0/auth0-react';
 import AuthNav from '../../Authentication/auth-nav';
 import AdminNavDropdown from '../ticketingmanager/AdminNavDropdown';
 import {SubscriptionNavDropdown} from './SubscriptionPurchasing/SubscriptionNavDropdown';
+
 interface NavbarProps {
   bMode?: boolean;
 }
@@ -19,15 +20,15 @@ interface NavbarProps {
  */
 const Navbar = ({bMode}: NavbarProps): ReactElement => {
   const [nav, setNav] = useState(false);
-  const handleClick = () => setNav(!nav);
-
   const [login, setLogin] = useState(false);
   const [profile, setProfile] = useState(false);
-  const {user, isAuthenticated} = useAuth0();
-  const {getIdTokenClaims} = useAuth0();
   const [admin, isAdmin] = useState(false);
+
+  const {user, isAuthenticated, getIdTokenClaims} = useAuth0();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+
+  const handleClick = () => setNav(!nav);
 
   let picture: any;
   let name: any;
@@ -49,15 +50,18 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
       isAdmin(true);
     }
   };
+
   useEffect(() => {
     showMenu();
   }, []);
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setProfile(false); // Close the dropdown
@@ -68,14 +72,18 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
     <div className='w-full h-[80px] z-10 bg-zinc-200 fixed drop-shadow-lg'>
       <div className='px-6 flex justify-between items-center w-full h-full'>
         <div className='w-full md:w-auto flex items-center justify-center md:justify-left gap-4'>
-
-          <img
-            className='w-12 h-full object-cover'
-            src={bgImg}
-            aria-hidden='true'
-            alt=''
-          />
-
+          <button
+            onClick={() => navigate('/')}
+            aria-label='Navigate to home'
+            className='ml-6 md:m-0'
+          >
+            <img
+              className='w-12 h-full object-cover'
+              src={bgImg}
+              aria-hidden='true'
+              alt=''
+            />
+          </button>
           <ul className='hidden md:flex'>
             <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
               {!bMode ? (
@@ -89,7 +97,9 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
                   Events
                 </Link>
               ) : (
-                <button onClick={() => navigate('/')} className="px-4 py-2">Events</button>
+                <button onClick={() => navigate('/')} className='px-4 py-2'>
+                  Events
+                </button>
               )}
             </li>
             <li className='hover:text-indigo-600 text-zinc-600 font-semibold transition duration-300 ease-in-out'>
@@ -149,8 +159,8 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
                     </svg>
                   </div>
                 </button>
-                {profile && (
-                  admin ? (
+                {profile &&
+                  (admin ? (
                     <AdminNavDropdown />
                   ) : (
                     <ul className='border-r bg-zinc-100 rounded shadow absolute w-full mt-6'>
@@ -158,8 +168,7 @@ const Navbar = ({bMode}: NavbarProps): ReactElement => {
                         <AuthNav />
                       </li>
                     </ul>
-                  )
-                )}
+                  ))}
               </div>
             ) : (
               <div className='flex px-5 flex-row gap-1 items-center text-zinc-500 font-semibold rounded-xl hover:text-indigo-500 transition duration-300 ease-in-out '>
