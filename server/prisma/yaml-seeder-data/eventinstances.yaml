@@ -4057,3 +4057,84 @@
   purchaseuri: http://null.com
   ispreview: false
   defaulttickettype: 1
+- eventid_fk: 36
+  eventdate: 20240105
+  eventtime: 23:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 69
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
+- eventid_fk: 36
+  eventdate: 20240106
+  eventtime: 19:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 43
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
+- eventid_fk: 36
+  eventdate: 20240107
+  eventtime: 19:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 45
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
+- eventid_fk: 37
+  eventdate: 20240202
+  eventtime: 23:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 40
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
+- eventid_fk: 37
+  eventdate: 20240203
+  eventtime: 25:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 37
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
+- eventid_fk: 37
+  eventdate: 20240204
+  eventtime: 29:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 20
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
+- eventid_fk: 38
+  eventdate: 20240301
+  eventtime: 23:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 26
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
+- eventid_fk: 38
+  eventdate: 20240302
+  eventtime: 27:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 31
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
+- eventid_fk: 38
+  eventdate: 20240303
+  eventtime: 28:00:00.000000 -08:00
+  salestatus: true
+  totalseats: 100
+  availableseats: 22
+  purchaseuri: http://null.com
+  ispreview: false
+  defaulttickettype: 1
