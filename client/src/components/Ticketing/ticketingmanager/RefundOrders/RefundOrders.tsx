@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useFetchToken} from '../Event/components/ShowingUtils';
 import PopUp from '../../PopUp';
 import format from 'date-fns/format';
+import {SearchIcon, UserIcon} from '../../Icons';
 
 export const formatUSD = (number) => {
   const formatter = new Intl.NumberFormat('en-us', {
@@ -24,6 +25,8 @@ const RefundOrders = () => {
     showSecondary: false,
     handleProceed: () => setShow({...show, showPopUp: false}),
     handleClose: () => setShow({...show, showPopUp: false}),
+    primaryLabel: 'Continue',
+    secondaryLabel: 'Close',
   });
 
   const setPopUp = (
@@ -31,8 +34,10 @@ const RefundOrders = () => {
     message: string,
     success: boolean,
     showPopUp: boolean,
-    handle,
-    secondary,
+    handle: () => void,
+    showSecondary: boolean,
+    primaryLabel: string,
+    secondaryLabel?: string,
   ) => {
     setShow({
       ...show,
@@ -41,7 +46,9 @@ const RefundOrders = () => {
       success,
       showPopUp,
       handleProceed: handle,
-      showSecondary: secondary,
+      showSecondary: showSecondary,
+      primaryLabel,
+      ...(secondaryLabel && {secondaryLabel: secondaryLabel}),
     });
   };
 
@@ -51,7 +58,7 @@ const RefundOrders = () => {
         `${process.env.REACT_APP_API_2_URL}/order/refund/${orderID}`,
         {
           credentials: 'include',
-          method: 'put',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -71,6 +78,7 @@ const RefundOrders = () => {
         true,
         show.handleClose,
         false,
+        'Continue',
       );
       setSubmitting(false);
     } catch (error) {
@@ -82,6 +90,7 @@ const RefundOrders = () => {
         true,
         show.handleClose,
         false,
+        'Continue',
       );
       setSubmitting(false);
     }
@@ -91,22 +100,16 @@ const RefundOrders = () => {
     event.preventDefault();
     const email = event.target[0].value;
     if (!email) {
-      setPopUp(
-        `Invalid Search`,
-        `Email required`,
-        false,
-        true,
-        show.handleClose,
-        false,
-      );
+      setOrders([]);
       return;
     }
+
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_2_URL}/order/refund?email=${email}`,
+        `${process.env.REACT_APP_API_2_URL}/order/refund?search=${email}`,
         {
           credentials: 'include',
-          method: 'get',
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -127,6 +130,7 @@ const RefundOrders = () => {
         true,
         show.handleClose,
         false,
+        'Continue',
       );
     }
   };
@@ -140,74 +144,52 @@ const RefundOrders = () => {
           handleProceed={show.handleProceed}
           success={show.success}
           showSecondary={show.showSecondary}
+          primaryLabel={show.primaryLabel}
+          secondaryLabel={show.secondaryLabel}
         />
       )}
-      <div className='w-full h-screen overflow-x-hidden absolute'>
+      <main className='w-full h-screen overflow-x-hidden absolute'>
         <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
           <h1 className='font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-700 to-yellow-200 mb-14'>
             Refund Orders
           </h1>
-          <form className='mb-4' onSubmit={onFetchOrders}>
-            <div className='flex'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='pointer-events-none h-5 w-5 absolute ml-6 mt-3'
-                viewBox='0 0 20 20'
-                fill='gray'
-              >
-                <path d='M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z' />
-                <path d='M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z' />
-              </svg>
-              <input // search button
-                type='email'
-                className='text-black border-2 border-gray rounded-l-full pl-12 w-80 py-2'
-                id='email'
-                placeholder='John_Smith@email.com'
-                aria-label='email'
-              />
-              <button id='email-search-input' type='submit' className='px-0'>
-                <div className='hover:bg-sky-500 w-20 rounded-r-full bg-indigo-500 hover:drop-shadow-md active:bg-sky-600'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    className='h-11 w-11 pl-6'
-                    viewBox='0 0 20 20'
-                    fill='white'
-                  >
-                    <path
-                      fillRule='evenodd'
-                      d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                </div>
-              </button>
-            </div>
+          <form
+            className='inline-flex mb-3 drop-shadow-sm'
+            onSubmit={onFetchOrders}
+          >
+            <UserIcon className='text-gray-500 pointer-events-none h-5 w-5 absolute ml-3 mt-3' />
+            <input
+              type='text'
+              className='text-zinc-800 border-y-2 border-l-2 border-gray rounded-l-lg pl-10 w-80 py-2'
+              id='name-email-input'
+              placeholder='Name or email'
+              aria-label='Name or email'
+            />
+            <button
+              id='order-search-input'
+              type='submit'
+              className='px-0 flex justify-center text-white items-center bg-zinc-800 hover:bg-zinc-700 w-12 rounded-r-lg hover:drop-shadow-md active:bg-zinc-600'
+              aria-label='Search'
+            >
+              <SearchIcon className='h-6 w-6' strokeWidth={2.5} />
+            </button>
           </form>
-          <table className={'w-full min-w-min'}>
+          <table className='w-full border-spacing-y-2 border-separate'>
             <thead>
-              <tr className='grid grid-cols-12 gap-2 bg-gray-200 h-18 rounded-lg shadow-md px-2 mb-2 font-bold whitespace-nowrap'>
-                <th className='row-start-1 justify-self-start p-2 col-span-2'>
-                  Name
-                </th>
-                <th className='row-start-1 justify-self-start p-2 col-span-1'>
-                  Order Date
-                </th>
-                <th className='row-start-1 justify-self-start pl-4 p-2 col-span-4'>
-                    Order Item(s)
-                </th>
-                <th className='row-start-1 justify-self-start p-2 col-span-2'>
-                  Donation
-                </th>
-                <th className='row-start-1 justify-self-start p-2 col-span-2'>
-                  Order Total
-                </th>
-                <th className='row-start-1 justify-self-center py-2 col-span-1'></th>
+              <tr className='bg-gray-200 drop-shadow-md font-bold whitespace-nowrap text-left'>
+                <th className='p-2 pl-4 rounded-l-lg'>Name</th>
+                <th className='p-2'>Email</th>
+                <th className='p-2'>Order Date</th>
+                <th className='p-2'>Order Item(s)</th>
+                <th className='p-2'>Donation</th>
+                <th className='p-2'>Order Total</th>
+                <th className='p-2 rounded-r-lg'></th>
               </tr>
             </thead>
             <tbody>
               {orders.length === 0 ? (
-                <tr className='text-center text-gray-600 grid grid-cols-6'>
-                  <td className={'col-span-6'}>
+                <tr className='text-center text-gray-600'>
+                  <td colSpan={7}>
                     <p>No Refundable Orders</p>
                   </td>
                 </tr>
@@ -215,39 +197,36 @@ const RefundOrders = () => {
                 orders.map((instance, index) => (
                   <tr
                     key={index}
-                    className='grid grid-cols-12 gap-2 bg-gray-200 rounded-lg shadow-md px-2 mb-2 hover:bg-gray-300'
+                    className='bg-gray-200 drop-shadow-md hover:bg-gray-300'
                   >
-                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-2'>
-                      {instance.name}
+                    <td className='pl-4 py-2 rounded-l-lg'>{instance.name}</td>
+                    <td className='pl-2 py-2'>{instance.email}</td>
+                    <td className='pl-2 py-2'>
+                      {format(new Date(instance.orderdate), 'MM/dd/yyyy')}
                     </td>
-                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-1'>
-                      {format(
-                        new Date(instance.orderdate),
-                        'MM/dd/yyyy',
-                      )}
-                    </td>
-                    <td className='row-start-1 justify-self-start pl-4 py-2 col-span-4'>
+                    <td className='pl-2 py-2'>
                       {instance.orderitems.length ? (
                         instance.orderitems.map((item, index) => (
-                          <p key={index}>{item.quantity} x {item.type} - <span className='italic'>{item.description}</span></p>
+                          <p key={index}>
+                            {item.quantity} x {item.type} -{' '}
+                            <span className='italic'>{item.description}</span>
+                          </p>
                         ))
                       ) : (
                         <p>No Refundable Order Items</p>
                       )}
                     </td>
-                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-2'>
+                    <td className='pl-2 py-2'>
                       {formatUSD(instance.donation ?? 0)}
                     </td>
-                    <td className='row-start-1 justify-self-start pl-2 py-2 col-span-2'>
-                      {formatUSD(instance.price)}
-                    </td>
-                    <td className='row-start-1 justify-self-start py-2 col-span-1'>
+                    <td className='pl-2 py-2'>{formatUSD(instance.price)}</td>
+                    <td className='py-2 px-2 rounded-r-lg'>
                       <button
                         disabled={submitting}
                         onClick={() =>
                           setPopUp(
                             'Confirm Refund',
-                            'Click continue to refund this order and any associated donation',
+                            'Click Refund to refund this order and any associated donation',
                             false,
                             true,
                             async () => {
@@ -257,14 +236,16 @@ const RefundOrders = () => {
                               return;
                             },
                             true,
+                            'Refund',
+                            'Cancel',
                           )
                         }
                         type='button'
                         className='bg-red-600 hover:bg-red-700 focus:ring-red-500
                           w-full inline-flex justify-center rounded-md border border-transparent
-                          shadow-sm px-1 py-2 text-base font-medium text-white
+                          shadow-sm px-3 py-2 text-base font-medium text-white
                           focus:outline-none focus:ring-2 focus:ring-offset-2
-                          tab:ml-3 tab:w-auto tab:text-sm disabled:bg-gray-500'
+                          tab:w-auto tab:text-sm disabled:bg-gray-500'
                       >
                         Refund
                       </button>
@@ -275,7 +256,7 @@ const RefundOrders = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </main>
     </>
   );
 };

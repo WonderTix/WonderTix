@@ -84,8 +84,8 @@ orderController.use(checkScopes);
  *     - New Order
  *     parameters:
  *     - in: query
- *       name: email
- *       description: Email associated with order
+ *       name: search
+ *       description: Search query to look for
  *       schema:
  *         type: string
  *     responses:
@@ -106,10 +106,14 @@ orderController.use(checkScopes);
  */
 orderController.get('/refund', async (req: Request, res: Response) => {
   try {
-    const {email} = req.query;
-    if (!email || typeof email !== 'string') {
-      return res.status(400).send('Email Required');
+    const {search} = req.query;
+    if (!search || typeof search !== 'string' || search.trim().length === 0) {
+      return res.status(400).send('Search String Required');
     }
+
+    const searchTokens = search.trim().split(' ');
+    const isSingleSearchTerm = searchTokens.length === 1;
+
     const orders = await prisma.orders.findMany({
       where: {
         order_status: state.completed,
@@ -134,9 +138,52 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             },
           },
         ],
-        contacts: {
-          email: {contains: email},
-        },
+        AND:
+          isSingleSearchTerm ? {
+            OR: [
+              {
+                contacts: {
+                  firstname: {
+                    contains: searchTokens[0],
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                contacts: {
+                  lastname: {
+                    contains: searchTokens[0],
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                contacts: {
+                  email: {
+                    contains: searchTokens[0],
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            ],
+          } : [
+            {
+              contacts: {
+                firstname: {
+                  contains: searchTokens[0],
+                  mode: 'insensitive',
+                },
+              },
+            },
+            {
+              contacts: {
+                lastname: {
+                  contains: searchTokens[1],
+                  mode: 'insensitive',
+                },
+              },
+            },
+          ],
       },
       include: {
         contacts: {
@@ -185,6 +232,9 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             refund: null,
           },
         },
+      },
+      orderBy: {
+        orderdatetime: 'desc',
       },
     });
 
