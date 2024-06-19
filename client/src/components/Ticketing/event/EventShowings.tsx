@@ -2,18 +2,25 @@ import React, {ReactElement, useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../app/hooks';
 import {useNavigate, useParams} from 'react-router-dom';
 import {titleCase} from '../../../utils/arrays';
-import {fetchTicketingData, selectEventData} from '../ticketingmanager/ticketingSlice';
+import {
+  fetchTicketingData,
+  selectEventData,
+} from '../ticketingmanager/ticketingSlice';
 import TicketPicker from './TicketPicker';
 import PopUp from '../PopUp';
-import {EventImage, getEventImageDefault} from '../../../utils/imageURLValidation';
-import {SmallBackIcon} from '../Icons';
+import {
+  EventImage,
+  getEventImageDefault,
+} from '../../../utils/imageURLValidation';
 import Label from '../Label';
 import {LoadingScreen} from '../mainpage/LoadingScreen';
 
 /**
  * EventPageProps - Used to hold data (uses url params rather than props)
  */
-type EventPageProps = {eventid: string};
+type EventPageProps = {
+  eventid: string;
+};
 
 /**
  * Page for an individual event.
@@ -39,7 +46,7 @@ const EventShowings = (): ReactElement => {
 
   useEffect(() => {
     // If event cannot be found, go to 404 page
-    if (!loading && eventData === undefined) {
+    if (!loading && !eventData) {
       navigate('not-found');
     }
   }, [loading]);
@@ -70,6 +77,21 @@ const EventShowings = (): ReactElement => {
     document.body.style.overflow = '';
   };
 
+  const EventDescription = ({
+    description,
+    className,
+  }: {
+    description: string | undefined;
+    className: string;
+  }) => (
+    <p className={`flex flex-col max-w-2xl ${className}`}>
+      <span className='text-zinc-300 font-semibold text-md tracking-wider'>
+        DESCRIPTION
+      </span>
+      <span className='text-zinc-100 text-xl'>{description}</span>
+    </p>
+  );
+
   return !eventData ? (
     <LoadingScreen />
   ) : (
@@ -82,41 +104,40 @@ const EventShowings = (): ReactElement => {
           )}),url(${getEventImageDefault()})`,
         }}
       >
-        <div className='flex flex-col gap-9 min-h-[calc(100vh-233px)] md:min-h-[calc(100vh-142px)] items-center backdrop-blur-sm bg-zinc-900/80 px-[1rem] py-[5rem] tab:px-[5rem] md:px-[8rem]'>
-          <button
-            onClick={() => navigate('/')}
-            className='bg-blue-600 mt-10 hover:bg-blue-700 px-3 py-2 rounded-lg flex items-center gap-1 self-start text-white
-            disabled:opacity-40 shadow-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-          >
-            <SmallBackIcon className='h-6 w-6' />
-            back to Events
-          </button>
-          <div className='flex flex-col md:gap-12 md:flex-row bg-zinc-700/30 p-9 rounded-xl'>
-            <EventImage
-              src={eventData.imageurl}
-              className='w-[75%] tab:w-[55%] md:w-[35%] lg:w-[25%] self-center h-auto rounded-xl'
-              title={eventData.title}
-            />
-            <div className='my-3'>
-              <h1
-                data-testid='event-title'
-                className='flex flex-col-reverse tab:flex-row gap-3 items-baseline text-white text-4xl font-bold'
-              >
-                {eventData.soldOut && (
-                  <Label className='text-3xl' color='slate'>
-                    SOLD OUT
-                  </Label>
-                )}
-                {titleCase(eventData.title)}
-              </h1>
-              <p className='text-zinc-200 font-semibold text-2xl mt-6'>
-                Event description
-              </p>
-              <p className='text-zinc-100 text-xl pr-7'>
-                {eventData.description ? eventData.description : ''}
-              </p>
+        <div
+          className='flex flex-col gap-9 min-h-[calc(100vh-233px)] md:min-h-[calc(100vh-142px)]
+          items-center bg-gradient-to-r from-black to-zinc-900/70 px-[1rem] py-[5rem] tab:px-[3rem] md:px-[8rem]'
+        >
+          <section className='bg-zinc-200/20 shadow-md p-8 mt-9 rounded-xl backdrop-blur-md w-full flex flex-col gap-8'>
+            {eventData.soldOut && (
+              <Label className='text-2xl' color='slate'>
+                SOLD OUT
+              </Label>
+            )}
+            <div className='flex gap-6 tab:gap-8 md:gap-12 items-center'>
+              <EventImage
+                src={eventData.imageurl}
+                className='self-center w-auto max-h-44 tab:max-h-56 max-w-[7rem] tab:max-w-[13rem] rounded-md'
+                title={eventData.title}
+              />
+              <div className='flex flex-col gap-5'>
+                <h1
+                  data-testid='event-title'
+                  className='text-white font-extrabold text-4xl md:text-5xl'
+                >
+                  {titleCase(eventData.title)}
+                </h1>
+                <EventDescription
+                  description={eventData.description}
+                  className='hidden tab:flex'
+                />
+              </div>
             </div>
-          </div>
+            <EventDescription
+              description={eventData.description}
+              className='tab:hidden'
+            />
+          </section>
           <TicketPicker
             isEventSoldOut={eventData.soldOut}
             onSubmit={handleSubmit}

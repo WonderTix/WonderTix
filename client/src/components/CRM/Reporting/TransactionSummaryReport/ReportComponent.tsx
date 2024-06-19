@@ -12,7 +12,7 @@ import DonationsByRecordAndPaymentComponent from './DonationsByRecordAndPaymentC
 import {Divider, Button} from '@mui/material';
 
 const ReportComponent = ({filterData}) => {
-  const header = {org: 'Portland Playhouse', range: ''};
+  const header = {org: 'Your Business', range: ''};
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
 

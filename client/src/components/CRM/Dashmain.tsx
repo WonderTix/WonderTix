@@ -1,6 +1,6 @@
 import React, {ReactElement} from 'react';
 import Dashboard from './Dashboard';
-import Navigation from './Navigation';
+import AdminNavBar from './AdminNavBar';
 
 /**
  * @returns {ReactElement} Dashmain - has Navigation
@@ -9,7 +9,7 @@ import Navigation from './Navigation';
 const Dashmain = (): ReactElement => {
   return (
     <main className='flex flex-row'>
-      <Navigation />
+      <AdminNavBar />
       <Dashboard />
     </main>
   );

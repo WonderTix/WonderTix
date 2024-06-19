@@ -3,7 +3,12 @@ import {useNavigate} from 'react-router-dom';
 import {Tooltip} from '@mui/material';
 import PopUp from '../../Ticketing/PopUp';
 import ContactPopUp from './ContactPopUp';
-import {Contact, editContact, deleteContact} from './contactUtils';
+import {
+  Contact,
+  editContact,
+  deleteContact,
+  getFormattedPhoneNumber,
+} from './contactUtils';
 import format from 'date-fns/format';
 
 interface ContactCardProps {
@@ -178,7 +183,7 @@ const ContactCard = ({
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Phone:</span>
-          <span data-testid='contact-phone'>{phone}</span>
+          <span data-testid='contact-phone'>{getFormattedPhoneNumber(phone)}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Address:</span>

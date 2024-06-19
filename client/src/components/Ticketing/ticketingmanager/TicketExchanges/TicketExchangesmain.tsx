@@ -1,11 +1,11 @@
 import React from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import TicketExchanges from './TicketExchanges';
 
 const TicketExchangesmain = () => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav/>
+      <TicketingNavBar/>
       <TicketExchanges/>
     </div>
   );

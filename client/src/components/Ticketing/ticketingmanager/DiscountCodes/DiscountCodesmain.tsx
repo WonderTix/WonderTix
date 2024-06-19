@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import Udash_nav from '../udash_navbar';
+import TicketingNavBar from '../TicketingNavBar';
 import DiscountCodes from './DiscountCodes';
 
 /**
@@ -11,7 +11,7 @@ import DiscountCodes from './DiscountCodes';
 const DiscountCodesmain = (): ReactElement => {
   return (
     <div className='flex flex-row'>
-      <Udash_nav />
+      <TicketingNavBar />
       <DiscountCodes />
     </div>
   );
