@@ -455,7 +455,10 @@ export const validateDiscount = async (discount: any, cartItems: TicketCartItem[
 
   const existingDiscount = await prisma.discounts.findFirst({
     where: {
-      code: discount.code,
+      code: {
+        equals: discount.code,
+        mode: 'insensitive',
+      },
       active: true,
       deletedat: null,
     },

@@ -55,7 +55,7 @@ const DiscountCodes = (): ReactElement => {
             onChange={() =>
               handleActivateDiscountCode({
                 discountId: params.row.discountid,
-                code: params.row.code.toUpperCase(),
+                code: params.row.code,
                 active: !params.row.active,
                 amount: params.row.amount,
                 percent: params.row.percent,
@@ -128,7 +128,7 @@ const DiscountCodes = (): ReactElement => {
                 onSubmit: handleEditDiscountCode,
                 values: {
                   discountId: cell.row.discountid,
-                  code: cell.row.code.toUpperCase(),
+                  code: cell.row.code,
                   active: cell.row.active,
                   amount: cell.row.amount,
                   percent: cell.row.percent,

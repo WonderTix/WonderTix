@@ -36,7 +36,10 @@ discountController.get('/code/:code', async (req: Request, res: Response) => {
   try {
     const code = req.params.code;
     const filters: any = {
-      code: code,
+      code: {
+        equals: code,
+        mode: 'insensitive',
+      },
       deletedat: null,
     };
 
@@ -46,12 +49,12 @@ discountController.get('/code/:code', async (req: Request, res: Response) => {
       };
     }
 
-    const discountRaw = await prisma.discounts.findUnique({
+    const discountRaw = await prisma.discounts.findFirst({
       where: filters,
     });
 
     if (!discountRaw) {
-      return res.status(404).json({error: 'discount not found'});
+      return res.status(404).json({error: 'Discount not found'});
     }
 
     const {deletedat, ...discount} = discountRaw;
@@ -115,6 +118,7 @@ discountController.get('/', async (req: Request, res: Response) => {
     if (req.query.code) {
       filters.code = {
         equals: req.query.code,
+        mode: 'insensitive',
       };
     }
     if (req.query.active) {
@@ -192,7 +196,7 @@ discountController.get('/:id', async (req: Request, res: Response) => {
     });
 
     if (!discountRaw) {
-      return res.status(404).json({error: 'discount not found'});
+      return res.status(404).json({error: 'Discount not found'});
     }
 
     const {deletedat, ...discount} = discountRaw;
@@ -270,7 +274,7 @@ discountController.post('/', async (req: Request, res: Response) => {
     // Attempt to create discount
     const discount = await prisma.discounts.create({
       data: {
-        code: req.body.code,
+        code: req.body.code.toUpperCase(),
         active: req.body.active,
         amount: amount,
         percent: percent,
@@ -352,7 +356,7 @@ discountController.put('/:id', async (req: Request, res: Response) => {
         discountid: Number(id),
       },
       data: {
-        code: req.body.code,
+        code: req.body.code.toUpperCase(),
         active: req.body.active,
         amount: req.body.amount,
         percent: req.body.percent,
@@ -417,7 +421,7 @@ discountController.delete('/:id', async (req: Request, res: Response) => {
     });
 
     if (!discount) {
-      return res.status(404).json({error: 'discount not found'});
+      return res.status(404).json({error: 'Discount not found'});
     }
 
     if (discount.orders.length > 0) {

@@ -31,7 +31,7 @@ export const createDiscountCode = async (
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          code: discountCode.code.toUpperCase(),
+          code: discountCode.code,
           active: discountCode.active,
           amount: discountCode.amount ? Number(discountCode.amount) : null,
           percent: discountCode.percent ? Number(discountCode.percent) : null,
@@ -96,7 +96,7 @@ export const editDiscountCode = async (
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          code: discountCode.code.toUpperCase(),
+          code: discountCode.code,
           active: discountCode.active,
           amount: discountCode.amount ? Number(discountCode.amount) : null,
           percent: discountCode.percent ? Number(discountCode.percent) : null,
