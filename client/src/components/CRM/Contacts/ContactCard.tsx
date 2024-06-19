@@ -65,15 +65,13 @@ const ContactCard = ({
   const [errorMsg, setErrorMsg] = useState(null);
 
   const handleEditCustomer = async (contact: Contact) => {
-    const responseCode = await editContact(contact, contactId, token);
-    if (responseCode === 204) {
+    const responseErrorMsg = await editContact(contact, contactId, token);
+    if (!responseErrorMsg) {
       setShowEditPopUp(false);
       setErrorMsg(null);
       void onRefresh();
-    } else if (responseCode === 400) {
-      setErrorMsg('Contact with email already exists');
     } else {
-      setErrorMsg('Failed to edit contact');
+      setErrorMsg(responseErrorMsg);
     }
   };
 
@@ -172,7 +170,9 @@ const ContactCard = ({
         </header>
         <p className='flex flex-row gap-3 text-lg mt-5 w-full'>
           <span className='font-semibold'>Full Name:</span>
-          <span data-testid='contact-name'>{first} {last}</span>
+          <span data-testid='contact-name'>
+            {first} {last}
+          </span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Contact ID:</span>
@@ -184,7 +184,9 @@ const ContactCard = ({
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Phone:</span>
-          <span data-testid='contact-phone'>{getFormattedPhoneNumber(phone)}</span>
+          <span data-testid='contact-phone'>
+            {getFormattedPhoneNumber(phone)}
+          </span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Address:</span>
@@ -207,6 +209,10 @@ const ContactCard = ({
           <span data-testid='contact-postalCode'>{postalCode}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
+          <span className='font-semibold'>Visit Source:</span>
+          <span data-testid='contact-visitSource'>{visitSource}</span>
+        </p>
+        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Seating Accommodation:</span>
           <span data-testid='contact-accommodation'>{seatingAcc}</span>
         </p>
@@ -215,13 +221,9 @@ const ContactCard = ({
           <span data-testid='contact-comments'>{comments}</span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
-          <span className='font-semibold'>Visit Source:</span>
-          <span data-testid='contact-visitSource'>{visitSource}</span>
-        </p>
-        <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Newsletter:</span>
           <span data-testid='contact-newsletter'>
-            {newsletter? `Since ${format(new Date(newsletter), 'Pp')}`: 'No'}
+            {newsletter ? `Since ${format(new Date(newsletter), 'Pp')}` : 'No'}
           </span>
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
@@ -242,7 +244,9 @@ const ContactCard = ({
         </p>
         <p className='flex flex-row gap-3 text-lg mt-2 w-full'>
           <span className='font-semibold'>Created Date:</span>
-          <span data-testid='contact-created-datetime'>{format(new Date(createdDate), 'Pp')}</span>
+          <span data-testid='contact-created-datetime'>
+            {format(new Date(createdDate), 'Pp')}
+          </span>
         </p>
         {showMoreButton && (
           <button

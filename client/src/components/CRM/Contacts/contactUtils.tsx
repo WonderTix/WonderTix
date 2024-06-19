@@ -25,6 +25,7 @@ export type Contact = {
   country: string;
   postalCode: string;
   comments: string;
+  visitSource: string;
   seatingAcc: string;
   otherSeatingAcc?: string;
   newsletter: Date | null;
@@ -48,6 +49,7 @@ export const emptyContact: Contact = {
   country: '',
   postalCode: '',
   comments: '',
+  visitSource: '',
   seatingAcc: 'None',
   newsletter: null,
   vip: false,
@@ -117,6 +119,7 @@ export const editContact = async (
           donorbadge: contact.donorBadge,
           seatingaccom: contact.seatingAcc,
           comments: contact.comments,
+          visitsource: contact.visitSource,
           vip: contact.vip,
           volunteerlist: contact.volunteerList,
           newsletter: contact.newsletter,
@@ -125,12 +128,11 @@ export const editContact = async (
     );
 
     if (!response.ok) {
-      console.error('Failed to update contact');
+      throw response;
     }
-    return response.status;
-  } catch (error) {
-    console.error(error);
     return null;
+  } catch (error) {
+    return error.json ? (await error.json()).error : 'Failed to edit contact';
   }
 };
 
@@ -269,7 +271,7 @@ export const columns: GridColDef[] = [
       const {address, city, state, country, postalcode} = params.row;
       const title = `${address ?? ''} ${city ?? ''}${
         address || city ? ',' : ''
-      }${state ?? ''} ${postalcode ?? ''} ${country ?? ''}`;
+      } ${state ?? ''} ${postalcode ?? ''} ${country ?? ''}`;
       return (
         <Tooltip title={title} placement='top' enterDelay={200}>
           <p className='truncate'>{title}</p>

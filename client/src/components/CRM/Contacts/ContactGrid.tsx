@@ -78,6 +78,7 @@ const ContactGrid = () => {
             country: contact.country,
             postalcode: contact.postalCode,
             donorbadge: contact.donorBadge,
+            visitsource: contact.visitSource,
             seatingaccom: contact.seatingAcc,
             comments: contact.comments,
             vip: contact.vip,
@@ -88,18 +89,14 @@ const ContactGrid = () => {
       );
 
       if (!response.ok) {
-        if (response.status === 400) {
-          throw new Error('Contact with email already exists');
-        } else {
-          throw new Error('Failed to create contact');
-        }
+        throw response;
       }
 
       const data = await response.json();
       navigate(`/admin/contacts/show/${data.contactid}`);
     } catch (error) {
-      setContactPopUpErrMsg(error.message);
-      console.error(error);
+      const errorMessage = error.json ? (await error.json()).error : 'Failed to create contact';
+      setContactPopUpErrMsg(errorMessage);
     }
   }, [token]);
 

@@ -59,17 +59,18 @@ contactController.post('/', async (req: Request, res: Response) => {
     return res.status(201).json({...contact, newsletter: !!contact.newsletter});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
 
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
 
-    res.status(500).json({error: 'Internal Server Error'});
-    return;
+    if (error instanceof Error) {
+      return res.status(400).json({error: error.message});
+    }
+
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 
@@ -512,9 +513,15 @@ contactController.put('/:id', async (req: Request, res: Response) => {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return res.status(400).json({error: error.message});
     }
+
     if (error instanceof Prisma.PrismaClientValidationError) {
       return res.status(400).json({error: error.message});
     }
+
+    if (error instanceof Error) {
+      return res.status(400).json({error: error.message});
+    }
+
     return res.status(500).json({error: 'Internal Server Error'});
   }
 });
