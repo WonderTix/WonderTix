@@ -12,7 +12,7 @@ import {Divider, Button} from '@mui/material';
 // EXPORT TO EXCEL NOT FUNCTIONAL
 
 const ReportComponent = ({filterData}) => {
-  const header = {'org': 'Portland Playhouse', 'range': 'Temp'};
+  const header = {'org': 'Your Business', 'range': 'Temp'};
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
 

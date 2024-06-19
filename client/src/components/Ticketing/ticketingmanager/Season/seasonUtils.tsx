@@ -1,5 +1,5 @@
 import React from 'react';
-import defaultSeasonImage from '../../../../assets/default_season_image.png';
+import defaultSeasonImage from '../../../../assets/WTix_default_season.png';
 
 export const formatSeasonDate = (date: number, fromApiResponse = false) => {
   const dateStr = date.toString();

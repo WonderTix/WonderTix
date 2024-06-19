@@ -76,12 +76,12 @@ export const SeasonSubscriptions = (props: SeasonSubscriptionsProps) => {
             </ImageCarousel>
           </div>
           <div
-            className={`col-span-12 min-[1300px]:col-span-6 flex flex-col gap-3 overflow-y-scroll
-                        ${
-                          season.seasonsubscriptiontypes.length > 3
-                            ? 'pt-4 max-[1300px]'
-                            : ''
-                        }justify-center max-lg:mb-4 items-center min-[1300px]:max-h-[400px]`}
+            className={`col-span-12 min-[1300px]:col-span-6 flex flex-col gap-3 overflow-y-auto
+                       ${
+                         season.seasonsubscriptiontypes.length > 3
+                           ? ' pt-4 max-[1300px]'
+                           : ''
+                       } justify-center max-lg:mb-4 items-center min-[1300px]:max-h-[400px]`}
           >
             {season.seasonsubscriptiontypes.map((option) => (
               <SubscriptionOption

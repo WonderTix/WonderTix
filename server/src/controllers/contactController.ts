@@ -49,26 +49,6 @@ contactController.use(checkScopes);
  */
 contactController.post('/', async (req: Request, res: Response) => {
   try {
-    const contact = await prisma.contacts.create({
-      data: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        country: req.body.country,
-        postalcode: req.body.postalcode,
-        donorbadge: req.body.donorbadge,
-        seatingaccom: req.body.seatingaccom,
-        comments: req.body.comments,
-        visitsource: req.body.visitsource,
-        vip: req.body.vip,
-        volunteerlist: req.body.volunteerlist,
-        newsletter: req.body.newsletter,
-      },
-
     const validatedContact = validateContact({
       ...req.body,
       newsletter: !!req.body.newsletter,
@@ -182,122 +162,33 @@ contactController.post('/', async (req: Request, res: Response) => {
  */
 contactController.get('/', async (req: Request, res: Response) => {
   try {
-    const filters: any = [];
-    if (req.query.firstname) {
-      filters.push({
-        firstname: {
-          equals: req.query.firstname,
-          mode: 'insensitive',
-        },
-      });
-    }
-    if (req.query.lastname) {
-      filters.push({
-        lastname: {
-          equals: req.query.lastname,
-          mode: 'insensitive',
-        },
-      });
-    }
-    if (req.query.email) {
-      filters.push({
-        email: {
-          equals: req.query.email,
-          mode: 'insensitive',
-        },
-      });
-    }
-    if (req.query.address) {
-      filters.push({
-        address: {
-          equals: req.query.address,
-          mode: 'insensitive',
-        },
-      });
-    }
-    if (req.query.city) {
-      filters.push({
-        city: {
-          equals: req.query.city,
-          mode: 'insensitive',
-        },
-      });
-    }
-    if (req.query.state) {
-      filters.push({
-        state: {
-          equals: req.query.state,
-          mode: 'insensitive',
-        },
-      });
-    }
-    if (req.query.country) {
-      filters.push({
-        country: {
-          equals: req.query.country,
-          mode: 'insensitive',
-        },
-      });
-    }
-    if (req.query.postalcode) {
-      filters.push({
-        postalcode: {
-          equals: req.query.postalcode,
-        },
-      });
-    }
     if (req.query.phone) {
-      filters.push({
-        phone: {
-          equals: req.query.phone,
-        },
-      });
+      req.query.phone = Array.isArray(req.query.phone) ?
+        req.query.phone.map((num) => num.toString().replace(/\D/g, '')):
+        [req.query.phone.toString().replace(/\D/g, '')];
     }
 
-    if (req.query.visitsource) {
-      filters.push({
-        visitsource: {
-          equals: req.query.visitsource,
-        },
-      });
+    if (req.query.contactid) {
+      // @ts-ignore
+      req.query.contactid = Array.isArray(req.query.contactid) ?
+        req.query.contactid.map((id) => parseInt(id.toString())):
+        [Number.parseInt(req.query.contactid.toString())];
     }
 
-    if (req.query.seatingaccom) {
-      filters.push({
-        seatingaccom: {
-          contains: req.query.seatingaccom,
-          mode: 'insensitive',
-        },
-      });
-    }
-    if (req.query.donorbadge) {
-      filters.push({
-        donorbadge: {
-          equals: (req.query.donorbadge === 'true'),
-        },
-      });
-    }
-    if (req.query.vip) {
-      filters.push({
-        vip: {
-          equals: (req.query.vip === 'true'),
-        },
-      });
-    }
-    if (req.query.volunteerlist) {
-      filters.push({
-        volunteerlist: {
-          equals: (req.query.volunteerlist === 'true'),
-        },
-      });
-    }
-    if (req.query.newsletter) {
-      filters.push({
-        newsletter: {
-          not: null,
-        },
-      });
-    }
+    const filters = Object.keys(req.query).flatMap((key) => {
+      const currentParameter = Array.isArray(req.query[key])?
+        req.query[key] as Array<string | number>:
+        [req.query[key]];
+
+      return currentParameter
+        .map((param) => ({
+          [key]: {
+            ...(typeof param === 'string'?
+              {contains: param, mode: 'insensitive'}:
+              {equals: param}
+            ),
+          }}));
+    });
 
     const contacts = await prisma.contacts.findMany({
       where: {
@@ -609,30 +500,6 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
 contactController.put('/:id', async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-
-    await prisma.contacts.update({
-      where: {
-        contactid: Number(id),
-      },
-      data: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        postalcode: req.body.postalcode,
-        country: req.body.country,
-        donorbadge: req.body.donorbadge,
-        seatingaccom: req.body.seatingaccom,
-        comments: req.body.comments,
-        visitsource: req.body.visitsource,
-        vip: req.body.vip,
-        volunteerlist: req.body.volunteerlist,
-        newsletter: req.body.newsletter,
-      },
-
     const validatedContact= validateContact({
       ...req.body,
       newsletter: !!req.body.newsletter,

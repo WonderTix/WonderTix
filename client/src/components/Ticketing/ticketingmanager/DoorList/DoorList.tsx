@@ -1,11 +1,17 @@
 import React, {ReactElement, useEffect, useState} from 'react';
-import {DataGrid, GridCellParams, useGridApiContext} from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridCellParams,
+  GridValueGetterParams,
+  useGridApiContext,
+} from '@mui/x-data-grid';
 import {Checkbox} from '@mui/material';
 import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 import {titleCase} from '../../../../utils/arrays';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import format from 'date-fns/format';
 import {useFetchToken} from '../Event/components/ShowingUtils';
+import {getFormattedPhoneNumber} from '../../../CRM/Contacts/contactUtils';
 
 interface RenderCheckinProps {
   params: GridCellParams;
@@ -99,7 +105,13 @@ const DoorList = (): ReactElement => {
       renderCell: renderTicketTypes,
     },
     {field: 'email', headerName: 'Email', width: 200},
-    {field: 'phone', headerName: 'Phone Number', width: 130},
+    {
+      field: 'phone',
+      headerName: 'Phone Number',
+      valueGetter: (params: GridValueGetterParams) =>
+        getFormattedPhoneNumber(params.value),
+      width: 130,
+    },
     {field: 'vip', headerName: 'VIP', width: 65, type: 'boolean'},
     {
       field: 'donorBadge',
@@ -249,6 +261,7 @@ const DoorList = (): ReactElement => {
             Choose Event
           </label>
           <select
+            data-testid='event-select'
             id='event-select'
             className='select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600'
             onChange={handleEventChange}
@@ -269,13 +282,14 @@ const DoorList = (): ReactElement => {
         </div>
         <div className='mb-6'>
           <label
-            htmlFor='time-select'
+            htmlFor='showing-select'
             className='text-sm text-zinc-500 ml-1 mb-2 block'
           >
             Choose Date & Time
           </label>
           <select
-            data-testid='time-select-test'
+            data-testid='showing-select'
+            id='showing-select'
             className='select w-full max-w-xs bg-white border border-zinc-300 rounded-lg p-3 text-zinc-600'
             onChange={handleTimeChange}
             disabled={!selectedEventId}
@@ -305,7 +319,7 @@ const DoorList = (): ReactElement => {
         </div>
         <h2 className='text-3xl font-bold'>Showing: {titleCase(eventName)}</h2>
         {date && (
-          <h3 className='text-xl font-bold text-zinc-700'>
+          <h3 className='text-xl font-bold text-zinc-700' data-testid='showing-time'>
             {format(date, 'eee, MMM dd yyyy, h:mm a')}
           </h3>
         )}

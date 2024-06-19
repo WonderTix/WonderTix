@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import FilterComponent from './FilterComponent';
 import ReportComponent from './ReportComponent';
-import Navigation from '../../Navigation';
+import AdminNavBar from '../../AdminNavBar';
 
 import {Box, Grid} from '@mui/material';
 
@@ -98,7 +98,7 @@ const TransactionSummaryReport=() =>{
                     </Grid>
                 </Box>
             </Box>
-            <Navigation/>
+            <AdminNavBar/>
         </div>
     );
 };

@@ -50,6 +50,7 @@ export const eventInstanceController = Router();
  *                               availableseats: {type: integer}
  *                               date: {type: string}
  *                               detail: {type: string}
+ *                               ispreview: {type: boolean}
  *                       allIds: {type: array, items: {type: integer}}
  *       400:
  *        description: bad request
@@ -98,7 +99,12 @@ eventInstanceController.get('/tickets', async (_, res: Response) => {
           date: getDate(ticket.eventtime.toISOString(), ticket.eventdate),
           totalseats: ticket.totalseats,
           availableseats: ticket.availableseats,
+          remainingtickets: Math.min(
+            ticket.availableseats,
+            ticket.ticketrestrictions.reduce<number>((acc, res) => res.ticketlimit - res.ticketitems.length + acc, 0),
+          ),
           detail: ticket.detail,
+          ispreview: ticket.ispreview,
         }};
       });
     res.send({data: {allIds, byId}});
