@@ -111,7 +111,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       return res.status(400).send('Search String Required');
     }
 
-    const searchTokens = search.trim().split(' ');
+    const searchTokens = search.trim().split(' ').filter((token) => token.length !== 0);
     const isSingleSearchTerm = searchTokens.length === 1;
 
     const orders = await prisma.orders.findMany({
