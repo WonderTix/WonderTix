@@ -28,7 +28,7 @@ export default interface TicketCartItem extends CartItem {
   payWhatPrice?: number;
   typeID: number;
   fee?: number;
-}
+};
 
 export interface SubscriptionCartItem extends CartItem {
   seasonid_fk: number;

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
-import {CartIcon, ExclamationCircleIcon, XIcon} from '../../Icons';
-import {Tab, Tabs, Tooltip} from '@mui/material';
+import {CartIcon, XIcon} from '../../Icons';
+import {Tab, Tabs} from '@mui/material';
 import Orders from './Orders';
 import Events from './Events';
 import Subscriptions from './Subscriptions';

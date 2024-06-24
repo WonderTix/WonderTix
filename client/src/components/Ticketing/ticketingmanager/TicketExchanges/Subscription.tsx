@@ -1,5 +1,5 @@
 import {useTicketExchangeContext} from './TicketExchangeProvider';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Field, Formik, FormikHelpers, FormikProps, FormikValues} from 'formik';
 import {OptionSelect} from '../Event/components/OptionSelect';
 import {QuantityInputControl} from '../../mainpage/SubscriptionPurchasing/QuantityInputControl';

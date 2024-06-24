@@ -1,4 +1,3 @@
-import {useFormikContext} from 'formik';
 import {FormButton} from '../../ticketingmanager/Event/components/FormButton';
 import {DecrementIcon, IncrementIcon} from '../../Icons';
 import React from 'react';

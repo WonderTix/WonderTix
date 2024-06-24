@@ -1,10 +1,9 @@
 /* eslint-disable camelcase*/
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {Prisma, purchase_source, state} from '@prisma/client';
+import {Prisma, state} from '@prisma/client';
 import {getDate, InvalidInputError, reservedTicketItemsFilter} from './eventInstanceController.service';
 import {onlineCheckout, requestStripeReaderPayment, validateWithRegex} from './eventController.service';
-import {createOrder} from './orderController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 import multer from 'multer';
@@ -937,7 +936,7 @@ eventController.post('/admin-checkout', async (req: Request, res: Response) =>
  *     - New Event API
  */
 eventController.post('/reader-intent', async (req: Request, res: Response) =>
-    onlineCheckout(req, res, PurchaseSource.card_reader, prisma));
+  onlineCheckout(req, res, PurchaseSource.card_reader, prisma));
 
 /**
  * @swagger

@@ -3,8 +3,10 @@ import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {
   orders,
   state,
-  purchase_source, contacts, Prisma, temporarystore,
-} from '@prisma/client'
+  purchase_source,
+  contacts,
+  temporarystore,
+} from '@prisma/client';
 import WebSocket from 'ws';
 import {InvalidInputError, reservedTicketItemsFilter} from './eventInstanceController.service';
 import {

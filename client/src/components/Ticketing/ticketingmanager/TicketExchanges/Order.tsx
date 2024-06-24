@@ -13,9 +13,6 @@ const Order: React.FC<ProviderOrder> = (props) => {
     orderitems,
     orderdatetime,
     orderid,
-    discounttotal,
-    feetotal,
-    ordersubtotal,
   } = props;
   const [open, setOpen] = useState(false);
   const {setRefundItems, refundItems} = useTicketExchangeContext();
