@@ -88,7 +88,7 @@ const EventShowings = (): ReactElement => {
       <span className='text-zinc-300 font-semibold text-md tracking-wider'>
         DESCRIPTION
       </span>
-      <span className='text-zinc-100 text-xl'>{description}</span>
+      <span className='text-zinc-100 text-lg md:text-xl'>{description}</span>
     </p>
   );
 
@@ -108,7 +108,7 @@ const EventShowings = (): ReactElement => {
           className='flex flex-col gap-9 min-h-[calc(100vh-233px)] md:min-h-[calc(100vh-142px)]
           items-center bg-gradient-to-r from-black to-zinc-900/70 px-[1rem] py-[5rem] tab:px-[3rem] md:px-[8rem]'
         >
-          <section className='bg-zinc-200/20 shadow-md p-8 mt-9 rounded-xl backdrop-blur-md w-full flex flex-col gap-8'>
+          <section className='bg-zinc-200/20 shadow-md p-7 md:p-8 mt-9 rounded-xl backdrop-blur-md w-full flex flex-col gap-8'>
             {eventData.soldOut && (
               <Label className='text-2xl' color='slate'>
                 SOLD OUT
@@ -117,7 +117,7 @@ const EventShowings = (): ReactElement => {
             <div className='flex gap-6 tab:gap-8 md:gap-12 items-center'>
               <EventImage
                 src={eventData.imageurl}
-                className='self-center w-auto max-h-44 tab:max-h-56 max-w-[7rem] tab:max-w-[13rem] rounded-md'
+                className='self-center w-auto max-h-40 tab:max-h-56 max-w-[7rem] tab:max-w-[13rem] rounded-md'
                 title={eventData.title}
               />
               <div className='flex flex-col gap-5'>

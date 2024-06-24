@@ -146,14 +146,9 @@ export const baseContact: CheckoutContact = {
   newsletter: true,
 };
 
-export enum orderSource {
-  online_ticketing = 'online_ticketing',
-  admin_ticketing = 'admin_ticketing',
-  card_reader = 'card_reader',
-}
-
 export const readableOrderSource = {
   online_ticketing: 'Standard Purchase',
+  online_donation: 'Standard Donation',
   admin_ticketing: 'Admin Purchase',
   card_reader: 'In Person Purchase',
 };

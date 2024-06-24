@@ -1,7 +1,7 @@
 export const getAllTicketRestrictions = async () => {
   try {
     const allTicketRestrictionRes = await fetch(
-      process.env.REACT_APP_API_2_URL + '/ticket-restriction',
+      process.env.REACT_APP_API_2_URL + '/ticket-restriction/all',
     );
 
     if (!allTicketRestrictionRes.ok) {

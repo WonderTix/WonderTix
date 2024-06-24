@@ -1,10 +1,21 @@
-import {InvalidInputError, LoadedTicketRestriction, reservedTicketItemsFilter} from './eventInstanceController.service';
+/* eslint-disable camelcase */
+import {
+  getDate,
+  InvalidInputError,
+  LoadedTicketRestriction,
+  reservedTicketItemsFilter,
+} from './eventInstanceController.service';
 import TicketCartItem, {SubscriptionCartItem} from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {freq} from '@prisma/client';
+import {freq, orders, Prisma, purchase_source, state} from '@prisma/client';
+import {Request, Response} from 'express';
+import {orderFulfillment, updateCanceledOrder} from './orderController.service';
+import {PurchaseSource} from '../interfaces/PurchaseSource';
+
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
 const stripe = require('stripe')(stripeKey);
+
 export interface LineItem {
   price_data: {
     currency: string;
@@ -16,6 +27,107 @@ export interface LineItem {
   };
   quantity: number;
 }
+
+/**
+ * The primary logic that handles the checkout process.
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {PurchaseSource} purchaseSource - Where the order is coming from (eg. online_ticketing)
+ * @param {ExtendedPrismaClient} prisma
+ * @return {Promise<Response>} - The response for the API to immediately return
+ */
+export const checkout = async (
+  req: Request,
+  res: Response,
+  purchaseSource: PurchaseSource,
+  prisma: ExtendedPrismaClient,
+): Promise<Response> => {
+  const {
+    ticketCartItems = [],
+    subscriptionCartItems = [],
+    formData,
+    donation = 0,
+    discount,
+  } = req.body;
+  let checkoutSessionId: string | undefined;
+  let order: orders | undefined;
+  try {
+    if (!ticketCartItems.length && !donation && !subscriptionCartItems.length) {
+      return res.status(400).json({error: 'Cart is empty'});
+    }
+
+    const validatedContact = validateContact(formData);
+
+    const {ticketCartRows, orderTicketItems, ticketTotal, feeTotal, eventInstanceQueries} =
+      await getTicketItems(ticketCartItems, purchaseSource, prisma);
+
+    const {subscriptionCartRows, orderSubscriptionItems, subscriptionTotal} =
+      await getSubscriptionItems(prisma, subscriptionCartItems);
+
+    const {donationItem, donationCartRow, donationTotal} = getDonationItem(donation);
+
+    const {feeCartRow} = getFeeItem(feeTotal);
+
+    let cartRows = ticketCartRows.concat(subscriptionCartRows);
+    if (donationCartRow) {
+      cartRows = cartRows.concat([donationCartRow]);
+    }
+    if (feeCartRow) {
+      cartRows = cartRows.concat([feeCartRow]);
+    }
+
+    const {discountTotal, discountId} = await getDiscountAmount(
+      prisma,
+      discount,
+      ticketTotal,
+      ticketCartItems,
+    );
+    const orderSubtotal = ticketTotal + subscriptionTotal + donationTotal;
+
+    if (orderSubtotal + feeTotal - discountTotal > 0.49) {
+      checkoutSessionId = await createStripeCheckoutSession(validatedContact, cartRows, {
+        ...discount,
+        amountOff: discountTotal,
+      });
+    } else if (orderSubtotal + feeTotal - discountTotal > 0) {
+      return res
+        .status(400)
+        .json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
+    }
+
+    order = await orderFulfillment(prisma, {
+      orderStatus: checkoutSessionId ? state.in_progress : state.completed,
+      orderSource: purchase_source[purchaseSource as keyof typeof purchase_source],
+      checkoutSession: checkoutSessionId,
+      discountId,
+      orderSubtotal,
+      discountTotal,
+      feeTotal,
+      orderTicketItems,
+      donationItem,
+      orderSubscriptionItems,
+      eventInstanceQueries,
+      ...(!checkoutSessionId && (await updateContact(prisma, validatedContact))),
+    });
+
+    return res.json({id: checkoutSessionId ?? 'comp'});
+  } catch (error) {
+    console.error(error);
+    if (order) await updateCanceledOrder(prisma, order);
+    if (checkoutSessionId) await expireCheckoutSession(checkoutSessionId);
+    if (error instanceof InvalidInputError) {
+      return res.status(error.code).json(error.message);
+    }
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError ||
+      error instanceof Prisma.PrismaClientValidationError
+    ) {
+      return res.status(400).json(error.message);
+    }
+    return res.status(500).json(error);
+  }
+};
 
 export const createStripeCheckoutSession = async (
   contact: ContactInput,
@@ -190,6 +302,7 @@ export const testPayReader = async (
 
 export const getTicketItems = async (
   cartItems: TicketCartItem[],
+  purchaseSource: PurchaseSource,
   prisma: ExtendedPrismaClient,
 ): Promise<TicketItemsReturn> => {
   const toReturn: TicketItemsReturn = {
@@ -242,6 +355,16 @@ export const getTicketItems = async (
         `Showing ${item.product_id} for ${item.name} does not exist`,
       );
     }
+
+    if (purchaseSource === PurchaseSource.online_ticketing) {
+      const now = new Date().toISOString();
+      const eventInstanceDateTime = getDate(eventInstance.eventtime.toISOString(), eventInstance.eventdate);
+
+      if (now >= eventInstanceDateTime) {
+        throw new InvalidInputError(422, 'Showing is no longer on sale');
+      }
+    }
+
     const ticketRestriction = eventInstance.ticketRestrictionMap.get(item.typeID);
     if (!ticketRestriction) {
       throw new InvalidInputError(422, 'Requested tickets no longer available');

@@ -1,30 +1,19 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "lib": [
-      "es2018",
-      "esnext.asynciterable"
-    ],
-		"types": [
-			"node"
-		],
+    "lib": ["es2018", "esnext.asynciterable", "ES2021.String"],
+    "types": ["node"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "CommonJS",
     "rootDir": ".",
-		"outDir": "./bin",
-		"pretty": true,
+    "outDir": "./bin",
+    "pretty": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*.ts",
-		"prisma/**/*.ts",
-  ],
-	"exclude": [
-		"node_modules",
-		"bin",
-	],
+  "include": ["src/**/*.ts", "prisma/**/*.ts"],
+  "exclude": ["node_modules", "bin"]
 }

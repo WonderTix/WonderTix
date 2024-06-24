@@ -27,7 +27,7 @@ const EventCard = (props: Event): ReactElement => {
   const navigate = useNavigate();
 
   const startEndDates =
-    startDate.substring(0, 10) === endDate.substring(0, 10)
+    new Date(startDate).toDateString() === new Date(endDate).toDateString()
       ? format(new Date(startDate), 'MMM d')
       : `${format(new Date(startDate), 'MMM d')} - ${format(
           new Date(endDate),
@@ -38,11 +38,11 @@ const EventCard = (props: Event): ReactElement => {
     <article
       className='relative flex flex-col md:flex-row w-full
       rounded-xl bg-zinc-800/70 backdrop-blur-md shadow-lg
-      hover:scale-105 transition duration-300 ease-in-out'
+      md:hover:scale-105 transition duration-300 ease-in-out'
       data-testid={`hero-event-card-${title}`}
     >
       <EventImage
-        className={`md:w-[14rem] h-40 md:h-auto object-cover rounded-t-lg md:rounded-lg ${
+        className={`md:w-[14rem] h-40 md:h-[350px] object-cover rounded-t-lg md:rounded-lg ${
           soldOut && 'brightness-50'
         }`}
         src={imageUrl}
@@ -68,7 +68,7 @@ const EventCard = (props: Event): ReactElement => {
         </p>
         <button
           onClick={() => navigate(`/events/${id}`)}
-          className={`border rounded-2xl px-5 py-2 my-3 mx-auto hover:bg-transparent hover:text-white hover:border-white
+          className={`border rounded-2xl px-5 py-2 mt-3 mx-auto hover:bg-transparent hover:text-white hover:border-white
           ${
             !soldOut
               ? 'text-white bg-indigo-600 border-indigo-600'

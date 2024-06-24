@@ -18,7 +18,6 @@ import {useAuth0} from '@auth0/auth0-react';
 import {
   baseContact,
   CheckoutContact,
-  orderSource,
   validateContactInput,
 } from './CheckoutUtils';
 
@@ -73,7 +72,6 @@ export default function CheckoutPage(): ReactElement {
             formData,
             donation,
             discount,
-            orderSource: orderSource.online_ticketing,
           }),
         },
       );
