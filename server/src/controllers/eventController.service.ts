@@ -455,15 +455,16 @@ export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: 
     return {discountTotal: 0};
   }
 
-  await validateDiscount(discount, ticketItems, prisma);
+  const validDiscount = await validateDiscount(discount.code, ticketItems, prisma);
 
-  if (discount.amount && discount.percent) {
-    return {discountTotal: Math.min((+discount.percent / 100) * orderTotal, discount.amount), discountId: discount.discountid};
-  } else if (discount.amount) {
-    return {discountTotal: Math.min(discount.amount, orderTotal), discountId: discount.discountid};
-  } else if (discount.percent) {
-    return {discountTotal: orderTotal*(+discount.percent)/100, discountId: discount.discountid};
+  if (validDiscount.amount && validDiscount.percent) {
+    return {discountTotal: Math.min((+validDiscount.percent / 100) * orderTotal, validDiscount.amount), discountId: validDiscount.discountid};
+  } else if (validDiscount.amount) {
+    return {discountTotal: Math.min(validDiscount.amount, orderTotal), discountId: validDiscount.discountid};
+  } else if (validDiscount.percent) {
+    return {discountTotal: orderTotal * (+validDiscount.percent)/100, discountId: validDiscount.discountid};
   }
+
   throw new Error('Invalid discount');
 };
 
@@ -567,7 +568,7 @@ export const validateContact = (formData: ContactInput): ContactInput => {
   };
 };
 
-export const validateDiscount = async (discount: any, cartItems: TicketCartItem[], prisma: ExtendedPrismaClient) => {
+export const validateDiscount = async (discountCode: string, cartItems: TicketCartItem[], prisma: ExtendedPrismaClient) => {
   const eventIds = new Set<number>();
   cartItems.forEach((item) => eventIds.add(item.eventId));
   const numEventsInCart = eventIds.size;
@@ -578,20 +579,29 @@ export const validateDiscount = async (discount: any, cartItems: TicketCartItem[
 
   const existingDiscount = await prisma.discounts.findFirst({
     where: {
-      code: discount.code,
+      code: {
+        equals: discountCode,
+        mode: 'insensitive',
+      },
       active: true,
       deletedat: null,
     },
   });
+
   if (!existingDiscount) {
     throw new InvalidInputError(422, 'Invalid discount code');
   }
   if (existingDiscount.min_events && existingDiscount.min_events > numEventsInCart) {
-    throw new InvalidInputError(422, `Not enough events in cart for discount code ${discount.code}`);
+    throw new InvalidInputError(422, `Not enough events in cart for discount code ${discountCode}`);
   }
   if (existingDiscount.min_tickets && existingDiscount.min_tickets > totalCartTicketCount) {
-    throw new InvalidInputError(422, `Not enough tickets in cart for discount code ${discount.code}`);
+    throw new InvalidInputError(422, `Not enough tickets in cart for discount code ${discountCode}`);
   }
+
+  return {
+    ...existingDiscount,
+    ...{amount: existingDiscount.amount ? Number(existingDiscount.amount) : null},
+  };
 };
 
 const validateName = (name: string, type: string): string => {
