@@ -110,7 +110,9 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
         subscriptiontype: true,
         subscriptions: {
           where: {
-            refund: null,
+            orderitem: {
+              refund: null,
+            },
           },
         },
       },
@@ -131,6 +133,62 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
                 name: subscriptiontype.name,
                 subscriptionssold: subscriptions.length,
               })));
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      res.status(400).json({error: error.message});
+      return;
+    }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
+
+subscriptionController.get('/available', async (req, res: Response) => {
+  try {
+    const date = getFormattedDate(new Date());
+    const toSend = await prisma.seasonsubscriptiontypes.findMany({
+      where: {
+        deletedat: null,
+        season: {
+          enddate: {gte: date},
+        },
+      },
+      include: {
+        subscriptiontype: true,
+        season: {
+          include: {
+            seasonsubscriptiontypes: true,
+          },
+        },
+        subscriptions: {
+          where: {
+            orderitem: {
+              refund: null,
+            },
+          },
+        },
+      },
+    });
+
+    const formattedResponse = toSend.reduce(({seasons, subscriptions}, type) => {
+      if (type.subscriptionlimit > type.subscriptions.length) {
+        seasons.push({
+          ...type.season,
+          seasonsubscriptiontypes: type.season.seasonsubscriptiontypes.map((type) => type.subscriptiontypeid_fk),
+        });
+        subscriptions.push({
+          ...type,
+          price: Number(type.price),
+          subscriptionsavailable: type.subscriptionlimit - type.subscriptions.length,
+        });
+      }
+      return {seasons, subscriptions};
+    }, {seasons: Array<any>(), subscriptions: Array<any>()});
+
+    return res.json(formattedResponse);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
@@ -261,7 +319,9 @@ subscriptionController.get('/active-subscriptions/:seasonid', async (req: Reques
             subscriptiontype: true,
             subscriptions: {
               where: {
-                refund: null,
+                orderitem: {
+                  refund: null,
+                },
               },
             },
           },
@@ -391,7 +451,11 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
         subscriptions: {
           include: {
             subscriptionticketitems: true,
-            refund: true,
+            orderitem: {
+              include: {
+                refund: true,
+              },
+            },
           },
         },
       },
@@ -411,7 +475,7 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
               },
             },
           });
-        } else if (!update && !type.subscriptions.some((sub) => !sub.refund)) {
+        } else if (!update && !type.subscriptions.some((sub) => !sub.orderitem.refund)) {
           return prisma.seasonsubscriptiontypes.update({
             where: {
               seasonid_fk_subscriptiontypeid_fk: {
@@ -474,7 +538,9 @@ subscriptionController.put('/season/:seasonid', async (req: Request, res: Respon
         subscriptiontype: true,
         subscriptions: {
           where: {
-            refund: null,
+            orderitem: {
+              refund: null,
+            },
           },
         },
       },
@@ -791,15 +857,17 @@ subscriptionController.get(
       const toReturn = await prisma.subscriptions.findMany({
         where: {
           ...(seasonIdsFormatted.length && {seasonid_fk: {in: seasonIdsFormatted}}),
-          order: {
-            order_status: state.completed,
-            ...(contactFilter.length && {
-              contacts: {
-                OR: contactFilter,
-              },
-            }),
+          orderitem: {
+            order: {
+              order_status: state.completed,
+              ...(contactFilter.length && {
+                contacts: {
+                  OR: contactFilter,
+                },
+              }),
+            },
+            refund: null,
           },
-          refund: null,
         },
         include: {
           seasonsubscriptiontype: {
@@ -808,18 +876,22 @@ subscriptionController.get(
               season: true,
             },
           },
-          order: {
+          orderitem: {
             include: {
-              contacts: true,
+              order: {
+                include: {
+                  contacts: true,
+                },
+              },
             },
           },
           subscriptionticketitems: true,
         },
       });
 
-      const formatterdDate = getFormattedDate(new Date());
+      const formattedDate = getFormattedDate(new Date());
       return res.json(
-        toReturn.map(({order, seasonsubscriptiontype, subscriptionticketitems, ...sub}) => ({
+        toReturn.map(({orderitem: {order}, seasonsubscriptiontype, subscriptionticketitems, ...sub}) => ({
           ...sub,
           previewonly: seasonsubscriptiontype.subscriptiontype.previewonly,
           firstname: order.contacts?.firstname,
@@ -829,7 +901,7 @@ subscriptionController.get(
           ticketlimit: seasonsubscriptiontype.ticketlimit,
           seasonName: seasonsubscriptiontype.season.name,
           ticketsredeemed: subscriptionticketitems.length,
-          current: seasonsubscriptiontype.season.enddate >= formatterdDate,
+          current: seasonsubscriptiontype.season.enddate >= formattedDate,
         })),
       );
     } catch (error) {
@@ -875,10 +947,12 @@ subscriptionController.get(
       const subscription = await prisma.subscriptions.findUnique({
         where: {
           id: subscriptionId,
-          order: {
-            order_status: state.completed,
+          orderitem: {
+            order: {
+              order_status: state.completed,
+            },
+            refund: null,
           },
-          refund: null,
         },
         include: {
           seasonsubscriptiontype: {
@@ -1076,10 +1150,12 @@ subscriptionController.put(
       const subscription = await prisma.subscriptions.findUnique({
         where: {
           id: subscriptionId,
-          order: {
-            order_status: state.completed,
+          orderitem: {
+            order: {
+              order_status: state.completed,
+            },
+            refund: null,
           },
-          refund: null,
         },
         include: {
           seasonsubscriptiontype: {
@@ -1171,9 +1247,13 @@ subscriptionController.put(
               season: true,
             },
           },
-          order: {
+          orderitem: {
             include: {
-              contacts: true,
+              order: {
+                include: {
+                  contacts: true,
+                },
+              },
             },
           },
           subscriptionticketitems: true,
@@ -1182,7 +1262,7 @@ subscriptionController.put(
 
       await updateAvailableSeats(prisma, eventInstanceIds);
 
-      const {order, seasonsubscriptiontype, subscriptionticketitems, ...rest} =
+      const {orderitem: {order}, seasonsubscriptiontype, subscriptionticketitems, ...rest} =
         updatedSubscription;
 
       return res.json({

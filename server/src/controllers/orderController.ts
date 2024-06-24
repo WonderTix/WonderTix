@@ -2,14 +2,16 @@
 import express, {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {Prisma, state} from '@prisma/client';
+import {Prisma, purchase_source, state} from '@prisma/client';
 import {
-  createRefundedOrder,
   ticketingWebhook,
-  updateRefundStatus,
   readerWebhook,
   discoverReaders,
   abortPaymentIntent,
+  updateRefundByPaymentIntent,
+  updateRefund,
+  createOrder,
+  deleteOrderAndTempStore,
 } from './orderController.service';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
@@ -43,24 +45,18 @@ orderController.post(
           prisma,
           event.type,
           action ? action.failure_message : 'no error',
-          object.id, // paymentIntent ID if payment_intent event, reader ID if terminal event
+          object,
         );
-      }
-
-      // Handle online payments
-      if (metaData.sessionType === '__ticketing') {
+      } else if (metaData.sessionType === '__ticketing') {
         await ticketingWebhook(
           prisma,
           event.type,
-          object.payment_intent,
-          object.id,
-          metaData.contact,
+          object,
         );
-      } else if (event.type === 'charge.refunded' || event.type === 'charge.refund.updated') {
-        await updateRefundStatus(
-          prisma,
-          object.payment_intent,
-        );
+      } else if (event.type === 'charge.refunded') {
+        await updateRefundByPaymentIntent(prisma, object.payment_intent);
+      } else if (event.type === 'charge.refund.updated') {
+        await updateRefund(prisma, object);
       }
 
       return res.send();
@@ -117,27 +113,6 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     const orders = await prisma.orders.findMany({
       where: {
         order_status: state.completed,
-        OR: [
-          {
-            orderticketitems: {
-              some: {
-                refund: null,
-              },
-            },
-          },
-          {
-            donation: {
-              refund: null,
-            },
-          },
-          {
-            subscriptions: {
-              some: {
-                refund: null,
-              },
-            },
-          },
-        ],
         AND:
           isSingleSearchTerm ? {
             OR: [
@@ -184,6 +159,11 @@ orderController.get('/refund', async (req: Request, res: Response) => {
               },
             },
           ],
+        orderitems: {
+          some: {
+            refund: null,
+          },
+        },
       },
       include: {
         contacts: {
@@ -193,7 +173,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
             email: true,
           },
         },
-        orderticketitems: {
+        orderitems: {
           where: {
             refund: null,
           },
@@ -212,24 +192,17 @@ orderController.get('/refund', async (req: Request, res: Response) => {
                 },
               },
             },
-          },
-        },
-        subscriptions: {
-          where: {
-            refund: null,
-          },
-          include: {
-            seasonsubscriptiontype: {
+            subscription: {
               include: {
-                season: true,
-                subscriptiontype: true,
+                seasonsubscriptiontype: {
+                  include: {
+                    season: true,
+                    subscriptiontype: true,
+                  },
+                },
               },
             },
-          },
-        },
-        donation: {
-          where: {
-            refund: null,
+            donation: true,
           },
         },
       },
@@ -241,9 +214,7 @@ orderController.get('/refund', async (req: Request, res: Response) => {
     const toReturn = orders.map((order) => {
       const {
         contacts,
-        orderticketitems,
-        subscriptions,
-        donation,
+        orderitems,
         orderdatetime,
         ...remainderOfOrder
       } = order;
@@ -251,48 +222,50 @@ orderController.get('/refund', async (req: Request, res: Response) => {
       if (!contacts) return;
 
       const orderItems = new Map<string, any>();
-      const ticketTotal = orderticketitems.reduce<number>((acc, ticket) => {
-        if (!ticket.ticketitem) return acc;
-        const key = `T${ticket.ticketitem.ticketrestriction.ticketrestrictionsid}`;
-        const item = orderItems.get(key);
-        if (item) {
-          item.quantity+=1;
-          item.price+=Number(ticket.price);
-        } else {
-          orderItems.set(key, {
-            type: ticket.ticketitem.ticketrestriction.tickettype.description,
-            description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
-            quantity: 1,
-            price: +ticket.price,
-          });
+      let donation;
+      const orderTotal = orderitems.reduce<number>((acc, item) => {
+        if (item.ticketitem) {
+          const key = `T${item.ticketitem.ticketrestriction.ticketrestrictionsid}`;
+          const current = orderItems.get(key);
+          if (current) {
+            current.quantity += 1;
+            current.price += Number(item.price);
+          } else {
+            orderItems.set(key, {
+              type: item.ticketitem.ticketrestriction.tickettype.description,
+              description: item.ticketitem.ticketrestriction.eventinstance.event.eventname,
+              quantity: 1,
+              price: +item.price,
+            });
+          }
+        } else if (item.subscription) {
+          const key = `S${item.subscription.seasonsubscriptiontype.season.seasonid}-${item.subscription.seasonsubscriptiontype.season.seasonid}`;
+          const current = orderItems.get(key);
+          if (current) {
+            current.quantity+=1;
+            current.price+=Number(item.price);
+          } else {
+            orderItems.set(key, {
+              type: `${item.subscription.seasonsubscriptiontype.subscriptiontype.name} Subscription`,
+              description: item.subscription.seasonsubscriptiontype.season.name,
+              quantity: 1,
+              price: +item.price,
+            });
+          }
+        } else if (item.donation) {
+          donation = item.price;
         }
-        return acc+Number(ticket.price);
+        return acc+Number(item.price);
       }, 0);
 
-      const subscriptionTotal = subscriptions.reduce<number>((acc, subscription) => {
-        const key = `S${subscription.seasonsubscriptiontype.season.seasonid}-${subscription.seasonsubscriptiontype.season.seasonid}`;
-        const item = orderItems.get(key);
-        if (item) {
-          item.quantity+=1;
-          item.price+=Number(subscription.price);
-        } else {
-          orderItems.set(key, {
-            type: `${subscription.seasonsubscriptiontype.subscriptiontype.name} Subscription`,
-            description: subscription.seasonsubscriptiontype.season.name,
-            quantity: 1,
-            price: +subscription.price,
-          });
-        }
-        return acc+Number(subscription.price);
-      }, 0);
       return {
-        price: ticketTotal+subscriptionTotal - Number(order.discounttotal ?? 0),
+        price: orderTotal - Number(order.discounttotal ?? 0),
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
         orderdate: orderdatetime,
         ...remainderOfOrder,
         orderitems: [...orderItems.entries()].map(([_, value]) => value),
-        donation: +(donation?.amount ?? 0),
+        donation: +(donation ?? 0),
       };
     });
     return res.json(toReturn);
@@ -342,37 +315,32 @@ orderController.put('/refund/:id', async (req, res) => {
         orderid: Number(orderID),
       },
       include: {
-        orderticketitems: {
+        contacts: true,
+        orderitems: {
           where: {
             refund: null,
           },
           include: {
+            refund: true,
             ticketitem: {
               include: {
                 ticketrestriction: true,
               },
             },
-          },
-        },
-        subscriptions: {
-          where: {
-            refund: null,
-          },
-          include: {
-            subscriptionticketitems: {
+            subscription: {
               include: {
-                ticketitem: {
+                subscriptionticketitems: {
                   include: {
-                    ticketrestriction: true,
+                    ticketitem: {
+                      include: {
+                        ticketrestriction: true,
+                      },
+                    },
                   },
                 },
               },
             },
-          },
-        },
-        donation: {
-          where: {
-            refund: null,
+            donation: true,
           },
         },
       },
@@ -381,34 +349,26 @@ orderController.put('/refund/:id', async (req, res) => {
     if (!order) {
       return res.status(400).json({error: `Order ${orderID} does not exist`});
     }
-    if (!order.payment_intent || order.order_status !== state.completed) {
+    if (order.order_status !== state.completed) {
       return res.status(400).json({error: `Order ${orderID} is still processing`});
     }
-    if (!order.donation && !order.orderticketitems.length && !order.subscriptions.length) {
+    if (!order.orderitems.length) {
       return res.status(400).json({error: `Order ${orderID} has already been fully refunded`});
     }
 
-    let refundIntent;
-    // eslint-disable-next-line camelcase
-    const {payment_intent} = order;
-    if (payment_intent.includes('comp')) {
-      refundIntent = `refund-${payment_intent}`;
-    } else {
-      const refund = await stripe.refunds.create({
-        payment_intent,
-      });
-      refundIntent = refund.id;
-    }
-    await createRefundedOrder(
+    const refundCartItems = order.orderitems.map((item) => ({
+      orderItemId: item.id,
+      refundFee: true,
+    }));
+
+    const response = await createOrder({
       prisma,
-      refundIntent,
-      order,
-      order.orderticketitems,
-      order.subscriptions,
-      refundIntent.includes('refund')? state.completed : state.in_progress,
-      order.donation,
-    );
-    return res.send(refundIntent);
+      refundCartItems,
+      orderSource: purchase_source.admin_ticketing,
+      contact: order.contacts ?? undefined,
+    });
+
+    return res.send(response);
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -452,7 +412,8 @@ orderController.get('/readers', async (req: Request, res: Response) => {
 orderController.post('/reader-cancel', async (req: Request, res: Response) => {
   const {paymentIntentID} = req.body;
   try {
-    await abortPaymentIntent(prisma, paymentIntentID);
+    await abortPaymentIntent(paymentIntentID);
+    await deleteOrderAndTempStore(prisma, paymentIntentID);
     return res.status(200).json('Reader order successfully cancelled');
   } catch (error) {
     res.status(500).json({error: 'Internal Server Error'});
@@ -486,40 +447,147 @@ orderController.post('/reader-cancel', async (req: Request, res: Response) => {
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-orderController.get('/:id', async (req: Request, res: Response) => {
+orderController.get('/:id', async (req: Request<{id: number}, any, any>, res: Response) => {
   try {
     const id = req.params.id;
-    const orderExists = await prisma.orders.findUnique({
-      where: {
-        orderid: Number(id),
-      },
-    });
-    if (!orderExists) {
-      res.status(404).json({error: 'order not found'});
-
-      return;
-    }
     const order = await prisma.orders.findUnique({
       where: {
         orderid: Number(id),
+        order_status: state.completed,
+      },
+      include: {
+        orderitems: {
+          include: {
+            refund: true,
+            subscription: {
+              include: {
+                seasonsubscriptiontype: {
+                  include: {
+                    season: true,
+                    subscriptiontype: true,
+                  },
+                },
+                subscriptionticketitems: {
+                  include: {
+                    ticketitem: {
+                      include: {
+                        ticketrestriction: {
+                          include: {
+                            eventinstance: {
+                              include: {
+                                event: true,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            ticketitem: {
+              include: {
+                ticketrestriction: {
+                  include: {
+                    eventinstance: {
+                      include: {
+                        event: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            donation: true,
+          },
+        },
       },
     });
-    res.status(200).json(order);
 
-    return;
+    if (!order) {
+      return res.status(404).json({error: 'order not found'});
+    }
+
+    return res.json({
+      ...order,
+      orderitems: order.orderitems.map((item) => ({
+        ...item,
+      })),
+    });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
+      return res.status(400).json({error: error.message});
+    }
+    res.status(500).json({error: 'Internal Server Error'});
+  }
+});
 
-      return;
+orderController.get('/customer/refund/items/:id', async (req: Request, res: Response) => {
+  try {
+    const {id} = req.params;
+
+    if (!id || isNaN(+id)) {
+      return res.status(400).json({error: `Customer Id(${id}) is invalid`});
     }
 
-    res.status(500).json({error: 'Internal Server Error'});
+    const customerOrders = await prisma.orders.findMany({
+      where: {
+        contactid_fk: +id,
+        order_status: state.completed,
+        orderitems: {
+          some: {
+            refund: null,
+          },
+        },
+      },
+      include: {
+        orderitems: {
+          where: {
+            refund: null,
+          },
+          include: {
+            subscription: {
+              include: {
+                seasonsubscriptiontype: {
+                  include: {
+                    season: true,
+                    subscriptiontype: true,
+                  },
+                },
+              },
+            },
+            ticketitem: {
+              include: {
+                ticketrestriction: {
+                  include: {
+                    tickettype: true,
+                    eventinstance: {
+                      include: {
+                        event: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            donation: true,
+          },
+        },
+      },
+    });
+
+    return res.json(customerOrders);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).json({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).json({error: error.message});
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });

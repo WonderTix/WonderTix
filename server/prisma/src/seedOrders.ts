@@ -1,4 +1,4 @@
-import {freq, state} from '@prisma/client';
+import {freq, state, type} from '@prisma/client';
 import {updateAvailableSeats} from '../../src/controllers/orderController.service';
 import {ExtendedPrismaClient} from '../../src/controllers/PrismaClient/GetExtendedPrismaClient';
 
@@ -22,27 +22,32 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
           data: {
             order_status: state.completed,
             contactid_fk: contact.contactid,
-            payment_intent: `comp-order-${index}`,
-            ...(!(index%4) && {
-              donation: {
-                create: {
-                  amount: (Math.random()*150)+1,
-                  frequency: freq.one_time,
-                  comments: 'Seeded Donation',
-                },
-              },
-            }),
             ordersubtotal: (Number(restriction.price) * orderItemCount),
-            orderticketitems: {
-              create: Array(orderItemCount).fill({
-                price: restriction?.price,
-                fee: restriction?.fee,
-                ticketitem: {
-                  create: {
-                    ticketrestrictionid_fk: restriction?.ticketrestrictionsid,
+            refundtotal: 0,
+            orderitems: {
+              create: [
+                ...Array(orderItemCount).fill({
+                  price: restriction?.price,
+                  fee: restriction?.fee,
+                  type: type.ticket,
+                  ticketitem: {
+                    create: {
+                      ticketrestrictionid_fk: restriction?.ticketrestrictionsid,
+                    },
                   },
-                },
-              }),
+                }),
+                ...(!(index%4)? [{
+                  price: (Math.floor(Math.random()*150)+1),
+                  fee: 0,
+                  type: type.donation,
+                  donation: {
+                    create: {
+                      frequency: freq.one_time,
+                      comments: 'Seeded Donation',
+                    },
+                  },
+                }] : []),
+              ],
             },
           },
         }));

@@ -21,7 +21,7 @@ interface ImageUploadProps {
 
 const ImageUpload = (props: ImageUploadProps): ReactElement => {
   const {className} = props;
-
+  const {token} = useEvent();
   const {setFieldValue} = useFormikContext();
 
   const onDrop = useCallback(
@@ -34,6 +34,9 @@ const ImageUpload = (props: ImageUploadProps): ReactElement => {
           process.env.REACT_APP_API_2_URL + '/events/image-upload',
           {
             method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
             body: formData,
           },
         );

@@ -4,6 +4,7 @@ export interface CartItem {
   qty: number;
   price: number;
   product_img_url: string;
+  department?: string;
 }
 
 /**
@@ -26,11 +27,16 @@ export default interface TicketCartItem extends CartItem {
   payWhatCan: boolean;
   payWhatPrice?: number;
   typeID: number;
-  department?: string;
+  fee?: number;
 }
 
 export interface SubscriptionCartItem extends CartItem {
   seasonid_fk: number;
   subscriptiontypeid_fk: number;
   qtyAvailable: number;
+}
+
+export interface RefundCartItem {
+  orderItemId: number;
+  refundFee: boolean;
 }

@@ -74,7 +74,7 @@ export const SubscriptionOption = (props: SubscriptionOption) => {
       }}
       onSubmit={onSubmit}
     >
-      {({handleSubmit, values}) => (
+      {({handleSubmit, values, setFieldValue}) => (
         <form
           onSubmit={handleSubmit}
           className='bg-zinc-900/80 rounded-2xl grid grid-cols-12 p-4 shadow-x w-full min-[768px]:w-[80%] min-[1300px]:w-full'
@@ -92,7 +92,15 @@ export const SubscriptionOption = (props: SubscriptionOption) => {
             <Field
               name='qty'
               component={QuantityInputControl}
+              increment={() => setFieldValue('qty', values.qty+1)}
+              decrement={() => setFieldValue('qty', values.qty-1)}
               quantityAvailable={option.subscriptionlimit - option.subscriptionssold}
+              styles={{
+                button: 'text-zinc-800 disabled:text-zinc-400',
+                group: 'flex flex-row items-center border bg-zinc-200 rounded-lg p-1',
+                quantity: 'text-lg',
+                icon: 'h-5 w-5',
+              }}
             />
             <button
               type='submit'

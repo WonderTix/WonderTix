@@ -276,11 +276,13 @@ donationController.get('/search', async (req: Request, res: Response) => {
     const donations = await prisma.donations.findMany({
       where: {
         donationid: donationId ? parseInt(donationId as string) : undefined,
-        order: {
-          contactid_fk: contactId? Number(contactId): undefined,
+        orderitem: {
+          price: amount ? parseFloat(amount as string) : undefined,
+          order: {
+            contactid_fk: contactId ? Number(contactId) : undefined,
+          },
         },
         anonymous: isAnonymous ? isAnonymous === 'true' : undefined,
-        amount: amount ? parseFloat(amount as string) : undefined,
         // frequency: frequency ? frequency as string : undefined,
         comments: comments ? comments as string : undefined,
         // payment_intent: paymentIntent ? paymentIntent as string : undefined,

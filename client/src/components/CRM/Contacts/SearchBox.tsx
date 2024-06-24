@@ -15,17 +15,19 @@ interface SearchBoxProps {
   defaultParameters: {[key: string]: string};
   updateQueries: (index: number, type: string, value: string) => void;
   addQuery: (parameter: string) => void;
+  header?: string;
+  queryMax?: number;
 }
 
 const SearchBox = (props: SearchBoxProps) => {
-  const {onSearch, queries, defaultParameters, updateQueries, addQuery} = props;
+  const {onSearch, queries, defaultParameters, updateQueries, addQuery, header, queryMax} = props;
   const parameters = [...Object.keys(defaultParameters)];
 
   return (
     <aside className='text-md bg-white p-3 mb-4 rounded-xl grid'>
       <div className='grid grid-cols-2 mb-2 text-white'>
-        <h2 className='text-zinc-500 font-semibold text-xl flex items-center'>Search Contacts</h2>
-        <div className='flex flex-row justify-end gap-2'>
+        {header && <h2 className='text-zinc-500 font-semibold text-xl flex items-center'>{header}</h2>}
+        <div className='col-start-2 flex flex-row justify-end gap-2'>
         <FormButton
           testID='contact-search-button'
           title='Search'
@@ -37,7 +39,7 @@ const SearchBox = (props: SearchBoxProps) => {
         </FormButton>
         <FormButton
           className='text-white bg-green-500 hover:bg-green-600 disabled:bg-gray-300 rounded-xl p-1 shadow-xl hover:ring hover:ring-green-300 hover:ring-offset-1 justify-self-end'
-          disabled={!parameters.length}
+          disabled={!parameters.length || queryMax && queries.length >= queryMax}
           testID='add-search-parameter-button'
           title='Add Search Field'
           onClick={() => addQuery(parameters[0])}

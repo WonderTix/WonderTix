@@ -199,7 +199,7 @@ export const reservedTicketItemsFilter = {
   where: {
     OR: [
       {
-        orderticketitem: {
+        orderitem: {
           refund: null,
         },
       },
@@ -217,7 +217,7 @@ export const soldTicketItemsFilter = {
   where: {
     OR: [
       {
-        orderticketitem: {
+        orderitem: {
           order: {
             order_status: state.completed,
           },
