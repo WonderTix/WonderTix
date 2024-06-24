@@ -485,13 +485,13 @@ export const updateContact = async (
   });
 
   if (check === 'exists' && !existingContact) {
-    throw new Error(`Contact(${contactid || contact.email}) does not exist`);
+    throw new Error(`Contact "${contactid || contact.email}" does not exist`);
   } else if (check === 'does_not_exist' && existingContact) {
-    throw new Error(`Contact(${contactid || contact.email}) already exists`);
+    throw new Error(`Contact "${contactid || contact.email}" already exists`);
   } else if (contactid !== undefined && existingContact && contact.email !== existingContact.email) {
     const currentContact = await prisma.contacts.findUnique({where: {email: contact.email}});
     if (currentContact) {
-      throw new Error(`Contact with email ${contact.email} already exists`);
+      throw new Error(`Contact "${contact.email}" already exists`);
     }
   }
 

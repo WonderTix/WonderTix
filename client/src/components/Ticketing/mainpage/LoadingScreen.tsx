@@ -9,8 +9,7 @@ export const LoadingScreen = () => {
     >
       <div className='m-auto'>
         <img
-          className='fill-white w-12 h-full
-             object-cover mx-4'
+          className='fill-white w-16 h-full object-cover ml-[0.65em] mr-4'
           src={bgImg}
           alt='/'
         />

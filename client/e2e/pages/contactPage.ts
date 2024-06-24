@@ -38,7 +38,7 @@ export class ContactPage {
   getContactRow(customer: CustomerInfo) {
     const address = `${customer.streetAddress ?? ''} ${customer.city ?? ''}${
       customer.streetAddress || customer.city ? ',' : ''
-    }${customer.state ?? ''} ${customer.postCode ?? ''} ${
+    } ${customer.state ?? ''} ${customer.postCode ?? ''} ${
       customer.country ?? ''
     }`;
 
