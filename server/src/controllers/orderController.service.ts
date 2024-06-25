@@ -120,11 +120,10 @@ export const completeOrder = async (
 ) => {
   const {
     queries,
-    eventInstances,
     contact,
     orderid,
   } = await getAndDeleteStore(prisma, key) as any;
-  const {contactid} = contact && await updateContact(prisma, contact);
+  const {contactid} = contact? await updateContact(prisma, contact): {contactid: undefined};
 
   await prisma.$transaction([
     prisma.orders.update({
@@ -141,7 +140,6 @@ export const completeOrder = async (
     }),
     ...buildPrismaQueries(prisma, queries),
   ]);
-  await updateAvailableSeats(prisma, eventInstances);
 };
 
 export const buildPrismaQueries = (prisma:ExtendedPrismaClient, queries: {table: string, func: string, query: any}[]) =>
@@ -216,7 +214,7 @@ export interface OrderFulfillmentData {
   donationItem?: any;
   orderSubscriptionItems?: any[];
   orderPaymentIntents?: any[];
-  eventInstanceSet?: Set<number>;
+  eventInstances?: number[];
   discountId?: number;
   contactid?: number;
   subscriptionQuery?: any;
@@ -239,32 +237,39 @@ export const orderFulfillment = async (
     orderPaymentIntents = [],
     discountId,
     contactid,
+    eventInstances,
   }: OrderFulfillmentData,
-) => prisma.orders.create({
-  data: {
-    contactid_fk: contactid,
-    discountid_fk: discountId,
-    ordersubtotal: orderSubtotal,
-    refundtotal: refundTotal,
-    discounttotal: discountTotal,
-    feetotal: feeTotal,
-    refunditems: {
-      create: orderRefundItems,
+) => {
+  const result = await prisma.orders.create({
+    data: {
+      contactid_fk: contactid,
+      discountid_fk: discountId,
+      ordersubtotal: orderSubtotal,
+      refundtotal: refundTotal,
+      discounttotal: discountTotal,
+      feetotal: feeTotal,
+      refunditems: {
+        create: orderRefundItems,
+      },
+      payment_intents: {
+        create: orderPaymentIntents,
+      },
+      orderitems: {
+        create: [
+          ...orderTicketItems,
+          ...orderSubscriptionItems,
+          ...(donationItem? [donationItem]:[]),
+        ],
+      },
+      order_status: orderStatus,
+      order_source: orderSource,
     },
-    payment_intents: {
-      create: orderPaymentIntents,
-    },
-    orderitems: {
-      create: [
-        ...orderTicketItems,
-        ...orderSubscriptionItems,
-        ...(donationItem? [donationItem]:[]),
-      ],
-    },
-    order_status: orderStatus,
-    order_source: orderSource,
-  },
-});
+  });
+  if (eventInstances) {
+    await updateAvailableSeats(prisma, eventInstances);
+  }
+  return result;
+};
 
 
 export const deleteOrderAndTempStore = async (prisma: ExtendedPrismaClient, id: string) => {
@@ -499,6 +504,7 @@ export const createOrder = async ({
         orderSubscriptionItems,
         orderPaymentIntents,
         contactid,
+        eventInstances,
       },
     );
 
@@ -549,7 +555,6 @@ export const createOrder = async ({
       });
       store = await createStore(prisma, id!, {
         queries,
-        eventInstances,
         ...(contactToUpdate && {contact: contactToUpdate}),
         orderid: order.orderid,
       });
@@ -558,7 +563,6 @@ export const createOrder = async ({
       const response = await createStripePaymentIntent(orderDeficit * 100);
       store = await createStore(prisma, response.id, {
         queries,
-        eventInstances,
         ...(contactToUpdate && {contact: contactToUpdate}),
         orderid: order.orderid,
       });
@@ -599,3 +603,4 @@ export const getAndDeleteStore = async (prisma: ExtendedPrismaClient, id: string
     throw Error('Temporary Store has already been deleted');
   }
 };
+

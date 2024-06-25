@@ -53,7 +53,7 @@ export const onlineCheckout = async (
     discount,
   } = req.body;
   try {
-    const contactToUpdate = validateContact(formData);
+    const contactToUpdate = formData && validateContact(formData);
     const response = await createOrder({
       prisma,
       refundCartItems,

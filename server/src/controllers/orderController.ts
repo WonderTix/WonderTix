@@ -544,6 +544,9 @@ orderController.get('/customer/refund/items/:id', async (req: Request, res: Resp
           },
         },
       },
+      orderBy: {
+        orderdatetime: 'desc',
+      },
       include: {
         orderitems: {
           where: {

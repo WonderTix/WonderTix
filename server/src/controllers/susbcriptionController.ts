@@ -146,7 +146,7 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
   }
 });
 
-subscriptionController.get('/available', async (req, res: Response) => {
+subscriptionController.get('/exchange/available', async (req, res: Response) => {
   try {
     const date = getFormattedDate(new Date());
     const toSend = await prisma.seasonsubscriptiontypes.findMany({
@@ -175,7 +175,7 @@ subscriptionController.get('/available', async (req, res: Response) => {
 
     const formattedResponse = toSend.reduce(({seasons, subscriptions}, type) => {
       if (type.subscriptionlimit > type.subscriptions.length) {
-        seasons.push({
+        seasons.set(type.seasonid_fk, {
           ...type.season,
           seasonsubscriptiontypes: type.season.seasonsubscriptiontypes.map((type) => type.subscriptiontypeid_fk),
         });
@@ -186,9 +186,9 @@ subscriptionController.get('/available', async (req, res: Response) => {
         });
       }
       return {seasons, subscriptions};
-    }, {seasons: Array<any>(), subscriptions: Array<any>()});
+    }, {seasons: new Map<number, any>(), subscriptions: Array<any>()});
 
-    return res.json(formattedResponse);
+    return res.json({...formattedResponse, seasons: [...formattedResponse.seasons.values()]});
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});

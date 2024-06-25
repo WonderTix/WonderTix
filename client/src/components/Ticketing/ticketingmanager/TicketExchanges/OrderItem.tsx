@@ -38,7 +38,7 @@ export const OrderItem: React.FC<orderitem> = (props) => {
         </p>
         <p className='col-span-12 flex flex-row gap-1 justify-center tab:gap-0 tab:flex-col tab:justify-self-end tab:col-span-3 text-sm'>
           Price: {formatUSD(Number(price) - Number(discount))}
-          <span>Fee: {formatUSD(+fee)}</span>
+          <span>Fee: {formatUSD(Number(fee))}</span>
         </p>
       </div>
       <FormButton

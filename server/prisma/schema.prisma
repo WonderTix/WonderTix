@@ -255,7 +255,7 @@ model order_payment_intents {
   orderid_fk        Int
   amount            Decimal @db.Money
 
-  order          orders           @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
+  order          orders           @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
   payment_intent payment_intents  @relation(fields: [payment_intent_fk], references: [payment_intent], onDelete: Cascade, onUpdate: Cascade)
   refunds        refund_intents[]
 
@@ -268,7 +268,7 @@ model refunditems {
   orderitemid_fk Int        @unique
   amount         Decimal    @db.Money
   orderitem      orderitems @relation(fields: [orderitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  order          orders     @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
+  order          orders     @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// provides a way to store reports

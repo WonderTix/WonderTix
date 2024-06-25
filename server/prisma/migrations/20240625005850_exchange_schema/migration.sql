@@ -182,7 +182,7 @@ ALTER TABLE "refund_intents" ADD CONSTRAINT "refund_intents_payment_intent_fk_fk
 ALTER TABLE "refund_intents" ADD CONSTRAINT "refund_intents_orderid_fk_payment_intent_fk_fkey" FOREIGN KEY ("orderid_fk", "payment_intent_fk") REFERENCES "order_payment_intents"("orderid_fk", "payment_intent_fk") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "order_payment_intents" ADD CONSTRAINT "order_payment_intents_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "order_payment_intents" ADD CONSTRAINT "order_payment_intents_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "order_payment_intents" ADD CONSTRAINT "order_payment_intents_payment_intent_fk_fkey" FOREIGN KEY ("payment_intent_fk") REFERENCES "payment_intents"("payment_intent") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -191,4 +191,4 @@ ALTER TABLE "order_payment_intents" ADD CONSTRAINT "order_payment_intents_paymen
 ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_orderitemid_fk_fkey" FOREIGN KEY ("orderitemid_fk") REFERENCES "orderitems"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "refunditems" ADD CONSTRAINT "refunditems_orderid_fk_fkey" FOREIGN KEY ("orderid_fk") REFERENCES "orders"("orderid") ON DELETE CASCADE ON UPDATE CASCADE;

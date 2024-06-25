@@ -147,7 +147,7 @@ export const getNameAndDescription = (item: orderitem) => {
       seasonsubscriptiontype: {ticketlimit, subscriptiontype, season},
     } = item.subscription;
     return {
-      name: `${subscriptiontype.description} Subscription`,
+      name: `${subscriptiontype.name} Subscription`,
       desc: `${ticketlimit} shows for ${season.name}`,
     };
   } else if (item.ticketitem) {
@@ -399,7 +399,7 @@ export const useFetchExchangeSubscriptions = (token: string) => {
     const controller = new AbortController();
     if (!token) return;
     getData(
-      `${process.env.REACT_APP_API_2_URL}/subscription-types/available`,
+      `${process.env.REACT_APP_API_2_URL}/subscription-types/exchange/available`,
       ({seasons, subscriptions}) => {
         setSubscriptionTypes(
           new Map(
@@ -499,7 +499,7 @@ export const onlineCheckout = async (checkoutBody: any, token?: string) => {
   if (!stripe) return;
 
   const response = await fetch(
-    `${process.env.REACT_APP_API_2_URL}/events/checkout/admin`,
+    `${process.env.REACT_APP_API_2_URL}/events/admin-checkout`,
     {
       credentials: 'include',
       method: 'POST',
