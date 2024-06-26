@@ -99,7 +99,7 @@ export default function AdminCheckout(): ReactElement {
                   })
                 }
                 validateInput={validateContactInputAdmin}
-                disabled={!cartItems.length || !token}
+                disabled={!cartItems.length}
                 requiredFields={['firstname', 'lastname', 'email']}
                 baseValues={{
                   ...baseContact,

@@ -1,6 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {getData, getDate} from '../Event/components/ShowingUtils';
-import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import {
   isTicketCartItem,
   SubscriptionCartItem,
@@ -13,6 +12,8 @@ import {emptyDiscountCode} from '../AdminPurchase/utils/adminCommon';
 import {CheckoutContact} from '../../checkout/CheckoutUtils';
 import {loadStripe} from '@stripe/stripe-js';
 import {
+  orderitem,
+  ProviderCartItem,
   ProviderEvent,
   ProviderEventInstance,
   ProviderSeason,
@@ -20,7 +21,6 @@ import {
   ProviderTicketRestriction,
   RefundCartItem,
 } from './ticketExchangeTypes';
-import {orderitem} from '../prismaTypes';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
@@ -130,7 +130,7 @@ export const useSearchBox = (
 
 const validateDiscountCode = (
   discount: any,
-  cartItems: (TicketCartItem | SubscriptionCartItem)[],
+  cartItems: ProviderCartItem[],
 ): boolean => {
   const eventIds = cartItems.reduce(
     (acc, item) => (isTicketCartItem(item) ? acc.add(item.eventId) : acc),
@@ -141,9 +141,9 @@ const validateDiscountCode = (
     (tot, item) => (isTicketCartItem(item) ? tot + item.qty : tot),
     0,
   );
-  return (
-    numEventsInCart >= discount.min_events ||
-    totalCartTicketCount >= discount.min_tickets
+  return !(
+    discount.min_events > numEventsInCart ||
+    discount.min_tickets > totalCartTicketCount
   );
 };
 
@@ -154,17 +154,17 @@ export const useDiscount = (setCheckoutDiscount: (value: any) => void) => {
 
   const getDiscountTotal = useCallback(
     (subtotal: number) => {
-      if (appliedDiscount?.amount && appliedDiscount?.percent) {
+      if (!appliedDiscount) {
+        return 0;
+      } else if (appliedDiscount.amount && appliedDiscount.percent) {
         return Math.min(
           (+appliedDiscount.percent / 100) * subtotal,
-          appliedDiscount.amount,
+          +appliedDiscount.amount,
         );
-      } else if (appliedDiscount?.amount) {
-        return Math.min(subtotal, appliedDiscount.amount);
-      } else if (appliedDiscount?.percent) {
+      } else if (appliedDiscount.amount) {
+        return Math.min(subtotal, +appliedDiscount.amount);
+      } else if (appliedDiscount.percent) {
         return (+appliedDiscount.percent / 100) * subtotal;
-      } else {
-        return 0;
       }
     },
     [appliedDiscount],
@@ -173,7 +173,7 @@ export const useDiscount = (setCheckoutDiscount: (value: any) => void) => {
   const handleApplyDiscount = useCallback(
     async (
       discountText: string,
-      cartItems: (SubscriptionCartItem | TicketCartItem)[],
+      cartItems: ProviderCartItem[],
     ) => {
       const discount = await getDiscountCode(discountText);
       if (discount && validateDiscountCode(discount, cartItems)) {
@@ -332,7 +332,7 @@ export const useFetchExchangeSubscriptions = (token: string) => {
     const controller = new AbortController();
     if (!token) return;
     getData(
-      `${process.env.REACT_APP_API_2_URL}/subscription-types/exchange/available`,
+      `${process.env.REACT_APP_API_2_URL}/subscription-types/season/exchange/available`,
       ({seasons, subscriptions}) => {
         setSubscriptionTypes(
           new Map(

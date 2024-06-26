@@ -3,7 +3,7 @@ import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
 import {Prisma, state} from '@prisma/client';
 import {getDate, InvalidInputError, reservedTicketItemsFilter} from './eventInstanceController.service';
-import {onlineCheckout, requestStripeReaderPayment, validateWithRegex} from './eventController.service';
+import {checkout, requestStripeReaderPayment, validateWithRegex} from './eventController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 import multer from 'multer';
@@ -53,8 +53,95 @@ export const eventController = Router();
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.post('/checkout', async (req: Request, res: Response) =>
-  onlineCheckout(req, res, PurchaseSource.online_ticketing, prisma));
+eventController.post('/checkout', async (req: Request, res: Response) => {
+  return checkout(req, res, PurchaseSource.online_ticketing, prisma);
+});
+
+/**
+ * @swagger
+ * /2/events/image-upload:
+ *   post:
+ *     summary: Upload image to google cloud storage, make public, return link
+ *     tags:
+ *     - New Event API
+ *     requestBody:
+ *       description: Image File
+ *     responses:
+ *       200:
+ *         description: Image successfully uploaded.
+ *         content:
+ *           application/json:
+ *             schema: {url: string}
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+
+eventController.post(
+  '/image-upload',
+  upload.single('file'),
+  async (req: Request, res: Response) => {
+    const gcloudKey = process.env.GCLOUD_KEY;
+    const bucketName = process.env.GCLOUD_BUCKET;
+
+    if (gcloudKey === undefined || gcloudKey === '') {
+      return res.status(500).send('Bucket key undefined!');
+    }
+    if (bucketName === undefined || bucketName === '') {
+      return res.status(500).send('Bucket name undefined!');
+    }
+
+    const credentials = JSON.parse(gcloudKey);
+
+    const storage = new Storage({credentials: credentials});
+    const imgBucket = storage.bucket(`${bucketName}`);
+
+    if (!req.file) {
+      return res.status(400).send('No file passed to request!');
+    }
+
+    try {
+      validateWithRegex(
+        req.file.mimetype.toLowerCase(),
+        'Invalid input, not a valid image filetype!',
+        new RegExp('^(image/(jpe?g|png))'),
+      );
+    } catch (error) {
+      console.error(error);
+      return res.status(400).send(error);
+    }
+
+    const file = imgBucket.file(req.file.originalname);
+    const stream = file.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype,
+      },
+      resumable: false,
+    });
+
+    stream.on('error', (err) => {
+      console.error(err);
+      return res.status(500).send('Upload failed!');
+    });
+
+    stream.on('finish', async () => {
+      await file.makePublic();
+      const url = `https://storage.googleapis.com/${bucketName}/${file.name}`;
+      return res.status(200).send({url});
+    });
+
+    stream.end(req.file.buffer);
+  },
+);
 
 /**
  * @swagger
@@ -146,7 +233,7 @@ eventController.get('/exchange', async (_, res: Response) => {
       return {events, eventinstances, ticketrestrictions};
     }, {events: Array<any>(), eventinstances: Array<any>(), ticketrestrictions: Array<any>()}));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return res.status(400).json({error: error.message});
     }
@@ -802,92 +889,6 @@ eventController.use(checkScopes);
 
 /**
  * @swagger
- * /2/events/image-upload:
- *   post:
- *     summary: Upload image to google cloud storage, make public, return link
- *     tags:
- *     - New Event API
- *     requestBody:
- *       description: Image File
- *     responses:
- *       200:
- *         description: Image successfully uploaded.
- *         content:
- *           application/json:
- *             schema: {url: string}
- *       400:
- *         description: bad request
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   description: Error message from the server.
- *       500:
- *         description: Internal Server Error. An error occurred while processing the request.
- */
-
-eventController.post(
-  '/image-upload',
-  upload.single('file'),
-  async (req: Request, res: Response) => {
-    const gcloudKey = process.env.GCLOUD_KEY;
-    const bucketName = process.env.GCLOUD_BUCKET;
-
-    if (gcloudKey === undefined || gcloudKey === '') {
-      return res.status(500).send('Bucket key undefined!');
-    }
-    if (bucketName === undefined || bucketName === '') {
-      return res.status(500).send('Bucket name undefined!');
-    }
-
-    const credentials = JSON.parse(gcloudKey);
-
-    const storage = new Storage({credentials: credentials});
-    const imgBucket = storage.bucket(`${bucketName}`);
-
-    if (!req.file) {
-      return res.status(400).send('No file passed to request!');
-    }
-
-    try {
-      validateWithRegex(
-        req.file.mimetype.toLowerCase(),
-        'Invalid input, not a valid image filetype!',
-        new RegExp('^(image/(jpe?g|png))'),
-      );
-    } catch (error) {
-      console.error(error);
-      return res.status(400).send(error);
-    }
-
-    const file = imgBucket.file(req.file.originalname);
-    const stream = file.createWriteStream({
-      metadata: {
-        contentType: req.file.mimetype,
-      },
-      resumable: false,
-    });
-
-    stream.on('error', (err) => {
-      console.error(err);
-      return res.status(500).send('Upload failed!');
-    });
-
-    stream.on('finish', async () => {
-      await file.makePublic();
-      const url = `https://storage.googleapis.com/${bucketName}/${file.name}`;
-      return res.status(200).send({url});
-    });
-
-    stream.end(req.file.buffer);
-  },
-);
-
-/**
- * @swagger
  * /2/events/admin-checkout:
  *   post:
  *     summary: Update contact information, create order, create Stripe checkout session for admin purchase
@@ -924,8 +925,9 @@ eventController.post(
  *       500:
  *         description: Internal Server Error. An error occurred while processing the request.
  */
-eventController.post('/admin-checkout', async (req: Request, res: Response) =>
-  onlineCheckout(req, res, PurchaseSource.admin_ticketing, prisma));
+eventController.post('/admin-checkout', async (req: Request, res: Response) => {
+  return checkout(req, res, PurchaseSource.admin_ticketing, prisma);
+});
 
 /**
  * @swagger
@@ -936,7 +938,7 @@ eventController.post('/admin-checkout', async (req: Request, res: Response) =>
  *     - New Event API
  */
 eventController.post('/reader-intent', async (req: Request, res: Response) =>
-  onlineCheckout(req, res, PurchaseSource.card_reader, prisma));
+  checkout(req, res, PurchaseSource.card_reader, prisma));
 
 /**
  * @swagger
@@ -950,7 +952,9 @@ eventController.post('/reader-checkout', async (req: Request, res: Response) => 
   const {paymentIntentID, readerID} = req.body;
   try {
     await requestStripeReaderPayment(readerID, paymentIntentID);
-    res.json({status: 'order sent'});
+    const store = await prisma.temporarystore.findUnique({where: {id: paymentIntentID}});
+    // @ts-ignore
+    res.json({status: 'order sent', orderID: store?.data?.orderid});
   } catch (error) {
     console.error(error);
     if (error instanceof InvalidInputError) {
@@ -1370,6 +1374,7 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
                 orderitem: {
                   refund: null,
                   order: {
+                    order_status: state.completed,
                     contactid_fk: +contactId,
                   },
                 },

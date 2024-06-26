@@ -52,7 +52,7 @@ export const InputControl = (props: InputControlProps) => {
         {`${label}: `}
       </label>
       <div className={className?.inputGroupClass}>
-        <span className={`${currency ? `before:content-['$'] before:ml-1` : ''} flex flex-row items-center`}>
+        <span className={`${currency ? `before:content-['$'] before:pl-1` : ''} flex flex-row items-center`}>
           {type === 'textarea' ? (
             <textarea {...inputProps} />
           ) : (

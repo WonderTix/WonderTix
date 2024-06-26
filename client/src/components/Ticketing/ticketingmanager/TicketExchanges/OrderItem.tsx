@@ -1,10 +1,10 @@
 import React, {useCallback} from 'react';
-import {orderitem} from '../prismaTypes';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
 import {getNameAndDescription} from './TicketExchangeUtils';
 import {formatUSD} from '../RefundOrders/RefundOrders';
 import {FormButton} from '../Event/components/FormButton';
 import {DecrementIcon, PlusIcon} from '../../Icons';
+import {orderitem} from './ticketExchangeTypes';
 
 export const OrderItem: React.FC<orderitem> = (props) => {
   const {id, price, fee, discount} = props;

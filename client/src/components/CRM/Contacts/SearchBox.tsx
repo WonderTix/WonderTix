@@ -16,11 +16,10 @@ interface SearchBoxProps {
   updateQueries: (index: number, type: string, value: string) => void;
   addQuery: (parameter: string) => void;
   header?: string;
-  queryMax?: number;
 }
 
 const SearchBox = (props: SearchBoxProps) => {
-  const {onSearch, queries, defaultParameters, updateQueries, addQuery, header, queryMax} = props;
+  const {onSearch, queries, defaultParameters, updateQueries, addQuery, header} = props;
   const parameters = [...Object.keys(defaultParameters)];
 
   return (
@@ -39,7 +38,7 @@ const SearchBox = (props: SearchBoxProps) => {
         </FormButton>
         <FormButton
           className='text-white bg-green-500 hover:bg-green-600 disabled:bg-gray-300 rounded-xl p-1 shadow-xl hover:ring hover:ring-green-300 hover:ring-offset-1 justify-self-end'
-          disabled={!parameters.length || queryMax && queries.length >= queryMax}
+          disabled={!parameters.length}
           testID='add-search-parameter-button'
           title='Add Search Field'
           onClick={() => addQuery(parameters[0])}

@@ -1,19 +1,17 @@
 /* eslint camelcase: 0 */
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {
-  orders,
-  state,
-  purchase_source,
-  contacts,
-  temporarystore,
-} from '@prisma/client';
+import {contacts, orders, purchase_source, state, temporarystore} from '@prisma/client';
 import WebSocket from 'ws';
 import {InvalidInputError, reservedTicketItemsFilter} from './eventInstanceController.service';
 import {
-  ContactInput, createStripeCheckoutSession, createStripePaymentIntent, expireCheckoutSession,
+  ContactInput,
+  createStripeCheckoutSession,
+  createStripePaymentIntent,
+  expireCheckoutSession,
   getDiscount,
   getDonationItem,
-  getFeeItem, getRefundIntent,
+  getFeeItem,
+  getRefundIntent,
   getRefundItems,
   getSubscriptionItems,
   getTicketItems,
@@ -118,11 +116,16 @@ export const completeOrder = async (
       },
     },
 ) => {
+  const store = await getAndDeleteStore(prisma, key) as any;
+
+  if (!store) return;
+
   const {
+    subscriptions,
     queries,
     contact,
     orderid,
-  } = await getAndDeleteStore(prisma, key) as any;
+  } = store;
   const {contactid} = contact? await updateContact(prisma, contact): {contactid: undefined};
 
   await prisma.$transaction([
@@ -140,6 +143,33 @@ export const completeOrder = async (
     }),
     ...buildPrismaQueries(prisma, queries),
   ]);
+
+  await deleteSubscriptionTicketItems(prisma, subscriptions);
+};
+
+export const deleteSubscriptionTicketItems = async (prisma: ExtendedPrismaClient, subscriptions: number[]) => {
+  if (!subscriptions.length) return;
+
+  const tickets = await prisma.subscriptionticketitems.findMany({
+    where: {
+      subscriptionid_fk: {in: subscriptions},
+    },
+    include: {
+      ticketitem: {
+        include: {
+          ticketrestriction: true,
+        },
+      },
+    },
+  });
+  await prisma.subscriptionticketitems.deleteMany({
+    where: {
+      subscriptionid_fk: {in: subscriptions},
+    },
+  });
+  const eventInstanceIds = [...new Set(tickets.map((ticket) => ticket.ticketitem?.ticketrestriction.eventinstanceid_fk))];
+  // @ts-ignore
+  await updateAvailableSeats(prisma, eventInstanceIds);
 };
 
 export const buildPrismaQueries = (prisma:ExtendedPrismaClient, queries: {table: string, func: string, query: any}[]) =>
@@ -217,8 +247,6 @@ export interface OrderFulfillmentData {
   eventInstances?: number[];
   discountId?: number;
   contactid?: number;
-  subscriptionQuery?: any;
-  paymentIntentQueries?: any[];
 }
 
 export const orderFulfillment = async (
@@ -235,9 +263,9 @@ export const orderFulfillment = async (
     orderRefundItems = [],
     orderSubscriptionItems = [],
     orderPaymentIntents = [],
+    eventInstances,
     discountId,
     contactid,
-    eventInstances,
   }: OrderFulfillmentData,
 ) => {
   const result = await prisma.orders.create({
@@ -273,7 +301,9 @@ export const orderFulfillment = async (
 
 
 export const deleteOrderAndTempStore = async (prisma: ExtendedPrismaClient, id: string) => {
-  const {orderid} = await getAndDeleteStore(prisma, id) as any;
+  const store = await getAndDeleteStore(prisma, id) as any;
+  if (!store) return;
+  const {orderid} = store;
   const order = await prisma.orders.findUnique({where: {orderid}});
   if (!order) return;
   await deleteOrder(prisma, order);
@@ -375,7 +405,6 @@ export const updateAvailableSeats = async (
       },
     },
   });
-
   await prisma.$transaction(eventInstances.map((instance) => prisma.eventinstances.update({
     where: {
       eventinstanceid: instance.eventinstanceid,
@@ -389,7 +418,20 @@ export const updateAvailableSeats = async (
 
 
 export const discoverReaders = async () => stripe.terminal.readers.list();
-export const abortPaymentIntent = async (id: string) => stripe.paymentIntents.cancel(id);
+export const abortPaymentIntent = async (id: string) => {
+  try {
+    await stripe.paymentIntents.cancel(id);
+  } catch (error: any) {
+    const paymentIntent = error?.raw?.payment_intent;
+    if (!paymentIntent || paymentIntent.status === 'succeeded') {
+      throw new Error('Payment intent can not be canceled');
+    } else if (paymentIntent.status === 'canceled') {
+      return;
+    } else {
+      throw new Error('Failed to cancel payment intent please try again');
+    }
+  }
+};
 
 export interface Discount {
  code: string;
@@ -400,7 +442,7 @@ export interface Discount {
 
 interface CreateOrderArguments {
   prisma: ExtendedPrismaClient,
-  orderSource: purchase_source,
+  orderSource: PurchaseSource,
   ticketCartItems?: TicketCartItem[],
   subscriptionCartItems?: SubscriptionCartItem[],
   refundCartItems?: RefundCartItem[],
@@ -435,10 +477,11 @@ export const createOrder = async ({
 
     const {
       orderPaymentIntents = [],
-      queries = [],
-      refundTotal = 0,
       orderRefundItems = [],
       eventInstanceSet = new Set<number>(),
+      queries = [],
+      subscriptions = [],
+      refundTotal = 0,
       paymentIntentMap,
     } = await getRefundItems(prisma, refundCartItems);
 
@@ -448,13 +491,13 @@ export const createOrder = async ({
       ticketTotal,
       feeTotal,
       eventInstanceSet: additionalEventInstanceIds,
-    } = await getTicketItems(prisma, ticketCartItems, orderSource !== purchase_source.online_ticketing);
+    } = await getTicketItems(ticketCartItems, orderSource !== PurchaseSource.online_ticketing, prisma);
 
     const {
       subscriptionCartRows,
       orderSubscriptionItems,
       subscriptionTotal,
-    } = await getSubscriptionItems(prisma, subscriptionCartItems, orderSource !== purchase_source.online_ticketing);
+    } = await getSubscriptionItems(prisma, subscriptionCartItems, orderSource !== PurchaseSource.online_ticketing);
 
     const {
       donationItem,
@@ -484,7 +527,7 @@ export const createOrder = async ({
 
     const contactid = contact ?
       contact.contactid :
-      (orderSource !== PurchaseSource.online_ticketing || orderDeficit === 0) && contactToUpdate ?
+      orderDeficit <= 0 && contactToUpdate ?
         (await updateContact(prisma, contactToUpdate)).contactid :
         undefined;
 
@@ -514,41 +557,39 @@ export const createOrder = async ({
 
     if (orderDeficit === 0) {
       await prisma.$transaction(buildPrismaQueries(prisma, queries));
-      await updateAvailableSeats(prisma, eventInstances);
+      await deleteSubscriptionTicketItems(prisma, subscriptions);
       return {id: 'comp'};
-    } else if (orderDeficit < 0 && paymentIntentMap) {
+    } else if (orderDeficit < 0) {
       orderDeficit = Math.abs(orderDeficit);
-      const refundIntents = [];
-      for (const paymentIntent of paymentIntentMap) {
-        if (paymentIntent[1] === 0) continue;
 
-        const amountToRefund = Math.min(orderDeficit, paymentIntent[1]);
+      if (!paymentIntentMap) {
+        throw Error('Order failed to process');
+      }
+
+      for (const [paymentIntent, amount] of paymentIntentMap) {
+        if (amount === 0) continue;
+
+        const amountToRefund = Math.min(orderDeficit, amount);
         orderDeficit -= amountToRefund;
 
-        const refund = paymentIntent[0].includes('seeded-order') ?
-          {id: `refund-intent-${paymentIntent[0]}-${order.orderid}`, status: 'succeeded'}:
-          await getRefundIntent(paymentIntent[0], amountToRefund);
-
-        refundIntents.push({
-          refund_intent: refund.id,
-          orderid_fk: order.orderid,
-          payment_intent_fk: paymentIntent[0],
-          status: getRefundStatus(refund.status),
-          amount: amountToRefund,
-        });
+        // work around to handle seeded orders
+        const refund = paymentIntent.includes('seeded-order') ?
+          {id: `refund-intent-${paymentIntent}-${order.orderid}`, status: 'succeeded'}:
+          await getRefundIntent(paymentIntent, amountToRefund);
+        await prisma.refund_intents.create({
+          data: {
+            refund_intent: refund.id,
+            orderid_fk: order.orderid,
+            payment_intent_fk: paymentIntent,
+            status: getRefundStatus(refund.status),
+            amount: amountToRefund,
+          }});
 
         if (orderDeficit === 0) break;
       }
 
-      await prisma.$transaction([
-        prisma.refund_intents.createMany({data: refundIntents}),
-        ...buildPrismaQueries(prisma, queries),
-      ]);
-
-      await updateAvailableSeats(prisma, [
-        ...additionalEventInstanceIds.keys(),
-        ...eventInstanceSet.keys(),
-      ]);
+      await prisma.$transaction(buildPrismaQueries(prisma, queries));
+      await deleteSubscriptionTicketItems(prisma, subscriptions);
       return {id: 'refund'};
     } else if (orderSource !== purchase_source.card_reader) {
       id = await createStripeCheckoutSession({
@@ -556,24 +597,25 @@ export const createOrder = async ({
         discount: {...discount, amountOff: Number(order.discounttotal)},
         refundCredit: Number(order.refundtotal),
         contactEmail: contact?.email ?? contactToUpdate?.email,
-        metaData: {
+        metadata: {
           sessionType: '__ticketing',
         },
       });
       store = await createStore(prisma, id!, {
-        queries,
-        ...(contactToUpdate && {contact: contactToUpdate}),
         orderid: order.orderid,
+        queries,
+        subscriptions,
+        ...(contactToUpdate && {contact: contactToUpdate}),
       });
       return {id};
     } else {
       const response = await createStripePaymentIntent(orderDeficit * 100);
       store = await createStore(prisma, response.id, {
-        queries,
-        ...(contactToUpdate && {contact: contactToUpdate}),
         orderid: order.orderid,
+        queries,
+        subscriptions,
+        ...(contactToUpdate && {contact: contactToUpdate}),
       });
-
       return response;
     }
   } catch (error) {
@@ -603,7 +645,9 @@ export const createStore = async (prisma: ExtendedPrismaClient, id: string, data
 
 export const getAndDeleteStore = async (prisma: ExtendedPrismaClient, id: string) => {
   try {
-    const store = await prisma.temporarystore.delete({where: {id}});
+    const store = await prisma.temporarystore.findUnique({where: {id}});
+    if (!store) return;
+    await prisma.temporarystore.delete({where: {id}});
     return store.data;
   } catch (error) {
     throw Error('Temporary Store has already been deleted');

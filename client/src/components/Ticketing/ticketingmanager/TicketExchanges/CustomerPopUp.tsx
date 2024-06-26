@@ -10,7 +10,8 @@ import {
 } from '@mui/x-data-grid';
 import IconButton from '../../IconButton';
 import {CircleCheckIcon, CircleIcon} from '../../Icons';
-import {contact} from '../prismaTypes';
+
+import {contact} from './ticketExchangeTypes';
 
 interface CustomerPopUpProps {
   setShow: () => void;
@@ -88,7 +89,6 @@ const CustomerPopUp: React.FC<CustomerPopUpProps> = (props) => {
           updateQueries={updateQueries}
           addQuery={addQuery}
           header='Select Customer'
-          queryMax={4}
         />
       </header>
       <div className='overflow-auto tab:min-w-[550px] px-4'>

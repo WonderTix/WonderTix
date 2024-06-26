@@ -9,9 +9,9 @@ import {
 import {seatingAccInOptions} from '../../../CRM/Contacts/contactUtils';
 import {getCheckoutRequestBody, onlineCheckout} from './TicketExchangeUtils';
 import {TicketExchangeCart} from './TicketExchangeCart';
-import {contact} from '../prismaTypes';
 import {useNavigate} from 'react-router-dom';
 import PopUp from '../../PopUp';
+import {contact} from './ticketExchangeTypes';
 
 
 const getCheckoutContact = (customer: contact) => ({
@@ -78,7 +78,7 @@ export const TicketExchangeOrderForm: React.FC = () => {
   );
 
   return (
-    <div className='flex flex-col items-center md:flex-row rounded-[1rem] md:items-stretch md:bg-white md:p-4 w-full h-full'>
+    <div className='flex flex-col items-center min-[1024px]:flex-row rounded-[1rem] md:items-stretch md:bg-white md:p-4 w-full h-full'>
       <div className='min-w-414 w-full h-full md:m-[2rem] md:mr-5 mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
         <div className='flex flex-col items-center h-auto w-full'>
           <h1 className='text-3xl font-bold mb-5'>Complete Order</h1>

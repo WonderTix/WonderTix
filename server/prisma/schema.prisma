@@ -176,11 +176,11 @@ model subscriptionticketitems {
 
 model orderitems {
   id           Int            @id @default(autoincrement())
-  orderid_fk   Int
   type         type
+  orderid_fk   Int
   price        Decimal        @db.Money
-  discount     Decimal        @default(0) @db.Money
   fee          Decimal        @default(0) @db.Money
+  discount     Decimal        @default(0) @db.Money
   department   String?        @db.VarChar(255)
   order        orders         @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
   ticketitem   ticketitems?
@@ -212,14 +212,14 @@ model ticketitems {
 model orders {
   orderid         Int                     @id @default(autoincrement())
   orderdatetime   DateTime                @default(now()) @db.Timestamp(3)
+  contactid_fk    Int?
+  discountid_fk   Int?
   ordersubtotal   Decimal                 @db.Money
   refundtotal     Decimal                 @db.Money
   discounttotal   Decimal                 @default(0) @db.Money
   feetotal        Decimal                 @default(0) @db.Money
-  order_status    state
-  contactid_fk    Int?
-  discountid_fk   Int?
   order_source    purchase_source?
+  order_status    state
   contacts        contacts?               @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
   discounts       discounts?              @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
   orderitems      orderitems[]

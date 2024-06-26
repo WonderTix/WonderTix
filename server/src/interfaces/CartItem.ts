@@ -28,7 +28,7 @@ export default interface TicketCartItem extends CartItem {
   payWhatPrice?: number;
   typeID: number;
   fee?: number;
-  discount?: number;
+  discount?: number // is not sent from frontend, rather is added while processing order
 };
 
 export interface SubscriptionCartItem extends CartItem {

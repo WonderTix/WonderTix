@@ -36,7 +36,7 @@ async function main() {
     await importEvents(prisma);
     await importEventInstances(prisma);
     await importTicketRestrictions(prisma);
-    // await importOrders(prisma);
+    await importOrders(prisma);
   }
 }
 

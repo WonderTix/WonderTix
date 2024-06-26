@@ -11,12 +11,12 @@ import {
   useFetchExchangeSubscriptions,
 } from './TicketExchangeUtils';
 import {
+  contact,
   ProviderCartItem,
   ProviderOrder,
   RefundCartItem,
   TicketExchangeContextValues,
 } from './ticketExchangeTypes';
-import {contact} from '../prismaTypes';
 
 const TicketExchangeContext = React.createContext<TicketExchangeContextValues>({
   token: undefined,
@@ -49,7 +49,7 @@ export const TicketExchangeProvider: React.FC = (props) => {
   const [refundItems, setRefundItems] = useState(new Map<number, RefundCartItem>());
   const [stage, setStage] = useState<'select_items' | 'customer_info' | 'checkout'>('select_items');
   const [orders] = useFetchData<ProviderOrder[]>(
-    `${process.env.REACT_APP_API_2_URL}/order/customer/refund/items/${customer?.contactid}`,
+    `${process.env.REACT_APP_API_2_URL}/order/refundable-orders/${customer?.contactid}`,
     {token: !customer ? undefined : token},
   );
   const {

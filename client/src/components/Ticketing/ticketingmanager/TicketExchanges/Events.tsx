@@ -37,7 +37,7 @@ const Events: React.FC = () => {
         <ActivenessGroupToggle
           defaultValue='active'
           handleFilterChange={setActiveFilter}
-          groupClass='mb-0'
+          className='mb-0'
         />
       </li>
       {

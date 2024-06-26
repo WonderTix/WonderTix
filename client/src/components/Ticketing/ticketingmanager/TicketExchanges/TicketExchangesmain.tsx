@@ -3,7 +3,7 @@ import {TicketExchangeProvider} from './TicketExchangeProvider';
 import TicketExchange from './TicketExchange';
 import TicketingNavBar from '../TicketingNavBar';
 
-const TicketExchangesMain = () => {
+const TicketExchangesmain = () => {
   return (
     <div className='flex flex-row'>
       <TicketingNavBar />
@@ -18,5 +18,5 @@ const TicketExchangesMain = () => {
   );
 };
 
-export default TicketExchangesMain;
+export default TicketExchangesmain;
 

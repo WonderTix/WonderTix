@@ -146,49 +146,82 @@ subscriptionController.get('/season/:id', async (req, res: Response) => {
   }
 });
 
-subscriptionController.get('/exchange/available', async (req, res: Response) => {
+
+/**
+ * @swagger
+ * /2/subscription-types/season/exchange/available:
+ *   get:
+ *     summary: get all seasons with available subscription types
+ *     tags:
+ *     - Subscription API
+ *     responses:
+ *       200:
+ *         description: array of seasons and subscription types
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+subscriptionController.get('/season/exchange/available', async (req, res: Response) => {
   try {
     const date = getFormattedDate(new Date());
-    const toSend = await prisma.seasonsubscriptiontypes.findMany({
+    const seasons = await prisma.seasons.findMany({
       where: {
         deletedat: null,
-        season: {
-          enddate: {gte: date},
+        enddate: {gte: date},
+        seasonsubscriptiontypes: {
+          some: {
+            deletedat: null,
+          },
         },
       },
       include: {
-        subscriptiontype: true,
-        season: {
-          include: {
-            seasonsubscriptiontypes: true,
-          },
-        },
-        subscriptions: {
+        seasonsubscriptiontypes: {
           where: {
-            orderitem: {
-              refund: null,
+            deletedat: null,
+          },
+          include: {
+            season: true,
+            subscriptiontype: true,
+            subscriptions: {
+              where: {
+                orderitem: {
+                  refund: null,
+                },
+              },
             },
           },
         },
       },
     });
 
-    const formattedResponse = toSend.reduce(({seasons, subscriptions}, type) => {
-      if (type.subscriptionlimit > type.subscriptions.length) {
-        seasons.set(type.seasonid_fk, {
-          ...type.season,
-          seasonsubscriptiontypes: type.season.seasonsubscriptiontypes.map((type) => type.subscriptiontypeid_fk),
-        });
-        subscriptions.push({
-          ...type,
-          price: Number(type.price),
-          subscriptionsavailable: type.subscriptionlimit - type.subscriptions.length,
+    const formattedResponse = seasons.reduce(({seasons, subscriptions}, season) => {
+      const seasonsubscriptiontypes = season.seasonsubscriptiontypes.reduce((acc, type) => {
+        if (type.subscriptions.length < type.subscriptionlimit) {
+          acc.push(type.subscriptiontypeid_fk);
+          subscriptions.push({
+            ...type,
+            price: Number(type.price),
+            subscriptionsavailable: type.subscriptionlimit - type.subscriptions.length,
+          });
+        }
+        return acc;
+      }, Array<any>());
+
+      if (seasonsubscriptiontypes.length > 0) {
+        seasons.push({
+          ...season,
+          seasonsubscriptiontypes,
         });
       }
       return {seasons, subscriptions};
-    }, {seasons: new Map<number, any>(), subscriptions: Array<any>()});
+    }, {seasons: Array<any>(), subscriptions: Array<any>()});
 
-    return res.json({...formattedResponse, seasons: [...formattedResponse.seasons.values()]});
+    return res.json(formattedResponse);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       res.status(400).json({error: error.message});
