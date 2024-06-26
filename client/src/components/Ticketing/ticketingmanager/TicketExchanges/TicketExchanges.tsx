@@ -8,7 +8,7 @@ import {TicketExchangeItems} from './TicketExchangeItems';
 import {CustomerDisplay} from './CustomerDisplay';
 import {LoadingIcon} from '../../Icons';
 
-export const TicketExchange: React.FC = () => {
+export const TicketExchanges: React.FC = () => {
   const {customer, stage, events, seasons, token} = useTicketExchangeContext();
   const [customerPopUp, setCustomerPopUp] = useState(false);
 
@@ -23,8 +23,8 @@ export const TicketExchange: React.FC = () => {
   return (
     <main className='h-full w-full min-[1700px]:w-[90%] min-[2000px]:w-[70%] mx-auto'>
       <header className='w-full flex flex-col gap-2 mb-4 tab:flex-row tab:items-center tab:justify-between tab:h-[100px] tab:mb-10'>
-        <h1 className='text-center tab:text-start p-1 font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-700 to-sky-200'>
-          Order Exchange
+        <h1 className='text-center tab:text-start p-1 font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-600'>
+          Ticket Exchange
         </h1>
         {customer ? (
           <CustomerDisplay />
@@ -55,4 +55,4 @@ export const TicketExchange: React.FC = () => {
     </main>
   );
 };
-export default TicketExchange;
+export default TicketExchanges;
