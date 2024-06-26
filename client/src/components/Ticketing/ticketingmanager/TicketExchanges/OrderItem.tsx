@@ -30,7 +30,7 @@ export const OrderItem: React.FC<orderitem> = (props) => {
   );
 
   return (
-    <li className='flex flex-col tab:flex-row tab:justify-between items-center bg-zinc-800/90 rounded-xl p-3 shadow-xl'>
+    <li className='flex flex-col tab:flex-row tab:justify-between items-center bg-zinc-800/90 rounded-xl p-3'>
       <div className='grid grid-cols-12 text-white items-center flex-grow'>
         <p className='flex flex-col col-span-12 tab:col-span-9 text-md font-semibold text-center tab:text-start'>
           {refundItem.name}
@@ -38,7 +38,7 @@ export const OrderItem: React.FC<orderitem> = (props) => {
         </p>
         <p className='col-span-12 flex flex-row gap-1 justify-center tab:gap-0 tab:flex-col tab:justify-self-end tab:col-span-3 text-sm'>
           Price: {formatUSD(Number(price) - Number(discount))}
-          <span>Fee: {formatUSD(Number(fee))}</span>
+          {fee > 0 && <span>Fee: {formatUSD(Number(fee))}</span>}
         </p>
       </div>
       <FormButton

@@ -22,6 +22,7 @@ import PopUp from '../../Ticketing/PopUp';
 import {usePopUp} from '../../Ticketing/ticketingmanager/TicketTypes/SubscriptionTypeUtils';
 import format from 'date-fns/format';
 import SearchBox from './SearchBox';
+import {useSearchBox} from '../../Ticketing/ticketingmanager/TicketExchanges/TicketExchangeUtils';
 
 const ContactGrid = () => {
   const {token} = useFetchToken();
@@ -30,7 +31,7 @@ const ContactGrid = () => {
   const [contactPopUpIsOpen, setContactPopUpIsOpen] = useState(false);
   const [contactPopUpErrMsg, setContactPopUpErrMsg] = useState(null);
   const location = useLocation();
-  const [queries, setQueries] = useState<{parameter: string; value: string}[]>(
+  const {queries, updateQueries, addQuery} = useSearchBox(
     location.state?.length
       ? location.state
       : [
@@ -52,73 +53,58 @@ const ContactGrid = () => {
     setContactPopUpErrMsg(null);
   }, []);
 
-  const handleCreateContact = useCallback(async (contact: Contact) => {
-    if (contact.seatingAcc === 'Other') {
-      contact.seatingAcc = contact.otherSeatingAcc;
-    }
+  const handleCreateContact = useCallback(
+    async (contact: Contact) => {
+      if (contact.seatingAcc === 'Other') {
+        contact.seatingAcc = contact.otherSeatingAcc;
+      }
 
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_API_2_URL + '/contact',
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_API_2_URL + '/contact',
+          {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              firstname: contact.first,
+              lastname: contact.last,
+              email: contact.email,
+              phone: contact.phone,
+              address: contact.address,
+              city: contact.city,
+              state: contact.state,
+              country: contact.country,
+              postalcode: contact.postalCode,
+              donorbadge: contact.donorBadge,
+              visitsource: contact.visitSource,
+              seatingaccom: contact.seatingAcc,
+              comments: contact.comments,
+              vip: contact.vip,
+              volunteerlist: contact.volunteerList,
+              newsletter: contact.newsletter,
+            }),
           },
-          body: JSON.stringify({
-            firstname: contact.first,
-            lastname: contact.last,
-            email: contact.email,
-            phone: contact.phone,
-            address: contact.address,
-            city: contact.city,
-            state: contact.state,
-            country: contact.country,
-            postalcode: contact.postalCode,
-            donorbadge: contact.donorBadge,
-            visitsource: contact.visitSource,
-            seatingaccom: contact.seatingAcc,
-            comments: contact.comments,
-            vip: contact.vip,
-            volunteerlist: contact.volunteerList,
-            newsletter: contact.newsletter,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        throw response;
-      }
-
-      const data = await response.json();
-      navigate(`/admin/contacts/show/${data.contactid}`);
-    } catch (error) {
-      const errorMessage = error.json ? (await error.json()).error : 'Failed to create contact';
-      setContactPopUpErrMsg(errorMessage);
-    }
-  }, [token]);
-
-  const updateParameters = useCallback((index: number, newValue: string) => {
-    setQueries((prev) => {
-      if (newValue) {
-        return prev.map((value, cur) =>
-          index === cur ? {...value, parameter: newValue} : value,
         );
-      }
-      prev.splice(index, 1);
-      return Array.from(prev);
-    });
-  }, []);
 
-  const updateQueries = useCallback(
-    (index: number, value:string) =>
-    setQueries((prev) =>
-      prev.map((query, cur) =>
-        index === cur ? {...query, value} : query,
-      ),
-    ), []);
+        if (!response.ok) {
+          throw response;
+        }
+
+        const data = await response.json();
+        navigate(`/admin/contacts/show/${data.contactid}`);
+      } catch (error) {
+        const errorMessage = error.json
+          ? (await error.json()).error
+          : 'Failed to create contact';
+        setContactPopUpErrMsg(errorMessage);
+      }
+    },
+    [token],
+  );
 
   return (
     <main className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
@@ -132,20 +118,11 @@ const ContactGrid = () => {
               setLoading(true);
               setReload((prev) => !prev);
             }}
+            header='Search'
             queries={queries}
             defaultParameters={defaultParameters}
-            updateQueries={(
-              indexToRemove: number,
-              type: string,
-              value: string,
-            ) =>
-              type === 'parameter'
-                ? updateParameters(indexToRemove, value)
-                : updateQueries(indexToRemove, value)
-            }
-            addQuery={(parameter: string) =>
-              setQueries((prev) => [{parameter, value: ''}, ...prev])
-            }
+            updateQueries={updateQueries}
+            addQuery={addQuery}
           />
         </header>
         <div className='flex bg-white p-4 rounded-xl'>
@@ -165,7 +142,8 @@ const ContactGrid = () => {
             componentsProps={{
               toolbar: {
                 setShowPopUp: setContactPopUpIsOpen,
-              }}}
+              },
+            }}
             initialState={{
               pagination: {
                 pageSize: 10,

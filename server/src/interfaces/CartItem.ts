@@ -28,6 +28,7 @@ export default interface TicketCartItem extends CartItem {
   payWhatPrice?: number;
   typeID: number;
   fee?: number;
+  discount?: number;
 };
 
 export interface SubscriptionCartItem extends CartItem {

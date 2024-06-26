@@ -15,13 +15,13 @@ export const TicketExchangeItems: React.FC = () => {
   const [current, setCurrent] = useState(2);
 
   useEffect(() => {
-    const closeCartOnSize = () => {
-      if (window.innerWidth >= 1280) {
+    const closeCartOnResize = () => {
+      if (window.innerWidth > 1279) {
         setCartPopUp(false);
       }
     };
-    window.addEventListener('resize', closeCartOnSize);
-    return () => window.removeEventListener('resize', closeCartOnSize);
+    window.addEventListener('resize', closeCartOnResize);
+    return () => window.removeEventListener('resize', closeCartOnResize);
   }, []);
 
   useEffect(() => {
@@ -31,37 +31,23 @@ export const TicketExchangeItems: React.FC = () => {
   }, [stage]);
 
   return (
-    <div className='w-full grid grid-cols-12 overflow-hidden'>
-      <section className='col-span-12 desktop:col-span-8 rounded-xl p-3'>
+    <div className='w-full grid grid-cols-12'>
+      <section className='col-span-12 min-[1280px]:col-span-8 p-3'>
         <header className='flex flex-row justify-between mb-3'>
           <Tabs
             value={current}
             onChange={(_, newValue) => setCurrent(newValue)}
             variant='scrollable'
           >
-            <Tab
-              label={
-                <span className='font-semibold text-md'>ORDERS</span>
-              }
-              value={1}
-              disabled={!customer}
-            />
-            <Tab
-              label={<span className='font-semibold text-md'>TICKETS</span>}
-              value={2}
-            />
-            <Tab
-              label={
-                <span className='font-semibold text-md'>SUBSCRIPTIONS</span>
-              }
-              value={3}
-            />
+            <Tab label='ORDERS' value={1} disabled={!customer} />
+            <Tab label='TICKETS' value={2} />
+            <Tab label='SUBSCRIPTIONS' value={3} />
           </Tabs>
           <FormButton
             onClick={() => setCartPopUp(true)}
             disabled={false}
-            className='desktop:hidden h-full ml-5 text-zinc-800 hover:bg-gray-300'
-            testID='cart-drawer-icon'
+            className='min-[1280px]:hidden h-full ml-5 text-zinc-800'
+            testID='open-cart'
           >
             <CartIcon className='h-7 w-7' />
           </FormButton>
@@ -70,27 +56,24 @@ export const TicketExchangeItems: React.FC = () => {
         {current === 2 && <Events />}
         {current === 3 && <Subscriptions />}
       </section>
-      <section className='hidden col-span-4 desktop:flex w-full justify-center'>
-        <TicketExchangeCart buttonClick={() => setStage('customer_info')} />
+      <section className='hidden col-span-4 min-[1280px]:flex w-full justify-center'>
+        <TicketExchangeCart onClick={() => setStage('customer_info')} />
       </section>
-      <PopUpBackdrop
-        showPopUp={cartPopUp}
-        setShow={() => setCartPopUp(false)}
-      >
+      <PopUpBackdrop showPopUp={cartPopUp} setShow={() => setCartPopUp(false)}>
         <div
           id='pop-up-backdrop-child-1'
-          className='flex flex-row justify-end w-full h-full max-h-full desktop:h-fit'
+          className='flex flex-row justify-end w-full h-full max-h-full'
         >
           <FormButton
             disabled={false}
             testID='close cart'
             title='close'
-            className='p-2 mr-2 self-start tab:self-center text-white'
+            className='p-2 mr-2 self-start text-white'
             onClick={() => setCartPopUp(false)}
           >
             <XIcon className='h-6 w-6' />
           </FormButton>
-          <TicketExchangeCart buttonClick={() => setStage('customer_info')} />
+          <TicketExchangeCart onClick={() => setStage('customer_info')} />
         </div>
       </PopUpBackdrop>
     </div>

@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {getData} from '../Event/components/ShowingUtils';
+import {getData, getDate} from '../Event/components/ShowingUtils';
 import {toDateStringFormat} from '../Event/components/util/EventsUtil';
 import {
   isTicketCartItem,
@@ -19,22 +19,13 @@ import {
   ProviderSeasonSubscriptionType,
   ProviderTicketRestriction,
   RefundCartItem,
-} from './ticketExchangeInterfaces';
+} from './ticketExchangeTypes';
 import {orderitem} from '../prismaTypes';
 
 const pk = `${process.env.REACT_APP_PUBLIC_STRIPE_KEY}`;
 const stripePromise = loadStripe(pk);
 
-/**
- *
- * @param url
- * @param options
- * @param options.token
- * @param options.dataFormatCallback
- * @param options.defaultState
- * @param options.dependencies
- */
-export function useFetchData<T>(
+export const useFetchData = <T, >(
   url: string,
   options: {
     token?: string;
@@ -51,7 +42,7 @@ export function useFetchData<T>(
   string,
   () => void,
   (value: any) => void,
-] {
+] => {
   const {token, dataFormatCallback, dependencies = [], defaultState} = options;
   const [data, setData] = useState<T>(defaultState);
   const [error, setError] = useState('');
@@ -85,15 +76,14 @@ export function useFetchData<T>(
     () => setReload(!reload),
     setData,
   ];
-}
+};
 
-export const useQueries = () => {
-  const [queries, setQueries] = useState<{parameter: string; value: string}[]>([
-    {
-      parameter: 'firstname',
-      value: '',
-    },
-  ]);
+export const useSearchBox = (
+  defaultState: {parameter: string; value: string}[],
+) => {
+  const [queries, setQueries] =
+    useState<{parameter: string; value: string}[]>(defaultState);
+
   const updateParameters = useCallback((index: number, newValue: string) => {
     setQueries((prev) => {
       if (newValue) {
@@ -115,11 +105,11 @@ export const useQueries = () => {
   );
 
   const updateQueries = useCallback(
-    (indexToRemove: number, type: 'parameter' | 'query', value: string) =>
+    (index: number, type: 'parameter' | 'query', value: string) =>
       type === 'parameter'
-        ? updateParameters(indexToRemove, value)
-        : updateQueryValues(indexToRemove, value),
-    [],
+        ? updateParameters(index, value)
+        : updateQueryValues(index, value),
+    [updateParameters, updateQueryValues],
   );
 
   const addQuery = useCallback((parameter: string) => {
@@ -138,38 +128,23 @@ export const useQueries = () => {
   return {queries, updateQueries, queryString, addQuery};
 };
 
-export const getDateTime = (date: number, time: string) =>
-  new Date(`${toDateStringFormat(date)} ${time.split('T')[1].slice(0, 8)}`);
-
-export const getNameAndDescription = (item: orderitem) => {
-  if (item.subscription) {
-    const {
-      seasonsubscriptiontype: {ticketlimit, subscriptiontype, season},
-    } = item.subscription;
-    return {
-      name: `${subscriptiontype.name} Subscription`,
-      desc: `${ticketlimit} shows for ${season.name}`,
-    };
-  } else if (item.ticketitem) {
-    const {
-      ticketrestriction: {
-        tickettype,
-        eventinstance: {eventdate, eventtime, event},
-      },
-    } = item.ticketitem;
-    return {
-      name: `${event.eventname} ticket`,
-      desc: `${tickettype.description} - ${format(
-        getDateTime(eventdate, eventtime),
-        'M/dd/yyyy, h:mm a',
-      )}`,
-    };
-  } else {
-    return {
-      name: 'Donation',
-      desc: 'generous donation',
-    };
-  }
+const validateDiscountCode = (
+  discount: any,
+  cartItems: (TicketCartItem | SubscriptionCartItem)[],
+): boolean => {
+  const eventIds = cartItems.reduce(
+    (acc, item) => (isTicketCartItem(item) ? acc.add(item.eventId) : acc),
+    new Set<number>(),
+  );
+  const numEventsInCart = eventIds.size;
+  const totalCartTicketCount = cartItems.reduce(
+    (tot, item) => (isTicketCartItem(item) ? tot + item.qty : tot),
+    0,
+  );
+  return (
+    numEventsInCart >= discount.min_events ||
+    totalCartTicketCount >= discount.min_tickets
+  );
 };
 
 export const useDiscount = (setCheckoutDiscount: (value: any) => void) => {
@@ -236,26 +211,38 @@ export const useDiscount = (setCheckoutDiscount: (value: any) => void) => {
   };
 };
 
-const validateDiscountCode = (
-  discount: any,
-  cartItems: (TicketCartItem | SubscriptionCartItem)[],
-): boolean => {
-  const eventIds = cartItems.reduce(
-    (acc, item) => (isTicketCartItem(item) ? acc.add(item.eventId) : acc),
-    new Set<number>(),
-  );
-  const numEventsInCart = eventIds.size;
-  const totalCartTicketCount = cartItems.reduce(
-    (tot, item) => (isTicketCartItem(item) ? tot + item.qty : tot),
-    0,
-  );
-  return (
-    numEventsInCart >= discount.min_events ||
-    totalCartTicketCount >= discount.min_tickets
-  );
+export const getNameAndDescription = (item: orderitem) => {
+  if (item.subscription) {
+    const {
+      seasonsubscriptiontype: {ticketlimit, subscriptiontype, season},
+    } = item.subscription;
+    return {
+      name: `${subscriptiontype.name} Subscription`,
+      desc: `${ticketlimit} shows for ${season.name}`,
+    };
+  } else if (item.ticketitem) {
+    const {
+      ticketrestriction: {
+        tickettype: {description},
+        eventinstance: {eventdate, eventtime, event},
+      },
+    } = item.ticketitem;
+    return {
+      name: `${event.eventname} ticket`,
+      desc: `${description} - ${format(
+        getDate(eventdate, eventtime),
+        'eee, MMM dd - h:mm a',
+      )}`,
+    };
+  } else {
+    return {
+      name: 'Donation',
+      desc: 'Generous donation',
+    };
+  }
 };
 
-export const subscriptionExchangeItemSchema = yup.object().shape({
+export const subscriptionItemSchema = yup.object().shape({
   seasonid_fk: yup
     .number()
     .integer('Must be an integer')
@@ -270,7 +257,7 @@ export const subscriptionExchangeItemSchema = yup.object().shape({
   qty: yup
     .number()
     .integer()
-    .min(0, 'Quantity must be positive')
+    .positive('Quantity must be positive')
     .required('Required'),
 });
 
@@ -286,70 +273,16 @@ export const eventInstanceItemSchema = yup.object().shape({
     .min(0, 'Must select a ticket type')
     .required('Required'),
   price: yup.number().min(0, 'Price can not be negative').required('Required'),
-  fee: yup.number().min(0, 'Price can not be negative').required('Required'),
+  fee: yup.number().min(0, 'Fee can not be negative').required('Required'),
   qty: yup
     .number()
     .integer()
-    .min(0, 'Quantity must be positive')
+    .positive('Quantity must be positive')
     .required('Required'),
 });
 
-interface CheckoutDataArguments {
-  checkoutFormInfo: CheckoutContact;
-  cartItems: Map<string, SubscriptionCartItem | TicketCartItem>;
-  ticketRestrictions: Map<number, ProviderTicketRestriction>;
-  refundItems: Map<number, RefundCartItem>;
-  appliedDiscount?: any;
-}
-
-export const getCheckoutData = ({
-  checkoutFormInfo,
-  appliedDiscount,
-  ticketRestrictions,
-  cartItems,
-  refundItems,
-}: CheckoutDataArguments) => {
-  const formData = {...checkoutFormInfo};
-  if (formData.seatingaccom === 'Other') {
-    formData.seatingaccom = formData.otherSeatingAcc;
-  }
-  const donation = formData.donation ? +formData.donation : 0;
-  const discount = appliedDiscount ? appliedDiscount : emptyDiscountCode;
-  const {ticketCartItems, subscriptionCartItems} = Array.from(cartItems).reduce(
-    (acc, [, item]) => {
-      if (isTicketCartItem(item)) {
-        acc.ticketCartItems.push({
-          ...item,
-          typeID: ticketRestrictions.get(item.typeID)?.tickettypeid_fk,
-        });
-      } else {
-        acc.subscriptionCartItems.push(item);
-      }
-      return acc;
-    },
-    {
-      ticketCartItems: Array<TicketCartItem>(),
-      subscriptionCartItems: Array<SubscriptionCartItem>(),
-    },
-  );
-
-  const refundCartItems = Array.from(refundItems).map(([, item]) => ({
-    orderItemId: item.id,
-    refundFee: item.fee !== undefined,
-  }));
-
-  return {
-    refundCartItems,
-    subscriptionCartItems,
-    ticketCartItems,
-    donation,
-    discount,
-    formData,
-  };
-};
-
 export const useFetchExchangeEvents = (token: string) => {
-  const [events, setEvents] = useState<Map<number, ProviderEvent>>();
+  const [events, setEvents] = useState<ProviderEvent[]>();
   const [eventInstances, setEventInstances] =
     useState<Map<number, ProviderEventInstance>>();
   const [ticketRestrictions, setTicketRestrictions] =
@@ -373,7 +306,7 @@ export const useFetchExchangeEvents = (token: string) => {
             ticketrestrictions.map((res) => [res.ticketrestrictionsid, res]),
           ),
         );
-        setEvents(new Map(events.map((event) => [event.eventid, event])));
+        setEvents(events);
       },
       controller.signal,
       token,
@@ -477,6 +410,7 @@ export const updateEventInstances = (
     ],
   ]);
 };
+
 export const updateTicketRestrictions = (
   ticketRestrictions: Map<number, ProviderTicketRestriction>,
   item: TicketCartItem,
@@ -494,7 +428,59 @@ export const updateTicketRestrictions = (
   ]);
 };
 
-export const onlineCheckout = async (checkoutBody: any, token?: string) => {
+export const getCheckoutRequestBody = ({
+  checkoutFormInfo,
+  appliedDiscount,
+  ticketRestrictions,
+  cartItems,
+  refundItems,
+}: {
+  checkoutFormInfo: CheckoutContact;
+  cartItems: Map<string, SubscriptionCartItem | TicketCartItem>;
+  ticketRestrictions: Map<number, ProviderTicketRestriction>;
+  refundItems: Map<number, RefundCartItem>;
+  appliedDiscount?: any;
+}) => {
+  const formData = {...checkoutFormInfo};
+  if (formData.seatingaccom === 'Other') {
+    formData.seatingaccom = formData.otherSeatingAcc;
+  }
+  const donation = formData.donation ? +formData.donation : 0;
+  const discount = appliedDiscount ? appliedDiscount : emptyDiscountCode;
+  const {ticketCartItems, subscriptionCartItems} = Array.from(cartItems).reduce(
+    (acc, [, item]) => {
+      if (isTicketCartItem(item)) {
+        acc.ticketCartItems.push({
+          ...item,
+          typeID: ticketRestrictions.get(item.typeID)?.tickettypeid_fk,
+        });
+      } else {
+        acc.subscriptionCartItems.push(item);
+      }
+      return acc;
+    },
+    {
+      ticketCartItems: Array<TicketCartItem>(),
+      subscriptionCartItems: Array<SubscriptionCartItem>(),
+    },
+  );
+
+  const refundCartItems = Array.from(refundItems).map(([, item]) => ({
+    orderItemId: item.id,
+    refundFee: item.fee !== undefined,
+  }));
+
+  return {
+    refundCartItems,
+    subscriptionCartItems,
+    ticketCartItems,
+    donation,
+    discount,
+    formData,
+  };
+};
+
+export const onlineCheckout = async (checkoutBody: any, token: string) => {
   const stripe = await stripePromise;
   if (!stripe) return;
 

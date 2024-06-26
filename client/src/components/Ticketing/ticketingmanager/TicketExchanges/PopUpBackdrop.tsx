@@ -1,10 +1,16 @@
 import React, {useEffect, useRef} from 'react';
 
-const PopUpBackdrop: React.FC<{showPopUp: boolean; setShow: () => void}> = (
+interface PopUpBackdropProps {
+  showPopUp: boolean;
+  setShow: () => void;
+}
+
+const PopUpBackdrop: React.FC<PopUpBackdropProps> = (
   props,
 ) => {
   const {showPopUp, setShow, children} = props;
   const popUpRef = useRef(null);
+
   useEffect(() => {
     if (!showPopUp) return;
     const popUpElement = popUpRef.current;

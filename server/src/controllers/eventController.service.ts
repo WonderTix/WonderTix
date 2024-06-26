@@ -8,7 +8,7 @@ import {
 import TicketCartItem, {RefundCartItem, SubscriptionCartItem} from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {type} from '@prisma/client';
+import {discounts, type} from '@prisma/client';
 import {createOrder, Discount} from './orderController.service';
 import {Request, Response} from 'express';
 import {freq, Prisma, state} from '@prisma/client';
@@ -292,8 +292,8 @@ interface TicketItemsReturn {
 }
 
 export const getTicketItems = async (
-  cartItems: TicketCartItem[],
   prisma: ExtendedPrismaClient,
+  cartItems: TicketCartItem[],
   admin = false,
 ): Promise<TicketItemsReturn> => {
   const toReturn: TicketItemsReturn = {
@@ -362,18 +362,29 @@ export const getTicketItems = async (
       );
     } else if (!admin && new Date().toISOString() >= getDate(eventInstance.eventtime.toISOString(), eventInstance.eventdate)) {
       throw new InvalidInputError(422, 'Showing is no longer on sale');
+    } else if ((ticketRestriction.availabletickets-=item.qty) < 0 || (eventInstance.availableseats-=item.qty) < 0) {
+      throw new InvalidInputError(422, 'Requested tickets no longer available');
     }
 
-    toReturn.orderTicketItems.push(
-      ...getTickets(
-        ticketRestriction,
-        eventInstance,
-        item.qty,
-        ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(item.fee) : 0,
-        item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
-        item.department ? item.department : undefined,
-      ),
-    );
+    const price = item.payWhatCan && item.payWhatPrice ? item.payWhatPrice/item.qty : item.price;
+    const discountPerItem = item.discount? Math.ceil(item.discount/item.qty) : 0;
+    const lastItemDiscount = item.discount? item.discount - discountPerItem * (item.qty - 1) : 0;
+
+    const orderTicketItems = Array(item.qty).fill(null).map((_, index) => ({
+      price,
+      type: type.ticket,
+      fee: price > 0 ? Number(item.fee) : 0,
+      discount: index === item.qty - 1? lastItemDiscount/100: discountPerItem/100,
+      department: item.department ? item.department: undefined,
+      ticketitem: {
+        create: {
+          ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
+        },
+      },
+    }));
+
+    toReturn.orderTicketItems.push(...orderTicketItems);
+
     toReturn.ticketCartRows.push(
       getCartRow(
         eventInstance.event.eventname,
@@ -406,53 +417,44 @@ export const getCartRow = (name: string, description: string, unitAmount: number
   quantity,
 });
 
-const getTickets = (
-  ticketRestriction: LoadedTicketRestriction,
-  eventInstance: any,
-  quantity: number,
-  fee: number,
-  price: number,
-  department?: string,
-) => {
-  if ((ticketRestriction.availabletickets-=quantity) < 0 || (eventInstance.availableseats-=quantity) < 0) {
-    throw new InvalidInputError(422, 'Requested tickets no longer available');
-  }
-  return Array(quantity)
-    .fill({
-      price: price,
-      type: type.ticket,
-      fee: fee,
-      department: department,
-      ticketitem: {
-        create: {
-          ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
-        },
-      },
-    });
-};
-
-export const getDiscountAmount = async (
+export const getDiscount = async (
   prisma: ExtendedPrismaClient,
   discount: Discount | undefined,
-  orderTotal: number,
   ticketItems: TicketCartItem[]) => {
   if (!discount || discount.code === '') {
-    return {discountTotal: 0};
+    return {
+      discountTotal: 0,
+      discountId: undefined,
+      discountMap: undefined,
+    };
   }
-
   const validDiscount = await validateDiscount(discount.code, ticketItems, prisma);
-
-  if (validDiscount.amount && validDiscount.percent) {
-    return {discountTotal: Math.min((+validDiscount.percent / 100) * orderTotal, validDiscount.amount), discountId: validDiscount.discountid};
-  } else if (validDiscount.amount) {
-    return {discountTotal: Math.min(validDiscount.amount, orderTotal), discountId: validDiscount.discountid};
-  } else if (validDiscount.percent) {
-    return {discountTotal: orderTotal * (+validDiscount.percent)/100, discountId: validDiscount.discountid};
-  }
-
-  throw new Error('Invalid discount');
+  return getDiscountAmount(validDiscount, ticketItems);
 };
 
+const getDiscountAmount = (
+  discount: Omit<discounts, 'amount'> & {amount: number | null},
+  ticketItems: TicketCartItem[],
+) => {
+  const orderSubTotal = Math.floor(ticketItems.reduce((acc, item) => item.price*item.qty + acc, 0)*100);
+  const amount = discount.amount? Math.min(Math.floor(discount.amount * 100), orderSubTotal): 0;
+  const percent = discount.percent? Math.floor(discount.percent/100 * orderSubTotal): 0;
+  const discountTotal = discount.amount && discount.percent ?
+    Math.min(amount, percent):
+    discount.amount ?
+      amount :
+      percent;
+  let discountRemaining = discountTotal;
+
+  ticketItems.forEach((item) => {
+    const price = item.payWhatPrice && item.payWhatCan? item.payWhatPrice * 100: item.price * item.qty * 100;
+    const discount = Math.min(Math.ceil(price/orderSubTotal * discountTotal), discountRemaining);
+    item.discount = discount;
+    discountRemaining-=discount;
+  });
+
+  return {discountTotal: discountTotal/100, discountId: discount.discountid};
+};
 
 export const getRefundItems = async (
   prisma: ExtendedPrismaClient,
@@ -523,15 +525,24 @@ export const getRefundItems = async (
     discount: Number(item.discount),
     fee: Number(item.fee),
   }]));
-  const orderMap = new Map(orders.map((order) => [order.orderid, {
-    ...order,
-    piIndex: 0,
-    payment_intents: order.payment_intents.map((intent) => ({
-      ...intent,
-      amount: Number(intent.amount),
-      amountAvailable: Number(intent.amount) - intent.refunds.reduce((acc, refund) => acc + Number(refund.amount), 0),
-    })),
-  }]));
+  const orderMap = new Map(orders.map((order) => [
+    order.orderid,
+    {
+      ...order,
+      piIndex: 0,
+      payment_intents: order.payment_intents.reduce((acc, intent) => {
+        const amountAvailable = Number(intent.amount) -
+          intent.refunds.reduce((acc, refund) => acc + Number(refund.amount), 0);
+        if (amountAvailable) {
+          acc.push({
+            ...intent,
+            amount: Number(intent.amount),
+            amountAvailable,
+          });
+        }
+        return acc;
+      }, Array<any>()),
+    }]));
 
   const orderRefundItems = refundCartItems.map((item) => {
     const orderItem = orderItemMap.get(item.orderItemId);
@@ -558,7 +569,7 @@ export const getRefundItems = async (
 
     // seeded order work around as a seeded order should be the only order that
     // has a positive balance but no payment intent, think of better idea
-    if (amountRequired !== 0 && order.piIndex !== 0) {
+    if (amountRequired !== 0) {
       throw new InvalidInputError(422, 'Amount required greater than available');
     }
 
@@ -726,7 +737,8 @@ export const validateContact = (formData: ContactInput): ContactInput => {
   };
 };
 
-export const validateDiscount = async (discountCode: string, cartItems: TicketCartItem[], prisma: ExtendedPrismaClient) => {
+export const validateDiscount = async (discountCode: string, cartItems: TicketCartItem[], prisma: ExtendedPrismaClient):
+  Promise<Omit<discounts, 'amount'> & {amount: number | null}> => {
   const eventIds = new Set<number>();
   cartItems.forEach((item) => eventIds.add(item.eventId));
   const numEventsInCart = eventIds.size;
@@ -737,6 +749,10 @@ export const validateDiscount = async (discountCode: string, cartItems: TicketCa
 
   const existingDiscount = await prisma.discounts.findFirst({
     where: {
+      OR: [
+        {percent: {not: null}},
+        {amount: {not: null}},
+      ],
       code: {
         equals: discountCode,
         mode: 'insensitive',

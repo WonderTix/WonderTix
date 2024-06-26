@@ -11,7 +11,7 @@ const Subscriptions = () => {
   const {seasons, subscriptionTypes} = useTicketExchangeContext();
 
   if (!seasons || !subscriptionTypes || !seasons.length) {
-    return <p className='w-full text-center'>NO SUBSCRIPTIONS AVAILABLE</p>;
+    return <p className='w-full text-center mt-4'>NO SUBSCRIPTIONS AVAILABLE</p>;
   }
 
   return (
@@ -34,11 +34,11 @@ const Subscriptions = () => {
           Form={(props: {
             open: boolean;
             formRef: MutableRefObject<FormikProps<FormikValues>>;
+            setDisabled: (value: any) => void;
           }) => (
             <Subscription
               {...season}
-              formRef={props.formRef}
-              open={props.open}
+              {...props}
             />
           )}
           id={season.seasonid}

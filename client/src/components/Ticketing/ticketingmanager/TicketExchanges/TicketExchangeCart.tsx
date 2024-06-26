@@ -3,12 +3,13 @@ import {useTicketExchangeContext} from './TicketExchangeProvider';
 import {formatUSD} from '../RefundOrders/RefundOrders';
 import {isTicketCartItem} from '../ticketingSlice';
 import {useDiscount} from './TicketExchangeUtils';
-import {DiscountDisplay, DiscountInput} from './DIscountInput';
+import {DiscountDisplay, DiscountInput} from './DiscountInput';
 import {TicketExchangeCartRow} from './TicketExchangeCartRow';
 
-export const TicketExchangeCart: React.FC<{
-  buttonClick?: () => void;
-}> = (props) => {
+interface TicketExchangeCartProps {
+ onClick?: () => void;
+}
+export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => {
   const {
     stage,
     cartItems,
@@ -29,7 +30,7 @@ export const TicketExchangeCart: React.FC<{
     discountText,
     getDiscountTotal,
   } = useDiscount(setAppliedDiscount);
-  const {buttonClick} = props;
+  const {onClick} = props;
 
   // @ts-ignore
   const cartItemArray = useMemo(
@@ -69,15 +70,15 @@ export const TicketExchangeCart: React.FC<{
 
   return (
     <div
-      className={`flex flex-col justify-between min-w-[80px] min-h-[500px] h-full max-h-full overflow-y-auto desktop:h-fit ${
+      className={`flex flex-col justify-between min-w-[80px] min-h-[500px] h-full max-h-full overflow-y-auto min-[1280px]:h-fit ${
         stage === 'select_items'
-          ? 'w-fit desktop:rounded-xl'
+          ? `w-fit min-[1280px]:rounded-xl`
           : 'w-full rounded-xl'
       } bg-zinc-900 p-5`}
     >
       <section className='flex flex-col items-center w-full mb-5'>
         <h2 className='text-zinc-100 text-2xl font-bold w-full basis-1/6 flex justify-center'>
-          Your order
+          Order Detail
         </h2>
         <div className='text-zinc-100 mt-10 w-full'>
           {refundItemArray.map((item, index) => (
@@ -88,8 +89,7 @@ export const TicketExchangeCart: React.FC<{
               decrement={() =>
                 setRefundItems((prev) => prev.delete(item.id) && new Map(prev))
               }
-              price={-item.price}
-              fee={-item.fee}
+              price={-item.price - (item.fee ?? 0)}
             />
           ))}
           {cartItemArray.map((item, index) => (
@@ -148,12 +148,11 @@ export const TicketExchangeCart: React.FC<{
             )}
           </span>
         </p>
-        {buttonClick && (
+        {onClick && (
           <button
-            onClick={buttonClick}
+            onClick={onClick}
             disabled={
-              (!cartItemArray.length && !refundItemArray.length) ||
-              stage === 'processing'
+              (!cartItemArray.length && !refundItemArray.length) || stage === 'checkout'
             }
             className='px-6 py-2 rounded-2xl bg-green-500 hover:bg-green-600 disabled:bg-gray-300 shadow-xl text-white'
           >

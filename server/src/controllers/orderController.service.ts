@@ -11,7 +11,7 @@ import WebSocket from 'ws';
 import {InvalidInputError, reservedTicketItemsFilter} from './eventInstanceController.service';
 import {
   ContactInput, createStripeCheckoutSession, createStripePaymentIntent, expireCheckoutSession,
-  getDiscountAmount,
+  getDiscount,
   getDonationItem,
   getFeeItem, getRefundIntent,
   getRefundItems,
@@ -429,6 +429,11 @@ export const createOrder = async ({
     }
 
     const {
+      discountTotal,
+      discountId,
+    } = await getDiscount(prisma, discount, ticketCartItems);
+
+    const {
       orderPaymentIntents = [],
       queries = [],
       refundTotal = 0,
@@ -443,7 +448,7 @@ export const createOrder = async ({
       ticketTotal,
       feeTotal,
       eventInstanceSet: additionalEventInstanceIds,
-    } = await getTicketItems(ticketCartItems, prisma, orderSource !== purchase_source.online_ticketing);
+    } = await getTicketItems(prisma, ticketCartItems, orderSource !== purchase_source.online_ticketing);
 
     const {
       subscriptionCartRows,
@@ -456,11 +461,6 @@ export const createOrder = async ({
       donationCartRow,
       donationTotal,
     } = getDonationItem(donation);
-
-    const {
-      discountTotal,
-      discountId,
-    } = await getDiscountAmount(prisma, discount, ticketTotal, ticketCartItems);
 
     const {feeCartRow} = getFeeItem(feeTotal);
 
@@ -520,10 +520,15 @@ export const createOrder = async ({
       orderDeficit = Math.abs(orderDeficit);
       const refundIntents = [];
       for (const paymentIntent of paymentIntentMap) {
-        if (orderDeficit === 0) break;
+        if (paymentIntent[1] === 0) continue;
+
         const amountToRefund = Math.min(orderDeficit, paymentIntent[1]);
         orderDeficit -= amountToRefund;
-        const refund = await getRefundIntent(paymentIntent[0], amountToRefund);
+
+        const refund = paymentIntent[0].includes('seeded-order') ?
+          {id: `refund-intent-${paymentIntent[0]}-${order.orderid}`, status: 'succeeded'}:
+          await getRefundIntent(paymentIntent[0], amountToRefund);
+
         refundIntents.push({
           refund_intent: refund.id,
           orderid_fk: order.orderid,
@@ -531,6 +536,8 @@ export const createOrder = async ({
           status: getRefundStatus(refund.status),
           amount: amountToRefund,
         });
+
+        if (orderDeficit === 0) break;
       }
 
       await prisma.$transaction([
@@ -571,14 +578,13 @@ export const createOrder = async ({
     }
   } catch (error) {
     console.error(error);
-
     if (store) {
       await deleteOrderAndTempStore(prisma, store.id);
     } else if (order) {
       await deleteOrder(prisma, order);
     }
 
-    if (id && orderSource === purchase_source.online_ticketing) {
+    if (id && orderSource !== purchase_source.card_reader) {
       await expireCheckoutSession(id);
     } else if (id) {
       await abortPaymentIntent(id);

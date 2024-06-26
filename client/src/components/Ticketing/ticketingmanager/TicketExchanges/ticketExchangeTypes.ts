@@ -14,6 +14,34 @@ import {
   ticketrestriction,
 } from '../prismaTypes';
 
+
+export type ProviderEventInstance = Omit<
+  eventinstance,
+  'ticketrestrictions'
+> & {ticketrestrictions: number[]};
+
+export type ProviderEvent = Omit<event, 'eventinstances'> & {
+  eventinstances: number[];
+};
+
+export type ProviderTicketRestriction = ticketrestriction & {
+  ticketsavailable: number;
+};
+
+export type ProviderSeasonSubscriptionType = seasonsubscriptiontype & {
+  subscriptionsavailable: number;
+};
+
+export type ProviderSeason = Omit<season, 'seasonsubscriptiontypes'> & {
+  seasonsubscriptiontypes: number[];
+};
+
+export type ProviderOrder = Omit<order, 'orderitems'> & {
+  orderitems: (orderitem & {refunded: boolean})[];
+};
+
+export type ProviderCartItem = SubscriptionCartItem | TicketCartItem;
+
 export interface RefundCartItem extends CartItem {
   id: number;
   fee: number;
@@ -26,37 +54,18 @@ export interface TicketExchangeContextValues {
   setRefundItems: (value: any) => void;
   customer: contact;
   setCustomer: (value?: any) => void;
-  events: Map<number, ProviderEvent>;
+  events: ProviderEvent[];
   eventInstances: Map<number, ProviderEventInstance>;
   ticketRestrictions: Map<number, ProviderTicketRestriction>;
   subscriptionTypes: Map<string, ProviderSeasonSubscriptionType>;
   seasons: ProviderSeason[];
   orders: ProviderOrder[];
   updateCart: (item: TicketCartItem | SubscriptionCartItem) => void;
-  stage: 'customer_info' | 'select_items' | 'checkout' | 'processing';
+  stage: 'customer_info' | 'select_items' | 'checkout';
   setStage: (
-    stage: 'customer_info' | 'select_items' | 'checkout' | 'processing',
+    stage: 'customer_info' | 'select_items' | 'checkout',
   ) => void;
   setAppliedDiscount: (value: any) => void;
   appliedDiscount: any;
 }
 
-export type ProviderEventInstance = Omit<
-  eventinstance,
-  'ticketrestrictions'
-> & {ticketrestrictions: number[]};
-export type ProviderEvent = Omit<event, 'eventinstances'> & {
-  eventinstances: number[];
-};
-export type ProviderTicketRestriction = ticketrestriction & {
-  ticketsavailable: number;
-};
-export type ProviderSeasonSubscriptionType = seasonsubscriptiontype & {
-  subscriptionsavailable: number;
-};
-export type ProviderSeason = Omit<season, 'seasonsubscriptiontypes'> & {
-  seasonsubscriptiontypes: number[];
-};
-export type ProviderOrder = Omit<order, 'orderitems'> & {
-  orderitems: (orderitem & {refunded: boolean})[];
-};

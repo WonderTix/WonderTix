@@ -5,7 +5,7 @@ import {ChevronDown, ChevronUp, DecrementIcon, PlusIcon} from '../../Icons';
 import {getNameAndDescription} from './TicketExchangeUtils';
 import {FormButton} from '../Event/components/FormButton';
 import format from 'date-fns/format';
-import {ProviderOrder} from './ticketExchangeInterfaces';
+import {ProviderOrder} from './ticketExchangeTypes';
 import {OrderItem} from './OrderItem';
 
 const Order: React.FC<ProviderOrder> = (props) => {
@@ -20,7 +20,6 @@ const Order: React.FC<ProviderOrder> = (props) => {
     () => orderitems.every((item) => refundItems.has(item.id)),
     [orderitems, refundItems],
   );
-
   const updateAllItems = useCallback(
     () =>
       allItemsInCart
@@ -55,10 +54,10 @@ const Order: React.FC<ProviderOrder> = (props) => {
           <span className='text-lg font-semibold flex flex-col tab:flex-row items-center sm:items-start'>
             Order #{orderid}
             <span className='tab:before:content-["-"] italic before:mx-1 font-normal'>
-              {format(new Date(orderdatetime), 'M/dd/yy, h:mm a')}{' '}
+              {format(new Date(orderdatetime), 'M/dd/yy, h:mm a')}
             </span>
           </span>
-          {`Total: ${formatUSD(orderitems.reduce((acc, item) => Number(item.price) + Number(item.fee) - Number(item.discount) + acc, 0))}`}
+          {`Refundable Total: ${formatUSD(orderitems.reduce((acc, item) => Number(item.price) + Number(item.fee) - Number(item.discount) + acc, 0))}`}
         </h3>
         <div className='flex-grow flex items-center justify-center sm:justify-end gap-1'>
           <FormButton
@@ -95,7 +94,7 @@ const Order: React.FC<ProviderOrder> = (props) => {
       </header>
       <ul
         className={`transition-all ease-in-out duration-300 ${
-          open ? 'visible max-h-[250px] mt-4' : 'invisible max-h-0'
+          open ? 'max-h-[250px] mt-4' : 'max-h-0'
         } flex flex-col gap-2 overflow-y-auto`}
       >
         {orderitems.map((orderitem, index) => (

@@ -17,6 +17,8 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
         const restriction = ticketRestrictions[index%ticketRestrictions.length];
         const orderItemCount = Math.floor((Math.random()*Math.min(5, restriction.ticketlimit)))+1;
         restriction.ticketlimit-=orderItemCount;
+        const donation = !(index%4) ? Math.floor(Math.random()*150)+1: 0;
+        const orderTotal = orderItemCount * Number(restriction.price) + orderItemCount * Number(restriction.fee) + donation;
         if (!restriction.ticketlimit) ticketRestrictions.splice(ticketRestrictions.indexOf(restriction), 1);
         orders.push(prisma.orders.create({
           data: {
@@ -24,6 +26,18 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
             contactid_fk: contact.contactid,
             ordersubtotal: (Number(restriction.price) * orderItemCount),
             refundtotal: 0,
+            payment_intents: {
+              create: {
+                amount: orderTotal,
+                payment_intent: {
+                  create: {
+                    payment_intent: `seeded-order-${index}`,
+                    status: state.completed,
+                    amount: orderTotal,
+                  },
+                },
+              },
+            },
             orderitems: {
               create: [
                 ...Array(orderItemCount).fill({
@@ -36,8 +50,8 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
                     },
                   },
                 }),
-                ...(!(index%4)? [{
-                  price: (Math.floor(Math.random()*150)+1),
+                ...(donation? [{
+                  price: donation,
                   fee: 0,
                   type: type.donation,
                   donation: {

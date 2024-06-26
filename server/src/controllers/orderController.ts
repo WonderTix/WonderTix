@@ -38,7 +38,7 @@ orderController.post(
       const action = object.action;
 
       // Handle in-person payments
-      if (metaData.sessionType === '__reader' ||
+      if (metaData?.sessionType === '__reader' ||
             event.type === 'terminal.reader.action_failed' ||
             event.type === 'terminal.reader.action.succeeded') { // terminal events don't carry our __reader metadata
         await readerWebhook(
@@ -47,7 +47,7 @@ orderController.post(
           action ? action.failure_message : 'no error',
           object,
         );
-      } else if (metaData.sessionType === '__ticketing') {
+      } else if (metaData?.sessionType === '__ticketing') {
         await ticketingWebhook(
           prisma,
           event.type,
@@ -249,17 +249,17 @@ orderController.get('/refund', async (req: Request, res: Response) => {
               type: `${item.subscription.seasonsubscriptiontype.subscriptiontype.name} Subscription`,
               description: item.subscription.seasonsubscriptiontype.season.name,
               quantity: 1,
-              price: +item.price,
+              price: Number(item.price),
             });
           }
         } else if (item.donation) {
-          donation = item.price;
+          donation = Number(item.price);
         }
-        return acc+Number(item.price);
+        return acc + Number(item.price);
       }, 0);
 
       return {
-        price: orderTotal - Number(order.discounttotal ?? 0),
+        price: orderTotal - Number(order.discounttotal ?? 0) + Number(order.feetotal),
         email: contacts.email,
         name: `${contacts.firstname} ${contacts.lastname}`,
         orderdate: orderdatetime,

@@ -1,19 +1,18 @@
 import React from 'react';
 import {CartItem} from '../ticketingSlice';
-import {RefundCartItem} from './ticketExchangeInterfaces';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
 import {formatUSD} from '../RefundOrders/RefundOrders';
 import IconButton from '../../IconButton';
 import {TrashCanIcon} from '../../Icons';
 import {QuantityInputControl} from '../../mainpage/SubscriptionPurchasing/QuantityInputControl';
 
-export const TicketExchangeCartRow: React.FC<
-  (CartItem | RefundCartItem) & {
+interface TicketExchangeCartRowProps extends CartItem {
   qtyAvailable: number;
   increment?: () => void;
   decrement: () => void;
 }
-> = (props) => {
+
+export const TicketExchangeCartRow: React.FC<TicketExchangeCartRowProps> = (props) => {
   const {price, qty, name, desc, qtyAvailable, increment, decrement} = props;
   const {stage} = useTicketExchangeContext();
   return (
@@ -22,8 +21,7 @@ export const TicketExchangeCartRow: React.FC<
       <p className='italic'>{desc}</p>
       <div className='flex flex-row items-center justify-between'>
         <p className='font-semibold'>{formatUSD(price)}</p>
-        {stage !== 'processing' &&
-          (!increment ? (
+        {!increment ? (
             <IconButton hoverColor='grey' onClick={decrement}>
               <TrashCanIcon className='h-6 w-6 text-white' strokeWidth={2} />
             </IconButton>
@@ -43,7 +41,7 @@ export const TicketExchangeCartRow: React.FC<
                 icon: 'h-4 w-4',
               }}
             />
-          ))}
+          )}
       </div>
     </li>
   );

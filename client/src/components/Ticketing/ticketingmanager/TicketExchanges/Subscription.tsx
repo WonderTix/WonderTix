@@ -1,15 +1,15 @@
 import {useTicketExchangeContext} from './TicketExchangeProvider';
-import React from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {Field, Formik, FormikHelpers, FormikProps, FormikValues} from 'formik';
 import {OptionSelect} from '../Event/components/OptionSelect';
 import {QuantityInputControl} from '../../mainpage/SubscriptionPurchasing/QuantityInputControl';
 import {InputControl} from '../Event/components/InputControl';
-import {subscriptionExchangeItemSchema} from './TicketExchangeUtils';
+import {subscriptionItemSchema} from './TicketExchangeUtils';
 import {departmentOptions} from '../AdminPurchase/utils/adminCommon';
 import {
   ProviderSeason,
   ProviderSeasonSubscriptionType,
-} from './ticketExchangeInterfaces';
+} from './ticketExchangeTypes';
 import {SubscriptionCartItem} from '../ticketingSlice';
 
 const getHandleSubscriptionTypeChange =
@@ -31,51 +31,58 @@ const getHandleSubscriptionTypeChange =
     await setFieldValue('department', '');
   };
 
-export const Subscription: React.FC<
-  ProviderSeason & {
-    open: boolean;
-    formRef: React.Ref<FormikProps<FormikValues>>;
-  }
-> = (props) => {
-  const {name, formRef, open, seasonid, seasonsubscriptiontypes} = props;
-  const {updateCart, subscriptionTypes} = useTicketExchangeContext();
-  const onSubmit = (
-    cartItem: SubscriptionCartItem,
-    formikHelpers: FormikHelpers<any>,
-  ) => {
-    const subscriptionType = subscriptionTypes.get(
-      `${seasonid}T${cartItem.subscriptiontypeid_fk}`,
-    );
-    formikHelpers.setSubmitting(false);
-    formikHelpers.resetForm();
+interface SubscriptionProps extends ProviderSeason {
+  open: boolean;
+  formRef: React.Ref<FormikProps<FormikValues>>;
+  setDisabled: (value: any) => void;
+}
 
-    if (subscriptionType) {
+export const Subscription: React.FC<SubscriptionProps> = (props) => {
+  const {name, formRef, open, seasonid, seasonsubscriptiontypes, setDisabled} =
+    props;
+  const {updateCart, subscriptionTypes} = useTicketExchangeContext();
+  const onSubmit = useCallback(
+    (cartItem: SubscriptionCartItem, formikHelpers: FormikHelpers<any>) => {
+      const subscriptionType = subscriptionTypes.get(
+        `${seasonid}T${cartItem.subscriptiontypeid_fk}`,
+      );
+      formikHelpers.setSubmitting(false);
+      formikHelpers.resetForm();
+
+      if (!subscriptionType) return;
+
       updateCart({
         ...cartItem,
-        name: `${name} - ${subscriptionType.subscriptiontype.name}`,
+        name: `${subscriptionType.subscriptiontype.name} Subscription`,
         desc: `${subscriptionType.ticketlimit} shows for ${name}`,
       });
-    }
-  };
+    },
+    [subscriptionTypes],
+  );
 
-  const filteredSubscriptionTypes = seasonsubscriptiontypes.reduce<
-    Array<{description: string; id: number}>
-  >((acc, id) => {
-    const subscriptionType = subscriptionTypes.get(`${seasonid}T${id}`);
-    if (subscriptionType?.subscriptionsavailable > 0) {
-      acc.push({
-        description: subscriptionType.subscriptiontype.name,
-        id: subscriptionType.subscriptiontypeid_fk,
-      });
-    }
-    return acc;
-  }, []);
+  const filteredSubscriptionTypes = useMemo(
+    () =>
+      seasonsubscriptiontypes.reduce<Array<{description: string; id: number}>>(
+        (acc, id) => {
+          const subscriptionType = subscriptionTypes.get(`${seasonid}T${id}`);
+          if (subscriptionType?.subscriptionsavailable > 0) {
+            acc.push({
+              description: subscriptionType.subscriptiontype.name,
+              id: subscriptionType.subscriptiontypeid_fk,
+            });
+          }
+          return acc;
+        },
+        [],
+      ),
+    [subscriptionTypes],
+  );
 
   return (
     <Formik
       onSubmit={onSubmit}
       innerRef={formRef}
-      validationSchema={subscriptionExchangeItemSchema}
+      validationSchema={subscriptionItemSchema}
       initialValues={{
         seasonid_fk: seasonid,
         subscriptiontypeid_fk: -1,
@@ -84,10 +91,21 @@ export const Subscription: React.FC<
         department: '',
       }}
     >
-      {({handleSubmit, setFieldValue, values}) => {
+      {({
+        handleSubmit,
+        setFieldValue,
+        values,
+        isSubmitting,
+        isValid,
+        isValidating,
+      }) => {
         const subscriptionType = subscriptionTypes.get(
           `${values.seasonid_fk}T${values.subscriptiontypeid_fk}`,
         );
+
+        useEffect(() => {
+          setDisabled(isSubmitting || !isValid || isValidating);
+        }, [isValid, isValidating, isSubmitting]);
 
         return (
           <form
@@ -99,13 +117,13 @@ export const Subscription: React.FC<
             <div className='col-span-12 tab:col-span-6'>
               <label
                 className='block text-md font-medium text-slate-700 ml-1'
-                htmlFor={`${seasonid}-subscriptiontypeid_fk`}
-                >
+                htmlFor={`${seasonid}subscriptiontypeid_fk`}
+              >
                 Subscription Type:
               </label>
               <Field
                 name='subscriptiontypeid_fk'
-                id={`${seasonid}-subscriptiontypeid_fk`}
+                id={seasonid}
                 component={OptionSelect}
                 disabled={!filteredSubscriptionTypes.length}
                 styles={{
@@ -126,13 +144,13 @@ export const Subscription: React.FC<
             <div className='col-span-12 tab:col-span-6'>
               <label
                 className='block text-md font-medium text-slate-700 ml-1'
-                htmlFor={`${seasonid}-qty`}
+                htmlFor={`${seasonid}qty`}
               >
                 Quantity:
               </label>
               <Field
                 name='qty'
-                id={`${seasonid}-qty`}
+                id={seasonid}
                 component={QuantityInputControl}
                 disabled={!subscriptionType}
                 quantityAvailable={
@@ -143,7 +161,8 @@ export const Subscription: React.FC<
                 styles={{
                   group:
                     'flex flex-row justify-center items-center w-fit max-w-full mx-auto py-1',
-                  button: 'text-slate-700 disabled:text-gray-300 rounded-full border border-slate-700 disabled:border-gray-300 hover:bg-slate-700 hover:text-white',
+                  button:
+                    'text-slate-700 disabled:text-gray-300 rounded-full border border-slate-700 disabled:border-gray-300 hover:bg-slate-700 hover:text-white',
                   quantity: 'text-2xl px-2',
                   icon: 'h-5 w-5',
                 }}
@@ -154,7 +173,7 @@ export const Subscription: React.FC<
               component={InputControl}
               type='number'
               label='Price'
-              id={`${seasonid}-price`}
+              id={seasonid}
               disabled={!subscriptionType}
               onChange={async (event) => {
                 const price = +event.target.value;
@@ -175,13 +194,13 @@ export const Subscription: React.FC<
             <div className='col-span-12 tab:col-span-6'>
               <label
                 className='block text-md font-medium text-slate-700 ml-1'
-                htmlFor={`${seasonid}-department`}
+                htmlFor={`${seasonid}department`}
               >
                 Department:
               </label>
               <Field
                 name='department'
-                id={`${seasonid}-department`}
+                id={seasonid}
                 component={OptionSelect}
                 disabled={!subscriptionType || values.price > 0}
                 styles={{

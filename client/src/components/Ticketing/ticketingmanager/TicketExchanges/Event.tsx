@@ -1,76 +1,89 @@
-import React from 'react';
-import {eventInstanceItemSchema, getDateTime} from './TicketExchangeUtils';
+import React, {useCallback, useEffect, useMemo} from 'react';
+import {eventInstanceItemSchema} from './TicketExchangeUtils';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
 import format from 'date-fns/format';
 import {Field, Formik, FormikHelpers, FormikProps, FormikValues} from 'formik';
 import {OptionSelect} from '../Event/components/OptionSelect';
 import {QuantityInputControl} from '../../mainpage/SubscriptionPurchasing/QuantityInputControl';
 import {InputControl} from '../Event/components/InputControl';
-import {ProviderEvent} from './ticketExchangeInterfaces';
+import {ProviderEvent} from './ticketExchangeTypes';
 import {departmentOptions} from '../AdminPurchase/utils/adminCommon';
 import {TicketCartItem} from '../ticketingSlice';
+import {getDate} from '../Event/components/ShowingUtils';
 
-const getHandleEventInstanceChange = (setFieldValue) => (event) => {
-  setFieldValue('product_id', +event.target.value);
-  setFieldValue(`typeID`, -1);
-  setFieldValue(`price`, 0);
-  setFieldValue(`fee`, 0);
-  setFieldValue(`qty`, 0);
-  setFieldValue(`department`, '');
+const getHandleEventInstanceChange = (setFieldValue) => async (event) => {
+  await setFieldValue('product_id', +event.target.value);
+  await setFieldValue(`typeID`, -1);
+  await setFieldValue(`price`, 0);
+  await setFieldValue(`fee`, 0);
+  await setFieldValue(`qty`, 0);
+  await setFieldValue(`department`, '');
 };
 
 const getHandleTicketTypeChange =
-  (setFieldValue, ticketRestrictions) => (event) => {
+  (setFieldValue, ticketRestrictions) => async (event) => {
     const ticketrestriction = ticketRestrictions.get(+event.target.value);
-    setFieldValue(`typeID`, ticketrestriction?.ticketrestrictionsid ?? -1);
-    setFieldValue(`price`, ticketrestriction?.price ?? 0);
-    setFieldValue(`fee`, ticketrestriction?.fee ?? 0);
-    setFieldValue(`qty`, 0);
-    setFieldValue(`department`, '');
+    await setFieldValue(
+      `typeID`,
+      ticketrestriction?.ticketrestrictionsid ?? -1,
+    );
+    await setFieldValue(`price`, ticketrestriction?.price ?? 0);
+    await setFieldValue(`fee`, ticketrestriction?.fee ?? 0);
+    await setFieldValue(`qty`, 0);
+    await setFieldValue(`department`, '');
   };
 
-const EventInstanceForm: React.FC<
-  ProviderEvent & {open: boolean; formRef: React.Ref<FormikProps<FormikValues>>}
-> = (props) => {
-  const {eventname, eventinstances, open, formRef, eventid} = props;
+interface Event extends ProviderEvent {
+  open: boolean;
+  formRef: React.MutableRefObject<FormikProps<FormikValues>>;
+  setDisabled: (value: any) => void;
+}
+
+const Event: React.FC<Event> = (props) => {
+  const {eventname, eventinstances, eventid, open, formRef, setDisabled} = props;
   const {eventInstances, ticketRestrictions, updateCart} =
     useTicketExchangeContext();
-  const onSubmit = (
+  const onSubmit = useCallback((
     cartItem: TicketCartItem,
     formikHelpers: FormikHelpers<any>,
   ) => {
-    formikHelpers.setSubmitting(false);
-    formikHelpers.resetForm();
     const eventInstance = eventInstances.get(cartItem.product_id);
     const ticketRestriction = ticketRestrictions.get(cartItem.typeID);
-    if (eventInstance && ticketRestriction) {
-      const date = getDateTime(eventInstance.eventdate, eventInstance.eventtime);
-      updateCart({
-        ...cartItem,
-        name: `${eventname} ticket${cartItem.qty > 1 ? 's' : ''}`,
-        desc: `${ticketRestriction?.tickettype?.description} - ${format(
-          date,
-          'eee, MMM dd - h:mm a',
-        )}`,
-        eventId: eventInstance.eventid_fk,
-        date,
-        payWhatCan: false,
-      });
-    }
-  };
 
-  const filteredEventInstances = eventinstances
-    .filter((instance) => eventInstances.get(instance)?.availableseats > 0)
-    .map((instance) => {
-      const eventInstance = eventInstances.get(instance);
-      return {
+    formikHelpers.setSubmitting(false);
+    formikHelpers.resetForm();
+
+    if (!eventInstance || !ticketRestriction) return;
+
+    const date = getDate(eventInstance.eventdate, eventInstance.eventtime);
+    updateCart({
+      ...cartItem,
+      name: `${eventname} ticket${cartItem.qty > 1 ? 's' : ''}`,
+      desc: `${ticketRestriction?.tickettype?.description} - ${format(
+        date,
+        'eee, MMM dd - h:mm a',
+      )}`,
+      eventId: eventInstance.eventid_fk,
+      date,
+      payWhatCan: false,
+    });
+  }, [eventInstances, ticketRestrictions]);
+
+  const filteredEventInstances = useMemo(() => eventinstances.reduce<
+    {description: string; id: number}[]
+  >((acc, instance) => {
+    const eventInstance = eventInstances.get(instance);
+    if (eventInstance?.availableseats > 0) {
+      acc.push({
         description: `${format(
-          getDateTime(eventInstance.eventdate, eventInstance.eventtime),
+          getDate(eventInstance.eventdate, eventInstance.eventtime),
           'MM/dd/yyy h:mm a',
         )}${eventInstance.detail ? ` - ${eventInstance.detail}` : ''}`,
         id: instance,
-      };
-    });
+      });
+    }
+    return acc;
+  }, []), [eventInstances, eventinstances]);
 
   return (
     <Formik
@@ -86,8 +99,13 @@ const EventInstanceForm: React.FC<
         department: '',
       }}
     >
-      {({handleSubmit, setFieldValue, values}) => {
+      {({handleSubmit, setFieldValue, values, isSubmitting, isValid, isValidating}) => {
         const eventInstance = eventInstances.get(values.product_id);
+
+        useEffect(() => {
+            setDisabled(isSubmitting || !isValid || isValidating);
+        }, [isValid, isValidating, isSubmitting]);
+
         return (
           <form
             onSubmit={handleSubmit}
@@ -98,13 +116,13 @@ const EventInstanceForm: React.FC<
             <div className='col-span-12 tab:col-span-5'>
               <label
                 className='block text-md font-medium text-slate-700 ml-1'
-                htmlFor={`${eventid}-product_id`}
+                htmlFor={`${eventid}product_id`}
               >
                 Showing:
               </label>
               <Field
                 name={`product_id`}
-                id={`${eventid}-product_id`}
+                id={eventid}
                 component={OptionSelect}
                 disabled={!filteredEventInstances.length}
                 styles={{
@@ -121,13 +139,13 @@ const EventInstanceForm: React.FC<
             <div className='col-span-12 tab:col-span-5'>
               <label
                 className='block text-md font-medium text-slate-700 ml-1'
-                htmlFor={`${eventid}-typeID`}
+                htmlFor={`${eventid}typeID`}
               >
                 Ticket Type:
               </label>
               <Field
                 name='typeID'
-                id={`${eventid}-typeID`}
+                id={eventid}
                 component={OptionSelect}
                 disabled={!eventInstance}
                 styles={{
@@ -162,13 +180,13 @@ const EventInstanceForm: React.FC<
             <div className='col-span-12 tab:col-span-2'>
               <label
                 className='block text-md font-medium text-slate-700 ml-1'
-                htmlFor={`${eventid}-qty`}
+                htmlFor={`${eventid}qty`}
               >
                 Quantity:
               </label>
               <Field
                 name={`qty`}
-                id={`${eventid}-qty`}
+                id={eventid}
                 component={QuantityInputControl}
                 disabled={values.typeID === -1}
                 quantityAvailable={
@@ -184,7 +202,8 @@ const EventInstanceForm: React.FC<
                 styles={{
                   group:
                     'flex flex-row justify-center items-center w-fit max-w-full mx-auto py-1',
-                  button: 'text-slate-700 disabled:text-gray-300 rounded-full border border-slate-700 disabled:border-gray-300 hover:bg-slate-700 hover:text-white',
+                  button:
+                    'text-slate-700 disabled:text-gray-300 rounded-full border border-slate-700 disabled:border-gray-300 hover:bg-slate-700 hover:text-white',
                   quantity: 'text-2xl px-2',
                   icon: 'h-5 w-5',
                 }}
@@ -195,7 +214,7 @@ const EventInstanceForm: React.FC<
               component={InputControl}
               type='number'
               label='Price'
-              id={`${eventid}-price`}
+              id={eventid}
               disabled={values.typeID === -1}
               onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                 const price = +event.target.value;
@@ -218,7 +237,7 @@ const EventInstanceForm: React.FC<
               component={InputControl}
               type='number'
               label='Fee'
-              id={`${eventid}-fee`}
+              id={eventid}
               disabled={values.typeID === -1}
               currency={true}
               className={{
@@ -232,13 +251,13 @@ const EventInstanceForm: React.FC<
             <div className='col-span-12 tab:col-span-4'>
               <label
                 className='block text-md font-medium text-slate-700 ml-1'
-                htmlFor={`${eventid}-department`}
+                htmlFor={`${eventid}department`}
               >
                 Department:
               </label>
               <Field
                 name='department'
-                id={`${eventid}-department`}
+                id={eventid}
                 component={OptionSelect}
                 disabled={values.typeID === -1 || values.price > 0}
                 styles={{
@@ -261,4 +280,4 @@ const EventInstanceForm: React.FC<
   );
 };
 
-export default EventInstanceForm;
+export default Event;

@@ -6,7 +6,7 @@ const Orders: React.FC = () => {
   const {orders} = useTicketExchangeContext();
 
   if (!orders || !orders.length) {
-    return <p className='w-full text-center'>NO REFUNDABLE ITEMS</p>;
+    return <p className='w-full text-center mt-4'>NO REFUNDABLE ITEMS</p>;
   }
 
   return (

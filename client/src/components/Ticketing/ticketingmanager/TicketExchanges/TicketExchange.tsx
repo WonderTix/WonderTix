@@ -13,14 +13,16 @@ export const TicketExchange: React.FC = () => {
   const [customerPopUp, setCustomerPopUp] = useState(false);
 
   if (!events || !seasons || !token) {
-    return <main className='fixed inset-0 md:left-[90px] h-screen w-full flex justify-center items-center'>
-      <LoadingIcon className='h-8 w-8 animate-spin text-slate-700'/>
-    </main>;
+    return (
+      <main className='fixed inset-0 md:left-[90px] h-screen w-full flex items-center justify-center'>
+        <LoadingIcon className='h-8 w-8 md:h-10 md:w-10 animate-spin text-slate-900' />
+      </main>
+    );
   }
 
   return (
-    <main className='h-full w-full min-[1700px]:w-[90%] 3xl:w-[70%] mx-auto'>
-      <header className='w-full flex flex-col tab:flex-row tab:items-center tab:justify-between tab:h-[100px] tab:mb-14 gap-2 mb-4'>
+    <main className='h-full w-full min-[1700px]:w-[90%] min-[2000px]:w-[70%] mx-auto'>
+      <header className='w-full flex flex-col gap-2 mb-4 tab:flex-row tab:items-center tab:justify-between tab:h-[100px] tab:mb-10'>
         <h1 className='text-center tab:text-start p-1 font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-sky-700 to-sky-200'>
           Order Exchange
         </h1>
@@ -28,9 +30,9 @@ export const TicketExchange: React.FC = () => {
           <CustomerDisplay />
         ) : (
           <FormButton
-            disabled={stage === 'checkout' || stage === 'processing'}
-            testID='add-customer'
-            className='py-2 px-4 rounded-3xl bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white shadow-xl w-fit self-center'
+            disabled={stage === 'checkout'}
+            testID='add-customer-to-order'
+            className='py-2 px-4 rounded-3xl bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white shadow-xl self-center'
             onClick={() => setCustomerPopUp(true)}
           >
             Add Customer

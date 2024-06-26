@@ -1,10 +1,6 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {useFetchToken} from '../Event/components/ShowingUtils';
-import {
-  isSubscriptionCartItem,
-  SubscriptionCartItem,
-  TicketCartItem,
-} from '../ticketingSlice';
+import {isSubscriptionCartItem} from '../ticketingSlice';
 import {
   updateCartItems,
   updateEventInstances,
@@ -15,9 +11,11 @@ import {
   useFetchExchangeSubscriptions,
 } from './TicketExchangeUtils';
 import {
-  ProviderOrder, RefundCartItem,
+  ProviderCartItem,
+  ProviderOrder,
+  RefundCartItem,
   TicketExchangeContextValues,
-} from './ticketExchangeInterfaces';
+} from './ticketExchangeTypes';
 import {contact} from '../prismaTypes';
 
 const TicketExchangeContext = React.createContext<TicketExchangeContextValues>({
@@ -45,19 +43,11 @@ export const useTicketExchangeContext = () =>
 
 export const TicketExchangeProvider: React.FC = (props) => {
   const {token} = useFetchToken();
-
-  const [appliedDiscount, setAppliedDiscount] = useState(null);
-  const [cartItems, setCartItems] = useState(
-    new Map<string, TicketCartItem | SubscriptionCartItem>(),
-  );
   const [customer, setCustomer] = useState<contact>();
-  const [stage, setStage] = useState<
-    'select_items' | 'customer_info' | 'checkout' | 'processing'
-  >('select_items');
-  const [refundItems, setRefundItems] = useState(
-    new Map<number, RefundCartItem>(),
-  );
-
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
+  const [cartItems, setCartItems] = useState(new Map<string, ProviderCartItem>());
+  const [refundItems, setRefundItems] = useState(new Map<number, RefundCartItem>());
+  const [stage, setStage] = useState<'select_items' | 'customer_info' | 'checkout'>('select_items');
   const [orders] = useFetchData<ProviderOrder[]>(
     `${process.env.REACT_APP_API_2_URL}/order/customer/refund/items/${customer?.contactid}`,
     {token: !customer ? undefined : token},
@@ -73,7 +63,7 @@ export const TicketExchangeProvider: React.FC = (props) => {
     useFetchExchangeSubscriptions(token);
 
   const updateCart = useCallback(
-    (item: SubscriptionCartItem | TicketCartItem) => {
+    (item: ProviderCartItem) => {
       setCartItems((prev) => updateCartItems(prev, item));
       if (isSubscriptionCartItem(item)) {
         setSubscriptionTypes((prev) => updateSubscriptionTypes(prev, item));

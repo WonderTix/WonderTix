@@ -2,7 +2,7 @@ import {SearchIcon, XIcon} from '../../Icons';
 import React from 'react';
 import {formatUSD} from '../RefundOrders/RefundOrders';
 
-interface DIscountInputProps {
+interface DiscountInputProps {
   discountText: string;
   disabled: boolean;
   handleDiscountTextChange: (
@@ -12,7 +12,7 @@ interface DIscountInputProps {
   handleRemoveDiscount: () => void;
 }
 
-export const DiscountInput: React.FC<DIscountInputProps> = (props) => {
+export const DiscountInput: React.FC<DiscountInputProps> = (props) => {
   const {
     disabled,
     handleDiscountTextChange,
@@ -22,8 +22,9 @@ export const DiscountInput: React.FC<DIscountInputProps> = (props) => {
   } = props;
   return (
     <div
-      className={`bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md w-full
-          ${disabled && 'bg-zinc-800 border-2 border-zinc-900'}`}
+      className={`bg-zinc-700 flex items-center justify-center gap-1 p-1 rounded-lg shadow-md w-full ${
+        disabled && 'bg-zinc-800 border-2 border-zinc-900'
+      }`}
     >
       <input
         type='text'

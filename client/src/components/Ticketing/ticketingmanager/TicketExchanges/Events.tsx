@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
 import ActivenessGroupToggle from '../../ActivenessGroupToggle';
 import PurchaseOption from './PurchaseOption';
-import EventInstanceForm from './EventInstanceForm';
+import Event from './Event';
 import {FormikProps, FormikValues} from 'formik';
 import {EventImage} from '../../../../utils/imageURLValidation';
-import {ProviderEvent} from './ticketExchangeInterfaces';
+import {ProviderEvent} from './ticketExchangeTypes';
 
 const eventFilter = (
   event: ProviderEvent,
@@ -27,8 +27,8 @@ const Events: React.FC = () => {
     'active' | 'inactive' | 'all'
   >('active');
 
-  if (!events || !events.size) {
-    return <p className='w-ful text-center'>NO AVAILABLE TICKETS</p>;
+  if (!events || !events.length) {
+    return <p className='w-ful text-center mt-4'>NO AVAILABLE TICKETS</p>;
   }
 
   return (
@@ -40,8 +40,8 @@ const Events: React.FC = () => {
           groupClass='mb-0'
         />
       </li>
-      {events?.size &&
-        Array.from(events).reduce((acc, [, event], index) => {
+      {
+        events.reduce((acc, event, index) => {
           if (eventFilter(event, activeFilter)) {
             acc.push(
               <PurchaseOption
@@ -58,11 +58,11 @@ const Events: React.FC = () => {
                 Form={(props: {
                   open: boolean;
                   formRef: React.MutableRefObject<FormikProps<FormikValues>>;
+                  setDisabled: (value: any) => void;
                 }) => (
-                  <EventInstanceForm
+                  <Event
                     {...event}
-                    open={props.open}
-                    formRef={props.formRef}
+                    {...props}
                   />
                 )}
                 id={event.eventid}
