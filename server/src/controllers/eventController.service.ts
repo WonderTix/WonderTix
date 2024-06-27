@@ -408,7 +408,7 @@ export const getTicketItems = async (
       ));
 
     toReturn.ticketTotal += item.payWhatCan && item.payWhatPrice? item.payWhatPrice: item.price * item.qty;
-    if (price > 0) {
+    if (price > 0 && item.fee) {
       // Only add a fee if the item's price is not 0
       toReturn.feeTotal += Number(item.fee) * item.qty;
     }

@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useFetchToken} from '../Event/components/ShowingUtils';
 import {isSubscriptionCartItem} from '../ticketingSlice';
 import {
@@ -48,7 +48,7 @@ export const TicketExchangeProvider: React.FC = (props) => {
   const [cartItems, setCartItems] = useState(new Map<string, ProviderCartItem>());
   const [refundItems, setRefundItems] = useState(new Map<number, RefundCartItem>());
   const [stage, setStage] = useState<'select_items' | 'customer_info' | 'checkout'>('select_items');
-  const [orders] = useFetchData<ProviderOrder[]>(
+  const [orders,,,,, setOrders] = useFetchData<ProviderOrder[]>(
     `${process.env.REACT_APP_API_2_URL}/order/refundable-orders/${customer?.contactid}`,
     {token: !customer ? undefined : token},
   );
@@ -79,6 +79,13 @@ export const TicketExchangeProvider: React.FC = (props) => {
       setCartItems,
     ],
   );
+
+  useEffect(() => {
+    if (!customer) {
+      setOrders([]);
+      setRefundItems(new Map());
+    }
+  }, [customer]);
 
   const contextValue = useMemo(
     () => ({

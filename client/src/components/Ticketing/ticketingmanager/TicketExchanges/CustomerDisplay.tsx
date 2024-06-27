@@ -20,10 +20,7 @@ export const CustomerDisplay = () => {
           testID='remove-customer-from-order'
           title='remove customer-from-order'
           className='p-1 hover:bg-red-200 hover:text-red-800 disabled:bg-gray-300 rounded-full'
-          onClick={() => {
-            setCustomer();
-            setRefundItems(new Map<string, RefundCartItem>());
-          }}
+          onClick={() => setCustomer()}
         >
           <XIcon className='h-5 w-5' />
         </FormButton>

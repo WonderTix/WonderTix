@@ -408,17 +408,11 @@ orderController.post('/reader-cancel', async (req: Request, res: Response) => {
  *     summary: get an order
  *     tags:
  *     - New Order
- *     parameters:
- *     - $ref: '#/components/parameters/id'
  *     security:
  *     - bearerAuth: []
  *     responses:
  *       200:
  *         description: order updated successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Order'
  *       400:
  *         description: bad request
  *         content:
