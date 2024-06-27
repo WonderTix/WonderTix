@@ -173,6 +173,12 @@ subscriptionController.get('/season/exchange/available', async (req, res: Respon
       where: {
         deletedat: null,
         enddate: {gte: date},
+        events: {
+          some: {
+            subscriptioneligible: true,
+            deletedat: null,
+          },
+        },
         seasonsubscriptiontypes: {
           some: {
             deletedat: null,

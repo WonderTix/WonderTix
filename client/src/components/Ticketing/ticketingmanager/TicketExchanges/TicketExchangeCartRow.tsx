@@ -5,6 +5,7 @@ import IconButton from '../../IconButton';
 import {TrashCanIcon} from '../../Icons';
 import {QuantityInputControl} from '../../mainpage/SubscriptionPurchasing/QuantityInputControl';
 import {formatAccounting} from './TicketExchangeUtils';
+import {FormButton} from '../Event/components/FormButton';
 
 interface TicketExchangeCartRowProps extends CartItem {
   qtyAvailable: number;
@@ -15,16 +16,22 @@ interface TicketExchangeCartRowProps extends CartItem {
 export const TicketExchangeCartRow: React.FC<TicketExchangeCartRowProps> = (props) => {
   const {price, qty, name, desc, qtyAvailable, increment, decrement} = props;
   const {stage} = useTicketExchangeContext();
+
   return (
     <li className='flex flex-col bg-gradient-to-b from-zinc-700 px-5 pt-3 pb-4 rounded-xl mb-5'>
       <p className='text-lg font-semibold'>{name}</p>
       <p className='italic'>{desc}</p>
-      <div className='flex flex-row items-center justify-between'>
+      <div className='flex flex-row items-center justify-between pt-1'>
         <p className='font-semibold'>{formatAccounting(price)}</p>
         {!increment ? (
-            <IconButton hoverColor='grey' onClick={decrement}>
+            <FormButton
+              onClick={decrement}
+              disabled={stage === 'checkout'}
+              className='text-white hover:scale-125 disabled:scale-100 transition-all ease-in disabled:text-zinc-300'
+              testID='remove-from-cart'
+            >
               <TrashCanIcon className='h-6 w-6 text-white' strokeWidth={2} />
-            </IconButton>
+            </FormButton>
           ) : (
             <QuantityInputControl
               field={{
@@ -36,8 +43,8 @@ export const TicketExchangeCartRow: React.FC<TicketExchangeCartRowProps> = (prop
               quantityAvailable={qtyAvailable + qty}
               styles={{
                 quantity: 'text-lg mx-1',
-                button: 'text-white disabled:text-gray-300',
-                group: 'flex flex-row items-center p-1 ml-2',
+                button: 'disabled:text-zinc-300 hover:scale-125 disabled:scale-100 transition-all ease-in',
+                group: 'flex flex-row items-center p-1 ml-2 text-white',
                 icon: 'h-4 w-4',
               }}
             />

@@ -71,15 +71,15 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
     <div
       className={`flex flex-col justify-between min-w-[80px] min-h-[500px] h-full max-h-full overflow-y-auto min-[1280px]:h-fit ${
         stage === 'select_items'
-          ? `w-fit min-[1280px]:rounded-xl`
+          ? `min-[1280px]:w-[25rem] min-[1280px]:rounded-xl`
           : 'w-full rounded-xl'
       } bg-zinc-900 p-5`}
     >
       <section className='flex flex-col items-center w-full mb-5'>
-        <h2 className='text-zinc-100 text-2xl font-bold w-full basis-1/6 flex justify-center'>
+        <h2 className='text-zinc-100 text-2xl font-bold w-full flex justify-center'>
           Order Detail
         </h2>
-        <div className='text-zinc-100 mt-10 w-full'>
+        <div className='text-zinc-100 mt-10 w-full min-[1280px]:max-h-[500px] overflow-y-auto'>
           {refundItemArray.map((item, index) => (
             <TicketExchangeCartRow
               key={index}

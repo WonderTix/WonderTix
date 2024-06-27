@@ -34,7 +34,7 @@ const PurchaseOption: React.FC<PurchaseOptionProps> = (props) => {
         <div className='flex items-center justify-center tab:justify-end flex-grow gap-1'>
           <FormButton
             onClick={() => ref.current?.submitForm()}
-            title='add to cart'
+            title={disabled? undefined:'add to cart'}
             disabled={disabled}
             className={`${!open && 'hidden'} p-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 rounded-xl text-white shadow-xl`}
             testID={`add-to-cart-${id}`}

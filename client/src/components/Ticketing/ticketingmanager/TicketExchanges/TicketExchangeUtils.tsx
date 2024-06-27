@@ -147,8 +147,13 @@ const validateDiscountCode = (
   );
 };
 
-export const useDiscount = (setCheckoutDiscount: (value: any) => void, defaultDiscount?: any) => {
-  const [appliedDiscount, setAppliedDiscount] = useState(defaultDiscount ?? null);
+export const useDiscount = (
+  setCheckoutDiscount: (value: any) => void,
+  defaultDiscount?: any,
+) => {
+  const [appliedDiscount, setAppliedDiscount] = useState(
+    defaultDiscount ?? null,
+  );
   const [discountText, setDiscountText] = useState(defaultDiscount?.code ?? '');
   const [discountClicked, setDiscountClicked] = useState(!!defaultDiscount);
 
@@ -171,10 +176,8 @@ export const useDiscount = (setCheckoutDiscount: (value: any) => void, defaultDi
   );
 
   const handleApplyDiscount = useCallback(
-    async (
-      discountText: string,
-      cartItems: ProviderCartItem[],
-    ) => {
+    async (discountText: string, cartItems: ProviderCartItem[]) => {
+      if (!discountText) return;
       const discount = await getDiscountCode(discountText);
       if (discount && validateDiscountCode(discount, cartItems)) {
         setAppliedDiscount(discount);
@@ -385,16 +388,11 @@ export const updateSubscriptionTypes = (
 ) => {
   const key = `${item.seasonid_fk}T${item.subscriptiontypeid_fk}`;
   const current = subscriptionTypes.get(key);
-  return new Map([
-    ...Array.from(subscriptionTypes),
-    [
-      key,
-      {
-        ...current,
-        subscriptionsavailable: current.subscriptionsavailable - item.qty,
-      },
-    ],
-  ]);
+  subscriptionTypes.set(key, {
+    ...current,
+    subscriptionsavailable: current.subscriptionsavailable - item.qty,
+  });
+  return new Map(subscriptionTypes);
 };
 
 export const updateEventInstances = (
@@ -518,5 +516,4 @@ const formatter = new Intl.NumberFormat('en-us', {
   currencySign: 'accounting',
 });
 
-export const formatAccounting = (number: number) =>
-  formatter.format(number);
+export const formatAccounting = (number: number) => formatter.format(number);

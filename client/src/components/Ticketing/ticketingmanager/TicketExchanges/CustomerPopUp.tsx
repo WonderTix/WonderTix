@@ -109,7 +109,7 @@ const CustomerPopUp: React.FC<CustomerPopUpProps> = (props) => {
         />
       </div>
       <div className='flex grow'></div>
-      <footer className='sticky bottom-0 bg-gray-50 w-full px-4 py-3 tab:px-6 flex flex-row justify-end items-end'>
+      <footer className='sticky bottom-0 bg-gray-50 w-full px-4 py-3 tab:px-6 flex flex-row justify-end items-end mt-1'>
         <button
           onClick={setShow}
           className='bg-green-600 hover:bg-green-800 focus:ring-green-300 cursor-pointer

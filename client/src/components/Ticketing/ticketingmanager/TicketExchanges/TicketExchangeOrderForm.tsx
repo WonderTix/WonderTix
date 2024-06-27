@@ -78,7 +78,7 @@ export const TicketExchangeOrderForm: React.FC = () => {
   );
 
   return (
-    <div className='flex flex-col items-center min-[1024px]:flex-row rounded-[1rem] md:items-stretch md:bg-white md:p-4 w-full h-full'>
+    <div className='flex flex-col items-center min-[1280px]:flex-row rounded-[1rem] min-[1280px]:items-stretch min-[1280px]:bg-white md:p-4 w-full h-full'>
       <div className='min-w-414 w-full h-full md:m-[2rem] md:mr-5 mt-10 bg-zinc-100 p-2 md:p-[1rem] flex flex-col gap-5 items-start rounded-xl overflow-auto'>
         <div className='flex flex-col items-center h-auto w-full'>
           <h1 className='text-3xl font-bold mb-5'>Complete Order</h1>
@@ -100,7 +100,7 @@ export const TicketExchangeOrderForm: React.FC = () => {
           />
         </div>
       </div>
-      <div className='md:w-[35rem] p-2 w-full mt-2 min-[1280px]:mt-0'>
+      <div className='min-[1280px]:w-[35rem] p-2 w-full mt-2 min-[1280px]:mt-0'>
         <TicketExchangeCart />
       </div>
       {popUp && (

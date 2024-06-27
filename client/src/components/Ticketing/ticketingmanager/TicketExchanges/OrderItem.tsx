@@ -45,13 +45,13 @@ export const OrderItem: React.FC<orderitem> = (props) => {
         onClick={updateRefundItem}
         disabled={false}
         title={existingItem ? 'remove from cart' : 'add to cart'}
-        className='text-white p-1 tab:ml-2 hover:text-zinc-800 hover:bg-white rounded-full'
+        className='p-1 tab:ml-2 bg-white rounded-full text-zinc-800/90 hover:scale-125 transition-all ease-in-out'
         testID={`update-refund-item-${id}`}
       >
         {existingItem ? (
-          <DecrementIcon className='h-7 w-7' />
+          <DecrementIcon className='h-5 w-5' strokeWidth={3} />
         ) : (
-          <PlusIcon className='h-7 w-7' />
+          <PlusIcon className='h-5 w-5' strokeWidth={3} />
         )}
       </FormButton>
     </li>

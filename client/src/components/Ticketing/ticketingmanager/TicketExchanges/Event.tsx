@@ -89,6 +89,7 @@ const Event: React.FC<Event> = (props) => {
     <Formik
       onSubmit={onSubmit}
       innerRef={formRef}
+      isInitialValid={false}
       validationSchema={eventInstanceItemSchema}
       initialValues={{
         product_id: -1,
@@ -203,7 +204,7 @@ const Event: React.FC<Event> = (props) => {
                   group:
                     'flex flex-row justify-center items-center w-fit max-w-full mx-auto py-1',
                   button:
-                    'text-slate-700 disabled:text-gray-300 rounded-full border border-slate-700 disabled:border-gray-300 hover:bg-slate-700 hover:text-white',
+                    'text-slate-700 disabled:text-gray-300 hover:scale-125 disabled:hover-scale-100 transition-all ease-in',
                   quantity: 'text-2xl px-2',
                   icon: 'h-5 w-5',
                 }}

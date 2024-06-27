@@ -83,6 +83,7 @@ export const Subscription: React.FC<SubscriptionProps> = (props) => {
       onSubmit={onSubmit}
       innerRef={formRef}
       validationSchema={subscriptionItemSchema}
+      isInitialValid={false}
       initialValues={{
         seasonid_fk: seasonid,
         subscriptiontypeid_fk: -1,
@@ -162,7 +163,7 @@ export const Subscription: React.FC<SubscriptionProps> = (props) => {
                   group:
                     'flex flex-row justify-center items-center w-fit max-w-full mx-auto py-1',
                   button:
-                    'text-slate-700 disabled:text-gray-300 rounded-full border border-slate-700 disabled:border-gray-300 hover:bg-slate-700 hover:text-white',
+                    'text-slate-700 disabled:text-gray-300 hover:scale-125 disabled:hover-scale-100 transition-all ease-in',
                   quantity: 'text-2xl px-2',
                   icon: 'h-5 w-5',
                 }}

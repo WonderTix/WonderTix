@@ -46,7 +46,7 @@ export const TicketExchangeItems: React.FC = () => {
           <FormButton
             onClick={() => setCartPopUp(true)}
             disabled={false}
-            className='min-[1280px]:hidden h-full ml-5 text-zinc-800'
+            className='min-[1280px]:hidden h-full ml-5 text-zinc-800 hover:scale-110 transition-all ease-in'
             testID='open-cart'
           >
             <CartIcon className='h-7 w-7' />
@@ -67,8 +67,7 @@ export const TicketExchangeItems: React.FC = () => {
           <FormButton
             disabled={false}
             testID='close cart'
-            title='close'
-            className='p-2 mr-2 self-start text-white'
+            className='p-1 mt-2 mr-4 self-start text-white border border-white rounded-full hover:border-zinc-300 hover:text-zinc-300'
             onClick={() => setCartPopUp(false)}
           >
             <XIcon className='h-6 w-6' />
