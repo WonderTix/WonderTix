@@ -2,10 +2,9 @@ import {FormButton} from '../Event/components/FormButton';
 import {XIcon} from '../../Icons';
 import React from 'react';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
-import {RefundCartItem} from './ticketExchangeTypes';
 
 export const CustomerDisplay = () => {
-  const {customer, stage, setCustomer, setRefundItems} = useTicketExchangeContext();
+  const {customer, stage, setCustomer} = useTicketExchangeContext();
 
   if (!customer) return <p>NO CUSTOMER</p>;
 

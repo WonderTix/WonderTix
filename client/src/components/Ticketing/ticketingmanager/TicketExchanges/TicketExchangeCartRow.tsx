@@ -1,7 +1,6 @@
 import React from 'react';
 import {CartItem} from '../ticketingSlice';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
-import IconButton from '../../IconButton';
 import {TrashCanIcon} from '../../Icons';
 import {QuantityInputControl} from '../../mainpage/SubscriptionPurchasing/QuantityInputControl';
 import {formatAccounting} from './TicketExchangeUtils';
