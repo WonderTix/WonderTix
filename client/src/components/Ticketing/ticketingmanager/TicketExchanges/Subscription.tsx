@@ -202,7 +202,7 @@ export const Subscription: React.FC<SubscriptionProps> = (props) => {
                 name='department'
                 id={seasonid}
                 component={OptionSelect}
-                disabled={!subscriptionType || values.price > 0}
+                disabled={!subscriptionType || values.price !== 0}
                 styles={{
                   select:
                     'w-full border border-zinc-300 p-3 rounded-lg disabled:text-slate-300',

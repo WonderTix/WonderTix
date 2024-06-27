@@ -134,7 +134,7 @@ export const expireCheckoutSession = async (
 
 export const createStripeCoupon = async (discount: any) => {
   return stripe.coupons.create({
-    ['amount_off']: discount.amountOff*100,
+    ['amount_off']: Math.floor(discount.amountOff*100),
     duration: 'once',
     name: discount.code,
     currency: 'usd',
@@ -565,6 +565,7 @@ export const getRefundItems = async (
       const amountToApply = Math.min(currentPI.amountAvailable, amountRequired);
       amountRequired-=amountToApply;
       currentPI.amountAvailable-=amountToApply;
+      currentPI.amount-=amountToApply;
       if (currentPI.amountAvailable === 0) ++order.piIndex;
       paymentIntentMap.set(currentPI.payment_intent_fk, currentAmount + amountToApply);
     }
@@ -595,22 +596,20 @@ export const getRefundItems = async (
   const queries = [...orderMap.values()].reduce(
     (acc, order) => {
       order.payment_intents.forEach((intent) => {
-        if (intent.amount !== intent.amountAvailable) {
-          acc.push({
-            table: 'order_payment_intents',
-            func: 'update',
-            query: {
-              where: {
-                orderid_fk_payment_intent_fk: {
-                  payment_intent_fk: intent.payment_intent_fk,
-                  orderid_fk: intent.orderid_fk,
-                },
+        acc.push({
+          table: 'order_payment_intents',
+          func: 'update',
+          query: {
+            where: {
+              orderid_fk_payment_intent_fk: {
+                payment_intent_fk: intent.payment_intent_fk,
+                orderid_fk: intent.orderid_fk,
               },
-              data: {
-                amount: intent.amountAvailable,
-              },
-            }});
-        }
+            },
+            data: {
+              amount: intent.amount,
+            },
+          }});
       });
       return acc;
     }, Array<any>());

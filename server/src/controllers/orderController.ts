@@ -241,7 +241,6 @@ orderController.get('/refund', async (req: Request, res: Response) => {
               price: +item.price,
             });
           }
-
         } else if (item.subscription) {
           const key = `${item.subscription.seasonsubscriptiontype.season.seasonid}-${item.subscription.seasonsubscriptiontype.season.seasonid}`;
           const current = orderItems.get(key);
@@ -257,7 +256,6 @@ orderController.get('/refund', async (req: Request, res: Response) => {
               price: +item.price,
             });
           }
-
         } else if (item.donation) {
           donation = Number(item.price);
         }
@@ -399,8 +397,7 @@ orderController.post('/reader-cancel', async (req: Request, res: Response) => {
     await deleteOrderAndTempStore(prisma, paymentIntentID);
     return res.status(200).json('Reader order successfully cancelled');
   } catch (error) {
-    console.log(error);
-   res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 

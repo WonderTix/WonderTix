@@ -1,8 +1,7 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
-import {formatUSD} from '../RefundOrders/RefundOrders';
 import {ChevronDown, ChevronUp, DecrementIcon, PlusIcon} from '../../Icons';
-import {getNameAndDescription} from './TicketExchangeUtils';
+import {formatAccounting, getNameAndDescription} from './TicketExchangeUtils';
 import {FormButton} from '../Event/components/FormButton';
 import format from 'date-fns/format';
 import {ProviderOrder} from './ticketExchangeTypes';
@@ -57,7 +56,7 @@ const Order: React.FC<ProviderOrder> = (props) => {
               {format(new Date(orderdatetime), 'M/dd/yy, h:mm a')}
             </span>
           </span>
-          {`Refundable Total: ${formatUSD(orderitems.reduce((acc, item) => Number(item.price) + Number(item.fee) - Number(item.discount) + acc, 0))}`}
+          {`Refundable Total: ${formatAccounting(orderitems.reduce((acc, item) => Number(item.price) + Number(item.fee) - Number(item.discount) + acc, 0))}`}
         </h3>
         <div className='flex-grow flex items-center justify-center sm:justify-end gap-1'>
           <FormButton

@@ -147,10 +147,10 @@ const validateDiscountCode = (
   );
 };
 
-export const useDiscount = (setCheckoutDiscount: (value: any) => void) => {
-  const [appliedDiscount, setAppliedDiscount] = useState(null);
-  const [discountText, setDiscountText] = useState('');
-  const [discountClicked, setDiscountClicked] = useState(false);
+export const useDiscount = (setCheckoutDiscount: (value: any) => void, defaultDiscount?: any) => {
+  const [appliedDiscount, setAppliedDiscount] = useState(defaultDiscount ?? null);
+  const [discountText, setDiscountText] = useState(defaultDiscount?.code ?? '');
+  const [discountClicked, setDiscountClicked] = useState(!!defaultDiscount);
 
   const getDiscountTotal = useCallback(
     (subtotal: number) => {
@@ -511,3 +511,12 @@ export const onlineCheckout = async (checkoutBody: any, token: string) => {
     throw result.error;
   }
 };
+
+const formatter = new Intl.NumberFormat('en-us', {
+  currency: 'USD',
+  style: 'currency',
+  currencySign: 'accounting',
+});
+
+export const formatAccounting = (number: number) =>
+  formatter.format(number);

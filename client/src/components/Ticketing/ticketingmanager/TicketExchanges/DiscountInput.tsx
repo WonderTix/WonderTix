@@ -1,6 +1,6 @@
 import {SearchIcon, XIcon} from '../../Icons';
 import React from 'react';
-import {formatUSD} from '../RefundOrders/RefundOrders';
+import {formatAccounting} from './TicketExchangeUtils';
 
 interface DiscountInputProps {
   discountText: string;
@@ -71,7 +71,7 @@ export const DiscountDisplay: React.FC<DiscountDisplayProps> = (props) => {
     <p className='flex items-center gap-2 justify-between w-full'>
       <span className='text-zinc-100 text-sm'>Discount</span>
       <span className='text-amber-300 text-lg font-bold'>
-        {formatUSD(discountTotal)}
+        {formatAccounting(discountTotal)}
       </span>
     </p>
   );

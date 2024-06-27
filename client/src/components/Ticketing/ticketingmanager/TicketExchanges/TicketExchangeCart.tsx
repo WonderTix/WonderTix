@@ -1,8 +1,7 @@
 import React, {useMemo} from 'react';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
-import {formatUSD} from '../RefundOrders/RefundOrders';
 import {isTicketCartItem} from '../ticketingSlice';
-import {useDiscount} from './TicketExchangeUtils';
+import {formatAccounting, useDiscount} from './TicketExchangeUtils';
 import {DiscountDisplay, DiscountInput} from './DiscountInput';
 import {TicketExchangeCartRow} from './TicketExchangeCartRow';
 
@@ -20,16 +19,16 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
     eventInstances,
     ticketRestrictions,
     subscriptionTypes,
+    appliedDiscount,
   } = useTicketExchangeContext();
   const {
     handleDiscountTextChange,
     handleRemoveDiscount,
-    appliedDiscount,
     handleApplyDiscount,
     discountClicked,
     discountText,
     getDiscountTotal,
-  } = useDiscount(setAppliedDiscount);
+  } = useDiscount(setAppliedDiscount, appliedDiscount);
   const {onClick} = props;
 
   // @ts-ignore
@@ -122,7 +121,7 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
           discountText={discountText}
           handleRemoveDiscount={handleRemoveDiscount}
         />
-        {appliedDiscount && (
+        {discountClicked && (
           <DiscountDisplay
             discountTotal={getDiscountTotal(ticketTotal)}
             invalidDiscount={discountClicked && !appliedDiscount}
@@ -133,13 +132,13 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
             Fee
           </span>
           <span className='text-white text-lg font-bold'>
-            {formatUSD(feeTotal)}
+            {formatAccounting(feeTotal)}
           </span>
         </p>
         <p className='flex items-center gap-2 justify-between w-full'>
           <span className='text-zinc-100 text-sm'>Total</span>
           <span className='text-white text-lg font-bold'>
-            {formatUSD(
+            {formatAccounting(
               ticketTotal +
                 subscriptionTotal +
                 feeTotal -
@@ -156,7 +155,7 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
             }
             className='px-6 py-2 rounded-2xl bg-green-500 hover:bg-green-600 disabled:bg-gray-300 shadow-xl text-white'
           >
-            {stage === 'select_items' ? 'Continue' : 'Checkout'}
+            Continue
           </button>
         )}
       </section>

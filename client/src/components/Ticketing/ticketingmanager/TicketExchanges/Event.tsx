@@ -259,7 +259,7 @@ const Event: React.FC<Event> = (props) => {
                 name='department'
                 id={eventid}
                 component={OptionSelect}
-                disabled={values.typeID === -1 || values.price > 0}
+                disabled={values.typeID === -1 || values.price !== 0}
                 styles={{
                   select:
                     'w-full border border-zinc-300 p-3 rounded-lg disabled:text-slate-300',
