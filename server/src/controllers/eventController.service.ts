@@ -2,15 +2,15 @@
 import {
   getDate,
   InvalidInputError,
-  LoadedTicketRestriction,
   reservedTicketItemsFilter,
 } from './eventInstanceController.service';
-import TicketCartItem, {SubscriptionCartItem} from '../interfaces/CartItem';
+import TicketCartItem, {RefundCartItem, SubscriptionCartItem} from '../interfaces/CartItem';
 import {JsonObject} from 'swagger-ui-express';
 import {ExtendedPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
-import {freq, orders, Prisma, purchase_source, state} from '@prisma/client';
+import {discounts, type} from '@prisma/client';
+import {createOrder, Discount} from './orderController.service';
 import {Request, Response} from 'express';
-import {orderFulfillment, updateCanceledOrder} from './orderController.service';
+import {freq, Prisma, state} from '@prisma/client';
 import {PurchaseSource} from '../interfaces/PurchaseSource';
 
 const stripeKey = `${process.env.PRIVATE_STRIPE_KEY}`;
@@ -44,80 +44,30 @@ export const checkout = async (
   prisma: ExtendedPrismaClient,
 ): Promise<Response> => {
   const {
-    ticketCartItems = [],
-    subscriptionCartItems = [],
+    ticketCartItems,
+    subscriptionCartItems,
+    refundCartItems,
     formData,
-    donation = 0,
+    donation,
     discount,
   } = req.body;
-  let checkoutSessionId: string | undefined;
-  let order: orders | undefined;
   try {
-    if (!ticketCartItems.length && !donation && !subscriptionCartItems.length) {
-      return res.status(400).json({error: 'Cart is empty'});
-    }
-
-    const validatedContact = validateContact(formData);
-
-    const {ticketCartRows, orderTicketItems, ticketTotal, feeTotal, eventInstanceQueries} =
-      await getTicketItems(ticketCartItems, purchaseSource, prisma);
-
-    const {subscriptionCartRows, orderSubscriptionItems, subscriptionTotal} =
-      await getSubscriptionItems(prisma, subscriptionCartItems);
-
-    const {donationItem, donationCartRow, donationTotal} = getDonationItem(donation);
-
-    const {feeCartRow} = getFeeItem(feeTotal);
-
-    let cartRows = ticketCartRows.concat(subscriptionCartRows);
-    if (donationCartRow) {
-      cartRows = cartRows.concat([donationCartRow]);
-    }
-    if (feeCartRow) {
-      cartRows = cartRows.concat([feeCartRow]);
-    }
-
-    const {discountTotal, discountId} = await getDiscountAmount(
+    const contactToUpdate = formData && validateContact(formData);
+    const response = await createOrder({
       prisma,
-      discount,
-      ticketTotal,
+      refundCartItems,
       ticketCartItems,
-    );
-    const orderSubtotal = ticketTotal + subscriptionTotal + donationTotal;
-
-    if (orderSubtotal + feeTotal - discountTotal > 0.49) {
-      checkoutSessionId = await createStripeCheckoutSession(validatedContact, cartRows, {
-        ...discount,
-        amountOff: discountTotal,
-      });
-    } else if (orderSubtotal + feeTotal - discountTotal > 0) {
-      return res
-        .status(400)
-        .json({error: 'Cart Total must either be $0.00 USD or greater than $0.49 USD'});
-    }
-
-    order = await orderFulfillment(prisma, {
-      orderStatus: checkoutSessionId ? state.in_progress : state.completed,
-      orderSource: purchase_source[purchaseSource as keyof typeof purchase_source],
-      checkoutSession: checkoutSessionId,
-      discountId,
-      orderSubtotal,
-      discountTotal,
-      feeTotal,
-      orderTicketItems,
-      donationItem,
-      orderSubscriptionItems,
-      eventInstanceQueries,
-      ...(!checkoutSessionId && (await updateContact(prisma, validatedContact))),
+      subscriptionCartItems,
+      donation,
+      discount,
+      orderSource: purchaseSource,
+      contactToUpdate,
     });
-
-    return res.json({id: checkoutSessionId ?? 'comp'});
+    return res.json(response);
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order);
-    if (checkoutSessionId) await expireCheckoutSession(checkoutSessionId);
     if (error instanceof InvalidInputError) {
-      return res.status(error.code).json(error.message);
+      return res.status(error.code).json({error: error.message});
     }
     if (
       error instanceof Prisma.PrismaClientKnownRequestError ||
@@ -129,12 +79,32 @@ export const checkout = async (
   }
 };
 
-export const createStripeCheckoutSession = async (
-  contact: ContactInput,
+
+interface CreateStripeCheckoutSessionArguments {
   lineItems: LineItem[],
   discount: any,
-) => {
+  refundCredit?: number,
+  contactEmail?: string | null,
+  metadata?: any,
+}
+
+export const createStripeCheckoutSession = async ({
+  lineItems,
+  discount,
+  refundCredit,
+  contactEmail,
+  metadata,
+}: CreateStripeCheckoutSessionArguments) => {
   const expire = Math.round((new Date().getTime() + 1799990) / 1000);
+  const discounts = [];
+
+  if (discount.code != '' && discount.amountOff) {
+    discounts.push({coupon: (await createStripeCoupon(discount)).id});
+  }
+  if (refundCredit && refundCredit > 0) {
+    discounts.push({coupon: (await createStripeCoupon({code: 'Refund Credit', amountOff: refundCredit})).id});
+  }
+
   const checkoutObject: JsonObject = {
     payment_method_types: ['card'],
     expires_at: expire,
@@ -143,17 +113,20 @@ export const createStripeCheckoutSession = async (
     success_url: `${process.env.FRONTEND_URL}/success`,
     cancel_url: `${process.env.FRONTEND_URL}`,
     customer_creation: 'always',
-    customer_email: contact.email,
-    metadata: {
-      sessionType: '__ticketing',
-      contact: JSON.stringify(contact),
-    },
-    ...(discount.code != '' && discount.amountOff && {discounts: [{coupon: (await createStripeCoupon(discount)).id}]}),
+    customer_email: contactEmail,
+    metadata,
+    discounts,
   };
 
   const session = await stripe.checkout.sessions.create(checkoutObject);
   return session.id;
 };
+
+export const getRefundIntent = async (paymentIntent: string, amount: number) =>
+  stripe.refunds.create({
+    payment_intent: paymentIntent,
+    amount: Math.floor(amount * 100),
+  });
 
 export const expireCheckoutSession = async (
   id: string,
@@ -161,7 +134,7 @@ export const expireCheckoutSession = async (
 
 export const createStripeCoupon = async (discount: any) => {
   return stripe.coupons.create({
-    ['amount_off']: discount.amountOff*100,
+    ['amount_off']: Math.floor(discount.amountOff*100),
     duration: 'once',
     name: discount.code,
     currency: 'usd',
@@ -181,8 +154,13 @@ export const getDonationItem = (donationCartItem: number) => {
 
   return {
     donationItem: {
-      amount: donationCartItem,
-      frequency: freq.one_time,
+      type: type.donation,
+      price: donationCartItem,
+      donation: {
+        create: {
+          frequency: freq.one_time,
+        },
+      },
     },
     donationCartRow: getCartRow('Donation', 'A generous donation', donationCartItem*100, 1),
     donationTotal: donationCartItem,
@@ -198,7 +176,17 @@ interface SubscriptionItemsReturn {
 
 export const getSubscriptionItems = async (
   prisma: ExtendedPrismaClient,
-  subscriptionCartItems: SubscriptionCartItem[]) => {
+  subscriptionCartItems: SubscriptionCartItem[],
+  admin = false,
+) => {
+  const toReturn: SubscriptionItemsReturn= {
+    subscriptionCartRows: [],
+    orderSubscriptionItems: [],
+    subscriptionTotal: 0,
+  };
+
+  if (!subscriptionCartItems.length) return toReturn;
+
   const seasonSubscriptionTypes = await prisma.seasonsubscriptiontypes.findMany({
     where: {
       seasonid_fk: {in: subscriptionCartItems.map((item) => item.seasonid_fk)},
@@ -209,7 +197,9 @@ export const getSubscriptionItems = async (
       subscriptiontype: true,
       subscriptions: {
         where: {
-          refund: null,
+          orderitem: {
+            refund: null,
+          },
         },
       },
     },
@@ -222,12 +212,12 @@ export const getSubscriptionItems = async (
     }]));
 
   return subscriptionCartItems.reduce<SubscriptionItemsReturn>((acc, item) => {
-    const type = seasonSubscriptionTypeMap.get(`${item.seasonid_fk}-${item.subscriptiontypeid_fk}`);
-    if (!type) {
+    const subType = seasonSubscriptionTypeMap.get(`${item.seasonid_fk}-${item.subscriptiontypeid_fk}`);
+    if (!subType) {
       throw new InvalidInputError(422, `${item.name} (${item.desc}) does not exist`);
-    } else if (+item.price !== +type.price) {
-      throw new InvalidInputError(422, `${item.name} (${item.desc}) price ($${item.price}) is invalid`);
-    } else if ((type.available-=item.qty) < 0) {
+    } else if ((!admin && +subType.price !== item.price) || item.price < 0) {
+      throw new InvalidInputError(422, `${item.name} (${item.desc}) price ${item.price} is invalid`);
+    } else if ((subType.available-=item.qty) < 0) {
       throw new InvalidInputError(422, `${item.name} (${item.desc}) quantity exceeds available`);
     }
     acc.subscriptionCartRows = acc.subscriptionCartRows.concat(getCartRow(
@@ -237,13 +227,19 @@ export const getSubscriptionItems = async (
       item.qty,
     ));
     acc.orderSubscriptionItems = acc.orderSubscriptionItems.concat(Array(item.qty).fill({
-      subscriptiontypeid_fk: type.subscriptiontypeid_fk,
-      seasonid_fk: type.seasonid_fk,
       price: item.price,
+      department: item.department || undefined,
+      type: type.subscription,
+      subscription: {
+        create: {
+          subscriptiontypeid_fk: subType.subscriptiontypeid_fk,
+          seasonid_fk: subType.seasonid_fk,
+        },
+      },
     }));
-    acc.subscriptionTotal += +type.price * +item.qty;
+    acc.subscriptionTotal += item.price * item.qty;
     return acc;
-  }, {subscriptionCartRows: [], orderSubscriptionItems: [], subscriptionTotal: 0});
+  }, toReturn);
 };
 
 export const getFeeItem = (feeTotal: number) => {
@@ -258,14 +254,6 @@ export const getFeeItem = (feeTotal: number) => {
     feeCartRow: feeCartRow,
   };
 };
-
-interface TicketItemsReturn {
-  orderTicketItems: any[];
-  ticketCartRows: LineItem[];
-  ticketTotal: number;
-  feeTotal: number;
-  eventInstanceQueries: any[];
-}
 
 export const createStripePaymentIntent = async (
   orderTotal: number,
@@ -293,25 +281,28 @@ export const requestStripeReaderPayment = async (
   {payment_intent: paymentIntentID},
 );
 
-export const testPayReader = async (
-  readerID: string,
-) => {
-  const pay = await stripe.testHelpers.terminal.readers.presentPaymentMethod(readerID);
-  return pay;
-};
+interface TicketItemsReturn {
+  orderTicketItems: any[];
+  ticketCartRows: LineItem[];
+  ticketTotal: number;
+  feeTotal: number;
+  eventInstanceSet: Set<number>;
+}
 
 export const getTicketItems = async (
   cartItems: TicketCartItem[],
-  purchaseSource: PurchaseSource,
+  admin = false,
   prisma: ExtendedPrismaClient,
 ): Promise<TicketItemsReturn> => {
   const toReturn: TicketItemsReturn = {
     orderTicketItems: [],
     ticketCartRows: [],
-    eventInstanceQueries: [],
     ticketTotal: 0,
     feeTotal: 0,
+    eventInstanceSet: new Set<number>(),
   };
+
+  if (!cartItems.length) return toReturn;
 
   const eventInstances = await prisma.eventinstances.findMany({
     where: {
@@ -356,7 +347,7 @@ export const getTicketItems = async (
       );
     }
 
-    if (purchaseSource === PurchaseSource.online_ticketing) {
+    if (!admin) {
       const now = new Date().toISOString();
       const eventInstanceDateTime = getDate(eventInstance.eventtime.toISOString(), eventInstance.eventdate);
 
@@ -375,17 +366,39 @@ export const getTicketItems = async (
         422,
         `Ticket Price ${item.payWhatCan? item.payWhatPrice: item.price} for showing ${item.product_id} of ${item.name} is invalid`,
       );
+    } else if (!admin && !item.payWhatCan && item.price !== +ticketRestriction.price) {
+      throw new InvalidInputError(
+        422,
+        `Ticket Price ${item.price} for showing ${item.product_id} of ${item.name} is invalid`,
+      );
+    } else if (!admin && item.fee !== +ticketRestriction.fee) {
+      throw new InvalidInputError(
+        422,
+        `Ticket fee ${item.fee} for showing ${item.product_id} of ${item.name} is invalid`,
+      );
+    } else if ((ticketRestriction.availabletickets-=item.qty) < 0 || (eventInstance.availableseats-=item.qty) < 0) {
+      throw new InvalidInputError(422, 'Requested tickets no longer available');
     }
-    toReturn.orderTicketItems.push(
-      ...getTickets(
-        ticketRestriction,
-        eventInstance,
-        item.qty,
-        ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) ? Number(ticketRestriction.fee) : 0,
-        item.payWhatCan? (item.payWhatPrice ?? 0)/item.qty : item.price,
-        item.department ? item.department : undefined,
-      ),
-    );
+
+    const price = item.payWhatCan && item.payWhatPrice ? item.payWhatPrice/item.qty : item.price;
+    const discountPerItem = item.discount? Math.ceil(item.discount/item.qty) : 0;
+    const lastItemDiscount = item.discount? item.discount - discountPerItem * (item.qty - 1) : 0;
+
+    const orderTicketItems = Array(item.qty).fill(null).map((_, index) => ({
+      price,
+      type: type.ticket,
+      fee: price > 0 && item.fee? +item.fee : 0,
+      discount: index === item.qty - 1? lastItemDiscount/100: discountPerItem/100,
+      department: item.department || undefined,
+      ticketitem: {
+        create: {
+          ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
+        },
+      },
+    }));
+
+    toReturn.orderTicketItems.push(...orderTicketItems);
+
     toReturn.ticketCartRows.push(
       getCartRow(
         eventInstance.event.eventname,
@@ -395,23 +408,16 @@ export const getTicketItems = async (
       ));
 
     toReturn.ticketTotal += item.payWhatCan && item.payWhatPrice? item.payWhatPrice: item.price * item.qty;
-    if ((item.payWhatCan && item.payWhatPrice ? item.payWhatPrice : item.price) > 0) {
+    if (price > 0 && item.fee) {
       // Only add a fee if the item's price is not 0
-      toReturn.feeTotal += Number(ticketRestriction.fee) * item.qty;
+      toReturn.feeTotal += Number(item.fee) * item.qty;
     }
   }
 
-  eventInstanceMap.forEach(({eventinstanceid, availableseats}) =>
-    toReturn.eventInstanceQueries.push(getUpdateAvailableSeatsQuery(prisma, eventinstanceid, availableseats)));
+  toReturn.eventInstanceSet = new Set<number>(eventInstanceMap.keys());
 
   return toReturn;
 };
-
-const getUpdateAvailableSeatsQuery =
-    (prisma: ExtendedPrismaClient, instanceId: number, availablSeats: number) => prisma.eventinstances.update({
-      where: {eventinstanceid: instanceId},
-      data: {availableseats: availablSeats},
-    });
 
 export const getCartRow = (name: string, description: string, unitAmount: number, quantity: number): LineItem => ({
   price_data: {
@@ -425,47 +431,198 @@ export const getCartRow = (name: string, description: string, unitAmount: number
   quantity,
 });
 
-const getTickets = (
-  ticketRestriction: LoadedTicketRestriction,
-  eventInstance: any,
-  quantity: number,
-  fee: number,
-  price: number,
-  department?: string,
-) => {
-  if ((ticketRestriction.availabletickets-=quantity) < 0 || (eventInstance.availableseats-=quantity) < 0) {
-    throw new InvalidInputError(422, 'Requested tickets no longer available');
+export const getDiscount = async (
+  prisma: ExtendedPrismaClient,
+  discount: Discount | undefined,
+  ticketItems: TicketCartItem[]) => {
+  if (!discount || discount.code === '') {
+    return {
+      discountTotal: 0,
+      discountId: undefined,
+      discountMap: undefined,
+    };
   }
-
-  return Array(quantity)
-    .fill({
-      price: price,
-      fee: fee,
-      department: department,
-      ticketitem: {
-        create: {
-          ticketrestrictionid_fk: ticketRestriction.ticketrestrictionsid,
-        },
-      },
-    });
+  const validDiscount = await validateDiscount(discount.code, ticketItems, prisma);
+  return getDiscountAmount(validDiscount, ticketItems);
 };
 
-export const getDiscountAmount = async (prisma: ExtendedPrismaClient, discount: any, orderTotal: number, ticketItems: TicketCartItem[]) => {
-  if (!discount || discount.code === '') {
-    return {discountTotal: 0};
-  }
+const getDiscountAmount = (
+  discount: Omit<discounts, 'amount'> & {amount: number | null},
+  ticketItems: TicketCartItem[],
+) => {
+  const orderSubTotal = Math.floor(ticketItems.reduce((acc, item) => item.price*item.qty + acc, 0)*100);
+  const amount = discount.amount? Math.min(Math.floor(discount.amount * 100), orderSubTotal): 0;
+  const percent = discount.percent? Math.floor(discount.percent/100 * orderSubTotal): 0;
+  const discountTotal = discount.amount && discount.percent ?
+    Math.min(amount, percent):
+    discount.amount ?
+      amount :
+      percent;
+  let discountRemaining = discountTotal;
 
-  const validDiscount = await validateDiscount(discount.code, ticketItems, prisma);
+  ticketItems.forEach((item) => {
+    const price = item.payWhatPrice && item.payWhatCan? item.payWhatPrice * 100: item.price * item.qty * 100;
+    const discount = Math.min(Math.ceil(price/orderSubTotal * discountTotal), discountRemaining);
+    item.discount = discount;
+    discountRemaining-=discount;
+  });
 
-  if (validDiscount.amount && validDiscount.percent) {
-    return {discountTotal: Math.min((+validDiscount.percent / 100) * orderTotal, validDiscount.amount), discountId: validDiscount.discountid};
-  } else if (validDiscount.amount) {
-    return {discountTotal: Math.min(validDiscount.amount, orderTotal), discountId: validDiscount.discountid};
-  } else if (validDiscount.percent) {
-    return {discountTotal: orderTotal * (+validDiscount.percent)/100, discountId: validDiscount.discountid};
-  }
+  return {discountTotal: discountTotal/100, discountId: discount.discountid};
+};
 
-  throw new Error('Invalid discount');
+export const getRefundItems = async (
+  prisma: ExtendedPrismaClient,
+  refundCartItems: RefundCartItem[]) => {
+  const eventInstanceSet = new Set<number>();
+  const subscriptions: number[] = [];
+  const paymentIntentMap = new Map<string, number>();
+  let refundTotal = 0;
+
+  if (!refundCartItems.length) return {};
+
+  const orderItems = await prisma.orderitems.findMany({
+    where: {
+      id: {in: refundCartItems.map((item) => item.orderItemId)},
+      order: {
+        order_status: state.completed,
+        orderitems: {
+          none: {
+            refund: {
+              order: {
+                order_status: state.in_progress,
+              },
+            },
+          },
+        },
+      },
+      refund: null,
+    },
+    include: {
+      ticketitem: {
+        include: {
+          ticketrestriction: true,
+        },
+      },
+      subscription: true,
+    },
+  });
+
+  const orders = await prisma.orders.findMany({
+    where: {
+      orderid: {in: orderItems.map((item) => item.orderid_fk)},
+    },
+    include: {
+      payment_intents: {
+        include: {
+          payment_intent: true,
+          refunds: true,
+        },
+      },
+    },
+  });
+
+  const orderItemMap = new Map(orderItems.map((item) => [item.id, {
+    ...item,
+    price: Number(item.price),
+    discount: Number(item.discount),
+    fee: Number(item.fee),
+  }]));
+  const orderMap = new Map(orders.map((order) => [
+    order.orderid,
+    {
+      ...order,
+      piIndex: 0,
+      payment_intents: order.payment_intents.reduce((acc, intent) => {
+        const amountAvailable = Number(intent.amount) -
+          intent.refunds.reduce((acc, refund) => acc + Number(refund.amount), 0);
+        if (amountAvailable) {
+          acc.push({
+            ...intent,
+            amount: Number(intent.amount),
+            amountAvailable,
+          });
+        }
+        return acc;
+      }, Array<any>()),
+    }]));
+
+  const orderRefundItems = refundCartItems.map((item) => {
+    const orderItem = orderItemMap.get(item.orderItemId);
+    const order = orderItem && orderMap.get(orderItem.orderid_fk);
+    if (!orderItem) {
+      throw new InvalidInputError(422, `Order Item (${item.orderItemId}) is not available for refund`);
+    } else if (!order) {
+      throw new InvalidInputError(422, 'Order does not exist');
+    }
+
+    const refundItemAmount = orderItem.price + orderItem.fee - orderItem.discount;
+    let amountRequired = refundItemAmount;
+
+
+    while (amountRequired > 0 && order.piIndex < order.payment_intents.length) {
+      const currentPI = order.payment_intents[order.piIndex];
+      const currentAmount = paymentIntentMap.get(currentPI.payment_intent_fk) ?? 0;
+      const amountToApply = Math.min(currentPI.amountAvailable, amountRequired);
+      amountRequired-=amountToApply;
+      currentPI.amountAvailable-=amountToApply;
+      currentPI.amount-=amountToApply;
+      if (currentPI.amountAvailable === 0) ++order.piIndex;
+      paymentIntentMap.set(currentPI.payment_intent_fk, currentAmount + amountToApply);
+    }
+
+    if (amountRequired !== 0) {
+      throw new InvalidInputError(422, 'Amount required greater than available');
+    }
+
+    refundTotal+=refundItemAmount;
+
+    if (orderItem.subscription) {
+      subscriptions.push(orderItem.subscription.id);
+    } else if (orderItem.ticketitem) {
+      eventInstanceSet.add(orderItem.ticketitem.ticketrestriction.eventinstanceid_fk);
+    }
+
+    return {
+      orderitemid_fk: orderItem.id,
+      amount: refundItemAmount,
+    };
+  });
+
+  const orderPaymentIntents= [...paymentIntentMap.entries()].map(([paymentIntent, amount]) => ({
+    payment_intent_fk: paymentIntent,
+    amount: amount,
+  }));
+
+  const queries = [...orderMap.values()].reduce(
+    (acc, order) => {
+      order.payment_intents.forEach((intent) => {
+        acc.push({
+          table: 'order_payment_intents',
+          func: 'update',
+          query: {
+            where: {
+              orderid_fk_payment_intent_fk: {
+                payment_intent_fk: intent.payment_intent_fk,
+                orderid_fk: intent.orderid_fk,
+              },
+            },
+            data: {
+              amount: intent.amount,
+            },
+          }});
+      });
+      return acc;
+    }, Array<any>());
+
+  return {
+    refundTotal,
+    orderRefundItems,
+    orderPaymentIntents,
+    eventInstanceSet,
+    paymentIntentMap,
+    queries,
+    subscriptions,
+  };
 };
 
 export const updateContact = async (
@@ -568,7 +725,8 @@ export const validateContact = (formData: ContactInput): ContactInput => {
   };
 };
 
-export const validateDiscount = async (discountCode: string, cartItems: TicketCartItem[], prisma: ExtendedPrismaClient) => {
+export const validateDiscount = async (discountCode: string, cartItems: TicketCartItem[], prisma: ExtendedPrismaClient):
+  Promise<Omit<discounts, 'amount'> & {amount: number | null}> => {
   const eventIds = new Set<number>();
   cartItems.forEach((item) => eventIds.add(item.eventId));
   const numEventsInCart = eventIds.size;

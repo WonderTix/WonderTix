@@ -309,12 +309,15 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         orders: {
           where: {
             order_status: state.completed,
+            orderitems: {
+              some: {},
+            },
           },
           orderBy: {
             orderdatetime: 'desc',
           },
           include: {
-            orderticketitems: {
+            orderitems: {
               include: {
                 refund: true,
                 ticketitem: {
@@ -335,27 +338,17 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
                     },
                   },
                 },
-              },
-            },
-            subscriptions: {
-              include: {
-                refund: true,
-                seasonsubscriptiontype: {
+                subscription: {
                   include: {
-                    subscriptiontype: true,
-                    season: true,
+                    seasonsubscriptiontype: {
+                      include: {
+                        subscriptiontype: true,
+                        season: true,
+                      },
+                    },
                   },
                 },
-                subscriptionticketitems: {
-                  include: {
-                    ticketitem: true,
-                  },
-                },
-              },
-            },
-            donation: {
-              include: {
-                refund: true,
+                donation: true,
               },
             },
           },
@@ -371,68 +364,66 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
     const {orders, ...remainderOfContact} = contact;
     const flattenedOrders : any[] = [];
     contact.orders.forEach((order) => {
+      let flattenedDonation;
       const orderItemsMap = new Map<string, any>();
       const
-        ticketItemsRefunded = order
-          .orderticketitems
-          .reduce<boolean>((acc, ticket) => {
-            if (!ticket.ticketitem) return acc;
-            const key = `${ticket.price}T${ticket.ticketitem.ticketrestriction.eventinstanceid_fk}T${ticket.ticketitem.ticketrestriction.tickettypeid_fk}T${ticket.department}`;
-            const item = orderItemsMap.get(key);
-            if (item) {
-              item.quantity += 1;
-            } else {
-              orderItemsMap.set(key,
-                {
-                  price: ticket.price,
-                  fee: ticket.fee,
-                  refunded: ticket.refund !== null,
-                  redeemed: ticket.ticketitem.redeemed,
-                  donated: ticket.ticketitem.donated,
-                  description: ticket.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
-                  department: ticket.department,
-                  eventdate: ticket.ticketitem.ticketrestriction.eventinstance.eventdate,
-                  eventtime: ticket.ticketitem.ticketrestriction.eventinstance.eventtime,
-                  eventname: ticket.ticketitem.ticketrestriction.eventinstance.event.eventname,
-                  detail: ticket.ticketitem.ticketrestriction.eventinstance.detail,
-                  seasonname: ticket.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
-                  tickettype: ticket.ticketitem.ticketrestriction.tickettype.description,
+        completeRefund = order
+          .orderitems
+          .reduce<boolean>((acc, item) => {
+            if (item.ticketitem) {
+              const key = `${item.price}T${item.ticketitem.ticketrestriction.eventinstanceid_fk}T${item.ticketitem.ticketrestriction.tickettypeid_fk}T${item.department}`;
+              const current = orderItemsMap.get(key);
+              if (current) {
+                current.quantity += 1;
+                current.refunded += item.refund? 1: 0;
+              } else {
+                orderItemsMap.set(key,
+                  {
+                    price: item.price,
+                    fee: item.fee,
+                    refunded: item.refund? 1: 0,
+                    redeemed: item.ticketitem.redeemed,
+                    donated: item.ticketitem.donated,
+                    description: item.ticketitem.ticketrestriction.eventinstance.event.eventdescription,
+                    department: item.department,
+                    eventdate: item.ticketitem.ticketrestriction.eventinstance.eventdate,
+                    eventtime: item.ticketitem.ticketrestriction.eventinstance.eventtime,
+                    eventname: item.ticketitem.ticketrestriction.eventinstance.event.eventname,
+                    detail: item.ticketitem.ticketrestriction.eventinstance.detail,
+                    seasonname: item.ticketitem.ticketrestriction.eventinstance.event.seasons?.name,
+                    tickettype: item.ticketitem.ticketrestriction.tickettype.description,
+                    quantity: 1,
+                  });
+              }
+            } else if (item.subscription) {
+              const key = `${item.price}S${item.subscription.subscriptiontypeid_fk}S${item.subscription.seasonid_fk}S${item.department}`;
+              const current = orderItemsMap.get(key);
+              if (current) {
+                current.quantity += 1;
+                current.refunded += item.refund? 1: 0;
+              } else {
+                orderItemsMap.set(key, {
+                  id: item.id,
+                  price: item.price,
+                  refunded: item.refund? 1: 0,
+                  subscriptionType: item.subscription.seasonsubscriptiontype.subscriptiontype.name,
+                  seasonName: item.subscription.seasonsubscriptiontype.season.name,
+                  ticketlimit: item.subscription.seasonsubscriptiontype.ticketlimit,
                   quantity: 1,
                 });
+              }
+            } else if (item.donation) {
+              flattenedDonation = {
+                donationid: item.donation.donationid,
+                anonymous: item.donation.anonymous,
+                amount: item.price,
+                frequency: item.donation.frequency,
+                comments: item.donation.comments,
+                refunded: !!item.refund,
+              };
             }
-            return acc && ticket.refund !== null;
+            return acc && item.refund !== null;
           }, true);
-
-      const subscriptionItemsRefunded = order.subscriptions.reduce<boolean>(
-        (acc, sub) => {
-          const key = `${sub.price}S${sub.subscriptiontypeid_fk}S${sub.seasonid_fk}`;
-          const item = orderItemsMap.get(key);
-          if (item) {
-            item.quantity += 1;
-          } else {
-            orderItemsMap.set(key, {
-              id: sub.id,
-              price: sub.price,
-              refunded: sub.refund !== null,
-              subscriptionType: sub.seasonsubscriptiontype.subscriptiontype.name,
-              seasonName: sub.seasonsubscriptiontype.season.name,
-              ticketlimit: sub.seasonsubscriptiontype.ticketlimit,
-              quantity: 1,
-            });
-          }
-          return acc && sub.refund !== null;
-        },
-        true,
-      );
-
-      const flattenedDonation = {
-        donationid: order.donation?.donationid,
-        anonymous: order.donation?.anonymous,
-        amount: order.donation?.amount,
-        frequency: order.donation?.frequency,
-        comments: order.donation?.comments,
-        refunded: order.donation?.refund !== null,
-      };
 
       flattenedOrders.push({
         orderid: order.orderid,
@@ -441,9 +432,9 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
         ordertotal: Number(order.ordersubtotal) + Number(order.feetotal) - Number(order.discounttotal),
         feetotal: order.feetotal,
         discounttotal: order.discounttotal,
-        refunded: ticketItemsRefunded && subscriptionItemsRefunded,
+        refunded: completeRefund,
         orderitems: [...orderItemsMap.values()],
-        donation: order.donation ? flattenedDonation : null,
+        donation: flattenedDonation,
       });
     });
 
@@ -452,20 +443,15 @@ contactController.get('/orders/:id', async (req: Request, res: Response) => {
       orders: flattenedOrders,
     };
 
-    res.status(200).json(toReturn);
-    return;
+    return res.status(200).json(toReturn);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-
-    res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
 

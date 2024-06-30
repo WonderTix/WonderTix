@@ -7,6 +7,7 @@ const ActivenessGroupToggle = ({
   defaultValue,
   handleFilterChange,
   showInactiveToggle = true,
+  className = 'mb-6',
 }) => {
   const [filter, setFilter] = useState(defaultValue);
 
@@ -24,7 +25,7 @@ const ActivenessGroupToggle = ({
   };
 
   return (
-    <div className='mb-6'>
+    <div className={className}>
       <ToggleButtonGroup
         color='standard'
         value={filter}
@@ -65,6 +66,7 @@ ActivenessGroupToggle.propTypes = {
   defaultValue: PropTypes.string.isRequired,
   handleFilterChange: PropTypes.func,
   showInactiveToggle: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default ActivenessGroupToggle;

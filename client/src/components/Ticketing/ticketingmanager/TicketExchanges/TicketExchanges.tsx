@@ -1,90 +1,58 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {useTicketExchangeContext} from './TicketExchangeProvider';
+import {FormButton} from '../Event/components/FormButton';
+import {TicketExchangeOrderForm} from './TicketExchangeOrderForm';
+import PopUpBackdrop from './PopUpBackdrop';
+import CustomerPopUp from './CustomerPopUp';
+import {TicketExchangeItems} from './TicketExchangeItems';
+import {CustomerDisplay} from './CustomerDisplay';
+import {LoadingIcon} from '../../Icons';
 
-const TicketExchanges = () => {
+export const TicketExchanges: React.FC = () => {
+  const {customer, stage, events, seasons, token} = useTicketExchangeContext();
+  const [customerPopUp, setCustomerPopUp] = useState(false);
+
+  if (!events || !seasons || !token) {
+    return (
+      <main className='fixed inset-0 md:left-[90px] h-screen w-full flex items-center justify-center'>
+        <LoadingIcon className='h-8 w-8 md:h-10 md:w-10 animate-spin text-slate-900' />
+      </main>
+    );
+  }
+
   return (
-    <div className='w-full h-screen overflow-x-hidden absolute '>
-      <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem] h-full'>
-        <h1 className='font-bold text-5xl bg-clip-text
-           text-transparent bg-gradient-to-r from-red-500 to-blue-600 mb-10 pb-4 h-fit'>Ticket Exchanges</h1>
-
-        <div className="flex flex-wrap justify-center h-fit gap-x-24">
-          <div className="w-80 bg-blue-400 drop-shadow-xl
-            text-center rounded-xl m-3 p-3">
-            <h2 className="text-xl font-bold text-white m-4">
-              Customer&apos;s Ticket
-            </h2>
-            <div className="flex flex-wrap w-64 mx-auto">
-              <div className="text-white text-l" id="select-event-id">
-                Order Number
-              </div>
-              <input className="w-full mt-1 mb-3 px-2 py-2 rounded" type="text"
-                id="order-number" name="order-number"
-                placeholder="enter order number"></input>
-              <div className="text-white text-l" id="select-event-id">
-                Select Event
-              </div>
-              <select className="w-full mt-1 mb-3 border border-gray-300
-                px-2 py-2 rounded">
-                <option value="">select event</option>
-              </select>
-              <div className="text-white text-l" id="select-date-id">
-                Select Date
-              </div>
-              <select className="w-full mt-1 mb-3 border border-gray-300
-                px-2 py-2 rounded">
-                <option value="">select date</option>
-              </select>
-              <div className="text-white text-l"
-                id="tickets-purchased-list-id">
-                List of Tickets Purchased
-              </div>
-              <div className="flex justify-center mt-1 mb-5 w-full">
-                <div className="w-full h-44 bg-white rounded-lg"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-80 bg-blue-400 drop-shadow-xl
-            text-center rounded-xl m-3 p-3">
-            <h2 className="text-white text-xl font-bold text-black m-4">
-              New Ticket
-            </h2>
-            <div className="flex flex-wrap w-64 mx-auto">
-              <div className="text-white text-l" id="select-event-id">
-                Select Event
-              </div>
-              <select className="w-full mt-1 mb-3 border border-gray-300
-                px-2 py-2 rounded">
-                <option value="">select event</option>
-              </select>
-              <div className="text-white text-l" id="select-date-id">
-                Select Date
-              </div>
-              <select className="w-full mt-1 mb-3 border border-gray-300
-                px-2 py-2 rounded">
-                <option value="">select date</option>
-              </select>
-              <div className="text-white text-l"
-                id="tickets-available-list-id">
-                Tickets Free to Switch
-              </div>
-              <div className="flex justify-center mt-1 mb-5 w-full">
-                <div className="w-full h-64 bg-white rounded-lg"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <button className="float-right bg-green-500
-              hover:bg-green-600 text-white mt-5 py-2 px-4 rounded">
-              Confirm Exchange
-          </button>
-        </div>
-
-      </div>
-    </div>
+    <main className='h-full w-full min-[1700px]:w-[90%] min-[2000px]:w-[70%] mx-auto'>
+      <header className='w-full flex flex-col gap-2 mb-4 tab:flex-row tab:items-center tab:justify-between tab:h-[100px] tab:mb-10'>
+        <h1 className='text-center tab:text-start p-1 font-bold text-5xl bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-600'>
+          Ticket Exchange
+        </h1>
+        {customer ? (
+          <CustomerDisplay />
+        ) : (
+          <FormButton
+            disabled={stage === 'checkout'}
+            testID='add-customer-to-order'
+            className='py-2 px-4 rounded-3xl bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white shadow-xl self-center'
+            onClick={() => setCustomerPopUp(true)}
+          >
+            Add Customer
+          </FormButton>
+        )}
+      </header>
+      {stage === 'select_items' ? (
+        <TicketExchangeItems />
+      ) : (
+        <TicketExchangeOrderForm />
+      )}
+      <PopUpBackdrop
+        showPopUp={customerPopUp}
+        setShow={() => setCustomerPopUp(false)}
+      >
+        {customerPopUp && (
+          <CustomerPopUp setShow={() => setCustomerPopUp(false)} />
+        )}
+      </PopUpBackdrop>
+    </main>
   );
 };
-
 export default TicketExchanges;

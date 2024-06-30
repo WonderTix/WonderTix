@@ -22,6 +22,7 @@ import PopUp from '../../Ticketing/PopUp';
 import {usePopUp} from '../../Ticketing/ticketingmanager/TicketTypes/SubscriptionTypeUtils';
 import format from 'date-fns/format';
 import SearchBox from './SearchBox';
+import {useSearchBox} from '../../Ticketing/ticketingmanager/TicketExchanges/TicketExchangeUtils';
 
 const ContactGrid = () => {
   const {token} = useFetchToken();
@@ -30,7 +31,7 @@ const ContactGrid = () => {
   const [contactPopUpIsOpen, setContactPopUpIsOpen] = useState(false);
   const [contactPopUpErrMsg, setContactPopUpErrMsg] = useState(null);
   const location = useLocation();
-  const [queries, setQueries] = useState<{parameter: string; value: string}[]>(
+  const {queries, updateQueries, addQuery} = useSearchBox(
     location.state?.length
       ? location.state
       : [
@@ -100,26 +101,6 @@ const ContactGrid = () => {
     }
   }, [token]);
 
-  const updateParameters = useCallback((index: number, newValue: string) => {
-    setQueries((prev) => {
-      if (newValue) {
-        return prev.map((value, cur) =>
-          index === cur ? {...value, parameter: newValue} : value,
-        );
-      }
-      prev.splice(index, 1);
-      return Array.from(prev);
-    });
-  }, []);
-
-  const updateQueries = useCallback(
-    (index: number, value:string) =>
-    setQueries((prev) =>
-      prev.map((query, cur) =>
-        index === cur ? {...query, value} : query,
-      ),
-    ), []);
-
   return (
     <main className='w-full h-screen overflow-x-hidden absolute bg-gray-200'>
       <div className='md:ml-[18rem] md:mt-40 md:mb-[11rem] tab:mx-[5rem] mx-[1.5rem] my-[9rem]'>
@@ -132,20 +113,11 @@ const ContactGrid = () => {
               setLoading(true);
               setReload((prev) => !prev);
             }}
+            header='Search Contacts'
             queries={queries}
             defaultParameters={defaultParameters}
-            updateQueries={(
-              indexToRemove: number,
-              type: string,
-              value: string,
-            ) =>
-              type === 'parameter'
-                ? updateParameters(indexToRemove, value)
-                : updateQueries(indexToRemove, value)
-            }
-            addQuery={(parameter: string) =>
-              setQueries((prev) => [{parameter, value: ''}, ...prev])
-            }
+            updateQueries={updateQueries}
+            addQuery={addQuery}
           />
         </header>
         <div className='flex bg-white p-4 rounded-xl'>

@@ -515,7 +515,7 @@ eventInstanceController.get('/doorlist/:id', async (req: Request, res: Response)
             ticketitems: {
               ...soldTicketItemsFilter,
               include: {
-                orderticketitem: {
+                orderitem: {
                   include: {
                     order: {
                       include: {
@@ -528,9 +528,13 @@ eventInstanceController.get('/doorlist/:id', async (req: Request, res: Response)
                   include: {
                     subscription: {
                       include: {
-                        order: {
+                        orderitem: {
                           include: {
-                            contacts: true,
+                            order: {
+                              include: {
+                                contacts: true,
+                              },
+                            },
                           },
                         },
                       },
@@ -582,8 +586,8 @@ eventInstanceController.get('/doorlist/:id', async (req: Request, res: Response)
         forEachTicket(
           res.tickettype.description,
           ticket.redeemed,
-          ticket.orderticketitem?.order.contacts ??
-            ticket.subscriptionticketitem?.subscription.order.contacts,
+          ticket.orderitem?.order.contacts ??
+          ticket.subscriptionticketitem?.subscription.orderitem.order.contacts,
         ),
       );
     });
@@ -602,14 +606,12 @@ eventInstanceController.get('/doorlist/:id', async (req: Request, res: Response)
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).send({error: error.message});
-      return;
+      return res.status(400).send({error: error.message});
     }
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).send({error: error.message});
-      return;
+      return res.status(400).send({error: error.message});
     }
-    res.status(500).send({error: 'Internal Server Error'});
+    return res.status(500).send({error: 'Internal Server Error'});
   }
 });
 
@@ -778,7 +780,7 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
           include: {
             ticketitems: {
               include: {
-                orderticketitem: {
+                orderitem: {
                   include: {
                     refund: true,
                   },
@@ -812,10 +814,9 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
           availabletickets:
             res.ticketlimit -
             res.ticketitems.filter(
-              (ticket) => ticket.subscriptionticketitemid_fk || !ticket.orderticketitem?.refund,
+              (ticket) => ticket.subscriptionticketitemid_fk || (ticket.orderitem && !ticket.orderitem.refund),
             ).length,
-        })),
-      },
+        }))},
       requestEventInstance,
     );
 
@@ -823,18 +824,15 @@ eventInstanceController.put('/:id', async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).send({error: error.message});
-      return;
+      return res.status(400).send({error: error.message});
     }
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).send({error: error.message});
-      return;
+      return res.status(400).send({error: error.message});
     }
     if (error instanceof InvalidInputError) {
-      res.status(error.code).send({error: error.message});
-      return;
+      return res.status(error.code).send({error: error.message});
     }
-    res.status(500).send({error: 'Internal Server Error'});
+    return res.status(500).send({error: 'Internal Server Error'});
   }
 });
 

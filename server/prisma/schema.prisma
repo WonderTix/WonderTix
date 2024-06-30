@@ -84,14 +84,15 @@ model discounts {
 /// donations can be one time or recurring, stored in the frequency field
 /// payment_intent and refund_intent are stripe payment intent ids
 model donations {
-  donationid Int          @id @default(autoincrement())
-  orderid_fk Int          @unique
-  anonymous  Boolean      @default(false)
-  amount     Decimal      @db.Money
-  frequency  freq
-  comments   String?      @db.VarChar(255)
-  order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
-  refund     refunditems?
+  donationid     Int        @id @default(autoincrement())
+  orderitemid_fk Int
+  orderitemtype  type
+  anonymous      Boolean    @default(false)
+  frequency      freq
+  comments       String?    @db.VarChar(255)
+  orderitem      orderitems @relation(fields: [orderitemid_fk, orderitemtype], references: [id, type], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([orderitemid_fk, orderitemtype])
 }
 
 /// an event instance is a specific showing of an event
@@ -155,14 +156,15 @@ model seasonsubscriptiontypes {
 
 model subscriptions {
   id                      Int                       @id @default(autoincrement())
-  orderid_fk              Int
+  orderitemid_fk          Int                       @unique
+  orderitemtype           type
   subscriptiontypeid_fk   Int
   seasonid_fk             Int
-  price                   Decimal                   @db.Money
-  order                   orders                    @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  orderitem               orderitems                @relation(fields: [orderitemid_fk, orderitemtype], references: [id, type], onDelete: Cascade, onUpdate: Cascade)
   seasonsubscriptiontype  seasonsubscriptiontypes   @relation(fields: [subscriptiontypeid_fk, seasonid_fk], references: [subscriptiontypeid_fk, seasonid_fk], onDelete: Restrict, onUpdate: Cascade)
-  refund                  refunditems?
   subscriptionticketitems subscriptionticketitems[]
+
+  @@unique([orderitemid_fk, orderitemtype])
 }
 
 model subscriptionticketitems {
@@ -172,72 +174,101 @@ model subscriptionticketitems {
   subscription      subscriptions @relation(fields: [subscriptionid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
-model orderticketitems {
-  id         Int          @id @default(autoincrement())
-  orderid_fk Int
-  price      Decimal      @db.Money
-  fee        Decimal      @db.Money
-  department String?      @db.VarChar(255)
-  order      orders       @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
-  ticketitem ticketitems?
-  refund     refunditems?
+model orderitems {
+  id           Int            @id @default(autoincrement())
+  type         type
+  orderid_fk   Int
+  price        Decimal        @db.Money
+  fee          Decimal        @default(0) @db.Money
+  discount     Decimal        @default(0) @db.Money
+  department   String?        @db.VarChar(255)
+  order        orders         @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  ticketitem   ticketitems?
+  subscription subscriptions?
+  donation     donations?
+  refund       refunditems?
+
+  @@unique([id, type])
 }
 
 /// supertable for sub ticket items tables (subscription, order)
 model ticketitems {
   id                          Int                      @id @default(autoincrement())
-  orderticketitemid_fk        Int?                     @unique
+  orderitemid_fk              Int?                     @unique
+  orderitemtype               type?
   subscriptionticketitemid_fk Int?                     @unique
   ticketrestrictionid_fk      Int
   donated                     Boolean                  @default(false)
   redeemed                    DateTime?                @db.Timestamp(3)
   ticketrestriction           ticketrestrictions       @relation(fields: [ticketrestrictionid_fk], references: [ticketrestrictionsid], onDelete: Restrict, onUpdate: Cascade)
-  orderticketitem             orderticketitems?        @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderitem                   orderitems?              @relation(fields: [orderitemid_fk, orderitemtype], references: [id, type], onDelete: Cascade, onUpdate: Cascade)
   subscriptionticketitem      subscriptionticketitems? @relation(fields: [subscriptionticketitemid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([orderitemid_fk, orderitemtype])
 }
 
 /// a customers order
 /// refund and payment intents are the uuids from stripe when a refund or payment is made
 model orders {
-  orderid           Int                @id @default(autoincrement())
-  orderdatetime     DateTime           @default(now()) @db.Timestamp(3)
-  contactid_fk      Int?
-  discountid_fk     Int?
-  payment_intent    String?            @unique @db.VarChar(255)
-  checkout_sessions String?            @unique @db.VarChar(255)
-  ordersubtotal     Decimal            @db.Money
-  discounttotal     Decimal            @default(0) @db.Money
-  feetotal          Decimal            @default(0) @db.Money
-  contacts          contacts?          @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
-  order_source      purchase_source?
-  order_status      state
-  discounts         discounts?         @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
-  donation          donations?
-  refunds           refunds[]
-  orderticketitems  orderticketitems[]
-  subscriptions     subscriptions[]
+  orderid         Int                     @id @default(autoincrement())
+  orderdatetime   DateTime                @default(now()) @db.Timestamp(3)
+  contactid_fk    Int?
+  discountid_fk   Int?
+  ordersubtotal   Decimal                 @db.Money
+  refundtotal     Decimal                 @db.Money
+  discounttotal   Decimal                 @default(0) @db.Money
+  feetotal        Decimal                 @default(0) @db.Money
+  order_source    purchase_source?
+  order_status    state
+  contacts        contacts?               @relation(fields: [contactid_fk], references: [contactid], onDelete: Restrict, onUpdate: Cascade, map: "orders_contactid_fkey")
+  discounts       discounts?              @relation(fields: [discountid_fk], references: [discountid], onDelete: Restrict, onUpdate: Cascade, map: "orders_discountid_fkey")
+  orderitems      orderitems[]
+  refunditems     refunditems[]
+  payment_intents order_payment_intents[]
+  refund_intents  refund_intents[]
 }
 
-model refunds {
-  id            Int           @id @default(autoincrement())
-  orderid_fk    Int
-  refund_intent String        @unique @db.VarChar(255)
-  refund_status state
-  order         orders        @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
-  refunditems   refunditems[]
+model refund_intents {
+  refund_intent     String  @id
+  orderid_fk        Int
+  payment_intent_fk String
+  status            state
+  amount            Decimal @db.Money
+
+  order                orders                @relation(fields: [orderid_fk], references: [orderid], onDelete: Restrict, onUpdate: Cascade)
+  payment_intent       payment_intents       @relation(fields: [payment_intent_fk], references: [payment_intent], onDelete: Restrict, onUpdate: Cascade)
+  order_payment_intent order_payment_intents @relation(fields: [orderid_fk, payment_intent_fk], references: [orderid_fk, payment_intent_fk], onDelete: Restrict, onUpdate: Cascade)
+}
+
+model payment_intents {
+  payment_intent    String  @id
+  checkout_sessions String? @unique
+  amount            Decimal @db.Money
+  status            state
+
+  orders  order_payment_intents[]
+  refunds refund_intents[]
+}
+
+model order_payment_intents {
+  payment_intent_fk String
+  orderid_fk        Int
+  amount            Decimal @db.Money
+
+  order          orders           @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
+  payment_intent payment_intents  @relation(fields: [payment_intent_fk], references: [payment_intent], onDelete: Cascade, onUpdate: Cascade)
+  refunds        refund_intents[]
+
+  @@id([orderid_fk, payment_intent_fk])
 }
 
 model refunditems {
-  id                   Int               @id @default(autoincrement())
-  refundid_fk          Int
-  orderticketitemid_fk Int?              @unique
-  subscriptionid_fk    Int?              @unique
-  donationid_fk        Int?              @unique
-  amount               Decimal           @db.Money
-  refund               refunds           @relation(fields: [refundid_fk], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  donation             donations?        @relation(fields: [donationid_fk], references: [donationid], onDelete: Restrict, onUpdate: Cascade)
-  orderticketitem      orderticketitems? @relation(fields: [orderticketitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  subscription         subscriptions?    @relation(fields: [subscriptionid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  id             Int        @id @default(autoincrement())
+  orderid_fk     Int
+  orderitemid_fk Int        @unique
+  amount         Decimal    @db.Money
+  orderitem      orderitems @relation(fields: [orderitemid_fk], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  order          orders     @relation(fields: [orderid_fk], references: [orderid], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// provides a way to store reports
@@ -351,11 +382,22 @@ model users {
   task_task_reportto_fkTousers task[]  @relation("task_reportto_fkTousers")
 }
 
+model temporarystore {
+  id   String @id
+  data Json
+}
+
 enum freq {
   one_time @map("one-time")
   weekly
   monthly
   yearly
+}
+
+enum type {
+  subscription
+  ticket
+  donation
 }
 
 enum state {
