@@ -26,6 +26,7 @@ import {ticketTypeController} from './controllers/ticketTypeController';
 import {taskNoteController} from './controllers/taskNoteController';
 import {discountController} from './controllers/discountController';
 import {donationController} from './controllers/donationController';
+import {donationOverviewController} from './controllers/donationOverviewController';
 import {eventInstanceController} from './controllers/eventInstanceController';
 import {eventController} from './controllers/eventController';
 import {orderController} from './controllers/orderController';
@@ -433,6 +434,20 @@ const openApiSpec = swaggerJsdoc({
             donationdate: {type: 'integer'},
           },
         },
+        DonationOverview: {
+          type: 'object',
+          properties: {
+            contactid_fk: {type: 'integer'},
+            isanonymous: {type: 'boolean'},
+            amount: {type: 'number'},
+            donorname: {type: 'string'},
+            frequency: {type: 'string'},
+            comments: {type: 'string'},
+            payment_intent: {type: 'string'},
+            refund_intent: {type: 'string'},
+            donationdate: {type: 'integer'},
+          },
+        },
         Event: {
           type: 'object',
           properties: {
@@ -655,6 +670,7 @@ const createServer = async () => {
   app.use('/api/2/contact', contactController);
   app.use('/api/2/discount', discountController);
   app.use('/api/2/donation', donationController);
+  app.use('/api/2/donation-overview', donationOverviewController);
   app.use('/api/2/events', eventController);
   app.use('/api/2/event-instance', eventInstanceController);
   app.use('/api/2/order', orderController);
