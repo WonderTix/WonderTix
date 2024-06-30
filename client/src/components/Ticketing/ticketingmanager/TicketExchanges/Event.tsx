@@ -219,8 +219,10 @@ const Event: React.FC<Event> = (props) => {
               disabled={values.typeID === -1}
               onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                 const price = +event.target.value;
-                if (price !== 0 && values.department) {
+                if (price !== 0) {
                   await setFieldValue('department', '');
+                } else {
+                  await setFieldValue('fee', 0);
                 }
                 await setFieldValue('price', price);
               }}
@@ -239,7 +241,7 @@ const Event: React.FC<Event> = (props) => {
               type='number'
               label='Fee'
               id={eventid}
-              disabled={values.typeID === -1}
+              disabled={values.typeID === -1 || values.price === 0}
               currency={true}
               className={{
                 controlClass: `col-span-12 tab:col-span-4 rounded-lg w-full`,

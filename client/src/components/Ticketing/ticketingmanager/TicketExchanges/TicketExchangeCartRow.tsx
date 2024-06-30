@@ -3,8 +3,8 @@ import {CartItem} from '../ticketingSlice';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
 import {TrashCanIcon} from '../../Icons';
 import {QuantityInputControl} from '../../mainpage/SubscriptionPurchasing/QuantityInputControl';
-import {formatAccounting} from './TicketExchangeUtils';
 import {FormButton} from '../Event/components/FormButton';
+import {formatUSD} from '../RefundOrders/RefundOrders';
 
 interface TicketExchangeCartRowProps extends CartItem {
   qtyAvailable: number;
@@ -21,7 +21,7 @@ export const TicketExchangeCartRow: React.FC<TicketExchangeCartRowProps> = (prop
       <p className='text-lg font-semibold'>{name}</p>
       <p className='italic'>{desc}</p>
       <div className='flex flex-row items-center justify-between pt-1'>
-        <p className='font-semibold'>{formatAccounting(price)}</p>
+        <p className='font-semibold'>{formatUSD(price)}</p>
         {!increment ? (
             <FormButton
               onClick={decrement}

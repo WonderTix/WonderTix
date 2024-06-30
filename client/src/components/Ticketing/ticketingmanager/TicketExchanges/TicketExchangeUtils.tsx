@@ -509,11 +509,3 @@ export const onlineCheckout = async (checkoutBody: any, token: string) => {
     throw result.error;
   }
 };
-
-const formatter = new Intl.NumberFormat('en-us', {
-  currency: 'USD',
-  style: 'currency',
-  currencySign: 'accounting',
-});
-
-export const formatAccounting = (number: number) => formatter.format(number);

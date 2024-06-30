@@ -17,7 +17,7 @@ export const CustomerDisplay = () => {
         <FormButton
           disabled={stage === 'checkout'}
           testID='remove-customer-from-order'
-          title='remove customer-from-order'
+          title='Remove customer from order'
           className='p-1 hover:bg-red-200 hover:text-red-800 disabled:bg-gray-300 rounded-full'
           onClick={() => setCustomer()}
         >

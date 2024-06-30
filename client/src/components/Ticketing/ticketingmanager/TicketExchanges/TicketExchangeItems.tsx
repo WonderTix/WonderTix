@@ -39,7 +39,7 @@ export const TicketExchangeItems: React.FC = () => {
             onChange={(_, newValue) => setCurrent(newValue)}
             variant='scrollable'
           >
-            <Tab label='ORDERS' value={1} disabled={!customer} />
+            <Tab label='CUSTOMER ORDERS' value={1} disabled={!customer} />
             <Tab label='TICKETS' value={2} />
             <Tab label='SUBSCRIPTIONS' value={3} />
           </Tabs>

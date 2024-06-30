@@ -1,9 +1,10 @@
 import React, {useMemo} from 'react';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
 import {isTicketCartItem} from '../ticketingSlice';
-import {formatAccounting, useDiscount} from './TicketExchangeUtils';
+import {useDiscount} from './TicketExchangeUtils';
 import {DiscountDisplay, DiscountInput} from './DiscountInput';
 import {TicketExchangeCartRow} from './TicketExchangeCartRow';
+import {formatUSD} from '../RefundOrders/RefundOrders';
 
 interface TicketExchangeCartProps {
  onClick?: () => void;
@@ -45,7 +46,7 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
   const refundTotal = useMemo(
     () =>
       refundItemArray.reduce(
-        (acc, item) => acc - item.price - (item.fee ?? 0),
+        (acc, item) => acc + item.price + (item.fee ?? 0),
         0,
       ),
     [refundItemArray],
@@ -67,6 +68,10 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
     [cartItemArray],
   );
 
+  const discountTotal = getDiscountTotal(
+    Math.max(ticketTotal - refundTotal, 0),
+  );
+
   return (
     <div
       className={`flex flex-col justify-between min-w-[80px] min-h-[500px] h-full max-h-full overflow-y-auto min-[1280px]:h-fit ${
@@ -80,6 +85,14 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
           Order Detail
         </h2>
         <div className='text-zinc-100 mt-10 w-full min-[1280px]:max-h-[500px] overflow-y-auto'>
+          {refundItemArray.length > 0 && (
+            <h3 className='text-xl text-zinc-100 w-full mb-1 font-semibold text-center flex flex-row justify-between'>
+              Items to Return
+              <span className='font-normal text-lg'>
+                Total: {formatUSD(refundTotal)}
+              </span>
+            </h3>
+          )}
           {refundItemArray.map((item, index) => (
             <TicketExchangeCartRow
               key={index}
@@ -88,9 +101,21 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
               decrement={() =>
                 setRefundItems((prev) => prev.delete(item.id) && new Map(prev))
               }
-              price={-item.price - (item.fee ?? 0)}
+              price={item.price + (item.fee ?? 0)}
             />
           ))}
+          {cartItemArray.length > 0 && (
+            <h3
+              className={`text-xl text-zinc-100 w-full mb-1 ${
+                refundItemArray.length && 'mt-2'
+              } font-semibold text-center flex flex-row justify-between`}
+            >
+              Items to Exchange
+              <span className='font-normal text-lg'>
+                Total: {formatUSD(ticketTotal + subscriptionTotal)}
+              </span>
+            </h3>
+          )}
           {cartItemArray.map((item, index) => (
             <TicketExchangeCartRow
               key={index}
@@ -123,7 +148,7 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
         />
         {discountClicked && (
           <DiscountDisplay
-            discountTotal={getDiscountTotal(ticketTotal)}
+            discountTotal={discountTotal}
             invalidDiscount={discountClicked && !appliedDiscount}
           />
         )}
@@ -132,17 +157,17 @@ export const TicketExchangeCart: React.FC<TicketExchangeCartProps> = (props) => 
             Fee
           </span>
           <span className='text-white text-lg font-bold'>
-            {formatAccounting(feeTotal)}
+            {formatUSD(feeTotal)}
           </span>
         </p>
         <p className='flex items-center gap-2 justify-between w-full'>
           <span className='text-zinc-100 text-sm'>Total</span>
           <span className='text-white text-lg font-bold'>
-            {formatAccounting(
+            {formatUSD(
               ticketTotal +
                 subscriptionTotal +
                 feeTotal -
-                getDiscountTotal(ticketTotal) +
+                discountTotal -
                 refundTotal,
             )}
           </span>

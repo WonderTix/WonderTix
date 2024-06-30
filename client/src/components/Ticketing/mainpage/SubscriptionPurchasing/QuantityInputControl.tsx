@@ -23,7 +23,7 @@ export const QuantityInputControl = (props: QuantityInputControl) => {
     <div className={styles.group}>
       <FormButton
         onClick={decrement}
-        title={disabled || field.value <= 0? undefined: 'remove one'}
+        title={disabled || field.value <= 0? undefined: 'Remove one'}
         disabled={field.value <= 0 || disabled}
         className={styles.button}
         testID='remove-one-item'
@@ -33,7 +33,7 @@ export const QuantityInputControl = (props: QuantityInputControl) => {
       <p className={`${styles.quantity} ${disabled && 'text-gray-400'}`}>{field.value}</p>
       <FormButton
         onClick={increment}
-        title={field.value >= quantityAvailable || disabled? undefined: 'add one'}
+        title={field.value >= quantityAvailable || disabled? undefined: 'Add One'}
         disabled={field.value >= quantityAvailable || disabled}
         className={styles.button}
         testID='remove-one-item'

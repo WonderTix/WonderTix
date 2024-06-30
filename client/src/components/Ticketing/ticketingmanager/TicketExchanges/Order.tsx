@@ -1,11 +1,12 @@
 import React, {useCallback, useMemo, useState} from 'react';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
 import {ChevronDown, ChevronUp, DecrementIcon, PlusIcon} from '../../Icons';
-import {formatAccounting, getNameAndDescription} from './TicketExchangeUtils';
+import {getNameAndDescription} from './TicketExchangeUtils';
 import {FormButton} from '../Event/components/FormButton';
 import format from 'date-fns/format';
 import {ProviderOrder} from './ticketExchangeTypes';
 import {OrderItem} from './OrderItem';
+import {formatUSD} from '../RefundOrders/RefundOrders';
 
 const Order: React.FC<ProviderOrder> = (props) => {
   const {
@@ -56,13 +57,13 @@ const Order: React.FC<ProviderOrder> = (props) => {
               {format(new Date(orderdatetime), 'M/dd/yy, h:mm a')}
             </span>
           </span>
-          {`Refundable Total: ${formatAccounting(orderitems.reduce((acc, item) => Number(item.price) + Number(item.fee) - Number(item.discount) + acc, 0))}`}
+          {`Refundable Total: ${formatUSD(orderitems.reduce((acc, item) => Number(item.price) + Number(item.fee) - Number(item.discount) + acc, 0))}`}
         </h3>
         <div className='flex-grow flex items-center justify-center sm:justify-end gap-1'>
           <FormButton
             onClick={updateAllItems}
             disabled={false}
-            title={allItemsInCart?'remove order' :'refund order'}
+            title={allItemsInCart?'Remove order' :'Refund order'}
             className={`p-2 ${
               allItemsInCart
                 ? 'bg-red-500 hover:bg-red-600'

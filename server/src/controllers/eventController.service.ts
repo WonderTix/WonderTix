@@ -102,7 +102,7 @@ export const createStripeCheckoutSession = async ({
     discounts.push({coupon: (await createStripeCoupon(discount)).id});
   }
   if (refundCredit && refundCredit > 0) {
-    discounts.push({coupon: (await createStripeCoupon({code: 'refund_credit', amountOff: refundCredit})).id});
+    discounts.push({coupon: (await createStripeCoupon({code: 'Refund Credit', amountOff: refundCredit})).id});
   }
 
   const checkoutObject: JsonObject = {

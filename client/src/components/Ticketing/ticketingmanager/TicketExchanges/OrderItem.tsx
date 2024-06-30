@@ -1,9 +1,10 @@
 import React, {useCallback} from 'react';
 import {useTicketExchangeContext} from './TicketExchangeProvider';
-import {formatAccounting, getNameAndDescription} from './TicketExchangeUtils';
+import {getNameAndDescription} from './TicketExchangeUtils';
 import {FormButton} from '../Event/components/FormButton';
 import {DecrementIcon, PlusIcon} from '../../Icons';
 import {orderitem} from './ticketExchangeTypes';
+import {formatUSD} from '../RefundOrders/RefundOrders';
 
 export const OrderItem: React.FC<orderitem> = (props) => {
   const {id, price, fee, discount, type} = props;
@@ -37,14 +38,14 @@ export const OrderItem: React.FC<orderitem> = (props) => {
         </p>
         <p className='col-span-12 flex flex-row gap-1 justify-center tab:gap-0 tab:flex-col tab:justify-self-end tab:col-span-3 tab:text-end text-sm'>
           {type === 'donation' ? 'Donation' : 'Price'}:{' '}
-          {formatAccounting(Number(price) - Number(discount))}
-          {type !== 'donation' && <span>Fee: {formatAccounting(Number(fee))}</span>}
+          {formatUSD(Number(price) - Number(discount))}
+          {type !== 'donation' && <span>Fee: {formatUSD(Number(fee))}</span>}
         </p>
       </div>
       <FormButton
         onClick={updateRefundItem}
         disabled={false}
-        title={existingItem ? 'remove from cart' : 'add to cart'}
+        title={existingItem ? 'Remove from cart' : 'Add to cart'}
         className='p-1 tab:ml-2 bg-white rounded-full text-zinc-800/90 hover:scale-125 transition-all ease-in-out'
         testID={`update-refund-item-${id}`}
       >
