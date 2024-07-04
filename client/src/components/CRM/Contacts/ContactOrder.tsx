@@ -142,7 +142,7 @@ const ContactOrder = (props: ContactOrderProps): ReactElement => {
 
 interface TicketOrderItem {
   price: number;
-  refunded: boolean;
+  refunded: number;
   ticketType: string;
   quantity: number;
   eventName: string;
@@ -184,9 +184,9 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
           )}
         </span>
         <span className='flex items-center gap-2'>
-          {refunded && (
+          {refunded > 0 && (
             <Label className='text-[0.7rem]' color='green'>
-              REFUNDED
+              {refunded < quantity? `${refunded} of ${quantity} REFUNDED`: 'FULLY REFUNDED'}
             </Label>
           )}
           {department ? (
@@ -208,7 +208,7 @@ const TicketOrderItem = (props: TicketOrderItem): ReactElement => {
 
 interface SubscriptionOrderItemProps {
   price: number;
-  refunded: boolean;
+  refunded: number;
   subscriptionType: string;
   seasonName: string;
   ticketlimit: number;
@@ -227,9 +227,9 @@ const SubscriptionOrderItem = (
           {quantity} x {subscriptionType} Subscription
         </span>
         <span className='flex items-center gap-2'>
-          {refunded && (
+          {refunded > 0 && (
             <Label className='text-[0.7rem]' color='green'>
-              REFUNDED
+              {refunded < quantity? `${refunded} of ${quantity} REFUNDED`: 'FULLY REFUNDED'}
             </Label>
           )}
           {toDollarAmount(Number(price))}

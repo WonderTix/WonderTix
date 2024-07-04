@@ -2,15 +2,15 @@ import {Switch} from '@mui/material';
 import React from 'react';
 
 export interface FieldType {
-  onChange: any;
-  onBlur: any;
-  name: any;
+  onChange?: any;
+  onBlur?: any;
+  name?: any;
   value: any;
 }
 
 interface FormSwitchProps {
   field: FieldType;
-  onChange: (value) => void;
+  onChange?: (value) => void;
   label: string;
   className: {
     labelClass: string;
@@ -35,7 +35,7 @@ export const FormSwitch = (props: FormSwitchProps) => {
       <label hidden={hidden} className={className.labelClass}>{label}</label>
         <Switch
           checked={field.value}
-          onChange={() => onChange(!field.value)}
+          onChange={onChange? () => onChange(!field.value): field.onChange}
           color={color}
           size={size}
         />

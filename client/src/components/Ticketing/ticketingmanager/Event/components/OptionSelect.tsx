@@ -4,25 +4,29 @@ import {FieldType} from '../../Season/components/SeasonSubscriptionAndTicketType
 interface OptionSelectProps {
   field: FieldType;
   options: any[];
-  handleChange: any;
+  handleChange?: any;
   disabled?: boolean;
+  styles?: {
+    option?: string;
+    select?: string;
+  };
 }
 
 export const OptionSelect = (props: OptionSelectProps) => {
-  const {field, handleChange, options, disabled = false} = props;
+  const {field, handleChange, options, disabled = false, styles = {select: 'w-full'}} = props;
 
   return (
     <select
       id={field.name}
       name={field.name}
-      onChange={handleChange}
+      onChange={handleChange ?? field.onChange}
       value={field.value}
-      className='w-full'
+      className={styles.select}
       disabled={disabled}
     >
       {options &&
         options.map((option, index) => (
-          <option key={index} value={option.id}>
+          <option key={index} value={option.id} className={styles.option}>
             {option.description}
           </option>
         ))}

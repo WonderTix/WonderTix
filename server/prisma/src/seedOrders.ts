@@ -1,4 +1,4 @@
-import {freq, state} from '@prisma/client';
+import {freq, state, type} from '@prisma/client';
 import {updateAvailableSeats} from '../../src/controllers/orderController.service';
 import {ExtendedPrismaClient} from '../../src/controllers/PrismaClient/GetExtendedPrismaClient';
 
@@ -17,32 +17,53 @@ export default async function seedOrders(prisma: ExtendedPrismaClient) {
         const restriction = ticketRestrictions[index%ticketRestrictions.length];
         const orderItemCount = Math.floor((Math.random()*Math.min(5, restriction.ticketlimit)))+1;
         restriction.ticketlimit-=orderItemCount;
+        const donation = !(index%4) ? Math.random()*150+1: 0;
+        const orderSubTotal = orderItemCount * Number(restriction.price);
+        const feeTotal = orderItemCount * Number(restriction.fee);
         if (!restriction.ticketlimit) ticketRestrictions.splice(ticketRestrictions.indexOf(restriction), 1);
         orders.push(prisma.orders.create({
           data: {
             order_status: state.completed,
             contactid_fk: contact.contactid,
-            payment_intent: `comp-order-${index}`,
-            ...(!(index%4) && {
-              donation: {
-                create: {
-                  amount: (Math.random()*150)+1,
-                  frequency: freq.one_time,
-                  comments: 'Seeded Donation',
-                },
-              },
-            }),
-            ordersubtotal: (Number(restriction.price) * orderItemCount),
-            orderticketitems: {
-              create: Array(orderItemCount).fill({
-                price: restriction?.price,
-                fee: restriction?.fee,
-                ticketitem: {
+            ordersubtotal: orderSubTotal,
+            feetotal: feeTotal,
+            refundtotal: 0,
+            payment_intents: {
+              create: {
+                amount: orderSubTotal+feeTotal+donation,
+                payment_intent: {
                   create: {
-                    ticketrestrictionid_fk: restriction?.ticketrestrictionsid,
+                    payment_intent: `seeded-order-${index}`,
+                    status: state.completed,
+                    amount: orderSubTotal+feeTotal+donation,
                   },
                 },
-              }),
+              },
+            },
+            orderitems: {
+              create: [
+                ...Array(orderItemCount).fill({
+                  price: restriction?.price,
+                  fee: restriction?.fee,
+                  type: type.ticket,
+                  ticketitem: {
+                    create: {
+                      ticketrestrictionid_fk: restriction?.ticketrestrictionsid,
+                    },
+                  },
+                }),
+                ...(donation? [{
+                  price: donation,
+                  fee: 0,
+                  type: type.donation,
+                  donation: {
+                    create: {
+                      frequency: freq.one_time,
+                      comments: 'Seeded Donation',
+                    },
+                  },
+                }] : []),
+              ],
             },
           },
         }));

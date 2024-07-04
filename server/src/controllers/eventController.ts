@@ -1,17 +1,9 @@
 /* eslint-disable camelcase*/
 import {Request, Response, Router} from 'express';
 import {checkJwt, checkScopes} from '../auth';
-import {orders, Prisma, purchase_source, state} from '@prisma/client';
-import {getDate, InvalidInputError} from './eventInstanceController.service';
-import {
-  getTicketItems,
-  createStripePaymentIntent,
-  requestStripeReaderPayment,
-  getDiscountAmount,
-  validateWithRegex,
-  checkout,
-} from './eventController.service';
-import {updateCanceledOrder, orderFulfillment} from './orderController.service';
+import {Prisma, state} from '@prisma/client';
+import {getDate, InvalidInputError, reservedTicketItemsFilter} from './eventInstanceController.service';
+import {checkout, requestStripeReaderPayment, validateWithRegex} from './eventController.service';
 import {extendPrismaClient} from './PrismaClient/GetExtendedPrismaClient';
 import {isBooleanString} from 'class-validator';
 import multer from 'multer';
@@ -150,6 +142,107 @@ eventController.post(
     stream.end(req.file.buffer);
   },
 );
+
+/**
+ * @swagger
+ * /2/events/exchange:
+ *   get:
+ *     summary: Get all active events, showings, and ticket restrictions format required for order exchange
+ *     tags:
+ *     - New Event API
+ *     responses:
+ *       200:
+ *         description: fetch successful
+ *       400:
+ *         description: bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message from the server.
+ *       500:
+ *         description: Internal Server Error. An error occurred while processing the request.
+ */
+eventController.get('/exchange', async (_, res: Response) => {
+  try {
+    const availableEvents = await prisma.events.findMany({
+      where: {
+        eventinstances: {
+          some: {
+            availableseats: {gt: 0},
+            ticketrestrictions: {
+              some: {
+                deletedat: null,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        seasons: true,
+        eventinstances: {
+          where: {
+            availableseats: {gt: 0},
+            ticketrestrictions: {
+              some: {
+                deletedat: null,
+              },
+            },
+          },
+          include: {
+            ticketrestrictions: {
+              where: {
+                deletedat: null,
+              },
+              include: {
+                tickettype: true,
+                ticketitems: {
+                  ...reservedTicketItemsFilter,
+                },
+              },
+            },
+          },
+          orderBy: {
+            eventdate: 'asc',
+          },
+        },
+      },
+    });
+
+    return res.json(availableEvents.reduce(({events, eventinstances, ticketrestrictions}, event) => {
+      const eventInstanceIds = event.eventinstances.reduce((acc, instance) => {
+        const ticketRestrictionIds = instance.ticketrestrictions.reduce((acc, res) => {
+          if (res.ticketlimit > res.ticketitems.length) {
+            acc.push(res.ticketrestrictionsid);
+            ticketrestrictions.push({...res, ticketsavailable: res.ticketlimit - res.ticketitems.length});
+          }
+          return acc;
+        }, new Array<number>());
+        if (ticketrestrictions.length > 0) {
+          eventinstances.push({...instance, ticketrestrictions: ticketRestrictionIds});
+          acc.push(instance.eventinstanceid);
+        }
+        return acc;
+      }, Array<number>());
+      if (eventinstances.length > 0) {
+        events.push({...event, eventinstances: eventInstanceIds});
+      }
+      return {events, eventinstances, ticketrestrictions};
+    }, {events: Array<any>(), eventinstances: Array<any>(), ticketrestrictions: Array<any>()}));
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(400).json({error: error.message});
+    }
+    if (error instanceof Prisma.PrismaClientValidationError) {
+      return res.status(400).json({error: error.message});
+    }
+    return res.status(500).json({error: 'Internal Server Error'});
+  }
+});
 
 /**
  * @swagger
@@ -844,37 +937,8 @@ eventController.post('/admin-checkout', async (req: Request, res: Response) => {
  *     tags:
  *     - New Event API
  */
-eventController.post('/reader-intent', async (req: Request, res: Response) => {
-  const {ticketCartItems} = req.body;
-
-  try {
-    if (!ticketCartItems.length) {
-      return res.status(400).json({error: 'Cart is empty'});
-    }
-
-    const {ticketTotal, feeTotal} = await getTicketItems(
-      ticketCartItems,
-      PurchaseSource.card_reader,
-      prisma,
-    );
-
-    if (ticketTotal + feeTotal < 0.5) {
-      return res
-        .status(400)
-        .json({error: 'Reader checkout can not be used for an order below .50 USD'});
-    }
-
-    const response = await createStripePaymentIntent((ticketTotal + feeTotal) * 100);
-    return res.json(response);
-  } catch (error) {
-    console.error(error);
-    if (error instanceof InvalidInputError) {
-      res.status(error.code).json(error.message);
-      return;
-    }
-    res.status(500).json('Internal Server Error');
-  }
-});
+eventController.post('/reader-intent', async (req: Request, res: Response) =>
+  checkout(req, res, PurchaseSource.card_reader, prisma));
 
 /**
  * @swagger
@@ -885,46 +949,14 @@ eventController.post('/reader-intent', async (req: Request, res: Response) => {
  *     - New Event API
  */
 eventController.post('/reader-checkout', async (req: Request, res: Response) => {
-  const {ticketCartItems = [], paymentIntentID, readerID, discount} = req.body;
-  const orderSource = PurchaseSource.card_reader;
-  let order: orders | null = null;
-
+  const {paymentIntentID, readerID} = req.body;
   try {
-    if (!ticketCartItems.length) {
-      return res.status(400).json({error: 'Cart is empty'});
-    }
-
-    const {orderTicketItems, ticketTotal, feeTotal, eventInstanceQueries} = await getTicketItems(
-      ticketCartItems,
-      orderSource,
-      prisma,
-    );
-
     await requestStripeReaderPayment(readerID, paymentIntentID);
-
-    const {discountTotal, discountId} = await getDiscountAmount(
-      prisma,
-      discount,
-      ticketTotal,
-      ticketCartItems,
-    );
-
-    order = await orderFulfillment(prisma, {
-      orderStatus: state.in_progress,
-      orderSource: purchase_source[orderSource as keyof typeof purchase_source],
-      orderSubtotal: ticketTotal,
-      discountTotal,
-      feeTotal,
-      orderTicketItems,
-      eventInstanceQueries,
-      paymentIntent: paymentIntentID,
-      discountId,
-    });
-
-    res.json({orderID: order.orderid, status: 'order sent'});
+    const store = await prisma.temporarystore.findUnique({where: {id: paymentIntentID}});
+    // @ts-ignore
+    res.json({status: 'order sent', orderID: store?.data?.orderid});
   } catch (error) {
     console.error(error);
-    if (order) await updateCanceledOrder(prisma, order);
     if (error instanceof InvalidInputError) {
       res.status(error.code).json(error.message);
       return;
@@ -1328,7 +1360,7 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
         },
         OR: [
           {
-            orderticketitem: {
+            orderitem: {
               refund: null,
               order: {
                 order_status: state.completed,
@@ -1339,9 +1371,12 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
           {
             subscriptionticketitem: {
               subscription: {
-                refund: null,
-                order: {
-                  contactid_fk: +contactId,
+                orderitem: {
+                  refund: null,
+                  order: {
+                    order_status: state.completed,
+                    contactid_fk: +contactId,
+                  },
                 },
               },
             },
@@ -1356,13 +1391,11 @@ eventController.put('/checkin', async (req: Request, res: Response) => {
     return res.send();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
     if (error instanceof Prisma.PrismaClientValidationError) {
-      res.status(400).json({error: error.message});
-      return;
+      return res.status(400).json({error: error.message});
     }
-    res.status(500).json({error: 'Internal Server Error'});
+    return res.status(500).json({error: 'Internal Server Error'});
   }
 });
