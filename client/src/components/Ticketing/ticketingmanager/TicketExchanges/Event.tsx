@@ -191,10 +191,10 @@ const Event: React.FC<Event> = (props) => {
                 component={QuantityInputControl}
                 disabled={values.typeID === -1}
                 quantityAvailable={
-                  values.typeID === -1
+                  values.typeID === -1 || !eventInstance
                     ? 0
                     : Math.min(
-                        ticketRestrictions.get(values.typeID)?.ticketsavailable,
+                        ticketRestrictions.get(values.typeID)?.ticketsavailable ?? 0,
                         eventInstance.availableseats,
                       )
                 }

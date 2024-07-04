@@ -444,14 +444,16 @@ export const getCheckoutRequestBody = ({
     formData.seatingaccom = formData.otherSeatingAcc;
   }
   const donation = formData.donation ? +formData.donation : 0;
-  const discount = appliedDiscount ? appliedDiscount : emptyDiscountCode;
-  const {ticketCartItems, subscriptionCartItems} = Array.from(cartItems).reduce(
+  const {ticketCartItems, subscriptionCartItems, ticketTotal} = Array.from(
+    cartItems,
+  ).reduce(
     (acc, [, item]) => {
       if (isTicketCartItem(item)) {
         acc.ticketCartItems.push({
           ...item,
           typeID: ticketRestrictions.get(item.typeID)?.tickettypeid_fk,
         });
+        acc.ticketTotal += item.price * item.qty;
       } else {
         acc.subscriptionCartItems.push(item);
       }
@@ -460,13 +462,26 @@ export const getCheckoutRequestBody = ({
     {
       ticketCartItems: Array<TicketCartItem>(),
       subscriptionCartItems: Array<SubscriptionCartItem>(),
+      ticketTotal: 0,
     },
   );
 
-  const refundCartItems = Array.from(refundItems).map(([, item]) => ({
-    orderItemId: item.id,
-    refundFee: item.fee !== undefined,
-  }));
+  const {refundCartItems, refundTotal} = Array.from(refundItems).reduce(
+    (acc, [, item]) => {
+      acc.refundTotal += item.price;
+      acc.refundCartItems.push({
+        orderItemId: item.id,
+        refundFee: item.fee !== undefined,
+      });
+      return acc;
+    },
+    {refundCartItems: [], refundTotal: 0},
+  );
+
+  const discount =
+    appliedDiscount && refundTotal < ticketTotal
+      ? appliedDiscount
+      : emptyDiscountCode;
 
   return {
     refundCartItems,
