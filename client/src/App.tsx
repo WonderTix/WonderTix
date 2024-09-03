@@ -14,6 +14,7 @@ import DailySalesReportMain from './components/CRM/Reporting/DailySalesReport/Da
 import DonationSummaryReportMain from './components/CRM/Reporting/DonationSummaryReport/DonationSummaryReportMain';
 import CreditCardConciliationReport from './components/CRM/Reporting/CreditCardReconciliationReport/CreditCardReconciliationReport';
 import TransactionSummaryReport from './components/CRM/Reporting/TransactionSummaryReport/TransactionSummaryReport';
+import SalesOverviewReportMain from './components/CRM/Reporting/SalesOverviewReport/SalesOverviewReportMain';
 
 /* Ticketing Main Page */
 import Mainpage from './components/Ticketing/mainpage/Main';
@@ -115,6 +116,10 @@ const App = () => {
         <Route
           path='/admin/reporting/transaction-summary-report'
           element={<ProtectedRoute component={TransactionSummaryReport} />}
+        />
+        <Route
+          path='/admin/reporting/sales-overview-report'
+          element={<ProtectedRoute component={SalesOverviewReportMain} />}
         />
         <Route
           path='/ticketing'
